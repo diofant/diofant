@@ -20,37 +20,37 @@ from .precedence import precedence
 
 # List of known functions.  First, those that have the same name in
 # Diofant and Octave.   This is almost certainly incomplete!
-known_fcns_src1 = ["sin", "cos", "tan", "cot", "sec", "csc",
-                   "asin", "acos", "acot", "atan", "atan2", "asec", "acsc",
-                   "sinh", "cosh", "tanh", "coth", "csch", "sech",
-                   "asinh", "acosh", "atanh", "acoth", "asech", "acsch",
-                   "erfc", "erfi", "erf", "erfinv", "erfcinv",
-                   "besseli", "besselj", "besselk", "bessely",
-                   "exp", "factorial", "floor", "fresnelc", "fresnels",
-                   "gamma", "log", "polylog", "sign", "zeta"]
+known_fcns_src1 = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc',
+                   'asin', 'acos', 'acot', 'atan', 'atan2', 'asec', 'acsc',
+                   'sinh', 'cosh', 'tanh', 'coth', 'csch', 'sech',
+                   'asinh', 'acosh', 'atanh', 'acoth', 'asech', 'acsch',
+                   'erfc', 'erfi', 'erf', 'erfinv', 'erfcinv',
+                   'besseli', 'besselj', 'besselk', 'bessely',
+                   'exp', 'factorial', 'floor', 'fresnelc', 'fresnels',
+                   'gamma', 'log', 'polylog', 'sign', 'zeta']
 
-# These functions have different names ("Diofant": "Octave"), more
+# These functions have different names ('Diofant': 'Octave'), more
 # generally a mapping to (argument_conditions, octave_function).
 known_fcns_src2 = {
-    "Abs": "abs",
-    "ceiling": "ceil",
-    "Chi": "coshint",
-    "Ci": "cosint",
-    "conjugate": "conj",
-    "laguerre": "laguerreL",
-    "li": "logint",
-    "loggamma": "gammaln",
-    "polygamma": "psi",
-    "Shi": "sinhint",
-    "Si": "sinint",
+    'Abs': 'abs',
+    'ceiling': 'ceil',
+    'Chi': 'coshint',
+    'Ci': 'cosint',
+    'conjugate': 'conj',
+    'laguerre': 'laguerreL',
+    'li': 'logint',
+    'loggamma': 'gammaln',
+    'polygamma': 'psi',
+    'Shi': 'sinhint',
+    'Si': 'sinint',
 }
 
 
 class OctaveCodePrinter(CodePrinter):
     """A printer to convert expressions to strings of Octave/Matlab code."""
 
-    printmethod = "_octave"
-    language = "Octave"
+    printmethod = '_octave'
+    language = 'Octave'
 
     _operators = {
         'and': '&',
@@ -82,13 +82,13 @@ class OctaveCodePrinter(CodePrinter):
         return p*5
 
     def _get_statement(self, codestring):
-        return "%s;" % codestring
+        return f'{codestring};'
 
     def _get_comment(self, text):
-        return "% {0}".format(text)
+        return f'% {text}'
 
     def _declare_number_const(self, name, value):
-        return "{0} = {1};".format(name, value)
+        return f'{name} = {value};'
 
     def _format_code(self, lines):
         return self.indent_code(lines)
@@ -100,15 +100,15 @@ class OctaveCodePrinter(CodePrinter):
             # Octave arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
                                    [i.label, i.lower + 1, i.upper + 1])
-            open_lines.append("for %s = %s:%s" % (var, start, stop))
-            close_lines.append("end")
+            open_lines.append(f'for {var} = {start}:{stop}')
+            close_lines.append('end')
         return open_lines, close_lines
 
     def _print_Mul(self, expr):
         # print complex numbers nicely in Octave
         if (expr.is_number and expr.is_imaginary and
                 expr.as_coeff_Mul()[0].is_integer):
-            return "%si" % self._print(-I*expr)
+            return '%si' % self._print(-I*expr)
 
         # cribbed from str.py
         prec = precedence(expr)
@@ -116,9 +116,9 @@ class OctaveCodePrinter(CodePrinter):
         c, e = expr.as_coeff_Mul()
         if c < 0:
             expr = _keep_coeff(-c, e)
-            sign = "-"
+            sign = '-'
         else:
-            sign = ""
+            sign = ''
 
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
@@ -167,7 +167,7 @@ class OctaveCodePrinter(CodePrinter):
         else:
             divsym = '/' if all(bi.is_number for bi in b) else './'
             return (sign + multjoin(a, a_str) +
-                    divsym + "(%s)" % multjoin(b, b_str))
+                    divsym + '(%s)' % multjoin(b, b_str))
 
     def _print_Pow(self, expr):
         powsymbol = '^' if all(x.is_number for x in expr.args) else '.^'
@@ -175,15 +175,15 @@ class OctaveCodePrinter(CodePrinter):
         PREC = precedence(expr)
 
         if expr.exp == Rational(1, 2):
-            return "sqrt(%s)" % self._print(expr.base)
+            return 'sqrt(%s)' % self._print(expr.base)
 
         if expr.is_commutative:
             if expr.exp == -Rational(1, 2):
                 sym = '/' if expr.base.is_number else './'
-                return "1" + sym + "sqrt(%s)" % self._print(expr.base)
+                return '1' + sym + 'sqrt(%s)' % self._print(expr.base)
             if expr.exp == -1:
                 sym = '/' if expr.base.is_number else './'
-                return "1" + sym + "%s" % self.parenthesize(expr.base, PREC)
+                return '1' + sym + '%s' % self.parenthesize(expr.base, PREC)
 
         return '%s%s%s' % (self.parenthesize(expr.base, PREC), powsymbol,
                            self.parenthesize(expr.exp, PREC))
@@ -197,19 +197,19 @@ class OctaveCodePrinter(CodePrinter):
         return 'pi'
 
     def _print_ImaginaryUnit(self, expr):
-        return "1i"
+        return '1i'
 
     def _print_Exp1(self, expr):
-        return "exp(1)"
+        return 'exp(1)'
 
     def _print_GoldenRatio(self, expr):
         # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
         # return self._print((1+sqrt(Integer(5)))/2)
-        return "(1+sqrt(5))/2"
+        return '(1+sqrt(5))/2'
 
     def _print_NumberSymbol(self, expr):
-        if self._settings["inline"]:
-            return self._print(expr.evalf(self._settings["precision"]))
+        if self._settings['inline']:
+            return self._print(expr.evalf(self._settings['precision']))
         else:
             # assign to a variable, perhaps more readable for longer program
             return super()._print_NumberSymbol(expr)
@@ -221,7 +221,7 @@ class OctaveCodePrinter(CodePrinter):
         lhs = expr.lhs
         rhs = expr.rhs
         # We special case assignments that take multiple lines
-        if not self._settings["inline"] and isinstance(expr.rhs, Piecewise):
+        if not self._settings['inline'] and isinstance(expr.rhs, Piecewise):
             # Here we modify Piecewise so each expression is now
             # an Assignment, and then continue on the print.
             expressions = []
@@ -231,7 +231,7 @@ class OctaveCodePrinter(CodePrinter):
                 conditions.append(c)
             temp = Piecewise(*zip(expressions, conditions))
             return self._print(temp)
-        if self._settings["contract"] and (lhs.has(IndexedBase) or
+        if self._settings['contract'] and (lhs.has(IndexedBase) or
                                            rhs.has(IndexedBase)):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
@@ -239,7 +239,7 @@ class OctaveCodePrinter(CodePrinter):
         else:
             lhs_code = self._print(lhs)
             rhs_code = self._print(rhs)
-            return self._get_statement("%s = %s" % (lhs_code, rhs_code))
+            return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Infinity(self, expr):
         return 'inf'
@@ -256,10 +256,10 @@ class OctaveCodePrinter(CodePrinter):
     _print_Tuple = _print_list
 
     def _print_BooleanTrue(self, expr):
-        return "true"
+        return 'true'
 
     def _print_BooleanFalse(self, expr):
-        return "false"
+        return 'false'
 
     # Could generate quadrature code for definite Integrals?
     # _print_Integral = _print_not_supported
@@ -269,16 +269,16 @@ class OctaveCodePrinter(CodePrinter):
         if (A.rows, A.cols) == (0, 0):
             return '[]'
         elif A.rows == 0 or A.cols == 0:
-            return 'zeros(%s, %s)' % (A.rows, A.cols)
+            return f'zeros({A.rows}, {A.cols})'
         elif (A.rows, A.cols) == (1, 1):
             # Octave does not distinguish between scalars and 1x1 matrices
             return self._print(A[0, 0])
         elif A.rows == 1:
-            return "[%s]" % A.table(self, rowstart='', rowend='', colsep=' ')
+            return '[%s]' % A.table(self, rowstart='', rowend='', colsep=' ')
         elif A.cols == 1:
             # note .table would unnecessarily equispace the rows
-            return "[%s]" % "; ".join([self._print(a) for a in A])
-        return "[%s]" % A.table(self, rowstart='', rowend='',
+            return '[%s]' % '; '.join([self._print(a) for a in A])
+        return '[%s]' % A.table(self, rowstart='', rowend='',
                                 rowsep=';\n', colsep=' ')
 
     def _print_SparseMatrix(self, A):
@@ -288,7 +288,7 @@ class OctaveCodePrinter(CodePrinter):
         I = Matrix([[k[0] + 1 for k in L]])
         J = Matrix([[k[1] + 1 for k in L]])
         AIJ = Matrix([[k[2] for k in L]])
-        return "sparse(%s, %s, %s, %s, %s)" % (self._print(I), self._print(J),
+        return 'sparse(%s, %s, %s, %s, %s)' % (self._print(I), self._print(J),
                                                self._print(AIJ), A.rows, A.cols)
 
     # FIXME: Str/CodePrinter could define each of these to call the _print
@@ -329,13 +329,13 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_Indexed(self, expr):
         inds = [ self._print(i) for i in expr.indices ]
-        return "%s(%s)" % (self._print(expr.base.label), ", ".join(inds))
+        return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
 
     def _print_Idx(self, expr):
         return self._print(expr.label)
 
     def _print_Identity(self, expr):
-        return "eye(%s)" % self._print(expr.shape[0])
+        return 'eye(%s)' % self._print(expr.shape[0])
 
     def _print_uppergamma(self, expr):
         return "gammainc(%s, %s, 'upper')" % (self._print(expr.args[1]),
@@ -346,12 +346,10 @@ class OctaveCodePrinter(CodePrinter):
                                               self._print(expr.args[0]))
 
     def _print_hankel1(self, expr):
-        return "besselh(%s, 1, %s)" % (self._print(expr.order),
-                                       self._print(expr.argument))
+        return f'besselh({self._print(expr.order)}, 1, {self._print(expr.argument)})'
 
     def _print_hankel2(self, expr):
-        return "besselh(%s, 2, %s)" % (self._print(expr.order),
-                                       self._print(expr.argument))
+        return f'besselh({self._print(expr.order)}, 2, {self._print(expr.argument)})'
 
     # Note: as of 2015, Octave doesn't have spherical Bessel functions
     def _print_jn(self, expr):
@@ -367,25 +365,25 @@ class OctaveCodePrinter(CodePrinter):
         return self._print(expr2)
 
     def _print_airyai(self, expr):
-        return "airy(0, %s)" % self._print(expr.args[0])
+        return 'airy(0, %s)' % self._print(expr.args[0])
 
     def _print_airyaiprime(self, expr):
-        return "airy(1, %s)" % self._print(expr.args[0])
+        return 'airy(1, %s)' % self._print(expr.args[0])
 
     def _print_airybi(self, expr):
-        return "airy(2, %s)" % self._print(expr.args[0])
+        return 'airy(2, %s)' % self._print(expr.args[0])
 
     def _print_airybiprime(self, expr):
-        return "airy(3, %s)" % self._print(expr.args[0])
+        return 'airy(3, %s)' % self._print(expr.args[0])
 
     def _print_LambertW(self, expr):
         # argument order is reversed
-        args = ", ".join([self._print(x) for x in reversed(expr.args)])
-        return "lambertw(" + args + ")"
+        args = ', '.join([self._print(x) for x in reversed(expr.args)])
+        return 'lambertw(' + args + ')'
 
     def _print_zeta(self, expr):
         if len(expr.args) == 1:
-            return "zeta(%s)" % expr.args[0]
+            return f'zeta({expr.args[0]})'
         else:
             return self._print_not_supported(expr)
 
@@ -393,47 +391,45 @@ class OctaveCodePrinter(CodePrinter):
         if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
-            raise ValueError("All Piecewise expressions must contain an "
-                             "(expr, True) statement to be used as a default "
-                             "condition. Without one, the generated "
-                             "expression may not evaluate to anything under "
-                             "some condition.")
+            raise ValueError('All Piecewise expressions must contain an '
+                             '(expr, True) statement to be used as a default '
+                             'condition. Without one, the generated '
+                             'expression may not evaluate to anything under '
+                             'some condition.')
         lines = []
-        if self._settings["inline"]:
+        if self._settings['inline']:
             # Express each (cond, expr) pair in a nested Horner form:
             #   (condition) .* (expr) + (not cond) .* (<others>)
             # Expressions that result in multiple statements won't work here.
-            ecpairs = ["({0}).*({1}) + (~({0})).*(".format
-                       (self._print(c), self._print(e))
+            ecpairs = [f'({self._print(c)}).*({self._print(e)}) + (~({self._print(c)})).*('
                        for e, c in expr.args[:-1]]
-            elast = "%s" % self._print(expr.args[-1].expr)
-            pw = " ...\n".join(ecpairs) + elast + ")"*len(ecpairs)
+            elast = '%s' % self._print(expr.args[-1].expr)
+            pw = ' ...\n'.join(ecpairs) + elast + ')'*len(ecpairs)
             # Note: current need these outer brackets for 2*pw.  Would be
             # nicer to teach parenthesize() to do this for us when needed!
-            return "(" + pw + ")"
+            return '(' + pw + ')'
         else:
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append("if (%s)" % self._print(c))
+                    lines.append('if (%s)' % self._print(c))
                 elif i == len(expr.args) - 1 and c == true:
-                    lines.append("else")
+                    lines.append('else')
                 else:
-                    lines.append("elseif (%s)" % self._print(c))
+                    lines.append('elseif (%s)' % self._print(c))
                 code0 = self._print(e)
                 lines.append(code0)
                 if i == len(expr.args) - 1:
-                    lines.append("end")
-            return "\n".join(lines)
+                    lines.append('end')
+            return '\n'.join(lines)
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""
-
         # code mostly copied from ccode
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
 
-        tab = "  "
+        tab = '  '
         inc_regex = ('^function ', '^if ', '^elseif ', '^else$', '^for ')
         dec_regex = ('^end$', '^elseif ', '^else$')
 
@@ -449,7 +445,7 @@ class OctaveCodePrinter(CodePrinter):
         level = 0
         for n, line in enumerate(code):
             level -= decrease[n]
-            pretty.append("%s%s" % (tab*level, line))
+            pretty.append('%s%s' % (tab*level, line))
             level += increase[n]
         return pretty
 
@@ -497,15 +493,14 @@ def octave_code(expr, assign_to=None, **settings):
     >>> octave_code(sin(x).series(x).removeO())
     'x.^5/120 - x.^3/6 + x'
 
-    >>> tau = symbols("tau")
-    >>> octave_code((2*tau)**Rational(7, 2))
-    '8*sqrt(2)*tau.^(7/2)'
+    >>> octave_code((2*x)**Rational(7, 2))
+    '8*sqrt(2)*x.^(7/2)'
 
     Note that element-wise (Hadamard) operations are used by default between
     symbols.  This is because its very common in Octave to write "vectorized"
     code.  It is harmless if the values are scalars.
 
-    >>> octave_code(sin(pi*x*y), assign_to="s")
+    >>> octave_code(sin(pi*x*y), assign_to='s')
     's = sin(pi*x.*y);'
 
     If you need a matrix product "*" or matrix power "^", you can specify the
@@ -542,8 +537,8 @@ def octave_code(expr, assign_to=None, **settings):
     generating an expression that may not evaluate to anything.
 
     >>> pw = Piecewise((x + 1, x > 0), (x, True))
-    >>> octave_code(pw, assign_to=tau)
-    'tau = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
+    >>> octave_code(pw, assign_to=y)
+    'y = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
 
     Note that any expression that can be generated normally can also exist
     inside a Matrix:
@@ -558,9 +553,9 @@ def octave_code(expr, assign_to=None, **settings):
     cfunction_string)].  This can be used to call a custom Octave function.
 
     >>> custom_functions = {
-    ...   "f": "existing_octave_fcn",
-    ...   "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
-    ...         (lambda x: not x.is_Matrix, "my_fcn")]
+    ...     'f': 'existing_octave_fcn',
+    ...     'g': [(lambda x: x.is_Matrix, 'my_mat_fcn'),
+    ...           (lambda x: not x.is_Matrix, 'my_fcn')]
     ... }
     >>> mat = Matrix([[1, x]])
     >>> octave_code(f(x) + g(x) + g(mat), user_functions=custom_functions)

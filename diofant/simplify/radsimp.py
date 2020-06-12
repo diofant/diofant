@@ -242,11 +242,9 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         """
         pattern = Mul.make_args(pattern)
 
-        if len(terms) < len(pattern):
-            # pattern is longer than matched product
-            # so no chance for positive parsing result
-            return
-        else:
+        if len(terms) >= len(pattern):
+            # if pattern is longer than matched product - there
+            # no chance for positive parsing result
             pattern = [parse_term(elem) for elem in pattern]
 
             terms = terms[:]  # need a copy
@@ -342,14 +340,14 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
         for symbol in syms:
             if DIOFANT_DEBUG:
-                print("DEBUG: parsing of expression %s with symbol %s " % (
+                print('DEBUG: parsing of expression %s with symbol %s ' % (
                     str(terms), str(symbol))
                 )
 
             result = parse_expression(terms, symbol)
 
             if DIOFANT_DEBUG:
-                print("DEBUG: returned %s" % str(result))
+                print('DEBUG: returned %s' % str(result))
 
             if result is not None:
                 terms, elems, common_expo, has_deriv = result
@@ -668,7 +666,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     """
     from .simplify import signsimp
 
-    syms = symbols("a:d A:D")
+    syms = symbols('a:d A:D')
 
     def _num(rterms):
         # return the multiplier that will simplify the expression described
@@ -968,9 +966,9 @@ expand_fraction = fraction_expand
 
 def split_surds(expr):
     """
-    split an expression with terms whose squares are rationals
+    Split an expression with terms whose squares are rationals
     into a sum of terms whose surds squared have gcd equal to g
-    and a sum of terms with surds squared prime with g
+    and a sum of terms with surds squared prime with g.
 
     Examples
     ========
@@ -1008,9 +1006,9 @@ def split_surds(expr):
 
 def _split_gcd(*a):
     """
-    split the list of integers ``a`` into a list of integers, ``a1`` having
+    Split the list of integers ``a`` into a list of integers, ``a1`` having
     ``g = gcd(a1)``, and a list ``a2`` whose elements are not divisible by
-    ``g``.  Returns ``g, a1, a2``
+    ``g``.  Returns ``g, a1, a2``.
 
     Examples
     ========

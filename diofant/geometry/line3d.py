@@ -25,15 +25,6 @@ class LinearEntity3D(GeometryEntity):
     """An base class for all linear entities (line, ray and segment)
     in a 3-dimensional Euclidean space.
 
-    Attributes
-    ==========
-
-    p1
-    p2
-    direction_ratio
-    direction_cosine
-    points
-
     Notes
     =====
 
@@ -47,7 +38,7 @@ class LinearEntity3D(GeometryEntity):
         if p1 == p2:
             # if it makes sense to return a Point, handle in subclass
             raise ValueError(
-                "%s.__new__ requires two unique Points." % cls.__name__)
+                f'{cls.__name__}.__new__ requires two unique Points.')
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -223,7 +214,6 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -436,7 +426,7 @@ class LinearEntity3D(GeometryEntity):
         """
         p = Point3D(p)
         if p in self:
-            raise NotImplementedError("Given point should not be on the line")
+            raise NotImplementedError('Given point should not be on the line')
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
@@ -488,7 +478,7 @@ class LinearEntity3D(GeometryEntity):
         """
         p = Point3D(p)
         if p in self:
-            raise NotImplementedError("Given point should not be on the line")
+            raise NotImplementedError('Given point should not be on the line')
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
@@ -572,7 +562,7 @@ class LinearEntity3D(GeometryEntity):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                "Do not know how to project %s onto %s" % (n2, n1))
+                f'Do not know how to project {n2} onto {n1}')
 
         return self.intersection(projected)
 
@@ -780,7 +770,7 @@ class LinearEntity3D(GeometryEntity):
             return result
         else:
             raise Undecidable(
-                "can't decide whether '%s' contains '%s'" % (self, other))
+                f"can't decide whether '{self}' contains '{other}'")
 
     def contains(self, other):
         """Subclasses should implement this method and should return
@@ -813,7 +803,6 @@ class Line3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import L
     >>> L = Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
     >>> L
     Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
@@ -984,15 +973,6 @@ class Ray3D(LinearEntity3D):
     p2 : Point or a direction vector
     direction_ratio: Determines the direction in which the Ray propagates.
 
-
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-    zdirection
-
     See Also
     ========
 
@@ -1002,7 +982,6 @@ class Ray3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import r
     >>> r = Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
     >>> r
     Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
@@ -1240,7 +1219,7 @@ class Ray3D(LinearEntity3D):
                 if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
-                    'Cannot determine if %s is in %s' % (o, self))
+                    f'Cannot determine if {o} is in {self}')
             else:
                 # Points are not collinear, so the rays are not parallel
                 # and hence it is impossible for self to contain o
@@ -1265,12 +1244,6 @@ class Segment3D(LinearEntity3D):
     p1 : Point3D
     p2 : Point3D
 
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : Point3D
-
     See Also
     ========
 
@@ -1279,8 +1252,7 @@ class Segment3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import s
-    >>> Segment3D((1, 0, 0), (1, 1, 1)) # tuples are interpreted as pts
+    >>> Segment3D((1, 0, 0), (1, 1, 1))  # tuples are interpreted as pts
     Segment3D(Point3D(1, 0, 0), Point3D(1, 1, 1))
     >>> s = Segment3D(Point3D(4, 3, 9), Point3D(1, 1, 7))
     >>> s

@@ -1,14 +1,15 @@
-from collections import defaultdict
-from functools import reduce
+import collections
+import functools
 
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import I, Integer, igcd, ilcm, nan, oo, zoo
+from .numbers import Integer, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
 
 
 class Add(AssocOp):
+    """Symbolic addition class."""
 
     is_Add = True
 
@@ -236,8 +237,7 @@ class Add(AssocOp):
         {x*y: 3}
 
         """
-
-        d = defaultdict(list)
+        d = collections.defaultdict(list)
         for ai in self.args:
             c, m = ai.as_coeff_Mul()
             d[m].append(c)
@@ -246,7 +246,7 @@ class Add(AssocOp):
                 d[k] = v[0]
             else:
                 d[k] = Add(*v)
-        di = defaultdict(int)
+        di = collections.defaultdict(int)
         di.update(d)
         return di
 
@@ -304,7 +304,6 @@ class Add(AssocOp):
         coeff, terms = self.as_coeff_add()
         if len(terms) == 1:
             return terms[0]._matches(expr - coeff, repl_dict)
-        return
 
     def _matches(self, expr, repl_dict={}):
         """Helper method for match().
@@ -351,7 +350,7 @@ class Add(AssocOp):
         return self.args[0], self._new_rawargs(*self.args[1:])
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -366,7 +365,7 @@ class Add(AssocOp):
         ncon, dcon = content.as_numer_denom()
 
         # collect numerators and denominators of the terms
-        nd = defaultdict(list)
+        nd = collections.defaultdict(list)
         for f in expr.args:
             ni, di = f.as_numer_denom()
             nd[di].append(ni)
@@ -406,9 +405,20 @@ class Add(AssocOp):
         return _fuzzy_group((a.is_commutative for a in self.args),
                             quick_exit=True)
 
+    def _eval_is_real(self):
+        return _fuzzy_group((a.is_real for a in self.args), quick_exit=True)
+
     def _eval_is_extended_real(self):
-        return _fuzzy_group((a.is_extended_real for a in self.args),
-                            quick_exit=True)
+        r = _fuzzy_group((a.is_extended_real for a in self.args), quick_exit=True)
+        if r is not True:
+            return r
+        else:
+            nfin = [_ for _ in self.args if not _.is_finite]
+            if len(nfin) <= 1:
+                return True
+            elif (all(_.is_nonnegative for _ in nfin) or
+                  all(_.is_nonpositive for _ in nfin)):
+                return True
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
@@ -426,11 +436,7 @@ class Add(AssocOp):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
     def _eval_is_imaginary(self):
-        rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
-        if rv is False:
-            return rv
-        iargs = [a*I for a in self.args]
-        return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
+        return _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
 
     def _eval_is_odd(self):
         l = [f for f in self.args if not f.is_even]
@@ -604,7 +610,7 @@ class Add(AssocOp):
 
     def as_real_imag(self, deep=True, **hints):
         """
-        returns a tuple representing a complex number
+        Returns a tuple representing a complex number.
 
         Examples
         ========
@@ -627,13 +633,21 @@ class Add(AssocOp):
 
     def _eval_as_leading_term(self, x):
         from . import factor_terms
+        from ..series import Order
 
-        expr = self.func(*[t.as_leading_term(x) for t in self.args]).removeO()
-        if not expr:
-            # simple leading term analysis gave us 0 but we have to send
-            # back a term, so compute the leading term (via series)
-            return self.compute_leading_term(x)
-        elif not expr.is_Add:
+        by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)
+        expr = Integer(0)
+
+        for t in sorted((_.as_leading_term(x) for _ in self.args), key=by_O):
+            expr += t
+            if not expr:
+                # simple leading term analysis gave us 0 but we have to send
+                # back a term, so compute the leading term (via series)
+                return self.compute_leading_term(x)
+
+        expr = expr.removeO()
+
+        if not expr.is_Add:
             return expr
         else:
             plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
@@ -708,11 +722,11 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = reduce(igcd, [t[0] for t in terms], 0)
-            dlcm = reduce(ilcm, [t[1] for t in terms], 1)
+            ngcd = functools.reduce(igcd, [t[0] for t in terms], 0)
+            dlcm = functools.reduce(ilcm, [t[1] for t in terms], 1)
         else:
-            ngcd = reduce(igcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = reduce(ilcm, [t[1] for t in terms if t[1]], 1)
+            ngcd = functools.reduce(igcd, [t[0] for t in terms if t[1]], 0)
+            dlcm = functools.reduce(ilcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
             return Integer(1), self
@@ -769,7 +783,7 @@ class Add(AssocOp):
             rads = []
             common_q = None
             for m in args:
-                term_rads = defaultdict(list)
+                term_rads = collections.defaultdict(list)
                 for ai in Mul.make_args(m):
                     if ai.is_Pow:
                         b, e = ai.as_base_exp()
@@ -796,7 +810,7 @@ class Add(AssocOp):
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = reduce(igcd, [r[q] for r in rads], 0)
+                    g = functools.reduce(igcd, [r[q] for r in rads], 0)
                     if g != 1:
                         G.append(root(g, q))
                 if G:

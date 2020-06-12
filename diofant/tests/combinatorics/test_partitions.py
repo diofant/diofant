@@ -1,12 +1,13 @@
+import random
+
 import pytest
 
+from diofant import Set, default_sort_key, ordered
 from diofant.abc import x
-from diofant.combinatorics.partitions import (IntegerPartition, Partition,
-                                              RGS_enum, RGS_rank, RGS_unrank,
-                                              random_integer_partition)
-from diofant.core.compatibility import ordered
-from diofant.sets.sets import Set
-from diofant.utilities.iterables import default_sort_key, partitions
+from diofant.combinatorics import (IntegerPartition, Partition, RGS_enum,
+                                   RGS_rank, RGS_unrank)
+from diofant.combinatorics.partitions import random_integer_partition
+from diofant.utilities.iterables import partitions
 
 
 __all__ = ()
@@ -27,6 +28,7 @@ def test_partition():
 
     assert (a == b) is False
     assert a <= b
+    assert a < b
     assert (a > b) is False
     assert a != b
 
@@ -50,6 +52,7 @@ def test_integer_partition():
     # check fails since 1 + 2 != 100
     pytest.raises(ValueError, lambda: IntegerPartition(100, list(range(1, 3))))
     a = IntegerPartition(8, [1, 3, 4])
+    assert a.as_dict() == {1: 1, 3: 1, 4: 1}
     b = a.next_lex()
     c = IntegerPartition([1, 3, 4])
     d = IntegerPartition(8, {1: 3, 3: 1, 2: 1})
@@ -88,6 +91,9 @@ def test_integer_partition():
     assert random_integer_partition(10,
                                     seed=[1, 3, 2,
                                           1, 5, 1]) == [5, 2, 1, 1, 1]
+
+    random.seed(0)
+    assert random_integer_partition(5, seed=1) == [2, 2, 1]
 
 
 def test_rgs():

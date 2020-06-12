@@ -1,4 +1,4 @@
-""" Integral Transforms """
+"""Integral Transforms."""
 
 from functools import reduce, wraps
 from itertools import repeat
@@ -35,8 +35,7 @@ class IntegralTransformError(NotImplementedError):
     """
 
     def __init__(self, transform, function, msg):
-        super().__init__("%s Transform could not be "
-                         "computed: %s." % (transform, msg))
+        super().__init__(f'{transform} Transform could not be computed: {msg}.')
         self.function = function
 
 
@@ -254,7 +253,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
-                t_ = Dummy("t", real=True)
+                t_ = Dummy('t', real=True)
                 soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
@@ -401,8 +400,6 @@ def _rewrite_sin(m_n, s, a, b):
 class MellinTransformStripError(ValueError):
     """Exception raised by _rewrite_gamma. Mainly for internal use."""
 
-    pass
-
 
 def _rewrite_gamma(f, s, a, b):
     """
@@ -513,7 +510,7 @@ def _rewrite_gamma(f, s, a, b):
     s_multipliers = [x/common_coefficient for x in s_multipliers]
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
-        raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
+        raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
     s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.denominator)
                                                     for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
@@ -548,7 +545,7 @@ def _rewrite_gamma(f, s, a, b):
     exponentials = []
 
     def exception(fact):
-        return IntegralTransformError("Inverse Mellin", f, "Unrecognised form '%s'." % fact)
+        return IntegralTransformError('Inverse Mellin', f, f"Unrecognised form '{fact}'.")
     while args:
         fact, is_numer = args.pop()
         if is_numer:
@@ -667,7 +664,7 @@ def _rewrite_gamma(f, s, a, b):
                 newa = a/p
                 newc = c/p
                 if not a.is_Integer:
-                    raise TypeError("a is not an integer")
+                    raise TypeError('a is not an integer')
                 for k in range(p):
                     gammas += [(newa, newc + k/p)]
                 if is_numer:
@@ -699,7 +696,7 @@ def _rewrite_gamma(f, s, a, b):
 
 @_noconds_(True)
 def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
-    """ A helper for the real inverse_mellin_transform function, this one here
+    """A helper for the real inverse_mellin_transform function, this one here
     assumes x to be real and positive.
 
     """
@@ -804,7 +801,7 @@ class InverseMellinTransform(IntegralTransform):
         for f in postorder_traversal(F):
             if f.is_Function and f.has(s) and f.func not in _allowed:
                 raise IntegralTransformError('Inverse Mellin', F,
-                                             'Component %s not recognised.' % f)
+                                             f'Component {f} not recognised.')
         strip = self.fundamental_strip
         return _inverse_mellin_transform(F, s, x, strip, **hints)
 
@@ -879,9 +876,9 @@ def _simplifyconds(expr, s, a):
     Abs(x**2) < 1
     >>> _simplifyconds(abs(1/x**2) < 1, x, 1)
     True
-    >>> _simplifyconds(Integer(1) < abs(x), x, 1)
+    >>> _simplifyconds(1 < abs(x), x, 1)
     True
-    >>> _simplifyconds(Integer(1) < abs(1/x), x, 1)
+    >>> _simplifyconds(1 < abs(1/x), x, 1)
     False
 
     >>> _simplifyconds(Ne(1, x**3), x, 1)
@@ -898,13 +895,12 @@ def _simplifyconds(expr, s, a):
 
     def power(ex):
         if ex == s:
-            return 1
+            return Integer(1)
         if ex.is_Pow and ex.base == s:
             return ex.exp
-        return
 
     def bigger(ex1, ex2):
-        """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
+        """Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
         Else return None.
 
         """
@@ -919,16 +915,13 @@ def _simplifyconds(expr, s, a):
         n = power(ex2)
         if n is None:
             return
-        try:
-            if n > 0 and (abs(ex1) - abs(a)**n).is_nonpositive:
-                return False
-            if n < 0 and (abs(ex1) - abs(a)**n).is_nonnegative:
-                return True
-        except TypeError:
-            pass
+        if n.is_positive and (abs(ex1) - abs(a)**n).is_nonpositive:
+            return False
+        elif n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
+            return True
 
     def replie(x, y):
-        """simplify x < y."""
+        """Simplify x < y."""
         if not (x.is_positive or isinstance(x, Abs)) \
                 or not (y.is_positive or isinstance(y, Abs)):
             return x < y
@@ -1009,7 +1002,7 @@ def _laplace_transform(f, t, s_, simplify=True):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
-                t_ = Dummy("t", real=True)
+                t_ = Dummy('t', real=True)
                 soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
@@ -1310,11 +1303,11 @@ class FourierTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            "Class %s must implement a(self) but does not" % self.__class__)
+            f'Class {self.__class__} must implement a(self) but does not')
 
     def b(self):
         raise NotImplementedError(
-            "Class %s must implement b(self) but does not" % self.__class__)
+            f'Class {self.__class__} must implement b(self) but does not')
 
     def _compute_transform(self, f, x, k, **hints):
         return _fourier_transform(f, x, k,
@@ -1474,11 +1467,11 @@ class SineCosineTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            "Class %s must implement a(self) but does not" % self.__class__)
+            f'Class {self.__class__} must implement a(self) but does not')
 
     def b(self):
         raise NotImplementedError(
-            "Class %s must implement b(self) but does not" % self.__class__)
+            f'Class {self.__class__} must implement b(self) but does not')
 
     def _compute_transform(self, f, x, k, **hints):
         return _sine_cosine_transform(f, x, k,
@@ -1583,8 +1576,8 @@ def inverse_sine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1)*
-    ...     gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
+    >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1) *
+    ...                        gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
     x**(-a)
     >>> inverse_sine_transform(sqrt(2)*k*exp(-k**2/(4*a))/(4*sqrt(a)**3), k, x)
     E**(-a*x**2)*x

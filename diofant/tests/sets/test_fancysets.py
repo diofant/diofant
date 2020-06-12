@@ -1,14 +1,14 @@
+"""Special sets tests."""
+
 import itertools
 
 import pytest
 
-from diofant import (Abs, Basic, I, Integer, Lambda, Rational, S, Symbol, cos,
-                     exp, log, oo, pi, sin, sqrt, symbols, tan)
+from diofant import (Basic, Contains, EmptySet, FiniteSet, I, ImageSet,
+                     Integer, Intersection, Interval, Lambda, Range, Rational,
+                     S, Set, Symbol, cos, exp, imageset, log, oo, pi, sin,
+                     sqrt, symbols, tan)
 from diofant.abc import m, n, t, x, y
-from diofant.sets.contains import Contains
-from diofant.sets.fancysets import ImageSet, Range
-from diofant.sets.sets import (EmptySet, FiniteSet, Intersection, Interval,
-                               Set, imageset)
 
 
 __all__ = ()
@@ -271,7 +271,7 @@ def test_imageset_intersection_real():
                      S.Integers).intersection(S.Reals) ==
             FiniteSet(-1, 1))
 
-    s = ImageSet(Lambda(n, -I*(I*(2*pi*n - pi/4) + log(Abs(sqrt(-I))))), S.Integers)
+    s = ImageSet(Lambda(n, -I*(I*(2*pi*n - pi/4) + log(abs(sqrt(-I))))), S.Integers)
     assert s.intersection(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
 
 

@@ -2,18 +2,14 @@ import warnings
 
 import pytest
 
-from diofant import (Abs, Derivative, Dummy, Float, Rational, Symbol, Tuple,
-                     cos, oo, pi, sqrt, symbols)
-from diofant.functions.elementary.trigonometric import tan
+from diofant import (Derivative, Dummy, Float, Integral, Rational, Symbol,
+                     Tuple, cos, oo, pi, root, solve, sqrt, symbols, tan)
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Point2D, Point3D, Polygon, Ray,
                               RegularPolygon, Segment, Triangle, are_similar,
-                              centroid, convex_hull, intersection)
+                              centroid, convex_hull, deg, idiff, intersection,
+                              rad)
 from diofant.geometry.entity import rotate, scale, translate
-from diofant.geometry.polygon import deg, rad
-from diofant.geometry.util import idiff
-from diofant.integrals.integrals import Integral
-from diofant.solvers.solvers import solve
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -38,7 +34,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -83,6 +79,8 @@ def test_curve():
     pytest.raises(ValueError, lambda: Curve((s, s + t), (s, 1, 2)).arbitrary_point())
     pytest.raises(ValueError, lambda: Curve((s, s + t), (t, 1, 2)).arbitrary_point(s))
 
+    assert Curve((t, t), (t, 0, 1)).plot_interval() == [t, 0, 1]
+
 
 def test_ellipse_geom():
     p1 = Point(0, 0)
@@ -95,6 +93,8 @@ def test_ellipse_geom():
     c1 = Circle(p1, 1)
     c2 = Circle(p2, 1)
     c3 = Circle(Point(sqrt(2), sqrt(2)), 1)
+
+    l1 = Line(p1, p2)
 
     pytest.raises(ValueError, lambda: Ellipse(Point3D(0, 0, 0), 1, 1))
     pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
@@ -114,6 +114,7 @@ def test_ellipse_geom():
     assert Ellipse(None, 1, 1).center == Point(0, 0)
     assert e1 == c1
     assert e1 != e2
+    assert e1 != l1  # issue sympy/sympy#12303
     assert p4 in e1
     assert p2 not in e2
     assert e1.area == pi
@@ -346,6 +347,16 @@ def test_ellipse_geom():
     assert c.scale(y=-1) == Circle((1, -1), 2)
     assert c.scale(2) == Ellipse((2, 1), 4, 2)
 
+    e1 = Ellipse(Point(1, 0), 3, 2)
+    assert (e1.evolute() == root(4, 3)*y**Rational(2, 3) +
+            (3*x - 3)**Rational(2, 3) - root(25, 3))
+
+    e1 = Ellipse(Point(0, 0), 3, 2)
+    p1 = e1.random_point(seed=0)
+    assert p1.evalf(2) == Point(2.0664, 1.4492)
+
+    assert Ellipse((1, 0), 2, 1).rotate(pi/2) == Ellipse(Point(0, 1), 1, 2)
+
 
 def test_ellipse_random_point():
     e3 = Ellipse(Point(0, 0), y1, y1)
@@ -423,13 +434,13 @@ def test_polygon():
     assert p5.distance(
         Polygon(Point(1, 8), Point(5, 8), Point(8, 12), Point(1, 12))) == 4
     warnings.filterwarnings(
-        "error", message="Polygons may intersect producing erroneous output")
+        'error', message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning,
                   lambda: Polygon(Point(0, 0), Point(1, 0),
                                   Point(1, 1)).distance(
                       Polygon(Point(0, 0), Point(0, 1), Point(1, 1))))
     warnings.filterwarnings(
-        "ignore", message="Polygons may intersect producing erroneous output")
+        'ignore', message='Polygons may intersect producing erroneous output')
     assert hash(p5) == hash(Polygon(Point(0, 0), Point(4, 4), Point(0, 4)))
     assert p5 == Polygon(Point(4, 4), Point(0, 4), Point(0, 0))
     assert Polygon(Point(4, 4), Point(0, 4), Point(0, 0)) in p5
@@ -497,16 +508,16 @@ def test_polygon():
     # Angles
     #
     angles = p4.angles
-    assert feq(angles[Point(0, 0)].evalf(), Float("0.7853981633974483"))
-    assert feq(angles[Point(4, 4)].evalf(), Float("1.2490457723982544"))
-    assert feq(angles[Point(5, 2)].evalf(), Float("1.8925468811915388"))
-    assert feq(angles[Point(3, 0)].evalf(), Float("2.3561944901923449"))
+    assert feq(angles[Point(0, 0)].evalf(), Float('0.7853981633974483'))
+    assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
+    assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
+    assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
 
     angles = p3.angles
-    assert feq(angles[Point(0, 0)].evalf(), Float("0.7853981633974483"))
-    assert feq(angles[Point(4, 4)].evalf(), Float("1.2490457723982544"))
-    assert feq(angles[Point(5, 2)].evalf(), Float("1.8925468811915388"))
-    assert feq(angles[Point(3, 0)].evalf(), Float("2.3561944901923449"))
+    assert feq(angles[Point(0, 0)].evalf(), Float('0.7853981633974483'))
+    assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
+    assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
+    assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
 
     #
     # Triangle
@@ -552,7 +563,7 @@ def test_polygon():
     # Inradius
     assert t1.inradius == t1.incircle.radius == 5 - 5*sqrt(2)/2
     assert t2.inradius == t2.incircle.radius == 5*sqrt(3)/6
-    assert t3.inradius == t3.incircle.radius == x1**2/((2 + sqrt(2))*Abs(x1))
+    assert t3.inradius == t3.incircle.radius == x1**2/((2 + sqrt(2))*abs(x1))
 
     # Circumcircle
     assert t1.circumcircle.center == Point(2.5, 2.5)
@@ -604,25 +615,42 @@ def test_polygon():
     pt1 = Point(half, half)
     pt2 = Point(1, 1)
 
-    '''Polygon to Point'''
+    # Polygon to Point
     assert p1.distance(pt1) == half
     assert p1.distance(pt2) == 0
     assert p2.distance(pt1) == Rational(3, 4)
     assert p3.distance(pt2) == sqrt(2)/2
 
-    '''Polygon to Polygon'''
+    # Polygon to Polygon
+
     # p1.distance(p2) emits a warning
     # First, test the warning
-    warnings.filterwarnings("error",
-                            message="Polygons may intersect producing erroneous output")
+    warnings.filterwarnings('error',
+                            message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning, lambda: p1.distance(p2))
     # now test the actual output
-    warnings.filterwarnings("ignore",
-                            message="Polygons may intersect producing erroneous output")
+    warnings.filterwarnings('ignore',
+                            message='Polygons may intersect producing erroneous output')
     assert p1.distance(p2) == half/2
 
     assert p1.distance(p3) == sqrt(2)/2
     assert p3.distance(p4) == 2*sqrt(2)/5
+
+    r = Polygon(Point(0, 0), 1, n=3)
+    assert r.vertices[0] == Point(1, 0)
+
+    mid = Point(1, 1)
+    assert Polygon((0, 2), (2, 2), mid, (0, 0), (2, 0), mid).area == 0
+
+    t1 = Triangle(Point(0, 0), Point(4, 0), Point(2, 4))
+    assert t1.is_isosceles() is True
+
+    t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
+    assert t1.is_scalene() is True
+
+    p1 = Polygon((1, 0), (2, 0), (2, 2), (-4, 3))
+    p2 = Polygon((1, 0), (2, 0), (3, 2), (-4, 3))
+    assert (p1 == p2) is False
 
 
 def test_convex_hull():

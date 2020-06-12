@@ -27,12 +27,6 @@ class Plane(GeometryEntity):
     inputs. They are three non-collinear points and a point and the plane's
     normal vector.
 
-    Attributes
-    ==========
-
-    p1
-    normal_vector
-
     Examples
     ========
 
@@ -60,9 +54,9 @@ class Plane(GeometryEntity):
             if is_sequence(a) and len(a) == 3:
                 normal_vector = Point3D(a).args
             else:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     Either provide 3 3D points or a point with a
-                    normal vector expressed as a sequence of length 3'''))
+                    normal vector expressed as a sequence of length 3"""))
         return GeometryEntity.__new__(cls, p1, normal_vector, **kwargs)
 
     @property
@@ -253,7 +247,7 @@ class Plane(GeometryEntity):
                 return False
 
     def is_perpendicular(self, l):
-        """is the given geometric entity perpendicular to the given plane?
+        """Is the given geometric entity perpendicular to the given plane?
 
         Parameters
         ==========
@@ -430,7 +424,7 @@ class Plane(GeometryEntity):
         planes = set(planes)
         for i in planes:
             if not isinstance(i, Plane):
-                raise ValueError('All objects should be Planes but got %s' % i.func)
+                raise ValueError(f'All objects should be Planes but got {i.func}')
         if len(planes) < 2:
             return False
         planes = list(planes)
@@ -562,7 +556,7 @@ class Plane(GeometryEntity):
         return Plane(p1, p2, p3)
 
     def random_point(self, seed=None):
-        """ Returns a random point on the Plane.
+        """Returns a random point on the Plane.
 
         Returns
         =======
@@ -579,7 +573,7 @@ class Plane(GeometryEntity):
         return self.arbitrary_point(t).subs({t: Rational(rng.random())})
 
     def arbitrary_point(self, t=None):
-        """ Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
+        """Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
         will move the point in a circle of radius 1 about p1 of the Plane.
 
         Examples
@@ -613,7 +607,7 @@ class Plane(GeometryEntity):
         return p.xreplace({m: solve(p.distance(self.p1) - 1, m)[0][m]})
 
     def intersection(self, o):
-        """ The intersection with other geometrical entity.
+        """The intersection with other geometrical entity.
 
         Parameters
         ==========
@@ -658,7 +652,7 @@ class Plane(GeometryEntity):
                 elif isinstance(o, Line):
                     o = Line3D(p1, p2)
                 else:
-                    raise ValueError('unhandled linear entity: %s' % o.func)
+                    raise ValueError(f'unhandled linear entity: {o.func}')
                 return [o]
             else:
                 x, y, z = map(Dummy, 'xyz')
@@ -716,7 +710,7 @@ class Plane(GeometryEntity):
             return False
 
     def is_coplanar(self, o):
-        """ Returns True if `o` is coplanar with self, else False.
+        """Returns True if `o` is coplanar with self, else False.
 
         Examples
         ========

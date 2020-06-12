@@ -5,7 +5,7 @@ from .domainelement import DomainElement
 
 
 class QuotientRingElement(DomainElement):
-    """A class representing an element of the quotent ring. """
+    """A class representing an element of the quotent ring."""
 
     @property
     def parent(self):
@@ -16,6 +16,9 @@ class QuotientRingElement(DomainElement):
             self.rep = rep.rep % self.mod
         else:
             self.rep = self.domain.convert(rep) % self.mod
+
+    def __reduce__(self):
+        return self.parent.__call__, (self.rep,)
 
     def __hash__(self):
         return hash((self.rep, self.mod))
@@ -85,7 +88,7 @@ class QuotientRingElement(DomainElement):
 
     def __pow__(self, exp):
         if not isinstance(exp, numbers.Integral):
-            raise TypeError("Integer exponent expected, got %s" % type(exp))
+            raise TypeError(f'Integer exponent expected, got {type(exp)}')
         if exp < 0:
             rep, exp = self.domain.invert(self.rep, self.mod), -exp
         else:

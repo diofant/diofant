@@ -40,7 +40,7 @@ def test_jacobi():
         (-b - n, -n), (a + 1,), -1)/(factorial(n)*gamma(a + 1))
     assert jacobi(n, a, b, 1) == RisingFactorial(a + 1, n)/factorial(n)
 
-    m = Symbol("m", positive=True)
+    m = Symbol('m', positive=True)
     assert jacobi(m, a, b, oo) == oo*RisingFactorial(a + b + m + 1, m)
     assert jacobi(n, a, b, oo) == jacobi(n, a, b, oo, evaluate=False)
 
@@ -53,14 +53,14 @@ def test_jacobi():
 
     # XXX see issue sympy/sympy#5539
     assert str(jacobi(n, a, b, x).diff(a)) == \
-        ("Sum((jacobi(n, a, b, x) + (a + b + 2*_k + 1)*RisingFactorial(b + "
-         "_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + "
-         "b + _k + 1, n - _k)))/(a + b + n + _k + 1), (_k, 0, n - 1))")
+        ('Sum((jacobi(n, a, b, x) + (a + b + 2*_k + 1)*RisingFactorial(b + '
+         '_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + '
+         'b + _k + 1, n - _k)))/(a + b + n + _k + 1), (_k, 0, n - 1))')
     assert str(jacobi(n, a, b, x).diff(b)) == \
-        ("Sum(((-1)**(n - _k)*(a + b + 2*_k + 1)*RisingFactorial(a + "
-         "_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + "
-         "b + _k + 1, n - _k)) + jacobi(n, a, b, x))/(a + b + n + "
-         "_k + 1), (_k, 0, n - 1))")
+        ('Sum(((-1)**(n - _k)*(a + b + 2*_k + 1)*RisingFactorial(a + '
+         '_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + '
+         'b + _k + 1, n - _k)) + jacobi(n, a, b, x))/(a + b + n + '
+         '_k + 1), (_k, 0, n - 1))')
 
     assert jacobi_normalized(n, a, b, x) == \
         (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
@@ -95,7 +95,7 @@ def test_gegenbauer():
 
     assert gegenbauer(n, Rational(3, 4), -1) == zoo
 
-    m = Symbol("m", positive=True)
+    m = Symbol('m', positive=True)
     assert gegenbauer(m, a, oo) == oo*RisingFactorial(a, m)
     assert gegenbauer(n, a, oo) == gegenbauer(n, a, oo, evaluate=False)
 
@@ -108,9 +108,9 @@ def test_gegenbauer():
 
     # XXX see issue sympy/sympy#5539
     assert str(gegenbauer(n, a, x).diff(a)) == \
-        ("Sum((2*(-1)**(n - _k) + 2)*(a + _k)*gegenbauer(_k, a, x)/((n - "
-         "_k)*(2*a + n + _k)) + (2/(2*a + n + _k) + (2*_k + 2)/((2*a + "
-         "_k)*(2*a + 2*_k + 1)))*gegenbauer(n, a, x), (_k, 0, n - 1))")
+        ('Sum((2*(-1)**(n - _k) + 2)*(a + _k)*gegenbauer(_k, a, x)/((n - '
+         '_k)*(2*a + n + _k)) + (2/(2*a + n + _k) + (2*_k + 2)/((2*a + '
+         '_k)*(2*a + 2*_k + 1)))*gegenbauer(n, a, x), (_k, 0, n - 1))')
 
 
 def test_legendre():
@@ -219,7 +219,7 @@ def test_chebyshev():
             assert chebyshevu(n, z) == 0
         pytest.raises(ValueError, lambda: chebyshevu_root(n, n))
 
-    n = Symbol("n")
+    n = Symbol('n')
     X = chebyshevt(n, x)
     assert isinstance(X, chebyshevt)
     assert chebyshevt(n, -x) == (-1)**n*chebyshevt(n, x)

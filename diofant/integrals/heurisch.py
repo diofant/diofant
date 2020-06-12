@@ -62,7 +62,7 @@ _symbols_cache = {}
 
 # NB @cacheit is not convenient here
 def _symbols(name, n):
-    """get vector of symbols local to this module."""
+    """Get vector of symbols local to this module."""
     try:
         lsyms = _symbols_cache[name]
     except KeyError:
@@ -70,7 +70,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy('%s%i' % (name, len(lsyms))) )
+        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
 
     return lsyms[:n]
 
@@ -112,24 +112,18 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     # conditions for these cases are stored in the list slns.
     slns = []
     for d in denoms(res):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns += solve(d, *ds)
     if not slns:
         return res
     slns = list(uniq(slns))
     # Remove the solutions corresponding to poles in the original expression.
     slns0 = []
     for d in denoms(f):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns0 += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns0 += solve(d, *ds)
     slns = [s for s in slns if s not in slns0]
     if not slns:
         return res
@@ -517,11 +511,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         solution = solve_lin_sys(numer.coeffs(), coeff_ring)
 
-        if solution is None:
-            return
-        else:
+        if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
-                         v.as_expr()) for k, v in solution.items()]
+                         coeff_ring.to_expr(v)) for k, v in solution.items()]
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
@@ -547,5 +539,3 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             if result is not None:
                 return indep*result
-
-        return

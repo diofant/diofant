@@ -57,7 +57,6 @@ optional shape parameter to IndexedBase upon construction:
 If an IndexedBase object has no shape information, it is assumed that the
 array is as large as the ranges of its indices:
 
->>> n, m = symbols('n m', integer=True)
 >>> i = Idx('i', m)
 >>> j = Idx('j', n)
 >>> M[i, j].shape
@@ -107,7 +106,7 @@ from ..core.compatibility import NotIterable, is_sequence
 
 
 class IndexException(Exception):
-    pass
+    """Generic index error."""
 
 
 class Indexed(Expr):
@@ -134,7 +133,7 @@ class Indexed(Expr):
         from ..matrices.matrices import MatrixBase
 
         if not args:
-            raise IndexException("Indexed needs at least one index.")
+            raise IndexException('Indexed needs at least one index.')
         if isinstance(base, (str, Symbol)):
             base = IndexedBase(base)
         elif not hasattr(base, '__getitem__') and not isinstance(base, IndexedBase):
@@ -205,7 +204,6 @@ class Indexed(Expr):
         the IndexedBase does not define a shape attribute, it is assumed that
         the ranges of the indices correspond to the shape of the array.
 
-        >>> n, m = symbols('n m', integer=True)
         >>> i = Idx('i', m)
         >>> j = Idx('j', m)
         >>> A = IndexedBase('A', shape=(n, n))
@@ -223,12 +221,12 @@ class Indexed(Expr):
         try:
             return Tuple(*[i.upper - i.lower + 1 for i in self.indices])
         except AttributeError:
-            raise IndexException(filldedent("""
-                Range is not defined for all indices in: %s""" % self))
+            raise IndexException(filldedent(f"""
+                Range is not defined for all indices in: {self}"""))
         except TypeError:
-            raise IndexException(filldedent("""
+            raise IndexException(filldedent(f"""
                 Shape cannot be inferred from Idx with
-                undefined range: %s""" % self))
+                undefined range: {self}"""))
 
     @property
     def ranges(self):
@@ -244,7 +242,6 @@ class Indexed(Expr):
         [(0, 1), (0, 3), (0, 7)]
         >>> Indexed('A', Idx('i', 3), Idx('j', 3), Idx('k', 3)).ranges
         [(0, 2), (0, 2), (0, 2)]
-        >>> x, y, z = symbols('x y z', integer=True)
         >>> Indexed('A', x, y, z).ranges
         [None, None, None]
 
@@ -259,7 +256,7 @@ class Indexed(Expr):
 
     def _diofantstr(self, p):
         indices = list(map(p.doprint, self.indices))
-        return "%s[%s]" % (p.doprint(self.base), ", ".join(indices))
+        return f"{p.doprint(self.base)}[{', '.join(indices)}]"
 
 
 class IndexedBase(Expr, NotIterable):
@@ -283,7 +280,8 @@ class IndexedBase(Expr, NotIterable):
          to arrays, and is recognized as such for code generation and automatic
          compilation and wrapping.
 
-    >>> A = IndexedBase('A'); A
+    >>> A = IndexedBase('A')
+    >>> A
     A
     >>> type(A)
     <class 'diofant.tensor.indexed.IndexedBase'>
@@ -301,7 +299,7 @@ class IndexedBase(Expr, NotIterable):
     it overrides any shape information in the indices. (But not the index
     ranges!)
 
-    >>> m, n, o, p = symbols('m n o p', integer=True)
+    >>> o, p = symbols('o p', integer=True)
     >>> i = Idx('i', m)
     >>> j = Idx('j', n)
     >>> A[i, j].shape
@@ -352,11 +350,11 @@ class IndexedBase(Expr, NotIterable):
         if is_sequence(indices):
             # Special case needed because M[*my_tuple] is a syntax error.
             if self.shape and len(self.shape) != len(indices):
-                raise IndexException("Rank mismatch.")
+                raise IndexException('Rank mismatch.')
             return Indexed(self, *indices, **kw_args)
         else:
             if self.shape and len(self.shape) != 1:
-                raise IndexException("Rank mismatch.")
+                raise IndexException('Rank mismatch.')
             return Indexed(self, indices, **kw_args)
 
     @property
@@ -430,19 +428,21 @@ class Idx(Expr):
     Examples
     ========
 
-    >>> n, i, L, U = symbols('n i L U', integer=True)
+    >>> i, L, U = symbols('i L U', integer=True)
 
     If a string is given for the label an integer Symbol is created and the
     bounds are both None:
 
-    >>> idx = Idx('qwerty'); idx
+    >>> idx = Idx('qwerty')
+    >>> idx
     qwerty
     >>> idx.lower, idx.upper
     (None, None)
 
     Both upper and lower bounds can be specified:
 
-    >>> idx = Idx(i, (L, U)); idx
+    >>> idx = Idx(i, (L, U))
+    >>> idx
     i
     >>> idx.lower, idx.upper
     (L, U)
@@ -450,16 +450,20 @@ class Idx(Expr):
     When only a single bound is given it is interpreted as the dimension
     and the lower bound defaults to 0:
 
-    >>> idx = Idx(i, n); idx.lower, idx.upper
+    >>> idx = Idx(i, n)
+    >>> idx.lower, idx.upper
     (0, n - 1)
-    >>> idx = Idx(i, 4); idx.lower, idx.upper
+    >>> idx = Idx(i, 4)
+    >>> idx.lower, idx.upper
     (0, 3)
-    >>> idx = Idx(i, oo); idx.lower, idx.upper
+    >>> idx = Idx(i, oo)
+    >>> idx.lower, idx.upper
     (0, oo)
 
     The label can be a literal integer instead of a string/Symbol:
 
-    >>> idx = Idx(2, n); idx.lower, idx.upper
+    >>> idx = Idx(2, n)
+    >>> idx.lower, idx.upper
     (0, n - 1)
     >>> idx.label
     2
@@ -476,19 +480,19 @@ class Idx(Expr):
         label, range = list(map(sympify, (label, range)))
 
         if not label.is_integer:
-            raise TypeError("Idx object requires an integer label.")
+            raise TypeError('Idx object requires an integer label.')
 
         elif is_sequence(range):
             if len(range) != 2:
-                raise ValueError(filldedent("""
-                    Idx range tuple must have length 2, but got %s""" % len(range)))
+                raise ValueError(filldedent(f"""
+                    Idx range tuple must have length 2, but got {len(range)}"""))
             for bound in range:
                 if not (bound.is_integer or abs(bound) is oo):
-                    raise TypeError("Idx object requires integer bounds.")
+                    raise TypeError('Idx object requires integer bounds.')
             args = label, Tuple(*range)
         elif isinstance(range, Expr):
             if not (range.is_integer or range is oo):
-                raise TypeError("Idx object requires an integer dimension.")
+                raise TypeError('Idx object requires an integer dimension.')
             args = label, Tuple(0, range - 1)
         elif range:
             raise TypeError(filldedent("""

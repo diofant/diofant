@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Abs, And, Basic, Eq, Function, Gt, I, Integral, Interval,
-                     Max, Min, Not, O, Or, Piecewise, Rational, Symbol,
-                     adjoint, conjugate, cos, diff, exp, expand, integrate,
-                     lambdify, log, oo, pi, piecewise_fold, sin, solve,
-                     symbols, sympify, transpose)
+from diofant import (And, Basic, Eq, Function, Gt, I, Integral, Interval, Max,
+                     Min, Not, O, Or, Piecewise, Rational, Symbol, adjoint,
+                     conjugate, cos, diff, exp, expand, integrate, lambdify,
+                     log, oo, pi, piecewise_fold, sin, solve, symbols, sympify,
+                     transpose)
 from diofant.abc import a, t, x, y
 
 
@@ -214,8 +214,8 @@ def test_piecewise_integrate():
 
 
 def test_piecewise_integrate_inequality_conditions():
-    x, y = symbols("x y", real=True)
-    c1, c2 = symbols("c1 c2", positive=True, real=True)
+    x, y = symbols('x y', real=True)
+    c1, c2 = symbols('c1 c2', positive=True, real=True)
     g = Piecewise((0, c1*x > 1), (1, c1*x > 0), (0, True))
     assert integrate(g, (x, -oo, 0)) == 0
     assert integrate(g, (x, -5, 0)) == 0
@@ -339,7 +339,7 @@ def test_piecewise_fold():
 
 def test_piecewise_fold_piecewise_in_cond():
     p1 = Piecewise((cos(x), x < 0), (0, True))
-    p2 = Piecewise((0, Eq(p1, 0)), (p1 / Abs(p1), True))
+    p2 = Piecewise((0, Eq(p1, 0)), (p1 / abs(p1), True))
     assert(p2.subs({x: -pi/2}) == 0.0)
     assert(p2.subs({x: 1}) == 0.0)
     assert(p2.subs({x: -pi/4}) == 1.0)
@@ -464,7 +464,7 @@ def test_piecewise_complex():
 
 
 def test_conjugate_transpose():
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Piecewise((A*B**2, x > 0), (A**2*B, True))
     assert p.adjoint() == \
         Piecewise((adjoint(A*B**2), x > 0), (adjoint(A**2*B), True))

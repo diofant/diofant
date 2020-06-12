@@ -1,7 +1,9 @@
 import pytest
 
+from diofant import (Derivative, Function, Integer, Matrix, Subs, Symbol,
+                     atan2, cos, exp, simplify, sin, sqrt, sstr, symbols,
+                     trigsimp)
 from diofant.abc import t, x, y
-from diofant.core import Derivative, Function, Integer, Subs, Symbol, symbols
 from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
                               CovarDerivativeOp, Differential, LieDerivative,
                               Manifold, Patch, TensorProduct, WedgeProduct,
@@ -12,10 +14,6 @@ from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
                               metric_to_Ricci_components,
                               metric_to_Riemann_components, twoform_to_matrix)
 from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_c, R3_r, R3_s
-from diofant.functions import atan2, cos, exp, sin, sqrt
-from diofant.matrices import Matrix
-from diofant.printing import sstr
-from diofant.simplify import simplify, trigsimp
 
 
 __all__ = ()
@@ -247,7 +245,7 @@ def test_sympyissue_11799():
     M = Manifold('M', n)
     P = Patch('P', M)
 
-    coord = CoordSystem('coord', P, ['x%s' % i for i in range(n)])
+    coord = CoordSystem('coord', P, [f'x{i}' for i in range(n)])
     x = coord.coord_functions()
     dx = coord.base_oneforms()
 

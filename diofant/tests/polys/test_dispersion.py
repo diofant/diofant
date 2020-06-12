@@ -1,9 +1,7 @@
 import pytest
 
+from diofant import oo, poly, sqrt
 from diofant.abc import a, x, y
-from diofant.core import oo
-from diofant.functions.elementary.miscellaneous import sqrt
-from diofant.polys import poly
 from diofant.polys.dispersion import dispersion, dispersionset
 
 

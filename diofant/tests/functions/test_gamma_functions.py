@@ -7,6 +7,7 @@ from diofant import (EulerGamma, I, Integer, O, Rational, Symbol, conjugate,
                      gamma, harmonic, im, log, loggamma, lowergamma, meijerg,
                      nan, oo, pi, polygamma, sin, sqrt, trigamma, uppergamma,
                      zeta, zoo)
+from diofant.abc import x, y
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_derivative_numerically as td
@@ -15,8 +16,6 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 __all__ = ()
 
-x = Symbol('x')
-y = Symbol('y')
 n = Symbol('n', integer=True)
 w = Symbol('w', extended_real=True)
 
@@ -241,7 +240,7 @@ def test_polygamma():
 
     assert polygamma(0, x).rewrite(harmonic) == harmonic(x - 1) - EulerGamma
     assert polygamma(2, x).rewrite(harmonic) == 2*harmonic(x - 1, 3) - 2*zeta(3)
-    ni = Symbol("n", integer=True)
+    ni = Symbol('n', integer=True)
     assert polygamma(ni, x).rewrite(harmonic) == (-1)**(ni + 1)*(-harmonic(x - 1, ni + 1)
                                                                  + zeta(ni + 1))*factorial(ni)
     assert polygamma(x, y).rewrite(harmonic) == polygamma(x, y)
@@ -325,7 +324,7 @@ def test_loggamma():
     assert loggamma(3) == log(2)
     assert loggamma(4) == log(6)
 
-    n = Symbol("n", integer=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
     assert loggamma(n) == log(gamma(n))
     assert loggamma(-n) == oo
     assert loggamma(n/2) == log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + Rational(1, 2)))

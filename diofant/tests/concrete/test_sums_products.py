@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma, Float,
+from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log,
@@ -40,9 +40,9 @@ def test_karr_convention():
     # where we intentionally used two different ways to typeset the
     # sum and its limits.
 
-    i = Symbol("i", integer=True)
-    k = Symbol("k", integer=True)
-    j = Symbol("j", integer=True)
+    i = Symbol('i', integer=True)
+    k = Symbol('k', integer=True)
+    j = Symbol('j', integer=True)
 
     # A simple example with a concrete summand and symbolic limits.
 
@@ -76,7 +76,7 @@ def test_karr_convention():
 
     # Another example this time with an unspecified summand and
     # numeric limits. (We can not do both tests in the same example.)
-    f = Function("f")
+    f = Function('f')
 
     # The normal sum with m < n:
     m = 2
@@ -113,9 +113,9 @@ def test_karr_convention():
 
 def test_karr_proposition_2a():
     # Test Karr, page 309, proposition 2, part a
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
 
     def test_the_sum(m, n):
         # g
@@ -139,10 +139,10 @@ def test_karr_proposition_2a():
 
 def test_karr_proposition_2b():
     # Test Karr, page 309, proposition 2, part b
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
-    w = Symbol("w", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
+    w = Symbol('w', integer=True)
 
     def test_the_sum(l, n, m):
         # Summand
@@ -235,7 +235,7 @@ def test_geometric_sums():
 
     # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
-        Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
+        Piecewise((1/(-x + 1), abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
 
     assert summation(-2**n, (n, 0, oo)) == -oo
     assert summation(I**n, (n, 0, oo)) == Sum(I**n, (n, 0, oo))
@@ -476,7 +476,7 @@ def test_wallis_product():
 def test_telescopic_sums():
     # checks also input 2 of comment 1 issue sympy/sympy#4127
     assert Sum(1/k - 1/(k + 1), (k, 1, n)).doit() == 1 - 1/(1 + n)
-    f = Function("f")
+    f = Function('f')
     assert Sum(
         f(k) - f(k + 2), (k, m, n)).doit() == -f(1 + n) - f(2 + n) + f(m) + f(1 + m)
     assert Sum(cos(k) - cos(k + 3), (k, 1, n)).doit() == -cos(1 + n) - \
@@ -508,7 +508,7 @@ def test_limit_subs():
 
 
 def test_function_subs():
-    f = Function("f")
+    f = Function('f')
     s = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
     assert s.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
     assert s.subs({f(x): x}) == s
@@ -677,7 +677,7 @@ def test_free_symbols():
 
 
 def test_conjugate_transpose():
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Sum(A*B**n, (n, 1, 3))
     assert p.adjoint().doit() == p.doit().adjoint()
     assert p.conjugate().doit() == p.doit().conjugate()
@@ -807,8 +807,8 @@ def test_findrecur():
     pytest.raises(ValueError, lambda: Sum(sin(x*y)/(x**2 + 1),
                                           (x, 0, oo)).findrecur())
 
-    n, k = symbols("n, k", integer=True)
-    F = symbols("F", cls=Function)
+    n, k = symbols('n, k', integer=True)
+    F = symbols('F', cls=Function)
 
     f = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
     g = Sum(k*factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
@@ -875,7 +875,7 @@ def test_sympyissue_2787():
     s = Sum(binomial_dist*k, (k, 0, n))
     res = s.doit().simplify()
     assert res == Piecewise(
-        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/Abs(p - 1) <= 1)),
+        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/abs(p - 1) <= 1)),
         (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
          True))
 

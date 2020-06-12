@@ -1,6 +1,7 @@
 import pytest
 
-from diofant import Dummy, Float, Rational, Symbol, asin, pi, sqrt, sstr
+from diofant import (Dummy, Float, Rational, Symbol, asin, cos, pi, sin, sqrt,
+                     sstr)
 from diofant.geometry import (Line, Line3D, Plane, Point, Point3D, Ray, Ray3D,
                               Segment, Segment3D)
 from diofant.geometry.util import are_coplanar
@@ -27,7 +28,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -224,3 +225,12 @@ def test_plane2():
     a = pl3.perpendicular_line(r).arbitrary_point(t)
     s = Segment3D(a.subs({t: 1}), a.subs({t: 2}))
     assert s.p1 not in pl3 and s.p2 not in pl3
+
+    a = Plane(Point3D(5, 0, 0), normal_vector=(1, -1, 1))
+    b = Plane(Point3D(0, -2, 0), normal_vector=(3, 1, 1))
+    c = Plane(Point3D(0, -1, 0), normal_vector=(5, -1, 9))
+    assert Plane.are_concurrent(a, b) is True
+    assert Plane.are_concurrent(a, b, c) is False
+
+    p = Plane((0, 0, 0), (0, 0, 1), (0, 1, 0))
+    assert p.arbitrary_point(t) == Point3D(0, cos(t), sin(t))

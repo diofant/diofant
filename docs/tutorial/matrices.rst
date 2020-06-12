@@ -296,8 +296,8 @@ To find the eigenvalues of a matrix, use method
 dictionary of roots including its multiplicity (similar to the output
 of :func:`~diofant.polys.polyroots.roots` function).
 
-    >>> M = Matrix([[3, -2,  4, -2], [5,  3, -3, -2],
-    ...             [5, -2,  2, -2], [5, -2, -3,  3]])
+    >>> M = Matrix([[3, -2, 4, -2], [5, +3, -3, -2],
+    ...             [5, -2, 2, -2], [5, -2, -3, +3]])
     >>> M
     ⎡3  -2  4   -2⎤
     ⎢             ⎥

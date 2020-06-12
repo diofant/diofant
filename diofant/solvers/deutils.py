@@ -12,6 +12,9 @@ from ..core import Derivative, Equality, Wild
 from ..core.function import AppliedUndef
 
 
+__all__ = 'ode_order',
+
+
 def _preprocess(expr, func=None, hint='_Integral'):
     """Prepare expr for solving by making sure that differentiation
     is done so that only func remains in unevaluated derivatives and
@@ -50,18 +53,19 @@ def _preprocess(expr, func=None, hint='_Integral'):
     >>> eq = Derivative(f(x) + g(x), x)
     >>> _preprocess(eq, g(x))
     (Derivative(f(x), x) + Derivative(g(x), x), g(x))
-    >>> try: _preprocess(eq)
-    ... except ValueError: print("A ValueError was raised.")
+    >>> try:
+    ...     _preprocess(eq)
+    ... except ValueError:
+    ...     print('A ValueError was raised.')
     A ValueError was raised.
 
     """
-
     derivs = expr.atoms(Derivative)
     if not func:
         funcs = set().union(*[d.atoms(AppliedUndef) for d in derivs])
         if len(funcs) != 1:
             raise ValueError('The function cannot be '
-                             'automatically detected for %s.' % expr)
+                             f'automatically detected for {expr}.')
         func = funcs.pop()
     fvars = set(func.args)
     reps = [(d, d.doit()) for d in derivs if not hint.endswith('_Integral') or
@@ -81,7 +85,7 @@ def ode_order(expr, func):
     ========
 
     >>> ode_order(f(x).diff(x, 2) + f(x).diff(x)**2 +
-    ... f(x).diff(x), f(x))
+    ...           f(x).diff(x), f(x))
     2
     >>> ode_order(f(x).diff(x, 2) + g(x).diff(x, 3), f(x))
     2
@@ -108,7 +112,7 @@ def ode_order(expr, func):
         return order
 
 
-def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
+def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
     """This is a helper function to dsolve and pdsolve in the ode
     and pde modules.
 
@@ -208,7 +212,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                             'order': kwargs['order']})
     if hints['order'] == 0:
         raise ValueError(
-            str(eq) + " is not a differential equation in " + str(func))
+            str(eq) + ' is not a differential equation in ' + str(func))
 
     if hint == 'default':
         return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
@@ -222,9 +226,9 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                 if i.endswith('_Integral'):
                     gethints.remove(i[:-len('_Integral')])
             # special cases
-            for k in ["1st_homogeneous_coeff_best", "1st_power_series",
-                      "lie_group", "2nd_power_series_ordinary",
-                      "2nd_power_series_regular"]:
+            for k in ['1st_homogeneous_coeff_best', '1st_power_series',
+                      'lie_group', '2nd_power_series_ordinary',
+                      '2nd_power_series_regular']:
                 if k in gethints:
                     gethints.remove(k)
         for i in gethints:
@@ -235,9 +239,9 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         retdict['eq'] = eq
         return retdict
     elif hint not in allhints:  # and hint not in ('default', 'ordered_hints'):
-        raise ValueError("Hint not recognized: " + hint)
+        raise ValueError('Hint not recognized: ' + hint)
     elif hint not in hints:
-        raise ValueError(string + str(eq) + " does not match hint " + hint)
+        raise ValueError(string + str(eq) + ' does not match hint ' + hint)
     else:
         # Key added to identify the hint needed to solve the equation
         hints['hint'] = hint

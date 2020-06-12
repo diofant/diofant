@@ -20,9 +20,9 @@ This is the central page for all of Diofant's documentation.
    interactive session:
 
       >>> from diofant import *
-      >>> a, b, c, d, x, y, z, t = symbols('a b c d x y z t')
+      >>> a, b, c, d, t, x, y, z = symbols('a:d t x:z')
       >>> k, m, n = symbols('k m n', integer=True)
-      >>> f, g, h = symbols('f g h', cls=Function)
+      >>> f, g, h = symbols('f:h', cls=Function)
 
 .. toctree::
    :maxdepth: 2

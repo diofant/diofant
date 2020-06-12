@@ -10,7 +10,7 @@ from diofant.abc import x, y, z
 
 __all__ = ()
 
-A, B, C = symbols("A B C", commutative=False)
+A, B, C = symbols('A B C', commutative=False)
 
 
 def test_adjoint():

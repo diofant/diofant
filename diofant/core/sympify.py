@@ -7,6 +7,8 @@ from .evaluate import global_evaluate
 
 
 class SympifyError(ValueError):
+    """Generic sympification error."""
+
     def __init__(self, expr, base_exc=None):
         self.expr = expr
         self.base_exc = base_exc
@@ -18,7 +20,7 @@ class SympifyError(ValueError):
             s = repr(self.expr)
 
         return ("Sympify of expression '%s' failed, because of exception being "
-                "raised:\n%s: %s" % (s, self.base_exc.__class__.__name__,
+                'raised:\n%s: %s' % (s, self.base_exc.__class__.__name__,
                                      str(self.base_exc)))
 
 
@@ -48,8 +50,6 @@ class CantSympify:
 
     """
 
-    pass
-
 
 def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
             evaluate=None):
@@ -78,14 +78,14 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> sympify(2.0).is_real
     True
-    >>> sympify("2.0").is_real
+    >>> sympify('2.0').is_real
     True
-    >>> sympify("2e-45").is_real
+    >>> sympify('2e-45').is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.
 
-    >>> sympify("x***2")
+    >>> sympify('x***2')
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: "could not parse u'x***2'"
@@ -102,9 +102,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> s = 'bitcount(42)'
     >>> sympify(s)
     bitcount(42)
-    >>> sympify("O(x)")
+    >>> sympify('O(x)')
     O(x)
-    >>> sympify("O + 1")
+    >>> sympify('O + 1')
     Traceback (most recent call last):
     ...
     TypeError: unbound method...
@@ -121,10 +121,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
-    >>> ns["O"] = Symbol("O")  # method 1
+    >>> ns['O'] = Symbol('O')  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
-    >>> ns.update(dict(O=Symbol("O")))  # method 3
-    >>> sympify("O + 1", locals=ns)
+    >>> ns.update({O: Symbol('O')})  # method 3
+    >>> sympify('O + 1', locals=ns)
     O + 1
 
     If you want *all* single-letter and Greek-letter variables to be symbols
@@ -190,8 +190,12 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 1
     ...         yield 2
     ...         return
-    ...     def __getitem__(self, i): return list(self)[i]
-    ...     def _diofant_(self): return Matrix(self)
+    ...
+    ...     def __getitem__(self, i):
+    ...         return list(self)[i]
+    ...
+    ...     def _diofant_(self):
+    ...         return Matrix(self)
     >>> sympify(MyList1())
     Matrix([
     [1],
@@ -203,11 +207,13 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     object, e.g. ``converter[MyList] = lambda x: Matrix(x)``.
 
     >>> class MyList2:   # XXX Do not do this if you control the class!
-    ...     def __iter__(self):  #     Use _diofant_!
+    ...     def __iter__(self):  # Use _diofant_!
     ...         yield 1
     ...         yield 2
     ...         return
-    ...     def __getitem__(self, i): return list(self)[i]
+    ...
+    ...     def __getitem__(self, i):
+    ...         return list(self)[i]
     >>> converter[MyList2] = lambda x: Matrix(x)
     >>> sympify(MyList2())
     Matrix([
@@ -296,6 +302,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         a = a.replace('\n', '')
         expr = parse_expr(a, local_dict=locals, transformations=transformations, evaluate=evaluate)
     except (TokenError, SyntaxError) as exc:
-        raise SympifyError('could not parse %r' % a, exc)
+        raise SympifyError(f'could not parse {a!r}', exc)
 
     return expr

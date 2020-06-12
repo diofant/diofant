@@ -6,7 +6,7 @@ from .rv import NamedArgsMixin, SingleDomain, SinglePSpace
 
 
 class SingleDiscreteDistribution(Expr, NamedArgsMixin):
-    """ Discrete distribution of a single variable
+    """Discrete distribution of a single variable.
 
     Serves as superclass for PoissonDistribution etc....
 
@@ -25,7 +25,7 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
     @cacheit
     def compute_cdf(self, **kwargs):
-        """ Compute the CDF from the PDF
+        """Compute the CDF from the PDF.
 
         Returns a Lambda
 
@@ -59,7 +59,7 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
 
 class SingleDiscreteDomain(SingleDomain):
-    pass
+    """Base class for a discrete domain."""
 
 
 class SingleDiscretePSpace(SinglePSpace):

@@ -266,7 +266,6 @@ precision. For example, this Ramanujan formula for pi can be summed to 10,000
 digits in a fraction of a second with a simple command:
 
     >>> f = factorial
-    >>> n = Symbol('n', integer=True)
     >>> R = 9801/sqrt(8)/Sum(f(4*n)*(1103+26390*n)/f(n)**4/396**(4*n),
     ...                      (n, 0, oo))
     >>> N(R, 10000, strict=False)
@@ -337,7 +336,6 @@ Here are several more advanced examples:
      ----
       2
     E
-    >>> n = Symbol('n')
     >>> nsimplify(Sum(1/n**2, (n, 1, oo)), [pi])
       2
     pi

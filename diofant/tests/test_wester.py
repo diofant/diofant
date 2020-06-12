@@ -1,4 +1,4 @@
-""" Tests from Michael Wester's 1999 paper "Review of CAS mathematical
+"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
 capabilities".
 
 http://www.math.unm.edu/~wester/cas/book/Wester.pdf
@@ -9,45 +9,35 @@ import itertools
 
 import pytest
 
-from diofant import (ZZ, And, Complement, Derivative, DiracDelta, E,
-                     EulerGamma, FiniteSet, Float, Function, GoldenRatio, I,
-                     Integral, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
-                     Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
-                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
-                     besselj, binomial, cancel, cbrt, ceiling, chebyshevt,
+from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
+                     E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
+                     GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
+                     LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
+                     N, O, Or, Piecewise, Poly, Product, Rational, Subs, Sum,
+                     Symbol, ZeroMatrix, acos, acot, apart, asin, asinh,
+                     assoc_legendre, atan, bernoulli, besselj, binomial,
+                     block_collapse, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
 from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
-from diofant import (cos, cosh, cot, diff, elliptic_e, elliptic_f, exp, expand,
-                     expand_func, factor, factorial, factorial2, factorint,
-                     fibonacci, floor, gamma, gcd, groebner, hessian, hyper,
-                     hyperexpand, igcd, im, legendre_poly, limit, log,
-                     logcombine, maximize, minimize, nan, npartitions, oo, pi,
+from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
+                     exp, expand, expand_func, eye, factor, factorial,
+                     factorial2, factorint, fibonacci, floor,
+                     fourier_transform, gamma, gcd, groebner, hessian, hyper,
+                     hyperexpand, igcd, im, integrate,
+                     inverse_laplace_transform, laplace_transform,
+                     legendre_poly, limit, log, logcombine, maximize,
+                     mellin_transform, minimize, nan, npartitions, oo, pi,
                      polygamma, polylog, powdenest, powsimp, primerange,
                      primitive, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, root, sec,
-                     series, sign, simplify, sin, sinh, solve, sqrt,
+                     reduce_inequalities, residue, resultant, rf, root, rsolve,
+                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
                      sqrtdenest, summation, symbols, tan, tanh, totient,
-                     trigsimp, trunc, wronskian, zoo)
+                     trigsimp, trunc, wronskian, zeta, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
-from diofant.concrete import Sum
-from diofant.concrete.products import Product
 from diofant.functions.combinatorial.numbers import stirling
-from diofant.functions.special.delta_functions import Heaviside
-from diofant.functions.special.error_functions import erf
-from diofant.functions.special.zeta_functions import zeta
-from diofant.integrals import integrate
-from diofant.integrals.transforms import (LaplaceTransform, fourier_transform,
-                                          inverse_laplace_transform,
-                                          laplace_transform, mellin_transform)
-from diofant.matrices import GramSchmidt, Matrix, eye
-from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
-from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
-                                                      block_collapse)
-from diofant.solvers.ode import dsolve
-from diofant.solvers.recurr import rsolve
 from diofant.utilities.iterables import partitions
 
 
@@ -869,7 +859,7 @@ def test_M38():
     [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
-     k44, k45, k46, k47, k48, k49] = variables = symbols("k1:50")
+     k44, k45, k46, k47, k48, k49] = variables = symbols('k1:50')
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -1608,7 +1598,7 @@ def test_S5():
             factorial(n - Rational(1, 2))/(sqrt(pi)*factorial(n)))
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S6():
     n, k = symbols('n k', integer=True, positive=True)
     assert simplify(product(x**2 - 2*x*cos(k*pi/n) + 1, (k, 1, n - 1))
@@ -1629,14 +1619,14 @@ def test_S8():
     assert simplify(T) == 2/pi
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S9():
     k = symbols('k', integer=True, positive=True)
     T = product(1 + (-1)**(k + 1)/(2*k - 1), (k, 1, oo))
     assert simplify(T) == sqrt(2)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7137")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7137')
 def test_S10():
     k = symbols('k', integer=True, positive=True)
     T = product((k*(k + 1) + 1 + I)/(k*(k + 1) + 1 - I), (k, 0, oo))
@@ -2076,14 +2066,14 @@ def test_X14():
     series(1/2**(2*n)*binomial(2*n, n), n, x0=oo, n=1)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7164')
 def test_X15():
     x, t = symbols('x t', real=True)
     e1 = integrate(exp(-t)/t, (t, x, oo))
     series(e1, x, x0=oo, n=5)
 
 
-@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
+@pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_X16():
     series(cos(x + y), x + y, x0=0, n=4)
 
@@ -2151,35 +2141,32 @@ def test_Y12():
 # Z. Ordinary Difference and Differential Equations
 
 def test_Z1():
-    r = Function('r')
-    assert (rsolve(r(n + 2) - 2*r(n + 1) + r(n) - 2, r(n),
-                   {r(0): 1, r(1): m}).simplify() == n**2 + n*(m - 2) + 1)
+    assert (rsolve(f(n + 2) - 2*f(n + 1) + f(n) - 2,
+                   init={f(0): 1, f(1): m}) == [{f: Lambda(n, n**2 +
+                                                           n*(m - 2) + 1)}])
 
 
 def test_Z2():
-    r = Function('r')
-    assert (rsolve(r(n) - (5*r(n - 1) - 6*r(n - 2)), r(n), {r(0): 0, r(1): 1})
-            == -2**n + 3**n)
+    assert rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)),
+                  init={f(0): 0, f(1): 1}) == [{f: Lambda(n, -2**n + 3**n)}]
 
 
 @pytest.mark.slow
 def test_Z3():
-    # => r(n) = Fibonacci[n + 1]   [Cohen, p. 83]
-    r = Function('r')
+    # => f(n) = Fibonacci[n + 1]   [Cohen, p. 83]
     # recurrence solution is correct, Wester expects it to be simplified to
     # fibonacci(n+1), but that is quite hard
-    assert (rsolve(r(n) - (r(n - 1) + r(n - 2)), r(n),
-                   {r(1): 1, r(2): 2}).simplify()
-            == 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
-                        (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
+    assert (rsolve(f(n) - (f(n - 1) + f(n - 2)),
+                   init={f(1): 1, f(2): 2})
+            == [{f: Lambda(n, 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
+                           (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)}])
 
 
 @pytest.mark.xfail
 def test_Z4():
-    r = Function('r')
-    rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
-                   - c*(1 - c**(n-2))/(1 - c**(n-1))*r(n - 2) + 1),
-           r(n), {r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
+    rsolve(f(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*f(n - 1)
+                   - c*(1 - c**(n-2))/(1 - c**(n-1))*f(n - 2) + 1),
+           init={f(1): 1, f(2): (2 + 2*c + c**2)/(1 + c)})
 
 
 def test_Z5():

@@ -1,4 +1,4 @@
-"""Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions. """
+"""Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
 import re
 
@@ -7,11 +7,11 @@ from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = "Options", "Order"
+__all__ = 'Options', 'Order'
 
 
 class Option:
-    """Base class for all kinds of options. """
+    """Base class for all kinds of options."""
 
     option = None
 
@@ -37,24 +37,24 @@ class Option:
 
 
 class Flag(Option):
-    """Base class for all kinds of flags. """
+    """Base class for all kinds of flags."""
 
     is_Flag = True
 
 
 class BooleanOption(Option):
-    """An option that must have a boolean value or equivalent assigned. """
+    """An option that must have a boolean value or equivalent assigned."""
 
     @classmethod
     def preprocess(cls, value):
         if value in [True, False]:
             return bool(value)
         else:
-            raise OptionError("'%s' must have a boolean value assigned, got %s" % (cls.option, value))
+            raise OptionError(f"'{cls.option}' must have a boolean value assigned, got {value}")
 
 
 class OptionType(type):
-    """Base type for all options that does registers options. """
+    """Base type for all options that does registers options."""
 
     def __init__(cls, *args, **kwargs):
         @property
@@ -130,11 +130,11 @@ class Options(dict):
                 try:
                     cls = self.__options__[option]
                 except KeyError:
-                    raise OptionError("'%s' is not a valid option" % option)
+                    raise OptionError(f"'{option}' is not a valid option")
 
                 if issubclass(cls, Flag):
                     if strict and (flags is None or option not in flags):
-                        raise OptionError("'%s' flag is not allowed in this context" % option)
+                        raise OptionError(f"'{option}' flag is not allowed in this context")
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -159,14 +159,14 @@ class Options(dict):
 
             for exclude_option in cls.excludes:
                 if self.get(exclude_option) is not None:
-                    raise OptionError("'%s' option is not allowed together with '%s'" % (option, exclude_option))
+                    raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
         for option in self.__order__:
             self.__options__[option].postprocess(self)
 
     @classmethod
     def _init_dependencies_order(cls):
-        """Resolve the order of options' processing. """
+        """Resolve the order of options' processing."""
         if cls.__order__ is None:
             vertices, edges = [], set()
 
@@ -182,11 +182,11 @@ class Options(dict):
             try:
                 cls.__order__ = topological_sort((vertices, list(edges)))
             except ValueError:
-                raise RuntimeError(
-                    "cycle detected in diofant.polys options framework")
+                raise RuntimeError('cycle detected in diofant.polys'
+                                   ' options framework')
 
     def clone(self, updates={}):
-        """Clone ``self`` and update specified options. """
+        """Clone ``self`` and update specified options."""
         obj = dict.__new__(self.__class__)
 
         for option, value in self.items():
@@ -236,7 +236,7 @@ class Options(dict):
 
 
 class Expand(BooleanOption, metaclass=OptionType):
-    """``expand`` option to polynomial manipulation functions. """
+    """``expand`` option to polynomial manipulation functions."""
 
     option = 'expand'
 
@@ -249,7 +249,7 @@ class Expand(BooleanOption, metaclass=OptionType):
 
 
 class Gens(Option, metaclass=OptionType):
-    """``gens`` option to polynomial manipulation functions. """
+    """``gens`` option to polynomial manipulation functions."""
 
     option = 'gens'
 
@@ -270,22 +270,22 @@ class Gens(Option, metaclass=OptionType):
         if gens == (None,):
             gens = ()
         elif has_dups(gens):
-            raise GeneratorsError("duplicated generators: %s" % str(gens))
+            raise GeneratorsError(f'duplicated generators: {gens}')
         elif any(gen.is_commutative is False for gen in gens):
-            raise GeneratorsError("non-commutative generators: %s" % str(gens))
+            raise GeneratorsError(f'non-commutative generators: {gens}')
 
         return tuple(gens)
 
 
 class Wrt(Option, metaclass=OptionType):
-    """``wrt`` option to polynomial manipulation functions. """
+    """``wrt`` option to polynomial manipulation functions."""
 
     option = 'wrt'
 
     requires = []
     excludes = []
 
-    _re_split = re.compile(r"\s*,\s*|\s+")
+    _re_split = re.compile(r'\s*,\s*|\s+')
 
     @classmethod
     def preprocess(cls, wrt):
@@ -297,7 +297,7 @@ class Wrt(Option, metaclass=OptionType):
                 raise OptionError('Bad input: missing parameter.')
             if not wrt:
                 return []
-            return [gen for gen in cls._re_split.split(wrt)]
+            return list(cls._re_split.split(wrt))
         elif hasattr(wrt, '__getitem__'):
             return list(map(str, wrt))
         else:
@@ -305,7 +305,7 @@ class Wrt(Option, metaclass=OptionType):
 
 
 class Sort(Option, metaclass=OptionType):
-    """``sort`` option to polynomial manipulation functions. """
+    """``sort`` option to polynomial manipulation functions."""
 
     option = 'sort'
 
@@ -327,7 +327,7 @@ class Sort(Option, metaclass=OptionType):
 
 
 class Order(Option, metaclass=OptionType):
-    """``order`` option to polynomial manipulation functions. """
+    """``order`` option to polynomial manipulation functions."""
 
     option = 'order'
 
@@ -346,7 +346,7 @@ class Order(Option, metaclass=OptionType):
 
 
 class Field(BooleanOption, metaclass=OptionType):
-    """``field`` option to polynomial manipulation functions. """
+    """``field`` option to polynomial manipulation functions."""
 
     option = 'field'
 
@@ -355,7 +355,7 @@ class Field(BooleanOption, metaclass=OptionType):
 
 
 class Greedy(BooleanOption, metaclass=OptionType):
-    """``greedy`` option to polynomial manipulation functions. """
+    """``greedy`` option to polynomial manipulation functions."""
 
     option = 'greedy'
 
@@ -364,7 +364,7 @@ class Greedy(BooleanOption, metaclass=OptionType):
 
 
 class Composite(BooleanOption, metaclass=OptionType):
-    """``composite`` option to polynomial manipulation functions. """
+    """``composite`` option to polynomial manipulation functions."""
 
     option = 'composite'
 
@@ -377,7 +377,7 @@ class Composite(BooleanOption, metaclass=OptionType):
 
 
 class Domain(Option, metaclass=OptionType):
-    """``domain`` option to polynomial manipulation functions. """
+    """``domain`` option to polynomial manipulation functions."""
 
     option = 'domain'
 
@@ -386,12 +386,12 @@ class Domain(Option, metaclass=OptionType):
 
     after = ['gens']
 
-    _re_realfield = re.compile(r"^(R|RR)(_(\d+))?$")
-    _re_complexfield = re.compile(r"^(C|CC)(_(\d+))?$")
-    _re_finitefield = re.compile(r"^(FF|GF)\((\d+)\)$")
-    _re_polynomial = re.compile(r"^(Z|ZZ|Q|QQ)\[(.+)\]$")
-    _re_fraction = re.compile(r"^(Z|ZZ|Q|QQ)\((.+)\)$")
-    _re_algebraic = re.compile(r"^(Q|QQ)\<(.+)\>$")
+    _re_realfield = re.compile(r'^(R|RR)(_(\d+))?$')
+    _re_complexfield = re.compile(r'^(C|CC)(_(\d+))?$')
+    _re_finitefield = re.compile(r'^(FF|GF)\((\d+)\)$')
+    _re_polynomial = re.compile(r'^(Z|ZZ|Q|QQ)\[(.+)\]$')
+    _re_fraction = re.compile(r'^(Z|ZZ|Q|QQ)\((.+)\)$')
+    _re_algebraic = re.compile(r'^(Q|QQ)\<(.+)\>$')
 
     @classmethod
     def preprocess(cls, domain):
@@ -441,9 +441,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return domains.ZZ.poly_ring(*gens)
+                    return domains.ZZ.inject(*gens)
                 else:
-                    return domains.QQ.poly_ring(*gens)
+                    return domains.QQ.inject(*gens)
 
             r = cls._re_fraction.match(domain)
 
@@ -453,9 +453,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return domains.ZZ.frac_field(*gens)
+                    return domains.ZZ.inject(*gens).field
                 else:
-                    return domains.QQ.frac_field(*gens)
+                    return domains.QQ.inject(*gens).field
 
             r = cls._re_algebraic.match(domain)
 
@@ -463,22 +463,23 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, r.groups()[1].split(',')))
                 return domains.QQ.algebraic_field(*gens)
 
-        raise OptionError('expected a valid domain specification, got %s' % str(domain))
+        raise OptionError(f'expected a valid domain specification, got {domain}')
 
     @classmethod
     def postprocess(cls, options):
         from .. import domains
         if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
                 (set(options['domain'].symbols) & set(options['gens'])):
-            raise GeneratorsError(
-                "ground domain and generators interfere together")
+            raise GeneratorsError('ground domain and generators '
+                                  'interfere together')
         elif ('gens' not in options or not options['gens']) and \
                 'domain' in options and options['domain'] == domains.EX:
-            raise GeneratorsError("you have to provide generators because EX domain was requested")
+            raise GeneratorsError('you have to provide generators because'
+                                  ' EX domain was requested')
 
 
 class Split(BooleanOption, metaclass=OptionType):
-    """``split`` option to polynomial manipulation functions. """
+    """``split`` option to polynomial manipulation functions."""
 
     option = 'split'
 
@@ -492,7 +493,7 @@ class Split(BooleanOption, metaclass=OptionType):
 
 
 class Gaussian(BooleanOption, metaclass=OptionType):
-    """``gaussian`` option to polynomial manipulation functions. """
+    """``gaussian`` option to polynomial manipulation functions."""
 
     option = 'gaussian'
 
@@ -507,7 +508,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
 
 class Extension(Option, metaclass=OptionType):
-    """``extension`` option to polynomial manipulation functions. """
+    """``extension`` option to polynomial manipulation functions."""
 
     option = 'extension'
 
@@ -540,7 +541,7 @@ class Extension(Option, metaclass=OptionType):
 
 
 class Modulus(Option, metaclass=OptionType):
-    """``modulus`` option to polynomial manipulation functions. """
+    """``modulus`` option to polynomial manipulation functions."""
 
     option = 'modulus'
 
@@ -555,7 +556,7 @@ class Modulus(Option, metaclass=OptionType):
             return int(modulus)
         else:
             raise OptionError(
-                "'modulus' must a positive integer, got %s" % modulus)
+                f"'modulus' must a positive integer, got {modulus}")
 
     @classmethod
     def postprocess(cls, options):
@@ -566,7 +567,7 @@ class Modulus(Option, metaclass=OptionType):
 
 
 class Strict(BooleanOption, metaclass=OptionType):
-    """``strict`` option to polynomial manipulation functions. """
+    """``strict`` option to polynomial manipulation functions."""
 
     option = 'strict'
 
@@ -576,7 +577,7 @@ class Strict(BooleanOption, metaclass=OptionType):
 
 
 class Auto(BooleanOption, Flag, metaclass=OptionType):
-    """``auto`` flag to polynomial manipulation functions. """
+    """``auto`` flag to polynomial manipulation functions."""
 
     option = 'auto'
 
@@ -593,7 +594,7 @@ class Auto(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Frac(BooleanOption, Flag, metaclass=OptionType):
-    """``frac`` option to polynomial manipulation functions. """
+    """``frac`` option to polynomial manipulation functions."""
 
     option = 'frac'
 
@@ -603,7 +604,7 @@ class Frac(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Formal(BooleanOption, Flag, metaclass=OptionType):
-    """``formal`` flag to polynomial manipulation functions. """
+    """``formal`` flag to polynomial manipulation functions."""
 
     option = 'formal'
 
@@ -613,13 +614,13 @@ class Formal(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Polys(BooleanOption, Flag, metaclass=OptionType):
-    """``polys`` flag to polynomial manipulation functions. """
+    """``polys`` flag to polynomial manipulation functions."""
 
     option = 'polys'
 
 
 class Include(BooleanOption, Flag, metaclass=OptionType):
-    """``include`` flag to polynomial manipulation functions. """
+    """``include`` flag to polynomial manipulation functions."""
 
     option = 'include'
 
@@ -629,7 +630,7 @@ class Include(BooleanOption, Flag, metaclass=OptionType):
 
 
 class All(BooleanOption, Flag, metaclass=OptionType):
-    """``all`` flag to polynomial manipulation functions. """
+    """``all`` flag to polynomial manipulation functions."""
 
     option = 'all'
 
@@ -639,7 +640,7 @@ class All(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Gen(Flag, metaclass=OptionType):
-    """``gen`` flag to polynomial manipulation functions. """
+    """``gen`` flag to polynomial manipulation functions."""
 
     option = 'gen'
 
@@ -656,7 +657,7 @@ class Gen(Flag, metaclass=OptionType):
 
 
 class Symbols(Flag, metaclass=OptionType):
-    """``symbols`` flag to polynomial manipulation functions. """
+    """``symbols`` flag to polynomial manipulation functions."""
 
     option = 'symbols'
 
@@ -669,11 +670,12 @@ class Symbols(Flag, metaclass=OptionType):
         if hasattr(symbols, '__iter__'):
             return iter(symbols)
         else:
-            raise OptionError("expected an iterator or iterable container, got %s" % symbols)
+            raise OptionError('expected an iterator or '
+                              f'iterable container, got {symbols}')
 
 
 class Method(Flag, metaclass=OptionType):
-    """``method`` flag to polynomial manipulation functions. """
+    """``method`` flag to polynomial manipulation functions."""
 
     option = 'method'
 
@@ -682,11 +684,11 @@ class Method(Flag, metaclass=OptionType):
         if isinstance(method, str):
             return method.lower()
         else:
-            raise OptionError("expected a string, got %s" % method)
+            raise OptionError(f'expected a string, got {method}')
 
 
 def build_options(gens, args=None):
-    """Construct options from keyword arguments or ... options. """
+    """Construct options from keyword arguments or ... options."""
     if args is None:
         gens, args = (), gens
 
@@ -719,13 +721,13 @@ def allowed_flags(args, flags):
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
                 raise FlagError(
-                    "'%s' flag is not allowed in this context" % arg)
+                    f"'{arg}' flag is not allowed in this context")
         except KeyError:
-            raise OptionError("'%s' is not a valid option" % arg)
+            raise OptionError(f"'{arg}' is not a valid option")
 
 
 def set_defaults(options, **defaults):
-    """Update options with default values. """
+    """Update options with default values."""
     if 'defaults' not in options:
         options = dict(options)
         options['defaults'] = defaults

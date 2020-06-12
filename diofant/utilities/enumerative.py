@@ -118,10 +118,6 @@ class PartComponent:
         # its u attribute.
         self.v = 0
 
-    def __repr__(self):
-        """for debug/algorithm animation purposes."""
-        return 'c:%d u:%d v:%d' % (self.c, self.u, self.v)
-
     def __eq__(self, other):
         """Define  value oriented equality, which is useful for testers."""
         return (isinstance(other, self.__class__) and
@@ -191,14 +187,13 @@ def multiset_partitions_taocp(multiplicities):
     >>> components = 'ab'
     >>> multiplicities = [1, 2]
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(list_visitor(state, components) for state in states)
+    >>> [list_visitor(state, components) for state in states]
     [[['a', 'b', 'b']],
     [['a', 'b'], ['b']],
     [['a'], ['b', 'b']],
     [['a'], ['b'], ['b']]]
 
     """
-
     # Important variables.
     # m is the number of components, i.e., number of distinct elements
     m = len(multiplicities)
@@ -311,7 +306,7 @@ def factoring_visitor(state, primes):
     >>> multiplicities
     (3, 1)
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(factoring_visitor(state, primes) for state in states)
+    >>> [factoring_visitor(state, primes) for state in states]
     [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3], [6, 2, 2], [2, 2, 2, 3]]
 
     """
@@ -405,18 +400,6 @@ class MultisetPartitionTraverser():
         self.k2 = 0
         self.p1 = 0
 
-    def db_trace(self, msg):
-        """Useful for usderstanding/debugging the algorithms.  Not
-        generally activated in end-user code.
-
-        """
-        if self.debug:
-            letters = 'abcdefghijklmnopqrstuvwxyz'
-            state = [self.f, self.lpart, self.pstack]
-            print("DBG:", msg,
-                  ["".join(part) for part in list_visitor(state, letters)],
-                  animation_visitor(state))
-
     #
     # Helper methods for enumeration
     #
@@ -427,7 +410,6 @@ class MultisetPartitionTraverser():
         there is no need to call it separately.
 
         """
-
         num_components = len(multiplicities)
         # cardinality is the total number of elements, whether or not distinct
         cardinality = sum(multiplicities)
@@ -537,7 +519,7 @@ class MultisetPartitionTraverser():
             self.p1 += 1  # increment to keep track of usefulness of tests
             return False
         plen = len(part)
-        for j in range(plen - 1, -1, -1):
+        for j in range(plen - 1, -1, -1):  # pragma: no branch
             # Knuth's mod, (answer to problem 7.2.1.5.69)
             if (j == 0) and (part[0].v - 1)*(ub - self.lpart) < part[0].u:
                 self.k1 += 1
@@ -559,12 +541,11 @@ class MultisetPartitionTraverser():
                     (part[0].u - part[0].v) ==
                         ((ub - self.lpart - 1) * part[0].v)):
                     self.k2 += 1
-                    self.db_trace("Decrement fails test 3")
                     return False
                 return True
-        return False
+        assert False  # pragma: no cover
 
-    def decrement_part_large(self, part, amt, lb):
+    def decrement_part_large(self, part, lb):
         """Decrements part, while respecting size constraint.
 
         A part can have no children which are of sufficient size (as
@@ -581,26 +562,11 @@ class MultisetPartitionTraverser():
         part
             part to be decremented (topmost part on the stack)
 
-        amt
-            Can only take values 0 or 1.  A value of 1 means that the
-            part must be decremented, and then the size constraint is
-            enforced.  A value of 0 means just to enforce the ``lb``
-            size constraint.
-
         lb
             The partitions produced by the calling enumeration must
             have more parts than this value.
 
         """
-
-        if amt == 1:
-            # In this case we always need to increment, *before*
-            # enforcing the "sufficient unallocated multiplicity"
-            # constraint.  Easiest for this is just to call the
-            # regular decrement method.
-            if not self.decrement_part(part):
-                return False
-
         # Next, perform any needed additional decrementing to respect
         # "sufficient unallocated multiplicity" (or fail if this is
         # not possible).
@@ -616,13 +582,11 @@ class MultisetPartitionTraverser():
         if deficit <= 0:
             return True
 
-        for i in range(len(part) - 1, -1, -1):
+        for i in range(len(part) - 1, -1, -1):  # pragma: no branch
             if i == 0:
-                if part[0].v > deficit:
-                    part[0].v -= deficit
-                    return True
-                else:
-                    return False  # This shouldn't happen, due to above check
+                assert part[0].v > deficit
+                part[0].v -= deficit
+                return True
             else:
                 if part[i].v >= deficit:
                     part[i].v -= deficit
@@ -630,6 +594,7 @@ class MultisetPartitionTraverser():
                 else:
                     deficit -= part[i].v
                     part[i].v = 0
+        assert False  # pragma: no cover
 
     def decrement_part_range(self, part, lb, ub):
         """Decrements part (a subrange of pstack), if possible, returning
@@ -658,7 +623,6 @@ class MultisetPartitionTraverser():
         the lb constraint.
 
         """
-
         # Constraint in the range case is just enforcing both the
         # constraints from _small and _large cases.  Note the 0 as the
         # second argument to the _large call -- this is the signal to
@@ -666,7 +630,7 @@ class MultisetPartitionTraverser():
         # short circuiting and left-to-right order of the 'and'
         # operator is important for this to work correctly.
         return self.decrement_part_small(part, ub) and \
-            self.decrement_part_large(part, 0, lb)
+            self.decrement_part_large(part, lb)
 
     def spread_part_multiplicity(self):
         """Returns True if a new part has been created, and
@@ -731,7 +695,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_all([2, 2])
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -791,7 +755,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_small([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -808,7 +772,6 @@ class MultisetPartitionTraverser():
           Part 1, of The Art of Computer Programming, by Donald Knuth.
 
         """
-
         # Keep track of iterations which do not yield a partition.
         # Clearly, we would like to keep this number small.
         self.discarded = 0
@@ -818,11 +781,9 @@ class MultisetPartitionTraverser():
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                self.db_trace("spread 1")
                 if self.lpart >= ub:
                     self.discarded += 1
                     good_partition = False
-                    self.db_trace("  Discarding")
                     self.lpart = ub - 2
                     break
 
@@ -833,18 +794,13 @@ class MultisetPartitionTraverser():
 
             # M5 (Decrease v)
             while not self.decrement_part_small(self.top_part(), ub):
-                self.db_trace("Failed decrement, going to backtrack")
                 # M6 (Backtrack)
                 if self.lpart == 0:
                     return
                 self.lpart -= 1
-                self.db_trace("Backtracked to")
-            self.db_trace("decrement ok, about to expand")
 
     def enum_large(self, multiplicities, lb):
         """Enumerate the partitions of a multiset with lb < num(parts)
-
-        Equivalent to enum_range(multiplicities, lb, sum(multiplicities))
 
         See also
         ========
@@ -866,38 +822,14 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_large([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a'], ['b'], ['b']],
         [['a', 'b'], ['a'], ['b']],
         [['a'], ['a'], ['b', 'b']],
         [['a'], ['a'], ['b'], ['b']]]
 
         """
-        self.discarded = 0
-        if lb >= sum(multiplicities):
-            return
-        self._initialize_enumeration(multiplicities)
-        self.decrement_part_large(self.top_part(), 0, lb)
-        while True:
-            good_partition = True
-            while self.spread_part_multiplicity():
-                if not self.decrement_part_large(self.top_part(), 0, lb):
-                    # Failure here should be rare/impossible
-                    self.discarded += 1
-                    good_partition = False
-                    break
-
-            # M4  Visit a partition
-            if good_partition:
-                state = [self.f, self.lpart, self.pstack]
-                yield state
-
-            # M5 (Decrease v)
-            while not self.decrement_part_large(self.top_part(), 1, lb):
-                # M6 (Backtrack)
-                if self.lpart == 0:
-                    return
-                self.lpart -= 1
+        return self.enum_range(multiplicities, lb, sum(multiplicities))
 
     def enum_range(self, multiplicities, lb, ub):
         """Enumerate the partitions of a multiset with
@@ -912,7 +844,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_range([2, 2], 1, 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
         [['a', 'b', 'b'], ['a']],
@@ -925,21 +857,15 @@ class MultisetPartitionTraverser():
         if ub <= 0 or lb >= sum(multiplicities):
             return
         self._initialize_enumeration(multiplicities)
-        self.decrement_part_large(self.top_part(), 0, lb)
+        self.decrement_part_large(self.top_part(), lb)
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                self.db_trace("spread 1")
-                if not self.decrement_part_large(self.top_part(), 0, lb):
-                    # Failure here - possible in range case?
-                    self.db_trace("  Discarding (large cons)")
+                assert self.decrement_part_large(self.top_part(), lb)
+
+                if self.lpart >= ub:
                     self.discarded += 1
                     good_partition = False
-                    break
-                elif self.lpart >= ub:
-                    self.discarded += 1
-                    good_partition = False
-                    self.db_trace("  Discarding small cons")
                     self.lpart = ub - 2
                     break
 
@@ -950,13 +876,10 @@ class MultisetPartitionTraverser():
 
             # M5 (Decrease v)
             while not self.decrement_part_range(self.top_part(), lb, ub):
-                self.db_trace("Failed decrement, going to backtrack")
                 # M6 (Backtrack)
                 if self.lpart == 0:
                     return
                 self.lpart -= 1
-                self.db_trace("Backtracked to")
-            self.db_trace("decrement ok, about to expand")
 
     def count_partitions_slow(self, multiplicities):
         """Returns the number of partitions of a multiset whose elements

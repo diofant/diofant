@@ -13,3 +13,12 @@ from .orienters import (AxisOrienter, BodyOrienter, QuaternionOrienter,
 from .point import Point
 from .scalar import BaseScalar
 from .vector import BaseVector, Vector, VectorAdd, VectorMul, VectorZero
+
+
+__all__ = ('CoordSysCartesian', 'Del', 'BaseDyadic', 'Dyadic', 'DyadicAdd',
+           'DyadicMul', 'DyadicZero', 'curl', 'divergence', 'express',
+           'gradient', 'is_conservative', 'is_solenoidal', 'matrix_to_vector',
+           'scalar_potential', 'scalar_potential_difference', 'AxisOrienter',
+           'BodyOrienter', 'QuaternionOrienter', 'SpaceOrienter', 'Point',
+           'BaseScalar', 'BaseVector', 'Vector', 'VectorAdd',
+           'VectorMul', 'VectorZero')

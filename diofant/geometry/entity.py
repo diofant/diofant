@@ -78,9 +78,9 @@ class GeometryEntity(Basic):
         ========
 
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
-        >>> t # vertex on x axis
+        >>> t  # vertex on x axis
         Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
-        >>> t.rotate(pi/2) # vertex on y axis now
+        >>> t.rotate(pi/2)  # vertex on y axis now
         Triangle(Point2D(0, 1), Point2D(-sqrt(3)/2, -1/2), Point2D(sqrt(3)/2, -1/2))
 
         """
@@ -169,7 +169,7 @@ class GeometryEntity(Basic):
             if not hasattr(g, 'reflect') and not all(
                     isinstance(arg, Point) for arg in g.args):
                 raise NotImplementedError(
-                    'reflect undefined or non-Point args in %s' % g)
+                    f'reflect undefined or non-Point args in {g}')
             a = atan(l.slope)
             c = l.coefficients
             d = -c[-1]/c[1]  # y-intercept
@@ -198,11 +198,11 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> t  = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
+        >>> t1 = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t2 = Polygon(*RegularPolygon(Point(0, 0), 2, 3).vertices)
-        >>> t2.encloses(t)
+        >>> t2.encloses(t1)
         True
-        >>> t.encloses(t2)
+        >>> t1.encloses(t2)
         False
 
         """
@@ -307,18 +307,16 @@ class GeometrySet(GeometryEntity, Set):
 
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
-
         if isinstance(other, Set) and other.is_FiniteSet:
             return all(self.__contains__(i) for i in other)
 
         return self.__contains__(other)
 
     def _union(self, o):
-        """ Returns the union of self and o
+        """Returns the union of self and o
         for use with diofant.sets.Set, if possible.
 
         """
-
         from ..sets import Union, FiniteSet
 
         # if its a FiniteSet, merge any points

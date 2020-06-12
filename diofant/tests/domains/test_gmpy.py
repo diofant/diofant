@@ -1,8 +1,7 @@
 import pytest
 
-from diofant.domains import (CC, FF, FF_gmpy, FF_python, PythonRational,
-                             QQ_gmpy, QQ_python, ZZ_gmpy, ZZ_python)
-from diofant.polys.polyerrors import CoercionFailed
+from diofant import (CC, FF, CoercionFailed, FF_gmpy, FF_python,
+                     PythonRational, QQ_gmpy, QQ_python, ZZ_gmpy, ZZ_python)
 
 
 __all__ = ()

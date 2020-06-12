@@ -38,7 +38,7 @@ def test_sympyissue_5223():
     assert next(Integer(0).lseries(x)) == 0
     assert cos(x).series() == cos(x).series(x)
     pytest.raises(ValueError, lambda: cos(x + y).series())
-    pytest.raises(ValueError, lambda: x.series(dir=""))
+    pytest.raises(ValueError, lambda: x.series(dir=''))
 
     assert (cos(x).series(x, 1) -
             cos(x + 1).series(x).subs({x: x - 1})).removeO() == 0
@@ -134,7 +134,7 @@ def test_sympyissue_7203():
         -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
 
-@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
+@pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
     x = a * b
@@ -225,3 +225,11 @@ def test_sympyissue_14885():
 
 def test_sympyissue_15539():
     assert series(exp(x), x, x0=-oo) == exp(-x)
+
+
+def test_sympyissue_18008():
+    e = x*(x*(-x + 1) + 1)/(x*(-x + 1) - (-x + 1)**2 + 1)
+    es = e.simplify()
+    s = e.series(x, x0=oo, n=4)
+    ss = es.series(x, x0=oo, n=4)
+    assert s == ss

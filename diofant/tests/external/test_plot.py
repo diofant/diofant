@@ -1,3 +1,5 @@
+"""Generic plotting tests."""
+
 import errno
 import functools
 import os
@@ -7,10 +9,10 @@ import tempfile
 import pytest
 
 from diofant import (And, I, Integral, LambertW, Piecewise, cos, exp_polar,
-                     log, meijerg, oo, pi, real_root, sin, sqrt, summation)
+                     log, meijerg, oo, pi, plot, plot3d,
+                     plot3d_parametric_line, plot3d_parametric_surface,
+                     plot_parametric, real_root, sin, sqrt, summation)
 from diofant.abc import x, y, z
-from diofant.plotting import (plot, plot3d, plot3d_parametric_line,
-                              plot3d_parametric_surface, plot_parametric)
 from diofant.plotting.plot import unset_show
 
 
@@ -66,7 +68,9 @@ def test_matplotlib_intro():
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
 
-        p = plot(x)
+        p = plot(x, adaptive=False)
+        assert str(p) == """Plot object containing:
+[0]: cartesian line: x for x over (-10.0, 10.0)"""
         p = plot(x*sin(x), x*cos(x))
         p.extend(p)
         p[0].line_color = lambda a: a
@@ -77,26 +81,26 @@ def test_matplotlib_intro():
         p.legend = True
         p.aspect_ratio = (1, 1)
         p.xlim = (-15, 20)
-        p.save(tmp_file('%s_basic_options_and_colors' % name))
+        p.save(tmp_file(f'{name}_basic_options_and_colors'))
 
         p.extend(plot(x + 1))
         p.append(plot(x + 3, x**2)[1])
-        p.save(tmp_file('%s_plot_extend_append' % name))
+        p.save(tmp_file(f'{name}_plot_extend_append'))
 
         p[2] = plot(x**2, (x, -2, 3))
-        p.save(tmp_file('%s_plot_setitem' % name))
+        p.save(tmp_file(f'{name}_plot_setitem'))
         del p
 
         p = plot(sin(x), (x, -2*pi, 4*pi))
-        p.save(tmp_file('%s_line_explicit' % name))
+        p.save(tmp_file(f'{name}_line_explicit'))
         del p
 
         p = plot(sin(x))
-        p.save(tmp_file('%s_line_default_range' % name))
+        p.save(tmp_file(f'{name}_line_default_range'))
         del p
 
         p = plot((x**2, (x, -5, 5)), (x**3, (x, -3, 3)))
-        p.save(tmp_file('%s_line_multiple_range' % name))
+        p.save(tmp_file(f'{name}_line_multiple_range'))
         del p
 
         pytest.raises(ValueError, lambda: plot(x, y))
@@ -108,69 +112,79 @@ def test_matplotlib_intro():
 
         # Single plot with range.
         p = plot_parametric(sin(x), cos(x), (x, -5, 5))
-        p.save(tmp_file('%s_parametric_range' % name))
+        assert str(p) == """Plot object containing:
+[0]: parametric cartesian line: (sin(x), cos(x)) for x over (-5.0, 5.0)"""
+        p.save(tmp_file(f'{name}_parametric_range'))
         del p
 
         # Multiple plots with same range.
         p = plot_parametric((sin(x), cos(x)), (x, sin(x)))
-        p.save(tmp_file('%s_parametric_multiple' % name))
+        p.save(tmp_file(f'{name}_parametric_multiple'))
         del p
 
         # Multiple plots with different ranges.
         p = plot_parametric((sin(x), cos(x), (x, -3, 3)), (x, sin(x), (x, -5, 5)))
-        p.save(tmp_file('%s_parametric_multiple_ranges' % name))
+        p.save(tmp_file(f'{name}_parametric_multiple_ranges'))
         del p
 
         # depth of recursion specified.
         p = plot_parametric(x, sin(x), depth=13)
-        p.save(tmp_file('%s_recursion_depth' % name))
+        p.save(tmp_file(f'{name}_recursion_depth'))
         del p
 
         # No adaptive sampling.
         p = plot_parametric(cos(x), sin(x), adaptive=False, nb_of_points=500)
-        p.save(tmp_file('%s_adaptive' % name))
+        p.save(tmp_file(f'{name}_adaptive'))
         del p
 
         # 3d parametric plots
         p = plot3d_parametric_line(sin(x), cos(x), x)
-        p.save(tmp_file('%s_3d_line' % name))
+        assert str(p) == """Plot object containing:
+[0]: 3D parametric cartesian line: (sin(x), cos(x), x) for x over (-10.0, 10.0)"""
+        p.save(tmp_file(f'{name}_3d_line'))
         del p
 
         p = plot3d_parametric_line(
             (sin(x), cos(x), x, (x, -5, 5)), (cos(x), sin(x), x, (x, -3, 3)))
-        p.save(tmp_file('%s_3d_line_multiple' % name))
+        p.save(tmp_file(f'{name}_3d_line_multiple'))
         del p
 
         p = plot3d_parametric_line(sin(x), cos(x), x, nb_of_points=30)
-        p.save(tmp_file('%s_3d_line_points' % name))
+        p.save(tmp_file(f'{name}_3d_line_points'))
         del p
 
         # 3d surface single plot.
         p = plot3d(x * y)
-        p.save(tmp_file('%s_surface' % name))
+        assert str(p) in ("""Plot object containing:
+[0]: cartesian surface: x*y for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+                          for _ in [(x, y), (y, x)])
+        p.save(tmp_file(f'{name}_surface'))
         del p
 
         # Multiple 3D plots with same range.
         p = plot3d(-x * y, x * y, (x, -5, 5))
-        p.save(tmp_file('%s_surface_multiple' % name))
+        p.save(tmp_file(f'{name}_surface_multiple'))
         del p
 
         # Multiple 3D plots with different ranges.
         p = plot3d(
             (x * y, (x, -3, 3), (y, -3, 3)), (-x * y, (x, -3, 3), (y, -3, 3)))
-        p.save(tmp_file('%s_surface_multiple_ranges' % name))
+        p.save(tmp_file(f'{name}_surface_multiple_ranges'))
         del p
 
         # Single Parametric 3D plot
         p = plot3d_parametric_surface(sin(x + y), cos(x - y), x - y)
-        p.save(tmp_file('%s_parametric_surface' % name))
+        assert str(p) in ("""Plot object containing:
+[0]: parametric cartesian surface: (sin(x + y), cos(x - y), x - y) for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+                          for _ in [(x, y), (y, x)])
+        p.save(tmp_file(f'{name}_parametric_surface'))
         del p
 
         # Multiple Parametric 3D plots.
         p = plot3d_parametric_surface(
             (x*sin(z), x*cos(z), z, (x, -5, 5), (z, -5, 5)),
             (sin(x + y), cos(x - y), x - y, (x, -5, 5), (y, -5, 5)))
-        p.save(tmp_file('%s_parametric_surface' % name))
+        p.save(tmp_file(f'{name}_parametric_surface'))
         del p
     finally:
         TmpFileManager.cleanup()
@@ -184,51 +198,51 @@ def test_matplotlib_colors():
 
         p = plot(sin(x))
         p[0].line_color = lambda a: a
-        p.save(tmp_file('%s_colors_line_arity1' % name))
+        p.save(tmp_file(f'{name}_colors_line_arity1'))
 
         p[0].line_color = lambda a, b: b
-        p.save(tmp_file('%s_colors_line_arity2' % name))
+        p.save(tmp_file(f'{name}_colors_line_arity2'))
 
         p = plot(x*sin(x), x*cos(x), (x, 0, 10))
         p[0].line_color = lambda a: a
-        p.save(tmp_file('%s_colors_param_line_arity1' % name))
+        p.save(tmp_file(f'{name}_colors_param_line_arity1'))
 
         p[0].line_color = lambda a, b: a
-        p.save(tmp_file('%s_colors_param_line_arity2a' % name))
+        p.save(tmp_file(f'{name}_colors_param_line_arity2a'))
 
         p[0].line_color = lambda a, b: b
-        p.save(tmp_file('%s_colors_param_line_arity2b' % name))
+        p.save(tmp_file(f'{name}_colors_param_line_arity2b'))
         del p
 
         p = plot3d_parametric_line(sin(x) + 0.1*sin(x)*cos(7*x),
                                    cos(x) + 0.1*cos(x)*cos(7*x), 0.1*sin(7*x), (x, 0, 2*pi))
         p[0].line_color = lambda a: sin(4*a)
-        p.save(tmp_file('%s_colors_3d_line_arity1' % name))
+        p.save(tmp_file(f'{name}_colors_3d_line_arity1'))
         p[0].line_color = lambda a, b: b
-        p.save(tmp_file('%s_colors_3d_line_arity2' % name))
+        p.save(tmp_file(f'{name}_colors_3d_line_arity2'))
         p[0].line_color = lambda a, b, c: c
-        p.save(tmp_file('%s_colors_3d_line_arity3' % name))
+        p.save(tmp_file(f'{name}_colors_3d_line_arity3'))
         del p
 
         p = plot3d(sin(x)*y, (x, 0, 6*pi), (y, -5, 5))
         p[0].surface_color = lambda a: a
-        p.save(tmp_file('%s_colors_surface_arity1' % name))
+        p.save(tmp_file(f'{name}_colors_surface_arity1'))
         p[0].surface_color = lambda a, b: b
-        p.save(tmp_file('%s_colors_surface_arity2' % name))
+        p.save(tmp_file(f'{name}_colors_surface_arity2'))
         p[0].surface_color = lambda a, b, c: c
-        p.save(tmp_file('%s_colors_surface_arity3a' % name))
+        p.save(tmp_file(f'{name}_colors_surface_arity3a'))
         p[0].surface_color = lambda a, b, c: sqrt((a - 3*pi)**2 + b**2)
-        p.save(tmp_file('%s_colors_surface_arity3b' % name))
+        p.save(tmp_file(f'{name}_colors_surface_arity3b'))
         del p
 
         p = plot3d_parametric_surface(x * cos(4 * y), x * sin(4 * y), y,
                                       (x, -1, 1), (y, -1, 1))
         p[0].surface_color = lambda a: a
-        p.save(tmp_file('%s_colors_param_surf_arity1' % name))
+        p.save(tmp_file(f'{name}_colors_param_surf_arity1'))
         p[0].surface_color = lambda a, b: a*b
-        p.save(tmp_file('%s_colors_param_surf_arity2' % name))
+        p.save(tmp_file(f'{name}_colors_param_surf_arity2'))
         p[0].surface_color = lambda a, b, c: sqrt(a**2 + b**2 + c**2)
-        p.save(tmp_file('%s_colors_param_surf_arity3' % name))
+        p.save(tmp_file(f'{name}_colors_param_surf_arity3'))
         del p
     finally:
         TmpFileManager.cleanup()
@@ -243,12 +257,12 @@ def test_matplotlib_advanced():
 
         s = summation(1/x**y, (x, 1, oo))
         p = plot(s, (y, 2, 10))
-        p.save(tmp_file('%s_advanced_inf_sum' % name))
+        p.save(tmp_file(f'{name}_advanced_inf_sum'))
 
         p = plot(summation(1/x, (x, 1, y)), (y, 2, 10), show=False)
         p[0].only_integers = True
         p[0].steps = True
-        p.save(tmp_file('%s_advanced_fin_sum' % name))
+        p.save(tmp_file(f'{name}_advanced_fin_sum'))
 
         ###
         # Test expressions that can not be translated to np and
@@ -277,7 +291,7 @@ def test_matplotlib_advanced_2():
 
         i = Integral(log((sin(x)**2 + 1)*sqrt(x**2 + 1)), (x, 0, y))
         p = plot(i, (y, 1, 5))
-        p.save(tmp_file('%s_advanced_integral' % name))
+        p.save(tmp_file(f'{name}_advanced_integral'))
     finally:
         TmpFileManager.cleanup()
 
@@ -305,7 +319,7 @@ def test_sympyissue_11461():
         tmp_file = TmpFileManager.tmp_file
 
         p = plot(real_root((log(x/(x-2))), 3), (x, 3, 4))
-        p.save(tmp_file('%s_11461' % name))
+        p.save(tmp_file(f'{name}_11461'))
         del p
     finally:
         TmpFileManager.cleanup()
@@ -320,7 +334,7 @@ def test_sympyissue_10925():
         f = Piecewise((-1, x < -1), (x, And(-1 <= x, x < 0)),
                       (x**2, And(0 <= x, x < 1)), (x**3, True))
         p = plot(f, (x, -3, 3))
-        p.save(tmp_file('%s_10925' % name))
+        p.save(tmp_file(f'{name}_10925'))
         del p
     finally:
         TmpFileManager.cleanup()

@@ -1,9 +1,8 @@
 import pytest
 
-from diofant import (Dummy, Eq, I, Integer, Integral, Rational, RootOf, cbrt,
-                     cos, cosh, posify, root, solve, sqrt, sqrtdenest, sstr,
-                     symbols, sympify)
-from diofant.abc import F, a, b, c, d, t, x, y
+from diofant import (Dummy, I, Integer, Integral, Rational, cbrt, cos, cosh,
+                     root, sqrt, sqrtdenest, sstr, symbols, sympify)
+from diofant.abc import a, b, c, d, t, x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets
 from diofant.simplify.sqrtdenest import unrad
 
@@ -212,8 +211,10 @@ def test_unrad0():
                  (s**10 + 8*s**8 + 24*s**6 - 12*s**5 - 22*s**4 - 160*s**3 - 212*s**2 -
                   192*s - 56, [s, s**2 - x]))
 
+    assert check(unrad(sqrt(x) + sqrt(1 - x) - 3),
+                 (x**2 - x + 16, []))
 
-@pytest.mark.slow
+
 def test_unrad1():
     pytest.raises(NotImplementedError, lambda:
                   unrad(sqrt(x) + sqrt(x + 1) + sqrt(1 - sqrt(x)) + 3))
@@ -263,8 +264,6 @@ def test_unrad1():
                  ((a*sqrt(x) + b*sqrt(x))**2 - (c*sqrt(y) + d*sqrt(y))**2, []))
     assert check(unrad(sqrt(x) + sqrt(1 - x)),
                  (2*x - 1, []))
-    assert check(unrad(sqrt(x) + sqrt(1 - x) - 3),
-                 (x**2 - x + 16, []))
     assert check(unrad(sqrt(x) + sqrt(1 - x) + sqrt(2 + x)),
                  (5*x**2 - 2*x + 1, []))
     assert unrad(sqrt(x) + sqrt(1 - x) + sqrt(2 + x) - 3) in [
@@ -277,12 +276,6 @@ def test_unrad1():
     eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - sqrt(x))
     assert check(unrad(eq),
                  (16*x**2 - 9*x, []))
-    assert {s[x] for s in solve(eq, check=False)} == {0, Rational(9, 16)}
-    assert solve(eq) == []
-    # but this one really does have those solutions
-    assert ({s[x] for s in solve(sqrt(x) - sqrt(x + 1) +
-                                 sqrt(1 - sqrt(x)))} ==
-            {0, Rational(9, 16)})
 
     assert check(unrad(sqrt(x) + root(x + 1, 3) + 2*sqrt(y), y),
                  (2*sqrt(x)*cbrt(x + 1) + x - 4*y +
@@ -294,38 +287,6 @@ def test_unrad1():
     assert check(unrad(sqrt(x)*sqrt(1 - x) + 2, x),
                  (x**2 - x + 4, []))
 
-    # http://tutorial.math.lamar.edu/
-    #        Classes/Alg/SolveRadicalEqns.aspx#Solve_Rad_Ex2_a
-    assert solve(Eq(x, sqrt(x + 6))) == [{x: 3}]
-    assert solve(Eq(x + sqrt(x - 4), 4)) == [{x: 4}]
-    assert solve(Eq(1, x + sqrt(2*x - 3))) == []
-    assert {s[x] for s in solve(Eq(sqrt(5*x + 6) - 2, x))} == {-1, 2}
-    assert {s[x] for s in solve(Eq(sqrt(2*x - 1) - sqrt(x - 4), 2))} == {5, 13}
-    assert solve(Eq(sqrt(x + 7) + 2, sqrt(3 - x))) == [{x: -6}]
-    # http://www.purplemath.com/modules/solverad.htm
-    assert solve(cbrt(2*x - 5) - 3) == [{x: 16}]
-    assert {s[x] for s in solve(x + 1 - root(x**4 + 4*x**3 - x, 4))} == {-Rational(1, 2),
-                                                                         -Rational(1, 3)}
-    assert {s[x] for s in solve(sqrt(2*x**2 - 7) - (3 - x))} == {-8, 2}
-    assert solve(sqrt(2*x + 9) - sqrt(x + 1) - sqrt(x + 4)) == [{x: 0}]
-    assert solve(sqrt(x + 4) + sqrt(2*x - 1) - 3*sqrt(x - 1)) == [{x: 5}]
-    assert solve(sqrt(x)*sqrt(x - 7) - 12) == [{x: 16}]
-    assert solve(sqrt(x - 3) + sqrt(x) - 3) == [{x: 4}]
-    assert solve(sqrt(9*x**2 + 4) - (3*x + 2)) == [{x: 0}]
-    assert solve(sqrt(x) - 2 - 5) == [{x: 49}]
-    assert solve(sqrt(x - 3) - sqrt(x) - 3) == []
-    assert solve(sqrt(x - 1) - x + 7) == [{x: 10}]
-    assert solve(sqrt(x - 2) - 5) == [{x: 27}]
-    assert solve(sqrt(17*x - sqrt(x**2 - 5)) - 7) == [{x: 3}]
-    assert solve(sqrt(x) - sqrt(x - 1) + sqrt(sqrt(x))) == []
-
-    # don't posify the expression in unrad and do use _mexpand
-    z = sqrt(2*x + 1)/sqrt(x) - sqrt(2 + 1/x)
-    p = posify(z)[0]
-    assert solve(p) == []
-    assert solve(z) == []
-    assert solve(z + 6*I) == [{x: -Rational(1, 11)}]
-    assert solve(p + 6*I) == []
     # issue sympy/sympy#8622
     assert unrad((root(x + 1, 5) - root(x, 3))) == (
         x**5 - x**3 - 3*x**2 - 3*x - 1, [])
@@ -336,11 +297,6 @@ def test_unrad1():
     # for coverage
     assert check(unrad(sqrt(x) + root(x, 3) + y),
                  (s**3 + s**2 + y, [s, s**6 - x]))
-    assert solve(sqrt(x) + root(x, 3) - 2) == [{x: 1}]
-    pytest.raises(NotImplementedError, lambda:
-                  solve(sqrt(x) + root(x, 3) + root(x + 1, 5) - 2))
-    # fails through a different code path
-    pytest.raises(NotImplementedError, lambda: solve(-sqrt(2) + cosh(x)/x))
     # unrad some
     e = root(x + 1, 3) + root(x, 3)
     assert unrad(e) == (2*x + 1, [])
@@ -367,16 +323,9 @@ def test_unrad1():
 
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
-    assert solve(root(x, 3) + root(x, 5) - 2) == [{x: 1}]
     eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
     assert check(unrad(eq),
                  ((5*x - 4)*(3125*x**3 + 37100*x**2 + 100800*x - 82944), []))
-    ans = [{x: Rational(4, 5)},
-           {x: Rational(-1484, 375) + 172564/(140625*cbrt(114*sqrt(12657)/78125 +
-                                                          Rational(12459439, 52734375))) +
-               4*cbrt(114*sqrt(12657)/78125 +
-                      Rational(12459439, 52734375))}]
-    assert solve(eq) == ans
     # duplicate radical handling
     assert check(unrad(sqrt(x + root(x + 1, 3)) - root(x + 1, 3) - 2),
                  (s**3 - s**2 - 3*s - 5, [s, s**3 - x - 1]))
@@ -407,24 +356,6 @@ def test_unrad1():
     assert check(unrad((x+y)**(2*y/3) + cbrt(x+y) + 1, x),
                  (s**(2*y) + s + 1, [s, s**3 - x - y]))
 
-    # This tests two things: that if full unrad is attempted and fails
-    # the solution should still be found; also it tests that the use of
-    # composite
-    assert len(solve(sqrt(y)*x + x**3 - 1, x)) == 3
-    assert len(solve(-512*y**3 + 1344*cbrt(x + 2)*y**2 -
-                     1176*(x + 2)**Rational(2, 3)*y -
-                     169*x + 686, y, _unrad=False)) == 3
-
-    # watch out for when the cov doesn't involve the symbol of interest
-    eq = -x + (7*y/8 - cbrt(27*x/2 + 27*sqrt(x**2)/2)/3)**3 - 1
-    assert solve(eq, y) == [
-        {y: RootOf(-768*x + 343*y**3 - 588*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
-                   672*cbrt(2)*y*cbrt(x + sqrt(x**2))**2 - 256*sqrt(x**2) - 512, y, 0)},
-        {y: RootOf(-768*x + 343*y**3 - 588*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
-                   672*cbrt(2)*y*cbrt(x + sqrt(x**2))**2 - 256*sqrt(x**2) - 512, y, 1)},
-        {y: RootOf(-768*x + 343*y**3 - 588*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
-                   672*cbrt(2)*y*cbrt(x + sqrt(x**2))**2 - 256*sqrt(x**2) - 512, y, 2)}]
-
     eq = root(x + 1, 3) - (root(x, 3) + root(x, 5))
     assert check(unrad(eq),
                  (3*s**13 + 3*s**11 + s**9 - 1, [s, s**15 - x]))
@@ -449,40 +380,6 @@ def test_unrad1():
                   453312*s**7 - 612864*s**6 - 3337173*s**5 - 6332418*s**4 - 7134912*s**3
                   - 5064768*s**2 - 2111913*s - 398034, [s, s**4 - x - 1]))
 
-    ans = solve(sqrt(x) + sqrt(x + 1) -
-                sqrt(1 - x) - sqrt(2 + x))
-    assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
-    # the fence optimization problem
-    # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
-    eq = F - (2*x + 2*y + sqrt(x**2 + y**2))
-    ans = 2*F/7 - sqrt(2)*F/14
-    X = solve(eq, x, check=False)
-    for xi in reversed(X):  # reverse since currently, ans is the 2nd one
-        Y = solve((x*y).subs(xi).diff(y), y,
-                  simplify=False, check=False)
-        if any((a[y] - ans).expand().is_zero for a in Y):
-            break
-    else:
-        assert None  # no answer was found
-    assert (solve(sqrt(x + 1) + root(x, 3) - 2) ==
-            [{x: (-11/(9*cbrt(Rational(47, 54) + sqrt(93)/6)) +
-                  Rational(1, 3) + cbrt(Rational(47, 54) +
-                                        sqrt(93)/6))**3}])
-    assert (solve(sqrt(sqrt(x + 1)) + cbrt(x) - 2) ==
-            [{x: (-sqrt(-2*cbrt(Rational(-1, 16) + sqrt(6913)/16) +
-                        6/cbrt(Rational(-1, 16) + sqrt(6913)/16) +
-                        Rational(17, 2) +
-                        121/(4*sqrt(-6/cbrt(Rational(-1, 16) +
-                                            sqrt(6913)/16) +
-                                    2*cbrt(Rational(-1, 16) +
-                                           sqrt(6913)/16) +
-                                    Rational(17, 4))))/2 +
-                  sqrt(-6/cbrt(Rational(-1, 16) + sqrt(6913)/16) +
-                       2*cbrt(Rational(-1, 16) + sqrt(6913)/16) +
-                       Rational(17, 4))/2 + Rational(9, 4))**3}])
-    assert (solve(sqrt(x) + root(sqrt(x) + 1, 3) - 2) ==
-            [{x: (-cbrt(Rational(81, 2) + 3*sqrt(741)/2)/3 +
-                  (Rational(81, 2) + 3*sqrt(741)/2)**Rational(-1, 3) + 2)**2}])
     eq = (-x + (Rational(1, 2) - sqrt(3)*I/2)*cbrt(3*x**3/2 - x*(3*x**2 - 34)/2 +
                                                    sqrt((-3*x**3 + x*(3*x**2 - 34) + 90)**2/4 - Rational(39304, 27)) -
                                                    45) + 34/(3*(Rational(1, 2) - sqrt(3)*I/2)*cbrt(3*x**3/2 -
@@ -493,22 +390,3 @@ def test_unrad1():
                   102*2**Rational(2, 3)*3**Rational(5, 6)*s**4*I + 1620*s**3 - 1620*sqrt(3)*s**3*I -
                   13872*cbrt(18)*s**2 + 471648 - 471648*sqrt(3)*I, [s, s**3 - 306*x
                                                                     - sqrt(3)*sqrt(31212*x**2 - 165240*x + 61484) + 810]))
-    assert solve(eq, x, check=False) != []  # not other code errors
-
-
-@pytest.mark.xfail
-def test_unrad1_fail():
-    assert solve(sqrt(x + root(x, 3)) + root(x - y, 5), y) != []
-
-
-@pytest.mark.slow
-def test_unrad_slow():
-    # this has roots with multiplicity > 1; there should be no
-    # repeats in roots obtained, however
-    eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
-    assert solve(eq) == [{x: Rational(1, 2)}]
-
-
-def test_unrad2():
-    assert solve(root(x**3 - 3*x**2, 3) + 1 - x) == []
-    assert solve(root(x + 1, 3) + root(x**2 - 2, 5) + 1) == []

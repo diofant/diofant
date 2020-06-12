@@ -1,10 +1,7 @@
 import pytest
 
-from diofant.core import symbols
-from diofant.core.symbol import Dummy
-from diofant.matrices import Matrix, MatrixSymbol
+from diofant import Dummy, Idx, IndexedBase, Matrix, MatrixSymbol, symbols
 from diofant.printing.codeprinter import Assignment, CodePrinter
-from diofant.tensor import Idx, IndexedBase
 
 
 __all__ = ()
@@ -20,16 +17,16 @@ def setup_test_printer(**kwargs):
 def test_print_Dummy():
     d = Dummy('d')
     p = setup_test_printer()
-    assert p._print_Dummy(d) == "d_%i" % d.dummy_index
+    assert p._print_Dummy(d) == f'd_{d.dummy_index:d}'
 
 
 def test_Assignment():
-    x, y = symbols("x, y")
+    x, y = symbols('x, y')
     A = MatrixSymbol('A', 3, 1)
     mat = Matrix([1, 2, 3])
     B = IndexedBase('B')
-    n = symbols("n", integer=True)
-    i = Idx("i", n)
+    n = symbols('n', integer=True)
+    i = Idx('i', n)
     # Here we just do things to show they don't error
     Assignment(x, y)
     Assignment(x, 0)

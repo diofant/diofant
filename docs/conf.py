@@ -1,13 +1,13 @@
-#
-# Diofant documentation build configuration file.
-#
-# This file is execfile()d with the current directory set to its
-# containing dir.
-#
-# The contents of this file are pickled, so don't put values in the
-# namespace that aren't pickleable (module imports are okay, they're
-# removed automatically).
-#
+"""
+Diofant documentation build configuration file.
+
+This file is execfile()d with the current directory set to its
+containing dir.
+
+The contents of this file are pickled, so don't put values in the
+namespace that aren't pickleable (module imports are okay, they're
+removed automatically).
+"""
 
 import inspect
 import os
@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2018 SymPy Development Team, 2013-2019 Sergey B Kirpichev'
+copyright = '2006-2018 SymPy Development Team, 2013-2020 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -69,17 +69,17 @@ latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
 
 # A dictionary that contains LaTeX snippets that override predefined.
 latex_elements = {
-    'fontpkg': r'''
+    'fontpkg': r"""
 \setmainfont{DejaVu Serif}
 \setsansfont{DejaVu Sans}
 \setmonofont{DejaVu Sans Mono}
-''',
-    'preamble':  r'''
+""",
+    'preamble': r"""
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
 
 \fvset{formatcom=\baselineskip10pt\relax\let\strut\empty}
-'''
+"""
 }
 
 # Add page references after internal references.
@@ -114,7 +114,8 @@ linkcheck_retries = 3
 linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
                     r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
                     r'https://primes.utm.edu/prove/prove2_3.html',
-                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']
+                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html',
+                    r'https://github.com/.*']
 
 # This value controls if docstring for classes or methods, if not explicitly
 # set, is inherited form parents.
@@ -171,7 +172,7 @@ nbsphinx_prompt_width = '10ex'
 
 
 def linkcode_resolve(domain, info):
-    """Determine the URL corresponding to Python object. """
+    """Determine the URL corresponding to Python object."""
     if domain != 'py':
         return
 
@@ -211,17 +212,17 @@ def linkcode_resolve(domain, info):
         lineno = None
 
     if lineno:
-        linespec = "#L%d-L%d" % (lineno, lineno + len(source) - 1)
+        linespec = f'#L{lineno:d}-L{lineno + len(source) - 1:d}'
     else:
-        linespec = ""
+        linespec = ''
 
     fn = os.path.relpath(fn, start=os.path.dirname(diofant.__file__))
 
-    blobpath = "https://github.com/diofant/diofant/blob/"
+    blobpath = 'https://github.com/diofant/diofant/blob/'
     if 'dev' in version:
-        return blobpath + "master/diofant/%s%s" % (fn, linespec)
+        return blobpath + f'master/diofant/{fn}{linespec}'
     else:
-        return blobpath + "v%s/diofant/%s%s" % (version, fn, linespec)
+        return blobpath + f'v{version}/diofant/{fn}{linespec}'
 
 
 # monkey-patch sphinx

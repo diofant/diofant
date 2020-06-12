@@ -70,7 +70,7 @@ class fibonacci(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Fibonacci_number
-    * http://mathworld.wolfram.com/FibonacciNumber.html
+    * https://mathworld.wolfram.com/FibonacciNumber.html
 
     See Also
     ========
@@ -104,8 +104,8 @@ class fibonacci(Function):
                     return Integer(cls._fib(n))
             else:
                 if n < 1:
-                    raise ValueError("Fibonacci polynomials are defined "
-                                     "only for positive integer indices.")
+                    raise ValueError('Fibonacci polynomials are defined '
+                                     'only for positive integer indices.')
                 return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
@@ -137,7 +137,7 @@ class lucas(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Lucas_number
-    * http://mathworld.wolfram.com/LucasNumber.html
+    * https://mathworld.wolfram.com/LucasNumber.html
 
     See Also
     ========
@@ -229,8 +229,8 @@ class bernoulli(Function):
 
     * https://en.wikipedia.org/wiki/Bernoulli_number
     * https://en.wikipedia.org/wiki/Bernoulli_polynomial
-    * http://mathworld.wolfram.com/BernoulliNumber.html
-    * http://mathworld.wolfram.com/BernoulliPolynomial.html
+    * https://mathworld.wolfram.com/BernoulliNumber.html
+    * https://mathworld.wolfram.com/BernoulliPolynomial.html
 
     See Also
     ========
@@ -304,8 +304,8 @@ class bernoulli(Function):
                         result.append(binomial(n, k)*cls(k)*sym**(n - k))
                     return Add(*result)
             else:
-                raise ValueError("Bernoulli numbers are defined only"
-                                 " for nonnegative integer indices.")
+                raise ValueError('Bernoulli numbers are defined only'
+                                 ' for nonnegative integer indices.')
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
@@ -371,8 +371,8 @@ class bell(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Bell_number
-    * http://mathworld.wolfram.com/BellNumber.html
-    * http://mathworld.wolfram.com/BellPolynomial.html
+    * https://mathworld.wolfram.com/BellNumber.html
+    * https://mathworld.wolfram.com/BellPolynomial.html
 
     See Also
     ========
@@ -630,7 +630,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_Sum(self, n, m=None):
         from ...concrete import Sum
-        k = Dummy("k", integer=True)
+        k = Dummy('k', integer=True)
         if m is None:
             m = Integer(1)
         return Sum(k**(-m), (k, 1, n))
@@ -658,7 +658,7 @@ class harmonic(Function):
                 u = p // q
                 p = p - u * q
                 if u.is_nonnegative and p.is_positive and q.is_positive and p < q:
-                    k = Dummy("k")
+                    k = Dummy('k')
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
                                  log(sin((pi * k) / q)),
@@ -670,7 +670,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_tractable(self, n, m=1):
         from .. import polygamma
-        return self.rewrite(polygamma).rewrite("tractable", deep=True)
+        return self.rewrite(polygamma).rewrite('tractable', deep=True)
 
     def _eval_evalf(self, prec):
         from .. import polygamma
@@ -717,9 +717,9 @@ class euler(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Euler_numbers
-    * http://mathworld.wolfram.com/EulerNumber.html
+    * https://mathworld.wolfram.com/EulerNumber.html
     * https://en.wikipedia.org/wiki/Alternating_permutation
-    * http://mathworld.wolfram.com/AlternatingPermutation.html
+    * https://mathworld.wolfram.com/AlternatingPermutation.html
 
     See Also
     ========
@@ -822,7 +822,7 @@ class catalan(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Catalan_number
-    * http://mathworld.wolfram.com/CatalanNumber.html
+    * https://mathworld.wolfram.com/CatalanNumber.html
     * http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
     * http://geometer.org/mathcircles/catalan.pdf
 
@@ -922,7 +922,7 @@ class genocchi(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Genocchi_number
-    * http://mathworld.wolfram.com/GenocchiNumber.html
+    * https://mathworld.wolfram.com/GenocchiNumber.html
 
     See Also
     ========
@@ -941,8 +941,8 @@ class genocchi(Function):
     def eval(cls, n):
         if n.is_Number:
             if (not n.is_Integer) or n.is_nonpositive:
-                raise ValueError("Genocchi numbers are defined only for " +
-                                 "positive integers")
+                raise ValueError('Genocchi numbers are defined only for ' +
+                                 'positive integers')
             return 2*(1 - 2**n)*bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
@@ -1132,7 +1132,7 @@ def _nP(n, k=None, replacement=False):
 
 @cacheit
 def _AOP_product(n):
-    """for n = (m1, m2, .., mk) return the coefficients of the polynomial,
+    """For n = (m1, m2, .., mk) return the coefficients of the polynomial,
     prod(sum(x**i for i in range(nj + 1)) for nj in n); i.e. the coefficients
     of the product of AOPs (all-one polynomials) or order given in n.  The
     resulting coefficient corresponding to x**r is the number of r-length
@@ -1145,7 +1145,8 @@ def _AOP_product(n):
 
     >>> n = (2, 2, 3)  # e.g. aabbccc
     >>> prod = ((x**2 + x + 1)*(x**2 + x + 1)*(x**3 + x**2 + x + 1)).expand()
-    >>> c = _AOP_product(n); dict(c)
+    >>> c = _AOP_product(n)
+    >>> dict(c)
     {0: 1, 1: 3, 2: 6, 3: 8, 4: 8, 5: 6, 6: 3, 7: 1}
     >>> [c[i] for i in range(8)] == [prod.coeff(x, i) for i in range(8)]
     True
@@ -1255,7 +1256,7 @@ def nC(n, k=None, replacement=False):
                 return 2**n
             return sum(nC(n, i, replacement) for i in range(n + 1))
         if k < 0:
-            raise ValueError("k cannot be negative")
+            raise ValueError('k cannot be negative')
         if replacement:
             return binomial(n + k - 1, k)
         return binomial(n, k)
@@ -1380,9 +1381,9 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Reduced second kind:
 
     >>> def delta(p):
-    ...    if len(p) == 1:
-    ...        return oo
-    ...    return min(abs(i[0] - i[1]) for i in subsets(p, 2))
+    ...     if len(p) == 1:
+    ...         return oo
+    ...     return min(abs(i[0] - i[1]) for i in subsets(p, 2))
     >>> parts = multiset_partitions(range(5), 3)
     >>> d = 2
     >>> sum(1 for p in parts if all(delta(i) >= d for i in p))
@@ -1423,7 +1424,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     elif kind == 2:
         return _stirling2(n, k)
     else:
-        raise ValueError('kind must be 1 or 2, not %s' % k)
+        raise ValueError(f'kind must be 1 or 2, not {k}')
 
 
 @cacheit
@@ -1465,7 +1466,7 @@ def nT(n, k=None):
     >>> nT('aabbc') == sum(_)
     True
 
-    >>> [nT("mississippi", i) for i in range(1, 12)]
+    >>> [nT('mississippi', i) for i in range(1, 12)]
     [1, 74, 609, 1521, 1768, 1224, 579, 197, 50, 9, 1]
 
     Partitions when all items are identical:

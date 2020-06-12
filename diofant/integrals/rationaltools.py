@@ -1,4 +1,4 @@
-"""This module implements tools for integrating rational functions. """
+"""This module implements tools for integrating rational functions."""
 
 from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
@@ -147,8 +147,8 @@ def ratint_ratpart(f, g, x):
 
     C_coeffs = A_coeffs + B_coeffs
 
-    A = Poly(A_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
-    B = Poly(B_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
+    A = Poly(A_coeffs, x, domain=ZZ.inject(*C_coeffs))
+    B = Poly(B_coeffs, x, domain=ZZ.inject(*C_coeffs))
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 
@@ -202,7 +202,7 @@ def ratint_logpart(f, g, x, t=None):
     res, R = resultant(a, b, includePRS=True)
     res = Poly(res, t, composite=False)
 
-    assert res, "BUG: resultant(%s, %s) can't be zero" % (a, b)
+    assert res, f"BUG: resultant({a}, {b}) can't be zero"
 
     R_map, H = {}, []
 
@@ -350,8 +350,6 @@ def log_to_real(h, q, x, t):
             if all(_ not in R_v_paired for _ in [+r_v, -r_v]):
                 if r_v.could_extract_minus_sign():
                     R_v_paired.append(-r_v)
-                elif not r_v.is_zero:
-                    R_v_paired.append(r_v)
 
         for r_v in R_v_paired:
             D = d.subs({u: r_u, v: r_v})

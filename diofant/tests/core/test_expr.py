@@ -12,7 +12,7 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
-from diofant.solvers.solvers import checksol
+from diofant.solvers.utils import checksol
 
 
 __all__ = ()
@@ -24,7 +24,7 @@ class DummyNumber:
 
     If one has a Number class (e.g. Sage Integer, or some other custom class)
     that one wants to work well with Diofant, one has to implement at least the
-    methods of this class DummyNumber, resp. its subclasses I5 and F1_1.
+    methods of this class DummyNumber, resp. its subclasses I5 and F1dot1.
 
     Basically, one just needs to implement either __int__() or __float__() and
     then one needs to make sure that the class works with Python integers and
@@ -95,7 +95,7 @@ class I5(DummyNumber):
         return self.number
 
 
-class F1_1(DummyNumber):
+class F1dot1(DummyNumber):
     number = 1.1
 
     def __float__(self):
@@ -103,12 +103,12 @@ class F1_1(DummyNumber):
 
 
 i5 = I5()
-f1_1 = F1_1()
+f1_1 = F1dot1()
 
 # basic diofant objects
 basic_objs = [
     Integer(2),
-    Float("1.3"),
+    Float('1.3'),
     x,
     y,
     pow(x, y)*y,
@@ -171,34 +171,34 @@ def test_relational():
 
 
 def test_relational_assumptions():
-    m1 = Symbol("m1", nonnegative=False)
-    m2 = Symbol("m2", positive=False)
-    m3 = Symbol("m3", nonpositive=False)
-    m4 = Symbol("m4", negative=False)
+    m1 = Symbol('m1', nonnegative=False)
+    m2 = Symbol('m2', positive=False)
+    m3 = Symbol('m3', nonpositive=False)
+    m4 = Symbol('m4', negative=False)
     assert (m1 < 0) == Lt(m1, 0)
     assert (m2 <= 0) == Le(m2, 0)
     assert (m3 > 0) == Gt(m3, 0)
     assert (m4 >= 0) == Ge(m4, 0)
-    m1 = Symbol("m1", nonnegative=False, extended_real=True)
-    m2 = Symbol("m2", positive=False, extended_real=True)
-    m3 = Symbol("m3", nonpositive=False, extended_real=True)
-    m4 = Symbol("m4", negative=False, extended_real=True)
+    m1 = Symbol('m1', nonnegative=False, extended_real=True)
+    m2 = Symbol('m2', positive=False, extended_real=True)
+    m3 = Symbol('m3', nonpositive=False, extended_real=True)
+    m4 = Symbol('m4', negative=False, extended_real=True)
     assert (m1 < 0) is true
     assert (m2 <= 0) is true
     assert (m3 > 0) is true
     assert (m4 >= 0) is true
-    m1 = Symbol("m1", negative=True)
-    m2 = Symbol("m2", nonpositive=True)
-    m3 = Symbol("m3", positive=True)
-    m4 = Symbol("m4", nonnegative=True)
+    m1 = Symbol('m1', negative=True)
+    m2 = Symbol('m2', nonpositive=True)
+    m3 = Symbol('m3', positive=True)
+    m4 = Symbol('m4', nonnegative=True)
     assert (m1 < 0) is true
     assert (m2 <= 0) is true
     assert (m3 > 0) is true
     assert (m4 >= 0) is true
-    m1 = Symbol("m1", negative=False, extended_real=True)
-    m2 = Symbol("m2", nonpositive=False, extended_real=True)
-    m3 = Symbol("m3", positive=False, extended_real=True)
-    m4 = Symbol("m4", nonnegative=False, extended_real=True)
+    m1 = Symbol('m1', negative=False, extended_real=True)
+    m2 = Symbol('m2', nonpositive=False, extended_real=True)
+    m3 = Symbol('m3', positive=False, extended_real=True)
+    m4 = Symbol('m4', nonnegative=False, extended_real=True)
     assert (m1 < 0) is false
     assert (m2 <= 0) is false
     assert (m3 > 0) is false
@@ -264,13 +264,19 @@ def test_as_leading_term():
     assert (6**(x + 1)).as_leading_term(x) == 6
     assert (6**(x + n)).as_leading_term(x) == 6**n
 
+    # issue sympy/sympy#17847
+    assert (1 - cos(x)).as_leading_term(x) == x**2/2
+    assert (1 - cos(x) + x**6).as_leading_term(x) == x**2/2
+    assert (1 + cos(x) + x**6).as_leading_term(x) == 2
+    assert (sin(x) - x + x**7).as_leading_term(x) == -x**3/6
+
 
 def test_as_leading_term_stub():
-    class foo(Function):
+    class Foo(Function):
         pass
-    assert foo(1/x).as_leading_term(x) == foo(1/x)
-    assert foo(1).as_leading_term(x) == foo(1)
-    pytest.raises(NotImplementedError, lambda: foo(x).as_leading_term(x))
+    assert Foo(1/x).as_leading_term(x) == Foo(1/x)
+    assert Foo(1).as_leading_term(x) == Foo(1)
+    pytest.raises(NotImplementedError, lambda: Foo(x).as_leading_term(x))
 
 
 def test_atoms():
@@ -970,7 +976,7 @@ def test_extractions():
     assert ((y + 1)*(x + 2*y + 1) + 3).extract_additively(y + 1) == \
         (x + 2*y)*(y + 1) + 3
 
-    n = Symbol("n", integer=True)
+    n = Symbol('n', integer=True)
     assert (Integer(-3)).could_extract_minus_sign() is True
     assert (-n*x + x).could_extract_minus_sign() != \
         (n*x - x).could_extract_minus_sign()
@@ -1078,14 +1084,14 @@ def test_coeff():
 
 
 def test_coeff2():
-    psi = Function("psi")
+    psi = Function('psi')
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
     assert g.coeff((psi(r).diff(r))) == 2/r
 
 
 def test_coeff2_0():
-    psi = Function("psi")
+    psi = Function('psi')
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
 
@@ -1112,12 +1118,12 @@ def test_as_base_exp():
 
 
 def test_sympyissue_4963():
-    assert hasattr(Mul(x, y), "is_commutative")
-    assert hasattr(Mul(x, y, evaluate=False), "is_commutative")
-    assert hasattr(Pow(x, y), "is_commutative")
-    assert hasattr(Pow(x, y, evaluate=False), "is_commutative")
+    assert hasattr(Mul(x, y), 'is_commutative')
+    assert hasattr(Mul(x, y, evaluate=False), 'is_commutative')
+    assert hasattr(Pow(x, y), 'is_commutative')
+    assert hasattr(Pow(x, y, evaluate=False), 'is_commutative')
     expr = Mul(Pow(2, 2, evaluate=False), 3, evaluate=False) + 1
-    assert hasattr(expr, "is_commutative")
+    assert hasattr(expr, 'is_commutative')
 
 
 def test_action_verbs():
@@ -1347,10 +1353,10 @@ def test_as_ordered_terms():
 
     f = x**2*y**2 + x*y**4 + y + 2
 
-    assert f.as_ordered_terms(order="lex") == [x**2*y**2, x*y**4, y, 2]
-    assert f.as_ordered_terms(order="grlex") == [x*y**4, x**2*y**2, y, 2]
-    assert f.as_ordered_terms(order="rev-lex") == [2, y, x*y**4, x**2*y**2]
-    assert f.as_ordered_terms(order="rev-grlex") == [2, y, x**2*y**2, x*y**4]
+    assert f.as_ordered_terms(order='lex') == [x**2*y**2, x*y**4, y, 2]
+    assert f.as_ordered_terms(order='grlex') == [x*y**4, x**2*y**2, y, 2]
+    assert f.as_ordered_terms(order='rev-lex') == [2, y, x*y**4, x**2*y**2]
+    assert f.as_ordered_terms(order='rev-grlex') == [2, y, x**2*y**2, x*y**4]
 
 
 def test_sympyissue_4199():
@@ -1601,7 +1607,7 @@ def test_round_exception_nostr():
         assert 'bad' not in str(e)
     else:
         # Did not raise
-        raise AssertionError("Did not raise")
+        raise AssertionError('Did not raise')
 
 
 def test_extract_branch_factor():
@@ -1655,7 +1661,10 @@ def test_pow_rewrite():
     assert (2**x).rewrite(tanh) == 2**x
 
 
+@pytest.mark.xfail
+@pytest.mark.timeout(20)
 def test_sympyissue_13645():
+    # NB: this does work if r and M are real
     r, r_m = symbols('r r_m', positive=True)
     th = symbols('th', extended_real=True)
     a, M = symbols('a M', extended_real=True)

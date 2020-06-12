@@ -1,4 +1,4 @@
-"""Implementation of :class:`Field` class. """
+"""Implementation of :class:`Field` class."""
 
 from .ring import Ring
 
@@ -7,34 +7,33 @@ __all__ = 'Field',
 
 
 class Field(Ring):
-    """Represents a field domain. """
+    """Represents a field domain."""
 
     is_Field = True
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``. """
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise AttributeError(f'there is no ring associated with {self}')
 
     @property
     def field(self):
-        """Returns a field associated with ``self``. """
+        """Returns a field associated with ``self``."""
         return self
 
     def exquo(self, a, b):
-        """Exact quotient of ``a`` and ``b``, implies ``__truediv__``.  """
+        """Exact quotient of ``a`` and ``b``, implies ``__truediv__``."""
         return a / b
 
     def quo(self, a, b):
-        """Quotient of ``a`` and ``b``, implies ``__truediv__``. """
+        """Quotient of ``a`` and ``b``, implies ``__truediv__``."""
         return a / b
 
     def rem(self, a, b):
-        """Remainder of ``a`` and ``b``, implies nothing.  """
+        """Remainder of ``a`` and ``b``, implies nothing."""
         return self.zero
 
     def div(self, a, b):
-        """Division of ``a`` and ``b``, implies ``__truediv__``. """
+        """Division of ``a`` and ``b``, implies ``__truediv__``."""
         return a / b, self.zero
 
     def gcd(self, a, b):
@@ -53,7 +52,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return self.one
 
         p = ring.gcd(a.numerator, b.numerator)
@@ -70,10 +69,9 @@ class Field(Ring):
         >>> lcm(Rational(2, 3), Rational(4, 9))
         4/3
         """
-
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return a*b
 
         p = ring.lcm(a.numerator, b.numerator)

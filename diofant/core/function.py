@@ -63,23 +63,24 @@ def _coeff_isneg(a):
     False
     >>> _coeff_isneg(-oo)
     True
-    >>> _coeff_isneg(Symbol('n', negative=True)) # coeff is 1
+    >>> _coeff_isneg(Symbol('n', negative=True))  # coeff is 1
     False
 
     """
-
     if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
 
 
 class PoleError(Exception):
-    pass
+    """Raised when an expansion pole is encountered."""
 
 
 class ArgumentIndexError(ValueError):
+    """Raised when an invalid operation for positional argument happened."""
+
     def __str__(self):
-        return ("Invalid operation with argument number %s for Function %s" %
+        return ('Invalid operation with argument number %s for Function %s' %
                 (self.args[1], self.args[0]))
 
 
@@ -113,7 +114,7 @@ class FunctionClass(ManagedProperties):
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             if not nargs:
-                raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
+                raise ValueError('Incorrectly specified nargs as %s' % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = as_int(nargs),
@@ -126,7 +127,6 @@ class FunctionClass(ManagedProperties):
         Function subclasses.
 
         """
-
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
@@ -168,7 +168,7 @@ class FunctionClass(ManagedProperties):
 
     def __repr__(self):
         if issubclass(self, AppliedUndef):
-            return 'Function(%r)' % (self.__name__)
+            return f'Function({self.__name__!r})'
         else:
             return self.__name__
 
@@ -199,7 +199,7 @@ class Application(Expr, metaclass=FunctionClass):
         options.pop('nargs', None)
 
         if options:
-            raise ValueError("Unknown options: %s" % options)
+            raise ValueError(f'Unknown options: {options}')
 
         if evaluate:
             if nan in args:
@@ -276,13 +276,13 @@ class Function(Application, Expr):
     Derivative(g(x), x)
 
     In the following example Function is used as a base class for
-    ``my_func`` that represents a mathematical function *my_func*. Suppose
-    that it is well known, that *my_func(0)* is *1* and *my_func* at infinity
+    ``MyFunc`` that represents a mathematical function *MyFunc*. Suppose
+    that it is well known, that *MyFunc(0)* is *1* and *MyFunc* at infinity
     goes to *0*, so we want those two simplifications to occur automatically.
-    Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
+    Suppose also that *MyFunc(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> class my_func(Function):
+    >>> class MyFunc(Function):
     ...
     ...     @classmethod
     ...     def eval(cls, x):
@@ -295,24 +295,24 @@ class Function(Application, Expr):
     ...     def _eval_is_real(self):
     ...         return self.args[0].is_real
     ...
-    >>> my_func(0) + sin(0)
+    >>> MyFunc(0) + sin(0)
     1
-    >>> my_func(oo)
+    >>> MyFunc(oo)
     0
-    >>> my_func(3.54).evalf() # Not yet implemented for my_func.
-    my_func(3.54)
-    >>> my_func(I).is_real
+    >>> MyFunc(3.54).evalf()  # Not yet implemented for MyFunc.
+    MyFunc(3.54)
+    >>> MyFunc(I).is_real
     False
 
-    In order for ``my_func`` to become useful, several other methods would
+    In order for ``MyFunc`` to become useful, several other methods would
     need to be implemented. See source code of some of the already
     implemented functions for more complete examples.
 
     Also, if the function can take more than one argument, then ``nargs``
-    must be defined, e.g. if ``my_func`` can take one or two arguments
+    must be defined, e.g. if ``MyFunc`` can take one or two arguments
     then,
 
-    >>> class my_func(Function):
+    >>> class MyFunc(Function):
     ...     nargs = (1, 2)
     ...
     >>>
@@ -476,9 +476,9 @@ class Function(Application, Expr):
 
         """
         from ..utilities.misc import filldedent
-        raise PoleError(filldedent('''
+        raise PoleError(filldedent("""
             Asymptotic expansion of %s around %s is
-            not implemented.''' % (type(self), args0)))
+            not implemented.""" % (type(self), args0)))
 
     def _eval_nseries(self, x, n, logx):
         """
@@ -548,7 +548,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs({x: 0})
                 if term.is_finite is False:
-                    raise PoleError("Cannot expand %s around 0" % self)
+                    raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
@@ -594,9 +594,9 @@ class Function(Application, Expr):
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
         # See issue sympy/sympy#4624 and issue sympy/sympy#4719
         # and issue sympy/sympy#5600
-        arg_dummy = Dummy('xi_%i' % argindex)
+        arg_dummy = Dummy(f'xi_{argindex:d}')
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
-        new_args = [arg for arg in self.args]
+        new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
         return Subs(Derivative(self.func(*new_args), arg_dummy),
                     (arg_dummy, self.args[argindex - 1]))
@@ -626,7 +626,7 @@ class Function(Application, Expr):
             #      sin(x)        x        <- _eval_as_leading_term needed
             #
             raise NotImplementedError(
-                '%s has no _eval_as_leading_term routine' % self.func)
+                f'{self.func} has no _eval_as_leading_term routine')
         else:
             return self.func(*args)
 
@@ -658,9 +658,12 @@ class UndefinedFunction(FunctionClass):
     def __instancecheck__(self, instance):
         return self in type(instance).__mro__
 
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__) and
+                (self.class_key() == other.class_key()))
 
-UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
-                                         (s.class_key() == o.class_key()))
+    def __hash__(self):
+        return super().__hash__()
 
 
 class WildFunction(Function, AtomicExpr):
@@ -802,23 +805,23 @@ class Derivative(Expr):
     of it instead as if we have something like this::
 
         >>> from diofant.abc import s
-        >>> def F(u):
+        >>> def f(u):
         ...     return 2*u
         ...
-        >>> def G(u):
+        >>> def g(u):
         ...     return 2*sqrt(1 - u**2)
         ...
-        >>> F(cos(x))
+        >>> f(cos(x))
         2*cos(x)
-        >>> G(sin(x))
+        >>> g(sin(x))
         2*sqrt(-sin(x)**2 + 1)
-        >>> F(c).diff(c)
+        >>> f(c).diff(c)
         2
-        >>> F(c).diff(c)
+        >>> f(c).diff(c)
         2
-        >>> G(s).diff(c)
+        >>> g(s).diff(c)
         0
-        >>> G(sin(x)).diff(cos(x))
+        >>> g(sin(x)).diff(cos(x))
         0
 
     Here, the Symbols c and s act just like the functions cos(x) and sin(x),
@@ -851,6 +854,7 @@ class Derivative(Expr):
     chain rule.  Note how the chain rule in Diofant is defined using unevaluated
     Subs objects::
 
+        >>> f, g = symbols('f g', cls=Function)
         >>> f(2*g(x)).diff(x)
         2*Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, 2*g(x)))
         >>> f(g(x)).diff(x)
@@ -927,9 +931,9 @@ class Derivative(Expr):
             variables = expr.free_symbols
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     The variable(s) of differentiation
-                    must be supplied to differentiate %s''' % expr))
+                    must be supplied to differentiate %s""" % expr))
 
         # Standardize the variables by sympifying them and making appending a
         # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
@@ -961,8 +965,8 @@ class Derivative(Expr):
                 from ..utilities.misc import filldedent
                 last_digit = int(str(count)[-1])
                 ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
-                raise ValueError(filldedent('''
-                Can\'t calculate %s%s derivative wrt %s.''' % (count, ordinal, v)))
+                raise ValueError(filldedent("""
+                Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
 
             if all_zero and not count == 0:
                 all_zero = False
@@ -1030,7 +1034,7 @@ class Derivative(Expr):
                 obj = None
             else:
                 if not is_symbol:
-                    new_v = Dummy('xi_%i' % i)
+                    new_v = Dummy(f'xi_{i:d}')
                     new_v.dummy_index = hash(v)
                     expr = expr.xreplace({v: new_v})
                     old_v = v
@@ -1110,7 +1114,6 @@ class Derivative(Expr):
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
 
         """
-
         sorted_vars = []
         symbol_part = []
         non_symbol_part = []
@@ -1290,7 +1293,7 @@ class Lambda(Expr):
         v = list(variables) if iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
-                raise TypeError('variable is not a symbol: %s' % i)
+                raise TypeError(f'variable is not a symbol: {i}')
         if len(v) == 1 and v[0] == expr:
             return S.IdentityFunction
 
@@ -1401,7 +1404,7 @@ class Subs(Expr):
         if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
-            raise ValueError("Subs support two or more arguments")
+            raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
             repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
@@ -1412,7 +1415,7 @@ class Subs(Expr):
 
         # use symbols with names equal to the point value (with preppended _)
         # to give a variable-independent expression
-        pre = "_"
+        pre = '_'
         pts = sorted(set(point), key=default_sort_key)
         from ..printing import StrPrinter
 
@@ -1438,7 +1441,7 @@ class Subs(Expr):
                    r in variables and
                    Symbol(pre + mystr(point[variables.index(r)])) != r
                    for _, r in reps):
-                pre += "_"
+                pre += '_'
                 continue
             break
 
@@ -1843,12 +1846,9 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     ...         return Expr.__new__(cls, *args)
     ...
     ...     def _eval_expand_double(self, **hints):
-    ...         '''
-    ...         Doubles the args of MyClass.
-    ...
-    ...         If there more than four args, doubling is not performed,
-    ...         unless force=True is also used (False by default).
-    ...         '''
+    ...         # Doubles the args of MyClass.
+    ...         # If there more than four args, doubling is not performed,
+    ...         # unless force=True is also used (False by default).
     ...         force = hints.pop('force', False)
     ...         if not force and len(self.args) > 4:
     ...             return self
@@ -1878,7 +1878,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     References
     ==========
 
-    * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+    * https://mathworld.wolfram.com/Multiple-AngleFormulas.html
 
     """
     # don't modify this; modify the Expr.expand method
@@ -1897,8 +1897,6 @@ def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
     # test_sympyissue_8247_8354 in test_arit)
-    if expr is None:
-        return
     was = None
     while was != expr:
         was, expr = expr, expand_mul(expand_multinomial(expr))

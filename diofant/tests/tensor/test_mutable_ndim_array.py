@@ -2,10 +2,9 @@ from copy import copy
 
 import pytest
 
-from diofant import Rational, SparseMatrix, Symbol
+from diofant import (Matrix, MutableDenseNDimArray, MutableSparseNDimArray,
+                     Rational, SparseMatrix, Symbol)
 from diofant.abc import x, y, z
-from diofant.matrices import Matrix
-from diofant.tensor import MutableDenseNDimArray, MutableSparseNDimArray
 
 
 __all__ = ()
@@ -110,6 +109,7 @@ def test_sparse():
     assert len(sparse_array._sparse_array) == 1
 
     assert list(sparse_array) == [0, 0, 0, 1]
+    assert sparse_array == MutableSparseNDimArray({(1, 1): 1}, (2, 2))
 
     for i, j in zip(sparse_array, [0, 0, 0, 1]):
         assert i == j

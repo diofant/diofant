@@ -2,10 +2,10 @@ from copy import copy
 
 import pytest
 
-from diofant import Dict, Indexed, IndexedBase, Rational, SparseMatrix, Symbol
+from diofant import (Dict, ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                     Indexed, IndexedBase, Matrix, Rational, SparseMatrix,
+                     Symbol)
 from diofant.abc import i, j, w, x, y, z
-from diofant.matrices import Matrix
-from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 
 
 __all__ = ()
@@ -327,7 +327,7 @@ def test_symbolic_indexing():
     for oi, oj in [(0, 0), (0, 1), (1, 0), (1, 1)]:
         assert Mij.subs({i: oi, j: oj}) == M[oi, oj]
         assert msij.subs({i: oi, j: oj}) == Ms[oi, oj]
-    A = IndexedBase("A", (0, 2))
+    A = IndexedBase('A', (0, 2))
     assert A[0, 0].subs({A: M}) == x
     assert A[i, j].subs({A: M}) == M[i, j]
     assert M[i, j].subs({M: A}) == A[i, j]

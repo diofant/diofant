@@ -1,33 +1,27 @@
-import re
 import sys
-import warnings
 
-import hypothesis
 import pytest
 
 import diofant
 
 
-collect_ignore = ["setup.py"]
+collect_ignore = ['setup.py']
 try:
     import matplotlib
     matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
-    collect_ignore.extend(["diofant/plotting/plot.py",
-                           "diofant/plotting/plot_implicit.py"])
-
-sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
-
-hypothesis.settings.register_profile("default",
-                                     hypothesis.settings(max_examples=100))
+    collect_ignore_glob = ['diofant/plotting/*.py']
 
 
 def pytest_report_header(config):
-    return """
-cache: %s
-ground types: %s
-""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
+    return f"""\nDiofant version: {diofant.__version__}
+cache: {diofant.core.cache.USE_CACHE}
+ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
+
+
+def pytest_configure(config):
+    config.addinivalue_line('markers', 'slow: marks tests as slow')
 
 
 @pytest.fixture(autouse=True, scope='module')
@@ -43,19 +37,17 @@ def set_displayhook():
 @pytest.fixture(autouse=True, scope='session')
 def enable_mpl_agg_backend():
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            import matplotlib as mpl
-        mpl.use('Agg')
+        import matplotlib
+        matplotlib.use('Agg')
     except ImportError:
         pass
 
 
 @pytest.fixture(autouse=True)
 def add_np(doctest_namespace):
-    for sym in (diofant.symbols('a b c d x y z t') +
+    for sym in (diofant.symbols('a:d t x:z') +
                 diofant.symbols('k m n', integer=True) +
-                diofant.symbols('f g h', cls=diofant.Function)):
+                diofant.symbols('f:h', cls=diofant.Function)):
         doctest_namespace[str(sym)] = sym
     for name in dir(diofant):
         doctest_namespace[name] = getattr(diofant, name)

@@ -92,11 +92,11 @@ def DiscreteUniform(name, items):
 
     >>> from diofant.stats import density
 
-    >>> X = DiscreteUniform('X', symbols('a b c')) # equally likely over a, b, c
+    >>> X = DiscreteUniform('X', (a, b, c))  # equally likely over a, b, c
     >>> density(X).dict
     {a: 1/3, b: 1/3, c: 1/3}
 
-    >>> Y = DiscreteUniform('Y', list(range(5))) # distribution over a range
+    >>> Y = DiscreteUniform('Y', list(range(5)))  # distribution over a range
     >>> density(Y).dict
     {0: 1/5, 1: 1/5, 2: 1/5, 3: 1/5, 4: 1/5}
 
@@ -134,7 +134,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                         "not %s" % (type(x)))
+                         f'not {type(x)}')
 
 
 def Die(name, sides=6):
@@ -145,16 +145,15 @@ def Die(name, sides=6):
 
     >>> from diofant.stats import density
 
-    >>> D6 = Die('D6', 6) # Six sided Die
+    >>> D6 = Die('D6', 6)  # Six sided Die
     >>> density(D6).dict
     {1: 1/6, 2: 1/6, 3: 1/6, 4: 1/6, 5: 1/6, 6: 1/6}
 
-    >>> D4 = Die('D4', 4) # Four sided Die
+    >>> D4 = Die('D4', 4)  # Four sided Die
     >>> density(D4).dict
     {1: 1/4, 2: 1/4, 3: 1/4, 4: 1/4}
 
     """
-
     return rv(name, DieDistribution, sides)
 
 
@@ -175,16 +174,15 @@ def Bernoulli(name, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
+    >>> X = Bernoulli('X', Rational(3, 4))  # 1-0 Bernoulli variable, probability = 3/4
     >>> density(X).dict
     {0: 1/4, 1: 3/4}
 
-    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails') # A fair coin toss
+    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails')  # A fair coin toss
     >>> density(X).dict
     {Heads: 1/2, Tails: 1/2}
 
     """
-
     return rv(name, BernoulliDistribution, p, succ, fail)
 
 
@@ -200,11 +198,11 @@ def Coin(name, p=Rational(1, 2)):
 
     >>> H, T = Symbol('H'), Symbol('T')
 
-    >>> C = Coin('C') # A fair coin toss
+    >>> C = Coin('C')  # A fair coin toss
     >>> density(C).dict
     {H: 1/2, T: 1/2}
 
-    >>> C2 = Coin('C2', Rational(3, 5)) # An unfair coin
+    >>> C2 = Coin('C2', Rational(3, 5))  # An unfair coin
     >>> density(C2).dict
     {H: 3/5, T: 2/5}
 
@@ -222,9 +220,9 @@ class BinomialDistribution(SingleFiniteDistribution):
         p_sym = sympify(p)
 
         if fuzzy_not(fuzzy_and((n_sym.is_integer, n_sym.is_nonnegative))):
-            raise ValueError("'n' must be positive integer. n = %s." % str(n))
+            raise ValueError(f"'n' must be positive integer. n = {n!s}.")
         elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
-            raise ValueError("'p' must be: 0 <= p <= 1 . p = %s" % str(p))
+            raise ValueError(f"'p' must be: 0 <= p <= 1 . p = {p!s}")
         else:
             return super().__new__(cls, *args)
 
@@ -252,12 +250,11 @@ def Binomial(name, n, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Binomial('X', 4, Rational(1, 2)) # Four "coin flips"
+    >>> X = Binomial('X', 4, Rational(1, 2))  # Four "coin flips"
     >>> density(X).dict
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
 
     """
-
     return rv(name, BinomialDistribution, n, p, succ, fail)
 
 
@@ -291,7 +288,7 @@ def Hypergeometric(name, N, m, n):
 
     >>> from diofant.stats import density
 
-    >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
+    >>> X = Hypergeometric('X', 10, 5, 3)  # 10 marbles, 5 white (success), 3 draws
     >>> density(X).dict
     {0: 1/12, 1: 5/12, 2: 5/12, 3: 1/12}
 

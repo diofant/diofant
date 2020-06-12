@@ -1,4 +1,4 @@
-"""Gosper's algorithm for hypergeometric summation. """
+"""Gosper's algorithm for hypergeometric summation."""
 
 from ..core import Dummy, Integer, nan, symbols
 from ..core.compatibility import is_sequence
@@ -109,7 +109,7 @@ def gosper_term(f, n):
 
     d = max(D)
 
-    coeffs = symbols('c:%s' % (d + 1), cls=Dummy)
+    coeffs = symbols(f'c:{d + 1}', cls=Dummy)
     domain = A.domain.inject(*coeffs)
 
     x = sum(c*n**i for i, c in enumerate(reversed(coeffs)))

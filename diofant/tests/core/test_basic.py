@@ -6,14 +6,11 @@ import collections
 
 import pytest
 
-from diofant import I, Lambda, cos, exp, gamma, sin
+from diofant import (Atom, Basic, Function, I, Integral, Lambda, cos,
+                     default_sort_key, exp, gamma, preorder_traversal, sin)
 from diofant.abc import w, x, y, z
-from diofant.core.basic import Atom, Basic, preorder_traversal
-from diofant.core.compatibility import default_sort_key
-from diofant.core.function import Function
 from diofant.core.singleton import S
 from diofant.core.singleton import SingletonWithManagedProperties as Singleton
-from diofant.integrals.integrals import Integral
 
 
 __all__ = ()
@@ -136,13 +133,13 @@ def test_Singleton():
     assert S.MyNewSingleton is MyNewSingleton()
     assert instantiated == 1
 
-    class MySingleton_sub(MyNewSingleton):
+    class MySingletonSub(MyNewSingleton):
         pass
     assert instantiated == 1
-    MySingleton_sub()
+    MySingletonSub()
     assert instantiated == 2
-    assert MySingleton_sub() is not MyNewSingleton()
-    assert MySingleton_sub() is MySingleton_sub()
+    assert MySingletonSub() is not MyNewSingleton()
+    assert MySingletonSub() is MySingletonSub()
 
 
 def test_preorder_traversal():

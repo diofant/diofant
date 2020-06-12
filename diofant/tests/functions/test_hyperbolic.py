@@ -407,10 +407,10 @@ def test_csch_series():
 
 
 def test_reciprocal():
-    class fake_sech(ReciprocalHyperbolicFunction):
+    class FakeSech(ReciprocalHyperbolicFunction):
         _reciprocal_of = cosh
 
-    assert fake_sech(-x) == 1/cosh(x)
+    assert FakeSech(-x) == 1/cosh(x)
 
 
 def test_sech():

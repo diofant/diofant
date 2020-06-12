@@ -55,7 +55,6 @@ def test_Tuple_concatenation():
 
 
 def test_Tuple_equality():
-    assert Tuple(1, 2) is not (1, 2)
     assert (Tuple(1, 2) == (1, 2)) is True
     assert (Tuple(1, 2) != (1, 2)) is False
     assert (Tuple(1, 2) == (1, 3)) is False
@@ -176,5 +175,6 @@ def test_sympyissue_5788():
         if o != Tuple:
             assert o(*args) == o(*reversed(args))
         pair = [o(*args), o(*reversed(args))]
-        assert sorted(pair) == sorted(reversed(pair))
+        rpair = reversed(pair)
+        assert sorted(pair) == sorted(rpair)
         assert set(o(*args))  # doesn't fail

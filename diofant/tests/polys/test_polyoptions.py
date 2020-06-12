@@ -1,19 +1,17 @@
-"""Tests for options manager for :class:`Poly` and public API functions. """
+"""Tests for options manager for :class:`Poly` and public API functions."""
 
 import pytest
 
-from diofant import I, Integer, Symbol, sqrt
+from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, ComplexField, GeneratorsError,
+                     I, Integer, OptionError, Options, RealField, Symbol, lex,
+                     sqrt)
 from diofant.abc import x, y, z
-from diofant.domains import CC, EX, FF, GF, QQ, RR, ZZ, ComplexField, RealField
-from diofant.polys.orderings import lex
-from diofant.polys.polyerrors import GeneratorsError, OptionError
 from diofant.polys.polyoptions import (All, Auto, BooleanOption, Domain,
                                        Expand, Extension, Field, Formal, Frac,
                                        Gaussian, Gen, Gens, Greedy, Include,
-                                       Method, Modulus, Options, OptionType,
-                                       Order, Polys, Sort, Split, Strict,
-                                       Symbols, Wrt, allowed_flags,
-                                       set_defaults)
+                                       Method, Modulus, OptionType, Order,
+                                       Polys, Sort, Split, Strict, Symbols,
+                                       Wrt, allowed_flags, set_defaults)
 
 
 __all__ = ()
@@ -191,7 +189,7 @@ def test_Domain_preprocess():
     assert Domain.preprocess(QQ) == QQ
     assert Domain.preprocess(EX) == EX
     assert Domain.preprocess(FF(2)) == FF(2)
-    assert Domain.preprocess(ZZ.poly_ring(x, y)) == ZZ.poly_ring(x, y)
+    assert Domain.preprocess(ZZ.inject(x, y)) == ZZ.inject(x, y)
 
     assert Domain.preprocess('Z') == ZZ
     assert Domain.preprocess('Q') == QQ
@@ -206,31 +204,31 @@ def test_Domain_preprocess():
 
     pytest.raises(OptionError, lambda: Domain.preprocess('Z[]'))
 
-    assert Domain.preprocess('Z[x]') == ZZ.poly_ring(x)
-    assert Domain.preprocess('Q[x]') == QQ.poly_ring(x)
+    assert Domain.preprocess('Z[x]') == ZZ.inject(x)
+    assert Domain.preprocess('Q[x]') == QQ.inject(x)
 
-    assert Domain.preprocess('ZZ[x]') == ZZ.poly_ring(x)
-    assert Domain.preprocess('QQ[x]') == QQ.poly_ring(x)
+    assert Domain.preprocess('ZZ[x]') == ZZ.inject(x)
+    assert Domain.preprocess('QQ[x]') == QQ.inject(x)
 
-    assert Domain.preprocess('Z[x,y]') == ZZ.poly_ring(x, y)
-    assert Domain.preprocess('Q[x,y]') == QQ.poly_ring(x, y)
+    assert Domain.preprocess('Z[x,y]') == ZZ.inject(x, y)
+    assert Domain.preprocess('Q[x,y]') == QQ.inject(x, y)
 
-    assert Domain.preprocess('ZZ[x,y]') == ZZ.poly_ring(x, y)
-    assert Domain.preprocess('QQ[x,y]') == QQ.poly_ring(x, y)
+    assert Domain.preprocess('ZZ[x,y]') == ZZ.inject(x, y)
+    assert Domain.preprocess('QQ[x,y]') == QQ.inject(x, y)
 
     pytest.raises(OptionError, lambda: Domain.preprocess('Z()'))
 
-    assert Domain.preprocess('Z(x)') == ZZ.frac_field(x)
-    assert Domain.preprocess('Q(x)') == QQ.frac_field(x)
+    assert Domain.preprocess('Z(x)') == ZZ.inject(x).field
+    assert Domain.preprocess('Q(x)') == QQ.inject(x).field
 
-    assert Domain.preprocess('ZZ(x)') == ZZ.frac_field(x)
-    assert Domain.preprocess('QQ(x)') == QQ.frac_field(x)
+    assert Domain.preprocess('ZZ(x)') == ZZ.inject(x).field
+    assert Domain.preprocess('QQ(x)') == QQ.inject(x).field
 
-    assert Domain.preprocess('Z(x,y)') == ZZ.frac_field(x, y)
-    assert Domain.preprocess('Q(x,y)') == QQ.frac_field(x, y)
+    assert Domain.preprocess('Z(x,y)') == ZZ.inject(x, y).field
+    assert Domain.preprocess('Q(x,y)') == QQ.inject(x, y).field
 
-    assert Domain.preprocess('ZZ(x,y)') == ZZ.frac_field(x, y)
-    assert Domain.preprocess('QQ(x,y)') == QQ.frac_field(x, y)
+    assert Domain.preprocess('ZZ(x,y)') == ZZ.inject(x, y).field
+    assert Domain.preprocess('QQ(x,y)') == QQ.inject(x, y).field
 
     assert Domain.preprocess('Q<I>') == QQ.algebraic_field(I)
     assert Domain.preprocess('QQ<I>') == QQ.algebraic_field(I)
@@ -252,7 +250,7 @@ def test_Domain_preprocess():
 
 def test_Domain_postprocess():
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (x, y),
-                                                               'domain': ZZ.poly_ring(y, z)}))
+                                                               'domain': ZZ.inject(y, z)}))
 
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (),
                                                                'domain': EX}))

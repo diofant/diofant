@@ -11,8 +11,7 @@ class LambdaPrinter(StrPrinter):
     """
 
     def _print_MatrixBase(self, expr):
-        return "%s(%s)" % (expr.__class__.__name__,
-                           self._print((expr.tolist())))
+        return f'{expr.__class__.__name__}({self._print(expr.tolist())})'
 
     _print_SparseMatrix = \
         _print_MutableSparseMatrix = \
@@ -64,10 +63,10 @@ class LambdaPrinter(StrPrinter):
         return ''.join(result)
 
     def _print_BooleanTrue(self, expr):
-        return "True"
+        return 'True'
 
     def _print_BooleanFalse(self, expr):
-        return "False"
+        return 'False'
 
     def _print_ITE(self, expr):
         result = [
@@ -78,7 +77,7 @@ class LambdaPrinter(StrPrinter):
         return ''.join(result)
 
     def _print_Dummy(self, expr):
-        return super()._print_Dummy(expr).replace("(", "_lpar_").replace(")", "_rpar_")
+        return super()._print_Dummy(expr).replace('(', '_lpar_').replace(')', '_rpar_')
 
 
 class NumPyPrinter(LambdaPrinter):
@@ -88,23 +87,23 @@ class NumPyPrinter(LambdaPrinter):
     """
 
     _default_settings = {
-        "order": "none",
-        "full_prec": "auto",
+        'order': 'none',
+        'full_prec': 'auto',
     }
 
     def _print_MatMul(self, expr):
         """Matrix multiplication printer"""
-        return '({0})'.format(').dot('.join(self._print(i) for i in expr.args))
+        return f"({').dot('.join(self._print(i) for i in expr.args)})"
 
     def _print_Piecewise(self, expr):
         """Piecewise function printer"""
-        exprs = '[{0}]'.format(','.join(self._print(arg.expr) for arg in expr.args))
-        conds = '[{0}]'.format(','.join(self._print(arg.cond) for arg in expr.args))
+        exprs = f"[{','.join(self._print(arg.expr) for arg in expr.args)}]"
+        conds = f"[{','.join(self._print(arg.cond) for arg in expr.args)}]"
         # If [default_value, True] is a (expr, cond) sequence in a Piecewise object
         #     it will behave the same as passing the 'default' kwarg to select()
         #     *as long as* it is the last element in expr.args.
         # If this is not the case, it may be triggered prematurely.
-        return 'select({0}, {1}, default=nan)'.format(conds, exprs)
+        return f'select({conds}, {exprs}, default=nan)'
 
     def _print_Relational(self, expr):
         """Relational printer"""
@@ -114,141 +113,62 @@ class NumPyPrinter(LambdaPrinter):
               '<=': 'less_equal',
               '>': 'greater',
               '>=': 'greater_equal'}
-        return '{op}({lhs}, {rhs})'.format(op=op[expr.rel_op],
-                                           lhs=self._print(expr.lhs),
-                                           rhs=self._print(expr.rhs))
+        return f'{op[expr.rel_op]}({self._print(expr.lhs)}, {self._print(expr.rhs)})'
 
     def _print_And(self, expr):
         """Logical And printer"""
         # We have to override LambdaPrinter because it uses Python 'and' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_and' to NUMPY_TRANSLATIONS.
-        return functools.reduce(lambda x, y: 'logical_and({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
+        return functools.reduce(lambda x, y: f'logical_and({self._print(x)}, {self._print(y)})', expr.args)
 
     def _print_Or(self, expr):
         """Logical Or printer"""
         # We have to override LambdaPrinter because it uses Python 'or' keyword.
         # If LambdaPrinter didn't define it, we could use StrPrinter's
         # version of the function and add 'logical_or' to NUMPY_TRANSLATIONS.
-        return functools.reduce(lambda x, y: 'logical_or({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
+        return functools.reduce(lambda x, y: f'logical_or({self._print(x)}, {self._print(y)})', expr.args)
 
     def _print_Xor(self, expr):
         """Logical Xor printer"""
-        return functools.reduce(lambda x, y: 'logical_xor({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
+        return functools.reduce(lambda x, y: f'logical_xor({self._print(x)}, {self._print(y)})', expr.args)
 
     def _print_Not(self, expr):
         """Logical Not printer"""
         # We have to override LambdaPrinter because it uses Python 'not' keyword.
         # If LambdaPrinter didn't define it, we would still have to define our
         #     own because StrPrinter doesn't define it.
-        return '{0}({1})'.format('logical_not', ','.join(self._print(i) for i in expr.args))
+        return f"{'logical_not'}({','.join(self._print(i) for i in expr.args)})"
 
     def _print_Min(self, expr):
-        return '{0}(({1}))'.format('amin', ','.join(self._print(i) for i in expr.args))
+        return f"{'amin'}(({','.join(self._print(i) for i in expr.args)}))"
 
     def _print_Max(self, expr):
-        return '{0}(({1}))'.format('amax', ','.join(self._print(i) for i in expr.args))
-
-
-# numexpr works by altering the string passed to numexpr.evaluate
-# rather than by populating a namespace.  Thus a special printer...
-
-
-class NumExprPrinter(LambdaPrinter):
-    # key, value pairs correspond to diofant name and numexpr name
-    # functions not appearing in this dict will raise a TypeError
-    _numexpr_functions = {
-        'sin': 'sin',
-        'cos': 'cos',
-        'tan': 'tan',
-        'asin': 'arcsin',
-        'acos': 'arccos',
-        'atan': 'arctan',
-        'atan2': 'arctan2',
-        'sinh': 'sinh',
-        'cosh': 'cosh',
-        'tanh': 'tanh',
-        'asinh': 'arcsinh',
-        'acosh': 'arccosh',
-        'atanh': 'arctanh',
-        'ln': 'log',
-        'log': 'log',
-        'exp': 'exp',
-        'sqrt': 'sqrt',
-        'Abs': 'abs',
-        'conjugate': 'conj',
-        'im': 'imag',
-        're': 'real',
-        'where': 'where',
-        'complex': 'complex',
-        'contains': 'contains',
-    }
-
-    def _print_ImaginaryUnit(self, expr):
-        return '1j'
-
-    def _print_seq(self, seq, delimiter=', '):
-        s = [self._print(item) for item in seq]
-        return delimiter.join(s)
-
-    def _print_Function(self, e):
-        func_name = e.func.__name__
-
-        nstr = self._numexpr_functions.get(func_name, None)
-        if nstr is None:
-            # check for implemented_function
-            if hasattr(e, '_imp_'):
-                return "(%s)" % self._print(e._imp_(*e.args))
-            else:
-                raise TypeError("numexpr does not support function '%s'" %
-                                func_name)
-        return "%s(%s)" % (nstr, self._print_seq(e.args))
-
-    def blacklisted(self, expr):
-        raise TypeError("numexpr cannot be used with %s" %
-                        expr.__class__.__name__)
-
-    # blacklist all Matrix printing
-    _print_SparseMatrix = \
-        _print_MutableSparseMatrix = \
-        _print_ImmutableSparseMatrix = \
-        _print_Matrix = \
-        _print_DenseMatrix = \
-        _print_MutableDenseMatrix = \
-        _print_ImmutableMatrix = \
-        _print_ImmutableDenseMatrix = \
-        _print_MatrixSymbol = \
-        blacklisted
-    # blacklist some python expressions
-    _print_list = \
-        _print_tuple = \
-        _print_Tuple = \
-        _print_dict = \
-        _print_Dict = \
-        blacklisted
-
-    def doprint(self, expr):
-        lstr = super().doprint(expr)
-        return "evaluate('%s')" % lstr
+        return f"{'amax'}(({','.join(self._print(i) for i in expr.args)}))"
 
 
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
-            return ("findroot(lambda %s: %s, %s, "
+            return ('findroot(lambda %s: %s, %s, '
                     "method='bisection')" % (self._print(expr.poly.gen),
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
         else:
-            raise NotImplementedError
+            return ('findroot(lambda %s: %s, mpc%s, '
+                    "method='secant')" % (self._print(expr.poly.gen),
+                                          self._print(expr.expr),
+                                          self._print(expr.interval.center)))
 
     def _print_Sum(self, expr):
-        return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
+        return 'nsum(lambda %s: %s, %s)' % (','.join([self._print(v) for v in expr.variables]),
                                             self._print(expr.function),
-                                            ",".join([self._print(v[1:]) for v in expr.limits]))
+                                            ','.join([self._print(v[1:]) for v in expr.limits]))
 
     def _print_Infinity(self, expr):
-        return "inf"
+        return 'inf'
 
     def _print_Float(self, e):
         # XXX: This does not handle setting mpmath.mp.dps. It is assumed that
@@ -257,10 +177,35 @@ class MpmathPrinter(LambdaPrinter):
 
         # Remove 'mpz' if gmpy is installed.
         args = str(tuple(map(int, e._mpf_)))
-        return 'mpf(%s)' % args
+        return f'mpf({args})'
 
     def _print_GoldenRatio(self, expr):
-        return "phi"
+        return 'phi'
+
+    def _print_Pow(self, expr):
+        if expr.exp.is_Rational:
+            n, d = expr.exp.as_numer_denom()
+            if d == 1:
+                if n >= 0:
+                    return f'{self._print(expr.base)}**{n}'
+                else:
+                    return f'power({self._print(expr.base)}, {n})'
+            else:
+                if n >= 2:
+                    return f'root({self._print(expr.base)}, {d})**{n}'
+                elif n == 1:
+                    return f'root({self._print(expr.base)}, {d})'
+                else:
+                    return f'power(root({self._print(expr.base)}, {d}), {n})'
+        else:
+            return super()._print_Pow(expr)
+
+    def _print_Rational(self, expr):
+        n, d = expr.numerator, expr.denominator
+        if d == 1:
+            return f'{n}'
+        else:
+            return f'{n}*power({d}, -1)'
 
 
 def lambdarepr(expr, **settings):

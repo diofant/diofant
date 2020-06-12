@@ -21,7 +21,7 @@ class AxisOrienter(Orienter):
         from .vector import Vector
 
         if not isinstance(axis, Vector):
-            raise TypeError("axis should be a Vector")
+            raise TypeError('axis should be a Vector')
         angle = sympify(angle)
 
         obj = super().__new__(cls, angle, axis)
@@ -56,7 +56,6 @@ class AxisOrienter(Orienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
     @cacheit
     def rotation_matrix(self, system):
@@ -72,7 +71,6 @@ class AxisOrienter(Orienter):
             is to be computed
 
         """
-
         from .functions import express
 
         axis = express(self.axis, system).normalize()
@@ -219,7 +217,6 @@ class BodyOrienter(ThreeAngleOrienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
 
 class SpaceOrienter(ThreeAngleOrienter):
@@ -278,7 +275,6 @@ class SpaceOrienter(ThreeAngleOrienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
 
 class QuaternionOrienter(Orienter):
@@ -347,7 +343,6 @@ class QuaternionOrienter(Orienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
     @property
     def q0(self):

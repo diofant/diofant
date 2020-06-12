@@ -6,6 +6,8 @@ from ..functions import cos, sin
 
 
 class MaximaHelpers:
+    """Class for maxima parsing helpers."""
+
     def maxima_expand(self):
         return self.expand()
 

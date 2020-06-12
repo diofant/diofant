@@ -10,7 +10,8 @@ The linear algebra module is designed to be as simple as possible. First, we
 import and declare our first ``Matrix`` object:
 
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
-    >>> M = Matrix([[1, 0, 0], [0, 0, 0]]); M
+    >>> M = Matrix([[1, 0, 0], [0, 0, 0]])
+    >>> M
     [1  0  0]
     [       ]
     [0  0  0]
@@ -60,7 +61,7 @@ is 1 on the diagonal and then use it to make the identity matrix:
 Finally let's use ``lambda`` to create a 1-line matrix with 1's in the even
 permutation entries:
 
-    >>> Matrix(3, 4, lambda i, j: 1 - (i + j)%2)
+    >>> Matrix(3, 4, lambda i, j: 1 - (i + j) % 2)
     [1  0  1  0]
     [          ]
     [0  1  0  1]
@@ -148,13 +149,13 @@ also (in keeping with 0-based indexing of Python) the first row/column is 0.
 You cannot access rows or columns that are not present unless they
 are in a slice:
 
-    >>> M[:, 10] # the 10-th column (not there)
+    >>> M[:, 10]  # the 10-th column (not there)
     Traceback (most recent call last):
     ...
     IndexError: Index out of range: a[[0, 10]]
-    >>> M[:, 10:11] # the 10-th column (if there)
+    >>> M[:, 10:11]  # the 10-th column (if there)
     []
-    >>> M[:, :10] # all columns up to the 10-th
+    >>> M[:, :10]  # all columns up to the 10-th
     [1  2  3]
     [       ]
     [4  5  6]
@@ -313,7 +314,8 @@ We are not restricted to having multiplication between two matrices:
 
 but we can also apply functions to our matrix entries using ``applyfunc()``. Here we'll declare a function that double any input number. Then we apply it to the 3x3 identity matrix:
 
-    >>> f = lambda x: 2*x
+    >>> def f(x):
+    ...     return 2*x
     >>> eye(3).applyfunc(f)
     [2  0  0]
     [       ]
@@ -336,7 +338,6 @@ One more useful matrix-wide entry application function is the substitution funct
     [0  4  0]
     [       ]
     [0  0  4]
-    >>> y = Symbol('y')
     >>> M.subs({x: y})
     [y  0  0]
     [       ]
@@ -372,19 +373,19 @@ decomposition as well:
     [0  1  0]
     [       ]
     [0  0  1]
-    >>> M2.inv(method="LU")
+    >>> M2.inv(method='LU')
     [1  0  0]
     [       ]
     [0  1  0]
     [       ]
     [0  0  1]
-    >>> M.inv(method="LU")
+    >>> M.inv(method='LU')
     [-3/14  1/14  1/2 ]
     [                 ]
     [-1/28  5/28  -1/4]
     [                 ]
     [ 3/7   -1/7   0  ]
-    >>> M * M.inv(method="LU")
+    >>> M * M.inv(method='LU')
     [1  0  0]
     [       ]
     [0  1  0]
@@ -475,7 +476,7 @@ Let's take a look at the vectors:
     [-1551/706],
     [ -423/706]])
     >>> for i in out2:
-    ...      print(i)
+    ...     print(i)
     ...
     Matrix([
     [  sqrt(38)/19],

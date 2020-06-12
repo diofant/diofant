@@ -5,8 +5,8 @@ __all__ = ()
 
 
 def test_equal():
-    b = Symbol("b")
-    a = Symbol("a")
+    b = Symbol('b')
+    a = Symbol('a')
     e1 = a + b
     e2 = 2*a*b
     e3 = a**3*b**2
@@ -18,13 +18,13 @@ def test_equal():
     assert e2 != e3
     assert not e2 == e3
 
-    x = Symbol("x")
+    x = Symbol('x')
     e1 = exp(x + 1/x)
-    y = Symbol("x")
+    y = Symbol('x')
     e2 = exp(y + 1/y)
     assert e1 == e2
     assert not e1 != e2
-    y = Symbol("y")
+    y = Symbol('y')
     e2 = exp(y + 1/y)
     assert not e1 == e2
     assert e1 != e2
@@ -39,7 +39,7 @@ def test_equal():
 
 
 def test_expevalbug():
-    x = Symbol("x")
+    x = Symbol('x')
     e1 = exp(1*x)
     e3 = exp(x)
     assert e1 == e3
@@ -50,7 +50,7 @@ def test_cmp_bug1():
         pass
 
     t = T()
-    x = Symbol("x")
+    x = Symbol('x')
 
     assert not (x == t)
     assert (x != t)

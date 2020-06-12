@@ -52,7 +52,7 @@ def flatten(iterable, levels=None, cls=None):
             levels -= 1
         else:
             raise ValueError(
-                "expected non-negative number of levels, got %s" % levels)
+                f'expected non-negative number of levels, got {levels}')
 
     if cls is None:
         def reducible(x):
@@ -80,67 +80,8 @@ def unflatten(iter, n=2):
 
     """
     if n < 1 or len(iter) % n:
-        raise ValueError('iter length is not a multiple of %i' % n)
+        raise ValueError(f'iter length is not a multiple of {n:d}')
     return list(zip(*(iter[i::n] for i in range(n))))
-
-
-def reshape(seq, how):
-    """Reshape the sequence according to the template in ``how``.
-
-    Examples
-    ========
-
-    >>> seq = list(range(1, 9))
-
-    >>> reshape(seq, [4]) # lists of 4
-    [[1, 2, 3, 4], [5, 6, 7, 8]]
-
-    >>> reshape(seq, (4,)) # tuples of 4
-    [(1, 2, 3, 4), (5, 6, 7, 8)]
-
-    >>> reshape(seq, (2, 2)) # tuples of 4
-    [(1, 2, 3, 4), (5, 6, 7, 8)]
-
-    >>> reshape(seq, (2, [2])) # (i, i, [i, i])
-    [(1, 2, [3, 4]), (5, 6, [7, 8])]
-
-    >>> reshape(seq, ((2,), [2])) # etc....
-    [((1, 2), [3, 4]), ((5, 6), [7, 8])]
-
-    >>> reshape(seq, (1, [2], 1))
-    [(1, [2, 3], 4), (5, [6, 7], 8)]
-
-    >>> reshape(tuple(seq), ([[1], 1, (2,)],))
-    (([[1], 2, (3, 4)],), ([[5], 6, (7, 8)],))
-
-    >>> reshape(tuple(seq), ([1], 1, (2,)))
-    (([1], 2, (3, 4)), ([5], 6, (7, 8)))
-
-    >>> reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)])
-    [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
-
-    """
-    m = sum(flatten(how))
-    n, rem = divmod(len(seq), m)
-    if m < 0 or rem:
-        raise ValueError('template must sum to positive number '
-                         'that divides the length of the sequence')
-    i = 0
-    container = type(how)
-    rv = [None]*n
-    for k in range(len(rv)):
-        rv[k] = []
-        for hi in how:
-            if type(hi) is int:
-                rv[k].extend(seq[i: i + hi])
-                i += hi
-            else:
-                n = sum(flatten(hi))
-                hi_type = type(hi)
-                rv[k].append(hi_type(reshape(seq[i: i + n], hi)[0]))
-                i += n
-        rv[k] = container(rv[k])
-    return type(seq)(rv)
 
 
 def group(seq, multiple=True):
@@ -260,65 +201,6 @@ def postorder_traversal(node, keys=None):
             for subtree in postorder_traversal(item, keys):
                 yield subtree
     yield node
-
-
-def ibin(n, bits=0, str=False):
-    """Return a list of length ``bits`` corresponding to the binary value
-    of ``n`` with small bits to the right (last). If bits is omitted, the
-    length will be the number required to represent ``n``. If the bits are
-    desired in reversed order, use the [::-1] slice of the returned list.
-
-    If a sequence of all bits-length lists starting from [0, 0,..., 0]
-    through [1, 1, ..., 1] are desired, pass a non-integer for bits, e.g.
-    'all'.
-
-    If the bit *string* is desired pass ``str=True``.
-
-    Examples
-    ========
-
-    >>> ibin(2)
-    [1, 0]
-    >>> ibin(2, 4)
-    [0, 0, 1, 0]
-    >>> ibin(2, 4)[::-1]
-    [0, 1, 0, 0]
-
-    If all lists corresponding to 0 to 2**n - 1, pass a non-integer
-    for bits:
-
-    >>> bits = 2
-    >>> for i in ibin(2, 'all'):
-    ...     print(i)
-    (0, 0)
-    (0, 1)
-    (1, 0)
-    (1, 1)
-
-    If a bit string is desired of a given length, use str=True:
-
-    >>> n = 123
-    >>> bits = 10
-    >>> ibin(n, bits, str=True)
-    '0001111011'
-    >>> ibin(n, bits, str=True)[::-1]  # small bits left
-    '1101111000'
-    >>> list(ibin(3, 'all', str=True))
-    ['000', '001', '010', '011', '100', '101', '110', '111']
-
-    """
-    if not str:
-        try:
-            bits = as_int(bits)
-            return [1 if i == "1" else 0 for i in bin(n)[2:].rjust(bits, "0")]
-        except ValueError:
-            return variations(list(range(2)), n, repetition=True)
-    else:
-        try:
-            bits = as_int(bits)
-            return bin(n)[2:].rjust(bits, "0")
-        except ValueError:
-            return (bin(i)[2:].rjust(n, "0") for i in range(2**n))
 
 
 def variations(seq, n, repetition=False):
@@ -474,7 +356,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
         cls = Symbol
 
     while True:
-        name = '%s%s' % (prefix, start)
+        name = f'{prefix}{start}'
         s = cls(name, *args, **assumptions)
         if s not in exclude:
             yield s
@@ -490,7 +372,7 @@ def capture(func):
     >>> def foo():
     ...     print('hello world!')
     ...
-    >>> 'hello' in capture(foo) # foo, not foo()
+    >>> 'hello' in capture(foo)  # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\n-\nx\n'
@@ -534,9 +416,9 @@ def sift(seq, keyfunc):
 
     Sometimes you won't know how many keys you will get:
 
-    >>> sift([sqrt(x), exp(x), (y**x)**2],
-    ...      lambda x: x.as_base_exp()[0]) == defaultdict(list,
-    ...      {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]})
+    >>> (sift([sqrt(x), exp(x), (y**x)**2],
+    ...       lambda x: x.as_base_exp()[0]) ==
+    ...  defaultdict(list, {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]}))
     True
 
     If you need to sort the sifted items it might be better to use
@@ -553,16 +435,6 @@ def sift(seq, keyfunc):
     for i in seq:
         m[keyfunc(i)].append(i)
     return m
-
-
-def dict_merge(*dicts):
-    """Merge dictionaries into a single dictionary."""
-    merged = {}
-
-    for dict in dicts:
-        merged.update(dict)
-
-    return merged
 
 
 def common_prefix(*seqs):
@@ -604,7 +476,6 @@ def common_suffix(*seqs):
     [3]
 
     """
-
     if any(not s for s in seqs):
         return []
     elif len(seqs) == 1:
@@ -628,7 +499,7 @@ def prefixes(seq):
     Examples
     ========
 
-    >>> list(prefixes([1,2,3,4]))
+    >>> list(prefixes([1, 2, 3, 4]))
     [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
 
     """
@@ -645,7 +516,7 @@ def postfixes(seq):
     Examples
     ========
 
-    >>> list(postfixes([1,2,3,4]))
+    >>> list(postfixes([1, 2, 3, 4]))
     [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
 
     """
@@ -763,7 +634,7 @@ def topological_sort(graph, key=None):
                         S.append(v)
 
     if E:
-        raise ValueError("cycle detected")
+        raise ValueError('cycle detected')
     else:
         return L
 
@@ -814,10 +685,11 @@ def multiset_combinations(m, n, g=None):
     ========
 
     >>> from itertools import combinations
-    >>> [''.join(i) for i in  multiset_combinations('baby', 3)]
+    >>> [''.join(i) for i in multiset_combinations('baby', 3)]
     ['abb', 'aby', 'bby']
 
-    >>> def count(f, s): return len(list(f(s, 3)))
+    >>> def count(f, s):
+    ...     return len(list(f(s, 3)))
 
     The number of combinations depends on the number of letters; the
     number of unique combinations depends on how the letters are
@@ -888,7 +760,6 @@ def multiset_permutations(m, size=None, g=None):
     if not do or size is not None and (size > SUM or size < 1):
         if size < 1:
             yield []
-        return
     elif size == 1:
         for k, v in do:
             yield [k]
@@ -904,8 +775,7 @@ def multiset_permutations(m, size=None, g=None):
         for i, (k, v) in enumerate(do):
             do[i][1] -= 1
             for j in multiset_permutations(None, size - 1, do):
-                if j:
-                    yield [k] + j
+                yield [k] + j
             do[i][1] += 1
 
 
@@ -957,7 +827,7 @@ def _set_partitions(n):
     ========
 
     >>> for m, q in _set_partitions(3):
-    ...     print('%s %s %s' % (m, q, _partition('abc', q, m)))
+    ...     print(f'{m} {q} { _partition("abc", q, m)}')
     1 [0, 0, 0] [['a', 'b', 'c']]
     2 [0, 0, 1] [['a', 'b'], ['c']]
     2 [0, 1, 0] [['a', 'c'], ['b']]
@@ -1042,15 +912,15 @@ def multiset_partitions(multiset, m=None):
     The number of partitions of length k from a set of size n is given by the
     Stirling Number of the 2nd kind:
 
-    >>> def S2(n, k):
+    >>> def s2(n, k):
     ...     from diofant import Dummy, binomial, factorial, Sum
     ...     if k > n:
     ...         return 0
     ...     j = Dummy()
-    ...     arg = (-1)**(k-j)*j**n*binomial(k,j)
-    ...     return 1/factorial(k)*Sum(arg,(j,0,k)).doit()
+    ...     arg = (-1)**(k-j)*j**n*binomial(k, j)
+    ...     return 1/factorial(k)*Sum(arg, (j, 0, k)).doit()
     ...
-    >>> S2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
+    >>> s2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
     True
 
     These comments on counting apply to *sets*, not multisets.
@@ -1102,7 +972,6 @@ def multiset_partitions(multiset, m=None):
     diofant.functions.combinatorial.numbers.nT
 
     """
-
     # This function looks at the supplied input and dispatches to
     # several special-case routines as they apply.
     if type(multiset) is int:
@@ -1234,7 +1103,7 @@ def partitions(n, m=None, k=None, size=False):
     This is for speed:  generating each partition goes quickly,
     taking constant time, independent of n.
 
-    >>> [p for p in partitions(6, k=2)]
+    >>> list(partitions(6, k=2))
     [{1: 6}, {1: 6}, {1: 6}, {1: 6}]
 
     If you want to build a list of the returned dictionaries then
@@ -1319,6 +1188,7 @@ def partitions(n, m=None, k=None, size=False):
             if need > room:
                 if not keys:
                     return
+                q  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             ms[i] = q
@@ -1377,7 +1247,7 @@ def ordered_partitions(n, m=None, sort=True):
     once for speed reasons so you will not see the correct partitions
     unless you make a copy of each as it is generated:
 
-    >>> [p for p in ordered_partitions(7, 3)]
+    >>> list(ordered_partitions(7, 3))
     [[1, 1, 1], [1, 1, 1], [1, 1, 1], [2, 2, 2]]
     >>> [list(p) for p in ordered_partitions(7, 3)]
     [[1, 1, 5], [1, 2, 4], [1, 3, 3], [2, 2, 3]]
@@ -1536,7 +1406,7 @@ def has_dups(seq):
     True
     >>> has_dups(range(3))
     False
-    >>> all(has_dups(c) is False for c in (set(), Set(), dict(), Dict()))
+    >>> all(has_dups(c) is False for c in (set(), Set(), {}, Dict()))
     True
 
     """
@@ -1608,108 +1478,6 @@ def uniq(seq, result=None):
                 yield s
 
 
-def generate_bell(n):
-    """Return permutations of [0, 1, ..., n - 1] such that each permutation
-    differs from the last by the exchange of a single pair of neighbors.
-    The ``n!`` permutations are returned as an iterator. In order to obtain
-    the next permutation from a random starting permutation, use the
-    ``next_trotterjohnson`` method of the Permutation class (which generates
-    the same sequence in a different manner).
-
-    Examples
-    ========
-
-    >>> from itertools import permutations
-
-    This is the sort of permutation used in the ringing of physical bells,
-    and does not produce permutations in lexicographical order. Rather, the
-    permutations differ from each other by exactly one inversion, and the
-    position at which the swapping occurs varies periodically in a simple
-    fashion. Consider the first few permutations of 4 elements generated
-    by ``permutations`` and ``generate_bell``:
-
-    >>> list(permutations(range(4)))[:5]
-    [(0, 1, 2, 3), (0, 1, 3, 2), (0, 2, 1, 3), (0, 2, 3, 1), (0, 3, 1, 2)]
-    >>> list(generate_bell(4))[:5]
-    [(0, 1, 2, 3), (0, 1, 3, 2), (0, 3, 1, 2), (3, 0, 1, 2), (3, 0, 2, 1)]
-
-    Notice how the 2nd and 3rd lexicographical permutations have 3 elements
-    out of place whereas each "bell" permutation always has only two
-    elements out of place relative to the previous permutation (and so the
-    signature (+/-1) of a permutation is opposite of the signature of the
-    previous permutation).
-
-    How the position of inversion varies across the elements can be seen
-    by tracing out where the largest number appears in the permutations:
-
-    >>> m = zeros(4, 24)
-    >>> for i, p in enumerate(generate_bell(4)):
-    ...     m[:, i] = Matrix([j - 3 for j in list(p)])  # make largest zero
-    >>> m.print_nonzero('X')
-    [XXX  XXXXXX  XXXXXX  XXX]
-    [XX XX XXXX XX XXXX XX XX]
-    [X XXXX XX XXXX XX XXXX X]
-    [ XXXXXX  XXXXXX  XXXXXX ]
-
-    See Also
-    ========
-
-    diofant.combinatorics.permutations.Permutation.next_trotterjohnson
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Method_ringing
-    * https://stackoverflow.com/questions/4856615/recursive-permutation/4857018
-    * https://web.archive.org/web/20160324133718/http://programminggeeks.com/bell-algorithm-for-permutation/
-    * https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
-    * Generating involutions, derangements, and relatives by ECO
-      Vincent Vajnovszki, DMTCS vol 1 issue 12, 2010
-
-    """
-    n = as_int(n)
-    if n < 1:
-        raise ValueError('n must be a positive integer')
-    if n == 1:
-        yield 0,
-    elif n == 2:
-        yield (0, 1)
-        yield (1, 0)
-    elif n == 3:
-        for li in [(0, 1, 2), (0, 2, 1), (2, 0, 1), (2, 1, 0), (1, 2, 0), (1, 0, 2)]:
-            yield li
-    else:
-        m = n - 1
-        op = [0] + [-1]*m
-        l = list(range(n))
-        while True:
-            yield tuple(l)
-            # find biggest element with op
-            big = None, -1  # idx, value
-            for i in range(n):
-                if op[i] and l[i] > big[1]:
-                    big = i, l[i]
-            i, _ = big
-            if i is None:
-                break  # there are no ops left
-            # swap it with neighbor in the indicated direction
-            j = i + op[i]
-            l[i], l[j] = l[j], l[i]
-            op[i], op[j] = op[j], op[i]
-            # if it landed at the end or if the neighbor in the same
-            # direction is bigger then turn off op
-            if j == 0 or j == m or l[j + op[j]] > l[j]:
-                op[j] = 0
-            # any element bigger to the left gets +1 op
-            for i in range(j):
-                if l[i] > l[j]:
-                    op[i] = 1
-            # any element bigger to the right gets -1 op
-            for i in range(j + 1, n):
-                if l[i] > l[j]:
-                    op[i] = -1
-
-
 def generate_involutions(n):
     """
     Generates involutions.
@@ -1726,7 +1494,7 @@ def generate_involutions(n):
     References
     ==========
 
-    * http://mathworld.wolfram.com/PermutationInvolution.html
+    * https://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1817,7 +1585,7 @@ def necklaces(n, k, free=False):
     References
     ==========
 
-    http://mathworld.wolfram.com/Necklace.html
+    https://mathworld.wolfram.com/Necklace.html
 
     """
     return uniq(minlex(i, directed=not free) for i in
@@ -1827,50 +1595,6 @@ def necklaces(n, k, free=False):
 def bracelets(n, k):
     """Wrapper to necklaces to return a free (unrestricted) necklace."""
     return necklaces(n, k, free=True)
-
-
-def generate_oriented_forest(n):
-    """
-    This algorithm generates oriented forests.
-
-    An oriented graph is a directed graph having no symmetric pair of directed
-    edges. A forest is an acyclic graph, i.e., it has no cycles. A forest can
-    also be described as a disjoint union of trees, which are graphs in which
-    any two vertices are connected by exactly one simple path.
-
-    References
-    ==========
-
-    * T. Beyer and S.M. Hedetniemi: constant time generation of
-      rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
-    * https://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
-
-    Examples
-    ========
-
-    >>> list(generate_oriented_forest(4))
-    [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0],
-     [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
-
-    """
-    P = list(range(-1, n))
-    while True:
-        yield P[1:]
-        if P[n] > 0:
-            P[n] = P[P[n]]
-        else:
-            for p in range(n - 1, 0, -1):
-                if P[p] != 0:
-                    target = P[p] - 1
-                    for q in range(p - 1, 0, -1):
-                        if P[q] == target:
-                            break
-                    offset = p - q
-                    for i in range(p, n + 1):
-                        P[i] = P[i - offset]
-                    break
-            else:
-                break
 
 
 def minlex(seq, directed=True, is_set=False, small=None):
@@ -1979,139 +1703,12 @@ def runs(seq, op=gt):
         else:
             cycles.append(run)
             run = [ei]
-    if run:
-        cycles.append(run)
+    cycles.append(run)
     return cycles
 
 
-def kbins(l, k, ordered=None):
-    """
-    Return sequence ``l`` partitioned into ``k`` bins.
-
-    Examples
-    ========
-
-    The default is to give the items in the same order, but grouped
-    into k partitions without any reordering:
-
-    >>> for p in kbins(list(range(5)), 2):
-    ...     print(p)
-    ...
-    [[0], [1, 2, 3, 4]]
-    [[0, 1], [2, 3, 4]]
-    [[0, 1, 2], [3, 4]]
-    [[0, 1, 2, 3], [4]]
-
-    The ``ordered`` flag which is either None (to give the simple partition
-    of the the elements) or is a 2 digit integer indicating whether the order of
-    the bins and the order of the items in the bins matters. Given::
-
-        A = [[0], [1, 2]]
-        B = [[1, 2], [0]]
-        C = [[2, 1], [0]]
-        D = [[0], [2, 1]]
-
-    the following values for ``ordered`` have the shown meanings::
-
-        00 means A == B == C == D
-        01 means A == B
-        10 means A == D
-        11 means A == A
-
-    >>> for ordered in [None, 0, 1, 10, 11]:
-    ...     print('ordered = %s' % ordered)
-    ...     for p in kbins(list(range(3)), 2, ordered=ordered):
-    ...         print('     %s' % p)
-    ...
-    ordered = None
-         [[0], [1, 2]]
-         [[0, 1], [2]]
-    ordered = 0
-         [[0, 1], [2]]
-         [[0, 2], [1]]
-         [[0], [1, 2]]
-    ordered = 1
-         [[0], [1, 2]]
-         [[0], [2, 1]]
-         [[1], [0, 2]]
-         [[1], [2, 0]]
-         [[2], [0, 1]]
-         [[2], [1, 0]]
-    ordered = 10
-         [[0, 1], [2]]
-         [[2], [0, 1]]
-         [[0, 2], [1]]
-         [[1], [0, 2]]
-         [[0], [1, 2]]
-         [[1, 2], [0]]
-    ordered = 11
-         [[0], [1, 2]]
-         [[0, 1], [2]]
-         [[0], [2, 1]]
-         [[0, 2], [1]]
-         [[1], [0, 2]]
-         [[1, 0], [2]]
-         [[1], [2, 0]]
-         [[1, 2], [0]]
-         [[2], [0, 1]]
-         [[2, 0], [1]]
-         [[2], [1, 0]]
-         [[2, 1], [0]]
-
-    See Also
-    ========
-
-    partitions, multiset_partitions
-
-    """
-    def partition(lista, bins):
-        #  EnricoGiampieri's partition generator from
-        #  https://stackoverflow.com/questions/13131491/
-        #  partition-n-items-into-k-bins-in-python-lazily
-        if len(lista) == 1 or bins == 1:
-            yield [lista]
-        elif len(lista) > 1 and bins > 1:
-            for i in range(1, len(lista)):
-                for part in partition(lista[i:], bins - 1):
-                    if len([lista[:i]] + part) == bins:
-                        yield [lista[:i]] + part
-
-    if ordered is None:
-        for p in partition(l, k):
-            yield p
-    elif ordered == 11:
-        for pl in multiset_permutations(l):
-            pl = list(pl)
-            for p in partition(pl, k):
-                yield p
-    elif ordered == 00:
-        for p in multiset_partitions(l, k):
-            yield p
-    elif ordered == 10:
-        for p in multiset_partitions(l, k):
-            for perm in permutations(p):
-                yield list(perm)
-    elif ordered == 1:
-        for kgot, p in partitions(len(l), k, size=True):
-            if kgot != k:
-                continue
-            for li in multiset_permutations(l):
-                rv = []
-                i = j = 0
-                li = list(li)
-                for size, multiplicity in sorted(p.items()):
-                    for m in range(multiplicity):
-                        j = i + size
-                        rv.append(li[i: j])
-                        i = j
-                yield rv
-    else:
-        raise ValueError('ordered must be one of 00, 01, '
-                         '10 or 11, not %s' % ordered)
-
-
 def cantor_product(*args):
-    """ Breadth-first (diagonal) cartesian product of iterables.
+    """Breadth-first (diagonal) cartesian product of iterables.
 
     Each iterable is advanced in turn in a round-robin fashion. As usual with
     breadth-first, this comes at the cost of memory consumption.

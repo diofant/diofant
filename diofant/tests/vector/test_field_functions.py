@@ -1,17 +1,10 @@
 import pytest
 
-from diofant import cos, sin
-from diofant.core.function import Derivative
-from diofant.core.numbers import Integer
-from diofant.core.symbol import symbols
-from diofant.simplify import simplify
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.deloperator import Del
-from diofant.vector.functions import (curl, divergence, gradient,
-                                      is_conservative, is_solenoidal,
-                                      scalar_potential,
-                                      scalar_potential_difference)
-from diofant.vector.vector import Vector
+from diofant import Derivative, Integer, cos, simplify, sin
+from diofant.abc import a, q
+from diofant.vector import (CoordSysCartesian, Del, Vector, curl, divergence,
+                            gradient, is_conservative, is_solenoidal,
+                            scalar_potential, scalar_potential_difference)
 
 
 __all__ = ()
@@ -20,7 +13,6 @@ C = CoordSysCartesian('C')
 i, j, k = C.base_vectors()
 x, y, z = C.base_scalars()
 delop = C.delop
-a, b, c, q = symbols('a b c q')
 
 
 def test_del_operator():
@@ -118,7 +110,6 @@ def test_product_rules():
     * https://en.wikipedia.org/wiki/Del
 
     """
-
     # Define the scalar and vector functions
     f = 2*x*y*z
     g = x*y + y*z + z*x

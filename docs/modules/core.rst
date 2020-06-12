@@ -488,18 +488,6 @@ compatibility
 .. automodule:: diofant.core.compatibility
    :members:
 
-iterable
-^^^^^^^^
-.. autofunction:: iterable
-
-is_sequence
-^^^^^^^^^^^
-.. autofunction:: is_sequence
-
-as_int
-^^^^^^
-.. autofunction:: as_int
-
 exprtools
 ---------
 .. module:: diofant.core.exprtools

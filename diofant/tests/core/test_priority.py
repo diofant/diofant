@@ -69,7 +69,7 @@ class Lower2(Higher):
 
 
 class Higher2:
-    result = "high"
+    result = 'high'
 
 
 def test_mul():

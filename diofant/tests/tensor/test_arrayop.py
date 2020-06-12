@@ -2,13 +2,12 @@ import random
 
 import pytest
 
-from diofant import (Derivative, Permutation, adjoint, conjugate, cos, exp,
-                     log, sin, symbols, transpose)
+from diofant import (Array, Derivative, Permutation, adjoint, conjugate, cos,
+                     derive_by_array, exp, log, permutedims, sin, symbols,
+                     tensorcontraction, tensorproduct, transpose)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          s, t, u, v, w, x, y, z)
 from diofant.combinatorics.permutations import _af_invert
-from diofant.tensor import (Array, derive_by_array, permutedims,
-                            tensorcontraction, tensorproduct)
 
 
 __all__ = ()

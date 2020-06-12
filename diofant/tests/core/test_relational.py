@@ -3,16 +3,14 @@ from operator import ge, gt, le, lt
 
 import pytest
 
-from diofant import (And, Float, Function, I, Implies, Integer, Not, Or,
-                     Rational, Symbol, Wild, Xor, ceiling, false, floor, nan,
-                     oo, pi, simplify, sqrt, true, zoo)
+from diofant import (And, Eq, Equality, FiniteSet, Float, Function, Ge,
+                     GreaterThan, Gt, I, Implies, Integer, Interval, Le,
+                     LessThan, Lt, Ne, Not, Or, Rational, Rel, Relational,
+                     StrictGreaterThan, StrictLessThan, Symbol, Unequality,
+                     Wild, Xor, ceiling, false, floor, nan, oo, pi, simplify,
+                     sqrt, true, zoo)
 from diofant.abc import t, w, x, y, z
-from diofant.core.relational import (Eq, Equality, Ge, GreaterThan, Gt, Le,
-                                     LessThan, Lt, Ne, Rel, Relational,
-                                     StrictGreaterThan, StrictLessThan,
-                                     Unequality)
 from diofant.core.relational import _Inequality as Inequality
-from diofant.sets.sets import FiniteSet, Interval
 
 
 __all__ = ()
@@ -519,7 +517,7 @@ def test_inequalities_symbol_name_same_complex():
 def test_inequalities_cant_sympify_other():
     # see issue sympy/sympy#7833
 
-    bar = "foo"
+    bar = 'foo'
 
     for a in (x, Integer(0), Rational(1, 3), pi, I, zoo, oo, -oo, nan):
         for op in (lt, gt, le, ge):

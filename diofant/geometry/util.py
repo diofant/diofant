@@ -60,7 +60,7 @@ def idiff(eq, y, x, n=1):
     elif isinstance(y, (Dummy, Symbol)):
         dep = {y}
     else:
-        raise ValueError("expecting x-dependent symbol(s) but got: %s" % y)
+        raise ValueError(f'expecting x-dependent symbol(s) but got: {y}')
 
     f = {s: Function(s.name)(x) for s in eq.free_symbols if s != x and s in dep}
     dydx = Function(y.name)(x).diff(x)
@@ -89,9 +89,9 @@ def _symbol(s, matching_symbol=None):
     >>> _.is_extended_real is None
     True
     >>> arb = Symbol('foo')
-    >>> _symbol('arb', arb) # arb's name is foo so foo will not be returned
+    >>> _symbol('arb', arb)  # arb's name is foo so foo will not be returned
     arb
-    >>> _symbol('foo', arb) # now it will
+    >>> _symbol('foo', arb)  # now it will
     foo
 
     NB: the symbol here may not be the same as a symbol with the same
@@ -306,7 +306,7 @@ def convex_hull(*args):
 
 
 def are_coplanar(*e):
-    """ Returns True if the given entities are coplanar otherwise False
+    """Returns True if the given entities are coplanar otherwise False.
 
     Parameters
     ==========
@@ -420,20 +420,7 @@ def are_similar(e1, e2):
     False
 
     """
-    from .exceptions import GeometryError
-
-    if e1 == e2:
-        return True
-    try:
-        return e1.is_similar(e2)
-    except AttributeError:
-        try:
-            return e2.is_similar(e1)
-        except AttributeError:
-            n1 = e1.__class__.__name__
-            n2 = e2.__class__.__name__
-            raise GeometryError(
-                "Cannot test similarity between %s and %s" % (n1, n2))
+    return e1.is_similar(e2)
 
 
 def centroid(*args):
@@ -472,7 +459,7 @@ def centroid(*args):
         >>> q = Polygon((1, 0), (3, 0), (3, 1), (1, 1))
         >>> centroid(p, q)
         Point2D(3/2, 1/2)
-        >>> centroid(p, p, p, q) # centroid x-coord shifts left
+        >>> centroid(p, p, p, q)  # centroid x-coord shifts left
         Point2D(11/10, 1/2)
 
     Stacking the squares vertically above and below p has the same
@@ -482,7 +469,6 @@ def centroid(*args):
         Point2D(11/10, 1/2)
 
     """
-
     from .polygon import Polygon, Segment
     from .point import Point
     if args:

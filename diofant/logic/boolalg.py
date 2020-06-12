@@ -342,7 +342,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> And(x<2, x>-2).as_set()
+        >>> And(x < 2, x > -2).as_set()
         (-2, 2)
 
         """
@@ -350,9 +350,9 @@ class And(LatticeOp, BooleanFunction):
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, And.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, And.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Or(LatticeOp, BooleanFunction):
@@ -410,7 +410,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> Or(x>2, x<-2).as_set()
+        >>> Or(x > 2, x < -2).as_set()
         (-oo, -2) U (2, oo)
 
         """
@@ -418,9 +418,9 @@ class Or(LatticeOp, BooleanFunction):
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, Or.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Or.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Not(BooleanFunction):
@@ -497,16 +497,16 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> Not(x>0, evaluate=False).as_set()
+        >>> Not(x > 0, evaluate=False).as_set()
         (-oo, 0]
 
         """
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
         else:
-            raise NotImplementedError("Sorry, Not.as_set has not yet been"
-                                      " implemented for mutivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Not.as_set has not yet been'
+                                      ' implemented for mutivariate'
+                                      ' expressions')
 
     def to_nnf(self, simplify=True):
         if is_literal(self):
@@ -541,7 +541,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError("Illegal operator %s in expression" % func)
+        raise ValueError(f'Illegal operator {func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -755,9 +755,8 @@ class Implies(BooleanFunction):
                     newargs.append(x)
             A, B = newargs
         except ValueError:
-            raise ValueError(
-                "%d operand(s) used for an Implies "
-                "(pairs are required): %s" % (len(args), str(args)))
+            raise ValueError(f'{len(args)} operand(s) used for an Implies '
+                             f'(pairs are required): {args!s}')
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -878,7 +877,7 @@ class ITE(BooleanFunction):
         try:
             a, b, c = args
         except ValueError:
-            raise ValueError("ITE expects exactly 3 arguments")
+            raise ValueError('ITE expects exactly 3 arguments')
         if a == true:
             return b
         elif a == false:
@@ -900,7 +899,7 @@ class ITE(BooleanFunction):
     # the diff method below is copied from Expr class
     def diff(self, *symbols, **assumptions):
         new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault("evaluate", True)
+        assumptions.setdefault('evaluate', True)
         return Derivative(self, *new_symbols, **assumptions)
 
 
@@ -980,10 +979,10 @@ def _distribute(info):
             return info[0]
         rest = info[2](*[a for a in info[0].args if a is not conj])
         return info[1](*list(map(_distribute,
-                                 [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
+                                 ((info[2](c, rest), info[1], info[2]) for c in conj.args))))
     elif isinstance(info[0], info[1]):
         return info[1](*list(map(_distribute,
-                                 [(x, info[1], info[2]) for x in info[0].args])))
+                                 ((x, info[1], info[2]) for x in info[0].args))))
     else:
         return info[0]
 
@@ -1092,7 +1091,6 @@ def is_nnf(expr, simplified=True):
     False
 
     """
-
     expr = sympify(expr)
     if is_literal(expr):
         return True
@@ -1253,7 +1251,6 @@ def to_int_repr(clauses, symbols):
     [{1, 2}, {2}]
 
     """
-
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
@@ -1414,7 +1411,7 @@ def SOPform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     old = None
     new = minterms + dontcares
@@ -1463,7 +1460,7 @@ def POSform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     maxterms = []
     for t in product([0, 1], repeat=len(variables)):
@@ -1521,7 +1518,6 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-
     if form == 'cnf' or form == 'dnf' or form is None:
         expr = sympify(expr)
         if not isinstance(expr, BooleanFunction):
@@ -1541,7 +1537,7 @@ def simplify_logic(expr, form=None, deep=True):
         elif form == 'cnf' or form is None:  # pragma: no branch
             return POSform(variables, truthtable)
     else:
-        raise ValueError("form can be cnf or dnf only")
+        raise ValueError('form can be cnf or dnf only')
 
 
 def _finger(eq):
@@ -1610,9 +1606,9 @@ def bool_map(bool1, bool2):
     The results are not necessarily unique, but they are canonical. Here,
     ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
+    >>> eq1 = Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq, eq2)
+    >>> bool_map(eq1, eq2)
     ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs({c: x}))
@@ -1634,7 +1630,6 @@ def bool_map(bool1, bool2):
         a workaround that is valid for simplified boolean expressions.
 
         """
-
         # do some quick checks
         if function1.__class__ != function2.__class__:
             return

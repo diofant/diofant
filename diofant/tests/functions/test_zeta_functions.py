@@ -3,6 +3,7 @@ import pytest
 from diofant import (Derivative, Float, I, O, PoleError, Rational, Symbol,
                      dirichlet_eta, exp, exp_polar, expand_func, lerchphi, log,
                      nan, oo, pi, polar_lift, polylog, sqrt, zeta, zoo)
+from diofant.abc import a, s, x, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.zeta_functions import _zetas
 from diofant.utilities.randtest import random_complex_number as randcplx
@@ -12,11 +13,7 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 __all__ = ()
 
-x = Symbol('x')
-a = Symbol('a')
 b = Symbol('b', negative=True)
-z = Symbol('z')
-s = Symbol('s')
 
 
 def test_zeta_eval():
@@ -69,7 +66,7 @@ def test_zeta_eval():
     assert zeta(0, -2) == Rational(5, 2)
 
     assert zeta(
-        3).evalf(20).epsilon_eq(Float("1.2020569031595942854", 20), 1e-19)
+        3).evalf(20).epsilon_eq(Float('1.2020569031595942854', 20), 1e-19)
 
     assert zeta(Rational(1, 2)) == zeta(Rational(1, 2), evaluate=False)
 

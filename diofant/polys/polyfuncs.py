@@ -1,4 +1,4 @@
-"""High-level polynomials manipulation functions. """
+"""High-level polynomials manipulation functions."""
 
 import itertools
 
@@ -224,10 +224,10 @@ def interpolate(data, x):
     n = len(data)
 
     if isinstance(data, dict):
-        X, Y = list(zip(*data.items()))
+        X, Y = zip(*data.items())
     else:
         if isinstance(data[0], tuple):
-            X, Y = list(zip(*data))
+            X, Y = zip(*data)
         else:
             X = list(range(1, n + 1))
             Y = list(data)
@@ -258,14 +258,14 @@ def viete(f, roots=None, *gens, **args):
         raise ComputationFailed('viete', 1, exc)
 
     if f.is_multivariate:
-        raise MultivariatePolynomialError(
-            "multivariate polynomials are not allowed")
+        raise MultivariatePolynomialError('multivariate polynomials are'
+                                          ' not allowed')
 
     n = f.degree()
 
     if n < 1:
-        raise ValueError(
-            "can't derive Viete's formulas for a constant polynomial")
+        raise ValueError("can't derive Viete's formulas for "
+                         'a constant polynomial')
 
     if roots is None:
         roots = numbered_symbols('r', start=1)
@@ -273,7 +273,7 @@ def viete(f, roots=None, *gens, **args):
     roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
-        raise ValueError("required %s roots, got %s" % (n, len(roots)))
+        raise ValueError(f'required {n} roots, got {len(roots)}')
 
     lc, coeffs = f.LC(), f.all_coeffs()
     result, sign = [], -1

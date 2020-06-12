@@ -25,13 +25,6 @@ class Curve(GeometrySet):
     limits : 3-tuple
         Function parameter and lower and upper bounds.
 
-    Attributes
-    ==========
-
-    functions
-    parameter
-    limits
-
     Raises
     ======
 
@@ -55,7 +48,8 @@ class Curve(GeometrySet):
     (t, 0, 2)
     >>> C.parameter
     t
-    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1)); C
+    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1))
+    >>> C
     Curve((t, t**2), (t, 0, 1))
     >>> C.subs({t: 4})
     Point2D(4, 16)
@@ -67,11 +61,11 @@ class Curve(GeometrySet):
     def __new__(cls, function, limits):
         fun = sympify(function)
         if not is_sequence(fun) or len(fun) != 2:
-            raise ValueError("Function argument should be (x(t), y(t)) "
-                             "but got %s" % str(function))
+            raise ValueError('Function argument should be (x(t), y(t)) '
+                             'but got %s' % str(function))
         if not is_sequence(limits) or len(limits) != 3:
-            raise ValueError("Limit argument should be (t, tmin, tmax) "
-                             "but got %s" % str(limits))
+            raise ValueError('Limit argument should be (t, tmin, tmax) '
+                             'but got %s' % str(limits))
 
         return GeometryEntity.__new__(cls, Tuple(*fun), Tuple(*limits))
 
@@ -264,7 +258,7 @@ class Curve(GeometrySet):
         Point2D(2*s, s**2)
         >>> C.arbitrary_point(None)
         Point2D(2*s, s**2)
-        >>> C.arbitrary_point(Symbol('a'))
+        >>> C.arbitrary_point(a)
         Point2D(2*a, a**2)
 
         """

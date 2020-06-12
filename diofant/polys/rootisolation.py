@@ -1,4 +1,4 @@
-"""Real and complex root isolation and refinement algorithms. """
+"""Real and complex root isolation and refinement algorithms."""
 
 import collections
 import math
@@ -10,8 +10,8 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+                         dmp_eval_in, dmp_ground_primitive, dup_real_imag,
+                         dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -32,14 +32,14 @@ def dup_sturm(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
 
     """
     if not K.is_Field:
-        raise DomainError("can't compute Sturm sequence over %s" % K)
+        raise DomainError(f"can't compute Sturm sequence over {K}")
 
     f = dmp_sqf_part(f, 0, K)
 
@@ -59,7 +59,7 @@ def dup_sign_variations(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
     2
@@ -156,16 +156,16 @@ def dup_step_refine_real_root(f, M, K):
         A = K.zero
 
     if A > 16:
-        f = dup_scale(f, A, K)
+        f = dmp_compose(f, [A, 0], 0, K)
         a, c, A = A*a, A*c, K.one
 
     if A >= 1:
-        f = dup_shift(f, A, K)
+        f = dmp_compose(f, [K.one, A], 0, K)
         b, d = A*a + b, A*c + d
 
         assert dmp_TC(f, K)
 
-    f, g = dup_shift(f, K.one, K), f
+    f, g = dmp_compose(f, [K.one, K.one], 0, K), f
 
     a1, b1, c1, d1 = a, a + b, c, c + d
 
@@ -177,7 +177,7 @@ def dup_step_refine_real_root(f, M, K):
     if k == 1:
         a, b, c, d = a1, b1, c1, d1
     else:
-        f = dup_shift(dup_reverse(g), K.one, K)
+        f = dmp_compose(dup_reverse(g), [K.one, K.one], 0, K)
 
         assert dmp_TC(f, K)
 
@@ -227,7 +227,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
 
     if dup_sign_variations(f, K) != 1:
-        raise RefinementFailed("there should be exactly one root in (%s, %s) interval" % (s, t))
+        raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
 
     return dup_inner_refine_real_root(f, (a, b, c, d), K, eps=eps, steps=steps, disjoint=disjoint)
 
@@ -239,7 +239,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     f = dmp_clear_denoms(f, 0, K)[1]
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
-        raise DomainError("real root refinement not supported over %s" % K)
+        raise DomainError(f'real root refinement not supported over {K}')
 
     if s == t:
         return s, t
@@ -251,9 +251,9 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
 
     if s < 0:
         if t <= 0:
-            f, s, t, negative = dup_mirror(f, K), -t, -s, True
+            f, s, t, negative = dmp_compose(f, [-K.one, 0], 0, K), -t, -s, True
         else:
-            raise ValueError("can't refine a real root in (%s, %s)" % (s, t))
+            raise ValueError(f"can't refine a real root in ({s}, {t})")
 
     if negative and disjoint is not None:
         if disjoint < 0:
@@ -284,11 +284,11 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             A = K.zero
 
         if A > 16:
-            f = dup_scale(f, A, K)
+            f = dmp_compose(f, [A, 0], 0, K)
             a, c, A = A*a, A*c, K.one
 
         if A >= 1:
-            f = dup_shift(f, A, K)
+            f = dmp_compose(f, [K.one, A], 0, K)
             b, d = A*a + b, A*c + d
 
             assert dmp_TC(f, K)
@@ -302,7 +302,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
                                                         eps=eps, mobius=True))
                 continue
 
-        f1 = dup_shift(f, K.one, K)
+        f1 = dmp_compose(f, [K.one, K.one], 0, K)
 
         a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
@@ -316,7 +316,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
         a2, b2, c2, d2 = b, a + b, d, c + d
 
         if k2 > 1:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)
@@ -334,7 +334,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f1 is None:
-            f1 = dup_shift(dup_reverse(f), K.one, K)
+            f1 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f1, K):
                 f1 = dup_rshift(f1, 1, K)
@@ -349,7 +349,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f2 is None:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)
@@ -412,7 +412,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=
     if inf is not None and inf >= 0:
         return []
 
-    roots = dup_inner_isolate_real_roots(dup_mirror(f, K), K, eps=eps)
+    roots = dup_inner_isolate_real_roots(dmp_compose(f, [-K.one, 0], 0, K), K, eps=eps)
 
     results = []
 
@@ -453,7 +453,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=Fals
         f = dmp_convert(f, 0, R, K)
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError("Can't isolate real roots in domain %s" % K)
+        raise DomainError(f"Can't isolate real roots in domain {K}")
 
     f = dmp_clear_denoms(f, 0, K)[1]
 
@@ -488,7 +488,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
         f = dmp_convert(f, 0, R, K)
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError("isolation of real roots not supported over %s" % K)
+        raise DomainError(f'isolation of real roots not supported over {K}')
 
     if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
         A, K = K, K.domain
@@ -513,7 +513,7 @@ def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=Fa
     R, K = K, K.field
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
-        raise DomainError("isolation of real roots not supported over %s" % K)
+        raise DomainError(f'isolation of real roots not supported over {K}')
 
     if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
         zeros, zero_indices = True, {}
@@ -666,7 +666,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         f = dmp_convert(f, 0, R, K)
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError("Can't count real roots in domain %s" % K)
+        raise DomainError(f"Can't count real roots in domain {K}")
 
     if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
         return sum(k for *_, k in dup_isolate_real_roots(f, K, inf, sup))
@@ -1209,7 +1209,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
         f = dmp_convert(f, 0, R, K)
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError("Can't count complex roots in domain %s" % K)
+        raise DomainError(f"Can't count complex roots in domain {K}")
 
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
         B = _roots_bound(f, K)
@@ -1483,7 +1483,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         f = dmp_convert(f, 0, R, K)
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError("Can't isolate complex roots in domain %s" % K)
+        raise DomainError(f"Can't isolate complex roots in domain {K}")
 
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
         B = _roots_bound(f, K)
@@ -1503,7 +1503,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         s, t = B, B
 
     if t <= v or s <= u:
-        raise ValueError("not a valid complex isolation rectangle")
+        raise ValueError('not a valid complex isolation rectangle')
 
     if v < 0 < t:
         roots = dup_isolate_complex_roots_sqf(f, K, eps=eps, inf=(u, 0),
@@ -1595,7 +1595,7 @@ def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False
 def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None):
     """Isolate real and complex roots of a non-square-free polynomial ``f``."""
     if not K.is_IntegerRing and not K.is_RationalField:
-        raise DomainError("isolation of real and complex roots is not supported over %s" % K)
+        raise DomainError(f'isolation of real and complex roots is not supported over {K}')
 
     _, factors = dmp_sqf_list(f, 0, K)
 
@@ -1609,7 +1609,7 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None):
 
         return real_part, complex_part
     else:
-        raise NotImplementedError("only trivial square-free polynomials are supported")
+        raise NotImplementedError('only trivial square-free polynomials are supported')
 
 
 class RealInterval:
@@ -1624,9 +1624,9 @@ class RealInterval:
 
             if s < 0:
                 if t <= 0:
-                    f, s, t, self.neg = dup_mirror(f, dom), -t, -s, True
+                    f, s, t, self.neg = dmp_compose(f, [-dom.one, 0], 0, dom), -t, -s, True
                 else:
-                    raise ValueError("can't refine a real root in (%s, %s)" % (s, t))
+                    raise ValueError(f"can't refine a real root in ({s}, {t})")
 
             a, b, c, d = _mobius_from_interval((s, t), dom.field)
 

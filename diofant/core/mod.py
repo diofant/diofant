@@ -33,7 +33,6 @@ class Mod(Function):
             to be less than or equal q.
 
             """
-
             if p.is_infinite or q.is_infinite:
                 return nan
             if (p == q or p == -q or
@@ -144,11 +143,11 @@ class Mod(Function):
             return True
 
     def _eval_is_nonnegative(self):
-        _, q = self.args
-        if q.is_positive:
+        p, q = self.args
+        if p.is_real and q.is_real and q.is_positive:
             return True
 
     def _eval_is_nonpositive(self):
-        _, q = self.args
-        if q.is_negative:
+        p, q = self.args
+        if p.is_real and q.is_real and q.is_negative:
             return True

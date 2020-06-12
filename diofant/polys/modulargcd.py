@@ -4,34 +4,10 @@ from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
-from .densebasic import dmp_from_dict, dmp_normal
-from .euclidtools import dmp_gcd
 from .polyerrors import ModularGCDFailed
 
 
 __all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
-
-
-def _trivial_gcd(f, g):
-    """
-    Compute the GCD of two polynomials in trivial cases, i.e. when one
-    or both polynomials are zero.
-
-    """
-    ring = f.ring
-
-    if not (f or g):
-        return ring.zero, ring.zero, ring.zero
-    elif not f:
-        if g.LC < ring.domain.zero:
-            return -g, ring.zero, -ring.one
-        else:
-            return g, ring.zero, ring.one
-    elif not g:
-        if f.LC < ring.domain.zero:
-            return -f, -ring.one, ring.zero
-        else:
-            return f, ring.one, ring.zero
 
 
 def _gf_gcd(fp, gp, p):
@@ -79,14 +55,14 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
     >>> p = 3
 
     >>> f = x**2*y**2 + x**2*y - y**2 - y
     >>> _primitive(f, p)
     (y**2 + y, x**2 - 1)
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> f = x*y*z - y**2*z**2
     >>> _primitive(f, p)
@@ -95,121 +71,22 @@ def _primitive(f, p):
     """
     ring = f.ring
     dom = ring.domain
-    k = ring.ngens
 
-    coeffs = {}
-    for monom, coeff in f.items():
-        if monom[:-1] not in coeffs:
-            coeffs[monom[:-1]] = {}
-        coeffs[monom[:-1]][monom[-1]] = coeff
-
+    fy = f.eject(-1)
+    yring = fy.ring.domain
     domp = dom.finite_field(p)
-    cont = []
-    for coeff in coeffs.values():
-        coeff = dmp_from_dict(coeff, 0, dom)
-        coeff = dmp_normal(coeff, 0, domp)
-        cont = dmp_gcd(cont, coeff, 0, domp)
-    cont = dmp_normal(cont, 0, dom)
 
-    yring = ring.clone(symbols=ring.symbols[k-1])
-    contf = yring.from_dense(cont).trunc_ground(p)
+    cont = yring.zero
+    cont = cont.set_domain(domp)
+    ypring = cont.ring
+
+    for coeff in fy.values():
+        coeff = coeff.set_domain(domp)
+        cont = ypring.gcd(cont, coeff)
+
+    contf = cont.set_domain(dom).trunc_ground(p)
 
     return contf, f//contf.set_ring(ring)
-
-
-def _deg(f):
-    r"""
-    Compute the degree of a multivariate polynomial
-    `f \in K[x_0, \ldots, x_{k-2}, y] \cong K[y][x_0, \ldots, x_{k-2}]`.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        polynomial in `K[x_0, \ldots, x_{k-2}, y]`
-
-    Returns
-    =======
-
-    degf : Integer tuple
-        degree of `f` in `x_0, \ldots, x_{k-2}`
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x, y", ZZ)
-
-    >>> f = x**2*y**2 + x**2*y - 1
-    >>> _deg(f)
-    (2,)
-
-    >>> R, x, y, z = ring("x, y, z", ZZ)
-
-    >>> f = x**2*y**2 + x**2*y - 1
-    >>> _deg(f)
-    (2, 2)
-
-    >>> f = x*y*z - y**2*z**2
-    >>> _deg(f)
-    (1, 1)
-
-    """
-    k = f.ring.ngens
-    degf = (0,) * (k-1)
-    for monom in f:
-        if monom[:-1] > degf:
-            degf = monom[:-1]
-    return degf
-
-
-def _LC(f):
-    r"""
-    Compute the leading coefficient of a multivariate polynomial
-    `f \in K[x_0, \ldots, x_{k-2}, y] \cong K[y][x_0, \ldots, x_{k-2}]`.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        polynomial in `K[x_0, \ldots, x_{k-2}, y]`
-
-    Returns
-    =======
-
-    lcf : PolyElement
-        polynomial in `K[y]`, leading coefficient of `f`
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x, y", ZZ)
-
-    >>> f = x**2*y**2 + x**2*y - 1
-    >>> _LC(f)
-    y**2 + y
-
-    >>> R, x, y, z = ring("x, y, z", ZZ)
-
-    >>> f = x**2*y**2 + x**2*y - 1
-    >>> _LC(f)
-    1
-
-    >>> f = x*y*z - y**2*z**2
-    >>> _LC(f)
-    z
-
-    """
-    ring = f.ring
-    k = ring.ngens
-    yring = ring.clone(symbols=ring.symbols[k-1])
-    y = yring.gens[0]
-    degf = _deg(f)
-
-    lcf = yring.zero
-    for monom, coeff in f.items():
-        if monom[:-1] == degf:
-            lcf += coeff*y**monom[-1]
-    return lcf
 
 
 def _swap(f, i):
@@ -258,7 +135,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
     >>> p = 3
     >>> q = 5
 
@@ -274,7 +151,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     >>> hpq.trunc_ground(q) == hq
     True
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
     >>> p = 6
     >>> q = 5
 
@@ -463,15 +340,16 @@ def _modgcd_p(f, g, p, degbound, contbound):
         contbound[k-1] = degconth
         raise ModularGCDFailed
 
-    lcf = _LC(f)
-    lcg = _LC(g)
+    lcf = f.eject(-1).LC
+    lcg = g.eject(-1).LC
 
     delta = _gf_gcd(lcf, lcg, p)  # polynomial in Z_p[y]
 
     evaltest = delta
 
     for i in range(k-1):
-        evaltest *= _gf_gcd(_LC(_swap(f, i)), _LC(_swap(g, i)), p)
+        evaltest *= _gf_gcd(_swap(f, i).eject(-1).LC,
+                            _swap(g, i).eject(-1).LC, p)
 
     degdelta = delta.degree()
 
@@ -568,12 +446,12 @@ def modgcd(f, g):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
 
     >>> modgcd((x - y)*(x + y), (x + y)**2)
     (x + y, x - y, x + y)
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> modgcd((x - y)*z**2, (x**2 + 1)*z)
     (z, x*z - y*z, x**2 + 1)
@@ -586,10 +464,6 @@ def modgcd(f, g):
 
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
-
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
 
     ring = f.ring
     k = ring.ngens
@@ -788,7 +662,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
 
         else:
             coeffh = ring.domain.zero
-            for mon, c in coeff.drop_to_ground(k).items():
+            for mon, c in coeff.eject(k).items():
                 ch = _rational_function_reconstruction(c, p, m)
 
                 if not ch:
@@ -884,7 +758,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
     while g:
         rem = f
         deg = g.degree(0)  # degree in x
-        lcinv, _, gcd = _gf_gcdex(g.drop_to_ground(-1).LC, minpoly, p)
+        lcinv, _, gcd = _gf_gcdex(g.eject(-1).LC, minpoly, p)
 
         if not gcd == 1:
             return
@@ -893,13 +767,13 @@ def _euclidean_algorithm(f, g, minpoly, p):
             degrem = rem.degree(0)  # degree in x
             if degrem < deg:
                 break
-            quo = (lcinv * rem.drop_to_ground(-1).LC).set_ring(ring)
+            quo = (lcinv * rem.eject(-1).LC).set_ring(ring)
             rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
 
         f = g
         g = rem
 
-    lcfinv = _gf_gcdex(f.drop_to_ground(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 
@@ -946,12 +820,12 @@ def trial_division(f, h, minpoly, p=None):
     degh = h.degree()
     degm = minpoly.degree(1)
 
-    lch = _LC(h).set_ring(ring)
+    lch = h.eject(-1).LC.set_ring(ring)
     lcm = minpoly.LC
 
     while rem and degrem >= degh:
         # polynomial in Z[t_1, ..., t_k][z]
-        lcrem = _LC(rem).set_ring(ring)
+        lcrem = rem.eject(-1).LC.set_ring(ring)
         rem = rem*lch - h.mul_monom((degrem - degh, 0))*lcrem
         if p:
             rem = rem.trunc_ground(p)
@@ -959,7 +833,7 @@ def trial_division(f, h, minpoly, p=None):
 
         while rem and degrem >= degm:
             # polynomial in Z[t_1, ..., t_k][x]
-            lcrem = _LC(rem.set_ring(zxring)).set_ring(ring)
+            lcrem = rem.set_ring(zxring).eject(-1).LC.set_ring(ring)
             rem = rem*lcm - minpoly.mul_monom((0, degrem - degm))*lcrem
             if p:
                 rem = rem.trunc_ground(p)
@@ -1038,7 +912,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     if k == 1:
         qdomain = domain.ring.field
     else:
-        qdomain = domain.ring.drop_to_ground(k - 1)
+        qdomain = domain.ring.eject(k - 1)
         qdomain = qdomain.clone(domain=qdomain.domain.ring.field)
 
     qring = ring.clone(domain=qdomain)  # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
@@ -1047,7 +921,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     d = 1
 
     # polynomial in Z_p[t_1, ..., t_k][z]
-    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
+    gamma = f.eject(-1).LC * g.eject(-1).LC
     # polynomial in Z_p[t_1, ..., t_k]
     delta = minpoly.LC
 
@@ -1150,7 +1024,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
                 coeff = coeff.set_domain(new_dom)
                 h[key] = (coeff*den).set_domain(dom)
 
-            h = ring(h.as_expr())
+            h = ring.from_expr(h.ring.to_expr(h))
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
@@ -1295,7 +1169,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     cg, g = g.primitive()
 
     # polynomial in Z[t_1, ..., t_k][z]
-    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
+    gamma = f.eject(-1).LC * g.eject(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
     assert k > 0 or delta == 1
@@ -1494,7 +1368,7 @@ def _primitive_in_x0(f):
 
     """
     fring = f.ring
-    f_ = f.drop_to_ground(*range(1, fring.ngens))
+    f_ = f.eject(*range(1, fring.ngens))
     dom = f_.ring.domain.ring
     cont = dom.zero
 
@@ -1506,7 +1380,6 @@ def _primitive_in_x0(f):
     return cont, f//cont.set_ring(fring)
 
 
-# TODO: add support for algebraic function fields
 def func_field_modgcd(f, g):
     r"""
     Compute the GCD of two polynomials `f` and `g` in
@@ -1586,9 +1459,8 @@ def func_field_modgcd(f, g):
 
     assert ring == g.ring and domain.is_AlgebraicField
 
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
+    if not f:
+        return ring._gcd_zero(g)
 
     z = Dummy('z')
 
@@ -1597,7 +1469,7 @@ def func_field_modgcd(f, g):
     if n == 1:
         f_ = _to_ZZ_poly(f, ZZring)
         g_ = _to_ZZ_poly(g, ZZring)
-        minpoly = ZZring.drop(0).from_dense(domain.mod.to_dense())
+        minpoly = ZZring.drop(0).from_dict(domain.mod)
 
         h = _func_field_modgcd_m(f_, g_, minpoly)
         h = _to_ANP_poly(h, ring)
@@ -1608,7 +1480,7 @@ def func_field_modgcd(f, g):
         contx0g, g = _primitive_in_x0(g)
         contx0h = func_field_modgcd(contx0f, contx0g)[0]
 
-        ZZring_ = ZZring.drop_to_ground(*range(1, n))
+        ZZring_ = ZZring.eject(*range(1, n))
 
         f_ = _to_ZZ_poly(f, ZZring_)
         g_ = _to_ZZ_poly(g, ZZring_)

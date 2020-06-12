@@ -23,8 +23,6 @@ class NotIterable:
 
     """
 
-    pass
-
 
 def iterable(i, exclude=(str, dict, NotIterable)):
     """
@@ -47,7 +45,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
 
     >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
     >>> for i in things:
-    ...     print('%s %s' % (iterable(i), type(i)))
+    ...     print(f'{iterable(i)} {type(i)}')
     True <... 'list'>
     True <... 'tuple'>
     True <... 'set'>
@@ -61,7 +59,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     True
     >>> iterable({}, exclude=str)
     True
-    >>> iterable("no", exclude=str)
+    >>> iterable('no', exclude=str)
     False
 
     """
@@ -143,7 +141,7 @@ def as_int(n):
         if result != n:
             raise TypeError
     except TypeError:
-        raise ValueError('%s is not an integer' % (n,))
+        raise ValueError(f'{n} is not an integer')
     return result
 
 
@@ -202,7 +200,8 @@ def default_sort_key(item, order=None):
     The returned key can be used anywhere that a key can be specified for
     a function, e.g. sort, min, max, etc...:
 
-    >>> a.sort(key=default_sort_key); a[0]
+    >>> a.sort(key=default_sort_key)
+    >>> a[0]
     2
     >>> min(a, key=default_sort_key)
     2
@@ -420,7 +419,7 @@ def ordered(seq, keys=None, default=True, warn=False):
                 from ..utilities.iterables import uniq
                 u = list(uniq(d[k]))
                 if len(u) > 1:
-                    raise ValueError('not enough keys to break ties: %s' % u)
+                    raise ValueError(f'not enough keys to break ties: {u}')
         for v in d[k]:
             yield v
         d.pop(k)

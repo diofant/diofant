@@ -1,13 +1,12 @@
-"""Tests for useful utilities for higher level polynomial classes. """
+"""Tests for useful utilities for higher level polynomial classes."""
 
 import pytest
 
-from diofant import Abs, Eq, I, Integer, Integral, Mul
+from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
+                     PolynomialError)
 from diofant import Rational as Q  # noqa: N814
-from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
-from diofant.domains import ZZ
-from diofant.polys import factor
-from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
+from diofant import cos, erf, exp, factor, integrate, pi, sin, sqrt, symbols
+from diofant.abc import p, q, t, x, y, z
 from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
                                      _sort_gens, _unify_gens, dict_from_expr,
                                      parallel_dict_from_expr)
@@ -15,7 +14,6 @@ from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
 
 __all__ = ()
 
-x, y, z, p, q, r, s, t, u, v, w = symbols('x,y,z,p,q,r,s,t,u,v,w')
 A, B = symbols('A,B', commutative=False)
 
 
@@ -50,10 +48,10 @@ def test__nsort():
     assert len(_nsort(r, separated=True)[0]) == 0
     b, c, a = exp(-1000), exp(-999), exp(-1001)
     assert _nsort((b, c, a)) == [a, b, c]
-    d = symbols("d", extended_real=True)
+    d = symbols('d', extended_real=True)
     assert _nsort((d,)) == [d]
     assert _nsort((d,), separated=True) == [[d], []]
-    c = symbols("c", complex=True, real=False)
+    c = symbols('c', complex=True, real=False)
     assert _nsort((c,)) == [c]
     assert _nsort((c,), separated=True) == [[], [c]]
     assert _nsort((I, Q(1)), separated=True) == ([Q(1)], [I])
@@ -246,8 +244,8 @@ def test__dict_from_expr_no_gens():
     assert dict_from_expr(sqrt(2)) == ({(1,): 1}, (sqrt(2),))
     pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
 
-    assert dict_from_expr(x*y, domain=ZZ.poly_ring(x)) == ({(1,): x}, (y,))
-    assert dict_from_expr(x*y, domain=ZZ.poly_ring(y)) == ({(1,): y}, (x,))
+    assert dict_from_expr(x*y, domain=ZZ.inject(x)) == ({(1,): x}, (y,))
+    assert dict_from_expr(x*y, domain=ZZ.inject(y)) == ({(1,): y}, (x,))
 
     assert dict_from_expr(3*sqrt(
         2)*pi*x*y, extension=None) == ({(1, 1, 1, 1): 3}, (x, y, pi, sqrt(2)))
@@ -301,6 +299,6 @@ def test_sympyissue_7383():
 
 def test_sympyissue_10161():
     x = symbols('x', real=True)
-    h = (2*x*(-2*x + Abs(x))*(x**2 - 1)/Abs(x**2 - 1)
-         + (x/Abs(x) - 2)*Abs(x**2 - 1))
+    h = (2*x*(-2*x + abs(x))*(x**2 - 1)/abs(x**2 - 1)
+         + (x/abs(x) - 2)*abs(x**2 - 1))
     assert (h - factor(h)).simplify() == 0

@@ -189,7 +189,7 @@ class sin(TrigonometricFunction):
     * https://en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Sin
-    * http://mathworld.wolfram.com/TrigonometryAngles.html
+    * https://mathworld.wolfram.com/TrigonometryAngles.html
 
     """
 
@@ -335,7 +335,7 @@ class sin(TrigonometricFunction):
             if n.is_Integer:  # n will be positive because of .eval
                 # canonicalization
 
-                # See http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+                # See https://mathworld.wolfram.com/Multiple-AngleFormulas.html
                 if n.is_odd:
                     return (-1)**((n - 1)/2)*chebyshevt(n, sin(x))
                 else:
@@ -634,7 +634,7 @@ class cos(TrigonometricFunction):
         if pi_coeff is None:
             return
 
-        assert not pi_coeff.is_integer, "should have been simplified already"
+        assert not pi_coeff.is_integer, 'should have been simplified already'
 
         if not pi_coeff.is_Rational:
             return
@@ -981,9 +981,8 @@ class tan(TrigonometricFunction):
 
     def _eval_rewrite_as_sqrt(self, arg):
         y = self.rewrite(cos).rewrite(sqrt)
-        if y.has(cos):
-            return
-        return y
+        if not y.has(cos):
+            return y
 
     def _eval_as_leading_term(self, x):
         from ...series import Order
@@ -1100,22 +1099,22 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
             return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_Pow(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_Pow", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_Pow', arg)
 
     def _eval_rewrite_as_sin(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sin", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sin', arg)
 
     def _eval_rewrite_as_cos(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_cos", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_cos', arg)
 
     def _eval_rewrite_as_tan(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tan", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tan', arg)
 
     def _eval_rewrite_as_sqrt(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sqrt", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sqrt', arg)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -1125,7 +1124,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
                                                                   **hints)
 
     def _eval_expand_trig(self, **hints):
-        return self._calculate_reciprocal("_eval_expand_trig", **hints)
+        return self._calculate_reciprocal('_eval_expand_trig', **hints)
 
     def _eval_is_extended_real(self):
         return (1/self._reciprocal_of(self.args[0])).is_extended_real
@@ -1423,8 +1422,6 @@ class cot(ReciprocalTrigonometricFunction):
 
 class InverseTrigonometricFunction(Function):
     """Base class for inverse trigonometric functions."""
-
-    pass
 
 
 class asin(InverseTrigonometricFunction):

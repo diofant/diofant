@@ -1,4 +1,4 @@
-""" Riemann zeta and related function. """
+"""Riemann zeta and related function."""
 
 from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
                      oo, pi, sympify, zoo)
@@ -265,7 +265,7 @@ class polylog(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Polylogarithm
-    * http://mathworld.wolfram.com/Polylogarithm.html
+    * https://mathworld.wolfram.com/Polylogarithm.html
 
     """
 
@@ -514,7 +514,7 @@ class dirichlet_eta(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Dirichlet_eta_function
-    * http://mathworld.wolfram.com/DirichletEtaFunction.html
+    * https://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples
     ========

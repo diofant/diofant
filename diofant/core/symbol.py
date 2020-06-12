@@ -72,7 +72,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> x = Symbol('x')
             >>> x._diff_wrt
             True
 
@@ -81,16 +80,13 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     @staticmethod
     def _sanitize(assumptions, obj=None):
-        """Remove None, covert values to bool, check commutativity *in place*.
-
-        """
-
+        """Remove None, covert values to bool, check commutativity *in place*."""
         # be strict about commutativity: cannot be None
         is_commutative = fuzzy_bool(assumptions.get('commutative', True))
         if is_commutative is None:
-            whose = '%s ' % obj.__name__ if obj else ''
+            whose = f'{obj.__name__} ' if obj else ''
             raise ValueError(
-                '%scommutativity must be True or False.' % whose)
+                f'{whose}commutativity must be True or False.')
 
         # sanitize other assumptions so 1 -> True and 0 -> False
         for key in list(assumptions):
@@ -103,9 +99,9 @@ class BaseSymbol(AtomicExpr, Boolean):
     def __new__(cls, name, **assumptions):
         """Symbols are identified by name and assumptions::
 
-        >>> Symbol("x") == Symbol("x")
+        >>> Symbol('x') == Symbol('x')
         True
-        >>> Symbol("x", real=True) == Symbol("x", real=False)
+        >>> Symbol('x', real=True) == Symbol('x', real=False)
         False
 
         """
@@ -114,7 +110,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     def __new_stage2__(cls, name, **assumptions):
         if not isinstance(name, str):
-            raise TypeError("name should be a string, not %s" % repr(type(name)))
+            raise TypeError('name should be a string, not %s' % repr(type(name)))
 
         obj = Expr.__new__(cls)
         obj.name = name
@@ -216,10 +212,10 @@ class Symbol(BaseSymbol):
 
     You can override default assumptions:
 
-    >>> A, B = symbols('A B', commutative = False)
+    >>> A, B = symbols('A B', commutative=False)
     >>> bool(A*B != B*A)
     True
-    >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
+    >>> bool(A*B*2 == 2*A*B) is True  # multiplication by scalars is commutative
     True
 
     See Also
@@ -231,20 +227,18 @@ class Symbol(BaseSymbol):
 
     """
 
-    pass
-
 
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> bool(Dummy("x") == Dummy("x")) == True
+    >>> bool(Dummy('x') == Dummy('x')) is True
     False
 
     If a name is not supplied then a string value of the count index will be
     used. This is useful when a temporary variable is needed and the name
     of the variable used in the expression is not important.
 
-    >>> Dummy() #doctest: +SKIP
+    >>> Dummy()  # doctest: +SKIP
     _Dummy_10
 
     See Also
@@ -260,7 +254,7 @@ class Dummy(BaseSymbol):
 
     def __new__(cls, name=None, **assumptions):
         if name is None:
-            name = "Dummy_" + str(Dummy._count)
+            name = 'Dummy_' + str(Dummy._count)
 
         cls._sanitize(assumptions, cls)
         obj = Symbol.__xnew__(cls, name, **assumptions)

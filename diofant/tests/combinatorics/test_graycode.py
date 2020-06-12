@@ -1,6 +1,7 @@
 import pytest
 
-from diofant.combinatorics.graycode import (GrayCode, bin_to_gray,
+from diofant.combinatorics import GrayCode
+from diofant.combinatorics.graycode import (bin_to_gray,
                                             get_subset_from_bitstring,
                                             graycode_subsets, random_bitstring)
 

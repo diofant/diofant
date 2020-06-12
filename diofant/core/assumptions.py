@@ -75,7 +75,7 @@ _assume_rules = FactRules([
     'nonpositive    ==  extended_real & ~positive',
     'nonnegative    ==  extended_real & ~negative',
 
-    'zero           ->  even & finite',
+    'zero           ->  even',
 
     'prime          ->  integer & positive',
     'composite      ->  integer & positive & ~prime',
@@ -354,7 +354,7 @@ class StdFactKB(FactKB):
 
 def as_property(fact):
     """Convert a fact name to the name of the corresponding property."""
-    return 'is_%s' % fact
+    return f'is_{fact}'
 
 
 def make_property(fact):
@@ -473,9 +473,6 @@ def _ask(fact, obj):
             if ret_val is not None:
                 return ret_val
 
-    # Note: the result has already been cached
-    return
-
 
 class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions."""
@@ -503,7 +500,7 @@ class ManagedProperties(type):
         cls._prop_handler = {}
         for k in _assume_defined:
             try:
-                cls._prop_handler[k] = getattr(cls, '_eval_is_%s' % k)
+                cls._prop_handler[k] = getattr(cls, f'_eval_is_{k}')
             except AttributeError:
                 pass
 

@@ -1,4 +1,4 @@
-"""Useful utility decorators. """
+"""Useful utility decorators."""
 
 import inspect
 

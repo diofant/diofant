@@ -8,13 +8,12 @@ Point3D
 """
 
 from ..core import Add, Float, Integer, Tuple, sympify
-from ..core.compatibility import iterable
+from ..core.compatibility import iterable, ordered
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify
 from .entity import GeometryEntity
-from .exceptions import GeometryError
 
 
 class Point(GeometryEntity):
@@ -26,13 +25,6 @@ class Point(GeometryEntity):
     coords : sequence of n-coordinate values. In the special
     case where n=2 or 3, a Point2D or Point3D will be created
     as appropriate.
-
-    Attributes
-    ==========
-
-    length
-    origin: A `Point` representing the origin of the
-        appropriately-dimensioned space.
 
     Raises
     ======
@@ -158,7 +150,6 @@ class Point(GeometryEntity):
         False
 
         """
-
         # Coincident points are irrelevant; use only unique points.
         uniq_args = list(set(args))
         if not all(isinstance(p, Point) for p in uniq_args):
@@ -344,7 +335,7 @@ class Point(GeometryEntity):
         """
         if isinstance(o, Point):
             if len(self) != len(o):
-                raise ValueError("Points must be of the same dimension to intersect")
+                raise ValueError('Points must be of the same dimension to intersect')
             if self == o:
                 return [self]
             return []
@@ -381,12 +372,11 @@ class Point(GeometryEntity):
         diofant.geometry.entity.GeometryEntity.translate
 
         """
-
         if iterable(other) and len(other) == len(self):
             return Point([simplify(a + b) for a, b in zip(self, other)])
         else:
             raise ValueError(
-                "Points must have the same number of dimensions")
+                'Points must have the same number of dimensions')
 
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
@@ -422,13 +412,6 @@ class Point2D(Point):
     ==========
 
     coords : sequence of 2 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    diofant.geometry.Point.length
 
     Raises
     ======
@@ -476,7 +459,7 @@ class Point2D(Point):
                 args = args[0]
             if len(args) != 2:
                 raise ValueError(
-                    "Only two dimensional points currently supported")
+                    'Only two dimensional points currently supported')
         coords = Tuple(*args)
         if check:
             if any(a.is_number and im(a) for a in coords):
@@ -525,7 +508,6 @@ class Point2D(Point):
         rectangle for the geometric figure.
 
         """
-
         return self.x, self.y, self.x, self.y
 
     def is_concyclic(*points):
@@ -578,21 +560,16 @@ class Point2D(Point):
             return False
         if len(points) <= 2:
             return True
-        ppoints = [Point(p) for p in points]
+        ppoints = list(ordered(Point(p) for p in points))
         if len(ppoints) == 3:
             return not Point.is_collinear(*ppoints)
 
-        try:
-            from .ellipse import Circle
-            c = Circle(ppoints[0], ppoints[1], ppoints[2])
-            for point in ppoints[3:]:
-                if point not in c:
-                    return False
-            return True
-        except GeometryError:
-            # Circle could not be created, because of collinearity of the
-            # three points passed in, hence they are not concyclic.
-            return False
+        from .ellipse import Circle
+        c = Circle(ppoints[0], ppoints[1], ppoints[2])
+        for point in ppoints[3:]:
+            if point not in c:
+                return False
+        return True
 
     def rotate(self, angle, pt=None):
         """Rotate ``angle`` radians counterclockwise about Point ``pt``.
@@ -694,8 +671,8 @@ class Point2D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 3x3 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 3x3 matrix')
         x, y = self.args
         return Point(*(Matrix(1, 3, [x, y, 1])*matrix).tolist()[0][:2])
 
@@ -707,14 +684,6 @@ class Point3D(Point):
     ==========
 
     coords : sequence of 3 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    z
-    diofant.geometry.Point.length
 
     Raises
     ======
@@ -759,7 +728,7 @@ class Point3D(Point):
                 args = args[0]
             if len(args) not in (2, 3):
                 raise TypeError(
-                    "Enter a 2 or 3 dimensional point")
+                    'Enter a 2 or 3 dimensional point')
         coords = Tuple(*args)
         if len(coords) == 2:
             coords += Integer(0),
@@ -1054,8 +1023,8 @@ class Point3D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 4x4 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 4x4 matrix')
         from ..matrices import Transpose
         x, y, z = self.args
         m = Transpose(matrix)

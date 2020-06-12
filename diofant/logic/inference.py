@@ -18,7 +18,6 @@ def literal_symbol(literal):
     a
 
     """
-
     if literal is True or literal is False:
         return literal
     try:
@@ -29,10 +28,10 @@ def literal_symbol(literal):
         else:
             raise ValueError
     except (AttributeError, ValueError):
-        raise ValueError("Argument must be a boolean literal.")
+        raise ValueError('Argument must be a boolean literal.')
 
 
-def satisfiable(expr, algorithm="dpll2", all_models=False):
+def satisfiable(expr, algorithm='dpll2', all_models=False):
     """
     Check satisfiability of a propositional sentence.
     Returns a model when it succeeds.
@@ -65,7 +64,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     ...             return model
     ...         else:
     ...             # Given expr is unsatisfiable.
-    ...             print("UNSAT")
+    ...             print('UNSAT')
     >>> use_models(satisfiable(a >> ~a, all_models=True))
     {a: False}
     >>> use_models(satisfiable(a ^ a, all_models=True))
@@ -73,10 +72,10 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
 
     """
     expr = to_cnf(expr)
-    if algorithm == "dpll":
+    if algorithm == 'dpll':
         from .algorithms.dpll import dpll_satisfiable
         return dpll_satisfiable(expr)
-    elif algorithm == "dpll2":
+    elif algorithm == 'dpll2':
         from .algorithms.dpll2 import dpll_satisfiable
         return dpll_satisfiable(expr, all_models)
     else:
@@ -142,7 +141,6 @@ def pl_true(expr, model={}, deep=False):
     False
 
     """
-
     from ..core import Symbol
     from .boolalg import BooleanFunction
     boolean = (True, False)
@@ -158,7 +156,7 @@ def pl_true(expr, model={}, deep=False):
         return expr
     expr = sympify(expr)
     if not _validate(expr):
-        raise ValueError("%s is not a valid boolean expression" % expr)
+        raise ValueError(f'{expr} is not a valid boolean expression')
     model = {k: v for k, v in model.items() if v in boolean}
     result = expr.subs(model)
     if result in boolean:
@@ -171,7 +169,6 @@ def pl_true(expr, model={}, deep=False):
         else:
             if not satisfiable(result):
                 return False
-    return
 
 
 def entails(expr, formula_set={}):

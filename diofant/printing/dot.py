@@ -11,12 +11,11 @@ def styleof(expr, styles=default_styles):
     """Merge style dictionaries in order.
 
     >>> styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
-    ...           (Expr,  {'color': 'black'})]
+    ...           (Expr, {'color': 'black'})]
 
     >>> styleof(Basic(1), styles)
     {'color': 'blue', 'shape': 'ellipse'}
 
-    >>> x = Symbol('x')
     >>> styleof(x + 1, styles)  # this is an Expr
     {'color': 'black', 'shape': 'ellipse'}
 
@@ -55,7 +54,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     expr_str = repr(expr)
     if repeat:
         expr_str += '_%s' % str(pos)
-    return '"%s" [%s];' % (expr_str, attrprint(style))
+    return f'"{expr_str}" [{attrprint(style)}];'
 
 
 def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True):
@@ -80,7 +79,7 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
         if repeat:
             expr_str += '_%s' % str(pos)
             arg_strs = [arg_str + '_%s' % str(pos + (i,)) for i, arg_str in enumerate(arg_strs)]
-        return ['"%s" -> "%s";' % (expr_str, arg_str) for arg_str in arg_strs]
+        return [f'"{expr_str}" -> "{arg_str}";' for arg_str in arg_strs]
 
 
 template = \

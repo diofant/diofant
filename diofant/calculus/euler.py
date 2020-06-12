@@ -43,16 +43,12 @@ def euler_equations(L, funcs=(), vars=()):
     Examples
     ========
 
-    >>> x = Function('x')
-    >>> t = Symbol('t')
-    >>> L = (x(t).diff(t))**2/2 - x(t)**2/2
-    >>> euler_equations(L, x(t), t)
-    [Eq(-x(t) - Derivative(x(t), t, t), 0)]
-    >>> u = Function('u')
-    >>> x = Symbol('x')
-    >>> L = (u(t, x).diff(t))**2/2 - (u(t, x).diff(x))**2/2
-    >>> euler_equations(L, u(t, x), [t, x])
-    [Eq(-Derivative(u(t, x), t, t) + Derivative(u(t, x), x, x), 0)]
+    >>> L = (f(t).diff(t))**2/2 - f(t)**2/2
+    >>> euler_equations(L, f(t), t)
+    [Eq(-f(t) - Derivative(f(t), t, t), 0)]
+    >>> L = (f(t, x).diff(t))**2/2 - (f(t, x).diff(x))**2/2
+    >>> euler_equations(L, f(t, x), [t, x])
+    [Eq(-Derivative(f(t, x), t, t) + Derivative(f(t, x), x, x), 0)]
 
     References
     ==========
@@ -68,7 +64,7 @@ def euler_equations(L, funcs=(), vars=()):
     else:
         for f in funcs:
             if not isinstance(f, Function):
-                raise TypeError('Function expected, got: %s' % f)
+                raise TypeError(f'Function expected, got: {f}')
 
     vars = tuple(vars) if iterable(vars) else (vars,)
 
@@ -78,11 +74,11 @@ def euler_equations(L, funcs=(), vars=()):
         vars = tuple(sympify(var) for var in vars)
 
     if not all(isinstance(v, Symbol) for v in vars):
-        raise TypeError('Variables are not symbols, got %s' % vars)
+        raise TypeError(f'Variables are not symbols, got {vars}')
 
     for f in funcs:
         if not vars == f.args:
-            raise ValueError("Variables %s don't match args: %s" % (vars, f))
+            raise ValueError(f"Variables {vars} don't match args: {f}")
 
     order = max(len(d.variables) for d in L.atoms(Derivative)
                 if d.expr in funcs)

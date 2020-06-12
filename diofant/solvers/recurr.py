@@ -1,75 +1,37 @@
-r"""
-This module is intended for solving recurrences or, in other words,
-difference equations. Currently supported are linear, inhomogeneous
-equations with polynomial or rational coefficients.
+"""This module is intended for solving recurrences (difference equations)."""
 
-The solutions are obtained among polynomials, rational functions,
-hypergeometric terms, or combinations of hypergeometric term which
-are pairwise dissimilar.
-
-``rsolve_X`` functions were meant as a low level interface
-for ``rsolve`` which would use Mathematica's syntax.
-
-Given a recurrence relation:
-
-    .. math:: a_{k}(n) y(n+k) + a_{k-1}(n) y(n+k-1) +
-              ... + a_{0}(n) y(n) = f(n)
-
-where `k > 0` and `a_{i}(n)` are polynomials in `n`. To use
-``rsolve_X`` we need to put all coefficients in to a list ``L`` of
-`k+1` elements the following way:
-
-    ``L = [ a_{0}(n), ..., a_{k-1}(n), a_{k}(n) ]``
-
-where ``L[i]``, for `i=0, \ldots, k`, maps to
-`a_{i}(n) y(n+i)` (`y(n+i)` is implicit).
-
-For example if we would like to compute `m`-th Bernoulli polynomial
-up to a constant (example was taken from rsolve_poly docstring),
-then we would use `b(n+1) - b(n) = m n^{m-1}` recurrence, which
-has solution `b(n) = B_m + C`.
-
-Then ``L = [-1, 1]`` and `f(n) = m n^(m-1)` and finally for `m=4`:
-
->>> rsolve_poly([-1, 1], 4*n**3, n)
-C0 + n**4 - 2*n**3 + n**2
-
->>> bernoulli(4, n)
-n**4 - 2*n**3 + n**2 - 1/30
-
-For the sake of completeness, `f(n)` can be:
-
-    [1] a polynomial              -> rsolve_poly
-    [2] a rational function       -> rsolve_ratio
-    [3] a hypergeometric function  -> rsolve_hyper
-"""
-
-from collections import defaultdict
+import collections
 
 from ..concrete import product
-from ..core import (Add, Dummy, Equality, Integer, Mul, Rational, Symbol, Wild,
-                    oo, sympify)
-from ..core.compatibility import default_sort_key
+from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
+                    Rational, Symbol, Wild, oo, sympify)
+from ..core.compatibility import default_sort_key, iterable
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
-from ..simplify import hypersimilar, hypersimp, simplify
+from ..simplify import hypersimilar, hypersimp
 from ..utilities import numbered_symbols
+from .ode import constantsimp
 from .solvers import solve
 
 
-def rsolve_poly(coeffs, f, n, **hints):
+def rsolve_poly(coeffs, f, n):
     r"""
+    Find polynomial solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order
     `k` with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek for
     all polynomial solutions over field `K` of characteristic zero.
 
+    Notes
+    =====
+
     The algorithm performs two basic steps:
 
-        (1) Compute degree `N` of the general polynomial solution.
-        (2) Find all polynomials of degree `N` or less
-            of `\operatorname{L} y = f`.
+        1. Compute degree `N` of the general polynomial solution.
+        2. Find all polynomials of degree `N` or less
+           of `\operatorname{L} y = f`.
 
     There are two methods for computing the polynomial solutions.
     If the degree bound is relatively small, i.e. it's smaller than
@@ -86,12 +48,16 @@ def rsolve_poly(coeffs, f, n, **hints):
     It is possible to generalize the algorithm implemented here to
     the case of linear q-difference and differential equations.
 
+    Examples
+    ========
+
     Lets say that we would like to compute `m`-th Bernoulli polynomial
-    up to a constant. For this we can use `b(n+1) - b(n) = m n^{m-1}`
-    recurrence, which has solution `b(n) = B_m + C`. For example:
+    up to a constant, using `b(n+1) - b(n) = m n^{m-1}` recurrence:
 
     >>> rsolve_poly([-1, 1], 4*n**3, n)
-    C0 + n**4 - 2*n**3 + n**2
+    (C0 + n**4 - 2*n**3 + n**2, [C0])
+    >>> bernoulli(4, n)
+    n**4 - 2*n**3 + n**2 - 1/30
 
     References
     ==========
@@ -110,19 +76,19 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     r = len(coeffs) - 1
 
-    coeffs = [ Poly(coeff, n) for coeff in coeffs ]
+    coeffs = [Poly(coeff, n) for coeff in coeffs]
 
     g = gcd_list(coeffs + [f], n, polys=True)
     if not g.is_ground:
         coeffs = [quo(c, g, n, polys=False) for c in coeffs]
         f = quo(f, g, n, polys=False)
 
-    polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (Integer(0), -oo) ] * (r + 1)
+    polys = [Poly(0, n)] * (r + 1)
+    terms = [(Integer(0), -oo)] * (r + 1)
 
     for i in range(r + 1):
         for j in range(i, r + 1):
-            polys[i] += coeffs[j]*binomial(j, i)
+            polys[i] += coeffs[j] * binomial(j, i)
 
         if not polys[i].is_zero:
             (exp,), coeff = polys[i].LT()
@@ -145,7 +111,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     for i in range(r + 1):
         if terms[i][1] - i == b:
-            degree_poly += terms[i][0]*FallingFactorial(x, i)
+            degree_poly += terms[i][0] * FallingFactorial(x, i)
 
     nni_roots = list(roots(degree_poly, x, filter='Z',
                            predicate=lambda r: r >= 0))
@@ -164,10 +130,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     if N < 0:
         if homogeneous:
-            if hints.get('symbols', False):
-                return Integer(0), []
-            else:
-                return Integer(0)
+            return Integer(0), []
         else:
             return
 
@@ -180,7 +143,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             y += C[i] * n**i
 
         for i in range(r + 1):
-            E += coeffs[i].as_expr()*y.subs({n: n + i})
+            E += coeffs[i].as_expr() * y.subs({n: n + i})
 
         solutions = solve((E - f).as_poly(n).coeffs(), *C)
 
@@ -220,10 +183,10 @@ def rsolve_poly(coeffs, f, n, **hints):
         alpha = {}
 
         for i in range(-A, d + 1):
-            I = _one_vector(d + 1)
+            E = _one_vector(d + 1)
 
             for k in range(1, d + 1):
-                I[k] = I[k - 1] * (x + i - k + 1)/k
+                E[k] = E[k - 1] * (x + i - k + 1) / k
 
             alpha[i] = Integer(0)
 
@@ -232,7 +195,7 @@ def rsolve_poly(coeffs, f, n, **hints):
                     B = binomial(k, i + j)
                     D = _delta(polys[j].as_expr(), k)
 
-                    alpha[i] += I[k]*B*D
+                    alpha[i] += E[k] * B * D
 
         V = Matrix(U, A, lambda i, j: int(i == j))
 
@@ -281,23 +244,23 @@ def rsolve_poly(coeffs, f, n, **hints):
         P, Q = _one_vector(U), _zero_vector(A)
 
         for i in range(1, U):
-            P[i] = (P[i - 1] * (n - a - i + 1)/i).expand()
+            P[i] = (P[i - 1] * (n - a - i + 1) / i).expand()
 
         for i in range(A):
-            Q[i] = Add(*[ (v*p).expand() for v, p in zip(V[:, i], P) ])
+            Q[i] = Add(*[(v * p).expand() for v, p in zip(V[:, i], P)])
 
         if not homogeneous:
-            h = Add(*[ (g*p).expand() for g, p in zip(G, P) ])
+            h = Add(*[(g * p).expand() for g, p in zip(G, P)])
 
         C = [Symbol('C' + str(i)) for i in range(A)]
 
         def g(i):
-            return Add(*[ c*_delta(q, i) for c, q in zip(C, Q) ])
+            return Add(*[c * _delta(q, i) for c, q in zip(C, Q)])
 
         if homogeneous:
-            E = [ g(i) for i in range(N + 1, U) ]
+            E = [g(i) for i in range(N + 1, U)]
         else:
-            E = [ g(i) + _delta(h, i) for i in range(N + 1, U) ]
+            E = [g(i) + _delta(h, i) for i in range(N + 1, U)]
 
         if E != []:
             solutions = solve(E, *C)
@@ -312,40 +275,36 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         for c, q in list(zip(C, Q)):
             if c in solutions:
-                s = solutions[c]*q
+                s = solutions[c] * q
                 C.remove(c)
             else:
-                s = c*q
+                s = c * q
 
             result += s.expand()
 
-    if hints.get('symbols', False):
-        return result, C
-    else:
-        return result
+    return result, C
 
 
-def rsolve_ratio(coeffs, f, n, **hints):
+def rsolve_ratio(coeffs, f, n):
     r"""
+    Find rational solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek
     for all rational solutions over field `K` of characteristic zero.
 
-    This procedure accepts only polynomials, however if you are
-    interested in solving recurrence with rational coefficients
-    then use ``rsolve`` which will pre-process the given equation
-    and run this procedure with polynomial arguments.
+    Notes
+    =====
 
     The algorithm performs two basic steps:
 
-        (1) Compute polynomial `v(n)` which can be used as universal
-            denominator of any rational solution of equation
-            `\operatorname{L} y = f`.
-
-        (2) Construct new linear difference equation by substitution
-            `y(n) = u(n)/v(n)` and solve it for `u(n)` finding all its
-            polynomial solutions. Return ``None`` if none were found.
+        1. Compute polynomial `v(n)` which can be used as universal
+           denominator of any rational solution of equation
+           `\operatorname{L} y = f`.
+        2. Construct new linear difference equation by substitution
+           `y(n) = u(n)/v(n)` and solve it for `u(n)` finding all its
+           polynomial solutions. Return :obj:`None` if none were found.
 
     Algorithm implemented here is a revised version of the original
     Abramov's algorithm, developed in 1989. The new approach is much
@@ -353,15 +312,16 @@ def rsolve_ratio(coeffs, f, n, **hints):
     method can be easily adapted to q-difference equations case.
 
     Besides finding rational solutions alone, this functions is
-    an important part of Hyper algorithm were it is used to find
+    an important part of the Hyper algorithm were it is used to find
     particular solution of inhomogeneous part of a recurrence.
 
     Examples
     ========
 
-    >>> rsolve_ratio([-2*x**3 + x**2 + 2*x - 1, 2*x**3 + x**2 - 6*x,
-    ... - 2*x**3 - 11*x**2 - 18*x - 9, 2*x**3 + 13*x**2 + 22*x + 8], 0, x)
-    C2*(2*x - 3)/(2*(x**2 - 1))
+    >>> rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
+    ...               -2*n**3 - 11*n**2 - 18*n - 9,
+    ...               2*n**3 + 13*n**2 + 22*n + 8], 0, n)
+    (C2*(2*n - 3)/(2*(n**2 - 1)), [C2])
 
     References
     ==========
@@ -395,11 +355,11 @@ def rsolve_ratio(coeffs, f, n, **hints):
                            predicate=lambda r: r >= 0))
 
     if not nni_roots:
-        return rsolve_poly(coeffs, f, n, **hints)
+        return rsolve_poly(coeffs, f, n)
     else:
-        C, numers = Integer(1), [Integer(0)]*(r + 1)
+        C, numers = Integer(1), [Integer(0)] * (r + 1)
 
-        for i in range(int(max(nni_roots)), -1, -1):
+        for i in range(max(nni_roots), -1, -1):
             d = gcd(A, B.subs({n: n + i}), n)
 
             A = quo(A, d, n)
@@ -418,17 +378,16 @@ def rsolve_ratio(coeffs, f, n, **hints):
         for i in range(r + 1):
             numers[i] *= Mul(*(denoms[:i] + denoms[i + 1:]))
 
-        result = rsolve_poly(numers, f * Mul(*denoms), n, **hints)
+        result = rsolve_poly(numers, f * Mul(*denoms), n)
 
         if result is not None:
-            if hints.get('symbols', False):
-                return simplify(result[0] / C), result[1]
-            else:
-                return simplify(result / C)
+            return (result[0] / C).simplify(), result[1]
 
 
-def rsolve_hyper(coeffs, f, n, **hints):
+def rsolve_hyper(coeffs, f, n):
     r"""
+    Find hypergeometric solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f` we seek for all hypergeometric solutions
@@ -437,38 +396,32 @@ def rsolve_hyper(coeffs, f, n, **hints):
     The inhomogeneous part can be either hypergeometric or a sum
     of a fixed number of pairwise dissimilar hypergeometric terms.
 
+    Notes
+    =====
+
     The algorithm performs three basic steps:
 
-        (1) Group together similar hypergeometric terms in the
-            inhomogeneous part of `\operatorname{L} y = f`, and find
-            particular solution using Abramov's algorithm.
-
-        (2) Compute generating set of `\operatorname{L}` and find basis
-            in it, so that all solutions are linearly independent.
-
-        (3) Form final solution with the number of arbitrary
-            constants equal to dimension of basis of `\operatorname{L}`.
-
-    Term `a(n)` is hypergeometric if it is annihilated by first order
-    linear difference equations with polynomial coefficients or, in
-    simpler words, if consecutive term ratio is a rational function.
+        1. Group together similar hypergeometric terms in the
+           inhomogeneous part of `\operatorname{L} y = f`, and find
+           particular solution using Abramov's algorithm.
+        2. Compute generating set of `\operatorname{L}` and find basis
+           in it, so that all solutions are linearly independent.
+        3. Form final solution with the number of arbitrary
+           constants equal to dimension of basis of `\operatorname{L}`.
 
     The output of this procedure is a linear combination of fixed
-    number of hypergeometric terms. However the underlying method
+    number of hypergeometric terms.  However the underlying method
     can generate larger class of solutions - D'Alembertian terms.
 
-    Note also that this method not only computes the kernel of the
+    This method not only computes the kernel of the
     inhomogeneous equation, but also reduces in to a basis so that
-    solutions generated by this procedure are linearly independent
+    solutions generated by this procedure are linearly independent.
 
     Examples
     ========
 
-    >>> rsolve_hyper([-1, -1, 1], 0, x)
-    C0*(1/2 + sqrt(5)/2)**x + C1*(-sqrt(5)/2 + 1/2)**x
-
-    >>> rsolve_hyper([-1, 1], 1 + x, x)
-    C0 + x*(x + 1)/2
+    >>> rsolve_hyper([-1, 1], 1 + n, n)
+    (C0 + n*(n + 1)/2, [C0])
 
     References
     ==========
@@ -509,9 +462,9 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
         for i, g in enumerate(inhomogeneous):
             coeff, polys = Integer(1), coeffs[:]
-            denoms = [ Integer(1) ] * (r + 1)
+            denoms = [Integer(1)] * (r + 1)
 
-            g = simplify(g)
+            g = g.simplify()
             s = hypersimp(g, n)
 
             for j in range(1, r + 1):
@@ -525,11 +478,11 @@ def rsolve_hyper(coeffs, f, n, **hints):
             for j in range(r + 1):
                 polys[j] *= Mul(*(denoms[:j] + denoms[j + 1:]))
 
-            R = rsolve_ratio(polys, Mul(*denoms), n, symbols=True)
+            R = rsolve_ratio(polys, Mul(*denoms), n)
             if R is not None:
                 R, syms = R
                 if syms:
-                    R = R.subs(zip(syms, [0]*len(syms)))
+                    R = R.subs(zip(syms, [0] * len(syms)))
 
             if R:
                 inhomogeneous[i] *= R
@@ -537,7 +490,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 return
 
             result = Add(*inhomogeneous)
-            result = simplify(result)
+            result = result.simplify()
     else:
         result = Integer(0)
 
@@ -548,7 +501,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
     p_factors = list(roots(p, n))
     q_factors = list(roots(q, n))
 
-    factors = [ (Integer(1), Integer(1)) ]
+    factors = [(Integer(1), Integer(1))]
 
     for p in p_factors:
         for q in q_factors:
@@ -557,20 +510,20 @@ def rsolve_hyper(coeffs, f, n, **hints):
             else:
                 factors += [(n - p, n - q)]
 
-    p = [ (n - p, Integer(1)) for p in p_factors ]
-    q = [ (Integer(1), n - q) for q in q_factors ]
+    p = [(n - p, Integer(1)) for p in p_factors]
+    q = [(Integer(1), n - q) for q in q_factors]
 
     factors = p + factors + q
 
     for A, B in factors:
         polys, degrees = [], []
-        D = A*B.subs({n: n + r - 1})
+        D = A * B.subs({n: n + r - 1})
 
         for i in range(r + 1):
             a = Mul(*[A.subs({n: n + j}) for j in range(0, i)])
             b = Mul(*[B.subs({n: n + j}) for j in range(i, r)])
 
-            poly = quo(coeffs[i]*a*b, D, n)
+            poly = quo(coeffs[i] * a * b, D, n)
             polys.append(poly.as_poly(n))
 
             if not poly.is_zero:
@@ -588,21 +541,21 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if z.is_zero:
                 continue
 
-            sol, syms = rsolve_poly([polys[i]*z**i for i in range(r + 1)],
-                                    0, n, symbols=True)
+            sol, syms = rsolve_poly([polys[i] * z**i for i in range(r + 1)],
+                                    0, n)
             sol = sol.collect(syms)
             sol = [sol.coeff(_) for _ in syms]
 
             for C in sol:
                 ratio = z * A * C.subs({n: n + 1}) / B / C
-                ratio = simplify(ratio)
+                ratio = ratio.simplify()
 
                 skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n)
                                    if v.is_Integer]) + 1
                 K = product(ratio, (n, skip, n - 1))
 
                 if K.has(factorial, FallingFactorial, RisingFactorial):
-                    K = simplify(K)
+                    K = K.simplify()
 
                 if casoratian(kernel + [K], n, zero=False) != 0:
                     kernel.append(K)
@@ -613,70 +566,79 @@ def rsolve_hyper(coeffs, f, n, **hints):
     for C, ker in sk:
         result += C * ker
 
-    if hints.get('symbols', False):
-        symbols |= {s for s, k in sk}
-        return result, list(symbols)
-    else:
-        return result
+    symbols |= {s for s, k in sk}
+    return result, sorted(symbols, key=default_sort_key)
 
 
-def rsolve(f, y, init=None):
+def rsolve(f, *y, init={}, simplify=True):
     r"""
-    Solve univariate recurrence with rational coefficients.
+    Solve recurrence equations.
 
-    Given `k`-th order linear recurrence `\operatorname{L} y = f`,
-    or equivalently:
+    The equations can involve objects of the form `y(n + k)`, where
+    `k` is a constant.
 
-    .. math:: a_{k}(n) y(n+k) + a_{k-1}(n) y(n+k-1) +
-              \ldots + a_{0}(n) y(n) = f(n)
+    Parameters
+    ==========
 
-    where `a_{i}(n)`, for `i=0, \ldots, k`, are polynomials or rational
-    functions in `n`, and `f` is a hypergeometric function or a sum
-    of a fixed number of pairwise dissimilar hypergeometric terms in
-    `n`, finds all solutions or returns ``None``, if none were found.
+    f : Expr, Equality or iterable of above
+        The single recurrence equation or a system of recurrence
+        equations.
 
-    Initial conditions can be given as a dictionary in two forms:
+    \*y : tuple
+        Holds function applications `y(n)`, wrt to which the recurrence
+        equation(s) will be solved.  If none given (empty tuple), this
+        will be guessed from the provided equation(s).
 
-        (1) ``{   n_0  : v_0,   n_1  : v_1, ...,   n_m  : v_m }``
-        (2) ``{ y(n_0) : v_0, y(n_1) : v_1, ..., y(n_m) : v_m }``
+    init : dict, optional
+        The initial/boundary conditions for the recurrence equations as
+        mapping of the function application `y(n_i)` to its value.
+        Default is empty dictionary.
 
-    or as a list ``L`` of values:
-
-        ``L = [ v_0, v_1, ..., v_m ]``
-
-    where ``L[i] = v_i``, for `i=0, \ldots, m`, maps to `y(n_i)`.
+    simplify : bool, optional
+        Enable simplification (default) on solutions.
 
     Examples
     ========
 
-    Lets consider the following recurrence:
+    >>> eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
 
-    .. math:: (n - 1) y(n + 2) - (n^2 + 3 n - 2) y(n + 1) +
-              2 n (n + 1) y(n) = 0
+    >>> rsolve(eq)
+    [{f: Lambda(n, 2**n*C0 + C1*factorial(n))}]
+    >>> rsolve(eq, init={f(0): 0, f(1): 3})
+    [{f: Lambda(n, 3*2**n - 3*factorial(n))}]
 
-    >>> y = Function('y')
+    Notes
+    =====
 
-    >>> f = (n - 1)*y(n + 2) - (n**2 + 3*n - 2)*y(n + 1) + 2*n*(n + 1)*y(n)
-
-    >>> rsolve(f, y(n))
-    2**n*C0 + C1*factorial(n)
-
-    >>> rsolve(f, y(n), {y(0): 0, y(1): 3})
-    3*2**n - 3*factorial(n)
+    Currently, the function can handle linear recurrences with polynomial
+    coefficients and hypergeometric inhomogeneous part.
 
     See Also
     ========
 
-    rsolve_poly, rsolve_ratio, rsolve_hyper
+    diofant.solvers.ode.dsolve : solving differential equations
+    diofant.solvers.solvers.solve : solving algebraic equations
 
     """
-    if isinstance(f, Equality):
-        f = f.lhs - f.rhs
-    f = f.expand()
+    if not iterable(f):
+        f = [f]
 
+    f = [_.lhs - _.rhs if isinstance(_, Equality) else _ for _ in f]
+    f = [_.expand() for _ in f]
+
+    if len(f) > 1 or len(y) > 1:
+        raise NotImplementedError('Support for systems of recurrence '
+                                  'equations is not implemented yet.')
+    else:
+        f = f[0]
+
+    if not y:
+        y = sorted(f.atoms(Function), key=default_sort_key)[0]
+    else:
+        y = y[0]
     n = y.args[0]
 
-    h_part = defaultdict(lambda: Integer(0))
+    h_part = collections.defaultdict(lambda: Integer(0))
     i_part = Integer(0)
 
     for h, c in f.collect(y.func(Wild('n')), evaluate=False).items():
@@ -684,29 +646,30 @@ def rsolve(f, y, init=None):
             k = Wild('k', exclude=(n,))
             r = h.args[0].match(n + k)
             if r:
-                c = simplify(c)
+                c = c.simplify()
                 if not c.is_rational_function(n):
-                    raise ValueError("Rational function of '%s' expected, got '%s'" % (n, c))
+                    raise ValueError(f"Rational function of '{n}' expected, got '{c}'")
                 h_part[int(r[k])] = c
             else:
-                raise ValueError("'%s(%s + Integer)' expected, got '%s'" % (y.func, n, h))
+                raise ValueError(f"'{y.func}({n} + Integer)' expected, got '{h}'")
         else:
-            i_term = h*c
+            i_term = h * c
             if i_term.find(y.func(Wild('k'))):
-                raise NotImplementedError("Linear recurrence for '%s' "
-                                          "expected, got '%s'" % (y.func, f))
+                raise NotImplementedError(f"Linear recurrence for '{y.func}' "
+                                          f"expected, got '{f}'")
             i_part -= i_term
 
     if not i_part.is_zero:
         if not all(p.is_hypergeometric(n) for p in i_part.as_coeff_add(n)[1]):
-            raise NotImplementedError("Inhomogeneous part should be a sum of "
-                                      "hypergeometric terms in '%s', got "
-                                      "'%s'" % (n, i_part))
+            raise NotImplementedError('Inhomogeneous part should be a sum of '
+                                      f"hypergeometric terms in '{n}', got "
+                                      f"'{i_part}'")
 
     k_min, k_max = min(h_part), max(h_part)
 
     if k_min < 0:
-        return rsolve(f.subs({n: n + abs(k_min)}), y, init)
+        return rsolve(f.subs({n: n + abs(k_min)}), y, init=init,
+                      simplify=simplify)
 
     i_numer, i_denom = i_part.as_numer_denom()
 
@@ -715,37 +678,27 @@ def rsolve(f, y, init=None):
     if common != 1:
         for k, coeff in h_part.items():
             numer, denom = coeff.as_numer_denom()
-            h_part[k] = numer*quo(common, denom, n)
+            h_part[k] = numer * quo(common, denom, n)
 
-        i_part = i_numer*quo(common, i_denom, n)
+        i_part = i_numer * quo(common, i_denom, n)
 
     coeffs = [h_part[i] for i in range(k_max + 1)]
 
-    result = rsolve_hyper(coeffs, i_part, n, symbols=True)
+    result = rsolve_hyper(coeffs, i_part, n)
 
     if result is None:
         return
 
     solution, symbols = result
 
-    if init == {} or init == []:
-        init = None
-
-    if symbols and init is not None:
-        if type(init) is list:
-            init = {i: init[i] for i in range(len(init))}
-
+    if symbols and init != {}:
         equations = []
 
         for k, v in init.items():
-            try:
-                i = int(k)
-            except TypeError:
-                if k.is_Function and k.func == y.func:
-                    i = int(k.args[0])
-                else:
-                    raise ValueError("Integer or term '%s(Integer)' "
-                                     "expected, got '%s'" % (y.func, k))
+            if k.is_Function and k.func == y.func:
+                i = int(k.args[0])
+            else:
+                raise ValueError(f"'{y.func}(Integer)' expected, got '{k}'")
             eq = solution.limit(n, i) - v
             equations.append(eq)
 
@@ -756,4 +709,9 @@ def rsolve(f, y, init=None):
         else:
             solution = solution.subs(result[0])
 
-    return solution
+    if simplify:
+        solution = solution.expand(log=True, mul=False)
+        solution = constantsimp(solution, symbols)
+        solution = solution.simplify()
+
+    return [{y.func: Lambda((n,), solution)}]

@@ -25,7 +25,7 @@ def isqrt(n):
     n = int(n)
 
     if n < 0:
-        raise ValueError("n argument must be nonnegative")
+        raise ValueError('n argument must be nonnegative')
     if n == 0:
         return 0
 
@@ -54,9 +54,9 @@ def integer_nthroot(y, n):
     """
     y, n = int(y), int(n)
     if y < 0:
-        raise ValueError("y must be nonnegative")
+        raise ValueError('y must be nonnegative')
     if n < 1:
-        raise ValueError("n must be positive")
+        raise ValueError('n must be positive')
     if y in (0, 1):
         return y, True
     if n == 1:
@@ -195,7 +195,9 @@ class Pow(Expr):
         b = sympify(b, strict=True)
         e = sympify(e, strict=True)
         if evaluate:
-            if e is S.Zero:
+            if nan in (b, e):
+                return nan
+            elif e is S.Zero:
                 return Integer(1)
             elif e is S.One:
                 return b
@@ -206,9 +208,7 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if nan in (b, e):  # XXX nan**x -> nan under assumption that x != 0
-                return nan
-            elif b is S.One:
+            if b is S.One:
                 if abs(e).is_infinite:
                     return nan
                 return Integer(1)
@@ -338,35 +338,25 @@ class Pow(Expr):
         if s is not None:
             return s*Pow(b, e*other)
 
-    def _eval_is_even(self):
-        if self.exp.is_integer and self.exp.is_positive:
-            return self.base.is_even
-
     def _eval_is_positive(self):
-        from ..functions import log
-        if self.base == self.exp:
-            if self.base.is_nonnegative:
-                return True
-        elif self.base.is_positive:
-            if self.exp.is_extended_real:
-                return True
-        elif self.base.is_negative:
-            if self.exp.is_even:
-                return True
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_nonpositive:
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_imaginary:
-            if self.exp.is_integer:
-                m = self.exp % 4
-                if m.is_zero:
-                    return True
-                if m.is_integer and m.is_nonzero:
-                    return False
-            if self.exp.is_imaginary:
-                return log(self.base).is_imaginary
+        b, e = self.base, self.exp
+        if b.is_nonnegative and b == e:
+            return True
+        elif b.is_positive and (e.is_real or e.is_positive):
+            return True
+        elif b.is_negative and e.is_integer:
+            return e.is_even
+        elif b.is_nonpositive and e.is_odd:
+            return False
+        elif b in {I, -I} and e.is_imaginary:
+            return True
+
+    def _eval_is_nonnegative(self):
+        b, e = self.base, self.exp
+        if b.is_imaginary and e.is_nonnegative:
+            m = e % 4
+            if m.is_integer:
+                return m.is_zero
 
     def _eval_is_negative(self):
         if self.base.is_negative:
@@ -403,7 +393,7 @@ class Pow(Expr):
                     return self.exp.is_negative
 
     def _eval_is_integer(self):
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_rational:
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
@@ -487,7 +477,8 @@ class Pow(Expr):
     def _eval_is_complex(self):
         from ..functions import log
         if self.base.is_complex:
-            return (log(self.base)*self.exp).is_complex
+            exp = log(self.base)*self.exp
+            return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
         from ..functions import arg, log
@@ -627,8 +618,7 @@ class Pow(Expr):
         (1/2, 2)
 
         """
-
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_Rational and b.numerator == 1 and b.denominator != 1:
             return Integer(b.denominator), -e
         return b, e
@@ -791,8 +781,7 @@ class Pow(Expr):
 
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
-
-        base, exp = self.args
+        base, exp = self.base, self.exp
         result = self
 
         if exp.is_Rational and exp.numerator > 0 and base.is_Add:
@@ -985,9 +974,7 @@ class Pow(Expr):
                 hints['complex'] = False
 
                 expanded = self.expand(deep, **hints)
-                if hints.get('ignore') == expanded:
-                    return
-                else:
+                if hints.get('ignore') != expanded:
                     return re(expanded), im(expanded)
             else:
                 return re(self), im(self)
@@ -1079,7 +1066,7 @@ class Pow(Expr):
             return True
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1284,11 +1271,13 @@ class Pow(Expr):
         3**(2*x + 2)
 
         >>> eq = (2 + 2*x)**y
-        >>> s = expand_power_base(eq); s.is_Mul, s
+        >>> s = expand_power_base(eq)
+        >>> s.is_Mul, s
         (False, (2*x + 2)**y)
         >>> eq.as_content_primitive()
         (1, (2*(x + 1))**y)
-        >>> s = expand_power_base(_[1]); s.is_Mul, s
+        >>> s = expand_power_base(_[1])
+        >>> s.is_Mul, s
         (True, 2**y*(x + 1)**y)
 
         See Also
@@ -1297,7 +1286,6 @@ class Pow(Expr):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         b, e = self.as_base_exp()
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)

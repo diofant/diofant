@@ -1,4 +1,4 @@
-from diofant import (Abs, I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
+from diofant import (I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
                      coth, exp, expand_complex, im, oo, pi, re, root, sign,
                      sin, sinh, sqrt, symbols, tan, tanh)
 
@@ -7,18 +7,18 @@ __all__ = ()
 
 
 def test_complex():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
     e = (a + I*b)*(a - I*b)
     assert e.expand() == a**2 + b**2
     assert sqrt(I) == root(-1, 4)
 
 
 def test_conjugate():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
-    c = Symbol("c", imaginary=True)
-    d = Symbol("d", imaginary=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
+    c = Symbol('c', imaginary=True)
+    d = Symbol('d', imaginary=True)
     x = Symbol('x')
     z = a + I*b + c + I*d
     zc = a - I*b - c + I*d
@@ -39,25 +39,25 @@ def test_conjugate():
 
 
 def test_abs1():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
     assert abs(a) == abs(a)
     assert abs(-a) == abs(a)
     assert abs(a + I*b) == sqrt(a**2 + b**2)
 
 
 def test_abs2():
-    a = Symbol("a", extended_real=False)
-    b = Symbol("b", extended_real=False)
+    a = Symbol('a', extended_real=False)
+    b = Symbol('b', extended_real=False)
     assert abs(a) != a
     assert abs(-a) != a
     assert abs(a + I*b) != sqrt(a**2 + b**2)
 
 
 def test_evalc():
-    x = Symbol("x", extended_real=True)
-    y = Symbol("y", extended_real=True)
-    z = Symbol("z")
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
+    z = Symbol('z')
     assert ((x + I*y)**2).expand(complex=True) == x**2 + 2*I*x*y - y**2
     assert expand_complex(z**(2*I)) == (re((re(z) + I*im(z))**(2*I)) +
                                         I*im((re(z) + I*im(z))**(2*I)))
@@ -96,7 +96,7 @@ def test_evalc():
 
 
 def test_pythoncomplex():
-    x = Symbol("x")
+    x = Symbol('x')
     assert 4j*x == 4*x*I
     assert 4j*x == 4.0*x*I
     assert 4.1j*x != 4*x*I
@@ -173,14 +173,14 @@ def test_real_imag():
     assert (2*a*x).as_real_imag() == (2*a*re(x), 2*a*im(x))
 
     # issue sympy/sympy#5395:
-    assert (x*x.conjugate()).as_real_imag() == (Abs(x)**2, 0)
+    assert (x*x.conjugate()).as_real_imag() == (abs(x)**2, 0)
     assert im(x*x.conjugate()) == 0
-    assert im(x*y.conjugate()*z*y) == im(x*z)*Abs(y)**2
-    assert im(x*y.conjugate()*x*y) == im(x**2)*Abs(y)**2
-    assert im(Z*y.conjugate()*X*y) == im(Z*X)*Abs(y)**2
+    assert im(x*y.conjugate()*z*y) == im(x*z)*abs(y)**2
+    assert im(x*y.conjugate()*x*y) == im(x**2)*abs(y)**2
+    assert im(Z*y.conjugate()*X*y) == im(Z*X)*abs(y)**2
     assert im(X*X.conjugate()) == im(X*X.conjugate(), evaluate=False)
     assert (sin(x)*sin(x).conjugate()).as_real_imag() == \
-        (Abs(sin(x))**2, 0)
+        (abs(sin(x))**2, 0)
 
     # issue sympy/sympy#6573:
     assert (x**2).as_real_imag() == (re(x)**2 - im(x)**2, 2*re(x)*im(x))
@@ -220,8 +220,8 @@ def test_sympyissue_4124():
 
 
 def test_sympyissue_11581():
-    x = Symbol("x", real=True)
-    y = Symbol("y", real=True)
+    x = Symbol('x', real=True)
+    y = Symbol('y', real=True)
     r = sqrt(x**2 + y**2)
     assert conjugate(r) == r
     s = abs(x + I*y)

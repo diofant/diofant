@@ -10,6 +10,7 @@ from .ndim_array import ImmutableNDimArray, NDimArray
 
 
 class DenseNDimArray(NDimArray):
+    """Dense N-dim array."""
 
     def __getitem__(self, index):
         """
@@ -108,13 +109,14 @@ class DenseNDimArray(NDimArray):
         """
         new_total_size = functools.reduce(lambda x, y: x*y, newshape)
         if new_total_size != self._loop_size:
-            raise ValueError("Invalid reshape parameters " + str(newshape))
+            raise ValueError('Invalid reshape parameters ' + str(newshape))
 
         # there is no `.func` as this class does not subtype `Basic`:
         return type(self)(self._array, newshape)
 
 
 class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
+    """An immutable version of a dense N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
         return cls._new(iterable, shape, **kwargs)
@@ -140,6 +142,7 @@ class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
 
 
 class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
+    """A mutable version of a dense N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
         return cls._new(iterable, shape, **kwargs)
@@ -161,7 +164,7 @@ class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
         Examples
         ========
 
-        >>> a = MutableDenseNDimArray.zeros(2,  2)
+        >>> a = MutableDenseNDimArray.zeros(2, 2)
         >>> a[0, 0] = 1
         >>> a[1, 1] = 1
         >>> a

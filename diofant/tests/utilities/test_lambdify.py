@@ -1,21 +1,20 @@
+import itertools
 import math
-from itertools import product
 
 import mpmath
 import pytest
 
 import diofant
-from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
-                     Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
-                     acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
-                     symbols, sympify, tan, true)
-from diofant.abc import a, b, t, w, x, y, z
+from diofant import (ITE, And, Float, Function, I, Integral, Lambda, Matrix,
+                     Max, Min, Not, Or, Piecewise, Rational, cos, exp, false,
+                     lambdify, oo, pi, sin, sqrt, symbols, true)
+from diofant.abc import t, w, x, y, z
 from diofant.external import import_module
-from diofant.printing.lambdarepr import LambdaPrinter, NumExprPrinter
+from diofant.printing.lambdarepr import LambdaPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
-                                        NUMPY_TRANSLATIONS,
-                                        implemented_function)
+                                        NUMPY_TRANSLATIONS, _get_namespace,
+                                        implemented_function, lambdastr)
 
 
 __all__ = ()
@@ -25,11 +24,6 @@ MutableDenseMatrix = Matrix
 numpy = import_module('numpy')
 with_numpy = pytest.mark.skipif(numpy is None,
                                 reason="Couldn't import numpy.")
-
-numexpr = import_module('numexpr')
-with_numexpr = pytest.mark.skipif(numexpr is None,
-                                  reason="Couldn't import numexpr.")
-
 
 # ================= Test different arguments =======================
 
@@ -61,7 +55,7 @@ def test_str_args():
 def test_own_namespace():
     def myfunc(x):
         return 1
-    f = lambdify(x, sin(x), {"sin": myfunc})
+    f = lambdify(x, sin(x), {'sin': myfunc})
     assert f(0.1) == 1
     assert f(100) == 1
 
@@ -76,13 +70,26 @@ def test_bad_args():
     pytest.raises(TypeError, lambda: lambdify(1))
     # same with vector exprs
     pytest.raises(TypeError, lambda: lambdify([1, 2]))
+    # reserved name
+    pytest.raises(ValueError, lambda: lambdify((('__flatten_args__',),), 1))
+
+    pytest.raises(NameError, lambda: lambdify(x, 1, 'spam'))
+
+
+def test__get_namespace():
+    pytest.raises(TypeError, lambda: _get_namespace(1))
+
+
+def test_lambdastr():
+    assert lambdastr(x, x**2) == 'lambda x: (x**2)'
+    assert lambdastr(x, None, dummify=True).find('None') > 0
 
 
 def test_atoms():
     # Non-Symbol atoms should not be pulled out from the expression namespace
-    f = lambdify(x, pi + x, {"pi": 3.14})
+    f = lambdify(x, pi + x, {'pi': 3.14})
     assert f(0) == 3.14
-    f = lambdify(x, I + x, {"I": 1j})
+    f = lambdify(x, I + x, {'I': 1j})
     assert f(1) == 1 + 1j
 
 # ================= Test different modules =========================
@@ -93,20 +100,20 @@ def test_atoms():
 @conserve_mpmath_dps
 def test_diofant_lambda():
     mpmath.mp.dps = 50
-    sin02 = mpmath.mpf("0.19866933079506121545941262711838975037020672954020")
-    f = lambdify(x, sin(x), "diofant")
+    sin02 = mpmath.mpf('0.19866933079506121545941262711838975037020672954020')
+    f = lambdify(x, sin(x), 'diofant')
     assert f(x) == sin(x)
     prec = 1e-15
     assert -prec < f(Rational(1, 5)).evalf() - Float(str(sin02)) < prec
     # arctan is in numpy module and should not be available
-    pytest.raises(NameError, lambda: lambdify(x, arctan(x), "diofant"))  # noqa: F821
+    pytest.raises(NameError, lambda: lambdify(x, arctan(x), 'diofant'))  # noqa: F821
 
 
 @conserve_mpmath_dps
 def test_math_lambda():
     mpmath.mp.dps = 50
-    sin02 = mpmath.mpf("0.19866933079506121545941262711838975037020672954020")
-    f = lambdify(x, sin(x), "math")
+    sin02 = mpmath.mpf('0.19866933079506121545941262711838975037020672954020')
+    f = lambdify(x, sin(x), 'math')
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
 
@@ -117,10 +124,10 @@ def test_math_lambda():
 @conserve_mpmath_dps
 def test_mpmath_lambda():
     mpmath.mp.dps = 50
-    sin02 = mpmath.mpf("0.19866933079506121545941262711838975037020672954020")
-    f = lambdify(x, sin(x), "mpmath")
+    sin02 = mpmath.mpf('0.19866933079506121545941262711838975037020672954020')
+    f = lambdify(x, sin(x), 'mpmath')
     prec = 1e-49  # mpmath precision is around 50 decimal places
-    assert -prec < f(mpmath.mpf("0.2")) - sin02 < prec
+    assert -prec < f(mpmath.mpf('0.2')) - sin02 < prec
 
     # if this succeeds, it can't be a mpmath function
     pytest.raises(TypeError, lambda: f(x))
@@ -129,8 +136,8 @@ def test_mpmath_lambda():
 @conserve_mpmath_dps
 def test_number_precision():
     mpmath.mp.dps = 50
-    sin02 = mpmath.mpf("0.19866933079506121545941262711838975037020672954020")
-    f = lambdify(x, sin02, "mpmath")
+    sin02 = mpmath.mpf('0.19866933079506121545941262711838975037020672954020')
+    f = lambdify(x, sin02, 'mpmath')
     prec = 1e-49  # mpmath precision is around 50 decimal places
     assert -prec < f(0) - sin02 < prec
 
@@ -167,39 +174,9 @@ def test_numpy_transl():
 
 @with_numpy
 def test_numpy_translation_abs():
-    f = lambdify(x, Abs(x), "numpy")
+    f = lambdify(x, abs(x), 'numpy')
     assert f(-1) == 1
     assert f(1) == 1
-
-
-@with_numexpr
-def test_numexpr_printer():
-    # if translation/printing is done incorrectly then evaluating
-    # a lambdified numexpr expression will throw an exception
-
-    blacklist = ('where', 'complex', 'contains')
-    arg_tuple = (x, y, z)  # some functions take more than one argument
-    for sym in NumExprPrinter._numexpr_functions:
-        if sym in blacklist:
-            continue
-        ssym = sympify(sym)
-        if hasattr(ssym, '_nargs'):
-            nargs = ssym._nargs[0]
-        else:
-            nargs = 1
-        args = arg_tuple[:nargs]
-        f = lambdify(args, ssym(*args), modules='numexpr')
-        assert f(*(1, )*nargs) is not None
-
-
-@with_numpy
-@with_numexpr
-def test_sympyissue_9334():
-    expr = b*a - sqrt(a**2)
-    syms = sorted(expr.free_symbols, key=lambda s: s.name)
-    func_numexpr = lambdify(syms, expr, modules=[numexpr], dummify=False)
-    foo, bar = numpy.random.random((2, 4))
-    func_numexpr(foo, bar)
 
 
 # ================= Test some functions ============================
@@ -280,23 +257,23 @@ def test_docs():
 
 
 def test_math():
-    f = lambdify((x, y), sin(x), modules="math")
+    f = lambdify((x, y), sin(x), modules='math')
     assert f(0, 5) == 0
 
 
 def test_sin():
     f = lambdify(x, sin(x)**2)
     assert isinstance(f(2), float)
-    f = lambdify(x, sin(x)**2, modules="math")
+    f = lambdify(x, sin(x)**2, modules='math')
     assert isinstance(f(2), float)
 
 
 def test_matrix():
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol = Matrix([[1, 2], [sin(3) + 4, 1]])
-    f = lambdify((x, y, z), A, modules="diofant")
+    f = lambdify((x, y, z), A, modules='diofant')
     assert f(1, 2, 3) == sol
-    f = lambdify((x, y, z), (A, [A]), modules="diofant")
+    f = lambdify((x, y, z), (A, [A]), modules='diofant')
     assert f(1, 2, 3) == (sol, [sol])
     J = Matrix((x, x + y)).jacobian((x, y))
     v = Matrix((x, y))
@@ -319,14 +296,14 @@ def test_numpy_matrix():
 @with_numpy
 def test_numpy_transpose():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify(x, A.T, modules="numpy")
+    f = lambdify(x, A.T, modules='numpy')
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, 0], [2, 1]]))
 
 
 @with_numpy
 def test_numpy_inverse():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify(x, A**-1, modules="numpy")
+    f = lambdify(x, A**-1, modules='numpy')
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, -2], [0,  1]]))
 
 
@@ -349,7 +326,7 @@ def test_python_div_zero_sympyissue_11306():
 @with_numpy
 def test_numpy_piecewise():
     pieces = Piecewise((x, x < 3), (x**2, x > 5), (0, True))
-    f = lambdify(x, pieces, modules="numpy")
+    f = lambdify(x, pieces, modules='numpy')
     numpy.testing.assert_array_equal(f(numpy.arange(10)),
                                      numpy.array([0, 1, 2, 0, 0, 0, 36, 49, 64, 81]))
     # If we evaluate somewhere all conditions are False, we should get back NaN
@@ -360,9 +337,9 @@ def test_numpy_piecewise():
 
 @with_numpy
 def test_numpy_logical_ops():
-    and_func = lambdify((x, y), And(x, y), modules="numpy")
-    or_func = lambdify((x, y), Or(x, y), modules="numpy")
-    not_func = lambdify(x, Not(x), modules="numpy")
+    and_func = lambdify((x, y), And(x, y), modules='numpy')
+    or_func = lambdify((x, y), Or(x, y), modules='numpy')
+    not_func = lambdify(x, Not(x), modules='numpy')
     arr1 = numpy.array([True, True])
     arr2 = numpy.array([False, True])
     numpy.testing.assert_array_equal(and_func(arr1, arr2), numpy.array([False, True]))
@@ -373,45 +350,19 @@ def test_numpy_logical_ops():
 @with_numpy
 def test_numpy_matmul():
     xmat = Matrix([[x, y], [z, 1+z]])
-    ymat = Matrix([[x**2], [Abs(x)]])
-    mat_func = lambdify((x, y, z), xmat*ymat, modules="numpy")
+    ymat = Matrix([[x**2], [abs(x)]])
+    mat_func = lambdify((x, y, z), xmat*ymat, modules='numpy')
     numpy.testing.assert_array_equal(mat_func(0.5, 3, 4), numpy.array([[1.625], [3.5]]))
     numpy.testing.assert_array_equal(mat_func(-0.5, 3, 4), numpy.array([[1.375], [3.5]]))
     # Multiple matrices chained together in multiplication
-    f = lambdify((x, y, z), xmat*xmat*xmat, modules="numpy")
+    f = lambdify((x, y, z), xmat*xmat*xmat, modules='numpy')
     numpy.testing.assert_array_equal(f(0.5, 3, 4), numpy.array([[72.125, 119.25],
                                                                 [159, 251]]))
 
 
-@with_numpy
-@with_numexpr
-def test_numpy_numexpr():
-    a, b, c = numpy.random.randn(3, 128, 128)
-    # ensure that numpy and numexpr return same value for complicated expression
-    expr = (sin(x) + cos(y) + tan(z)**2 + Abs(z - y)*acos(sin(y*z)) +
-            Abs(y - z)*acosh(2 + exp(y - x)) - sqrt(x**2 + I*y**2))
-    npfunc = lambdify((x, y, z), expr, modules='numpy')
-    nefunc = lambdify((x, y, z), expr, modules='numexpr')
-    assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))
-
-
-@with_numpy
-@with_numexpr
-def test_numexpr_userfunctions():
-    a, b = numpy.random.randn(2, 10)
-    uf = type('uf', (Function, ),
-              {'eval': classmethod(lambda x, y: y**2+1)})
-    func = lambdify(x, 1-uf(x), modules='numexpr')
-    assert numpy.allclose(func(a), -(a**2))
-
-    uf = implemented_function(Function('uf'), lambda x, y: 2*x*y+1)
-    func = lambdify((x, y), uf(x, y), modules='numexpr')
-    assert numpy.allclose(func(a, b), 2*a*b+1)
-
-
 def test_integral():
     f = Lambda(x, exp(-x**2))
-    l = lambdify(x, Integral(f(x), (x, -oo, oo)), modules="diofant")
+    l = lambdify(x, Integral(f(x), (x, -oo, oo)), modules='diofant')
     assert l(x) == Integral(exp(-x**2), (x, -oo, oo))
 
 # ================= Test symbolic ==================================
@@ -429,7 +380,7 @@ def test_sym_list_args():
 
 def test_sym_integral():
     f = Lambda(x, exp(-x**2))
-    l = lambdify(x, Integral(f(x), (x, -oo, oo)), modules="diofant")
+    l = lambdify(x, Integral(f(x), (x, -oo, oo)), modules='diofant')
     assert l(y).doit() == sqrt(pi)
 
 
@@ -445,9 +396,9 @@ def test_namespace_order():
           'g': lambda x: 'function g'}
     f = diofant.Function('f')
     g = diofant.Function('g')
-    if1 = lambdify(x, f(x), modules=(n1, "diofant"))
+    if1 = lambdify(x, f(x), modules=(n1, 'diofant'))
     assert if1(1) == 'first f'
-    if2 = lambdify(x, g(x), modules=(n2, "diofant"))
+    if2 = lambdify(x, g(x), modules=(n2, 'diofant'))
     assert if2(1) == 'function g'
     # previously gave 'second f'
     assert if1(1) == 'first f'
@@ -469,15 +420,16 @@ def test_imps():
     my_f = implemented_function(func, lambda x: 2*x)
     assert hasattr(func, '_imp_') and hasattr(my_f, '_imp_')
     # Error for functions with same name and different implementation
-    f2 = implemented_function("f", lambda x: x + 101)
+    f2 = implemented_function('f', lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))
 
 
 def test_imps_errors():
     # Test errors that implemented functions can return, and still be
     # able to form expressions.  See issue sympy/sympy#10810.
-    for val, error_class in product((0, 0., 2, 2.0),
-                                    (AttributeError, TypeError, ValueError)):
+    for val, error_class in itertools.product((0, 0., 2, 2.0),
+                                              (AttributeError, TypeError,
+                                               ValueError)):
 
         def myfunc(a):
             if a == 0:
@@ -501,7 +453,7 @@ def test_lambdify_imps():
     assert lambdify(x, 1 + f(x))(0) == 2
     assert lambdify((x, y), y + f(x))(0, 1) == 2
     # make an implemented function and test
-    f = implemented_function("f", lambda x: x + 100)
+    f = implemented_function('f', lambda x: x + 100)
     assert lambdify(x, f(x))(0) == 100
     assert lambdify(x, 1 + f(x))(0) == 101
     assert lambdify((x, y), y + f(x))(0, 1) == 101
@@ -560,18 +512,18 @@ def test_python_keywords():
 def test_lambdify_docstring():
     func = lambdify((w, x, y, z), w + x + y + z)
     assert func.__doc__ == (
-        "Created with lambdify. Signature:\n\n"
-        "func(w, x, y, z)\n\n"
-        "Expression:\n\n"
-        "w + x + y + z")
+        'Created with lambdify. Signature:\n\n'
+        'func(w, x, y, z)\n\n'
+        'Expression:\n\n'
+        'w + x + y + z')
     syms = symbols('a1:26')
     func = lambdify(syms, sum(syms))
     assert func.__doc__ == (
-        "Created with lambdify. Signature:\n\n"
-        "func(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15,\n"
-        "        a16, a17, a18, a19, a20, a21, a22, a23, a24, a25)\n\n"
-        "Expression:\n\n"
-        "a1 + a10 + a11 + a12 + a13 + a14 + a15 + a16 + a17 + a18 + a19 + a2 + a20 +...")
+        'Created with lambdify. Signature:\n\n'
+        'func(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15,\n'
+        '        a16, a17, a18, a19, a20, a21, a22, a23, a24, a25)\n\n'
+        'Expression:\n\n'
+        'a1 + a10 + a11 + a12 + a13 + a14 + a15 + a16 + a17 + a18 + a19 + a2 + a20 +...')
 
 
 # ================= Test special printers ==========================
@@ -579,22 +531,22 @@ def test_lambdify_docstring():
 
 def test_special_printers():
     class IntervalPrinter(LambdaPrinter):
-        """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
+        """Use ``lambda`` printer but print numbers as ``mpi`` intervals."""
 
         def _print_Integer(self, expr):
-            return "mpi('%s')" % super()._print_Integer(expr)
+            return f"mpi('{super()._print_Integer(expr)}')"
 
         def _print_Rational(self, expr):
-            return "mpi('%s')" % super()._print_Rational(expr)
+            return f"mpi('{super()._print_Rational(expr)}')"
 
     def intervalrepr(expr):
         return IntervalPrinter().doprint(expr)
 
     expr = diofant.sqrt(diofant.sqrt(2) + diofant.sqrt(3)) + diofant.Rational(1, 2)
 
-    func0 = lambdify((), expr, modules="mpmath", printer=intervalrepr)
-    func1 = lambdify((), expr, modules="mpmath", printer=IntervalPrinter)
-    func2 = lambdify((), expr, modules="mpmath", printer=IntervalPrinter())
+    func0 = lambdify((), expr, modules='mpmath', printer=intervalrepr)
+    func1 = lambdify((), expr, modules='mpmath', printer=IntervalPrinter)
+    func2 = lambdify((), expr, modules='mpmath', printer=IntervalPrinter())
 
     mpi = type(mpmath.mpi(1, 2))
 
