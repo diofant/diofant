@@ -4,18 +4,73 @@ import collections
 import math
 
 from ..core import I
-from .densearith import (dmp_add, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
-                         dmp_rem, dup_rshift)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
-                         dup_reverse)
+from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
+                         dmp_quo, dmp_rem, dmp_sub, dup_rshift)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
+                         dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_to_dict, dmp_to_tuple, dmp_zero, dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive, dup_real_imag,
-                         dup_transform)
+                         dmp_eval_in, dmp_ground_primitive, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
+
+
+def dup_real_imag(f, K):
+    """
+    Return bivariate polynomials ``f1`` and ``f2``, such that ``f = f1 + f2*I``.
+
+    Examples
+    ========
+
+    >>> R, x, y = ring('x y', ZZ)
+
+    >>> R.dup_real_imag(x**3 + x**2 + x + 1)
+    (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
+
+    >>> R, x, y = ring('x y', QQ.algebraic_field(I))
+
+    >>> R.dup_real_imag(x**2 + I*x - 1)
+    (x**2 - y**2 - y - 1, 2*x*y + x)
+
+    """
+    if K.is_ComplexAlgebraicField:
+        K0 = K.domain
+        r1, i1 = dup_real_imag([_.real for _ in f], K0)
+        r2, i2 = dup_real_imag([_.imag for _ in f], K0)
+        return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
+    elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
+        raise DomainError(f'computing real and imaginary parts is not supported over {K}')
+
+    f1 = dmp_zero(1)
+    f2 = dmp_zero(1)
+
+    if not f:
+        return f1, f2
+
+    g = [[[K.one, K.zero]], [[K.one], []]]
+    h = dmp_ground(f[0], 2)
+
+    for c in f[1:]:
+        h = dmp_mul(h, g, 2, K)
+        h = dmp_add(h, [dmp_ground(c, 1)], 2, K)
+
+    H = dmp_to_dict(h, 0)
+
+    for (k,), h in H.items():
+        m = k % 4
+
+        if not m:
+            f1 = dmp_add(f1, h, 1, K)
+        elif m == 1:
+            f2 = dmp_add(f2, h, 1, K)
+        elif m == 2:
+            f1 = dmp_sub(f1, h, 1, K)
+        else:
+            f2 = dmp_sub(f2, h, 1, K)
+
+    return f1, f2
 
 
 def dup_sturm(f, K):
