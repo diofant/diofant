@@ -6,19 +6,6 @@ from diofant import ZZ, ring
 __all__ = ()
 
 
-def test_dup_transform():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_transform(R(0), R(0), x + 1) == 0
-    assert R.dup_transform(R(0), R(1), x + 1) == 0
-    assert R.dup_transform(R(0), x + 2, x + 1) == 0
-
-    assert (R.dup_transform(6*x**4 - 5*x**3 + 4*x**2 - 3*x + 17,
-                            x**2 - 3*x + 4, 2*x - 3) ==
-            6*x**8 - 82*x**7 + 541*x**6 - 2205*x**5 + 6277*x**4 -
-            12723*x**3 + 17191*x**2 - 13603*x + 4773)
-
-
 def test_dmp_compose():
     R, x = ring('x', ZZ)
 

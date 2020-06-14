@@ -3,7 +3,7 @@
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
                          dup_lshift, dup_rshift)
 from .densebasic import dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC
-from .densetools import dmp_compose, dup_transform
+from .densetools import dmp_compose
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -11,7 +11,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots_pair,
                             dup_isolate_real_roots_sqf, dup_real_imag,
                             dup_refine_real_root, dup_root_upper_bound,
-                            dup_sign_variations, dup_sturm)
+                            dup_sign_variations, dup_sturm, dup_transform)
 
 
 __all__ = 'IPolys',

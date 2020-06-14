@@ -10,7 +10,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
                          dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
                          dmp_to_dict, dmp_to_tuple, dmp_zero, dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive, dup_transform)
+                         dmp_eval_in, dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -71,6 +71,36 @@ def dup_real_imag(f, K):
             f2 = dmp_sub(f2, h, 1, K)
 
     return f1, f2
+
+
+def dup_transform(f, p, q, K):
+    """
+    Evaluate functional transformation ``q**n * f(p/q)`` in ``K[x]``.
+
+    Examples
+    ========
+
+    >>> R, x = ring('x', ZZ)
+
+    >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
+    x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
+    """
+    if not f:
+        return []
+
+    n = len(f) - 1
+    h, Q = [f[0]], [[K.one]]
+
+    for i in range(n):
+        Q.append(dmp_mul(Q[-1], q, 0, K))
+
+    for c, q in zip(f[1:], Q[1:]):
+        h = dmp_mul(h, p, 0, K)
+        q = dmp_mul_ground(q, c, 0, K)
+        h = dmp_add(h, q, 0, K)
+
+    return h
 
 
 def dup_sturm(f, K):
