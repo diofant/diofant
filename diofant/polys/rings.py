@@ -20,7 +20,7 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
-from .orderings import lex
+from .orderings import ilex, lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
                          GeneratorsError, GeneratorsNeeded,
@@ -1801,19 +1801,31 @@ class PolyElement(DomainElement, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(x.items(), key=lambda k: ring.index(k[0]))
+                replacements = list(x.items())
             else:
-                raise ValueError('expected a generator, value pair a sequence of such pairs')
+                raise ValueError('expected a generator, value pair a '
+                                 'sequence of such pairs')
+
+        replacements = [(ring.index(x), ring(g)) for x, g in replacements]
+        replacements.sort(key=lambda k: k[0])
+
+        if ring.is_univariate:
+            [(i, g)] = replacements
+            acc, d = ring.one, 0
+            for monom, coeff in self.terms(ilex):
+                n = monom[i]
+                acc *= g**(n - d)
+                d = n
+                poly += acc.mul_ground(coeff)
+            return poly
 
         for monom, coeff in self.items():
             monom = list(monom)
             subpoly = ring.one
 
-            for x, g in replacements:
-                i, g = ring.index(x), ring(g)
+            for i, g in replacements:
                 n, monom[i] = monom[i], 0
-                if n:
-                    subpoly *= g**n
+                subpoly *= g**n
 
             subpoly = subpoly.mul_term((monom, coeff))
             poly += subpoly
