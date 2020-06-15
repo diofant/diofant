@@ -1,8 +1,5 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import dmp_add, dmp_mul
-from .densebasic import dmp_zero_p
-
 
 def dmp_diff_in(f, m, j, u, K):
     """``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``."""
@@ -38,28 +35,11 @@ def dmp_ground_primitive(f, u, K):
 
 
 def dmp_compose(f, g, u, K):
-    """
-    Evaluate functional composition ``f(g)`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_compose(x*y + 2*x + y, y)
-    y**2 + 3*y
-
-    """
-    if dmp_zero_p(f, u):
-        return f
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = dmp_mul(h, g, u, K)
-        h = dmp_add(h, [c], u, K)
-
-    return h
+    """Evaluate functional composition ``f(g)`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    r = f.compose(0, g)
+    return r.to_dense()
 
 
 def dmp_clear_denoms(f, u, K, convert=False):
