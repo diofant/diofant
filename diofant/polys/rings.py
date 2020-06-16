@@ -20,7 +20,7 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
-from .orderings import lex
+from .orderings import ilex, lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
                          GeneratorsError, GeneratorsNeeded,
@@ -1801,19 +1801,31 @@ class PolyElement(DomainElement, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(x.items(), key=lambda k: ring.index(k[0]))
+                replacements = list(x.items())
             else:
-                raise ValueError('expected a generator, value pair a sequence of such pairs')
+                raise ValueError('expected a generator, value pair a '
+                                 'sequence of such pairs')
+
+        replacements = [(ring.index(x), ring(g)) for x, g in replacements]
+        replacements.sort(key=lambda k: k[0])
+
+        if ring.is_univariate:
+            [(i, g)] = replacements
+            acc, d = ring.one, 0
+            for monom, coeff in self.terms(ilex):
+                n = monom[i]
+                acc *= g**(n - d)
+                d = n
+                poly += acc.mul_ground(coeff)
+            return poly
 
         for monom, coeff in self.items():
             monom = list(monom)
             subpoly = ring.one
 
-            for x, g in replacements:
-                i, g = ring.index(x), ring(g)
+            for i, g in replacements:
                 n, monom[i] = monom[i], 0
-                if n:
-                    subpoly *= g**n
+                subpoly *= g**n
 
             subpoly = subpoly.mul_term((monom, coeff))
             poly += subpoly
@@ -2056,14 +2068,123 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise AttributeError('cyclotomic polynomial')
 
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
+    def _right_decompose(self, s):
+        ring = self.ring
+        domain = ring.domain
+        x = ring.gens[0]
+
+        n = self.degree()
+        lc = self.LC
+
+        f = self.copy()
+        g = x**s
+
+        r = n // s
+
+        for i in range(1, s):
+            coeff = domain.zero
+
+            for j in range(i):
+                if not (n + j - i,) in f:
+                    continue
+
+                assert (s - j,) in g
+
+                fc, gc = f[(n + j - i,)], g[(s - j,)]
+                coeff += (i - r*j)*fc*gc
+
+            g[(s - i,)] = domain.quo(coeff, i*r*lc)
+
+        g._strip_zero()
+
+        return g
+
+    def _left_decompose(self, h):
+        ring = self.ring
+
+        g, i = ring.zero, 0
+        f = self.copy()
+
+        while f:
+            q, r = divmod(f, h)
+
+            if r.degree() > 0:
+                return
+            else:
+                g[(i,)] = r.LC
+                f, i = q, i + 1
+
+        g._strip_zero()
+
+        return g
+
+    def _decompose(self):
+        df = self.degree()
+
+        for s in range(2, df):
+            if df % s != 0:
+                continue
+
+            h = self._right_decompose(s)
+            g = self._left_decompose(h)
+
+            if g is not None:
+                return g, h
 
     def decompose(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_decompose(self)
-        else:
+        """
+        Compute functional decomposition of ``f`` in ``K[x]``.
+
+        Given a univariate polynomial ``f`` with coefficients in a field of
+        characteristic zero, returns list ``[f_1, f_2, ..., f_n]``, where::
+
+                  f = f_1 o f_2 o ... f_n = f_1(f_2(... f_n))
+
+        and ``f_2, ..., f_n`` are monic and homogeneous polynomials of at
+        least second degree.
+
+        Unlike factorization, complete functional decompositions of
+        polynomials are not unique, consider examples:
+
+        1. ``f o g = f(x + b) o (g - b)``
+        2. ``x**n o x**m = x**m o x**n``
+        3. ``T_n o T_m = T_m o T_n``
+
+        where ``T_n`` and ``T_m`` are Chebyshev polynomials.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (x**4 - 2*x**3 + x**2).decompose()
+        [x**2, x**2 - x]
+
+        References
+        ==========
+
+        * :cite:`Kozen1989decomposition`
+
+        """
+        if self.ring.is_multivariate:
             raise MultivariatePolynomialError('polynomial decomposition')
+
+        F = []
+        f = self.copy()
+
+        while True:
+            result = f._decompose()
+
+            if result is not None:
+                f, h = result
+                F = [h] + F
+            else:
+                break
+
+        return [f] + F
+
+    # The following methods aren't ported (yet) to polynomial
+    # representation independent algorithm implementations.
 
     def sturm(self):
         if self.ring.is_univariate:

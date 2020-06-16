@@ -608,4 +608,5 @@ derived from them). These formulae are mostly taken from :cite:`Luke1969` and
 
 .. automodule:: diofant.simplify.hyperexpand_doc
 
-.. autofunction:: diofant.simplify.hyperexpand.add_formulae
+.. currentmodule:: diofant.simplify.hyperexpand
+.. autofunction:: add_formulae
