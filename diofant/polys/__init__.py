@@ -41,6 +41,7 @@ from .partfrac import apart, apart_list, assemble_partfrac_list
 from .polyoptions import Options
 from .rings import PolynomialRing, ring, sring
 from .fields import FractionField, field
+from .univar import UnivarPolynomialRing
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
@@ -70,4 +71,4 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'chebyshevu_poly', 'hermite_poly', 'legendre_poly',
            'laguerre_poly', 'spherical_bessel_fn', 'apart', 'apart_list',
            'assemble_partfrac_list', 'Options', 'PolynomialRing', 'ring',
-           'sring', 'FractionField', 'field')
+           'sring', 'FractionField', 'field', 'UnivarPolynomialRing')

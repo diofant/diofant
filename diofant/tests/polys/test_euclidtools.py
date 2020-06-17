@@ -2,8 +2,7 @@
 
 import pytest
 
-from diofant import (CC, FF, QQ, RR, ZZ, I, MultivariatePolynomialError,
-                     NotInvertible, field, ring, sqrt)
+from diofant import CC, FF, QQ, RR, ZZ, I, NotInvertible, field, ring, sqrt
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys
 
@@ -55,11 +54,6 @@ def test_gcdex():
 
     assert f.half_gcdex(g) == (s, h)
     assert f.gcdex(g) == (s, t, h)
-
-    _, x, y = ring('x y', QQ)
-
-    pytest.raises(MultivariatePolynomialError, lambda: (x + y).half_gcdex(x*y))
-    pytest.raises(MultivariatePolynomialError, lambda: (x + y).gcdex(x*y))
 
 
 def test_dup_invert():

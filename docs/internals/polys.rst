@@ -88,6 +88,11 @@ Sparse polynomials are represented as dictionaries.
 .. autoclass:: PolyElement
    :members:
 
+.. currentmodule:: diofant.polys.univar
+
+.. autoclass:: UnivarPolyElement
+   :members:
+
 Polynomial factorization algorithms
 ===================================
 
