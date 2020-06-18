@@ -5,16 +5,16 @@ import math
 
 from ..core import I
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
-                         dmp_quo, dmp_rem, dmp_sub, dup_rshift)
+                         dmp_quo, dmp_sub, dup_rshift)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
                          dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
                          dmp_to_dict, dmp_to_tuple, dmp_zero, dup_reverse)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
+                         dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dmp_sqf_list, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list
 
 
 def dup_real_imag(f, K):
@@ -101,40 +101,6 @@ def dup_transform(f, p, q, K):
         h = dmp_add(h, q, 0, K)
 
     return h
-
-
-def dup_sturm(f, K):
-    """
-    Computes the Sturm sequence of ``f`` in ``F[x]``.
-
-    Given a univariate, square-free polynomial ``f(x)`` returns the
-    associated Sturm sequence (see e.g. :cite:`Davenport1988systems`)
-    ``f_0(x), ..., f_n(x)`` defined by::
-
-       f_0(x), f_1(x) = f(x), f'(x)
-       f_n = -rem(f_{n-2}(x), f_{n-1}(x))
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
-    [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
-
-    """
-    if not K.is_Field:
-        raise DomainError(f"can't compute Sturm sequence over {K}")
-
-    f = dmp_sqf_part(f, 0, K)
-
-    sturm = [f, dmp_diff_in(f, 1, 0, 0, K)]
-
-    while sturm[-1]:
-        s = dmp_rem(sturm[-2], sturm[-1], 0, K)
-        sturm.append(dmp_neg(s, 0, K))
-
-    return sturm[:-1]
 
 
 def dup_sign_variations(f, K):
@@ -1913,3 +1879,30 @@ class ComplexInterval:
                 _, a, b, I, Q, F1, F2 = D_U
 
         return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
+
+
+def dup_sturm(f, K):
+    """Computes the Sturm sequence of ``f`` in ``F[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return list(map(lambda _: _.to_dense(), f.sturm()))
+
+
+class _FindRoot:
+    """Mixin class for computing polynomial roots."""
+
+    def _sturm(self, f):
+        domain = self.domain
+
+        if not domain.is_Field:
+            raise DomainError(f"can't compute Sturm sequence over {domain}")
+
+        f = f.sqf_part()
+
+        sturm = [f, f.diff()]
+
+        while sturm[-1]:
+            s = sturm[-2] % sturm[-1]
+            sturm.append(-s)
+
+        return sturm[:-1]

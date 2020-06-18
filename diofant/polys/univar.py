@@ -1,11 +1,12 @@
 from .polyerrors import DomainError
 from .rings import PolyElement, PolynomialRing
+from .rootisolation import _FindRoot
 
 
 __all__ = 'UnivarPolynomialRing', 'UnivarPolyElement'
 
 
-class UnivarPolynomialRing(PolynomialRing):
+class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
 
 
@@ -169,8 +170,24 @@ class UnivarPolyElement(PolyElement):
 
         return [f] + F
 
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
-
     def sturm(self):
-        return self.ring.dup_sturm(self)
+        """
+        Computes the Sturm sequence of ``f`` in ``F[x]``.
+
+        Given a univariate, square-free polynomial ``f(x)`` returns the
+        associated Sturm sequence (see e.g. :cite:`Davenport1988systems`)
+        ``f_0(x), ..., f_n(x)`` defined by::
+
+           f_0(x), f_1(x) = f(x), f'(x)
+           f_n = -rem(f_{n-2}(x), f_{n-1}(x))
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', QQ)
+
+        >>> (x**3 - 2*x**2 + x - 3).sturm()
+        [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
+
+        """
+        return self.ring._sturm(self)

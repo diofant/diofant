@@ -79,7 +79,7 @@ def test_dup_transform():
             12723*x**3 + 17191*x**2 - 13603*x + 4773)
 
 
-def test_dup_sturm():
+def test_sturm():
     R, x = ring('x', QQ)
 
     assert R(5).sturm() == [1]
