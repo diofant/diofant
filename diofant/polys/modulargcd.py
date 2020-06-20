@@ -168,8 +168,8 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     True
 
     """
-    hpmonoms = set(hp.monoms())
-    hqmonoms = set(hq.monoms())
+    hpmonoms = set(hp)
+    hqmonoms = set(hq)
     monoms = hpmonoms.intersection(hqmonoms)
     hpmonoms.difference_update(monoms)
     hqmonoms.difference_update(monoms)
@@ -1354,7 +1354,7 @@ def _minpoly_from_dense(minpoly, ring):
     """
     minpoly_ = ring.zero
 
-    for monom, coeff in minpoly.terms():
+    for monom, coeff in minpoly.items():
         minpoly_[monom] = ring.domain(coeff)
 
     return minpoly_

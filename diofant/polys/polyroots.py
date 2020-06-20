@@ -672,7 +672,7 @@ def preprocess_roots(poly):
     poly = poly.primitive()[1]
     poly = poly.retract()
 
-    if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.coeffs()):
+    if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.values()):
         poly = poly.inject()
 
         strips = list(zip(*poly.monoms()))

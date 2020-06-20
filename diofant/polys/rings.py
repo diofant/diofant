@@ -1255,7 +1255,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def total_degree(self):
         """Returns the total degree."""
-        return max(sum(m) for m in self.monoms())
+        return max(sum(m) for m in self)
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
@@ -1301,7 +1301,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if element == 1:
             return self._get_coeff(self.ring.zero_monom)
         elif isinstance(element, self.ring.dtype) and element.is_monomial:
-            monom = element.monoms().pop()
+            monom, = element
             return self._get_coeff(monom)
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)

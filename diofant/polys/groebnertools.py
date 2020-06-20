@@ -739,9 +739,9 @@ def groebner_lcm(f, g):
 
     lcm = domain.lcm(fc, gc)
 
-    f_terms = [((1,) + monom, coeff) for monom, coeff in f.terms()]
-    g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
-        + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
+    f_terms = [((1,) + monom, coeff) for monom, coeff in f.items()]
+    g_terms = [((0,) + monom, coeff) for monom, coeff in g.items()] \
+        + [((1,) + monom, -coeff) for monom, coeff in g.items()]
 
     t = Dummy('t')
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
@@ -752,11 +752,11 @@ def groebner_lcm(f, g):
     basis = groebner([F, G], t_ring)
 
     def is_independent(h, j):
-        return all(not monom[j] for monom in h.monoms())
+        return all(not monom[j] for monom in h)
 
     H = [h for h in basis if is_independent(h, 0)]
 
-    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].terms()]
+    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].items()]
     h = ring.from_terms(h_terms)
 
     return h
