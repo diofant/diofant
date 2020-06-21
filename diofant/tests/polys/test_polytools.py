@@ -17,9 +17,8 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      groebner, half_gcdex, im, invert, lcm, lcm_list, lex,
                      monic, nroots, oo, parallel_poly_from_expr, pi, poly,
                      prem, primitive, quo, re, real_roots, reduced, rem,
-                     resultant, ring, sin, sqf, sqf_list, sqf_norm, sqf_part,
-                     sqrt, subresultants, symbols, tanh, terms_gcd, true,
-                     trunc)
+                     resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
+                     subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -1673,10 +1672,6 @@ def test_gcdex():
     pytest.raises(DomainError, lambda: half_gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: invert(x + 1, 2*x + 1, auto=False))
-
-    R, y, z = ring('y,z', QQ)
-    pytest.raises(MultivariatePolynomialError, lambda: (y + z).half_gcdex(y - z))
-    pytest.raises(MultivariatePolynomialError, lambda: (y + z).gcdex(y - z))
 
 
 def test_subresultants():

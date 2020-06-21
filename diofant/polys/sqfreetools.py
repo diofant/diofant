@@ -3,14 +3,6 @@
 from .polyerrors import DomainError
 
 
-def dmp_sqf_part(f, u, K):
-    """Returns square-free part of a polynomial in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    p = ring.sqf_part(f)
-    return p.to_dense()
-
-
 def dmp_sqf_list(f, u, K):
     """Return square-free decomposition of a polynomial in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

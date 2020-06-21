@@ -22,9 +22,8 @@ from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import ilex, lex
 from .polyconfig import query
-from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
-                         GeneratorsError, GeneratorsNeeded,
-                         MultivariatePolynomialError, PolynomialDivisionFailed,
+from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
+                         GeneratorsNeeded, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
@@ -137,21 +136,31 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
     has_assoc_Ring = True
 
     def __new__(cls, domain, symbols, order=lex):
+        from .univar import UnivarPolynomialRing, UnivarPolyElement
+
         symbols = tuple(_parse_symbols(symbols))
         ngens = len(symbols)
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
 
-        key = (cls.__name__, symbols, ngens, domain, order)
+        new_cls = PolynomialRing if ngens > 1 else UnivarPolynomialRing
+
+        key = (new_cls.__name__, symbols, ngens, domain, order)
         obj = _ring_cache.get(key)
 
         if obj is None:
             if domain.is_Composite and set(symbols) & set(domain.symbols):
                 raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
-            obj = object.__new__(cls)
+            obj = object.__new__(new_cls)
             obj._hash = hash(key)
-            obj.dtype = type('PolyElement', (PolyElement,), {'ring': obj})
+
+            if new_cls == UnivarPolynomialRing:
+                dtype = UnivarPolyElement
+            else:
+                dtype = PolyElement
+            obj.dtype = type(dtype.__name__, (dtype,), {'ring': obj})
+
             obj.symbols = symbols
             obj.ngens = ngens
             obj.domain = domain
@@ -1246,7 +1255,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def total_degree(self):
         """Returns the total degree."""
-        return max(sum(m) for m in self.monoms())
+        return max(sum(m) for m in self)
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
@@ -1292,7 +1301,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if element == 1:
             return self._get_coeff(self.ring.zero_monom)
         elif isinstance(element, self.ring.dtype) and element.is_monomial:
-            monom = element.monoms().pop()
+            monom, = element
             return self._get_coeff(monom)
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)
@@ -1846,12 +1855,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return self.resultant(self.diff()) // (c*s)
 
-    def shift(self, a):
-        if self.ring.is_univariate:
-            return self.compose(0, self.ring.gens[0] + a)
-        else:
-            raise MultivariatePolynomialError('polynomial shift')
-
     def slice(self, m, n, x=0):
         ring = self.ring
         poly = ring.zero
@@ -1980,47 +1983,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.resultant(other, includePRS=True)[1]
 
-    def half_gcdex(self, other):
-        """
-        Half extended Euclidean algorithm in `F[x]`.
-
-        Returns ``(s, h)`` such that ``h = gcd(self, other)``
-        and ``s*self = h (mod other)``.
-
-        Examples
-        ========
-
-        >>> R, x = ring('x', QQ)
-
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
-
-        >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
-
-        """
-        ring = self.ring
-        if ring.is_multivariate:
-            raise MultivariatePolynomialError('half extended Euclidean algorithm')
-
-        domain = ring.domain
-
-        if not domain.is_Field:
-            raise DomainError(f"can't compute half extended GCD over {domain}")
-
-        a, b = ring.one, ring.zero
-        f, g = self, other
-
-        while g:
-            q, r = divmod(f, g)
-            f, g = g, r
-            a, b = b, a - q*b
-
-        a = a.quo_ground(f.LC)
-        f = f.monic()
-
-        return a, f
-
     def gcdex(self, other):
         """
         Extended Euclidean algorithm in `F[x]`.
@@ -2060,134 +2022,3 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.factor_list(self)
-
-    @property
-    def is_cyclotomic(self):
-        if self.ring.is_univariate:
-            return self.ring._cyclotomic_p(self)
-        else:
-            raise AttributeError('cyclotomic polynomial')
-
-    def _right_decompose(self, s):
-        ring = self.ring
-        domain = ring.domain
-        x = ring.gens[0]
-
-        n = self.degree()
-        lc = self.LC
-
-        f = self.copy()
-        g = x**s
-
-        r = n // s
-
-        for i in range(1, s):
-            coeff = domain.zero
-
-            for j in range(i):
-                if not (n + j - i,) in f:
-                    continue
-
-                assert (s - j,) in g
-
-                fc, gc = f[(n + j - i,)], g[(s - j,)]
-                coeff += (i - r*j)*fc*gc
-
-            g[(s - i,)] = domain.quo(coeff, i*r*lc)
-
-        g._strip_zero()
-
-        return g
-
-    def _left_decompose(self, h):
-        ring = self.ring
-
-        g, i = ring.zero, 0
-        f = self.copy()
-
-        while f:
-            q, r = divmod(f, h)
-
-            if r.degree() > 0:
-                return
-            else:
-                g[(i,)] = r.LC
-                f, i = q, i + 1
-
-        g._strip_zero()
-
-        return g
-
-    def _decompose(self):
-        df = self.degree()
-
-        for s in range(2, df):
-            if df % s != 0:
-                continue
-
-            h = self._right_decompose(s)
-            g = self._left_decompose(h)
-
-            if g is not None:
-                return g, h
-
-    def decompose(self):
-        """
-        Compute functional decomposition of ``f`` in ``K[x]``.
-
-        Given a univariate polynomial ``f`` with coefficients in a field of
-        characteristic zero, returns list ``[f_1, f_2, ..., f_n]``, where::
-
-                  f = f_1 o f_2 o ... f_n = f_1(f_2(... f_n))
-
-        and ``f_2, ..., f_n`` are monic and homogeneous polynomials of at
-        least second degree.
-
-        Unlike factorization, complete functional decompositions of
-        polynomials are not unique, consider examples:
-
-        1. ``f o g = f(x + b) o (g - b)``
-        2. ``x**n o x**m = x**m o x**n``
-        3. ``T_n o T_m = T_m o T_n``
-
-        where ``T_n`` and ``T_m`` are Chebyshev polynomials.
-
-        Examples
-        ========
-
-        >>> R, x = ring('x', ZZ)
-
-        >>> (x**4 - 2*x**3 + x**2).decompose()
-        [x**2, x**2 - x]
-
-        References
-        ==========
-
-        * :cite:`Kozen1989decomposition`
-
-        """
-        if self.ring.is_multivariate:
-            raise MultivariatePolynomialError('polynomial decomposition')
-
-        F = []
-        f = self.copy()
-
-        while True:
-            result = f._decompose()
-
-            if result is not None:
-                f, h = result
-                F = [h] + F
-            else:
-                break
-
-        return [f] + F
-
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
-
-    def sturm(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_sturm(self)
-        else:
-            raise MultivariatePolynomialError('sturm sequence')

@@ -10,7 +10,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots_pair,
                             dup_isolate_real_roots_sqf, dup_real_imag,
                             dup_refine_real_root, dup_root_upper_bound,
-                            dup_sign_variations, dup_sturm, dup_transform)
+                            dup_sign_variations, dup_transform)
 
 
 __all__ = 'IPolys',
@@ -78,10 +78,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    def dup_sturm(self, f):
-        seq = dup_sturm(f.to_dense(), self.domain)
-        return list(map(self.from_list, seq))
 
     def dup_root_upper_bound(self, f):
         return dup_root_upper_bound(f.to_dense(), self.domain)

@@ -1,13 +1,6 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 
-def dmp_diff_in(f, m, j, u, K):
-    """``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return f.diff(x=j, m=m).to_dense()
-
-
 def dmp_eval_in(f, a, j, u, K):
     """Evaluate a polynomial at ``x_j = a`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

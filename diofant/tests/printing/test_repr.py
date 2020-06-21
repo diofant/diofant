@@ -196,11 +196,11 @@ def test_FiniteField():
 
 
 def test_PolynomialRing():
-    sT(ZZ.inject('x'), f"PolynomialRing({ZZ!r}, (Symbol('x'),), LexOrder())")
+    sT(ZZ.inject('x'), f"UnivarPolynomialRing({ZZ!r}, (Symbol('x'),), LexOrder())")
     sT(QQ.poly_ring('x', 'y', order=grlex),
        f"PolynomialRing({QQ!r}, (Symbol('x'), Symbol('y')), GradedLexOrder())")
     sT(ZZ.inject('x', 'y', 'z', 't').eject('t'),
-       f"PolynomialRing(PolynomialRing({ZZ!r}, (Symbol('t'),), "
+       f"PolynomialRing(UnivarPolynomialRing({ZZ!r}, (Symbol('t'),), "
        "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())")
 
 
@@ -209,7 +209,7 @@ def test_FractionField():
     sT(QQ.frac_field('x', 'y', order=grlex),
        f"FractionField({QQ!r}, (Symbol('x'), Symbol('y')), GradedLexOrder())")
     sT(ZZ.inject('x', 'y', 'z', 't').eject('t').field,
-       f"FractionField(PolynomialRing({ZZ!r}, (Symbol('t'),), LexOrder()), "
+       f"FractionField(UnivarPolynomialRing({ZZ!r}, (Symbol('t'),), LexOrder()), "
        "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())")
 
 

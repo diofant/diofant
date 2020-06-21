@@ -7,9 +7,9 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
-                     MultivariatePolynomialError, PolynomialDivisionFailed,
-                     PolynomialError, PolynomialRing, Rational, Symbol, field,
-                     grlex, lex, oo, pi, ring, sin, sqrt, sring, symbols)
+                     PolynomialDivisionFailed, PolynomialError, PolynomialRing,
+                     Rational, Symbol, field, grlex, lex, oo, pi, ring, sin,
+                     sqrt, sring, symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -2683,19 +2683,11 @@ def test_PolyElement_decompose():
 
     assert f.decompose() == [f]
 
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(MultivariatePolynomialError, lambda: (x + y).decompose())
-
 
 def test_PolyElement_shift():
     _, x = ring('x', ZZ)
 
     assert (x**2 - 2*x + 1).shift(2) == x**2 + 2*x + 1
-
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(MultivariatePolynomialError, lambda: (x + y).shift(2))
 
 
 def test_PolyElement_sturm():
@@ -2710,10 +2702,6 @@ def test_PolyElement_sturm():
         (-t**4/96 + F(20000)/9)*x + 25*t**4/18,
         (-9*t**12 - 11520000*t**8 - 3686400000000*t**4)/(576*t**8 - 245760000*t**4 + 26214400000000),
     ]
-
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(MultivariatePolynomialError, lambda: (x + y).sturm())
 
 
 def test_PolyElement_almosteq():
