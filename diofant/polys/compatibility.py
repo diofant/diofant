@@ -1,7 +1,6 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_add, dmp_mul, dmp_neg, dmp_sub, dup_lshift,
-                         dup_rshift)
+from .densearith import dmp_mul, dmp_neg, dmp_sub, dup_lshift, dup_rshift
 from .densebasic import dmp_degree_in
 from .rootisolation import (dup_count_complex_roots, dup_isolate_all_roots,
                             dup_isolate_all_roots_sqf,
@@ -32,9 +31,6 @@ class IPolys:
 
     def dmp_neg(self, f):
         return self.from_list(dmp_neg(f.to_dense(), self.ngens-1, self.domain))
-
-    def dmp_add(self, f, g):
-        return self.from_list(dmp_add(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
 
     def dmp_sub(self, f, g):
         return self.from_list(dmp_sub(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))

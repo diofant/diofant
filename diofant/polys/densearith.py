@@ -69,79 +69,11 @@ def dmp_neg(f, u, K):
         return [dmp_neg(coeff, v, K) for coeff in f]
 
 
-def dup_add(f, g, K):
-    """
-    Add dense polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_add(x**2 - 1, x - 2)
-    x**2 + x - 3
-
-    """
-    if not f:
-        return g
-    if not g:
-        return f
-
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if df == dg:
-        return dmp_strip([a + b for a, b in zip(f, g)], 0)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = g[:k], g[k:]
-
-        return h + [a + b for a, b in zip(f, g)]
-
-
 def dmp_add(f, g, u, K):
-    """
-    Add dense polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_add(x**2 + y, x**2*y + x)
-    x**2*y + x**2 + x + y
-
-    """
-    if not u:
-        return dup_add(f, g, K)
-
-    df = dmp_degree_in(f, 0, u)
-
-    if df < 0:
-        return g
-
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        return f
-
-    v = u - 1
-
-    if df == dg:
-        return dmp_strip([dmp_add(a, b, v, K) for a, b in zip(f, g)], u)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = g[:k], g[k:]
-
-        return h + [dmp_add(a, b, v, K) for a, b in zip(f, g)]
+    """Add dense polynomials in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return (f + g).to_dense()
 
 
 def dup_sub(f, g, K):
@@ -245,11 +177,11 @@ def dup_mul_karatsuba(f, g, K):
     lo = dup_mul(fl, gl, K)
     hi = dup_mul(fh, gh, K)
 
-    mid = dup_mul(dup_add(fl, fh, K), dup_add(gl, gh, K), K)
-    mid = dup_sub(mid, dup_add(lo, hi, K), K)
+    mid = dup_mul(dmp_add(fl, fh, 0, K), dmp_add(gl, gh, 0, K), K)
+    mid = dmp_sub(mid, dmp_add(lo, hi, 0, K), 0, K)
 
-    return dup_add(dup_add(lo, dup_lshift(mid, n2, K), K),
-                   dup_lshift(hi, 2*n2, K), K)
+    return dmp_add(dmp_add(lo, dup_lshift(mid, n2, K), 0, K),
+                   dup_lshift(hi, 2*n2, K), 0, K)
 
 
 def dup_mul(f, g, K):
