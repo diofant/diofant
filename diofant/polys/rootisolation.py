@@ -1691,7 +1691,7 @@ class _FindRoot:
             f = f.compose(x, x + A)
             b, d = A*a + b, A*c + d
 
-            assert self.dmp_TC(f)
+            assert f.coeff(1)
 
         f, g = f.compose(x, x + 1), f
 
@@ -1707,7 +1707,7 @@ class _FindRoot:
         else:
             f = self._reverse(g).compose(x, x + 1)
 
-            assert self.dmp_TC(f)
+            assert f.coeff(1)
 
             a, b, c, d = b, a + b, d, c + d
 
@@ -1821,7 +1821,7 @@ class _FindRoot:
                 f = f.compose(x, x + A)
                 b, d = A*a + b, A*c + d
 
-                assert self.dmp_TC(f)
+                assert f.coeff(1)
 
                 k = self._sign_variations(f)
 
@@ -1836,7 +1836,7 @@ class _FindRoot:
 
             a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
-            if not self.dmp_TC(f1):
+            if not f1.coeff(1):
                 roots.append((f1, (b1, b1, d1, d1)))
                 f1, r = f1 // x, 1
 
@@ -1848,7 +1848,7 @@ class _FindRoot:
             if k2 > 1:
                 f2 = self._reverse(f).compose(x, x + 1)
 
-                if not self.dmp_TC(f2):
+                if not f2.coeff(1):
                     f2 //= x
 
                 k2 = self._sign_variations(f2)
@@ -1866,7 +1866,7 @@ class _FindRoot:
             if f1 is None:
                 f1 = self._reverse(f).compose(x, x + 1)
 
-                if not self.dmp_TC(f1):
+                if not f1.coeff(1):
                     f1 //= x
 
             if k1 == 1:
@@ -1881,7 +1881,7 @@ class _FindRoot:
             if f2 is None:
                 f2 = self._reverse(f).compose(x, x + 1)
 
-                if not self.dmp_TC(f2):
+                if not f2.coeff(1):
                     f2 //= x
 
             if k2 == 1:
