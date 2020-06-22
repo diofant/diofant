@@ -6,9 +6,9 @@ import math
 from ..core import I
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
                          dmp_quo, dmp_sub)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
-                         dmp_permute, dmp_strip, dmp_terms_gcd, dmp_to_dict,
-                         dmp_to_tuple, dmp_zero)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
+                         dmp_strip, dmp_terms_gcd, dmp_to_dict, dmp_to_tuple,
+                         dmp_zero)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -807,15 +807,6 @@ def _winding_number(T, field):
     return int(sum((field(_values[t][i][0])/field(_values[t][i][1]) for t, i in T), field(0)) / field(2))
 
 
-def _roots_bound(f, F):
-    lc = F.to_expr(dmp_LC(f, F))
-    B = 2*max(abs(F.to_expr(c)/lc) for c in f)
-    if not F.is_AlgebraicField:
-        return F.convert(B)
-    else:
-        return F.domain(int(100*B) + 1)/F.domain(100)
-
-
 def _get_rectangle(f1, f2, F, inf, sup, exclude=None):
     (u, v), (s, t) = inf, sup
 
@@ -1522,6 +1513,12 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=
     return r
 
 
+def _roots_bound(f, F):
+    ring = F.poly_ring('_0')
+    f = ring.from_list(f)
+    return ring._roots_bound(f)
+
+
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1947,3 +1944,12 @@ class _FindRoot:
             count += 1
 
         return count
+
+    def _roots_bound(self, f):
+        domain = self.domain
+        lc = domain.to_expr(f.LC)
+        B = 2*max(abs(domain.to_expr(c)/lc) for c in f.values())
+        if not domain.is_AlgebraicField:
+            return domain.convert(B)
+        else:
+            return domain.domain(int(100*B) + 1)/domain.domain(100)
