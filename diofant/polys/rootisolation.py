@@ -122,75 +122,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def _discard_if_outside_interval(f, M, inf, sup, K, negative, mobius):
-    """Discard an isolating interval if outside ``(inf, sup)``."""
-    while True:
-        u, v = _mobius_to_interval(M)
-
-        if negative:
-            u, v = -v, -u
-
-        if (inf is None or u >= inf) and (sup is None or v <= sup):
-            if not mobius:
-                return u, v
-            else:
-                return f, M
-        elif (sup is not None and u > sup) or (inf is not None and v < inf):
-            return
-        else:
-            f, M = dup_step_refine_real_root(f, M, K)
-
-
-def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, mobius=False):
-    """Iteratively compute disjoint positive root isolation intervals."""
-    if sup is not None and sup < 0:
-        return []
-
-    roots = dup_inner_isolate_real_roots(f, K, eps=eps)
-
-    results = []
-
-    if inf is not None or sup is not None:
-        for f, M in roots:
-            result = _discard_if_outside_interval(f, M, inf, sup, K, False, mobius)
-
-            if result is not None:
-                results.append(result)
-    elif not mobius:
-        for f, M in roots:
-            u, v = _mobius_to_interval(M)
-            results.append((u, v))
-    else:
-        results = roots
-
-    return results
-
-
-def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=False):
-    """Iteratively compute disjoint negative root isolation intervals."""
-    if inf is not None and inf >= 0:
-        return []
-
-    roots = dup_inner_isolate_real_roots(dmp_compose(f, [-K.one, 0], 0, K), K, eps=eps)
-
-    results = []
-
-    if inf is not None or sup is not None:
-        for f, M in roots:
-            result = _discard_if_outside_interval(f, M, inf, sup, K, True, mobius)
-
-            if result is not None:
-                results.append(result)
-    elif not mobius:
-        for f, M in roots:
-            u, v = _mobius_to_interval(M)
-            results.append((-v, -u))
-    else:
-        results = roots
-
-    return results
-
-
 def _isolate_zero(f, K, inf, sup, sqf=False):
     """Handle special case of CF algorithm when ``f`` is homogeneous."""
     (j,), f = dmp_terms_gcd(f, 0, K)
@@ -1603,14 +1534,6 @@ def dup_sign_variations(f, K):
     return ring._sign_variations(f)
 
 
-def dup_step_refine_real_root(f, M, K):
-    """One step of positive real root refinement algorithm."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    r = ring._step_refine_real_root(f, M)
-    return r[0].to_dense(), r[1]
-
-
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
     """Refine a positive root of `f` given a Mobius transform or an interval."""
     ring = K.poly_ring('_0')
@@ -1628,12 +1551,24 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     return ring._refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
 
 
-def dup_inner_isolate_real_roots(f, K, eps=None):
-    """Internal function for isolation positive roots up to given precision."""
+def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, mobius=False):
+    """Iteratively compute disjoint positive root isolation intervals."""
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
-    r = ring._inner_isolate_real_roots(f, eps=eps)
-    return [(_[0].to_dense(), _[1]) for _ in r]
+    r = ring._inner_isolate_positive_roots(f, eps=eps, inf=inf, sup=sup, mobius=mobius)
+    if mobius:
+        r = [(_[0].to_dense(), _[1]) for _ in r]
+    return r
+
+
+def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=False):
+    """Iteratively compute disjoint negative root isolation intervals."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._inner_isolate_negative_roots(f, eps=eps, inf=inf, sup=sup, mobius=mobius)
+    if mobius:
+        r = [(_[0].to_dense(), _[1]) for _ in r]
+    return r
 
 
 class _FindRoot:
@@ -1951,3 +1886,71 @@ class _FindRoot:
                 stack.append((a2, b2, c2, d2, f2, k2))
 
         return roots
+
+    def _discard_if_outside_interval(self, f, M, inf, sup, negative, mobius):
+        """Discard an isolating interval if outside ``(inf, sup)``."""
+        while True:
+            u, v = _mobius_to_interval(M)
+
+            if negative:
+                u, v = -v, -u
+
+            if (inf is None or u >= inf) and (sup is None or v <= sup):
+                if not mobius:
+                    return u, v
+                else:
+                    return f, M
+            elif (sup is not None and u > sup) or (inf is not None and v < inf):
+                return
+            else:
+                f, M = self._step_refine_real_root(f, M)
+
+    def _inner_isolate_positive_roots(self, f, eps=None, inf=None, sup=None, mobius=False):
+        """Iteratively compute disjoint positive root isolation intervals."""
+        if sup is not None and sup < 0:
+            return []
+
+        roots = self._inner_isolate_real_roots(f, eps=eps)
+
+        results = []
+
+        if inf is not None or sup is not None:
+            for f, M in roots:
+                result = self._discard_if_outside_interval(f, M, inf, sup, False, mobius)
+
+                if result is not None:
+                    results.append(result)
+        elif not mobius:
+            for f, M in roots:
+                u, v = _mobius_to_interval(M)
+                results.append((u, v))
+        else:
+            results = roots
+
+        return results
+
+    def _inner_isolate_negative_roots(self, f, inf=None, sup=None, eps=None, mobius=False):
+        """Iteratively compute disjoint negative root isolation intervals."""
+        x = self.gens[0]
+
+        if inf is not None and inf >= 0:
+            return []
+
+        roots = self._inner_isolate_real_roots(f.compose(x, -x), eps=eps)
+
+        results = []
+
+        if inf is not None or sup is not None:
+            for f, M in roots:
+                result = self._discard_if_outside_interval(f, M, inf, sup, True, mobius)
+
+                if result is not None:
+                    results.append(result)
+        elif not mobius:
+            for f, M in roots:
+                u, v = _mobius_to_interval(M)
+                results.append((-v, -u))
+        else:
+            results = roots
+
+        return results
