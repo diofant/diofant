@@ -847,7 +847,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     elif case in ['other_linear', 'other_nonlinear']:
         # XXX: If these are supported by the structure theorems, change to NotImplementedError.
-        raise ValueError('The %s case is not supported in this function.' % case)
+        raise ValueError(f'The {case} case is not supported in this function.')
 
     else:
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "

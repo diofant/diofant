@@ -81,15 +81,12 @@ def test_FracElement_as_expr():
     g = (3*X**2*Y - X*Y*Z)/(7*Z**3 + 1)
 
     assert f != g
-    assert f.as_expr() == g
+    assert F.to_expr(f) == g
 
     X, Y, Z = symbols('x,y,z')
     g = (3*X**2*Y - X*Y*Z)/(7*Z**3 + 1)
 
     assert f != g
-    assert f.as_expr(X, Y, Z) == g
-
-    pytest.raises(ValueError, lambda: f.as_expr(X))
 
 
 def test_FracElement_from_expr():

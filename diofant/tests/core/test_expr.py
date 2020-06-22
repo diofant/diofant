@@ -1661,7 +1661,10 @@ def test_pow_rewrite():
     assert (2**x).rewrite(tanh) == 2**x
 
 
+@pytest.mark.xfail
+@pytest.mark.timeout(20)
 def test_sympyissue_13645():
+    # NB: this does work if r and M are real
     r, r_m = symbols('r r_m', positive=True)
     th = symbols('th', extended_real=True)
     a, M = symbols('a M', extended_real=True)

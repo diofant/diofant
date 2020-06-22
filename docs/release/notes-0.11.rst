@@ -2,14 +2,14 @@
 Diofant 0.11
 ============
 
-Not Released Yet
+22 Apr 2020
 
 New features
 ============
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
-* Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
 * Support inhomogenous case for systems of linear ODEs with constant coefficients, see :pull:`919`.
+* Support domains pickling, see :pull:`972`.
 
 Major changes
 =============
@@ -18,6 +18,7 @@ Major changes
 * :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
 * :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
 * Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.  Polynomial factorization now works for univariate polynomials over any :class:`~diofant.domains.FiniteField`'s domain.
+* Module :mod:`~diofant.polys.euclidtools` was ported to use sparse polynomial representation, see :pull:`994`.
 
 Compatibility breaks
 ====================
@@ -30,26 +31,25 @@ Compatibility breaks
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
 * Removed ``is_nonnegative()``, ``is_nonpositive()`` and ``is_positive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834` and :pull:`975`.
-* Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
 * Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
 * Removed ``is_hermitian/is_antihermitian`` core properties, see :pull:`873`.
-* :meth:`~diofant.polys.polytools.Poly.intervals` support only scalar arguments, see :pull:`874`.
 * Removed ``print_python()`` and ``print_ccode()`` functions, see :pull:`891`.
 * Reorder output for :meth:`~diofant.matrices.matrices.MatrixBase.jordan_form` and :meth:`~diofant.matrices.matrices.MatrixBase.jordan_cells`, the last one is now optional, see :pull:`896`.
 * Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
-* Drop support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
+* Removed support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
 * Removed ``DeferredVector`` class, see :pull:`905`.
 * Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 * Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
 * ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
-* Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
-* Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
+* Removed ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
+* Removed ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 * ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
 * Renamed option misspeled option ``bareis`` to ``bareiss`` in :meth:`~diofant.matrices.matrices.MatrixBase.det` and :func:`~diofant.matrices.dense.wronskian`, see :pull:`866`.
+* Removed ``nth_power_roots_poly()``, ``ground_roots()``, ``refine_root()``, ``intervals()`` and ``sturm()`` functions and ``nth_power_roots_poly()``, ``ltrim()``, ``ground_roots()``, ``refine_root()``, ``intervals()``, ``max_norm()``, ``l1_norm()`` and ``sturm()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`996`.
 
 Minor changes
 =============
@@ -60,10 +60,10 @@ Minor changes
 * :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
+* Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
 * The :class:`~diofant.domains.ring.Ring` and all derived classes got :attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
-* Correct wrong implementation of the Berlekamp factorization algorithm, see :pull:`968`.
-* Support domains pickling, see :pull:`972`.
+* Correct wrong implementations of factorization algorithms over finite fields, see :pull:`968` and :pull:`964`.  Thanks to Kalevi Suominen for help with review.
 
 Developer changes
 =================
@@ -155,7 +155,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`9204` dsolve fails
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
 * :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
-* :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
+* :sympyissue:`8810` Poly keyword 'composite' is ignored when instantiating from Poly
 * :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
 * :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
 * :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
@@ -188,3 +188,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12361` Misspelling of "Bareiss" in Matrix module
 * :sympyissue:`12452` is_upper() raises IndexError for tall matrices
 * :sympyissue:`19070` bug in poly
+* :sympyissue:`16971` is_extended_real should not evaluate if sign is not known

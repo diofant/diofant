@@ -75,7 +75,7 @@ class FiniteField(Field, SimpleDomain):
                                  {'mod': mod, 'domain': dom, '_parent': obj})
             else:
                 ff = dom.finite_field(mod).inject(Dummy('x'))
-                mod = ff.from_dense(modulus)
+                mod = ff.from_list(modulus)
                 if not mod.is_irreducible:
                     raise ValueError('defining polynomial must be irreducible')
                 obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
@@ -172,7 +172,7 @@ class GaloisFieldElement(ModularInteger):
             rep = integer_digits(rep % self.parent.order, self.parent.mod)
 
         if isinstance(rep, (list, tuple)):
-            rep = self.domain.from_dense(rep)
+            rep = self.domain.from_list(rep)
 
         super().__init__(rep)
 

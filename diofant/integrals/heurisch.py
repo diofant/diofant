@@ -70,7 +70,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy('%s%i' % (name, len(lsyms))) )
+        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
 
     return lsyms[:n]
 
@@ -513,7 +513,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
-                         v.as_expr()) for k, v in solution.items()]
+                         coeff_ring.to_expr(v)) for k, v in solution.items()]
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 

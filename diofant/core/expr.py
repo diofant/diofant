@@ -190,7 +190,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
         if r in (nan, oo, -oo):
-            raise TypeError("can't convert %s to int" % r)
+            raise TypeError(f"can't convert {r} to int")
         return int(r)
 
     def __floor__(self):
@@ -218,7 +218,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import GreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError('Invalid comparison of complex %s' % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
                 raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
@@ -233,7 +233,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import LessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError('Invalid comparison of complex %s' % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
                 raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
@@ -248,7 +248,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictGreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError('Invalid comparison of complex %s' % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
                 raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
@@ -263,7 +263,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictLessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError('Invalid comparison of complex %s' % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
                 raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
@@ -909,7 +909,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                             if oi.base.is_Symbol and oi.exp.is_Rational:
                                 return abs(oi.exp)
 
-        raise NotImplementedError('not sure of order of %s' % o)
+        raise NotImplementedError(f'not sure of order of {o}')
 
     def count_ops(self, visual=None):
         """Wrapper for count_ops that returns the operation count."""
@@ -2743,7 +2743,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif is_zero is False:
                 break
             else:
-                raise NotImplementedError('Zero-decision problem for %s' % t)
+                raise NotImplementedError(f'Zero-decision problem for {t}')
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2776,14 +2776,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return self
         x = sympify(symbols[0])
         if not x.is_Symbol:
-            raise ValueError('expecting a Symbol but got %s' % x)
+            raise ValueError(f'expecting a Symbol but got {x}')
         if x not in self.free_symbols:
             return self
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError('as_leading_term(%s, %s)' %
-                                  (self, x))  # pragma: no cover
+        raise NotImplementedError(f'as_leading_term({self}, {x})')  # pragma: no cover
 
     def _eval_as_leading_term(self, x):
         return self
@@ -2960,7 +2959,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             if not modulus.is_Integer or modulus <= 0:
                 raise ValueError(
-                    'modulus must be a positive integer, got %s' % modulus)
+                    f'modulus must be a positive integer, got {modulus}')
 
             terms = []
 

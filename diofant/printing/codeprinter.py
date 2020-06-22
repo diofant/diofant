@@ -9,8 +9,6 @@ from .str import StrPrinter
 class AssignmentError(Exception):
     """Raised if an assignment variable for a loop is missing."""
 
-    pass
-
 
 class Assignment(Relational):
     """
@@ -117,8 +115,7 @@ class CodePrinter(StrPrinter):
             else:
                 assign_to = Symbol(assign_to)
         elif not isinstance(assign_to, (Basic, type(None))):
-            raise TypeError('{0} cannot assign to object of type {1}'.format(
-                type(self).__name__, type(assign_to)))
+            raise TypeError(f'{type(self).__name__} cannot assign to object of type {type(assign_to)}')
 
         if assign_to:
             expr = Assignment(assign_to, expr)
@@ -138,7 +135,7 @@ class CodePrinter(StrPrinter):
             frontlines = []
             if len(self._not_supported) > 0:
                 frontlines.append(self._get_comment(
-                    'Not supported in {0}:'.format(self.language)))
+                    f'Not supported in {self.language}:'))
                 for expr in sorted(self._not_supported, key=str):
                     frontlines.append(self._get_comment(type(expr).__name__))
             for name, value in sorted(self._number_symbols, key=str):
@@ -183,7 +180,7 @@ class CodePrinter(StrPrinter):
         if text != lhs_printed:
             lines.extend(openloop)
             assert assign_to is not None
-            text = self._get_statement('%s = %s' % (lhs_printed, text))
+            text = self._get_statement(f'{lhs_printed} = {text}')
             lines.append(text)
             lines.extend(closeloop)
 
@@ -237,8 +234,7 @@ class CodePrinter(StrPrinter):
         if linds and not rinds:
             rinds = linds
         if rinds != linds:
-            raise ValueError('lhs indices must match non-dummy'
-                             ' rhs indices in %s' % expr)
+            raise ValueError(f'lhs indices must match non-dummy rhs indices in {expr}')
 
         return self._sort_optimized(rinds, assign_to)
 
@@ -340,7 +336,7 @@ class CodePrinter(StrPrinter):
         else:
             lhs_code = self._print(lhs)
             rhs_code = self._print(rhs)
-            return self._get_statement('%s = %s' % (lhs_code, rhs_code))
+            return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Symbol(self, expr):
 
@@ -388,7 +384,7 @@ class CodePrinter(StrPrinter):
 
     def _print_Dummy(self, expr):
         # dummies must be printed as unique symbols
-        return '%s_%i' % (expr.name, expr.dummy_index)  # Dummy
+        return f'{expr.name}_{expr.dummy_index:d}'  # Dummy
 
     def _print_Catalan(self, expr):
         return self._print_NumberSymbol(expr)

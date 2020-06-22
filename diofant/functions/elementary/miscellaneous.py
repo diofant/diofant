@@ -224,7 +224,7 @@ def root(arg, n, k=0, **kwargs):
     * https://en.wikipedia.org/wiki/Real_root
     * https://en.wikipedia.org/wiki/Root_of_unity
     * https://en.wikipedia.org/wiki/Principal_value
-    * http://mathworld.wolfram.com/CubeRoot.html
+    * https://mathworld.wolfram.com/CubeRoot.html
 
     """
     n = sympify(n)
@@ -348,7 +348,7 @@ class MinMaxBase(LatticeOp):
 
             # pre-filter, checking comparability of arguments
             if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is zoo):
-                raise ValueError("The argument '%s' is not comparable." % arg)
+                raise ValueError(f"The argument '{arg}' is not comparable.")
 
             if arg == cls.zero:
                 raise ShortCircuit(arg)

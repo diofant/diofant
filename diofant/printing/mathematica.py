@@ -160,8 +160,7 @@ class MCodePrinter(CodePrinter):
         else:
             raise NotImplementedError
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
-        return ('Hold[Limit[%s, %s -> %s, Direction -> %s]]' % (e, x, x0,
-                                                                direction))
+        return (f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]')
 
     def _print_Sum(self, expr):
         return 'Hold[Sum[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
@@ -193,8 +192,7 @@ class MCodePrinter(CodePrinter):
                                    self.doprint(expr.index + 1))
 
     def _print_Lambda(self, expr):
-        return 'Function[%s, %s]' % (self.doprint(expr.variables),
-                                     self.doprint(expr.expr))
+        return f'Function[{self.doprint(expr.variables)}, {self.doprint(expr.expr)}]'
 
     def _print_RootSum(self, expr):
         from ..core import Lambda
@@ -208,7 +206,7 @@ class MCodePrinter(CodePrinter):
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):
-        return '%s%s' % (expr.name, expr.dummy_index)
+        return f'{expr.name}{expr.dummy_index}'
 
 
 def mathematica_code(expr, **settings):

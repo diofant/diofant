@@ -45,8 +45,7 @@ class SparseMatrixBase(MatrixBase):
             elif is_sequence(args[2]):
                 if len(args[2]) != self.rows*self.cols:
                     raise ValueError(
-                        'List length (%s) != rows*columns (%s)' %
-                        (len(args[2]), self.rows*self.cols))
+                        f'List length ({len(args[2])}) != rows*columns ({self.rows*self.cols})')
                 flat_list = args[2]
                 for i in range(self.rows):
                     for j in range(self.cols):
@@ -431,8 +430,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if not isinstance(other, SparseMatrixBase):
-            raise ValueError('only use add with %s, not %s' %
-                             tuple(c.__class__.__name__ for c in (self, other)))
+            raise ValueError(f'only use add with {self.__class__.__name__}, not {other.__class__.__name__}')
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()
@@ -599,7 +597,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError('Invalid reshape parameters %d %d' % (rows, cols))
+            raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         smat = {}
         for k, v in self._smat.items():
             i, j = k
@@ -998,8 +996,7 @@ class SparseMatrixBase(MatrixBase):
         elif method == 'CH':
             solve = M._cholesky_solve
         else:
-            raise NotImplementedError('Method may be "CH" or '
-                                      '"LDL", not %s.' % method)
+            raise NotImplementedError(f'Method may be "CH" or "LDL", not {method}.')
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
         if not sym:
             scale = (r1*rv[:, 0])[0, 0]

@@ -224,10 +224,10 @@ def interpolate(data, x):
     n = len(data)
 
     if isinstance(data, dict):
-        X, Y = list(zip(*data.items()))
+        X, Y = zip(*data.items())
     else:
         if isinstance(data[0], tuple):
-            X, Y = list(zip(*data))
+            X, Y = zip(*data)
         else:
             X = list(range(1, n + 1))
             Y = list(data)

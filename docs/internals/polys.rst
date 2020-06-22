@@ -83,10 +83,14 @@ there is code to manipulate polynomials in a *sparse* representation.
 Sparse polynomials are represented as dictionaries.
 
 .. autofunction:: ring
-.. autofunction:: vring
 .. autofunction:: sring
 
 .. autoclass:: PolyElement
+   :members:
+
+.. currentmodule:: diofant.polys.univar
+
+.. autoclass:: UnivarPolyElement
    :members:
 
 Polynomial factorization algorithms
@@ -94,7 +98,7 @@ Polynomial factorization algorithms
 
 Many variants of Euclid's algorithm:
 
-.. currentmodule:: diofant.polys.euclidtools
+.. module:: diofant.polys.euclidtools
 
 Classical remainder sequence
 ----------------------------
@@ -157,8 +161,6 @@ This leads to an equation
 analogous to `Bézout's identity
 <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_
 in the case of integers.
-
-.. autofunction:: dup_gcdex
 
 Simplified remainder sequences
 ------------------------------
@@ -318,13 +320,8 @@ which is not needed after finding `f_{k+1} = 0`.
 Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
 
-.. autofunction:: dmp_inner_subresultants
-.. autofunction:: dmp_zz_modular_resultant
-.. autofunction:: dmp_zz_collins_resultant
-.. autofunction:: dmp_qq_collins_resultant
 .. autofunction:: dmp_resultant
 .. autofunction:: dmp_gcd
-.. autofunction:: dmp_primitive
 
 Polynomial factorization in characteristic zero:
 
@@ -361,8 +358,7 @@ Modular GCD
 Heuristic GCD
 =============
 
-.. automodule:: diofant.polys.heuristicgcd
-    :members:
+.. automethod:: diofant.polys.euclidtools._GCD._zz_heu_gcd
 
 Undocumented
 ============

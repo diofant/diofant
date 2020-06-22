@@ -354,7 +354,7 @@ class StdFactKB(FactKB):
 
 def as_property(fact):
     """Convert a fact name to the name of the corresponding property."""
-    return 'is_%s' % fact
+    return f'is_{fact}'
 
 
 def make_property(fact):
@@ -500,7 +500,7 @@ class ManagedProperties(type):
         cls._prop_handler = {}
         for k in _assume_defined:
             try:
-                cls._prop_handler[k] = getattr(cls, '_eval_is_%s' % k)
+                cls._prop_handler[k] = getattr(cls, f'_eval_is_{k}')
             except AttributeError:
                 pass
 

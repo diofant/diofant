@@ -1,241 +1,241 @@
 """Square-free decomposition algorithms and related tools."""
 
-from .densearith import dmp_mul, dmp_quo, dmp_sub
-from .densebasic import (dmp_degree_in, dmp_ground_LC, dmp_ground_p,
-                         dmp_inject, dmp_one_p, dmp_raise, dmp_swap,
-                         dmp_zero_p)
-from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
-                         dmp_ground_primitive)
-from .euclidtools import dmp_gcd, dmp_resultant
 from .polyerrors import DomainError
 
 
-def dmp_sqf_p(f, u, K):
-    """
-    Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> _, x, y = ring('x y', ZZ)
-
-    >>> ((x + y)**2).is_squarefree
-    False
-    >>> (x**2 + y**2).is_squarefree
-    True
-
-    """
-    if dmp_ground_p(f, None, u):
-        return True
-    else:
-        g = f
-        for i in range(u + 1):
-            g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
-            if dmp_ground_p(g, None, u):
-                return True
-        return False
+def dmp_sqf_list(f, u, K):
+    """Return square-free decomposition of a polynomial in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    coeff, factors = ring.sqf_list(f)
+    return coeff, [(f.to_dense(), k) for f, k in factors]
 
 
-def dmp_sqf_norm(f, u, K):
-    """
-    Square-free norm of ``f`` in ``K[X]``, useful over algebraic domains.
+class _SQF:
+    """Mixin class to compute square-free decomposition of polynomials."""
 
-    Returns ``s``, ``f``, ``r``, such that ``g(x) = f(x-sa)`` and ``r(x) = Norm(g(x))``
-    is a square-free polynomial over K, where ``a`` is the algebraic extension of ``K``.
+    def sqf_list(self, f):
+        """
+        Return square-free decomposition of a polynomial in ``K[X]``.
 
-    Examples
-    ========
+        Examples
+        ========
 
-    >>> _, x, y = ring('x y', QQ.algebraic_field(I))
+        >>> R, x, y = ring('x y', ZZ)
 
-    >>> (x*y + y**2).sqf_norm()
-    (1, x*y - I*x + y**2 - 3*I*y - 2,
-     x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
+        >>> R.sqf_list(x**5 + 2*x**4*y + x**3*y**2)
+        (1, [(x + y, 2), (x, 3)])
 
-    """
-    if not K.is_AlgebraicField:
-        raise DomainError('ground domain must be algebraic')
+        """
+        domain = self.domain
 
-    g = dmp_raise(K.mod.to_dense(), u + 1, 0, K.domain)
-    F = dmp_raise([K.one, -K.unit], u, 0, K)
-
-    s = 0
-
-    while True:
-        h, _ = dmp_inject(f, u, K, front=True)
-        r = dmp_resultant(g, h, u + 1, K.domain)
-
-        if dmp_sqf_p(r, u, K.domain):
-            return s, f, r
+        if domain.is_Field:
+            coeff, f = f.LC, f.monic()
         else:
-            for j in range(u + 1):
-                f = dmp_swap(f, 0, j, u, K)
-                f = dmp_compose(f, F, u, K)
-                f = dmp_swap(f, 0, j, u, K)
-            s += 1
+            coeff, f = f.primitive()
 
+        if domain.is_FiniteField:
+            return coeff, self._gf_sqf_list(f)
+        else:
+            return coeff, self._rr_yun0_sqf_list(f)
 
-def dmp_sqf_part(f, u, K):
-    """
-    Returns square-free part of a polynomial in ``K[X]``.
+    def _gf_sqf_list(self, f):
+        """
+        Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``.
 
-    Examples
-    ========
+        Examples
+        ========
 
-    >>> _, x, y = ring('x y', ZZ)
+        >>> _, x = ring('x', FF(11))
+        >>> f = x**11 + 1
 
-    >>> (x**3 + 2*x**2*y + x*y**2).sqf_part()
-    x**2 + x*y
+        Note that:
 
-    """
-    if K.is_FiniteField:
-        _, sqf = dmp_sqf_list(f, u, K)
+        >>> f.diff()
+        0 mod 11
 
-        g = [K.one]
-        for f, _ in sqf:
-            g = dmp_mul(g, f, u, K)
+        This phenomenon doesn't happen in characteristic zero. However we can
+        still compute square-free decomposition of ``f``:
 
-        return g
+        >>> f.sqf_list()
+        (1 mod 11, [(x + 1 mod 11, 11)])
 
-    if dmp_zero_p(f, u):
-        return f
+        """
+        if self.is_multivariate:
+            raise NotImplementedError('multivariate polynomials over finite fields')
+        else:
+            return self._gf_musser_sqf_list(f)
 
-    gcd = f
-    for i in range(u + 1):
-        gcd = dmp_gcd(gcd, dmp_diff_in(f, 1, i, u, K), u, K)
-    sqf = dmp_quo(f, gcd, u, K)
+    def _gf_musser_sqf_list(self, f):
+        """Compute square-free decomposition of the monic ``f`` in ``GF(q)[x]``.
 
-    if K.is_Field:
-        return dmp_ground_monic(sqf, u, K)
-    else:
-        return dmp_ground_primitive(sqf, u, K)[1]
+        References
+        ==========
 
+        * :cite:`Geddes1992algorithms`, algorithm 8.3
 
-def dup_gf_musser_sqf_list(f, K):
-    """Compute square-free decomposition of the monic ``f`` in ``GF(q)[x]``.
+        """
+        domain = self.domain
 
-    References
-    ==========
+        n, factors, p = 1, [], domain.characteristic
+        m = domain.order // p
 
-    * :cite:`Geddes1992algorithms`, algorithm 8.3
+        while not f.is_ground:
+            df = f.diff()
 
-    """
-    n, factors, p = 1, [], K.characteristic
-    m = K.order // p
+            if not df.is_zero:
+                g = self.gcd(f, df)
+                h, f, i = f // g, g, 1
 
-    while not dmp_ground_p(f, None, 0):
-        df = dmp_diff_in(f, 1, 0, 0, K)
+                while not h.is_one:
+                    g = self.gcd(f, h)
+                    h //= g
 
-        if not dmp_zero_p(df, 0):
-            g = dmp_gcd(f, df, 0, K)
-            h = dmp_quo(f, g, 0, K)
+                    if not h.is_ground:
+                        factors.append((h, i*n))
+
+                    f //= g
+                    h = g
+                    i += 1
+
+            n *= p
+
+            g = self.zero
+            for i in range(f.degree()//p + 1):
+                k = (i*p,)
+                if k in f:
+                    g[(i,)] = f[k]**m
             f = g
-            i = 1
 
-            while not dmp_one_p(h, 0, K):
-                g = dmp_gcd(f, h, 0, K)
-                h = dmp_quo(h, g, 0, K)
+        return factors
 
-                if dmp_degree_in(h, 0, 0) > 0:
-                    factors.append((h, i*n))
+    def _rr_yun0_sqf_list(self, f):
+        """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K[X]``.
 
-                f, h, i = dmp_quo(f, g, 0, K), g, i + 1
+        References
+        ==========
 
-        d = dmp_degree_in(f, 0, 0) // p
-        n *= p
+        * :cite:`Geddes1992algorithms`, algorithm 8.2
+        * :cite:`LeeM2013factor`, algorithm 3.1
 
-        for i in range(d + 1):
-            f[i] = f[i*p]**m
-        del f[d + 1:]
+        """
+        if f.is_ground:
+            return []
 
-    return factors
-
-
-def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``.
-
-    Examples
-    ========
-
-    >>> _, x = ring('x', FF(11))
-    >>> f = x**11 + 1
-
-    Note that:
-
-    >>> f.diff()
-    0 mod 11
-
-    This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f``:
-
-    >>> f.sqf_list()
-    (1 mod 11, [(x + 1 mod 11, 11)])
-
-    """
-    if not u:
-        return dup_gf_musser_sqf_list(f, K)
-
-    raise NotImplementedError('multivariate polynomials over finite fields')
-
-
-def dmp_rr_yun0_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K[X]``.
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`, algorithm 8.2
-    * :cite:`LeeM2013factor`, algorithm 3.1
-
-    """
-    if dmp_ground_p(f, None, u):
-        return []
-
-    result, count = [], 1
-    qs = [dmp_diff_in(f, 1, i, u, K) for i in range(u + 1)]
-
-    g = f
-    for q in qs:
-        g = dmp_gcd(g, q, u, K)
-
-    while not dmp_one_p(f, u, K):
-        for i in range(u + 1):
-            qs[i] = dmp_quo(qs[i], g, u, K)
-        f = dmp_quo(f, g, u, K)
-        for i in range(u + 1):
-            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, i, u, K), u, K)
+        result, count = [], 1
+        qs = [f.diff(x) for x in self.gens]
 
         g = f
         for q in qs:
-            g = dmp_gcd(g, q, u, K)
-        if not dmp_one_p(g, u, K):
-            result.append((g, count))
+            g = self.gcd(g, q)
 
-        count += 1
+        while not f.is_one:
+            qs = [q // g for q in qs]
+            f //= g
+            qs = [q - f.diff(x) for x, q in zip(self.gens, qs)]
 
-    return result
+            g = f
+            for q in qs:
+                g = self.gcd(g, q)
+            if not g.is_one:
+                result.append((g, count))
 
+            count += 1
 
-def dmp_sqf_list(f, u, K):
-    """
-    Return square-free decomposition of a polynomial in ``K[X]``.
+        return result
 
-    Examples
-    ========
+    def is_squarefree(self, f):
+        """
+        Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``.
 
-    >>> _, x, y = ring('x y', ZZ)
+        Examples
+        ========
 
-    >>> (x**5 + 2*x**4*y + x**3*y**2).sqf_list()
-    (1, [(x + y, 2), (x, 3)])
+        >>> _, x, y = ring('x y', ZZ)
 
-    """
-    if K.is_Field:
-        coeff = dmp_ground_LC(f, u, K)
-        f = dmp_ground_monic(f, u, K)
-    else:
-        coeff, f = dmp_ground_primitive(f, u, K)
+        >>> ((x + y)**2).is_squarefree
+        False
+        >>> (x**2 + y**2).is_squarefree
+        True
 
-    if K.is_FiniteField:
-        return coeff, dmp_gf_sqf_list(f, u, K)
+        """
+        if f.is_ground:
+            return True
+        else:
+            g = f
+            for x in self.gens:
+                g = self.gcd(g, f.diff(x))
+                if g.is_ground:
+                    return True
+            return False
 
-    return coeff, dmp_rr_yun0_sqf_list(f, u, K)
+    def sqf_part(self, f):
+        """
+        Returns square-free part of a polynomial in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> R.sqf_part(x**3 + 2*x**2*y + x*y**2)
+        x**2 + x*y
+
+        """
+        domain = self.domain
+
+        if domain.is_FiniteField:
+            g = self.one
+            for f, _ in self.sqf_list(f)[1]:
+                g *= f
+
+            return g
+
+        if f.is_zero:
+            return f
+
+        gcd = f
+        for x in self.gens:
+            gcd = self.gcd(gcd, f.diff(x))
+        sqf = f // gcd
+
+        if domain.is_Field:
+            return sqf.monic()
+        else:
+            return sqf.primitive()[1]
+
+    def sqf_norm(self, f):
+        """
+        Square-free norm of ``f`` in ``K[X]``, useful over algebraic domains.
+
+        Returns ``s``, ``f``, ``r``, such that ``g(x) = f(x-sa)`` and ``r(x) = Norm(g(x))``
+        is a square-free polynomial over K, where ``a`` is the algebraic extension of ``K``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', QQ.algebraic_field(I))
+
+        >>> (x*y + y**2).sqf_norm()
+        (1, x*y - I*x + y**2 - 3*I*y - 2,
+         x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
+
+        """
+        domain = self.domain
+
+        if not domain.is_AlgebraicField:
+            raise DomainError(f'ground domain must be algebraic, got {domain}')
+
+        new_ring = self.to_ground().inject(*domain.symbols, front=True)
+        g = domain.mod.set_ring(new_ring)
+        s = 0
+
+        while True:
+            h = f.inject(front=True)
+            r = g.resultant(h)
+
+            if r.is_squarefree:
+                return s, f, r
+            else:
+                f = f.compose({x: x - domain.unit for x in self.gens})
+                s += 1

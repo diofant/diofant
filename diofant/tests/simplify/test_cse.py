@@ -20,13 +20,13 @@ x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = symbols('x:13')
 def test_numbered_symbols():
     ns = cse_main.numbered_symbols(prefix='y')
     assert list(itertools.islice(
-        ns, 0, 10)) == [Symbol('y%s' % i) for i in range(10)]
+        ns, 0, 10)) == [Symbol(f'y{i}') for i in range(10)]
     ns = cse_main.numbered_symbols(prefix='y')
     assert list(itertools.islice(
-        ns, 10, 20)) == [Symbol('y%s' % i) for i in range(10, 20)]
+        ns, 10, 20)) == [Symbol(f'y{i}') for i in range(10, 20)]
     ns = cse_main.numbered_symbols()
     assert list(itertools.islice(
-        ns, 0, 10)) == [Symbol('x%s' % i) for i in range(10)]
+        ns, 0, 10)) == [Symbol(f'x{i}') for i in range(10)]
 
 # Dummy "optimization" functions for testing.
 

@@ -4,52 +4,103 @@ import collections
 import math
 
 from ..core import I
-from .densearith import (dmp_add, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
-                         dmp_rem, dup_rshift)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
-                         dup_reverse)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
+                         dmp_quo, dmp_sub, dup_rshift)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
+                         dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_to_dict, dmp_to_tuple, dmp_zero, dup_reverse)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
+                         dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dmp_sqf_list, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list
 
 
-def dup_sturm(f, K):
+def dup_real_imag(f, K):
     """
-    Computes the Sturm sequence of ``f`` in ``F[x]``.
-
-    Given a univariate, square-free polynomial ``f(x)`` returns the
-    associated Sturm sequence (see e.g. :cite:`Davenport1988systems`)
-    ``f_0(x), ..., f_n(x)`` defined by::
-
-       f_0(x), f_1(x) = f(x), f'(x)
-       f_n = -rem(f_{n-2}(x), f_{n-1}(x))
+    Return bivariate polynomials ``f1`` and ``f2``, such that ``f = f1 + f2*I``.
 
     Examples
     ========
 
-    >>> R, x = ring('x', QQ)
+    >>> R, x, y = ring('x y', ZZ)
 
-    >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
-    [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
+    >>> R.dup_real_imag(x**3 + x**2 + x + 1)
+    (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
+
+    >>> R, x, y = ring('x y', QQ.algebraic_field(I))
+
+    >>> R.dup_real_imag(x**2 + I*x - 1)
+    (x**2 - y**2 - y - 1, 2*x*y + x)
 
     """
-    if not K.is_Field:
-        raise DomainError(f"can't compute Sturm sequence over {K}")
+    if K.is_ComplexAlgebraicField:
+        K0 = K.domain
+        r1, i1 = dup_real_imag([_.real for _ in f], K0)
+        r2, i2 = dup_real_imag([_.imag for _ in f], K0)
+        return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
+    elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
+        raise DomainError(f'computing real and imaginary parts is not supported over {K}')
 
-    f = dmp_sqf_part(f, 0, K)
+    f1 = dmp_zero(1)
+    f2 = dmp_zero(1)
 
-    sturm = [f, dmp_diff_in(f, 1, 0, 0, K)]
+    if not f:
+        return f1, f2
 
-    while sturm[-1]:
-        s = dmp_rem(sturm[-2], sturm[-1], 0, K)
-        sturm.append(dmp_neg(s, 0, K))
+    g = [[[K.one, K.zero]], [[K.one], []]]
+    h = dmp_ground(f[0], 2)
 
-    return sturm[:-1]
+    for c in f[1:]:
+        h = dmp_mul(h, g, 2, K)
+        h = dmp_add(h, [dmp_ground(c, 1)], 2, K)
+
+    H = dmp_to_dict(h, 0)
+
+    for (k,), h in H.items():
+        m = k % 4
+
+        if not m:
+            f1 = dmp_add(f1, h, 1, K)
+        elif m == 1:
+            f2 = dmp_add(f2, h, 1, K)
+        elif m == 2:
+            f1 = dmp_sub(f1, h, 1, K)
+        else:
+            f2 = dmp_sub(f2, h, 1, K)
+
+    return f1, f2
+
+
+def dup_transform(f, p, q, K):
+    """
+    Evaluate functional transformation ``q**n * f(p/q)`` in ``K[x]``.
+
+    Examples
+    ========
+
+    >>> R, x = ring('x', ZZ)
+
+    >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
+    x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
+    """
+    if not f:
+        return []
+
+    n = len(f) - 1
+    h, Q = [f[0]], [[K.one]]
+
+    for i in range(n):
+        Q.append(dmp_mul(Q[-1], q, 0, K))
+
+    for c, q in zip(f[1:], Q[1:]):
+        h = dmp_mul(h, p, 0, K)
+        q = dmp_mul_ground(q, c, 0, K)
+        h = dmp_add(h, q, 0, K)
+
+    return h
 
 
 def dup_sign_variations(f, K):
@@ -156,16 +207,16 @@ def dup_step_refine_real_root(f, M, K):
         A = K.zero
 
     if A > 16:
-        f = dup_scale(f, A, K)
+        f = dmp_compose(f, [A, 0], 0, K)
         a, c, A = A*a, A*c, K.one
 
     if A >= 1:
-        f = dup_shift(f, A, K)
+        f = dmp_compose(f, [K.one, A], 0, K)
         b, d = A*a + b, A*c + d
 
         assert dmp_TC(f, K)
 
-    f, g = dup_shift(f, K.one, K), f
+    f, g = dmp_compose(f, [K.one, K.one], 0, K), f
 
     a1, b1, c1, d1 = a, a + b, c, c + d
 
@@ -177,7 +228,7 @@ def dup_step_refine_real_root(f, M, K):
     if k == 1:
         a, b, c, d = a1, b1, c1, d1
     else:
-        f = dup_shift(dup_reverse(g), K.one, K)
+        f = dmp_compose(dup_reverse(g), [K.one, K.one], 0, K)
 
         assert dmp_TC(f, K)
 
@@ -251,7 +302,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
 
     if s < 0:
         if t <= 0:
-            f, s, t, negative = dup_mirror(f, K), -t, -s, True
+            f, s, t, negative = dmp_compose(f, [-K.one, 0], 0, K), -t, -s, True
         else:
             raise ValueError(f"can't refine a real root in ({s}, {t})")
 
@@ -284,11 +335,11 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             A = K.zero
 
         if A > 16:
-            f = dup_scale(f, A, K)
+            f = dmp_compose(f, [A, 0], 0, K)
             a, c, A = A*a, A*c, K.one
 
         if A >= 1:
-            f = dup_shift(f, A, K)
+            f = dmp_compose(f, [K.one, A], 0, K)
             b, d = A*a + b, A*c + d
 
             assert dmp_TC(f, K)
@@ -302,7 +353,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
                                                         eps=eps, mobius=True))
                 continue
 
-        f1 = dup_shift(f, K.one, K)
+        f1 = dmp_compose(f, [K.one, K.one], 0, K)
 
         a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
@@ -316,7 +367,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
         a2, b2, c2, d2 = b, a + b, d, c + d
 
         if k2 > 1:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)
@@ -334,7 +385,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f1 is None:
-            f1 = dup_shift(dup_reverse(f), K.one, K)
+            f1 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f1, K):
                 f1 = dup_rshift(f1, 1, K)
@@ -349,7 +400,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f2 is None:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)
@@ -412,7 +463,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=
     if inf is not None and inf >= 0:
         return []
 
-    roots = dup_inner_isolate_real_roots(dup_mirror(f, K), K, eps=eps)
+    roots = dup_inner_isolate_real_roots(dmp_compose(f, [-K.one, 0], 0, K), K, eps=eps)
 
     results = []
 
@@ -1624,7 +1675,7 @@ class RealInterval:
 
             if s < 0:
                 if t <= 0:
-                    f, s, t, self.neg = dup_mirror(f, dom), -t, -s, True
+                    f, s, t, self.neg = dmp_compose(f, [-dom.one, 0], 0, dom), -t, -s, True
                 else:
                     raise ValueError(f"can't refine a real root in ({s}, {t})")
 
@@ -1828,3 +1879,30 @@ class ComplexInterval:
                 _, a, b, I, Q, F1, F2 = D_U
 
         return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
+
+
+def dup_sturm(f, K):
+    """Computes the Sturm sequence of ``f`` in ``F[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return list(map(lambda _: _.to_dense(), f.sturm()))
+
+
+class _FindRoot:
+    """Mixin class for computing polynomial roots."""
+
+    def _sturm(self, f):
+        domain = self.domain
+
+        if not domain.is_Field:
+            raise DomainError(f"can't compute Sturm sequence over {domain}")
+
+        f = f.sqf_part()
+
+        sturm = [f, f.diff()]
+
+        while sturm[-1]:
+            s = sturm[-2] % sturm[-1]
+            sturm.append(-s)
+
+        return sturm[:-1]

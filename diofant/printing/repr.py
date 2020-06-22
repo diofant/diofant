@@ -63,12 +63,12 @@ class ReprPrinter(Printer):
 
     def _print_FunctionClass(self, expr):
         if issubclass(expr, AppliedUndef):
-            return 'Function(%r)' % (expr.__name__)
+            return f'Function({expr.__name__!r})'
         else:
             return expr.__name__
 
     def _print_RationalConstant(self, expr):
-        return 'Rational(%s, %s)' % (expr.numerator, expr.denominator)
+        return f'Rational({expr.numerator}, {expr.denominator})'
 
     def _print_AtomicExpr(self, expr):
         return str(expr)
@@ -94,7 +94,7 @@ class ReprPrinter(Printer):
             l.append([])
             for j in range(expr.cols):
                 l[-1].append(expr[i, j])
-        return '%s(%s)' % (expr.__class__.__name__, self._print(l))
+        return f'{expr.__class__.__name__}({self._print(l)})'
 
     _print_SparseMatrix = \
         _print_MutableSparseMatrix = \
@@ -128,14 +128,14 @@ class ReprPrinter(Printer):
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
         r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
-        return "%s('%s', dps=%i)" % (expr.__class__.__name__, r, dps)
+        return f"{expr.__class__.__name__}('{r}', dps={dps:d})"
 
     def _print_Symbol(self, expr):
         d = expr._assumptions.generator
         if d == {}:
-            return '%s(%s)' % (expr.__class__.__name__, self._print(expr.name))
+            return f'{expr.__class__.__name__}({self._print(expr.name)})'
         else:
-            attr = ['%s=%s' % (k, v) for k, v in d.items()]
+            attr = [f'{k}={v}' for k, v in d.items()]
             return '%s(%s, %s)' % (expr.__class__.__name__,
                                    self._print(expr.name), ', '.join(attr))
     _print_Dummy = _print_Symbol
@@ -151,14 +151,14 @@ class ReprPrinter(Printer):
             return '(%s)' % self.reprify(expr, ', ')
 
     def _print_WildFunction(self, expr):
-        return "%s('%s')" % (expr.__class__.__name__, expr.name)
+        return f"{expr.__class__.__name__}('{expr.name}')"
 
     def _print_PolynomialRing(self, ring):
         return '%s(%s, %s, %s)' % (ring.__class__.__name__,
                                    self._print(ring.domain), self._print(ring.symbols), self._print(ring.order))
 
     def _print_GMPYIntegerRing(self, expr):
-        return '%s()' % expr.__class__.__name__
+        return f'{expr.__class__.__name__}()'
     _print_GMPYRationalField = _print_GMPYIntegerRing
     _print_PythonIntegerRing = _print_GMPYIntegerRing
     _print_PythonRationalField = _print_GMPYIntegerRing
@@ -173,7 +173,7 @@ class ReprPrinter(Printer):
     def _print_PolyElement(self, poly):
         terms = list(poly.terms())
         terms.sort(key=poly.ring.order, reverse=True)
-        return '%s(%s, %s)' % (poly.__class__.__name__, self._print(poly.ring), self._print(terms))
+        return f'{poly.__class__.__name__}({self._print(poly.ring)}, {self._print(terms)})'
 
     def _print_FracElement(self, frac):
         numer_terms = list(frac.numerator.terms())
@@ -182,7 +182,7 @@ class ReprPrinter(Printer):
         denom_terms.sort(key=frac.field.order, reverse=True)
         numer = self._print(numer_terms)
         denom = self._print(denom_terms)
-        return '%s(%s, %s, %s)' % (frac.__class__.__name__, self._print(frac.field), numer, denom)
+        return f'{frac.__class__.__name__}({self._print(frac.field)}, {numer}, {denom})'
 
     def _print_AlgebraicField(self, expr):
         return 'AlgebraicField(%s, %s)' % (self._print(expr.domain),

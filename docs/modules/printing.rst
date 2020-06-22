@@ -61,13 +61,13 @@ Usage::
     >>> print(ccode(abs(x**2)))
     fabs(pow(x, 2))
 
-.. autoclass:: diofant.printing.ccode.CCodePrinter
+.. autoclass:: CCodePrinter
    :members:
 
    .. autoattribute:: CCodePrinter.printmethod
 
 
-.. autofunction:: diofant.printing.ccode.ccode
+.. autofunction:: ccode
 
 Fortran Printing
 ----------------

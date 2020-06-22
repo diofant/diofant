@@ -82,13 +82,13 @@ class OctaveCodePrinter(CodePrinter):
         return p*5
 
     def _get_statement(self, codestring):
-        return '%s;' % codestring
+        return f'{codestring};'
 
     def _get_comment(self, text):
-        return '% {0}'.format(text)
+        return f'% {text}'
 
     def _declare_number_const(self, name, value):
-        return '{0} = {1};'.format(name, value)
+        return f'{name} = {value};'
 
     def _format_code(self, lines):
         return self.indent_code(lines)
@@ -100,7 +100,7 @@ class OctaveCodePrinter(CodePrinter):
             # Octave arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
                                    [i.label, i.lower + 1, i.upper + 1])
-            open_lines.append('for %s = %s:%s' % (var, start, stop))
+            open_lines.append(f'for {var} = {start}:{stop}')
             close_lines.append('end')
         return open_lines, close_lines
 
@@ -239,7 +239,7 @@ class OctaveCodePrinter(CodePrinter):
         else:
             lhs_code = self._print(lhs)
             rhs_code = self._print(rhs)
-            return self._get_statement('%s = %s' % (lhs_code, rhs_code))
+            return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Infinity(self, expr):
         return 'inf'
@@ -269,7 +269,7 @@ class OctaveCodePrinter(CodePrinter):
         if (A.rows, A.cols) == (0, 0):
             return '[]'
         elif A.rows == 0 or A.cols == 0:
-            return 'zeros(%s, %s)' % (A.rows, A.cols)
+            return f'zeros({A.rows}, {A.cols})'
         elif (A.rows, A.cols) == (1, 1):
             # Octave does not distinguish between scalars and 1x1 matrices
             return self._print(A[0, 0])
@@ -346,12 +346,10 @@ class OctaveCodePrinter(CodePrinter):
                                               self._print(expr.args[0]))
 
     def _print_hankel1(self, expr):
-        return 'besselh(%s, 1, %s)' % (self._print(expr.order),
-                                       self._print(expr.argument))
+        return f'besselh({self._print(expr.order)}, 1, {self._print(expr.argument)})'
 
     def _print_hankel2(self, expr):
-        return 'besselh(%s, 2, %s)' % (self._print(expr.order),
-                                       self._print(expr.argument))
+        return f'besselh({self._print(expr.order)}, 2, {self._print(expr.argument)})'
 
     # Note: as of 2015, Octave doesn't have spherical Bessel functions
     def _print_jn(self, expr):
@@ -385,7 +383,7 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_zeta(self, expr):
         if len(expr.args) == 1:
-            return 'zeta(%s)' % expr.args[0]
+            return f'zeta({expr.args[0]})'
         else:
             return self._print_not_supported(expr)
 
@@ -403,8 +401,7 @@ class OctaveCodePrinter(CodePrinter):
             # Express each (cond, expr) pair in a nested Horner form:
             #   (condition) .* (expr) + (not cond) .* (<others>)
             # Expressions that result in multiple statements won't work here.
-            ecpairs = ['({0}).*({1}) + (~({0})).*('.format
-                       (self._print(c), self._print(e))
+            ecpairs = [f'({self._print(c)}).*({self._print(e)}) + (~({self._print(c)})).*('
                        for e, c in expr.args[:-1]]
             elast = '%s' % self._print(expr.args[-1].expr)
             pw = ' ...\n'.join(ecpairs) + elast + ')'*len(ecpairs)

@@ -125,7 +125,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         # where 'z' is a symbol that we don't know about
         # We will never be able to test this equality through iteration
         if not cond.free_symbols.issubset(domain.free_symbols):
-            raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (
+            raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (  # noqa: SFS101
                 condition, tuple(cond.free_symbols - domain.free_symbols)) +
                 'Will be unable to iterate using this condition')
 
@@ -137,7 +137,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
             return val
         elif val.is_Equality:
             return val.lhs == val.rhs
-        raise ValueError('Undeciable if %s' % str(val))
+        raise ValueError(f'Undeciable if {val!s}')
 
     def __contains__(self, other):
         return other in self.fulldomain and self._test(other)

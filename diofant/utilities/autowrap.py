@@ -81,8 +81,6 @@ from .lambdify import implemented_function
 class CodeWrapError(Exception):
     """Generic code wrapping error."""
 
-    pass
-
 
 class CodeWrapper:
     """Base Class for code wrappers."""
@@ -93,11 +91,11 @@ class CodeWrapper:
 
     @property
     def filename(self):
-        return '%s_%s' % (self._filename, CodeWrapper._module_counter)
+        return f'{self._filename}_{CodeWrapper._module_counter}'
 
     @property
     def module_name(self):
-        return '%s_%s' % (self._module_basename, CodeWrapper._module_counter)
+        return f'{self._module_basename}_{CodeWrapper._module_counter}'
 
     def __init__(self, generator, filepath=None, flags=[], verbose=False):
         """Generator -- the code generator to use."""
@@ -169,7 +167,7 @@ def %(name)s():
         return
 
     def _generate_code(self, routine, helpers):
-        with open('%s.py' % self.module_name, 'w') as f:
+        with open(f'{self.module_name}.py', 'w') as f:
             printed = ', '.join(
                 [str(res.expr) for res in routine.result_variables])
             # convert OutputArguments to return value like f2py
@@ -238,7 +236,7 @@ class CythonCodeWrapper(CodeWrapper):
 
     def _prepare_files(self, routine):
         pyxfilename = self.module_name + '.pyx'
-        codefilename = '%s.%s' % (self.filename, self.generator.code_extension)
+        codefilename = f'{self.filename}.{self.generator.code_extension}'
 
         # pyx
         with open(pyxfilename, 'w') as f:
@@ -300,8 +298,8 @@ class CythonCodeWrapper(CodeWrapper):
             for arg, val in py_inf.items():
                 proto = self._prototype_arg(arg)
                 mat, ind = val
-                local_decs.append('    cdef {0} = {1}.shape[{2}]'.format(proto, mat, ind))
-            local_decs.extend(['    cdef {0}'.format(self._declare_arg(a)) for a in py_loc])
+                local_decs.append(f'    cdef {proto} = {mat}.shape[{ind}]')
+            local_decs.extend([f'    cdef {self._declare_arg(a)}' for a in py_loc])
             declarations = '\n'.join(local_decs)
             if declarations:
                 declarations = declarations + '\n'
@@ -310,9 +308,9 @@ class CythonCodeWrapper(CodeWrapper):
             args_c = ', '.join([self._call_arg(a) for a in routine.arguments])
             rets = ', '.join([str(r.name) for r in py_rets])
             if routine.results:
-                body = '    return %s(%s)' % (routine.name, args_c)
+                body = f'    return {routine.name}({args_c})'
             else:
-                body = '    %s(%s)\n' % (routine.name, args_c)
+                body = f'    {routine.name}({args_c})\n'
                 body = body + '    return ' + rets
 
             functions.append(self.pyx_func.format(name=name, arg_string=arg_string,
@@ -365,22 +363,22 @@ class CythonCodeWrapper(CodeWrapper):
             mtype = np_types[t]
             return mat_dec.format(mtype=mtype, ndim=ndim, name=arg.name)
         else:
-            return '%s %s' % (t, str(arg.name))
+            return f'{t} {arg.name!s}'
 
     def _declare_arg(self, arg):
         proto = self._prototype_arg(arg)
         if arg.dimensions:
             shape = '(' + ','.join(str(i[1] + 1) for i in arg.dimensions) + ')'
-            return proto + ' = np.empty({shape})'.format(shape=shape)
+            return proto + f' = np.empty({shape})'
         else:
             return proto + ' = 0'
 
     def _call_arg(self, arg):
         if arg.dimensions:
             t = arg.get_datatype('c')
-            return '<{0}*> {1}.data'.format(t, arg.name)
+            return f'<{t}*> {arg.name}.data'
         elif isinstance(arg, ResultBase):
-            return '&{0}'.format(arg.name)
+            return f'&{arg.name}'
         else:
             return str(arg.name)
 
@@ -432,8 +430,8 @@ def _validate_backend_language(backend, language):
     if not langs:
         raise ValueError('Unrecognized backend: ' + backend)
     if language.upper() not in langs:
-        raise ValueError(('Backend {0} and language {1} are '
-                          'incompatible').format(backend, language))
+        raise ValueError(f'Backend {backend} and language {language} are '
+                         'incompatible')
 
 
 @cacheit
@@ -689,7 +687,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
         function_creation = []
         ufunc_init = []
         module = self.module_name
-        include_file = '"{0}.h"'.format(prefix)
+        include_file = f'"{prefix}.h"'
         top = _ufunc_top.substitute(include_file=include_file, module=module)
 
         for r_index, routine in enumerate(routines):
@@ -730,7 +728,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
             docstring = '"Created in Diofant with Ufuncify"'
 
             # Function Creation
-            function_creation.append('PyObject *ufunc{0};'.format(r_index))
+            function_creation.append(f'PyObject *ufunc{r_index};')
 
             # Ufunc initialization
             init_form = _ufunc_init_form.substitute(module=module,

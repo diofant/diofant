@@ -19,8 +19,6 @@ from .indexed import Idx, Indexed
 class IndexConformanceException(Exception):
     """Raised if indexes are not consistent."""
 
-    pass
-
 
 def _remove_repeated(inds):
     """Removes repeated objects from sequences
@@ -144,7 +142,7 @@ def _get_indices_Add(expr):
         return set(), {}
 
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
-        raise IndexConformanceException('Indices are not consistent: %s' % expr)
+        raise IndexConformanceException(f'Indices are not consistent: {expr}')
 
     # FIXME: search for symmetries
     symmetries = {}
@@ -237,7 +235,7 @@ def get_indices(expr):
 
         else:
             raise NotImplementedError('No specialized handling of '
-                                      'type %s' % type(expr))
+                                      f'type {type(expr)}')
 
 
 def get_contraction_structure(expr):
@@ -401,4 +399,4 @@ def get_contraction_structure(expr):
 
     else:
         raise NotImplementedError('No specialized handling of '
-                                  'type %s' % type(expr))
+                                  f'type {type(expr)}')

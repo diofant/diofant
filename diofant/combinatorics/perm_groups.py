@@ -1189,7 +1189,7 @@ class PermutationGroup(Basic):
         elif method == 'dimino':
             return self.generate_dimino(af)
         else:
-            raise NotImplementedError('No generation defined for %s' % method)
+            raise NotImplementedError(f'No generation defined for {method}')
 
     def generate_dimino(self, af=False):
         """Yield group elements using Dimino's algorithm

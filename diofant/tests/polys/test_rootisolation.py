@@ -12,7 +12,74 @@ from diofant.polys.rootisolation import (RealInterval,
 __all__ = ()
 
 
-def test_dup_sturm():
+def test_dup_real_imag():
+    R, x, y = ring('x y', ZZ)
+
+    assert R.dup_real_imag(R.zero) == (0, 0)
+    assert R.dup_real_imag(R.one) == (1, 0)
+
+    assert R.dup_real_imag(x + 1) == (x + 1, y)
+    assert R.dup_real_imag(x + 2) == (x + 2, y)
+
+    assert R.dup_real_imag(x**2 + 2*x + 3) == (x**2 - y**2 + 2*x + 3,
+                                               2*x*y + 2*y)
+
+    f = x**3 + x**2 + x + 1
+
+    assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
+                                  3*x**2*y + 2*x*y - y**3 + y)
+
+    R, x, y = ring('x y', EX)
+    pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
+
+    R = QQ.algebraic_field(I).inject('x', 'y')
+    x, y = R.to_ground().gens
+
+    f = R.x**2 + I*R.x - 1
+    r = x**2 - y**2 - y - 1
+    i = 2*x*y + x
+
+    assert R.dup_real_imag(f) == (r, i)
+
+    f = R.x**4 + I*R.x**3 - R.x + 1
+    r = x**4 - 6*x**2*y**2 - 3*x**2*y - x + y**4 + y**3 + 1
+    i = 4*x**3*y + x**3 - 4*x*y**3 - 3*x*y**2 - y
+
+    assert R.dup_real_imag(f) == (r, i)
+
+    K = QQ.algebraic_field(sqrt(2))
+    R = K.inject('x', 'y')
+    x, y = R.gens
+
+    f = R.x**2 + sqrt(2)*R.x - 1
+    assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
+
+    K = K.algebraic_field(I)
+    R = K.inject('x', 'y')
+    x, y = R.to_ground().gens
+
+    f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
+    assert R.dup_real_imag(f) == (x**2 - y**2 - 2*sqrt(2)*y - 1,
+                                  2*x*y + 2*sqrt(2)*x + 1)
+
+
+def test_dup_transform():
+    R, x = ring('x', ZZ)
+
+    assert R.dup_transform(R(0), R(0), x + 1) == 0
+    assert R.dup_transform(R(0), R(1), x + 1) == 0
+    assert R.dup_transform(R(0), x + 2, x + 1) == 0
+
+    assert R.dup_transform(x**2 - 2*x + 1, x**2 + 1,
+                           x - 1) == x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
+    assert (R.dup_transform(6*x**4 - 5*x**3 + 4*x**2 - 3*x + 17,
+                            x**2 - 3*x + 4, 2*x - 3) ==
+            6*x**8 - 82*x**7 + 541*x**6 - 2205*x**5 + 6277*x**4 -
+            12723*x**3 + 17191*x**2 - 13603*x + 4773)
+
+
+def test_sturm():
     R, x = ring('x', QQ)
 
     assert R(5).sturm() == [1]
@@ -23,11 +90,31 @@ def test_dup_sturm():
     assert f.sturm() == [f, 3*x**2 - 4*x + 3,
                          -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
 
+    f = x**3 - 2*x**2 + x - 3
+
+    assert f.sturm() == [f, 3*x**2 - 4*x + 1, 2*x/9 + QQ(25, 9), QQ(-2079, 4)]
+
+    pytest.raises(DomainError, lambda: x.set_domain(ZZ).sturm())
+
+    F = ZZ.frac_field('pi')
+    pi = F.pi
+    R, x = ring('x', F)
+
+    f = (1024/(15625*pi**8)*x**5 - 4096/(625*pi**8)*x**4 + 32/(15625*pi**4)*x**3
+         - 128/(625*pi**4)*x**2 + x/62500 - F((1, 625)))
+
+    assert f.sturm() == [x**3 - 100*x**2 + pi**4/64*x - 25*pi**4/16,
+                         3*x**2 - 200*x + pi**4/64,
+                         (F((20000, 9)) - pi**4/96)*x + 25*pi**4/18,
+                         (-3686400000000*pi**4 - 11520000*pi**8 -
+                          9*pi**12)/(26214400000000 - 245760000*pi**4 +
+                                     576*pi**8)]
+
 
 def test_dup_sign_variations():
     R, x = ring('x', ZZ)
 
-    assert R.dup_sign_variations(0) == 0
+    assert R.dup_sign_variations(R(0)) == 0
     assert R.dup_sign_variations(x) == 0
     assert R.dup_sign_variations(x**2 + 2) == 0
     assert R.dup_sign_variations(x*(x**2 + 3)) == 0
@@ -100,6 +187,7 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, steps=2) == (QQ(4, 3), QQ(3, 2))
     assert R.dup_refine_real_root(f, s, t, steps=3) == (QQ(7, 5), QQ(3, 2))
     assert R.dup_refine_real_root(f, s, t, steps=4) == (QQ(7, 5), QQ(10, 7))
+    assert R.dup_refine_real_root(f, s, t, eps=QQ(1, 100)) == (QQ(24, 17), QQ(17, 12))
 
     s, t = 1, QQ(3, 2)
 
@@ -119,8 +207,8 @@ def test_dup_refine_real_root():
 
     s, t = -1, -2
 
-    assert R.dup_refine_real_root(f, s, t, steps=0) == (-QQ(2, 1), -QQ(1, 1))
-    assert R.dup_refine_real_root(f, s, t, steps=1) == (-QQ(3, 2), -QQ(1, 1))
+    assert R.dup_refine_real_root(f, s, t, steps=0) == (-2, -1)
+    assert R.dup_refine_real_root(f, s, t, steps=1) == (-QQ(3, 2), -1)
     assert R.dup_refine_real_root(f, s, t, steps=2) == (-QQ(3, 2), -QQ(4, 3))
     assert R.dup_refine_real_root(f, s, t, steps=3) == (-QQ(3, 2), -QQ(7, 5))
     assert R.dup_refine_real_root(f, s, t, steps=4) == (-QQ(10, 7), -QQ(7, 5))
@@ -148,6 +236,11 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, disjoint=-u) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=u) == (u, v)
 
+    f = x**2 - 3
+
+    assert R.dup_refine_real_root(f, 1, 2,
+                                  eps=QQ(1, 100)) == (QQ(19, 11), QQ(26, 15))
+
     R, x = ring('x', QQ)
 
     f = (x - QQ(1, 2))*(x + QQ(1, 2))
@@ -165,8 +258,10 @@ def test_dup_refine_real_root():
 def test_dup_isolate_real_roots_sqf():
     R, x = ring('x', ZZ)
 
-    assert R.dup_isolate_real_roots_sqf(0) == []
-    assert R.dup_isolate_real_roots_sqf(5) == []
+    assert R.dup_isolate_real_roots_sqf(R(0)) == []
+    assert R.dup_isolate_real_roots_sqf(R(5)) == []
+
+    assert R.dup_isolate_real_roots_sqf(x) == [(0, 0)]
 
     f = x*(x + 1)
 
@@ -189,7 +284,7 @@ def test_dup_isolate_real_roots_sqf():
 
     for r in range(2, 7):
         for s in (1, 10, -1, -10):
-            f = prod(x - s*_ for _ in range(1, r))
+            f = R(prod(x - s*_ for _ in range(1, r)))
             ans = sorted((s*_, s*_) for _ in range(1, r))
             assert R.dup_isolate_real_roots_sqf(f) == ans
 
@@ -203,7 +298,7 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(x**9 - 5) == [(1, 2)]
 
     for roots in subsets(range(1, 4)):
-        f = prod(x - r for r in roots)
+        f = R(prod(x - r for r in roots))
         ans = sorted((_, _) for _ in roots)
         assert R.dup_isolate_real_roots_sqf(f) == ans
 
@@ -287,12 +382,26 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f, inf=+1) == [i[1]]
     assert R.dup_isolate_real_roots_sqf(f, sup=-1) == [i[0]]
 
+    f = (2*x - 3)*(x**2 - 3)*(x**2 - 2)
+
+    assert R.dup_isolate_real_roots_sqf(f) == \
+        [(-2, -QQ(3, 2)), (-QQ(3, 2), -QQ(1, 1)), (1, QQ(3, 2)),
+         (QQ(3, 2), QQ(3, 2)), (QQ(3, 2), 2)]
+
+    f = 7*x**4 - 19*x**3 + 20*x**2 + 17*x + 20
+
+    assert R.dup_isolate_real_roots_sqf(f) == []
+
     R, x = ring('x', QQ)
 
     f = (6*x - 85)*(1028*x + 1)/3855
 
     assert R.dup_isolate_real_roots_sqf(f) == [(-1, 0), (14, 15)]
     assert [_.as_tuple() for _ in R.dup_isolate_real_roots_sqf(f, blackbox=True)] == [(-1, 0), (14, 15)]
+
+    f = (2*x/5 - QQ(17, 3))*(4*x + QQ(1, 257))
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(-1, 0), (14, 15)]
 
     R, x = ring('x', EX)
 
@@ -340,11 +449,14 @@ def test_dup_isolate_real_roots_sqf():
 def test_dup_isolate_real_roots():
     R, x = ring('x', ZZ)
 
-    assert R.dup_isolate_real_roots(0) == []
-    assert R.dup_isolate_real_roots(3) == []
+    assert R.dup_isolate_real_roots(R(0)) == []
+    assert R.dup_isolate_real_roots(R(1)) == []
+    assert R.dup_isolate_real_roots(R(3)) == []
 
+    assert R.dup_isolate_real_roots(x) == [((0, 0), 1)]
     assert R.dup_isolate_real_roots(5*x) == [((0, 0), 1)]
     assert R.dup_isolate_real_roots(7*x**4) == [((0, 0), 4)]
+    assert R.dup_isolate_real_roots(x**128) == [((0, 0), 128)]
 
     assert R.dup_isolate_real_roots(x*(x + 1)) == [((-1, -1), 1), ((0, 0), 1)]
     assert R.dup_isolate_real_roots(x*(x - 1)) == [((0, 0), 1), ((1, 1), 1)]
@@ -364,9 +476,6 @@ def test_dup_isolate_real_roots():
 
     f = (2*x - 3)*(x**2 - 3)*(x**2 - 2)
 
-    assert R.dup_isolate_real_roots_sqf(f) == \
-        [(-2, -QQ(3, 2)), (-QQ(3, 2), -QQ(1, 1)), (1, QQ(3, 2)),
-         (QQ(3, 2), QQ(3, 2)), (QQ(3, 2), 2)]
     assert R.dup_isolate_real_roots(f) == \
         [((-2, -QQ(3, 2)), 1), ((-QQ(3, 2), -QQ(1, 1)), 1), ((1, QQ(3, 2)), 1),
          ((QQ(3, 2), QQ(3, 2)), 1), ((QQ(3, 2), 2), 1)]
@@ -419,6 +528,39 @@ def test_dup_isolate_real_roots():
 
     assert R.dup_isolate_real_roots(f*g) == \
         [((0, QQ(1, 2)), 1), ((QQ(2, 3), QQ(3, 4)), 1), ((QQ(3, 4), 1), 1), ((6, 7), 1), ((24, 25), 1)]
+
+    f = x**2 - 3
+
+    assert R.dup_isolate_real_roots(f) == [((-2, -1), 1), ((1, 2), 1)]
+    assert R.dup_isolate_real_roots(f, eps=QQ(1, 100)) == [((QQ(-26, 15), QQ(-19, 11)), 1), ((QQ(19, 11), QQ(26, 15)), 1)]
+
+    f = x**4 - 4*x**2 + 4
+
+    assert R.dup_isolate_real_roots(f, inf=QQ(7, 4)) == []
+    assert R.dup_isolate_real_roots(f, inf=QQ(7, 5)) == [((QQ(7, 5), QQ(3, 2)), 2)]
+    assert R.dup_isolate_real_roots(f, sup=QQ(7, 4)) == [((-2, -1), 2), ((1, QQ(3, 2)), 2)]
+    assert R.dup_isolate_real_roots(f, sup=QQ(7, 5)) == [((-2, -1), 2)]
+
+    f = (x**2 - 2)*(x**2 - 3)**7*(x + 1)*(7*x + 3)**3
+
+    assert R.dup_isolate_real_roots(f) == [((-2, -QQ(3, 2)), 7), ((-QQ(3, 2), -1), 1),
+                                           ((-1, -1), 1), ((-1, 0), 3),
+                                           ((1, QQ(3, 2)), 1), ((QQ(3, 2), 2), 7)]
+
+    f = 7*x**4 - 19*x**3 + 20*x**2 + 17*x + 20
+
+    assert R.dup_isolate_real_roots(f) == []
+
+    R, x = ring('x', QQ)
+
+    f = (2*x/5 - QQ(17, 3))*(4*x + QQ(1, 257))
+
+    assert R.dup_isolate_real_roots(f) == [((-1, 0), 1), ((14, 15), 1)]
+
+    assert R.dup_isolate_real_roots(f, eps=QQ(1, 10)) == [((-QQ(1, 513), 0), 1), ((QQ(85, 6), QQ(85, 6)), 1)]
+    assert R.dup_isolate_real_roots(f, eps=QQ(1, 100)) == [((-QQ(1, 513), 0), 1), ((QQ(85, 6), QQ(85, 6)), 1)]
+    assert R.dup_isolate_real_roots(f, eps=QQ(1, 1000)) == [((-QQ(1, 1025), 0), 1), ((QQ(85, 6), QQ(85, 6)), 1)]
+    assert R.dup_isolate_real_roots(f, eps=QQ(1, 10000)) == [((-QQ(1, 1025), -QQ(65, 66881)), 1), ((QQ(85, 6), QQ(85, 6)), 1)]
 
     R, x = ring('x', EX)
 
@@ -524,8 +666,8 @@ def test_dup_isolate_real_roots_pair():
 def test_dup_count_real_roots():
     R, x = ring('x', ZZ)
 
-    assert R.dup_count_real_roots(0) == 0
-    assert R.dup_count_real_roots(7) == 0
+    assert R.dup_count_real_roots(R(0)) == 0
+    assert R.dup_count_real_roots(R(7)) == 0
 
     f = x - 1
 
@@ -934,6 +1076,11 @@ def test_dup_isolate_complex_roots_sqf():
     assert R.dup_isolate_complex_roots_sqf(f) == \
         [((-QQ(40, 7), -QQ(40, 7)), (0, 0)), ((-QQ(40, 7), 0), (0, QQ(40, 7))),
          ((0, -QQ(40, 7)), (QQ(40, 7), 0)), ((0, 0), (QQ(40, 7), QQ(40, 7)))]
+    assert R.dup_isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
+        [((QQ(-25, 56), QQ(-5, 8)), (QQ(-5, 14), QQ(-15, 28))),
+         ((QQ(-25, 56), QQ(15, 28)), (QQ(-5, 14), QQ(5, 8))),
+         ((QQ(95, 56), QQ(-85, 56)), (QQ(25, 14), QQ(-10, 7))),
+         ((QQ(95, 56), QQ(10, 7)), (QQ(25, 14), QQ(85, 56)))]
 
     R, x = ring('x', QQ)
 
@@ -1002,7 +1149,8 @@ def test_dup_isolate_complex_roots_sqf():
     pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(100)
+@pytest.mark.slow
 @pytest.mark.skipif(ZZ.dtype is int, reason='gmpy2 is not used')
 def test_dup_isolate_complex_roots_sqf_2():
     R, x = ring('x', ZZ)
@@ -1102,7 +1250,7 @@ def test_RealInterval():
 
     f = (x - 1)**2
 
-    pytest.raises(ValueError, lambda: RealInterval((-2, 1), R.to_dense(f),
+    pytest.raises(ValueError, lambda: RealInterval((-2, 1), f.to_dense(),
                                                    R.domain))
 
 

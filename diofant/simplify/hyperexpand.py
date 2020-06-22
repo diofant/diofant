@@ -1550,7 +1550,7 @@ def devise_plan(target, origin, z):
 
     if len(list(abuckets)) != len(list(nabuckets)) or \
             len(list(bbuckets)) != len(list(nbbuckets)):
-        raise ValueError('%s not reachable from %s' % (target, origin))
+        raise ValueError(f'{target} not reachable from {origin}')
 
     ops = []
 
@@ -1593,7 +1593,7 @@ def devise_plan(target, origin, z):
             bk = bbuckets[r]
             nbk = nbbuckets[r]
         if len(al) != len(nal) or len(bk) != len(nbk):
-            raise ValueError('%s not reachable from %s' % (target, origin))
+            raise ValueError(f'{target} not reachable from {origin}')
 
         al, nal, bk, nbk = [sorted(w, key=default_sort_key)
                             for w in [al, nal, bk, nbk]]
@@ -1803,7 +1803,7 @@ def try_lerchphi(func):
             if tmp != t:
                 b, _ = tmp.as_independent(t)
             if dep != b*t + a:
-                raise NotImplementedError('unrecognised form %s' % dep)
+                raise NotImplementedError(f'unrecognised form {dep}')
             a /= b
             indep *= b**n
         else:

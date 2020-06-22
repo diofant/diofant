@@ -424,7 +424,7 @@ class Plane(GeometryEntity):
         planes = set(planes)
         for i in planes:
             if not isinstance(i, Plane):
-                raise ValueError('All objects should be Planes but got %s' % i.func)
+                raise ValueError(f'All objects should be Planes but got {i.func}')
         if len(planes) < 2:
             return False
         planes = list(planes)
@@ -652,7 +652,7 @@ class Plane(GeometryEntity):
                 elif isinstance(o, Line):
                     o = Line3D(p1, p2)
                 else:
-                    raise ValueError('unhandled linear entity: %s' % o.func)
+                    raise ValueError(f'unhandled linear entity: {o.func}')
                 return [o]
             else:
                 x, y, z = map(Dummy, 'xyz')

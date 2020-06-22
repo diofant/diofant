@@ -202,7 +202,7 @@ def ratint_logpart(f, g, x, t=None):
     res, R = resultant(a, b, includePRS=True)
     res = Poly(res, t, composite=False)
 
-    assert res, "BUG: resultant(%s, %s) can't be zero" % (a, b)
+    assert res, f"BUG: resultant({a}, {b}) can't be zero"
 
     R_map, H = {}, []
 

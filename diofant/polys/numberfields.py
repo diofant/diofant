@@ -8,14 +8,14 @@ from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
                     cacheit, pi, prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
-from ..domains import QQ, ZZ, AlgebraicField
+from ..domains import QQ, AlgebraicField
 from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
 from ..ntheory import divisors, factorint
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
 from ..utilities.iterables import uniq
-from .orthopolys import dup_chebyshevt
+from .orthopolys import chebyshevt_poly
 from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
@@ -328,7 +328,7 @@ def _minpoly_mul(x, dom, *a):
 def _minpoly_sin(ex, x):
     """
     Returns the minimal polynomial of ``sin(ex)``
-    see http://mathworld.wolfram.com/TrigonometryAngles.html
+    see https://mathworld.wolfram.com/TrigonometryAngles.html
 
     """
     c, a = ex.args[0].as_coeff_Mul()
@@ -339,7 +339,7 @@ def _minpoly_sin(ex, x):
             # for a = pi*p/q with q odd prime, using chebyshevt
             # write sin(q*a) = mp(sin(a))*sin(a);
             # the roots of mp(x) are sin(pi*p/q) for p = 1,..., q - 1
-            a = dup_chebyshevt(n, ZZ)
+            a = chebyshevt_poly(n, polys=True).all_coeffs()
             return Add(*[x**(n - i - 1)*a[i] for i in range(n)])
         if c.numerator == 1:
             if q == 9:
@@ -348,8 +348,8 @@ def _minpoly_sin(ex, x):
         if n % 2 == 1:
             # for a = pi*p/q with q odd, use
             # sin(q*a) = 0 to see that the minimal polynomial must be
-            # a factor of dup_chebyshevt(n, ZZ)
-            a = dup_chebyshevt(n, ZZ)
+            # a factor of chebyshevt_poly(n)
+            a = chebyshevt_poly(n, polys=True).all_coeffs()
             a = [x**(n - i)*a[i] for i in range(n + 1)]
             r = Add(*a)
             _, factors = factor_list(r)
@@ -365,7 +365,7 @@ def _minpoly_sin(ex, x):
 def _minpoly_cos(ex, x):
     """
     Returns the minimal polynomial of ``cos(ex)``
-    see http://mathworld.wolfram.com/TrigonometryAngles.html
+    see https://mathworld.wolfram.com/TrigonometryAngles.html
 
     """
     c, a = ex.args[0].as_coeff_Mul()
@@ -383,7 +383,7 @@ def _minpoly_cos(ex, x):
 
         # for a = pi*p/q, cos(q*a) =T_q(cos(a)) = (-1)**p
         n = int(c.denominator)
-        a = dup_chebyshevt(n, ZZ)
+        a = chebyshevt_poly(n, polys=True).all_coeffs()
         a = [x**(n - i)*a[i] for i in range(n + 1)]
         r = Add(*a) - (-1)**c.numerator
         _, factors = factor_list(r)

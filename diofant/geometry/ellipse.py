@@ -89,7 +89,7 @@ class Ellipse(GeometrySet):
             center = Point(center)
 
         if len(center) != 2:
-            raise ValueError('The center of "{0}" must be a two dimensional point'.format(cls))
+            raise ValueError(f'The center of "{cls}" must be a two dimensional point')
 
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
@@ -542,7 +542,7 @@ class Ellipse(GeometrySet):
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
-                'f(%s, %s) = %s' % (str(x), str(y), str(result))))
+                f'f({x!s}, {y!s}) = {result!s}'))
 
     def encloses_point(self, p):
         """

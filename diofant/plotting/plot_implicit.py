@@ -223,7 +223,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
             return Tuple(s) + default_range
         if len(s) == 3:
             return Tuple(*s)
-        raise ValueError('symbol or `(symbol, min, max)` expected but got %s' % str(s))
+        raise ValueError(f'symbol or `(symbol, min, max)` expected but got {s!s}')
 
     if len(xyvar) == 0:
         xyvar = list(_sort_gens(free_symbols))
@@ -231,7 +231,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     x = var_start_end_x[0]
     if len(xyvar) != 2:
         if x in undeclared or not undeclared:
-            xyvar.append(Dummy('f(%s)' % x.name))
+            xyvar.append(Dummy(f'f({x.name})'))
         else:
             xyvar.append(undeclared.pop())
     var_start_end_y = _range_tuple(xyvar[1])

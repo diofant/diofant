@@ -25,7 +25,7 @@ class Polyhedron(Basic):
     References
     ==========
 
-    http://mathworld.wolfram.com/PolyhedralGroup.html
+    * https://mathworld.wolfram.com/PolyhedralGroup.html
 
     """
 

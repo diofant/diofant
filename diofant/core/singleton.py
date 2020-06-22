@@ -70,8 +70,7 @@ class SingletonRegistry:
         """
         if name not in self._classes_to_install:
             raise AttributeError(
-                "Attribute '%s' was not installed on Diofant registry %s" % (
-                    name, self))
+                f"Attribute '{name}' was not installed on Diofant registry {self}")
         class_to_install = self._classes_to_install[name]
         value_to_install = class_to_install()
         self.__setattr__(name, value_to_install)
