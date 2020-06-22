@@ -103,51 +103,6 @@ def dup_transform(f, p, q, K):
     return h
 
 
-def dup_root_upper_bound(f, K):
-    """Compute the LMQ upper bound for the positive roots of `f`.
-
-    LMQ (Local Max Quadratic) bound was developed by
-    Akritas-Strzebonski-Vigklas :cite:`Alkiviadis2009bounds`.
-
-    """
-    n, P = len(f), []
-    t = n * [1]
-    if dmp_LC(f, K) < 0:
-        f = dmp_neg(f, 0, K)
-    f = dup_reverse(f)
-
-    def ilog2(a):
-        return int(math.log(a, 2))
-
-    for i in range(n):
-        b = int(-f[i])
-        if b <= 0:
-            continue
-
-        a, QL = ilog2(b), []
-
-        for j in range(i + 1, n):
-            b = int(f[j])
-
-            if b <= 0:
-                continue
-
-            q = t[j] + a - ilog2(b)
-            QL.append([q // (j - i), j])
-
-        if not QL:
-            continue
-
-        q = min(QL)
-
-        t[q[1]] = t[q[1]] + 1
-
-        P.append(q[0])
-
-    if P:
-        return K(2)**int(max(P) + 1)
-
-
 def _mobius_from_interval(I, field):
     """Convert an open interval to a Mobius transform."""
     s, t = I
@@ -1870,6 +1825,13 @@ def dup_sign_variations(f, K):
     return ring._sign_variations(f)
 
 
+def dup_root_upper_bound(f, K):
+    """Compute the LMQ upper bound for the positive roots of `f`."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return ring._root_upper_bound(f)
+
+
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1913,3 +1875,49 @@ class _FindRoot:
                 prev = coeff
 
         return k
+
+    def _root_upper_bound(self, f):
+        """Compute the LMQ upper bound for the positive roots of `f`.
+
+        LMQ (Local Max Quadratic) bound was developed by
+        Akritas-Strzebonski-Vigklas :cite:`Alkiviadis2009bounds`.
+
+        """
+        domain = self.domain
+
+        n, P = len(f.all_coeffs()), []
+        t = n * [1]
+        if f.LC < 0:
+            f = -f
+        f = self.dup_reverse(f)
+
+        def ilog2(a):
+            return int(math.log(a, 2))
+
+        for i in range(n):
+            b = int(-f.coeff((n - 1 - i,)))
+            if b <= 0:
+                continue
+
+            a, QL = ilog2(b), []
+
+            for j in range(i + 1, n):
+                b = int(f.coeff((n - 1 - j,)))
+
+                if b <= 0:
+                    continue
+
+                q = t[j] + a - ilog2(b)
+                QL.append([q // (j - i), j])
+
+            if not QL:
+                continue
+
+            q = min(QL)
+
+            t[q[1]] = t[q[1]] + 1
+
+            P.append(q[0])
+
+        if P:
+            return domain(2)**int(max(P) + 1)

@@ -143,19 +143,19 @@ def test__sign_variations():
     assert R._sign_variations(+x**4 + 4*x**2 + 5) == 0
 
 
-def test_dup_root_upper_bound():
+def test__root_upper_bound():
     R, x = ring('x', ZZ)
 
-    assert R.dup_root_upper_bound(+x - 1) == 4
-    assert R.dup_root_upper_bound(-x - 1) is None
+    assert R._root_upper_bound(+x - 1) == 4
+    assert R._root_upper_bound(-x - 1) is None
 
     R, x = ring('x', QQ)
 
-    assert R.dup_root_upper_bound(+x - 1) == 4
-    assert R.dup_root_upper_bound(-x - 1) is None
+    assert R._root_upper_bound(+x - 1) == 4
+    assert R._root_upper_bound(-x - 1) is None
 
-    assert R.dup_root_upper_bound(+x/2 - 1) is None
-    assert R.dup_root_upper_bound(-x/2 - 1) is None
+    assert R._root_upper_bound(+x/2 - 1) is None
+    assert R._root_upper_bound(-x/2 - 1) is None
 
 
 def test_dup_step_refine_real_root():
