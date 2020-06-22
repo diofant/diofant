@@ -120,32 +120,36 @@ def test_dup_rshift():
 def test_dmp_neg():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(x**2 - 1) == 1 - x**2
-    assert R.dmp_neg(R(1)) == -1
-    assert R.dmp_neg(R(-7)) == 7
-    assert R.dmp_neg(-x**2 + 2*x + 3) == x**2 - 2*x - 3
-    assert R.dmp_neg(R(-1)) == 1
+    assert -R(0) == 0
+    assert -(x**2 - 1) == 1 - x**2
+    assert -R(1) == -1
+    assert -R(-7) == 7
+    assert -(-x**2 + 2*x + 3) == x**2 - 2*x - 3
+    assert -R(-1) == 1
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(QQ(1, 2))) == QQ(-1, 2)
-    assert R.dmp_neg(R(QQ(-7, 9))) == QQ(7, 9)
-    assert R.dmp_neg(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 - 2*x/7 - QQ(3, 7)
-    assert R.dmp_neg(R(QQ(-1, 2))) == QQ(1, 2)
+    assert -R(0) == 0
+    assert -R(QQ(1, 2)) == QQ(-1, 2)
+    assert -R(QQ(-7, 9)) == QQ(7, 9)
+    assert -(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 - 2*x/7 - QQ(3, 7)
+    assert -R(QQ(-1, 2)) == QQ(1, 2)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert -(x**2*y - x) == -x**2*y + x
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(1)) == -1
-    assert R.dmp_neg(R(-7)) == 7
+    assert -R(0) == 0
+    assert -R(1) == -1
+    assert -R(-7) == 7
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(QQ(1, 9))) == QQ(-1, 9)
-    assert R.dmp_neg(R(QQ(-7, 9))) == QQ(7, 9)
+    assert -R(0) == 0
+    assert -R(QQ(1, 9)) == QQ(-1, 9)
+    assert -R(QQ(-7, 9)) == QQ(7, 9)
 
 
 def test_dmp_add():

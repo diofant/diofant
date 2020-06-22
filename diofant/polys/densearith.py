@@ -50,23 +50,10 @@ def dup_rshift(f, n, K):
 
 
 def dmp_neg(f, u, K):
-    """
-    Negate a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_neg(x**2*y - x)
-    -x**2*y + x
-
-    """
-    if not u:
-        return [-coeff for coeff in f]
-    else:
-        v = u - 1
-        return [dmp_neg(coeff, v, K) for coeff in f]
+    """Negate a polynomial in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return (-f).to_dense()
 
 
 def dmp_add(f, g, u, K):
