@@ -1615,6 +1615,11 @@ class _FindRoot:
 
         return k
 
+    def _reverse(self, f):
+        """Compute ``x**n * f(1/x)``, i.e.: reverse ``f`` in ``K[x]``."""
+        n = f.degree()
+        return self.from_terms([((n - i,), c) for (i,), c in f.items()])
+
     def _root_upper_bound(self, f):
         """Compute the LMQ upper bound for the positive roots of `f`.
 
@@ -1628,7 +1633,7 @@ class _FindRoot:
         t = n * [1]
         if f.LC < 0:
             f = -f
-        f = self.dup_reverse(f)
+        f = self._reverse(f)
 
         def ilog2(a):
             return int(math.log(a, 2))
@@ -1671,7 +1676,7 @@ class _FindRoot:
         if a == b and c == d:
             return f, (a, b, c, d)
 
-        A = self._root_upper_bound(self.dup_reverse(f))
+        A = self._root_upper_bound(self._reverse(f))
 
         if A is not None:
             A = 1/domain.convert(A)
@@ -1700,7 +1705,7 @@ class _FindRoot:
         if k == 1:
             a, b, c, d = a1, b1, c1, d1
         else:
-            f = self.dup_reverse(g).compose(x, x + 1)
+            f = self._reverse(g).compose(x, x + 1)
 
             assert self.dmp_TC(f)
 
@@ -1801,7 +1806,7 @@ class _FindRoot:
         while stack:
             a, b, c, d, f, k = stack.pop()
 
-            A = self._root_upper_bound(self.dup_reverse(f))
+            A = self._root_upper_bound(self._reverse(f))
 
             if A is not None:
                 A = 1/domain.convert(A)
@@ -1841,7 +1846,7 @@ class _FindRoot:
             a2, b2, c2, d2 = b, a + b, d, c + d
 
             if k2 > 1:
-                f2 = self.dup_reverse(f).compose(x, x + 1)
+                f2 = self._reverse(f).compose(x, x + 1)
 
                 if not self.dmp_TC(f2):
                     f2 //= x
@@ -1859,7 +1864,7 @@ class _FindRoot:
                 continue
 
             if f1 is None:
-                f1 = self.dup_reverse(f).compose(x, x + 1)
+                f1 = self._reverse(f).compose(x, x + 1)
 
                 if not self.dmp_TC(f1):
                     f1 //= x
@@ -1874,7 +1879,7 @@ class _FindRoot:
                 continue
 
             if f2 is None:
-                f2 = self.dup_reverse(f).compose(x, x + 1)
+                f2 = self._reverse(f).compose(x, x + 1)
 
                 if not self.dmp_TC(f2):
                     f2 //= x

@@ -117,20 +117,6 @@ def dmp_strip(f, u):
     return dmp_zero(u)
 
 
-def dup_reverse(f):
-    """
-    Compute ``x**n * f(1/x)``, i.e.: reverse ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_reverse([ZZ(1), ZZ(2), ZZ(3), ZZ(0)])
-    [3, 2, 1]
-
-    """
-    return dmp_strip(list(reversed(f)), 0)
-
-
 def dmp_to_tuple(f, u):
     """
     Convert ``f`` into a nested :class:`tuple`.

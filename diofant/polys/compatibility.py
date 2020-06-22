@@ -2,8 +2,7 @@
 
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
                          dup_lshift, dup_rshift)
-from .densebasic import (dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC,
-                         dup_reverse)
+from .densebasic import dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -65,10 +64,6 @@ class IPolys:
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(f.to_dense(), j, self.ngens-1)
-
-    def dup_reverse(self, f):
-        f = dup_reverse(f.to_dense())
-        return self.from_list(f)
 
     def dup_real_imag(self, f):
         ring = self

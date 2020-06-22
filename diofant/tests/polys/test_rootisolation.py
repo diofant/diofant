@@ -77,6 +77,13 @@ def test_dup_transform():
             12723*x**3 + 17191*x**2 - 13603*x + 4773)
 
 
+def test__reverse():
+    R, x = ring('x', ZZ)
+
+    assert R._reverse(x**3 + 2*x**2 + 3) == 3*x**3 + 2*x + 1
+    assert R._reverse(x**3 + 2*x**2 + 3*x) == 3*x**2 + 2*x + 1
+
+
 def test_sturm():
     R, x = ring('x', QQ)
 

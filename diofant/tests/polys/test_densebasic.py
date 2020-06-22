@@ -145,13 +145,6 @@ def test_dmp_strip():
     assert dmp_strip([[[]], [[1]], [[]]], 2) == [[[1]], [[]]]
 
 
-def test_dup_reverse():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_reverse(x**3 + 2*x**2 + 3) == 3*x**3 + 2*x + 1
-    assert R.dup_reverse(x**3 + 2*x**2 + 3*x) == 3*x**2 + 2*x + 1
-
-
 def test_dmp_convert():
     K0, K1 = ZZ.inject('x'), ZZ
 
