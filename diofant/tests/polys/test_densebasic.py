@@ -5,8 +5,7 @@ import pytest
 from diofant import ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_from_dict, dmp_ground,
                                       dmp_one_p, dmp_permute, dmp_strip,
-                                      dmp_to_dict, dmp_zero, dmp_zero_p,
-                                      dup_reverse)
+                                      dmp_to_dict, dmp_zero, dmp_zero_p)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -147,8 +146,10 @@ def test_dmp_strip():
 
 
 def test_dup_reverse():
-    assert dup_reverse([1, 2, 0, 3]) == [3, 0, 2, 1]
-    assert dup_reverse([1, 2, 3, 0]) == [3, 2, 1]
+    R, x = ring('x', ZZ)
+
+    assert R.dup_reverse(x**3 + 2*x**2 + 3) == 3*x**3 + 2*x + 1
+    assert R.dup_reverse(x**3 + 2*x**2 + 3*x) == 3*x**2 + 2*x + 1
 
 
 def test_dmp_convert():

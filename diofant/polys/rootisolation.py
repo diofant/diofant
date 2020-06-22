@@ -114,7 +114,7 @@ def dup_root_upper_bound(f, K):
     t = n * [1]
     if dmp_LC(f, K) < 0:
         f = dmp_neg(f, 0, K)
-    f = list(reversed(f))
+    f = dup_reverse(f)
 
     def ilog2(a):
         return int(math.log(a, 2))
