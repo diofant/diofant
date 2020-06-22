@@ -10,7 +10,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_pair,
                             dup_isolate_real_roots_sqf, dup_real_imag,
-                            dup_refine_real_root, dup_transform)
+                            dup_transform)
 
 
 __all__ = 'IPolys',
@@ -79,9 +79,6 @@ class IPolys:
 
     def dup_transform(self, f, p, q):
         return self.from_list(dup_transform(f.to_dense(), p.to_dense(), q.to_dense(), self.domain))
-
-    def dup_refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None):
-        return dup_refine_real_root(f.to_dense(), s, t, self.domain, eps=eps, steps=steps, disjoint=disjoint)
 
     def dup_isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         return dup_isolate_real_roots_sqf(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)

@@ -122,40 +122,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
-    """Refine real root's approximating interval to the given precision."""
-    R, K = K, K.field
-    f = dmp_convert(f, 0, R, K)
-    f = dmp_clear_denoms(f, 0, K)[1]
-
-    if not (K.is_RationalField or K.is_RealAlgebraicField):
-        raise DomainError(f'real root refinement not supported over {K}')
-
-    if s == t:
-        return s, t
-
-    if s > t:
-        s, t = t, s
-
-    negative = False
-
-    if s < 0:
-        if t <= 0:
-            f, s, t, negative = dmp_compose(f, [-K.one, 0], 0, K), -t, -s, True
-        else:
-            raise ValueError(f"can't refine a real root in ({s}, {t})")
-
-    if negative and disjoint is not None:
-        if disjoint < 0:
-            disjoint = -disjoint
-        else:
-            disjoint = None
-
-    s, t = dup_outer_refine_real_root(f, s, t, K, eps=eps, steps=steps, disjoint=disjoint)
-
-    return (-t, -s) if negative else (s, t)
-
-
 def dup_inner_isolate_real_roots(f, K, eps=None):
     """Internal function for isolation positive roots up to given precision."""
     a, b, c, d = K.one, K.zero, K.zero, K.one
@@ -1759,12 +1725,11 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mob
     return r[0].to_dense(), r[1]
 
 
-def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
-    """Refine a positive root of `f` given an interval `(s, t)`."""
+def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
+    """Refine real root's approximating interval to the given precision."""
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
-    r = ring._outer_refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
-    return r
+    return ring._refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
 
 
 class _FindRoot:
@@ -1949,3 +1914,38 @@ class _FindRoot:
             raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
 
         return self._inner_refine_real_root(f, (a, b, c, d), eps=eps, steps=steps, disjoint=disjoint)
+
+    def _refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None):
+        """Refine real root's approximating interval to the given precision."""
+        domain = self.domain.field
+        new_ring = self.clone(domain=domain)
+        x = new_ring.gens[0]
+        f = f.set_domain(domain)
+        f = f.clear_denoms()[1]
+
+        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+            raise DomainError(f'real root refinement not supported over {domain}')
+
+        if s == t:
+            return s, t
+
+        if s > t:
+            s, t = t, s
+
+        negative = False
+
+        if s < 0:
+            if t <= 0:
+                f, s, t, negative = f.compose(x, -x), -t, -s, True
+            else:
+                raise ValueError(f"can't refine a real root in ({s}, {t})")
+
+        if negative and disjoint is not None:
+            if disjoint < 0:
+                disjoint = -disjoint
+            else:
+                disjoint = None
+
+        s, t = new_ring._outer_refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
+
+        return (-t, -s) if negative else (s, t)
