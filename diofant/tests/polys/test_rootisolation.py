@@ -111,36 +111,36 @@ def test_sturm():
                                      576*pi**8)]
 
 
-def test_dup_sign_variations():
+def test__sign_variations():
     R, x = ring('x', ZZ)
 
-    assert R.dup_sign_variations(R(0)) == 0
-    assert R.dup_sign_variations(x) == 0
-    assert R.dup_sign_variations(x**2 + 2) == 0
-    assert R.dup_sign_variations(x*(x**2 + 3)) == 0
-    assert R.dup_sign_variations(x**4 + 4*x**2 + 5) == 0
+    assert R._sign_variations(R(0)) == 0
+    assert R._sign_variations(x) == 0
+    assert R._sign_variations(x**2 + 2) == 0
+    assert R._sign_variations(x*(x**2 + 3)) == 0
+    assert R._sign_variations(x**4 + 4*x**2 + 5) == 0
 
-    assert R.dup_sign_variations(2 - x**2) == 1
-    assert R.dup_sign_variations(x*(3 - x**2)) == 1
-    assert R.dup_sign_variations((5 - x**2)*(x**2 + 1)) == 1
+    assert R._sign_variations(2 - x**2) == 1
+    assert R._sign_variations(x*(3 - x**2)) == 1
+    assert R._sign_variations((5 - x**2)*(x**2 + 1)) == 1
 
-    assert R.dup_sign_variations(-x**2 - 4*x - 5) == 0
-    assert R.dup_sign_variations((x - 5)*(x + 1)) == 1
-    assert R.dup_sign_variations((x - 1)*(x + 5)) == 1
-    assert R.dup_sign_variations(+x**2 - 4*x + 5) == 2
-    assert R.dup_sign_variations(-x**2 + 4*x - 5) == 2
-    assert R.dup_sign_variations((5 - x)*(x + 1)) == 1
-    assert R.dup_sign_variations((1 - x)*(x + 5)) == 1
-    assert R.dup_sign_variations(+x**2 + 4*x + 5) == 0
+    assert R._sign_variations(-x**2 - 4*x - 5) == 0
+    assert R._sign_variations((x - 5)*(x + 1)) == 1
+    assert R._sign_variations((x - 1)*(x + 5)) == 1
+    assert R._sign_variations(+x**2 - 4*x + 5) == 2
+    assert R._sign_variations(-x**2 + 4*x - 5) == 2
+    assert R._sign_variations((5 - x)*(x + 1)) == 1
+    assert R._sign_variations((1 - x)*(x + 5)) == 1
+    assert R._sign_variations(+x**2 + 4*x + 5) == 0
 
-    assert R.dup_sign_variations(-x**4 - 4*x**2 - 5) == 0
-    assert R.dup_sign_variations((x**2 - 5)*(x**2 + 1)) == 1
-    assert R.dup_sign_variations((x - 1)*(x + 1)*(x**2 + 5)) == 1
-    assert R.dup_sign_variations(+x**4 - 4*x**2 + 5) == 2
-    assert R.dup_sign_variations(-x**4 + 4*x**2 - 5) == 2
-    assert R.dup_sign_variations((5 - x**2)*(x**2 + 1)) == 1
-    assert R.dup_sign_variations((1 - x)*(x + 1)*(x**2 + 5)) == 1
-    assert R.dup_sign_variations(+x**4 + 4*x**2 + 5) == 0
+    assert R._sign_variations(-x**4 - 4*x**2 - 5) == 0
+    assert R._sign_variations((x**2 - 5)*(x**2 + 1)) == 1
+    assert R._sign_variations((x - 1)*(x + 1)*(x**2 + 5)) == 1
+    assert R._sign_variations(+x**4 - 4*x**2 + 5) == 2
+    assert R._sign_variations(-x**4 + 4*x**2 - 5) == 2
+    assert R._sign_variations((5 - x**2)*(x**2 + 1)) == 1
+    assert R._sign_variations((1 - x)*(x + 1)*(x**2 + 5)) == 1
+    assert R._sign_variations(+x**4 + 4*x**2 + 5) == 0
 
 
 def test_dup_root_upper_bound():

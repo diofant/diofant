@@ -103,31 +103,6 @@ def dup_transform(f, p, q, K):
     return h
 
 
-def dup_sign_variations(f, K):
-    """
-    Compute the number of sign variations of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
-    2
-
-    """
-    prev, k = K.zero, 0
-
-    for coeff in f:
-        if coeff*prev < 0:
-            k += 1
-
-        if coeff:
-            prev = coeff
-
-    return k
-
-
 def dup_root_upper_bound(f, K):
     """Compute the LMQ upper bound for the positive roots of `f`.
 
@@ -1888,6 +1863,13 @@ def dup_sturm(f, K):
     return list(map(lambda _: _.to_dense(), f.sturm()))
 
 
+def dup_sign_variations(f, K):
+    """Compute the number of sign variations of ``f`` in ``K[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return ring._sign_variations(f)
+
+
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1906,3 +1888,28 @@ class _FindRoot:
             sturm.append(-s)
 
         return sturm[:-1]
+
+    def _sign_variations(self, f):
+        """
+        Compute the number of sign variations of ``f`` in ``K[x]``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> R._sign_variations(x**4 - x**2 - x + 1)
+        2
+
+        """
+        domain = self.domain
+        prev, k = domain.zero, 0
+
+        for coeff in f.all_coeffs():
+            if coeff*prev < 0:
+                k += 1
+
+            if coeff:
+                prev = coeff
+
+        return k
