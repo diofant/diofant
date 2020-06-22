@@ -2,7 +2,7 @@
 
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
                          dup_lshift, dup_rshift)
-from .densebasic import dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC
+from .densebasic import dmp_degree_in, dmp_LC
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -23,9 +23,6 @@ class IPolys:
     domain = None
     order = None
     gens = None
-
-    def dmp_ground_TC(self, f):
-        return dmp_ground_TC(f.to_dense(), self.ngens-1, self.domain)
 
     def dmp_mul_ground(self, f, c):
         return self.from_list(dmp_mul_ground(f.to_dense(), c, self.ngens-1, self.domain))
@@ -54,13 +51,6 @@ class IPolys:
             return self.drop(0).from_list(LC)
         else:
             return LC
-
-    def dmp_TC(self, f):
-        TC = dmp_TC(f.to_dense(), self.domain)
-        if self.is_multivariate:
-            return self.drop(0).from_list(TC)
-        else:
-            return TC
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(f.to_dense(), j, self.ngens-1)

@@ -492,7 +492,42 @@ def test_PolyEelemet_total_degree():
 
 
 def test_PolyElement_coeff():
+    R, x = ring('x', ZZ)
+
+    assert R(0).coeff(1) == 0
+    assert R(1).coeff(1) == 1
+    assert (x + 2).coeff(1) == 2
+    assert (3*x**2 + 1).coeff(1) == 1
+    assert (2*x**3 + 3*x**2 + 4*x + 5).coeff(1) == 5
+    assert (x**2 + 2*x + 3).coeff(1) == 3
+
+    R, x, y = ring('x y', ZZ)
+
+    f = R(0)
+
+    assert f.coeff(1) == 0
+    assert f.eject(y).coeff(1) == 0
+
+    f = 2*x*y**2 + 3*x*y + 4*x + 5
+
+    assert f.coeff(1) == 5
+    assert f.eject(y).coeff(1) == 5
+
     R, x, y, z = ring('x y z', ZZ)
+
+    f = R(0)
+
+    assert f.coeff(1) == 0
+    assert f.eject(y, z).coeff(1) == 0
+
+    f = 2*x*y + 3*x*z + 4*x + 5
+
+    assert f.coeff(1) == 5
+    assert f.eject(y, z).coeff(1) == 5
+
+    f = y + 2*z + 3
+
+    assert f.coeff(1) == 3
 
     f = 3*x**2*y - x*y*z + 7*z**3 + 23
 

@@ -23,45 +23,6 @@ def dmp_LC(f, K):
         return f[0]
 
 
-def dmp_TC(f, K):
-    """
-    Return trailing coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_TC(x**2 + 2*x + 3)
-    3
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[-1]
-
-
-def dmp_ground_TC(f, u, K):
-    """
-    Return the ground trailing coefficient.
-
-    Examples
-    ========
-
-    >>> R, x, y, z = ring('x y z', ZZ)
-
-    >>> R.dmp_ground_TC(y + 2*z + 3)
-    3
-
-    """
-    while u:
-        f = dmp_TC(f, K)
-        u -= 1
-
-    return dmp_TC(f, K)
-
-
 def dmp_degree_in(f, j, u):
     """
     Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.

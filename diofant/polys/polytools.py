@@ -1098,7 +1098,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.ring.dmp_ground_TC(self.rep)
+        result = self.rep.coeff(1)
         return self.domain.to_expr(result)
 
     def EC(self, order=None):

@@ -36,38 +36,6 @@ def test_dmp_LC():
     assert R.dmp_LC(2*x*y + 3*x*z + 4*x + 5) == 2*R12.y + 3*R12.z + 4
 
 
-def test_dmp_TC():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_TC(R(0)) == 0
-    assert R.dmp_TC(R(1)) == 1
-    assert R.dmp_TC(x + 2) == 2
-    assert R.dmp_TC(3*x**2 + 1) == 1
-    assert R.dmp_TC(2*x**3 + 3*x**2 + 4*x + 5) == 5
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_TC(R(0)) == 0
-    assert R.dmp_TC(2*x*y**2 + 3*x*y + 4*x + 5) == 5
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_TC(R(0)) == 0
-    assert R.dmp_TC(2*x*y + 3*x*z + 4*x + 5) == 5
-
-
-def test_dmp_ground_TC():
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_ground_TC(R(0)) == 0
-    assert R.dmp_ground_TC(2*x*y**2 + 3*x*y + 4*x + 5) == 5
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_ground_TC(R(0)) == 0
-    assert R.dmp_ground_TC(2*x*y + 3*x*z + 4*x + 5) == 5
-
-
 def test_dmp_degree_in():
     R, x = ring('x', ZZ)
 
