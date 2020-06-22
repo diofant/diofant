@@ -35,7 +35,7 @@ def dup_real_imag(f, K):
     (x**2 - y**2 - y - 1, 2*x*y + x)
 
     """
-    if K.is_ComplexAlgebraicField:
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
         K0 = K.domain
         r1, i1 = dup_real_imag([_.real for _ in f], K0)
         r2, i2 = dup_real_imag([_.imag for _ in f], K0)
