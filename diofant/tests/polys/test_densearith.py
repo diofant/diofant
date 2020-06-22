@@ -89,34 +89,6 @@ def test_dmp_mul_ground():
             y/14 + QQ(1, 14))
 
 
-def test_dup_lshift():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_lshift(R(0), 3) == 0
-    assert R.dup_lshift(R(1), 3) == x**3
-
-    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
-
-    assert R.dup_lshift(f, 1) == x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x
-    assert R.dup_lshift(f, 2) == x**6 + 2*x**5 + 3*x**4 + 4*x**3 + 5*x**2
-
-
-def test_dup_rshift():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_rshift(R(0), 3) == 0
-    assert R.dup_rshift(x**3, 3) == 1
-
-    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
-
-    assert R.dup_rshift(R(0), 5) == 0
-
-    assert R.dup_rshift(f, 0) == 0
-    assert R.dup_rshift(f, 1) == x**3 + 2*x**2 + 3*x + 4
-    assert R.dup_rshift(f, 3) == x + 2
-    assert R.dup_rshift(f, 5) == 0
-
-
 def test_dmp_neg():
     R, x = ring('x', ZZ)
 

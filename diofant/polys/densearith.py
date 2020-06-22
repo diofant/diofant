@@ -13,40 +13,19 @@ def dmp_mul_ground(f, c, u, K):
 
 
 def dup_lshift(f, n, K):
-    """
-    Efficiently multiply ``f`` by ``x**n`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_lshift(x**2 + 1, 2)
-    x**4 + x**2
-
-    """
-    if not f:
-        return f
-    else:
-        return f + [K.zero]*n
+    """Efficiently multiply ``f`` by ``x**n`` in ``K[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = f.mul_monom((n,))
+    return r.to_dense()
 
 
 def dup_rshift(f, n, K):
-    """
-    Efficiently divide ``f`` by ``x**n`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_rshift(x**4 + x**2, 2)
-    x**2 + 1
-    >>> R.dup_rshift(x**4 + x**2 + 2, 2)
-    x**2 + 1
-
-    """
-    return f[:-n]
+    """Efficiently divide ``f`` by ``x**n`` in ``K[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = f.quo_term(((n,), K.one))
+    return r.to_dense()
 
 
 def dmp_neg(f, u, K):

@@ -1135,6 +1135,27 @@ def test_PolyElement___floordiv__truediv__():
 
 
 def test_PolyElement_quo_term():
+    R, x = ring('x', ZZ)
+
+    assert R(0).quo_term(((3,), ZZ(1))) == 0
+    assert (x**3).quo_term(((3,), ZZ(1))) == 1
+
+    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
+
+    assert R(0).quo_term(((5,), ZZ(1))) == 0
+
+    assert f.quo_term(((1,), ZZ(1))) == x**3 + 2*x**2 + 3*x + 4
+    assert f.quo_term(((3,), ZZ(1))) == x + 2
+    assert f.quo_term(((5,), ZZ(1))) == 0
+
+    f = x**4 + x**2
+
+    assert f.quo_term(((2,), ZZ(1))) == x**2 + 1
+
+    f += 2
+
+    assert f.quo_term(((2,), ZZ(1))) == x**2 + 1
+
     R, x, y, z = ring('x y z', ZZ)
 
     f = x**3*y**4*z
@@ -1188,6 +1209,22 @@ def test_PolyElement_mul_term():
     f = x*y/5 + 2*x/5 + QQ(3, 5)
 
     assert f.mul_term(((2, 0), QQ(2, 3))) == 2*x**3*y/15 + 4*x**3/15 + 2*x**2/5
+
+
+def test_PolyElement_mul_monom():
+    R, x = ring('x', ZZ)
+
+    assert R(0).mul_monom((3,)) == 0
+    assert R(1).mul_monom((3,)) == x**3
+
+    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
+
+    assert f.mul_monom((1,)) == x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x
+    assert f.mul_monom((2,)) == x**6 + 2*x**5 + 3*x**4 + 4*x**3 + 5*x**2
+
+    f = x**2 + 1
+
+    assert f.mul_monom((2,)) == x**4 + x**2
 
 
 def test_PolyElement___pow__():
