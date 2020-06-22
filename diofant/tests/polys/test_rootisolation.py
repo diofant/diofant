@@ -5,8 +5,7 @@ import pytest
 from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, prod, ring,
                      sqrt, subsets)
 from diofant.polys.rootisolation import (RealInterval,
-                                         dup_inner_refine_real_root,
-                                         dup_step_refine_real_root)
+                                         dup_inner_refine_real_root)
 
 
 __all__ = ()
@@ -158,9 +157,11 @@ def test__root_upper_bound():
     assert R._root_upper_bound(-x/2 - 1) is None
 
 
-def test_dup_step_refine_real_root():
-    assert dup_step_refine_real_root([1, 1], (-2, 0, 1, 1),
-                                     ZZ) == ([1, 2], (0, -2, 1, 2))
+def test__step_refine_real_root():
+    R, x = ring('x', ZZ)
+
+    assert R._step_refine_real_root(x + 1,
+                                    (-2, 0, 1, 1)) == (x + 2, (0, -2, 1, 2))
 
 
 def test_dup_inner_refine_real_root():

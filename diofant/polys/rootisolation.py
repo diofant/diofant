@@ -122,51 +122,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def dup_step_refine_real_root(f, M, K):
-    """One step of positive real root refinement algorithm."""
-    a, b, c, d = M
-
-    if a == b and c == d:
-        return f, (a, b, c, d)
-
-    A = dup_root_upper_bound(dup_reverse(f), K)
-
-    if A is not None:
-        A = 1/K.convert(A)
-    else:
-        A = K.zero
-
-    if A > 16:
-        f = dmp_compose(f, [A, 0], 0, K)
-        a, c, A = A*a, A*c, K.one
-
-    if A >= 1:
-        f = dmp_compose(f, [K.one, A], 0, K)
-        b, d = A*a + b, A*c + d
-
-        assert dmp_TC(f, K)
-
-    f, g = dmp_compose(f, [K.one, K.one], 0, K), f
-
-    a1, b1, c1, d1 = a, a + b, c, c + d
-
-    if not dmp_eval_in(f, K.zero, 0, 0, K):
-        return f, (b1, b1, d1, d1)
-
-    k = dup_sign_variations(f, K)
-
-    if k == 1:
-        a, b, c, d = a1, b1, c1, d1
-    else:
-        f = dmp_compose(dup_reverse(g), [K.one, K.one], 0, K)
-
-        assert dmp_TC(f, K)
-
-        a, b, c, d = b, a + b, d, c + d
-
-    return f, (a, b, c, d)
-
-
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
     """Refine a positive root of `f` given a Mobius transform or an interval."""
     a, b, c, d = M
@@ -1832,6 +1787,14 @@ def dup_root_upper_bound(f, K):
     return ring._root_upper_bound(f)
 
 
+def dup_step_refine_real_root(f, M, K):
+    """One step of positive real root refinement algorithm."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._step_refine_real_root(f, M)
+    return r[0].to_dense(), r[1]
+
+
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1921,3 +1884,50 @@ class _FindRoot:
 
         if P:
             return domain(2)**int(max(P) + 1)
+
+    def _step_refine_real_root(self, f, M):
+        """One step of positive real root refinement algorithm."""
+        domain = self.domain
+        x = self.gens[0]
+
+        a, b, c, d = M
+
+        if a == b and c == d:
+            return f, (a, b, c, d)
+
+        A = self._root_upper_bound(self.dup_reverse(f))
+
+        if A is not None:
+            A = 1/domain.convert(A)
+        else:
+            A = domain.zero
+
+        if A > 16:
+            f = f.compose(x, A*x)
+            a, c, A = A*a, A*c, domain.one
+
+        if A >= 1:
+            f = f.compose(x, x + A)
+            b, d = A*a + b, A*c + d
+
+            assert self.dmp_TC(f)
+
+        f, g = f.compose(x, x + 1), f
+
+        a1, b1, c1, d1 = a, a + b, c, c + d
+
+        if not f.eval(x, 0):
+            return f, (b1, b1, d1, d1)
+
+        k = self._sign_variations(f)
+
+        if k == 1:
+            a, b, c, d = a1, b1, c1, d1
+        else:
+            f = self.dup_reverse(g).compose(x, x + 1)
+
+            assert self.dmp_TC(f)
+
+            a, b, c, d = b, a + b, d, c + d
+
+        return f, (a, b, c, d)
