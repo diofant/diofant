@@ -122,18 +122,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
-    """Refine a positive root of `f` given an interval `(s, t)`."""
-    a, b, c, d = _mobius_from_interval((s, t), K)
-
-    f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
-
-    if dup_sign_variations(f, K) != 1:
-        raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
-
-    return dup_inner_refine_real_root(f, (a, b, c, d), K, eps=eps, steps=steps, disjoint=disjoint)
-
-
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     """Refine real root's approximating interval to the given precision."""
     R, K = K, K.field
@@ -1767,10 +1755,16 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mob
     f = ring.from_list(f)
     r = ring._inner_refine_real_root(f, M, eps=eps, steps=steps,
                                      disjoint=disjoint, mobius=mobius)
-    if mobius:
-        return r[0].to_dense(), r[1]
-    else:
-        return r
+    assert mobius
+    return r[0].to_dense(), r[1]
+
+
+def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
+    """Refine a positive root of `f` given an interval `(s, t)`."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._outer_refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
+    return r
 
 
 class _FindRoot:
@@ -1942,3 +1936,16 @@ class _FindRoot:
                     break
 
         return (f, (a, b, c, d)) if mobius else _mobius_to_interval((a, b, c, d))
+
+    def _outer_refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None):
+        """Refine a positive root of `f` given an interval `(s, t)`."""
+        domain = self.domain
+        x = self.gens[0]
+        a, b, c, d = _mobius_from_interval((s, t), domain)
+
+        f = self.dup_transform(f, a*x + b, c*x + d)
+
+        if self._sign_variations(f) != 1:
+            raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
+
+        return self._inner_refine_real_root(f, (a, b, c, d), eps=eps, steps=steps, disjoint=disjoint)
