@@ -3,8 +3,8 @@
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
                          dup_lshift, dup_rshift)
 from .densebasic import dmp_degree_in, dmp_LC
-from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
-                            dup_isolate_all_roots, dup_isolate_all_roots_sqf,
+from .rootisolation import (dup_count_complex_roots, dup_isolate_all_roots,
+                            dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_pair,
@@ -73,9 +73,6 @@ class IPolys:
 
     def dup_isolate_real_roots_pair(self, f, g, eps=None, inf=None, sup=None, strict=False, basis=False):
         return dup_isolate_real_roots_pair(*(map(lambda _: _.to_dense(), [f, g])), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
-
-    def dup_count_real_roots(self, f, inf=None, sup=None):
-        return dup_count_real_roots(f.to_dense(), self.domain, inf=inf, sup=sup)
 
     def dup_count_complex_roots(self, f, inf=None, sup=None, exclude=None):
         return dup_count_complex_roots(f.to_dense(), self.domain, inf=inf, sup=sup, exclude=exclude)

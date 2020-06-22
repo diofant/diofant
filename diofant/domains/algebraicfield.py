@@ -251,7 +251,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         ring = self.rep.ring
         rep = (self - other).rep.compose(0, self.parent.unit.rep*coeff)
 
-        while ring.dup_count_real_roots(rep, root.interval.a, root.interval.b):
+        while ring._count_real_roots(rep, root.interval.a, root.interval.b):
             root.refine()
 
         self.parent._ext_root = coeff, root
@@ -265,7 +265,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         rep = self.rep.compose(0, self.parent.unit.rep*coeff)
         df = rep.diff()
 
-        while (ring.dup_count_real_roots(df, root.interval.a, root.interval.b) or
+        while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
                int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
             root.refine()
 

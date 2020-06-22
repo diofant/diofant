@@ -346,41 +346,6 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
     return I_neg, I_pos
 
 
-def dup_count_real_roots(f, K, inf=None, sup=None):
-    """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``."""
-    if dmp_degree_in(f, 0, 0) <= 0:
-        return 0
-
-    if not K.is_Field:
-        R, K = K, K.field
-        f = dmp_convert(f, 0, R, K)
-
-    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError(f"Can't count real roots in domain {K}")
-
-    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
-        return sum(k for *_, k in dup_isolate_real_roots(f, K, inf, sup))
-
-    sturm = dup_sturm(f, K)
-
-    if inf is None:
-        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree_in(s, 0, 0) for s in sturm], K)
-    else:
-        signs_inf = dup_sign_variations([dmp_eval_in(s, inf, 0, 0, K) for s in sturm], K)
-
-    if sup is None:
-        signs_sup = dup_sign_variations([dmp_LC(s, K) for s in sturm], K)
-    else:
-        signs_sup = dup_sign_variations([dmp_eval_in(s, sup, 0, 0, K) for s in sturm], K)
-
-    count = abs(signs_inf - signs_sup)
-
-    if inf is not None and not dmp_eval_in(f, inf, 0, 0, K):
-        count += 1
-
-    return count
-
-
 OO = 'OO'  # Origin of (re, im) coordinate system
 
 Q1 = 'Q1'  # Quadrant #1 (++): re > 0 and im > 0
@@ -1520,20 +1485,6 @@ class ComplexInterval:
         return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
 
 
-def dup_sturm(f, K):
-    """Computes the Sturm sequence of ``f`` in ``F[x]``."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    return list(map(lambda _: _.to_dense(), f.sturm()))
-
-
-def dup_sign_variations(f, K):
-    """Compute the number of sign variations of ``f`` in ``K[x]``."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    return ring._sign_variations(f)
-
-
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
     """Refine a positive root of `f` given a Mobius transform or an interval."""
     ring = K.poly_ring('_0')
@@ -1959,3 +1910,40 @@ class _FindRoot:
             results = roots
 
         return results
+
+    def _count_real_roots(self, f, inf=None, sup=None):
+        """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``."""
+        domain = self.domain.field
+        new_ring = self.clone(domain=domain)
+
+        if f.degree() <= 0:
+            return 0
+
+        f = f.set_domain(domain)
+
+        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+            raise DomainError(f"Can't count real roots in domain {domain}")
+
+        if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
+            return sum(k for *_, k in new_ring.dup_isolate_real_roots(f, inf, sup))
+
+        sturm = f.sturm()
+
+        if inf is None:
+            f_inf = new_ring.from_list([s.LC*(-1)**s.degree() for s in sturm])
+        else:
+            f_inf = new_ring.from_list([s.eval(a=inf) for s in sturm])
+        signs_inf = new_ring._sign_variations(f_inf)
+
+        if sup is None:
+            f_sup = new_ring.from_list([s.LC for s in sturm])
+        else:
+            f_sup = new_ring.from_list([s.eval(a=sup) for s in sturm])
+        signs_sup = new_ring._sign_variations(f_sup)
+
+        count = abs(signs_inf - signs_sup)
+
+        if inf is not None and not f.eval(a=inf):
+            count += 1
+
+        return count

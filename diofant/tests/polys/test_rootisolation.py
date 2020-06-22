@@ -672,37 +672,37 @@ def test_dup_isolate_real_roots_pair():
         [((QQ(75, 26), QQ(101, 35)), {0: 1}), ((QQ(309, 107), QQ(26, 9)), {1: 1})]
 
 
-def test_dup_count_real_roots():
+def test__count_real_roots():
     R, x = ring('x', ZZ)
 
-    assert R.dup_count_real_roots(R(0)) == 0
-    assert R.dup_count_real_roots(R(7)) == 0
+    assert R._count_real_roots(R(0)) == 0
+    assert R._count_real_roots(R(7)) == 0
 
     f = x - 1
 
-    assert R.dup_count_real_roots(f) == 1
-    assert R.dup_count_real_roots(f, inf=1) == 1
-    assert R.dup_count_real_roots(f, sup=0) == 0
-    assert R.dup_count_real_roots(f, sup=1) == 1
-    assert R.dup_count_real_roots(f, inf=0, sup=1) == 1
-    assert R.dup_count_real_roots(f, inf=0, sup=2) == 1
-    assert R.dup_count_real_roots(f, inf=1, sup=2) == 1
+    assert R._count_real_roots(f) == 1
+    assert R._count_real_roots(f, inf=1) == 1
+    assert R._count_real_roots(f, sup=0) == 0
+    assert R._count_real_roots(f, sup=1) == 1
+    assert R._count_real_roots(f, inf=0, sup=1) == 1
+    assert R._count_real_roots(f, inf=0, sup=2) == 1
+    assert R._count_real_roots(f, inf=1, sup=2) == 1
 
     f = x**2 - 2
 
-    assert R.dup_count_real_roots(f) == 2
-    assert R.dup_count_real_roots(f, sup=0) == 1
-    assert R.dup_count_real_roots(f, inf=-1, sup=1) == 0
+    assert R._count_real_roots(f) == 2
+    assert R._count_real_roots(f, sup=0) == 1
+    assert R._count_real_roots(f, inf=-1, sup=1) == 0
 
     R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**3 + I*x + 2
 
-    assert R.dup_count_real_roots(f) == 0
+    assert R._count_real_roots(f) == 0
 
     f *= (x - 1)*(x + 1)
 
-    assert R.dup_count_real_roots(f) == 2
+    assert R._count_real_roots(f) == 2
 
 
 # parameters for test_dup_count_complex_roots_n(): n = 1..8
@@ -1289,4 +1289,4 @@ def test_diofantissue_745():
     D, y = ring('y', ZZ)
     R, x = ring('x', D)
 
-    pytest.raises(DomainError, lambda: R.dup_count_real_roots(x**7 + y*x + 1))
+    pytest.raises(DomainError, lambda: R._count_real_roots(x**7 + y*x + 1))
