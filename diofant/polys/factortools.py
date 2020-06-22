@@ -617,7 +617,7 @@ class _Factor:
         g = g**2
         h = h**2
 
-        F = g - self.dup_lshift(h, 1)
+        F = g - h.mul_monom((1,))
 
         if F.LC < 0:
             F = -F
@@ -663,8 +663,8 @@ class _Factor:
 
             s, t, _ = p_ring.gcdex(g, f)
 
-            s = p_ring.dup_lshift(s, m)
-            t = p_ring.dup_lshift(t, m)
+            s = s.mul_monom((m,))
+            t = t.mul_monom((m,))
 
             q, s = divmod(s, f)
             s = s.set_domain(domain)
@@ -690,7 +690,7 @@ class _Factor:
             p_domain = domain.finite_field(p)
 
             for s, f in zip(S, F):
-                s = self.dup_lshift(s, m)
+                s = s.mul_monom((m,))
                 s, f = map(lambda _: _.set_domain(p_domain), (s, f))
                 s = (s % f).set_domain(domain)
 

@@ -4,64 +4,6 @@ from ..core import oo
 from .monomials import Monomial
 
 
-def dmp_LC(f, K):
-    """
-    Return leading coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_LC(x**2 + 2*x + 3)
-    1
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[0]
-
-
-def dmp_TC(f, K):
-    """
-    Return trailing coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_TC(x**2 + 2*x + 3)
-    3
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[-1]
-
-
-def dmp_ground_TC(f, u, K):
-    """
-    Return the ground trailing coefficient.
-
-    Examples
-    ========
-
-    >>> R, x, y, z = ring('x y z', ZZ)
-
-    >>> R.dmp_ground_TC(y + 2*z + 3)
-    3
-
-    """
-    while u:
-        f = dmp_TC(f, K)
-        u -= 1
-
-    return dmp_TC(f, K)
-
-
 def dmp_degree_in(f, j, u):
     """
     Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.
@@ -107,28 +49,14 @@ def dmp_strip(f, u):
         for i, c in enumerate(f):
             if c:
                 return f[i:]
-        return dmp_zero(u)
+        return dmp_ground(0, u)
 
     v = u - 1
 
     for i, c in enumerate(f):
         if not dmp_zero_p(c, v):
             return f[i:]
-    return dmp_zero(u)
-
-
-def dup_reverse(f):
-    """
-    Compute ``x**n * f(1/x)``, i.e.: reverse ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_reverse([ZZ(1), ZZ(2), ZZ(3), ZZ(0)])
-    [3, 2, 1]
-
-    """
-    return dmp_strip(list(reversed(f)), 0)
+    return dmp_ground(0, u)
 
 
 def dmp_to_tuple(f, u):
@@ -204,25 +132,6 @@ def dmp_zero_p(f, u):
     return not f
 
 
-def dmp_zero(u):
-    """
-    Return a multivariate zero.
-
-    Examples
-    ========
-
-    >>> dmp_zero(4)
-    [[[[[]]]]]
-
-    """
-    r = []
-
-    for i in range(u):
-        r = [r]
-
-    return r
-
-
 def dmp_one_p(f, u, K):
     """
     Return ``True`` if ``f`` is one in ``K[X]``.
@@ -257,7 +166,12 @@ def dmp_ground(c, u):
 
     """
     if not c:
-        return dmp_zero(u)
+        r = []
+
+        for i in range(u):
+            r = [r]
+
+        return r
 
     for i in range(u + 1):
         c = [c]
@@ -280,7 +194,7 @@ def dmp_from_dict(f, u, K):
 
     """
     if not f:
-        return dmp_zero(u)
+        return dmp_ground(0, u)
     elif not u:
         h = []
         n, = max(f)
@@ -308,7 +222,7 @@ def dmp_from_dict(f, u, K):
         if coeff is not None:
             h.append(dmp_from_dict(coeff, v, K))
         else:
-            h.append(dmp_zero(v))
+            h.append(dmp_ground(0, v))
 
     return dmp_strip(h, u)
 
@@ -371,10 +285,3 @@ def dmp_terms_gcd(f, u, K):
     f = ring.from_list(f)
     G, f = f.terms_gcd()
     return G, f.to_dense()
-
-
-def dmp_slice_in(f, m, n, j, u, K):
-    """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return f.slice(m, n, x=j).to_dense()

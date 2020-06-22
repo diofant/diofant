@@ -1098,7 +1098,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.ring.dmp_ground_TC(self.rep)
+        result = self.rep.coeff(1)
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1910,7 +1910,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            count = self.rep.ring.dup_count_real_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_real_roots(self.rep, inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)

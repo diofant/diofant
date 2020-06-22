@@ -56,22 +56,26 @@ def test_dmp_mul_ground():
 
     f = R(0)
 
-    assert R.dmp_mul_ground(f, ZZ(2)) == 0
+    assert f.mul_ground(ZZ(2)) == 0
 
     f = x**2 + 2*x - 1
 
-    assert R.dmp_mul_ground(f, ZZ(3)) == 3*x**2 + 6*x - 3
+    assert f.mul_ground(ZZ(3)) == 3*x**2 + 6*x - 3
 
     f = x**2 + 2*x + 3
 
-    assert R.dmp_mul_ground(f, ZZ(0)) == 0
-    assert R.dmp_mul_ground(f, ZZ(2)) == 2*x**2 + 4*x + 6
+    assert f.mul_ground(ZZ(0)) == 0
+    assert f.mul_ground(ZZ(2)) == 2*x**2 + 4*x + 6
+
+    R, x, y = ring('x y', ZZ)
+
+    assert (2*x + 2*y).mul_ground(ZZ(3)) == 6*x + 6*y
 
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]
 
-    assert (R.dmp_mul_ground(f, ZZ(2)) ==
+    assert (f.mul_ground(ZZ(2)) ==
             2*x**2*y*z**2 + 4*x**2*y*z + 6*x**2*y + 4*x**2 + 6*x +
             8*y**2*z**2 + 10*y**2*z + 12*y**2 + 2*y*z**2 + 4*y*z + 2*y + 2)
 
@@ -79,166 +83,152 @@ def test_dmp_mul_ground():
 
     f = f.set_ring(R)/7
 
-    assert (R.dmp_mul_ground(f, QQ(1, 2)) ==
+    assert (f.mul_ground(QQ(1, 2)) ==
             x**2*y*z**2/14 + x**2*y*z/7 + 3*x**2*y/14 + x**2/7 + 3*x/14 +
             2*y**2*z**2/7 + 5*y**2*z/14 + 3*y**2/7 + y*z**2/14 + y*z/7 +
             y/14 + QQ(1, 14))
 
 
-def test_dup_lshift():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_lshift(R(0), 3) == 0
-    assert R.dup_lshift(R(1), 3) == x**3
-
-    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
-
-    assert R.dup_lshift(f, 1) == x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x
-    assert R.dup_lshift(f, 2) == x**6 + 2*x**5 + 3*x**4 + 4*x**3 + 5*x**2
-
-
-def test_dup_rshift():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_rshift(R(0), 3) == 0
-    assert R.dup_rshift(x**3, 3) == 1
-
-    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
-
-    assert R.dup_rshift(R(0), 5) == 0
-
-    assert R.dup_rshift(f, 0) == 0
-    assert R.dup_rshift(f, 1) == x**3 + 2*x**2 + 3*x + 4
-    assert R.dup_rshift(f, 3) == x + 2
-    assert R.dup_rshift(f, 5) == 0
-
-
 def test_dmp_neg():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(x**2 - 1) == 1 - x**2
-    assert R.dmp_neg(R(1)) == -1
-    assert R.dmp_neg(R(-7)) == 7
-    assert R.dmp_neg(-x**2 + 2*x + 3) == x**2 - 2*x - 3
-    assert R.dmp_neg(R(-1)) == 1
+    assert -R(0) == 0
+    assert -(x**2 - 1) == 1 - x**2
+    assert -R(1) == -1
+    assert -R(-7) == 7
+    assert -(-x**2 + 2*x + 3) == x**2 - 2*x - 3
+    assert -R(-1) == 1
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(QQ(1, 2))) == QQ(-1, 2)
-    assert R.dmp_neg(R(QQ(-7, 9))) == QQ(7, 9)
-    assert R.dmp_neg(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 - 2*x/7 - QQ(3, 7)
-    assert R.dmp_neg(R(QQ(-1, 2))) == QQ(1, 2)
+    assert -R(0) == 0
+    assert -R(QQ(1, 2)) == QQ(-1, 2)
+    assert -R(QQ(-7, 9)) == QQ(7, 9)
+    assert -(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 - 2*x/7 - QQ(3, 7)
+    assert -R(QQ(-1, 2)) == QQ(1, 2)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert -(x**2*y - x) == -x**2*y + x
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(1)) == -1
-    assert R.dmp_neg(R(-7)) == 7
+    assert -R(0) == 0
+    assert -R(1) == -1
+    assert -R(-7) == 7
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_neg(R(0)) == 0
-    assert R.dmp_neg(R(QQ(1, 9))) == QQ(-1, 9)
-    assert R.dmp_neg(R(QQ(-7, 9))) == QQ(7, 9)
+    assert -R(0) == 0
+    assert -R(QQ(1, 9)) == QQ(-1, 9)
+    assert -R(QQ(-7, 9)) == QQ(7, 9)
 
 
 def test_dmp_add():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_add(R(0), R(0)) == 0
-    assert R.dmp_add(R(1), R(0)) == 1
-    assert R.dmp_add(R(0), R(1)) == 1
-    assert R.dmp_add(R(1), R(1)) == 2
-    assert R.dmp_add(R(1), R(2)) == 3
+    assert R(0) + R(0) == 0
+    assert R(1) + R(0) == 1
+    assert R(0) + R(1) == 1
+    assert R(1) + R(1) == 2
+    assert R(1) + R(2) == 3
 
-    assert R.dmp_add(x + 2, R(1)) == x + 3
-    assert R.dmp_add(R(1), x + 2) == x + 3
+    assert (x + 2) + R(1) == x + 3
+    assert R(1) + (x + 2) == x + 3
 
-    assert R.dmp_add(x**2 + 2*x + 3, 8*x**2 + 9*x + 10) == 9*x**2 + 11*x + 13
+    assert (x**2 + 2*x + 3) + (8*x**2 + 9*x + 10) == 9*x**2 + 11*x + 13
+
+    assert (x**2 - 1) + (x - 2) == x**2 + x - 3
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_add(R(0), R(0)) == 0
-    assert R.dmp_add(R(QQ(1, 2)), R(0)) == QQ(1, 2)
-    assert R.dmp_add(R(0), R(QQ(1, 2))) == QQ(1, 2)
-    assert R.dmp_add(R(QQ(1, 4)), R(QQ(1, 4))) == QQ(1, 2)
-    assert R.dmp_add(R(QQ(1, 4)), R(QQ(1, 2))) == QQ(3, 4)
+    assert R(0) + R(0) == 0
+    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
+    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
+    assert R(QQ(1, 4)) + R(QQ(1, 4)) == QQ(1, 2)
+    assert R(QQ(1, 4)) + R(QQ(1, 2)) == QQ(3, 4)
 
-    assert R.dmp_add(x/2 + QQ(2, 3), R(1)) == x/2 + QQ(5, 3)
-    assert R.dmp_add(R(1), x/2 + QQ(2, 3)) == x/2 + QQ(5, 3)
+    assert (x/2 + QQ(2, 3)) + R(1) == x/2 + QQ(5, 3)
+    assert R(1) + (x/2 + QQ(2, 3)) == x/2 + QQ(5, 3)
 
-    assert R.dmp_add(x**2/7 + 2*x/7 + QQ(3, 7),
-                     8*x**2/7 + 9*x/7 + QQ(10, 7)) == 9*x**2/7 + 11*x/7 + QQ(13, 7)
+    assert ((x**2/7 + 2*x/7 + QQ(3, 7)) +
+            (8*x**2/7 + 9*x/7 + QQ(10, 7))) == 9*x**2/7 + 11*x/7 + QQ(13, 7)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert (x**2 + y) + (x**2*y + x) == x**2*y + x**2 + x + y
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_add(R(0), R(0)) == 0
-    assert R.dmp_add(R(1), R(0)) == 1
-    assert R.dmp_add(R(0), R(1)) == 1
-    assert R.dmp_add(R(2), R(1)) == 3
-    assert R.dmp_add(R(1), R(2)) == 3
+    assert R(0) + R(0) == 0
+    assert R(1) + R(0) == 1
+    assert R(0) + R(1) == 1
+    assert R(2) + R(1) == 3
+    assert R(1) + R(2) == 3
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_add(R(0), R(0)) == 0
-    assert R.dmp_add(R(QQ(1, 2)), R(0)) == QQ(1, 2)
-    assert R.dmp_add(R(0), R(QQ(1, 2))) == QQ(1, 2)
-    assert R.dmp_add(R(QQ(2, 7)), R(QQ(1, 7))) == QQ(3, 7)
-    assert R.dmp_add(R(QQ(1, 7)), R(QQ(2, 7))) == QQ(3, 7)
+    assert R(0) + R(0) == 0
+    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
+    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
+    assert R(QQ(2, 7)) + R(QQ(1, 7)) == QQ(3, 7)
+    assert R(QQ(1, 7)) + R(QQ(2, 7)) == QQ(3, 7)
 
 
 def test_dmp_sub():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_sub(R(0), R(0)) == 0
-    assert R.dmp_sub(R(1), R(0)) == +1
-    assert R.dmp_sub(R(0), R(1)) == -1
-    assert R.dmp_sub(R(1), R(1)) == 0
-    assert R.dmp_sub(R(1), R(2)) == -1
+    assert R(0) - R(0) == 0
+    assert R(1) - R(0) == +1
+    assert R(0) - R(1) == -1
+    assert R(1) - R(1) == 0
+    assert R(1) - R(2) == -1
 
-    assert R.dmp_sub(x + 2, R(1)) == +x + 1
-    assert R.dmp_sub(R(1), x + 2) == -x - 1
+    assert (x + 2) - R(1) == +x + 1
+    assert R(1) - (x + 2) == -x - 1
 
-    assert R.dmp_sub(3*x**2 + 2*x + 1, 8*x**2 + 9*x + 10) == -5*x**2 - 7*x - 9
+    assert (3*x**2 + 2*x + 1) - (8*x**2 + 9*x + 10) == -5*x**2 - 7*x - 9
+
+    assert (x**2 - 1) - (x - 2) == x**2 - x + 1
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_sub(R(0), R(0)) == 0
-    assert R.dmp_sub(R(QQ(1, 2)), R(0)) == QQ(+1, 2)
-    assert R.dmp_sub(R(0), R(QQ(1, 2))) == QQ(-1, 2)
-    assert R.dmp_sub(R(QQ(1, 3)), R(QQ(1, 3))) == 0
-    assert R.dmp_sub(R(QQ(1, 3)), R(QQ(2, 3))) == QQ(-1, 3)
+    assert R(0) - R(0) == 0
+    assert R(QQ(1, 2)) - R(0) == QQ(+1, 2)
+    assert R(0) - R(QQ(1, 2)) == QQ(-1, 2)
+    assert R(QQ(1, 3)) - R(QQ(1, 3)) == 0
+    assert R(QQ(1, 3)) - R(QQ(2, 3)) == QQ(-1, 3)
 
-    assert R.dmp_sub(x/7 + QQ(2, 7), R(1)) == +x/7 - QQ(5, 7)
-    assert R.dmp_sub(R(1), x/7 + QQ(2, 7)) == -x/7 + QQ(5, 7)
+    assert (x/7 + QQ(2, 7)) - R(1) == +x/7 - QQ(5, 7)
+    assert R(1) - (x/7 + QQ(2, 7)) == -x/7 + QQ(5, 7)
 
-    assert R.dmp_sub(3*x**2/7 + 2*x/7 + QQ(1, 7),
-                     8*x**2/7 + 9*x/7 + QQ(10, 7)) == -5*x**2/7 - x - QQ(9, 7)
+    assert ((3*x**2/7 + 2*x/7 + QQ(1, 7)) -
+            (8*x**2/7 + 9*x/7 + QQ(10, 7))) == -5*x**2/7 - x - QQ(9, 7)
 
     R, x, y = ring('x y', ZZ)
 
     f, g = x**2 - 2, y**2
 
-    assert R.dmp_sub(f, g) == x**2 - y**2 - 2
-    assert R.dmp_sub(g, f) == 2 + y**2 - x**2
+    assert f - g == x**2 - y**2 - 2
+    assert g - f == 2 + y**2 - x**2
+
+    assert (x**2 + y) - (x**2*y + x) == -x**2*y + x**2 - x + y
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_sub(R(0), R(0)) == 0
-    assert R.dmp_sub(R(1), R(0)) == +1
-    assert R.dmp_sub(R(0), R(1)) == -1
-    assert R.dmp_sub(R(2), R(1)) == +1
-    assert R.dmp_sub(R(1), R(2)) == -1
+    assert R(0) - R(0) == 0
+    assert R(1) - R(0) == +1
+    assert R(0) - R(1) == -1
+    assert R(2) - R(1) == +1
+    assert R(1) - R(2) == -1
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_sub(R(0), R(0)) == 0
-    assert R.dmp_sub(R(QQ(1, 2)), R(0)) == QQ(+1, 2)
-    assert R.dmp_sub(R(0), R(QQ(1, 2))) == QQ(-1, 2)
-    assert R.dmp_sub(R(QQ(2, 7)), R(QQ(1, 7))) == QQ(+1, 7)
-    assert R.dmp_sub(R(QQ(1, 7)), R(QQ(2, 7))) == QQ(-1, 7)
+    assert R(0) - R(0) == 0
+    assert R(QQ(1, 2)) - R(0) == QQ(+1, 2)
+    assert R(0) - R(QQ(1, 2)) == QQ(-1, 2)
+    assert R(QQ(2, 7)) - R(QQ(1, 7)) == QQ(+1, 7)
+    assert R(QQ(1, 7)) - R(QQ(2, 7)) == QQ(-1, 7)
 
 
 def test_dmp_add_mul():
@@ -272,23 +262,25 @@ def test_dmp_sub_mul():
 def test_dmp_mul():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(0), R(1)) == 0
-    assert R.dmp_mul(R(1), R(0)) == 0
-    assert R.dmp_mul(R(1), R(1)) == 1
-    assert R.dmp_mul(R(5), R(7)) == 35
+    assert R(0)*R(0) == 0
+    assert R(0)*R(1) == 0
+    assert R(1)*R(0) == 0
+    assert R(1)*R(1) == 1
+    assert R(5)*R(7) == 35
+
+    assert (x - 2)*(x + 2) == x**2 - 4
 
     f = 3*x**5 + 6*x**2 + x + 2
     g = 4*x**3 + x
     h = 12*x**8 + 3*x**6 + 24*x**5 + 4*x**4 + 14*x**3 + x**2 + 2*x
 
-    assert R.dmp_mul(f, g) == h
-    assert R.dmp_mul(g, f) == h
+    assert f*g == h
+    assert g*f == h
 
     f = 2*x**4 + x + 7
     h = 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
 
-    assert R.dmp_mul(f, f) == h
+    assert f*f == h
 
     p1 = R.from_list([79, -1, 78, -94, -10, 11, 32, -19, 78, 2, -89, 30, 73, 42,
                       85, 77, 83, -30, -34, -2, 95, -81, 37, -49, -46, -58, -16, 37, 35, -11,
@@ -390,7 +382,7 @@ def test_dmp_mul():
                        -6753, -4808, 2976, -10881, -10228, -13816, -12686, 1385, 2316, 2190, -875,
                        -1924])
 
-    assert R.dmp_mul(p1, p2) == res
+    assert p1*p2 == res
 
     p1 = R.from_list([83, -61, -86, -24, 12, 43, -88, -9, 42, 55, -66, 74, 95,
                       -25, -12, 68, -99, 4, 45, 6, -15, -19, 78, 65, -55, 47, -13, 17, 86,
@@ -485,36 +477,40 @@ def test_dmp_mul():
                        11899, 1409, -15094, 22540, -18863, 137, 11123, -4516, 2290, -8594, 12150,
                        -10380, 3005, 5235, -7350, 2535, -858])
 
-    assert R.dmp_mul(p1, p2) == res
+    assert p1*p2 == res
 
     R, x = ring('x', FF(7))
 
-    assert R.dmp_mul(2*x + 1, 3*x + 4) == 6*x**2 + 4*x + 4
+    assert (2*x + 1)*(3*x + 4) == 6*x**2 + 4*x + 4
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(0), R(QQ(1, 2))) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(0)) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(QQ(4, 7))) == QQ(2, 7)
-    assert R.dmp_mul(R(QQ(5, 7)), R(QQ(3, 7))) == QQ(15, 49)
+    assert R(0)*R(0) == 0
+    assert R(0)*R(QQ(1, 2)) == 0
+    assert R(QQ(1, 2))*R(0) == 0
+    assert R(QQ(1, 2))*R(QQ(4, 7)) == QQ(2, 7)
+    assert R(QQ(5, 7))*R(QQ(3, 7)) == QQ(15, 49)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert (x*y + 1)*x == x**2*y + x
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(1), R(0)) == 0
-    assert R.dmp_mul(R(0), R(1)) == 0
-    assert R.dmp_mul(R(2), R(1)) == 2
-    assert R.dmp_mul(R(1), R(2)) == 2
+    assert R(0)*R(0) == 0
+    assert R(1)*R(0) == 0
+    assert R(0)*R(1) == 0
+    assert R(2)*R(1) == 2
+    assert R(1)*R(2) == 2
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(0)) == 0
-    assert R.dmp_mul(R(0), R(QQ(1, 2))) == 0
-    assert R.dmp_mul(R(QQ(2, 7)), R(QQ(1, 3))) == QQ(2, 21)
-    assert R.dmp_mul(R(QQ(1, 7)), R(QQ(2, 3))) == QQ(2, 21)
+    assert R(0)*R(0) == 0
+    assert R(QQ(1, 2))*R(0) == 0
+    assert R(0)*R(QQ(1, 2)) == 0
+    assert R(QQ(2, 7))*R(QQ(1, 3)) == QQ(2, 21)
+    assert R(QQ(1, 7))*R(QQ(2, 3)) == QQ(2, 21)
 
     R, x, y = ring('x y', FF(5))
 
-    assert R.dmp_mul(2*x + 1, 3*x + 4) == x**2 + x + 4
+    assert (2*x + 1)*(3*x + 4) == x**2 + x + 4
