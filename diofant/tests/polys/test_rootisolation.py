@@ -4,8 +4,7 @@ import pytest
 
 from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, prod, ring,
                      sqrt, subsets)
-from diofant.polys.rootisolation import (RealInterval,
-                                         dup_inner_refine_real_root)
+from diofant.polys.rootisolation import RealInterval
 
 
 __all__ = ()
@@ -164,11 +163,13 @@ def test__step_refine_real_root():
                                     (-2, 0, 1, 1)) == (x + 2, (0, -2, 1, 2))
 
 
-def test_dup_inner_refine_real_root():
-    f = [-1, 0, 2]
+def test__inner_refine_real_root():
+    R, x = ring('x', ZZ)
+
+    f = 2 - x**2
     r = (1, QQ(3, 2))
 
-    assert dup_inner_refine_real_root(f, (1, 2, 1, 1), QQ, steps=1) == r
+    assert R._inner_refine_real_root(f, (1, 2, 1, 1), steps=1) == r
 
 
 def test_dup_refine_real_root():

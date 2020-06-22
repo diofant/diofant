@@ -122,40 +122,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
-    """Refine a positive root of `f` given a Mobius transform or an interval."""
-    a, b, c, d = M
-
-    while not c:
-        f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K)
-
-    if eps is not None and steps is not None:
-        for i in range(steps):
-            if abs(a/c - b/d) >= eps:
-                f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K)
-            else:
-                break
-    else:
-        if eps is not None:
-            while abs(a/c - b/d) >= eps:
-                f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K)
-
-        if steps is not None:
-            for i in range(steps):
-                f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K)
-
-    if disjoint is not None:
-        while True:
-            u, v = _mobius_to_interval((a, b, c, d))
-
-            if u < disjoint < v:
-                f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K)
-            else:
-                break
-
-    return (f, (a, b, c, d)) if mobius else _mobius_to_interval((a, b, c, d))
-
-
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     """Refine a positive root of `f` given an interval `(s, t)`."""
     a, b, c, d = _mobius_from_interval((s, t), K)
@@ -1795,6 +1761,18 @@ def dup_step_refine_real_root(f, M, K):
     return r[0].to_dense(), r[1]
 
 
+def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
+    """Refine a positive root of `f` given a Mobius transform or an interval."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._inner_refine_real_root(f, M, eps=eps, steps=steps,
+                                     disjoint=disjoint, mobius=mobius)
+    if mobius:
+        return r[0].to_dense(), r[1]
+    else:
+        return r
+
+
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1931,3 +1909,36 @@ class _FindRoot:
             a, b, c, d = b, a + b, d, c + d
 
         return f, (a, b, c, d)
+
+    def _inner_refine_real_root(self, f, M, eps=None, steps=None, disjoint=None, mobius=False):
+        """Refine a positive root of `f` given a Mobius transform or an interval."""
+        a, b, c, d = M
+
+        while not c:
+            f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
+
+        if eps is not None and steps is not None:
+            for i in range(steps):
+                if abs(a/c - b/d) >= eps:
+                    f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
+                else:
+                    break
+        else:
+            if eps is not None:
+                while abs(a/c - b/d) >= eps:
+                    f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
+
+            if steps is not None:
+                for i in range(steps):
+                    f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
+
+        if disjoint is not None:
+            while True:
+                u, v = _mobius_to_interval((a, b, c, d))
+
+                if u < disjoint < v:
+                    f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
+                else:
+                    break
+
+        return (f, (a, b, c, d)) if mobius else _mobius_to_interval((a, b, c, d))
