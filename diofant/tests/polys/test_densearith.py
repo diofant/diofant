@@ -262,25 +262,25 @@ def test_dmp_sub_mul():
 def test_dmp_mul():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(0), R(1)) == 0
-    assert R.dmp_mul(R(1), R(0)) == 0
-    assert R.dmp_mul(R(1), R(1)) == 1
-    assert R.dmp_mul(R(5), R(7)) == 35
+    assert R(0)*R(0) == 0
+    assert R(0)*R(1) == 0
+    assert R(1)*R(0) == 0
+    assert R(1)*R(1) == 1
+    assert R(5)*R(7) == 35
 
-    assert R.dmp_mul(x - 2, x + 2) == x**2 - 4
+    assert (x - 2)*(x + 2) == x**2 - 4
 
     f = 3*x**5 + 6*x**2 + x + 2
     g = 4*x**3 + x
     h = 12*x**8 + 3*x**6 + 24*x**5 + 4*x**4 + 14*x**3 + x**2 + 2*x
 
-    assert R.dmp_mul(f, g) == h
-    assert R.dmp_mul(g, f) == h
+    assert f*g == h
+    assert g*f == h
 
     f = 2*x**4 + x + 7
     h = 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
 
-    assert R.dmp_mul(f, f) == h
+    assert f*f == h
 
     p1 = R.from_list([79, -1, 78, -94, -10, 11, 32, -19, 78, 2, -89, 30, 73, 42,
                       85, 77, 83, -30, -34, -2, 95, -81, 37, -49, -46, -58, -16, 37, 35, -11,
@@ -382,7 +382,7 @@ def test_dmp_mul():
                        -6753, -4808, 2976, -10881, -10228, -13816, -12686, 1385, 2316, 2190, -875,
                        -1924])
 
-    assert R.dmp_mul(p1, p2) == res
+    assert p1*p2 == res
 
     p1 = R.from_list([83, -61, -86, -24, 12, 43, -88, -9, 42, 55, -66, 74, 95,
                       -25, -12, 68, -99, 4, 45, 6, -15, -19, 78, 65, -55, 47, -13, 17, 86,
@@ -477,40 +477,40 @@ def test_dmp_mul():
                        11899, 1409, -15094, 22540, -18863, 137, 11123, -4516, 2290, -8594, 12150,
                        -10380, 3005, 5235, -7350, 2535, -858])
 
-    assert R.dmp_mul(p1, p2) == res
+    assert p1*p2 == res
 
     R, x = ring('x', FF(7))
 
-    assert R.dmp_mul(2*x + 1, 3*x + 4) == 6*x**2 + 4*x + 4
+    assert (2*x + 1)*(3*x + 4) == 6*x**2 + 4*x + 4
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(0), R(QQ(1, 2))) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(0)) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(QQ(4, 7))) == QQ(2, 7)
-    assert R.dmp_mul(R(QQ(5, 7)), R(QQ(3, 7))) == QQ(15, 49)
+    assert R(0)*R(0) == 0
+    assert R(0)*R(QQ(1, 2)) == 0
+    assert R(QQ(1, 2))*R(0) == 0
+    assert R(QQ(1, 2))*R(QQ(4, 7)) == QQ(2, 7)
+    assert R(QQ(5, 7))*R(QQ(3, 7)) == QQ(15, 49)
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_mul(x*y + 1, x) == x**2*y + x
+    assert (x*y + 1)*x == x**2*y + x
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(1), R(0)) == 0
-    assert R.dmp_mul(R(0), R(1)) == 0
-    assert R.dmp_mul(R(2), R(1)) == 2
-    assert R.dmp_mul(R(1), R(2)) == 2
+    assert R(0)*R(0) == 0
+    assert R(1)*R(0) == 0
+    assert R(0)*R(1) == 0
+    assert R(2)*R(1) == 2
+    assert R(1)*R(2) == 2
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_mul(R(0), R(0)) == 0
-    assert R.dmp_mul(R(QQ(1, 2)), R(0)) == 0
-    assert R.dmp_mul(R(0), R(QQ(1, 2))) == 0
-    assert R.dmp_mul(R(QQ(2, 7)), R(QQ(1, 3))) == QQ(2, 21)
-    assert R.dmp_mul(R(QQ(1, 7)), R(QQ(2, 3))) == QQ(2, 21)
+    assert R(0)*R(0) == 0
+    assert R(QQ(1, 2))*R(0) == 0
+    assert R(0)*R(QQ(1, 2)) == 0
+    assert R(QQ(2, 7))*R(QQ(1, 3)) == QQ(2, 21)
+    assert R(QQ(1, 7))*R(QQ(2, 3)) == QQ(2, 21)
 
     R, x, y = ring('x y', FF(5))
 
-    assert R.dmp_mul(2*x + 1, 3*x + 4) == x**2 + x + 4
+    assert (2*x + 1)*(3*x + 4) == x**2 + x + 4

@@ -1,4 +1,5 @@
-from .polyerrors import DomainError
+from .polyconfig import query
+from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
 
@@ -191,3 +192,47 @@ class UnivarPolyElement(PolyElement):
 
         """
         return self.ring._sturm(self)
+
+    def __mul__(self, other):
+        ring = self.ring
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        if max(self.degree(), other.degree()) > query('KARATSUBA_CUTOFF'):
+            return self._mul_karatsuba(other)
+        return super().__mul__(other)
+
+    def _mul_karatsuba(self, other):
+        """
+        Multiply dense polynomials in ``K[x]`` using Karatsuba's algorithm.
+
+        References
+        ==========
+
+        * :cite:`Hoeven02`
+
+        """
+        ring = self.ring
+        domain = ring.domain
+
+        df = self.degree()
+        dg = other.degree()
+
+        n = max(df, dg) + 1
+
+        n2 = n//2
+
+        fl = self.slice(0, n2)
+        gl = other.slice(0, n2)
+
+        fh = self.slice(n2, n).quo_term(((n2,), domain.one))
+        gh = other.slice(n2, n).quo_term(((n2,), domain.one))
+
+        lo = fl*gl
+        hi = fh*gh
+
+        mid = (fl + fh)*(gl + gh)
+        mid -= (lo + hi)
+
+        return lo + mid.mul_monom((n2,)) + hi.mul_monom((2*n2,))

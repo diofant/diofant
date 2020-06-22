@@ -285,10 +285,3 @@ def dmp_terms_gcd(f, u, K):
     f = ring.from_list(f)
     G, f = f.terms_gcd()
     return G, f.to_dense()
-
-
-def dmp_slice_in(f, m, n, j, u, K):
-    """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return f.slice(m, n, x=j).to_dense()

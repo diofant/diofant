@@ -1,6 +1,5 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import dmp_mul
 from .densebasic import dmp_degree_in
 from .rootisolation import (dup_count_complex_roots, dup_isolate_all_roots,
                             dup_isolate_all_roots_sqf,
@@ -22,9 +21,6 @@ class IPolys:
     domain = None
     order = None
     gens = None
-
-    def dmp_mul(self, f, g):
-        return self.from_list(dmp_mul(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(f.to_dense(), j, self.ngens-1)
