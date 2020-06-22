@@ -5,23 +5,11 @@ from .polyconfig import query
 
 
 def dmp_mul_ground(f, c, u, K):
-    """
-    Multiply ``f`` by a constant value in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_mul_ground(2*x + 2*y, ZZ(3))
-    6*x + 6*y
-
-    """
-    if not u:
-        return dmp_strip([coeff * c for coeff in f], u)
-    else:
-        v = u - 1
-        return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
+    """Multiply ``f`` by a constant value in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    r = f.mul_ground(c)
+    return r.to_dense()
 
 
 def dup_lshift(f, n, K):
