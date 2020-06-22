@@ -76,79 +76,11 @@ def dmp_add(f, g, u, K):
     return (f + g).to_dense()
 
 
-def dup_sub(f, g, K):
-    """
-    Subtract dense polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_sub(x**2 - 1, x - 2)
-    x**2 - x + 1
-
-    """
-    if not f:
-        return dmp_neg(g, 0, K)
-    if not g:
-        return f
-
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if df == dg:
-        return dmp_strip([a - b for a, b in zip(f, g)], 0)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = dmp_neg(g[:k], 0, K), g[k:]
-
-        return h + [a - b for a, b in zip(f, g)]
-
-
 def dmp_sub(f, g, u, K):
-    """
-    Subtract dense polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_sub(x**2 + y, x**2*y + x)
-    -x**2*y + x**2 - x + y
-
-    """
-    if not u:
-        return dup_sub(f, g, K)
-
-    df = dmp_degree_in(f, 0, u)
-
-    if df < 0:
-        return dmp_neg(g, u, K)
-
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        return f
-
-    v = u - 1
-
-    if df == dg:
-        return dmp_strip([dmp_sub(a, b, v, K) for a, b in zip(f, g)], u)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = dmp_neg(g[:k], u, K), g[k:]
-
-        return h + [dmp_sub(a, b, v, K) for a, b in zip(f, g)]
+    """Subtract dense polynomials in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return (f - g).to_dense()
 
 
 def dup_mul_karatsuba(f, g, K):
