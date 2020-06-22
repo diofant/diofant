@@ -4,25 +4,6 @@ from ..core import oo
 from .monomials import Monomial
 
 
-def dmp_LC(f, K):
-    """
-    Return leading coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_LC(x**2 + 2*x + 3)
-    1
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[0]
-
-
 def dmp_degree_in(f, j, u):
     """
     Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.

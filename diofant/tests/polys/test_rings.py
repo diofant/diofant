@@ -556,9 +556,19 @@ def test_PolyElement_coeff():
 
 
 def test_PolyElement_LC():
+    R, x = ring('x', ZZ)
+
+    assert R(0).LC == 0
+    assert R(1).LC == 1
+    assert (2*x**3 + 3*x**2 + 4*x + 5).LC == 2
+    assert (3*x**2 + 1).LC == 3
+    assert (x + 2).LC == 1
+    assert (x**2 + 2*x + 3).LC == 1
+
     R, x, y = ring('x y', ZZ)
 
     assert R(0).LC == 0
+    assert R(0).eject(-1).LC == 0
     assert (2*x*y**2 + 3*x*y + 4*x + 5).LC == 2
 
     R1 = R.eject(-1).domain
@@ -566,6 +576,10 @@ def test_PolyElement_LC():
     f = x**2*y**2 + x**2*y - 1
 
     assert f.eject(-1).LC == R1.y**2 + R1.y
+
+    f = 2*x*y**2 + 3*x*y + 4*x + 5
+
+    assert f.eject(-1).LC == 2*R1.y**2 + 3*R1.y + 4
 
     R, x, y = ring('x y', QQ)
 
@@ -588,6 +602,14 @@ def test_PolyElement_LC():
     f = x*y*z - y**2*z**2
 
     assert f.eject(-1).LC == R2.z
+
+    R12 = R.drop(x)
+
+    assert R(0).eject(y, z).LC == 0
+
+    f = 2*x*y + 3*x*z + 4*x + 5
+
+    assert f.eject(y, z).LC == 2*R12.y + 3*R12.z + 4
 
 
 def test_PolyElement_LM():

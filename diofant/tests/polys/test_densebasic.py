@@ -14,28 +14,6 @@ __all__ = ()
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [f.to_dense() for f in f_polys()]
 
 
-def test_dmp_LC():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_LC(R(0)) == 0
-    assert R.dmp_LC(R(1)) == 1
-    assert R.dmp_LC(2*x**3 + 3*x**2 + 4*x + 5) == 2
-    assert R.dmp_LC(3*x**2 + 1) == 3
-    assert R.dmp_LC(x + 2) == 1
-
-    R, x, y = ring('x y', ZZ)
-    R1 = R.drop(x)
-
-    assert R.dmp_LC(R(0)) == 0
-    assert R.dmp_LC(2*x*y**2 + 3*x*y + 4*x + 5) == 2*R1.y**2 + 3*R1.y + 4
-
-    R, x, y, z = ring('x y z', ZZ)
-    R12 = R.drop(x)
-
-    assert R.dmp_LC(R(0)) == 0
-    assert R.dmp_LC(2*x*y + 3*x*z + 4*x + 5) == 2*R12.y + 3*R12.z + 4
-
-
 def test_dmp_degree_in():
     R, x = ring('x', ZZ)
 
