@@ -49,14 +49,14 @@ def dmp_strip(f, u):
         for i, c in enumerate(f):
             if c:
                 return f[i:]
-        return dmp_zero(u)
+        return dmp_ground(0, u)
 
     v = u - 1
 
     for i, c in enumerate(f):
         if not dmp_zero_p(c, v):
             return f[i:]
-    return dmp_zero(u)
+    return dmp_ground(0, u)
 
 
 def dmp_to_tuple(f, u):
@@ -132,25 +132,6 @@ def dmp_zero_p(f, u):
     return not f
 
 
-def dmp_zero(u):
-    """
-    Return a multivariate zero.
-
-    Examples
-    ========
-
-    >>> dmp_zero(4)
-    [[[[[]]]]]
-
-    """
-    r = []
-
-    for i in range(u):
-        r = [r]
-
-    return r
-
-
 def dmp_one_p(f, u, K):
     """
     Return ``True`` if ``f`` is one in ``K[X]``.
@@ -185,7 +166,12 @@ def dmp_ground(c, u):
 
     """
     if not c:
-        return dmp_zero(u)
+        r = []
+
+        for i in range(u):
+            r = [r]
+
+        return r
 
     for i in range(u + 1):
         c = [c]
@@ -208,7 +194,7 @@ def dmp_from_dict(f, u, K):
 
     """
     if not f:
-        return dmp_zero(u)
+        return dmp_ground(0, u)
     elif not u:
         h = []
         n, = max(f)
@@ -236,7 +222,7 @@ def dmp_from_dict(f, u, K):
         if coeff is not None:
             h.append(dmp_from_dict(coeff, v, K))
         else:
-            h.append(dmp_zero(v))
+            h.append(dmp_ground(0, v))
 
     return dmp_strip(h, u)
 

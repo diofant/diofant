@@ -7,8 +7,7 @@ from ..core import I
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
                          dmp_quo, dmp_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
-                         dmp_strip, dmp_terms_gcd, dmp_to_dict, dmp_to_tuple,
-                         dmp_zero)
+                         dmp_strip, dmp_terms_gcd, dmp_to_dict, dmp_to_tuple)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -43,8 +42,8 @@ def dup_real_imag(f, K):
     elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
         raise DomainError(f'computing real and imaginary parts is not supported over {K}')
 
-    f1 = dmp_zero(1)
-    f2 = dmp_zero(1)
+    f1 = dmp_ground(0, 1)
+    f2 = dmp_ground(0, 1)
 
     if not f:
         return f1, f2

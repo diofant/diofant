@@ -1,6 +1,6 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero
+from .densebasic import dmp_degree_in, dmp_ground, dmp_slice_in, dmp_strip
 from .polyconfig import query
 
 
@@ -336,7 +336,7 @@ def dmp_mul(f, g, u, K):
     h, v = [], u - 1
 
     for i in range(df + dg + 1):
-        coeff = dmp_zero(v)
+        coeff = dmp_ground(0, v)
 
         for j in range(max(0, i - dg), min(df, i) + 1):
             coeff = dmp_add(coeff, dmp_mul(f[j], g[i - j], v, K), v, K)
