@@ -5,10 +5,10 @@ import math
 
 from ..core import I
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
-                         dmp_quo, dmp_sub, dup_rshift)
+                         dmp_quo, dmp_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_LC,
-                         dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
-                         dmp_to_dict, dmp_to_tuple, dmp_zero, dup_reverse)
+                         dmp_permute, dmp_strip, dmp_terms_gcd, dmp_to_dict,
+                         dmp_to_tuple, dmp_zero)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -120,103 +120,6 @@ def _mobius_to_interval(M):
     s, t = a/c, b/d
 
     return (s, t) if s <= t else (t, s)
-
-
-def dup_inner_isolate_real_roots(f, K, eps=None):
-    """Internal function for isolation positive roots up to given precision."""
-    a, b, c, d = K.one, K.zero, K.zero, K.one
-    k = dup_sign_variations(f, K)
-
-    roots, stack = [], [(a, b, c, d, f, k)]
-
-    while stack:
-        a, b, c, d, f, k = stack.pop()
-
-        A = dup_root_upper_bound(dup_reverse(f), K)
-
-        if A is not None:
-            A = 1/K.convert(A)
-        else:
-            A = K.zero
-
-        if A > 16:
-            f = dmp_compose(f, [A, 0], 0, K)
-            a, c, A = A*a, A*c, K.one
-
-        if A >= 1:
-            f = dmp_compose(f, [K.one, A], 0, K)
-            b, d = A*a + b, A*c + d
-
-            assert dmp_TC(f, K)
-
-            k = dup_sign_variations(f, K)
-
-            if k == 0:
-                continue
-            if k == 1:
-                roots.append(dup_inner_refine_real_root(f, (a, b, c, d), K,
-                                                        eps=eps, mobius=True))
-                continue
-
-        f1 = dmp_compose(f, [K.one, K.one], 0, K)
-
-        a1, b1, c1, d1, r = a, a + b, c, c + d, 0
-
-        if not dmp_TC(f1, K):
-            roots.append((f1, (b1, b1, d1, d1)))
-            f1, r = dup_rshift(f1, 1, K), 1
-
-        k1 = dup_sign_variations(f1, K)
-        k2 = k - k1 - r
-
-        a2, b2, c2, d2 = b, a + b, d, c + d
-
-        if k2 > 1:
-            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
-
-            if not dmp_TC(f2, K):
-                f2 = dup_rshift(f2, 1, K)
-
-            k2 = dup_sign_variations(f2, K)
-        else:
-            f2 = None
-
-        if k1 < k2:
-            a1, a2, b1, b2 = a2, a1, b2, b1
-            c1, c2, d1, d2 = c2, c1, d2, d1
-            f1, f2, k1, k2 = f2, f1, k2, k1
-
-        if not k1:
-            continue
-
-        if f1 is None:
-            f1 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
-
-            if not dmp_TC(f1, K):
-                f1 = dup_rshift(f1, 1, K)
-
-        if k1 == 1:
-            roots.append(dup_inner_refine_real_root(f1, (a1, b1, c1, d1), K,
-                                                    eps=eps, mobius=True))
-        else:
-            stack.append((a1, b1, c1, d1, f1, k1))
-
-        if not k2:
-            continue
-
-        if f2 is None:
-            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
-
-            if not dmp_TC(f2, K):
-                f2 = dup_rshift(f2, 1, K)
-
-        if k2 == 1:
-            roots.append(dup_inner_refine_real_root(f2, (a2, b2, c2, d2), K,
-                                                    eps=eps, mobius=True))
-        else:
-            stack.append((a2, b2, c2, d2, f2, k2))
-
-    return roots
 
 
 def _discard_if_outside_interval(f, M, inf, sup, K, negative, mobius):
@@ -1700,13 +1603,6 @@ def dup_sign_variations(f, K):
     return ring._sign_variations(f)
 
 
-def dup_root_upper_bound(f, K):
-    """Compute the LMQ upper bound for the positive roots of `f`."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    return ring._root_upper_bound(f)
-
-
 def dup_step_refine_real_root(f, M, K):
     """One step of positive real root refinement algorithm."""
     ring = K.poly_ring('_0')
@@ -1730,6 +1626,14 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
     return ring._refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
+
+
+def dup_inner_isolate_real_roots(f, K, eps=None):
+    """Internal function for isolation positive roots up to given precision."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._inner_isolate_real_roots(f, eps=eps)
+    return [(_[0].to_dense(), _[1]) for _ in r]
 
 
 class _FindRoot:
@@ -1949,3 +1853,101 @@ class _FindRoot:
         s, t = new_ring._outer_refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
 
         return (-t, -s) if negative else (s, t)
+
+    def _inner_isolate_real_roots(self, f, eps=None):
+        """Internal function for isolation positive roots up to given precision."""
+        domain = self.domain
+        x = self.gens[0]
+        a, b, c, d = domain.one, domain.zero, domain.zero, domain.one
+        k = self._sign_variations(f)
+
+        roots, stack = [], [(a, b, c, d, f, k)]
+
+        while stack:
+            a, b, c, d, f, k = stack.pop()
+
+            A = self._root_upper_bound(self.dup_reverse(f))
+
+            if A is not None:
+                A = 1/domain.convert(A)
+            else:
+                A = domain.zero
+
+            if A > 16:
+                f = f.compose(x, A*x)
+                a, c, A = A*a, A*c, domain.one
+
+            if A >= 1:
+                f = f.compose(x, x + A)
+                b, d = A*a + b, A*c + d
+
+                assert self.dmp_TC(f)
+
+                k = self._sign_variations(f)
+
+                if k == 0:
+                    continue
+                if k == 1:
+                    roots.append(self._inner_refine_real_root(f, (a, b, c, d),
+                                                              eps=eps, mobius=True))
+                    continue
+
+            f1 = f.compose(x, x + 1)
+
+            a1, b1, c1, d1, r = a, a + b, c, c + d, 0
+
+            if not self.dmp_TC(f1):
+                roots.append((f1, (b1, b1, d1, d1)))
+                f1, r = f1 // x, 1
+
+            k1 = self._sign_variations(f1)
+            k2 = k - k1 - r
+
+            a2, b2, c2, d2 = b, a + b, d, c + d
+
+            if k2 > 1:
+                f2 = self.dup_reverse(f).compose(x, x + 1)
+
+                if not self.dmp_TC(f2):
+                    f2 //= x
+
+                k2 = self._sign_variations(f2)
+            else:
+                f2 = None
+
+            if k1 < k2:
+                a1, a2, b1, b2 = a2, a1, b2, b1
+                c1, c2, d1, d2 = c2, c1, d2, d1
+                f1, f2, k1, k2 = f2, f1, k2, k1
+
+            if not k1:
+                continue
+
+            if f1 is None:
+                f1 = self.dup_reverse(f).compose(x, x + 1)
+
+                if not self.dmp_TC(f1):
+                    f1 //= x
+
+            if k1 == 1:
+                roots.append(self._inner_refine_real_root(f1, (a1, b1, c1, d1),
+                                                          eps=eps, mobius=True))
+            else:
+                stack.append((a1, b1, c1, d1, f1, k1))
+
+            if not k2:
+                continue
+
+            if f2 is None:
+                f2 = self.dup_reverse(f).compose(x, x + 1)
+
+                if not self.dmp_TC(f2):
+                    f2 //= x
+
+            if k2 == 1:
+                roots.append(self._inner_refine_real_root(f2, (a2, b2, c2, d2),
+                                                          eps=eps, mobius=True))
+            else:
+                stack.append((a2, b2, c2, d2, f2, k2))
+
+        return roots
