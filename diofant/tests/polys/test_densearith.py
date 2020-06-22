@@ -296,6 +296,8 @@ def test_dmp_mul():
     assert R.dmp_mul(R(1), R(1)) == 1
     assert R.dmp_mul(R(5), R(7)) == 35
 
+    assert R.dmp_mul(x - 2, x + 2) == x**2 - 4
+
     f = 3*x**5 + 6*x**2 + x + 2
     g = 4*x**3 + x
     h = 12*x**8 + 3*x**6 + 24*x**5 + 4*x**4 + 14*x**3 + x**2 + 2*x
@@ -516,6 +518,10 @@ def test_dmp_mul():
     assert R.dmp_mul(R(QQ(1, 2)), R(0)) == 0
     assert R.dmp_mul(R(QQ(1, 2)), R(QQ(4, 7))) == QQ(2, 7)
     assert R.dmp_mul(R(QQ(5, 7)), R(QQ(3, 7))) == QQ(15, 49)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R.dmp_mul(x*y + 1, x) == x**2*y + x
 
     R, x, y, z = ring('x y z', ZZ)
 
