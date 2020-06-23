@@ -25,11 +25,3 @@ def dmp_compose(f, g, u, K):
     f, g = map(ring.from_list, (f, g))
     r = f.compose(0, g)
     return r.to_dense()
-
-
-def dmp_clear_denoms(f, u, K, convert=False):
-    """Clear denominators."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    common, f = f.clear_denoms(convert=convert)
-    return common, f.to_dense()
