@@ -6,7 +6,6 @@ import math
 from ..core import Dummy, I
 from .densearith import dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub
 from .densebasic import dmp_convert, dmp_degree_in, dmp_ground, dmp_to_dict
-from .densetools import dmp_eval_in
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list
 
@@ -1305,6 +1304,16 @@ def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=Fa
     r = ring._isolate_real_roots_pair(f, g, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
     assert basis
     r = [(_[0], _[1], _[2].to_dense()) for _ in r]
+    return r
+
+
+def dmp_eval_in(f, a, j, u, K):
+    """Evaluate a polynomial at ``x_j = a`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    r = f.eval(x=j, a=a)
+    if ring.is_multivariate:
+        r = r.to_dense()
     return r
 
 

@@ -49,9 +49,6 @@ may be slightly more efficient.)
 
 **Further tools:**
 
-.. automodule:: diofant.polys.densetools
-    :members:
-
 .. automodule:: diofant.polys.rootisolation
     :members:
 

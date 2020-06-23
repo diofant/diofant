@@ -6,7 +6,6 @@ import random
 from ..ntheory import factorint
 from .densearith import dmp_add, dmp_mul, dmp_pow, dmp_quo, dmp_rem, dmp_sub
 from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
-from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
 from .polyconfig import query
 from .polyutils import _sort_factors
@@ -761,3 +760,11 @@ def dup_gf_factor_sqf(f, K):
     method = query('GF_FACTOR_METHOD')
 
     return _factor_methods[method](f, K)
+
+
+def dmp_ground_monic(f, u, K):
+    """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    f = f.monic()
+    return f.to_dense()
