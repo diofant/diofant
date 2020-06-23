@@ -274,11 +274,3 @@ def dmp_permute(f, P, u, K):
         H[tuple(new_exp)] = coeff
 
     return dmp_from_dict(H, u, K)
-
-
-def dmp_terms_gcd(f, u, K):
-    """Remove GCD of terms from ``f`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    G, f = f.terms_gcd()
-    return G, f.to_dense()
