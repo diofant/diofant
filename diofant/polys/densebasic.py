@@ -97,9 +97,6 @@ def dmp_convert(f, u, K0, K1):
     [[1], [2]]
 
     """
-    if K0 is not None and K0 == K1:
-        return f
-
     if not u:
         r = [K1.convert(c, K0) for c in f]
     else:

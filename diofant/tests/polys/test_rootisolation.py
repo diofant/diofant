@@ -589,86 +589,87 @@ def test__isolate_real_roots():
         [((-2, -1), 2), ((0, 0), 4), ((1, 1), 3), ((QQ(4, 3), QQ(3, 2)), 2)]
 
 
-def test_dup_isolate_real_roots_pair():
+def test__isolate_real_roots_pair():
     R, x = ring('x', ZZ)
 
-    assert R.dup_isolate_real_roots_pair(x*(x + 1), x) == \
+    assert R._isolate_real_roots_pair(x*(x + 1), x) == \
         [((-1, -1), {0: 1}), ((0, 0), {0: 1, 1: 1})]
-    assert R.dup_isolate_real_roots_pair(x*(x - 1), x) == \
+    assert R._isolate_real_roots_pair(x*(x - 1), x) == \
         [((0, 0), {0: 1, 1: 1}), ((1, 1), {0: 1})]
 
     f, g = (x**2 - 2)**2, x - 1
 
-    assert R.dup_isolate_real_roots_pair(f, g, inf=QQ(7, 4)) == []
-    assert R.dup_isolate_real_roots_pair(f, g, inf=QQ(7, 5)) == \
+    assert R._isolate_real_roots_pair(f, g, inf=QQ(7, 4)) == []
+    assert R._isolate_real_roots_pair(f, g, inf=QQ(7, 5)) == \
         [((QQ(7, 5), QQ(3, 2)), {0: 2})]
-    assert R.dup_isolate_real_roots_pair(f, g, sup=QQ(7, 5)) == \
+    assert R._isolate_real_roots_pair(f, g, sup=QQ(7, 5)) == \
         [((-2, -1), {0: 2}), ((1, 1), {1: 1})]
-    assert R.dup_isolate_real_roots_pair(f, g, sup=QQ(7, 4)) == \
+    assert R._isolate_real_roots_pair(f, g, sup=QQ(7, 4)) == \
         [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, QQ(3, 2)), {0: 2})]
-    assert R.dup_isolate_real_roots_pair(f, g, sup=-QQ(7, 4)) == []
-    assert R.dup_isolate_real_roots_pair(f, g, sup=-QQ(7, 5)) == \
+    assert R._isolate_real_roots_pair(f, g, sup=-QQ(7, 4)) == []
+    assert R._isolate_real_roots_pair(f, g, sup=-QQ(7, 5)) == \
         [((-QQ(3, 2), -QQ(7, 5)), {0: 2})]
-    assert R.dup_isolate_real_roots_pair(f, g, inf=-QQ(7, 5)) == \
+    assert R._isolate_real_roots_pair(f, g, inf=-QQ(7, 5)) == \
         [((1, 1), {1: 1}), ((1, 2), {0: 2})]
-    assert R.dup_isolate_real_roots_pair(f, g, inf=-QQ(7, 4)) == \
+    assert R._isolate_real_roots_pair(f, g, inf=-QQ(7, 4)) == \
         [((-QQ(3, 2), -1), {0: 2}), ((1, 1), {1: 1}), ((1, 2), {0: 2})]
 
     f, g = 2*x**2 - 1, x**2 - 2
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((-2, -1), {1: 1}), ((-1, 0), {0: 1}),
          ((0, 1), {0: 1}), ((1, 2), {1: 1})]
-    assert R.dup_isolate_real_roots_pair(f, g, strict=True) == \
+    assert R._isolate_real_roots_pair(f, g, strict=True) == \
         [((-QQ(3, 2), -QQ(4, 3)), {1: 1}), ((-1, -QQ(2, 3)), {0: 1}),
          ((QQ(2, 3), 1), {0: 1}), ((QQ(4, 3), QQ(3, 2)), {1: 1})]
 
     f, g = x**2 - 2, (x - 1)*(x**2 - 2)
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((-2, -1), {1: 1, 0: 1}), ((1, 1), {1: 1}), ((1, 2), {1: 1, 0: 1})]
 
     f, g = x*(x**2 - 2), x**2*(x - 1)*(x**2 - 2)
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((-2, -1), {1: 1, 0: 1}), ((0, 0), {0: 1, 1: 2}),
          ((1, 1), {1: 1}), ((1, 2), {1: 1, 0: 1})]
 
     f, g = x**2*(x - 1)**3*(x**2 - 2)**2, x*(x - 1)**2*(x**2 + 2)
+    _x = R.clone(domain=ZZ.field).x
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((-2, -1), {0: 2}), ((0, 0), {0: 2, 1: 1}),
          ((1, 1), {0: 3, 1: 2}), ((1, 2), {0: 2})]
-    assert R.dup_isolate_real_roots_pair(f, g, basis=True) == \
-        [((-2, -1), {0: 2}, [1, 0, -2]), ((0, 0), {0: 2, 1: 1}, [1, 0]),
-         ((1, 1), {0: 3, 1: 2}, [1, -1]), ((1, 2), {0: 2}, [1, 0, -2])]
+    assert R._isolate_real_roots_pair(f, g, basis=True) == \
+        [((-2, -1), {0: 2}, _x**2 - 2), ((0, 0), {0: 2, 1: 1}, _x),
+         ((1, 1), {0: 3, 1: 2}, _x - 1), ((1, 2), {0: 2}, _x**2 - 2)]
 
     f, g = x, R.zero
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
-        R.dup_isolate_real_roots_pair(g, f) == [((0, 0), {0: 1, 1: 1})]
+    assert R._isolate_real_roots_pair(f, g) == \
+        R._isolate_real_roots_pair(g, f) == [((0, 0), {0: 1, 1: 1})]
 
     f *= x**2
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
-        R.dup_isolate_real_roots_pair(g, f) == [((0, 0), {0: 3, 1: 3})]
+    assert R._isolate_real_roots_pair(f, g) == \
+        R._isolate_real_roots_pair(g, f) == [((0, 0), {0: 3, 1: 3})]
 
     R, x = ring('x', EX)
 
-    pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_pair(x, x + 3))
+    pytest.raises(DomainError, lambda: R._isolate_real_roots_pair(x, x + 3))
 
     R, x = ring('x', ZZ)
 
     f, g = x**5 - 200, x**5 - 201
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((QQ(75, 26), QQ(101, 35)), {0: 1}), ((QQ(309, 107), QQ(26, 9)), {1: 1})]
 
     R, x = ring('x', QQ)
 
     f, g = -x**5/200 + 1, -x**5/201 + 1
 
-    assert R.dup_isolate_real_roots_pair(f, g) == \
+    assert R._isolate_real_roots_pair(f, g) == \
         [((QQ(75, 26), QQ(101, 35)), {0: 1}), ((QQ(309, 107), QQ(26, 9)), {1: 1})]
 
 

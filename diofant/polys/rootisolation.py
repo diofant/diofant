@@ -4,13 +4,11 @@ import collections
 import math
 
 from ..core import Dummy, I
-from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
-                         dmp_quo, dmp_sub)
+from .densearith import dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
-                         dmp_strip, dmp_terms_gcd, dmp_to_dict, dmp_to_tuple)
-from .densetools import dmp_clear_denoms, dmp_compose, dmp_eval_in
+                         dmp_strip, dmp_to_dict, dmp_to_tuple)
+from .densetools import dmp_compose, dmp_eval_in
 from .euclidtools import dmp_gcd, dmp_resultant
-from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list
 
@@ -118,69 +116,6 @@ def _mobius_to_interval(M):
     s, t = a/c, b/d
 
     return (s, t) if s <= t else (t, s)
-
-
-def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
-    """Isolate real roots of a list of polynomials."""
-    R, K = K, K.field
-
-    if not (K.is_RationalField or K.is_RealAlgebraicField):
-        raise DomainError(f'isolation of real roots not supported over {K}')
-
-    if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
-        zeros, zero_indices = True, {}
-    else:
-        zeros = False
-
-    polys = [f, g]
-    gcd = []
-
-    for i, p in enumerate(polys):
-        p = dmp_convert(p, 0, R, K)
-        p = dmp_clear_denoms(p, 0, K)[1]
-        (j,), polys[i] = dmp_terms_gcd(p, 0, K)
-
-        if zeros and j > 0:
-            zero_indices[i] = j
-
-        gcd = dmp_gcd(gcd, polys[i], 0, K)
-
-    polys = [dmp_quo(p, gcd, 0, K) for p in polys]
-
-    factors = collections.defaultdict(dict)
-
-    for i, p in enumerate(polys):
-        ni = (i + 1) % 2
-
-        if not p and zeros and ni in zero_indices:
-            zero_indices[i] = zero_indices[ni]
-
-        for f, _ in dmp_sqf_list(dmp_gcd(p, gcd, 0, K), 0, K)[1]:
-            k1 = dmp_trial_division(gcd, [f], 0, K)[0][1]
-            k2 = dmp_trial_division(p, [f], 0, K)[0][1]
-            factors[tuple(f)] = {i: k1 + k2, ni: k1}
-
-            gcd = dmp_quo(gcd, dmp_pow(f, k1, 0, K), 0, K)
-            p = dmp_quo(p, dmp_pow(f, k2, 0, K), 0, K)
-
-        for f, k in dmp_sqf_list(p, 0, K)[1]:
-            factors[tuple(f)] = {i: k}
-
-    for f, k in dmp_sqf_list(gcd, 0, K)[1]:
-        factors[tuple(f)] = {0: k, 1: k}
-
-    I_neg, I_pos = _real_isolate_and_disjoin(factors.items(), K, eps=eps,
-                                             inf=inf, sup=sup, strict=strict,
-                                             basis=basis)
-    I_zero = []
-
-    if zeros and zero_indices:
-        if not basis:
-            I_zero = [((K.zero, K.zero), zero_indices)]
-        else:
-            I_zero = [((K.zero, K.zero), zero_indices, [K.one, K.zero])]
-
-    return sorted(I_neg + I_zero + I_pos)
 
 
 def _disjoint_p(M, N, strict=False):
@@ -1373,13 +1308,13 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
     return ring._isolate_real_roots(f, eps=eps, inf=inf, sup=sup)
 
 
-def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=False, basis=False):
-    """Isolate real roots of a list of polynomials and disjoin intervals."""
+def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
+    """Isolate real roots of a list of polynomials."""
     ring = K.poly_ring('_0')
-    factors = [(ring.from_list(f), k) for f, k in dict(factors).items()]
-    r = ring._real_isolate_and_disjoin(factors, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
-    if basis:
-        r = [[(_[0], _[1], _[2].to_dense()) for _ in t] for t in r]
+    f, g = map(ring.from_list, (f, g))
+    r = ring._isolate_real_roots_pair(f, g, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
+    assert basis
+    r = [(_[0], _[1], _[2].to_dense()) for _ in r]
     return r
 
 
@@ -1879,7 +1814,7 @@ class _FindRoot:
             new_ring2 = new_ring.domain.inject(*new_ring.symbols, Dummy('y'))
             f = f.set_ring(new_ring2)
             polys = [_.eval(1, 0) for _ in new_ring2.dup_real_imag(f)]
-            roots = new_ring.to_ground().dup_isolate_real_roots_pair(*polys, eps=eps, inf=inf, sup=sup, strict=True)
+            roots = new_ring.to_ground()._isolate_real_roots_pair(*polys, eps=eps, inf=inf, sup=sup, strict=True)
             return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
 
         _, factors = f.sqf_list()
@@ -1953,3 +1888,67 @@ class _FindRoot:
             I_pos = [((+u, +v), k, f) for ((u, v), k, f) in I_pos]
 
         return I_neg, I_pos
+
+    def _isolate_real_roots_pair(self, f, g, eps=None, inf=None, sup=None, strict=False, basis=False):
+        """Isolate real roots of a list of polynomials."""
+        domain = self.domain.field
+        new_ring = self.clone(domain=domain)
+
+        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+            raise DomainError(f'isolation of real roots not supported over {domain}')
+
+        if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
+            zeros, zero_indices = True, {}
+        else:
+            zeros = False
+
+        polys = [f, g]
+        gcd = new_ring.zero
+
+        for i, p in enumerate(polys):
+            p = p.set_domain(domain)
+            p = p.clear_denoms()[1]
+            (j,), p = p.terms_gcd()
+            polys[i] = p  # .set_domain(domain)
+
+            if zeros and j > 0:
+                zero_indices[i] = j
+
+            gcd = new_ring.gcd(gcd, polys[i])
+
+        polys = [p//gcd for p in polys]
+
+        factors = collections.defaultdict(dict)
+
+        for i, p in enumerate(polys):
+            ni = (i + 1) % 2
+
+            if not p and zeros and ni in zero_indices:
+                zero_indices[i] = zero_indices[ni]
+
+            for f, _ in new_ring.gcd(p, gcd).sqf_list()[1]:
+                k1 = new_ring._trial_division(gcd, [f])[0][1]
+                k2 = new_ring._trial_division(p, [f])[0][1]
+                factors[f] = {i: k1 + k2, ni: k1}
+
+                gcd //= f**k1
+                p //= f**k2
+
+            for f, k in p.sqf_list()[1]:
+                factors[f] = {i: k}
+
+        for f, k in gcd.sqf_list()[1]:
+            factors[f] = {0: k, 1: k}
+
+        I_neg, I_pos = new_ring._real_isolate_and_disjoin(tuple(factors.items()), eps=eps,
+                                                          inf=inf, sup=sup, strict=strict,
+                                                          basis=basis)
+        I_zero = []
+
+        if zeros and zero_indices:
+            if not basis:
+                I_zero = [((domain.zero, domain.zero), zero_indices)]
+            else:
+                I_zero = [((domain.zero, domain.zero), zero_indices, new_ring.gens[0])]
+
+        return sorted(I_neg + I_zero + I_pos)
