@@ -17,11 +17,3 @@ def dmp_ground_monic(f, u, K):
     f = ring.from_list(f)
     f = f.monic()
     return f.to_dense()
-
-
-def dmp_compose(f, g, u, K):
-    """Evaluate functional composition ``f(g)`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    r = f.compose(0, g)
-    return r.to_dense()
