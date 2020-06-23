@@ -5,10 +5,8 @@ import math
 
 from ..core import Dummy, I
 from .densearith import dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
-                         dmp_to_dict, dmp_to_tuple)
-from .densetools import dmp_compose, dmp_eval_in
-from .euclidtools import dmp_gcd, dmp_resultant
+from .densebasic import dmp_convert, dmp_degree_in, dmp_ground, dmp_to_dict
+from .densetools import dmp_eval_in
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list
 
@@ -1211,17 +1209,18 @@ class ComplexInterval:
         if not check_re_refinement:
             return self.by <= other.ay or other.by <= self.ay
 
+        dom = self.domain.unify(other.domain)
+        ring = dom.poly_ring('_0', '_1')
+        rring = dom.poly_ring(*reversed(ring.symbols))
         resultants = []
         for i in (self, other):
-            re = dmp_permute(i.f1, [1, 0], 1, i.domain)
-            im = dmp_permute(i.f2, [1, 0], 1, i.domain)
-            re, im = map(lambda x: dmp_to_tuple(x, 1), [re, im])
-            resultants.append(dmp_resultant(re, im, 1, i.domain))
-        dom = self.domain.unify(other.domain)
-        gcd = dmp_gcd(*resultants, 0, dom)
-        gcd_roots = dup_isolate_real_roots(gcd, dom,
-                                           inf=max(self.ax, other.ax),
-                                           sup=min(self.bx, other.bx))
+            re, im = map(ring.from_list, (i.f1, i.f2))
+            re, im = map(lambda _: _.set_ring(rring), (re, im))
+            resultants.append(re.resultant(im))
+        gcd = ring.drop(1).gcd(*resultants)
+        gcd_roots = ring.drop(1)._isolate_real_roots(gcd,
+                                                     inf=max(self.ax, other.ax),
+                                                     sup=min(self.bx, other.bx))
         if len(gcd_roots) != 1:
             return False
 
@@ -1233,14 +1232,15 @@ class ComplexInterval:
             # on the north-western corner of the original isolation rectangle.
             for i in (self, other):
                 dom = i.domain.algebraic_field(I)
-                f1 = dmp_convert(dmp_eval_in(i.f1, l, 0, 1, i.domain), 0, i.domain, dom)
-                f2 = dmp_convert(dmp_eval_in(i.f2, l, 0, 1, i.domain), 0, i.domain, dom)
-                f = dmp_add(f1, dmp_mul_ground(f2, dom.unit, 0, dom), 0, dom)
-                f = dmp_compose(f, [-dom.unit, 0], 0, dom)
+                f1 = ring.from_list(i.f1).eval(a=l).set_domain(dom)
+                f2 = ring.from_list(i.f2).eval(a=l).set_domain(dom)
+                f = f1 + f2.mul_ground(dom.unit)
+                x = f.ring.gens[0]
+                f = f.compose(0, -dom.unit*x)
                 if i.conj:
-                    f = [_.conjugate() for _ in f]
-                f = dmp_compose(f, [dom.unit, 0], 0, dom)
-                r = dup_isolate_real_roots(f, dom, inf=i.ay, sup=i.by)
+                    f = f.ring.from_list([_.conjugate() for _ in f.all_coeffs()])
+                f = f.compose(0, dom.unit*x)
+                r = f.ring._isolate_real_roots(f, inf=i.ay, sup=i.by)
                 if len([1 for _ in r if ((not i.conj and i.ay < _[0][0]) or
                                          (i.conj and _[0][1] < i.by)) and l < i.bx]) != 1:
                     return False
@@ -1296,13 +1296,6 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=Fals
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
     return ring._isolate_real_roots_sqf(f, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
-
-
-def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
-    """Isolate real roots."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    return ring._isolate_real_roots(f, eps=eps, inf=inf, sup=sup)
 
 
 def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
