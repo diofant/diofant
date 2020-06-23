@@ -42,11 +42,6 @@ may be slightly more efficient.)
 .. automodule:: diofant.polys.densebasic
     :members:
 
-**Arithmetic operations:**
-
-.. automodule:: diofant.polys.densearith
-    :members:
-
 **Further tools:**
 
 .. automodule:: diofant.polys.rootisolation
