@@ -6,7 +6,7 @@ import math
 from ..core import Dummy, I
 from .densearith import dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
-                         dmp_strip, dmp_to_dict, dmp_to_tuple)
+                         dmp_to_dict, dmp_to_tuple)
 from .densetools import dmp_compose, dmp_eval_in
 from .euclidtools import dmp_gcd, dmp_resultant
 from .polyerrors import DomainError, RefinementFailed
@@ -1056,29 +1056,33 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None):
 class RealInterval:
     """A fully qualified representation of a real isolation interval."""
 
-    def __init__(self, data, f, dom):
+    def __init__(self, data, f):
         """Initialize new real interval with complete information."""
         if len(data) == 2:
             s, t = data
 
             self.neg = False
 
+            ring = f.ring
+            domain = ring.domain
+            x = ring.gens[0]
+
             if s < 0:
                 if t <= 0:
-                    f, s, t, self.neg = dmp_compose(f, [-dom.one, 0], 0, dom), -t, -s, True
+                    f, s, t, self.neg = f.compose(x, -x), -t, -s, True
                 else:
                     raise ValueError(f"can't refine a real root in ({s}, {t})")
 
-            a, b, c, d = _mobius_from_interval((s, t), dom.field)
+            a, b, c, d = _mobius_from_interval((s, t), domain.field)
 
-            f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), dom)
+            f = ring.dup_transform(f, a*x + b, c*x + d)
 
             self.mobius = a, b, c, d
         else:
             self.mobius = data[:-1]
             self.neg = data[-1]
 
-        self.f, self.domain = f, dom
+        self.f = f
 
     @property
     def a(self):
@@ -1120,9 +1124,12 @@ class RealInterval:
         """Perform one step of real root refinement algorithm."""
         assert self.mobius is not None
 
-        f, mobius = dup_inner_refine_real_root(self.f, self.mobius, self.domain, steps=1, mobius=True)
+        f = self.f
+        ring = f.ring
 
-        return RealInterval(mobius + (self.neg,), f, self.domain)
+        f, mobius = ring._inner_refine_real_root(f, self.mobius, steps=1, mobius=True)
+
+        return RealInterval(mobius + (self.neg,), f)
 
 
 class ComplexInterval:
@@ -1269,16 +1276,6 @@ class ComplexInterval:
                 _, a, b, I, Q, F1, F2 = D_U
 
         return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
-
-
-def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, mobius=False):
-    """Refine a positive root of `f` given a Mobius transform or an interval."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    r = ring._inner_refine_real_root(f, M, eps=eps, steps=steps,
-                                     disjoint=disjoint, mobius=mobius)
-    assert mobius
-    return r[0].to_dense(), r[1]
 
 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
@@ -1780,7 +1777,7 @@ class _FindRoot:
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
             roots = [r for r, _ in new_ring._isolate_real_roots(f, eps=eps, inf=inf, sup=sup)]
-            return [RealInterval((a, b), f.to_dense(), domain) for (a, b) in roots] if blackbox else roots
+            return [RealInterval((a, b), f) for (a, b) in roots] if blackbox else roots
 
         if f.degree() <= 0:
             return []
@@ -1791,7 +1788,7 @@ class _FindRoot:
         I_pos = new_ring._inner_isolate_positive_roots(f, eps=eps, inf=inf, sup=sup)
 
         roots = sorted(I_neg + I_zero + I_pos)
-        return [RealInterval((a, b), f.to_dense(), domain) for (a, b) in roots] if blackbox else roots
+        return [RealInterval((a, b), f) for (a, b) in roots] if blackbox else roots
 
     def _isolate_real_roots(self, f, eps=None, inf=None, sup=None):
         """Isolate real roots.

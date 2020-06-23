@@ -1260,8 +1260,7 @@ def test_RealInterval():
 
     f = (x - 1)**2
 
-    pytest.raises(ValueError, lambda: RealInterval((-2, 1), f.to_dense(),
-                                                   R.domain))
+    pytest.raises(ValueError, lambda: RealInterval((-2, 1), f))
 
 
 def test_ComplexInterval():
