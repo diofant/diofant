@@ -1,8 +1,7 @@
 """Compatibility interface between dense and sparse polys."""
 
 from .densebasic import dmp_degree_in
-from .rootisolation import (dup_count_complex_roots, dup_isolate_all_roots,
-                            dup_isolate_all_roots_sqf,
+from .rootisolation import (dup_count_complex_roots,
                             dup_isolate_complex_roots_sqf, dup_real_imag,
                             dup_transform)
 
@@ -37,9 +36,3 @@ class IPolys:
 
     def dup_isolate_complex_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         return dup_isolate_complex_roots_sqf(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
-
-    def dup_isolate_all_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
-        return dup_isolate_all_roots_sqf(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
-
-    def dup_isolate_all_roots(self, f, eps=None, inf=None, sup=None):
-        return dup_isolate_all_roots(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup)

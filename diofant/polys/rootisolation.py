@@ -7,7 +7,6 @@ from ..core import Dummy, I
 from .densearith import dmp_add, dmp_mul, dmp_sub
 from .densebasic import dmp_convert, dmp_degree_in, dmp_ground, dmp_to_dict
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dmp_sqf_list
 
 
 def dup_real_imag(f, K):
@@ -1024,32 +1023,6 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     return roots if blackbox else [r.as_tuple() for r in roots]
 
 
-def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
-    """Isolate real and complex roots of a square-free polynomial ``f``."""
-    return (dup_isolate_real_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, blackbox=blackbox),
-            dup_isolate_complex_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, blackbox=blackbox))
-
-
-def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None):
-    """Isolate real and complex roots of a non-square-free polynomial ``f``."""
-    if not K.is_IntegerRing and not K.is_RationalField:
-        raise DomainError(f'isolation of real and complex roots is not supported over {K}')
-
-    _, factors = dmp_sqf_list(f, 0, K)
-
-    if len(factors) == 1:
-        (f, k), = factors
-
-        real_part, complex_part = dup_isolate_all_roots_sqf(f, K, eps=eps, inf=inf, sup=sup)
-
-        real_part = [((a, b), k) for (a, b) in real_part]
-        complex_part = [((a, b), k) for (a, b) in complex_part]
-
-        return real_part, complex_part
-    else:
-        raise NotImplementedError('only trivial square-free polynomials are supported')
-
-
 class RealInterval:
     """A fully qualified representation of a real isolation interval."""
 
@@ -1288,13 +1261,6 @@ def _roots_bound(f, F):
     ring = F.poly_ring('_0')
     f = ring.from_list(f)
     return ring._roots_bound(f)
-
-
-def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
-    """Isolate real roots of a square-free polynomial."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    return ring._isolate_real_roots_sqf(f, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
 
 
 def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
@@ -1966,3 +1932,29 @@ class _FindRoot:
                 I_zero = [((domain.zero, domain.zero), zero_indices, new_ring.gens[0])]
 
         return sorted(I_neg + I_zero + I_pos)
+
+    def _isolate_all_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
+        """Isolate real and complex roots of a square-free polynomial ``f``."""
+        return (self._isolate_real_roots_sqf(f, eps=eps, inf=inf, sup=sup, blackbox=blackbox),
+                self.dup_isolate_complex_roots_sqf(f, eps=eps, inf=inf, sup=sup, blackbox=blackbox))
+
+    def _isolate_all_roots(self, f, eps=None, inf=None, sup=None):
+        """Isolate real and complex roots of a non-square-free polynomial ``f``."""
+        domain = self.domain
+
+        if not domain.is_IntegerRing and not domain.is_RationalField:
+            raise DomainError(f'isolation of real and complex roots is not supported over {domain}')
+
+        _, factors = f.sqf_list()
+
+        if len(factors) == 1:
+            (f, k), = factors
+
+            real_part, complex_part = self._isolate_all_roots_sqf(f, eps=eps, inf=inf, sup=sup)
+
+            real_part = [((a, b), k) for (a, b) in real_part]
+            complex_part = [((a, b), k) for (a, b) in complex_part]
+
+            return real_part, complex_part
+        else:
+            raise NotImplementedError('only trivial square-free polynomials are supported')

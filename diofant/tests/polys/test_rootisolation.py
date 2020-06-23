@@ -1210,49 +1210,49 @@ def test_dup_isolate_complex_roots_sqf_2():
     assert res == ans
 
 
-def test_dup_isolate_all_roots_sqf():
+def test__isolate_all_roots_sqf():
     R, x = ring('x', ZZ)
 
     f = (4*x**3 - x**2 + 2*x + 5)*x
 
-    assert R.dup_isolate_all_roots_sqf(f) == \
+    assert R._isolate_all_roots_sqf(f) == \
         ([(-1, 0), (0, 0)],
          [((0, -QQ(5, 2)), (QQ(5, 2), 0)), ((0, 0), (QQ(5, 2), QQ(5, 2)))])
 
-    assert R.dup_isolate_all_roots_sqf(f, eps=QQ(1, 10)) == \
+    assert R._isolate_all_roots_sqf(f, eps=QQ(1, 10)) == \
         ([(QQ(-7, 8), QQ(-6, 7)), (0, 0)],
          [((QQ(35, 64), -QQ(35, 32)), (QQ(5, 8), -QQ(65, 64))), ((QQ(35, 64), QQ(65, 64)), (QQ(5, 8), QQ(35, 32)))])
 
     R, x = ring('x', EX)
 
-    pytest.raises(DomainError, lambda: R.dup_isolate_all_roots_sqf(x, R))
+    pytest.raises(DomainError, lambda: R._isolate_all_roots_sqf(x, R))
 
 
-def test_dup_isolate_all_roots():
+def test__isolate_all_roots():
     R, x = ring('x', ZZ)
 
     f = (4*x**3 - x**2 + 2*x + 5)*x
 
-    assert R.dup_isolate_all_roots(f) == \
+    assert R._isolate_all_roots(f) == \
         ([((-1, 0), 1), ((0, 0), 1)],
          [(((0, -QQ(5, 2)), (QQ(5, 2), 0)), 1),
           (((0, 0), (QQ(5, 2), QQ(5, 2))), 1)])
 
-    assert R.dup_isolate_all_roots(f, eps=QQ(1, 10)) == \
+    assert R._isolate_all_roots(f, eps=QQ(1, 10)) == \
         ([((QQ(-7, 8), QQ(-6, 7)), 1), ((0, 0), 1)],
          [(((QQ(35, 64), -QQ(35, 32)), (QQ(5, 8), -QQ(65, 64))), 1),
           (((QQ(35, 64), QQ(65, 64)), (QQ(5, 8), QQ(35, 32))), 1)])
 
     f = (x - 1)**2*(x + 1)**3
 
-    pytest.raises(NotImplementedError, lambda: R.dup_isolate_all_roots(f))
+    pytest.raises(NotImplementedError, lambda: R._isolate_all_roots(f))
 
     D, y = ring('y', ZZ)
     R, x = ring('x', D)
 
     f = x**2 + y*x - 1
 
-    pytest.raises(DomainError, lambda: R.dup_isolate_all_roots(f))
+    pytest.raises(DomainError, lambda: R._isolate_all_roots(f))
 
 
 def test_RealInterval():
