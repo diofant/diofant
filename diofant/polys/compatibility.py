@@ -4,9 +4,7 @@ from .densebasic import dmp_degree_in
 from .rootisolation import (dup_count_complex_roots, dup_isolate_all_roots,
                             dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
-                            dup_isolate_real_roots,
-                            dup_isolate_real_roots_pair,
-                            dup_isolate_real_roots_sqf, dup_real_imag,
+                            dup_isolate_real_roots_pair, dup_real_imag,
                             dup_transform)
 
 
@@ -34,12 +32,6 @@ class IPolys:
 
     def dup_transform(self, f, p, q):
         return self.from_list(dup_transform(f.to_dense(), p.to_dense(), q.to_dense(), self.domain))
-
-    def dup_isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
-        return dup_isolate_real_roots_sqf(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
-
-    def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None):
-        return dup_isolate_real_roots(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup)
 
     def dup_isolate_real_roots_pair(self, f, g, eps=None, inf=None, sup=None, strict=False, basis=False):
         return dup_isolate_real_roots_pair(*(map(lambda _: _.to_dense(), [f, g])), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)

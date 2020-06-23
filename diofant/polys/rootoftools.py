@@ -235,7 +235,7 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
         if factor not in _reals_cache:
-            reals = factor.rep.ring.dup_isolate_real_roots_sqf(factor.rep, blackbox=True)
+            reals = factor.rep.ring._isolate_real_roots_sqf(factor.rep, blackbox=True)
             if not reals:
                 _reals_cache[factor] = []
             return reals

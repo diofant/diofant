@@ -3,13 +3,12 @@
 import collections
 import math
 
-from ..core import I
+from ..core import Dummy, I
 from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow,
                          dmp_quo, dmp_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_permute,
                          dmp_strip, dmp_terms_gcd, dmp_to_dict, dmp_to_tuple)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in,
-                         dmp_ground_primitive)
+from .densetools import dmp_clear_denoms, dmp_compose, dmp_eval_in
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -121,82 +120,6 @@ def _mobius_to_interval(M):
     return (s, t) if s <= t else (t, s)
 
 
-def _isolate_zero(f, K, inf, sup, sqf=False):
-    """Handle special case of CF algorithm when ``f`` is homogeneous."""
-    (j,), f = dmp_terms_gcd(f, 0, K)
-
-    if j > 0:
-        if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
-            if not sqf:
-                return [((K.zero, K.zero), j)], f
-            else:
-                return [(K.zero, K.zero)], f
-
-    return [], f
-
-
-def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
-    """Isolate real roots of a square-free polynomial."""
-    if not K.is_Field:
-        R, K = K, K.field
-        f = dmp_convert(f, 0, R, K)
-
-    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError(f"Can't isolate real roots in domain {K}")
-
-    f = dmp_clear_denoms(f, 0, K)[1]
-
-    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
-        roots = [r for r, _ in dup_isolate_real_roots(f, K, eps=eps, inf=inf, sup=sup)]
-        return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
-
-    if dmp_degree_in(f, 0, 0) <= 0:
-        return []
-
-    I_zero, f = _isolate_zero(f, K, inf, sup, sqf=True)
-
-    I_neg = dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup)
-    I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup)
-
-    roots = sorted(I_neg + I_zero + I_pos)
-    return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
-
-
-def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
-    """Isolate real roots.
-
-    Notes
-    =====
-
-    Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
-    fractions approach :cite:`Alkiviadis2005comp`, :cite:`Alkiviadis2008cf`.
-
-    """
-    if not K.is_Field:
-        R, K = K, K.field
-        f = dmp_convert(f, 0, R, K)
-
-    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
-        raise DomainError(f'isolation of real roots not supported over {K}')
-
-    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
-        A, K = K, K.domain
-        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
-        roots = dup_isolate_real_roots_pair(*polys, K, eps=eps, inf=inf, sup=sup, strict=True)
-        return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
-
-    _, factors = dmp_sqf_list(f, 0, K)
-    factors = [(dmp_clear_denoms(f, 0, K)[1], k) for f, k in factors]
-
-    if len(factors) == 1:
-        (f, k), = factors
-        return [(r, k) for r in dup_isolate_real_roots_sqf(f, K, eps, inf, sup)]
-    else:
-        I_zero, f = _isolate_zero(f, K, inf, sup)
-        I_neg, I_pos = _real_isolate_and_disjoin(factors, K, eps, inf, sup)
-        return sorted(I_neg + I_zero + I_pos)
-
-
 def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
     """Isolate real roots of a list of polynomials."""
     R, K = K, K.field
@@ -281,68 +204,6 @@ def _disjoint_p(M, N, strict=False):
         return a2*d1 >= c2*b1 or b2*c1 <= d2*a1
     else:
         return a2*d1 > c2*b1 or b2*c1 < d2*a1
-
-
-def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=False, basis=False):
-    """Isolate real roots of a list of polynomials and disjoin intervals."""
-    I_pos, I_neg = [], []
-
-    for i, (f, k) in enumerate(factors):
-        f = dmp_ground_primitive(f, 0, K)[1]
-        for F, M in dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, mobius=True):
-            I_pos.append((F, M, k, f))
-
-        for G, N in dup_inner_isolate_negative_roots(f, K, eps=eps, inf=inf, sup=sup, mobius=True):
-            I_neg.append((G, N, k, f))
-
-    for i, (f, M, k, F) in enumerate(I_pos):
-        for j, (g, N, m, G) in enumerate(I_pos[i + 1:]):
-            while not _disjoint_p(M, N, strict=strict):
-                f, M = dup_inner_refine_real_root(f, M, K, steps=1, mobius=True)
-                g, N = dup_inner_refine_real_root(g, N, K, steps=1, mobius=True)
-
-            I_pos[i + j + 1] = g, N, m, G
-
-        I_pos[i] = f, M, k, F
-
-    for i, (f, M, k, F) in enumerate(I_neg):
-        for j, (g, N, m, G) in enumerate(I_neg[i + 1:]):
-            while not _disjoint_p(M, N, strict=strict):
-                f, M = dup_inner_refine_real_root(f, M, K, steps=1, mobius=True)
-                g, N = dup_inner_refine_real_root(g, N, K, steps=1, mobius=True)
-
-            I_neg[i + j + 1] = g, N, m, G
-
-        I_neg[i] = f, M, k, F
-
-    if strict:
-        for i, (f, M, k, F) in enumerate(I_neg):
-            if not M[0]:
-                while not M[0]:
-                    f, M = dup_inner_refine_real_root(f, M, K, steps=1, mobius=True)
-
-                I_neg[i] = f, M, k, F
-                break
-
-        for j, (g, N, m, G) in enumerate(I_pos):
-            if not N[0]:
-                while not N[0]:
-                    g, N = dup_inner_refine_real_root(g, N, K, steps=1, mobius=True)
-
-                I_pos[j] = g, N, m, G
-                break
-
-    I_neg = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_neg]
-    I_pos = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_pos]
-
-    if not basis:
-        I_neg = [((-v, -u), k) for ((u, v), k, _) in I_neg]
-        I_pos = [((+u, +v), k) for ((u, v), k, _) in I_pos]
-    else:
-        I_neg = [((-v, -u), k, f) for ((u, v), k, f) in I_neg]
-        I_pos = [((+u, +v), k, f) for ((u, v), k, f) in I_pos]
-
-    return I_neg, I_pos
 
 
 OO = 'OO'  # Origin of (re, im) coordinate system
@@ -1492,30 +1353,34 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
     return ring._refine_real_root(f, s, t, eps=eps, steps=steps, disjoint=disjoint)
 
 
-def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, mobius=False):
-    """Iteratively compute disjoint positive root isolation intervals."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    r = ring._inner_isolate_positive_roots(f, eps=eps, inf=inf, sup=sup, mobius=mobius)
-    if mobius:
-        r = [(_[0].to_dense(), _[1]) for _ in r]
-    return r
-
-
-def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=False):
-    """Iteratively compute disjoint negative root isolation intervals."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    r = ring._inner_isolate_negative_roots(f, eps=eps, inf=inf, sup=sup, mobius=mobius)
-    if mobius:
-        r = [(_[0].to_dense(), _[1]) for _ in r]
-    return r
-
-
 def _roots_bound(f, F):
     ring = F.poly_ring('_0')
     f = ring.from_list(f)
     return ring._roots_bound(f)
+
+
+def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
+    """Isolate real roots of a square-free polynomial."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return ring._isolate_real_roots_sqf(f, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
+
+
+def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
+    """Isolate real roots."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return ring._isolate_real_roots(f, eps=eps, inf=inf, sup=sup)
+
+
+def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=False, basis=False):
+    """Isolate real roots of a list of polynomials and disjoin intervals."""
+    ring = K.poly_ring('_0')
+    factors = [(ring.from_list(f), k) for f, k in dict(factors).items()]
+    r = ring._real_isolate_and_disjoin(factors, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
+    if basis:
+        r = [[(_[0], _[1], _[2].to_dense()) for _ in t] for t in r]
+    return r
 
 
 class _FindRoot:
@@ -1921,7 +1786,7 @@ class _FindRoot:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
-            return sum(k for *_, k in new_ring.dup_isolate_real_roots(f, inf, sup))
+            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf, sup))
 
         sturm = f.sturm()
 
@@ -1952,3 +1817,139 @@ class _FindRoot:
             return domain.convert(B)
         else:
             return domain.domain(int(100*B) + 1)/domain.domain(100)
+
+    def _isolate_zero(self, f, inf, sup, sqf=False):
+        """Handle special case of CF algorithm when ``f`` is homogeneous."""
+        domain = self.domain
+        (j,), f = f.terms_gcd()
+
+        if j > 0:
+            if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
+                if not sqf:
+                    return [((domain.zero, domain.zero), j)], f
+                else:
+                    return [(domain.zero, domain.zero)], f
+
+        return [], f
+
+    def _isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
+        """Isolate real roots of a square-free polynomial."""
+        domain = self.domain.field
+        f = f.set_domain(domain)
+        new_ring = self.clone(domain=domain)
+
+        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+            raise DomainError(f"Can't isolate real roots in domain {domain}")
+
+        f = f.clear_denoms()[1]
+
+        if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
+            roots = [r for r, _ in new_ring._isolate_real_roots(f, eps=eps, inf=inf, sup=sup)]
+            return [RealInterval((a, b), f.to_dense(), domain) for (a, b) in roots] if blackbox else roots
+
+        if f.degree() <= 0:
+            return []
+
+        I_zero, f = new_ring._isolate_zero(f, inf, sup, sqf=True)
+
+        I_neg = new_ring._inner_isolate_negative_roots(f, eps=eps, inf=inf, sup=sup)
+        I_pos = new_ring._inner_isolate_positive_roots(f, eps=eps, inf=inf, sup=sup)
+
+        roots = sorted(I_neg + I_zero + I_pos)
+        return [RealInterval((a, b), f.to_dense(), domain) for (a, b) in roots] if blackbox else roots
+
+    def _isolate_real_roots(self, f, eps=None, inf=None, sup=None):
+        """Isolate real roots.
+
+        Notes
+        =====
+
+        Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
+        fractions approach :cite:`Alkiviadis2005comp`, :cite:`Alkiviadis2008cf`.
+
+        """
+        domain = self.domain.field
+        f = f.set_domain(domain)
+        new_ring = self.clone(domain=domain)
+
+        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+            raise DomainError(f'isolation of real roots not supported over {domain}')
+
+        if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
+            new_ring2 = new_ring.domain.inject(*new_ring.symbols, Dummy('y'))
+            f = f.set_ring(new_ring2)
+            polys = [_.eval(1, 0) for _ in new_ring2.dup_real_imag(f)]
+            roots = new_ring.to_ground().dup_isolate_real_roots_pair(*polys, eps=eps, inf=inf, sup=sup, strict=True)
+            return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
+
+        _, factors = f.sqf_list()
+        factors = [(f.clear_denoms()[1], k) for f, k in factors]
+
+        if len(factors) == 1:
+            (f, k), = factors
+            return [(r, k) for r in new_ring._isolate_real_roots_sqf(f, eps, inf, sup)]
+        else:
+            I_zero, f = new_ring._isolate_zero(f, inf, sup)
+            I_neg, I_pos = new_ring._real_isolate_and_disjoin(factors, eps, inf, sup)
+            return sorted(I_neg + I_zero + I_pos)
+
+    def _real_isolate_and_disjoin(self, factors, eps=None, inf=None, sup=None, strict=False, basis=False):
+        """Isolate real roots of a list of polynomials and disjoin intervals."""
+        I_pos, I_neg = [], []
+
+        for i, (f, k) in enumerate(factors):
+            f = f.primitive()[1]
+            for F, M in self._inner_isolate_positive_roots(f, eps=eps, inf=inf, sup=sup, mobius=True):
+                I_pos.append((F, M, k, f))
+
+            for G, N in self._inner_isolate_negative_roots(f, eps=eps, inf=inf, sup=sup, mobius=True):
+                I_neg.append((G, N, k, f))
+
+        for i, (f, M, k, F) in enumerate(I_pos):
+            for j, (g, N, m, G) in enumerate(I_pos[i + 1:]):
+                while not _disjoint_p(M, N, strict=strict):
+                    f, M = self._inner_refine_real_root(f, M, steps=1, mobius=True)
+                    g, N = self._inner_refine_real_root(g, N, steps=1, mobius=True)
+
+                I_pos[i + j + 1] = g, N, m, G
+
+            I_pos[i] = f, M, k, F
+
+        for i, (f, M, k, F) in enumerate(I_neg):
+            for j, (g, N, m, G) in enumerate(I_neg[i + 1:]):
+                while not _disjoint_p(M, N, strict=strict):
+                    f, M = self._inner_refine_real_root(f, M, steps=1, mobius=True)
+                    g, N = self._inner_refine_real_root(g, N, steps=1, mobius=True)
+
+                I_neg[i + j + 1] = g, N, m, G
+
+            I_neg[i] = f, M, k, F
+
+        if strict:
+            for i, (f, M, k, F) in enumerate(I_neg):
+                if not M[0]:
+                    while not M[0]:
+                        f, M = self._inner_refine_real_root(f, M, steps=1, mobius=True)
+
+                    I_neg[i] = f, M, k, F
+                    break
+
+            for j, (g, N, m, G) in enumerate(I_pos):
+                if not N[0]:
+                    while not N[0]:
+                        g, N = self._inner_refine_real_root(g, N, steps=1, mobius=True)
+
+                    I_pos[j] = g, N, m, G
+                    break
+
+        I_neg = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_neg]
+        I_pos = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_pos]
+
+        if not basis:
+            I_neg = [((-v, -u), k) for ((u, v), k, _) in I_neg]
+            I_pos = [((+u, +v), k) for ((u, v), k, _) in I_pos]
+        else:
+            I_neg = [((-v, -u), k, f) for ((u, v), k, f) in I_neg]
+            I_pos = [((+u, +v), k, f) for ((u, v), k, f) in I_pos]
+
+        return I_neg, I_pos
