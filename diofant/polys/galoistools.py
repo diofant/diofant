@@ -4,7 +4,7 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import dmp_add, dmp_mul, dmp_sub
+from .densearith import dmp_add, dmp_mul
 from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
 from .polyconfig import query
 from .polyutils import _sort_factors
@@ -767,6 +767,13 @@ def dmp_ground_monic(f, u, K):
     f = ring.from_list(f)
     f = f.monic()
     return f.to_dense()
+
+
+def dmp_sub(f, g, u, K):
+    """Subtract dense polynomials in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return (f - g).to_dense()
 
 
 def dmp_pow(f, n, u, K):

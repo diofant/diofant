@@ -8,13 +8,6 @@ def dmp_add(f, g, u, K):
     return (f + g).to_dense()
 
 
-def dmp_sub(f, g, u, K):
-    """Subtract dense polynomials in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return (f - g).to_dense()
-
-
 def dmp_mul(f, g, u, K):
     """Multiply dense polynomials in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

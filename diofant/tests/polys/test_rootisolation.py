@@ -10,55 +10,65 @@ from diofant.polys.rootisolation import RealInterval
 __all__ = ()
 
 
-def test_dup_real_imag():
+def test__real_imag():
     R, x, y = ring('x y', ZZ)
+    Rx = R.drop(y)
+    _y = R.symbols[1]
 
-    assert R.dup_real_imag(R.zero) == (0, 0)
-    assert R.dup_real_imag(R.one) == (1, 0)
+    assert Rx._real_imag(Rx.zero, _y) == (0, 0)
+    assert Rx._real_imag(Rx.one, _y) == (1, 0)
 
-    assert R.dup_real_imag(x + 1) == (x + 1, y)
-    assert R.dup_real_imag(x + 2) == (x + 2, y)
+    assert Rx._real_imag(Rx.x + 1, _y) == (x + 1, y)
+    assert Rx._real_imag(Rx.x + 2, _y) == (x + 2, y)
 
-    assert R.dup_real_imag(x**2 + 2*x + 3) == (x**2 - y**2 + 2*x + 3,
-                                               2*x*y + 2*y)
+    assert Rx._real_imag(Rx.x**2 + 2*Rx.x + 3, _y) == (x**2 - y**2 + 2*x + 3,
+                                                       2*x*y + 2*y)
 
-    f = x**3 + x**2 + x + 1
+    f = Rx.x**3 + Rx.x**2 + Rx.x + 1
 
-    assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
-                                  3*x**2*y + 2*x*y - y**3 + y)
+    assert Rx._real_imag(f, _y) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
+                                    3*x**2*y + 2*x*y - y**3 + y)
 
     R, x, y = ring('x y', EX)
-    pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
+    Rx = R.drop(y)
+
+    pytest.raises(DomainError, lambda: Rx._real_imag(Rx.x + 1))
 
     R = QQ.algebraic_field(I).inject('x', 'y')
+    Rx = R.drop(1)
+    _y = R.symbols[1]
     x, y = R.to_ground().gens
 
-    f = R.x**2 + I*R.x - 1
+    f = Rx.x**2 + I*Rx.x - 1
     r = x**2 - y**2 - y - 1
     i = 2*x*y + x
 
-    assert R.dup_real_imag(f) == (r, i)
+    assert Rx._real_imag(f, _y) == (r, i)
 
-    f = R.x**4 + I*R.x**3 - R.x + 1
+    f = Rx.x**4 + I*Rx.x**3 - Rx.x + 1
     r = x**4 - 6*x**2*y**2 - 3*x**2*y - x + y**4 + y**3 + 1
     i = 4*x**3*y + x**3 - 4*x*y**3 - 3*x*y**2 - y
 
-    assert R.dup_real_imag(f) == (r, i)
+    assert Rx._real_imag(f, _y) == (r, i)
 
     K = QQ.algebraic_field(sqrt(2))
     R = K.inject('x', 'y')
+    Rx = R.drop(1)
+    _y = R.symbols[1]
     x, y = R.gens
 
-    f = R.x**2 + sqrt(2)*R.x - 1
-    assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
+    f = Rx.x**2 + sqrt(2)*Rx.x - 1
+    assert Rx._real_imag(f, _y) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
 
     K = K.algebraic_field(I)
     R = K.inject('x', 'y')
+    Rx = R.drop(1)
+    _y = R.symbols[1]
     x, y = R.to_ground().gens
 
-    f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
-    assert R.dup_real_imag(f) == (x**2 - y**2 - 2*sqrt(2)*y - 1,
-                                  2*x*y + 2*sqrt(2)*x + 1)
+    f = Rx.x**2 + 2*sqrt(2)*I*Rx.x - 1 + I
+    assert Rx._real_imag(f, _y) == (x**2 - y**2 - 2*sqrt(2)*y - 1,
+                                    2*x*y + 2*sqrt(2)*x + 1)
 
 
 def test_dup_transform():

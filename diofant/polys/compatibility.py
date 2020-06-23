@@ -2,8 +2,7 @@
 
 from .densebasic import dmp_degree_in
 from .rootisolation import (dup_count_complex_roots,
-                            dup_isolate_complex_roots_sqf, dup_real_imag,
-                            dup_transform)
+                            dup_isolate_complex_roots_sqf, dup_transform)
 
 
 __all__ = 'IPolys',
@@ -20,13 +19,6 @@ class IPolys:
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(f.to_dense(), j, self.ngens-1)
-
-    def dup_real_imag(self, f):
-        ring = self
-        p, q = dup_real_imag(f.drop(1).to_dense(), ring.domain)
-        if ring.domain.is_ComplexAlgebraicField and not ring.domain.is_RealAlgebraicField:
-            ring = ring.to_ground()
-        return ring.from_list(p), ring.from_list(q)
 
     def dup_transform(self, f, p, q):
         return self.from_list(dup_transform(f.to_dense(), p.to_dense(), q.to_dense(), self.domain))
