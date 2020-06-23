@@ -14,15 +14,6 @@ from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
 from .polyutils import _sort_factors
 
 
-def dmp_trial_division(f, factors, u, K):
-    """Determine multiplicities of factors using trial division."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    factors = list(map(ring.from_list, factors))
-    result = ring._trial_division(f, factors)
-    return [(f.to_dense(), k) for f, k in result]
-
-
 class _Factor:
     """Mixin class for factorization routines."""
 
