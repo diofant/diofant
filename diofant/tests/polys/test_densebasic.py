@@ -4,8 +4,8 @@ import pytest
 
 from diofant import ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_from_dict, dmp_ground,
-                                      dmp_one_p, dmp_permute, dmp_strip,
-                                      dmp_to_dict, dmp_zero_p)
+                                      dmp_one_p, dmp_strip, dmp_to_dict,
+                                      dmp_zero_p)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -163,19 +163,3 @@ def test_dmp_from_to_dict():
 
     assert dmp_from_dict(g, 1, ZZ) == f
     assert dmp_to_dict(f, 1) == g
-
-
-def test_dmp_permute():
-    f = [[1, 0, 0], [], [1, 0], [], [1]]
-    g = [[1, 0, 0, 0, 0], [1, 0, 0], [1]]
-
-    assert dmp_permute(f, [0, 1], 1, ZZ) == f
-    assert dmp_permute(g, [0, 1], 1, ZZ) == g
-
-    assert dmp_permute(f, [1, 0], 1, ZZ) == g
-    assert dmp_permute(g, [1, 0], 1, ZZ) == f
-
-    f = [[[2], [1, 0]], []]
-
-    assert dmp_permute(f, [1, 0, 2], 2, ZZ) == [[[2], []], [[1, 0], []]]
-    assert dmp_permute(f, [1, 2, 0], 2, ZZ) == [[[1], []], [[2, 0], []]]
