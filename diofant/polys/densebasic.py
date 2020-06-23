@@ -59,29 +59,6 @@ def dmp_strip(f, u):
     return dmp_ground(0, u)
 
 
-def dmp_to_tuple(f, u):
-    """
-    Convert ``f`` into a nested :class:`tuple`.
-
-    This is needed for hashing.
-
-    Examples
-    ========
-
-    >>> dmp_to_tuple([ZZ(1), ZZ(2), ZZ(3), ZZ(0)], 0)
-    (1, 2, 3, 0)
-
-    >>> dmp_to_tuple([[ZZ(1)], [ZZ(1), ZZ(2)]], 1)
-    ((1,), (1, 2))
-
-    """
-    if not u:
-        return tuple(f)
-
-    v = u - 1
-    return tuple(dmp_to_tuple(c, v) for c in f)
-
-
 def dmp_convert(f, u, K0, K1):
     """
     Convert the ground domain of ``f`` from ``K0`` to ``K1``.
