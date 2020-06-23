@@ -317,8 +317,6 @@ which is not needed after finding `f_{k+1} = 0`.
 Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
 
-.. autofunction:: dmp_gcd
-
 Polynomial factorization in characteristic zero:
 
 .. automodule:: diofant.polys.factortools

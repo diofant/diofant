@@ -6,13 +6,6 @@ from .polyconfig import query
 from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
 
 
-def dmp_gcd(f, g, u, K):
-    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return ring.gcd(f, g).to_dense()
-
-
 class _GCD:
     """Mixin class for computing gcd."""
 

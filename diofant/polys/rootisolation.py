@@ -4,7 +4,7 @@ import collections
 import math
 
 from ..core import Dummy, I
-from .densearith import dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub
+from .densearith import dmp_add, dmp_mul, dmp_sub
 from .densebasic import dmp_convert, dmp_degree_in, dmp_ground, dmp_to_dict
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list
@@ -1315,6 +1315,21 @@ def dmp_eval_in(f, a, j, u, K):
     if ring.is_multivariate:
         r = r.to_dense()
     return r
+
+
+def dmp_mul_ground(f, c, u, K):
+    """Multiply ``f`` by a constant value in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    r = f.mul_ground(c)
+    return r.to_dense()
+
+
+def dmp_neg(f, u, K):
+    """Negate a polynomial in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return (-f).to_dense()
 
 
 class _FindRoot:

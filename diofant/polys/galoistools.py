@@ -4,9 +4,8 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import dmp_add, dmp_mul, dmp_pow, dmp_quo, dmp_rem, dmp_sub
+from .densearith import dmp_add, dmp_mul, dmp_sub
 from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
-from .euclidtools import dmp_gcd
 from .polyconfig import query
 from .polyutils import _sort_factors
 
@@ -768,3 +767,34 @@ def dmp_ground_monic(f, u, K):
     f = ring.from_list(f)
     f = f.monic()
     return f.to_dense()
+
+
+def dmp_pow(f, n, u, K):
+    """Raise ``f`` to the ``n``-th power in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return (f**n).to_dense()
+
+
+def dmp_div(f, g, u, K):
+    """Polynomial division with remainder in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return tuple(map(lambda _: _.to_dense(), divmod(f, g)))
+
+
+def dmp_rem(f, g, u, K):
+    """Return polynomial remainder in ``K[X]``."""
+    return dmp_div(f, g, u, K)[1]
+
+
+def dmp_quo(f, g, u, K):
+    """Return exact polynomial quotient in ``K[X]``."""
+    return dmp_div(f, g, u, K)[0]
+
+
+def dmp_gcd(f, g, u, K):
+    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return ring.gcd(f, g).to_dense()
