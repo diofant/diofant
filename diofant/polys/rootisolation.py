@@ -4,39 +4,8 @@ import collections
 import math
 
 from ..core import Dummy, I
-from .densearith import dmp_add, dmp_mul
 from .densebasic import dmp_convert, dmp_degree_in
 from .polyerrors import DomainError, RefinementFailed
-
-
-def dup_transform(f, p, q, K):
-    """
-    Evaluate functional transformation ``q**n * f(p/q)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
-    x**4 - 2*x**3 + 5*x**2 - 4*x + 4
-
-    """
-    if not f:
-        return []
-
-    n = len(f) - 1
-    h, Q = [f[0]], [[K.one]]
-
-    for i in range(n):
-        Q.append(dmp_mul(Q[-1], q, 0, K))
-
-    for c, q in zip(f[1:], Q[1:]):
-        h = dmp_mul(h, p, 0, K)
-        q = dmp_mul_ground(q, c, 0, K)
-        h = dmp_add(h, q, 0, K)
-
-    return h
 
 
 def _mobius_from_interval(I, field):
@@ -989,7 +958,7 @@ class RealInterval:
 
             a, b, c, d = _mobius_from_interval((s, t), domain.field)
 
-            f = ring.dup_transform(f, a*x + b, c*x + d)
+            f = ring._transform(f, a*x + b, c*x + d)
 
             self.mobius = a, b, c, d
         else:
@@ -1234,14 +1203,6 @@ def dmp_eval_in(f, a, j, u, K):
     return r
 
 
-def dmp_mul_ground(f, c, u, K):
-    """Multiply ``f`` by a constant value in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    r = f.mul_ground(c)
-    return r.to_dense()
-
-
 class _FindRoot:
     """Mixin class for computing polynomial roots."""
 
@@ -1423,7 +1384,7 @@ class _FindRoot:
         x = self.gens[0]
         a, b, c, d = _mobius_from_interval((s, t), domain)
 
-        f = self.dup_transform(f, a*x + b, c*x + d)
+        f = self._transform(f, a*x + b, c*x + d)
 
         if self._sign_variations(f) != 1:
             raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
@@ -1960,3 +1921,32 @@ class _FindRoot:
                 f2 -= h
 
         return f1, f2
+
+    def _transform(self, f, p, q):
+        """
+        Evaluate functional transformation ``q**n * f(p/q)`` in ``K[x]``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> R._transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
+        x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
+        """
+        if f.is_zero:
+            return self.zero
+
+        n = f.degree()
+        h, Q = f.LC*self.one, [self.one]
+
+        for i in range(n):
+            Q.append(Q[-1]*q)
+
+        for c, q in zip(f.all_coeffs()[1:], Q[1:]):
+            h *= p
+            q = q.mul_ground(c)
+            h += q
+
+        return h
