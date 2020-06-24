@@ -499,6 +499,75 @@ class _Factor:
                 if (lc % p) and (tc % p**2):
                     return True
 
+    def _gf_irreducible_p_ben_or(self, f):
+        """
+        Ben-Or's polynomial irreducibility test over finite fields.
+
+        References
+        ==========
+
+        * :cite:`Ben-Or1981ff`
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        if n <= 1:
+            return True
+
+        x = self.gens[0]
+        f = f.monic()
+
+        H = h = x**q % f
+
+        for i in range(n//2):
+            g = h - x
+
+            if self.gcd(f, g) == 1:
+                h = h.compose(x, H) % f
+            else:
+                return False
+
+        return True
+
+    def _gf_irreducible_p_rabin(self, f):
+        """
+        Rabin's polynomial irreducibility test over finite fields.
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, algorithm 14.36
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        if n <= 1:
+            return True
+
+        x = self.gens[0]
+        f = f.monic()
+
+        indices = {n//d for d in factorint(n)}
+
+        H = h = x**q % f
+
+        for i in range(1, n):
+            if i in indices:
+                g = h - x
+
+                if self.gcd(f, g) != 1:
+                    return False
+
+            h = h.compose(x, H) % f
+
+        return h == x
+
     def _cyclotomic_decompose(self, n):
         H = [self.gens[0] - 1]
 

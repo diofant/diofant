@@ -3,7 +3,6 @@
 import math
 import random
 
-from ..ntheory import factorint
 from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
 from .polyconfig import query
 from .polyutils import _sort_factors
@@ -167,7 +166,7 @@ def dup_gf_irreducible(n, K):
 
     >>> dup_gf_irreducible(4, FF(5))  # doctest: +SKIP
     [1 mod 5, 2 mod 5, 4 mod 5, 4 mod 5, 3 mod 5]
-    >>> dup_gf_irreducible_p(_, FF(5))
+    >>> dup_gf_irreducible_p([1, 2, 4, 4, 3], FF(5))
     True
 
     """
@@ -175,95 +174,6 @@ def dup_gf_irreducible(n, K):
         f = dup_gf_random(n, K)
         if dup_gf_irreducible_p(f, K):
             return f
-
-
-def dup_gf_irred_p_ben_or(f, K):
-    """
-    Ben-Or's polynomial irreducibility test over finite fields.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
-    >>> dup_gf_irred_p_ben_or(f, R.domain)
-    True
-    >>> f = (3*x**2 + 2*x + 4).to_dense()
-    >>> dup_gf_irred_p_ben_or(f, R.domain)
-    False
-
-    References
-    ==========
-
-    * :cite:`Ben-Or1981ff`
-
-    """
-    n, q = dmp_degree_in(f, 0, 0), K.order
-
-    if n <= 1:
-        return True
-
-    x = [K.one, K.zero]
-    f = dmp_ground_monic(f, 0, K)
-
-    H = h = dup_gf_pow_mod(x, q, f, K)
-
-    for i in range(n//2):
-        g = dmp_sub(h, x, 0, K)
-
-        if dmp_one_p(dmp_gcd(f, g, 0, K), 0, K):
-            h = dup_gf_compose_mod(h, H, f, K)
-        else:
-            return False
-
-    return True
-
-
-def dup_gf_irred_p_rabin(f, K):
-    """
-    Rabin's polynomial irreducibility test over finite fields.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
-    >>> dup_gf_irred_p_rabin(f, R.domain)
-    True
-    >>> f = (3*x**2 + 2*x + 4).to_dense()
-    >>> dup_gf_irred_p_rabin(f, R.domain)
-    False
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`, algorithm 14.36
-
-    """
-    n, q = dmp_degree_in(f, 0, 0), K.order
-
-    if n <= 1:
-        return True
-
-    x = [K.one, K.zero]
-    f = dmp_ground_monic(f, 0, K)
-
-    indices = {n//d for d in factorint(n)}
-
-    H = h = dup_gf_pow_mod(x, q, f, K)
-
-    for i in range(1, n):
-        if i in indices:
-            g = dmp_sub(h, x, 0, K)
-
-            if not dmp_one_p(dmp_gcd(f, g, 0, K), 0, K):
-                return False
-
-        h = dup_gf_compose_mod(h, H, f, K)
-
-    return h == x
 
 
 def dup_gf_irreducible_p(f, K):
@@ -737,14 +647,6 @@ def dup_gf_factor_sqf(f, K):
     method = query('GF_FACTOR_METHOD')
 
     return _factor_methods[method](f, K)
-
-
-def dmp_ground_monic(f, u, K):
-    """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    f = f.monic()
-    return f.to_dense()
 
 
 def dmp_add(f, g, u, K):

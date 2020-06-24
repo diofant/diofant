@@ -785,12 +785,10 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if ring.is_univariate:
             if domain.is_FiniteField:
-                from .galoistools import dup_gf_irred_p_ben_or, dup_gf_irred_p_rabin
                 method = query('GF_IRRED_METHOD')
-                f = self.to_dense()
-                _irred_methods = {'ben-or': dup_gf_irred_p_ben_or,
-                                  'rabin': dup_gf_irred_p_rabin}
-                return _irred_methods[method](f, domain)
+                _irred_methods = {'ben-or': ring._gf_irreducible_p_ben_or,
+                                  'rabin': ring._gf_irreducible_p_rabin}
+                return _irred_methods[method](self)
             elif domain.is_IntegerRing:
                 res = ring._zz_irreducible_p(self)
                 if res is not None:
