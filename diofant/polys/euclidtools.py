@@ -1,26 +1,9 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
-from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
 from .polyconfig import query
 from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
-
-
-@cacheit
-def dmp_resultant(f, g, u, K):
-    """Computes resultant of two polynomials in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    res = f.resultant(g)
-    return res.to_dense()
-
-
-def dmp_gcd(f, g, u, K):
-    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return ring.gcd(f, g).to_dense()
 
 
 class _GCD:

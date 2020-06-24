@@ -59,29 +59,6 @@ def dmp_strip(f, u):
     return dmp_ground(0, u)
 
 
-def dmp_to_tuple(f, u):
-    """
-    Convert ``f`` into a nested :class:`tuple`.
-
-    This is needed for hashing.
-
-    Examples
-    ========
-
-    >>> dmp_to_tuple([ZZ(1), ZZ(2), ZZ(3), ZZ(0)], 0)
-    (1, 2, 3, 0)
-
-    >>> dmp_to_tuple([[ZZ(1)], [ZZ(1), ZZ(2)]], 1)
-    ((1,), (1, 2))
-
-    """
-    if not u:
-        return tuple(f)
-
-    v = u - 1
-    return tuple(dmp_to_tuple(c, v) for c in f)
-
-
 def dmp_convert(f, u, K0, K1):
     """
     Convert the ground domain of ``f`` from ``K0`` to ``K1``.
@@ -97,9 +74,6 @@ def dmp_convert(f, u, K0, K1):
     [[1], [2]]
 
     """
-    if K0 is not None and K0 == K1:
-        return f
-
     if not u:
         r = [K1.convert(c, K0) for c in f]
     else:
@@ -253,35 +227,3 @@ def dmp_to_dict(f, u):
                 result[Monomial((k,))] = f[n - k]
 
     return result
-
-
-def dmp_permute(f, P, u, K):
-    """
-    Return a polynomial in ``K[x_{P(1)},..,x_{P(n)}]``.
-
-    Examples
-    ========
-
-    >>> dmp_permute([[[ZZ(2)], [ZZ(1), ZZ(0)]], []], [1, 0, 2], 2, ZZ)
-    [[[2], []], [[1, 0], []]]
-
-    """
-    F, H = dmp_to_dict(f, u), {}
-
-    for exp, coeff in F.items():
-        new_exp = [0]*len(exp)
-
-        for e, p in zip(exp, P):
-            new_exp[p] = e
-
-        H[tuple(new_exp)] = coeff
-
-    return dmp_from_dict(H, u, K)
-
-
-def dmp_terms_gcd(f, u, K):
-    """Remove GCD of terms from ``f`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    G, f = f.terms_gcd()
-    return G, f.to_dense()
