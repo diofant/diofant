@@ -484,6 +484,8 @@ class _Factor:
 
     def _zz_irreducible_p(self, f):
         """Test irreducibility using Eisenstein's criterion."""
+        assert self.is_univariate
+
         lc = f.LC
         tc = f.coeff(1)
 

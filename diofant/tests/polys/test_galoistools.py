@@ -2,8 +2,8 @@ import pytest
 
 from diofant import FF, ring
 from diofant.polys.galoistools import (dup_gf_compose_mod, dup_gf_irreducible,
-                                       dup_gf_irreducible_p, dup_gf_pow_mod,
-                                       dup_gf_primitive_p, dup_gf_trace_map)
+                                       dup_gf_pow_mod, dup_gf_primitive_p,
+                                       dup_gf_trace_map)
 from diofant.polys.polyconfig import using
 
 
@@ -61,33 +61,48 @@ def test_dup_gf_irreducible():
     F11 = FF(11)
 
     for n in range(8):
-        assert dup_gf_irreducible_p(dup_gf_irreducible(n, F11), F11) is True
+        f = dup_gf_irreducible(n, F11)
+        R, x = ring('x', F11)
+        f = R.from_list(f)
+
+        assert f.is_irreducible is True
 
 
 def test_dup_gf_irreducible_p():
-    R, x = ring('x', FF(11))
+    R, x = ring('x', FF(5))
 
-    f = R(7).to_dense()
-    g = (7*x + 3).to_dense()
-    h = (7*x**2 + 3*x + 1).to_dense()
+    f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+         2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    g = 3*x**2 + 2*x + 4
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert dup_gf_irreducible_p(f, R.domain) is True
-            assert dup_gf_irreducible_p(g, R.domain) is True
-            assert dup_gf_irreducible_p(h, R.domain) is False
+            assert f.is_irreducible is True
+            assert g.is_irreducible is False
+
+    R, x = ring('x', FF(11))
+
+    f = R(7)
+    g = 7*x + 3
+    h = 7*x**2 + 3*x + 1
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is True
+            assert g.is_irreducible is True
+            assert h.is_irreducible is False
 
     with using(gf_irred_method='other'):
-        pytest.raises(KeyError, lambda: dup_gf_irreducible_p(f, R.domain))
+        pytest.raises(KeyError, lambda: f.is_irreducible)
 
     R, x = ring('x', FF(13))
 
-    f = (2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6).to_dense()
-    g = (2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8).to_dense()
+    f = 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6
+    g = 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8
 
     with using(gf_irred_method='ben-or'):
-        assert dup_gf_irreducible_p(f, R.domain) is False
-        assert dup_gf_irreducible_p(g, R.domain) is True
+        assert f.is_irreducible is False
+        assert g.is_irreducible is True
 
     R, x = ring('x', FF(17))
 
@@ -96,31 +111,30 @@ def test_dup_gf_irreducible_p():
     g = (x**10 + 7*x**9 + 16*x**8 + 7*x**7 + 15*x**6 + 13*x**5 + 13*x**4 +
          11*x**3 + 16*x**2 + 10*x + 9)
     h = f*g
-    f, g, h = map(lambda _: _.to_dense(), (f, g, h))
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert dup_gf_irreducible_p(f, R.domain) is True
-            assert dup_gf_irreducible_p(g, R.domain) is True
-            assert dup_gf_irreducible_p(h, R.domain) is False
+            assert f.is_irreducible is True
+            assert g.is_irreducible is True
+            assert h.is_irreducible is False
 
     F9 = FF(3, [1, 2, 2])
     R, x = ring('x', F9)
 
-    f = (x**3 + F9(8)*x**2 + F9(8)*x + F9(4)).to_dense()
+    f = x**3 + F9(8)*x**2 + F9(8)*x + F9(4)
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert dup_gf_irreducible_p(f, R.domain) is False
+            assert f.is_irreducible is False
 
     F27 = FF(3, [1, 2, 0, 1])
     R, x = ring('x', F27)
 
-    f = (x**3 + F27(8)*x**2 + F27(19)*x + F27(24)).to_dense()
+    f = x**3 + F27(8)*x**2 + F27(19)*x + F27(24)
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert dup_gf_irreducible_p(f, R.domain) is True
+            assert f.is_irreducible is True
 
 
 def test_dup_gf_primitive_p():
@@ -134,7 +148,10 @@ def test_dup_gf_primitive_p():
 
     assert dup_gf_primitive_p(f, R.domain) is False
 
-    f = (x**2 + 2*x + 6).to_dense()
+    f = x**2 + 2*x + 6
 
-    assert dup_gf_irreducible_p(f, R.domain) is True
+    assert f.is_irreducible is True
+
+    f = f.to_dense()
+
     assert dup_gf_primitive_p(f, R.domain) is True

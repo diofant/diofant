@@ -266,32 +266,11 @@ def dup_gf_irred_p_rabin(f, K):
     return h == x
 
 
-_irred_methods = {
-    'ben-or': dup_gf_irred_p_ben_or,
-    'rabin': dup_gf_irred_p_rabin,
-}
-
-
 def dup_gf_irreducible_p(f, K):
-    """
-    Test irreducibility of a polynomial ``f`` in ``GF(q)[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
-    >>> dup_gf_irreducible_p(f, R.domain)
-    True
-    >>> f = (3*x**2 + 2*x + 4).to_dense()
-    >>> dup_gf_irreducible_p(f, R.domain)
-    False
-
-    """
-    method = query('GF_IRRED_METHOD')
-
-    return _irred_methods[method](f, K)
+    """Test irreducibility of a polynomial ``f`` in ``GF(q)[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    return f.is_irreducible
 
 
 def dup_gf_primitive_p(f, K):

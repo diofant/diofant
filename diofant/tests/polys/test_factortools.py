@@ -75,8 +75,8 @@ def test__zz_irreducible_p():
 
     assert R._zz_irreducible_p(f + 7) is None
     assert R._zz_irreducible_p(f + 4) is None
-    assert R._zz_irreducible_p(f + 10) is True
-    assert R._zz_irreducible_p(f + 14) is True
+    assert (f + 10).is_irreducible is True
+    assert (f + 14).is_irreducible is True
 
 
 def test__cyclotomic_p():
