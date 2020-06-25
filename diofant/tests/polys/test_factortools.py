@@ -66,19 +66,6 @@ def test__zz_hensel_lift():
                                                  x + 182, x + 1]
 
 
-def test__zz_irreducible_p():
-    R, x = ring('x', ZZ)
-
-    assert R._zz_irreducible_p(x) is None
-
-    f = 3*x**4 + 2*x**3 + 6*x**2 + 8*x
-
-    assert R._zz_irreducible_p(f + 7) is None
-    assert R._zz_irreducible_p(f + 4) is None
-    assert (f + 10).is_irreducible is True
-    assert (f + 14).is_irreducible is True
-
-
 def test__cyclotomic_p():
     R, x = ring('x', ZZ)
 
@@ -846,9 +833,17 @@ def test_PolyElement_is_irreducible():
 
     R, x = ring('x', ZZ)
 
+    assert x.is_irreducible is True
     assert (x**2 + x + 1).is_irreducible is True
     assert (x**2 + 2*x + 1).is_irreducible is False
     assert (x**2 - 1).is_irreducible is False
+
+    f = 3*x**4 + 2*x**3 + 6*x**2 + 8*x
+
+    assert (f + 7).is_irreducible is True
+    assert (f + 4).is_irreducible is True
+    assert (f + 10).is_irreducible is True
+    assert (f + 14).is_irreducible is True
 
     R, x, y = ring('x y', ZZ)
 
