@@ -98,9 +98,8 @@ def import_module(module, min_module_version=None, min_python_version=None,
         if sys.version_info < min_python_version:
             min_python_version = '.'.join(map(str, min_python_version))
             if warn_old_version:
-                warnings.warn('Python version is too old to use %s '
-                              '(%s or newer required)' % (module,
-                                                          min_python_version),
+                warnings.warn(f'Python version is too old to use {module} '
+                              f'({min_python_version} or newer required)',
                               UserWarning)
             return
 
@@ -108,7 +107,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
         mod = __import__(module, **__import__kwargs)
     except ImportError:
         if warn_not_installed:
-            warnings.warn('%s module is not installed' % module, UserWarning)
+            warnings.warn(f'{module} module is not installed', UserWarning)
         return
 
     if min_module_version:
@@ -117,9 +116,8 @@ def import_module(module, min_module_version=None, min_python_version=None,
             modversion = modversion(*module_version_attr_call_args)
         if LooseVersion(modversion) < LooseVersion(min_module_version):
             if warn_old_version:
-                warnings.warn('%s version is too old to use '
-                              '(%s or newer required)' % (module,
-                                                          min_module_version),
+                warnings.warn(f'{module} version is too old to use '
+                              f'({min_module_version} or newer required)',
                               UserWarning)
             return
 

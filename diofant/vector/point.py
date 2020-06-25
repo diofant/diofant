@@ -13,10 +13,10 @@ class Point(Basic):
         name = str(name)
         # Check the args first
         if not isinstance(position, Vector):
-            raise TypeError('position should be an instance of Vector, not %s' % type(position))
+            raise TypeError(f'position should be an instance of Vector, not {type(position)}')
         if (not isinstance(parent_point, Point)
                 and parent_point is not None):
-            raise TypeError('parent_point should be an instance of Point, not %s' % type(parent_point))
+            raise TypeError(f'parent_point should be an instance of Point, not {type(parent_point)}')
         # Super class construction
         if parent_point is None:
             obj = super().__new__(cls, Symbol(name), position)

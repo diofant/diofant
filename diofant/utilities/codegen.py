@@ -162,11 +162,11 @@ class Routine:
                 input_symbols.add(arg.name)
                 symbols.update(arg.expr.free_symbols)
             else:
-                raise ValueError('Unknown Routine argument: %s' % arg)
+                raise ValueError(f'Unknown Routine argument: {arg}')
 
         for r in results:
             if not isinstance(r, Result):
-                raise ValueError('Unknown Routine result: %s' % r)
+                raise ValueError(f'Unknown Routine result: {r}')
             symbols.update(r.expr.free_symbols)
 
         local_symbols = set()
@@ -319,13 +319,9 @@ class Argument(Variable):
 
     """
 
-    pass
-
 
 class InputArgument(Argument):
     """Input argument class."""
-
-    pass
 
 
 class ResultBase:
@@ -498,7 +494,7 @@ class CodeGen:
                     raise ValueError('No expression given')
                 for e in expr:
                     if not e.is_Equality:
-                        raise CodeGenError('Lists of expressions must all be Equalities. {} is not.'.format(e))
+                        raise CodeGenError(f'Lists of expressions must all be Equalities. {e} is not.')
 
                 # create a list of right hand sides and simplify them
                 rhs = [e.rhs for e in expr]
@@ -662,17 +658,17 @@ class CodeGen:
         """
         for routine in routines:
             if not isinstance(routine, Routine):
-                raise CodeGenError('Routine expected, got {0}'.format(routine))
+                raise CodeGenError(f'Routine expected, got {routine}')
 
         if to_files:
             for dump_fn in self.dump_fns:
-                filename = '%s.%s' % (prefix, dump_fn.extension)
+                filename = f'{prefix}.{dump_fn.extension}'
                 with open(filename, 'w') as f:
                     dump_fn(self, routines, f, prefix, header, empty)
         else:
             result = []
             for dump_fn in self.dump_fns:
-                filename = '%s.%s' % (prefix, dump_fn.extension)
+                filename = f'{prefix}.{dump_fn.extension}'
                 contents = StringIO()
                 dump_fn(self, routines, contents, prefix, header, empty)
                 result.append((filename, contents.getvalue()))
@@ -810,15 +806,15 @@ class CCodeGen(CodeGen):
         for arg in routine.arguments:
             name = ccode(arg.name)
             if arg.dimensions or isinstance(arg, ResultBase):
-                type_args.append((arg.get_datatype('C'), '*%s' % name))
+                type_args.append((arg.get_datatype('C'), f'*{name}'))
             else:
                 type_args.append((arg.get_datatype('C'), name))
         arguments = ', '.join([ '%s %s' % t for t in type_args])
-        return '%s %s(%s)' % (ctype, routine.name, arguments)
+        return f'{ctype} {routine.name}({arguments})'
 
     def _preprocessor_statements(self, prefix):
         code_lines = []
-        code_lines.append('#include "{}.h"\n'.format(os.path.basename(prefix)))
+        code_lines.append(f'#include "{os.path.basename(prefix)}.h\"\n')
         code_lines.extend(self.preprocessor_statements)
         return code_lines
 
@@ -853,13 +849,13 @@ class CCodeGen(CodeGen):
 
             assign_to = result.name
             t = result.get_datatype('c')
-            prefix = 'const {0} '.format(t)
+            prefix = f'const {t} '
 
             constants, not_c, c_expr = self._printer_method_with_settings(
                 'doprint', {'human': False, 'dereference': dereference},
                 result.expr, assign_to=assign_to)
 
-            code_lines.append('{}{}\n'.format(prefix, c_expr))
+            code_lines.append(f'{prefix}{c_expr}\n')
 
         return code_lines
 
@@ -879,7 +875,7 @@ class CCodeGen(CodeGen):
             if isinstance(result, Result):
                 assign_to = routine.name + '_result'
                 t = result.get_datatype('c')
-                code_lines.append('{0} {1};\n'.format(t, str(assign_to)))
+                code_lines.append(f'{t} {assign_to!s};\n')
                 return_val = assign_to
             else:
                 assign_to = result.result_var
@@ -888,11 +884,11 @@ class CCodeGen(CodeGen):
                                              assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
-                code_lines.append('double const %s = %s;\n' % (name, value))
-            code_lines.append('%s\n' % c_expr)
+                code_lines.append(f'double const {name} = {value};\n')
+            code_lines.append(f'{c_expr}\n')
 
         if return_val:
-            code_lines.append('   return %s;\n' % return_val)
+            code_lines.append(f'   return {return_val};\n')
         return code_lines
 
     def _indent_code(self, codelines):
@@ -941,14 +937,14 @@ class CCodeGen(CodeGen):
         # include guards
         if empty:
             print(file=f)
-        print('#ifndef %s' % guard_name, file=f)
-        print('#define %s' % guard_name, file=f)
+        print(f'#ifndef {guard_name}', file=f)
+        print(f'#define {guard_name}', file=f)
         if empty:
             print(file=f)
         # declaration of the function prototypes
         for routine in routines:
             prototype = self.get_prototype(routine)
-            print('%s;' % prototype, file=f)
+            print(f'{prototype};', file=f)
         # end if include guards
         if empty:
             print(file=f)
@@ -1010,7 +1006,7 @@ class FCodeGen(CodeGen):
         args = ', '.join('%s' % self._get_symbol(arg.name)
                          for arg in routine.arguments)
 
-        call_sig = '{0}({1})\n'.format(routine.name, args)
+        call_sig = f'{routine.name}({args})\n'
         # Fortran 95 requires all lines be less than 132 characters, so wrap
         # this line before appending.
         call_sig = ' &\n'.join(textwrap.wrap(call_sig,
@@ -1042,10 +1038,10 @@ class FCodeGen(CodeGen):
                 dimstr = ', '.join(['%s:%s' % (
                     fprint(dim[0] + 1), fprint(dim[1] + 1))
                     for dim in arg.dimensions])
-                typeinfo += ', dimension(%s)' % dimstr
-                array_list.append('%s :: %s\n' % (typeinfo, fprint(arg.name)))
+                typeinfo += f', dimension({dimstr})'
+                array_list.append(f'{typeinfo} :: {fprint(arg.name)}\n')
             else:
-                scalar_list.append('%s :: %s\n' % (typeinfo, fprint(arg.name)))
+                scalar_list.append(f'{typeinfo} :: {fprint(arg.name)}\n')
 
         # scalars first, because they can be used in array declarations
         code_list.extend(scalar_list)
@@ -1062,8 +1058,7 @@ class FCodeGen(CodeGen):
         code_list = []
         for var in sorted(routine.local_vars, key=str):
             typeinfo = get_default_datatype(var)
-            code_list.append('%s :: %s\n' % (
-                typeinfo.fname, self._get_symbol(var)))
+            code_list.append(f'{typeinfo.fname} :: {self._get_symbol(var)}\n')
         return code_list
 
     def _get_routine_ending(self, routine):
@@ -1106,16 +1101,16 @@ class FCodeGen(CodeGen):
             for obj, v in sorted(constants, key=str):
                 t = get_default_datatype(obj)
                 declarations.append(
-                    '%s, parameter :: %s = %s\n' % (t.fname, obj, v))
+                    f'{t.fname}, parameter :: {obj} = {v}\n')
             for obj in sorted(not_fortran, key=str):
                 t = get_default_datatype(obj)
                 if isinstance(obj, Function):
                     name = obj.func
                 else:
                     name = obj
-                declarations.append('%s :: %s\n' % (t.fname, name))
+                declarations.append(f'{t.fname} :: {name}\n')
 
-            code_lines.append('%s\n' % f_expr)
+            code_lines.append(f'{f_expr}\n')
         return declarations + code_lines
 
     def _indent_code(self, codelines):
@@ -1291,7 +1286,7 @@ class OctaveCodeGen(CodeGen):
             if line == '':
                 code_lines.append('%\n')
             else:
-                code_lines.append('%%   %s\n' % line)
+                code_lines.append(f'%   {line}\n')
         return code_lines
 
     def _preprocessor_statements(self, prefix):
@@ -1323,7 +1318,7 @@ class OctaveCodeGen(CodeGen):
             else:
                 args.append('%s' % self._get_symbol(arg.name))
         args = ', '.join(args)
-        code_list.append('%s(%s)\n' % (routine.name, args))
+        code_list.append(f'{routine.name}({args})\n')
         code_list = [ ''.join(code_list) ]
 
         return code_list
@@ -1355,15 +1350,15 @@ class OctaveCodeGen(CodeGen):
 
             for obj, v in sorted(constants, key=str):
                 declarations.append(
-                    '  %s = %s;  %% constant\n' % (obj, v))
+                    f'  {obj} = {v};  % constant\n')
             for obj in sorted(not_supported, key=str):
                 if isinstance(obj, Function):
                     name = obj.func
                 else:
                     name = obj
                 declarations.append(
-                    '  %% unsupported: %s\n' % name)
-            code_lines.append('%s\n' % oct_expr)
+                    f'  % unsupported: {name}\n')
+            code_lines.append(f'{oct_expr}\n')
         return declarations + code_lines
 
     def _indent_code(self, codelines):
@@ -1416,7 +1411,7 @@ def get_code_generator(language, project):
     CodeGenClass = {'C': CCodeGen, 'F95': FCodeGen,
                     'OCTAVE': OctaveCodeGen}.get(language.upper())
     if CodeGenClass is None:
-        raise ValueError("Language '%s' is not supported." % language)
+        raise ValueError(f"Language '{language}' is not supported.")
     return CodeGenClass(project)
 
 

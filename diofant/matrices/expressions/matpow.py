@@ -32,7 +32,7 @@ class MatPow(MatrixExpr):
         if isinstance(A, MatPow):
             # We still have a MatPow, make an explicit MatMul out of it.
             if not A.base.is_square:
-                raise ShapeError('Power of non-square matrix %s' % A.base)
+                raise ShapeError(f'Power of non-square matrix {A.base}')
             elif A.exp.is_Integer and A.exp.is_positive:
                 A = MatMul(*[A.base for k in range(A.exp)])
             # elif A.exp.is_Integer and self.exp.is_negative:
@@ -42,7 +42,7 @@ class MatPow(MatrixExpr):
             # T = A.base.as_explicit().inverse()
             # A = MatMul(*[T for k in range(-A.exp)])
             else:
-                raise NotImplementedError(('(%d, %d) entry' % (int(i), int(j)))
+                raise NotImplementedError((f'({int(i):d}, {int(j):d}) entry')
                                           + ' of matrix power either not defined or not implemented')
         return A._entry(i, j)
 

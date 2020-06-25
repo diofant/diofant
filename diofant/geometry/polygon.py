@@ -27,16 +27,6 @@ class Polygon(GeometrySet):
 
     vertices : sequence of Points
 
-    Attributes
-    ==========
-
-    area
-    angles
-    perimeter
-    vertices
-    centroid
-    sides
-
     Raises
     ======
 
@@ -580,7 +570,7 @@ class Polygon(GeometrySet):
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError('Symbol %s already appears in object and cannot be used as a parameter.' % t.name)
+            raise ValueError(f'Symbol {t.name} already appears in object and cannot be used as a parameter.')
         sides = []
         perimeter = self.perimeter
         perim_fraction_start = 0
@@ -966,20 +956,6 @@ class RegularPolygon(Polygon):
     n : int
         The number of sides
 
-    Attributes
-    ==========
-
-    vertices
-    center
-    radius
-    rotation
-    apothem
-    interior_angle
-    exterior_angle
-    circumcircle
-    incircle
-    angles
-
     Raises
     ======
 
@@ -1016,11 +992,11 @@ class RegularPolygon(Polygon):
         r, n, rot = map(sympify, (r, n, rot))
         c = Point(c)
         if not isinstance(r, Expr):
-            raise GeometryError('r must be an Expr object, not %s' % r)
+            raise GeometryError(f'r must be an Expr object, not {r}')
         if n.is_Number:
             as_int(n)  # let an error raise if necessary
             if n < 3:
-                raise GeometryError('n must be a >= 3, not %s' % n)
+                raise GeometryError(f'n must be a >= 3, not {n}')
 
         obj = GeometryEntity.__new__(cls, c, r, n, **kwargs)
         obj._n = n
@@ -1543,20 +1519,6 @@ class Triangle(Polygon):
 
     points : sequence of Points
     keyword: asa, sas, or sss to specify sides/angles of the triangle
-
-    Attributes
-    ==========
-
-    vertices
-    altitudes
-    orthocenter
-    circumcenter
-    circumradius
-    circumcircle
-    inradius
-    incircle
-    medians
-    medial
 
     Raises
     ======

@@ -65,7 +65,7 @@ def _preprocess(expr, func=None, hint='_Integral'):
         funcs = set().union(*[d.atoms(AppliedUndef) for d in derivs])
         if len(funcs) != 1:
             raise ValueError('The function cannot be '
-                             'automatically detected for %s.' % expr)
+                             f'automatically detected for {expr}.')
         func = funcs.pop()
     fvars = set(func.args)
     reps = [(d, d.doit()) for d in derivs if not hint.endswith('_Integral') or

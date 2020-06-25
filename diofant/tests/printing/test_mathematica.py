@@ -37,7 +37,7 @@ def test_Rational():
 def test_symbols():
     assert mathematica_code(x) == 'x'
     d = Dummy('d')
-    assert mathematica_code(d) == 'd%s' % d.dummy_index
+    assert mathematica_code(d) == f'd{d.dummy_index}'
 
 
 def test_Function():
@@ -195,7 +195,7 @@ def test_Matrix():
 
 def test_Relational():
     assert mathematica_code(Eq(x, y)) == 'x == y'
-    assert mathematica_code(Ne(x, y/(1 + y**2))) == 'x != y/(y^2 + 1)'
+    assert mathematica_code(Ne(x, y/(1 + y**2))) == 'x != (y/(y^2 + 1))'
     assert mathematica_code(Le(0, x**2)) == '0 <= x^2'
     assert mathematica_code(Gt(pi, 3, evaluate=False)) == 'Pi > 3'
 

@@ -103,10 +103,10 @@ class FCodePrinter(CodePrinter):
         return codestring
 
     def _get_comment(self, text):
-        return '! {0}'.format(text)
+        return f'! {text}'
 
     def _declare_number_const(self, name, value):
-        return 'parameter ({0} = {1})'.format(name, value)
+        return f'parameter ({name} = {value})'
 
     def _format_code(self, lines):
         return self._wrap_fortran(self.indent_code(lines))
@@ -122,7 +122,7 @@ class FCodePrinter(CodePrinter):
             # fortran arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
                                    [i.label, i.lower + 1, i.upper + 1])
-            open_lines.append('do %s = %s, %s' % (var, start, stop))
+            open_lines.append(f'do {var} = {start}, {stop}')
             close_lines.append('end do')
         return open_lines, close_lines
 
@@ -169,7 +169,7 @@ class FCodePrinter(CodePrinter):
                                       'standards earlier than Fortran95.')
 
     def _print_MatrixElement(self, expr):
-        return '{0}({1}, {2})'.format(expr.parent, expr.i + 1, expr.j + 1)
+        return f'{expr.parent}({expr.i + 1}, {expr.j + 1})'
 
     def _print_Add(self, expr):
         # purpose: print complex numbers nicely in Fortran.
@@ -251,14 +251,14 @@ class FCodePrinter(CodePrinter):
 
     def _print_Rational(self, expr):
         p, q = int(expr.numerator), int(expr.denominator)
-        return '%d.0d0/%d.0d0' % (p, q)
+        return f'{p:d}.0d0/{q:d}.0d0'
 
     def _print_Float(self, expr):
         printed = CodePrinter._print_Float(self, expr)
         e = printed.find('e')
         if e > -1:
             return '%sd%s' % (printed[:e], printed[e + 1:])
-        return '%sd0' % printed
+        return f'{printed}d0'
 
     def _print_Indexed(self, expr):
         inds = [ self._print(i) for i in expr.indices ]
@@ -327,7 +327,7 @@ class FCodePrinter(CodePrinter):
                             pos = 66
                         hunk = line[:pos]
                         line = line[pos:].lstrip()
-                        result.append('%s%s' % (self._lead_comment, hunk))
+                        result.append(f'{self._lead_comment}{hunk}')
                 else:
                     result.append(line)
             elif line.startswith(self._lead_code):
@@ -344,7 +344,7 @@ class FCodePrinter(CodePrinter):
                     line = line[pos:].lstrip()
                     if line:
                         hunk += trailing
-                    result.append('%s%s' % (self._lead_cont, hunk))
+                    result.append(f'{self._lead_cont}{hunk}')
             else:
                 result.append(line)
         return result
@@ -383,7 +383,7 @@ class FCodePrinter(CodePrinter):
             else:
                 padding = ' '*level*tabwidth
 
-            line = '%s%s' % (padding, line)
+            line = f'{padding}{line}'
             if not free:
                 line = self._pad_leading_columns([line])[0]
 

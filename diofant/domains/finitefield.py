@@ -4,12 +4,12 @@ import numbers
 import random
 
 from ..core import Dummy, integer_digits
-from ..ntheory import isprime, perfect_power
+from ..ntheory import factorint
 from ..polys.galoistools import dup_gf_irreducible
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
-from .integerring import GMPYIntegerRing, PythonIntegerRing
+from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
 from .quotientring import QuotientRingElement
 from .simpledomain import SimpleDomain
 
@@ -27,25 +27,29 @@ class FiniteField(Field, SimpleDomain):
     is_Numerical = True
 
     def __new__(cls, order, dom, modulus=None):
-        if not (isinstance(order, numbers.Integral) and isprime(order)):
-            pp = perfect_power(order)
-            if not pp:
-                raise ValueError(f'order must be a prime power, got {order}')
-            mod, deg = pp
-        else:
-            mod, deg = order, 1
-            if modulus is None:
-                modulus = [1, 0]
-            else:
+        try:
+            pp = factorint(order)
+            if not order or len(pp) != 1:
+                raise ValueError
+            mod, deg = pp.popitem()
+        except ValueError:
+            raise ValueError(f'order must be a prime power, got {order}')
+
+        if deg == 1:
+            if modulus:
                 deg = len(modulus) - 1
-                order = mod**deg
+            else:
+                modulus = [1, 0]
+
+        order = mod**deg
 
         if modulus is None:
             random.seed(0)
-            modulus = dup_gf_irreducible(deg, PythonIntegerRing().finite_field(mod))
+            modulus = dup_gf_irreducible(deg, ZZ_python.finite_field(mod))
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')
+
         modulus = tuple(map(dom.dtype, modulus))
 
         mod = dom.convert(mod)
@@ -59,7 +63,7 @@ class FiniteField(Field, SimpleDomain):
         obj.order = order
 
         if order > mod:
-            obj.rep = f'GF({obj.mod}, {list(map(PythonIntegerRing(), modulus))})'
+            obj.rep = f'GF({obj.mod}, {list(map(ZZ_python, modulus))})'
         else:
             obj.rep = f'GF({obj.mod})'
 
@@ -71,7 +75,7 @@ class FiniteField(Field, SimpleDomain):
                                  {'mod': mod, 'domain': dom, '_parent': obj})
             else:
                 ff = dom.finite_field(mod).inject(Dummy('x'))
-                mod = ff.from_dense(modulus)
+                mod = ff.from_list(modulus)
                 if not mod.is_irreducible:
                     raise ValueError('defining polynomial must be irreducible')
                 obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
@@ -153,20 +157,25 @@ class GMPYFiniteField(FiniteField):
 class ModularInteger(QuotientRingElement):
     """A class representing a modular integer."""
 
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
+
 
 class GaloisFieldElement(ModularInteger):
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
-            rep = rep % self.parent.order
-            rep = integer_digits(rep, self.parent.mod)
+            rep = integer_digits(rep % self.parent.order, self.parent.mod)
 
         if isinstance(rep, (list, tuple)):
-            rep = self.domain.from_dense(rep)
-            self.rep = rep = rep % self.mod
-        else:
-            super().__init__(rep)
+            rep = self.domain.from_list(rep)
 
-        self._int_rep = self.parent.domain.inject(*self.rep.parent.symbols)(dict(self.rep))
+        super().__init__(rep)
 
     def __int__(self):
-        return int(self._int_rep.eval(0, self.parent.mod))
+        rep = self.rep.set_domain(self.parent.domain)
+        return int(rep.eval(0, self.parent.mod))

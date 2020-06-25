@@ -248,7 +248,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
         """
         # First parse the hints
         n, funcs, iterables, extragens = parse_hints(hints)
-        debug('n=%s' % n, 'funcs:', funcs, 'iterables:',
+        debug(f'n={n}', 'funcs:', funcs, 'iterables:',
               iterables, 'extragens:', extragens)
 
         # We just add the extragens to gens and analyse them as before

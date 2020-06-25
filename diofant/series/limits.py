@@ -100,10 +100,10 @@ class Limit(Expr):
         if isinstance(dir, str):
             dir = Symbol(dir)
         elif not isinstance(dir, Symbol):
-            raise TypeError('direction must be of type str or Symbol, not %s' % type(dir))
+            raise TypeError(f'direction must be of type str or Symbol, not {type(dir)}')
         if str(dir) not in ('+', '-', 'real'):
             raise ValueError(
-                "direction must be either '+' or '-' or 'real', not %s" % dir)
+                f"direction must be either '+' or '-' or 'real', not {dir}")
 
         obj = Expr.__new__(cls)
         obj._args = (e, z, z0, dir)
@@ -135,8 +135,8 @@ class Limit(Expr):
             right = limit(e, z, z0, '+')
             left = limit(e, z, z0, '-')
             if not (left - right).equals(0):
-                raise PoleError('left and right limits for expression %s at '
-                                'point %s=%s seems to be not equal' % (e, z, z0))
+                raise PoleError(f'left and right limits for expression {e} at '
+                                'point {z}={z0} seems to be not equal')
             else:
                 return right
 

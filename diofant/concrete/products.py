@@ -169,7 +169,7 @@ class Product(ExprWithIntLimits):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    * https://en.wikipedia.org/wiki/Multiplication#Capital_pi_notation
     * https://en.wikipedia.org/wiki/Empty_product
 
     """

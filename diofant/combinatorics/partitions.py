@@ -348,7 +348,7 @@ class IntegerPartition(Basic):
             integer = as_int(integer)
 
         if not sum_ok and sum(partition) != integer:
-            raise ValueError('Partition did not add to %s' % integer)
+            raise ValueError(f'Partition did not add to {integer}')
         if any(i < 1 for i in partition):
             raise ValueError('The summands must all be positive.')
 

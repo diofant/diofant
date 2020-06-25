@@ -108,8 +108,6 @@ from ..core.compatibility import NotIterable, is_sequence
 class IndexException(Exception):
     """Generic index error."""
 
-    pass
-
 
 class Indexed(Expr):
     """Represents a mathematical object with indices.
@@ -223,12 +221,12 @@ class Indexed(Expr):
         try:
             return Tuple(*[i.upper - i.lower + 1 for i in self.indices])
         except AttributeError:
-            raise IndexException(filldedent("""
-                Range is not defined for all indices in: %s""" % self))
+            raise IndexException(filldedent(f"""
+                Range is not defined for all indices in: {self}"""))
         except TypeError:
-            raise IndexException(filldedent("""
+            raise IndexException(filldedent(f"""
                 Shape cannot be inferred from Idx with
-                undefined range: %s""" % self))
+                undefined range: {self}"""))
 
     @property
     def ranges(self):
@@ -258,7 +256,7 @@ class Indexed(Expr):
 
     def _diofantstr(self, p):
         indices = list(map(p.doprint, self.indices))
-        return '%s[%s]' % (p.doprint(self.base), ', '.join(indices))
+        return f"{p.doprint(self.base)}[{', '.join(indices)}]"
 
 
 class IndexedBase(Expr, NotIterable):
@@ -486,8 +484,8 @@ class Idx(Expr):
 
         elif is_sequence(range):
             if len(range) != 2:
-                raise ValueError(filldedent("""
-                    Idx range tuple must have length 2, but got %s""" % len(range)))
+                raise ValueError(filldedent(f"""
+                    Idx range tuple must have length 2, but got {len(range)}"""))
             for bound in range:
                 if not (bound.is_integer or abs(bound) is oo):
                     raise TypeError('Idx object requires integer bounds.')

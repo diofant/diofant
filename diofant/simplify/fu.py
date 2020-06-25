@@ -429,7 +429,7 @@ def TR4(rv):
     ========
 
     >>> for s in (0, pi/6, pi/4, pi/3, pi/2):
-    ...     print('%s %s %s %s' % (cos(s), sin(s), tan(s), cot(s)))
+    ...     print(f'{cos(s)} {sin(s)} {tan(s)} {cot(s)}')
     ...
     1 0 0 zoo
     sqrt(3)/2 1/2 sqrt(3)/3 sqrt(3)
@@ -2023,7 +2023,7 @@ def _osborne(e, d):
         elif isinstance(rv, coth):
             return cot(a)/I
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2062,7 +2062,7 @@ def _osbornei(e, d):
         elif isinstance(rv, csc):
             return I/sinh(a)
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 

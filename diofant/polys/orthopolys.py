@@ -3,7 +3,6 @@
 from ..core import Dummy
 from ..domains import QQ, ZZ
 from .constructor import construct_domain
-from .densearith import dmp_mul_ground, dup_add, dup_lshift, dup_mul, dup_sub
 from .polytools import Poly, PurePoly
 
 
@@ -12,19 +11,22 @@ __all__ = ('jacobi_poly', 'chebyshevt_poly', 'chebyshevu_poly', 'hermite_poly',
            'gegenbauer_poly')
 
 
-def dup_jacobi(n, a, b, K):
+def _jacobi(n, a, b, K):
     """Low-level implementation of Jacobi polynomials."""
-    seq = [[K.one], [(a + b + K(2))/K(2), (a - b)/K(2)]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, ((a + b + K(2))*x + (a - b))/K(2)]
 
     for i in range(2, n + 1):
         den = K(i)*(a + b + i)*(a + b + K(2)*i - K(2))
         f0 = (a + b + K(2)*i - K.one) * (a*a - b*b) / (K(2)*den)
         f1 = (a + b + K(2)*i - K.one) * (a + b + K(2)*i - K(2)) * (a + b + K(2)*i) / (K(2)*den)
         f2 = (a + i - K.one)*(b + i - K.one)*(a + b + K(2)*i) / den
-        p0 = dmp_mul_ground(seq[-1], f0, 0, K)
-        p1 = dmp_mul_ground(dup_lshift(seq[-1], 1, K), f1, 0, K)
-        p2 = dmp_mul_ground(seq[-2], f2, 0, K)
-        seq.append(dup_sub(dup_add(p0, p1, K), p2, K))
+        p0 = seq[-1].mul_ground(f0)
+        p1 = (seq[-1]*x).mul_ground(f1)
+        p2 = seq[-2].mul_ground(f2)
+        seq.append(p0 + p1 - p2)
 
     return seq[n]
 
@@ -35,7 +37,7 @@ def jacobi_poly(n, a, b, x=None, **args):
         raise ValueError(f"can't generate Jacobi polynomial of degree {n}")
 
     K, v = construct_domain([a, b], field=True)
-    poly = dup_jacobi(int(n), v[0], v[1], K)
+    poly = _jacobi(int(n), v[0], v[1], K)
 
     if x is not None:
         poly = Poly(poly, x, domain=K)
@@ -48,16 +50,19 @@ def jacobi_poly(n, a, b, x=None, **args):
         return poly
 
 
-def dup_gegenbauer(n, a, K):
+def _gegenbauer(n, a, K):
     """Low-level implementation of Gegenbauer polynomials."""
-    seq = [[K.one], [K(2)*a, K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, K(2)*a*x]
 
     for i in range(2, n + 1):
         f1 = K(2) * (i + a - K.one) / i
         f2 = (i + K(2)*a - K(2)) / i
-        p1 = dmp_mul_ground(dup_lshift(seq[-1], 1, K), f1, 0, K)
-        p2 = dmp_mul_ground(seq[-2], f2, 0, K)
-        seq.append(dup_sub(p1, p2, K))
+        p1 = (seq[-1]*x).mul_ground(f1)
+        p2 = seq[-2].mul_ground(f2)
+        seq.append(p1 - p2)
 
     return seq[n]
 
@@ -69,7 +74,7 @@ def gegenbauer_poly(n, a, x=None, **args):
             f"can't generate Gegenbauer polynomial of degree {n}")
 
     K, a = construct_domain(a, field=True)
-    poly = dup_gegenbauer(int(n), a, K)
+    poly = _gegenbauer(int(n), a, K)
 
     if x is not None:
         poly = Poly(poly, x, domain=K)
@@ -82,13 +87,16 @@ def gegenbauer_poly(n, a, x=None, **args):
         return poly
 
 
-def dup_chebyshevt(n, K):
+def _chebyshevt(n, K):
     """Low-level implementation of Chebyshev polynomials of the 1st kind."""
-    seq = [[K.one], [K.one, K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, x]
 
     for i in range(2, n + 1):
-        a = dmp_mul_ground(dup_lshift(seq[-1], 1, K), K(2), 0, K)
-        seq.append(dup_sub(a, seq[-2], K))
+        a = (seq[-1]*x).mul_ground(K(2))
+        seq.append(a - seq[-2])
 
     return seq[n]
 
@@ -99,7 +107,7 @@ def chebyshevt_poly(n, x=None, **args):
         raise ValueError(
             f"can't generate 1st kind Chebyshev polynomial of degree {n}")
 
-    poly = dup_chebyshevt(int(n), ZZ)
+    poly = _chebyshevt(int(n), ZZ)
 
     if x is not None:
         poly = Poly(poly, x, domain=ZZ)
@@ -112,13 +120,16 @@ def chebyshevt_poly(n, x=None, **args):
         return poly
 
 
-def dup_chebyshevu(n, K):
+def _chebyshevu(n, K):
     """Low-level implementation of Chebyshev polynomials of the 2nd kind."""
-    seq = [[K.one], [K(2), K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, K(2)*x]
 
     for i in range(2, n + 1):
-        a = dmp_mul_ground(dup_lshift(seq[-1], 1, K), K(2), 0, K)
-        seq.append(dup_sub(a, seq[-2], K))
+        a = (seq[-1]*x).mul_ground(K(2))
+        seq.append(a - seq[-2])
 
     return seq[n]
 
@@ -129,7 +140,7 @@ def chebyshevu_poly(n, x=None, **args):
         raise ValueError(
             f"can't generate 2nd kind Chebyshev polynomial of degree {n}")
 
-    poly = dup_chebyshevu(int(n), ZZ)
+    poly = _chebyshevu(int(n), ZZ)
 
     if x is not None:
         poly = Poly(poly, x, domain=ZZ)
@@ -142,15 +153,18 @@ def chebyshevu_poly(n, x=None, **args):
         return poly
 
 
-def dup_hermite(n, K):
+def _hermite(n, K):
     """Low-level implementation of Hermite polynomials."""
-    seq = [[K.one], [K(2), K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, K(2)*x]
 
     for i in range(2, n + 1):
-        a = dup_lshift(seq[-1], 1, K)
-        b = dmp_mul_ground(seq[-2], K(i - 1), 0, K)
+        a = seq[-1]*x
+        b = seq[-2].mul_ground(K(i - 1))
 
-        c = dmp_mul_ground(dup_sub(a, b, K), K(2), 0, K)
+        c = (a - b).mul_ground(K(2))
 
         seq.append(c)
 
@@ -162,7 +176,7 @@ def hermite_poly(n, x=None, **args):
     if n < 0:
         raise ValueError(f"can't generate Hermite polynomial of degree {n}")
 
-    poly = dup_hermite(int(n), ZZ)
+    poly = _hermite(int(n), ZZ)
 
     if x is not None:
         poly = Poly(poly, x, domain=ZZ)
@@ -175,15 +189,18 @@ def hermite_poly(n, x=None, **args):
         return poly
 
 
-def dup_legendre(n, K):
+def _legendre(n, K):
     """Low-level implementation of Legendre polynomials."""
-    seq = [[K.one], [K.one, K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, x]
 
     for i in range(2, n + 1):
-        a = dmp_mul_ground(dup_lshift(seq[-1], 1, K), K(2*i - 1, i), 0, K)
-        b = dmp_mul_ground(seq[-2], K(i - 1, i), 0, K)
+        a = (seq[-1]*x).mul_ground(K(2*i - 1, i))
+        b = seq[-2].mul_ground(K(i - 1, i))
 
-        seq.append(dup_sub(a, b, K))
+        seq.append(a - b)
 
     return seq[n]
 
@@ -193,7 +210,7 @@ def legendre_poly(n, x=None, **args):
     if n < 0:
         raise ValueError(f"can't generate Legendre polynomial of degree {n}")
 
-    poly = dup_legendre(int(n), QQ)
+    poly = _legendre(int(n), QQ)
 
     if x is not None:
         poly = Poly(poly, x, domain=QQ)
@@ -206,15 +223,18 @@ def legendre_poly(n, x=None, **args):
         return poly
 
 
-def dup_laguerre(n, alpha, K):
+def _laguerre(n, alpha, K):
     """Low-level implementation of Laguerre polynomials."""
-    seq = [[K.zero], [K.one]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.zero, ring.one]
 
     for i in range(1, n + 1):
-        a = dup_mul(seq[-1], [-K.one/i, alpha/i + K(2*i - 1)/i], K)
-        b = dmp_mul_ground(seq[-2], alpha/i + K(i - 1)/i, 0, K)
+        a = seq[-1]*(-K.one/i*x + alpha/i + K(2*i - 1)/i)
+        b = seq[-2].mul_ground(alpha/i + K(i - 1)/i)
 
-        seq.append(dup_sub(a, b, K))
+        seq.append(a - b)
 
     return seq[-1]
 
@@ -230,7 +250,7 @@ def laguerre_poly(n, x=None, alpha=None, **args):
     else:
         K, alpha = QQ, QQ(0)
 
-    poly = dup_laguerre(int(n), alpha, K)
+    poly = _laguerre(int(n), alpha, K)
 
     if x is not None:
         poly = Poly(poly, x, domain=K)
@@ -243,24 +263,30 @@ def laguerre_poly(n, x=None, alpha=None, **args):
         return poly
 
 
-def dup_spherical_bessel_fn(n, K):
+def _spherical_bessel_fn(n, K):
     """Low-level implementation of fn(n, x)."""
-    seq = [[K.one], [K.one, K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [ring.one, x]
 
     for i in range(2, n + 1):
-        a = dmp_mul_ground(dup_lshift(seq[-1], 1, K), K(2*i - 1), 0, K)
-        seq.append(dup_sub(a, seq[-2], K))
+        a = (seq[-1]*x).mul_ground(K(2*i - 1))
+        seq.append(a - seq[-2])
 
-    return dup_lshift(seq[n], 1, K)
+    return seq[n]*x
 
 
-def dup_spherical_bessel_fn_minus(n, K):
+def _spherical_bessel_fn_minus(n, K):
     """Low-level implementation of fn(-n, x)."""
-    seq = [[K.one, K.zero], [K.zero]]
+    ring = K.poly_ring('_0')
+    x = ring._0
+
+    seq = [x, ring.zero]
 
     for i in range(2, n + 1):
-        a = dmp_mul_ground(dup_lshift(seq[-1], 1, K), K(3 - 2*i), 0, K)
-        seq.append(dup_sub(a, seq[-2], K))
+        a = (seq[-1]*x).mul_ground(K(3 - 2*i))
+        seq.append(a - seq[-2])
 
     return seq[n]
 
@@ -291,9 +317,9 @@ def spherical_bessel_fn(n, x=None, **args):
 
     """
     if n < 0:
-        poly = dup_spherical_bessel_fn_minus(-int(n), ZZ)
+        poly = _spherical_bessel_fn_minus(-int(n), ZZ)
     else:
-        poly = dup_spherical_bessel_fn(int(n), ZZ)
+        poly = _spherical_bessel_fn(int(n), ZZ)
 
     if x is not None:
         poly = Poly(poly, 1/x, domain=ZZ)

@@ -235,7 +235,7 @@ def construct_domain(obj, **args):
             if not obj:
                 monoms, coeffs = [], []
             else:
-                monoms, coeffs = list(zip(*list(obj.items())))
+                monoms, coeffs = zip(*obj.items())
         else:
             coeffs = obj
     else:

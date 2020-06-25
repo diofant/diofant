@@ -20,8 +20,6 @@ from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
                         roots_linear, roots_quadratic, roots_quartic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
-from .rootisolation import (dup_isolate_complex_roots_sqf,
-                            dup_isolate_real_roots_sqf)
 
 
 __all__ = 'RootOf', 'RootSum'
@@ -237,7 +235,7 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
         if factor not in _reals_cache:
-            reals = dup_isolate_real_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
+            reals = factor.rep.ring._isolate_real_roots_sqf(factor.rep, blackbox=True)
             if not reals:
                 _reals_cache[factor] = []
             return reals
@@ -247,7 +245,7 @@ class RootOf(Expr):
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
         if factor not in _complexes_cache:
-            complexes = dup_isolate_complex_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
+            complexes = factor.rep.ring.dup_isolate_complex_roots_sqf(factor.rep, blackbox=True)
             if not complexes:
                 _complexes_cache[factor] = []
             return complexes

@@ -116,7 +116,7 @@ def _import(module):
             module]
     except KeyError:
         raise NameError(
-            "'%s' module can't be used for lambdification" % module)
+            f"'{module}' module can't be used for lambdification")
 
     # Clear namespace or exit
     if namespace != namespace_default:
@@ -135,7 +135,7 @@ def _import(module):
             continue
 
         raise ImportError(
-            "can't import '%s' with '%s' command" % (module, import_command))
+            f"can't import '{module}' with '{import_command}' command")
 
     # Add translated names to namespace
     for diofantname, translation in translations.items():
@@ -203,7 +203,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     (3) Use a dictionary defining custom functions:
 
         >>> def my_cool_function(x):
-        ...     return 'sin(%s) is cool' % x
+        ...     return f'sin({x}) is cool'
         >>> myfuncs = {'sin': my_cool_function}
         >>> f = lambdify(x, sin(x), myfuncs)
         >>> f(1)
@@ -336,13 +336,18 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
             return wrapper
         func = array_wrap(func)
     # Apply the docstring
-    sig = 'func({0})'.format(', '.join(str(i) for i in names))
+    sig = f"func({', '.join(str(i) for i in names)})"
     sig = textwrap.fill(sig, subsequent_indent=' '*8)
     expr_str = str(expr)
     if len(expr_str) > 78:
         expr_str = textwrap.wrap(expr_str, 75)[0] + '...'
-    func.__doc__ = ('Created with lambdify. Signature:\n\n{sig}\n\n'
-                    'Expression:\n\n{expr}').format(sig=sig, expr=expr_str)
+    func.__doc__ = f"""Created with lambdify. Signature:
+
+{sig}
+
+Expression:
+
+{expr_str}"""
     return func
 
 
@@ -356,7 +361,7 @@ def _get_namespace(m):
     elif hasattr(m, '__dict__'):
         return m.__dict__
     else:
-        raise TypeError('Argument must be either a string, dict or module but it is: %s' % m)
+        raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
 
 
 def lambdastr(args, expr, printer=None, dummify=False):
@@ -440,7 +445,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         rv = 'lambda %s: (%s)(*list(%s([%s])))' % (
             ','.join(dum_args), lstr, flat, iter_args)
         if len(re.findall(r'\b%s\b' % flat, rv)) > 1:
-            raise ValueError('the name %s is reserved by lambdastr' % flat)
+            raise ValueError(f'the name {flat} is reserved by lambdastr')
         return rv
 
     dummies_dict = {}
@@ -458,7 +463,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             expr = sub_expr(expr, dummies_dict)
     expr = lambdarepr(expr)
 
-    return 'lambda %s: (%s)' % (args, expr)
+    return f'lambda {args}: ({expr})'
 
 
 def _imp_namespace(expr, namespace=None):

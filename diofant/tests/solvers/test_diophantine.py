@@ -548,7 +548,7 @@ def test_general_pythagorean():
 
 def test_diop_general_sum_of_squares_quick():
     for i in range(3, 10):
-        assert check_solutions(sum(i**2 for i in symbols(':%i' % i)) - i)
+        assert check_solutions(sum(i**2 for i in symbols(f':{i:d}')) - i)
     pytest.raises(ValueError, lambda: _diop_general_sum_of_squares((x, y), 2))
     assert _diop_general_sum_of_squares((x, y, z), -2) == set()
     eq = x**2 + y**2 + z**2 - (1 + 4 + 9)

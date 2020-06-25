@@ -60,7 +60,7 @@ def idiff(eq, y, x, n=1):
     elif isinstance(y, (Dummy, Symbol)):
         dep = {y}
     else:
-        raise ValueError('expecting x-dependent symbol(s) but got: %s' % y)
+        raise ValueError(f'expecting x-dependent symbol(s) but got: {y}')
 
     f = {s: Function(s.name)(x) for s in eq.free_symbols if s != x and s in dep}
     dydx = Function(y.name)(x).diff(x)

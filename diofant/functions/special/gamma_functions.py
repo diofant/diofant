@@ -79,7 +79,7 @@ class gamma(Function):
 
     * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
-    * http://mathworld.wolfram.com/GammaFunction.html
+    * https://mathworld.wolfram.com/GammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/Gamma/
 
     """
@@ -178,9 +178,9 @@ class gamma(Function):
     def _latex(self, printer, exp=None):
         aa = printer._print(self.args[0])
         if exp:
-            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)
+            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)  # noqa: SFS101
         else:
-            return r'\Gamma{\left(%s \right)}' % aa
+            return r'\Gamma{\left(%s \right)}' % aa  # noqa: SFS101
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -544,7 +544,7 @@ class polygamma(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Polygamma_function
-    * http://mathworld.wolfram.com/PolygammaFunction.html
+    * https://mathworld.wolfram.com/PolygammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
@@ -809,7 +809,7 @@ class loggamma(Function):
 
     * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
-    * http://mathworld.wolfram.com/LogGammaFunction.html
+    * https://mathworld.wolfram.com/LogGammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/LogGamma/
 
     """
@@ -920,7 +920,7 @@ def digamma(x):
     ==========
 
     * https://en.wikipedia.org/wiki/Digamma_function
-    * http://mathworld.wolfram.com/DigammaFunction.html
+    * https://mathworld.wolfram.com/DigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
     """
@@ -951,7 +951,7 @@ def trigamma(x):
     ==========
 
     * https://en.wikipedia.org/wiki/Trigamma_function
-    * http://mathworld.wolfram.com/TrigammaFunction.html
+    * https://mathworld.wolfram.com/TrigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
     """

@@ -230,5 +230,5 @@ PyMODINIT_FUNC initwrapper_module_%(num)s(void)
     PyDict_SetItemString(d, "test", ufunc0);
     Py_DECREF(ufunc0);
 }
-#endif""" % {'num': CodeWrapper._module_counter}
+#endif""" % {'num': CodeWrapper._module_counter}  # noqa: SFS101
     assert source == expected

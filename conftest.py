@@ -15,8 +15,13 @@ except ImportError:
 
 
 def pytest_report_header(config):
-    return f"""\ncache: {diofant.core.cache.USE_CACHE}
+    return f"""\nDiofant version: {diofant.__version__}
+cache: {diofant.core.cache.USE_CACHE}
 ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
+
+
+def pytest_configure(config):
+    config.addinivalue_line('markers', 'slow: marks tests as slow')
 
 
 @pytest.fixture(autouse=True, scope='module')

@@ -498,7 +498,6 @@ class SATSolver:
 
     def _vsids_lit_assigned(self, lit):
         """Handle the assignment of a literal for the VSIDS heuristic."""
-        pass
 
     def _vsids_lit_unset(self, lit):
         """Handle the unsetting of a literal for the VSIDS heuristic.

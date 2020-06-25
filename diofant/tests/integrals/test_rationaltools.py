@@ -89,8 +89,8 @@ def test_ratint():
 
     # issue sympy/sympy#4991
     assert ratint(1/(x*(a + b*x)**3), x) == \
-        (3*a + 2*b*x)/(2*a**4 + 4*a**3*b*x + 2*a**2*b**2*x**2) + (
-            log(x) - log(a/b + x))/a**3
+        ((3*a + 2*b*x)/(2*a**4 + 4*a**3*b*x + 2*a**2*b**2*x**2) +
+         (log(2*b*x) - log(2*a + 2*b*x))/a**3)
 
     assert ratint(x/(1 - x**2), x) == -log(x**2 - 1)/2
     assert ratint(-x/(1 - x**2), x) == log(x**2 - 1)/2

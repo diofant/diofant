@@ -55,10 +55,10 @@ def test_ipython_printing(monkeypatch):
 
     symbol = 'verylongsymbolname'
     assert symbol not in app.user_ns
-    app.run_cell('a = %s' % symbol)
-    app.run_cell('a = type(%s)' % symbol)
+    app.run_cell(f'a = {symbol}')
+    app.run_cell(f'a = type({symbol})')
     assert app.user_ns['a'] == Symbol
-    app.run_cell("%s = Symbol('%s')" % (symbol, symbol))
+    app.run_cell(f"{symbol} = Symbol('{symbol}')")
     assert symbol in app.user_ns
 
     # Check that built-in names aren't overridden

@@ -26,13 +26,6 @@ class Point(GeometryEntity):
     case where n=2 or 3, a Point2D or Point3D will be created
     as appropriate.
 
-    Attributes
-    ==========
-
-    length
-    origin: A `Point` representing the origin of the
-        appropriately-dimensioned space.
-
     Raises
     ======
 
@@ -420,13 +413,6 @@ class Point2D(Point):
 
     coords : sequence of 2 coordinate values.
 
-    Attributes
-    ==========
-
-    x
-    y
-    diofant.geometry.Point.length
-
     Raises
     ======
 
@@ -698,14 +684,6 @@ class Point3D(Point):
     ==========
 
     coords : sequence of 3 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    z
-    diofant.geometry.Point.length
 
     Raises
     ======

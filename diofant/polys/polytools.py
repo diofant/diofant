@@ -5,8 +5,8 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
-                    Tuple, oo, preorder_traversal, sympify)
+from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
+                    preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -36,10 +36,10 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
-           'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
+           'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
-           'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
-           'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
+           'factor_list', 'factor', 'count_roots',
+           'real_roots', 'nroots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
 
@@ -354,7 +354,7 @@ class Poly(Expr):
         >>> a = Poly(x**2 + 1)
         >>> R = ZZ.inject(x)
 
-        >>> a.per(R.from_dense([ZZ(1), ZZ(1)]), gens=[y])
+        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), gens=[y])
         Poly(y + 1, y, domain='ZZ')
 
         """
@@ -403,7 +403,7 @@ class Poly(Expr):
         domain = self.domain
 
         if domain.is_FiniteField:
-            return Integer(domain.characteristic)
+            return Integer(domain.order)
         else:
             raise PolynomialError('not a polynomial over a Galois field')
 
@@ -499,36 +499,6 @@ class Poly(Expr):
         rep = newring.from_dict(rep)
 
         return self.per(rep, gens=gens)
-
-    def ltrim(self, gen):
-        """
-        Remove dummy generators from the "left" of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(y**2 + y*z**2, x, y, z).ltrim(y)
-        Poly(y**2 + y*z**2, y, z, domain='ZZ')
-
-        """
-        rep = self.as_dict(native=True)
-        j = self._gen_to_level(gen)
-        terms = {}
-
-        for monom, coeff in rep.items():
-            monom = monom[j:]
-
-            if monom not in terms:
-                terms[monom] = coeff
-            else:
-                raise PolynomialError(f"can't left trim {self}")
-
-        gens = self.gens[j:]
-
-        newring = self.domain.poly_ring(*gens)
-        rep = newring.from_dict(terms)
-
-        return self.new(rep, *gens)
 
     def has_only_gens(self, *gens):
         """
@@ -787,7 +757,8 @@ class Poly(Expr):
                 else:
                     gens[index] = value
 
-        return self.rep.as_expr(*gens)
+        rep = self.rep
+        return rep.ring.to_expr(rep).subs(zip(self.gens, gens))
 
     def deflate(self):
         """
@@ -818,20 +789,8 @@ class Poly(Expr):
         Poly(y**3*x + y*x**2 + y*x + 1, y, x, domain='ZZ')
 
         """
-        dom = self.domain
-
-        if dom.is_Numerical and not dom.is_AlgebraicField:
-            return self
-
-        if front:
-            gens = dom.symbols + self.gens
-        else:
-            gens = self.gens + dom.symbols
-
-        newring = dom.domain.poly_ring(*gens)
-        result = newring.from_expr(self.rep.as_expr())
-
-        return self.new(result, *gens)
+        result = self.rep.inject(front=front)
+        return self.new(result, *result.ring.symbols)
 
     def eject(self, *gens):
         """
@@ -1057,22 +1016,10 @@ class Poly(Expr):
 
     def _gen_to_level(self, gen):
         """Returns level associated with the given generator."""
-        if isinstance(gen, int):
-            length = len(self.gens)
-
-            if -length <= gen < length:
-                if gen < 0:
-                    return length + gen
-                else:
-                    return gen
-            else:
-                raise PolynomialError(f'-{length} <= gen < {length} expected, got {gen}')
-        else:
-            try:
-                return self.gens.index(sympify(gen))
-            except ValueError:
-                raise PolynomialError(
-                    f'a valid generator expected, got {gen}')
+        try:
+            return self.rep.ring.index(gen)
+        except ValueError:
+            raise PolynomialError(f'a valid generator expected, got {gen}')
 
     def degree(self, gen=0):
         """
@@ -1151,7 +1098,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.ring.dmp_ground_TC(self.rep)
+        result = self.rep.coeff(1)
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1279,34 +1226,6 @@ class Poly(Expr):
         EM = self.EM(order)
         return EM, self.coeff_monomial(tuple(EM))
 
-    def max_norm(self):
-        """
-        Returns maximum norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).max_norm()
-        3
-
-        """
-        result = self.rep.max_norm()
-        return self.domain.to_expr(result)
-
-    def l1_norm(self):
-        """
-        Returns l1 norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
-        6
-
-        """
-        result = self.rep.l1_norm()
-        return self.domain.to_expr(result)
-
     def clear_denoms(self, convert=False):
         """
         Clear denominators, but keep the ground domain.
@@ -1322,22 +1241,17 @@ class Poly(Expr):
         (6, Poly(3*x + 2, x, domain='ZZ'))
 
         """
-        f = self
+        dom = self.domain
+        if convert and dom.has_assoc_Ring:
+            dom = self.domain.ring
 
-        if not f.domain.is_Field:
-            return Integer(1), f
+        coeff, result = self.rep.clear_denoms(convert=convert)
+        f = self.per(result)
 
-        dom = f.domain
-        if dom.has_assoc_Ring:
-            dom = f.domain.ring
+        if convert:
+            f = f.set_domain(dom)
 
-        coeff, result = f.rep.clear_denoms()
-        coeff, f = dom.to_expr(coeff), f.per(result)
-
-        if not convert or not dom.has_assoc_Ring:
-            return coeff, f
-        else:
-            return coeff, f.to_ring()
+        return dom.to_expr(coeff), f
 
     def rat_clear_denoms(self, other):
         """
@@ -1602,7 +1516,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        result = F.ring.dup_invert(F, G)
+        result = F.ring.invert(F, G)
         return per(result)
 
     def subresultants(self, other):
@@ -1876,28 +1790,6 @@ class Poly(Expr):
         result = self.rep.shift(a)
         return self.per(result)
 
-    def sturm(self, auto=True):
-        """
-        Computes the Sturm sequence of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 - 2*x**2 + x - 3, x).sturm()
-        [Poly(x**3 - 2*x**2 + x - 3, x, domain='QQ'),
-         Poly(3*x**2 - 4*x + 1, x, domain='QQ'),
-         Poly(2/9*x + 25/9, x, domain='QQ'),
-         Poly(-2079/4, x, domain='QQ')]
-
-        """
-        f = self
-
-        if auto and f.domain.is_Ring:
-            f = f.to_field()
-
-        result = f.rep.sturm()
-        return list(map(f.per, result))
-
     def sqf_norm(self):
         """
         Computes square-free norm of ``self``.
@@ -1976,122 +1868,6 @@ class Poly(Expr):
         return (self.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def intervals(self, all=False, eps=None, inf=None, sup=None, sqf=False):
-        """
-        Compute isolating intervals for roots of ``self``.
-
-        For real roots the Vincent-Akritas-Strzebonski (VAS) continued fractions method is used.
-
-        References
-        ==========
-
-        * :cite:`Alkiviadis2005comp`
-        * :cite:`Alkiviadis2008cf`
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).intervals()
-        [((-2, -1), 1), ((1, 2), 1)]
-        >>> Poly(x**2 - 3, x).intervals(eps=1e-2)
-        [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-        """
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if inf is not None:
-            inf = QQ.convert(inf)
-        if sup is not None:
-            sup = QQ.convert(sup)
-
-        R = self.rep.ring
-
-        if self.is_univariate:
-            if not all:
-                if not sqf:
-                    result = R.dup_isolate_real_roots(self.rep, eps=eps,
-                                                      inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_real_roots_sqf(self.rep,
-                                                          eps=eps, inf=inf,
-                                                          sup=sup)
-            else:
-                if not sqf:
-                    result = R.dup_isolate_all_roots(self.rep, eps=eps,
-                                                     inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_all_roots_sqf(self.rep,
-                                                         eps=eps, inf=inf, sup=sup)
-        else:
-            raise MultivariatePolynomialError("can't isolate roots of a multivariate polynomial")
-
-        if sqf:
-            def _real(interval):
-                s, t = interval
-                return QQ.to_expr(s), QQ.to_expr(t)
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                (u, v), (s, t) = rectangle
-                return (QQ.to_expr(u) + I*QQ.to_expr(v),
-                        QQ.to_expr(s) + I*QQ.to_expr(t))
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
-        else:
-            def _real(interval):
-                (s, t), k = interval
-                return (QQ.to_expr(s), QQ.to_expr(t)), k
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                ((u, v), (s, t)), k = rectangle
-                return ((QQ.to_expr(u) + I*QQ.to_expr(v),
-                         QQ.to_expr(s) + I*QQ.to_expr(t)), k)
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
-
-    def refine_root(self, s, t, eps=None, steps=None, check_sqf=False):
-        """
-        Refine an isolating interval of a root to the given precision.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
-        (19/11, 26/15)
-
-        """
-        if check_sqf and not self.is_squarefree:
-            raise PolynomialError('only square-free polynomials supported')
-
-        s, t = QQ.convert(s), QQ.convert(t)
-
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if steps is not None:
-            steps = int(steps)
-        elif eps is None:
-            steps = 1
-
-        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps)
-        return QQ.to_expr(S), QQ.to_expr(T)
-
     def count_roots(self, inf=None, sup=None):
         """
         Return the number of roots of ``self`` in ``[inf, sup]`` interval.
@@ -2134,7 +1910,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            count = self.rep.ring.dup_count_real_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_real_roots(self.rep, inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)
@@ -2284,66 +2060,6 @@ class Poly(Expr):
             mpmath.mp.dps = dps
 
         return roots
-
-    def ground_roots(self):
-        """
-        Compute roots of ``self`` by factorization in the ground domain.
-
-        Examples
-        ========
-
-        >>> Poly(x**6 - 4*x**4 + 4*x**3 - x**2).ground_roots()
-        {0: 2, 1: 2}
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError(
-                f"can't compute ground roots of {self}")
-
-        roots = {}
-
-        for factor, k in self.factor_list()[1]:
-            if factor.is_linear:
-                a, b = factor.all_coeffs()
-                roots[-b/a] = k
-
-        return roots
-
-    def nth_power_roots_poly(self, n):
-        """
-        Construct a polynomial with n-th powers of roots of ``self``.
-
-        Examples
-        ========
-
-        >>> f = Poly(x**4 - x**2 + 1)
-
-        >>> f.nth_power_roots_poly(2)
-        Poly(x**4 - 2*x**3 + 3*x**2 - 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(3)
-        Poly(x**4 + 2*x**2 + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(4)
-        Poly(x**4 + 2*x**3 + 3*x**2 + 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(12)
-        Poly(x**4 - 4*x**3 + 6*x**2 - 4*x + 1, x, domain='ZZ')
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError('must be a univariate polynomial')
-
-        N = sympify(n)
-
-        if N.is_Integer and N >= 1:
-            n = int(N)
-        else:
-            raise ValueError(f"'n' must an integer and n >= 1, got {n}")
-
-        x = self.gen
-        t = Dummy('t')
-
-        r = self.resultant(self.__class__.from_expr(x**n - t, x, t))
-
-        return r.replace(t, x)
 
     def cancel(self, other, include=False):
         """
@@ -2901,7 +2617,7 @@ def _poly_from_expr(expr, opt):
     except GeneratorsNeeded:
         raise PolificationFailed(opt, orig, expr)
 
-    monoms, coeffs = list(zip(*list(rep.items())))
+    monoms, coeffs = zip(*rep.items())
     domain = opt.domain
 
     if domain is None:
@@ -2989,7 +2705,7 @@ def _parallel_poly_from_expr(exprs, opt):
     all_coeffs = []
 
     for rep in reps:
-        monoms, coeffs = list(zip(*list(rep.items())))
+        monoms, coeffs = zip(*rep.items())
 
         coeffs_list.extend(coeffs)
         all_monoms.append(monoms)
@@ -3959,32 +3675,6 @@ def decompose(f, *gens, **args):
         return result
 
 
-def sturm(f, *gens, **args):
-    """
-    Compute Sturm sequence of ``f``.
-
-    Examples
-    ========
-
-    >>> sturm(x**3 - 2*x**2 + x - 3)
-    [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2*x/9 + 25/9, -2079/4]
-
-    """
-    options.allowed_flags(args, ['auto', 'polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('sturm', 1, exc)
-
-    result = F.sturm(auto=opt.auto)
-
-    if not opt.polys:
-        return [r.as_expr() for r in result]
-    else:
-        return result
-
-
 def sqf_norm(f, *gens, **args):
     """
     Compute square-free norm of ``f``.
@@ -4435,47 +4125,6 @@ def factor(f, *gens, **args):
             raise PolynomialError(msg)
 
 
-def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=False):
-    """
-    Compute isolating intervals for roots of ``f``.
-
-    Examples
-    ========
-
-    >>> intervals(x**2 - 3)
-    [((-2, -1), 1), ((1, 2), 1)]
-    >>> intervals(x**2 - 3, eps=1e-2)
-    [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-    """
-    try:
-        F = Poly(F)
-    except GeneratorsNeeded:
-        return []
-
-    return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
-
-
-def refine_root(f, s, t, eps=None, steps=None, check_sqf=False):
-    """
-    Refine an isolating interval of a root to the given precision.
-
-    Examples
-    ========
-
-    >>> refine_root(x**2 - 3, 1, 2, eps=1e-2)
-    (19/11, 26/15)
-
-    """
-    try:
-        F = Poly(f)
-    except GeneratorsNeeded:
-        raise PolynomialError(
-            f"can't refine a root of {f}, not a polynomial")
-
-    return F.refine_root(s, t, eps=eps, steps=steps, check_sqf=check_sqf)
-
-
 def count_roots(f, inf=None, sup=None):
     """
     Return the number of roots of ``f`` in ``[inf, sup]`` interval.
@@ -4540,62 +4189,6 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
             f"can't compute numerical roots of {f}, not a polynomial")
 
     return F.nroots(n=n, maxsteps=maxsteps, cleanup=cleanup)
-
-
-def ground_roots(f, *gens, **args):
-    """
-    Compute roots of ``f`` by factorization in the ground domain.
-
-    Examples
-    ========
-
-    >>> ground_roots(x**6 - 4*x**4 + 4*x**3 - x**2)
-    {0: 2, 1: 2}
-
-    """
-    options.allowed_flags(args, [])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('ground_roots', 1, exc)
-
-    return F.ground_roots()
-
-
-def nth_power_roots_poly(f, n, *gens, **args):
-    """
-    Construct a polynomial with n-th powers of roots of ``f``.
-
-    Examples
-    ========
-
-    >>> f = x**4 - x**2 + 1
-    >>> g = factor(nth_power_roots_poly(f, 2))
-
-    >>> g
-    (x**2 - x + 1)**2
-
-    >>> R_f = [(r**2).expand() for r in roots(f)]
-    >>> R_g = roots(g)
-
-    >>> set(R_f) == set(R_g)
-    True
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('nth_power_roots_poly', 1, exc)
-
-    result = F.nth_power_roots_poly(n)
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
 
 
 def cancel(f, *gens, **args):

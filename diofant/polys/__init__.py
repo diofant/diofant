@@ -6,10 +6,9 @@ from .polytools import (Poly, PurePoly, poly_from_expr,
                         exquo, half_gcdex, gcdex, invert, subresultants,
                         resultant, discriminant, cofactors, gcd_list, gcd,
                         lcm_list, lcm, terms_gcd, trunc, monic, content,
-                        primitive, compose, decompose, sturm,
+                        primitive, compose, decompose,
                         sqf_norm, sqf_part, sqf_list, sqf, factor_list,
-                        factor, intervals, refine_root, count_roots,
-                        real_roots, nroots, ground_roots, nth_power_roots_poly,
+                        factor, count_roots, real_roots, nroots,
                         cancel, reduced, groebner, GroebnerBasis, poly)
 from .polyfuncs import symmetrize, horner, interpolate, viete
 from .rationaltools import together
@@ -40,8 +39,9 @@ from .orthopolys import (jacobi_poly, chebyshevt_poly,
                          laguerre_poly, spherical_bessel_fn)
 from .partfrac import apart, apart_list, assemble_partfrac_list
 from .polyoptions import Options
-from .rings import PolynomialRing, ring, sring, vring
-from .fields import FractionField, field, vfield
+from .rings import PolynomialRing, ring, sring
+from .fields import FractionField, field
+from .univar import UnivarPolynomialRing
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
@@ -50,9 +50,8 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
            'cofactors', 'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd',
            'trunc', 'monic', 'content', 'primitive', 'compose', 'decompose',
-           'sturm', 'sqf_norm', 'sqf_part', 'sqf_list', 'sqf', 'factor_list',
-           'factor', 'intervals', 'refine_root', 'count_roots', 'real_roots',
-           'nroots', 'ground_roots', 'nth_power_roots_poly', 'cancel',
+           'sqf_norm', 'sqf_part', 'sqf_list', 'sqf', 'factor_list',
+           'factor', 'count_roots', 'real_roots', 'nroots', 'cancel',
            'reduced', 'groebner', 'GroebnerBasis', 'poly', 'symmetrize',
            'horner', 'interpolate', 'viete', 'together', 'BasePolynomialError',
            'ExactQuotientFailed', 'PolynomialDivisionFailed',
@@ -72,4 +71,4 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'chebyshevu_poly', 'hermite_poly', 'legendre_poly',
            'laguerre_poly', 'spherical_bessel_fn', 'apart', 'apart_list',
            'assemble_partfrac_list', 'Options', 'PolynomialRing', 'ring',
-           'sring', 'vring', 'FractionField', 'field', 'vfield')
+           'sring', 'FractionField', 'field', 'UnivarPolynomialRing')

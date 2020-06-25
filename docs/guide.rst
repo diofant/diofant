@@ -69,11 +69,11 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
-       python setup.py test
+       py.test
 
    To check also doctests, run::
 
-       python setup.py test --addopts --doctest-modules
+       py.test --doctest-modules
 
 7. Please also check for potential flaws in your Python code with::
 
@@ -142,4 +142,4 @@ and publish this release tag::
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _flake8: http://flake8.rtfd.io/
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
-.. _mention closed issues: https://help.github.com/en/articles/closing-issues-using-keywords
+.. _mention closed issues: https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue

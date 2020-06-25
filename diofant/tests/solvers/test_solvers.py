@@ -991,8 +991,8 @@ def test_checksol():
     with pytest.warns(UserWarning) as warn:
         assert checksol(sqrt(y**2), sol, warn=True, force=False) is None
     assert len(warn) == 1
-    assert warn[0].message.args[0] == """
-\tWarning: could not verify solution %s.""" % sol
+    assert warn[0].message.args[0] == f"""
+\tWarning: could not verify solution {sol}."""
 
     eq = r - x**2 - y**2
     dict_var_soln = {y: - sqrt(r) / sqrt(tan(t)**2 + 1),

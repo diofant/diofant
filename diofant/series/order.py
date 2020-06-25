@@ -111,10 +111,10 @@ class Order(Expr):
                 point = [Integer(0)]*len(variables)
 
         if not all(isinstance(v, (Dummy, Symbol)) for v in variables):
-            raise TypeError('Variables are not symbols, got %s' % variables)
+            raise TypeError(f'Variables are not symbols, got {variables}')
 
         if len(list(uniq(variables))) != len(variables):
-            raise ValueError('Variables are supposed to be unique symbols, got %s' % variables)
+            raise ValueError(f'Variables are supposed to be unique symbols, got {variables}')
 
         if expr.is_Order:
             expr_vp = dict(expr.args[1:])
@@ -137,7 +137,7 @@ class Order(Expr):
             return nan
 
         if any(x in p.free_symbols for x in variables for p in point):
-            raise ValueError('Got %s as a point.' % point)
+            raise ValueError(f'Got {point} as a point.')
 
         if variables:
             if any(p != point[0] for p in point):
@@ -267,7 +267,7 @@ class Order(Expr):
             if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          'or oo not supported, got %s as a point.' % point)
+                                          f'or oo not supported, got {point} as a point.')
             if order_symbols and order_symbols[0][1] != self.point[0]:
                 raise NotImplementedError(
                     'Multiplying Order at different points is not supported.')
@@ -307,7 +307,7 @@ class Order(Expr):
             if (not all(p == expr.point[0] for p in expr.point) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          'or oo not supported, got %s as a point.' % point)
+                                          f'or oo not supported, got {point} as a point.')
             else:
                 # self and/or expr is O(1):
                 if any(not p for p in [expr.point, self.point]):

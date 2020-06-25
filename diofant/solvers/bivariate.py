@@ -184,7 +184,7 @@ def _solve_lambert(f, symbol, gens):
         rhs = log(rhs)
 
     lhs = factor(lhs, deep=True)
-    # make sure we are inverted as completely as possible
+    # make sure we have inverted as completely as possible
     r = Dummy()
     i, lhs = _invert(lhs - r, symbol)
     rhs = i.xreplace({r: rhs})
@@ -242,8 +242,8 @@ def _solve_lambert(f, symbol, gens):
                 soln = _lambert(expand_log(diff), symbol)
 
     if not soln:
-        raise NotImplementedError('%s does not appear to have a solution in '
-                                  'terms of LambertW' % f)
+        raise NotImplementedError(f'{f} does not appear to have a solution in '
+                                  'terms of LambertW')
 
     return list(ordered(soln))
 

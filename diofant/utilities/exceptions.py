@@ -115,13 +115,13 @@ class DiofantDeprecationWarning(DeprecationWarning):
                 self.fullMessage = '%s has been deprecated since Diofant %s. ' % \
                                    (feature, deprecated_since_version)
             else:
-                self.fullMessage = '%s has been deprecated. ' % feature
+                self.fullMessage = f'{feature} has been deprecated. '
 
         if last_supported_version:
             self.fullMessage += ('It will be last supported in Diofant '
                                  'version %s. ') % last_supported_version
         if useinstead:
-            self.fullMessage += 'Use %s instead. ' % useinstead
+            self.fullMessage += f'Use {useinstead} instead. '
         if issue:
             self.fullMessage += ('See '
                                  'https://github.com/diofant/diofant/issues/%d for more '

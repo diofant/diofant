@@ -109,11 +109,7 @@ class factorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
-
-    def _eval_is_positive(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
+    _eval_is_positive = _eval_is_integer
 
     def _eval_is_composite(self):
         n = self.args[0]
@@ -152,7 +148,7 @@ class subfactorial(CombinatorialFunction):
     ==========
 
     * https://en.wikipedia.org/wiki/Subfactorial
-    * http://mathworld.wolfram.com/Subfactorial.html
+    * https://mathworld.wolfram.com/Subfactorial.html
 
     Examples
     ========
@@ -192,15 +188,11 @@ class subfactorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
+    _eval_is_nonnegative = _eval_is_integer
 
     def _eval_rewrite_as_uppergamma(self, n):
         from .. import uppergamma
         return uppergamma(n + 1, -1)/E
-
-    def _eval_is_nonnegative(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
 
     def _eval_is_odd(self):
         n = self.args[0]
@@ -310,7 +302,7 @@ class RisingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/RisingFactorial.html page.
+    or visit https://mathworld.wolfram.com/RisingFactorial.html page.
 
     Examples
     ========
@@ -385,7 +377,7 @@ class FallingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/FallingFactorial.html page.
+    or visit https://mathworld.wolfram.com/FallingFactorial.html page.
 
     >>> ff(x, 0)
     1

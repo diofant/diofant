@@ -92,7 +92,7 @@ graphviz_output_format = 'svg'
 # should be linked to in this documentation.
 intersphinx_mapping = {
     'python3': ('https://docs.python.org/3/', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
 
@@ -114,7 +114,8 @@ linkcheck_retries = 3
 linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
                     r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
                     r'https://primes.utm.edu/prove/prove2_3.html',
-                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']
+                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html',
+                    r'https://github.com/.*']
 
 # This value controls if docstring for classes or methods, if not explicitly
 # set, is inherited form parents.
@@ -202,7 +203,7 @@ def linkcode_resolve(domain, info):
         lineno = None
 
     if lineno:
-        linespec = '#L%d-L%d' % (lineno, lineno + len(source) - 1)
+        linespec = f'#L{lineno:d}-L{lineno + len(source) - 1:d}'
     else:
         linespec = ''
 
@@ -210,9 +211,9 @@ def linkcode_resolve(domain, info):
 
     blobpath = 'https://github.com/diofant/diofant/blob/'
     if 'dev' in version:
-        return blobpath + 'master/diofant/%s%s' % (fn, linespec)
+        return blobpath + f'master/diofant/{fn}{linespec}'
     else:
-        return blobpath + 'v%s/diofant/%s%s' % (version, fn, linespec)
+        return blobpath + f'v{version}/diofant/{fn}{linespec}'
 
 
 # monkey-patch sphinx

@@ -150,7 +150,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
 
     # Do all the magic to compile, run and validate the test code
     # 1) prepare the temporary working directory, switch to that dir
-    work = tempfile.mkdtemp('_diofant_%s_test' % language, '%s_' % label)
+    work = tempfile.mkdtemp(f'_diofant_{language}_test', f'{label}_')
     oldwork = os.getcwd()
     os.chdir(work)
 
@@ -183,7 +183,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
         f_name = 'main.c'
     else:
         raise NotImplementedError(
-            'FIXME: filename extension unknown for language: %s' % language)
+            f'FIXME: filename extension unknown for language: {language}')
 
     with open(f_name, 'w') as f:
         f.write(
@@ -214,7 +214,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
         os.chdir(oldwork)
         os.rmdir(work)
     else:
-        print('TEST NOT REMOVED: %s' % work, file=sys.stderr)
+        print(f'TEST NOT REMOVED: {work}', file=sys.stderr)
         os.chdir(oldwork)
 
     # 7) Do the assertions in the end

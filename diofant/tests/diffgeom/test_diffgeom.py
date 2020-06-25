@@ -245,7 +245,7 @@ def test_sympyissue_11799():
     M = Manifold('M', n)
     P = Patch('P', M)
 
-    coord = CoordSystem('coord', P, ['x%s' % i for i in range(n)])
+    coord = CoordSystem('coord', P, [f'x{i}' for i in range(n)])
     x = coord.coord_functions()
     dx = coord.base_oneforms()
 

@@ -38,8 +38,7 @@ class Sieve:
     _list = array.array('l', [2, 3, 5, 7, 11, 13])
 
     def __repr__(self):
-        return '<Sieve with %i primes sieved: 2, 3, 5, ... %i, %i>' % \
-            (len(self._list), self._list[-2], self._list[-1])
+        return f'<Sieve with {len(self._list)} primes sieved: 2, 3, 5, ... {self._list[-2]}, {self._list[-1]}>'
 
     def extend(self, n):
         """Grow the sieve to cover all primes <= n (a real number).
@@ -156,7 +155,7 @@ class Sieve:
         test = int(ceiling(n))
         n = int(n)
         if n < 2:
-            raise ValueError('n should be >= 2 but got: %s' % n)
+            raise ValueError(f'n should be >= 2 but got: {n}')
         if n > self._list[-1]:
             self.extend(n)
         b = bisect.bisect(self._list, n)

@@ -133,7 +133,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
             M1 = staircase(N)
             M2 = staircase(D)
-            debug('%s / %s: %s, %s' % (N, D, M1, M2))
+            debug(f'{N} / {D}: {M1}, {M2}')
 
             Cs = symbols('c:%d' % len(M1), cls=Dummy)
             Ds = symbols('d:%d' % len(M2), cls=Dummy)

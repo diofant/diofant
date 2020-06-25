@@ -49,7 +49,6 @@ DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
 class PrecisionExhausted(ArithmeticError):
     """Raised when precision is exhausted."""
 
-    pass
 
 ############################################################################
 #                                                                          #

@@ -75,7 +75,7 @@ def solve_linear_system(system, *symbols, **flags):
 
     for k in list(res):
         s = domain.symbols[domain.index(k)]
-        res[s] = res[k].as_expr()
+        res[s] = domain.to_expr(res[k])
         del res[k]
         if flags.get('simplify', True):
             res[s] = simplify(res[s])
@@ -149,7 +149,7 @@ def solve_poly_system(eqs, *gens, **args):
             f = basis[-1]
             gen = gens[-1]
 
-            zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
+            zeros = {k.doit() for k in f.exclude().all_roots()}
 
             if len(basis) == 1:
                 return [{gen: zero} for zero in zeros]

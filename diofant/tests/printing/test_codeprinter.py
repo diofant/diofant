@@ -17,7 +17,7 @@ def setup_test_printer(**kwargs):
 def test_print_Dummy():
     d = Dummy('d')
     p = setup_test_printer()
-    assert p._print_Dummy(d) == 'd_%i' % d.dummy_index
+    assert p._print_Dummy(d) == f'd_{d.dummy_index:d}'
 
 
 def test_Assignment():

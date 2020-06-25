@@ -541,7 +541,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError('Illegal operator %s in expression' % func)
+        raise ValueError(f'Illegal operator {func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -755,9 +755,8 @@ class Implies(BooleanFunction):
                     newargs.append(x)
             A, B = newargs
         except ValueError:
-            raise ValueError(
-                '%d operand(s) used for an Implies '
-                '(pairs are required): %s' % (len(args), str(args)))
+            raise ValueError(f'{len(args)} operand(s) used for an Implies '
+                             f'(pairs are required): {args!s}')
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -1412,7 +1411,7 @@ def SOPform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     old = None
     new = minterms + dontcares
@@ -1461,7 +1460,7 @@ def POSform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     maxterms = []
     for t in product([0, 1], repeat=len(variables)):

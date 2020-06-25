@@ -107,7 +107,7 @@ class jacobi(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Jacobi_polynomials
-    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * https://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
 
     """
@@ -229,7 +229,7 @@ def jacobi_normalized(n, a, b, x):
     ==========
 
     * https://en.wikipedia.org/wiki/Jacobi_polynomials
-    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * https://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
 
     """
@@ -302,7 +302,7 @@ class gegenbauer(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Gegenbauer_polynomials
-    * http://mathworld.wolfram.com/GegenbauerPolynomial.html
+    * https://mathworld.wolfram.com/GegenbauerPolynomial.html
     * http://functions.wolfram.com/Polynomials/GegenbauerC3/
 
     """
@@ -433,8 +433,8 @@ class chebyshevt(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Chebyshev_polynomial
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
 
@@ -531,8 +531,8 @@ class chebyshevu(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Chebyshev_polynomial
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
 
@@ -612,8 +612,7 @@ class chebyshevt_root(Function):
     @classmethod
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
-            raise ValueError('must have 0 <= k < n, '
-                             'got k = %s and n = %s' % (k, n))
+            raise ValueError(f'must have 0 <= k < n, got k = {k} and n = {n}')
         return cos(pi*(2*k + 1)/(2*n))
 
 
@@ -651,8 +650,7 @@ class chebyshevu_root(Function):
     @classmethod
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
-            raise ValueError('must have 0 <= k < n, '
-                             'got k = %s and n = %s' % (k, n))
+            raise ValueError(f'must have 0 <= k < n, got k = {k} and n = {n}')
         return cos(pi*(k + 1)/(n + 1))
 
 ############################################################################
@@ -702,7 +700,7 @@ class legendre(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Legendre_polynomial
-    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * https://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
 
@@ -731,7 +729,7 @@ class legendre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -792,7 +790,7 @@ class assoc_legendre(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
-    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * https://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
 
@@ -815,9 +813,9 @@ class assoc_legendre(Function):
             return 2**m*sqrt(pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
         if n.is_Number and m.is_Number and n.is_integer and m.is_integer:
             if n.is_negative:
-                raise ValueError('%s : 1st index must be nonnegative integer (got %r)' % (cls, n))
+                raise ValueError(f'{cls} : 1st index must be nonnegative integer (got {n!r})')
             if abs(m) > n:
-                raise ValueError("%s : abs('2nd index') must be <= '1st index' (got %r, %r)" % (cls, n, m))
+                raise ValueError(f"{cls} : abs('2nd index') must be <= '1st index' (got {n!r}, {m!r})")
             return cls._eval_at_order(int(n), abs(int(m))).subs({_x: x})
 
     def fdiff(self, argindex=3):
@@ -880,7 +878,7 @@ class hermite(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Hermite_polynomial
-    * http://mathworld.wolfram.com/HermitePolynomial.html
+    * https://mathworld.wolfram.com/HermitePolynomial.html
     * http://functions.wolfram.com/Polynomials/HermiteH/
 
     """
@@ -903,7 +901,7 @@ class hermite(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -968,7 +966,7 @@ class laguerre(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Laguerre_polynomial
-    * http://mathworld.wolfram.com/LaguerrePolynomial.html
+    * https://mathworld.wolfram.com/LaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
 
@@ -995,7 +993,7 @@ class laguerre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -1069,7 +1067,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
+    * https://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
 
@@ -1098,7 +1096,7 @@ class assoc_laguerre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x, alpha)
 
