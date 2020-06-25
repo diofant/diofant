@@ -164,9 +164,10 @@ def dup_gf_irreducible(n, K):
     Examples
     ========
 
-    >>> dup_gf_irreducible(4, FF(5))  # doctest: +SKIP
+    >>> f = dup_gf_irreducible(4, FF(5))
+    >>> f  # doctest: +SKIP
     [1 mod 5, 2 mod 5, 4 mod 5, 4 mod 5, 3 mod 5]
-    >>> dup_gf_irreducible_p([1, 2, 4, 4, 3], FF(5))
+    >>> dup_gf_irreducible_p(f, FF(5))
     True
 
     """
@@ -254,7 +255,7 @@ def dup_gf_berlekamp(f, K):
 
     >>> R, x = ring('x', FF(5))
     >>> f = (x**4 + 1).to_dense()
-    >>> dup_gf_berlekamp([1, 0, 0, 0, 1], R.domain)
+    >>> dup_gf_berlekamp(f, R.domain)
     [[1 mod 5, 0 mod 5, 2 mod 5], [1 mod 5, 0 mod 5, 3 mod 5]]
 
     References
