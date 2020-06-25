@@ -34,3 +34,5 @@ See the `release milestone <https://github.com/diofant/diofant/milestone/6?close
 for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
+
+* :sympyissue:`19630` ``rsolve`` gives None for linear homogeneous recurrence relation
