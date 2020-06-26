@@ -1219,3 +1219,136 @@ class _Factor:
                         return _sort_factors(factors, multiple=False)
 
         return _sort_factors(factors, multiple=False)
+
+    def _gf_ddf_zassenhaus(self, f):
+        """
+        Cantor-Zassenhaus: Deterministic Distinct Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
+        partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
+        ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
+        list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
+        is an argument to the equal degree factorization routine.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(11))
+        >>> R._gf_ddf_zassenhaus(x**15 - 1)
+        [(x**5 + 10 mod 11, 1), (x**10 + x**5 + 1 mod 11, 2)]
+
+        To obtain factorization into irreducibles, use equal degree factorization
+        procedure (EDF) with each of the factors.
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, algorithm 14.3
+        * :cite:`Geddes1992algorithms`, algorithm 8.8
+
+        See Also
+        ========
+
+        _gf_edf_zassenhaus
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        factors, q = [], domain.order
+        g, x = [self.gens[0]]*2
+
+        for i in range(1, f.degree()//2 + 1):
+            g = pow(g, q, f)
+            h = self.gcd(f, g - x)
+
+            if h != 1:
+                factors.append((h, i))
+
+                f //= h
+                g %= f
+
+        if f != 1:
+            factors += [(f, f.degree())]
+
+        return factors
+
+    def _gf_edf_zassenhaus(self, f, n):
+        """
+        Cantor-Zassenhaus: Probabilistic Equal Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
+        an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
+        irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
+        EDF procedure gives complete factorization over Galois fields.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_edf_zassenhaus(x**3 + x**2 + x + 1, 1)
+        [x + 1 mod 5, x + 2 mod 5, x + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.9
+
+        See Also
+        ========
+
+        _gf_ddf_zassenhaus
+
+        """
+        from .galoistools import dup_gf_random
+
+        assert self.is_univariate
+
+        factors = [f]
+        d = f.degree()
+
+        if d <= n:
+            return factors
+
+        domain = self.domain
+        p, q = domain.characteristic, domain.order
+        N = d // n
+
+        while len(factors) < N:
+            r = self.from_list(dup_gf_random(2*n - 1, domain))
+
+            if p == 2:
+                h = r
+
+                for i in range(1, n):
+                    h += pow(r, q, f)
+            else:
+                h = pow(r, (q**n - 1)//2, f)
+                h -= 1
+
+            g = self.gcd(f, h)
+
+            if g != 1 and g != f:
+                factors = (self._gf_edf_zassenhaus(g, n) +
+                           self._gf_edf_zassenhaus(f // g, n))
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_zassenhaus(self, f):
+        """
+        Factor a square-free polynomial over finite fields of medium order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_zassenhaus(x**2 + 4*x + 3)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        """
+        factors = []
+
+        for factor, n in self._gf_ddf_zassenhaus(f):
+            factors += self._gf_edf_zassenhaus(factor, n)
+
+        return _sort_factors(factors, multiple=False)

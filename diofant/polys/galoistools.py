@@ -212,118 +212,6 @@ def dup_gf_berlekamp(f, K):
     return [_.to_dense() for _ in r]
 
 
-def dup_gf_ddf_zassenhaus(f, K):
-    """
-    Cantor-Zassenhaus: Deterministic Distinct Degree Factorization.
-
-    Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
-    partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
-    ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
-    list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
-    is an argument to the equal degree factorization routine.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(11))
-    >>> f = (x**15 - 1).to_dense()
-    >>> dup_gf_ddf_zassenhaus(f, R.domain)
-    [([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 10 mod 11], 1),
-     ([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 1 mod 11, 0 mod 11,
-       0 mod 11, 0 mod 11, 0 mod 11, 1 mod 11], 2)]
-
-    To obtain factorization into irreducibles, use equal degree factorization
-    procedure (EDF) with each of the factors.
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`, algorithm 14.3
-    * :cite:`Geddes1992algorithms`, algorithm 8.8
-
-    See Also
-    ========
-
-    dup_gf_edf_zassenhaus
-
-    """
-    factors, q = [], K.order
-    g, x = [[K.one, K.zero]]*2
-
-    for i in range(1, dmp_degree_in(f, 0, 0)//2 + 1):
-        g = dup_gf_pow_mod(g, q, f, K)
-        h = dmp_gcd(f, dmp_sub(g, x, 0, K), 0, K)
-
-        if not dmp_one_p(h, 0, K):
-            factors.append((h, i))
-
-            f = dmp_quo(f, h, 0, K)
-            g = dmp_rem(g, f, 0, K)
-
-    if not dmp_one_p(f, 0, K):
-        factors += [(f, dmp_degree_in(f, 0, 0))]
-
-    return factors
-
-
-def dup_gf_edf_zassenhaus(f, n, K):
-    """
-    Cantor-Zassenhaus: Probabilistic Equal Degree Factorization.
-
-    Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
-    an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
-    irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
-    EDF procedure gives complete factorization over Galois fields.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**3 + x**2 + x + 1).to_dense()
-    >>> dup_gf_edf_zassenhaus(f, 1, R.domain)
-    [[1 mod 5, 1 mod 5], [1 mod 5, 2 mod 5], [1 mod 5, 3 mod 5]]
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`, algorithm 8.9
-
-    See Also
-    ========
-
-    dup_gf_ddf_zassenhaus
-
-    """
-    factors = [f]
-
-    if dmp_degree_in(f, 0, 0) <= n:
-        return factors
-
-    p, q = K.characteristic, K.order
-    N = dmp_degree_in(f, 0, 0) // n
-
-    while len(factors) < N:
-        r = dup_gf_random(2*n - 1, K)
-
-        if p == 2:
-            h = r
-
-            for i in range(1, n):
-                r = dup_gf_pow_mod(r, q, f, K)
-                h = dmp_add(h, r, 0, K)
-        else:
-            h = dup_gf_pow_mod(r, (q**n - 1) // 2, f, K)
-            h = dmp_sub(h, [K.one], 0, K)
-
-        g = dmp_gcd(f, h, 0, K)
-
-        if not dmp_one_p(g, 0, K) and g != f:
-            factors = (dup_gf_edf_zassenhaus(g, n, K) +
-                       dup_gf_edf_zassenhaus(dmp_quo(f, g, 0, K), n, K))
-
-    return _sort_factors(factors, multiple=False)
-
-
 def dup_gf_ddf_shoup(f, K):
     """
     Kaltofen-Shoup: Deterministic Distinct Degree Factorization.
@@ -477,24 +365,11 @@ def dup_gf_edf_shoup(f, n, K):
 
 
 def dup_gf_zassenhaus(f, K):
-    """
-    Factor a square-free polynomial over finite fields of medium order.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**2 + 4*x + 3).to_dense()
-    >>> dup_gf_zassenhaus(f, R.domain)
-    [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
-
-    """
-    factors = []
-
-    for factor, n in dup_gf_ddf_zassenhaus(f, K):
-        factors += dup_gf_edf_zassenhaus(factor, n, K)
-
-    return _sort_factors(factors, multiple=False)
+    """Factor a square-free polynomial over finite fields of medium order."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._gf_zassenhaus(f)
+    return [_.to_dense() for _ in r]
 
 
 def dup_gf_shoup(f, K):
