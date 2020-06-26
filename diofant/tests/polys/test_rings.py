@@ -1230,8 +1230,10 @@ def test_PolyElement_mul_monom():
 def test_PolyElement___pow__():
     R, x = ring('x', FF(5))
 
-    assert ((3*x**2 + 2*x + 4)**3 == 2*x**6 + 4*x**5 + 4*x**4 +
-            2*x**3 + 2*x**2 + x + 4)
+    f, g = 3*x**2 + 2*x + 4, x + 1
+
+    assert f**3 == 2*x**6 + 4*x**5 + 4*x**4 + 2*x**3 + 2*x**2 + x + 4
+    assert pow(f, 3, g) == 0
 
     R, x = ring('x', FF(7))
 
@@ -1266,6 +1268,15 @@ def test_PolyElement___pow__():
                      2*x**44 + 10*x**37 + 10*x**34 + 3*x**33 + 10*x**26 +
                      10*x**23 + 3*x**22 + 2*x**15 + 2*x**12 + 5*x**11 +
                      4*x**4 + 4*x + 10)
+
+    g = 2*x**2 + 7
+
+    assert pow(f, 0, g) == 1
+    assert pow(f, 1, g) == x + 1
+    assert pow(f, 2, g) == 2*x + 3
+    assert pow(f, 5, g) == 7*x + 8
+    assert pow(f, 8, g) == x + 5
+    assert pow(f, 45, g) == 5*x + 4
 
     R, x = ring('x', FF(8))
 
