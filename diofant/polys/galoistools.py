@@ -3,7 +3,7 @@
 import math
 import random
 
-from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
+from .densebasic import dmp_degree_in, dmp_one_p
 from .polyconfig import query
 from .polyutils import _sort_factors
 
@@ -204,93 +204,12 @@ def dup_gf_primitive_p(f, K):
     return True
 
 
-def dup_gf_Qmatrix(f, K):
-    """
-    Calculate Berlekamp's ``Q`` matrix.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (3*x**2 + 2*x + 4).to_dense()
-    >>> dup_gf_Qmatrix(f, R.domain)
-    [[1 mod 5, 0 mod 5],
-     [3 mod 5, 4 mod 5]]
-
-    >>> f = (x**4 + 1).to_dense()
-    >>> dup_gf_Qmatrix(f, R.domain)
-    [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
-     [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
-     [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
-     [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`, algorithm 8.5
-
-    """
-    n, q = dmp_degree_in(f, 0, 0), K.order
-
-    r = [K.one] + [K.zero]*(n - 1)
-    Q = [r.copy()] + [[]]*(n - 1)
-
-    for i in range(1, (n - 1)*q + 1):
-        c, r[1:], r[0] = r[-1], r[:-1], K.zero
-        for j in range(n):
-            r[j] -= c*f[-j - 1]
-
-        if not (i % q):
-            Q[i//q] = r.copy()
-
-    return Q
-
-
 def dup_gf_berlekamp(f, K):
-    """
-    Factor a square-free polynomial over finite fields of small order.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = (x**4 + 1).to_dense()
-    >>> dup_gf_berlekamp(f, R.domain)
-    [[1 mod 5, 0 mod 5, 2 mod 5], [1 mod 5, 0 mod 5, 3 mod 5]]
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`, algorithm 8.4
-    * :cite:`Knuth1985seminumerical`, section 4.6.2
-
-    """
-    from .solvers import RawMatrix
-    Q = dup_gf_Qmatrix(f, K)
-    Q = RawMatrix(Q) - RawMatrix.eye(len(Q))
-    V = Q.T.nullspace()
-
-    for i, v in enumerate(V):
-        V[i] = dmp_strip(list(reversed(v)), 0)
-
-    factors = [f]
-
-    for v in V[1:]:
-        for f in list(factors):
-            for s in range(K.order):
-                h = dmp_sub(v, [K(s)], 0, K)
-                g = dmp_gcd(f, h, 0, K)
-
-                if not dmp_one_p(g, 0, K) and g != f:
-                    factors.remove(f)
-
-                    f = dmp_quo(f, g, 0, K)
-                    factors.extend([f, g])
-
-                if len(factors) == len(V):
-                    return _sort_factors(factors, multiple=False)
-
-    return _sort_factors(factors, multiple=False)
+    """Factor a square-free polynomial over finite fields of small order."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    r = ring._gf_berlekamp(f)
+    return [_.to_dense() for _ in r]
 
 
 def dup_gf_ddf_zassenhaus(f, K):

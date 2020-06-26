@@ -1124,3 +1124,98 @@ class _Factor:
             raise ExtraneousFactors
         else:
             return H
+
+    def _gf_Qmatrix(self, f):
+        """
+        Calculate Berlekamp's ``Q`` matrix.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+
+        >>> f = 3*x**2 + 2*x + 4
+        >>> R._gf_Qmatrix(f)
+        [[1 mod 5, 0 mod 5],
+         [3 mod 5, 4 mod 5]]
+
+        >>> f = x**4 + 1
+        >>> R._gf_Qmatrix(f)
+        [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
+         [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
+         [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
+         [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.5
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        r = [domain.one] + [domain.zero]*(n - 1)
+        Q = [r.copy()] + [[]]*(n - 1)
+        f = f.all_coeffs()
+
+        for i in range(1, (n - 1)*q + 1):
+            c, r[1:], r[0] = r[-1], r[:-1], domain.zero
+            for j in range(n):
+                r[j] -= c*f[-j - 1]
+
+            if not (i % q):
+                Q[i//q] = r.copy()
+
+        return Q
+
+    def _gf_berlekamp(self, f):
+        """
+        Factor a square-free polynomial over finite fields of small order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+
+        >>> R._gf_berlekamp(x**4 + 1)
+        [x**2 + 2 mod 5, x**2 + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.4
+        * :cite:`Knuth1985seminumerical`, section 4.6.2
+
+        """
+        from .solvers import RawMatrix
+
+        domain = self.domain
+
+        Q = self._gf_Qmatrix(f)
+        Q = RawMatrix(Q) - RawMatrix.eye(len(Q))
+        V = Q.T.nullspace()
+
+        for i, v in enumerate(V):
+            V[i] = self.from_list(list(reversed(v)))
+
+        factors = [f]
+
+        for v in V[1:]:
+            for f in list(factors):
+                for s in range(domain.order):
+                    h = v - domain(s)
+                    g = self.gcd(f, h)
+
+                    if g != 1 and g != f:
+                        factors.remove(f)
+
+                        f //= g
+                        factors.extend([f, g])
+
+                    if len(factors) == len(V):
+                        return _sort_factors(factors, multiple=False)
+
+        return _sort_factors(factors, multiple=False)
