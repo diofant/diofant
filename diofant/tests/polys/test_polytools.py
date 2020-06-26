@@ -663,6 +663,12 @@ def test_Poly_pow():
     assert Poly(x*y, x, y)**2 == Poly(x**2*y**2, x, y)
     assert Poly(x - 2, x)**2 == Poly(x**2 - 4*x + 4, x)
 
+    f, g = Poly(x**3 + x - 1), Poly(x**3 + 1)
+    r = pow(f, 3, g)
+
+    assert r == f**3 % g
+    assert r == Poly(-6*x**2 + 12*x - 9)
+
 
 def test_Poly_divmod():
     f, g = Poly(x**2), Poly(x)

@@ -2423,14 +2423,17 @@ class Poly(Expr):
 
         return other*self
 
-    @_sympifyit('n', NotImplemented)
-    def __pow__(self, n):
+    def __pow__(self, n, mod=None):
+        if mod:
+            mod = sympify(mod, strict=True)
+        n = sympify(n)
         if n.is_Integer and n >= 0:
             n = int(n)
-            result = self.rep**n
+            result = pow(self.rep, n, mod.rep if mod else mod)
             return self.per(result)
         else:
-            return self.as_expr()**n
+            r = self.as_expr()**n
+            return r % mod if mod else r
 
     @_sympifyit('other', NotImplemented)
     def __divmod__(self, other):

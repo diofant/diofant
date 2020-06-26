@@ -520,7 +520,7 @@ class _Factor:
         x = self.gens[0]
         f = f.monic()
 
-        H = h = x**q % f
+        H = h = pow(x, q, f)
 
         for i in range(n//2):
             g = h - x
@@ -555,7 +555,7 @@ class _Factor:
 
         indices = {n//d for d in factorint(n)}
 
-        H = h = x**q % f
+        H = h = pow(x, q, f)
 
         for i in range(1, n):
             if i in indices:
