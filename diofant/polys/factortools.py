@@ -1352,3 +1352,231 @@ class _Factor:
             factors += self._gf_edf_zassenhaus(factor, n)
 
         return _sort_factors(factors, multiple=False)
+
+    def _gf_ddf_shoup(self, f):
+        """
+        Kaltofen-Shoup: Deterministic Distinct Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
+        partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
+        ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
+        list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
+        is an argument to the equal degree factorization routine.
+
+        Notes
+        =====
+
+        This algorithm is an improved version of Zassenhaus algorithm for
+        large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(3))
+        >>> R._gf_ddf_shoup(x**6 - x**5 + x**4 + x**3 - x)
+        [(x**2 + x, 1), (x**4 + x**3 + x + 2 mod 3, 2)]
+
+        References
+        ==========
+
+        * :cite:`Kaltofen1998subquadratic`, algorithm D
+        * :cite:`Shoup1995factor`
+        * :cite:`Gathen1992frobenious`
+
+        See Also
+        ========
+
+        _gf_edf_shoup
+
+        """
+        domain = self.domain
+        n, q = f.degree(), domain.order
+        k = math.ceil(math.sqrt(n//2))
+        x = self.gens[0]
+
+        h = pow(x, q, f)
+
+        # U[i] = x**(q**i)
+        U = [x, h] + [self.zero]*(k - 1)
+
+        for i in range(2, k + 1):
+            U[i] = U[i - 1].compose(x, h) % f
+
+        h, U = U[k], U[:k]
+        # V[i] = x**(q**(k*(i+1)))
+        V = [h] + [self.zero]*(k - 1)
+
+        for i in range(1, k):
+            V[i] = V[i - 1].compose(x, h) % f
+
+        factors = []
+
+        for i, v in enumerate(V):
+            h, j = self.one, k - 1
+
+            for u in U:
+                g = v - u
+                h *= g
+                h %= f
+
+            g = self.gcd(f, h)
+            f //= g
+
+            for u in reversed(U):
+                h = v - u
+                F = self.gcd(g, h)
+
+                if F != 1:
+                    factors.append((F, k*(i + 1) - j))
+
+                g, j = g // F, j - 1
+
+        if f != 1:
+            factors.append((f, f.degree()))
+
+        return factors
+
+    def _gf_trace_map(self, a, b, c, n, f):
+        """
+        Compute polynomial trace map in ``GF(q)[x]/(f)``.
+
+        Given a polynomial ``f`` in ``GF(q)[x]``, polynomials ``a``, ``b``,
+        ``c`` in the quotient ring ``GF(q)[x]/(f)`` such that ``b = c**t
+        (mod f)`` for some positive power ``t`` of ``q``, and a positive
+        integer ``n``, returns a mapping::
+
+           a -> a**t**n, a + a**t + a**t**2 + ... + a**t**n (mod f)
+
+        In factorization context, ``b = x**q mod f`` and ``c = x mod f``.
+        This way we can efficiently compute trace polynomials in equal
+        degree factorization routine, much faster than with other methods,
+        like iterated Frobenius algorithm, for large degrees.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> a = x + 2
+        >>> b = 4*x + 4
+        >>> c = x + 1
+        >>> f = 3*x**2 + 2*x + 4
+        >>> R._gf_trace_map(a, b, c, 4, f)
+        (x + 3 mod 5, x + 3 mod 5)
+
+        References
+        ==========
+
+        * :cite:`Gathen1992ComputingFM`, algorithm 5.2
+
+        """
+        u = a.compose(0, b) % f
+        v = b
+
+        if n & 1:
+            U = a + u
+            V = b
+        else:
+            U = a
+            V = c
+
+        n >>= 1
+
+        while n:
+            u = u + (u.compose(0, v) % f)
+            v = v.compose(0, v) % f
+
+            if n & 1:
+                U = U + (u.compose(0, V) % f)
+                V = v.compose(0, V) % f
+
+            n >>= 1
+
+        return a.compose(0, V) % f, U
+
+    def _gf_edf_shoup(self, f, n):
+        """
+        Gathen-Shoup: Probabilistic Equal Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
+        an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
+        irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
+        EDF procedure gives complete factorization over Galois fields.
+
+        Notes
+        =====
+
+        This algorithm is an improved version of Zassenhaus algorithm for
+        large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(2917))
+        >>> R._gf_edf_shoup(x**2 + 2837*x + 2277, 1)
+        [x + 852 mod 2917, x + 1985 mod 2917]
+
+        References
+        ==========
+
+        * :cite:`Shoup1991ffactor`
+        * :cite:`Gathen1992ComputingFM`, algorithm 3.6
+
+        See Also
+        ========
+
+        _gf_ddf_shoup
+
+        """
+        from .galoistools import dup_gf_random
+
+        domain = self.domain
+        q, p = domain.order, domain.characteristic
+        N = f.degree()
+
+        if not N:
+            return []
+        if N <= n:
+            return [f]
+
+        factors, x = [f], self.gens[0]
+
+        r = self.from_list(dup_gf_random(N - 1, domain))
+
+        h = pow(x, q, f)
+        H = self._gf_trace_map(r, h, x, n - 1, f)[1]
+
+        if p == 2:
+            h1 = self.gcd(f, H)
+            h2 = f // h1
+
+            factors = self._gf_edf_shoup(h1, n) + self._gf_edf_shoup(h2, n)
+        else:
+            h = pow(H, (q - 1)//2, f)
+
+            h1 = self.gcd(f, h)
+            h2 = self.gcd(f, h - 1)
+            h3 = f // (h1 * h2)
+
+            factors = (self._gf_edf_shoup(h1, n) + self._gf_edf_shoup(h2, n) +
+                       self._gf_edf_shoup(h3, n))
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_shoup(self, f):
+        """
+        Factor a square-free polynomial over finite fields of large order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_shoup(x**2 + 4*x + 3)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        """
+        factors = []
+
+        for factor, n in self._gf_ddf_shoup(f):
+            factors += self._gf_edf_shoup(factor, n)
+
+        return _sort_factors(factors, multiple=False)

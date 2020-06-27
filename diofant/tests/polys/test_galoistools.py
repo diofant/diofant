@@ -1,24 +1,9 @@
 from diofant import FF, ring
 from diofant.polys.galoistools import (dup_gf_compose_mod, dup_gf_irreducible,
-                                       dup_gf_pow_mod, dup_gf_primitive_p,
-                                       dup_gf_trace_map)
+                                       dup_gf_primitive_p, dup_gf_trace_map)
 
 
 __all__ = ()
-
-
-def test_gf_powering():
-    R, x = ring('x', FF(11))
-
-    f = (x**4 + x + 8).to_dense()
-    g = (2*x**2 + 7).to_dense()
-
-    assert dup_gf_pow_mod(f, 0, g, R.domain) == [1]
-    assert dup_gf_pow_mod(f, 1, g, R.domain) == [1, 1]
-    assert dup_gf_pow_mod(f, 2, g, R.domain) == [2, 3]
-    assert dup_gf_pow_mod(f, 5, g, R.domain) == [7, 8]
-    assert dup_gf_pow_mod(f, 8, g, R.domain) == [1, 5]
-    assert dup_gf_pow_mod(f, 45, g, R.domain) == [5, 4]
 
 
 def test_dup_gf_compose_mod():
@@ -40,10 +25,12 @@ def test_dup_gf_compose_mod():
 def test_dup_gf_trace_map():
     R, x = ring('x', FF(11))
 
-    f = (x**4 + x**3 + 4*x**2 + 9*x + 1).to_dense()
-    a = (x**2 + x + 1).to_dense()
-    c = x.to_dense()
-    b = dup_gf_pow_mod(c, 11, f, R.domain)
+    f = x**4 + x**3 + 4*x**2 + 9*x + 1
+    a = x**2 + x + 1
+    c = x
+    b = pow(c, 11, f)
+
+    f, a, b, c = map(lambda _: _.to_dense(), (f, a, b, c))
 
     assert dup_gf_trace_map(a, b, c, 0, f, R.domain) == ([1, 1, 1], [1, 1, 1])
     assert dup_gf_trace_map(a, b, c, 1, f, R.domain) == ([5, 2, 10, 3], [5, 3, 0, 4])
