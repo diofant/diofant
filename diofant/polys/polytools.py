@@ -4394,7 +4394,7 @@ class GroebnerBasis(Basic):
                  for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
-        G = [Poly._from_dict(g, opt) for g in G]
+        G = [Poly._from_dict(dict(g), opt) for g in G]
 
         return cls._new(G, opt)
 
