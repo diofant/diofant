@@ -1,12 +1,13 @@
 """Tests for functions for generating interesting polynomials."""
 
+import random
+
 import pytest
 
-from diofant import (Poly, cyclotomic_poly, interpolating_poly, random_poly,
-                     swinnerton_dyer_poly, symbols, symmetric_poly)
+from diofant import (ZZ, Poly, cyclotomic_poly, interpolating_poly,
+                     random_poly, ring, swinnerton_dyer_poly, symbols,
+                     symmetric_poly)
 from diofant.abc import x, y, z
-from diofant.polys.specialpolys import (fateman_poly_F_1, fateman_poly_F_2,
-                                        fateman_poly_F_3)
 
 
 __all__ = ()
@@ -66,6 +67,41 @@ def test_random_poly():
     assert poly.degree() == 10
     assert all(-100 <= coeff <= 100 for coeff in poly.coeffs()) is True
 
+    poly = random_poly(x, 0, -10, 10, polys=True)
+
+    assert poly.degree() == 0
+    assert all(-10 <= c <= 10 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 1, -20, 20, polys=True)
+
+    assert poly.degree() == 1
+    assert all(-20 <= c <= 20 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 2, -30, 30, polys=True)
+
+    assert poly.degree() == 2
+    assert all(-30 <= c <= 30 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 3, -40, 40, polys=True)
+
+    assert poly.degree() == 3
+    assert all(-40 <= c <= 40 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 3, -400, 400, polys=True)
+
+    assert poly.degree() == 3
+    assert all(-400 <= c <= 400 for c in poly.all_coeffs())
+
+    random.seed(11)
+    assert random_poly(x, 10, -1, 1, polys=True).all_coeffs() == [1, 0, 0, -1,
+                                                                  0, 0, -1, 1,
+                                                                  1, 0, 1]
+
+    for i in range(10):
+        poly = random_poly(x, 3, -10, 10, percent=50, polys=True)
+        assert poly.all_coeffs()[0]
+        assert len([c for c in poly.all_coeffs() if c == 0]) == 2
+
 
 def test_interpolating_poly():
     x0, x1, x2, y0, y1, y2 = symbols('x:3, y:3')
@@ -83,112 +119,57 @@ def test_interpolating_poly():
 
 
 def test_fateman_poly_F_1():
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_1(1))
+    R, x, y = ring('x y', ZZ)
 
-    assert f == [[1], [2, 3], [1, 3, 2]]
-    assert g == [[-3, 0], [], [-3, 1, -3, -1], [], [1, 0, 0, 0, -1]]
-    assert h == [[1]]
+    f, g, h = R.fateman_poly_F_1()
 
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_1(3))
+    assert f == (1 + sum(R.gens))*(2 + sum(R.gens))
+    assert g == (1 + sum(_**2 for _ in R.gens))*(-3*y*x**2 + y**2 - 1)
+    assert h == 1
 
-    assert f == [[[[1]]], [[[2]], [[2], [2, 3]]],
-                 [[[1]], [[2], [2, 3]], [[1], [2, 3], [1, 3, 2]]]]
-    assert g == [[[[-3]], [[]]], [[[]]],
-                 [[[-3]], [[1]], [[-3], [], [-3, 0, -3]], [[-1]]],
-                 [[[]]], [[[1]], [[]], [[1], [], [1, 0, 0]],
-                          [[]], [[-1], [], [-1, 0, -1]]]]
-    assert h == [[[[1]]]]
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f, g, h = R.fateman_poly_F_1()
+
+    assert f == (1 + sum(R.gens))*(2 + sum(R.gens))
+    assert g == (1 + sum(_**2 for _ in R.gens))*(-3*y*x**2 + y**2 - 1)
 
 
 def test_fateman_poly_F_2():
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_2(1))
+    R, x, y = ring('x y', ZZ)
 
-    assert f == [[1], [-2], [-2, -6, -3], [2, 6, 4], [1, 6, 13, 12, 4]]
-    assert g == [[1], [4, 6], [6, 18, 13], [4, 18, 26, 12], [1, 6, 13, 12, 4]]
-    assert h == [[1], [2, 2], [1, 2, 1]]
+    f, g, h = R.fateman_poly_F_2()
+    D = (1 + sum(R.gens))**2
 
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_2(3))
+    assert f == D*(-2 + x - sum(R.gens[1:]))**2
+    assert g == D*(2 + sum(R.gens))**2
+    assert h == D
 
-    assert f == [[[[1]]], [[[-2]]], [[[-2]], [[-4], [-4, -6]],
-                                     [[-2], [-4, -6], [-2, -6, -3]]],
-                 [[[2]], [[4], [4, 6]], [[2], [4, 6], [2, 6, 4]]],
-                 [[[1]], [[4], [4, 6]], [[6], [12, 18], [6, 18, 13]],
-                  [[4], [12, 18], [12, 36, 26], [4, 18, 26, 12]],
-                  [[1], [4, 6], [6, 18, 13], [4, 18, 26, 12],
-                   [1, 6, 13, 12, 4]]]]
-    assert g == [[[[1]]], [[[4]], [[4], [4, 6]]],
-                 [[[6]], [[12], [12, 18]], [[6], [12, 18], [6, 18, 13]]],
-                 [[[4]], [[12], [12, 18]], [[12], [24, 36], [12, 36, 26]],
-                  [[4], [12, 18], [12, 36, 26], [4, 18, 26, 12]]],
-                 [[[1]], [[4], [4, 6]], [[6], [12, 18], [6, 18, 13]],
-                  [[4], [12, 18], [12, 36, 26], [4, 18, 26, 12]],
-                  [[1], [4, 6], [6, 18, 13], [4, 18, 26, 12],
-                   [1, 6, 13, 12, 4]]]]
-    assert h == [[[[1]]], [[[2]], [[2], [2, 2]]],
-                 [[[1]], [[2], [2, 2]], [[1], [2, 2], [1, 2, 1]]]]
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f, g, h = R.fateman_poly_F_2()
+    D = (1 + sum(R.gens))**2
+
+    assert f == D*(-2 + x - sum(R.gens[1:]))**2
+    assert g == D*(2 + sum(R.gens))**2
+    assert h == D
 
 
 def test_fateman_poly_F_3():
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_3(1))
+    R, x, y = ring('x y', ZZ)
 
-    assert f == [[1], [], [-2], [], [-2, 0, -6, 0, -3], [],
-                 [2, 0, 6, 0, 4], [], [1, 0, 6, 0, 13, 0, 12, 0, 4]]
-    assert g == [[1], [], [4, 0, 6], [], [6, 0, 18, 0, 13], [],
-                 [4, 0, 18, 0, 26, 0, 12], [], [1, 0, 6, 0, 13, 0, 12, 0, 4]]
-    assert h == [[1], [], [2, 0, 2], [], [1, 0, 2, 0, 1]]
+    f, g, h = R.fateman_poly_F_3()
+    D = (1 + sum(_**R.ngens for _ in R.gens))**2
 
-    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_3(3))
+    assert f == D*(-2 + x**R.ngens - sum(_**R.ngens for _ in R.gens[1:]))**2
+    assert g == D*(+2 + sum(_**R.ngens for _ in R.gens))**2
+    assert h == D
 
-    assert f == [[[[1]]], [[[]]], [[[]]], [[[]]], [[[-2]]], [[[]]], [[[]]],
-                 [[[]]], [[[-2]], [[]], [[]], [[]],
-                          [[-4], [], [], [], [-4, 0, 0, 0, -6]], [[]], [[]],
-                          [[]], [[-2], [], [], [], [-4, 0, 0, 0, -6], [], [],
-                                 [], [-2, 0, 0, 0, -6, 0, 0, 0, -3]]],
-                 [[[]]], [[[]]], [[[]]],
-                 [[[2]], [[]], [[]], [[]],
-                  [[4], [], [], [], [4, 0, 0, 0, 6]], [[]], [[]], [[]],
-                  [[2], [], [], [], [4, 0, 0, 0, 6], [], [], [],
-                   [2, 0, 0, 0, 6, 0, 0, 0, 4]]],
-                 [[[]]], [[[]]], [[[]]],
-                 [[[1]], [[]], [[]], [[]],
-                  [[4], [], [], [], [4, 0, 0, 0, 6]], [[]], [[]], [[]],
-                  [[6], [], [], [], [12, 0, 0, 0, 18], [], [], [],
-                   [6, 0, 0, 0, 18, 0, 0, 0, 13]], [[]], [[]], [[]],
-                  [[4], [], [], [], [12, 0, 0, 0, 18], [], [], [],
-                   [12, 0, 0, 0, 36, 0, 0, 0, 26], [], [], [],
-                   [4, 0, 0, 0, 18, 0, 0, 0, 26, 0, 0, 0, 12]],
-                  [[]], [[]], [[]],
-                  [[1], [], [], [], [4, 0, 0, 0, 6], [], [],
-                   [], [6, 0, 0, 0, 18, 0, 0, 0, 13], [], [], [],
-                   [4, 0, 0, 0, 18, 0, 0, 0, 26, 0, 0, 0, 12], [], [], [],
-                   [1, 0, 0, 0, 6, 0, 0, 0, 13, 0, 0, 0, 12, 0, 0, 0, 4]]]]
-    assert g == [[[[1]]], [[[]]], [[[]]], [[[]]],
-                 [[[4]], [[]], [[]], [[]], [[4], [], [], [], [4, 0, 0, 0, 6]]],
-                 [[[]]], [[[]]], [[[]]],
-                 [[[6]], [[]], [[]], [[]],
-                  [[12], [], [], [], [12, 0, 0, 0, 18]], [[]], [[]], [[]],
-                  [[6], [], [], [], [12, 0, 0, 0, 18], [], [], [],
-                   [6, 0, 0, 0, 18, 0, 0, 0, 13]]], [[[]]], [[[]]], [[[]]],
-                 [[[4]], [[]], [[]], [[]], [[12], [], [], [], [12, 0, 0, 0, 18]],
-                  [[]], [[]], [[]], [[12], [], [], [], [24, 0, 0, 0, 36], [], [], [],
-                  [12, 0, 0, 0, 36, 0, 0, 0, 26]], [[]], [[]], [[]],
-                  [[4], [], [], [], [12, 0, 0, 0, 18], [], [], [],
-                   [12, 0, 0, 0, 36, 0, 0, 0, 26], [], [], [],
-                   [4, 0, 0, 0, 18, 0, 0, 0, 26, 0, 0, 0, 12]]], [[[]]], [[[]]],
-                 [[[]]], [[[1]], [[]], [[]], [[]], [[4], [], [], [], [4, 0, 0, 0, 6]],
-                 [[]], [[]], [[]], [[6], [], [], [], [12, 0, 0, 0, 18],
-                                    [], [], [], [6, 0, 0, 0, 18, 0, 0, 0, 13]],
-                 [[]], [[]], [[]],
-                 [[4], [], [], [], [12, 0, 0, 0, 18], [], [], [],
-                  [12, 0, 0, 0, 36, 0, 0, 0, 26], [], [], [],
-                  [4, 0, 0, 0, 18, 0, 0, 0, 26, 0, 0, 0, 12]], [[]], [[]], [[]],
-                 [[1], [], [], [], [4, 0, 0, 0, 6], [], [], [],
-                  [6, 0, 0, 0, 18, 0, 0, 0, 13], [], [], [],
-                  [4, 0, 0, 0, 18, 0, 0, 0, 26, 0, 0, 0, 12],
-                  [], [], [], [1, 0, 0, 0, 6, 0, 0, 0, 13, 0, 0, 0, 12, 0, 0, 0, 4]]]]
-    assert h == [[[[1]]], [[[]]], [[[]]], [[[]]],
-                 [[[2]], [[]], [[]], [[]], [[2], [], [], [], [2, 0, 0, 0, 2]]],
-                 [[[]]], [[[]]], [[[]]], [[[1]], [[]], [[]], [[]],
-                 [[2], [], [], [], [2, 0, 0, 0, 2]], [[]], [[]], [[]],
-                 [[1], [], [], [], [2, 0, 0, 0, 2], [], [], [],
-                  [1, 0, 0, 0, 2, 0, 0, 0, 1]]]]
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f, g, h = R.fateman_poly_F_3()
+    D = (1 + sum(_**R.ngens for _ in R.gens))**2
+
+    assert f == D*(-2 + x**R.ngens - sum(_**R.ngens for _ in R.gens[1:]))**2
+    assert g == D*(+2 + sum(_**R.ngens for _ in R.gens))**2
+    assert h == D

@@ -42,15 +42,7 @@ may be slightly more efficient.)
 .. automodule:: diofant.polys.densebasic
     :members:
 
-**Arithmetic operations:**
-
-.. automodule:: diofant.polys.densearith
-    :members:
-
 **Further tools:**
-
-.. automodule:: diofant.polys.densetools
-    :members:
 
 .. automodule:: diofant.polys.rootisolation
     :members:
@@ -86,6 +78,11 @@ Sparse polynomials are represented as dictionaries.
 .. autofunction:: sring
 
 .. autoclass:: PolyElement
+   :members:
+
+.. currentmodule:: diofant.polys.univar
+
+.. autoclass:: UnivarPolyElement
    :members:
 
 Polynomial factorization algorithms
@@ -156,8 +153,6 @@ This leads to an equation
 analogous to `Bézout's identity
 <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_
 in the case of integers.
-
-.. autofunction:: dup_gcdex
 
 Simplified remainder sequences
 ------------------------------
@@ -316,10 +311,6 @@ are computed as by-products of the algorithm, all but `s_{n_k}(f,g)`
 which is not needed after finding `f_{k+1} = 0`.
 Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
-
-.. autofunction:: dmp_resultant
-.. autofunction:: dmp_gcd
-.. autofunction:: dmp_primitive
 
 Polynomial factorization in characteristic zero:
 

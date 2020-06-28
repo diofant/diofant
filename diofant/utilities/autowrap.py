@@ -81,8 +81,6 @@ from .lambdify import implemented_function
 class CodeWrapError(Exception):
     """Generic code wrapping error."""
 
-    pass
-
 
 class CodeWrapper:
     """Base Class for code wrappers."""
@@ -432,8 +430,8 @@ def _validate_backend_language(backend, language):
     if not langs:
         raise ValueError('Unrecognized backend: ' + backend)
     if language.upper() not in langs:
-        raise ValueError(('Backend {0} and language {1} are '
-                          'incompatible').format(backend, language))
+        raise ValueError(f'Backend {backend} and language {language} are '
+                         'incompatible')
 
 
 @cacheit

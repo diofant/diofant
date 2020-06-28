@@ -73,8 +73,6 @@ class AppliedFunction:
 class ParenthesisGroup(list):
     """List of tokens representing an expression in parentheses."""
 
-    pass
-
 
 def _flatten(result):
     result2 = []

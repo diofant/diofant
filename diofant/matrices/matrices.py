@@ -25,19 +25,13 @@ def _iszero(x):
 class MatrixError(Exception):
     """Generic matrix error."""
 
-    pass
-
 
 class ShapeError(ValueError, MatrixError):
     """Wrong matrix shape."""
 
-    pass
-
 
 class NonSquareMatrixError(ShapeError):
     """Raised when a square matrix is expected."""
-
-    pass
 
 
 class MatrixBase(DefaultPrinting):
@@ -674,8 +668,8 @@ class MatrixBase(DefaultPrinting):
         if self.rows == 0 or self.cols == 0:
             return f'Matrix({self.rows}, {self.cols}, [])'
         if self.rows == 1:
-            return 'Matrix([%s])' % self.table(printer, rowsep=',\n')
-        return 'Matrix([\n%s])' % self.table(printer, rowsep=',\n')
+            return 'Matrix([%s])' % self.table(printer, rowsep=',\n')  # noqa: SFS101
+        return 'Matrix([\n%s])' % self.table(printer, rowsep=',\n')  # noqa: SFS101
 
     def _repr_pretty_(self, p, cycle):
         from ..printing import pretty

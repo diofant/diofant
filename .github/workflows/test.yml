@@ -28,24 +28,26 @@ jobs:
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
-        flake8
-        flake8-rst
-        pylint -j1 diofant
+        flake8-rst --statistics
+        flake8-rst --ignore= --statistics --exit-zero
+        flake8 --statistics
+        flake8 --ignore= --statistics --exit-zero
+        pylint diofant
     - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      run: python setup.py test
+      run: py.test
     - name: Tests
       if: matrix.python-version != 3.7
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
-      run: python setup.py test
+      run: py.test
     - name: Coverage tests
       if: matrix.python-version == 3.7
       env:
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
-        python setup.py test
+        py.test
     - name: Extra coverage tests
       if: matrix.python-version == 3.7
       env:

@@ -75,8 +75,6 @@ def _coeff_isneg(a):
 class PoleError(Exception):
     """Raised when an expansion pole is encountered."""
 
-    pass
-
 
 class ArgumentIndexError(ValueError):
     """Raised when an invalid operation for positional argument happened."""

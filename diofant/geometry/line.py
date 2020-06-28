@@ -27,8 +27,6 @@ from .util import _symbol
 class Undecidable(ValueError):
     """Raised when can't decide on relation."""
 
-    pass
-
 
 class LinearEntity(GeometrySet):
     """A base class for all linear entities (line, ray and segment)

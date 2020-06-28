@@ -17,9 +17,8 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      groebner, half_gcdex, im, invert, lcm, lcm_list, lex,
                      monic, nroots, oo, parallel_poly_from_expr, pi, poly,
                      prem, primitive, quo, re, real_roots, reduced, rem,
-                     resultant, ring, sin, sqf, sqf_list, sqf_norm, sqf_part,
-                     sqrt, subresultants, symbols, tanh, terms_gcd, true,
-                     trunc)
+                     resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
+                     subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -663,6 +662,12 @@ def test_Poly_pow():
     assert Poly(x - 2, x)**3 == Poly(x**3 - 6*x**2 + 12*x - 8)
     assert Poly(x*y, x, y)**2 == Poly(x**2*y**2, x, y)
     assert Poly(x - 2, x)**2 == Poly(x**2 - 4*x + 4, x)
+
+    f, g = Poly(x**3 + x - 1), Poly(x**3 + 1)
+    r = pow(f, 3, g)
+
+    assert r == f**3 % g
+    assert r == Poly(-6*x**2 + 12*x - 9)
 
 
 def test_Poly_divmod():
@@ -1673,10 +1678,6 @@ def test_gcdex():
     pytest.raises(DomainError, lambda: half_gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: gcdex(x + 1, 2*x + 1, auto=False))
     pytest.raises(DomainError, lambda: invert(x + 1, 2*x + 1, auto=False))
-
-    R, y, z = ring('y,z', QQ)
-    pytest.raises(MultivariatePolynomialError, lambda: (y + z).half_gcdex(y - z))
-    pytest.raises(MultivariatePolynomialError, lambda: (y + z).gcdex(y - z))
 
 
 def test_subresultants():
@@ -2848,7 +2849,8 @@ def test_dimension_and_independent_sets():
          15*L7*(L1*(5*L1 - 3*L2 + L3)) + (L1*(2*L6 - 4*L4))*(5*L4 - 2*L5) + L1*L7*(-120*L1 + 30*L2 - 6*L3)/2,
          -3*(L1*(5*L1 - 3*L2 + L3))*L7 + (L1*(2*L6 - 4*L4))*(-L4/2 + L5/4 - L6/2) + L1*L7/2*(24*L1 - 6*L2),
          3*(L1*(2*L6 - 4*L4))*L7 + L1*L7*(40*L4 - 8*L5 + 4*L6)/2)
-    G.independent_sets == [[L5, L3, L2], [L6, L3]]
+    G = groebner(S, V, domain=QQ)
+    assert G.independent_sets == [[L5, L3, L2], [L6, L3]]
     assert G.dimension == 3
 
     # Algebraic Solution of Nonlinear Equation Systems in REDUCE, p.7.

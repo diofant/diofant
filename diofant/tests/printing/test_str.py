@@ -31,7 +31,7 @@ d = Dummy('d')
 def test_printmethod():
     class R(Abs):
         def _diofantstr(self, printer):
-            return 'foo(%s)' % printer._print(self.args[0])
+            return f'foo({printer._print(self.args[0])})'
     assert sstr(R(x)) == 'foo(x)'
 
     class R(Abs):

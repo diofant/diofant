@@ -665,7 +665,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         """
         if not is_sequence(value):
-            raise TypeError('`value` must be an ordered iterable, not %s.' % type(value))
+            raise TypeError(f'`value` must be an ordered iterable, not {type(value)}.')
         return self.copyin_matrix(key, MutableMatrix(value))
 
     def zip_row_op(self, i, k, f):
@@ -968,7 +968,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
     from numpy import empty, ndindex
     arr = empty(shape, dtype=object)
     for index in ndindex(shape):
-        arr[index] = Symbol('%s_%s' % (prefix, '_'.join(map(str, index))),
+        arr[index] = Symbol(f"{prefix}_{'_'.join(map(str, index))}",
                             **kwargs)
     return arr
 
@@ -1274,7 +1274,7 @@ def diag(*values, **kwargs):
         from . import Matrix as cls  # noqa: N813
 
     if kwargs:
-        raise ValueError('unrecognized keyword%s: %s' % (
+        raise ValueError('unrecognized keyword%s: %s' % (  # noqa: SFS101
             's' if len(kwargs) > 1 else '',
             ', '.join(kwargs)))
     rows = 0

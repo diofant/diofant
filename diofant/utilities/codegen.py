@@ -319,13 +319,9 @@ class Argument(Variable):
 
     """
 
-    pass
-
 
 class InputArgument(Argument):
     """Input argument class."""
-
-    pass
 
 
 class ResultBase:

@@ -590,13 +590,11 @@ def probability(condition, given_condition=None, numsamples=None,
 
     if given_condition is not None and \
             not isinstance(given_condition, (Relational, Boolean)):
-        raise ValueError('%s is not a relational or combination of relationals'
-                         % (given_condition))
+        raise ValueError(f'{given_condition} is not a relational or combination of relationals')
     if given_condition == false:
         return Integer(0)
     if not isinstance(condition, (Relational, Boolean)):
-        raise ValueError('%s is not a relational or combination of relationals'
-                         % condition)
+        raise ValueError(f'{condition} is not a relational or combination of relationals')
     if condition == true:
         return Integer(1)
     if condition == false:
@@ -1017,8 +1015,7 @@ class NamedArgsMixin:
         try:
             return self.args[self._argnames.index(attr)]
         except ValueError:
-            raise AttributeError("'%s' object has not attribute '%s'" % (
-                type(self).__name__, attr))
+            raise AttributeError(f"'{type(self).__name__}' object has not attribute '{attr}'")
 
 
 def _value_check(condition, message):

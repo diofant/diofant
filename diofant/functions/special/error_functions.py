@@ -1889,11 +1889,11 @@ class Chi(TrigonometricIntegral):
 
     def _latex(self, printer, exp=None):
         if exp:
-            return r'\operatorname{Chi}^{%s}{\left (%s \right )}' \
-                % (printer._print(exp), printer._print(self.args[0]))
+            return (r'\operatorname{Chi}^{%s}{\left (%s \right )}'  # noqa: SFS101
+                    % (printer._print(exp), printer._print(self.args[0])))
         else:
-            return r'\operatorname{Chi}{\left (%s \right )}' \
-                % printer._print(self.args[0])
+            return (r'\operatorname{Chi}{\left (%s \right )}'  # noqa: SFS101
+                    % printer._print(self.args[0]))
 
     @staticmethod
     def _latex_no_arg(printer):

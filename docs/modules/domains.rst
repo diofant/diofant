@@ -62,6 +62,9 @@ Concrete Domains
 .. autoclass:: diofant.polys.rings.PolynomialRing
    :members:
 
+.. autoclass:: diofant.polys.univar.UnivarPolynomialRing
+   :members:
+
 .. autoclass:: diofant.polys.fields.FractionField
    :members:
 

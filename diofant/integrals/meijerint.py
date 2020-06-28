@@ -295,8 +295,6 @@ def _mytype(f, x):
 class _CoeffExpValueError(ValueError):
     """Exception raised by _get_coeff_exp, for internal use only."""
 
-    pass
-
 
 def _get_coeff_exp(expr, x):
     """

@@ -352,8 +352,6 @@ class AssocOp(Expr):
 class ShortCircuit(Exception):
     """Helper exception to detect absorbing element among arguments."""
 
-    pass
-
 
 class LatticeOp(AssocOp):
     """
@@ -404,7 +402,7 @@ class LatticeOp(AssocOp):
         else:
             _args = frozenset(args)
 
-        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj = super(AssocOp, cls).__new__(cls, _args)  # pylint: disable=bad-super-call
         obj._argset = _args
         return obj
 

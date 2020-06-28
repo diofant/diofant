@@ -667,7 +667,6 @@ class NonElementaryIntegralException(Exception):
 
     # TODO: Pass through information about why the integral was nonelementary,
     # and store that in the resulting NonElementaryIntegral somehow.
-    pass
 
 
 def gcdex_diophantine(a, b, c):
@@ -1566,7 +1565,6 @@ class NonElementaryIntegral(Integral):
     # elementary. But should we do more?  Perhaps a no-op .doit() if
     # elementary=True?  Or maybe some information on why the integral is
     # nonelementary.
-    pass
 
 
 def risch_integrate(f, x, extension=None, handle_first='log',

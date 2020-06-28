@@ -1098,7 +1098,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.ring.dmp_ground_TC(self.rep)
+        result = self.rep.coeff(1)
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1910,7 +1910,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            count = self.rep.ring.dup_count_real_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_real_roots(self.rep, inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)
@@ -2423,14 +2423,17 @@ class Poly(Expr):
 
         return other*self
 
-    @_sympifyit('n', NotImplemented)
-    def __pow__(self, n):
+    def __pow__(self, n, mod=None):
+        if mod:
+            mod = sympify(mod, strict=True)
+        n = sympify(n)
         if n.is_Integer and n >= 0:
             n = int(n)
-            result = self.rep**n
+            result = pow(self.rep, n, mod.rep if mod else mod)
             return self.per(result)
         else:
-            return self.as_expr()**n
+            r = self.as_expr()**n
+            return r % mod if mod else r
 
     @_sympifyit('other', NotImplemented)
     def __divmod__(self, other):
@@ -4391,7 +4394,7 @@ class GroebnerBasis(Basic):
                  for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
-        G = [Poly._from_dict(g, opt) for g in G]
+        G = [Poly._from_dict(dict(g), opt) for g in G]
 
         return cls._new(G, opt)
 

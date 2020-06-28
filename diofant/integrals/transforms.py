@@ -400,8 +400,6 @@ def _rewrite_sin(m_n, s, a, b):
 class MellinTransformStripError(ValueError):
     """Exception raised by _rewrite_gamma. Mainly for internal use."""
 
-    pass
-
 
 def _rewrite_gamma(f, s, a, b):
     """

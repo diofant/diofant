@@ -9,8 +9,6 @@ from .str import StrPrinter
 class AssignmentError(Exception):
     """Raised if an assignment variable for a loop is missing."""
 
-    pass
-
 
 class Assignment(Relational):
     """
@@ -117,8 +115,7 @@ class CodePrinter(StrPrinter):
             else:
                 assign_to = Symbol(assign_to)
         elif not isinstance(assign_to, (Basic, type(None))):
-            raise TypeError('{0} cannot assign to object of type {1}'.format(
-                type(self).__name__, type(assign_to)))
+            raise TypeError(f'{type(self).__name__} cannot assign to object of type {type(assign_to)}')
 
         if assign_to:
             expr = Assignment(assign_to, expr)

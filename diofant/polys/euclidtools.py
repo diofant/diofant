@@ -1,43 +1,9 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
-from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
 from .polyconfig import query
 from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
-
-
-def dup_gcdex(f, g, K):
-    """Extended Euclidean algorithm in `F[x]`."""
-    ring = K.poly_ring('_0')
-    f, g = map(ring.from_list, (f, g))
-    return tuple(map(ring.to_dense, f.gcdex(g)))
-
-
-@cacheit
-def dmp_resultant(f, g, u, K):
-    """Computes resultant of two polynomials in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    res = f.resultant(g)
-    return ring.drop(0).to_dense(res)
-
-
-def dmp_gcd(f, g, u, K):
-    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return ring.to_dense(ring.gcd(f, g))
-
-
-def dmp_primitive(f, u, K):
-    """Returns multivariate content and a primitive polynomial."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
-    c, f = f.primitive()
-    f = f.inject()
-    return new_ring.domain.to_dense(c), ring.to_dense(f)
 
 
 class _GCD:

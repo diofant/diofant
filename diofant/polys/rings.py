@@ -4,7 +4,7 @@ import functools
 import math
 import operator
 
-from ..core import Expr, Symbol, oo
+from ..core import Expr, Symbol, cacheit, oo
 from ..core import symbols as _symbols
 from ..core import sympify
 from ..core.compatibility import is_sequence
@@ -20,16 +20,16 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
-from .orderings import lex
+from .orderings import ilex, lex
 from .polyconfig import query
-from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
-                         GeneratorsError, GeneratorsNeeded,
-                         MultivariatePolynomialError, PolynomialDivisionFailed,
+from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
+                         GeneratorsNeeded, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
+from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
 
@@ -127,7 +127,8 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
+class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
+                     _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -135,21 +136,31 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
     has_assoc_Ring = True
 
     def __new__(cls, domain, symbols, order=lex):
+        from .univar import UnivarPolynomialRing, UnivarPolyElement
+
         symbols = tuple(_parse_symbols(symbols))
         ngens = len(symbols)
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
 
-        key = (cls.__name__, symbols, ngens, domain, order)
+        new_cls = PolynomialRing if ngens > 1 else UnivarPolynomialRing
+
+        key = (new_cls.__name__, symbols, ngens, domain, order)
         obj = _ring_cache.get(key)
 
         if obj is None:
             if domain.is_Composite and set(symbols) & set(domain.symbols):
                 raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
-            obj = object.__new__(cls)
+            obj = object.__new__(new_cls)
             obj._hash = hash(key)
-            obj.dtype = type('PolyElement', (PolyElement,), {'ring': obj})
+
+            if new_cls == UnivarPolynomialRing:
+                dtype = UnivarPolyElement
+            else:
+                dtype = PolyElement
+            obj.dtype = type(dtype.__name__, (dtype,), {'ring': obj})
+
             obj.symbols = symbols
             obj.ngens = ngens
             obj.domain = domain
@@ -188,7 +199,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
         one = self.domain.one
         _gens = []
         for i in range(self.ngens):
-            expv = self.monomial_basis(i)
+            expv = self._monomial_basis(i)
             poly = self.zero
             poly[expv] = one
             _gens.append(poly)
@@ -203,7 +214,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
-    def monomial_basis(self, i):
+    def _monomial_basis(self, i):
         """Return the ith-basis element."""
         basis = [0]*self.ngens
         basis[i] = 1
@@ -769,7 +780,22 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_irreducible(self):
+        ring = self.ring
+        domain = ring.domain
+
+        if ring.is_univariate:
+            if domain.is_FiniteField:
+                method = query('GF_IRRED_METHOD')
+                _irred_methods = {'ben-or': ring._gf_irreducible_p_ben_or,
+                                  'rabin': ring._gf_irreducible_p_rabin}
+                return _irred_methods[method](self)
+            elif domain.is_IntegerRing:
+                res = ring._zz_irreducible_p(self)
+                if res is not None:
+                    return res
+
         _, factors = self.factor_list()
+
         if not factors:
             return True
         elif len(factors) > 1:
@@ -913,7 +939,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.__mul__(other)
 
-    def __pow__(self, n):
+    def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`.
 
         Examples
@@ -932,6 +958,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ValueError('negative exponent')
         elif not n:
             return ring.one
+        elif len(self) > 5 or mod:
+            return self._pow_generic(n, mod)
         elif len(self) == 1:
             monom, coeff = list(self.items())[0]
             p = ring.zero
@@ -943,21 +971,23 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._square()
         elif n == 3:
             return self*self._square()
-        elif len(self) <= 5:
-            return self._pow_multinomial(n)
         else:
-            return self._pow_generic(n)
+            return self._pow_multinomial(n)
 
-    def _pow_generic(self, n):
+    def _pow_generic(self, n, mod=None):
         p = self.ring.one
         c = self
 
         while n:
             if n & 1:
                 p *= c
+                if mod:
+                    p %= mod
                 n -= 1
 
             c = c._square()
+            if mod:
+                c %= mod
             n //= 2
 
         return p
@@ -1244,7 +1274,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def total_degree(self):
         """Returns the total degree."""
-        return max(sum(m) for m in self.monoms())
+        return max(sum(m) for m in self)
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
@@ -1290,7 +1320,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if element == 1:
             return self._get_coeff(self.ring.zero_monom)
         elif isinstance(element, self.ring.dtype) and element.is_monomial:
-            monom = element.monoms().pop()
+            monom, = element
             return self._get_coeff(monom)
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)
@@ -1444,9 +1474,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for coeff in self.values():
             cont = gcd(cont, coeff)
-
-            if cont == domain.one:
-                break
 
         if not ring.is_normal(self):
             cont = -cont
@@ -1746,7 +1773,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        x = ring.monomial_basis(i)
+        x = ring._monomial_basis(i)
         x = x**m
         g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
@@ -1762,7 +1789,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes indefinite integral in ``x``."""
         ring = self.ring
         i = ring.index(x)
-        x = ring.monomial_basis(i)
+        x = ring._monomial_basis(i)
         x = x**m
         g = ring.zero
         for expv, coeff in self.items():
@@ -1802,19 +1829,31 @@ class PolyElement(DomainElement, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(x.items(), key=lambda k: ring.index(k[0]))
+                replacements = list(x.items())
             else:
-                raise ValueError('expected a generator, value pair a sequence of such pairs')
+                raise ValueError('expected a generator, value pair a '
+                                 'sequence of such pairs')
+
+        replacements = [(ring.index(x), ring(g)) for x, g in replacements]
+        replacements.sort(key=lambda k: k[0])
+
+        if ring.is_univariate:
+            [(i, g)] = replacements
+            acc, d = ring.one, 0
+            for monom, coeff in self.terms(ilex):
+                n = monom[i]
+                acc *= g**(n - d)
+                d = n
+                poly += acc.mul_ground(coeff)
+            return poly
 
         for monom, coeff in self.items():
             monom = list(monom)
             subpoly = ring.one
 
-            for x, g in replacements:
-                i, g = ring.index(x), ring(g)
+            for i, g in replacements:
                 n, monom[i] = monom[i], 0
-                if n:
-                    subpoly *= g**n
+                subpoly *= g**n
 
             subpoly = subpoly.mul_term((monom, coeff))
             poly += subpoly
@@ -1834,12 +1873,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             c = self.eject(*ring.gens[1:]).LC
 
             return self.resultant(self.diff()) // (c*s)
-
-    def shift(self, a):
-        if self.ring.is_univariate:
-            return self.compose(0, self.ring.gens[0] + a)
-        else:
-            raise MultivariatePolynomialError('polynomial shift')
 
     def slice(self, m, n, x=0):
         ring = self.ring
@@ -1921,6 +1954,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return r
 
+    @cacheit
     def resultant(self, other, includePRS=False):
         """
         Computes resultant of two polynomials in `K[X]`.
@@ -1969,47 +2003,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.resultant(other, includePRS=True)[1]
 
-    def half_gcdex(self, other):
-        """
-        Half extended Euclidean algorithm in `F[x]`.
-
-        Returns ``(s, h)`` such that ``h = gcd(self, other)``
-        and ``s*self = h (mod other)``.
-
-        Examples
-        ========
-
-        >>> R, x = ring('x', QQ)
-
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
-
-        >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
-
-        """
-        ring = self.ring
-        if ring.is_multivariate:
-            raise MultivariatePolynomialError('half extended Euclidean algorithm')
-
-        domain = ring.domain
-
-        if not domain.is_Field:
-            raise DomainError(f"can't compute half extended GCD over {domain}")
-
-        a, b = ring.one, ring.zero
-        f, g = self, other
-
-        while g:
-            q, r = divmod(f, g)
-            f, g = g, r
-            a, b = b, a - q*b
-
-        a = a.quo_ground(f.LC)
-        f = f.monic()
-
-        return a, f
-
     def gcdex(self, other):
         """
         Extended Euclidean algorithm in `F[x]`.
@@ -2047,27 +2040,5 @@ class PolyElement(DomainElement, CantSympify, dict):
     def sqf_norm(self):
         return self.ring.sqf_norm(self)
 
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
-
-    def decompose(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_decompose(self)
-        else:
-            raise MultivariatePolynomialError('polynomial decomposition')
-
-    def sturm(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_sturm(self)
-        else:
-            raise MultivariatePolynomialError('sturm sequence')
-
-    @property
-    def is_cyclotomic(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_cyclotomic_p(self)
-        else:
-            raise AttributeError('cyclotomic polynomial')
-
     def factor_list(self):
-        return self.ring.dmp_factor_list(self)
+        return self.ring.factor_list(self)
