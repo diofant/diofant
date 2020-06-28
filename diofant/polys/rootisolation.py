@@ -5,6 +5,7 @@ import math
 
 from ..core import Dummy, I
 from .densebasic import dmp_convert, dmp_degree_in
+from .orderings import ilex
 from .polyerrors import DomainError, RefinementFailed
 
 
@@ -1883,11 +1884,7 @@ class _FindRoot:
         domain = self.domain
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
-            domain0 = domain.domain
-            new_ring = self.clone(domain=domain0)
-            r1, i1 = new_ring._real_imag(new_ring.from_list([_.real for _ in f.all_coeffs()]), _y=_y)
-            r2, i2 = new_ring._real_imag(new_ring.from_list([_.imag for _ in f.all_coeffs()]), _y=_y)
-            return r1 - i2, r2 + i1
+            domain = domain.domain
         elif not domain.is_IntegerRing and not domain.is_RationalField and not domain.is_RealAlgebraicField:
             raise DomainError(f'computing real and imaginary parts is not supported over {domain}')
 
@@ -1899,16 +1896,15 @@ class _FindRoot:
         if f.is_zero:
             return f1, f2
 
-        g = x + y*z
-        h = new_ring.one*f.LC
+        t, h = new_ring.one, new_ring.zero
+        g, d = x + y*z, 0
 
-        for c in f.all_coeffs()[1:]:
-            h *= g
-            h += c
+        for (i,), coeff in f.terms(ilex):
+            t *= g**(i - d)
+            d = i
+            h += t*(coeff.real + z*coeff.imag)
 
-        H = h.eject(x, y)
-
-        for (k,), h in H.items():
+        for (k,), h in h.eject(x, y).items():
             m = k % 4
 
             if not m:

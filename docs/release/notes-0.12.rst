@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Support modular exponentiation of :class:`~diofant.polys.rings.PolyElement`'s, see :pull:`1032`.
+
 Major changes
 =============
 
@@ -34,3 +36,6 @@ See the `release milestone <https://github.com/diofant/diofant/milestone/6?close
 for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
+
+* :sympyissue:`19630` ``rsolve`` gives None for linear homogeneous recurrence relation
+* :sympyissue:`19076` modular exponentiation of poly

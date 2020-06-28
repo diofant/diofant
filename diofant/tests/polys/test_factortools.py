@@ -66,19 +66,6 @@ def test__zz_hensel_lift():
                                                  x + 182, x + 1]
 
 
-def test__zz_irreducible_p():
-    R, x = ring('x', ZZ)
-
-    assert R._zz_irreducible_p(x) is None
-
-    f = 3*x**4 + 2*x**3 + 6*x**2 + 8*x
-
-    assert R._zz_irreducible_p(f + 7) is None
-    assert R._zz_irreducible_p(f + 4) is None
-    assert R._zz_irreducible_p(f + 10) is True
-    assert R._zz_irreducible_p(f + 14) is True
-
-
 def test__cyclotomic_p():
     R, x = ring('x', ZZ)
 
@@ -839,16 +826,86 @@ def test_gf_factor():
 
 
 def test_PolyElement_is_irreducible():
+    R, x = ring('x', FF(5))
+
+    f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+         2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    g = 3*x**2 + 2*x + 4
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is True
+            assert g.is_irreducible is False
+
     R, x = ring('x', FF(11))
 
-    assert (7*x + 3).is_irreducible
-    assert (7*x**2 + 3*x + 1).is_irreducible is False
+    f = R(7)
+    g = 7*x + 3
+    h = 7*x**2 + 3*x + 1
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is True
+            assert g.is_irreducible is True
+            assert h.is_irreducible is False
+
+    with using(gf_irred_method='other'):
+        pytest.raises(KeyError, lambda: f.is_irreducible)
+
+    R, x = ring('x', FF(13))
+
+    f = 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6
+    g = 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8
+
+    with using(gf_irred_method='ben-or'):
+        assert f.is_irreducible is False
+        assert g.is_irreducible is True
+
+    R, x = ring('x', FF(17))
+
+    f = (x**10 + 9*x**9 + 9*x**8 + 13*x**7 + 16*x**6 + 15*x**5 +
+         6*x**4 + 7*x**3 + 7*x**2 + 7*x + 10)
+    g = (x**10 + 7*x**9 + 16*x**8 + 7*x**7 + 15*x**6 + 13*x**5 + 13*x**4 +
+         11*x**3 + 16*x**2 + 10*x + 9)
+    h = f*g
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is True
+            assert g.is_irreducible is True
+            assert h.is_irreducible is False
+
+    F9 = FF(3, [1, 2, 2])
+    R, x = ring('x', F9)
+
+    f = x**3 + F9(8)*x**2 + F9(8)*x + F9(4)
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is False
+
+    F27 = FF(3, [1, 2, 0, 1])
+    R, x = ring('x', F27)
+
+    f = x**3 + F27(8)*x**2 + F27(19)*x + F27(24)
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert f.is_irreducible is True
 
     R, x = ring('x', ZZ)
 
+    assert x.is_irreducible is True
     assert (x**2 + x + 1).is_irreducible is True
     assert (x**2 + 2*x + 1).is_irreducible is False
     assert (x**2 - 1).is_irreducible is False
+
+    f = 3*x**4 + 2*x**3 + 6*x**2 + 8*x
+
+    assert (f + 7).is_irreducible is True
+    assert (f + 4).is_irreducible is True
+    assert (f + 10).is_irreducible is True
+    assert (f + 14).is_irreducible is True
 
     R, x, y = ring('x y', ZZ)
 

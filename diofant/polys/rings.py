@@ -780,7 +780,22 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_irreducible(self):
+        ring = self.ring
+        domain = ring.domain
+
+        if ring.is_univariate:
+            if domain.is_FiniteField:
+                method = query('GF_IRRED_METHOD')
+                _irred_methods = {'ben-or': ring._gf_irreducible_p_ben_or,
+                                  'rabin': ring._gf_irreducible_p_rabin}
+                return _irred_methods[method](self)
+            elif domain.is_IntegerRing:
+                res = ring._zz_irreducible_p(self)
+                if res is not None:
+                    return res
+
         _, factors = self.factor_list()
+
         if not factors:
             return True
         elif len(factors) > 1:
@@ -924,7 +939,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.__mul__(other)
 
-    def __pow__(self, n):
+    def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`.
 
         Examples
@@ -943,6 +958,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ValueError('negative exponent')
         elif not n:
             return ring.one
+        elif len(self) > 5 or mod:
+            return self._pow_generic(n, mod)
         elif len(self) == 1:
             monom, coeff = list(self.items())[0]
             p = ring.zero
@@ -954,21 +971,23 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._square()
         elif n == 3:
             return self*self._square()
-        elif len(self) <= 5:
-            return self._pow_multinomial(n)
         else:
-            return self._pow_generic(n)
+            return self._pow_multinomial(n)
 
-    def _pow_generic(self, n):
+    def _pow_generic(self, n, mod=None):
         p = self.ring.one
         c = self
 
         while n:
             if n & 1:
                 p *= c
+                if mod:
+                    p %= mod
                 n -= 1
 
             c = c._square()
+            if mod:
+                c %= mod
             n //= 2
 
         return p
