@@ -1152,8 +1152,6 @@ class _Factor:
         * :cite:`Geddes1992algorithms`, algorithm 8.5
 
         """
-        assert self.is_univariate
-
         domain = self.domain
         n, q = f.degree(), domain.order
 
@@ -1191,6 +1189,8 @@ class _Factor:
 
         """
         from .solvers import RawMatrix
+
+        assert self.is_univariate
 
         domain = self.domain
 
@@ -1252,9 +1252,8 @@ class _Factor:
         _gf_edf_zassenhaus
 
         """
-        assert self.is_univariate
-
         domain = self.domain
+
         factors, q = [], domain.order
         g, x = [self.gens[0]]*2
 
@@ -1302,8 +1301,6 @@ class _Factor:
         """
         from .galoistools import dup_gf_random
 
-        assert self.is_univariate
-
         factors = [f]
         d = f.degree()
 
@@ -1346,6 +1343,8 @@ class _Factor:
         [x + 1 mod 5, x + 3 mod 5]
 
         """
+        assert self.is_univariate
+
         factors = []
 
         for factor, n in self._gf_ddf_zassenhaus(f):
@@ -1390,6 +1389,7 @@ class _Factor:
 
         """
         domain = self.domain
+
         n, q = f.degree(), domain.order
         k = math.ceil(math.sqrt(n//2))
         x = self.gens[0]
@@ -1429,7 +1429,8 @@ class _Factor:
                 if F != 1:
                     factors.append((F, k*(i + 1) - j))
 
-                g, j = g // F, j - 1
+                g //= F
+                j -= 1
 
         if f != 1:
             factors.append((f, f.degree()))
@@ -1482,11 +1483,11 @@ class _Factor:
         n >>= 1
 
         while n:
-            u = u + (u.compose(0, v) % f)
+            u += u.compose(0, v) % f
             v = v.compose(0, v) % f
 
             if n & 1:
-                U = U + (u.compose(0, V) % f)
+                U += u.compose(0, V) % f
                 V = v.compose(0, V) % f
 
             n >>= 1
@@ -1574,6 +1575,8 @@ class _Factor:
         [x + 1 mod 5, x + 3 mod 5]
 
         """
+        assert self.is_univariate
+
         factors = []
 
         for factor, n in self._gf_ddf_shoup(f):
