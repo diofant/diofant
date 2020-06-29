@@ -1,61 +1,11 @@
 """Tests for dense recursive polynomials' basic tools."""
 
-import pytest
-
-from diofant import ZZ, oo, ring
+from diofant import ZZ
 from diofant.polys.densebasic import (dmp_convert, dmp_ground, dmp_strip,
                                       dmp_zero_p)
-from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
-
-f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [f.to_dense() for f in f_polys()]
-
-
-def test_dmp_degree_in():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_degree_in(R(0), 0) == -oo
-    assert R.dmp_degree_in(R(1), 0) == 0
-    assert R.dmp_degree_in(x, 0) == 1
-    assert R.dmp_degree_in(x**4 + 1, 0) == 4
-    assert R.dmp_degree_in(x**3 + 2*x**2 + 3, 0) == 3
-    assert R.dmp_degree_in(x**3 + x**2 + 2*x, 0) == 3
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_degree_in(R(0), 0) == -oo
-    assert R.dmp_degree_in(R(1), 0) == 0
-    assert R.dmp_degree_in(2*x + 1, 0) == 1
-    assert R.dmp_degree_in(2*x + y**2 + 2*y + 3, 0) == 1
-
-    pytest.raises(IndexError, lambda: R.dmp_degree_in(R(1), -5))
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_degree_in(R(0), 0) == -oo
-    assert R.dmp_degree_in(R(0), 1) == -oo
-    assert R.dmp_degree_in(R(0), 2) == -oo
-
-    assert R.dmp_degree_in(R(1), 0) == 0
-    assert R.dmp_degree_in(R(1), 1) == 0
-    assert R.dmp_degree_in(R(1), 2) == 0
-
-    f = R.from_list(f_4)
-
-    assert R.dmp_degree_in(f, 0) == 9
-    assert R.dmp_degree_in(f, 1) == 12
-    assert R.dmp_degree_in(f, 2) == 8
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-
-    f = R.from_list(f_6)
-
-    assert R.dmp_degree_in(f, 0) == 4
-    assert R.dmp_degree_in(f, 1) == 4
-    assert R.dmp_degree_in(f, 2) == 6
-    assert R.dmp_degree_in(f, 3) == 3
 
 
 def test_dmp_strip():

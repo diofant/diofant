@@ -425,6 +425,23 @@ def test_PolyElement_from_expr():
 
 
 def test_PolyElement_degree():
+    R, x = ring('x', ZZ)
+
+    assert R(0).degree() == -oo
+    assert R(1).degree() == 0
+    assert x.degree() == 1
+    assert (x**4 + 1).degree() == 4
+    assert (x**3 + 2*x**2 + 3).degree() == 3
+    assert (x**3 + x**2 + 2*x).degree() == 3
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).degree() == -oo
+    assert R(1).degree() == 0
+    assert (2*x + 1).degree() == 1
+    assert (2*x + y**2 + 2*y + 3).degree() == 1
+    assert (2*x + y**2 + 2*y + 3).degree(y) == 2
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0).degree() == -oo
@@ -459,6 +476,21 @@ def test_PolyElement_degree():
     assert (2*y**3 + z).degree(z) == 1
     assert (x*y**3 + z).degree(z) == 1
     assert (7*x**5*y**3 + z).degree(z) == 1
+
+    f = f_polys()[4]
+
+    assert f.degree(x) == 9
+    assert f.degree(y) == 12
+    assert f.degree(z) == 8
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f = f_polys()[6]
+
+    assert f.degree(x) == 4
+    assert f.degree(y) == 4
+    assert f.degree(z) == 6
+    assert f.degree(t) == 3
 
 
 def test_PolyElement_tail_degree():

@@ -5,18 +5,7 @@ from .monomials import Monomial
 
 
 def dmp_degree_in(f, j, u):
-    """
-    Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_degree_in(2*x + y**2 + 2*y + 3, 1)
-    2
-
-    """
+    """Return the leading degree of ``f`` in ``x_j`` in ``K[X]``."""
     if not j:
         return -oo if dmp_zero_p(f, u) else len(f) - 1
 
