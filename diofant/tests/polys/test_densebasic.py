@@ -1,44 +1,10 @@
 """Tests for dense recursive polynomials' basic tools."""
 
 from diofant import ZZ
-from diofant.polys.densebasic import (dmp_convert, dmp_ground, dmp_strip,
-                                      dmp_zero_p)
+from diofant.polys.densebasic import dmp_convert, dmp_ground, dmp_zero_p
 
 
 __all__ = ()
-
-
-def test_dmp_strip():
-    assert dmp_strip([], 0) == []
-    assert dmp_strip([0], 0) == []
-    assert dmp_strip([0, 0, 0], 0) == []
-
-    assert dmp_strip([1], 0) == [1]
-    assert dmp_strip([0, 1], 0) == [1]
-    assert dmp_strip([0, 0, 0, 1], 0) == [1]
-
-    assert dmp_strip([1, 2, 0], 0) == [1, 2, 0]
-    assert dmp_strip([0, 1, 2, 0], 0) == [1, 2, 0]
-    assert dmp_strip([0, 0, 0, 1, 2, 0], 0) == [1, 2, 0]
-
-    assert dmp_strip([0, 1, 0], 0) == [1, 0]
-
-    assert dmp_strip([0, 0, 1, 2, 3, 0], 0) == [1, 2, 3, 0]
-
-    assert dmp_strip([0, 0, 0, 3, 0, 1], 0) == [3, 0, 1]
-
-    assert dmp_strip([[]], 1) == [[]]
-    assert dmp_strip([[], []], 1) == [[]]
-    assert dmp_strip([[], [], []], 1) == [[]]
-    assert dmp_strip([[], [0, 1, 2], [1]], 1) == [[0, 1, 2], [1]]
-
-    assert dmp_strip([[[]]], 2) == [[[]]]
-    assert dmp_strip([[[]], [[]]], 2) == [[[]]]
-    assert dmp_strip([[[]], [[]], [[]]], 2) == [[[]]]
-
-    assert dmp_strip([[[1]]], 2) == [[[1]]]
-    assert dmp_strip([[[]], [[1]]], 2) == [[[1]]]
-    assert dmp_strip([[[]], [[1]], [[]]], 2) == [[[1]], [[]]]
 
 
 def test_dmp_convert():
