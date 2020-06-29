@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import ZZ, oo, ring
-from diofant.polys.densebasic import (dmp_convert, dmp_from_dict, dmp_ground,
-                                      dmp_strip, dmp_to_dict, dmp_zero_p)
+from diofant.polys.densebasic import (dmp_convert, dmp_ground, dmp_strip,
+                                      dmp_zero_p)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -121,36 +121,3 @@ def test_dmp_ground():
     assert dmp_ground(ZZ(7), -1) == ZZ(7)
     assert dmp_ground(ZZ(7), 0) == [ZZ(7)]
     assert dmp_ground(ZZ(7), 2) == [[[ZZ(7)]]]
-
-
-def test_dmp_from_to_dict():
-    assert dmp_from_dict({}, 0, ZZ) == []
-
-    assert dmp_to_dict([], 0) == {}
-
-    f = [3, 0, 0, 2, 0, 0, 0, 0, 8]
-    h = {(8,): 3, (5,): 2, (0,): 8}
-
-    assert dmp_from_dict(h, 0, ZZ) == f
-
-    assert dmp_to_dict(f, 0) == h
-
-    R,  x, y = ring('x,y', ZZ)
-
-    f = [R(3), R(0), R(2), R(0), R(0), R(8)]
-    h = {(5,): R(3), (3,): R(2), (0,): R(8)}
-
-    assert dmp_from_dict(h, 0, R) == f
-
-    assert dmp_to_dict(f, 0) == h
-
-    assert dmp_to_dict([1, 0, 5, 0, 7], 0) == {(0,): 7, (2,): 5, (4,): 1}
-
-    assert dmp_from_dict({}, 1, ZZ) == [[]]
-    assert dmp_to_dict([[]], 1) == {}
-
-    f = [[3], [], [], [2], [], [], [], [], [8]]
-    g = {(8, 0): 3, (5, 0): 2, (0, 0): 8}
-
-    assert dmp_from_dict(g, 1, ZZ) == f
-    assert dmp_to_dict(f, 1) == g

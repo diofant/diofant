@@ -134,19 +134,7 @@ def dmp_ground(c, u):
 
 
 def dmp_from_dict(f, u, K):
-    """
-    Create a ``K[X]`` polynomial from a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
-    [1, 0, 5, 0, 7]
-
-    >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
-    [[1, 0], [], [2, 3]]
-
-    """
+    """Create a ``K[X]`` polynomial from a :class:`dict`."""
     if not f:
         return dmp_ground(0, u)
     elif not u:
@@ -182,16 +170,7 @@ def dmp_from_dict(f, u, K):
 
 
 def dmp_to_dict(f, u):
-    """
-    Convert a ``K[X]`` polynomial to a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_to_dict([[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]], 1)
-    {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-
-    """
+    """Convert a ``K[X]`` polynomial to a :class:`dict`."""
     n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
 
     if n == -oo:
