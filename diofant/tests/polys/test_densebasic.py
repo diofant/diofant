@@ -30,6 +30,7 @@ def test_dmp_strip():
     assert dmp_strip([[]], 1) == [[]]
     assert dmp_strip([[], []], 1) == [[]]
     assert dmp_strip([[], [], []], 1) == [[]]
+    assert dmp_strip([[], [0, 1, 2], [1]], 1) == [[0, 1, 2], [1]]
 
     assert dmp_strip([[[]]], 2) == [[[]]]
     assert dmp_strip([[[]], [[]]], 2) == [[[]]]
@@ -61,6 +62,8 @@ def test_dmp_zero_p():
 
     assert dmp_zero_p([[[]]], 2) is True
     assert dmp_zero_p([[[1]]], 2) is False
+    assert dmp_zero_p([[[[[]]]]], 4) is True
+    assert dmp_zero_p([[[[[1]]]]], 4) is False
 
 
 def test_dmp_ground():
@@ -69,5 +72,9 @@ def test_dmp_ground():
     assert dmp_ground(ZZ(0), 4) == [[[[[]]]]]
 
     assert dmp_ground(ZZ(7), -1) == ZZ(7)
+    assert dmp_ground(ZZ(1), -1) == ZZ(1)
+
     assert dmp_ground(ZZ(7), 0) == [ZZ(7)]
     assert dmp_ground(ZZ(7), 2) == [[[ZZ(7)]]]
+
+    assert dmp_ground(ZZ(3), 5) == [[[[[[ZZ(3)]]]]]]

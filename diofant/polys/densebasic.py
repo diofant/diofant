@@ -24,16 +24,7 @@ def dmp_degree_in(f, j, u):
 
 
 def dmp_strip(f, u):
-    """
-    Remove leading zeros from ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_strip([[], [ZZ(0), ZZ(1), ZZ(2)], [ZZ(1)]], 1)
-    [[0, 1, 2], [1]]
-
-    """
+    """Remove leading zeros from ``f`` in ``K[X]``."""
     if not u:
         for i, c in enumerate(f):
             if c:
@@ -49,20 +40,7 @@ def dmp_strip(f, u):
 
 
 def dmp_convert(f, u, K0, K1):
-    """
-    Convert the ground domain of ``f`` from ``K0`` to ``K1``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
-    [[1], [2]]
-    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R)
-    [[1], [2]]
-
-    """
+    """Convert the ground domain of ``f`` from ``K0`` to ``K1``."""
     if not u:
         r = [K1.convert(c, K0) for c in f]
     else:
@@ -73,18 +51,7 @@ def dmp_convert(f, u, K0, K1):
 
 
 def dmp_zero_p(f, u):
-    """
-    Return ``True`` if ``f`` is zero in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_zero_p([[[[[]]]]], 4)
-    True
-    >>> dmp_zero_p([[[[[ZZ(1)]]]]], 4)
-    False
-
-    """
+    """Return ``True`` if ``f`` is zero in ``K[X]``."""
     while u:
         if len(f) != 1:
             return False
@@ -96,18 +63,7 @@ def dmp_zero_p(f, u):
 
 
 def dmp_ground(c, u):
-    """
-    Return a multivariate constant.
-
-    Examples
-    ========
-
-    >>> dmp_ground(ZZ(3), 5)
-    [[[[[[3]]]]]]
-    >>> dmp_ground(ZZ(1), -1)
-    1
-
-    """
+    """Return a multivariate constant."""
     if not c:
         r = []
 
