@@ -6,21 +6,8 @@ from .monomials import Monomial
 
 def dmp_degree_in(f, j, u):
     """Return the leading degree of ``f`` in ``x_j`` in ``K[X]``."""
-    if not j:
-        return -oo if dmp_zero_p(f, u) else len(f) - 1
-
-    if j < 0 or j > u:
-        raise IndexError(f'0 <= j <= {u} expected, got {j}')
-
-    def degree_in(g, v, i, j):
-        if i == j:
-            return dmp_degree_in(g, 0, v)
-
-        v, i = v - 1, i + 1
-
-        return max(degree_in(c, v, i, j) for c in g)
-
-    return degree_in(f, u, 0, j)
+    assert not j
+    return -oo if dmp_zero_p(f, u) else len(f) - 1
 
 
 def dmp_strip(f, u):
