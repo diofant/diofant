@@ -4,8 +4,7 @@ import pytest
 
 from diofant import ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_from_dict, dmp_ground,
-                                      dmp_one_p, dmp_strip, dmp_to_dict,
-                                      dmp_zero_p)
+                                      dmp_strip, dmp_to_dict, dmp_zero_p)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -112,14 +111,6 @@ def test_dmp_zero_p():
 
     assert dmp_zero_p([[[]]], 2) is True
     assert dmp_zero_p([[[1]]], 2) is False
-
-
-def test_dmp_one_p():
-    assert dmp_one_p([1], 0, ZZ) is True
-    assert dmp_one_p([[1]], 1, ZZ) is True
-    assert dmp_one_p([[[1]]], 2, ZZ) is True
-    assert dmp_one_p([[[12]]], 2, ZZ) is False
-    assert dmp_one_p([[[1], [1]]], 2, ZZ) is False
 
 
 def test_dmp_ground():

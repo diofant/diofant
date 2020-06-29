@@ -106,26 +106,6 @@ def dmp_zero_p(f, u):
     return not f
 
 
-def dmp_one_p(f, u, K):
-    """
-    Return ``True`` if ``f`` is one in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_one_p([[[ZZ(1)]]], 2, ZZ)
-    True
-
-    """
-    while u:
-        if len(f) != 1:
-            return False
-        f = f[0]
-        u -= 1
-
-    return f == [K.one]
-
-
 def dmp_ground(c, u):
     """
     Return a multivariate constant.
