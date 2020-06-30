@@ -3062,7 +3062,7 @@ def test_sympyissue_15798():
 
 
 @pytest.mark.timeout(20)
-def test_sympyissue_16222():
+def test_sympyissue_16222_19670():
     Poly(x**100000000)
 
 
