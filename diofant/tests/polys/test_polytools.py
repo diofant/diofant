@@ -244,8 +244,14 @@ def test_Poly__new__():
     pytest.raises(OptionError, lambda: Poly(x + 2, x, domain=ZZ, greedy=False))
     pytest.raises(OptionError, lambda: Poly(x + 2, x, domain=QQ, field=False))
 
-    pytest.raises(NotImplementedError, lambda: Poly(x + 1, x, modulus=3, order='grlex'))
-    pytest.raises(NotImplementedError, lambda: Poly(x + 1, x, order='grlex'))
+    f = Poly(x + 1, x, modulus=3, order='grlex')
+
+    assert f.get_modulus() == 3
+    assert f.rep.ring.order == grlex
+
+    f = Poly(x + 1, x, order='grlex')
+
+    assert f.rep.ring.order == grlex
 
     pytest.raises(GeneratorsNeeded, lambda: Poly({1: 2, 0: 1}))
     pytest.raises(GeneratorsNeeded, lambda: Poly([2, 1]))
@@ -2682,7 +2688,8 @@ def test_groebner():
     assert groebner([x**2 + 1, y**4*x + x**3], x, y, order='lex', polys=True) == \
         [Poly(1 + x**2, x, y), Poly(-1 + y**4, x, y)]
     assert groebner([x**2 + 1, y**4*x + x**3, x*y*z**3], x, y, z, order='grevlex', polys=True) == \
-        [Poly(-1 + y**4, x, y, z), Poly(z**3, x, y, z), Poly(1 + x**2, x, y, z)]
+        [Poly(-1 + y**4, x, y, z, order='grevlex'), Poly(z**3, x, y, z, order='grevlex'),
+         Poly(1 + x**2, x, y, z, order='grevlex')]
 
     assert groebner([x**3 - 1, x**2 - 1]) == [x - 1]
     assert groebner([Eq(x**3, 1), Eq(x**2, 1)]) == [x - 1]
@@ -2871,7 +2878,7 @@ def test_GroebnerBasis():
     assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), (x, y))
 
     H = [y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y]
-    P = [Poly(h, x, y) for h in H]
+    P = [Poly(h, x, y, order='grevlex') for h in H]
 
     assert isinstance(G, GroebnerBasis) is True
 
@@ -2906,8 +2913,9 @@ def test_GroebnerBasis():
     assert G[1:] == P[1:] and all(g.is_Poly for g in G[1:])
     assert G[:2] == P[:2] and all(g.is_Poly for g in G[1:])
 
-    assert tuple(G) == (Poly(y**3 - 2*y, x, y), Poly(x**2 - 2*y**2, x, y),
-                        Poly(x*y - 2*y, x, y))
+    assert tuple(G) == (Poly(y**3 - 2*y, x, y, order='grevlex'),
+                        Poly(x**2 - 2*y**2, x, y, order='grevlex'),
+                        Poly(x*y - 2*y, x, y, order='grevlex'))
 
     G = groebner(F, x, y, order='grevlex', polys=True)
     assert hash(G) == hash(groebner([Poly(_) for _ in F], order='grevlex'))
