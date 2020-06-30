@@ -5,46 +5,13 @@ from .monomials import Monomial
 
 
 def dmp_degree_in(f, j, u):
-    """
-    Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_degree_in(2*x + y**2 + 2*y + 3, 1)
-    2
-
-    """
-    if not j:
-        return -oo if dmp_zero_p(f, u) else len(f) - 1
-
-    if j < 0 or j > u:
-        raise IndexError(f'0 <= j <= {u} expected, got {j}')
-
-    def degree_in(g, v, i, j):
-        if i == j:
-            return dmp_degree_in(g, 0, v)
-
-        v, i = v - 1, i + 1
-
-        return max(degree_in(c, v, i, j) for c in g)
-
-    return degree_in(f, u, 0, j)
+    """Return the leading degree of ``f`` in ``x_j`` in ``K[X]``."""
+    assert not j
+    return -oo if dmp_zero_p(f, u) else len(f) - 1
 
 
 def dmp_strip(f, u):
-    """
-    Remove leading zeros from ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_strip([[], [ZZ(0), ZZ(1), ZZ(2)], [ZZ(1)]], 1)
-    [[0, 1, 2], [1]]
-
-    """
+    """Remove leading zeros from ``f`` in ``K[X]``."""
     if not u:
         for i, c in enumerate(f):
             if c:
@@ -60,20 +27,7 @@ def dmp_strip(f, u):
 
 
 def dmp_convert(f, u, K0, K1):
-    """
-    Convert the ground domain of ``f`` from ``K0`` to ``K1``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
-    [[1], [2]]
-    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R)
-    [[1], [2]]
-
-    """
+    """Convert the ground domain of ``f`` from ``K0`` to ``K1``."""
     if not u:
         r = [K1.convert(c, K0) for c in f]
     else:
@@ -84,18 +38,7 @@ def dmp_convert(f, u, K0, K1):
 
 
 def dmp_zero_p(f, u):
-    """
-    Return ``True`` if ``f`` is zero in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_zero_p([[[[[]]]]], 4)
-    True
-    >>> dmp_zero_p([[[[[ZZ(1)]]]]], 4)
-    False
-
-    """
+    """Return ``True`` if ``f`` is zero in ``K[X]``."""
     while u:
         if len(f) != 1:
             return False
@@ -106,39 +49,8 @@ def dmp_zero_p(f, u):
     return not f
 
 
-def dmp_one_p(f, u, K):
-    """
-    Return ``True`` if ``f`` is one in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_one_p([[[ZZ(1)]]], 2, ZZ)
-    True
-
-    """
-    while u:
-        if len(f) != 1:
-            return False
-        f = f[0]
-        u -= 1
-
-    return f == [K.one]
-
-
 def dmp_ground(c, u):
-    """
-    Return a multivariate constant.
-
-    Examples
-    ========
-
-    >>> dmp_ground(ZZ(3), 5)
-    [[[[[[3]]]]]]
-    >>> dmp_ground(ZZ(1), -1)
-    1
-
-    """
+    """Return a multivariate constant."""
     if not c:
         r = []
 
@@ -154,19 +66,7 @@ def dmp_ground(c, u):
 
 
 def dmp_from_dict(f, u, K):
-    """
-    Create a ``K[X]`` polynomial from a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
-    [1, 0, 5, 0, 7]
-
-    >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
-    [[1, 0], [], [2, 3]]
-
-    """
+    """Create a ``K[X]`` polynomial from a :class:`dict`."""
     if not f:
         return dmp_ground(0, u)
     elif not u:
@@ -202,16 +102,7 @@ def dmp_from_dict(f, u, K):
 
 
 def dmp_to_dict(f, u):
-    """
-    Convert a ``K[X]`` polynomial to a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_to_dict([[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]], 1)
-    {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-
-    """
+    """Convert a ``K[X]`` polynomial to a :class:`dict`."""
     n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
 
     if n == -oo:

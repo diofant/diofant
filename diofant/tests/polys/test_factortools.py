@@ -265,7 +265,7 @@ def test__zz_wang():
                                   105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
 
     assert R._zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
+    assert s.is_squarefree and s.degree() == w_1.degree()
 
     _, H = UV._zz_factor_sqf(s)
 

@@ -327,6 +327,51 @@ def test_PolyElement_items():
     assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
+def test_PolynomialRing_from_to_list():
+    R, x = ring('x', ZZ)
+
+    assert R(0).to_dense() == []
+    assert R.from_list([]) == R(0)
+
+    f = [ZZ(3), ZZ(0), ZZ(0), ZZ(2), ZZ(0), ZZ(0), ZZ(0), ZZ(0), ZZ(8)]
+    g = 3*x**8 + 2*x**5 + 8
+
+    assert g.to_dense() == f
+    assert R.from_list(f) == g
+
+    f = [ZZ(1), ZZ(0), ZZ(5), ZZ(0), ZZ(7)]
+    g = x**4 + 5*x**2 + 7
+
+    assert g.to_dense() == f
+    assert R.from_list(f) == g
+
+    R, x, y = ring('x,y', ZZ)
+    R1, z = ring('z', R)
+
+    f = [R(3), R(0), R(2), R(0), R(0), R(8)]
+    g = 3*z**5 + 2*z**3 + 8
+
+    assert g.to_dense() == f
+    assert R1.from_list(f) == g
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).to_dense() == [[]]
+    assert R.from_list([[]]) == R(0)
+
+    f = [[ZZ(3)], [], [], [ZZ(2)], [], [], [], [], [ZZ(8)]]
+    g = 3*x**8 + 2*x**5 + 8
+
+    assert g.to_dense() == f
+    assert R.from_list(f) == g
+
+    f = [[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]]
+    g = x**2*y + 2*y + 3
+
+    assert g.to_dense() == f
+    assert R.from_list(f) == g
+
+
 def test_PolyElement_as_expr():
     R, x, y, z = ring('x y z', ZZ)
 
@@ -380,6 +425,23 @@ def test_PolyElement_from_expr():
 
 
 def test_PolyElement_degree():
+    R, x = ring('x', ZZ)
+
+    assert R(0).degree() == -oo
+    assert R(1).degree() == 0
+    assert x.degree() == 1
+    assert (x**4 + 1).degree() == 4
+    assert (x**3 + 2*x**2 + 3).degree() == 3
+    assert (x**3 + x**2 + 2*x).degree() == 3
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).degree() == -oo
+    assert R(1).degree() == 0
+    assert (2*x + 1).degree() == 1
+    assert (2*x + y**2 + 2*y + 3).degree() == 1
+    assert (2*x + y**2 + 2*y + 3).degree(y) == 2
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0).degree() == -oo
@@ -414,6 +476,21 @@ def test_PolyElement_degree():
     assert (2*y**3 + z).degree(z) == 1
     assert (x*y**3 + z).degree(z) == 1
     assert (7*x**5*y**3 + z).degree(z) == 1
+
+    f = f_polys()[4]
+
+    assert f.degree(x) == 9
+    assert f.degree(y) == 12
+    assert f.degree(z) == 8
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f = f_polys()[6]
+
+    assert f.degree(x) == 4
+    assert f.degree(y) == 4
+    assert f.degree(z) == 6
+    assert f.degree(t) == 3
 
 
 def test_PolyElement_tail_degree():
@@ -2632,7 +2709,9 @@ def test_PolyElement_is_():
     R, x = ring('x', ZZ)
 
     assert R(0).is_ground is True
+    assert R(0).is_zero is True
     assert R(1).is_ground is True
+    assert R(1).is_one is True
     assert R(2).is_ground is True
 
     f = x**16 + x**14 - x**10 - x**8 - x**6 + x**2
@@ -2645,12 +2724,22 @@ def test_PolyElement_is_():
     R, x, y = ring('x y', ZZ)
 
     assert R(0).is_ground is True
+    assert R(0).is_zero is True
     assert R(1).is_ground is True
+    assert R(1).is_one is True
     assert R(2).is_ground is True
 
     assert R.zero.is_homogeneous is True
     assert (x**2 + x*y).is_homogeneous is True
     assert (x**3 + x*y).is_homogeneous is False
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0).is_zero is True
+    assert R(1).is_one is True
+    assert R(1).is_zero is False
+    assert R(12).is_one is False
+    assert (y + 1).is_one is False
 
     R, x, y, z = ring('x y z', QQ)
 
@@ -2708,6 +2797,11 @@ def test_PolyElement_is_():
     assert (x*y*z + 1).is_quadratic is False
 
     pytest.raises(AttributeError, lambda: x.is_cyclotomic)
+
+    R, x, y, z, w, t = ring('x y z w t', ZZ)
+
+    assert R(0).is_zero is True
+    assert R(1).is_zero is False
 
 
 def test_PolyElement_drop():

@@ -55,9 +55,6 @@ class Poly(Expr):
         """Create a new polynomial instance out of something useful."""
         opt = options.build_options(gens, args)
 
-        if 'order' in opt:
-            raise NotImplementedError("'order' keyword is not implemented yet")
-
         if iterable(rep, exclude=str):
             if isinstance(rep, dict):
                 return cls._from_dict(rep, opt)
@@ -128,7 +125,7 @@ class Poly(Expr):
             for monom, coeff in rep.items():
                 rep[monom] = domain.convert(coeff)
 
-        ring = domain.poly_ring(*gens)
+        ring = domain.poly_ring(*gens, order=opt.order)
 
         return cls.new(ring.from_dict(rep), *gens)
 
@@ -4390,8 +4387,7 @@ class GroebnerBasis(Basic):
         if not ring.domain.is_Exact:
             raise ValueError(f'Domain must be exact, got {ring.domain}')
 
-        polys = [ring.from_dict(dict(_.rep))
-                 for _ in polys if not _.is_zero]
+        polys = [ring.from_dict(dict(_.rep)) for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
         G = [Poly._from_dict(dict(g), opt) for g in G]
