@@ -1,7 +1,7 @@
 """Tests for dense recursive polynomials' basic tools."""
 
 from diofant import ZZ
-from diofant.polys.densebasic import dmp_convert, dmp_ground, dmp_zero_p
+from diofant.polys.densebasic import dmp_convert, dmp_ground
 
 
 __all__ = ()
@@ -20,16 +20,6 @@ def test_dmp_convert():
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-
-def test_dmp_zero_p():
-    assert dmp_zero_p([], 0) is True
-    assert dmp_zero_p([[]], 1) is True
-
-    assert dmp_zero_p([[[]]], 2) is True
-    assert dmp_zero_p([[[1]]], 2) is False
-    assert dmp_zero_p([[[[[]]]]], 4) is True
-    assert dmp_zero_p([[[[[1]]]]], 4) is False
 
 
 def test_dmp_ground():

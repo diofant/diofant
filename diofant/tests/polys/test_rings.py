@@ -2709,6 +2709,7 @@ def test_PolyElement_is_():
     R, x = ring('x', ZZ)
 
     assert R(0).is_ground is True
+    assert R(0).is_zero is True
     assert R(1).is_ground is True
     assert R(1).is_one is True
     assert R(2).is_ground is True
@@ -2723,6 +2724,7 @@ def test_PolyElement_is_():
     R, x, y = ring('x y', ZZ)
 
     assert R(0).is_ground is True
+    assert R(0).is_zero is True
     assert R(1).is_ground is True
     assert R(1).is_one is True
     assert R(2).is_ground is True
@@ -2733,7 +2735,9 @@ def test_PolyElement_is_():
 
     R, x, y, z = ring('x y z', ZZ)
 
+    assert R(0).is_zero is True
     assert R(1).is_one is True
+    assert R(1).is_zero is False
     assert R(12).is_one is False
     assert (y + 1).is_one is False
 
@@ -2793,6 +2797,11 @@ def test_PolyElement_is_():
     assert (x*y*z + 1).is_quadratic is False
 
     pytest.raises(AttributeError, lambda: x.is_cyclotomic)
+
+    R, x, y, z, w, t = ring('x y z w t', ZZ)
+
+    assert R(0).is_zero is True
+    assert R(1).is_zero is False
 
 
 def test_PolyElement_drop():
