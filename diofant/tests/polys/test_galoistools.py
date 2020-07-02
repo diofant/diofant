@@ -1,25 +1,9 @@
 from diofant import FF, ring
-from diofant.polys.galoistools import (dup_gf_compose_mod, dup_gf_irreducible,
-                                       dup_gf_primitive_p, dup_gf_trace_map)
+from diofant.polys.galoistools import (dup_gf_irreducible, dup_gf_primitive_p,
+                                       dup_gf_trace_map)
 
 
 __all__ = ()
-
-
-def test_dup_gf_compose_mod():
-    R, x = ring('x', FF(11))
-
-    g = []
-    h = x.to_dense()
-    f = h.copy()
-
-    assert dup_gf_compose_mod(g, h, h, R.domain) == []
-
-    f = (x**4 + x**3 + 4*x**2 + 9*x + 1).to_dense()
-    g = (x**2 + x + 1).to_dense()
-    h = (x**3 + 2).to_dense()
-
-    assert dup_gf_compose_mod(g, h, f, R.domain) == [3, 9, 6, 10]
 
 
 def test_dup_gf_trace_map():

@@ -6,34 +6,6 @@ from ..core import oo
 from .polyconfig import query
 
 
-def dup_gf_compose_mod(g, h, f, K):
-    """
-    Compute polynomial composition ``g(h)`` in ``GF(q)[x]/(f)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> g = (3*x**2 + 2*x + 4).to_dense()
-    >>> h = (2*x**2 + 2*x + 2).to_dense()
-    >>> f = (4*x + 3).to_dense()
-    >>> dup_gf_compose_mod(g, h, f, R.domain)
-    [4 mod 5]
-
-    """
-    if not g:
-        return []
-
-    comp = [g[0]]
-
-    for a in g[1:]:
-        comp = dmp_mul(comp, h, 0, K)
-        comp = dmp_add(comp, [a], 0, K)
-        comp = dmp_rem(comp, f, 0, K)
-
-    return comp
-
-
 def dup_gf_trace_map(a, b, c, n, f, K):
     """Compute polynomial trace map in ``GF(q)[x]/(f)``."""
     ring = K.poly_ring('_0')
@@ -177,13 +149,6 @@ def dup_gf_factor_sqf(f, K):
     return _factor_methods[method](f, K)
 
 
-def dmp_add(f, g, u, K):
-    """Add dense polynomials in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return (f + g).to_dense()
-
-
 def dmp_mul(f, g, u, K):
     """Multiply dense polynomials in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
@@ -191,16 +156,11 @@ def dmp_mul(f, g, u, K):
     return (f*g).to_dense()
 
 
-def dmp_div(f, g, u, K):
-    """Polynomial division with remainder in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return tuple(map(lambda _: _.to_dense(), divmod(f, g)))
-
-
 def dmp_rem(f, g, u, K):
     """Return polynomial remainder in ``K[X]``."""
-    return dmp_div(f, g, u, K)[1]
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_list, (f, g))
+    return (f % g).to_dense()
 
 
 def dup_degree(f):
