@@ -16,14 +16,14 @@ def dmp_strip(f, u):
         for i, c in enumerate(f):
             if c:
                 return f[i:]
-        return dmp_ground(0, u)
+        return dmp_zero(u)
 
     v = u - 1
 
     for i, c in enumerate(f):
         if not dmp_zero_p(c, v):
             return f[i:]
-    return dmp_ground(0, u)
+    return dmp_zero(u)
 
 
 def dmp_zero_p(f, u):
@@ -38,26 +38,20 @@ def dmp_zero_p(f, u):
     return not f
 
 
-def dmp_ground(c, u):
-    """Return a multivariate constant."""
-    if not c:
-        r = []
+def dmp_zero(u):
+    """Return a multivariate zero."""
+    r = []
 
-        for i in range(u):
-            r = [r]
+    for i in range(u):
+        r = [r]
 
-        return r
-
-    for i in range(u + 1):
-        c = [c]
-
-    return c
+    return r
 
 
 def dmp_from_dict(f, u, K):
     """Create a ``K[X]`` polynomial from a :class:`dict`."""
     if not f:
-        return dmp_ground(0, u)
+        return dmp_zero(u)
     elif not u:
         h = []
         n, = max(f)
@@ -85,7 +79,7 @@ def dmp_from_dict(f, u, K):
         if coeff is not None:
             h.append(dmp_from_dict(coeff, v, K))
         else:
-            h.append(dmp_ground(0, v))
+            h.append(dmp_zero(v))
 
     return dmp_strip(h, u)
 
