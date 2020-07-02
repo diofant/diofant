@@ -27,6 +27,7 @@ __all__ = 'RootOf', 'RootSum'
 
 _reals_cache = {}
 _complexes_cache = {}
+_x = Dummy('x')
 
 
 class RootOf(Expr):
@@ -235,7 +236,10 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
         if factor not in _reals_cache:
-            reals = factor.rep.ring._isolate_real_roots_sqf(factor.rep, blackbox=True)
+            ring = factor.domain.inject(_x)
+            rep = factor.rep
+            rep = ring.from_dict(dict(rep))
+            reals = ring._isolate_real_roots_sqf(rep, blackbox=True)
             if not reals:
                 _reals_cache[factor] = []
             return reals
@@ -245,7 +249,10 @@ class RootOf(Expr):
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
         if factor not in _complexes_cache:
-            complexes = factor.rep.ring.dup_isolate_complex_roots_sqf(factor.rep, blackbox=True)
+            ring = factor.domain.inject(_x)
+            rep = factor.rep
+            rep = ring.from_dict(dict(rep))
+            complexes = ring._isolate_complex_roots_sqf(rep, blackbox=True)
             if not complexes:
                 _complexes_cache[factor] = []
             return complexes

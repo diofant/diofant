@@ -1915,7 +1915,7 @@ class Poly(Expr):
             if sup_real and sup is not None:
                 sup = (sup, QQ.zero)
 
-            count = self.rep.ring.dup_count_complex_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_complex_roots(self.rep, inf=inf, sup=sup)
 
         return Integer(count)
 
