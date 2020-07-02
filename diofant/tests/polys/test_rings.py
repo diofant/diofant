@@ -88,6 +88,8 @@ def test_PolynomialRing__call__():
     R, x = ring('x', ZZ)
 
     assert R({2: 1, 1: 0, 0: -1}) == x**2 - 1
+    assert R([1, 0, -1]) == x**2 - 1
+    assert R([((2,), 1), ((0,), -1)]) == x**2 - 1
 
     D, t = ring('t', ZZ)
     R, x = ring('x', D)
@@ -101,7 +103,6 @@ def test_PolynomialRing__call__():
 
     f = x**2 + 2*x*y + 3*x + 4*z**2 + 5*z + 6
 
-    assert R([[[1]], [[2], [3]], [[4, 5, 6]]]) == f
     assert R({(2, 0, 0): 1, (1, 1, 0): 2, (1, 0, 0): 3, (0, 0, 2): 4, (0, 0, 1): 5, (0, 0, 0): 6}) == f
     assert R([((2, 0, 0), 1), ((1, 1, 0), 2), ((1, 0, 0), 3), ((0, 0, 2), 4), ((0, 0, 1), 5), ((0, 0, 0), 6)]) == f
 
@@ -353,23 +354,6 @@ def test_PolynomialRing_from_to_list():
 
     assert g.to_dense() == f
     assert R1.from_list(f) == g
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R(0).to_dense() == [[]]
-    assert R.from_list([[]]) == R(0)
-
-    f = [[ZZ(3)], [], [], [ZZ(2)], [], [], [], [], [ZZ(8)]]
-    g = 3*x**8 + 2*x**5 + 8
-
-    assert g.to_dense() == f
-    assert R.from_list(f) == g
-
-    f = [[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]]
-    g = x**2*y + 2*y + 3
-
-    assert g.to_dense() == f
-    assert R.from_list(f) == g
 
 
 def test_PolyElement_as_expr():
@@ -2274,7 +2258,7 @@ def test_PolyElement_diff():
 
     R, x, y, z, t = ring('x y z t', FF(23))
 
-    f = R.from_list(f_polys()[6].to_dense())
+    f = f_polys()[6].set_ring(R)
 
     assert f.diff(m=0) == f
     assert f.diff(m=2) == f.diff().diff()
@@ -2367,7 +2351,7 @@ def test_PolyElement_integrate():
 
     R, x, y, z, t = ring('x y z t', QQ)
 
-    f = R.from_list(f_polys()[6].to_dense())
+    f = f_polys()[6].set_ring(R)
 
     assert (f.integrate(x=y, m=2) ==
             705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -

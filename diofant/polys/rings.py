@@ -15,7 +15,7 @@ from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
 from .constructor import construct_domain
-from .densebasic import dmp_from_dict, dmp_to_dict
+from .densebasic import dmp_from_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
@@ -253,10 +253,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF,
         elif isinstance(element, dict):
             return self.from_dict(element)
         elif isinstance(element, list):
-            try:
-                return self.from_terms(element)
-            except ValueError:
-                return self.from_list(element)
+            return self.from_terms(element)
         elif isinstance(element, Expr):
             return self.convert(element)
         else:
@@ -277,9 +274,6 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF,
 
     def from_terms(self, element):
         return self.from_dict(dict(element))
-
-    def from_list(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def from_expr(self, expr):
         expr = sympify(expr)

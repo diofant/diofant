@@ -16,6 +16,7 @@ Compatibility breaks
 ====================
 
 * Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
+* Drop support for ``from_list()`` initialization for multivariate polynomials, see :pull:`1035`.
 
 Minor changes
 =============

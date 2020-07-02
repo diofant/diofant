@@ -10,6 +10,17 @@ __all__ = 'UnivarPolynomialRing', 'UnivarPolyElement'
 class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
 
+    def __call__(self, element):
+        if isinstance(element, list):
+            try:
+                return self.from_terms(element)
+            except (TypeError, ValueError):
+                return self.from_list(element)
+        return super().__call__(element)
+
+    def from_list(self, element):
+        return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+
 
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""

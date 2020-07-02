@@ -1,7 +1,6 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 from ..core import oo
-from .monomials import Monomial
 
 
 def dmp_degree_in(f, j, u):
@@ -82,22 +81,3 @@ def dmp_from_dict(f, u, K):
             h.append(dmp_zero(v))
 
     return dmp_strip(h, u)
-
-
-def dmp_to_dict(f, u):
-    """Convert a ``K[X]`` polynomial to a :class:`dict`."""
-    n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
-
-    if n == -oo:
-        n = -1
-
-    for k in range(n + 1):
-        if f[n - k]:
-            if u:
-                h = dmp_to_dict(f[n - k], v)
-                for exp, coeff in h.items():
-                    result[Monomial((k,) + exp)] = coeff
-            else:
-                result[Monomial((k,))] = f[n - k]
-
-    return result
