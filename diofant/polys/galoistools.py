@@ -2,7 +2,6 @@
 
 import random
 
-from ..core import oo
 from .polyconfig import query
 
 
@@ -45,26 +44,6 @@ def dup_gf_irreducible_p(f, K):
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
     return f.is_irreducible
-
-
-def dup_gf_primitive_p(f, K):
-    """Test if ``f`` is a primitive polynomial over ``GF(p)``."""
-    p = K.characteristic
-
-    assert K.order == p
-
-    if not dup_gf_irreducible_p(f, K):
-        return False
-
-    n = dup_degree(f)
-    t = [K.one] + [K.zero]*n
-
-    for m in range(n, p**n - 1):
-        r = dmp_rem(t, f, 0, K)
-        if r == [K.one]:
-            return False
-        t = dmp_mul(r, [K.one, K.zero], 0, K)
-    return True
 
 
 def dup_gf_berlekamp(f, K):
@@ -140,22 +119,3 @@ def dup_gf_factor_sqf(f, K):
     method = query('GF_FACTOR_METHOD')
 
     return _factor_methods[method](f, K)
-
-
-def dmp_mul(f, g, u, K):
-    """Multiply dense polynomials in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return (f*g).to_dense()
-
-
-def dmp_rem(f, g, u, K):
-    """Return polynomial remainder in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
-    return (f % g).to_dense()
-
-
-def dup_degree(f):
-    """Return the leading degree of ``f`` in ``K[x]``."""
-    return -oo if not f else len(f) - 1

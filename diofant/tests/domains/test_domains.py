@@ -993,6 +993,8 @@ def test_ModularInteger():
     assert bool(F3(3)) is False
     assert bool(F3(4)) is True
 
+    assert F3(2).is_primitive is True
+
     F5 = FF(5)
 
     a = F5(1)**(-1)
@@ -1018,6 +1020,12 @@ def test_ModularInteger():
     assert F5.is_normal(F5.zero) is True
 
     assert F5 == FF(5, [1, 0])
+
+    assert F5(2).is_primitive is True
+
+    F7 = FF(7)
+
+    assert F7(2).is_primitive is False
 
     F9 = FF(9, [1, 0, 1])
 
@@ -1066,6 +1074,12 @@ def test_ModularInteger():
     assert 2*F4.one != F4(2)*F4.one
 
     pytest.raises(TypeError, lambda: object()*F4.one)
+
+    F1331 = FF(11, [1, 4, 8, 7])
+
+    assert F1331([1, 2, 0]).is_primitive is False
+    assert F1331([1, 7, 5]).is_primitive is False
+    assert F1331([1, 2, 6]).is_primitive is True
 
 
 def test_QQ_int():

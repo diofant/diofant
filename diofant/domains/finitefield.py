@@ -4,7 +4,7 @@ import numbers
 import random
 
 from ..core import Dummy, integer_digits
-from ..ntheory import factorint
+from ..ntheory import factorint, is_primitive_root
 from ..polys.galoistools import dup_gf_irreducible
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
@@ -165,8 +165,16 @@ class ModularInteger(QuotientRingElement):
     def denominator(self):
         return self.parent.one
 
+    @property
+    def is_primitive(self):
+        """Test if this is a primitive element."""
+        parent = self.parent
+        return is_primitive_root(int(self), parent.order)
+
 
 class GaloisFieldElement(ModularInteger):
+    """A class representing a Galois field element."""
+
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
             rep = integer_digits(rep % self.parent.order, self.parent.mod)
@@ -179,3 +187,24 @@ class GaloisFieldElement(ModularInteger):
     def __int__(self):
         rep = self.rep.set_domain(self.parent.domain)
         return int(rep.eval(0, self.parent.mod))
+
+    @property
+    def is_primitive(self):
+        parent = self.parent
+        p = parent.characteristic
+        f = self.rep
+        domain = self.domain
+        x = domain.gens[0]
+
+        if not f.is_irreducible:
+            return False
+
+        n = f.degree()
+        t = x**n
+
+        for m in range(n, p**n - 1):
+            r = t % f
+            if r == 1:
+                return False
+            t = r*x
+        return True
