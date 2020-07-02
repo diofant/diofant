@@ -6,13 +6,6 @@ from ..core import oo
 from .polyconfig import query
 
 
-def dup_gf_trace_map(a, b, c, n, f, K):
-    """Compute polynomial trace map in ``GF(q)[x]/(f)``."""
-    ring = K.poly_ring('_0')
-    a, b, c, f = map(ring.from_list, (a, b, c, f))
-    return tuple(_.to_dense() for _ in ring._gf_trace_map(a, b, c, n, f))
-
-
 def dup_gf_random(n, K):
     """
     Generate a random polynomial in ``GF(q)[x]`` of degree ``n``.

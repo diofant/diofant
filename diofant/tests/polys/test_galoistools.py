@@ -1,28 +1,8 @@
 from diofant import FF, ring
-from diofant.polys.galoistools import (dup_gf_irreducible, dup_gf_primitive_p,
-                                       dup_gf_trace_map)
+from diofant.polys.galoistools import dup_gf_irreducible, dup_gf_primitive_p
 
 
 __all__ = ()
-
-
-def test_dup_gf_trace_map():
-    R, x = ring('x', FF(11))
-
-    f = x**4 + x**3 + 4*x**2 + 9*x + 1
-    a = x**2 + x + 1
-    c = x
-    b = pow(c, 11, f)
-
-    f, a, b, c = map(lambda _: _.to_dense(), (f, a, b, c))
-
-    assert dup_gf_trace_map(a, b, c, 0, f, R.domain) == ([1, 1, 1], [1, 1, 1])
-    assert dup_gf_trace_map(a, b, c, 1, f, R.domain) == ([5, 2, 10, 3], [5, 3, 0, 4])
-    assert dup_gf_trace_map(a, b, c, 2, f, R.domain) == ([5, 9, 5, 3], [10, 1, 5, 7])
-    assert dup_gf_trace_map(a, b, c, 3, f, R.domain) == ([1, 10, 6, 0], [7])
-    assert dup_gf_trace_map(a, b, c, 4, f, R.domain) == ([1, 1, 1], [1, 1, 8])
-    assert dup_gf_trace_map(a, b, c, 5, f, R.domain) == ([5, 2, 10, 3], [5, 3, 0, 0])
-    assert dup_gf_trace_map(a, b, c, 11, f, R.domain) == ([1, 10, 6, 0], [10])
 
 
 def test_dup_gf_irreducible():

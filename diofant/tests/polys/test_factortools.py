@@ -942,3 +942,32 @@ def test_sympyissue_16620():
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
         with using(gf_factor_method=method):
             assert f.factor_list() == g
+
+
+def test__gf_trace_map():
+    R, x = ring('x', FF(5))
+
+    a = x + 2
+    b = 4*x + 4
+    c = x + 1
+    f = 3*x**2 + 2*x + 4
+
+    assert R._gf_trace_map(a, b, c, 4, f) == (x + 3, x + 3)
+
+    R, x = ring('x', FF(11))
+
+    f = x**4 + x**3 + 4*x**2 + 9*x + 1
+    a = x**2 + x + 1
+    c = x
+    b = pow(c, 11, f)
+
+    assert R._gf_trace_map(a, b, c, 0, f) == (x**2 + x + 1, x**2 + x + 1)
+    assert R._gf_trace_map(a, b, c, 1, f) == (5*x**3 + 2*x**2 + 10*x + 3,
+                                              5*x**3 + 3*x**2 + 4)
+    assert R._gf_trace_map(a, b, c, 2, f) == (5*x**3 + 9*x**2 + 5*x + 3,
+                                              10*x**3 + x**2 + 5*x + 7)
+    assert R._gf_trace_map(a, b, c, 3, f) == (x**3 + 10*x**2 + 6*x, 7)
+    assert R._gf_trace_map(a, b, c, 4, f) == (x**2 + x + 1, x**2 + x + 8)
+    assert R._gf_trace_map(a, b, c, 5, f) == (5*x**3 + 2*x**2 + 10*x + 3,
+                                              5*x**3 + 3*x**2)
+    assert R._gf_trace_map(a, b, c, 11, f) == (x**3 + 10*x**2 + 6*x, 10)
