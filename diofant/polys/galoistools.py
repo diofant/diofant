@@ -2,7 +2,7 @@
 
 import random
 
-from .densebasic import dmp_degree_in
+from ..core import oo
 from .polyconfig import query
 
 
@@ -91,7 +91,7 @@ def dup_gf_primitive_p(f, K):
     if not dup_gf_irreducible_p(f, K):
         return False
 
-    n = dmp_degree_in(f, 0, 0)
+    n = dup_degree(f)
     t = [K.one] + [K.zero]*n
 
     for m in range(n, p**n - 1):
@@ -201,3 +201,8 @@ def dmp_div(f, g, u, K):
 def dmp_rem(f, g, u, K):
     """Return polynomial remainder in ``K[X]``."""
     return dmp_div(f, g, u, K)[1]
+
+
+def dup_degree(f):
+    """Return the leading degree of ``f`` in ``K[x]``."""
+    return -oo if not f else len(f) - 1

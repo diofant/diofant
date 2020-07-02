@@ -1,13 +1,5 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from ..core import oo
-
-
-def dmp_degree_in(f, j, u):
-    """Return the leading degree of ``f`` in ``x_j`` in ``K[X]``."""
-    assert not j
-    return -oo if dmp_zero_p(f, u) else len(f) - 1
-
 
 def dmp_strip(f, u):
     """Remove leading zeros from ``f`` in ``K[X]``."""
