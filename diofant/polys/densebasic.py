@@ -26,17 +26,6 @@ def dmp_strip(f, u):
     return dmp_ground(0, u)
 
 
-def dmp_convert(f, u, K0, K1):
-    """Convert the ground domain of ``f`` from ``K0`` to ``K1``."""
-    if not u:
-        r = [K1.convert(c, K0) for c in f]
-    else:
-        v = u - 1
-        r = [dmp_convert(c, v, K0, K1) for c in f]
-
-    return dmp_strip(r, u)
-
-
 def dmp_zero_p(f, u):
     """Return ``True`` if ``f`` is zero in ``K[X]``."""
     while u:

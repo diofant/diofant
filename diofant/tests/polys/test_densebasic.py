@@ -1,33 +1,10 @@
 """Tests for dense recursive polynomials' basic tools."""
 
 from diofant import ZZ
-from diofant.polys.densebasic import dmp_convert, dmp_ground
+from diofant.polys.densebasic import dmp_ground
 
 
 __all__ = ()
-
-
-def test_dmp_convert():
-    K0, K1 = ZZ.inject('x'), ZZ
-
-    assert dmp_convert([K0(1), K0(2)], 0, K0, K1) == [ZZ(1), ZZ(2)]
-    assert dmp_convert([K1(1), K1(2)], 0, K1, K0) == [K0(1), K0(2)]
-
-    f = [K0(1), K0(2), K0(0), K0(3)]
-
-    assert dmp_convert(f, 0, K0, K1) == [ZZ(1), ZZ(2), ZZ(0), ZZ(3)]
-
-    f = [K0(0), K0(1)]
-
-    assert dmp_convert(f, 0, K0, K1) == [K1(1)]
-
-    f = [[K0(1)], [K0(2)], [], [K0(3)]]
-
-    assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-    f = [[], []]
-
-    assert dmp_convert(f, 1, K0, K1) == [[]]
 
 
 def test_dmp_ground():
