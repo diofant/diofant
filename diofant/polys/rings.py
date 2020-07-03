@@ -15,7 +15,6 @@ from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
 from .constructor import construct_domain
-from .densebasic import dmp_from_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
@@ -680,9 +679,6 @@ class PolyElement(DomainElement, CantSympify, dict):
                 poly[cmonom] = ccoeff
 
         return poly
-
-    def to_dense(self):
-        return dmp_from_dict(self, self.ring.ngens-1, self.ring.domain)
 
     def to_dict(self):
         return dict(self)

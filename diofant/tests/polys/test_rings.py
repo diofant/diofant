@@ -328,22 +328,19 @@ def test_PolyElement_items():
     assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
-def test_PolynomialRing_from_to_list():
+def test_PolynomialRing_from_list():
     R, x = ring('x', ZZ)
 
-    assert R(0).to_dense() == []
     assert R.from_list([]) == R(0)
 
     f = [ZZ(3), ZZ(0), ZZ(0), ZZ(2), ZZ(0), ZZ(0), ZZ(0), ZZ(0), ZZ(8)]
     g = 3*x**8 + 2*x**5 + 8
 
-    assert g.to_dense() == f
     assert R.from_list(f) == g
 
     f = [ZZ(1), ZZ(0), ZZ(5), ZZ(0), ZZ(7)]
     g = x**4 + 5*x**2 + 7
 
-    assert g.to_dense() == f
     assert R.from_list(f) == g
 
     R, x, y = ring('x,y', ZZ)
@@ -352,7 +349,6 @@ def test_PolynomialRing_from_to_list():
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     g = 3*z**5 + 2*z**3 + 8
 
-    assert g.to_dense() == f
     assert R1.from_list(f) == g
 
 

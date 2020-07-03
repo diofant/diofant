@@ -2334,8 +2334,8 @@ def test_factor_large():
     assert factor(f) == (x + 2)**20000000*(x**2 + 1)*(x + 1)**2469134
     assert factor(g) == (x + 1)**6000*(y + 1)**2
 
-    assert factor_list(f) == (1, [(x + 1, 2469134), (x + 2, 20000000),
-                                  (x**2 + 1, 1)])
+    assert factor_list(f) == (1, [(x**2 + 1, 1), (x + 1, 2469134),
+                                  (x + 2, 20000000)])
     assert factor_list(g) == (1, [(y + 1, 2), (x + 1, 6000)])
 
     f = (x**2 - y**2)**200000*(x**7 + 1)
@@ -3054,7 +3054,7 @@ def test_sympyissue_8210():
 
 def test_sympyissue_11775():
     e = y**4 + x*y**3 + y**2 + x*y
-    assert factor_list(e, y) == (1, [(y, 1), (x + y, 1), (y**2 + 1, 1)])
+    assert factor_list(e, y) == (1, [(y, 1), (y**2 + 1, 1), (x + y, 1)])
 
 
 def test_sympyissue_5602():

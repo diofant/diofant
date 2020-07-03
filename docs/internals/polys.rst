@@ -37,11 +37,6 @@ i.e. the number of generators minus one, has to be passed.
 (Note that, in many cases, ``dup_`` versions of functions are available, which
 may be slightly more efficient.)
 
-**Basic manipulation:**
-
-.. automodule:: diofant.polys.densebasic
-    :members:
-
 **Further tools:**
 
 .. automodule:: diofant.polys.rootisolation

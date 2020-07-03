@@ -159,11 +159,9 @@ def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order."""
     def order_if_multiple_key(factor):
         f, n = factor
-        f = f if isinstance(f, list) else f.to_dense()
         return len(f), n, default_sort_key(f)
 
     def order_no_multiple_key(f):
-        f = f if isinstance(f, list) else f.to_dense()
         return len(f), default_sort_key(f)
 
     if args.get('multiple', True):
