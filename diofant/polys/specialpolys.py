@@ -54,7 +54,7 @@ def cyclotomic_poly(n, x=None, **args):
             f"can't generate cyclotomic polynomial of order {n}")
 
     R = ZZ.inject('_0')
-    poly = R._zz_cyclotomic_poly(int(n)).to_dense()
+    poly = R._zz_cyclotomic_poly(int(n)).all_coeffs()
 
     if x is not None:
         poly = polytools.Poly(poly, x)

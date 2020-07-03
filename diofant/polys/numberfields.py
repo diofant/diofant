@@ -754,7 +754,7 @@ def field_isomorphism_factor(a, b):
             root = -f.rep.coeff((0,))/f.rep.coeff((1,))
 
             if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
-                return root.rep.to_dense()
+                return root.rep.all_coeffs()
 
 
 def field_isomorphism(a, b, **args):
@@ -763,7 +763,7 @@ def field_isomorphism(a, b, **args):
         raise ValueError(f'Arguments should be algebraic fields, got {a} and {b}')
 
     if a == b:
-        return a.unit.rep.to_dense()
+        return a.unit.rep.all_coeffs()
 
     n = a.minpoly.degree()
     m = b.minpoly.degree()

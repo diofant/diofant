@@ -7,9 +7,9 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
-                     PolynomialDivisionFailed, PolynomialError, PolynomialRing,
-                     Rational, Symbol, field, grlex, lex, oo, pi, ring, sin,
-                     sqrt, sring, symbols)
+                     PolynomialDivisionFailed, PolynomialRing, Rational,
+                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt, sring,
+                     symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -793,10 +793,6 @@ def test_PolyElement_all_coeffs():
     assert R.zero.all_coeffs() == [0]
     assert (3*x**2 + 2*x + 1).all_coeffs() == [3, 2, 1]
     assert (7*x**4 + 2*x + 1).all_coeffs() == [7, 0, 0, 2, 1]
-
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(PolynomialError, lambda: (x + y).all_coeffs())
 
 
 def test_PolyElement__abs__():

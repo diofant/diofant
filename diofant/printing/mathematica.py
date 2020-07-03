@@ -201,7 +201,7 @@ class MCodePrinter(CodePrinter):
                                     self.doprint(f))
 
     def _print_AlgebraicElement(self, expr):
-        coeffs = list(reversed(expr.rep.to_dense()))
+        coeffs = list(reversed(expr.rep.all_coeffs()))
         return 'AlgebraicNumber[%s, %s]' % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 

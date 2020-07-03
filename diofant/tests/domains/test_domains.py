@@ -539,7 +539,7 @@ def test_Domain_convert():
     ALG2 = QQ.algebraic_field(sqrt(2))
     a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
-    assert a.rep.to_dense() == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert a.rep.all_coeffs() == [QQ(1, 2), 0, -QQ(9, 2), 0]
     assert RR.convert(a) == RR(1.4142135623730951)
     assert CC.convert(a) == CC(1.4142135623730951)
 
@@ -788,20 +788,20 @@ def test_AlgebraicElement():
 
     f = A(rep)
 
-    assert f.rep.to_dense() == rep
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == rep
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     f = A(1)
 
-    assert f.rep.to_dense() == [QQ(1)]
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == [QQ(1)]
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     f = A([QQ(3, 2)])
 
-    assert f.rep.to_dense() == [QQ(3, 2)]
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == [QQ(3, 2)]
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     B = QQ.algebraic_field(I*sqrt(2))
@@ -829,7 +829,7 @@ def test_AlgebraicElement():
     assert bool(A([QQ(1)])) is True
 
     a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.rep.to_dense() == [-1, 1]
+    assert a.rep.all_coeffs() == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))
 
@@ -1058,7 +1058,7 @@ def test_ModularInteger():
 
     assert F8.order == 8
     assert F8.characteristic == 2
-    assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
+    assert F8.dtype.mod.all_coeffs() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
     assert int(F8(-1)) == int(F8(7)) == 7
     assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])(5)'

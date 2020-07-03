@@ -25,6 +25,12 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
 
+    def all_coeffs(self):
+        if self.is_zero:
+            return [self.parent.domain.zero]
+        else:
+            return [self.coeff((i,)) for i in range(self.degree(), -1, -1)]
+
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
 
