@@ -3,7 +3,7 @@
 import random
 
 
-def dup_gf_random(n, K):
+def dup_gf_random(n, K, irreducible=False):
     """
     Generate a random polynomial in ``GF(q)[x]`` of degree ``n``.
 
@@ -13,18 +13,7 @@ def dup_gf_random(n, K):
     >>> dup_gf_random(4, FF(5))  # doctest: +SKIP
     [1 mod 5, 4 mod 5, 4 mod 5, 2 mod 5, 1 mod 5]
 
-    """
-    return [K.one] + [K(random.randint(0, K.order - 1)) for i in range(n)]
-
-
-def dup_gf_irreducible(n, K):
-    """
-    Generate random irreducible polynomial of degree ``n`` in ``GF(q)[x]``.
-
-    Examples
-    ========
-
-    >>> f = dup_gf_irreducible(4, FF(5))
+    >>> f = dup_gf_random(4, FF(5), irreducible=True)
     >>> f  # doctest: +SKIP
     [1 mod 5, 2 mod 5, 4 mod 5, 4 mod 5, 3 mod 5]
     >>> dup_gf_irreducible_p(f, FF(5))
@@ -32,8 +21,8 @@ def dup_gf_irreducible(n, K):
 
     """
     while True:
-        f = dup_gf_random(n, K)
-        if dup_gf_irreducible_p(f, K):
+        f = [K.one] + [K(random.randint(0, K.order - 1)) for i in range(n)]
+        if not irreducible or dup_gf_irreducible_p(f, K):
             return f
 
 
