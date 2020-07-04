@@ -1,7 +1,5 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking."""
 
-import random
-
 from ..core import Add, Dummy, Integer, Mul, symbols, sympify
 from ..domains import ZZ
 from ..ntheory import nextprime
@@ -84,43 +82,10 @@ def symmetric_poly(n, *gens, **args):
         return polytools.Poly(poly, *gens)
 
 
-def dup_random(n, a, b, K, percent=None):
-    """
-    Return a polynomial of degree ``n`` with coefficients in ``[a, b]``.
-
-    If ``percent`` is a natural number less than 100 then only approximately
-    the given percentage of elements will be non-zero.
-
-    Examples
-    ========
-
-    >>> dup_random(3, -10, 10, ZZ)  # doctest: +SKIP
-    [-2, -8, 9, -4]
-
-    """
-    if percent is None:
-        percent = 100//(b - a)
-    percent = min(max(0, percent), 100)
-    nz = ((n + 1)*percent)//100
-
-    f = []
-    while len(f) < n + 1:
-        v = K.convert(random.randint(a, b))
-        if v:
-            f.append(v)
-
-    if nz:
-        f[-nz:] = [K.zero]*nz
-        lt = f.pop(0)
-        random.shuffle(f)
-        f.insert(0, lt)
-
-    return f
-
-
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
     """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``."""
-    poly = polytools.Poly(dup_random(n, inf, sup, domain, percent), x, domain=domain)
+    ring = domain.inject(x)
+    poly = polytools.Poly(dict(ring._random(n, inf, sup, percent)), x, domain=domain)
 
     if not polys:
         return poly.as_expr()

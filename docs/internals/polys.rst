@@ -24,27 +24,6 @@ Every object created by a domain has to implement the arithmetic operations
 `+`, `-` and `\times`. Other operations are accessed through the domain, e.g.
 as in ``ZZ.quo(ZZ(4), ZZ(2))``.
 
-Manipulation of dense, multivariate polynomials
-===============================================
-
-These functions can be used to manipulate polynomials in `K[X_0, \ldots, X_u]`.
-Functions for manipulating multivariate polynomials in the dense representation
-have the prefix ``dmp_``. Functions which only apply to univariate polynomials
-(i.e. `u = 0`)
-have the prefix ``dup_``. The ground domain `K` has to be passed explicitly.
-For many multivariate polynomial manipulation functions also the level `u`,
-i.e. the number of generators minus one, has to be passed.
-(Note that, in many cases, ``dup_`` versions of functions are available, which
-may be slightly more efficient.)
-
-**Further tools:**
-
-.. automodule:: diofant.polys.rootisolation
-    :members:
-
-.. automodule:: diofant.polys.sqfreetools
-    :members:
-
 Manipulation of dense, univariate polynomials with finite field coefficients
 ============================================================================
 
@@ -343,6 +322,15 @@ Heuristic GCD
 =============
 
 .. automethod:: diofant.polys.euclidtools._GCD._zz_heu_gcd
+
+Further tools
+=============
+
+.. automodule:: diofant.polys.rootisolation
+    :members:
+
+.. automodule:: diofant.polys.sqfreetools
+    :members:
 
 Undocumented
 ============

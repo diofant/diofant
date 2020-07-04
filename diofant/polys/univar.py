@@ -1,3 +1,5 @@
+import random
+
 from .polyconfig import query
 from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
@@ -20,6 +22,28 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
     def from_list(self, element):
         return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+
+    def _random(self, n, a, b, percent=None):
+        domain = self.domain
+
+        if percent is None:
+            percent = 100//(b - a)
+        percent = min(max(0, percent), 100)
+        nz = ((n + 1)*percent)//100
+
+        f = []
+        while len(f) < n + 1:
+            v = domain.convert(random.randint(a, b))
+            if v:
+                f.append(v)
+
+        if nz:
+            f[-nz:] = [domain.zero]*nz
+            lt = f.pop(0)
+            random.shuffle(f)
+            f.insert(0, lt)
+
+        return self.from_list(f)
 
 
 class UnivarPolyElement(PolyElement):
