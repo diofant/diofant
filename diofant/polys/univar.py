@@ -45,6 +45,18 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
         return self.from_list(f)
 
+    def _gf_random(self, n, irreducible=False):
+        domain = self.domain
+
+        assert domain.is_FiniteField
+
+        while True:
+            f = [domain.one] + [domain(random.randint(0, domain.order - 1))
+                                for i in range(n)]
+            f = self.from_list(f)
+            if not irreducible or f.is_irreducible:
+                return f
+
 
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""

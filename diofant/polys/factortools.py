@@ -1297,8 +1297,6 @@ class _Factor:
         _gf_ddf_zassenhaus
 
         """
-        from .galoistools import dup_gf_random
-
         factors = [f]
         d = f.degree()
 
@@ -1310,7 +1308,7 @@ class _Factor:
         N = d // n
 
         while len(factors) < N:
-            r = self.from_list(dup_gf_random(2*n - 1, domain))
+            r = self._gf_random(2*n - 1)
 
             if p == 2:
                 h = r
@@ -1526,8 +1524,6 @@ class _Factor:
         _gf_ddf_shoup
 
         """
-        from .galoistools import dup_gf_random
-
         domain = self.domain
         q, p = domain.order, domain.characteristic
         N = f.degree()
@@ -1539,7 +1535,7 @@ class _Factor:
 
         factors, x = [f], self.gens[0]
 
-        r = self.from_list(dup_gf_random(N - 1, domain))
+        r = self._gf_random(N - 1)
 
         h = pow(x, q, f)
         H = self._gf_trace_map(r, h, x, n - 1, f)[1]

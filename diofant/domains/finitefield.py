@@ -5,7 +5,6 @@ import random
 
 from ..core import Dummy, integer_digits
 from ..ntheory import factorint, is_primitive_root
-from ..polys.galoistools import dup_gf_random
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
@@ -45,7 +44,8 @@ class FiniteField(Field, SimpleDomain):
 
         if modulus is None:
             random.seed(0)
-            modulus = dup_gf_random(deg, ZZ_python.finite_field(mod), irreducible=True)
+            ring = ZZ_python.finite_field(mod).inject(Dummy('x'))
+            modulus = ring._gf_random(deg, irreducible=True).all_coeffs()
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')

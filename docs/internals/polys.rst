@@ -24,19 +24,6 @@ Every object created by a domain has to implement the arithmetic operations
 `+`, `-` and `\times`. Other operations are accessed through the domain, e.g.
 as in ``ZZ.quo(ZZ(4), ZZ(2))``.
 
-Manipulation of dense, univariate polynomials with finite field coefficients
-============================================================================
-
-Functions in this module carry the suffix ``gf_``, referring to the classical
-name "Galois Fields" for finite fields. Note that many polynomial
-factorization algorithms work by reduction to the finite field case, so having
-special implementations for this case is justified both by performance, and by
-the necessity of certain methods which do not even make sense over general
-fields.
-
-.. automodule:: diofant.polys.galoistools
-    :members:
-
 Manipulation of sparse, distributed polynomials
 ===============================================
 

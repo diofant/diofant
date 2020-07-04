@@ -2935,3 +2935,13 @@ def test_cache():
     R2 = QQ.inject(-2*sqrt(2))
 
     assert R1 != R2
+
+
+def test__gf_random():
+    R, x = ring('x', FF(11))
+
+    for n in range(8):
+        f = R._gf_random(n, irreducible=True)
+
+        assert f.monic() == f
+        assert f.is_irreducible is True
