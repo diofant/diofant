@@ -447,7 +447,7 @@ class StrPrinter(Printer):
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python
         return 'GF(%s, %s)(%s)' % (expr.parent.characteristic,
-                                   expr.mod.set_domain(ZZ_python).to_dense(),
+                                   expr.mod.set_domain(ZZ_python).all_coeffs(),
                                    int(expr))
 
     def _print_Pow(self, expr, rational=False):

@@ -1,3 +1,5 @@
+import random
+
 from .polyconfig import query
 from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
@@ -10,9 +12,60 @@ __all__ = 'UnivarPolynomialRing', 'UnivarPolyElement'
 class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
 
+    def __call__(self, element):
+        if isinstance(element, list):
+            try:
+                return self.from_terms(element)
+            except (TypeError, ValueError):
+                return self.from_list(element)
+        return super().__call__(element)
+
+    def from_list(self, element):
+        return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+
+    def _random(self, n, a, b, percent=None):
+        domain = self.domain
+
+        if percent is None:
+            percent = 100//(b - a)
+        percent = min(max(0, percent), 100)
+        nz = ((n + 1)*percent)//100
+
+        f = []
+        while len(f) < n + 1:
+            v = domain.convert(random.randint(a, b))
+            if v:
+                f.append(v)
+
+        if nz:
+            f[-nz:] = [domain.zero]*nz
+            lt = f.pop(0)
+            random.shuffle(f)
+            f.insert(0, lt)
+
+        return self.from_list(f)
+
+    def _gf_random(self, n, irreducible=False):
+        domain = self.domain
+
+        assert domain.is_FiniteField
+
+        while True:
+            f = [domain.one] + [domain(random.randint(0, domain.order - 1))
+                                for i in range(n)]
+            f = self.from_list(f)
+            if not irreducible or f.is_irreducible:
+                return f
+
 
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
+
+    def all_coeffs(self):
+        if self.is_zero:
+            return [self.parent.domain.zero]
+        else:
+            return [self.coeff((i,)) for i in range(self.degree(), -1, -1)]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)

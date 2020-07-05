@@ -7,9 +7,9 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
-                     PolynomialDivisionFailed, PolynomialError, PolynomialRing,
-                     Rational, Symbol, field, grlex, lex, oo, pi, ring, sin,
-                     sqrt, sring, symbols)
+                     PolynomialDivisionFailed, PolynomialRing, Rational,
+                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt, sring,
+                     symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -88,6 +88,8 @@ def test_PolynomialRing__call__():
     R, x = ring('x', ZZ)
 
     assert R({2: 1, 1: 0, 0: -1}) == x**2 - 1
+    assert R([1, 0, -1]) == x**2 - 1
+    assert R([((2,), 1), ((0,), -1)]) == x**2 - 1
 
     D, t = ring('t', ZZ)
     R, x = ring('x', D)
@@ -101,7 +103,6 @@ def test_PolynomialRing__call__():
 
     f = x**2 + 2*x*y + 3*x + 4*z**2 + 5*z + 6
 
-    assert R([[[1]], [[2], [3]], [[4, 5, 6]]]) == f
     assert R({(2, 0, 0): 1, (1, 1, 0): 2, (1, 0, 0): 3, (0, 0, 2): 4, (0, 0, 1): 5, (0, 0, 0): 6}) == f
     assert R([((2, 0, 0), 1), ((1, 1, 0), 2), ((1, 0, 0), 3), ((0, 0, 2), 4), ((0, 0, 1), 5), ((0, 0, 0), 6)]) == f
 
@@ -327,22 +328,19 @@ def test_PolyElement_items():
     assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
-def test_PolynomialRing_from_to_list():
+def test_PolynomialRing_from_list():
     R, x = ring('x', ZZ)
 
-    assert R(0).to_dense() == []
     assert R.from_list([]) == R(0)
 
     f = [ZZ(3), ZZ(0), ZZ(0), ZZ(2), ZZ(0), ZZ(0), ZZ(0), ZZ(0), ZZ(8)]
     g = 3*x**8 + 2*x**5 + 8
 
-    assert g.to_dense() == f
     assert R.from_list(f) == g
 
     f = [ZZ(1), ZZ(0), ZZ(5), ZZ(0), ZZ(7)]
     g = x**4 + 5*x**2 + 7
 
-    assert g.to_dense() == f
     assert R.from_list(f) == g
 
     R, x, y = ring('x,y', ZZ)
@@ -351,25 +349,7 @@ def test_PolynomialRing_from_to_list():
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     g = 3*z**5 + 2*z**3 + 8
 
-    assert g.to_dense() == f
     assert R1.from_list(f) == g
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R(0).to_dense() == [[]]
-    assert R.from_list([[]]) == R(0)
-
-    f = [[ZZ(3)], [], [], [ZZ(2)], [], [], [], [], [ZZ(8)]]
-    g = 3*x**8 + 2*x**5 + 8
-
-    assert g.to_dense() == f
-    assert R.from_list(f) == g
-
-    f = [[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]]
-    g = x**2*y + 2*y + 3
-
-    assert g.to_dense() == f
-    assert R.from_list(f) == g
 
 
 def test_PolyElement_as_expr():
@@ -809,10 +789,6 @@ def test_PolyElement_all_coeffs():
     assert R.zero.all_coeffs() == [0]
     assert (3*x**2 + 2*x + 1).all_coeffs() == [3, 2, 1]
     assert (7*x**4 + 2*x + 1).all_coeffs() == [7, 0, 0, 2, 1]
-
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(PolynomialError, lambda: (x + y).all_coeffs())
 
 
 def test_PolyElement__abs__():
@@ -2274,7 +2250,7 @@ def test_PolyElement_diff():
 
     R, x, y, z, t = ring('x y z t', FF(23))
 
-    f = R.from_list(f_polys()[6].to_dense())
+    f = f_polys()[6].set_ring(R)
 
     assert f.diff(m=0) == f
     assert f.diff(m=2) == f.diff().diff()
@@ -2367,7 +2343,7 @@ def test_PolyElement_integrate():
 
     R, x, y, z, t = ring('x y z t', QQ)
 
-    f = R.from_list(f_polys()[6].to_dense())
+    f = f_polys()[6].set_ring(R)
 
     assert (f.integrate(x=y, m=2) ==
             705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -
@@ -2959,3 +2935,13 @@ def test_cache():
     R2 = QQ.inject(-2*sqrt(2))
 
     assert R1 != R2
+
+
+def test__gf_random():
+    R, x = ring('x', FF(11))
+
+    for n in range(8):
+        f = R._gf_random(n, irreducible=True)
+
+        assert f.monic() == f
+        assert f.is_irreducible is True

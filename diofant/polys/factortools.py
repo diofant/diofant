@@ -7,7 +7,6 @@ import operator
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
@@ -429,9 +428,8 @@ class _Factor:
             factors = []
 
             for g, n in f.sqf_list()[1]:
-                g = g.to_dense()
-                for h in dup_gf_factor_sqf(g, domain):
-                    factors.append((self.from_list(h), n))
+                for h in self._gf_factor_sqf(g):
+                    factors.append((h, n))
         elif domain.is_AlgebraicField:
             coeff, factors = self._aa_factor_trager(f)
         else:
@@ -1299,8 +1297,6 @@ class _Factor:
         _gf_ddf_zassenhaus
 
         """
-        from .galoistools import dup_gf_random
-
         factors = [f]
         d = f.degree()
 
@@ -1312,7 +1308,7 @@ class _Factor:
         N = d // n
 
         while len(factors) < N:
-            r = self.from_list(dup_gf_random(2*n - 1, domain))
+            r = self._gf_random(2*n - 1)
 
             if p == 2:
                 h = r
@@ -1528,8 +1524,6 @@ class _Factor:
         _gf_ddf_shoup
 
         """
-        from .galoistools import dup_gf_random
-
         domain = self.domain
         q, p = domain.order, domain.characteristic
         N = f.degree()
@@ -1541,7 +1535,7 @@ class _Factor:
 
         factors, x = [f], self.gens[0]
 
-        r = self.from_list(dup_gf_random(N - 1, domain))
+        r = self._gf_random(N - 1)
 
         h = pow(x, q, f)
         H = self._gf_trace_map(r, h, x, n - 1, f)[1]
@@ -1583,3 +1577,51 @@ class _Factor:
             factors += self._gf_edf_shoup(factor, n)
 
         return _sort_factors(factors, multiple=False)
+
+    def _gf_factor_sqf(self, f):
+        """
+        Factor a square-free polynomial ``f`` in ``GF(q)[x]``.
+
+        Returns its complete factorization into irreducibles::
+
+                     f_1(x) f_2(x) ... f_d(x)
+
+        where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
+        for ``i != j``.  The result is given as a list of factors of ``f``.
+
+        Square-free factors of ``f`` can be factored into irreducibles over
+        finite fields using three very different methods:
+
+        Berlekamp
+            efficient for very small values of order ``q`` (usually ``q < 25``)
+        Cantor-Zassenhaus
+            efficient on average input and with "typical" ``q``
+        Shoup-Kaltofen-Gathen
+            efficient with very large inputs and order
+
+        If you want to use a specific factorization method - set
+        ``GF_FACTOR_METHOD`` configuration option with one of ``"berlekamp"``,
+        ``"zassenhaus"`` or ``"shoup"`` values.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> f = x**2 + 4*x + 3
+        >>> R._gf_factor_sqf(f)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, chapter 14
+
+        """
+        _factor_methods = {
+            'berlekamp': self._gf_berlekamp,  # ``p`` : small
+            'zassenhaus': self._gf_zassenhaus,  # ``p`` : medium
+            'shoup': self._gf_shoup,      # ``p`` : large
+        }
+        method = query('GF_FACTOR_METHOD')
+
+        return _factor_methods[method](f)

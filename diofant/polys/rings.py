@@ -14,17 +14,14 @@ from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
-from .compatibility import IPolys
 from .constructor import construct_domain
-from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import ilex, lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, PolynomialDivisionFailed,
-                         PolynomialError)
+                         GeneratorsNeeded, PolynomialDivisionFailed)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -127,7 +124,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
+class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF,
                      _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
@@ -254,10 +251,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
         elif isinstance(element, dict):
             return self.from_dict(element)
         elif isinstance(element, list):
-            try:
-                return self.from_terms(element)
-            except ValueError:
-                return self.from_list(element)
+            return self.from_terms(element)
         elif isinstance(element, Expr):
             return self.convert(element)
         else:
@@ -278,9 +272,6 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
 
     def from_terms(self, element):
         return self.from_dict(dict(element))
-
-    def from_list(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def from_expr(self, expr):
         expr = sympify(expr)
@@ -688,9 +679,6 @@ class PolyElement(DomainElement, CantSympify, dict):
                 poly[cmonom] = ccoeff
 
         return poly
-
-    def to_dense(self):
-        return dmp_from_dict(self, self.ring.ngens-1, self.ring.domain)
 
     def to_dict(self):
         return dict(self)
@@ -1411,15 +1399,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return [coeff for _, coeff in self.terms(order)]
-
-    def all_coeffs(self):
-        if self.ring.is_univariate:
-            if self.is_zero:
-                return [self.parent.domain.zero]
-            else:
-                return self.to_dense()
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
 
     def monoms(self, order=None):
         """Ordered list of polynomial monomials.

@@ -1915,7 +1915,7 @@ class Poly(Expr):
             if sup_real and sup is not None:
                 sup = (sup, QQ.zero)
 
-            count = self.rep.ring.dup_count_complex_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_complex_roots(self.rep, inf=inf, sup=sup)
 
         return Integer(count)
 
@@ -3736,12 +3736,12 @@ def _sorted_factors(factors, method):
     if method == 'sqf':
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.to_dense()
+            rep = poly.rep
             return exp, len(rep), len(poly.gens), default_sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.to_dense()
+            rep = poly.rep
             return len(rep), len(poly.gens), exp, default_sort_key(rep)
 
     return sorted(factors, key=key)

@@ -1272,12 +1272,12 @@ def _to_ZZ_poly(f, ring):
     den = domain.one
 
     for coeff in f.values():
-        for c in coeff.rep.to_dense():
+        for c in coeff.rep.all_coeffs():
             if c:
                 den = domain.lcm(den, c.denominator)
 
     for monom, coeff in f.items():
-        coeff = coeff.rep.to_dense()
+        coeff = coeff.rep.all_coeffs()
         m = ring.domain.one
         if isinstance(ring.domain, rings.PolynomialRing):
             m = m.mul_monom(monom[1:])
