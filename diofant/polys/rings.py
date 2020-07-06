@@ -658,7 +658,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def to_dict(self):
         return dict(self)
 
-    def str(self, printer, precedence, exp_pattern, mul_symbol):
+    def _str(self, printer, precedence, exp_pattern, mul_symbol):
         if not self:
             return printer._print(self.ring.domain.zero)
         prec_add = precedence['Add']
