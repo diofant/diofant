@@ -214,7 +214,7 @@ def test_FractionField():
 
 
 def test_PolyElement():
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
     g = R.domain.dtype
     assert repr(3*x**2*y + 1) == (f"PolyElement(PolynomialRing({ZZ!r}, (Symbol('x'), "
                                   "Symbol('y')), LexOrder()), [((2, 1), "
@@ -222,7 +222,7 @@ def test_PolyElement():
 
 
 def test_FracElement():
-    F, x, y = field('x,y', ZZ)
+    F, x, y = field('x y', ZZ)
     g = F.domain.dtype
     assert repr((3*x**2*y + 1)/(x - y**2)) == (f"FracElement(FractionField({ZZ!r}, (Symbol('x'), "
                                                f"Symbol('y')), LexOrder()), [((2, 1), {g(3)!r}), "

@@ -343,7 +343,7 @@ def test_PolynomialRing_from_list():
 
     assert R.from_list(f) == g
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
     R1, z = ring('z', R)
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
@@ -666,7 +666,7 @@ def test_PolyElement_LC():
 
 
 def test_PolyElement_LM():
-    R, x, y = ring('x, y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     f = x**2*y**2 + x**2*y - 1
 
@@ -678,7 +678,7 @@ def test_PolyElement_LM():
     assert (x/2).LM == (1, 0)
     assert (x*y/4 + x/2).LM == (1, 1)
 
-    R, x, y, z = ring('x, y, z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     f = x**2*y**2 + x**2*y - 1
 

@@ -481,7 +481,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> R, x, y = ring('x, y', ZZ)
+        >>> R, x, y = ring('x y', ZZ)
         >>> p = (x + y)**2
         >>> p1 = p.copy()
         >>> p2 = p
@@ -555,7 +555,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p1 = (x + y)**2 + (x - y)**2
         >>> p1 == 4*x*y
         False
@@ -820,7 +820,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (x + y)**2 + (x - y)**2
         2*x**2 + 2*y**2
 
@@ -848,7 +848,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p1 = x + y**2
         >>> p2 = x*y + y**2
         >>> p1 - p2
@@ -875,7 +875,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y
         >>> 4 - p
         -x - y + 4
@@ -889,7 +889,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', QQ)
+        >>> _, x, y = ring('x y', QQ)
         >>> p1 = x + y
         >>> p2 = x - y
         >>> p1*p2
@@ -918,7 +918,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y
         >>> 4 * p
         4*x + 4*y
@@ -932,7 +932,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y**2
         >>> p**3
         x**3 + 3*x**2*y**2 + 3*x*y**4 + y**6
@@ -1011,7 +1011,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y**2
         >>> p._square()
         x**2 + 2*x*y**2 + y**4
@@ -1091,7 +1091,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> f = x**3
         >>> f0 = x - y**2
         >>> f1 = x - y
@@ -1156,7 +1156,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x**4 + 2*y
         >>> m = (1, 2)
         >>> p1 = p._iadd_monom((m, 5))
@@ -1197,7 +1197,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y, z = ring('x, y, z', ZZ)
+        >>> _, x, y, z = ring('x y z', ZZ)
         >>> p1 = x**4 + 2*y
         >>> p2 = y + z
         >>> m = (1, 2, 3)
@@ -1260,7 +1260,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y, z = ring('x, y, z', ZZ)
+        >>> _, x, y, z = ring('x y z', ZZ)
         >>> p = x**4 + x**3*y + x**2*z**2 + z**7
         >>> p.leading_expv()
         (4, 0, 0)
@@ -1324,7 +1324,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (3*x*y + y**2).leading_monom()
         x*y
 
@@ -1349,7 +1349,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (3*x*y + y**2).leading_term()
         3*x*y
 
@@ -1379,7 +1379,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.coeffs()
@@ -1401,7 +1401,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.monoms()
@@ -1423,7 +1423,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.terms()
