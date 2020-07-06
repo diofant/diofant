@@ -2875,19 +2875,6 @@ def test_PolyElement_sturm():
     ]
 
 
-def test_PolyElement_almosteq():
-    R, x, y = ring('x y', RR)
-    z = symbols('z')
-
-    assert x.almosteq(x) is True
-    assert x.almosteq(y) is False
-    assert x.almosteq(1) is False
-    assert (x + 2*y).almosteq(2) is False
-    assert (x + 2*y).almosteq(2*x + y) is False
-    assert R.one.almosteq(2) is False
-    assert R.one.almosteq(z) is False
-
-
 def test_PolyElement_slice():
     R, x = ring('x', ZZ)
 

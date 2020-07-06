@@ -17,7 +17,7 @@ Compatibility breaks
 
 * Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
 * Drop support for ``from_list()`` initialization for multivariate polynomials, see :pull:`1035`.
-* Drop ``to_dense()`` and ``tail_degrees()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
+* Drop ``to_dense()``, ``tail_degrees()`` and ``almosteq`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
 
 Minor changes
 =============

@@ -577,30 +577,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def almosteq(self, other, tolerance=None):
-        """Approximate equality test for polynomials."""
-        ring = self.ring
-
-        if isinstance(other, ring.dtype):
-            if set(self) != set(other):
-                return False
-
-            almosteq = ring.domain.almosteq
-
-            for k in self:
-                if not almosteq(self[k], other[k], tolerance):
-                    return False
-            return True
-        elif len(self) > 1:
-            return False
-        else:
-            try:
-                other = ring.domain.convert(other)
-            except CoercionFailed:
-                return False
-            else:
-                return ring.domain.almosteq(self.coeff(1), other, tolerance)
-
     def sort_key(self):
         return len(self), self.terms()
 
