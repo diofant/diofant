@@ -124,8 +124,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF,
-                     _Factor, _test_polys):
+class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -1250,15 +1249,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         i = self.ring.index(x)
         return min((monom[i] for monom in self), default=-oo)
-
-    def tail_degrees(self):
-        """
-        A tuple containing tail degrees in all variables.
-
-        Note that the degree of 0 is negative infinity (the Diofant object -oo)
-
-        """
-        return tuple(self.tail_degree(i) for i in range(self.ring.ngens))
 
     def total_degree(self):
         """Returns the total degree."""
