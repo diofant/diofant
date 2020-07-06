@@ -726,10 +726,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self == self.ring.one
 
     @property
-    def is_primitive(self):
-        return self.content() == self.ring.domain.one
-
-    @property
     def is_linear(self):
         return all(sum(monom) <= 1 for monom in self)
 
@@ -768,14 +764,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return True
 
         tdeg = sum(self.LM)
-
-        for monom in self:
-            _tdeg = sum(monom)
-
-            if _tdeg != tdeg:
-                return False
-
-        return True
+        return all(sum(monom) == tdeg for monom in self.monoms()[1:])
 
     def __neg__(self):
         return self.__class__({monom: -self[monom] for monom in self})

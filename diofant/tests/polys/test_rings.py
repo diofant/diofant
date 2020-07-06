@@ -1900,6 +1900,11 @@ def test_PolyElement_primitive():
 
     assert f.eject(y, z).primitive() == (-1, -f.eject(y, z))
 
+    R, x, y, z = ring('x y z', QQ)
+
+    assert (3*x + 2).primitive() == (1, 3*x + 2)
+    assert (4*x + 2).primitive() == (2, 2*x + 1)
+
     R, x, y, z, t = ring('x y z t', ZZ)
 
     f = f_polys()[6]
@@ -2757,9 +2762,6 @@ def test_PolyElement_is_():
 
     assert R(0).is_one is False
     assert R(1).is_one
-
-    assert (3*x + 2).is_primitive
-    assert (4*x + 2).is_primitive is False
 
     assert (x + y + z + 1).is_linear
     assert (x*y*z + 1).is_linear is False
