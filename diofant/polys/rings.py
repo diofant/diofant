@@ -1148,7 +1148,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         False
 
         """
-        if self in self.ring._gens_set:
+        if self.is_generator:
             cpself = self.copy()
         else:
             cpself = self
@@ -1183,7 +1183,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p1 = self
-        if p1 in p1.ring._gens_set:
+        if p1.is_generator:
             p1 = p1.copy()
         m, c = mc
         get = p1.get
