@@ -2138,22 +2138,6 @@ class Poly(Expr):
         return self.rep.is_squarefree
 
     @property
-    def is_monic(self):
-        """
-        Returns ``True`` if the leading coefficient of ``self`` is one.
-
-        Examples
-        ========
-
-        >>> Poly(x + 2, x).is_monic
-        True
-        >>> Poly(2*x + 2, x).is_monic
-        False
-
-        """
-        return self.rep.is_monic
-
-    @property
     def is_primitive(self):
         """
         Returns ``True`` if GCD of the coefficients of ``self`` is one.

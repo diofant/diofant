@@ -743,9 +743,6 @@ def test_Poly_properties():
     assert Poly(x - 1, x).is_squarefree is True
     assert Poly((x - 1)**2, x).is_squarefree is False
 
-    assert Poly(x - 1, x).is_monic is True
-    assert Poly(2*x - 1, x).is_monic is False
-
     assert Poly(3*x + 2, x).is_primitive is True
     assert Poly(4*x + 2, x).is_primitive is False
 
@@ -1991,6 +1988,12 @@ def test_monic():
 
     assert monic(2.0*x**2 + 6.0*x + 4.0) == 1.0*x**2 + 3.0*x + 2.0
     assert monic(2*x**2 + 3*x + 4, modulus=5) == x**2 + 4*x + 2
+
+    assert monic(x + 2) == x + 2
+    assert monic(2*x + 2) == x + 1
+
+    assert monic(x - 1) == x - 1
+    assert monic(2*x - 1) == x - Rational(1, 2)
 
 
 def test_content():

@@ -1678,6 +1678,8 @@ def test_PolyElement_monic():
     assert (2*x + 1).monic() == x + QQ(1, 2)
     assert (7*x**2 + x + 21).monic() == x**2 + x/7 + 3
     assert (3*x**2 + 4*x + 2).monic() == x**2 + 4*x/3 + QQ(2, 3)
+    assert (x - 1).monic() == x - 1
+    assert (2*x - 1).monic() == x - QQ(1, 2)
 
     R, x, y = ring('x y', ZZ)
 
@@ -2755,9 +2757,6 @@ def test_PolyElement_is_():
 
     assert R(0).is_one is False
     assert R(1).is_one
-
-    assert (x - 1).is_monic
-    assert (2*x - 1).is_monic is False
 
     assert (3*x + 2).is_primitive
     assert (4*x + 2).is_primitive is False

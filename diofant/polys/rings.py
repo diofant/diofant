@@ -726,10 +726,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self == self.ring.one
 
     @property
-    def is_monic(self):
-        return self.LC == self.ring.domain.one
-
-    @property
     def is_primitive(self):
         return self.content() == self.ring.domain.one
 
