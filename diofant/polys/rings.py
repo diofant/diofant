@@ -776,16 +776,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.__class__({monom: abs(self[monom]) for monom in self})
 
     def __add__(self, other):
-        """Add two polynomials.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> (x + y)**2 + (x - y)**2
-        2*x**2 + 2*y**2
-
-        """
+        """Add two polynomials."""
         ring = self.ring
         domain = ring.domain
         try:
@@ -804,18 +795,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.__add__(other)
 
     def __sub__(self, other):
-        """Subtract polynomial other from self.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p1 = x + y**2
-        >>> p2 = x*y + y**2
-        >>> p1 - p2
-        -x*y + x
-
-        """
+        """Subtract polynomial other from self."""
         ring = self.ring
         domain = ring.domain
         try:
@@ -831,32 +811,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         return result
 
     def __rsub__(self, other):
-        """Substract self from other, with other convertible to the coefficient domain.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = x + y
-        >>> 4 - p
-        -x - y + 4
-
-        """
+        """Substract self from other, with other convertible to the coefficient domain."""
         return (-self).__add__(other)
 
     def __mul__(self, other):
-        """Multiply two polynomials.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', QQ)
-        >>> p1 = x + y
-        >>> p2 = x - y
-        >>> p1*p2
-        x**2 - y**2
-
-        """
+        """Multiply two polynomials."""
         ring = self.ring
         domain = ring.domain
         try:
@@ -874,31 +833,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         return result
 
     def __rmul__(self, other):
-        """Multiply other to self with other in the coefficient domain of self.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = x + y
-        >>> 4 * p
-        4*x + 4*y
-
-        """
+        """Multiply other to self with other in the coefficient domain of self."""
         return self.__mul__(other)
 
     def __pow__(self, n, mod=None):
-        """Raise polynomial to power `n`.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = x + y**2
-        >>> p**3
-        x**3 + 3*x**2*y**2 + 3*x*y**4 + y**6
-
-        """
+        """Raise polynomial to power `n`."""
         ring = self.ring
         n = int(n)
 
@@ -967,17 +906,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return poly
 
     def _square(self):
-        """Square of a polynomial.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = x + y**2
-        >>> p._square()
-        x**2 + 2*x*y**2 + y**4
-
-        """
+        """Square of a polynomial."""
         ring = self.ring
         p = ring.zero
         get = p.get
