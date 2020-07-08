@@ -361,7 +361,7 @@ class StrPrinter(Printer):
         return 'pi'
 
     def _print_PolyElement(self, poly):
-        return poly.str(self, PRECEDENCE, '%s**%d', '*')
+        return poly._str(self, PRECEDENCE, '%s**%d', '*')
 
     def _print_FracElement(self, frac):
         if frac.denominator == 1:

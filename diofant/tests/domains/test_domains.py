@@ -709,8 +709,8 @@ def test_Domain__algebraic_field():
 
 
 def test_PolynomialRing_from_FractionField():
-    F,  x, y = field('x,y', ZZ)
-    R,  X, Y = ring('x,y', ZZ)
+    F,  x, y = field('x y', ZZ)
+    R,  X, Y = ring('x y', ZZ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -720,8 +720,8 @@ def test_PolynomialRing_from_FractionField():
     pytest.raises(CoercionFailed, lambda: R.convert(g, F))
     assert R.convert(h, F) == X**2 + Y**2
 
-    F,  x, y = field('x,y', QQ)
-    R,  X, Y = ring('x,y', QQ)
+    F,  x, y = field('x y', QQ)
+    R,  X, Y = ring('x y', QQ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -733,8 +733,8 @@ def test_PolynomialRing_from_FractionField():
 
 
 def test_FractionField_from_PolynomialRing():
-    R,  x, y = ring('x,y', QQ)
-    F,  X, Y = field('x,y', ZZ)
+    R,  x, y = ring('x y', QQ)
+    F,  X, Y = field('x y', ZZ)
 
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5
@@ -742,13 +742,13 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(f, R) == 3*X**2 + 5*Y**2
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
-    RALG,  u, v = ring('u,v', ALG)
+    RALG,  u, v = ring('u v', ALG)
     pytest.raises(CoercionFailed,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
 def test_FractionField_convert():
-    F,  X, Y = field('x,y', QQ)
+    F,  X, Y = field('x y', QQ)
     F.convert(QQ_python(1, 3)) == F.one/3
 
 

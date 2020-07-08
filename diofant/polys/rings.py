@@ -124,8 +124,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF,
-                     _Factor, _test_polys):
+class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -482,7 +481,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> R, x, y = ring('x, y', ZZ)
+        >>> R, x, y = ring('x y', ZZ)
         >>> p = (x + y)**2
         >>> p1 = p.copy()
         >>> p2 = p
@@ -556,7 +555,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p1 = (x + y)**2 + (x - y)**2
         >>> p1 == 4*x*y
         False
@@ -577,30 +576,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def almosteq(self, other, tolerance=None):
-        """Approximate equality test for polynomials."""
-        ring = self.ring
-
-        if isinstance(other, ring.dtype):
-            if set(self) != set(other):
-                return False
-
-            almosteq = ring.domain.almosteq
-
-            for k in self:
-                if not almosteq(self[k], other[k], tolerance):
-                    return False
-            return True
-        elif len(self) > 1:
-            return False
-        else:
-            try:
-                other = ring.domain.convert(other)
-            except CoercionFailed:
-                return False
-            else:
-                return ring.domain.almosteq(self.coeff(1), other, tolerance)
 
     def sort_key(self):
         return len(self), self.terms()
@@ -683,7 +658,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def to_dict(self):
         return dict(self)
 
-    def str(self, printer, precedence, exp_pattern, mul_symbol):
+    def _str(self, printer, precedence, exp_pattern, mul_symbol):
         if not self:
             return printer._print(self.ring.domain.zero)
         prec_add = precedence['Add']
@@ -751,14 +726,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self == self.ring.one
 
     @property
-    def is_monic(self):
-        return self.LC == self.ring.domain.one
-
-    @property
-    def is_primitive(self):
-        return self.content() == self.ring.domain.one
-
-    @property
     def is_linear(self):
         return all(sum(monom) <= 1 for monom in self)
 
@@ -797,14 +764,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return True
 
         tdeg = sum(self.LM)
-
-        for monom in self:
-            _tdeg = sum(monom)
-
-            if _tdeg != tdeg:
-                return False
-
-        return True
+        return all(sum(monom) == tdeg for monom in self.monoms()[1:])
 
     def __neg__(self):
         return self.__class__({monom: -self[monom] for monom in self})
@@ -821,7 +781,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (x + y)**2 + (x - y)**2
         2*x**2 + 2*y**2
 
@@ -849,7 +809,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p1 = x + y**2
         >>> p2 = x*y + y**2
         >>> p1 - p2
@@ -876,7 +836,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y
         >>> 4 - p
         -x - y + 4
@@ -890,7 +850,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', QQ)
+        >>> _, x, y = ring('x y', QQ)
         >>> p1 = x + y
         >>> p2 = x - y
         >>> p1*p2
@@ -919,7 +879,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y
         >>> 4 * p
         4*x + 4*y
@@ -933,7 +893,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y**2
         >>> p**3
         x**3 + 3*x**2*y**2 + 3*x*y**4 + y**6
@@ -1012,7 +972,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + y**2
         >>> p._square()
         x**2 + 2*x*y**2 + y**4
@@ -1092,7 +1052,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> f = x**3
         >>> f0 = x - y**2
         >>> f1 = x - y
@@ -1157,7 +1117,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x**4 + 2*y
         >>> m = (1, 2)
         >>> p1 = p._iadd_monom((m, 5))
@@ -1173,7 +1133,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         False
 
         """
-        if self in self.ring._gens_set:
+        if self.is_generator:
             cpself = self.copy()
         else:
             cpself = self
@@ -1198,7 +1158,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y, z = ring('x, y, z', ZZ)
+        >>> _, x, y, z = ring('x y z', ZZ)
         >>> p1 = x**4 + 2*y
         >>> p2 = y + z
         >>> m = (1, 2, 3)
@@ -1208,7 +1168,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p1 = self
-        if p1 in p1.ring._gens_set:
+        if p1.is_generator:
             p1 = p1.copy()
         m, c = mc
         get = p1.get
@@ -1251,15 +1211,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         i = self.ring.index(x)
         return min((monom[i] for monom in self), default=-oo)
 
-    def tail_degrees(self):
-        """
-        A tuple containing tail degrees in all variables.
-
-        Note that the degree of 0 is negative infinity (the Diofant object -oo)
-
-        """
-        return tuple(self.tail_degree(i) for i in range(self.ring.ngens))
-
     def total_degree(self):
         """Returns the total degree."""
         return max(sum(m) for m in self)
@@ -1270,7 +1221,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y, z = ring('x, y, z', ZZ)
+        >>> _, x, y, z = ring('x y z', ZZ)
         >>> p = x**4 + x**3*y + x**2*z**2 + z**7
         >>> p.leading_expv()
         (4, 0, 0)
@@ -1334,7 +1285,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (3*x*y + y**2).leading_monom()
         x*y
 
@@ -1359,7 +1310,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> (3*x*y + y**2).leading_term()
         3*x*y
 
@@ -1389,7 +1340,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.coeffs()
@@ -1411,7 +1362,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.monoms()
@@ -1433,7 +1384,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring('x, y', ZZ, lex)
+        >>> _, x, y = ring('x y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.terms()

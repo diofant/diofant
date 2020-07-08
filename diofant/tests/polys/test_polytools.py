@@ -743,12 +743,6 @@ def test_Poly_properties():
     assert Poly(x - 1, x).is_squarefree is True
     assert Poly((x - 1)**2, x).is_squarefree is False
 
-    assert Poly(x - 1, x).is_monic is True
-    assert Poly(2*x - 1, x).is_monic is False
-
-    assert Poly(3*x + 2, x).is_primitive is True
-    assert Poly(4*x + 2, x).is_primitive is False
-
     assert Poly(1, x).is_ground is True
     assert Poly(x, x).is_ground is False
 
@@ -1992,6 +1986,12 @@ def test_monic():
     assert monic(2.0*x**2 + 6.0*x + 4.0) == 1.0*x**2 + 3.0*x + 2.0
     assert monic(2*x**2 + 3*x + 4, modulus=5) == x**2 + 4*x + 2
 
+    assert monic(x + 2) == x + 2
+    assert monic(2*x + 2) == x + 1
+
+    assert monic(x - 1) == x - 1
+    assert monic(2*x - 1) == x - Rational(1, 2)
+
 
 def test_content():
     f, F = 4*x + 2, Poly(4*x + 2)
@@ -2028,6 +2028,11 @@ def test_primitive():
 
     assert primitive(-3*x/4 + y + Rational(11, 8)) == \
         (Rational(-1, 8), 6*x - 8*y - 11)
+
+    assert primitive(3*x + 2) == (1, 3*x + 2)
+    assert primitive(4*x + 2) == (2, 2*x + 1)
+    assert primitive(2*x**2 + 6*x + 12) == (2, x**2 + 3*x + 6)
+    assert primitive(x**2 + 3*x + 6) == (1, x**2 + 3*x + 6)
 
 
 def test_compose():
