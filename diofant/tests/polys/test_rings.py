@@ -8,7 +8,7 @@ import pytest
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
                      PolynomialDivisionFailed, PolynomialRing, Rational,
-                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt, sring,
+                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt,
                      symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
@@ -197,38 +197,6 @@ def test_PolynomialRing_to_ground():
 
     assert R2.eject(x) == ZZ.inject('x').poly_ring('y')
     assert R2.eject(x, y) == R2
-
-
-def test_sring():
-    x, y, z, t = symbols('x y z t')
-
-    R = ZZ.inject('x', 'y', 'z')
-
-    assert sring(x + 2*y + 3*z) == (R, R.x + 2*R.y + 3*R.z)
-
-    R = QQ.inject('x', 'y', 'z')
-
-    assert sring(x + 2*y + z/3) == (R, R.x + 2*R.y + R.z/3)
-    assert sring([x, 2*y, z/3]) == (R, [R.x, 2*R.y, R.z/3])
-
-    Rt = ZZ.inject('t')
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + 2*t*y + 3*t**2*z, x, y, z) == (R, R.x + 2*Rt.t*R.y + 3*Rt.t**2*R.z)
-
-    Rt = QQ.inject('t')
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
-
-    Rt = ZZ.inject('t').field
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
-
-    R = QQ.inject('x', 'y')
-
-    assert sring(x + y, domain=QQ) == (R, R.x + R.y)
 
 
 def test_PolyElement___hash__():

@@ -14,7 +14,6 @@ from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
-from .constructor import construct_domain
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
@@ -24,13 +23,12 @@ from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, PolynomialDivisionFailed)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
-from .polyoptions import build_options
-from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
+from .polyutils import _dict_reorder, expr_from_dict
 from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
 
-__all__ = 'PolynomialRing', 'ring', 'sring'
+__all__ = 'PolynomialRing', 'ring'
 
 
 def ring(symbols, domain, order=lex):
@@ -55,51 +53,6 @@ def ring(symbols, domain, order=lex):
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
-
-
-def sring(exprs, *symbols, **options):
-    """Construct a ring deriving generators and domain from options and input expressions.
-
-    Parameters
-    ==========
-
-    exprs : :class:`~diofant.core.expr.Expr` or sequence of :class:`~diofant.core.expr.Expr` (sympifiable)
-    symbols : sequence of :class:`~diofant.core.symbol.Symbol`/:class:`~diofant.core.expr.Expr`
-    options : keyword arguments understood by :class:`~diofant.polys.polyoptions.Options`
-
-    Examples
-    ========
-
-    >>> R, f = sring(x + 2*y + 3*z)
-    >>> R
-    ZZ[x,y,z]
-    >>> f
-    x + 2*y + 3*z
-
-    """
-    single = False
-
-    if not is_sequence(exprs):
-        exprs, single = [exprs], True
-
-    exprs = list(map(sympify, exprs))
-    opt = build_options(symbols, options)
-
-    reps, opt = _parallel_dict_from_expr(exprs, opt)
-
-    if opt.domain is None:
-        # NOTE: this is inefficient because construct_domain() automatically
-        # performs conversion to the target domain. It shouldn't do this.
-        coeffs = sum((list(rep.values()) for rep in reps), [])
-        opt.domain, _ = construct_domain(coeffs, opt=opt)
-
-    _ring = PolynomialRing(opt.domain, opt.gens, opt.order)
-    polys = list(map(_ring.from_dict, reps))
-
-    if single:
-        return _ring, polys[0]
-    else:
-        return _ring, polys
 
 
 def _parse_symbols(symbols):
