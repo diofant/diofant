@@ -1,6 +1,6 @@
 """Polynomial manipulation algorithms and algebraic objects."""
 
-from .polytools import (Poly, PurePoly, poly_from_expr,
+from .polytools import (Poly, PurePoly,
                         parallel_poly_from_expr, degree, degree_list, LC,
                         LM, LT, prem, div, rem, quo,
                         exquo, half_gcdex, gcdex, invert, subresultants,
@@ -44,7 +44,7 @@ from .fields import FractionField, field
 from .univar import UnivarPolynomialRing
 
 
-__all__ = ('Poly', 'PurePoly', 'poly_from_expr',
+__all__ = ('Poly', 'PurePoly',
            'parallel_poly_from_expr', 'degree', 'degree_list', 'LC',
            'LM', 'LT', 'prem', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
