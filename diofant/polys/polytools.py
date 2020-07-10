@@ -25,8 +25,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
-from .polyutils import (_dict_from_expr, _dict_reorder,
-                        _parallel_dict_from_expr, _sort_gens)
+from .polyutils import _dict_reorder, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -176,7 +175,7 @@ class Poly(Expr):
     @classmethod
     def _from_expr(cls, rep, opt):
         """Construct a polynomial from an expression."""
-        rep, opt = _dict_from_expr(rep, opt)
+        (rep,), opt = _parallel_dict_from_expr([rep], opt)
         return cls._from_dict(rep, opt)
 
     def _hashable_content(self):

@@ -307,18 +307,6 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
     return polys, tuple(gens)
 
 
-def _dict_from_expr_if_gens(expr, opt):
-    """Transform an expression into a multinomial form given generators."""
-    (poly,), gens = _parallel_dict_from_expr_if_gens((expr,), opt)
-    return poly, gens
-
-
-def _dict_from_expr_no_gens(expr, opt):
-    """Transform an expression into a multinomial form and figure out generators."""
-    (poly,), gens = _parallel_dict_from_expr_no_gens((expr,), opt)
-    return poly, gens
-
-
 def parallel_dict_from_expr(exprs, **args):
     """Transform expressions into a multinomial form."""
     reps, opt = _parallel_dict_from_expr(exprs, build_options(args))
@@ -336,25 +324,6 @@ def _parallel_dict_from_expr(exprs, opt):
         reps, gens = _parallel_dict_from_expr_no_gens(exprs, opt)
 
     return reps, opt.clone({'gens': gens})
-
-
-def dict_from_expr(expr, **args):
-    """Transform an expression into a multinomial form."""
-    rep, opt = _dict_from_expr(expr, build_options(args))
-    return rep, opt.gens
-
-
-def _dict_from_expr(expr, opt):
-    """Transform an expression into a multinomial form."""
-    if opt.expand is not False:
-        expr = expr.expand()
-
-    if opt.gens:
-        rep, gens = _dict_from_expr_if_gens(expr, opt)
-    else:
-        rep, gens = _dict_from_expr_no_gens(expr, opt)
-
-    return rep, opt.clone({'gens': gens})
 
 
 def expr_from_dict(rep, *gens):
