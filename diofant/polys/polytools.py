@@ -25,7 +25,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
-from .polyutils import _dict_reorder, _parallel_dict_from_expr, _sort_gens
+from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -489,10 +489,9 @@ class Poly(Expr):
             raise PolynomialError(
                 'generators list can differ only up to order of elements')
 
-        rep = dict(zip(*_dict_reorder(dict(self.rep), self.gens, gens)))
-
-        newring = self.domain.poly_ring(*gens)
-        rep = newring.from_dict(rep)
+        rep = self.rep
+        new_ring = rep.ring.clone(symbols=gens)
+        rep = rep.set_ring(new_ring)
 
         return self.per(rep, gens=gens)
 

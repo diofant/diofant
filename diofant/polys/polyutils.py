@@ -324,25 +324,3 @@ def _parallel_dict_from_expr(exprs, opt):
         reps, gens = _parallel_dict_from_expr_no_gens(exprs, opt)
 
     return reps, opt.clone({'gens': gens})
-
-
-def _dict_reorder(rep, gens, new_gens):
-    """Reorder levels using dict representation."""
-    gens = list(gens)
-
-    monoms = rep.keys()
-    coeffs = rep.values()
-
-    new_monoms = [[] for _ in range(len(rep))]
-
-    for gen in new_gens:
-        try:
-            j = gens.index(gen)
-
-            for M, new_M in zip(monoms, new_monoms):
-                new_M.append(M[j])
-        except ValueError:
-            for new_M in new_monoms:
-                new_M.append(0)
-
-    return map(tuple, new_monoms), coeffs

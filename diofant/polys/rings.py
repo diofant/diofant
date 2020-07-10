@@ -23,7 +23,6 @@ from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, PolynomialDivisionFailed)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
-from .polyutils import _dict_reorder
 from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
@@ -453,12 +452,32 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.__class__(self)
 
     def set_ring(self, new_ring):
-        if self.ring == new_ring:
+        ring = self.ring
+        symbols = ring.symbols
+        new_symbols = new_ring.symbols
+
+        if ring == new_ring:
             return self
-        elif self.ring == new_ring.domain:
+        elif ring == new_ring.domain:
             return new_ring.ground_new(self)
-        elif set(new_ring.symbols).issuperset(self.ring.symbols):
-            terms = zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols))
+        elif set(new_symbols).issuperset(symbols):
+            monoms = self.keys()
+            coeffs = self.values()
+
+            new_monoms = [[] for _ in range(len(self))]
+
+            for gen in new_symbols:
+                try:
+                    j = symbols.index(gen)
+
+                    for M, new_M in zip(monoms, new_monoms):
+                        new_M.append(M[j])
+                except ValueError:
+                    for new_M in new_monoms:
+                        new_M.append(0)
+
+            terms = zip(map(tuple, new_monoms), coeffs)
+
             return new_ring.from_terms(terms)
         else:
             raise CoercionFailed(f"Can't set element ring to {new_ring}")
