@@ -4,7 +4,7 @@ import functools
 import math
 import operator
 
-from ..core import Expr, Symbol, cacheit, oo
+from ..core import Expr, Integer, Symbol, cacheit, oo
 from ..core import symbols as _symbols
 from ..core import sympify
 from ..core.compatibility import is_sequence
@@ -23,7 +23,7 @@ from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, PolynomialDivisionFailed)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
-from .polyutils import _dict_reorder, expr_from_dict
+from .polyutils import _dict_reorder
 from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
@@ -326,9 +326,12 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_expr(self, element):
-        to_expr = self.domain.to_expr
-        return expr_from_dict({k: to_expr(v) for k, v in element.items()},
-                              *self.symbols)
+        symbols = self.symbols
+        domain = self.domain
+        return functools.reduce(operator.add,
+                                (domain.to_expr(v)*k.as_expr(*symbols)
+                                 for k, v in element.items()),
+                                Integer(0))
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
