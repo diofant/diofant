@@ -4,7 +4,7 @@ import collections
 
 from ..domains import EX
 from ..matrices import Matrix
-from ..polys import groebner, poly, sring
+from ..polys import groebner, poly
 from ..polys.polyerrors import ComputationFailed, PolificationFailed
 from ..polys.polytools import parallel_poly_from_expr
 from ..polys.solvers import solve_lin_sys
@@ -67,9 +67,11 @@ def solve_linear_system(system, *symbols, **flags):
 
     """
     eqs = system*Matrix(symbols + (-1,))
-    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
+    polys, opt = parallel_poly_from_expr(eqs, *symbols, field=True)
+    domain = polys[0].rep.ring
+    polys = [_.rep for _ in polys]
 
-    res = solve_lin_sys(eqs, domain)
+    res = solve_lin_sys(polys, domain)
     if res is None:
         return
 

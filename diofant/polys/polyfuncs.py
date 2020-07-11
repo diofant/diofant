@@ -7,7 +7,7 @@ from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
-from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
+from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
@@ -176,9 +176,9 @@ def horner(f, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        return exc.expr
+        return exc.exprs[0]
 
     form, gen = Integer(0), F.gen
 
@@ -253,7 +253,7 @@ def viete(f, roots=None, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        f, opt = poly_from_expr(f, *gens, **args)
+        (f,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('viete', 1, exc)
 

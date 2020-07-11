@@ -1,6 +1,6 @@
 """Polynomial manipulation algorithms and algebraic objects."""
 
-from .polytools import (Poly, PurePoly, poly_from_expr,
+from .polytools import (Poly, PurePoly,
                         parallel_poly_from_expr, degree, degree_list, LC,
                         LM, LT, prem, div, rem, quo,
                         exquo, half_gcdex, gcdex, invert, subresultants,
@@ -39,12 +39,12 @@ from .orthopolys import (jacobi_poly, chebyshevt_poly,
                          laguerre_poly, spherical_bessel_fn)
 from .partfrac import apart, apart_list, assemble_partfrac_list
 from .polyoptions import Options
-from .rings import PolynomialRing, ring, sring
+from .rings import PolynomialRing, ring
 from .fields import FractionField, field
 from .univar import UnivarPolynomialRing
 
 
-__all__ = ('Poly', 'PurePoly', 'poly_from_expr',
+__all__ = ('Poly', 'PurePoly',
            'parallel_poly_from_expr', 'degree', 'degree_list', 'LC',
            'LM', 'LT', 'prem', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
@@ -71,4 +71,4 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'chebyshevu_poly', 'hermite_poly', 'legendre_poly',
            'laguerre_poly', 'spherical_bessel_fn', 'apart', 'apart_list',
            'assemble_partfrac_list', 'Options', 'PolynomialRing', 'ring',
-           'sring', 'FractionField', 'field', 'UnivarPolynomialRing')
+           'FractionField', 'field', 'UnivarPolynomialRing')

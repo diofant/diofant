@@ -8,7 +8,7 @@ import pytest
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
                      PolynomialDivisionFailed, PolynomialRing, Rational,
-                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt, sring,
+                     Symbol, field, grlex, lex, oo, pi, ring, sin, sqrt,
                      symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
@@ -197,38 +197,6 @@ def test_PolynomialRing_to_ground():
 
     assert R2.eject(x) == ZZ.inject('x').poly_ring('y')
     assert R2.eject(x, y) == R2
-
-
-def test_sring():
-    x, y, z, t = symbols('x y z t')
-
-    R = ZZ.inject('x', 'y', 'z')
-
-    assert sring(x + 2*y + 3*z) == (R, R.x + 2*R.y + 3*R.z)
-
-    R = QQ.inject('x', 'y', 'z')
-
-    assert sring(x + 2*y + z/3) == (R, R.x + 2*R.y + R.z/3)
-    assert sring([x, 2*y, z/3]) == (R, [R.x, 2*R.y, R.z/3])
-
-    Rt = ZZ.inject('t')
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + 2*t*y + 3*t**2*z, x, y, z) == (R, R.x + 2*Rt.t*R.y + 3*Rt.t**2*R.z)
-
-    Rt = QQ.inject('t')
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
-
-    Rt = ZZ.inject('t').field
-    R = Rt.poly_ring('x', 'y', 'z')
-
-    assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
-
-    R = QQ.inject('x', 'y')
-
-    assert sring(x + y, domain=QQ) == (R, R.x + R.y)
 
 
 def test_PolyElement___hash__():
@@ -845,6 +813,10 @@ def test_PolyElement___add__():
 
     assert (x + y - 1) + 1 == x + y
 
+    f, g = (x + y)**2, (x - y)**2
+
+    assert f + g == 2*x**2 + 2*y**2
+
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
     Rxyz, x, y, z = ring('x y z', Ruv)
@@ -882,6 +854,14 @@ def test_PolyElement___sub__():
 
     assert (x + y + 1) - 1 == x + y
 
+    f, g = x + y**2, x*y + y**2
+
+    assert f - g == x - x*y
+
+    f, g = 4, x + y
+
+    assert f - g == -x - y + 4
+
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
     Rxyz, x, y, z = ring('x y z', Ruv)
@@ -915,6 +895,16 @@ def test_PolyElement___sub__():
 
 
 def test_PolyElement___mul__():
+    R, x, y = ring('x y', QQ)
+
+    f, g = x + y, x - y
+
+    assert f*g == x**2 - y**2
+
+    f, g = 4, x + y
+
+    assert f*g == 4*x + 4*y
+
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
     Rxyz, x, y, z = ring('x y z', Ruv)
@@ -1438,6 +1428,11 @@ def test_PolyElement___pow__():
     assert R(1)**0 == 1
     assert R(1)**1 == 1
     assert R(1)**7 == 1
+
+    f = x + y**2
+
+    assert f**2 == x**2 + 2*x*y**2 + y**4
+    assert f**3 == x**3 + 3*x**2*y**2 + 3*x*y**4 + y**6
 
     assert (x**2 + x*y +
             y**2)**2 == x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
@@ -2903,15 +2898,6 @@ def test_PolyElement_slice():
 
     assert f.slice(1, 2) == f
     assert f.slice(2, 1) == 2*y**2 + 3*y + 5
-
-
-def test_sympyissue_18894():
-    exprs = [+Rational(3, 16) + sqrt(3*sqrt(3) + 10)/8,
-             Rational(1, 8) + 3*sqrt(3)/16,
-             -Rational(3, 16) + sqrt(3*sqrt(3) + 10)/8]
-    K = QQ.algebraic_field(sqrt(3) + sqrt(3*sqrt(3) + 10))
-
-    assert sring(exprs, x, extension=True)[0] == K.inject(x)
 
 
 def test_cache():

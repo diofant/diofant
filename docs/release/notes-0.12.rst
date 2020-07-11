@@ -19,6 +19,7 @@ Compatibility breaks
 * Drop support for ``from_list()`` initialization for multivariate polynomials, see :pull:`1035`.
 * Drop ``to_dense()``, ``tail_degrees()`` and ``almosteq`` methods and ``is_monic``, ``is_primitive`` attributes of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
 * Drop ``is_monic`` and ``is_primitive`` attributes of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036`.
+* Drop ``sring()`` and ``poly_from_expr()`` functions, see pull:`1037`.
 
 Minor changes
 =============
