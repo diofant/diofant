@@ -14,7 +14,6 @@ from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
 from ..utilities import group, sift
-from . import polyoptions as options
 from .constructor import construct_domain
 from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
@@ -25,6 +24,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
+from .polyoptions import Modulus, Options, allowed_flags, build_options
 from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
@@ -52,7 +52,7 @@ class Poly(Expr):
 
     def __new__(cls, rep, *gens, **args):
         """Create a new polynomial instance out of something useful."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
 
         if iterable(rep, exclude=str):
             if isinstance(rep, dict):
@@ -86,25 +86,25 @@ class Poly(Expr):
     @classmethod
     def from_dict(cls, rep, *gens, **args):
         """Construct a polynomial from a :class:`dict`."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_dict(rep, opt)
 
     @classmethod
     def from_list(cls, rep, *gens, **args):
         """Construct a polynomial from a :class:`list`."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_list(rep, opt)
 
     @classmethod
     def from_poly(cls, rep, *gens, **args):
         """Construct a polynomial from a polynomial."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_poly(rep, opt)
 
     @classmethod
     def from_expr(cls, rep, *gens, **args):
         """Construct a polynomial from an expression."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_expr(rep, opt)
 
     @classmethod
@@ -367,7 +367,7 @@ class Poly(Expr):
 
     def set_domain(self, domain):
         """Set the ground domain of ``self``."""
-        opt = options.build_options(self.gens, {'domain': domain})
+        opt = build_options(self.gens, {'domain': domain})
         newrep = self.rep.set_domain(opt.domain)
         return self.per(newrep)
 
@@ -382,7 +382,7 @@ class Poly(Expr):
         Poly(x**2 + 1, x, modulus=2)
 
         """
-        modulus = options.Modulus.preprocess(modulus)
+        modulus = Modulus.preprocess(modulus)
         return self.set_domain(FF(modulus))
 
     def get_modulus(self):
@@ -481,7 +481,7 @@ class Poly(Expr):
         Poly(y**2*x + x**2, y, x, domain='ZZ')
 
         """
-        opt = options.Options((), args)
+        opt = Options((), args)
 
         if not gens:
             gens = _sort_gens(self.gens, opt=opt)
@@ -2555,7 +2555,7 @@ class PurePoly(Poly):
 
 def parallel_poly_from_expr(exprs, *gens, **args):
     """Construct polynomials from expressions."""
-    opt = options.build_options(gens, args)
+    opt = build_options(gens, args)
     return _parallel_poly_from_expr(exprs, opt)
 
 
@@ -2685,7 +2685,7 @@ def degree(f, *gens, **args):
     -oo
 
     """
-    options.allowed_flags(args, ['gen', 'polys'])
+    allowed_flags(args, ['gen', 'polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2706,7 +2706,7 @@ def degree_list(f, *gens, **args):
     (2, 1)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2729,7 +2729,7 @@ def LC(f, *gens, **args):
     4
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2750,7 +2750,7 @@ def LM(f, *gens, **args):
     x**2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2772,7 +2772,7 @@ def LT(f, *gens, **args):
     4*x**2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2794,7 +2794,7 @@ def prem(f, g, *gens, **args):
     20
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2822,7 +2822,7 @@ def div(f, g, *gens, **args):
     (x/2 + 1, 5)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2850,7 +2850,7 @@ def rem(f, g, *gens, **args):
     5
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2878,7 +2878,7 @@ def quo(f, g, *gens, **args):
     x + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2909,7 +2909,7 @@ def exquo(f, g, *gens, **args):
     ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2937,7 +2937,7 @@ def half_gcdex(f, g, *gens, **args):
     (-x/5 + 3/5, x + 1)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -2968,7 +2968,7 @@ def gcdex(f, g, *gens, **args):
     (-x/5 + 3/5, x**2/5 - 6*x/5 + 2, x + 1)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3015,7 +3015,7 @@ def invert(f, g, *gens, **args):
     diofant.core.numbers.mod_inverse
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3043,7 +3043,7 @@ def subresultants(f, g, *gens, **args):
     [x**2 + 1, x**2 - 1, -2]
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3070,7 +3070,7 @@ def resultant(f, g, *gens, **args):
 
     """
     includePRS = args.pop('includePRS', False)
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3103,7 +3103,7 @@ def discriminant(f, *gens, **args):
     -8
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3133,7 +3133,7 @@ def cofactors(f, g, *gens, **args):
     (x - 1, x + 1, x - 2)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3186,7 +3186,7 @@ def gcd_list(seq, *gens, **args):
     if result is not None:
         return result
 
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         polys, opt = parallel_poly_from_expr(seq, *gens, **args)
@@ -3229,7 +3229,7 @@ def gcd(f, g, *gens, **args):
     x - 1
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3277,7 +3277,7 @@ def lcm_list(seq, *gens, **args):
     if result is not None:
         return result
 
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         polys, opt = parallel_poly_from_expr(seq, *gens, **args)
@@ -3317,7 +3317,7 @@ def lcm(f, g, *gens, **args):
     x**3 - 2*x**2 - x + 2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3412,7 +3412,7 @@ def terms_gcd(f, *gens, **args):
         return f
 
     clear = args.pop('clear', True)
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
 
@@ -3451,7 +3451,7 @@ def trunc(f, p, *gens, **args):
     -x**3 - x + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3477,7 +3477,7 @@ def monic(f, *gens, **args):
     x**2 + 4*x/3 + 2/3
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3503,7 +3503,7 @@ def content(f, *gens, **args):
     2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3541,7 +3541,7 @@ def primitive(f, *gens, **args):
     (2, x*(x + 1) + 1)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3566,7 +3566,7 @@ def compose(f, g, *gens, **args):
     x**2 - x
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3592,7 +3592,7 @@ def decompose(f, *gens, **args):
     [x**2 - x - 1, x**2 + x]
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3622,7 +3622,7 @@ def sqf_norm(f, *gens, **args):
     (1, x**2 - 2*sqrt(3)*x + 4, x**4 - 4*x**2 + 16)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3648,7 +3648,7 @@ def sqf_part(f, *gens, **args):
     x**2 - x - 2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -3758,8 +3758,8 @@ def _symbolic_factor(expr, opt, method):
 
 def _generic_factor_list(expr, gens, args, method):
     """Helper function for :func:`sqf_list` and :func:`factor_list`."""
-    options.allowed_flags(args, ['frac', 'polys'])
-    opt = options.build_options(gens, args)
+    allowed_flags(args, ['frac', 'polys'])
+    opt = build_options(gens, args)
 
     expr = sympify(expr)
 
@@ -3802,8 +3802,8 @@ def _generic_factor_list(expr, gens, args, method):
 
 def _generic_factor(expr, gens, args, method):
     """Helper function for :func:`sqf` and :func:`factor`."""
-    options.allowed_flags(args, [])
-    opt = options.build_options(gens, args)
+    allowed_flags(args, [])
+    opt = build_options(gens, args)
     return _symbolic_factor(sympify(expr), opt, method)
 
 
@@ -4140,7 +4140,7 @@ def cancel(f, *gens, **args):
     """
     from ..core.exprtools import factor_terms
     from ..functions import Piecewise
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     f = sympify(f)
 
@@ -4209,7 +4209,7 @@ def reduced(f, G, *gens, **args):
     ([2*x, 1], x**2 + y**2 + y)
 
     """
-    options.allowed_flags(args, ['polys', 'auto'])
+    allowed_flags(args, ['polys', 'auto'])
 
     try:
         polys, opt = parallel_poly_from_expr([f] + list(G), *gens, **args)
@@ -4307,7 +4307,7 @@ class GroebnerBasis(Basic):
 
     def __new__(cls, F, *gens, **args):
         """Compute a reduced Gröbner basis for a system of polynomials."""
-        options.allowed_flags(args, ['polys', 'method'])
+        allowed_flags(args, ['polys', 'method'])
 
         try:
             polys, opt = parallel_poly_from_expr(F, *gens, **args)
@@ -4571,7 +4571,7 @@ def poly(expr, *gens, **args):
     Poly(x**5 + 2*x**4 - x**3 - 2*x**2 + x, x, domain='ZZ')
 
     """
-    options.allowed_flags(args, [])
+    allowed_flags(args, [])
 
     def _poly(expr, opt):
         terms, poly_terms = [], []
@@ -4633,6 +4633,6 @@ def poly(expr, *gens, **args):
     if 'expand' not in args:
         args['expand'] = False
 
-    opt = options.build_options(gens, args)
+    opt = build_options(gens, args)
 
     return _poly(expr, opt)
