@@ -2978,6 +2978,11 @@ def test_poly():
             Poly(1/(1 + sqrt(2)), x,
                  domain=QQ.algebraic_field(1/(1 + sqrt(2)))))
 
+    # issue sympy/sympy#19755
+    assert (poly(x + (2*x + 3)**2/5 + Rational(6, 5)) ==
+            Poly(4*x**2/5 + 17*x/5 + 3, domain=QQ))
+    assert poly(((x + 1)**2)/2) == Poly(x**2/2 + x + Rational(1, 2), domain=QQ)
+
 
 def test_keep_coeff():
     u = Mul(2, x + 1, evaluate=False)
