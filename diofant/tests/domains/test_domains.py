@@ -539,7 +539,7 @@ def test_Domain_convert():
     ALG2 = QQ.algebraic_field(sqrt(2))
     a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
-    assert a.rep.to_dense() == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert a.rep.all_coeffs() == [QQ(1, 2), 0, -QQ(9, 2), 0]
     assert RR.convert(a) == RR(1.4142135623730951)
     assert CC.convert(a) == CC(1.4142135623730951)
 
@@ -709,8 +709,8 @@ def test_Domain__algebraic_field():
 
 
 def test_PolynomialRing_from_FractionField():
-    F,  x, y = field('x,y', ZZ)
-    R,  X, Y = ring('x,y', ZZ)
+    F,  x, y = field('x y', ZZ)
+    R,  X, Y = ring('x y', ZZ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -720,8 +720,8 @@ def test_PolynomialRing_from_FractionField():
     pytest.raises(CoercionFailed, lambda: R.convert(g, F))
     assert R.convert(h, F) == X**2 + Y**2
 
-    F,  x, y = field('x,y', QQ)
-    R,  X, Y = ring('x,y', QQ)
+    F,  x, y = field('x y', QQ)
+    R,  X, Y = ring('x y', QQ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -733,8 +733,8 @@ def test_PolynomialRing_from_FractionField():
 
 
 def test_FractionField_from_PolynomialRing():
-    R,  x, y = ring('x,y', QQ)
-    F,  X, Y = field('x,y', ZZ)
+    R,  x, y = ring('x y', QQ)
+    F,  X, Y = field('x y', ZZ)
 
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5
@@ -742,13 +742,13 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(f, R) == 3*X**2 + 5*Y**2
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
-    RALG,  u, v = ring('u,v', ALG)
+    RALG,  u, v = ring('u v', ALG)
     pytest.raises(CoercionFailed,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
 def test_FractionField_convert():
-    F,  X, Y = field('x,y', QQ)
+    F,  X, Y = field('x y', QQ)
     F.convert(QQ_python(1, 3)) == F.one/3
 
 
@@ -788,20 +788,20 @@ def test_AlgebraicElement():
 
     f = A(rep)
 
-    assert f.rep.to_dense() == rep
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == rep
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     f = A(1)
 
-    assert f.rep.to_dense() == [QQ(1)]
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == [QQ(1)]
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     f = A([QQ(3, 2)])
 
-    assert f.rep.to_dense() == [QQ(3, 2)]
-    assert f.mod.to_dense() == mod
+    assert f.rep.all_coeffs() == [QQ(3, 2)]
+    assert f.mod.all_coeffs() == mod
     assert f.domain.domain == QQ
 
     B = QQ.algebraic_field(I*sqrt(2))
@@ -829,7 +829,7 @@ def test_AlgebraicElement():
     assert bool(A([QQ(1)])) is True
 
     a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.rep.to_dense() == [-1, 1]
+    assert a.rep.all_coeffs() == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))
 
@@ -993,6 +993,8 @@ def test_ModularInteger():
     assert bool(F3(3)) is False
     assert bool(F3(4)) is True
 
+    assert F3(2).is_primitive is True
+
     F5 = FF(5)
 
     a = F5(1)**(-1)
@@ -1018,6 +1020,12 @@ def test_ModularInteger():
     assert F5.is_normal(F5.zero) is True
 
     assert F5 == FF(5, [1, 0])
+
+    assert F5(2).is_primitive is True
+
+    F7 = FF(7)
+
+    assert F7(2).is_primitive is False
 
     F9 = FF(9, [1, 0, 1])
 
@@ -1050,7 +1058,7 @@ def test_ModularInteger():
 
     assert F8.order == 8
     assert F8.characteristic == 2
-    assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
+    assert F8.dtype.mod.all_coeffs() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
     assert int(F8(-1)) == int(F8(7)) == 7
     assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])(5)'
@@ -1066,6 +1074,12 @@ def test_ModularInteger():
     assert 2*F4.one != F4(2)*F4.one
 
     pytest.raises(TypeError, lambda: object()*F4.one)
+
+    F1331 = FF(11, [1, 4, 8, 7])
+
+    assert F1331([1, 2, 0]).is_primitive is False
+    assert F1331([1, 7, 5]).is_primitive is False
+    assert F1331([1, 2, 6]).is_primitive is True
 
 
 def test_QQ_int():

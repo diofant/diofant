@@ -755,7 +755,7 @@ def as_poly_1t(p, t, z):
         raise NotImplementedError(e)
     # Compute the negative degree parts.
     od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
-    one_t_part = Poly(list(reversed(one_t_part.rep.to_dense())) + [0]*od,
+    one_t_part = Poly(list(reversed(one_t_part.rep.all_coeffs())) + [0]*od,
                       *one_t_part.gens, domain=one_t_part.domain)
     if 0 < r < oo:
         one_t_part *= Poly(t**r, t)

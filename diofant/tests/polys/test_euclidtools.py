@@ -705,7 +705,7 @@ def test_dmp_gcd():
 
                 assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z = ring('x, y, z', QQ.algebraic_field(sqrt(2), sqrt(3)))
+    R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2), sqrt(3)))
 
     with using(gcd_aa_method='modgcd'):
         h = x**2*y**7 + sqrt(6)/21*z

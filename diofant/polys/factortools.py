@@ -7,7 +7,6 @@ import operator
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
@@ -429,9 +428,8 @@ class _Factor:
             factors = []
 
             for g, n in f.sqf_list()[1]:
-                g = g.to_dense()
-                for h in dup_gf_factor_sqf(g, domain):
-                    factors.append((self.from_list(h), n))
+                for h in self._gf_factor_sqf(g):
+                    factors.append((h, n))
         elif domain.is_AlgebraicField:
             coeff, factors = self._aa_factor_trager(f)
         else:
@@ -484,6 +482,8 @@ class _Factor:
 
     def _zz_irreducible_p(self, f):
         """Test irreducibility using Eisenstein's criterion."""
+        assert self.is_univariate
+
         lc = f.LC
         tc = f.coeff(1)
 
@@ -496,6 +496,75 @@ class _Factor:
             for p in e_ff:
                 if (lc % p) and (tc % p**2):
                     return True
+
+    def _gf_irreducible_p_ben_or(self, f):
+        """
+        Ben-Or's polynomial irreducibility test over finite fields.
+
+        References
+        ==========
+
+        * :cite:`Ben-Or1981ff`
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        if n <= 1:
+            return True
+
+        x = self.gens[0]
+        f = f.monic()
+
+        H = h = pow(x, q, f)
+
+        for i in range(n//2):
+            g = h - x
+
+            if self.gcd(f, g) == 1:
+                h = h.compose(x, H) % f
+            else:
+                return False
+
+        return True
+
+    def _gf_irreducible_p_rabin(self, f):
+        """
+        Rabin's polynomial irreducibility test over finite fields.
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, algorithm 14.36
+
+        """
+        assert self.is_univariate
+
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        if n <= 1:
+            return True
+
+        x = self.gens[0]
+        f = f.monic()
+
+        indices = {n//d for d in factorint(n)}
+
+        H = h = pow(x, q, f)
+
+        for i in range(1, n):
+            if i in indices:
+                g = h - x
+
+                if self.gcd(f, g) != 1:
+                    return False
+
+            h = h.compose(x, H) % f
+
+        return h == x
 
     def _cyclotomic_decompose(self, n):
         H = [self.gens[0] - 1]
@@ -1053,3 +1122,506 @@ class _Factor:
             raise ExtraneousFactors
         else:
             return H
+
+    def _gf_Qmatrix(self, f):
+        """
+        Calculate Berlekamp's ``Q`` matrix.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+
+        >>> f = 3*x**2 + 2*x + 4
+        >>> R._gf_Qmatrix(f)
+        [[1 mod 5, 0 mod 5],
+         [3 mod 5, 4 mod 5]]
+
+        >>> f = x**4 + 1
+        >>> R._gf_Qmatrix(f)
+        [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
+         [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
+         [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
+         [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.5
+
+        """
+        domain = self.domain
+        n, q = f.degree(), domain.order
+
+        r = [domain.one] + [domain.zero]*(n - 1)
+        Q = [r.copy()] + [[]]*(n - 1)
+        f = f.all_coeffs()
+
+        for i in range(1, (n - 1)*q + 1):
+            c, r[1:], r[0] = r[-1], r[:-1], domain.zero
+            for j in range(n):
+                r[j] -= c*f[-j - 1]
+
+            if not (i % q):
+                Q[i//q] = r.copy()
+
+        return Q
+
+    def _gf_berlekamp(self, f):
+        """
+        Factor a square-free polynomial over finite fields of small order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+
+        >>> R._gf_berlekamp(x**4 + 1)
+        [x**2 + 2 mod 5, x**2 + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.4
+        * :cite:`Knuth1985seminumerical`, section 4.6.2
+
+        """
+        from .solvers import RawMatrix
+
+        assert self.is_univariate
+
+        domain = self.domain
+
+        Q = self._gf_Qmatrix(f)
+        Q = RawMatrix(Q) - RawMatrix.eye(len(Q))
+        V = Q.T.nullspace()
+
+        for i, v in enumerate(V):
+            V[i] = self.from_list(list(reversed(v)))
+
+        factors = [f]
+
+        for v in V[1:]:
+            for f in list(factors):
+                for s in range(domain.order):
+                    h = v - domain(s)
+                    g = self.gcd(f, h)
+
+                    if g != 1 and g != f:
+                        factors.remove(f)
+
+                        f //= g
+                        factors.extend([f, g])
+
+                    if len(factors) == len(V):
+                        return _sort_factors(factors, multiple=False)
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_ddf_zassenhaus(self, f):
+        """
+        Cantor-Zassenhaus: Deterministic Distinct Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
+        partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
+        ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
+        list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
+        is an argument to the equal degree factorization routine.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(11))
+        >>> R._gf_ddf_zassenhaus(x**15 - 1)
+        [(x**5 + 10 mod 11, 1), (x**10 + x**5 + 1 mod 11, 2)]
+
+        To obtain factorization into irreducibles, use equal degree factorization
+        procedure (EDF) with each of the factors.
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, algorithm 14.3
+        * :cite:`Geddes1992algorithms`, algorithm 8.8
+
+        See Also
+        ========
+
+        _gf_edf_zassenhaus
+
+        """
+        domain = self.domain
+
+        factors, q = [], domain.order
+        g, x = [self.gens[0]]*2
+
+        for i in range(1, f.degree()//2 + 1):
+            g = pow(g, q, f)
+            h = self.gcd(f, g - x)
+
+            if h != 1:
+                factors.append((h, i))
+
+                f //= h
+                g %= f
+
+        if f != 1:
+            factors += [(f, f.degree())]
+
+        return factors
+
+    def _gf_edf_zassenhaus(self, f, n):
+        """
+        Cantor-Zassenhaus: Probabilistic Equal Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
+        an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
+        irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
+        EDF procedure gives complete factorization over Galois fields.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_edf_zassenhaus(x**3 + x**2 + x + 1, 1)
+        [x + 1 mod 5, x + 2 mod 5, x + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Geddes1992algorithms`, algorithm 8.9
+
+        See Also
+        ========
+
+        _gf_ddf_zassenhaus
+
+        """
+        factors = [f]
+        d = f.degree()
+
+        if d <= n:
+            return factors
+
+        domain = self.domain
+        p, q = domain.characteristic, domain.order
+        N = d // n
+
+        while len(factors) < N:
+            r = self._gf_random(2*n - 1)
+
+            if p == 2:
+                h = r
+
+                for i in range(1, n):
+                    h += pow(r, q, f)
+            else:
+                h = pow(r, (q**n - 1)//2, f)
+                h -= 1
+
+            g = self.gcd(f, h)
+
+            if g != 1 and g != f:
+                factors = (self._gf_edf_zassenhaus(g, n) +
+                           self._gf_edf_zassenhaus(f // g, n))
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_zassenhaus(self, f):
+        """
+        Factor a square-free polynomial over finite fields of medium order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_zassenhaus(x**2 + 4*x + 3)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        """
+        assert self.is_univariate
+
+        factors = []
+
+        for factor, n in self._gf_ddf_zassenhaus(f):
+            factors += self._gf_edf_zassenhaus(factor, n)
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_ddf_shoup(self, f):
+        """
+        Kaltofen-Shoup: Deterministic Distinct Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
+        partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
+        ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
+        list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
+        is an argument to the equal degree factorization routine.
+
+        Notes
+        =====
+
+        This algorithm is an improved version of Zassenhaus algorithm for
+        large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(3))
+        >>> R._gf_ddf_shoup(x**6 - x**5 + x**4 + x**3 - x)
+        [(x**2 + x, 1), (x**4 + x**3 + x + 2 mod 3, 2)]
+
+        References
+        ==========
+
+        * :cite:`Kaltofen1998subquadratic`, algorithm D
+        * :cite:`Shoup1995factor`
+        * :cite:`Gathen1992frobenious`
+
+        See Also
+        ========
+
+        _gf_edf_shoup
+
+        """
+        domain = self.domain
+
+        n, q = f.degree(), domain.order
+        k = math.ceil(math.sqrt(n//2))
+        x = self.gens[0]
+
+        h = pow(x, q, f)
+
+        # U[i] = x**(q**i)
+        U = [x, h] + [self.zero]*(k - 1)
+
+        for i in range(2, k + 1):
+            U[i] = U[i - 1].compose(x, h) % f
+
+        h, U = U[k], U[:k]
+        # V[i] = x**(q**(k*(i+1)))
+        V = [h] + [self.zero]*(k - 1)
+
+        for i in range(1, k):
+            V[i] = V[i - 1].compose(x, h) % f
+
+        factors = []
+
+        for i, v in enumerate(V):
+            h, j = self.one, k - 1
+
+            for u in U:
+                g = v - u
+                h *= g
+                h %= f
+
+            g = self.gcd(f, h)
+            f //= g
+
+            for u in reversed(U):
+                h = v - u
+                F = self.gcd(g, h)
+
+                if F != 1:
+                    factors.append((F, k*(i + 1) - j))
+
+                g //= F
+                j -= 1
+
+        if f != 1:
+            factors.append((f, f.degree()))
+
+        return factors
+
+    def _gf_trace_map(self, a, b, c, n, f):
+        """
+        Compute polynomial trace map in ``GF(q)[x]/(f)``.
+
+        Given a polynomial ``f`` in ``GF(q)[x]``, polynomials ``a``, ``b``,
+        ``c`` in the quotient ring ``GF(q)[x]/(f)`` such that ``b = c**t
+        (mod f)`` for some positive power ``t`` of ``q``, and a positive
+        integer ``n``, returns a mapping::
+
+           a -> a**t**n, a + a**t + a**t**2 + ... + a**t**n (mod f)
+
+        In factorization context, ``b = x**q mod f`` and ``c = x mod f``.
+        This way we can efficiently compute trace polynomials in equal
+        degree factorization routine, much faster than with other methods,
+        like iterated Frobenius algorithm, for large degrees.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> a = x + 2
+        >>> b = 4*x + 4
+        >>> c = x + 1
+        >>> f = 3*x**2 + 2*x + 4
+        >>> R._gf_trace_map(a, b, c, 4, f)
+        (x + 3 mod 5, x + 3 mod 5)
+
+        References
+        ==========
+
+        * :cite:`Gathen1992ComputingFM`, algorithm 5.2
+
+        """
+        u = a.compose(0, b) % f
+        v = b
+
+        if n & 1:
+            U = a + u
+            V = b
+        else:
+            U = a
+            V = c
+
+        n >>= 1
+
+        while n:
+            u += u.compose(0, v) % f
+            v = v.compose(0, v) % f
+
+            if n & 1:
+                U += u.compose(0, V) % f
+                V = v.compose(0, V) % f
+
+            n >>= 1
+
+        return a.compose(0, V) % f, U
+
+    def _gf_edf_shoup(self, f, n):
+        """
+        Gathen-Shoup: Probabilistic Equal Degree Factorization.
+
+        Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
+        an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
+        irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
+        EDF procedure gives complete factorization over Galois fields.
+
+        Notes
+        =====
+
+        This algorithm is an improved version of Zassenhaus algorithm for
+        large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(2917))
+        >>> R._gf_edf_shoup(x**2 + 2837*x + 2277, 1)
+        [x + 852 mod 2917, x + 1985 mod 2917]
+
+        References
+        ==========
+
+        * :cite:`Shoup1991ffactor`
+        * :cite:`Gathen1992ComputingFM`, algorithm 3.6
+
+        See Also
+        ========
+
+        _gf_ddf_shoup
+
+        """
+        domain = self.domain
+        q, p = domain.order, domain.characteristic
+        N = f.degree()
+
+        if not N:
+            return []
+        if N <= n:
+            return [f]
+
+        factors, x = [f], self.gens[0]
+
+        r = self._gf_random(N - 1)
+
+        h = pow(x, q, f)
+        H = self._gf_trace_map(r, h, x, n - 1, f)[1]
+
+        if p == 2:
+            h1 = self.gcd(f, H)
+            h2 = f // h1
+
+            factors = self._gf_edf_shoup(h1, n) + self._gf_edf_shoup(h2, n)
+        else:
+            h = pow(H, (q - 1)//2, f)
+
+            h1 = self.gcd(f, h)
+            h2 = self.gcd(f, h - 1)
+            h3 = f // (h1 * h2)
+
+            factors = (self._gf_edf_shoup(h1, n) + self._gf_edf_shoup(h2, n) +
+                       self._gf_edf_shoup(h3, n))
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_shoup(self, f):
+        """
+        Factor a square-free polynomial over finite fields of large order.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> R._gf_shoup(x**2 + 4*x + 3)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        """
+        assert self.is_univariate
+
+        factors = []
+
+        for factor, n in self._gf_ddf_shoup(f):
+            factors += self._gf_edf_shoup(factor, n)
+
+        return _sort_factors(factors, multiple=False)
+
+    def _gf_factor_sqf(self, f):
+        """
+        Factor a square-free polynomial ``f`` in ``GF(q)[x]``.
+
+        Returns its complete factorization into irreducibles::
+
+                     f_1(x) f_2(x) ... f_d(x)
+
+        where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
+        for ``i != j``.  The result is given as a list of factors of ``f``.
+
+        Square-free factors of ``f`` can be factored into irreducibles over
+        finite fields using three very different methods:
+
+        Berlekamp
+            efficient for very small values of order ``q`` (usually ``q < 25``)
+        Cantor-Zassenhaus
+            efficient on average input and with "typical" ``q``
+        Shoup-Kaltofen-Gathen
+            efficient with very large inputs and order
+
+        If you want to use a specific factorization method - set
+        ``GF_FACTOR_METHOD`` configuration option with one of ``"berlekamp"``,
+        ``"zassenhaus"`` or ``"shoup"`` values.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', FF(5))
+        >>> f = x**2 + 4*x + 3
+        >>> R._gf_factor_sqf(f)
+        [x + 1 mod 5, x + 3 mod 5]
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`, chapter 14
+
+        """
+        _factor_methods = {
+            'berlekamp': self._gf_berlekamp,  # ``p`` : small
+            'zassenhaus': self._gf_zassenhaus,  # ``p`` : medium
+            'shoup': self._gf_shoup,      # ``p`` : large
+        }
+        method = query('GF_FACTOR_METHOD')
+
+        return _factor_methods[method](f)

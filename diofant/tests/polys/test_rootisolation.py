@@ -721,382 +721,382 @@ a, b = (-1, -1), (1, 1)
 c, d = (+0, +0), (1, 1)
 
 
-def test_dup_count_complex_roots_1():
+def test__count_complex_roots_1():
     R, x = ring('x', ZZ)
 
     f = x - 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 1
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 1
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 1
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 1
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = x + 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 1
-    assert R.dup_count_complex_roots(f, c, d) == 0
+    assert R._count_complex_roots(f, a, b) == 1
+    assert R._count_complex_roots(f, c, d) == 0
 
     R, x = ring('x', QQ)
 
     f = x - QQ(1, 2)
 
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, c, d) == 1
 
     R, x = ring('x', EX)
 
-    pytest.raises(DomainError, lambda: R.dup_count_complex_roots(x))
+    pytest.raises(DomainError, lambda: R._count_complex_roots(x))
 
 
-def test_dup_count_complex_roots_2():
+def test__count_complex_roots_2():
     R, x = ring('x', ZZ)
 
     f = x*(x - 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = x*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
 
-def test_dup_count_complex_roots_3():
+def test__count_complex_roots_3():
     R, x = ring('x', ZZ)
 
     f = (x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = x*(x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
 
-def test_dup_count_complex_roots_4():
+def test__count_complex_roots_4():
     R, x = ring('x', ZZ)
 
     f = x**2 + 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = x*(x**2 + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = (x**2 + 1)*(x - 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = (x**2 + 1)*(x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = -f
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 3
 
 
-def test_dup_count_complex_roots_5():
+def test__count_complex_roots_5():
     R, x = ring('x', ZZ)
 
     f = (x + 1)**2 + 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 0
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 0
 
     f = ((x + 1)**2 + 1)*(x - 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = ((x + 1)**2 + 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 0
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 0
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = ((x + 1)**2 + 1)*(x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 2
 
 
-def test_dup_count_complex_roots_6():
+def test__count_complex_roots_6():
     R, x = ring('x', ZZ)
 
     f = (x - 1)**2 + 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= x - 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = ((x - 1)**2 + 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 3
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 3
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= x
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = ((x - 1)**2 + 1)*(x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 3
 
 
-def test_dup_count_complex_roots_7():
+def test__count_complex_roots_7():
     R, x = ring('x', ZZ)
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= (x - 2)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x**2 - 2)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, c, d) == 1
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 6
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 6
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 5
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 5
+    assert R._count_complex_roots(f, c, d) == 1
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 6
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 6
+    assert R._count_complex_roots(f, c, d) == 2
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)*(x + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 6
-    assert R.dup_count_complex_roots(f, c, d) == 2
+    assert R._count_complex_roots(f, a, b) == 6
+    assert R._count_complex_roots(f, c, d) == 2
 
     f *= x
 
-    assert R.dup_count_complex_roots(f, a, b) == 7
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 7
+    assert R._count_complex_roots(f, c, d) == 3
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)*(x + 1)*(x**2 + 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 8
-    assert R.dup_count_complex_roots(f, c, d) == 3
+    assert R._count_complex_roots(f, a, b) == 8
+    assert R._count_complex_roots(f, c, d) == 3
 
 
-def test_dup_count_complex_roots_8():
+def test__count_complex_roots_8():
     R, x = ring('x', ZZ)
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)*(x + 1)*(x**2 + 1)*x
 
-    assert R.dup_count_complex_roots(f, a, b) == 9
-    assert R.dup_count_complex_roots(f, c, d) == 4
+    assert R._count_complex_roots(f, a, b) == 9
+    assert R._count_complex_roots(f, c, d) == 4
 
     f *= (x**2 - 2)
 
-    assert R.dup_count_complex_roots(f, a, b) == 9
-    assert R.dup_count_complex_roots(f, c, d) == 4
+    assert R._count_complex_roots(f, a, b) == 9
+    assert R._count_complex_roots(f, c, d) == 4
 
 
-def test_dup_count_complex_roots_9():
+def test__count_complex_roots_9():
     R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = -x**3 + sqrt(2)*x - 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
     R, x = ring('x', QQ.algebraic_field(sqrt(2)).algebraic_field(I))
 
     f = -x**3 + I*x**2 + sqrt(2)*x - 1
 
-    assert R.dup_count_complex_roots(f, a, b) == 2
-    assert R.dup_count_complex_roots(f, c, d) == 1
+    assert R._count_complex_roots(f, a, b) == 2
+    assert R._count_complex_roots(f, c, d) == 1
 
 
-def test_dup_count_complex_roots_implicit():
+def test__count_complex_roots_implicit():
     R, x = ring('x', ZZ)
 
     f = (x**2 + 1)*(x - 1)*(x + 1)*x
 
-    assert R.dup_count_complex_roots(f) == 5
+    assert R._count_complex_roots(f) == 5
 
-    assert R.dup_count_complex_roots(f, sup=(0, 0)) == 3
-    assert R.dup_count_complex_roots(f, inf=(0, 0)) == 3
+    assert R._count_complex_roots(f, sup=(0, 0)) == 3
+    assert R._count_complex_roots(f, inf=(0, 0)) == 3
 
-    assert R.dup_count_complex_roots(f, inf=QQ(-2), sup=QQ(-1)) == 1
+    assert R._count_complex_roots(f, inf=QQ(-2), sup=QQ(-1)) == 1
 
 
-def test_dup_count_complex_roots_exclude():
+def test__count_complex_roots_exclude():
     R, x = ring('x', ZZ)
 
     f = (x**2 + 1)*(x - 1)*(x + 1)*x
 
     a, b = (-1, 0), (1, 1)
 
-    assert R.dup_count_complex_roots(f, a, b) == 4
+    assert R._count_complex_roots(f, a, b) == 4
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['S']) == 3
-    assert R.dup_count_complex_roots(f, a, b, exclude=['N']) == 3
+    assert R._count_complex_roots(f, a, b, exclude=['S']) == 3
+    assert R._count_complex_roots(f, a, b, exclude=['N']) == 3
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['S', 'N']) == 2
+    assert R._count_complex_roots(f, a, b, exclude=['S', 'N']) == 2
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['E']) == 4
-    assert R.dup_count_complex_roots(f, a, b, exclude=['W']) == 4
+    assert R._count_complex_roots(f, a, b, exclude=['E']) == 4
+    assert R._count_complex_roots(f, a, b, exclude=['W']) == 4
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['E', 'W']) == 4
+    assert R._count_complex_roots(f, a, b, exclude=['E', 'W']) == 4
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['N', 'S', 'E', 'W']) == 2
+    assert R._count_complex_roots(f, a, b, exclude=['N', 'S', 'E', 'W']) == 2
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['SW']) == 3
-    assert R.dup_count_complex_roots(f, a, b, exclude=['SE']) == 3
+    assert R._count_complex_roots(f, a, b, exclude=['SW']) == 3
+    assert R._count_complex_roots(f, a, b, exclude=['SE']) == 3
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=['SW', 'SE']) == 2
-    assert R.dup_count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S']) == 1
-    assert R.dup_count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S', 'N']) == 0
+    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE']) == 2
+    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S']) == 1
+    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S', 'N']) == 0
 
     a, b = (0, 0), (1, 1)
 
-    assert R.dup_count_complex_roots(f, a, b, exclude=True) == 1
+    assert R._count_complex_roots(f, a, b, exclude=True) == 1
 
     R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**4 + I*x**3 - x + 1
 
-    assert R.dup_count_complex_roots(f, inf=(0, 0), sup=(1, 1)) == 1
+    assert R._count_complex_roots(f, inf=(0, 0), sup=(1, 1)) == 1
 
-    r = R.dup_isolate_complex_roots_sqf(f)
+    r = R._isolate_complex_roots_sqf(f)
 
     assert r == [((QQ(-201, 100), QQ(-201, 100)), (0, 0)),
                  ((QQ(-201, 100), 0), (0, QQ(201, 100))),
                  ((0, QQ(-201, 100)), (QQ(201, 100), 0)),
                  ((0, 0), (QQ(201, 100), QQ(201, 100)))]
-    assert all(R.dup_count_complex_roots(f, inf=i, sup=s) == 1
+    assert all(R._count_complex_roots(f, inf=i, sup=s) == 1
                for i, s in r)
 
 
-def test_dup_isolate_complex_roots_sqf():
+def test__isolate_complex_roots_sqf():
     R, x = ring('x', ZZ)
 
     f = x**2 - 2*x + 3
 
-    assert R.dup_isolate_complex_roots_sqf(f) == \
+    assert R._isolate_complex_roots_sqf(f) == \
         [((0, -6), (6, 0)), ((0, 0), (6, 6))]
-    assert [r.as_tuple() for r in R.dup_isolate_complex_roots_sqf(f, blackbox=True)] == \
+    assert [r.as_tuple() for r in R._isolate_complex_roots_sqf(f, blackbox=True)] == \
         [((0, -6), (6, 0)), ((0, 0), (6, 6))]
 
-    assert R.dup_isolate_complex_roots_sqf(f, inf=1, sup=3) == [((1, -3), (3, 0)), ((1, 0), (3, 3))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(1, 0), sup=3) == [((1, 0), (3, 3))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(1, QQ(-1, 2)), sup=3) == [((1, 0), (3, 3))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(1, -3), sup=(3, -1)) == [((1, -3), (3, -1))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=0, sup=QQ(1, 6)) == []
+    assert R._isolate_complex_roots_sqf(f, inf=1, sup=3) == [((1, -3), (3, 0)), ((1, 0), (3, 3))]
+    assert R._isolate_complex_roots_sqf(f, inf=(1, 0), sup=3) == [((1, 0), (3, 3))]
+    assert R._isolate_complex_roots_sqf(f, inf=(1, QQ(-1, 2)), sup=3) == [((1, 0), (3, 3))]
+    assert R._isolate_complex_roots_sqf(f, inf=(1, -3), sup=(3, -1)) == [((1, -3), (3, -1))]
+    assert R._isolate_complex_roots_sqf(f, inf=0, sup=QQ(1, 6)) == []
 
-    assert R.dup_isolate_complex_roots_sqf(R.zero) == []
+    assert R._isolate_complex_roots_sqf(R.zero) == []
 
-    pytest.raises(ValueError, lambda: R.dup_isolate_complex_roots_sqf(f, inf=1, sup=1))
+    pytest.raises(ValueError, lambda: R._isolate_complex_roots_sqf(f, inf=1, sup=1))
 
-    assert R.dup_isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
+    assert R._isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
         [((QQ(15, 16), -QQ(3, 2)), (QQ(33, 32), -QQ(45, 32))),
          ((QQ(15, 16), QQ(45, 32)), (QQ(33, 32), QQ(3, 2)))]
-    assert R.dup_isolate_complex_roots_sqf(f, eps=QQ(1, 100)) == \
+    assert R._isolate_complex_roots_sqf(f, eps=QQ(1, 100)) == \
         [((QQ(255, 256), -QQ(363, 256)), (QQ(513, 512), -QQ(723, 512))),
          ((QQ(255, 256), QQ(723, 512)), (QQ(513, 512), QQ(363, 256)))]
 
     f = 7*x**4 - 19*x**3 + 20*x**2 + 17*x + 20
 
-    assert R.dup_isolate_complex_roots_sqf(f) == \
+    assert R._isolate_complex_roots_sqf(f) == \
         [((-QQ(40, 7), -QQ(40, 7)), (0, 0)), ((-QQ(40, 7), 0), (0, QQ(40, 7))),
          ((0, -QQ(40, 7)), (QQ(40, 7), 0)), ((0, 0), (QQ(40, 7), QQ(40, 7)))]
-    assert R.dup_isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
+    assert R._isolate_complex_roots_sqf(f, eps=QQ(1, 10)) == \
         [((QQ(-25, 56), QQ(-5, 8)), (QQ(-5, 14), QQ(-15, 28))),
          ((QQ(-25, 56), QQ(15, 28)), (QQ(-5, 14), QQ(5, 8))),
          ((QQ(95, 56), QQ(-85, 56)), (QQ(25, 14), QQ(-10, 7))),
@@ -1106,78 +1106,78 @@ def test_dup_isolate_complex_roots_sqf():
 
     f = x**2/2 - 3*x/7 + 1
 
-    assert R.dup_isolate_complex_roots_sqf(f) == [((0, -4), (4, 0)), ((0, 0), (4, 4))]
+    assert R._isolate_complex_roots_sqf(f) == [((0, -4), (4, 0)), ((0, 0), (4, 4))]
 
     R, x = ring('x', EX)
 
     pytest.raises(DomainError,
-                  lambda: R.dup_isolate_complex_roots_sqf(x, inf=(-1, 0),
-                                                          sup=(1, 1)))
+                  lambda: R._isolate_complex_roots_sqf(x, inf=(-1, 0),
+                                                       sup=(1, 1)))
 
     R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**4 + I*x**3 - x + 1
 
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(0, 0),
-                                           sup=(1, 1)) == [((0, 0), (1, QQ(1, 2)))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(0, 0), sup=(1, 1),
-                                           eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
-                                                                (QQ(5, 8), QQ(39, 128)))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(0, -1),
-                                           sup=(1, 1)) == [((0, -1), (1, QQ(-1, 2))),
-                                                           ((0, 0), (1, QQ(1, 2)))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(0, -1), sup=(1, 1),
-                                           eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
-                                                                (QQ(5, 8), QQ(39, 128))),
-                                                               ((QQ(45, 64), QQ(-91, 128)),
-                                                                (QQ(91, 128), QQ(-45, 64)))]
+    assert R._isolate_complex_roots_sqf(f, inf=(0, 0),
+                                        sup=(1, 1)) == [((0, 0), (1, QQ(1, 2)))]
+    assert R._isolate_complex_roots_sqf(f, inf=(0, 0), sup=(1, 1),
+                                        eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
+                                                            (QQ(5, 8), QQ(39, 128)))]
+    assert R._isolate_complex_roots_sqf(f, inf=(0, -1),
+                                        sup=(1, 1)) == [((0, -1), (1, QQ(-1, 2))),
+                                                        ((0, 0), (1, QQ(1, 2)))]
+    assert R._isolate_complex_roots_sqf(f, inf=(0, -1), sup=(1, 1),
+                                        eps=QQ(1, 100)) == [((QQ(79, 128), QQ(19, 64)),
+                                                             (QQ(5, 8), QQ(39, 128))),
+                                                            ((QQ(45, 64), QQ(-91, 128)),
+                                                             (QQ(91, 128), QQ(-45, 64)))]
 
     f *= (x - 1)
 
-    assert R.dup_isolate_complex_roots_sqf(f) == [((QQ(-401, 100), QQ(-401, 100)), (0, 0)),
-                                                  ((QQ(-401, 100), 0), (0, QQ(401, 100))),
-                                                  ((0, QQ(-401, 100)), (QQ(401, 100), 0)),
-                                                  ((0, 0), (QQ(401, 100), QQ(401, 100)))]
+    assert R._isolate_complex_roots_sqf(f) == [((QQ(-401, 100), QQ(-401, 100)), (0, 0)),
+                                               ((QQ(-401, 100), 0), (0, QQ(401, 100))),
+                                               ((0, QQ(-401, 100)), (QQ(401, 100), 0)),
+                                               ((0, 0), (QQ(401, 100), QQ(401, 100)))]
 
     f = x**7 + I*x**4 - (2 + I)*x**3 - 3*x + 5
 
-    assert R.dup_isolate_complex_roots_sqf(f) == [((QQ(-1001, 100), 0), (0, QQ(1001, 100))),
-                                                  ((QQ(-1001, 400), QQ(-1001, 800)), (QQ(-1001, 800), 0)),
-                                                  ((QQ(-1001, 800), QQ(-1001, 800)), (0, 0)),
-                                                  ((0, QQ(-1001, 400)), (QQ(1001, 400), QQ(-1001, 800))),
-                                                  ((0, QQ(-1001, 800)), (QQ(1001, 400), 0)),
-                                                  ((0, 0), (QQ(1001, 400), QQ(1001, 800))),
-                                                  ((0, QQ(1001, 800)), (QQ(1001, 400), QQ(1001, 400)))]
+    assert R._isolate_complex_roots_sqf(f) == [((QQ(-1001, 100), 0), (0, QQ(1001, 100))),
+                                               ((QQ(-1001, 400), QQ(-1001, 800)), (QQ(-1001, 800), 0)),
+                                               ((QQ(-1001, 800), QQ(-1001, 800)), (0, 0)),
+                                               ((0, QQ(-1001, 400)), (QQ(1001, 400), QQ(-1001, 800))),
+                                               ((0, QQ(-1001, 800)), (QQ(1001, 400), 0)),
+                                               ((0, 0), (QQ(1001, 400), QQ(1001, 800))),
+                                               ((0, QQ(1001, 800)), (QQ(1001, 400), QQ(1001, 400)))]
 
     R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = -x**3 + sqrt(2)*x - 1
 
-    assert R.dup_isolate_complex_roots_sqf(f) == [((0, QQ(-283, 100)), (QQ(283, 100), 0)),
-                                                  ((0, 0), (QQ(283, 100), QQ(283, 100)))]
+    assert R._isolate_complex_roots_sqf(f) == [((0, QQ(-283, 100)), (QQ(283, 100), 0)),
+                                               ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
     R, x = ring('x', QQ.algebraic_field(sqrt(2)).algebraic_field(I))
 
     f = -x**3 + I*x**2 + sqrt(2)*x - 1
 
-    assert R.dup_isolate_complex_roots_sqf(f) == [((QQ(-283, 100), 0), (0, QQ(283, 100))),
-                                                  ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
-                                                  ((0, 0), (QQ(283, 100), QQ(283, 100)))]
+    assert R._isolate_complex_roots_sqf(f) == [((QQ(-283, 100), 0), (0, QQ(283, 100))),
+                                               ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
+                                               ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
     R, x = ring('x', EX)
 
-    pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
+    pytest.raises(DomainError, lambda: R._isolate_complex_roots_sqf(x))
 
 
 @pytest.mark.timeout(100)
 @pytest.mark.slow
 @pytest.mark.skipif(ZZ.dtype is int, reason='gmpy2 is not used')
-def test_dup_isolate_complex_roots_sqf_2():
+def test__isolate_complex_roots_sqf_2():
     R, x = ring('x', ZZ)
 
     f = x**40 - 15*x**17 - 21*x**3 + 11
 
-    res = R.dup_isolate_complex_roots_sqf(f)
+    res = R._isolate_complex_roots_sqf(f)
     ans = [((QQ(-21, 16), QQ(-21, 128)), (QQ(-63, 64), 0)),
            ((QQ(-21, 16), 0), (QQ(-63, 64), QQ(21, 128))),
            ((QQ(-21, 16), QQ(-21, 64)), (QQ(-63, 64), QQ(-21, 128))),
@@ -1278,7 +1278,7 @@ def test_ComplexInterval():
 
     f = x**3 + x + I
 
-    _, r1, r2 = R.dup_isolate_complex_roots_sqf(f, blackbox=True)
+    _, r1, r2 = R._isolate_complex_roots_sqf(f, blackbox=True)
 
     assert r1.is_disjoint(r2) is True
     assert r1.is_disjoint(r2, check_re_refinement=True) is False

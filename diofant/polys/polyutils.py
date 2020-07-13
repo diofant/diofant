@@ -159,11 +159,9 @@ def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order."""
     def order_if_multiple_key(factor):
         f, n = factor
-        f = f if isinstance(f, list) else f.to_dense()
         return len(f), n, default_sort_key(f)
 
     def order_no_multiple_key(f):
-        f = f if isinstance(f, list) else f.to_dense()
         return len(f), default_sort_key(f)
 
     if args.get('multiple', True):
@@ -309,18 +307,6 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
     return polys, tuple(gens)
 
 
-def _dict_from_expr_if_gens(expr, opt):
-    """Transform an expression into a multinomial form given generators."""
-    (poly,), gens = _parallel_dict_from_expr_if_gens((expr,), opt)
-    return poly, gens
-
-
-def _dict_from_expr_no_gens(expr, opt):
-    """Transform an expression into a multinomial form and figure out generators."""
-    (poly,), gens = _parallel_dict_from_expr_no_gens((expr,), opt)
-    return poly, gens
-
-
 def parallel_dict_from_expr(exprs, **args):
     """Transform expressions into a multinomial form."""
     reps, opt = _parallel_dict_from_expr(exprs, build_options(args))
@@ -338,59 +324,3 @@ def _parallel_dict_from_expr(exprs, opt):
         reps, gens = _parallel_dict_from_expr_no_gens(exprs, opt)
 
     return reps, opt.clone({'gens': gens})
-
-
-def dict_from_expr(expr, **args):
-    """Transform an expression into a multinomial form."""
-    rep, opt = _dict_from_expr(expr, build_options(args))
-    return rep, opt.gens
-
-
-def _dict_from_expr(expr, opt):
-    """Transform an expression into a multinomial form."""
-    if opt.expand is not False:
-        expr = expr.expand()
-
-    if opt.gens:
-        rep, gens = _dict_from_expr_if_gens(expr, opt)
-    else:
-        rep, gens = _dict_from_expr_no_gens(expr, opt)
-
-    return rep, opt.clone({'gens': gens})
-
-
-def expr_from_dict(rep, *gens):
-    """Convert a multinomial form into an expression."""
-    result = []
-
-    for monom, coeff in rep.items():
-        term = [coeff]
-        for g, m in zip(gens, monom):
-            if m:
-                term.append(Pow(g, m))
-
-        result.append(Mul(*term))
-
-    return Add(*result)
-
-
-def _dict_reorder(rep, gens, new_gens):
-    """Reorder levels using dict representation."""
-    gens = list(gens)
-
-    monoms = rep.keys()
-    coeffs = rep.values()
-
-    new_monoms = [[] for _ in range(len(rep))]
-
-    for gen in new_gens:
-        try:
-            j = gens.index(gen)
-
-            for M, new_M in zip(monoms, new_monoms):
-                new_M.append(M[j])
-        except ValueError:
-            for new_M in new_monoms:
-                new_M.append(0)
-
-    return map(tuple, new_monoms), coeffs

@@ -361,7 +361,7 @@ class StrPrinter(Printer):
         return 'pi'
 
     def _print_PolyElement(self, poly):
-        return poly.str(self, PRECEDENCE, '%s**%d', '*')
+        return poly._str(self, PRECEDENCE, '%s**%d', '*')
 
     def _print_FracElement(self, frac):
         if frac.denominator == 1:
@@ -447,7 +447,7 @@ class StrPrinter(Printer):
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python
         return 'GF(%s, %s)(%s)' % (expr.parent.characteristic,
-                                   expr.mod.set_domain(ZZ_python).to_dense(),
+                                   expr.mod.set_domain(ZZ_python).all_coeffs(),
                                    int(expr))
 
     def _print_Pow(self, expr, rational=False):

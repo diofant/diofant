@@ -55,14 +55,14 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> R, x, y = ring('x, y', ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> p = 3
 
     >>> f = x**2*y**2 + x**2*y - y**2 - y
     >>> _primitive(f, p)
     (y**2 + y, x**2 - 1)
 
-    >>> R, x, y, z = ring('x, y, z', ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
 
     >>> f = x*y*z - y**2*z**2
     >>> _primitive(f, p)
@@ -135,7 +135,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     Examples
     ========
 
-    >>> R, x, y = ring('x, y', ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> p = 3
     >>> q = 5
 
@@ -151,7 +151,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     >>> hpq.trunc_ground(q) == hq
     True
 
-    >>> R, x, y, z = ring('x, y, z', ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
     >>> p = 6
     >>> q = 5
 
@@ -446,12 +446,12 @@ def modgcd(f, g):
     Examples
     ========
 
-    >>> R, x, y = ring('x, y', ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> modgcd((x - y)*(x + y), (x + y)**2)
     (x + y, x - y, x + y)
 
-    >>> R, x, y, z = ring('x, y, z', ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
 
     >>> modgcd((x - y)*z**2, (x**2 + 1)*z)
     (z, x*z - y*z, x**2 + 1)
@@ -1126,7 +1126,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     Examples
     ========
 
-    >>> R, x, z = ring('x, z', ZZ)
+    >>> R, x, z = ring('x z', ZZ)
     >>> minpoly = (z**2 - 2).drop(0)
 
     >>> f = x**2 + 2*x*z + 2
@@ -1135,7 +1135,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     x + z
 
     >>> D, t = ring('t', ZZ)
-    >>> R, x, z = ring('x, z', D)
+    >>> R, x, z = ring('x z', D)
     >>> minpoly = (z**2-3).drop(0)
 
     >>> f = x**2 + (t + 1)*x*z + 3*t
@@ -1272,12 +1272,12 @@ def _to_ZZ_poly(f, ring):
     den = domain.one
 
     for coeff in f.values():
-        for c in coeff.rep.to_dense():
+        for c in coeff.rep.all_coeffs():
             if c:
                 den = domain.lcm(den, c.denominator)
 
     for monom, coeff in f.items():
-        coeff = coeff.rep.to_dense()
+        coeff = coeff.rep.all_coeffs()
         m = ring.domain.one
         if isinstance(ring.domain, rings.PolynomialRing):
             m = m.mul_monom(monom[1:])
@@ -1439,7 +1439,7 @@ def func_field_modgcd(f, g):
     >>> func_field_modgcd(x**2 - 2, x + sqrt(2))
     (x + sqrt(2), x - sqrt(2), 1)
 
-    >>> R, x, y = ring('x, y', A)
+    >>> R, x, y = ring('x y', A)
 
     >>> func_field_modgcd((x + sqrt(2)*y)**2, x + sqrt(2)*y)
     (x + sqrt(2)*y, x + sqrt(2)*y, 1)
