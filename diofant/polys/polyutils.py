@@ -261,12 +261,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         reprs.append(terms)
 
     if not gens:
-        if len(exprs) == 1:
-            arg = exprs[0]
-        else:
-            arg = exprs,
-
-        raise GeneratorsNeeded(f'specify generators to give {arg} a meaning')
+        raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
 
     gens = _sort_gens(gens, opt=opt)
     k, indices = len(gens), {}
