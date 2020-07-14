@@ -69,10 +69,10 @@ def _nsort(roots, separated=False):
 def _sort_gens(gens, **args):
     """Sort generators in a reasonably intelligent way."""
     opt = build_options(args)
+    gens_order, wrt = _gens_order.copy(), opt.wrt
 
-    gens_order, wrt = {}, opt.wrt
-    for i, gen in enumerate(opt.sort):
-        gens_order[gen] = i + 1
+    for i, gen in enumerate(opt.sort, start=1):
+        gens_order[gen] = i
 
     def order_key(gen):
         gen = str(gen)
@@ -84,30 +84,11 @@ def _sort_gens(gens, **args):
                 pass
 
         name, index = _re_gen.match(gen).groups()
+        index = int(index) if index else 0
 
-        if index:
-            index = int(index)
-        else:
-            index = 0
+        return gens_order.get(name, _max_order), name, index
 
-        try:
-            return gens_order[name], name, index
-        except KeyError:
-            pass
-
-        try:
-            return _gens_order[name], name, index
-        except KeyError:
-            pass
-
-        return _max_order, name, index
-
-    try:
-        gens = sorted(gens, key=order_key)
-    except TypeError:  # pragma: no cover
-        pass
-
-    return tuple(gens)
+    return tuple(sorted(gens, key=order_key))
 
 
 def _unify_gens(f_gens, g_gens):
