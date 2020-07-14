@@ -243,7 +243,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).args
+        >>> Poly(x**2 + 1).args
         (x**2 + 1, x)
 
         """
@@ -261,7 +261,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).gen
+        >>> Poly(x**2 + 1).gen
         x
 
         """
@@ -378,7 +378,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(5*x**2 + 2*x - 1, x).set_modulus(2)
+        >>> Poly(5*x**2 + 2*x - 1).set_modulus(2)
         Poly(x**2 + 1, x, modulus=2)
 
         """
@@ -445,7 +445,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).replace(x, y)
+        >>> Poly(x**2 + 1).replace(x, y)
         Poly(y**2 + 1, y, domain='ZZ')
 
         """
@@ -477,7 +477,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x*y**2, x, y).reorder(y, x)
+        >>> Poly(x**2 + x*y**2).reorder(y, x)
         Poly(y**2*x + x**2, y, x, domain='ZZ')
 
         """
@@ -607,7 +607,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x + 3, x).coeffs()
+        >>> Poly(x**3 + 2*x + 3).coeffs()
         [1, 2, 3]
 
         See Also
@@ -626,7 +626,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).monoms()
+        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y).monoms()
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
         """
@@ -639,7 +639,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).terms()
+        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y).terms()
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
 
         """
@@ -652,7 +652,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
+        >>> Poly(x**3 + 2*x - 1).all_coeffs()
         [1, 0, 2, -1]
 
         """
@@ -711,7 +711,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 - y, x, y).as_dict()
+        >>> Poly(x**2 + 2*x*y**2 - y).as_dict()
         {(0, 1): -1, (1, 2): 2, (2, 0): 1}
 
         """
@@ -727,7 +727,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 2*x*y**2 - y, x, y)
+        >>> f = Poly(x**2 + 2*x*y**2 - y)
 
         >>> f.as_expr()
         x**2 + 2*x*y**2 - y
@@ -762,7 +762,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**6*y**2 + x**3 + 1, x, y).deflate()
+        >>> Poly(x**6*y**2 + x**3 + 1).deflate()
         ((3, 2), Poly(x**2*y + x + 1, x, y, domain='ZZ'))
 
         """
@@ -794,7 +794,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)
+        >>> f = Poly(x**2*y + x*y**3 + x*y + 1)
 
         >>> f.eject(x)
         Poly(x*y**3 + (x**2 + x)*y + 1, y, domain='ZZ[x]')
@@ -819,7 +819,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**6*y**2 + x**3*y, x, y).terms_gcd()
+        >>> Poly(x**6*y**2 + x**3*y).terms_gcd()
         ((3, 1), Poly(x**3*y + 1, x, y, domain='ZZ'))
 
         """
@@ -869,7 +869,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).prem(Poly(2*x - 4, x))
+        >>> Poly(x**2 + 1).prem(Poly(2*x - 4, x))
         Poly(20, x, domain='ZZ')
 
         """
@@ -885,10 +885,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x))
+        >>> Poly(x**2 + 1).div(Poly(2*x - 4))
         (Poly(1/2*x + 1, x, domain='QQ'), Poly(5, x, domain='QQ'))
 
-        >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x), auto=False)
+        >>> Poly(x**2 + 1).div(Poly(2*x - 4), auto=False)
         (Poly(0, x, domain='ZZ'), Poly(x**2 + 1, x, domain='ZZ'))
 
         """
@@ -918,10 +918,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x))
+        >>> Poly(x**2 + 1).rem(Poly(2*x - 4))
         Poly(5, x, domain='ZZ')
 
-        >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x), auto=False)
+        >>> Poly(x**2 + 1).rem(Poly(2*x - 4), auto=False)
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
@@ -949,10 +949,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).quo(Poly(2*x - 4, x))
+        >>> Poly(x**2 + 1).quo(Poly(2*x - 4))
         Poly(1/2*x + 1, x, domain='QQ')
 
-        >>> Poly(x**2 - 1, x).quo(Poly(x - 1, x))
+        >>> Poly(x**2 - 1).quo(Poly(x - 1))
         Poly(x + 1, x, domain='ZZ')
 
         """
@@ -980,10 +980,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).exquo(Poly(x - 1, x))
+        >>> Poly(x**2 - 1).exquo(Poly(x - 1))
         Poly(x + 1, x, domain='ZZ')
 
-        >>> Poly(x**2 + 1, x).exquo(Poly(2*x - 4, x))
+        >>> Poly(x**2 + 1).exquo(Poly(2*x - 4))
         Traceback (most recent call last):
         ...
         ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
@@ -1025,9 +1025,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + y*x + 1, x, y).degree()
+        >>> Poly(x**2 + y*x + 1).degree()
         2
-        >>> Poly(x**2 + y*x + y, x, y).degree(y)
+        >>> Poly(x**2 + y*x + y).degree(y)
         1
         >>> Poly(0, x).degree()
         -oo
@@ -1044,7 +1044,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + y*x + 1, x, y).degree_list()
+        >>> Poly(x**2 + y*x + 1).degree_list()
         (2, 1)
 
         """
@@ -1057,9 +1057,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + y*x + 1, x, y).total_degree()
+        >>> Poly(x**2 + y*x + 1).total_degree()
         2
-        >>> Poly(x + y**5, x, y).total_degree()
+        >>> Poly(x + y**5).total_degree()
         5
 
         """
@@ -1072,7 +1072,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**3 + 2*x**2 + 3*x, x).LC()
+        >>> Poly(4*x**3 + 2*x**2 + 3*x).LC()
         4
 
         """
@@ -1089,7 +1089,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).TC()
+        >>> Poly(x**3 + 2*x**2 + 3*x).TC()
         0
 
         """
@@ -1103,7 +1103,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).EC()
+        >>> Poly(x**3 + 2*x**2 + 3*x).EC()
         3
 
         """
@@ -1169,7 +1169,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y).LM()
         x**2*y**0
 
         """
@@ -1183,7 +1183,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y).EM()
         x**0*y**1
 
         """
@@ -1200,7 +1200,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y).LT()
         (x**2*y**0, 4)
 
         """
@@ -1214,7 +1214,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
+        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y).ET()
         (x**0*y**1, 3)
 
         """
@@ -1291,10 +1291,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 1, x).integrate()
+        >>> Poly(x**2 + 2*x + 1).integrate()
         Poly(1/3*x**3 + x**2 + x, x, domain='QQ')
 
-        >>> Poly(x*y**2 + x, x, y).integrate((0, 1), (1, 0))
+        >>> Poly(x*y**2 + x).integrate((0, 1), (1, 0))
         Poly(1/2*x**2*y**2 + 1/2*x**2, x, y, domain='QQ')
 
         """
@@ -1325,10 +1325,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 1, x).diff()
+        >>> Poly(x**2 + 2*x + 1).diff()
         Poly(2*x + 2, x, domain='ZZ')
 
-        >>> Poly(x*y**2 + x, x, y).diff((0, 0), (1, 1))
+        >>> Poly(x*y**2 + x).diff((0, 0), (1, 1))
         Poly(2*x*y, x, y, domain='ZZ')
 
         """
@@ -1359,13 +1359,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 3, x).eval(2)
+        >>> Poly(x**2 + 2*x + 3).eval(2)
         11
 
-        >>> Poly(2*x*y + 3*x + y + 2, x, y).eval(x, 2)
+        >>> Poly(2*x*y + 3*x + y + 2).eval(x, 2)
         Poly(5*y + 8, y, domain='ZZ')
 
-        >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
+        >>> f = Poly(2*x*y + 3*x + y + 2*z)
 
         >>> f.eval({x: 2})
         Poly(5*y + 2*z + 6, y, z, domain='ZZ')
@@ -1428,7 +1428,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
+        >>> f = Poly(2*x*y + 3*x + y + 2*z)
 
         >>> f(2)
         Poly(5*y + 2*z + 6, y, z, domain='ZZ')
@@ -1497,10 +1497,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).invert(Poly(2*x - 1, x))
+        >>> Poly(x**2 - 1).invert(Poly(2*x - 1))
         Poly(-4/3, x, domain='QQ')
 
-        >>> Poly(x**2 - 1, x).invert(Poly(x - 1, x))
+        >>> Poly(x**2 - 1).invert(Poly(x - 1))
         Traceback (most recent call last):
         ...
         NotInvertible: zero divisor
@@ -1521,7 +1521,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).subresultants(Poly(x**2 - 1, x))
+        >>> Poly(x**2 + 1).subresultants(Poly(x**2 - 1))
         [Poly(x**2 + 1, x, domain='ZZ'),
          Poly(x**2 - 1, x, domain='ZZ'),
          Poly(-2, x, domain='ZZ')]
@@ -1543,11 +1543,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, x)
+        >>> f = Poly(x**2 + 1)
 
-        >>> f.resultant(Poly(x**2 - 1, x))
+        >>> f.resultant(Poly(x**2 - 1))
         4
-        >>> f.resultant(Poly(x**2 - 1, x), includePRS=True)
+        >>> f.resultant(Poly(x**2 - 1), includePRS=True)
         (4, [Poly(x**2 + 1, x, domain='ZZ'), Poly(x**2 - 1, x, domain='ZZ'),
              Poly(-2, x, domain='ZZ')])
 
@@ -1568,7 +1568,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 3, x).discriminant()
+        >>> Poly(x**2 + 2*x + 3).discriminant()
         -8
 
         """
@@ -1632,7 +1632,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).cofactors(Poly(x**2 - 3*x + 2, x))
+        >>> Poly(x**2 - 1).cofactors(Poly(x**2 - 3*x + 2))
         (Poly(x - 1, x, domain='ZZ'),
          Poly(x + 1, x, domain='ZZ'),
          Poly(x - 2, x, domain='ZZ'))
@@ -1650,7 +1650,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).gcd(Poly(x**2 - 3*x + 2, x))
+        >>> Poly(x**2 - 1).gcd(Poly(x**2 - 3*x + 2))
         Poly(x - 1, x, domain='ZZ')
 
         """
@@ -1666,7 +1666,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).lcm(Poly(x**2 - 3*x + 2, x))
+        >>> Poly(x**2 - 1).lcm(Poly(x**2 - 3*x + 2))
         Poly(x**3 - 2*x**2 - x + 2, x, domain='ZZ')
 
         """
@@ -1682,7 +1682,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**3 + 3*x**2 + 5*x + 7, x).trunc(3)
+        >>> Poly(2*x**3 + 3*x**2 + 5*x + 7).trunc(3)
         Poly(-x**3 - x + 1, x, domain='ZZ')
 
         """
@@ -1720,7 +1720,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(6*x**2 + 8*x + 12, x).content()
+        >>> Poly(6*x**2 + 8*x + 12).content()
         2
 
         """
@@ -1734,7 +1734,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**2 + 8*x + 12, x).primitive()
+        >>> Poly(2*x**2 + 8*x + 12).primitive()
         (2, Poly(x**2 + 4*x + 6, x, domain='ZZ'))
 
         """
@@ -1748,7 +1748,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x, x).compose(Poly(x - 1, x))
+        >>> Poly(x**2 + x).compose(Poly(x - 1))
         Poly(x**2 - x, x, domain='ZZ')
 
         """
@@ -1778,7 +1778,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 2*x + 1, x).shift(2)
+        >>> Poly(x**2 - 2*x + 1).shift(2)
         Poly(x**2 + 2*x + 1, x, domain='ZZ')
 
         """
@@ -1796,7 +1796,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> s, f, r = Poly(x**2 + 1, x, extension=[sqrt(3)]).sqf_norm()
+        >>> s, f, r = Poly(x**2 + 1, extension=[sqrt(3)]).sqf_norm()
 
         >>> s
         1
@@ -1816,7 +1816,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 - 3*x - 2, x).sqf_part()
+        >>> Poly(x**3 - 3*x - 2).sqf_part()
         Poly(x**2 - x - 2, x, domain='ZZ')
 
         """
@@ -1870,9 +1870,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**4 - 4, x).count_roots(-3, 3)
+        >>> Poly(x**4 - 4).count_roots(-3, 3)
         2
-        >>> Poly(x**4 - 4, x).count_roots(0, 1 + 3*I)
+        >>> Poly(x**4 - 4).count_roots(0, 1 + 3*I)
         1
 
         """
@@ -2063,10 +2063,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x))
+        >>> Poly(2*x**2 - 2).cancel(Poly(x**2 - 2*x + 1))
         (1, Poly(2*x + 2, x, domain='ZZ'), Poly(x - 1, x, domain='ZZ'))
 
-        >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x), include=True)
+        >>> Poly(2*x**2 - 2).cancel(Poly(x**2 - 2*x + 1), include=True)
         (Poly(2*x + 2, x, domain='ZZ'), Poly(x - 1, x, domain='ZZ'))
 
         """
@@ -2127,9 +2127,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 2*x + 1, x).is_squarefree
+        >>> Poly(x**2 - 2*x + 1).is_squarefree
         False
-        >>> Poly(x**2 - 1, x).is_squarefree
+        >>> Poly(x**2 - 1).is_squarefree
         True
 
         """
@@ -2143,7 +2143,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x, x).is_ground
+        >>> Poly(x).is_ground
         False
         >>> Poly(2, x).is_ground
         True
@@ -2161,9 +2161,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x + y + 2, x, y).is_linear
+        >>> Poly(x + y + 2).is_linear
         True
-        >>> Poly(x*y + 2, x, y).is_linear
+        >>> Poly(x*y + 2).is_linear
         False
 
         """
@@ -2177,9 +2177,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x*y + 2, x, y).is_quadratic
+        >>> Poly(x*y + 2).is_quadratic
         True
-        >>> Poly(x*y**2 + 2, x, y).is_quadratic
+        >>> Poly(x*y**2 + 2).is_quadratic
         False
 
         """
@@ -2193,9 +2193,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(3*x**2, x).is_term
+        >>> Poly(3*x**2).is_term
         True
-        >>> Poly(3*x**2 + 1, x).is_term
+        >>> Poly(3*x**2 + 1).is_term
         False
 
         """
@@ -2212,9 +2212,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x*y, x, y).is_homogeneous
+        >>> Poly(x**2 + x*y).is_homogeneous
         True
-        >>> Poly(x**3 + x*y, x, y).is_homogeneous
+        >>> Poly(x**3 + x*y).is_homogeneous
         False
 
         """
@@ -2228,9 +2228,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x, modulus=2).is_irreducible
+        >>> Poly(x**2 + x + 1, modulus=2).is_irreducible
         True
-        >>> Poly(x**2 + 1, x, modulus=2).is_irreducible
+        >>> Poly(x**2 + 1, modulus=2).is_irreducible
         False
 
         """
@@ -2244,9 +2244,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x).is_univariate
+        >>> Poly(x**2 + x + 1).is_univariate
         True
-        >>> Poly(x*y**2 + x*y + 1, x, y).is_univariate
+        >>> Poly(x*y**2 + x*y + 1).is_univariate
         False
         >>> Poly(x*y**2 + x*y + 1, x).is_univariate
         True
@@ -2264,9 +2264,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x).is_multivariate
+        >>> Poly(x**2 + x + 1).is_multivariate
         False
-        >>> Poly(x*y**2 + x*y + 1, x, y).is_multivariate
+        >>> Poly(x*y**2 + x*y + 1).is_multivariate
         True
         >>> Poly(x*y**2 + x*y + 1, x).is_multivariate
         False
@@ -2302,7 +2302,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> abs(Poly(x**2 - 1, x))
+        >>> abs(Poly(x**2 - 1))
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
@@ -2316,7 +2316,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> -Poly(x**2 - 1, x)
+        >>> -Poly(x**2 - 1)
         Poly(-x**2 + 1, x, domain='ZZ')
 
         """
@@ -3348,7 +3348,7 @@ def terms_gcd(f, *gens, **args):
     Examples
     ========
 
-    >>> terms_gcd(x**6*y**2 + x**3*y, x, y)
+    >>> terms_gcd(x**6*y**2 + x**3*y)
     x**3*y*(x**3*y + 1)
 
     The default action of polys routines is to expand the expression
@@ -4034,6 +4034,7 @@ def factor(f, *gens, **args):
 
     See Also
     ========
+
     diofant.ntheory.factor_.factorint
 
     """
@@ -4443,9 +4444,9 @@ class GroebnerBasis(Basic):
         ========
 
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
-        >>> G = groebner(F, x, y, order='grlex')
+        >>> G = groebner(F, order='grlex')
 
-        >>> G.set_order('lex') == groebner(F, x, y, order='lex')
+        >>> G.set_order('lex') == groebner(F, order='lex')
         True
 
         """
