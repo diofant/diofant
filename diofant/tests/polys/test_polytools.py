@@ -276,7 +276,7 @@ def test_Poly__new__():
     assert Poly(3*x**2 + 2*x + 1, domain='QQ').all_coeffs() == [3, 2, 1]
     assert Poly(3*x**2 + 2*x + 1, domain='RR').all_coeffs() == [3.0, 2.0, 1.0]
 
-    pytest.raises(CoercionFailed, lambda: Poly(3*x**2/5 + 2*x/5 + 1, domain='ZZ'))
+    pytest.raises(CoercionFailed, lambda: Poly(3*x**2/5 + 2*x/5 + 1, x, domain='ZZ'))
     assert Poly(
         3*x**2/5 + 2*x/5 + 1, domain='QQ').all_coeffs() == [Rational(3, 5), Rational(2, 5), 1]
     assert _epsilon_eq(
@@ -287,7 +287,7 @@ def test_Poly__new__():
     assert Poly(
         3.0*x**2 + 2.0*x + 1, domain='RR').all_coeffs() == [3.0, 2.0, 1.0]
 
-    pytest.raises(CoercionFailed, lambda: Poly(3.1*x**2 + 2.1*x + 1, domain='ZZ'))
+    pytest.raises(CoercionFailed, lambda: Poly(3.1*x**2 + 2.1*x + 1, x, domain='ZZ'))
     assert Poly(3.1*x**2 + 2.1*x + 1, domain='QQ').all_coeffs() == [Rational(31, 10), Rational(21, 10), 1]
     assert Poly(3.1*x**2 + 2.1*x + 1, domain='RR').all_coeffs() == [3.1, 2.1, 1.0]
 
@@ -542,7 +542,8 @@ def test_Poly_domain():
 
     assert Poly(x/2).domain == QQ
 
-    pytest.raises(CoercionFailed, lambda: Poly(x/2, domain='ZZ'))
+    assert Poly(x/2, domain='ZZ') == Poly({(1, 1): 1}, x, Rational(1, 2),
+                                          domain='ZZ')
     assert Poly(x/2, domain='QQ').domain == QQ
 
     assert isinstance(Poly(0.2*x).domain, RealField)

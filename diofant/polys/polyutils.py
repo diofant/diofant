@@ -3,7 +3,7 @@
 import collections
 import re
 
-from ..core import Add, Mul, Pow, nan, oo, zoo
+from ..core import Add, Mul, Pow
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsNeeded, PolynomialError
@@ -162,13 +162,11 @@ def _sort_factors(factors, **args):
         return sorted(factors, key=order_no_multiple_key)
 
 
-def _not_a_coeff(expr):
-    """Do not treat NaN and infinities as valid polynomial coefficients."""
-    return expr in [nan, oo, -oo, zoo]
-
-
 def _parallel_dict_from_expr_if_gens(exprs, opt):
     """Transform expressions into a multinomial form given generators."""
+    def _is_coeff(factor):
+        return factor.is_Number and (factor.is_finite is not False)
+
     k, indices = len(opt.gens), {}
 
     for i, g in enumerate(opt.gens):
@@ -189,7 +187,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
             coeff, monom = [], [0]*k
 
             for factor in Mul.make_args(term):
-                if not _not_a_coeff(factor) and factor.is_Number:
+                if _is_coeff(factor):
                     coeff.append(factor)
                 else:
                     try:
@@ -224,13 +222,13 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             return factor in opt.domain
     elif opt.extension is True:
         def _is_coeff(factor):
-            return factor.is_algebraic
+            return factor.is_number and factor.is_algebraic
     elif opt.greedy is not False:
         def _is_coeff(factor):
-            return False
+            return factor.is_Number and factor.is_finite is not False
     else:
         def _is_coeff(factor):
-            return factor.is_number
+            return factor.is_number and factor.is_finite is not False
 
     gens, reprs = set(), []
 
@@ -247,7 +245,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             coeff, elements = [], collections.defaultdict(int)
 
             for factor in Mul.make_args(term):
-                if not _not_a_coeff(factor) and (factor.is_Number or _is_coeff(factor)):
+                if _is_coeff(factor):
                     coeff.append(factor)
                 else:
                     base, exp = decompose_power(factor)
