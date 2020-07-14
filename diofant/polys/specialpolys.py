@@ -5,7 +5,6 @@ from ..domains import ZZ
 from ..ntheory import nextprime
 from ..utilities import subsets
 from . import polytools, rings
-from .polyutils import _analyze_gens
 
 
 __all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
@@ -67,8 +66,6 @@ def cyclotomic_poly(n, x=None, **args):
 
 def symmetric_poly(n, *gens, **args):
     """Generates symmetric polynomial of order `n`."""
-    gens = _analyze_gens(gens)
-
     if n < 0 or n > len(gens) or not gens:
         raise ValueError(f"can't generate symmetric polynomial of order {n} for {gens}")
     elif not n:

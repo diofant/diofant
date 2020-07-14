@@ -72,7 +72,7 @@ def symmetrize(F, *gens, **args):
     gens, dom = opt.gens, opt.domain
 
     for i in range(len(gens)):
-        poly = symmetric_poly(i + 1, gens, polys=True)
+        poly = symmetric_poly(i + 1, *gens, polys=True)
         polys.append((next(symbols), poly.set_domain(dom)))
 
     indices = range(len(gens) - 1)
@@ -276,7 +276,7 @@ def viete(f, roots=None, *gens, **args):
     result, sign = [], -1
 
     for i, coeff in enumerate(coeffs[1:]):
-        poly = symmetric_poly(i + 1, roots)
+        poly = symmetric_poly(i + 1, *roots)
         coeff = sign*(coeff/lc)
         result.append((poly, coeff))
         sign = -sign

@@ -7,9 +7,8 @@ from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
 from diofant import Rational as Q  # noqa: N814
 from diofant import cos, erf, exp, factor, integrate, pi, sin, sqrt, symbols
 from diofant.abc import p, q, t, x, y, z
-from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
-                                     _sort_gens, _unify_gens,
-                                     parallel_dict_from_expr)
+from diofant.polys.polyutils import (_nsort, _sort_factors, _sort_gens,
+                                     _unify_gens, parallel_dict_from_expr)
 
 
 __all__ = ()
@@ -135,14 +134,6 @@ def test__unify_gens():
     assert _unify_gens([z, y, x], [z, y, x]) == (z, y, x)
 
     assert _unify_gens([x, y, z], [t, x, p, q, z]) == (t, x, y, p, q, z)
-
-
-def test__analyze_gens():
-    assert _analyze_gens((x, y, z)) == (x, y, z)
-    assert _analyze_gens([x, y, z]) == (x, y, z)
-
-    assert _analyze_gens(([x, y, z],)) == (x, y, z)
-    assert _analyze_gens(((x, y, z),)) == (x, y, z)
 
 
 def test__sort_factors():
