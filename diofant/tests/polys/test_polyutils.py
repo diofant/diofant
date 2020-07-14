@@ -3,9 +3,8 @@
 import pytest
 
 from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
-                     PolynomialError)
-from diofant import Rational as Q  # noqa: N814
-from diofant import cos, erf, exp, factor, integrate, pi, sin, sqrt, symbols
+                     PolynomialError, Rational, cos, erf, exp, factor,
+                     integrate, pi, sin, sqrt, symbols)
 from diofant.abc import p, q, t, x, y, z
 from diofant.polys.polyutils import (_nsort, _sort_factors, _sort_gens,
                                      _unify_gens, parallel_dict_from_expr)
@@ -18,30 +17,30 @@ A, B = symbols('A,B', commutative=False)
 
 def test__nsort():
     # issue sympy/sympy#6137
-    r = ([Q(3, 2) + sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) -
-                         4/sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-                                2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
-                         61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)))/2 -
-          sqrt(-7/3 + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-               2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2,
-          Q(3, 2) - sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-                         2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2 -
-          sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) -
-               4/sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-                      2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
-               61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)))/2, Q(3, 2) +
-          sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) +
-               4/sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) +
-                                         13*I/12)**Q(1, 3)) + 2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
-               61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)))/2 +
-          sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216)
-                                  + 13*I/12)**Q(1, 3)) + 2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2,
-          Q(3, 2) + sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) +
-                                            13*I/12)**Q(1, 3)) + 2*(Q(-415, 216) + 13*I/12)**Q(1, 3))/2 -
-          sqrt(Q(-14, 3) - 2*(Q(-415, 216) + 13*I/12)**Q(1, 3) +
-               4/sqrt(Q(-7, 3) + 61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)) +
-                      2*(Q(-415, 216) + 13*I/12)**Q(1, 3)) -
-               61/(18*(Q(-415, 216) + 13*I/12)**Q(1, 3)))/2])
+    r = ([Rational(3, 2) + sqrt(Rational(-14, 3) - 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3) -
+                                4/sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) +
+                                       2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) -
+                                61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)))/2 -
+          sqrt(-7/3 + 61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) +
+               2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3))/2,
+          Rational(3, 2) - sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) +
+                                2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3))/2 -
+          sqrt(Rational(-14, 3) - 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3) -
+               4/sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) +
+                      2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) -
+               61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)))/2, Rational(3, 2) +
+          sqrt(Rational(-14, 3) - 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3) +
+               4/sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) +
+                                                13*I/12)**Rational(1, 3)) + 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) -
+               61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)))/2 +
+          sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216)
+                                         + 13*I/12)**Rational(1, 3)) + 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3))/2,
+          Rational(3, 2) + sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) +
+                                                          13*I/12)**Rational(1, 3)) + 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3))/2 -
+          sqrt(Rational(-14, 3) - 2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3) +
+               4/sqrt(Rational(-7, 3) + 61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) +
+                      2*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)) -
+               61/(18*(Rational(-415, 216) + 13*I/12)**Rational(1, 3)))/2])
     ans = [r[1], r[0], r[-1], r[-2]]
     assert _nsort(r) == ans
     assert len(_nsort(r, separated=True)[0]) == 0
@@ -53,7 +52,7 @@ def test__nsort():
     c = symbols('c', complex=True, real=False)
     assert _nsort((c,)) == [c]
     assert _nsort((c,), separated=True) == [[], [c]]
-    assert _nsort((I, Q(1)), separated=True) == ([Q(1)], [I])
+    assert _nsort((I, Rational(1)), separated=True) == ([Rational(1)], [I])
 
 
 def test__sort_gens():
@@ -105,7 +104,7 @@ def test__sort_gens():
     assert _sort_gens([x, p, q], wrt='p', sort='q > x') == (p, q, x)
     assert _sort_gens([x, p, q], wrt='q', sort='p > x') == (q, p, x)
 
-    X = symbols('x0,x1,x2,x10,x11,x12,x20,x21,x22')
+    X = symbols('x0:3 x10:13 x20:23')
 
     assert _sort_gens(X) == X
 
