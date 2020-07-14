@@ -656,3 +656,10 @@ def test_sympyissue_18874():
     assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
                                     [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
                                              [QQ(-1, 78), 0, QQ(59, 78), 0]])
+
+
+def test_sympyissue_19760():
+    e = 1/(sqrt(1 + sqrt(2)) - sqrt(2)*sqrt(1 + sqrt(2))) + 1
+
+    for meth in ('compose', 'groebner'):
+        minimal_polynomial(e, method=meth)(x) == x**4 - 4*x**3 + 4*x**2 - 2
