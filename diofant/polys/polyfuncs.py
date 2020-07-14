@@ -11,9 +11,6 @@ from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
-__all__ = 'symmetrize', 'horner', 'interpolate', 'viete'
-
-
 def symmetrize(F, *gens, **args):
     """
     Rewrite a polynomial in terms of elementary symmetric polynomials.

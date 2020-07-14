@@ -22,9 +22,6 @@ from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 
 
-__all__ = 'RootOf', 'RootSum'
-
-
 _reals_cache = {}
 _complexes_cache = {}
 _x = Dummy('x')

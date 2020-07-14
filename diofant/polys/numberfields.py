@@ -24,7 +24,7 @@ from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 
 
-__all__ = ('minimal_polynomial', 'primitive_element', 'field_isomorphism')
+__all__ = 'minimal_polynomial', 'primitive_element', 'field_isomorphism'
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):

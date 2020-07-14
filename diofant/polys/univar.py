@@ -6,9 +6,6 @@ from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
 
 
-__all__ = 'UnivarPolynomialRing', 'UnivarPolyElement'
-
-
 class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
 

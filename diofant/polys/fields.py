@@ -13,9 +13,6 @@ from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
-__all__ = 'FractionField', 'field'
-
-
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn)."""
     _field = FractionField(domain, symbols, order)
