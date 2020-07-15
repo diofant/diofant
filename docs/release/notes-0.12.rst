@@ -46,3 +46,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`19630` ``rsolve`` gives None for linear homogeneous recurrence relation
 * :sympyissue:`19076` modular exponentiation of poly
 * :sympyissue:`19670` Poly(E**100000000) is slow to create
+* :sympyissue:`19755` poly gives coercion error when integers and rationals are mixed
+* :sympyissue:`19760` minimal_polynomial using Groebner basis can give wrong result
+* :sympyissue:`19770` Limit involving cosine
+* :sympyissue:`19766` Incorrect limit

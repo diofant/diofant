@@ -952,7 +952,7 @@ class tan(TrigonometricFunction):
 
             p = [0, 0]
             for i in range(n + 1):
-                p[1 - i % 2] += symmetric_poly(i, Y)*(-1)**((i % 4)//2)
+                p[1 - i % 2] += symmetric_poly(i, *Y)*(-1)**((i % 4)//2)
             return (p[0]/p[1]).subs(list(zip(Y, TX)))
 
         else:
@@ -1388,7 +1388,7 @@ class cot(ReciprocalTrigonometricFunction):
 
             p = [0, 0]
             for i in range(n, -1, -1):
-                p[(n - i) % 2] += symmetric_poly(i, Y)*(-1)**(((n - i) % 4)//2)
+                p[(n - i) % 2] += symmetric_poly(i, *Y)*(-1)**(((n - i) % 4)//2)
             return (p[0]/p[1]).subs(list(zip(Y, CX)))
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)

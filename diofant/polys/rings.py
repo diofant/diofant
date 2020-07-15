@@ -27,9 +27,6 @@ from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
 
-__all__ = 'PolynomialRing', 'ring'
-
-
 def ring(symbols, domain, order=lex):
     """Construct a polynomial ring returning ``(ring, x_1, ..., x_n)``.
 

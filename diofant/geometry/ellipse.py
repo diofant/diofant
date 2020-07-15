@@ -12,7 +12,7 @@ from ..core.logic import fuzzy_bool
 from ..functions import cos, sin, sqrt
 from ..logic import false, true
 from ..polys import DomainError, Poly, PolynomialError
-from ..polys.polyutils import _not_a_coeff, _nsort
+from ..polys.polyutils import _nsort
 from ..simplify import simplify, trigsimp
 from ..solvers import solve
 from ..utilities import filldedent
@@ -809,7 +809,7 @@ class Ellipse(GeometrySet):
         slopes = [norm.subs(zip((x, y), pt.args)) for pt in points]
         if prec is not None:
             points = [pt.evalf(prec) for pt in points]
-            slopes = [i if _not_a_coeff(i) else i.evalf(prec) for i in slopes]
+            slopes = [i if i.is_Number and i.is_finite is not False else i.evalf(prec) for i in slopes]
         return [Line(pt, slope=s) for pt, s in zip(points, slopes)]
 
     def arbitrary_point(self, parameter='t'):

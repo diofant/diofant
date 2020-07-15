@@ -8,9 +8,6 @@ from .polyoptions import build_options
 from .polyutils import parallel_dict_from_expr
 
 
-__all__ = 'construct_domain',
-
-
 def _construct_simple(coeffs, opt):
     """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains."""
     result, rationals, reals, algebraics = {}, False, False, False

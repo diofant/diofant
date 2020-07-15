@@ -7,9 +7,6 @@ from . import rings
 from .polyerrors import ModularGCDFailed
 
 
-__all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
-
-
 def _gf_gcd(fp, gp, p):
     r"""Compute the GCD of two univariate polynomials in `\mathbb{Z}_p[x]`."""
     dom = fp.ring.domain

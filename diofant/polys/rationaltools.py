@@ -3,9 +3,6 @@
 from ..core import Add, gcd_terms, sympify
 
 
-__all__ = 'together',
-
-
 def together(expr, deep=False):
     """
     Denest and combine rational expressions using symbolic methods.
