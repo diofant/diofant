@@ -64,8 +64,7 @@ from functools import reduce
 
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
 from ..core.compatibility import ordered
-from ..functions import Abs, exp, log
-from ..functions import sign as sgn
+from ..functions import Abs, exp, log, sign
 
 
 def compare(a, b, x):
@@ -161,7 +160,7 @@ def mrv_max(f, g, x):
 
 
 @cacheit
-def sign(e, x):
+def signinf(e, x):
     r"""
     Determine a sign of an expression at infinity.
 
@@ -177,19 +176,19 @@ def sign(e, x):
 
     """
     if not e.has(x):
-        return sgn(e).simplify()
+        return sign(e).simplify()
     elif e == x:
         return 1
     elif e.is_Mul:
         a, b = e.as_two_terms()
-        return sign(a, x)*sign(b, x)
+        return signinf(a, x)*signinf(b, x)
     elif e.is_Pow:
-        s = sign(e.base, x)
+        s = signinf(e.base, x)
         if s == 1:
             return 1
 
     c0, e0 = mrv_leadterm(e, x)
-    return sign(c0, x)
+    return signinf(c0, x)
 
 
 @cacheit
@@ -215,7 +214,7 @@ def limitinf(e, x):
     e = e.rewrite('tractable', deep=True)
 
     def transform_abs(f):
-        s = sgn(limitinf(f.args[0], x))
+        s = sign(limitinf(f.args[0], x))
         return s*f.args[0] if s in (1, -1) else f
 
     e = e.replace(lambda f: isinstance(f, Abs) and f.has(x),
@@ -229,11 +228,11 @@ def limitinf(e, x):
         return e.rewrite('intractable', deep=True)
 
     c0, e0 = mrv_leadterm(e, x)
-    sig = sign(e0, x)
+    sig = signinf(e0, x)
     if sig == 1:
         return Integer(0)
     elif sig == -1:
-        s = sign(c0, x)
+        s = signinf(c0, x)
         assert s != 0
         return s*oo
     elif sig == 0:
@@ -336,7 +335,7 @@ def rewrite(e, x, w):
     Omega = list(ordered(Omega, keys=lambda a: -len(mrv(a, x))))
 
     for g in Omega:
-        sig = sign(g.exp, x)
+        sig = signinf(g.exp, x)
         if sig not in (1, -1):
             raise NotImplementedError(f'Result depends on the sign of {sig}')
 

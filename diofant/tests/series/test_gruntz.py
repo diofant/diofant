@@ -15,8 +15,7 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      oo, pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
 from diofant.series.gruntz import compare
 from diofant.series.gruntz import limitinf as gruntz
-from diofant.series.gruntz import mrv, mrv_leadterm, rewrite
-from diofant.series.gruntz import sign as mrv_sign
+from diofant.series.gruntz import mrv, mrv_leadterm, rewrite, signinf
 
 
 __all__ = ()
@@ -194,27 +193,27 @@ def test_compare():
     assert compare(exp(exp(x)), exp(x + exp(-exp(x))), x) > 0
 
 
-def test_sign():
-    assert mrv_sign(Integer(0), x) == 0
-    assert mrv_sign(Integer(3), x) == 1
-    assert mrv_sign(Integer(-5), x) == -1
-    assert mrv_sign(log(x), x) == 1
-    assert mrv_sign(exp(-x), x) == 1
-    assert mrv_sign(exp(x), x) == 1
-    assert mrv_sign(-exp(x), x) == -1
-    assert mrv_sign(3 - 1/x, x) == 1
-    assert mrv_sign(-3 - 1/x, x) == -1
-    assert mrv_sign(sin(1/x), x) == 1
-    assert mrv_sign(x**2, x) == 1
-    assert mrv_sign(x**5, x) == 1
+def test_signinf():
+    assert signinf(Integer(0), x) == 0
+    assert signinf(Integer(3), x) == 1
+    assert signinf(Integer(-5), x) == -1
+    assert signinf(log(x), x) == 1
+    assert signinf(exp(-x), x) == 1
+    assert signinf(exp(x), x) == 1
+    assert signinf(-exp(x), x) == -1
+    assert signinf(3 - 1/x, x) == 1
+    assert signinf(-3 - 1/x, x) == -1
+    assert signinf(sin(1/x), x) == 1
+    assert signinf(x**2, x) == 1
+    assert signinf(x**5, x) == 1
 
-    assert mrv_sign(x, x) == 1
-    assert mrv_sign(-x, x) == -1
+    assert signinf(x, x) == 1
+    assert signinf(-x, x) == -1
     y = Symbol('y', positive=True)
-    assert mrv_sign(y, x) == 1
-    assert mrv_sign(-y, x) == -1
-    assert mrv_sign(y*x, x) == 1
-    assert mrv_sign(-y*x, x) == -1
+    assert signinf(y, x) == 1
+    assert signinf(-y, x) == -1
+    assert signinf(y*x, x) == 1
+    assert signinf(-y*x, x) == -1
 
 
 def test_mrv():
