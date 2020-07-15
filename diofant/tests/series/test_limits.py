@@ -782,3 +782,9 @@ def test_sympyissue_18992():
 
 def test_sympyissue_19026():
     assert limit(abs(log(x) + 1)/log(x), x, oo) == 1
+
+
+def test_sympyissue_19770():
+    m = Symbol('m', extended_real=True)
+
+    assert limit(cos(x*m)/x, x, oo) == 0
