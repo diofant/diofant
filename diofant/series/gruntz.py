@@ -82,14 +82,7 @@ def compare(a, b, x):
     ========
 
     >>> x = Symbol('x', real=True, positive=True)
-    >>> m = Symbol('m', real=True, positive=True)
 
-    >>> compare(x, x**2, x)
-    0
-    >>> compare(1/x, x**m, x)
-    0
-    >>> compare(exp(x), exp(x**2), x)
-    -1
     >>> compare(exp(x), x**5, x)
     1
 
@@ -118,8 +111,6 @@ def mrv(e, x):
 
     >>> mrv(log(x - log(x))/log(x), x)
     {x}
-    >>> mrv(exp(x + exp(-x)), x)
-    {E**(-x), E**(x + E**(-x))}
 
     """
     if not e.has(x):
@@ -203,8 +194,6 @@ def limitinf(e, x):
 
     >>> limitinf(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x)
     -1
-    >>> limitinf(x/log(x**(log(x**(log(2)/log(x))))), x)
-    oo
 
     """
     assert x.is_real and x.is_positive
@@ -314,8 +303,6 @@ def rewrite(e, x, w):
     >>> x = Symbol('x', real=True, positive=True)
     >>> m = Symbol('m', real=True, positive=True)
 
-    >>> rewrite(exp(x), x, m)
-    (1/m, -x)
     >>> rewrite(exp(x)*log(log(exp(x))), x, m)
     (log(x)/m, -x)
 
