@@ -49,3 +49,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19755` poly gives coercion error when integers and rationals are mixed
 * :sympyissue:`19760` minimal_polynomial using Groebner basis can give wrong result
 * :sympyissue:`19770` Limit involving cosine
+* :sympyissue:`19766` Incorrect limit
