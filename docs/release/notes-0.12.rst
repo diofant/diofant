@@ -50,3 +50,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19760` minimal_polynomial using Groebner basis can give wrong result
 * :sympyissue:`19770` Limit involving cosine
 * :sympyissue:`19766` Incorrect limit
+* :sympyissue:`19774` evalf() doesn't evaluate terms in an exponential
