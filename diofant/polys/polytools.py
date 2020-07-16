@@ -586,7 +586,7 @@ class Poly(Expr):
                                     field=field,
                                     composite=self.domain.is_Composite or None,
                                     extension=False if self.domain.is_ExpressionDomain else True)
-        return self.from_dict(rep, self.gens, domain=dom)
+        return self.from_dict(rep, *self.gens, domain=dom)
 
     def slice(self, x, m, n=None):
         """Take a continuous subsequence of terms of ``self``."""
@@ -2447,7 +2447,7 @@ class Poly(Expr):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -2503,7 +2503,7 @@ class PurePoly(Poly):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -4338,7 +4338,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return Tuple(*self.exprs), Tuple(*self.gens)
+        return (Tuple(*self.exprs),) + self.gens
 
     @property
     def exprs(self):

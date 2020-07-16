@@ -20,6 +20,7 @@ Compatibility breaks
 * Drop ``to_dense()``, ``tail_degrees()`` and ``almosteq`` methods and ``is_monic``, ``is_primitive`` attributes of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
 * Drop ``is_monic`` and ``is_primitive`` attributes of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036`.
 * Drop ``sring()`` and ``poly_from_expr()`` functions, see :pull:`1037`.
+* Functions and classes of the :mod:`~diofant.polys.polytools` module do not support anymore iterables as polynomial generator, see :pull:`1039`.
 
 Minor changes
 =============
