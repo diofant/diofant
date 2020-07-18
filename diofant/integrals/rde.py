@@ -22,7 +22,7 @@ Manuel Bronstein.  See also the docstring of risch.py.
 """
 
 import functools
-from operator import mul
+import operator
 
 from ..core import Dummy, oo
 from ..domains import ZZ
@@ -125,7 +125,8 @@ def weak_normalizer(a, d, DE, z=None):
 
     N = [i for i in r.real_roots() if i in ZZ and i > 0]
 
-    q = functools.reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
+    q = functools.reduce(operator.mul,
+                         [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
                          Poly(1, DE.t))
     q = q.monic()
 

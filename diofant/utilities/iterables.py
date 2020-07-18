@@ -1,7 +1,7 @@
+import operator
 from collections import defaultdict
 from itertools import (combinations, combinations_with_replacement,
                        permutations, product)
-from operator import gt
 
 # this is the logical location of these functions
 from ..core.compatibility import as_int, is_sequence, iterable
@@ -1671,7 +1671,7 @@ def minlex(seq, directed=True, is_set=False, small=None):
     return tuple(best)
 
 
-def runs(seq, op=gt):
+def runs(seq, op=operator.gt):
     """Group the sequence into lists in which successive elements
     all compare the same with the comparison operator, ``op``:
     op(seq[i + 1], seq[i]) is True from all elements in a run.
@@ -1679,10 +1679,10 @@ def runs(seq, op=gt):
     Examples
     ========
 
-    >>> from operator import ge
+    >>> import operator
     >>> runs([0, 1, 2, 2, 1, 4, 3, 2, 2])
     [[0, 1, 2], [2], [1, 4], [3], [2], [2]]
-    >>> runs([0, 1, 2, 2, 1, 4, 3, 2, 2], op=ge)
+    >>> runs([0, 1, 2, 2, 1, 4, 3, 2, 2], op=operator.ge)
     [[0, 1, 2, 2], [1, 4], [3], [2, 2]]
 
     """

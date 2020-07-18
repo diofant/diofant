@@ -1,5 +1,5 @@
+import operator
 import random
-from operator import ge, gt, le, lt
 
 import pytest
 
@@ -520,7 +520,7 @@ def test_inequalities_cant_sympify_other():
     bar = 'foo'
 
     for a in (x, Integer(0), Rational(1, 3), pi, I, zoo, oo, -oo, nan):
-        for op in (lt, gt, le, ge):
+        for op in (operator.lt, operator.gt, operator.le, operator.ge):
             pytest.raises(TypeError, lambda: op(a, bar))
 
 
