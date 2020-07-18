@@ -4,7 +4,7 @@ Provides functionality for multidimensional usage of scalar-functions.
 Read the vectorize docstring for more details.
 """
 
-from functools import wraps
+import functools
 
 from .numbers import Integer
 
@@ -106,7 +106,7 @@ class vectorize:
         multidimensional arguments.
 
         """
-        @wraps(f)
+        @functools.wraps(f)
         def wrapper(*args, **kwargs):
             # Get arguments that should be treated multidimensional
             if self.mdargs:

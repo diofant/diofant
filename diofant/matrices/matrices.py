@@ -1,5 +1,5 @@
 import collections
-from functools import reduce
+import functools
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
@@ -488,8 +488,8 @@ class MatrixBase(DefaultPrinting):
                 return NotImplemented
             alst = A.tolist()
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
-                                      reduce(lambda k, l: k + l,
-                                             [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
+                                      functools.reduce(lambda k, l: k + l,
+                                                       [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
         else:
             return self._new(self.rows, self.cols,
                              [i*other for i in self._mat])
@@ -3722,7 +3722,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         _cls = type(args[0])
-        return reduce(_cls.row_join, args)
+        return functools.reduce(_cls.row_join, args)
 
     @classmethod
     def vstack(cls, *args):
@@ -3741,7 +3741,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         _cls = type(args[0])
-        return reduce(_cls.col_join, args)
+        return functools.reduce(_cls.col_join, args)
 
     def row_join(self, rhs):
         """Concatenates two matrices along self's last and rhs's first column

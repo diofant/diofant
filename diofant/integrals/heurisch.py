@@ -1,4 +1,4 @@
-from functools import reduce
+import functools
 from itertools import permutations
 
 from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
@@ -319,7 +319,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         diffs = [ _substitute(cancel(g.diff(x))) for g in terms ]
         denoms = [ g.as_numer_denom()[1] for g in diffs ]
         if all(h.is_polynomial(*V) for h in denoms) and _substitute(f).is_rational_function(*V):
-            denom = reduce(lambda p, q: lcm(p, q, *V), denoms)
+            denom = functools.reduce(lambda p, q: lcm(p, q, *V), denoms)
             break
     else:
         if not rewrite:

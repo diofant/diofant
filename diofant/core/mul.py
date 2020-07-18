@@ -1,6 +1,6 @@
+import functools
 import operator
 from collections import defaultdict
-from functools import reduce
 
 from ..utilities import default_sort_key
 from .basic import Basic
@@ -1467,7 +1467,7 @@ def prod(a, start=1):
     6
 
     """
-    return reduce(operator.mul, a, start)
+    return functools.reduce(operator.mul, a, start)
 
 
 def _keep_coeff(coeff, factors, clear=True, sign=False):

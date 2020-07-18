@@ -1,5 +1,5 @@
+import functools
 from collections import defaultdict
-from functools import reduce
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
@@ -1196,7 +1196,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         return Mul(Add(*[Mul(*r) for r, c in co]), Mul(*co[0][1][:ii]))
                     else:
                         return Mul(*co[0][1][ii + len(nx):])
-            beg = reduce(incommon, (n[1] for n in co))
+            beg = functools.reduce(incommon, (n[1] for n in co))
             if beg:
                 ii = find(beg, nx, right)
                 if ii is not None:
@@ -1211,7 +1211,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         m = ii + len(nx)
                         return Add(*[Mul(*(list(r) + n[m:])) for r, n in co])
             end = list(reversed(
-                reduce(incommon, (list(reversed(n[1])) for n in co))))
+                functools.reduce(incommon, (list(reversed(n[1])) for n in co))))
             if end:
                 ii = find(end, nx, right)
                 if ii is not None:
