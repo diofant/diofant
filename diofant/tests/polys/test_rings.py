@@ -820,6 +820,16 @@ def test_PolyElement___add__():
 
     assert f + g == 2*x**2 + 2*y**2
 
+    R, x, y, z = ring('x y z', ZZ)
+
+    p1 = x**4 + 2*y
+    p2 = y + z
+    m = (1, 2, 3)
+
+    p = p1._iadd_poly_term(p2, (m, 3))
+
+    assert p is p1 and p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
+
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
     Rxyz, x, y, z = ring('x y z', Ruv)

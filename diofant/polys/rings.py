@@ -988,7 +988,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 if term:
                     expv1, c = term.LT
                     qv[i] = qv[i]._iadd_term((expv1, c))
-                    p = p._iadd_poly_monom(fv[i], (expv1, -c))
+                    p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1
                     if p and order(p.LM) >= order(lt.LM):
                         raise PolynomialDivisionFailed(self, fv[i], self.ring)
@@ -1028,37 +1028,20 @@ class PolyElement(DomainElement, CantSympify, dict):
             del p1[monom]
         return p1
 
-    def _iadd_poly_monom(self, p2, mc):
-        """Add to self the product of (p)*(coeff*x0**i0*x1**i1*...)
-        unless self is a generator -- then just return the sum of the two.
+    def _iadd_poly_term(self, p2, term):
+        """Add inplace to self the product of p2 and term.
 
-        mc is a tuple, (monom, coeff), where monomial is (i0, i1, ...)
-
-        Examples
-        ========
-
-        >>> _, x, y, z = ring('x y z', ZZ)
-        >>> p1 = x**4 + 2*y
-        >>> p2 = y + z
-        >>> m = (1, 2, 3)
-        >>> p1 = p1._iadd_poly_monom(p2, (m, 3))
-        >>> p1
-        x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
+        If self is a generator -- then just return the sum of the two.
 
         """
         p1 = self
         if p1.is_generator:
             p1 = p1.copy()
-        m, c = mc
-        get = p1.get
-        zero = p1.ring.domain.zero
-        for k, v in p2.items():
-            ka = k*m
-            coeff = get(ka, zero) + v*c
-            if coeff:
-                p1[ka] = coeff
-            else:
-                del p1[ka]
+        monom, coeff = term
+        for m, c in p2.items():
+            m *= monom
+            c *= coeff
+            p1 = p1._iadd_term((m, c))
         return p1
 
     def degree(self, x=0):
