@@ -2,9 +2,9 @@ import operator
 from collections import defaultdict
 from functools import reduce
 
+from ..utilities import default_sort_key
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import default_sort_key
 from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S

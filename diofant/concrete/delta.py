@@ -3,11 +3,11 @@ This module implements sums and products containing the Kronecker Delta function
 """
 
 from ..core import Add, Dummy, Integer, Mul, cacheit
-from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
 from ..logic import true
 from ..polys import factor
 from ..sets import Interval
+from ..utilities import default_sort_key
 
 
 @cacheit

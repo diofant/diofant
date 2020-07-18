@@ -7,13 +7,13 @@ import mpmath
 
 from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
                     preorder_traversal, sympify)
-from ..core.compatibility import default_sort_key, iterable
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
-from ..utilities import group, sift
+from ..utilities import default_sort_key, group, sift
 from .constructor import construct_domain
 from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner

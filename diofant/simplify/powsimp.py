@@ -4,14 +4,13 @@ from functools import reduce
 from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
                     count_ops, expand_log, expand_mul, factor_terms, prod,
                     sympify)
-from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..logic import true
 from ..ntheory import multiplicity
 from ..polys import gcd, lcm_list
-from ..utilities import ordered
+from ..utilities import default_sort_key, ordered
 
 
 @cacheit

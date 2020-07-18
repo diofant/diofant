@@ -4,8 +4,8 @@ import collections
 import re
 
 from ..core import Add, Mul, Pow
-from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
+from ..utilities import default_sort_key
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
 

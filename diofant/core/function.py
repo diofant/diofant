@@ -31,13 +31,13 @@ import inspect
 import mpmath
 import mpmath.libmp as mlib
 
-from ..utilities import ordered
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import as_int, default_sort_key, is_sequence, iterable
+from .compatibility import as_int, is_sequence, iterable
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted
