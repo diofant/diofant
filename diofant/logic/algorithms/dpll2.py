@@ -15,7 +15,8 @@ References
 from collections import defaultdict
 from heapq import heappop, heappush
 
-from ...core.compatibility import default_sort_key, ordered
+from ...core.compatibility import default_sort_key
+from ...utilities import ordered
 from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
 
 

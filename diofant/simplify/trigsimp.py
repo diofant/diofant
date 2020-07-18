@@ -1110,7 +1110,7 @@ def _futrig(e, **kwargs):
     """Helper for futrig."""
     from .fu import (TR1, TR2, TR3, TR2i, TR10, L, TR10i, TR8, TR6, TR15,
                      TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22, TR12)
-    from ..core.compatibility import _nodes
+    from ..utilities.iterables import _nodes
 
     if not e.has(TrigonometricFunction):
         return e

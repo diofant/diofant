@@ -1,10 +1,11 @@
 from collections import defaultdict
 
 from ..core import Add, Function, Integer, Mul, Pow, Rational, pi
-from ..core.compatibility import default_sort_key, ordered
+from ..core.compatibility import default_sort_key
 from ..functions import binomial, factorial, gamma, sin, sqrt
 from ..polys import cancel, factor
-from ..utilities.iterables import sift, uniq
+from ..utilities import ordered, sift
+from ..utilities.iterables import uniq
 
 
 def combsimp(expr):

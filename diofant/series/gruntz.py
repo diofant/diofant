@@ -63,8 +63,8 @@ for proof of the termination (pp. 52-60).
 from functools import reduce
 
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
-from ..core.compatibility import ordered
 from ..functions import Abs, exp, log, sign
+from ..utilities import ordered
 
 
 def compare(a, b, x):

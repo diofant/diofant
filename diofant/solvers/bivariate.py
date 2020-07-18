@@ -1,9 +1,9 @@
 from ..core import Add, Dummy, Pow, expand_log
-from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import LambertW, exp, log, root
 from ..polys.polytools import Poly, factor
 from ..simplify import collect, separatevars
+from ..utilities import ordered
 from .solvers import _invert, solve
 
 

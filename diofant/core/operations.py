@@ -1,6 +1,6 @@
+from ..utilities import ordered
 from .basic import _aresame
 from .cache import cacheit
-from .compatibility import ordered
 from .evaluate import global_evaluate
 from .expr import Expr
 from .sympify import sympify

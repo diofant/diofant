@@ -1,5 +1,5 @@
 from ..logic.boolalg import Boolean, BooleanAtom, false, true
-from .compatibility import ordered
+from ..utilities import ordered
 from .evalf import EvalfMixin
 from .evaluate import global_evaluate
 from .expr import Expr

@@ -2,7 +2,6 @@ from functools import reduce
 from itertools import permutations
 
 from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
-from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
                          binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
                          log, root, sin, sinh, sqrt, tan, tanh)
@@ -12,6 +11,7 @@ from ..polys.constructor import construct_domain
 from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
 from ..polys.solvers import solve_lin_sys
+from ..utilities import ordered
 from ..utilities.iterables import uniq
 
 

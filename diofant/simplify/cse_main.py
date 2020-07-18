@@ -3,8 +3,8 @@
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
 from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
-from ..utilities.iterables import (filter_symbols, numbered_symbols, ordered,
-                                   sift, topological_sort)
+from ..utilities import numbered_symbols, ordered, sift, topological_sort
+from ..utilities.iterables import filter_symbols
 from . import cse_opts
 
 

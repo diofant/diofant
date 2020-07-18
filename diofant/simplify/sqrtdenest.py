@@ -1,10 +1,9 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
                     expand_mul, factor_terms, ilcm, sympify)
-from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import log, root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
-from ..utilities import default_sort_key
+from ..utilities import default_sort_key, ordered
 from .powsimp import powdenest
 
 

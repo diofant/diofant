@@ -4,8 +4,9 @@ from collections import defaultdict
 from collections.abc import Mapping
 from itertools import zip_longest
 
+from ..utilities import ordered
 from .cache import cacheit
-from .compatibility import iterable, ordered
+from .compatibility import iterable
 from .decorators import _sympifyit
 from .sympify import SympifyError, sympify
 
