@@ -1710,7 +1710,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         f, g = self, other
 
         if ring.is_multivariate:
-            f, g = map(lambda _: _.eject(*ring.gens[1:]), (f, g))
+            f, g = map(operator.methodcaller('eject', *ring.gens[1:]), (f, g))
             r = f.prem(g)
             return r.inject()
 

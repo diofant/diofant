@@ -1,3 +1,4 @@
+import operator
 import random
 
 from ..core import Dummy
@@ -532,8 +533,8 @@ def _gf_div(f, g, p):
     ring = f.ring
     dom = ring.domain
     domp = dom.finite_field(p)
-    f, g = map(lambda x: x.set_domain(domp), (f, g))
-    return tuple(map(lambda x: x.set_domain(dom), divmod(f, g)))
+    f, g = map(operator.methodcaller('set_domain', domp), (f, g))
+    return tuple(map(operator.methodcaller('set_domain', dom), divmod(f, g)))
 
 
 def _rational_function_reconstruction(c, p, m):
@@ -684,8 +685,8 @@ def _gf_gcdex(f, g, p):
     ring = f.ring
     dom = ring.domain
     domp = dom.finite_field(p)
-    f, g = map(lambda x: x.set_domain(domp), (f, g))
-    return tuple(map(lambda x: x.set_domain(dom), f.gcdex(g)))
+    f, g = map(operator.methodcaller('set_domain', domp), (f, g))
+    return tuple(map(operator.methodcaller('set_domain', dom), f.gcdex(g)))
 
 
 def _trunc(f, minpoly, p):
