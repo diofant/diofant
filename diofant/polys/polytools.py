@@ -272,21 +272,6 @@ class Poly(Expr):
         """Get the ground domain of ``self``."""
         return self.rep.ring.domain
 
-    @property
-    def zero(self):
-        """Return zero polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.zero, *self.gens)
-
-    @property
-    def one(self):
-        """Return one polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.one, *self.gens)
-
-    @property
-    def unit(self):
-        """Return unit polynomial with ``self``'s properties."""
-        return self.new(self.rep.unit(self.rep.lev, self.domain), *self.gens)
-
     def unify(self, other):
         """
         Make ``self`` and ``other`` belong to the same domain.

@@ -352,16 +352,6 @@ def test_Poly__gens():
     assert Poly((x - p)*(x - q), wrt='q', sort='p > x').gens == (q, p, x)
 
 
-def test_Poly_zero():
-    assert Poly(x).zero == Poly(0, x, domain=ZZ)
-    assert Poly(x/2).zero == Poly(0, x, domain=QQ)
-
-
-def test_Poly_one():
-    assert Poly(x).one == Poly(1, x, domain=ZZ)
-    assert Poly(x/2).one == Poly(1, x, domain=QQ)
-
-
 def test_Poly_unify():
     pytest.raises(UnificationFailed, lambda: Poly(x).unify(y))
     pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(y))
