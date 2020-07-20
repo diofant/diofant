@@ -15,7 +15,7 @@ the right hand side of the equation (i.e., qi in k[t]).  See the docstring of
 each function for more information.
 """
 
-from functools import reduce
+import functools
 
 from ..core import Add, Dummy, Integer, Mul, Pow, ilcm
 from ..matrices import Matrix, eye, zeros
@@ -39,7 +39,7 @@ def prde_normal_denom(fa, fd, G, DE):
     """
     dn, ds = splitfactor(fd, DE)
     Gas, Gds = list(zip(*G))
-    gd = reduce(lambda i, j: i.lcm(j), Gds, Poly(1, DE.t))
+    gd = functools.reduce(lambda i, j: i.lcm(j), Gds, Poly(1, DE.t))
     en, es = splitfactor(gd, DE)
 
     p = dn.gcd(en)
@@ -177,7 +177,7 @@ def prde_linear_constraints(a, b, G, DE):
     m = len(G)
 
     Gns, Gds = list(zip(*G))
-    d = reduce(lambda i, j: i.lcm(j), Gds)
+    d = functools.reduce(lambda i, j: i.lcm(j), Gds)
     d = Poly(d, field=True)
     Q = [(ga*d.quo(gd)).div(d) for ga, gd in G]
 
@@ -382,7 +382,7 @@ def limited_integrate_reduce(fa, fd, G, DE):
     dn, ds = splitfactor(fd, DE)
     E = [splitfactor(gd, DE) for _, gd in G]
     En, Es = list(zip(*E))
-    c = reduce(lambda i, j: i.lcm(j), (dn,) + En)  # lcm(dn, en1, ..., enm)
+    c = functools.reduce(lambda i, j: i.lcm(j), (dn,) + En)  # lcm(dn, en1, ..., enm)
     hn = c.gcd(c.diff(DE.t))
     a = hn
     b = -derivation(hn, DE)
@@ -391,7 +391,7 @@ def limited_integrate_reduce(fa, fd, G, DE):
     # These are the cases where we know that S1irr = Sirr, but there could be
     # others, and this algorithm will need to be extended to handle them.
     if DE.case in ['base', 'primitive', 'exp', 'tan']:
-        hs = reduce(lambda i, j: i.lcm(j), (ds,) + Es)  # lcm(ds, es1, ..., esm)
+        hs = functools.reduce(lambda i, j: i.lcm(j), (ds,) + Es)  # lcm(ds, es1, ..., esm)
         a = hn*hs
         b = -derivation(hn, DE) - (hn*derivation(hs, DE)).quo(hs)
         mu = min(order_at_oo(fa, fd, DE.t), min(order_at_oo(ga, gd, DE.t)
@@ -734,7 +734,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
         else:
-            n = reduce(ilcm, [i.as_numer_denom()[1] for i in u])
+            n = functools.reduce(ilcm, [i.as_numer_denom()[1] for i in u])
             u *= Integer(n)
             terms = [DE.T[i] for i in DE.E_K] + DE.L_args
             ans = list(zip(terms, u))
@@ -837,7 +837,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
-        n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
+        n = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
         return Integer(n), u
 
@@ -853,8 +853,8 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
                          "'base', 'auto'}, not %s" % case)
 
-    common_denom = reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
-                                                                 residueterms]] + [n], Integer(1))
+    common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
+                                                                           residueterms]] + [n], Integer(1))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

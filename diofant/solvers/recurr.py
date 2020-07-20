@@ -5,12 +5,12 @@ import collections
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
                     Rational, Symbol, Wild, oo, sympify)
-from ..core.compatibility import default_sort_key, iterable
+from ..core.compatibility import iterable
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
-from ..utilities import numbered_symbols
+from ..utilities import default_sort_key, numbered_symbols
 from .ode import constantsimp
 from .solvers import solve
 

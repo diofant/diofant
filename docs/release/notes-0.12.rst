@@ -18,8 +18,9 @@ Compatibility breaks
 * Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
 * Drop support for ``from_list()`` initialization for multivariate polynomials, see :pull:`1035`.
 * Drop ``to_dense()``, ``tail_degrees()`` and ``almosteq`` methods and ``is_monic``, ``is_primitive`` attributes of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
-* Drop ``is_monic`` and ``is_primitive`` attributes of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036`.
+* Drop ``is_monic``, ``is_primitive``, ``zero``, ``one`` and ``unit`` attributes of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036` and :pull:`1039`.
 * Drop ``sring()`` and ``poly_from_expr()`` functions, see :pull:`1037`.
+* Functions and classes of the :mod:`~diofant.polys.polytools` module do not support anymore iterables as polynomial generator, see :pull:`1039`.
 
 Minor changes
 =============
@@ -50,3 +51,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19760` minimal_polynomial using Groebner basis can give wrong result
 * :sympyissue:`19770` Limit involving cosine
 * :sympyissue:`19766` Incorrect limit
+* :sympyissue:`19774` evalf() doesn't evaluate terms in an exponential

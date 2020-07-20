@@ -21,8 +21,8 @@ See Chapter 6 of "Symbolic Integration I: Transcendental Functions" by
 Manuel Bronstein.  See also the docstring of risch.py.
 """
 
-from functools import reduce
-from operator import mul
+import functools
+import operator
 
 from ..core import Dummy, oo
 from ..domains import ZZ
@@ -125,8 +125,9 @@ def weak_normalizer(a, d, DE, z=None):
 
     N = [i for i in r.real_roots() if i in ZZ and i > 0]
 
-    q = reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
-               Poly(1, DE.t))
+    q = functools.reduce(operator.mul,
+                         [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
+                         Poly(1, DE.t))
     q = q.monic()
 
     dq = derivation(q, DE)

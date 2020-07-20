@@ -2,6 +2,7 @@
 
 import collections
 import math
+import operator
 
 from ..core import Dummy, I
 from .orderings import ilex
@@ -954,7 +955,7 @@ class ComplexInterval:
         rring = dom.poly_ring(*reversed(ring.symbols))
         resultants = []
         for i in (self, other):
-            re, im = map(lambda _: _.set_ring(rring), (i.f1, i.f2))
+            re, im = map(operator.methodcaller('set_ring', rring), (i.f1, i.f2))
             resultants.append(re.resultant(im))
         gcd = ring.drop(1).gcd(*resultants)
         gcd_roots = ring.drop(1)._isolate_real_roots(gcd,

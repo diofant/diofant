@@ -1,10 +1,11 @@
 from ..core import Eq, Ge, Gt, Integer, Le, Lt, Ne, diff, nan, oo, sympify
-from ..core.compatibility import is_sequence, ordered
+from ..core.compatibility import is_sequence
 from ..functions import Min
 from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
+from ..utilities import ordered
 from .singularities import singularities
 
 

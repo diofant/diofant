@@ -797,25 +797,38 @@ def test_PolyElement___add__():
 
     p = x**4 + 2*y
     m = (1, 2)
-    p1 = p._iadd_monom((m, 5))
+    p1 = p._iadd_term((m, 5))
 
-    assert p == p1 and p1 == x**4 + 5*x*y**2 + 2*y
+    assert p is p1 and p1 == x**4 + 5*x*y**2 + 2*y
 
-    p2 = p._iadd_monom(((0, 1), 2))
+    p2 = p._iadd_term(((0, 1), 2))
 
     assert p == p2 and p2 == x**4 + 5*x*y**2 + 4*y
 
-    p3 = p._iadd_monom(((0, 1), -4))
+    p3 = p._iadd_term(((0, 1), -4))
 
     assert p == p3 and p3 == x**4 + 5*x*y**2
 
-    assert x._iadd_monom((m, 5)) == 5*x*y**2 + x
+    p = x
+    p1 = p._iadd_term((m, 5))
+
+    assert p is not p1 and p1 == 5*x*y**2 + x
 
     assert (x + y - 1) + 1 == x + y
 
     f, g = (x + y)**2, (x - y)**2
 
     assert f + g == 2*x**2 + 2*y**2
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    p1 = x**4 + 2*y
+    p2 = y + z
+    m = (1, 2, 3)
+
+    p = p1._iadd_poly_term(p2, (m, 3))
+
+    assert p is p1 and p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
 
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)

@@ -5,11 +5,11 @@ import math
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
                     factor_terms, pi, symbols, sympify)
-from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify import powsimp, simplify
+from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
 from .polytools import Poly, cancel, discriminant, factor, gcd_list

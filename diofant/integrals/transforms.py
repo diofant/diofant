@@ -1,6 +1,6 @@
 """Integral Transforms."""
 
-from functools import reduce, wraps
+import functools
 from itertools import repeat
 
 from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
@@ -191,7 +191,7 @@ def _noconds_(default):
 
     """
     def make_wrapper(func):
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             noconds = kwargs.pop('noconds', default)
             res = func(*args, **kwargs)
@@ -511,14 +511,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
-    s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.denominator)
-                                                    for x in s_multipliers], Integer(1))
+    s_multiplier = common_coefficient/functools.reduce(ilcm, [Integer(x.denominator)
+                                                              for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
+                * functools.reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)

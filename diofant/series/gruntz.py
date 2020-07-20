@@ -60,11 +60,11 @@ for proof of the termination (pp. 52-60).
 
 """
 
-from functools import reduce
+import functools
 
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
-from ..core.compatibility import ordered
 from ..functions import Abs, exp, log, sign
+from ..utilities import ordered
 
 
 def compare(a, b, x):
@@ -133,7 +133,8 @@ def mrv(e, x):
     elif isinstance(e, log):
         return mrv(e.args[0], x)
     elif e.is_Function:
-        return reduce(lambda a, b: mrv_max(a, b, x), [mrv(a, x) for a in e.args])
+        return functools.reduce(lambda a, b: mrv_max(a, b, x),
+                                [mrv(a, x) for a in e.args])
     else:
         raise NotImplementedError(f"Don't know how to calculate the mrv of '{e}'")
 

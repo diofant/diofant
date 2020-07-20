@@ -554,3 +554,8 @@ def test_evalf_bernoulli():
 
 def test_evalf_abs():
     assert Abs(0, evaluate=False).evalf() == 0
+
+
+def test_sympyissue_19774():
+    assert exp(x/2).evalf() == Float('2.7182818284590451',
+                                     dps=15)**(Float('0.5', dps=15)*x)

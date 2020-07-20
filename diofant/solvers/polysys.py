@@ -116,7 +116,7 @@ def solve_poly_system(eqs, *gens, **args):
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""
-        basis = groebner(system, gens, polys=True, extension=False)
+        basis = groebner(system, *gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []
 

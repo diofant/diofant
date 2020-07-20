@@ -32,7 +32,6 @@ from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
                     Pow, Rational, Tuple, Wild, cacheit, expand, expand_mul,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
                     sympify, zoo)
-from ..core.compatibility import default_sort_key, ordered
 from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
                                                _rewrite_hyperbolics_as_exp)
@@ -40,6 +39,7 @@ from ..logic import And, Not, Or, false
 from ..logic.boolalg import BooleanAtom
 from ..simplify import collect, hyperexpand, powdenest
 from ..simplify.fu import sincos_to_sum
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import multiset_partitions
 from ..utilities.misc import debug as _debug
 

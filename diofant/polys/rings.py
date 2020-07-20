@@ -987,8 +987,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                 term = lt.quo_term((expvs[i], fv[i][expvs[i]]))
                 if term:
                     expv1, c = term.LT
-                    qv[i] = qv[i]._iadd_monom((expv1, c))
-                    p = p._iadd_poly_monom(fv[i], (expv1, -c))
+                    qv[i] = qv[i]._iadd_term((expv1, c))
+                    p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1
                     if p and order(p.LM) >= order(lt.LM):
                         raise PolynomialDivisionFailed(self, fv[i], self.ring)
@@ -996,7 +996,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     i += 1
             if not divoccurred:
                 expv = p.leading_expv()
-                r = r._iadd_monom((expv, p[expv]))
+                r = r._iadd_term((expv, p[expv]))
                 del p[expv]
         r._hash = None
         return qv, r
@@ -1009,78 +1009,39 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise ExactQuotientFailed(self, other)
 
-    def _iadd_monom(self, mc):
-        """Add to self the monomial coeff*x0**i0*x1**i1*...
-        unless self is a generator -- then just return the sum of the two.
+    def _iadd_term(self, term):
+        """Add to self the term inplace.
 
-        mc is a tuple, (monom, coeff), where monomial is (i0, i1, ...)
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = x**4 + 2*y
-        >>> m = (1, 2)
-        >>> p1 = p._iadd_monom((m, 5))
-        >>> p1
-        x**4 + 5*x*y**2 + 2*y
-        >>> p1 is p
-        True
-        >>> p = x
-        >>> p1 = p._iadd_monom((m, 5))
-        >>> p1
-        5*x*y**2 + x
-        >>> p1 is p
-        False
+        If self is a generator -- then just return the sum of the two.
 
         """
-        if self.is_generator:
-            cpself = self.copy()
-        else:
-            cpself = self
-        expv, coeff = mc
-        c = cpself.get(expv)
-        if c is None:
-            cpself[expv] = coeff
-        else:
-            c += coeff
-            if c:
-                cpself[expv] = c
-            else:
-                del cpself[expv]
-        return cpself
+        ring = self.ring
+        domain = ring.domain
+        p1 = self
+        if p1.is_generator:
+            p1 = p1.copy()
+        monom, coeff = term
+        coeff += p1.get(monom, domain.zero)
+        if coeff:
+            p1[monom] = coeff
+        elif monom in p1:
+            del p1[monom]
+        return p1
 
-    def _iadd_poly_monom(self, p2, mc):
-        """Add to self the product of (p)*(coeff*x0**i0*x1**i1*...)
-        unless self is a generator -- then just return the sum of the two.
+    def _iadd_poly_term(self, p2, term):
+        """Add inplace to self the product of p2 and term.
 
-        mc is a tuple, (monom, coeff), where monomial is (i0, i1, ...)
-
-        Examples
-        ========
-
-        >>> _, x, y, z = ring('x y z', ZZ)
-        >>> p1 = x**4 + 2*y
-        >>> p2 = y + z
-        >>> m = (1, 2, 3)
-        >>> p1 = p1._iadd_poly_monom(p2, (m, 3))
-        >>> p1
-        x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
+        If self is a generator -- then just return the sum of the two.
 
         """
         p1 = self
         if p1.is_generator:
             p1 = p1.copy()
-        m, c = mc
-        get = p1.get
-        zero = p1.ring.domain.zero
-        for k, v in p2.items():
-            ka = k*m
-            coeff = get(ka, zero) + v*c
-            if coeff:
-                p1[ka] = coeff
-            else:
-                del p1[ka]
+        monom, coeff = term
+        for m, c in p2.items():
+            m *= monom
+            c *= coeff
+            p1 = p1._iadd_term((m, c))
         return p1
 
     def degree(self, x=0):
@@ -1749,7 +1710,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         f, g = self, other
 
         if ring.is_multivariate:
-            f, g = map(lambda _: _.eject(*ring.gens[1:]), (f, g))
+            f, g = map(operator.methodcaller('eject', *ring.gens[1:]), (f, g))
             r = f.prem(g)
             return r.inject()
 

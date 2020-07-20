@@ -12,8 +12,7 @@ from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal,
                     sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import (default_sort_key, is_sequence, iterable,
-                                  ordered)
+from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef
 from ..core.logic import fuzzy_and
 from ..core.relational import Relational
@@ -30,7 +29,7 @@ from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
 from ..simplify.fu import TR1
 from ..simplify.sqrtdenest import unrad
-from ..utilities import filldedent
+from ..utilities import default_sort_key, filldedent, ordered
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
 from .utils import checksol

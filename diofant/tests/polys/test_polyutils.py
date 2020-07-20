@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
+from diofant import (ZZ, GeneratorsNeeded, I, Integer, Integral, Mul,
                      PolynomialError, Rational, cos, erf, exp, factor,
                      integrate, pi, sin, sqrt, symbols)
 from diofant.abc import p, q, t, x, y, z
@@ -294,14 +294,14 @@ def test__parallel_dict_from_expr_no_gens():
 
 
 def test_parallel_dict_from_expr():
-    assert parallel_dict_from_expr([Eq(x, 1), Eq(
-        x**2, 2)]) == ([{(0,): -1, (1,): 1},
-                        {(0,): -2, (2,): 1}], (x,))
+    assert parallel_dict_from_expr([x - 1, x**2 - 2]) == ([{(0,): -1, (1,): 1},
+                                                           {(0,): -2,
+                                                            (2,): 1}], (x,))
     pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
 
 
 def test_dict_from_expr():
-    assert parallel_dict_from_expr([Eq(x, 1)]) == ([{(0,): -1, (1,): 1}], (x,))
+    assert parallel_dict_from_expr([x - 1]) == ([{(0,): -1, (1,): 1}], (x,))
     pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
 
 

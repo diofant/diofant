@@ -5,13 +5,13 @@ import itertools
 from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
 from ..logic import And, Not, Or, false, true
-from ..utilities import subsets
+from ..utilities import ordered, subsets
 from .contains import Contains
 
 

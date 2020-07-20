@@ -1,4 +1,4 @@
-from functools import wraps
+import functools
 
 
 def recurrence_memo(initial):
@@ -10,7 +10,7 @@ def recurrence_memo(initial):
     cache = initial
 
     def decorator(f):
-        @wraps(f)
+        @functools.wraps(f)
         def g(n):
             L = len(cache)
             if n <= L - 1:

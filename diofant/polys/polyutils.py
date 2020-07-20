@@ -4,8 +4,8 @@ import collections
 import re
 
 from ..core import Add, Mul, Pow
-from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
+from ..utilities import default_sort_key
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
 
@@ -146,37 +146,27 @@ def _sort_factors(factors, **args):
 def _parallel_dict_from_expr_if_gens(exprs, opt):
     """Transform expressions into a multinomial form given generators."""
     def _is_coeff(factor):
-        return factor.is_Number and (factor.is_finite is not False)
+        return factor.is_Number and factor.is_finite is not False
 
-    k, indices = len(opt.gens), {}
-
-    for i, g in enumerate(opt.gens):
-        indices[g] = i
+    indices = {g: i for i, g in enumerate(opt.gens)}
+    zero_monom = [0]*len(opt.gens)
 
     polys = []
 
     for expr in exprs:
         poly = {}
 
-        if expr.is_Equality:
-            expr = expr.lhs - expr.rhs
-
-        if not expr.is_commutative:
-            raise PolynomialError('non-commutative expressions are not supported')
-
         for term in Add.make_args(expr):
-            coeff, monom = [], [0]*k
+            coeff, monom = [], zero_monom.copy()
 
             for factor in Mul.make_args(term):
                 if _is_coeff(factor):
                     coeff.append(factor)
                 else:
+                    base, exp = decompose_power(factor)
+                    if exp < 0:
+                        exp, base = -exp, Pow(base, -1)
                     try:
-                        base, exp = decompose_power(factor)
-
-                        if exp < 0:
-                            exp, base = -exp, Pow(base, -1)
-
                         monom[indices[base]] += exp
                     except KeyError:
                         if not factor.free_symbols.intersection(opt.gens):
@@ -185,11 +175,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                             raise PolynomialError(f'{factor} contains an element of the generators set')
 
             monom = tuple(monom)
-
-            if monom in poly:
-                poly[monom] += Mul(*coeff)
-            else:
-                poly[monom] = Mul(*coeff)
+            poly[monom] = Mul(*coeff) + poly.get(monom, 0)
 
         polys.append(poly)
 
@@ -215,12 +201,6 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
 
     for expr in exprs:
         terms = []
-
-        if expr.is_Equality:
-            expr = expr.lhs - expr.rhs
-
-        if not expr.is_commutative:
-            raise PolynomialError('non-commutative expressions are not supported')
 
         for term in Add.make_args(expr):
             coeff, elements = [], collections.defaultdict(int)
@@ -281,6 +261,9 @@ def parallel_dict_from_expr(exprs, **args):
 
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form."""
+    if any(not expr.is_commutative for expr in exprs):
+        raise PolynomialError('non-commutative expressions are not supported')
+
     if opt.expand is not False:
         exprs = [expr.expand() for expr in exprs]
 

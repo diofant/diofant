@@ -1,5 +1,5 @@
+import functools
 from collections import defaultdict
-from functools import reduce
 
 from strategies.core import identity
 from strategies.tree import greedy
@@ -293,7 +293,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
             # from this list.
             fns = [x[1] for x in val]
             val = [x[0] for x in val]
-            gcd = reduce(igcd, val)
+            gcd = functools.reduce(igcd, val)
             terms = [(fn, v/gcd) for (fn, v) in zip(fns, val)]
             fs = set(funcs + fns)
             for c, s, t in ([cos, sin, tan], [cosh, sinh, tanh]):
@@ -1110,7 +1110,7 @@ def _futrig(e, **kwargs):
     """Helper for futrig."""
     from .fu import (TR1, TR2, TR3, TR2i, TR10, L, TR10i, TR8, TR6, TR15,
                      TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22, TR12)
-    from ..core.compatibility import _nodes
+    from ..utilities.iterables import _nodes
 
     if not e.has(TrigonometricFunction):
         return e

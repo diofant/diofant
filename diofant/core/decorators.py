@@ -5,7 +5,7 @@ The purpose of this module is to expose decorators without any other
 dependencies, so that they can be easily imported anywhere in diofant/core.
 """
 
-from functools import wraps
+import functools
 
 from .sympify import SympifyError, sympify
 
@@ -17,7 +17,7 @@ def deprecated(**decorator_kwargs):
     """
 
     def deprecated_decorator(func):
-        @wraps(func)
+        @functools.wraps(func)
         def new_func(*args, **kwargs):
             from ..utilities.exceptions import DiofantDeprecationWarning
             decorator_kwargs.setdefault('feature', func.__name__)
@@ -63,12 +63,12 @@ def __sympifyit(func, arg, retval=None):
     # only b is _sympified
     assert func.__code__.co_varnames[1] == arg
     if retval is None:
-        @wraps(func)
+        @functools.wraps(func)
         def __sympifyit_wrapper(a, b):
             return func(a, sympify(b, strict=True))
 
     else:
-        @wraps(func)
+        @functools.wraps(func)
         def __sympifyit_wrapper(a, b):
             try:
                 # If an external class has _op_priority, it knows how to deal
@@ -106,7 +106,7 @@ def call_highest_priority(method_name):
         ...
     """
     def priority_decorator(func):
-        @wraps(func)
+        @functools.wraps(func)
         def binary_op_wrapper(self, other):
             if hasattr(other, '_op_priority'):
                 if other._op_priority > self._op_priority:

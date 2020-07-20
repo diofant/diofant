@@ -1,6 +1,6 @@
 """Hypergeometric and Meijer G-functions."""
 
-from functools import reduce
+import functools
 
 import mpmath
 
@@ -585,7 +585,7 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return reduce(ilcm, (x.denominator for x in l), 1)
+            return functools.reduce(ilcm, (x.denominator for x in l), 1)
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)

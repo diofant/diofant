@@ -297,8 +297,8 @@ def test_sympyissue_16038():
             (7*y - 10*z)**2 + (8*y - z)**2 + (10*y - 9*z)**2 - 474,
             (-10*x + 10*z)**2 + (-5*x + 9*z)**2 + (-2*x + z)**2 - 885]
 
-    sols1 = solve_poly_system(sys1, (x, y, z))
-    sols2 = solve_poly_system(sys2, (x, y, z))
+    sols1 = solve_poly_system(sys1, x, y, z)
+    sols2 = solve_poly_system(sys2, x, y, z)
 
     assert len(sols1) == len(sols2) == 8
     assert {x: -1, y: -2, z: -3} in sols1

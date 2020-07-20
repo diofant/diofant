@@ -33,8 +33,8 @@ more information on each (run help(pde)):
 
 """
 
+import functools
 import operator
-from functools import reduce
 from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
@@ -782,9 +782,9 @@ def pde_separate(eq, fun, sep, strategy='mul'):
             subs_args.append(s.args[j])
 
     if do_add:
-        functions = reduce(operator.add, sep)
+        functions = functools.reduce(operator.add, sep)
     else:
-        functions = reduce(operator.mul, sep)
+        functions = functools.reduce(operator.mul, sep)
 
     # Check whether variables match
     if len(subs_args) != len(orig_args):
@@ -898,7 +898,7 @@ def _separate(eq, dep, others):
         div.add(sep)
         rhs -= term.expand()
     # Do the division
-    fulldiv = reduce(operator.add, div)
+    fulldiv = functools.reduce(operator.add, div)
     lhs = simplify(lhs/fulldiv).expand()
     rhs = simplify(rhs/fulldiv).expand()
     # ...and check whether we were successful :)

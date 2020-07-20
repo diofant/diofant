@@ -352,16 +352,6 @@ def test_Poly__gens():
     assert Poly((x - p)*(x - q), wrt='q', sort='p > x').gens == (q, p, x)
 
 
-def test_Poly_zero():
-    assert Poly(x).zero == Poly(0, x, domain=ZZ)
-    assert Poly(x/2).zero == Poly(0, x, domain=QQ)
-
-
-def test_Poly_one():
-    assert Poly(x).one == Poly(1, x, domain=ZZ)
-    assert Poly(x/2).one == Poly(1, x, domain=QQ)
-
-
 def test_Poly_unify():
     pytest.raises(UnificationFailed, lambda: Poly(x).unify(y))
     pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(y))
@@ -1515,7 +1505,6 @@ def test_prem():
 
     assert prem(f, g) == r
     assert prem(f, g, x, y) == r
-    assert prem(f, g, (x, y)) == r
     assert prem(F, G) == R
     assert prem(f, g, polys=True) == R
     assert prem(F, G, polys=False) == r
@@ -1543,11 +1532,6 @@ def test_div():
     assert rem(f, g, x, y) == r
     assert quo(f, g, x, y) == q
     assert exquo(f, g, x, y) == q
-
-    assert div(f, g, (x, y)) == (q, r)
-    assert rem(f, g, (x, y)) == r
-    assert quo(f, g, (x, y)) == q
-    assert exquo(f, g, (x, y)) == q
 
     assert div(F, G) == (Q, R)
     assert rem(F, G) == R
@@ -1656,10 +1640,6 @@ def test_gcdex():
     assert gcdex(f, g, x) == (s, t, h)
     assert invert(f, g, x) == s
 
-    assert half_gcdex(f, g, (x,)) == (s, h)
-    assert gcdex(f, g, (x,)) == (s, t, h)
-    assert invert(f, g, (x,)) == s
-
     assert half_gcdex(F, G) == (S, H)
     assert gcdex(F, G) == (S, T, H)
     assert invert(F, G) == S
@@ -1688,7 +1668,6 @@ def test_subresultants():
     assert F.subresultants(G) == [F, G, H]
     assert subresultants(f, g) == [f, g, h]
     assert subresultants(f, g, x) == [f, g, h]
-    assert subresultants(f, g, (x,)) == [f, g, h]
     assert subresultants(F, G) == [F, G, H]
     assert subresultants(f, g, polys=True) == [F, G, H]
     assert subresultants(F, G, polys=False) == [f, g, h]
@@ -1704,7 +1683,6 @@ def test_resultant():
     assert PurePoly(f).resultant(PurePoly(g)) == h
     assert resultant(f, g) == h
     assert resultant(f, g, x) == h
-    assert resultant(f, g, (x,)) == h
     assert resultant(F, G) == h
     assert resultant(f, g, polys=True) == h
     assert resultant(F, G, polys=False) == h
@@ -1718,7 +1696,6 @@ def test_resultant():
     assert F.resultant(G) == H
     assert resultant(f, g) == h
     assert resultant(f, g, x) == h
-    assert resultant(f, g, (x,)) == h
     assert resultant(F, G) == H
     assert resultant(f, g, polys=True) == H
     assert resultant(F, G, polys=False) == h
@@ -1743,7 +1720,6 @@ def test_discriminant():
     assert F.discriminant() == g
     assert discriminant(f) == g
     assert discriminant(f, x) == g
-    assert discriminant(f, (x,)) == g
     assert discriminant(F) == g
     assert discriminant(f, polys=True) == g
     assert discriminant(F, polys=False) == g
@@ -1754,7 +1730,6 @@ def test_discriminant():
     assert F.discriminant() == G
     assert discriminant(f) == g
     assert discriminant(f, x, a, b, c) == g
-    assert discriminant(f, (x, a, b, c)) == g
     assert discriminant(F) == G
     assert discriminant(f, polys=True) == G
     assert discriminant(F, polys=False) == g
@@ -1837,10 +1812,6 @@ def test_gcd():
     assert cofactors(f, g, x) == (h, s, t)
     assert gcd(f, g, x) == h
     assert lcm(f, g, x) == r
-
-    assert cofactors(f, g, (x,)) == (h, s, t)
-    assert gcd(f, g, (x,)) == h
-    assert lcm(f, g, (x,)) == r
 
     assert cofactors(F, G) == (H, S, T)
     assert gcd(F, G) == H
@@ -1944,7 +1915,6 @@ def test_trunc():
     assert F.trunc(3) == G
     assert trunc(f, 3) == g
     assert trunc(f, 3, x) == g
-    assert trunc(f, 3, (x,)) == g
     assert trunc(F, 3) == G
     assert trunc(f, 3, polys=True) == G
     assert trunc(F, 3, polys=False) == g
@@ -1955,7 +1925,6 @@ def test_trunc():
     assert F.trunc(3) == G
     assert trunc(f, 3) == g
     assert trunc(f, 3, x) == g
-    assert trunc(f, 3, (x,)) == g
     assert trunc(F, 3) == G
     assert trunc(f, 3, polys=True) == G
     assert trunc(F, 3, polys=False) == g
@@ -1974,7 +1943,6 @@ def test_monic():
     assert F.monic() == G
     assert monic(f) == g
     assert monic(f, x) == g
-    assert monic(f, (x,)) == g
     assert monic(F) == G
     assert monic(f, polys=True) == G
     assert monic(F, polys=False) == g
@@ -2014,7 +1982,6 @@ def test_primitive():
     assert F.primitive() == (2, G)
     assert primitive(f) == (2, g)
     assert primitive(f, x) == (2, g)
-    assert primitive(f, (x,)) == (2, g)
     assert primitive(F) == (2, G)
     assert primitive(f, polys=True) == (2, G)
     assert primitive(F, polys=False) == (2, g)
@@ -2046,7 +2013,6 @@ def test_compose():
     assert G.compose(H) == F
     assert compose(g, h) == f
     assert compose(g, h, x) == f
-    assert compose(g, h, (x,)) == f
     assert compose(G, H) == F
     assert compose(g, h, polys=True) == F
     assert compose(G, H, polys=False) == f
@@ -2054,7 +2020,6 @@ def test_compose():
     assert F.decompose() == [G, H]
     assert decompose(f) == [g, h]
     assert decompose(f, x) == [g, h]
-    assert decompose(f, (x,)) == [g, h]
     assert decompose(F) == [G, H]
     assert decompose(f, polys=True) == [G, H]
     assert decompose(F, polys=False) == [g, h]
@@ -2102,7 +2067,6 @@ def test_sqf():
     assert F.sqf_part() == P
     assert sqf_part(f) == p
     assert sqf_part(f, x) == p
-    assert sqf_part(f, (x,)) == p
     assert sqf_part(F) == P
     assert sqf_part(f, polys=True) == P
     assert sqf_part(F, polys=False) == p
@@ -2110,7 +2074,6 @@ def test_sqf():
     assert F.sqf_list() == (1, [(G, 1), (H, 2)])
     assert sqf_list(f) == (1, [(g, 1), (h, 2)])
     assert sqf_list(f, x) == (1, [(g, 1), (h, 2)])
-    assert sqf_list(f, (x,)) == (1, [(g, 1), (h, 2)])
     assert sqf_list(F) == (1, [(G, 1), (H, 2)])
     assert sqf_list(f, polys=True) == (1, [(G, 1), (H, 2)])
     assert sqf_list(F, polys=False) == (1, [(g, 1), (h, 2)])
@@ -2125,13 +2088,11 @@ def test_sqf():
 
     assert sqf(f) == g*h**2
     assert sqf(f, x) == g*h**2
-    assert sqf(f, (x,)) == g*h**2
 
     d = x**2 + y**2
 
     assert sqf(f/d) == (g*h**2)/d
     assert sqf(f/d, x) == (g*h**2)/d
-    assert sqf(f/d, (x,)) == (g*h**2)/d
 
     assert sqf(x - 1) == x - 1
     assert sqf(-x - 1) == -x - 1
@@ -2167,7 +2128,6 @@ def test_factor():
     assert F.factor_list() == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(f) == (1, [(u, 1), (v, 2), (w, 1)])
     assert factor_list(f, x) == (1, [(u, 1), (v, 2), (w, 1)])
-    assert factor_list(f, (x,)) == (1, [(u, 1), (v, 2), (w, 1)])
     assert factor_list(F) == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(f, polys=True) == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(F, polys=False) == (1, [(u, 1), (v, 2), (w, 1)])
@@ -2195,13 +2155,11 @@ def test_factor():
 
     assert factor(f) == u*v**2*w
     assert factor(f, x) == u*v**2*w
-    assert factor(f, (x,)) == u*v**2*w
 
     g, p, q, r = x**2 - y**2, x - y, x + y, x**2 + 1
 
     assert factor(f/g) == (u*v**2*w)/(p*q)
     assert factor(f/g, x) == (u*v**2*w)/(p*q)
-    assert factor(f/g, (x,)) == (u*v**2*w)/(p*q)
 
     p = Symbol('p', positive=True)
     i = Symbol('i', integer=True)
@@ -2546,7 +2504,6 @@ def test_cancel():
     assert F.cancel(G) == (1, P, Q)
     assert cancel((f, g)) == (1, p, q)
     assert cancel((f, g), x) == (1, p, q)
-    assert cancel((f, g), (x,)) == (1, p, q)
     assert cancel((F, G)) == (1, P, Q)
     assert cancel((f, g), polys=True) == (1, P, Q)
     assert cancel((F, G), polys=False) == (1, p, q)
@@ -2698,7 +2655,6 @@ def test_groebner():
          Poly(1 + x**2, x, y, z, order='grevlex')]
 
     assert groebner([x**3 - 1, x**2 - 1]) == [x - 1]
-    assert groebner([Eq(x**3, 1), Eq(x**2, 1)]) == [x - 1]
 
     F = [3*x**2 + y*z - 5*x - 1, 2*x + 3*x*y + y**2, x - 3*y + x*z - 2*z**2]
     f = z**9 - x**2*y**3 - 3*x*y**2*z + 11*y*z**2 + x**2*z**2 - 5
@@ -2742,7 +2698,7 @@ def test_groebner():
     pytest.raises(ValueError,
                   lambda: groebner([0.144*x*y + 0.018*x**2 + 0.05*x - 1.577,
                                     0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
-                                   [x, y]))
+                                   x, y))
 
 
 def test_set_order():
@@ -2829,7 +2785,7 @@ def test_dimension_and_independent_sets():
     S = (C2 - A21, C3 - A31 - A32, B1 + B2 + B3 - 1,
          B2*C2 + B3*C3 - QQ(1, 2), B2*C2**2 + B3*C3**2 - QQ(1, 3),
          B3*A32*C2 - QQ(1, 6))
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[C3, C2], [B3, C2], [B2, C3], [B2, B3], [A32, C3], [A32, B2]]
     assert G.dimension == 2
 
@@ -2843,7 +2799,7 @@ def test_dimension_and_independent_sets():
          B3*C3*A32*C2 - QQ(1, 8) - 3*B/8 - 7*B**2/4 - 3*B**3/2 - B**4 + A*B/2 + A*B**2/2 + A*B**3,
          B3*A32*C2**2 - QQ(1, 12) - B/12 - 7*B**2/6 - 3*B**3/2 - B**4 + 2*A*B/3 + A*B**2 + A*B**3,
          QQ(1, 24) + 7*B/24 + 13*B**2/12 + 3*B**3/2 + B**4 - A*B/3 - A*B**2 - A*B**3)
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[B3, C2], [A32, C3, C2], [A32, B2, C3], [A32, B2, B3]]
     assert G.dimension == 3
 
@@ -2862,7 +2818,7 @@ def test_dimension_and_independent_sets():
          15*L7*(L1*(5*L1 - 3*L2 + L3)) + (L1*(2*L6 - 4*L4))*(5*L4 - 2*L5) + L1*L7*(-120*L1 + 30*L2 - 6*L3)/2,
          -3*(L1*(5*L1 - 3*L2 + L3))*L7 + (L1*(2*L6 - 4*L4))*(-L4/2 + L5/4 - L6/2) + L1*L7/2*(24*L1 - 6*L2),
          3*(L1*(2*L6 - 4*L4))*L7 + L1*L7*(40*L4 - 8*L5 + 4*L6)/2)
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[L5, L3, L2], [L6, L3]]
     assert G.dimension == 3
 
@@ -2870,7 +2826,7 @@ def test_dimension_and_independent_sets():
     V = ax, bx, cx, gx, jx, lx, mx, nx, q = symbols('ax bx cx gx jx lx mx nx q')
     S = (ax*q - lx*q - mx, ax - gx*q - lx, bx*q**2 + cx*q - jx*q - nx,
          q*(-ax*q + lx*q + mx), q*(-ax + gx*q + lx))
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[cx, jx, lx, mx, nx, q], [cx, gx, jx, lx, mx, nx], [bx, cx, gx, jx, lx, nx]]
     assert G.dimension == 6
 
@@ -2881,7 +2837,7 @@ def test_GroebnerBasis():
     G = groebner(F, x, y, order='grevlex')
     assert groebner(F + [0], x, y, order='grevlex') == G
 
-    assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), (x, y))
+    assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), x, y)
 
     H = [y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y]
     P = [Poly(h, x, y, order='grevlex') for h in H]

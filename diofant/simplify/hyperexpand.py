@@ -64,7 +64,6 @@ from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
                     Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
                     sympify, zoo)
-from ..core.compatibility import default_sort_key
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
                          exp_polar, expint, factorial, floor, fresnelc,
@@ -80,7 +79,7 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
 from ..polys import Poly, poly
 from ..printing import sstr
 from ..series import residue
-from ..utilities.iterables import sift
+from ..utilities import default_sort_key, sift
 from .powsimp import powdenest
 from .simplify import simplify
 

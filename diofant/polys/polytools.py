@@ -7,13 +7,13 @@ import mpmath
 
 from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
                     preorder_traversal, sympify)
-from ..core.compatibility import default_sort_key, iterable
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
-from ..utilities import group, sift
+from ..utilities import default_sort_key, group, sift
 from .constructor import construct_domain
 from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
@@ -271,21 +271,6 @@ class Poly(Expr):
     def domain(self):
         """Get the ground domain of ``self``."""
         return self.rep.ring.domain
-
-    @property
-    def zero(self):
-        """Return zero polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.zero, *self.gens)
-
-    @property
-    def one(self):
-        """Return one polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.one, *self.gens)
-
-    @property
-    def unit(self):
-        """Return unit polynomial with ``self``'s properties."""
-        return self.new(self.rep.unit(self.rep.lev, self.domain), *self.gens)
 
     def unify(self, other):
         """
@@ -586,7 +571,7 @@ class Poly(Expr):
                                     field=field,
                                     composite=self.domain.is_Composite or None,
                                     extension=False if self.domain.is_ExpressionDomain else True)
-        return self.from_dict(rep, self.gens, domain=dom)
+        return self.from_dict(rep, *self.gens, domain=dom)
 
     def slice(self, x, m, n=None):
         """Take a continuous subsequence of terms of ``self``."""
@@ -2447,7 +2432,7 @@ class Poly(Expr):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -2503,7 +2488,7 @@ class PurePoly(Poly):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -4338,7 +4323,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return Tuple(*self.exprs), Tuple(*self.gens)
+        return (Tuple(*self.exprs),) + self.gens
 
     @property
     def exprs(self):

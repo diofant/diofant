@@ -8,11 +8,12 @@ Point3D
 """
 
 from ..core import Add, Float, Integer, Tuple, sympify
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify
+from ..utilities import ordered
 from .entity import GeometryEntity
 
 

@@ -233,7 +233,7 @@ from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, sympify, zoo)
-from ..core.compatibility import is_sequence, iterable, ordered
+from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..functions import (atan2, conjugate, cos, exp, factorial, im, log, re,
@@ -247,7 +247,7 @@ from ..polys.polytools import cancel, degree, div
 from ..series import Order, series
 from ..simplify import (collect, collect_const, cse, logcombine, posify,
                         powsimp, separatevars, simplify, trigsimp)
-from ..utilities import default_sort_key, numbered_symbols, sift
+from ..utilities import default_sort_key, numbered_symbols, ordered, sift
 from .deutils import _desolve, _preprocess, ode_order
 from .pde import pdsolve
 from .solvers import solve
