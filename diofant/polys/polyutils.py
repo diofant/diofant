@@ -158,9 +158,6 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
     for expr in exprs:
         poly = {}
 
-        if not expr.is_commutative:
-            raise PolynomialError('non-commutative expressions are not supported')
-
         for term in Add.make_args(expr):
             coeff, monom = [], [0]*k
 
@@ -212,9 +209,6 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
 
     for expr in exprs:
         terms = []
-
-        if not expr.is_commutative:
-            raise PolynomialError('non-commutative expressions are not supported')
 
         for term in Add.make_args(expr):
             coeff, elements = [], collections.defaultdict(int)
@@ -275,6 +269,9 @@ def parallel_dict_from_expr(exprs, **args):
 
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form."""
+    if any(not expr.is_commutative for expr in exprs):
+        raise PolynomialError('non-commutative expressions are not supported')
+
     if opt.expand is not False:
         exprs = [expr.expand() for expr in exprs]
 
