@@ -1423,6 +1423,32 @@ def test_PolyElement_mul_ground():
     assert (x + 2*y).mul_ground(0) == R.zero
 
 
+def test_PolyElement_misc_ariths():
+    R, x = ring('x', ZZ)
+
+    f, g, h = x**2 + 2*x + 3, 3*x**2 + 2*x + 1, x + 2
+
+    assert f + g*h == 3*x**3 + 9*x**2 + 7*x + 5
+    assert f - g*h == -3*x**3 - 7*x**2 - 3*x + 1
+
+    f, g, h = x**2 - 1, x - 2, x + 2
+
+    assert f + g*h == 2*x**2 - 5
+    assert f - g*h == 3
+
+    R, x, y = ring('x y', ZZ)
+
+    f, g, h = x*y + 2*x + 3, 3*x + 2*y + 1, x + 2
+
+    assert f + g*h == 3*x**2 + 3*x*y + 9*x + 4*y + 5
+    assert f - g*h == -3*x**2 - x*y - 5*x - 4*y + 1
+
+    f, g, h = x**2 + y, x, x + 2
+
+    assert f + g*h == 2*x**2 + y + 2*x
+    assert f - g*h == -2*x + y
+
+
 def test_PolyElement___floordiv__truediv__():
     R, x = ring('x', ZZ)
 
