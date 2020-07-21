@@ -945,6 +945,35 @@ def test_PolyElement___add__():
 
 
 def test_PolyElement___sub__():
+    R, x = ring('x', ZZ)
+
+    assert R(0) - R(0) == 0
+    assert R(1) - R(0) == +1
+    assert R(0) - R(1) == -1
+    assert R(1) - R(1) == 0
+    assert R(1) - R(2) == -1
+
+    assert (x + 2) - R(1) == +x + 1
+    assert R(1) - (x + 2) == -x - 1
+
+    assert (3*x**2 + 2*x + 1) - (8*x**2 + 9*x + 10) == -5*x**2 - 7*x - 9
+
+    assert (x**2 - 1) - (x - 2) == x**2 - x + 1
+
+    R, x = ring('x', QQ)
+
+    assert R(0) - R(0) == 0
+    assert R(QQ(1, 2)) - R(0) == QQ(+1, 2)
+    assert R(0) - R(QQ(1, 2)) == QQ(-1, 2)
+    assert R(QQ(1, 3)) - R(QQ(1, 3)) == 0
+    assert R(QQ(1, 3)) - R(QQ(2, 3)) == QQ(-1, 3)
+
+    assert (x/7 + QQ(2, 7)) - R(1) == +x/7 - QQ(5, 7)
+    assert R(1) - (x/7 + QQ(2, 7)) == -x/7 + QQ(5, 7)
+
+    assert ((3*x**2/7 + 2*x/7 + QQ(1, 7)) -
+            (8*x**2/7 + 9*x/7 + QQ(10, 7))) == -5*x**2/7 - x - QQ(9, 7)
+
     R, x, y = ring('x y', ZZ)
 
     assert (x + y + 1) - 1 == x + y
@@ -956,6 +985,31 @@ def test_PolyElement___sub__():
     f, g = 4, x + y
 
     assert f - g == -x - y + 4
+
+    f, g = x**2 - 2, y**2
+
+    assert f - g == x**2 - y**2 - 2
+    assert g - f == 2 + y**2 - x**2
+
+    f, g = x**2 + y, x**2*y + x
+
+    assert f - g == -x**2*y + x**2 - x + y
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0) - R(0) == 0
+    assert R(1) - R(0) == +1
+    assert R(0) - R(1) == -1
+    assert R(2) - R(1) == +1
+    assert R(1) - R(2) == -1
+
+    R, x, y, z = ring('x y z', QQ)
+
+    assert R(0) - R(0) == 0
+    assert R(QQ(1, 2)) - R(0) == QQ(+1, 2)
+    assert R(0) - R(QQ(1, 2)) == QQ(-1, 2)
+    assert R(QQ(2, 7)) - R(QQ(1, 7)) == QQ(+1, 7)
+    assert R(QQ(1, 7)) - R(QQ(2, 7)) == QQ(-1, 7)
 
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
