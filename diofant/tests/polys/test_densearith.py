@@ -51,44 +51,6 @@ def test_dmp_add_term():
     assert f + 0 == f
 
 
-def test_dmp_mul_ground():
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert f.mul_ground(ZZ(2)) == 0
-
-    f = x**2 + 2*x - 1
-
-    assert f.mul_ground(ZZ(3)) == 3*x**2 + 6*x - 3
-
-    f = x**2 + 2*x + 3
-
-    assert f.mul_ground(ZZ(0)) == 0
-    assert f.mul_ground(ZZ(2)) == 2*x**2 + 4*x + 6
-
-    R, x, y = ring('x y', ZZ)
-
-    assert (2*x + 2*y).mul_ground(ZZ(3)) == 6*x + 6*y
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    f = f_polys()[0]
-
-    assert (f.mul_ground(ZZ(2)) ==
-            2*x**2*y*z**2 + 4*x**2*y*z + 6*x**2*y + 4*x**2 + 6*x +
-            8*y**2*z**2 + 10*y**2*z + 12*y**2 + 2*y*z**2 + 4*y*z + 2*y + 2)
-
-    R, x, y, z = ring('x y z', QQ)
-
-    f = f.set_ring(R)/7
-
-    assert (f.mul_ground(QQ(1, 2)) ==
-            x**2*y*z**2/14 + x**2*y*z/7 + 3*x**2*y/14 + x**2/7 + 3*x/14 +
-            2*y**2*z**2/7 + 5*y**2*z/14 + 3*y**2/7 + y*z**2/14 + y*z/7 +
-            y/14 + QQ(1, 14))
-
-
 def test_dmp_neg():
     R, x = ring('x', ZZ)
 
