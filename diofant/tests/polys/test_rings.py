@@ -828,9 +828,7 @@ def test_PolyElement__neg__():
 def test_PolyElement___add__():
     R, x = ring('x', ZZ)
 
-    assert R(0) + R(0) == 0
     assert R(1) + R(0) == 1
-    assert R(0) + R(1) == 1
     assert R(1) + R(1) == 2
     assert R(1) + R(2) == 3
 
@@ -840,6 +838,30 @@ def test_PolyElement___add__():
     assert (x**2 + 2*x + 3) + (8*x**2 + 9*x + 10) == 9*x**2 + 11*x + 13
 
     assert (x**2 - 1) + (x - 2) == x**2 + x - 3
+
+    f = R(0)
+
+    assert f + 0 == 0
+    assert f + 1 == 1
+    assert f + x == x
+    assert f + x**2 == x**2
+
+    f = x**2 + x + 1
+
+    assert f + 1 == x**2 + x + 2
+    assert f + x == x**2 + 2*x + 1
+    assert f + x**2 == 2*x**2 + x + 1
+
+    assert f + x**3 == x**3 + x**2 + x + 1
+    assert f + x**4 == x**4 + x**2 + x + 1
+    assert f + x**5 == x**5 + x**2 + x + 1
+    assert f + x**6 == x**6 + x**2 + x + 1
+
+    assert f - x**2 == x + 1
+
+    f = x**2 - 1
+
+    assert f + 2*x**4 == 2*x**4 + x**2 - 1
 
     R, x = ring('x', QQ)
 
@@ -904,6 +926,14 @@ def test_PolyElement___add__():
 
     assert p is p1 and p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
 
+    f = f_polys()[0]
+
+    assert f + 0 == f
+
+    f = x*y + 1
+
+    assert f + 2*x**2 == 2*x**2 + x*y + 1
+
     R, x, y, z = ring('x y z', QQ)
 
     assert R(0) + R(0) == 0
@@ -911,6 +941,10 @@ def test_PolyElement___add__():
     assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
     assert R(QQ(2, 7)) + R(QQ(1, 7)) == QQ(3, 7)
     assert R(QQ(1, 7)) + R(QQ(2, 7)) == QQ(3, 7)
+
+    f = f.set_ring(R)/7
+
+    assert f + 0 == f
 
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)
