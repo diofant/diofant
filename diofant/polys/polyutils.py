@@ -1,6 +1,5 @@
 """Useful utilities for higher level polynomial classes."""
 
-import collections
 import re
 
 from ..core import Add, Mul, Pow
@@ -150,7 +149,6 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
 
     indices = {g: i for i, g in enumerate(opt.gens)}
     zero_monom = [0]*len(opt.gens)
-
     polys = []
 
     for expr in exprs:
@@ -169,10 +167,10 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                     try:
                         monom[indices[base]] += exp
                     except KeyError:
-                        if not factor.free_symbols.intersection(opt.gens):
-                            coeff.append(factor)
-                        else:
-                            raise PolynomialError(f'{factor} contains an element of the generators set')
+                        if factor.free_symbols.intersection(opt.gens):
+                            raise PolynomialError(f'{factor} contains an element'
+                                                  ' of the generators set')
+                        coeff.append(factor)
 
             monom = tuple(monom)
             poly[monom] = Mul(*coeff) + poly.get(monom, 0)
@@ -197,60 +195,24 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         def _is_coeff(factor):
             return factor.is_number and factor.is_finite is not False
 
-    gens, reprs = set(), []
+    gens = set()
 
     for expr in exprs:
-        terms = []
-
         for term in Add.make_args(expr):
-            coeff, elements = [], collections.defaultdict(int)
-
             for factor in Mul.make_args(term):
-                if _is_coeff(factor):
-                    coeff.append(factor)
-                else:
+                if not _is_coeff(factor):
                     base, exp = decompose_power(factor)
-
                     if exp < 0:
-                        exp, base = -exp, Pow(base, -1)
+                        base = Pow(base, -1)
 
-                    elements[base] += exp
                     gens.add(base)
-
-            terms.append((coeff, elements))
-
-        reprs.append(terms)
 
     if not gens:
         raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
+    else:
+        gens = _sort_gens(gens, opt=opt)
 
-    gens = _sort_gens(gens, opt=opt)
-    k, indices = len(gens), {}
-
-    for i, g in enumerate(gens):
-        indices[g] = i
-
-    polys = []
-
-    for terms in reprs:
-        poly = {}
-
-        for coeff, term in terms:
-            monom = [0]*k
-
-            for base, exp in term.items():
-                monom[indices[base]] = exp
-
-            monom = tuple(monom)
-
-            if monom in poly:
-                poly[monom] += Mul(*coeff)
-            else:
-                poly[monom] = Mul(*coeff)
-
-        polys.append(poly)
-
-    return polys, tuple(gens)
+    return _parallel_dict_from_expr_if_gens(exprs, opt.clone({'gens': gens}))
 
 
 def parallel_dict_from_expr(exprs, **args):
