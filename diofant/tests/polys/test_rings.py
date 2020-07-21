@@ -826,6 +826,35 @@ def test_PolyElement__neg__():
 
 
 def test_PolyElement___add__():
+    R, x = ring('x', ZZ)
+
+    assert R(0) + R(0) == 0
+    assert R(1) + R(0) == 1
+    assert R(0) + R(1) == 1
+    assert R(1) + R(1) == 2
+    assert R(1) + R(2) == 3
+
+    assert (x + 2) + R(1) == x + 3
+    assert R(1) + (x + 2) == x + 3
+
+    assert (x**2 + 2*x + 3) + (8*x**2 + 9*x + 10) == 9*x**2 + 11*x + 13
+
+    assert (x**2 - 1) + (x - 2) == x**2 + x - 3
+
+    R, x = ring('x', QQ)
+
+    assert R(0) + R(0) == 0
+    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
+    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
+    assert R(QQ(1, 4)) + R(QQ(1, 4)) == QQ(1, 2)
+    assert R(QQ(1, 4)) + R(QQ(1, 2)) == QQ(3, 4)
+
+    assert (x/2 + QQ(2, 3)) + R(1) == x/2 + QQ(5, 3)
+    assert R(1) + (x/2 + QQ(2, 3)) == x/2 + QQ(5, 3)
+
+    assert ((x**2/7 + 2*x/7 + QQ(3, 7)) +
+            (8*x**2/7 + 9*x/7 + QQ(10, 7))) == 9*x**2/7 + 11*x/7 + QQ(13, 7)
+
     R, x, y = ring('x y', ZZ)
 
     pytest.raises(CoercionFailed, lambda: R.convert(EX(pi)))
@@ -855,7 +884,17 @@ def test_PolyElement___add__():
 
     assert f + g == 2*x**2 + 2*y**2
 
+    f, g = x**2 + y, x**2*y + x
+
+    assert f + g == x**2*y + x**2 + x + y
+
     R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0) + R(0) == 0
+    assert R(1) + R(0) == 1
+    assert R(0) + R(1) == 1
+    assert R(2) + R(1) == 3
+    assert R(1) + R(2) == 3
 
     p1 = x**4 + 2*y
     p2 = y + z
@@ -864,6 +903,14 @@ def test_PolyElement___add__():
     p = p1._iadd_poly_term(p2, (m, 3))
 
     assert p is p1 and p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
+
+    R, x, y, z = ring('x y z', QQ)
+
+    assert R(0) + R(0) == 0
+    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
+    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
+    assert R(QQ(2, 7)) + R(QQ(1, 7)) == QQ(3, 7)
+    assert R(QQ(1, 7)) + R(QQ(2, 7)) == QQ(3, 7)
 
     Rt, t = ring('t', ZZ)
     Ruv, u, v = ring('u v', ZZ)

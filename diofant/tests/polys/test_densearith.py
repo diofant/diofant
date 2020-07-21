@@ -51,57 +51,6 @@ def test_dmp_add_term():
     assert f + 0 == f
 
 
-def test_dmp_add():
-    R, x = ring('x', ZZ)
-
-    assert R(0) + R(0) == 0
-    assert R(1) + R(0) == 1
-    assert R(0) + R(1) == 1
-    assert R(1) + R(1) == 2
-    assert R(1) + R(2) == 3
-
-    assert (x + 2) + R(1) == x + 3
-    assert R(1) + (x + 2) == x + 3
-
-    assert (x**2 + 2*x + 3) + (8*x**2 + 9*x + 10) == 9*x**2 + 11*x + 13
-
-    assert (x**2 - 1) + (x - 2) == x**2 + x - 3
-
-    R, x = ring('x', QQ)
-
-    assert R(0) + R(0) == 0
-    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
-    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
-    assert R(QQ(1, 4)) + R(QQ(1, 4)) == QQ(1, 2)
-    assert R(QQ(1, 4)) + R(QQ(1, 2)) == QQ(3, 4)
-
-    assert (x/2 + QQ(2, 3)) + R(1) == x/2 + QQ(5, 3)
-    assert R(1) + (x/2 + QQ(2, 3)) == x/2 + QQ(5, 3)
-
-    assert ((x**2/7 + 2*x/7 + QQ(3, 7)) +
-            (8*x**2/7 + 9*x/7 + QQ(10, 7))) == 9*x**2/7 + 11*x/7 + QQ(13, 7)
-
-    R, x, y = ring('x y', ZZ)
-
-    assert (x**2 + y) + (x**2*y + x) == x**2*y + x**2 + x + y
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R(0) + R(0) == 0
-    assert R(1) + R(0) == 1
-    assert R(0) + R(1) == 1
-    assert R(2) + R(1) == 3
-    assert R(1) + R(2) == 3
-
-    R, x, y, z = ring('x y z', QQ)
-
-    assert R(0) + R(0) == 0
-    assert R(QQ(1, 2)) + R(0) == QQ(1, 2)
-    assert R(0) + R(QQ(1, 2)) == QQ(1, 2)
-    assert R(QQ(2, 7)) + R(QQ(1, 7)) == QQ(3, 7)
-    assert R(QQ(1, 7)) + R(QQ(2, 7)) == QQ(3, 7)
-
-
 def test_dmp_sub():
     R, x = ring('x', ZZ)
 
