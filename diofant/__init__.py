@@ -111,13 +111,57 @@ from .sets import (Complement, Contains, EmptySet, FiniteSet, ImageSet,
                    ProductSet, Range, Rationals, Reals, Set,
                    SymmetricDifference, Union, imageset)
 from .solvers import dsolve, reduce_inequalities, rsolve, solve
-from .matrices import *
-from .geometry import *
-from .utilities import *
-from .integrals import *
-from .tensor import *
-from .calculus import *
-from .combinatorics import *
+from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
+                       DiagonalMatrix, DiagonalOf, FunctionMatrix, GramSchmidt,
+                       HadamardProduct, Identity, ImmutableDenseMatrix,
+                       ImmutableMatrix, ImmutableSparseMatrix, Inverse, MatAdd,
+                       MatMul, MatPow, Matrix, MatrixBase, MatrixExpr,
+                       MatrixSlice, MatrixSymbol, MutableDenseMatrix,
+                       MutableMatrix, MutableSparseMatrix,
+                       NonSquareMatrixError, ShapeError, SparseMatrix, Trace,
+                       Transpose, ZeroMatrix, block_collapse, blockcut,
+                       casoratian, det, diag, eye, hadamard_product, hessian,
+                       jordan_cell, list2numpy, matrix2numpy,
+                       matrix_multiply_elementwise, ones, randMatrix,
+                       rot_axis1, rot_axis2, rot_axis3, symarray, trace,
+                       vandermonde, wronskian, zeros)
+from .geometry import (Circle, Curve, Ellipse, GeometryError, Line, Line3D,
+                       Plane, Point, Point2D, Point3D, Polygon, Ray, Ray3D,
+                       RegularPolygon, Segment, Segment3D, Triangle,
+                       are_similar, centroid, convex_hull, deg, idiff,
+                       intersection, rad)
+from .utilities import (cantor_product, capture, default_sort_key, filldedent,
+                        flatten, group, has_dups, has_variety, lambdify,
+                        numbered_symbols, ordered, postfixes,
+                        postorder_traversal, prefixes, sift, subsets,
+                        topological_sort, unflatten, variations)
+from .integrals import (CosineTransform, FourierTransform, HankelTransform,
+                        Integral, InverseCosineTransform,
+                        InverseFourierTransform, InverseHankelTransform,
+                        InverseLaplaceTransform, InverseMellinTransform,
+                        InverseSineTransform, LaplaceTransform,
+                        MellinTransform, SineTransform, cosine_transform,
+                        fourier_transform, hankel_transform, integrate,
+                        inverse_cosine_transform, inverse_fourier_transform,
+                        inverse_hankel_transform, inverse_laplace_transform,
+                        inverse_mellin_transform, inverse_sine_transform,
+                        laplace_transform, line_integrate, mellin_transform,
+                        sine_transform)
+from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
+                     ImmutableSparseNDimArray, Indexed, IndexedBase,
+                     MutableDenseNDimArray, MutableSparseNDimArray, NDimArray,
+                     SparseNDimArray, derive_by_array,
+                     get_contraction_structure, get_indices, permutedims,
+                     tensorcontraction, tensorproduct)
+from .calculus import maximize, minimize
+from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
+                            DihedralGroup, DirectProduct, GrayCode,
+                            IntegerPartition, Partition, Permutation,
+                            PermutationGroup, Polyhedron, Prufer, RGS_enum,
+                            RGS_rank, RGS_unrank, RubikGroup, Subset,
+                            SymmetricGroup, alternating, cube, cyclic,
+                            dihedral, dodecahedron, icosahedron, octahedron,
+                            symmetric, tetrahedron)
 from .plotting import *
 from .printing import *
 from .interactive import *
