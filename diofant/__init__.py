@@ -162,6 +162,11 @@ from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
                             SymmetricGroup, alternating, cube, cyclic,
                             dihedral, dodecahedron, icosahedron, octahedron,
                             symmetric, tetrahedron)
-from .plotting import *
-from .printing import *
-from .interactive import *
+from .plotting import (plot, plot3d, plot3d_parametric_line,
+                       plot3d_parametric_surface, plot_backends, plot_implicit,
+                       plot_parametric)
+from .printing import (StrPrinter, ccode, dotprint, fcode, latex,
+                       mathematica_code, mathml, octave_code, pprint,
+                       pprint_use_unicode, pretty, pretty_print, python, srepr,
+                       sstr, sstrrepr)
+from .interactive import init_printing
