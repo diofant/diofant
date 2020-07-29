@@ -38,6 +38,11 @@ def test_point():
 
     assert p1.origin == p3
     assert p1.ambient_dimension == 2
+    assert p3.is_zero is True
+    assert p1 in p1
+    assert p1 not in p2
+
+    assert p1[0] == x1 and p1[1] == x2
 
     assert p1 in p1
     assert p1 not in p2
@@ -239,6 +244,12 @@ def test_Point2D():
     p3 = Point2D(6.1, 3.5)
     assert p1.distance(p2) == sqrt(61)/2
     assert p2.distance(p3) == sqrt(541)/10
+    assert p1.bounds == (1, 5, 1, 5)
+
+    assert Point2D.is_concyclic() is False
+
+    pytest.raises(ValueError, lambda: Point2D(1, 1, 1))
+    pytest.raises(ValueError, lambda: Point2D(1, I))
 
 
 def test_sympyissue_9214():
