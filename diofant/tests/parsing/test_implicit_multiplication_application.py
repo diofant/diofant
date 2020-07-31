@@ -17,7 +17,7 @@ __all__ = ()
 def test_implicit_multiplication():
     cases = {
         '5x': '5*x',
-        'abc': 'a*b*c',
+        'xyz': 'x*y*z',
         '3sin(x)': '3*sin(x)',
         '(x+1)(x+2)': '(x+1)*(x+2)',
         '(5 x**2)sin(x)': '(5*x**2)*sin(x)',

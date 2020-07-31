@@ -911,7 +911,7 @@ def test_PolyElement_is_irreducible():
     assert (x**2 + 2*x + 1).is_irreducible is False
 
 
-@pytest.mark.timeout(20)
+@pytest.mark.timeout(30)
 def test_sympyissue_16620():
     R, x = ring('x', FF(2))
 

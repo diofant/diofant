@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8.3]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:
@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     - run: git fetch --prune --unshallow --tags -f
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install libs

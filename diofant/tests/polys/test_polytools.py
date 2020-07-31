@@ -532,8 +532,7 @@ def test_Poly_domain():
 
     assert Poly(x/2).domain == QQ
 
-    assert Poly(x/2, domain='ZZ') == Poly({(1, 1): 1}, x, Rational(1, 2),
-                                          domain='ZZ')
+    pytest.raises(CoercionFailed, lambda: Poly(x/2, domain='ZZ'))
     assert Poly(x/2, domain='QQ').domain == QQ
 
     assert isinstance(Poly(0.2*x).domain, RealField)

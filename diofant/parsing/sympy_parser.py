@@ -503,9 +503,9 @@ def auto_symbol(tokens, local_dict, global_dict):
                 continue
             elif name in global_dict:
                 obj = global_dict[name]
-                if isinstance(obj, (Basic, type)) or callable(obj):
-                    result.append((NAME, name))
-                    continue
+                assert isinstance(obj, (Basic, type)) or callable(obj)
+                result.append((NAME, name))
+                continue
 
             result.extend([
                 (NAME, 'Symbol' if nextTokVal != '(' else 'Function'),
