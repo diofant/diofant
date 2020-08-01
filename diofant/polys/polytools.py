@@ -12,6 +12,7 @@ from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
+from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
 from ..utilities import default_sort_key, group, sift
 from .constructor import construct_domain
@@ -226,7 +227,7 @@ class Poly(Expr):
         """
         domain, symbols = self.domain, set()
 
-        if domain.is_Composite:
+        if isinstance(domain, CompositeDomain):
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
         elif domain.is_ExpressionDomain:
@@ -447,7 +448,7 @@ class Poly(Expr):
         if x in self.gens and y not in self.gens:
             dom = self.domain
 
-            if not dom.is_Composite or y not in dom.symbols:
+            if not isinstance(dom, CompositeDomain) or y not in dom.symbols:
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
                 rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
@@ -569,7 +570,7 @@ class Poly(Expr):
         """
         dom, rep = construct_domain(self.as_dict(),
                                     field=field,
-                                    composite=self.domain.is_Composite or None,
+                                    composite=isinstance(self.domain, CompositeDomain) or None,
                                     extension=False if self.domain.is_ExpressionDomain else True)
         return self.from_dict(rep, *self.gens, domain=dom)
 

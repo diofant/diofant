@@ -466,7 +466,9 @@ class Domain(Option, metaclass=OptionType):
     @classmethod
     def postprocess(cls, options):
         from .. import domains
-        if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
+        from ..domains.compositedomain import CompositeDomain
+
+        if 'gens' in options and 'domain' in options and isinstance(options['domain'], CompositeDomain) and \
                 (set(options['domain'].symbols) & set(options['gens'])):
             raise GeneratorsError('ground domain and generators '
                                   'interfere together')
