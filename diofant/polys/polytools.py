@@ -11,7 +11,7 @@ from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from ..domains import FF, QQ, ZZ
+from ..domains import EX, FF, QQ, ZZ
 from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
 from ..utilities import default_sort_key, group, sift
@@ -2549,39 +2549,8 @@ def _parallel_poly_from_expr(exprs, opt):
     """Construct polynomials from expressions."""
     from ..functions import Piecewise
 
-    exprs = list(exprs)
-
-    if len(exprs) == 1 and isinstance(exprs[0], Poly):
-        f = exprs[0].__class__._from_poly(exprs[0], opt)
-
-        opt.gens = f.gens
-        opt.domain = f.domain
-
-        if opt.polys is None:
-            opt.polys = True
-
-        return [f], opt
-
-    if len(exprs) == 2:
-        f, g = exprs
-
-        if isinstance(f, Poly) and isinstance(g, Poly):
-            f = f.__class__._from_poly(f, opt)
-            g = g.__class__._from_poly(g, opt)
-
-            f, g = f.unify(g)
-
-            opt.gens = f.gens
-            opt.domain = f.domain
-
-            if opt.polys is None:
-                opt.polys = True
-
-            return [f, g], opt
-
     origs, exprs = list(exprs), []
     _exprs, _polys = [], []
-
     failed = False
 
     for i, expr in enumerate(origs):
@@ -2590,6 +2559,8 @@ def _parallel_poly_from_expr(exprs, opt):
         if isinstance(expr, Basic):
             if expr.is_Poly:
                 _polys.append(i)
+
+                expr = expr.__class__._from_poly(expr, opt)
             else:
                 _exprs.append(i)
 
@@ -2603,10 +2574,26 @@ def _parallel_poly_from_expr(exprs, opt):
     if failed:
         raise PolificationFailed(opt, origs, exprs, True)
 
+    if opt.polys is None:
+        opt.polys = bool(_polys)
+
     if _polys:
-        # XXX: this is a temporary solution
+        for i, j in zip(_polys, _polys[1:]):
+            exprs[i], exprs[j] = exprs[i].unify(exprs[j])
+
+        i = _polys[-1]
+        opt.gens = exprs[i].gens
+        opt.domain = exprs[i].domain
+
         for i in _polys:
-            exprs[i] = exprs[i].as_expr()
+            exprs[i] = exprs[i].set_domain(opt.domain)
+
+        if not _exprs and opt.domain is not EX:
+            return exprs, opt
+
+    # XXX: this is a temporary solution
+    for i in _polys:
+        exprs[i] = exprs[i].as_expr()
 
     try:
         reps, opt = _parallel_dict_from_expr(exprs, opt)
@@ -2647,9 +2634,6 @@ def _parallel_poly_from_expr(exprs, opt):
         rep = dict(zip(monoms, coeffs))
         poly = Poly._from_dict(rep, opt)
         polys.append(poly)
-
-    if opt.polys is None:
-        opt.polys = bool(_polys)
 
     return polys, opt
 
