@@ -442,6 +442,10 @@ def test__isolate_real_roots_sqf():
     assert R._isolate_real_roots_sqf(x - 1) == [(1, 1)]
     assert R._isolate_real_roots_sqf(x - I) == []
 
+    f = (x + I)*(x - 1)
+
+    assert [_.as_tuple() for _ in R._isolate_real_roots_sqf(f, blackbox=True)] == [(1, 1)]
+
     R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = (-x**3 + sqrt(2)*x - 1)*(x**2 + 1)

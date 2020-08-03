@@ -806,6 +806,9 @@ class RealInterval:
             domain = ring.domain
             x = ring.gens[0]
 
+            if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
+                domain = domain.domain
+
             if s < 0:
                 if t <= 0:
                     f, s, t, self.neg = f.compose(x, -x), -t, -s, True
@@ -814,7 +817,7 @@ class RealInterval:
 
             a, b, c, d = _mobius_from_interval((s, t), domain.field)
 
-            f = ring._transform(f, a*x + b, c*x + d)
+            f = ring._transform(f, ring(a)*x + ring(b), ring(c)*x + ring(d))
 
             self.mobius = a, b, c, d
         else:
