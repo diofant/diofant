@@ -127,6 +127,39 @@ def _unify_gens(f_gens, g_gens):
     return tuple(gens)
 
 
+def _find_gens(exprs, opt):
+    """Find generators in a reasonably intelligent way."""
+    if opt.domain is not None:
+        def _is_coeff(factor):
+            return factor in opt.domain
+    elif opt.extension is True:
+        def _is_coeff(factor):
+            return factor.is_number and factor.is_algebraic
+    elif opt.greedy is not False:
+        def _is_coeff(factor):
+            return factor.is_Number and factor.is_finite is not False
+    else:
+        def _is_coeff(factor):
+            return factor.is_number and factor.is_finite is not False
+
+    gens = set()
+
+    for expr in exprs:
+        for term in Add.make_args(expr):
+            for factor in Mul.make_args(term):
+                if not _is_coeff(factor):
+                    base, exp = decompose_power(factor)
+                    if exp < 0:
+                        base = Pow(base, -1)
+
+                    gens.add(base)
+
+    if not gens:
+        raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
+
+    return _sort_gens(gens, opt=opt)
+
+
 def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order."""
     def order_if_multiple_key(factor):
@@ -177,42 +210,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
 
         polys.append(poly)
 
-    return polys, opt.gens
-
-
-def _parallel_dict_from_expr_no_gens(exprs, opt):
-    """Transform expressions into a multinomial form and figure out generators."""
-    if opt.domain is not None:
-        def _is_coeff(factor):
-            return factor in opt.domain
-    elif opt.extension is True:
-        def _is_coeff(factor):
-            return factor.is_number and factor.is_algebraic
-    elif opt.greedy is not False:
-        def _is_coeff(factor):
-            return factor.is_Number and factor.is_finite is not False
-    else:
-        def _is_coeff(factor):
-            return factor.is_number and factor.is_finite is not False
-
-    gens = set()
-
-    for expr in exprs:
-        for term in Add.make_args(expr):
-            for factor in Mul.make_args(term):
-                if not _is_coeff(factor):
-                    base, exp = decompose_power(factor)
-                    if exp < 0:
-                        base = Pow(base, -1)
-
-                    gens.add(base)
-
-    if not gens:
-        raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
-    else:
-        gens = _sort_gens(gens, opt=opt)
-
-    return _parallel_dict_from_expr_if_gens(exprs, opt.clone({'gens': gens}))
+    return polys
 
 
 def parallel_dict_from_expr(exprs, **args):
@@ -229,9 +227,9 @@ def _parallel_dict_from_expr(exprs, opt):
     if opt.expand is not False:
         exprs = [expr.expand() for expr in exprs]
 
-    if opt.gens:
-        reps, gens = _parallel_dict_from_expr_if_gens(exprs, opt)
-    else:
-        reps, gens = _parallel_dict_from_expr_no_gens(exprs, opt)
+    if not opt.gens:
+        opt = opt.clone({'gens': _find_gens(exprs, opt)})
 
-    return reps, opt.clone({'gens': gens})
+    reps = _parallel_dict_from_expr_if_gens(exprs, opt)
+
+    return reps, opt.clone()
