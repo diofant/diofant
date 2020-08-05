@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8.3]
+        python-version: [3.7, 3.8]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:

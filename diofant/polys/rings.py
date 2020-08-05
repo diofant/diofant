@@ -94,7 +94,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
         obj = _ring_cache.get(key)
 
         if obj is None:
-            if domain.is_Composite and set(symbols) & set(domain.symbols):
+            if isinstance(domain, CompositeDomain) and set(symbols) & set(domain.symbols):
                 raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
             obj = object.__new__(new_cls)
@@ -293,7 +293,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
             return self.clone(symbols=symbols)
 
     def to_ground(self):
-        if self.domain.is_Composite or self.domain.is_AlgebraicField:
+        if isinstance(self.domain, CompositeDomain) or self.domain.is_AlgebraicField:
             return self.clone(domain=self.domain.domain)
         else:
             raise ValueError(f'{self.domain} is not a composite or algebraic domain')
@@ -607,7 +607,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         domain = ring.domain
 
-        if not (domain.is_Composite or domain.is_AlgebraicField):
+        if not (isinstance(domain, CompositeDomain) or domain.is_AlgebraicField):
             return self
 
         new_ring = ring.to_ground()

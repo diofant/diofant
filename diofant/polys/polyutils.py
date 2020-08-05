@@ -127,61 +127,8 @@ def _unify_gens(f_gens, g_gens):
     return tuple(gens)
 
 
-def _sort_factors(factors, **args):
-    """Sort low-level factors in increasing 'complexity' order."""
-    def order_if_multiple_key(factor):
-        f, n = factor
-        return len(f), n, default_sort_key(f)
-
-    def order_no_multiple_key(f):
-        return len(f), default_sort_key(f)
-
-    if args.get('multiple', True):
-        return sorted(factors, key=order_if_multiple_key)
-    else:
-        return sorted(factors, key=order_no_multiple_key)
-
-
-def _parallel_dict_from_expr_if_gens(exprs, opt):
-    """Transform expressions into a multinomial form given generators."""
-    def _is_coeff(factor):
-        return factor.is_Number and factor.is_finite is not False
-
-    indices = {g: i for i, g in enumerate(opt.gens)}
-    zero_monom = [0]*len(opt.gens)
-    polys = []
-
-    for expr in exprs:
-        poly = {}
-
-        for term in Add.make_args(expr):
-            coeff, monom = [], zero_monom.copy()
-
-            for factor in Mul.make_args(term):
-                if _is_coeff(factor):
-                    coeff.append(factor)
-                else:
-                    base, exp = decompose_power(factor)
-                    if exp < 0:
-                        exp, base = -exp, Pow(base, -1)
-                    try:
-                        monom[indices[base]] += exp
-                    except KeyError:
-                        if factor.free_symbols.intersection(opt.gens):
-                            raise PolynomialError(f'{factor} contains an element'
-                                                  ' of the generators set')
-                        coeff.append(factor)
-
-            monom = tuple(monom)
-            poly[monom] = Mul(*coeff) + poly.get(monom, 0)
-
-        polys.append(poly)
-
-    return polys, opt.gens
-
-
-def _parallel_dict_from_expr_no_gens(exprs, opt):
-    """Transform expressions into a multinomial form and figure out generators."""
+def _find_gens(exprs, opt):
+    """Find generators in a reasonably intelligent way."""
     if opt.domain is not None:
         def _is_coeff(factor):
             return factor in opt.domain
@@ -209,10 +156,57 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
 
     if not gens:
         raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
-    else:
-        gens = _sort_gens(gens, opt=opt)
 
-    return _parallel_dict_from_expr_if_gens(exprs, opt.clone({'gens': gens}))
+    return _sort_gens(gens, opt=opt)
+
+
+def _sort_factors(factors, **args):
+    """Sort low-level factors in increasing 'complexity' order."""
+    def order_if_multiple_key(factor):
+        f, n = factor
+        return len(f), n, default_sort_key(f)
+
+    def order_no_multiple_key(f):
+        return len(f), default_sort_key(f)
+
+    if args.get('multiple', True):
+        return sorted(factors, key=order_if_multiple_key)
+    else:
+        return sorted(factors, key=order_no_multiple_key)
+
+
+def _parallel_dict_from_expr_if_gens(exprs, opt):
+    """Transform expressions into a multinomial form given generators."""
+    indices = {g: i for i, g in enumerate(opt.gens)}
+    zero_monom = [0]*len(opt.gens)
+    polys = []
+
+    for expr in exprs:
+        poly = {}
+
+        for term in Add.make_args(expr):
+            coeff, monom = [], zero_monom.copy()
+
+            for factor in Mul.make_args(term):
+                base, exp = decompose_power(factor)
+                if exp < 0:
+                    exp, base = -exp, Pow(base, -1)
+                try:
+                    monom[indices[base]] += exp
+                    continue
+                except KeyError:
+                    if factor.free_symbols.intersection(opt.gens):
+                        raise PolynomialError(f'{factor} contains an element'
+                                              ' of the generators set')
+
+                coeff.append(factor)
+
+            monom = tuple(monom)
+            poly[monom] = Mul(*coeff) + poly.get(monom, 0)
+
+        polys.append(poly)
+
+    return polys
 
 
 def parallel_dict_from_expr(exprs, **args):
@@ -229,9 +223,9 @@ def _parallel_dict_from_expr(exprs, opt):
     if opt.expand is not False:
         exprs = [expr.expand() for expr in exprs]
 
-    if opt.gens:
-        reps, gens = _parallel_dict_from_expr_if_gens(exprs, opt)
-    else:
-        reps, gens = _parallel_dict_from_expr_no_gens(exprs, opt)
+    if not opt.gens:
+        opt = opt.clone({'gens': _find_gens(exprs, opt)})
 
-    return reps, opt.clone({'gens': gens})
+    reps = _parallel_dict_from_expr_if_gens(exprs, opt)
+
+    return reps, opt.clone()
