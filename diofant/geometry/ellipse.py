@@ -11,8 +11,7 @@ from ..core import Dummy, Rational, oo, pi, sympify
 from ..core.logic import fuzzy_bool
 from ..functions import cos, sin, sqrt
 from ..logic import false, true
-from ..polys import DomainError, Poly, PolynomialError
-from ..polys.polyutils import _nsort
+from ..polys import Poly
 from ..simplify import simplify, trigsimp
 from ..solvers import solve
 from ..utilities import filldedent
@@ -795,12 +794,7 @@ class Ellipse(GeometrySet):
         yis = solve(seq, y)[0][y]
         xeq = eq.subs({y: yis}).as_numer_denom()[0].expand()
         if len(xeq.free_symbols) == 1:
-            try:
-                # this is so much faster, it's worth a try
-                xsol = Poly(xeq, x).real_roots()
-            except (DomainError, PolynomialError, NotImplementedError):
-                xsol = _nsort([s[x] for s in solve(xeq, x)],
-                              separated=True)[0]
+            xsol = Poly(xeq, x).real_roots()
             points = [Point(i, solve(eq.subs({x: i}), y)[0][y])
                       for i in xsol]
         else:
