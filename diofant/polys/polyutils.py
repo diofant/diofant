@@ -177,9 +177,6 @@ def _sort_factors(factors, **args):
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):
     """Transform expressions into a multinomial form given generators."""
-    def _is_coeff(factor):
-        return factor.is_Number and factor.is_finite is not False
-
     indices = {g: i for i, g in enumerate(opt.gens)}
     zero_monom = [0]*len(opt.gens)
     polys = []
@@ -191,19 +188,18 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
             coeff, monom = [], zero_monom.copy()
 
             for factor in Mul.make_args(term):
-                if _is_coeff(factor):
-                    coeff.append(factor)
-                else:
-                    base, exp = decompose_power(factor)
-                    if exp < 0:
-                        exp, base = -exp, Pow(base, -1)
-                    try:
-                        monom[indices[base]] += exp
-                    except KeyError:
-                        if factor.free_symbols.intersection(opt.gens):
-                            raise PolynomialError(f'{factor} contains an element'
-                                                  ' of the generators set')
-                        coeff.append(factor)
+                base, exp = decompose_power(factor)
+                if exp < 0:
+                    exp, base = -exp, Pow(base, -1)
+                try:
+                    monom[indices[base]] += exp
+                    continue
+                except KeyError:
+                    if factor.free_symbols.intersection(opt.gens):
+                        raise PolynomialError(f'{factor} contains an element'
+                                              ' of the generators set')
+
+                coeff.append(factor)
 
             monom = tuple(monom)
             poly[monom] = Mul(*coeff) + poly.get(monom, 0)
