@@ -2541,13 +2541,9 @@ class PurePoly(Poly):
 
 def parallel_poly_from_expr(exprs, *gens, **args):
     """Construct polynomials from expressions."""
-    opt = build_options(gens, args)
-    return _parallel_poly_from_expr(exprs, opt)
-
-
-def _parallel_poly_from_expr(exprs, opt):
-    """Construct polynomials from expressions."""
     from ..functions import Piecewise
+
+    opt = build_options(gens, args)
 
     origs, exprs = list(exprs), []
     _exprs, _polys = [], []
@@ -3673,9 +3669,19 @@ def _symbolic_factor_list(expr, opt, method):
             base, exp = arg, Integer(1)
 
         try:
-            (poly,), _ = _parallel_poly_from_expr((base,), opt)
-        except PolificationFailed as exc:
-            factors.append((exc.exprs[0], exp))
+            if base.is_Poly:
+                cls = base.func
+            else:
+                cls = Poly
+                if opt.expand:
+                    base = base.expand()
+
+            if opt.polys is None:
+                opt.polys = base.is_Poly
+
+            poly = cls._from_expr(base.as_expr(), opt)
+        except GeneratorsNeeded:
+            factors.append((base, exp))
         else:
             func = getattr(poly, method + '_list')
 
