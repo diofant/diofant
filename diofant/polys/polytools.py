@@ -3750,7 +3750,7 @@ def _generic_factor_list(expr, gens, args, method):
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):
                 if not f.is_Poly:
-                    (f,), _ = _parallel_poly_from_expr((f,), _opt)
+                    f = Poly._from_expr(f, _opt)
                     factors[i] = (f, k)
 
         fp = _sorted_factors(fp, method)
