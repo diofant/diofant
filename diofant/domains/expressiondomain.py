@@ -41,7 +41,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
             return self.__class__(self.ex.as_numer_denom()[1])
 
         def simplify(self, ex):
-            return self.__class__(ex.cancel())
+            return self.__class__(ex.cancel().expand())
 
         def __abs__(self):
             return self.__class__(abs(self.ex))
