@@ -289,9 +289,6 @@ manual for usage.
 .. automodule:: diofant.polys.groebnertools
     :members:
 
-.. automodule:: diofant.polys.fglmtools
-    :members:
-
 Algebraic number fields
 =======================
 

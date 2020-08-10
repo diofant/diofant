@@ -16,8 +16,8 @@ from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
 from ..utilities import default_sort_key, group, sift
 from .constructor import construct_domain
-from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
+from .groebnertools import matrix_fglm
 from .monomials import Monomial
 from .orderings import monomial_key
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
