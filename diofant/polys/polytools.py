@@ -11,7 +11,7 @@ from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
-from ..domains import EX, FF, QQ, ZZ
+from ..domains import FF, QQ, ZZ
 from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
 from ..utilities import default_sort_key, group, sift
@@ -2541,17 +2541,15 @@ class PurePoly(Poly):
 
 def parallel_poly_from_expr(exprs, *gens, **args):
     """Construct polynomials from expressions."""
-    opt = build_options(gens, args)
-    return _parallel_poly_from_expr(exprs, opt)
-
-
-def _parallel_poly_from_expr(exprs, opt):
-    """Construct polynomials from expressions."""
     from ..functions import Piecewise
 
+    opt = build_options(gens, args)
+
     origs, exprs = list(exprs), []
-    _exprs, _polys = [], []
-    failed = False
+    _exprs, _polys, _failed = [], [], []
+
+    if not origs and not opt.gens:
+        raise PolificationFailed(opt, origs, exprs, True)
 
     for i, expr in enumerate(origs):
         expr = sympify(expr)
@@ -2562,80 +2560,58 @@ def _parallel_poly_from_expr(exprs, opt):
 
                 expr = expr.__class__._from_poly(expr, opt)
             else:
-                _exprs.append(i)
-
                 if opt.expand:
                     expr = expr.expand()
+
+                try:
+                    expr = Poly._from_expr(expr, opt)
+                    _exprs.append(i)
+                except GeneratorsNeeded:
+                    _failed.append(i)
         else:
-            failed = True
+            raise PolificationFailed(opt, origs, exprs, True)
 
         exprs.append(expr)
-
-    if failed:
-        raise PolificationFailed(opt, origs, exprs, True)
 
     if opt.polys is None:
         opt.polys = bool(_polys)
 
-    if _polys:
-        for i, j in zip(_polys, _polys[1:]):
+    _exprs += _polys
+
+    for i, j in zip(_exprs, _exprs[1:]):
+        exprs[i], exprs[j] = exprs[i].unify(exprs[j])
+
+    if _exprs:
+        i = _exprs[-1]
+        opt.gens = exprs[i].gens
+
+    for i in _failed:
+        try:
+            exprs[i] = Poly._from_expr(exprs[i], opt)
+        except GeneratorsNeeded:
+            raise PolificationFailed(opt, origs, exprs, True)
+
+    if opt.domain is None:
+        opt.domain = ZZ
+
+    _exprs += _failed
+
+    if _exprs:
+        for i, j in zip(_exprs, _exprs[1:]):
             exprs[i], exprs[j] = exprs[i].unify(exprs[j])
 
-        i = _polys[-1]
-        opt.gens = exprs[i].gens
+        i = _exprs[-1]
         opt.domain = exprs[i].domain
+        cls = exprs[i].func
 
-        for i in _polys:
-            exprs[i] = exprs[i].set_domain(opt.domain)
-
-        if not _exprs and opt.domain is not EX:
-            return exprs, opt
-
-    # XXX: this is a temporary solution
-    for i in _polys:
-        exprs[i] = exprs[i].as_expr()
-
-    try:
-        reps, opt = _parallel_dict_from_expr(exprs, opt)
-    except GeneratorsNeeded:
-        raise PolificationFailed(opt, origs, exprs, True)
+        for i, expr in enumerate(exprs):
+            exprs[i] = cls._from_poly(expr, opt)
 
     for k in opt.gens:
         if isinstance(k, Piecewise) and len(exprs) > 1:
             raise PolynomialError('Piecewise generators do not make sense')
 
-    coeffs_list, lengths = [], []
-
-    all_monoms = []
-    all_coeffs = []
-
-    for rep in reps:
-        monoms, coeffs = zip(*rep.items())
-
-        coeffs_list.extend(coeffs)
-        all_monoms.append(monoms)
-
-        lengths.append(len(coeffs))
-
-    domain = opt.domain
-
-    if domain is None:
-        opt.domain, coeffs_list = construct_domain(coeffs_list, opt=opt)
-    else:
-        coeffs_list = list(map(domain.convert, coeffs_list))
-
-    for k in lengths:
-        all_coeffs.append(coeffs_list[:k])
-        coeffs_list = coeffs_list[k:]
-
-    polys = []
-
-    for monoms, coeffs in zip(all_monoms, all_coeffs):
-        rep = dict(zip(monoms, coeffs))
-        poly = Poly._from_dict(rep, opt)
-        polys.append(poly)
-
-    return polys, opt
+    return exprs, opt
 
 
 def degree(f, *gens, **args):
@@ -3673,9 +3649,19 @@ def _symbolic_factor_list(expr, opt, method):
             base, exp = arg, Integer(1)
 
         try:
-            (poly,), _ = _parallel_poly_from_expr((base,), opt)
-        except PolificationFailed as exc:
-            factors.append((exc.exprs[0], exp))
+            if base.is_Poly:
+                cls = base.func
+            else:
+                cls = Poly
+                if opt.expand:
+                    base = base.expand()
+
+            if opt.polys is None:
+                opt.polys = base.is_Poly
+
+            poly = cls._from_expr(base.as_expr(), opt)
+        except GeneratorsNeeded:
+            factors.append((base, exp))
         else:
             func = getattr(poly, method + '_list')
 
@@ -3750,7 +3736,7 @@ def _generic_factor_list(expr, gens, args, method):
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):
                 if not f.is_Poly:
-                    (f,), _ = _parallel_poly_from_expr((f,), _opt)
+                    f = Poly._from_expr(f, _opt)
                     factors[i] = (f, k)
 
         fp = _sorted_factors(fp, method)

@@ -1,7 +1,5 @@
 """Implementation of matrix FGLM Gröbner basis conversion algorithm."""
 
-from .monomials import Monomial
-
 
 def matrix_fglm(F, ring, O_to):
     """
@@ -107,7 +105,7 @@ def _representing_matrices(basis, G, ring):
     u = ring.ngens-1
 
     def var(i):
-        return Monomial([0] * i + [1] + [0] * (u - i))
+        return ring._monomial_basis(i)
 
     def representing_matrix(m):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]
