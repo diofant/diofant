@@ -1,5 +1,7 @@
 """Implementation of RootOf class and related tools."""
 
+import typing
+
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
@@ -19,10 +21,11 @@ from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
                         roots_linear, roots_quadratic, roots_quartic)
 from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
+from .rootisolation import ComplexInterval, RealInterval
 
 
-_reals_cache = {}
-_complexes_cache = {}
+_reals_cache: typing.Dict[Poly, RealInterval] = {}
+_complexes_cache: typing.Dict[Poly, ComplexInterval] = {}
 _x = Dummy('x')
 
 

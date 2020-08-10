@@ -1,5 +1,7 @@
 """Definitions of monomial orderings."""
 
+import typing
+
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
@@ -11,8 +13,8 @@ __all__ = ('lex', 'grlex', 'grevlex', 'ilex', 'igrlex', 'igrevlex',
 class MonomialOrder:
     """Base class for monomial orderings."""
 
-    alias = None
-    is_global = None
+    alias: str
+    is_global: typing.Union[bool, None] = None
     is_default = False
 
     def __str__(self):

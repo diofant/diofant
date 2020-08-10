@@ -2,6 +2,7 @@
 
 import functools
 import operator
+import typing
 
 from ..core import Expr, Symbol, sympify
 from ..core.sympify import CantSympify
@@ -19,9 +20,6 @@ def field(symbols, domain, order=lex):
     return (_field,) + _field.gens
 
 
-_field_cache = {}
-
-
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields."""
 
@@ -36,7 +34,7 @@ class FractionField(Field, CompositeDomain):
         domain = ring.domain
         order = ring.order
 
-        key = (cls.__name__, symbols, ngens, domain, order)
+        key = cls.__name__, symbols, ngens, domain, order
         obj = _field_cache.get(key)
 
         if obj is None:
@@ -209,6 +207,9 @@ class FractionField(Field, CompositeDomain):
 
     def is_normal(self, a):
         return self.domain.is_normal(a.numerator.LC)
+
+
+_field_cache: typing.Dict[tuple, FractionField] = {}
 
 
 @functools.total_ordering

@@ -35,14 +35,16 @@ if HAS_GMPY:
         isqrt as gmpy_sqrt,
         qdiv as gmpy_qdiv)
 else:
-    class GMPYInteger:
+    class _GMPYInteger:
         def __init__(self, obj):
             pass
 
-    class GMPYRational:
+    class _GMPYRational:
         def __init__(self, obj):
             pass
 
+    GMPYInteger = _GMPYInteger
+    GMPYRational = _GMPYRational
     gmpy_factorial = None
     gmpy_numer = None
     gmpy_denom = None

@@ -3,6 +3,7 @@
 import functools
 import math
 import operator
+import typing
 
 from ..core import Expr, Integer, Symbol, cacheit, oo
 from ..core import symbols as _symbols
@@ -70,9 +71,6 @@ def _parse_symbols(symbols):
                           'Symbols or expressions')
 
 
-_ring_cache = {}
-
-
 class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
@@ -90,7 +88,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
 
         new_cls = PolynomialRing if ngens > 1 else UnivarPolynomialRing
 
-        key = (new_cls.__name__, symbols, ngens, domain, order)
+        key = new_cls.__name__, symbols, ngens, domain, order
         obj = _ring_cache.get(key)
 
         if obj is None:
@@ -391,6 +389,9 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
     def lcm(self, a, b):
         """Returns LCM of ``a`` and ``b``."""
         return a.lcm(b)
+
+
+_ring_cache: typing.Dict[tuple, PolynomialRing] = {}
 
 
 class PolyElement(DomainElement, CantSympify, dict):
