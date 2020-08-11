@@ -1,6 +1,7 @@
 """Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
 import re
+import typing
 
 from ..core import Basic, I, sympify
 from ..utilities import has_dups, numbered_symbols, topological_sort
@@ -13,15 +14,15 @@ __all__ = 'Options', 'Order'
 class Option:
     """Base class for all kinds of options."""
 
-    option = None
+    option: str
 
     is_Flag = False
 
-    requires = []
-    excludes = []
+    requires: typing.List[str] = []
+    excludes: typing.List[str] = []
 
-    after = []
-    before = []
+    after: typing.List[str] = []
+    before: typing.List[str] = []
 
     @classmethod
     def default(cls):
@@ -110,8 +111,8 @@ class Options(dict):
 
     """
 
-    __order__ = None
-    __options__ = {}
+    __order__: typing.Union[None, typing.List[str]] = None
+    __options__: typing.Dict[str, typing.Type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):
         dict.__init__(self)
@@ -240,9 +241,6 @@ class Expand(BooleanOption, metaclass=OptionType):
 
     option = 'expand'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         return True
@@ -252,9 +250,6 @@ class Gens(Option, metaclass=OptionType):
     """``gens`` option to polynomial manipulation functions."""
 
     option = 'gens'
-
-    requires = []
-    excludes = []
 
     @classmethod
     def default(cls):
@@ -280,9 +275,6 @@ class Wrt(Option, metaclass=OptionType):
 
     option = 'wrt'
 
-    requires = []
-    excludes = []
-
     _re_split = re.compile(r'\s*,\s*|\s+')
 
     @classmethod
@@ -307,9 +299,6 @@ class Sort(Option, metaclass=OptionType):
 
     option = 'sort'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         return []
@@ -329,9 +318,6 @@ class Order(Option, metaclass=OptionType):
 
     option = 'order'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         from .orderings import lex
@@ -348,7 +334,6 @@ class Field(BooleanOption, metaclass=OptionType):
 
     option = 'field'
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian']
 
 
@@ -357,7 +342,6 @@ class Greedy(BooleanOption, metaclass=OptionType):
 
     option = 'greedy'
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus']
 
 
@@ -370,7 +354,6 @@ class Composite(BooleanOption, metaclass=OptionType):
     def default(cls):
         return
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian', 'modulus']
 
 
@@ -379,7 +362,6 @@ class Domain(Option, metaclass=OptionType):
 
     option = 'domain'
 
-    requires = []
     excludes = ['field', 'greedy', 'split', 'gaussian', 'extension']
 
     after = ['gens']
@@ -483,7 +465,6 @@ class Split(BooleanOption, metaclass=OptionType):
 
     option = 'split'
 
-    requires = []
     excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension', 'modulus']
 
     @classmethod
@@ -497,7 +478,6 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
     option = 'gaussian'
 
-    requires = []
     excludes = ['field', 'greedy', 'domain', 'split', 'extension', 'modulus']
 
     @classmethod
@@ -512,7 +492,6 @@ class Extension(Option, metaclass=OptionType):
 
     option = 'extension'
 
-    requires = []
     excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus']
 
     @classmethod
@@ -545,7 +524,6 @@ class Modulus(Option, metaclass=OptionType):
 
     option = 'modulus'
 
-    requires = []
     excludes = ['greedy', 'split', 'domain', 'gaussian', 'extension']
 
     @classmethod
