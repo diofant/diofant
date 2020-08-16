@@ -1742,12 +1742,10 @@ def test_dispersion():
     # tests see the dedicated test file.
     fp = poly((x + 1)*(x + 2), x)
     assert sorted(fp.dispersionset()) == [0, 1]
-    assert fp.dispersion() == 1
 
     fp = poly(x**4 - 3*x**2 + 1, x)
     gp = fp.shift(-3)
     assert sorted(fp.dispersionset(gp)) == [2, 3, 4]
-    assert fp.dispersion(gp) == 4
 
 
 def test_gcd_list():

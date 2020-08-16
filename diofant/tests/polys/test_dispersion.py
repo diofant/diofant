@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import oo, poly, sqrt
+from diofant import poly, sqrt
 from diofant.abc import a, x, y
-from diofant.polys.dispersion import dispersion, dispersionset
+from diofant.polys.dispersion import dispersionset
 
 
 __all__ = ()
@@ -22,26 +22,20 @@ def test_dispersion():
 
     fp = poly(x + 1, x)
     assert sorted(dispersionset(fp)) == [0]
-    assert dispersion(fp) == 0
 
     fp = poly((x + 1)*(x + 2), x)
     assert sorted(dispersionset(fp)) == [0, 1]
-    assert dispersion(fp) == 1
 
     fp = poly(x*(x + 3), x)
     assert sorted(dispersionset(fp)) == [0, 3]
-    assert dispersion(fp) == 3
 
     fp = poly((x - 3)*(x + 3), x)
     assert sorted(dispersionset(fp)) == [0, 6]
-    assert dispersion(fp) == 6
 
     fp = poly(x**4 - 3*x**2 + 1, x)
     gp = fp.shift(-3)
     assert sorted(dispersionset(fp, gp)) == [2, 3, 4]
-    assert dispersion(fp, gp) == 4
     assert sorted(dispersionset(gp, fp)) == []
-    assert dispersion(gp, fp) == -oo
 
     fp = poly(x**2 + 2*x - 1, x)
     gp = poly(x**2 + 2*x + 3, x)
@@ -87,19 +81,15 @@ def test_dispersion():
     # Work with Expr instead of Poly
     f = (x + 1)*(x + 2)
     assert sorted(dispersionset(f)) == [0, 1]
-    assert dispersion(f) == 1
 
     f = x**4 - 3*x**2 + 1
     g = x**4 - 12*x**3 + 51*x**2 - 90*x + 55
     assert sorted(dispersionset(f, g)) == [2, 3, 4]
-    assert dispersion(f, g) == 4
 
     # Work with Expr and specify a generator
     f = (x + 1)*(x + 2)
     assert sorted(dispersionset(f, None, x)) == [0, 1]
-    assert dispersion(f, None, x) == 1
 
     f = x**4 - 3*x**2 + 1
     g = x**4 - 12*x**3 + 51*x**2 - 90*x + 55
     assert sorted(dispersionset(f, g, x)) == [2, 3, 4]
-    assert dispersion(f, g, x) == 4

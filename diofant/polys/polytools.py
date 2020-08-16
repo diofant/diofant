@@ -1573,39 +1573,11 @@ class Poly(Expr):
         See Also
         ========
 
-        dispersion
         diofant.polys.dispersion.dispersionset
 
         """
         from .dispersion import dispersionset
         return dispersionset(self, other)
-
-    def dispersion(self, other=None):
-        r"""Compute the *dispersion* of polynomials.
-
-        Examples
-        ========
-
-        >>> Poly((x - 3)*(x + 3)).dispersion()
-        6
-
-        See Also
-        ========
-
-        dispersionset
-        diofant.polys.dispersion.dispersion
-
-        References
-        ==========
-
-        * :cite:`Man1994disp`
-        * :cite:`Koepf98`
-        * :cite:`Abramov71rat`
-        * :cite:`Man1993indefsum`
-
-        """
-        from .dispersion import dispersion
-        return dispersion(self, other)
 
     def cofactors(self, other):
         """
