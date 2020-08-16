@@ -32,7 +32,7 @@ from .rings import PolyElement
 
 
 __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'prem',
+           'degree', 'LC', 'LM', 'LT', 'prem',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
@@ -1022,19 +1022,6 @@ class Poly(Expr):
         j = self._gen_to_level(gen)
 
         return self.rep.degree(j)
-
-    def degree_list(self):
-        """
-        Returns a list of degrees of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + y*x + 1).degree_list()
-        (2, 1)
-
-        """
-        return self.rep.degree_list()
 
     def total_degree(self):
         """
@@ -2611,29 +2598,6 @@ def degree(f, *gens, **args):
         raise ComputationFailed('degree', 1, exc)
 
     return sympify(F.degree(opt.gen))
-
-
-def degree_list(f, *gens, **args):
-    """
-    Return a list of degrees of ``f`` in all variables.
-
-    Examples
-    ========
-
-    >>> degree_list(x**2 + y*x + 1)
-    (2, 1)
-
-    """
-    allowed_flags(args, ['polys'])
-
-    try:
-        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('degree_list', 1, exc)
-
-    degrees = F.degree_list()
-
-    return tuple(map(Integer, degrees))
 
 
 def LC(f, *gens, **args):

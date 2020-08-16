@@ -1055,15 +1055,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         i = self.ring.index(x)
         return max((monom[i] for monom in self), default=-oo)
 
-    def degree_list(self):
-        """
-        A tuple containing leading degrees in all variables.
-
-        Note that the degree of 0 is negative infinity (the Diofant object -oo)
-
-        """
-        return tuple(self.degree(i) for i in range(self.ring.ngens))
-
     def tail_degree(self, x=0):
         """
         The tail degree in ``x`` or the main variable.

@@ -17,11 +17,11 @@ Compatibility breaks
 
 * Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
 * Drop support for ``from_list()`` initialization for multivariate polynomials, see :pull:`1035`.
-* Drop ``to_dense()``, ``tail_degrees()`` and ``almosteq`` methods and ``is_monic``, ``is_primitive`` attributes of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035` and :pull:`1036`.
-* Drop ``is_monic``, ``is_primitive``, ``zero``, ``one`` and ``unit`` attributes of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036` and :pull:`1039`.
+* Drop ``to_dense()``, ``tail_degrees()``, ``almosteq()`` and ``degree_list()`` methods and ``is_monic``, ``is_primitive`` attributes of :class:`~diofant.polys.rings.PolyElement`, see :pull:`1035`, :pull:`1036` and :pull:`1051`.
+* Drop ``is_monic``, ``is_primitive``, ``zero``, ``one`` and ``unit`` attributes and ``degree_list()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036`, :pull:`1039` and :pull:`1051`.
 * Drop ``sring()`` and ``poly_from_expr()`` functions, see :pull:`1037`.
 * Functions and classes of the :mod:`~diofant.polys.polytools` module do not support anymore iterables as polynomial generator, see :pull:`1039`.
-* Drop unused function ``dispersion()``, see :pull:`1051`.
+* Drop unused functions ``dispersion()`` and ``degree_list()``, see :pull:`1051`.
 
 Minor changes
 =============

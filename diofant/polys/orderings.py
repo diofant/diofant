@@ -232,7 +232,8 @@ def monomial_key(order=None, gens=None):
     if hasattr(order, '__call__'):
         if gens is not None:
             def _order(expr):
-                return order(expr.as_poly(*gens).degree_list())
+                poly = expr.as_poly(*gens)
+                return order([poly.degree(x) for x in gens])
             return _order
         return order
     else:
