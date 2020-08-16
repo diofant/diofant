@@ -5,6 +5,7 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using Diofant with NumPy
 
+import distutils
 import sys
 
 import mpmath
@@ -208,18 +209,18 @@ def test_sympyissue_3728():
 
 
 @conserve_mpmath_dps
-@pytest.mark.skipif(sys.version_info >= (3, 8), reason='Broken on 3.8')
 def test_lambdify():
     mpmath.mp.dps = 16
     sin02 = mpmath.mpf('0.198669330795061215459412627')
     f = lambdify(x, sin(x), 'numpy')
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
-    try:
-        f(x)  # if this succeeds, it can't be a numpy function
-        assert False
-    except AttributeError:
-        pass
+    if distutils.version.LooseVersion(numpy.__version__) >= distutils.version.LooseVersion('1.17'):
+        with pytest.raises(TypeError):
+            f(x)
+    else:
+        with pytest.raises(AttributeError):
+            f(x)
 
 
 def test_lambdify_numpy_matrix():
