@@ -34,7 +34,7 @@ jobs:
         flake8 --ignore= --statistics --exit-zero
         pylint diofant
     - name: Run type checks with mypy
-      run: mypy --follow-imports skip diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
+      run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
     - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
