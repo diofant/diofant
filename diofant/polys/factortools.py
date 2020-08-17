@@ -156,7 +156,7 @@ class _Factor:
 
         a = f.max_norm()
         b = abs(f.LC)
-        n = sum(f.degree_list())
+        n = sum(f.degree(x) for x in self.gens)
 
         return domain.sqrt(domain(n + 1))*2**n*a*b
 
@@ -1075,7 +1075,7 @@ class _Factor:
             s = S[0].eval(x=n - i, a=a)
             S.insert(0, s.trunc_ground(p))
 
-        d = max(f.degree_list()[1:])
+        d = max(f.degree(x) for x in self.gens[1:])
 
         for j, s, a in zip(range(2, n + 2), S, A):
             G, w = list(H), j - 1

@@ -1,4 +1,3 @@
-from ..core import oo
 from . import Poly
 
 
@@ -24,12 +23,8 @@ def dispersionset(p, q=None, *gens, **args):
     >>> gp = fp.shift(-3)
     >>> sorted(dispersionset(fp, gp))
     [2, 3, 4]
-    >>> dispersion(fp, gp)
-    4
     >>> sorted(dispersionset(gp, fp))
     []
-    >>> dispersion(gp, fp)
-    -oo
 
     Computing the dispersion also works over field extensions:
 
@@ -46,11 +41,6 @@ def dispersionset(p, q=None, *gens, **args):
     >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
     >>> sorted(dispersionset(fp))
     [0, 1]
-
-    See Also
-    ========
-
-    dispersion
 
     References
     ==========
@@ -112,34 +102,3 @@ def dispersionset(p, q=None, *gens, **args):
             J.add(alpha)
 
     return J
-
-
-def dispersion(p, q=None, *gens, **args):
-    r"""Compute the *dispersion* of polynomials.
-
-    For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
-    and `\deg g > 0` the dispersion `\operatorname{dis}(f, g)` is defined as:
-
-    .. math::
-        \operatorname{dis}(f, g)
-        & := \max\{ J(f,g) \cup \{0\} \} \\
-        &  = \max\{ \{a \in \mathbb{N} | \gcd(f(x), g(x+a)) \neq 1\} \cup \{0\} \}
-
-    and for a single polynomial `\operatorname{dis}(f) := \operatorname{dis}(f, f)`.
-    Note that we make the definition `\max\{\} := -\infty`.
-
-    See Also
-    ========
-
-    dispersionset
-
-    References
-    ==========
-
-    * :cite:`Man1994disp`
-    * :cite:`Koepf98`
-    * :cite:`Abramov71rat`
-    * :cite:`Man1993indefsum`
-
-    """
-    return max(dispersionset(p, q, *gens, **args), default=-oo)

@@ -32,7 +32,7 @@ from .rings import PolyElement
 
 
 __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'prem',
+           'degree', 'LC', 'LM', 'LT', 'prem',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
@@ -1023,19 +1023,6 @@ class Poly(Expr):
 
         return self.rep.degree(j)
 
-    def degree_list(self):
-        """
-        Returns a list of degrees of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + y*x + 1).degree_list()
-        (2, 1)
-
-        """
-        return self.rep.degree_list()
-
     def total_degree(self):
         """
         Returns the total degree of ``self``.
@@ -1573,39 +1560,11 @@ class Poly(Expr):
         See Also
         ========
 
-        dispersion
         diofant.polys.dispersion.dispersionset
 
         """
         from .dispersion import dispersionset
         return dispersionset(self, other)
-
-    def dispersion(self, other=None):
-        r"""Compute the *dispersion* of polynomials.
-
-        Examples
-        ========
-
-        >>> Poly((x - 3)*(x + 3)).dispersion()
-        6
-
-        See Also
-        ========
-
-        dispersionset
-        diofant.polys.dispersion.dispersion
-
-        References
-        ==========
-
-        * :cite:`Man1994disp`
-        * :cite:`Koepf98`
-        * :cite:`Abramov71rat`
-        * :cite:`Man1993indefsum`
-
-        """
-        from .dispersion import dispersion
-        return dispersion(self, other)
 
     def cofactors(self, other):
         """
@@ -2639,29 +2598,6 @@ def degree(f, *gens, **args):
         raise ComputationFailed('degree', 1, exc)
 
     return sympify(F.degree(opt.gen))
-
-
-def degree_list(f, *gens, **args):
-    """
-    Return a list of degrees of ``f`` in all variables.
-
-    Examples
-    ========
-
-    >>> degree_list(x**2 + y*x + 1)
-    (2, 1)
-
-    """
-    allowed_flags(args, ['polys'])
-
-    try:
-        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('degree_list', 1, exc)
-
-    degrees = F.degree_list()
-
-    return tuple(map(Integer, degrees))
 
 
 def LC(f, *gens, **args):
