@@ -1733,14 +1733,88 @@ def test_discriminant():
 
 
 def test_dispersion():
-    # We test only the API here. For more mathematical
-    # tests see the dedicated test file.
-    fp = poly((x + 1)*(x + 2), x)
-    assert sorted(fp.dispersionset()) == [0, 1]
+    pytest.raises(ValueError, lambda: poly(x*y).dispersionset(poly(x)))
+    pytest.raises(ValueError, lambda: poly(x).dispersionset(poly(y)))
 
-    fp = poly(x**4 - 3*x**2 + 1, x)
+    fp = poly(0, x)
+
+    assert fp.dispersionset() == {0}
+
+    fp = poly(2, x)
+
+    assert fp.dispersionset() == {0}
+
+    fp = poly(x + 1)
+
+    assert fp.dispersionset() == {0}
+
+    fp = poly((x + 1)*(x + 2))
+
+    assert fp.dispersionset() == {0, 1}
+
+    fp = poly(x**4 - 3*x**2 + 1)
     gp = fp.shift(-3)
-    assert sorted(fp.dispersionset(gp)) == [2, 3, 4]
+
+    assert fp.dispersionset(gp) == {2, 3, 4}
+    assert gp.dispersionset(fp) == set()
+
+    fp = poly(x*(x + 3))
+
+    assert fp.dispersionset() == {0, 3}
+
+    fp = poly((x - 3)*(x + 3))
+
+    assert fp.dispersionset() == {0, 6}
+
+    fp = poly(x**2 + 2*x - 1)
+    gp = poly(x**2 + 2*x + 3)
+
+    assert fp.dispersionset(gp) == set()
+
+    fp = poly(x*(3*x**2 + a)*(x - 2536)*(x**3 + a), x)
+    gp = fp.as_expr().subs({x: x - 345}).as_poly(x)
+
+    assert fp.dispersionset(gp) == {345, 2881}
+    assert gp.dispersionset(fp) == {2191}
+
+    fp = poly((x - 2)**2*(x - 3)**3*(x - 5)**3)
+    gp = (fp + 4)**2
+
+    assert fp.dispersionset() == {0, 1, 2, 3}
+    assert fp.dispersionset(gp) == {1, 2}
+
+    fp = poly(x*(x + 2)*(x - 1))
+
+    assert fp.dispersionset() == {0, 1, 2, 3}
+
+    fp = poly(x**2 + sqrt(5)*x - 1, x)
+    gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
+
+    assert fp.dispersionset(gp) == {2}
+    assert gp.dispersionset(fp) == {1, 4}
+
+    # There are some difficulties if we compute over Z[a]
+    # and alpha happenes to lie in Z[a] instead of simply Z.
+    # Hence we can not decide if alpha is indeed integral
+    # in general.
+
+    fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+
+    assert fp.dispersionset() == {0, 1}
+
+    # For any specific value of a, the dispersion is 3*a
+    # but the algorithm can not find this in general.
+    # This is the point where the resultant based Ansatz
+    # is superior to the current one.
+    fp = poly(a**2*x**3 + (a**3 + a**2 + a + 1)*x, x)
+    gp = fp.as_expr().subs({x: x - 3*a}).as_poly(x)
+
+    assert fp.dispersionset(gp) == set()
+
+    fpa = fp.as_expr().subs({a: 2}).as_poly(x)
+    gpa = gp.as_expr().subs({a: 2}).as_poly(x)
+
+    assert fpa.dispersionset(gpa) == {6}
 
 
 def test_gcd_list():
