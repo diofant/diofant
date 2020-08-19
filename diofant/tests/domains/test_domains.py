@@ -449,6 +449,14 @@ def test_Domain__contains__():
 
     assert (Rational(3, 2)*x/(y + 1) - z in QQ.inject(x, y, z)) is False
 
+    R = QQ.inject(x)
+
+    assert R(1) in ZZ
+
+    F = R.field
+
+    assert F(1) in ZZ
+
 
 def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
