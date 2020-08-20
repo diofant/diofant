@@ -257,6 +257,9 @@ def test_bessel_eval():
         assert f(1 + I, 0) == zoo
         assert f(I, 0) == nan
 
+    for x in (oo, -oo, I*oo, -I*oo):
+        assert besselk(m, x) == 0
+
     for f in [besselj, bessely]:
         assert f(m, +oo) == 0
         assert f(m, -oo) == 0

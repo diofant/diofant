@@ -414,7 +414,7 @@ class besselk(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if im(z) in (oo, -oo):
+        if z in (oo, -oo, I*oo, -I*oo):
             return Integer(0)
 
         if nu.is_integer:
