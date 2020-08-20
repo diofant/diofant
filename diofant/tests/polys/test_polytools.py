@@ -1733,7 +1733,7 @@ def test_discriminant():
 
 
 def test_dispersion():
-    pytest.raises(ValueError, lambda: poly(x*y).dispersionset(poly(x)))
+    pytest.raises(AttributeError, lambda: poly(x*y).dispersionset(poly(x)))
     pytest.raises(ValueError, lambda: poly(x).dispersionset(poly(y)))
 
     fp = poly(0, x)
