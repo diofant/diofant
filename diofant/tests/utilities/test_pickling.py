@@ -134,6 +134,12 @@ def test_core_numbers():
         check(c)
 
 
+def test_sympyissue_19988():
+    c = pi.evalf(100)
+
+    check(c)
+
+
 def test_core_relational():
     for c in (Equality, Equality(x, y), GreaterThan, GreaterThan(x, y),
               LessThan, LessThan(x, y), Relational, Relational(x, y),

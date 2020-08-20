@@ -1554,17 +1554,14 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> sorted(Poly((x - 3)*(x + 3)).dispersionset())
-        [0, 6]
-
-        See Also
-        ========
-
-        diofant.polys.dispersion.dispersionset
+        >>> poly((x - 3)*(x + 3)).dispersionset()
+        {0, 6}
 
         """
-        from .dispersion import dispersionset
-        return dispersionset(self, other)
+        f = self.rep
+        ring = f.ring
+        g = other.rep if other is not None else other
+        return {ZZ.to_expr(i) for i in ring.dispersionset(f, g)}
 
     def cofactors(self, other):
         """

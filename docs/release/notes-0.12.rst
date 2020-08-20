@@ -21,7 +21,7 @@ Compatibility breaks
 * Drop ``is_monic``, ``is_primitive``, ``zero``, ``one`` and ``unit`` attributes and ``degree_list()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`1036`, :pull:`1039` and :pull:`1051`.
 * Drop ``sring()`` and ``poly_from_expr()`` functions, see :pull:`1037`.
 * Functions and classes of the :mod:`~diofant.polys.polytools` module do not support anymore iterables as polynomial generator, see :pull:`1039`.
-* Drop unused functions ``dispersion()`` and ``degree_list()``, see :pull:`1051`.
+* Drop unused functions ``dispersion()``, ``dispersionset()`` and ``degree_list()``, see :pull:`1051` and :pull:`1053`.
 
 Minor changes
 =============
@@ -54,3 +54,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19770` Limit involving cosine
 * :sympyissue:`19766` Incorrect limit
 * :sympyissue:`19774` evalf() doesn't evaluate terms in an exponential
+* :sympyissue:`19988` Float loses precision after being pickled

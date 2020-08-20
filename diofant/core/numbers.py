@@ -612,10 +612,7 @@ class Float(Number):
         return obj
 
     def __getnewargs__(self):
-        return self._mpf_,
-
-    def __getstate__(self):
-        return {'_prec': self._prec}
+        return self._mpf_, mlib.libmpf.prec_to_dps(self._prec)
 
     def _hashable_content(self):
         return self._mpf_, self._prec

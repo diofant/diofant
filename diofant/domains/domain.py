@@ -136,6 +136,10 @@ class Domain(DefaultPrinting, abc.ABC):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 
+    def _from_FractionField(self, a, K0):
+        if a.numerator.is_ground and a.denominator.is_one:
+            return self.convert(a.numerator.LC, K0.domain.ring)
+
     def unify(self, K1, symbols=()):
         """
         Construct a minimal domain that contains elements of ``self`` and ``K1``.
