@@ -128,8 +128,8 @@ def deltaintegrate(f, x):
     if not f.has(DiracDelta):
         return
 
-    from .integrals import Integral, integrate
     from ..solvers import solve
+    from .integrals import Integral, integrate
 
     # g(x) = DiracDelta(h(x))
     if f.func == DiracDelta:

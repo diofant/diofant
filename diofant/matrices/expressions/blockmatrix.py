@@ -97,6 +97,7 @@ class BlockMatrix(MatrixExpr):
 
     def _eval_transpose(self):
         from .. import Matrix
+
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy

@@ -443,8 +443,8 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     ([(x0, x + 1)], [x0*y**2, 3*x0*y**2])
 
     """
-    from ..matrices import (MatrixBase, Matrix, ImmutableMatrix,
-                            SparseMatrix, ImmutableSparseMatrix)
+    from ..matrices import (ImmutableMatrix, ImmutableSparseMatrix, Matrix,
+                            MatrixBase, SparseMatrix)
 
     # Handle the case if just one expression was passed.
     if isinstance(exprs, (Basic, MatrixBase)):

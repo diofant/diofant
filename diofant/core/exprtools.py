@@ -1050,8 +1050,8 @@ def factor_nc(expr):
     (x + A)*(x + B)
 
     """
+    from ..polys import factor, gcd
     from ..simplify.simplify import powsimp
-    from ..polys import gcd, factor
 
     def _pemexpand(expr):
         """Expand with the minimal set of hints necessary to check the result."""

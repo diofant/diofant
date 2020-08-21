@@ -273,8 +273,8 @@ def deltasummation(f, limit, no_piecewise=False):
     diofant.concrete.sums.summation
 
     """
-    from .summations import summation
     from ..solvers import solve
+    from .summations import summation
 
     if (limit[2] - limit[1] < 0) == true:
         return Integer(0)

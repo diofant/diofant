@@ -500,8 +500,8 @@ class MatrixBase(DefaultPrinting):
         return self._new(self.rows, self.cols, [a*i for i in self._mat])
 
     def __pow__(self, num):
-        from . import eye, diag, MutableMatrix
         from ..functions import binomial
+        from . import MutableMatrix, diag, eye
 
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -1894,6 +1894,7 @@ class MatrixBase(DefaultPrinting):
                 res = exp(l)
             else:
                 from . import eye
+
                 # extract the diagonal part
                 d = b[0, 0]*eye(nr)
                 # and the nilpotent part

@@ -1068,8 +1068,8 @@ class _airyais(Function):
         return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:
@@ -1097,8 +1097,8 @@ class _airybis(Function):
         return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:

@@ -67,8 +67,8 @@ class Boolean(Expr):
         False
 
         """
-        from .inference import satisfiable
         from ..core.relational import Relational
+        from .inference import satisfiable
 
         other = sympify(other)
 
@@ -470,8 +470,8 @@ class Not(BooleanFunction):
 
     @classmethod
     def eval(cls, arg):
-        from ..core import (Equality, GreaterThan, LessThan,
-                            StrictGreaterThan, StrictLessThan, Unequality)
+        from ..core import (Equality, GreaterThan, LessThan, StrictGreaterThan,
+                            StrictLessThan, Unequality)
         if isinstance(arg, Number) or arg in (True, False):
             return false if arg else true
         if arg.is_Not:

@@ -118,8 +118,8 @@ def mr(n, bases):
     True
 
     """
-    from .factor_ import trailing
     from ..domains import ZZ
+    from .factor_ import trailing
 
     n = int(n)
     if n < 2:

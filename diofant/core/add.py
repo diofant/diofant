@@ -32,8 +32,8 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
-        from .mul import Mul
         from ..series.order import Order
+        from .mul import Mul
 
         rv = None
         if len(seq) == 2:
@@ -324,8 +324,8 @@ class Add(AssocOp):
         oo - oo return 0, instead of a nan.
 
         """
-        from . import oo, I
         from ..simplify import signsimp
+        from . import I, oo
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
             return Integer(0)
         return signsimp(lhs - rhs)
@@ -633,8 +633,8 @@ class Add(AssocOp):
         return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
-        from . import factor_terms
         from ..series import Order
+        from . import factor_terms
 
         by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)
         expr = Integer(0)
@@ -773,8 +773,8 @@ class Add(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-        from .mul import Mul, _keep_coeff, prod
         from ..functions import root
+        from .mul import Mul, _keep_coeff, prod
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()

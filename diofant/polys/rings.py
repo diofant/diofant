@@ -79,7 +79,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
     has_assoc_Ring = True
 
     def __new__(cls, domain, symbols, order=lex):
-        from .univar import UnivarPolynomialRing, UnivarPolyElement
+        from .univar import UnivarPolyElement, UnivarPolynomialRing
 
         symbols = tuple(_parse_symbols(symbols))
         ngens = len(symbols)

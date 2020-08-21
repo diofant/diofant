@@ -174,12 +174,12 @@ def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
     terms = kwargs.get('n')
 
     if type == 'ode':
-        from .ode import classify_ode, allhints
+        from .ode import allhints, classify_ode
         classifier = classify_ode
         string = 'ODE '
 
     elif type == 'pde':
-        from .pde import classify_pde, allhints
+        from .pde import allhints, classify_pde
         classifier = classify_pde
         string = 'PDE '
 

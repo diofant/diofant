@@ -82,10 +82,10 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, self.dtype):
             return element
 
-        from .integerring import PythonIntegerRing, GMPYIntegerRing
-        from .rationalfield import PythonRationalField, GMPYRationalField
-        from . import RealField, ComplexField, PythonRational
+        from . import ComplexField, PythonRational, RealField
         from .expressiondomain import ExpressionDomain
+        from .integerring import GMPYIntegerRing, PythonIntegerRing
+        from .rationalfield import GMPYRationalField, PythonRationalField
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())

@@ -1321,7 +1321,7 @@ class LatexPrinter(Printer):
 
     def _print_MatMul(self, expr):
         from ..core import Add
-        from ..matrices import MatAdd, HadamardProduct
+        from ..matrices import HadamardProduct, MatAdd
 
         def parens(x):
             if isinstance(x, (Add, MatAdd, HadamardProduct)):

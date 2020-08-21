@@ -315,7 +315,7 @@ class StrPrinter(Printer):
         return expr.__repr__()
 
     def _print_Permutation(self, expr):
-        from ..combinatorics import Permutation, Cycle
+        from ..combinatorics import Cycle, Permutation
         if Permutation.print_cyclic:
             if not expr.size:
                 return 'Permutation()'

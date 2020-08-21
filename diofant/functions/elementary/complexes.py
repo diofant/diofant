@@ -717,8 +717,8 @@ class polar_lift(Function):
 
     @classmethod
     def eval(cls, arg):
-        from .exponential import exp_polar
         from .complexes import arg as argument
+        from .exponential import exp_polar
         if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
@@ -813,7 +813,7 @@ class periodic_argument(Function):
         # NOTE evidently this means it is a rather bad idea to use this with
         # period != 2*pi and non-polar numbers.
         from .integers import ceiling
-        from .trigonometric import atan2, atan
+        from .trigonometric import atan, atan2
         if not period.is_positive:
             return
         if period == oo and isinstance(ar, principal_branch):

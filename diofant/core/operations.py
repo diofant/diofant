@@ -291,9 +291,9 @@ class AssocOp(Expr):
 
         """
         from .add import Add
+        from .function import AppliedUndef
         from .mul import Mul
         from .symbol import Symbol
-        from .function import AppliedUndef
 
         if isinstance(self, (Mul, Add)):
             x, tail = self.as_independent(Symbol, AppliedUndef)

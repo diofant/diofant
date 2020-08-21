@@ -992,6 +992,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We speed up slightly by starting at one less than the number of
         # variables the quick method manages.
         from itertools import combinations
+
         from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
@@ -1051,7 +1052,7 @@ def _tsolve(eq, sym, **flags):
     [LambertW(2)/2]
 
     """
-    from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
+    from .bivariate import _filtered_gens, _solve_lambert, bivariate_type
 
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []

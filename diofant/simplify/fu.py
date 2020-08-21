@@ -2091,8 +2091,8 @@ def hyper_as_trig(rv):
     https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
-    from .simplify import signsimp
     from .radsimp import collect
+    from .simplify import signsimp
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)

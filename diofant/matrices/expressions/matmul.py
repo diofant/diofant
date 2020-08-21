@@ -56,8 +56,8 @@ class MatMul(MatrixExpr):
         X = head
         Y = MatMul(*tail)
 
-        from ...core import Dummy
         from ...concrete import Sum
+        from ...core import Dummy
         from .. import ImmutableMatrix
         k = Dummy('k', integer=True)
         if X.has(ImmutableMatrix) or Y.has(ImmutableMatrix):

@@ -649,7 +649,7 @@ class PrettyPrinter(Printer):
 
     def _print_MatMul(self, expr):
         args = list(expr.args)
-        from ...matrices import MatAdd, HadamardProduct
+        from ...matrices import HadamardProduct, MatAdd
         for i, a in enumerate(args):
             if (isinstance(a, (Add, MatAdd, HadamardProduct))
                     and len(expr.args) > 1):
@@ -1254,8 +1254,8 @@ class PrettyPrinter(Printer):
             else:
                 a.append(item)
 
-        from ...functions import Piecewise
         from ...concrete import Product, Sum
+        from ...functions import Piecewise
         from ...integrals import Integral
 
         # Convert to pretty forms. Add parens to Add instances if there
@@ -1324,8 +1324,8 @@ class PrettyPrinter(Printer):
         return s
 
     def _print_Pow(self, power):
-        from ...simplify import fraction
         from ...series import Limit
+        from ...simplify import fraction
         b, e = power.as_base_exp()
         if power.is_commutative and not e.is_Float:
             if e == -1:

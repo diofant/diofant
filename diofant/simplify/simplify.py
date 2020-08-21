@@ -587,9 +587,9 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     original_expr = expr = signsimp(expr)
 
-    from .hyperexpand import hyperexpand
+    from ..concrete import Product, Sum
     from ..functions.special.bessel import BesselBase
-    from ..concrete import Sum, Product
+    from .hyperexpand import hyperexpand
 
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
         return expr

@@ -1048,6 +1048,7 @@ class Ei(Function):
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
+
         # XXX this does not currently work usefully because uppergamma
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
@@ -1179,7 +1180,7 @@ class expint(Function):
 
     @classmethod
     def eval(cls, nu, z):
-        from .. import unpolarify, uppergamma, exp, gamma, factorial
+        from .. import exp, factorial, gamma, unpolarify, uppergamma
         nu2 = unpolarify(nu)
         if nu != nu2:
             return expint(nu2, z)
@@ -1213,7 +1214,7 @@ class expint(Function):
         return z**(nu - 1)*uppergamma(1 - nu, z)
 
     def _eval_rewrite_as_Ei(self, nu, z):
-        from .. import exp_polar, unpolarify, exp, factorial
+        from .. import exp, exp_polar, factorial, unpolarify
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
         elif nu.is_Integer and nu > 1:
@@ -1795,6 +1796,7 @@ class Shi(TrigonometricIntegral):
 
     def _eval_rewrite_as_expint(self, z):
         from .. import exp_polar
+
         # XXX should we polarify z?
         return (E1(z) - E1(exp_polar(I*pi)*z))/2 - I*pi/2
 
