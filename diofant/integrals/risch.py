@@ -1126,7 +1126,7 @@ def recognize_log_derivative(a, d, DE, z=None):
     pz = Poly(z, DE.t)
     Dd = derivation(d, DE)
     q = a - pz*Dd
-    r, R = d.resultant(q, includePRS=True)
+    r = d.resultant(q)
     r = Poly(r, z)
     Np, Sp = splitfactor_sqf(r, DE, coefficientD=True, z=z)
 
