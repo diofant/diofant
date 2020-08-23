@@ -199,6 +199,12 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == -1
 
+            # issue sympy/sympy#10666
+            f = x**3 - 7*x + 7
+            g = x
+
+            assert f.resultant(g) == -g.resultant(f) == -7
+
     Rt, t = ring('t', ZZ)
     Rx, x = ring('x', Rt)
 

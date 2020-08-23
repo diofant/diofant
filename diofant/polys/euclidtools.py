@@ -311,8 +311,10 @@ class _GCD:
         m = g.degree()
 
         if n < m:
-            f, g = g, f
-            n, m = m, n
+            res, sub = ring._primitive_prs(g, f)
+            if res:
+                res *= (-domain.one)**(n*m)
+            return res, sub
 
         c, r = domain.zero, []
 
