@@ -1859,7 +1859,7 @@ def build_hypergeometric_formula(func):
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.
     # I'm not aware of a basis that works in all cases.
-    from ..matrices import zeros, Matrix, eye
+    from ..matrices import Matrix, eye, zeros
     z = Dummy('z')
     if func.ap:
         afactors = [_x + a for a in func.ap]

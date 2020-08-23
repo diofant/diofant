@@ -929,7 +929,7 @@ class Ellipse(GeometrySet):
         times) until a valid point is obtained.
 
         """
-        from ..functions import sin, cos
+        from ..functions import cos, sin
         t = _symbol('t')
         x, y = self.arbitrary_point(t).args
         # get a random value in [-1, 1) corresponding to cos(t)

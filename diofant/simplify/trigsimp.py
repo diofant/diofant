@@ -463,8 +463,8 @@ def trigsimp(expr, **opts):
     diofant.simplify.fu.fu
 
     """
-    from .fu import fu
     from ..matrices import MatrixExpr
+    from .fu import fu
 
     expr = sympify(expr)
 
@@ -520,7 +520,7 @@ def exptrigsimp(expr, simplify=True):
     E**(-z)
 
     """
-    from .fu import hyper_as_trig, TR2i
+    from .fu import TR2i, hyper_as_trig
     from .simplify import bottom_up
 
     def exp_trig(e):
@@ -1108,9 +1108,9 @@ def futrig(e, **kwargs):
 
 def _futrig(e, **kwargs):
     """Helper for futrig."""
-    from .fu import (TR1, TR2, TR3, TR2i, TR10, L, TR10i, TR8, TR6, TR15,
-                     TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22, TR12)
     from ..utilities.iterables import _nodes
+    from .fu import (TR1, TR2, TR3, TR5, TR6, TR8, TR10, TR11, TR12, TR14,
+                     TR15, TR16, TR22, TR111, L, TR2i, TR10i, TRmorrie)
 
     if not e.has(TrigonometricFunction):
         return e

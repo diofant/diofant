@@ -213,8 +213,8 @@ def canonicalize_naive(g, dummies, sym, *v):
 
     """
     from .perm_groups import PermutationGroup
-    from .tensor_can import gens_products, dummy_sgs
     from .permutations import Permutation, _af_rmul
+    from .tensor_can import dummy_sgs, gens_products
     v1 = []
     for i in range(len(v)):
         base_i, gens_i, n_i, sym_i = v[i]
@@ -281,7 +281,7 @@ def graph_certificate(gr):
 
     """
     from .permutations import _af_invert
-    from .tensor_can import get_symmetric_group_sgs, canonicalize
+    from .tensor_can import canonicalize, get_symmetric_group_sgs
     items = list(gr.items())
     items.sort(key=lambda x: len(x[1]), reverse=True)
     pvert = [x[0] for x in items]

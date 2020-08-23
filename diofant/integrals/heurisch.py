@@ -98,7 +98,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     diofant.integrals.heurisch.heurisch
 
     """
-    from ..solvers.solvers import solve, denoms
+    from ..solvers.solvers import denoms, solve
     f = sympify(f)
     if x not in f.free_symbols:
         return f*x

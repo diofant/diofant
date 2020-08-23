@@ -232,8 +232,8 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
 
         """
-        from ..solvers import solve
         from ..simplify import posify
+        from ..solvers import solve
         d = Dummy('d')
 
         xfree = x.free_symbols.intersection(self.variables)

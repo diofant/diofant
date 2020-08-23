@@ -5,11 +5,11 @@ import itertools
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, binomial,
-                     cbrt, ceiling, cos, cot, diff, digamma, erf, erfi, exp,
-                     factorial, floor, gamma, integrate, limit, log, nan, oo,
-                     pi, polygamma, root, sign, simplify, sin, sinh, sqrt,
-                     subfactorial, symbols, tan)
+                     PoleError, Rational, Sum, Symbol, acos, atan, besselk,
+                     binomial, cbrt, ceiling, cos, cot, diff, digamma, erf,
+                     erfi, exp, factorial, floor, gamma, integrate, limit, log,
+                     nan, oo, pi, polygamma, root, sign, simplify, sin, sinh,
+                     sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -792,3 +792,7 @@ def test_sympyissue_19770():
 
 def test_sympyissue_19766():
     assert limit(2**(-x)*sqrt(4**(x + 1) + 1), x, oo) == 2
+
+
+def test_sympyissue_14874():
+    assert limit(besselk(0, x), x, oo) == 0

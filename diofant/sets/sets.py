@@ -928,7 +928,8 @@ class Interval(Set, EvalfMixin):
         if other.is_UniversalSet:
             return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
-            from ..functions import Min, Max
+            from ..functions import Max, Min
+
             # Non-overlapping intervals
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
@@ -979,11 +980,12 @@ class Interval(Set, EvalfMixin):
         return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
-        from ..functions import Min, Max
-        from ..solvers import solve
-        from ..core import diff, Lambda
-        from ..series import limit
         from ..calculus.singularities import singularities
+        from ..core import Lambda, diff
+        from ..functions import Max, Min
+        from ..series import limit
+        from ..solvers import solve
+
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)
         # TODO: handle multivariate functions
 

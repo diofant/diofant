@@ -378,8 +378,8 @@ def capture(func):
     '2\n-\nx\n'
 
     """
-    from io import StringIO
     import sys
+    from io import StringIO
 
     stdout = sys.stdout
     sys.stdout = file = StringIO()

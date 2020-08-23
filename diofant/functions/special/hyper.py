@@ -198,8 +198,8 @@ class hyper(TupleParametersBase):
         return fac*hyper(nap, nbq, self.argument)
 
     def _eval_expand_func(self, **hints):
-        from .gamma_functions import gamma
         from ...simplify import hyperexpand
+        from .gamma_functions import gamma
         if len(self.ap) == 2 and len(self.bq) == 1 and self.argument == 1:
             a, b = self.ap
             c = self.bq[0]
@@ -207,8 +207,8 @@ class hyper(TupleParametersBase):
         return hyperexpand(self)
 
     def _eval_rewrite_as_Sum(self, ap, bq, z):
-        from .. import factorial, RisingFactorial, Piecewise
         from ...concrete import Sum
+        from .. import Piecewise, RisingFactorial, factorial
         n = Dummy('n', integer=True)
         rfap = Tuple(*[RisingFactorial(a, n) for a in ap])
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
@@ -610,7 +610,7 @@ class meijerg(TupleParametersBase):
         # less than (say) n*pi, we put r=1/n, compute z' = root(z, n)
         # (carefully so as not to loose the branch information), and evaluate
         # G(z'**(1/r)) = G(z'**n) = G(z).
-        from .. import exp_polar, ceiling
+        from .. import ceiling, exp_polar
         z = self.argument
         znum = self.argument.evalf(prec, strict=False)
         if znum.has(exp_polar):

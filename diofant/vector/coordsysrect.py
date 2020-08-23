@@ -40,9 +40,9 @@ class CoordSysCartesian(Basic):
             Used for simple str printing.
 
         """
-        from .vector import Vector, BaseVector
-        from .point import Point
         from .deloperator import Del
+        from .point import Point
+        from .vector import BaseVector, Vector
 
         name = str(name)
 

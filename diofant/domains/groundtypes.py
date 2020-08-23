@@ -23,17 +23,16 @@ PythonRational = fractions.Fraction
 
 
 if HAS_GMPY:
-    from gmpy2 import (  # noqa: N812
-        mpz as GMPYInteger,
-        mpq as GMPYRational,
-        fac as gmpy_factorial,
-        numer as gmpy_numer,
-        denom as gmpy_denom,
-        gcdext as gmpy_gcdex,
-        gcd as gmpy_gcd,
-        lcm as gmpy_lcm,
-        isqrt as gmpy_sqrt,
-        qdiv as gmpy_qdiv)
+    from gmpy2 import denom as gmpy_denom
+    from gmpy2 import fac as gmpy_factorial
+    from gmpy2 import gcd as gmpy_gcd
+    from gmpy2 import gcdext as gmpy_gcdex
+    from gmpy2 import isqrt as gmpy_sqrt
+    from gmpy2 import lcm as gmpy_lcm
+    from gmpy2 import mpq as GMPYRational  # noqa: N812
+    from gmpy2 import mpz as GMPYInteger  # noqa: N812
+    from gmpy2 import numer as gmpy_numer
+    from gmpy2 import qdiv as gmpy_qdiv
 else:
     class _GMPYInteger:
         def __init__(self, obj):

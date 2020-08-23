@@ -252,7 +252,7 @@ def _sqrtdenest_rec(expr):
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
 
     """
-    from .radsimp import radsimp, rad_rationalize, split_surds
+    from .radsimp import rad_rationalize, radsimp, split_surds
     if not expr.is_Pow:
         return sqrtdenest(expr)
     if expr.base < 0:
@@ -470,7 +470,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
 
     """
-    from .radsimp import radsimp, rad_rationalize
+    from .radsimp import rad_rationalize, radsimp
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
         return
     for x in (a, b, r):

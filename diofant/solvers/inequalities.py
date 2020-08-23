@@ -375,7 +375,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     """
     from ..simplify import simplify
-    from .solvers import solve, denoms
+    from .solvers import denoms, solve
 
     e = expr.lhs - expr.rhs
     parts = n, d = e.as_numer_denom()

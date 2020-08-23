@@ -55,3 +55,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`19766` Incorrect limit
 * :sympyissue:`19774` evalf() doesn't evaluate terms in an exponential
 * :sympyissue:`19988` Float loses precision after being pickled
+* :sympyissue:`14874` Limit x --> oo for besselk
+* :sympyissue:`19991` Wrong result from floor().evalf()

@@ -804,7 +804,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                     keep = False
                 break
 
-            from .powsimp import powsimp, powdenest
+            from .powsimp import powdenest, powsimp
 
             num = powsimp(_num(rterms))
             n *= num

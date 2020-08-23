@@ -245,8 +245,8 @@ class log(Function):
         return self, Integer(1)
 
     def _eval_expand_log(self, deep=True, **hints):
+        from ...concrete import Product, Sum
         from .complexes import unpolarify
-        from ...concrete import Sum, Product
         force = hints.get('force', False)
         if (len(self.args) == 2):
             return expand_log(self.func(*self.args), deep=deep, force=force)
@@ -365,9 +365,9 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from .integers import floor
-        from .complexes import arg
         from ...series import Order
+        from .complexes import arg
+        from .integers import floor
         if not logx:
             logx = log(x)
         arg_series = self.args[0].nseries(x, n=n, logx=logx)
