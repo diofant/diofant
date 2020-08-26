@@ -319,7 +319,7 @@ def function_exponentiation(tokens, local_dict, global_dict):
                 continue
         result.append(tok)
     result.append(tokens[-1])
-    if exponent:  # pragma: no cover
+    if exponent:
         raise NotImplementedError
     return result
 

@@ -812,8 +812,7 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv or any(isinstance(s[x], RootOf)
-                                  for s in inv):  # pragma: no cover
+                if not inv or any(isinstance(s[x], RootOf) for s in inv):
                     raise NotImplementedError
                 eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
@@ -844,7 +843,7 @@ def unrad(eq, *syms, **flags):
                         try:
                             sol = solve(c, x, **uflags)
                             if not sol or any(isinstance(s[x], RootOf)
-                                              for s in sol):  # pragma: no cover
+                                              for s in sol):
                                 raise NotImplementedError
                             neweq = r0.subs(sol[0]) + covsym*r1/_rads1 + others
                             tmp = unrad(neweq, covsym)

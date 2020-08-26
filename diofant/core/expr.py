@@ -2373,7 +2373,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
 
-        if not x.is_Symbol:  # pragma: no cover
+        if not x.is_Symbol:
             raise NotImplementedError('x is not a symbol')
 
         if not self.has(x):
@@ -2783,7 +2783,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError(f'as_leading_term({self}, {x})')  # pragma: no cover
+        raise NotImplementedError(f'as_leading_term({self}, {x})')
 
     def _eval_as_leading_term(self, x):
         return self

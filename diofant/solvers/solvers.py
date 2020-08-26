@@ -857,7 +857,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(rnew)
                     hit = True
                     got_s.add(s)
-                if not hit:  # pragma: no cover
+                if not hit:
                     raise NotImplementedError(f'could not solve {eq2}')
             else:
                 result = newresult
