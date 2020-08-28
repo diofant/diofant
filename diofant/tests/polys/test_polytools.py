@@ -1,5 +1,7 @@
 """Tests for user-friendly public interface to polynomial functions."""
 
+import functools
+
 import pytest
 
 from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
@@ -13,8 +15,8 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      UnificationFailed, cancel, cofactors, compose, content,
                      count_roots, decompose, degree, diff, discriminant, div,
                      exp, expand, exquo, factor, factor_list, false, gcd,
-                     gcd_list, gcdex, grevlex, grlex, groebner, half_gcdex, im,
-                     invert, lcm, lcm_list, lex, monic, nroots, oo,
+                     gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
+                     lcm, lcm_list, lex, monic, nroots, oo,
                      parallel_poly_from_expr, pi, poly, prem, primitive, quo,
                      re, real_roots, reduced, rem, resultant, sin, sqf,
                      sqf_list, sqf_norm, sqf_part, sqrt, subresultants,
@@ -1817,29 +1819,6 @@ def test_dispersion():
     assert fpa.dispersionset(gpa) == {6}
 
 
-def test_gcd_list():
-    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
-
-    assert gcd_list(F) == x - 1
-    assert gcd_list(F, polys=True) == Poly(x - 1)
-
-    assert gcd_list([]) == 0
-    assert gcd_list([1, 2]) == 1
-    assert gcd_list([4, 6, 8]) == 2
-
-    assert gcd_list([x*(y + 42) - x*y - x*42]) == 0
-
-    gcd = gcd_list([], x)
-    assert gcd.is_Number and gcd is Integer(0)
-
-    gcd = gcd_list([], x, polys=True)
-    assert gcd.is_Poly and gcd.is_zero
-
-    pytest.raises(ComputationFailed, lambda: gcd_list([], polys=True))
-
-    assert gcd_list([x**3 - 1, x**2 - 2, x**2 - 3*x + 2]) == 1
-
-
 def test_lcm_list():
     F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
 
@@ -1920,6 +1899,15 @@ def test_gcd():
 
     pytest.raises(TypeError, lambda: gcd(x))
     pytest.raises(TypeError, lambda: lcm(x))
+
+    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
+
+    assert functools.reduce(lambda x, y: gcd(x, y), F) == x - 1
+    assert functools.reduce(lambda x, y: gcd(x, y, polys=True), F) == Poly(x - 1)
+
+    F = [x**3 - 1, x**2 - 2, x**2 - 3*x + 2]
+
+    assert functools.reduce(lambda x, y: gcd(x, y), F) == 1
 
 
 def test_gcd_numbers_vs_polys():

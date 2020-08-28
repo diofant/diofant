@@ -35,7 +35,7 @@ __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
            'degree', 'LC', 'LM', 'LT', 'prem',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
-           'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
+           'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
@@ -3028,73 +3028,6 @@ def cofactors(f, g, *gens, **args):
         return h.as_expr(), cff.as_expr(), cfg.as_expr()
     else:
         return h, cff, cfg
-
-
-def gcd_list(seq, *gens, **args):
-    """
-    Compute GCD of a list of polynomials.
-
-    Examples
-    ========
-
-    >>> gcd_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
-    x - 1
-
-    """
-    seq = sympify(seq)
-
-    def try_non_polynomial_gcd(seq):
-        if not gens and not args:
-            domain, numbers = construct_domain(seq)
-
-            if not numbers:
-                return domain.zero
-            elif domain.is_Numerical:
-                result, numbers = numbers[0], numbers[1:]
-
-                for number in numbers:
-                    result = domain.gcd(result, number)
-
-                    if result == domain.one:
-                        break
-
-                return domain.to_expr(result)
-
-    result = try_non_polynomial_gcd(seq)
-
-    if result is not None:
-        return result
-
-    allowed_flags(args, ['polys'])
-
-    try:
-        polys, opt = parallel_poly_from_expr(seq, *gens, **args)
-    except PolificationFailed as exc:
-        result = try_non_polynomial_gcd(exc.exprs)
-
-        if result is not None:
-            return result
-        else:
-            raise ComputationFailed('gcd_list', len(seq), exc)
-
-    if not polys:
-        if not opt.polys:
-            return Integer(0)
-        else:
-            return Poly(0, opt=opt)
-
-    result, polys = polys[0], polys[1:]
-
-    for poly in polys:
-        result = result.gcd(poly)
-
-        if result.is_one:
-            break
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
 
 
 def gcd(f, g, *gens, **args):
