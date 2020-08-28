@@ -14,9 +14,6 @@ from .quotientring import QuotientRingElement
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
-
-
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields."""
 

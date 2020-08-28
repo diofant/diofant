@@ -6,9 +6,6 @@ from .field import Field
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'ExpressionDomain',
-
-
 class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     """A class for arbitrary expressions."""
 

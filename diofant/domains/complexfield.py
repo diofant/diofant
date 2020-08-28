@@ -12,9 +12,6 @@ from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'ComplexField',
-
-
 class ComplexField(CharacteristicZero, SimpleDomain, Field):
     """Complex numbers up to the given precision."""
 
