@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9-dev]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:
@@ -24,7 +24,13 @@ jobs:
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
-      run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+      run: |
+        if [ "${{ matrix.python-version }}" != "3.9-dev" ]
+        then
+          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        else
+          pip install -U .[interactive,develop,gmpy,exports,docs]
+        fi
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
