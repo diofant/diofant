@@ -506,6 +506,7 @@ def test_PolyElement_degree_list():
 def test_PolyEelemet_total_degree():
     R, x, y, z = ring('x y z', ZZ)
 
+    assert R(0).total_degree() == -oo
     assert (x**2*y + x**3*z**2 + 1).total_degree() == 5
     assert (x**2 + z**3).total_degree() == 3
     assert (x*y*z + z**4).total_degree() == 4
@@ -1787,6 +1788,10 @@ def test_PolyElement___pow__():
     f = x + 1
 
     assert f**11 == x**11 + 1
+
+    f = x**10 + 1
+
+    assert f**11 == x**110 + 1
 
     f = x**4 + x + 8
 
