@@ -4,7 +4,7 @@ import functools
 import math
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
-                    factor_terms, pi, symbols, sympify)
+                    factor_terms, igcd, pi, symbols, sympify)
 from ..core.mul import expand_2arg
 from ..domains.compositedomain import CompositeDomain
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
@@ -13,7 +13,7 @@ from ..simplify import powsimp, simplify
 from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
-from .polytools import Poly, cancel, discriminant, factor, gcd_list
+from .polytools import Poly, cancel, discriminant, factor
 from .rationaltools import together
 from .specialpolys import cyclotomic_poly
 
@@ -644,7 +644,7 @@ def _integer_basis(poly):
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
 
-    divs = reversed(divisors(gcd_list(coeffs))[1:])
+    divs = reversed(divisors(igcd(*coeffs))[1:])
 
     try:
         div = next(divs)

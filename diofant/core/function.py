@@ -527,7 +527,7 @@ class Function(Application, Expr):
             v = None
             for ai, zi, pi in zip(a0, z, p):
                 if zi.has(x):
-                    if v is not None:  # pragma: no cover
+                    if v is not None:
                         raise NotImplementedError
                     q.append(ai + pi)
                     v = pi
@@ -1190,7 +1190,7 @@ class Derivative(Expr):
         import mpmath
 
         from .expr import Expr
-        if len(self.free_symbols) != 1 or len(self.variables) != 1:  # pragma: no cover
+        if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
         z = list(self.free_symbols)[0]
 

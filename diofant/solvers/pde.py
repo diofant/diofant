@@ -255,7 +255,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     """
     prep = kwargs.pop('prep', True)
 
-    if func and len(func.args) != 2:  # pragma: no cover
+    if func and len(func.args) != 2:
         raise NotImplementedError('Right now only partial '
                                   'differential equations of two '
                                   'variables are supported')

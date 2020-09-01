@@ -1048,7 +1048,7 @@ def evalf_sum(expr, prec, options):
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
-    if len(limits) != 1 or len(limits[0]) != 3:  # pragma: no cover
+    if len(limits) != 1 or len(limits[0]) != 3:
         raise NotImplementedError
     if func is S.Zero:
         return mpf(0), None, None, None

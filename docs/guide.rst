@@ -32,6 +32,11 @@ When opening a new issue, please take the following steps:
 4. Include any relevant details of your local setup (i.e. Python
    version, installed libraries).
 
+.. note::
+
+    Please avoid changing your messages on the GitHub, unless you
+    want fix a typo and so on.  Just add new comments.
+
 Contributing Code
 =================
 

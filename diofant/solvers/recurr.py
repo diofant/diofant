@@ -1,6 +1,7 @@
 """This module is intended for solving recurrences (difference equations)."""
 
 import collections
+import functools
 
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
@@ -8,7 +9,7 @@ from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
 from ..core.compatibility import iterable
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
-from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
+from ..polys import Poly, gcd, lcm_list, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
 from ..utilities import default_sort_key, numbered_symbols
 from .ode import constantsimp
@@ -78,7 +79,7 @@ def rsolve_poly(coeffs, f, n):
 
     coeffs = [Poly(coeff, n) for coeff in coeffs]
 
-    g = gcd_list(coeffs + [f], n, polys=True)
+    g = functools.reduce(lambda x, y: gcd(x, y, n, polys=True), coeffs + [f])
     if not g.is_ground:
         coeffs = [quo(c, g, n, polys=False) for c in coeffs]
         f = quo(f, g, n, polys=False)

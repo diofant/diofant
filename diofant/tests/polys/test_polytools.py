@@ -1,5 +1,7 @@
 """Tests for user-friendly public interface to polynomial functions."""
 
+import functools
+
 import pytest
 
 from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
@@ -13,8 +15,8 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      UnificationFailed, cancel, cofactors, compose, content,
                      count_roots, decompose, degree, diff, discriminant, div,
                      exp, expand, exquo, factor, factor_list, false, gcd,
-                     gcd_list, gcdex, grevlex, grlex, groebner, half_gcdex, im,
-                     invert, lcm, lcm_list, lex, monic, nroots, oo,
+                     gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
+                     lcm, lcm_list, lex, monic, nroots, oo,
                      parallel_poly_from_expr, pi, poly, prem, primitive, quo,
                      re, real_roots, reduced, rem, resultant, sin, sqf,
                      sqf_list, sqf_norm, sqf_part, sqrt, subresultants,
@@ -1733,62 +1735,62 @@ def test_discriminant():
 
 
 def test_dispersion():
-    pytest.raises(AttributeError, lambda: poly(x*y).dispersionset(poly(x)))
-    pytest.raises(ValueError, lambda: poly(x).dispersionset(poly(y)))
+    pytest.raises(AttributeError, lambda: Poly(x*y).dispersionset(Poly(x)))
+    pytest.raises(ValueError, lambda: Poly(x).dispersionset(Poly(y)))
 
-    fp = poly(0, x)
-
-    assert fp.dispersionset() == {0}
-
-    fp = poly(2, x)
+    fp = Poly(0, x)
 
     assert fp.dispersionset() == {0}
 
-    fp = poly(x + 1)
+    fp = Poly(2, x)
 
     assert fp.dispersionset() == {0}
 
-    fp = poly((x + 1)*(x + 2))
+    fp = Poly(x + 1)
+
+    assert fp.dispersionset() == {0}
+
+    fp = Poly((x + 1)*(x + 2))
 
     assert fp.dispersionset() == {0, 1}
 
-    fp = poly(x**4 - 3*x**2 + 1)
+    fp = Poly(x**4 - 3*x**2 + 1)
     gp = fp.shift(-3)
 
     assert fp.dispersionset(gp) == {2, 3, 4}
     assert gp.dispersionset(fp) == set()
 
-    fp = poly(x*(x + 3))
+    fp = Poly(x*(x + 3))
 
     assert fp.dispersionset() == {0, 3}
 
-    fp = poly((x - 3)*(x + 3))
+    fp = Poly((x - 3)*(x + 3))
 
     assert fp.dispersionset() == {0, 6}
 
-    fp = poly(x**2 + 2*x - 1)
-    gp = poly(x**2 + 2*x + 3)
+    fp = Poly(x**2 + 2*x - 1)
+    gp = Poly(x**2 + 2*x + 3)
 
     assert fp.dispersionset(gp) == set()
 
-    fp = poly(x*(3*x**2 + a)*(x - 2536)*(x**3 + a), x)
+    fp = Poly(x*(3*x**2 + a)*(x - 2536)*(x**3 + a), x)
     gp = fp.as_expr().subs({x: x - 345}).as_poly(x)
 
     assert fp.dispersionset(gp) == {345, 2881}
     assert gp.dispersionset(fp) == {2191}
 
-    fp = poly((x - 2)**2*(x - 3)**3*(x - 5)**3)
+    fp = Poly((x - 2)**2*(x - 3)**3*(x - 5)**3)
     gp = (fp + 4)**2
 
     assert fp.dispersionset() == {0, 1, 2, 3}
     assert fp.dispersionset(gp) == {1, 2}
 
-    fp = poly(x*(x + 2)*(x - 1))
+    fp = Poly(x*(x + 2)*(x - 1))
 
     assert fp.dispersionset() == {0, 1, 2, 3}
 
-    fp = poly(x**2 + sqrt(5)*x - 1, x)
-    gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
+    fp = Poly(x**2 + sqrt(5)*x - 1, x)
+    gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
 
     assert fp.dispersionset(gp) == {2}
     assert gp.dispersionset(fp) == {1, 4}
@@ -1798,7 +1800,7 @@ def test_dispersion():
     # Hence we can not decide if alpha is indeed integral
     # in general.
 
-    fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+    fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
 
     assert fp.dispersionset() == {0, 1}
 
@@ -1806,7 +1808,7 @@ def test_dispersion():
     # but the algorithm can not find this in general.
     # This is the point where the resultant based Ansatz
     # is superior to the current one.
-    fp = poly(a**2*x**3 + (a**3 + a**2 + a + 1)*x, x)
+    fp = Poly(a**2*x**3 + (a**3 + a**2 + a + 1)*x, x)
     gp = fp.as_expr().subs({x: x - 3*a}).as_poly(x)
 
     assert fp.dispersionset(gp) == set()
@@ -1815,29 +1817,6 @@ def test_dispersion():
     gpa = gp.as_expr().subs({a: 2}).as_poly(x)
 
     assert fpa.dispersionset(gpa) == {6}
-
-
-def test_gcd_list():
-    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
-
-    assert gcd_list(F) == x - 1
-    assert gcd_list(F, polys=True) == Poly(x - 1)
-
-    assert gcd_list([]) == 0
-    assert gcd_list([1, 2]) == 1
-    assert gcd_list([4, 6, 8]) == 2
-
-    assert gcd_list([x*(y + 42) - x*y - x*42]) == 0
-
-    gcd = gcd_list([], x)
-    assert gcd.is_Number and gcd is Integer(0)
-
-    gcd = gcd_list([], x, polys=True)
-    assert gcd.is_Poly and gcd.is_zero
-
-    pytest.raises(ComputationFailed, lambda: gcd_list([], polys=True))
-
-    assert gcd_list([x**3 - 1, x**2 - 2, x**2 - 3*x + 2]) == 1
 
 
 def test_lcm_list():
@@ -1920,6 +1899,15 @@ def test_gcd():
 
     pytest.raises(TypeError, lambda: gcd(x))
     pytest.raises(TypeError, lambda: lcm(x))
+
+    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
+
+    assert functools.reduce(lambda x, y: gcd(x, y), F) == x - 1
+    assert functools.reduce(lambda x, y: gcd(x, y, polys=True), F) == Poly(x - 1)
+
+    F = [x**3 - 1, x**2 - 2, x**2 - 3*x + 2]
+
+    assert functools.reduce(lambda x, y: gcd(x, y), F) == 1
 
 
 def test_gcd_numbers_vs_polys():
@@ -3121,7 +3109,7 @@ def test_sympyissue_8695():
     e = (x**2 + 1) * (x - 1)**2 * (x - 2)**3 * (x - 3)**3
     r = (1, [(x**2 + 1, 1), (x - 1, 2), (x**2 - 5*x + 6, 3)])
     assert sqf_list(e) == r
-    assert poly(e).sqf_list() == r
+    assert Poly(e).sqf_list() == r
 
     # regression test from the issue thread, not related to the issue
     e = (x + 2)**2 * (y + 4)**5

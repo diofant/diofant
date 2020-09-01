@@ -40,14 +40,14 @@ def _nsort(roots, separated=False):
             return [[r], []]
         elif r.is_real is False and r.is_complex:
             return [[], [r]]
-    if not all(r.is_number for r in roots):  # pragma: no cover
+        else:
+            raise NotImplementedError
+    all_numbers = all(r.is_number for r in roots)
+    if not all_numbers:
         raise NotImplementedError
     # see issue sympy/sympy#6137:
     # get the real part of the evaluated real and imaginary parts of each root
     key = [[i.evalf(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
-    # make sure the parts were computed with precision
-    if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
-        raise NotImplementedError('could not compute root with precision')
     # insert a key to indicate if the root has an imaginary part
     key = [(1 if i else 0, r, -abs(i), i.is_positive) for r, i in key]
     key = sorted(zip(key, roots))

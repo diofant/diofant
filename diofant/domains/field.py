@@ -3,9 +3,6 @@
 from .ring import Ring
 
 
-__all__ = 'Field',
-
-
 class Field(Ring):
     """Represents a field domain."""
 

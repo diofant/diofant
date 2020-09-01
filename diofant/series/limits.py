@@ -134,9 +134,9 @@ class Limit(Expr):
         if str(dir) == 'real':
             right = limit(e, z, z0, '+')
             left = limit(e, z, z0, '-')
-            if not (left - right).equals(0):
+            if not left.equals(right):
                 raise PoleError(f'left and right limits for expression {e} at '
-                                'point {z}={z0} seems to be not equal')
+                                f'point {z}={z0} seems to be not equal')
             else:
                 return right
 

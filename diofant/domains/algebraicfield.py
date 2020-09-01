@@ -13,9 +13,6 @@ from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'AlgebraicField',
-
-
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 

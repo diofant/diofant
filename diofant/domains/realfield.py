@@ -12,9 +12,6 @@ from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'RealField',
-
-
 class RealField(CharacteristicZero, SimpleDomain, Field):
     """Real numbers up to the given precision."""
 

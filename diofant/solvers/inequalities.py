@@ -290,7 +290,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
         elif expr.is_Pow:
             n = expr.exp
 
-            if not n.is_Integer:  # pragma: no cover
+            if not n.is_Integer:
                 raise NotImplementedError('only integer powers are supported')
 
             _exprs = _bottom_up_scan(expr.base)

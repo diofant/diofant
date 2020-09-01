@@ -17,7 +17,7 @@ from ..utilities import default_sort_key, flatten
 def _iszero(x):
     """Returns True if x is zero."""
     r = x.equals(0)
-    if r is None:  # pragma: no cover
+    if r is None:
         raise NotImplementedError(f'Zero-decision problem for {x}')
     return r
 
@@ -1557,7 +1557,7 @@ class MatrixBase(DefaultPrinting):
             # normalize it
             R[j, j] = tmp.norm()
             Q[:, j] = tmp / R[j, j]
-            if Q[:, j].norm() != 1:  # pragma: no cover
+            if Q[:, j].norm() != 1:
                 raise NotImplementedError("Couldn't normalize the "
                                           f'vector {j:d}.')
             for i in range(j):
@@ -2708,7 +2708,7 @@ class MatrixBase(DefaultPrinting):
                     if simplify:
                         v = simpfunc(v)
                     if v:
-                        if j in pivots:  # pragma: no cover
+                        if j in pivots:
                             # XXX: Is this the correct error?
                             raise NotImplementedError("Couldn't compute the "
                                                       'nullspace of `self`.')

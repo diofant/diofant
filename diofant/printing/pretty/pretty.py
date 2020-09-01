@@ -672,7 +672,7 @@ class PrettyPrinter(Printer):
     def _print_BasisDependent(self, expr):
         from ...vector import Vector
 
-        if not self._use_unicode:  # pragma: no cover
+        if not self._use_unicode:
             raise NotImplementedError('ASCII pretty printing of BasisDependent is not implemented')
 
         if expr == expr.zero:

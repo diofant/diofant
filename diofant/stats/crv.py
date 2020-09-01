@@ -101,7 +101,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                     integrand *= DiracDelta(cond.lhs - cond.rhs)
                 else:
                     symbols = cond.free_symbols & set(self.symbols)
-                    if len(symbols) != 1:  # Can't handle x > y, # pragma: no cover
+                    if len(symbols) != 1:  # Can't handle x > y
                         raise NotImplementedError(
                             'Multivariate Inequalities not yet implemented')
                     # Can handle x > 0
@@ -183,7 +183,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         x, z = symbols('x, z', extended_real=True, positive=True, cls=Dummy)
         # Invert CDF
         inverse_cdf = solve(self.cdf(x) - z, x)
-        if not inverse_cdf or len(inverse_cdf) != 1:  # pragma: no cover
+        if not inverse_cdf or len(inverse_cdf) != 1:
             raise NotImplementedError('Could not invert CDF')
 
         return Lambda(z, inverse_cdf[0][x])
@@ -301,7 +301,7 @@ class ContinuousPSpace(PSpace):
 
     def where(self, condition):
         rvs = frozenset(random_symbols(condition))
-        if not (len(rvs) == 1 and rvs.issubset(self.values)):  # pragma: no cover
+        if not (len(rvs) == 1 and rvs.issubset(self.values)):
             raise NotImplementedError(
                 'Multiple continuous random variables not supported')
         rv = tuple(rvs)[0]
