@@ -1554,7 +1554,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> poly((x - 3)*(x + 3)).dispersionset()
+        >>> Poly((x - 3)*(x + 3)).dispersionset()
         {0, 6}
 
         """
