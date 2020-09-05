@@ -4453,9 +4453,15 @@ def poly(expr, *gens, **args):
     if expr.is_Poly:
         return Poly(expr, *gens, **args)
 
-    if 'expand' not in args:
-        args['expand'] = False
-
     opt = build_options(gens, args)
+    no_gens = not opt.gens
 
-    return _poly(expr, opt)
+    if 'expand' not in args:
+        opt = opt.clone({'expand': False})
+
+    res = _poly(expr, opt)
+
+    if no_gens:
+        res = res.exclude()
+
+    return res
