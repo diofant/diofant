@@ -147,12 +147,20 @@ def _find_gens(exprs, opt):
     for expr in exprs:
         for term in Add.make_args(expr):
             for factor in Mul.make_args(term):
-                if not _is_coeff(factor):
-                    base, exp = decompose_power(factor)
-                    if exp < 0:
-                        base = Pow(base, -1)
+                try:
+                    if factor.is_Add and opt.expand:
+                        gens |= set(_find_gens([factor], opt))
+                    elif not _is_coeff(factor):
+                        base, exp = decompose_power(factor)
+                        if exp < 0:
+                            base = Pow(base, -1)
 
-                    gens.add(base)
+                        if opt.expand and exp > 1:
+                            gens |= set(_find_gens([base], opt))
+                        else:
+                            gens.add(base)
+                except GeneratorsNeeded:
+                    pass
 
     if not gens:
         raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')

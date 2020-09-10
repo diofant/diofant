@@ -2985,6 +2985,11 @@ def test_poly():
     assert poly((x + y)**2 - y**2 - 2*x*y) == Poly(x**2)
     assert poly((x + y)**2 - y**2 - 2*x*y, x, y) == Poly(x**2, x, y)
 
+    e = x**2 + (1 + sqrt(2))*x + 1
+
+    assert (poly(e, greedy=False) == poly(e, x, greedy=False) ==
+            Poly(e, x, domain=QQ.algebraic_field(sqrt(2))))
+
     # issue sympy/sympy#6184
     assert poly(x + y, x, y) == Poly(x + y, x, y)
     assert poly(x + y, y, x) == Poly(x + y, y, x)

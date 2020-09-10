@@ -26,7 +26,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
 from .polyoptions import Modulus, Options, allowed_flags, build_options
-from .polyutils import _parallel_dict_from_expr, _sort_gens
+from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -4455,6 +4455,10 @@ def poly(expr, *gens, **args):
 
     opt = build_options(gens, args)
     no_gens = not opt.gens
+
+    if no_gens:
+        gens = _find_gens([expr], opt)
+        opt = opt.clone({'gens': gens})
 
     if 'expand' not in args:
         opt = opt.clone({'expand': False})
