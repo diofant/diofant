@@ -55,11 +55,6 @@ jobs:
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         py.test
-    - name: Extra coverage tests
-      if: matrix.python-version == 3.7
-      env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
-      run: |
         pip uninstall -y gmpy2
         DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
         py.test diofant/tests/polys
