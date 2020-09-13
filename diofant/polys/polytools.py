@@ -26,7 +26,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
 from .polyoptions import Modulus, Options, allowed_flags, build_options
-from .polyutils import _parallel_dict_from_expr, _sort_gens
+from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -1554,7 +1554,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> poly((x - 3)*(x + 3)).dispersionset()
+        >>> Poly((x - 3)*(x + 3)).dispersionset()
         {0, 6}
 
         """
@@ -4453,9 +4453,19 @@ def poly(expr, *gens, **args):
     if expr.is_Poly:
         return Poly(expr, *gens, **args)
 
-    if 'expand' not in args:
-        args['expand'] = False
-
     opt = build_options(gens, args)
+    no_gens = not opt.gens
 
-    return _poly(expr, opt)
+    if no_gens:
+        gens = _find_gens([expr], opt)
+        opt = opt.clone({'gens': gens})
+
+    if 'expand' not in args:
+        opt = opt.clone({'expand': False})
+
+    res = _poly(expr, opt)
+
+    if no_gens:
+        res = res.exclude()
+
+    return res

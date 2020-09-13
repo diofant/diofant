@@ -904,7 +904,7 @@ class Pow(Expr):
 
         """
         from ..functions import arg, cos, sin
-        from ..polys.polytools import poly
+        from ..polys import Poly
 
         if self.exp.is_Integer:
             exp = self.exp
@@ -918,7 +918,7 @@ class Pow(Expr):
                     expr = expand_multinomial(self.base**exp)
                     return expr.as_real_imag()
 
-                expr = poly(
+                expr = Poly(
                     (a + b)**exp)  # a = re, b = im; expr = (a + b*I)**exp
             else:
                 mag = re**2 + im**2
@@ -928,7 +928,7 @@ class Pow(Expr):
                     expr = expand_multinomial((re + im*I)**-exp)
                     return expr.as_real_imag()
 
-                expr = poly((a + b)**-exp)
+                expr = Poly((a + b)**-exp)
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]

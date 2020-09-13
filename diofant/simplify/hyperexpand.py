@@ -76,7 +76,7 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_power1, HyperRep_power2,
                                        HyperRep_sinasin, HyperRep_sqrts1,
                                        HyperRep_sqrts2, hyper, meijerg)
-from ..polys import Poly, poly
+from ..polys import Poly, cancel
 from ..printing import sstr
 from ..series import residue
 from ..utilities import default_sort_key, sift
@@ -466,9 +466,7 @@ def make_simp(z):
 
     def simp(expr):
         """Efficiently simplify the rational function ``expr``."""
-        numer, denom = expr.as_numer_denom()
-        c, numer, denom = poly(numer, z).cancel(poly(denom, z))
-        return c * numer.as_expr() / denom.as_expr()
+        return cancel(expr, z)
 
     return simp
 

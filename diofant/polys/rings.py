@@ -111,7 +111,6 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
 
             obj.zero_monom = Monomial((0,)*ngens)
             obj.gens = obj._gens()
-            obj._gens_set = set(obj.gens)
 
             obj._one = [(obj.zero_monom, domain.one)]
 
@@ -676,7 +675,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_generator(self):
-        return self in self.ring._gens_set
+        return self.is_monomial and self.total_degree() == 1
 
     @property
     def is_ground(self):
