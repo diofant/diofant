@@ -1,6 +1,6 @@
 """Tools for solving inequalities and systems of inequalities."""
 
-from collections import defaultdict
+import collections
 
 from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
@@ -439,7 +439,8 @@ def solve_univariate_inequality(expr, gen, relational=True):
 def _reduce_inequalities(inequalities, symbols):
     # helper for reduce_inequalities
 
-    poly_part, pw_part = defaultdict(list), defaultdict(list)
+    poly_part = collections.defaultdict(list)
+    pw_part = poly_part.copy()
     other = []
 
     for inequality in inequalities:
