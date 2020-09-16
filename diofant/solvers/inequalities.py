@@ -1,12 +1,14 @@
 """Tools for solving inequalities and systems of inequalities."""
 
 import collections
+import itertools
 
 from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
 from ..logic import And, false, true
+from ..matrices import Matrix
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Reals, Union
@@ -14,6 +16,73 @@ from ..utilities import filldedent
 
 
 __all__ = 'reduce_inequalities',
+
+
+def fourier_motzkin(A, b, c, j):
+    """
+    Fourier-Motzkin elimination for `j`-th variable.
+
+    Parameters
+    ==========
+
+    A : Matrix
+        The coefficients of the system.
+    b : Matrix
+        The constant terms in the right hand side of relations.
+    c : Matrix
+        The vector of boolean elements, which determine the
+        type of relation (1 for Le and 0 - for Lt).
+    j : int
+        The variable index.
+
+    Example
+    =======
+
+    >>> A = Matrix([[-1, 0], [2, 4], [1, -2]])
+    >>> b = Matrix([-1, 14, -1])
+    >>> c = Matrix([1, 1, 1])
+    >>> fourier_motzkin(A, b, c, 0)
+    (Matrix([
+    [0,  4],
+    [0, -2]]), Matrix([
+    [12],
+    [-2]]), Matrix([
+    [1],
+    [1]]))
+
+    References
+    ==========
+
+    * :cite:`Schrijver1998theory`, pp. 155–156.
+
+    """
+    m = A.rows
+    Z, N, P = [], [], []
+    D, d, k = [Matrix()]*3
+
+    assert m == b.rows == c.rows
+    assert all(_.is_comparable for _ in A)
+
+    for i, a in enumerate(A[:, j]):
+        if a > 0:
+            P.append(i)
+        elif a < 0:
+            N.append(i)
+        else:
+            Z.append(i)
+
+    for p in itertools.chain(Z, itertools.product(N, P)):
+        if p in Z:
+            D = D.col_join(A[p, :])
+            d = d.col_join(Matrix([b[p]]))
+            k = k.col_join(Matrix([c[p]]))
+        else:
+            s, t = p
+            D = D.col_join(A[t, j]*A[s, :] - A[s, j]*A[t, :])
+            d = d.col_join(Matrix([A[t, j]*b[s] - A[s, j]*b[t]]))
+            k = k.col_join(Matrix([c[s] and c[t]]))
+
+    return D, d, k
 
 
 def solve_poly_inequality(poly, rel):
