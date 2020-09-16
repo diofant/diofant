@@ -61,16 +61,6 @@ def test_roots_quadratic():
         assert roots == _nsort(roots)
 
 
-def test_sympyissue_8438():
-    p = Poly([1, y, -2, -3], x).as_expr()
-    roots = roots_cubic(Poly(p, x), x)
-    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
-    post = [r.subs({y: z}) for r in roots]
-    assert set(post) == set(roots_cubic(Poly(p.subs({y: z}), x)))
-    # /!\ if p is not made an expression, this is *very* slow
-    assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
-
-
 def test_sympyissue_8285():
     roots = (Poly(4*x**8 - 1, x)*Poly(x**2 + 1)).all_roots()
     assert roots == _nsort(roots)
@@ -124,6 +114,15 @@ def test_roots_cubic():
                        root(a + sqrt(a**2), 3), evaluate=False),
                    Mul(Rational(-1, 3), Rational(-1, 2) - sqrt(3)*I/2,
                        root(a + sqrt(a**2), 3), evaluate=False)]
+
+    # issue sympy/sympy#8438
+    p = Poly([1, y, -2, -3], x).as_expr()
+    croots = roots_cubic(Poly(p, x), x)
+    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
+    post = [r.subs({y: z}) for r in croots]
+    assert set(post) == set(roots_cubic(Poly(p.subs({y: z}), x)))
+    # /!\ if p is not made an expression, this is *very* slow
+    assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
 
 
 def test_roots_quartic():

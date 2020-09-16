@@ -106,7 +106,8 @@ def runtest_ufuncify(language, backend):
     numpy.testing.assert_allclose(facb(grid, c, b), expected)
 
 
-def runtest_sympyissue_10274(language, backend):
+def runtest_autowrap_helpers(language, backend):
+    # issue sympy/sympy#10274
     expr = (a - b + c)**13
     tmp = tempfile.mkdtemp()
     f = autowrap(expr, language, backend, tempdir=tmp, helpers=[('helper', a - b + c, (a, b, c))])
@@ -232,8 +233,8 @@ def test_ufuncify_C_Cython():
 
 
 @with_cython
-def test_sympyissue_10274_C_cython():
-    runtest_sympyissue_10274('C', 'cython')
+def test_autowrap_helpers_C_cython():
+    runtest_autowrap_helpers('C', 'cython')
 
 
 # Numpy
