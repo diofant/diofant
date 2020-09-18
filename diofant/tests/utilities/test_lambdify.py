@@ -44,6 +44,13 @@ def test_list_args():
     assert f(1, 2) == 3
 
 
+def test_nested_args():
+    # issue sympy/sympy#2790
+    assert lambdify((x, (y, z)), x + y)(1, (2, 4)) == 3
+    assert lambdify((x, (y, (w, z))), w + x + y + z)(1, (2, (3, 4))) == 10
+    assert lambdify(x, x + 1, dummify=False)(1) == 2
+
+
 def test_str_args():
     f = lambdify('x,y,z', 'z,y,x')
     assert f(3, 2, 1) == (1, 2, 3)
@@ -559,12 +566,6 @@ def test_true_false():
     # We want exact is comparison here, not just ==
     assert lambdify([], true)() is True
     assert lambdify([], false)() is False
-
-
-def test_sympyissue_2790():
-    assert lambdify((x, (y, z)), x + y)(1, (2, 4)) == 3
-    assert lambdify((x, (y, (w, z))), w + x + y + z)(1, (2, (3, 4))) == 10
-    assert lambdify(x, x + 1, dummify=False)(1) == 2
 
 
 def test_ITE():

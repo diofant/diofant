@@ -209,15 +209,16 @@ def test_minimal_polynomial_GoldenRatio(method):
     assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
 
 
-def test_diofantissue_662():
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
+def test_abs_re_im(method):
+    # issue diofant/diofant#662
     e1 = abs(sqrt(1 + sqrt(2 + I)))
     e2 = re(sqrt(I), evaluate=False)
     e3 = im(sqrt(I), evaluate=False)
-    for meth in ('compose', 'groebner'):
-        assert (minimal_polynomial(e1, method=meth)(x) ==
-                x**16 - 4*x**12 - 12*x**8 - 8*x**4 + 4)
-        assert minimal_polynomial(e2, method=meth)(x) == 2*x**2 - 1
-        assert minimal_polynomial(e3, method=meth)(x) == 2*x**2 - 1
+    assert (minimal_polynomial(e1, method=method)(x) ==
+            x**16 - 4*x**12 - 12*x**8 - 8*x**4 + 4)
+    assert minimal_polynomial(e2, method=method)(x) == 2*x**2 - 1
+    assert minimal_polynomial(e3, method=method)(x) == 2*x**2 - 1
 
 
 def test_minimal_polynomial_sq():

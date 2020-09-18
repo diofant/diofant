@@ -757,7 +757,8 @@ def test_FractionField_from_PolynomialRing():
 
 def test_FractionField_convert():
     F,  X, Y = field('x y', QQ)
-    F.convert(QQ_python(1, 3)) == F.one/3
+    assert F.convert(QQ_python(1, 3)) == F.one/3
+    assert F.convert(RR(1)) == F.one
 
 
 def test_FF_of_type():
