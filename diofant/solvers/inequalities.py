@@ -3,7 +3,7 @@
 import collections
 import itertools
 
-from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
+from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
@@ -12,10 +12,28 @@ from ..matrices import Matrix
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Reals, Union
-from ..utilities import filldedent
+from ..utilities import filldedent, ordered
 
 
 __all__ = 'reduce_inequalities',
+
+
+def canonicalize_inequalities(eqs):
+    """Canonicalize system of inequalities to have only Lt/Le."""
+    eqs = set(eqs)
+
+    # Canonicalize constraints, Ne -> pair Lt, Eq -> pair Le
+    eqs |= {Lt(*e.args) for e in eqs if isinstance(e, Ne)}
+    eqs |= {Lt(e.rhs, e.lhs) for e in eqs if isinstance(e, Ne)}
+    eqs |= {Le(*e.args) for e in eqs if isinstance(e, Eq)}
+    eqs |= {Le(e.rhs, e.lhs) for e in eqs if isinstance(e, Eq)}
+    eqs -= {e for e in eqs if isinstance(e, (Ne, Eq))}
+
+    # Gt/Ge -> Lt, Le
+    eqs = {e.reversed if e.func in (Gt, Ge) else e for e in eqs}
+
+    # Now we have only Lt/Le
+    return list(ordered(e.func(e.lhs - e.rhs, 0) for e in eqs))
 
 
 def fourier_motzkin(A, b, c, j):
