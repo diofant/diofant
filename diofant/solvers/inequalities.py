@@ -103,6 +103,59 @@ def fourier_motzkin(A, b, c, j):
     return D, d, k
 
 
+def solve_linear_inequalities(eqs, *gens, **args):
+    """
+    Solve system of linear inequalities.
+
+    Examples
+    ========
+
+    >>> solve_linear_inequalities([x >= 0, 2*x + 4*y <= 14, x - 2*y <= 1])
+    (x >= 0) & (x <= 4) & (y >= x/2 - 1/2) & (y <= -x/2 + 7/2)
+
+    """
+    assert all(e.is_Relational for e in eqs)
+
+    eqs = canonicalize_inequalities(eqs)
+
+    polys, opt = parallel_poly_from_expr([e.lhs for e in eqs], *gens, **args)
+
+    assert all(p.is_linear for p in polys)
+
+    gens = Matrix(opt.gens)
+    A = Matrix([[p.coeff_monomial(x) for x in gens] for p in polys])
+    b = Matrix([-p.coeff_monomial(1) for p in polys])
+    c = Matrix([e.func is Le for e in eqs])
+    res = []
+
+    for i, g in reversed(list(enumerate(gens))):
+        D, d, e = fourier_motzkin(A, b, c, i)
+
+        if not D:
+            continue
+
+        gens_g = gens.copy()
+        gens_g[i] = 0
+
+        for j, (r, x) in enumerate(zip(b - A*gens_g, c)):
+            gc = A[j, i]
+            op = Le if x else Lt
+
+            if gc > 0:
+                res.append(op(g, r/gc))
+            elif gc < 0:
+                res.append(op(r/gc, g).reversed)
+
+        A, b, c = D, d, e
+
+    if not A.is_zero:
+        raise NotImplementedError
+    elif any(_ < 0 for _ in b):
+        return false
+
+    return And(*res)
+
+
 def solve_poly_inequality(poly, rel):
     """
     Solve a polynomial inequality with rational coefficients.

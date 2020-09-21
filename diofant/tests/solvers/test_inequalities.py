@@ -10,6 +10,7 @@ from diofant.abc import x, y
 from diofant.solvers.inequalities import (fourier_motzkin,
                                           reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
+                                          solve_linear_inequalities,
                                           solve_poly_inequalities)
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
 from diofant.solvers.inequalities import solve_univariate_inequality as isolve
@@ -45,6 +46,22 @@ def test_fourier_motzkin():
     assert fourier_motzkin(A, b, c, 0) == ans
     assert fourier_motzkin(*ans, 1) == (Matrix([[0, 0]]),
                                         Matrix([-2]), Matrix([1]))
+
+
+def test_solve_linear_inequalities():
+    eqs = [x >= 0, 2*x + 4*y <= 14, x - 2*y <= 1]
+    ans = ((x >= Integer(0)) & (x <= Integer(4)) &
+           (y >= x/2 - Rational(1, 2)) & (y <= -x/2 + Rational(7, 2)))
+
+    assert solve_linear_inequalities(eqs, x, y) == ans
+
+    eqs = [x + y >= 4, x <= 1, y <= 1]
+
+    assert solve_linear_inequalities(eqs, x, y) == false
+
+    eqs = [x + 2*y <= 3, 2*x + y <= 5]
+
+    pytest.raises(NotImplementedError, lambda: solve_linear_inequalities(eqs))
 
 
 def test_solve_poly_inequality():
