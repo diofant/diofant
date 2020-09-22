@@ -3,12 +3,11 @@
 import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
-                     Interval, Le, Lt, Matrix, Ne, Or, Piecewise, Poly,
-                     PurePoly, Rational, RootOf, S, Symbol, Union, false, log,
-                     oo, pi, reduce_inequalities, root, sin, solve, sqrt)
+                     Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
+                     Rational, RootOf, S, Symbol, Union, false, log, oo, pi,
+                     reduce_inequalities, root, sin, solve, sqrt)
 from diofant.abc import x, y
-from diofant.solvers.inequalities import (fourier_motzkin,
-                                          reduce_piecewise_inequality,
+from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
                                           solve_linear_inequalities,
                                           solve_poly_inequalities)
@@ -19,33 +18,6 @@ from diofant.solvers.inequalities import solve_univariate_inequality as isolve
 __all__ = ()
 
 inf = oo.evalf()
-
-
-def test_fourier_motzkin():
-    A = Matrix([[-1, 0], [2, 4], [1, -2]])
-    b = Matrix([-1, 14, -1])
-    c = Matrix([1, 1, 1])
-
-    assert fourier_motzkin(A, b, c, 0) == (Matrix([[0,  4], [0, -2]]),
-                                           Matrix([12, -2]), Matrix([1, 1]))
-
-    A = Matrix([[2, -5, 4], [3, -6, 3], [-1, 5, -2], [-3, 2, 6]])
-    b = Matrix([10, 9, -7, 12])
-    c = Matrix([1, 0, 1, 1])
-
-    assert fourier_motzkin(A, b, c, 0) == (Matrix([[0, 5, 0], [0, 9, -3],
-                                                   [0, -11, 24], [0, -12, 27]]),
-                                           Matrix([-4, -12, 54, 63]),
-                                           Matrix([1, 0, 1, 0]))
-
-    A = Matrix([[-1, -1], [1, 0], [0, 1]])
-    b = Matrix([-4, 1, 1])
-    c = Matrix([1, 1, 1])
-    ans = Matrix([[0, 1], [0, -1]]), Matrix([1, -3]), Matrix([1, 1])
-
-    assert fourier_motzkin(A, b, c, 0) == ans
-    assert fourier_motzkin(*ans, 1) == (Matrix([[0, 0]]),
-                                        Matrix([-2]), Matrix([1]))
 
 
 def test_solve_linear_inequalities():
