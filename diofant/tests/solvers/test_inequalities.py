@@ -234,6 +234,10 @@ def test_reduce_inequalities_general():
     assert reduce_inequalities(Ge(sqrt(2)*x, 1)) == And(sqrt(2)/2 <= x, x < oo)
     assert reduce_inequalities(PurePoly(x + 1, x) > 0) == And(Integer(-1) < x, x < oo)
 
+    # issue sympy/sympy#10196
+    assert reduce_inequalities(x**2 >= 0)
+    assert reduce_inequalities(x**2 < 0) is false
+
 
 def test_reduce_inequalities_boolean():
     assert reduce_inequalities(
@@ -350,11 +354,6 @@ def test_sympyissue_8545():
 def test_sympyissue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
-
-
-def test_sympyissue_10196():
-    assert reduce_inequalities(x**2 >= 0)
-    assert reduce_inequalities(x**2 < 0) is false
 
 
 def test_sympyissue_10268():
