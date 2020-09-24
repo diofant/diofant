@@ -6,9 +6,9 @@ import itertools
 from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
-from ..functions import Abs, Piecewise
-from ..logic import And, false, true
-from ..matrices import Matrix
+from ..functions import Abs, Max, Min, Piecewise
+from ..logic import And, Or, false, true
+from ..matrices import Matrix, diag
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Reals, Union
@@ -127,11 +127,13 @@ def solve_linear_inequalities(eqs, *gens, **args):
     b = Matrix([-p.coeff_monomial(1) for p in polys])
     c = Matrix([e.func is Le for e in eqs])
     res = []
+    failed = []
 
     for i, g in reversed(list(enumerate(gens))):
         D, d, e = fourier_motzkin(A, b, c, i)
 
         if not D:
+            failed.append(i)
             continue
 
         gens_g = gens.copy()
@@ -149,7 +151,29 @@ def solve_linear_inequalities(eqs, *gens, **args):
         A, b, c = D, d, e
 
     if not A.is_zero:
-        raise NotImplementedError
+        i = failed.pop(0)
+        g = gens[i]
+        gens_g = gens.copy()
+        gens_g[i] = 0
+        strict = []
+        non_strict = []
+
+        for r, x in zip(diag(*A[:, i])**-1*(b - A*gens_g), c):
+            non_strict.append(r) if x else strict.append(r)
+
+        if A[0, i] > 0:
+            if strict and non_strict:
+                a, b = Min(*non_strict), Min(*strict)
+                res.append(Or(And(Le(g, a), Lt(a, b)), And(Lt(g, b), Le(b, a))))
+            else:
+                res.append((Lt if strict else Le)(g, Min(*(non_strict + strict))))
+        else:
+            if strict and non_strict:
+                a, b = Max(*non_strict), Max(*strict)
+                res.append(Or(And(Le(a, g).reversed, Lt(b, a).reversed),
+                              And(Lt(b, g).reversed, Le(a, b).reversed)))
+            else:
+                res.append((Lt if strict else Le)(Max(*(non_strict + strict)), g).reversed)
     elif any(_ < 0 for _ in b):
         return false
 
