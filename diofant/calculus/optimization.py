@@ -1,10 +1,11 @@
-from ..core import Eq, Ge, Gt, Integer, Le, Lt, Ne, diff, nan, oo, sympify
+from ..core import Integer, Lt, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence
 from ..functions import Min
 from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
+from ..solvers.inequalities import canonicalize_inequalities
 from ..utilities import ordered
 from .singularities import singularities
 
@@ -49,20 +50,7 @@ def minimize(f, *v):
 
     assert all(x.is_Symbol for x in v)
 
-    # Canonicalize constraints, Ne -> pair Lt, Eq -> pair Le
-    constraints |= {Lt(*c.args) for c in constraints if isinstance(c, Ne)}
-    constraints |= {Lt(c.rhs, c.lhs) for c in constraints if isinstance(c, Ne)}
-    constraints |= {Le(*c.args) for c in constraints if isinstance(c, Eq)}
-    constraints |= {Le(c.rhs, c.lhs) for c in constraints if isinstance(c, Eq)}
-    constraints -= {c for c in constraints if isinstance(c, (Ne, Eq))}
-
-    # Gt/Ge -> Lt, Le
-    constraints = {c.reversed if c.func in (Gt, Ge) else c
-                   for c in constraints}
-
-    # Now we have only Lt/Le
-    constraints = list(ordered(c.func(c.lhs - c.rhs, 0)
-                               for c in constraints))
+    constraints = canonicalize_inequalities(constraints)
 
     if dim == 1:
         if constraints:
