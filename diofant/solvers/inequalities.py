@@ -9,7 +9,7 @@ from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise
 from ..logic import And, Or, false, true
 from ..matrices import Matrix, diag
-from ..polys import Poly, parallel_poly_from_expr
+from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Reals, Union
 from ..utilities import filldedent, ordered
@@ -120,7 +120,8 @@ def solve_linear_inequalities(eqs, *gens, **args):
 
     polys, opt = parallel_poly_from_expr([e.lhs for e in eqs], *gens, **args)
 
-    assert all(p.is_linear for p in polys)
+    if not all(p.is_linear for p in polys):
+        raise ValueError(f'Got non-linear inequality in {eqs}')
 
     gens = Matrix(opt.gens)
     A = Matrix([[p.coeff_monomial(x) for x in gens] for p in polys])
@@ -606,6 +607,7 @@ def _reduce_inequalities(inequalities, symbols):
     poly_part = collections.defaultdict(list)
     pw_part = poly_part.copy()
     other = []
+    rest = []
 
     for inequality in inequalities:
         if inequality == true:
@@ -623,15 +625,13 @@ def _reduce_inequalities(inequalities, symbols):
         if len(gens) == 1:
             gen = gens.pop()
         else:
-            common = expr.free_symbols & symbols
+            common = expr.free_symbols & set(symbols)
             if len(common) == 1:
                 gen = common.pop()
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
-                continue
             else:
-                raise NotImplementedError(filldedent("""
-                    inequality has more than one
-                    symbol of interest"""))
+                rest.append(inequality)
+            continue
 
         if expr.is_polynomial(gen):
             poly_part[gen].append((expr, rel))
@@ -652,6 +652,12 @@ def _reduce_inequalities(inequalities, symbols):
 
     for gen, exprs in pw_part.items():
         pw_reduced.append(reduce_piecewise_inequalities(exprs, gen))
+
+    if rest:
+        try:
+            return solve_linear_inequalities(inequalities, *symbols)
+        except (PolificationFailed, ValueError):
+            raise NotImplementedError
 
     return And(*(poly_reduced + pw_reduced + other))
 
@@ -699,13 +705,13 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     if not iterable(symbols):
         symbols = [symbols]
-    symbols = set(symbols) or gens
+    symbols = ordered(set(symbols) or gens)
 
     # make vanilla symbol real
     recast = {i: Dummy(i.name, extended_real=True)
               for i in gens if i.is_extended_real is None}
     inequalities = [i.xreplace(recast) for i in inequalities]
-    symbols = {i.xreplace(recast) for i in symbols}
+    symbols = ordered(i.xreplace(recast) for i in symbols)
 
     # solve system
     rv = _reduce_inequalities(inequalities, symbols)

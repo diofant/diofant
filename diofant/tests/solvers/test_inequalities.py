@@ -9,7 +9,6 @@ from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
 from diofant.abc import x, y
 from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
-                                          solve_linear_inequalities,
                                           solve_poly_inequalities)
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
 from diofant.solvers.inequalities import solve_univariate_inequality as isolve
@@ -25,43 +24,43 @@ def test_solve_linear_inequalities():
     ans = ((x >= Integer(0)) & (x <= Integer(4)) &
            (y >= x/2 - Rational(1, 2)) & (y <= -x/2 + Rational(7, 2)))
 
-    assert solve_linear_inequalities(eqs) == ans
+    assert reduce_inequalities(eqs) == ans
 
     eqs = [x + y >= 4, x <= 1, y <= 1]
 
-    assert solve_linear_inequalities(eqs) == false
+    assert reduce_inequalities(eqs) == false
 
     eqs = [x + 2*y <= 3, 2*x + y <= 5]
 
-    assert solve_linear_inequalities(eqs) == (y <= Min(-2*x + 5,
-                                                       -x/2 + Rational(3, 2)))
+    assert reduce_inequalities(eqs) == (y <= Min(-2*x + 5,
+                                                 -x/2 + Rational(3, 2)))
 
     eqs = [x + 2*y < 3, 2*x + y < 5]
 
-    assert solve_linear_inequalities(eqs) == (y < Min(-2*x + 5,
-                                                      -x/2 + Rational(3, 2)))
+    assert reduce_inequalities(eqs) == (y < Min(-2*x + 5,
+                                                -x/2 + Rational(3, 2)))
 
     eqs = [x + 2*y <= 3, 2*x + y < 5]
     ans = (((y <= -x/2 + Rational(3, 2)) & (-x/2 + Rational(3, 2) < -2*x + 5)) |
            ((y < -2*x + 5) & (-2*x + 5 <= -x/2 + Rational(3, 2))))
 
-    assert solve_linear_inequalities(eqs) == ans
+    assert reduce_inequalities(eqs) == ans
 
     eqs = [x + 2*y >= 3, 2*x + y >= 5]
 
-    assert solve_linear_inequalities(eqs) == (y >= Max(-2*x + 5,
-                                                       -x/2 + Rational(3, 2)))
+    assert reduce_inequalities(eqs) == (y >= Max(-2*x + 5,
+                                                 -x/2 + Rational(3, 2)))
 
     eqs = [x + 2*y > 3, 2*x + y > 5]
 
-    assert solve_linear_inequalities(eqs) == (y > Max(-2*x + 5,
-                                                      -x/2 + Rational(3, 2)))
+    assert reduce_inequalities(eqs) == (y > Max(-2*x + 5,
+                                                -x/2 + Rational(3, 2)))
 
     eqs = [x + 2*y >= 3, 2*x + y > 5]
     ans = (((y >= -x/2 + Rational(3, 2)) & (-x/2 + Rational(3, 2) > -2*x + 5)) |
            ((y > -2*x + 5) & (-2*x + 5 >= -x/2 + Rational(3, 2))))
 
-    assert solve_linear_inequalities(eqs) == ans
+    assert reduce_inequalities(eqs) == ans
 
 
 def test_solve_poly_inequality():
