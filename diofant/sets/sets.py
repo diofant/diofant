@@ -1100,11 +1100,11 @@ class Interval(Set, EvalfMixin):
         if self.right_open:
             right = x < self.end
         else:
-            right = x <= self.end
+            right = true if self.is_right_unbounded else x <= self.end
         if self.left_open:
             left = self.start < x
         else:
-            left = self.start <= x
+            left = true if self.is_left_unbounded else self.start <= x
         return And(left, right)
 
     def _eval_Eq(self, other):

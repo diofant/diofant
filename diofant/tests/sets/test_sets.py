@@ -537,6 +537,7 @@ def test_Interval_is_right_unbounded():
 
 def test_Interval_as_relational():
     x = Symbol('x')
+
     assert Interval(-1, 2, False, False).as_relational(x) == \
         And(Le(-1, x), Le(x, 2))
     assert Interval(-1, 2, True, False).as_relational(x) == \
@@ -546,13 +547,20 @@ def test_Interval_as_relational():
     assert Interval(-1, 2, True, True).as_relational(x) == \
         And(Lt(-1, x), Lt(x, 2))
 
-    assert Interval(-oo, 2, right_open=False).as_relational(x) == And(Le(-oo, x), Le(x, 2))
-    assert Interval(-oo, 2, right_open=True).as_relational(x) == And(Le(-oo, x), Lt(x, 2))
+    assert Interval(-oo, 2, True, False).as_relational(x) == And(Lt(-oo, x), Le(x, 2))
+    assert Interval(-oo, 2, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, 2))
 
-    assert Interval(-2, oo, left_open=False).as_relational(x) == And(Le(-2, x), Le(x, oo))
-    assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Le(x, oo))
+    assert Interval(-oo, 2, False, False).as_relational(x) == Le(x, 2)
+    assert Interval(-oo, 2, False, True).as_relational(x) == Lt(x, 2)
 
-    assert Interval(-oo, oo).as_relational(x) == And(Le(-oo, x), Le(x, oo))
+    assert Interval(-2, oo, False, True).as_relational(x) == And(Le(-2, x), Lt(x, oo))
+    assert Interval(-2, oo, True, True).as_relational(x) == And(Lt(-2, x), Lt(x, oo))
+
+    assert Interval(-2, oo, False, False).as_relational(x) == Le(-2, x)
+    assert Interval(-2, oo, True, False).as_relational(x) == Lt(-2, x)
+
+    assert Interval(-oo, oo, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, oo))
+    assert Interval(-oo, oo).as_relational(x) == true
 
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
