@@ -221,6 +221,12 @@ class Reals(Interval, metaclass=Singleton):
     def __new__(cls):
         return Interval.__new__(cls, -oo, oo, True, True)
 
+    def __eq__(self, other):
+        return other == Interval(-oo, oo, True, True)
+
+    def __hash__(self):
+        return hash(Interval(-oo, oo, True, True))
+
 
 class ImageSet(Set):
     """Image of a set under a mathematical function.
