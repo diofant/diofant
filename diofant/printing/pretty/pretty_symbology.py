@@ -109,11 +109,11 @@ def GSUB(letter):
 
 
 def DSUB(digit):
-    return U('SUBSCRIPT %s' % digit_2txt[digit])
+    return U(f'SUBSCRIPT {digit_2txt[digit]}')
 
 
 def SSUB(symb):
-    return U('SUBSCRIPT %s' % symb_2txt[symb])
+    return U(f'SUBSCRIPT {symb_2txt[symb]}')
 
 
 def LSUP(letter):
@@ -121,11 +121,11 @@ def LSUP(letter):
 
 
 def DSUP(digit):
-    return U('SUPERSCRIPT %s' % digit_2txt[digit])
+    return U(f'SUPERSCRIPT {digit_2txt[digit]}')
 
 
 def SSUP(symb):
-    return U('SUPERSCRIPT %s' % symb_2txt[symb])
+    return U(f'SUPERSCRIPT {symb_2txt[symb]}')
 
 
 sub = {}    # symb -> subscript symbol
@@ -186,27 +186,27 @@ modifier_dict = {
 
 
 def HUP(symb):
-    return U('%s UPPER HOOK' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} UPPER HOOK')
 
 
 def CUP(symb):
-    return U('%s UPPER CORNER' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} UPPER CORNER')
 
 
 def MID(symb):
-    return U('%s MIDDLE PIECE' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} MIDDLE PIECE')
 
 
 def EXT(symb):
-    return U('%s EXTENSION' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} EXTENSION')
 
 
 def HLO(symb):
-    return U('%s LOWER HOOK' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} LOWER HOOK')
 
 
 def CLO(symb):
-    return U('%s LOWER CORNER' % symb_2txt[symb])
+    return U(f'{symb_2txt[symb]} LOWER CORNER')
 
 
 # {} '('  ->  (extension, start, end, middle) 1-character
@@ -290,7 +290,7 @@ def xobj(symb, length):
     return: [] of equal-length strings
     """
     if length <= 0:
-        raise ValueError("Length should be greater than 0")
+        raise ValueError('Length should be greater than 0')
 
     # TODO robustify when no unicodedat available
     if _use_unicode:
@@ -384,7 +384,7 @@ root = {
 
 # RATIONAL
 def VF(txt):
-    return U('VULGAR FRACTION %s' % txt)
+    return U(f'VULGAR FRACTION {txt}')
 
 
 # (p,q) -> symbol

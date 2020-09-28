@@ -12,8 +12,7 @@ from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal,
                     sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import (default_sort_key, is_sequence, iterable,
-                                  ordered)
+from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef
 from ..core.logic import fuzzy_and
 from ..core.relational import Relational
@@ -29,7 +28,7 @@ from ..polys.polyerrors import PolynomialError
 from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
 from ..simplify.fu import TR1
-from ..utilities import filldedent
+from ..utilities import default_sort_key, filldedent, ordered
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
 from .utils import checksol
@@ -128,7 +127,7 @@ def solve(f, *symbols, **flags):
 
     We could restrict solutions by using assumptions:
 
-    >>> p = Symbol("p", positive=True)
+    >>> p = Symbol('p', positive=True)
     >>> solve(p**2 - 1)
     [{p: 1}]
 
@@ -184,8 +183,7 @@ def solve(f, *symbols, **flags):
             else:
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
         elif isinstance(fi, Relational):
-            raise ValueError("Only expressions or equalities "
-                             "supported, got %s" % fi)
+            raise ValueError(f'Only expressions or equalities supported, got {fi}')
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
 
@@ -247,8 +245,8 @@ def solve(f, *symbols, **flags):
             if not a.has(*symbols):
                 continue
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
-                raise NotImplementedError('solving %s when the argument '
-                                          'is not real or imaginary.' % a)
+                raise NotImplementedError(f'solving {a} when the argument '
+                                          'is not real or imaginary.')
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
                          piece(a.args[0]*I)))
         fi = fi.subs(reps)
@@ -293,7 +291,7 @@ def solve(f, *symbols, **flags):
             s_new = s
         else:
             symbol_swapped = True
-            s_new = Dummy('X%d' % i)
+            s_new = Dummy(f'X{i:d}')
         symbols_new.append(s_new)
 
     if symbol_swapped:
@@ -431,7 +429,7 @@ def _solve(f, symbol, **flags):
     gives None a ValueError will be raised.
 
     """
-    not_impl_msg = "No algorithms are implemented to solve equation %s"
+    not_impl_msg = 'No algorithms are implemented to solve equation %s'
 
     # /!\ capture this flag then set it to False so that no checking in
     # recursive calls will be done; only the final answer is checked
@@ -584,7 +582,7 @@ def _solve(f, symbol, **flags):
                         result = list(ordered(sols))
 
                 if result is False:
-                    msg = 'multiple generators %s' % gens
+                    msg = f'multiple generators {gens}'
 
             else:
                 # e.g. case where gens are exp(x), exp(-x)
@@ -853,8 +851,8 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(rnew)
                     hit = True
                     got_s.add(s)
-                if not hit:  # pragma: no cover
-                    raise NotImplementedError('could not solve %s' % eq2)
+                if not hit:
+                    raise NotImplementedError(f'could not solve {eq2}')
             else:
                 result = newresult
                 assert not any(b in bad_results for b in result)
@@ -906,7 +904,7 @@ def solve_linear(f, x):
 
     """
     if not x.is_Symbol:
-        raise ValueError("%s is not a Symbol" % x)
+        raise ValueError(f'{x} is not a Symbol')
     f = f.replace(lambda e: e.is_Derivative, lambda e: e.doit())
     n, d = res = f.as_numer_denom()
     poly = n.as_poly(x, extension=False)
@@ -988,12 +986,13 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We speed up slightly by starting at one less than the number of
         # variables the quick method manages.
         from itertools import combinations
+
         from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
         n0 = len([x for x in bestsol.values() if x != 0])
         for n in range(n0 - 1, 1, -1):
-            debug('minsolve: %s' % n)
+            debug(f'minsolve: {n}')
             thissol = None
             for nonzeros in combinations(list(range(N)), n):
                 subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T
@@ -1047,7 +1046,7 @@ def _tsolve(eq, sym, **flags):
     [LambertW(2)/2]
 
     """
-    from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
+    from .bivariate import _filtered_gens, _solve_lambert, bivariate_type
 
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []

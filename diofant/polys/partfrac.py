@@ -114,7 +114,7 @@ def apart(f, x=None, full=False, **options):
             return apart(fc, x=x, full=full, **_options)
 
         raise NotImplementedError(
-            "multivariate partial fraction decomposition")
+            'multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -313,8 +313,8 @@ def apart_list(f, x=None, dummies=None, **options):
     options = set_defaults(options, extension=True)
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
-    if P.is_multivariate:  # pragma: no cover
-        raise NotImplementedError("multivariate partial fraction decomposition")
+    if P.is_multivariate:
+        raise NotImplementedError('multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -329,7 +329,7 @@ def apart_list(f, x=None, dummies=None, **options):
             while True:
                 yield d
 
-        dummies = dummies("w")
+        dummies = dummies('w')
 
     rationalpart = apart_list_full_decomposition(P, Q, dummies)
 
@@ -448,7 +448,7 @@ def assemble_partfrac_list(partial_list):
     >>> pfda.doit()
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
-    >>> a = Dummy("a")
+    >>> a = Dummy('a')
     >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)

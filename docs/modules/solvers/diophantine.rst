@@ -86,8 +86,8 @@ First, let's import the highest API of the Diophantine module.
 
 Before we start solving the equations, we need to define the variables.
 
->>> x, y, z, t, p, q = symbols("x, y, z, t, p, q", integer=True)
->>> t1, t2, t3, t4, t5 = symbols("t1:6", integer=True)
+>>> x, y, z, t, p, q = symbols('x, y, z, t, p, q', integer=True)
+>>> t1, t2, t3, t4, t5 = symbols('t1:6', integer=True)
 
 Let's start by solving the easiest type of Diophantine equations, i.e. linear
 Diophantine equations. Let's solve `2x + 3y = 5`. Note that although we
@@ -168,7 +168,7 @@ set()
 {(t_0, -t_0), (t_0, -t_0 + 3)}
 
 The most interesting case is when `\Delta > 0` and it is not a perfect square.
-In this case, the equation has either no solutions or an infinte number of
+In this case, the equation has either no solutions or an infinite number of
 solutions. Consider the below cases where `\Delta = 8`.
 
 >>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
@@ -314,7 +314,7 @@ References
 * Andreescu, Titu. Andrica, Dorin. Cucurezeanu, Ion. An Introduction to
   Diophantine Equations
 * Diophantine Equation, Wolfram Mathworld, [online]. Available:
-  http://mathworld.wolfram.com/DiophantineEquation.html
+  https://mathworld.wolfram.com/DiophantineEquation.html
 * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
   Available: https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM
 * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
@@ -379,10 +379,6 @@ find_DN
 diop_ternary_quadratic
 ^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diop_ternary_quadratic
-
-square_factor
-^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.square_factor
 
 descent
 ^^^^^^^

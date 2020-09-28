@@ -28,7 +28,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 

@@ -195,7 +195,7 @@ def test_minimal_polynomial_conjugate():
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_rootof(method):
     e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
     assert (minimal_polynomial(e, method=method)(x) ==
@@ -204,20 +204,21 @@ def test_minimal_polynomial_rootof(method):
                               domain=e.poly.domain)(y) == e.poly(y)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_GoldenRatio(method):
     assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
 
 
-def test_diofantissue_662():
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
+def test_abs_re_im(method):
+    # issue diofant/diofant#662
     e1 = abs(sqrt(1 + sqrt(2 + I)))
     e2 = re(sqrt(I), evaluate=False)
     e3 = im(sqrt(I), evaluate=False)
-    for meth in ('compose', 'groebner'):
-        assert (minimal_polynomial(e1, method=meth)(x) ==
-                x**16 - 4*x**12 - 12*x**8 - 8*x**4 + 4)
-        assert minimal_polynomial(e2, method=meth)(x) == 2*x**2 - 1
-        assert minimal_polynomial(e3, method=meth)(x) == 2*x**2 - 1
+    assert (minimal_polynomial(e1, method=method)(x) ==
+            x**16 - 4*x**12 - 12*x**8 - 8*x**4 + 4)
+    assert minimal_polynomial(e2, method=method)(x) == 2*x**2 - 1
+    assert minimal_polynomial(e3, method=method)(x) == 2*x**2 - 1
 
 
 def test_minimal_polynomial_sq():
@@ -648,3 +649,18 @@ def test_sympyissue_5934():
          (-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                    24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
     assert [minimal_polynomial(i)(x) for i in e.as_numer_denom()] == [x]*2
+
+
+def test_sympyissue_18874():
+    e = [sqrt(2) + sqrt(5), sqrt(2)]
+
+    assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
+                                    [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
+                                             [QQ(-1, 78), 0, QQ(59, 78), 0]])
+
+
+def test_sympyissue_19760():
+    e = 1/(sqrt(1 + sqrt(2)) - sqrt(2)*sqrt(1 + sqrt(2))) + 1
+
+    for meth in ('compose', 'groebner'):
+        minimal_polynomial(e, method=meth)(x) == x**4 - 4*x**3 + 4*x**2 - 2

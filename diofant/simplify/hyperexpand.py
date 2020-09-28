@@ -64,7 +64,6 @@ from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
                     Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
                     sympify, zoo)
-from ..core.compatibility import default_sort_key
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
                          exp_polar, expint, factorial, floor, fresnelc,
@@ -77,10 +76,10 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_power1, HyperRep_power2,
                                        HyperRep_sinasin, HyperRep_sqrts1,
                                        HyperRep_sqrts2, hyper, meijerg)
-from ..polys import Poly, poly
+from ..polys import Poly, cancel
 from ..printing import sstr
 from ..series import residue
-from ..utilities.iterables import sift
+from ..utilities import default_sort_key, sift
 from .powsimp import powdenest
 from .simplify import simplify
 
@@ -467,9 +466,7 @@ def make_simp(z):
 
     def simp(expr):
         """Efficiently simplify the rational function ``expr``."""
-        numer, denom = expr.as_numer_denom()
-        c, numer, denom = poly(numer, z).cancel(poly(denom, z))
-        return c * numer.as_expr() / denom.as_expr()
+        return cancel(expr, z)
 
     return simp
 
@@ -477,7 +474,7 @@ def make_simp(z):
 def debug(*args):
     if DIOFANT_DEBUG:
         for a in args:
-            print(a, end="")
+            print(a, end='')
         print()
 
 
@@ -752,8 +749,8 @@ class Formula:
             elif a in self.func.bq.args:
                 symbol_values.append(bq)
             else:
-                raise ValueError("At least one of the parameters of the "
-                                 "formula must be equal to %s" % (a,))
+                raise ValueError('At least one of the parameters of the '
+                                 'formula must be equal to %s' % (a,))
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -780,7 +777,7 @@ class Formula:
                             for target in bucket[mod]:
                                 n0 = solve(expr.xreplace(repl0) - target, _n)[0][_n]
                                 if n0.free_symbols:
-                                    raise ValueError("Value should not be true")
+                                    raise ValueError('Value should not be true')
                                 vals.append(n0)
             else:
                 values = []
@@ -1550,7 +1547,7 @@ def devise_plan(target, origin, z):
 
     if len(list(abuckets)) != len(list(nabuckets)) or \
             len(list(bbuckets)) != len(list(nbbuckets)):
-        raise ValueError('%s not reachable from %s' % (target, origin))
+        raise ValueError(f'{target} not reachable from {origin}')
 
     ops = []
 
@@ -1593,7 +1590,7 @@ def devise_plan(target, origin, z):
             bk = bbuckets[r]
             nbk = nbbuckets[r]
         if len(al) != len(nal) or len(bk) != len(nbk):
-            raise ValueError('%s not reachable from %s' % (target, origin))
+            raise ValueError(f'{target} not reachable from {origin}')
 
         al, nal, bk, nbk = [sorted(w, key=default_sort_key)
                             for w in [al, nal, bk, nbk]]
@@ -1783,7 +1780,7 @@ def try_lerchphi(func):
         if not denom.has(t):
             p = Poly(numer, t)
             if not p.is_term:
-                raise TypeError("p should be a term")
+                raise TypeError('p should be a term')
             ((b, ), a) = p.LT()
             monomials += [(a/denom, b)]
             continue
@@ -1803,7 +1800,7 @@ def try_lerchphi(func):
             if tmp != t:
                 b, _ = tmp.as_independent(t)
             if dep != b*t + a:
-                raise NotImplementedError('unrecognised form %s' % dep)
+                raise NotImplementedError(f'unrecognised form {dep}')
             a /= b
             indep *= b**n
         else:
@@ -1860,7 +1857,7 @@ def build_hypergeometric_formula(func):
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.
     # I'm not aware of a basis that works in all cases.
-    from ..matrices import zeros, Matrix, eye
+    from ..matrices import Matrix, eye, zeros
     z = Dummy('z')
     if func.ap:
         afactors = [_x + a for a in func.ap]

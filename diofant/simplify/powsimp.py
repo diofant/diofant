@@ -1,16 +1,16 @@
+import functools
 from collections import defaultdict
-from functools import reduce
 
 from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
                     count_ops, expand_log, expand_mul, factor_terms, prod,
                     sympify)
-from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..logic import true
 from ..ntheory import multiplicity
 from ..polys import gcd, lcm_list
+from ..utilities import default_sort_key, ordered
 
 
 @cacheit
@@ -658,7 +658,7 @@ def _denest_pow(eq):
     glogb = expand_log(log(b))
     if glogb.is_Add:
         args = glogb.args
-        g = reduce(nc_gcd, args)
+        g = functools.reduce(nc_gcd, args)
         if g != 1:
             cg, rg = g.as_coeff_Mul()
             glogb = _keep_coeff(cg, rg*Add(*[a/g for a in args]))

@@ -97,6 +97,7 @@ class BlockMatrix(MatrixExpr):
 
     def _eval_transpose(self):
         from .. import Matrix
+
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy
@@ -110,7 +111,7 @@ class BlockMatrix(MatrixExpr):
             return Add(*[Trace(self.blocks[i, i])
                          for i in range(self.blockshape[0])])
         raise NotImplementedError("Can't perform trace of irregular "
-                                  "blockshape")  # pragma: no cover
+                                  'blockshape')  # pragma: no cover
 
     def _eval_determinant(self):
         return Determinant(self)

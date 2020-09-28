@@ -11,8 +11,7 @@ from ..core import Dummy, Rational, oo, pi, sympify
 from ..core.logic import fuzzy_bool
 from ..functions import cos, sin, sqrt
 from ..logic import false, true
-from ..polys import DomainError, Poly, PolynomialError
-from ..polys.polyutils import _not_a_coeff, _nsort
+from ..polys import Poly
 from ..simplify import simplify, trigsimp
 from ..solvers import solve
 from ..utilities import filldedent
@@ -37,20 +36,6 @@ class Ellipse(GeometrySet):
     eccentricity : number or Diofant expression, optional
         Two of `hradius`, `vradius` and `eccentricity` must be supplied to
         create an Ellipse. The third is derived from the two supplied.
-
-    Attributes
-    ==========
-
-    center
-    hradius
-    vradius
-    area
-    circumference
-    eccentricity
-    periapsis
-    apoapsis
-    focus_distance
-    foci
 
     Raises
     ======
@@ -103,7 +88,7 @@ class Ellipse(GeometrySet):
             center = Point(center)
 
         if len(center) != 2:
-            raise ValueError('The center of "{0}" must be a two dimensional point'.format(cls))
+            raise ValueError(f'The center of "{cls}" must be a two dimensional point')
 
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
@@ -556,7 +541,7 @@ class Ellipse(GeometrySet):
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
-                "f(%s, %s) = %s" % (str(x), str(y), str(result))))
+                f'f({x!s}, {y!s}) = {result!s}'))
 
     def encloses_point(self, p):
         """
@@ -744,7 +729,7 @@ class Ellipse(GeometrySet):
                 c += len([True for point in inter if point in seg])
             return c == 1
         else:
-            raise NotImplementedError("Unknown argument type")
+            raise NotImplementedError('Unknown argument type')
 
     def normal_lines(self, p, prec=None):
         """Normal lines between `p` and the ellipse.
@@ -809,12 +794,7 @@ class Ellipse(GeometrySet):
         yis = solve(seq, y)[0][y]
         xeq = eq.subs({y: yis}).as_numer_denom()[0].expand()
         if len(xeq.free_symbols) == 1:
-            try:
-                # this is so much faster, it's worth a try
-                xsol = Poly(xeq, x).real_roots()
-            except (DomainError, PolynomialError, NotImplementedError):
-                xsol = _nsort([s[x] for s in solve(xeq, x)],
-                              separated=True)[0]
+            xsol = Poly(xeq, x).real_roots()
             points = [Point(i, solve(eq.subs({x: i}), y)[0][y])
                       for i in xsol]
         else:
@@ -823,7 +803,7 @@ class Ellipse(GeometrySet):
         slopes = [norm.subs(zip((x, y), pt.args)) for pt in points]
         if prec is not None:
             points = [pt.evalf(prec) for pt in points]
-            slopes = [i if _not_a_coeff(i) else i.evalf(prec) for i in slopes]
+            slopes = [i if i.is_Number and i.is_finite is not False else i.evalf(prec) for i in slopes]
         return [Line(pt, slope=s) for pt, s in zip(points, slopes)]
 
     def arbitrary_point(self, parameter='t'):
@@ -949,7 +929,7 @@ class Ellipse(GeometrySet):
         times) until a valid point is obtained.
 
         """
-        from ..functions import sin, cos
+        from ..functions import cos, sin
         t = _symbol('t')
         x, y = self.arbitrary_point(t).args
         # get a random value in [-1, 1) corresponding to cos(t)
@@ -1160,9 +1140,9 @@ class Ellipse(GeometrySet):
 
     def __eq__(self, o):
         """Is the other GeometryEntity the same as this ellipse?"""
-        return isinstance(o, GeometryEntity) and (self.center == o.center and
-                                                  self.hradius == o.hradius and
-                                                  self.vradius == o.vradius)
+        return isinstance(o, Ellipse) and (self.center == o.center and
+                                           self.hradius == o.hradius and
+                                           self.vradius == o.vradius)
 
     def __hash__(self):
         return super().__hash__()
@@ -1191,13 +1171,6 @@ class Circle(Ellipse):
     center : Point
     radius : number or diofant expression
     points : sequence of three Points
-
-    Attributes
-    ==========
-
-    radius (synonymous with hradius, vradius, major and minor)
-    circumference
-    equation
 
     Raises
     ======
@@ -1232,7 +1205,7 @@ class Circle(Ellipse):
             args = [Point(a) for a in args]
             if Point.is_collinear(*args):
                 raise GeometryError(
-                    "Cannot construct a circle from three collinear points")
+                    'Cannot construct a circle from three collinear points')
             from .polygon import Triangle
             t = Triangle(*args)
             c = t.circumcenter
@@ -1245,7 +1218,7 @@ class Circle(Ellipse):
         if not (c is None or r is None):
             return GeometryEntity.__new__(cls, c, r, **kwargs)
 
-        raise GeometryError("Circle.__new__ received unknown arguments")
+        raise GeometryError('Circle.__new__ received unknown arguments')
 
     @property
     def radius(self):

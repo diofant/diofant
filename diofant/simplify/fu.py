@@ -194,7 +194,6 @@ from strategies.tree import greedy
 from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
                     expand_mul, factor_terms, gcd_terms, pi, sympify)
-from ..core.compatibility import ordered
 from ..core.exprtools import Factors
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
@@ -202,6 +201,7 @@ from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
 from ..polys.polytools import factor
+from ..utilities import ordered
 from .simplify import bottom_up
 
 
@@ -429,7 +429,7 @@ def TR4(rv):
     ========
 
     >>> for s in (0, pi/6, pi/4, pi/3, pi/2):
-    ...     print('%s %s %s %s' % (cos(s), sin(s), tan(s), cot(s)))
+    ...     print(f'{cos(s)} {sin(s)} {tan(s)} {cot(s)}')
     ...
     1 0 0 zoo
     sqrt(3)/2 1/2 sqrt(3)/3 sqrt(3)
@@ -2023,7 +2023,7 @@ def _osborne(e, d):
         elif isinstance(rv, coth):
             return cot(a)/I
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2062,7 +2062,7 @@ def _osbornei(e, d):
         elif isinstance(rv, csc):
             return I/sinh(a)
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2091,8 +2091,8 @@ def hyper_as_trig(rv):
     https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
-    from .simplify import signsimp
     from .radsimp import collect
+    from .simplify import signsimp
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)

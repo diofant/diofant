@@ -25,7 +25,7 @@ argument.
 Plot Class
 ----------
 
-.. autoclass:: diofant.plotting.plot.Plot
+.. autoclass:: Plot
    :members:
 
 Plotting Function Reference
@@ -41,37 +41,41 @@ Plotting Function Reference
 
 .. autofunction:: plot3d_parametric_surface
 
-.. autofunction:: diofant.plotting.plot_implicit.plot_implicit
+.. currentmodule:: diofant.plotting.plot_implicit
+.. autofunction:: plot_implicit
 
 Series Classes
 --------------
 
-.. autoclass:: diofant.plotting.plot.BaseSeries
+.. currentmodule:: diofant.plotting.plot
+
+.. autoclass:: BaseSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.Line2DBaseSeries
+.. autoclass:: Line2DBaseSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.LineOver1DRangeSeries
+.. autoclass:: LineOver1DRangeSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.Parametric2DLineSeries
+.. autoclass:: Parametric2DLineSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.Line3DBaseSeries
+.. autoclass:: Line3DBaseSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.Parametric3DLineSeries
+.. autoclass:: Parametric3DLineSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.SurfaceBaseSeries
+.. autoclass:: SurfaceBaseSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.SurfaceOver2DRangeSeries
+.. autoclass:: SurfaceOver2DRangeSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot.ParametricSurfaceSeries
+.. autoclass:: ParametricSurfaceSeries
    :members:
 
-.. autoclass:: diofant.plotting.plot_implicit.ImplicitSeries
+.. currentmodule:: diofant.plotting.plot_implicit
+.. autoclass:: ImplicitSeries
    :members:

@@ -5,11 +5,10 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
+from diofant import (QQ, ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
                      PolynomialError, Rational, RootOf, Symbol, Wild, acos,
-                     cbrt, cos, cyclotomic_poly, exp, im, intervals,
-                     legendre_poly, nroots, pi, powsimp, re, root, roots, sin,
-                     sqrt, symbols)
+                     cbrt, cos, cyclotomic_poly, exp, im, legendre_poly,
+                     nroots, pi, powsimp, re, root, roots, sin, sqrt, symbols)
 from diofant.abc import a, b, c, d, e, q, x, y, z
 from diofant.polys.polyroots import (preprocess_roots, root_factors,
                                      roots_binomial, roots_cubic,
@@ -60,16 +59,6 @@ def test_roots_quadratic():
         f = Poly(_a*x**2 + _b*x + _c)
         roots = roots_quadratic(f)
         assert roots == _nsort(roots)
-
-
-def test_sympyissue_8438():
-    p = Poly([1, y, -2, -3], x).as_expr()
-    roots = roots_cubic(Poly(p, x), x)
-    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
-    post = [r.subs({y: z}) for r in roots]
-    assert set(post) == set(roots_cubic(Poly(p.subs({y: z}), x)))
-    # /!\ if p is not made an expression, this is *very* slow
-    assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
 
 
 def test_sympyissue_8285():
@@ -125,6 +114,15 @@ def test_roots_cubic():
                        root(a + sqrt(a**2), 3), evaluate=False),
                    Mul(Rational(-1, 3), Rational(-1, 2) - sqrt(3)*I/2,
                        root(a + sqrt(a**2), 3), evaluate=False)]
+
+    # issue sympy/sympy#8438
+    p = Poly([1, y, -2, -3], x).as_expr()
+    croots = roots_cubic(Poly(p, x), x)
+    z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
+    post = [r.subs({y: z}) for r in croots]
+    assert set(post) == set(roots_cubic(Poly(p.subs({y: z}), x)))
+    # /!\ if p is not made an expression, this is *very* slow
+    assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
 
 
 def test_roots_quartic():
@@ -309,7 +307,7 @@ def test_roots_preprocessing():
     assert coeff == 1/c
     assert poly == Poly(x**3 + a, x)
 
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \
@@ -332,8 +330,8 @@ def test_roots_preprocessing():
     assert coeff == 1
     assert poly == Poly(f, x)
 
-    f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.poly_ring(x, exp(x)))
-    g = Poly(y**2 - exp(x), y, domain=ZZ.poly_ring(exp(x)))
+    f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.inject(x, exp(x)))
+    g = Poly(y**2 - exp(x), y, domain=ZZ.inject(exp(x)))
 
     assert preprocess_roots(f) == (x, g)
 
@@ -529,7 +527,7 @@ def test_roots1():
 
 def test_roots_slow():
     """Just test that calculating these roots does not hang."""
-    a, b, c, d, x = symbols("a,b,c,d,x")
+    a, b, c, d, x = symbols('a,b,c,d,x')
 
     f1 = x**2*c + (a/b) + x*c*d - a
     f2 = x**2*(a + b*(c - d)*a) + x*a*b*c/(b*d - d) + (a*d - c/d)
@@ -537,7 +535,7 @@ def test_roots_slow():
     assert list(roots(f1, x).values()) == [1, 1]
     assert list(roots(f2, x).values()) == [1, 1]
 
-    zz, yy, xx, zy, zx, yx, k = symbols("zz,yy,xx,zy,zx,yx,k")
+    zz, yy, xx, zy, zx, yx, k = symbols('zz,yy,xx,zy,zx,yx,k')
 
     e1 = (zz - k)*(yy - k)*(xx - k) + zy*yx*zx + zx - zy - yx
     e2 = (zz - k)*yx*yx + zx*(yy - k)*zx + zy*zy*(xx - k)
@@ -569,7 +567,7 @@ def test_roots_inexact():
 
 
 def test_roots_preprocessed():
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \
@@ -600,12 +598,23 @@ def test_roots_preprocessed():
 def test_roots_mixed():
     f = -1936 - 5056*x - 7592*x**2 + 2704*x**3 - 49*x**4
 
-    _re, _im = intervals(f, all=True)
+    _re, _im = [], []
+    p = Poly(f)
+    for r in p.all_roots():
+        c, (r,) = r.as_coeff_mul()
+        if r.is_real:
+            r = r.interval
+            _re.append((c*QQ.to_expr(r.a), c*QQ.to_expr(r.b)))
+        else:
+            r = r.interval
+            _im.append((c*QQ.to_expr(r.ax) + c*I*QQ.to_expr(r.ay),
+                        c*QQ.to_expr(r.bx) + c*I*QQ.to_expr(r.by)))
+
     _nroots = nroots(f)
     _sroots = roots(f, multiple=True)
 
-    _re = [Interval(a, b) for (a, b), _ in _re]
-    _im = [Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b), _ in _im]
+    _re = [Interval(a, b) for (a, b) in _re]
+    _im = [Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b) in _im]
 
     _intervals = _re + _im
     _sroots = [r.evalf() for r in _sroots]

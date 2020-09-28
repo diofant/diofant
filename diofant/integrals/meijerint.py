@@ -32,7 +32,6 @@ from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
                     Pow, Rational, Tuple, Wild, cacheit, expand, expand_mul,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
                     sympify, zoo)
-from ..core.compatibility import default_sort_key, ordered
 from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
                                                _rewrite_hyperbolics_as_exp)
@@ -40,6 +39,7 @@ from ..logic import And, Not, Or, false
 from ..logic.boolalg import BooleanAtom
 from ..simplify import collect, hyperexpand, powdenest
 from ..simplify.fu import sincos_to_sum
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import multiset_partitions
 from ..utilities.misc import debug as _debug
 
@@ -79,8 +79,8 @@ def _create_lookup_table(table):
 
     # [P], Section 8.
 
-    from ..logic import Not
     from ..functions import unpolarify
+    from ..logic import Not
 
     class IsNonPositiveInteger(Function):
 
@@ -91,8 +91,9 @@ def _create_lookup_table(table):
                 return arg <= 0
 
     # Section 8.4.2
-    from ..functions import (gamma, cos, exp, re, sin, sqrt, sinh, cosh,
-                             factorial, log, erf, erfc, erfi, polar_lift)
+    from ..functions import (cos, cosh, erf, erfc, erfi, exp, factorial, gamma,
+                             log, polar_lift, re, sin, sinh, sqrt)
+
     # TODO this needs more polar_lift (c/f entry for exp)
     add(Heaviside(t - b)*(t - b)**(a - 1), [a], [], [], [0], t/b,
         gamma(a)*b**(a - 1), And(b > 0))
@@ -184,8 +185,7 @@ def _create_lookup_table(table):
     # TODO
 
     # Section 8.4.11
-    from ..functions import (Ei, expint, Si, Ci, Shi, Chi,
-                             fresnels, fresnelc)
+    from ..functions import Chi, Ci, Ei, Shi, Si, expint, fresnelc, fresnels
     addi(Ei(t),
          constant(-I*pi) + [(Integer(-1), meijerg([], [1], [0, 0], [],
                                                   t*polar_lift(-1)))],
@@ -217,7 +217,7 @@ def _create_lookup_table(table):
     add(fresnelc(t), [1], [], [Rational(1, 4)], [0, Rational(3, 4)], pi**2*t**4/16, Rational(1, 2))
 
     # ##### bessel-type functions #####
-    from ..functions import besselj, bessely, besseli, besselk
+    from ..functions import besseli, besselj, besselk, bessely
 
     # Section 8.4.19
     add(besselj(a, t), [], [], [a/2], [-a/2], t**2/4)
@@ -267,7 +267,7 @@ def _create_lookup_table(table):
     # TODO many more formulas. should all be derivable
 
     # Complete elliptic integrals K(z) and E(z)
-    from ..functions import elliptic_k, elliptic_e
+    from ..functions import elliptic_e, elliptic_k
     add(elliptic_k(t), [Rational(1, 2), Rational(1, 2)], [], [0], [0], -t, Rational(1, 2))
     add(elliptic_e(t), [Rational(1, 2), 3*Rational(1, 2)], [], [0], [0], -t, -Rational(1, 2)/2)
 
@@ -294,8 +294,6 @@ def _mytype(f, x):
 
 class _CoeffExpValueError(ValueError):
     """Exception raised by _get_coeff_exp, for internal use only."""
-
-    pass
 
 
 def _get_coeff_exp(expr, x):
@@ -325,7 +323,7 @@ def _get_coeff_exp(expr, x):
     elif m == x:
         return c, Integer(1)
     else:
-        raise _CoeffExpValueError('expr not of form a*x**b: %s' % expr)
+        raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
 
 
 def _exponents(expr, x):
@@ -571,7 +569,7 @@ def _is_analytic(f, x):
     will in fact agree with the G functions almost everywhere
 
     """
-    from ..functions import Heaviside, Abs
+    from ..functions import Abs, Heaviside
     return not any(x in expr.free_symbols for expr in f.atoms(Heaviside, Abs))
 
 
@@ -586,8 +584,8 @@ def _condsimp(cond):
     z | (x <= y)
 
     """
-    from ..functions import (unbranched_argument, exp_polar,
-                             periodic_argument, polar_lift)
+    from ..functions import (exp_polar, periodic_argument, polar_lift,
+                             unbranched_argument)
     from ..logic.boolalg import BooleanFunction
     if not isinstance(cond, BooleanFunction):
         return cond
@@ -719,7 +717,8 @@ def _check_antecedents_1(g, x, helper=False):
 
     """
     # NOTE if you update these conditions, please update the documentation as well
-    from ..functions import ceiling, re, unbranched_argument as arg
+    from ..functions import ceiling, re
+    from ..functions import unbranched_argument as arg
     delta = g.delta
     eta, _ = _get_coeff_exp(g.argument, x)
     m, n, p, q = sympify([len(g.bm), len(g.an), len(g.ap), len(g.bq)])
@@ -750,11 +749,10 @@ def _check_antecedents_1(g, x, helper=False):
         _debug(*msg)
 
     debug('Checking antecedents for 1 function:')
-    debug('  delta=%s, eta=%s, m=%s, n=%s, p=%s, q=%s'
-          % (delta, eta, m, n, p, q))
-    debug('  ap = %s, %s' % (list(g.an), list(g.aother)))
-    debug('  bq = %s, %s' % (list(g.bm), list(g.bother)))
-    debug('  cond_3=%s, cond_3*=%s, cond_4=%s' % (cond_3, cond_3_star, cond_4))
+    debug(f'  delta={delta}, eta={eta}, m={m}, n={n}, p={p}, q={q}')
+    debug(f'  ap = {list(g.an)}, {list(g.aother)}')
+    debug(f'  bq = {list(g.bm)}, {list(g.bother)}')
+    debug(f'  cond_3={cond_3}, cond_3*={cond_3_star}, cond_4={cond_4}')
 
     conds = []
 
@@ -917,12 +915,14 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
 
 def _check_antecedents(g1, g2, x):
     """Return a condition under which the integral theorem applies."""
-    from ..functions import (re, cos, exp, sin, sign, unpolarify,
-                             arg as arg_, unbranched_argument as arg)
+    from ..functions import arg as arg_
+    from ..functions import cos, exp, re, sign, sin
+    from ..functions import unbranched_argument as arg
+    from ..functions import unpolarify
+
     #  Yes, this is madness.
     # XXX TODO this is a testing *nightmare*
     # NOTE if you update these conditions, please update the documentation as well
-
     # The following conditions are found in
     # [P], Section 2.24.1
     #
@@ -944,11 +944,9 @@ def _check_antecedents(g1, g2, x):
     theta = (pi*(v - s - t) + abs(arg(sigma)))/(v - u)
 
     _debug('Checking antecedents:')
-    _debug('  sigma=%s, s=%s, t=%s, u=%s, v=%s, b*=%s, rho=%s'
-           % (sigma, s, t, u, v, bstar, rho))
-    _debug('  omega=%s, m=%s, n=%s, p=%s, q=%s, c*=%s, mu=%s,'
-           % (omega, m, n, p, q, cstar, mu))
-    _debug('  phi=%s, eta=%s, psi=%s, theta=%s' % (phi, eta, psi, theta))
+    _debug(f'  sigma={sigma}, s={s}, t={t}, u={u}, v={v}, b*={bstar}, rho={rho}')
+    _debug(f'  omega={omega}, m={m}, n={n}, p={p}, q={q}, c*={cstar}, mu={mu},')
+    _debug(f'  phi={phi}, eta={eta}, psi={psi}, theta={theta}')
 
     def _c1():
         for g in [g1, g2]:
@@ -1055,13 +1053,13 @@ def _check_antecedents(g1, g2, x):
     for cond, i in [(c1, 1), (c2, 2), (c3, 3), (c4, 4), (c5, 5), (c6, 6),
                     (c7, 7), (c8, 8), (c9, 9), (c10, 10), (c11, 11),
                     (c12, 12), (c13, 13), (c14, 14), (c15, 15)]:
-        _debug('  c%s:' % i, cond)
+        _debug(f'  c{i}:', cond)
 
     # We will return Or(*conds)
     conds = []
 
     def pr(count):
-        _debug('  case %s:' % count, conds[-1])
+        _debug(f'  case {count}:', conds[-1])
     conds += [And(m*n*s*t != 0, bstar.is_positive is True, cstar.is_positive is True, c1, c2, c3, c10,
                   c12)]  # 1
     pr(1)
@@ -1255,7 +1253,7 @@ def _rewrite_inversion(fac, po, g, x):
 
 def _check_antecedents_inversion(g, x):
     """Check antecedents for the laplace inversion integral."""
-    from ..functions import re, im, exp
+    from ..functions import exp, im, re
     _debug('Checking antecedents for inversion:')
     z = g.argument
     _, e = _get_coeff_exp(z, x)
@@ -1306,7 +1304,7 @@ def _check_antecedents_inversion(g, x):
     delta = g.delta
     _debug('  m=%s, n=%s, p=%s, q=%s, tau=%s, nu=%s, rho=%s, sigma=%s' % (
         m, n, p, q, tau, nu, rho, sigma))
-    _debug('  epsilon=%s, theta=%s, delta=%s' % (epsilon, theta, delta))
+    _debug(f'  epsilon={epsilon}, theta={theta}, delta={delta}')
 
     # First check if the computation is valid.
     if not (g.delta >= e/2 or (p >= 1 and p >= q)):
@@ -1467,10 +1465,10 @@ def _rewrite_single(f, x, recursive=True):
     if not recursive:
         return
     _debug('Trying recursive Mellin transform method.')
-    from .transforms import (mellin_transform, inverse_mellin_transform,
-                             IntegralTransformError, MellinTransformStripError)
-    from ..simplify import simplify
     from ..polys import cancel
+    from ..simplify import simplify
+    from .transforms import (IntegralTransformError, MellinTransformStripError,
+                             inverse_mellin_transform, mellin_transform)
 
     def my_imt(F, s, x, strip):
         """Calling simplify() all the time is slow and not helpful, since
@@ -1491,8 +1489,8 @@ def _rewrite_single(f, x, recursive=True):
     # to avoid infinite recursion, we have to force the two g functions case
 
     def my_integrator(f, x):
-        from .integrals import Integral
         from ..simplify import hyperexpand
+        from .integrals import Integral
         r = _meijerint_definite_4(f, x, only_double=True)
         if r is not None:
             res, cond = r
@@ -1622,8 +1620,8 @@ def meijerint_indefinite(f, x):
 
 def _meijerint_indefinite_1(f, x):
     """Helper that does not attempt any substitution."""
-    from .integrals import Integral
     from ..functions import piecewise_fold
+    from .integrals import Integral
     _debug('Trying to compute the indefinite integral of', f, 'wrt', x)
 
     gs = _rewrite1(f, x)
@@ -1736,8 +1734,8 @@ def meijerint_definite(f, x, a, b):
     #
     # There are usually several ways of doing this, and we want to try all.
     # This function does (1), calls _meijerint_definite_2 for step (2).
-    from ..functions import arg, exp, DiracDelta
-    _debug('Integrating', f, 'wrt %s from %s to %s.' % (x, a, b))
+    from ..functions import DiracDelta, arg, exp
+    _debug('Integrating', f, f'wrt {x} from {a} to {b}.')
 
     if f.has(DiracDelta):
         _debug('Integrand has DiracDelta terms - giving up.')
@@ -1801,7 +1799,7 @@ def meijerint_definite(f, x, a, b):
         if b == oo:
             for split in _find_splitting_points(f, x):
                 if (a - split).is_nonnegative:
-                    _debug('Trying x -> x + %s' % split)
+                    _debug(f'Trying x -> x + {split}')
                     res = _meijerint_definite_2(f.subs({x: x + split})
                                                 * Heaviside(x + split - a), x)
                     if res:
@@ -1996,7 +1994,7 @@ def _meijerint_definite_4(f, x, only_double=False):
                 break
             cond = _my_unpolarify(cond)
             if cond == false:
-                _debug('But cond is always False (full_pb=%s).' % full_pb)
+                _debug(f'But cond is always False (full_pb={full_pb}).')
             else:
                 _debug('Result before branch substitutions is:', res)
                 if only_double:
@@ -2020,9 +2018,9 @@ def meijerint_inversion(f, x, t):
     Heaviside(t)
 
     """
-    from ..core import expand, Add, Mul
+    from ..core import Add, Mul, expand
+    from ..functions import Heaviside, exp, log
     from .integrals import Integral
-    from ..functions import exp, log, Heaviside
     f_ = f
     t_ = t
     t = Dummy('t', polar=True)  # We don't want sqrt(t**2) = abs(t) etc

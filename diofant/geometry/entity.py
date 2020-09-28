@@ -169,7 +169,7 @@ class GeometryEntity(Basic):
             if not hasattr(g, 'reflect') and not all(
                     isinstance(arg, Point) for arg in g.args):
                 raise NotImplementedError(
-                    'reflect undefined or non-Point args in %s' % g)
+                    f'reflect undefined or non-Point args in {g}')
             a = atan(l.slope)
             c = l.coefficients
             d = -c[-1]/c[1]  # y-intercept
@@ -206,10 +206,10 @@ class GeometryEntity(Basic):
         False
 
         """
-        from .line import Segment, Ray, Line
         from .ellipse import Ellipse
-        from .polygon import Polygon, RegularPolygon
+        from .line import Line, Ray, Segment
         from .point import Point
+        from .polygon import Polygon, RegularPolygon
 
         if isinstance(o, Point):
             return self.encloses_point(o)
@@ -317,7 +317,7 @@ class GeometrySet(GeometryEntity, Set):
         for use with diofant.sets.Set, if possible.
 
         """
-        from ..sets import Union, FiniteSet
+        from ..sets import FiniteSet, Union
 
         # if its a FiniteSet, merge any points
         # we contain and return a union with the rest
@@ -334,8 +334,8 @@ class GeometrySet(GeometryEntity, Set):
         if possible.
 
         """
-        from .point import Point
         from ..sets import FiniteSet, Union
+        from .point import Point
 
         try:
             inter = self.intersection(o)

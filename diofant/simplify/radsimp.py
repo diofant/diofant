@@ -3,12 +3,13 @@ from collections import defaultdict
 from .. import DIOFANT_DEBUG
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols, sympify)
-from ..core.compatibility import default_sort_key, iterable, ordered
+from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
 from ..functions import log, sqrt
 from ..polys import gcd
+from ..utilities import default_sort_key, ordered
 from .sqrtdenest import sqrtdenest
 
 
@@ -340,14 +341,14 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
         for symbol in syms:
             if DIOFANT_DEBUG:
-                print("DEBUG: parsing of expression %s with symbol %s " % (
+                print('DEBUG: parsing of expression %s with symbol %s ' % (
                     str(terms), str(symbol))
                 )
 
             result = parse_expression(terms, symbol)
 
             if DIOFANT_DEBUG:
-                print("DEBUG: returned %s" % str(result))
+                print('DEBUG: returned %s' % str(result))
 
             if result is not None:
                 terms, elems, common_expo, has_deriv = result
@@ -666,7 +667,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     """
     from .simplify import signsimp
 
-    syms = symbols("a:d A:D")
+    syms = symbols('a:d A:D')
 
     def _num(rterms):
         # return the multiplier that will simplify the expression described
@@ -803,7 +804,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                     keep = False
                 break
 
-            from .powsimp import powsimp, powdenest
+            from .powsimp import powdenest, powsimp
 
             num = powsimp(_num(rterms))
             n *= num

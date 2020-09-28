@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 from ..core import Basic, Dict, sympify
-from ..core.compatibility import as_int, default_sort_key
+from ..core.compatibility import as_int
 from ..functions import bell
 from ..matrices import zeros
 from ..sets import FiniteSet
-from ..utilities import flatten, group, has_dups
+from ..utilities import default_sort_key, flatten, group, has_dups
 
 
 class Partition(FiniteSet):
@@ -49,13 +49,13 @@ class Partition(FiniteSet):
         args = partition
         if not all(isinstance(part, (list, FiniteSet)) for part in args):
             raise ValueError(
-                "Each argument to Partition should be a list or a FiniteSet")
+                'Each argument to Partition should be a list or a FiniteSet')
 
         # sort so we have a canonical reference for RGS
         partition = sorted(sum(list(map(list, partition)), []),
                            key=default_sort_key)
         if has_dups(partition):
-            raise ValueError("Partition contained duplicated elements.")
+            raise ValueError('Partition contained duplicated elements.')
 
         obj = FiniteSet.__new__(cls, *[FiniteSet(*x) for x in args])
         obj.members = tuple(partition)
@@ -348,9 +348,9 @@ class IntegerPartition(Basic):
             integer = as_int(integer)
 
         if not sum_ok and sum(partition) != integer:
-            raise ValueError("Partition did not add to %s" % integer)
+            raise ValueError(f'Partition did not add to {integer}')
         if any(i < 1 for i in partition):
-            raise ValueError("The summands must all be positive.")
+            raise ValueError('The summands must all be positive.')
 
         obj = Basic.__new__(cls, sympify(integer), sympify(partition))
         obj.partition = list(partition)
@@ -532,7 +532,7 @@ class IntegerPartition(Basic):
         #
 
         """
-        return "\n".join([char*i for i in self.partition])
+        return '\n'.join([char*i for i in self.partition])
 
     def __str__(self):
         return str(list(self.partition))
@@ -658,9 +658,9 @@ def RGS_unrank(rank, m):
 
     """
     if m < 1:
-        raise ValueError("The superset size must be >= 1")
+        raise ValueError('The superset size must be >= 1')
     if rank < 0 or RGS_enum(m) <= rank:
-        raise ValueError("Invalid arguments")
+        raise ValueError('Invalid arguments')
 
     L = [1] * (m + 1)
     j = 1

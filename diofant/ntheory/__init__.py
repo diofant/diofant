@@ -9,7 +9,8 @@ from .continued_fraction import (continued_fraction_convergents,
 from .egyptian_fraction import egyptian_fraction
 from .factor_ import (divisor_count, divisor_sigma, divisors, factorint,
                       factorrat, multiplicity, perfect_power, pollard_pm1,
-                      pollard_rho, primefactors, totient, trailing)
+                      pollard_rho, primefactors, square_factor, totient,
+                      trailing)
 from .generate import (Sieve, cycle_length, nextprime, prevprime, prime,
                        primepi, primerange, primorial, randprime, sieve)
 from .multinomial import (binomial_coefficients, binomial_coefficients_list,
@@ -35,4 +36,4 @@ __all__ = ('continued_fraction_convergents', 'continued_fraction_iterator',
            'discrete_log', 'is_nthpow_residue', 'is_primitive_root',
            'is_quad_residue', 'jacobi_symbol', 'legendre_symbol', 'mobius',
            'n_order', 'nthroot_mod', 'primitive_root', 'quadratic_residues',
-           'sqrt_mod', 'sqrt_mod_iter')
+           'sqrt_mod', 'sqrt_mod_iter', 'square_factor')

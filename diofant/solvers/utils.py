@@ -58,7 +58,7 @@ def checksol(f, sol, **flags):
     minimal = flags.get('minimal', False)
 
     if not isinstance(sol, dict):
-        raise ValueError("Expecting dictionary but got %s" % sol)
+        raise ValueError(f'Expecting dictionary but got {sol}')
 
     if sol and not f.has(*list(sol)):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
@@ -136,4 +136,4 @@ def checksol(f, sol, **flags):
         was = val
 
     if flags.get('warn', False):
-        warnings.warn("\n\tWarning: could not verify solution %s." % sol)
+        warnings.warn(f'\n\tWarning: could not verify solution {sol}.')

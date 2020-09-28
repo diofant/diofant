@@ -5,18 +5,30 @@ import pytest
 import diofant
 
 
-collect_ignore = ["setup.py"]
+collect_ignore = ['setup.py']
 try:
     import matplotlib
     matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
-    collect_ignore_glob = ["diofant/plotting/*.py"]
+    collect_ignore_glob = ['diofant/plotting/*.py']
 
 
 def pytest_report_header(config):
-    return f"""\ncache: {diofant.core.cache.USE_CACHE}
+    return f"""\nDiofant version: {diofant.__version__}
+cache: {diofant.core.cache.USE_CACHE}
 ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
+
+
+def pytest_configure(config):
+    config.addinivalue_line('markers', 'slow: marks tests as slow')
+    config.addinivalue_line('markers', 'regression: marks a regression test')
+
+
+def pytest_collection_modifyitems(items):
+    for item in items:
+        if 'issue' in item.nodeid:
+            item.add_marker(pytest.mark.regression)
 
 
 @pytest.fixture(autouse=True, scope='module')

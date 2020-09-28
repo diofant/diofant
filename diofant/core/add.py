@@ -1,10 +1,11 @@
 import collections
 import functools
 
+from ..utilities import default_sort_key
 from .cache import cacheit
-from .compatibility import default_sort_key, is_sequence
+from .compatibility import is_sequence
 from .logic import _fuzzy_group
-from .numbers import I, Integer, igcd, ilcm, nan, oo, zoo
+from .numbers import Integer, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
 
 
@@ -31,8 +32,8 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
-        from .mul import Mul
         from ..series.order import Order
+        from .mul import Mul
 
         rv = None
         if len(seq) == 2:
@@ -323,8 +324,8 @@ class Add(AssocOp):
         oo - oo return 0, instead of a nan.
 
         """
-        from . import oo, I
         from ..simplify import signsimp
+        from . import I, oo
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
             return Integer(0)
         return signsimp(lhs - rhs)
@@ -405,9 +406,20 @@ class Add(AssocOp):
         return _fuzzy_group((a.is_commutative for a in self.args),
                             quick_exit=True)
 
+    def _eval_is_real(self):
+        return _fuzzy_group((a.is_real for a in self.args), quick_exit=True)
+
     def _eval_is_extended_real(self):
-        return _fuzzy_group((a.is_extended_real for a in self.args),
-                            quick_exit=True)
+        r = _fuzzy_group((a.is_extended_real for a in self.args), quick_exit=True)
+        if r is not True:
+            return r
+        else:
+            nfin = [_ for _ in self.args if not _.is_finite]
+            if len(nfin) <= 1:
+                return True
+            elif (all(_.is_nonnegative for _ in nfin) or
+                  all(_.is_nonpositive for _ in nfin)):
+                return True
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
@@ -425,11 +437,7 @@ class Add(AssocOp):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
     def _eval_is_imaginary(self):
-        rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
-        if rv is False:
-            return rv
-        iargs = [a*I for a in self.args]
-        return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
+        return _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
 
     def _eval_is_odd(self):
         l = [f for f in self.args if not f.is_even]
@@ -625,8 +633,8 @@ class Add(AssocOp):
         return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
-        from . import factor_terms
         from ..series import Order
+        from . import factor_terms
 
         by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)
         expr = Integer(0)
@@ -765,8 +773,8 @@ class Add(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-        from .mul import Mul, _keep_coeff, prod
         from ..functions import root
+        from .mul import Mul, _keep_coeff, prod
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()

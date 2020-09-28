@@ -60,12 +60,11 @@ for proof of the termination (pp. 52-60).
 
 """
 
-from functools import reduce
+import functools
 
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
-from ..core.compatibility import ordered
-from ..functions import Abs, exp, log
-from ..functions import sign as sgn
+from ..functions import Abs, exp, log, sign
+from ..utilities import ordered
 
 
 def compare(a, b, x):
@@ -83,14 +82,7 @@ def compare(a, b, x):
     ========
 
     >>> x = Symbol('x', real=True, positive=True)
-    >>> m = Symbol('m', real=True, positive=True)
 
-    >>> compare(x, x**2, x)
-    0
-    >>> compare(1/x, x**m, x)
-    0
-    >>> compare(exp(x), exp(x**2), x)
-    -1
     >>> compare(exp(x), x**5, x)
     1
 
@@ -119,8 +111,6 @@ def mrv(e, x):
 
     >>> mrv(log(x - log(x))/log(x), x)
     {x}
-    >>> mrv(exp(x + exp(-x)), x)
-    {E**(-x), E**(x + E**(-x))}
 
     """
     if not e.has(x):
@@ -143,9 +133,10 @@ def mrv(e, x):
     elif isinstance(e, log):
         return mrv(e.args[0], x)
     elif e.is_Function:
-        return reduce(lambda a, b: mrv_max(a, b, x), [mrv(a, x) for a in e.args])
+        return functools.reduce(lambda a, b: mrv_max(a, b, x),
+                                [mrv(a, x) for a in e.args])
     else:
-        raise NotImplementedError("Don't know how to calculate the mrv of '%s'" % e)
+        raise NotImplementedError(f"Don't know how to calculate the mrv of '{e}'")
 
 
 def mrv_max(f, g, x):
@@ -161,7 +152,7 @@ def mrv_max(f, g, x):
 
 
 @cacheit
-def sign(e, x):
+def signinf(e, x):
     r"""
     Determine a sign of an expression at infinity.
 
@@ -177,19 +168,19 @@ def sign(e, x):
 
     """
     if not e.has(x):
-        return sgn(e).simplify()
+        return sign(e).simplify()
     elif e == x:
         return 1
     elif e.is_Mul:
         a, b = e.as_two_terms()
-        return sign(a, x)*sign(b, x)
+        return signinf(a, x)*signinf(b, x)
     elif e.is_Pow:
-        s = sign(e.base, x)
+        s = signinf(e.base, x)
         if s == 1:
             return 1
 
     c0, e0 = mrv_leadterm(e, x)
-    return sign(c0, x)
+    return signinf(c0, x)
 
 
 @cacheit
@@ -204,8 +195,6 @@ def limitinf(e, x):
 
     >>> limitinf(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x)
     -1
-    >>> limitinf(x/log(x**(log(x**(log(2)/log(x))))), x)
-    oo
 
     """
     assert x.is_real and x.is_positive
@@ -215,7 +204,7 @@ def limitinf(e, x):
     e = e.rewrite('tractable', deep=True)
 
     def transform_abs(f):
-        s = sgn(limitinf(f.args[0], x))
+        s = sign(limitinf(f.args[0], x))
         return s*f.args[0] if s in (1, -1) else f
 
     e = e.replace(lambda f: isinstance(f, Abs) and f.has(x),
@@ -229,17 +218,17 @@ def limitinf(e, x):
         return e.rewrite('intractable', deep=True)
 
     c0, e0 = mrv_leadterm(e, x)
-    sig = sign(e0, x)
+    sig = signinf(e0, x)
     if sig == 1:
         return Integer(0)
     elif sig == -1:
-        s = sign(c0, x)
+        s = signinf(c0, x)
         assert s != 0
         return s*oo
     elif sig == 0:
         return limitinf(c0, x)
     else:
-        raise NotImplementedError('Result depends on the sign of %s' % sig)
+        raise NotImplementedError(f'Result depends on the sign of {sig}')
 
 
 @cacheit
@@ -276,15 +265,15 @@ def mrv_leadterm(e, x):
     # The positive dummy, w, is used here so log(w*2) etc. will expand.
     # TODO: For limits of complex functions, the algorithm would have to
     # be improved, or just find limits of Re and Im components separately.
-    w = Dummy("w", real=True, positive=True)
+    w = Dummy('w', real=True, positive=True)
     e, logw = rewrite(e, x, w)
 
     lt = e.compute_leading_term(w, logx=logw)
     c0, e0 = lt.as_coeff_exponent(w)
     if c0.has(w):
-        raise NotImplementedError("Cannot compute mrv_leadterm(%s, %s). "
-                                  "The coefficient should have been free of "
-                                  "%s, but got %s." % (e, x, w, c0))
+        raise NotImplementedError(f'Cannot compute mrv_leadterm({e}, {x}). '
+                                  'The coefficient should have been free of '
+                                  f'{w}, but got {c0}.')
     return c0, e0
 
 
@@ -315,8 +304,6 @@ def rewrite(e, x, w):
     >>> x = Symbol('x', real=True, positive=True)
     >>> m = Symbol('m', real=True, positive=True)
 
-    >>> rewrite(exp(x), x, m)
-    (1/m, -x)
     >>> rewrite(exp(x)*log(log(exp(x))), x, m)
     (log(x)/m, -x)
 
@@ -336,9 +323,9 @@ def rewrite(e, x, w):
     Omega = list(ordered(Omega, keys=lambda a: -len(mrv(a, x))))
 
     for g in Omega:
-        sig = sign(g.exp, x)
+        sig = signinf(g.exp, x)
         if sig not in (1, -1):
-            raise NotImplementedError('Result depends on the sign of %s' % sig)
+            raise NotImplementedError(f'Result depends on the sign of {sig}')
 
     if sig == 1:
         w = 1/w  # if g goes to oo, substitute 1/w

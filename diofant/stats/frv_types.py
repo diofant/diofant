@@ -134,7 +134,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                         "not %s" % (type(x)))
+                         f'not {type(x)}')
 
 
 def Die(name, sides=6):
@@ -220,9 +220,9 @@ class BinomialDistribution(SingleFiniteDistribution):
         p_sym = sympify(p)
 
         if fuzzy_not(fuzzy_and((n_sym.is_integer, n_sym.is_nonnegative))):
-            raise ValueError("'n' must be positive integer. n = %s." % str(n))
+            raise ValueError(f"'n' must be positive integer. n = {n!s}.")
         elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
-            raise ValueError("'p' must be: 0 <= p <= 1 . p = %s" % str(p))
+            raise ValueError(f"'p' must be: 0 <= p <= 1 . p = {p!s}")
         else:
             return super().__new__(cls, *args)
 

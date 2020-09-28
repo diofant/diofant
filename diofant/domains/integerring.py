@@ -12,19 +12,15 @@ from .ring import Ring
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing'
-
-
 class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     """General class for integer rings."""
 
     rep = 'ZZ'
 
-    is_IntegerRing = is_ZZ = True
+    is_IntegerRing = True
     is_Numerical = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     @property
     def field(self):
@@ -32,25 +28,20 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         from . import QQ
         return QQ
 
-    def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
-        return self.field.algebraic_field(*extension)
+    def to_expr(self, element):
+        return DiofantInteger(element)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return DiofantInteger(a)
-
-    def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
-        if a.is_Integer:
-            return self.dtype(a.numerator)
-        elif a.is_Float and int(a) == a:
-            return self.dtype(int(a))
+    def from_expr(self, expr):
+        if expr.is_Integer:
+            return self.dtype(expr.numerator)
+        elif expr.is_Float and int(expr) == expr:
+            return self.dtype(int(expr))
         else:
-            raise CoercionFailed("expected an integer, got %s" % a)
+            raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonFiniteField(self, a, K0):
         return self.dtype(int(a))
@@ -59,13 +50,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self.dtype(a)
-
-    def _from_GMPYRationalField(self, a, K0):
-        if a.denominator == 1:
-            return self.dtype(a.numerator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)
@@ -75,7 +60,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
 
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
-            return self.convert(a.LC(), K0.domain)
+            return self.convert(a.rep.LC, K0.domain)
 
     @abc.abstractmethod
     def finite_field(self, p):

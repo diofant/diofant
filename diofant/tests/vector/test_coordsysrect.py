@@ -29,7 +29,7 @@ def test_func_args():
                                                        rotation_matrix=a))
     pytest.raises(TypeError, lambda: CoordSysCartesian('B', parent=a))
     pytest.raises(ValueError, lambda: CoordSysCartesian('A', vector_names=(1,)))
-    pytest.raises(TypeError, lambda: CoordSysCartesian('A', vector_names=("a", "b", 1)))
+    pytest.raises(TypeError, lambda: CoordSysCartesian('A', vector_names=('a', 'b', 1)))
 
 
 def test_point():

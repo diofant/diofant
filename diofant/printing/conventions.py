@@ -32,12 +32,12 @@ def split_super_sub(text):
     subs = []
     while pos < len(text):
         start = pos + 1
-        if text[pos:pos + 2] == "__":
+        if text[pos:pos + 2] == '__':
             start += 1
-        pos_hat = text.find("^", start)
+        pos_hat = text.find('^', start)
         if pos_hat < 0:
             pos_hat = len(text)
-        pos_usc = text.find("_", start)
+        pos_usc = text.find('_', start)
         if pos_usc < 0:
             pos_usc = len(text)
         pos_next = min(pos_hat, pos_usc)
@@ -45,14 +45,14 @@ def split_super_sub(text):
         pos = pos_next
         if name is None:
             name = part
-        elif part.startswith("^"):
+        elif part.startswith('^'):
             supers.append(part[1:])
-        elif part.startswith("__"):
+        elif part.startswith('__'):
             supers.append(part[2:])
-        elif part.startswith("_"):
+        elif part.startswith('_'):
             subs.append(part[1:])
         else:  # pragma: no cover
-            raise RuntimeError("This should never happen.")
+            raise RuntimeError('This should never happen.')
 
     # make a little exception when a name ends with digits, i.e. treat them
     # as a subscript too.

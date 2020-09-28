@@ -15,7 +15,6 @@ __all__ = ()
 @cacheit
 def _emptyfn():
     """Test docstring."""
-    pass
 
 
 @cacheit
@@ -24,8 +23,8 @@ def _identity(x):
 
 
 def test_cacheit_doc():
-    assert _emptyfn.__doc__ == "Test docstring."
-    assert _emptyfn.__name__ == "_emptyfn"
+    assert _emptyfn.__doc__ == 'Test docstring.'
+    assert _emptyfn.__name__ == '_emptyfn'
 
 
 def test_cacheit():
@@ -66,7 +65,7 @@ def test_nocache(clear_imports, monkeypatch):
     monkeypatch.setenv('DIOFANT_USE_CACHE', 'False')
     from diofant.core.cache import CACHE
     from diofant.core.symbol import Symbol
-    from diofant.functions import sin, sqrt, exp, sinh
+    from diofant.functions import exp, sin, sinh, sqrt
 
     # test that we don't use cache
     assert CACHE == []

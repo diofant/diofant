@@ -165,13 +165,13 @@ The easiest way to convert an expression to the form that can be numerically
 evaluated with libraries like :mod:`numpy` or the standard library :mod:`math`
 module --- use the :func:`~diofant.utilities.lambdify.lambdify` function.
 
-    >>> f = lambdify(x, expr, "math")
+    >>> f = lambdify(x, expr, 'math')
     >>> f(0.1)
     0.9983341664682815
 
 Using the :mod:`numpy` library gives the generated function access to powerful
 vectorized ufuncs that are backed by compiled C code.
 
-    >>> f = lambdify(x, expr, "numpy")
+    >>> f = lambdify(x, expr, 'numpy')
     >>> f(range(1, 5))
     [ 0.84147098  0.45464871  0.04704    -0.18920062]

@@ -8,9 +8,6 @@ from .polyoptions import build_options
 from .polyutils import parallel_dict_from_expr
 
 
-__all__ = 'construct_domain',
-
-
 def _construct_simple(coeffs, opt):
     """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains."""
     result, rationals, reals, algebraics = {}, False, False, False
@@ -190,7 +187,7 @@ def _construct_composite(coeffs, opt):
     result = []
 
     if not fractions:
-        domain = ground.poly_ring(*gens)
+        domain = ground.inject(*gens)
 
         for numer in numers:
             for monom, coeff in numer.items():
@@ -198,7 +195,7 @@ def _construct_composite(coeffs, opt):
 
             result.append(domain(numer))
     else:
-        domain = ground.frac_field(*gens)
+        domain = ground.inject(*gens).field
 
         for numer, denom in zip(numers, denoms):
             for monom, coeff in numer.items():
@@ -231,7 +228,7 @@ def construct_domain(obj, **args):
             if not obj:
                 monoms, coeffs = [], []
             else:
-                monoms, coeffs = list(zip(*list(obj.items())))
+                monoms, coeffs = zip(*obj.items())
         else:
             coeffs = obj
     else:

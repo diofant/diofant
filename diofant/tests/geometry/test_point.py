@@ -25,7 +25,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -38,6 +38,11 @@ def test_point():
 
     assert p1.origin == p3
     assert p1.ambient_dimension == 2
+    assert p3.is_zero is True
+    assert p1 in p1
+    assert p1 not in p2
+
+    assert p1[0] == x1 and p1[1] == x2
 
     assert p1 in p1
     assert p1 not in p2
@@ -87,7 +92,7 @@ def test_point():
     assert Point.is_concyclic(p2_1, p2_2, p2_3, p2_4)
     assert Point.is_concyclic(p2_1, p2_2, p2_3, p2_5) is False
     assert Point.is_concyclic(p4, p4 * 2, p4 * 3) is False
-    pytest.raises(TypeError, lambda: Point.is_concyclic(p2_1, "123"))
+    pytest.raises(TypeError, lambda: Point.is_concyclic(p2_1, '123'))
 
     assert p4.scale(2, 3) == Point(2, 3)
     assert p3.scale(2, 3) == p3
@@ -239,6 +244,12 @@ def test_Point2D():
     p3 = Point2D(6.1, 3.5)
     assert p1.distance(p2) == sqrt(61)/2
     assert p2.distance(p3) == sqrt(541)/10
+    assert p1.bounds == (1, 5, 1, 5)
+
+    assert Point2D.is_concyclic() is False
+
+    pytest.raises(ValueError, lambda: Point2D(1, 1, 1))
+    pytest.raises(ValueError, lambda: Point2D(1, I))
 
 
 def test_sympyissue_9214():

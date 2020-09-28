@@ -30,6 +30,7 @@ def test_matexpr():
     assert (x*A).__class__ == MatMul
     assert 2*A - A - A == ZeroMatrix(*A.shape)
     assert (A*B).shape == (n, l)
+    assert A.equals(ZeroMatrix(3, 3)) is None
 
 
 def test_subs():
@@ -249,8 +250,8 @@ def test_Zero_power():
 
 
 def test_diofantissue_469():
-    A = MatrixSymbol("A", n, n)
-    B = MatrixSymbol("B", n, n)
+    A = MatrixSymbol('A', n, n)
+    B = MatrixSymbol('B', n, n)
     expr = Eq(A, B)
     assert simplify(expr) == expr
 
@@ -269,7 +270,7 @@ def test_MatrixElement_with_values():
     for oi, oj in [(0, 0), (0, 1), (1, 0), (1, 1)]:
         assert Mij.subs({i: oi, j: oj}) == M[oi, oj]
         assert msij.subs({i: oi, j: oj}) == Ms[oi, oj]
-    A = MatrixSymbol("A", 2, 2)
+    A = MatrixSymbol('A', 2, 2)
     assert A[0, 0].subs({A: M}) == x
     assert A[i, j].subs({A: M}) == M[i, j]
     assert M[i, j].subs([(M, A)]) == A[i, j]

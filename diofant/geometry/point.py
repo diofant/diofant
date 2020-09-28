@@ -8,11 +8,12 @@ Point3D
 """
 
 from ..core import Add, Float, Integer, Tuple, sympify
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify
+from ..utilities import ordered
 from .entity import GeometryEntity
 
 
@@ -25,13 +26,6 @@ class Point(GeometryEntity):
     coords : sequence of n-coordinate values. In the special
     case where n=2 or 3, a Point2D or Point3D will be created
     as appropriate.
-
-    Attributes
-    ==========
-
-    length
-    origin: A `Point` representing the origin of the
-        appropriately-dimensioned space.
 
     Raises
     ======
@@ -69,8 +63,6 @@ class Point(GeometryEntity):
         evaluate = kwargs.get('evaluate', global_evaluate[0])
 
         if iterable(args[0]):
-            if isinstance(args[0], Point) and not evaluate:
-                return args[0]
             args = args[0]
 
         # unpack the arguments into a friendly Tuple
@@ -342,7 +334,7 @@ class Point(GeometryEntity):
         """
         if isinstance(o, Point):
             if len(self) != len(o):
-                raise ValueError("Points must be of the same dimension to intersect")
+                raise ValueError('Points must be of the same dimension to intersect')
             if self == o:
                 return [self]
             return []
@@ -383,7 +375,7 @@ class Point(GeometryEntity):
             return Point([simplify(a + b) for a, b in zip(self, other)])
         else:
             raise ValueError(
-                "Points must have the same number of dimensions")
+                'Points must have the same number of dimensions')
 
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
@@ -420,13 +412,6 @@ class Point2D(Point):
 
     coords : sequence of 2 coordinate values.
 
-    Attributes
-    ==========
-
-    x
-    y
-    diofant.geometry.Point.length
-
     Raises
     ======
 
@@ -462,29 +447,17 @@ class Point2D(Point):
 
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
-        check = True
-        if isinstance(args[0], Point2D):
-            if not eval:
-                return args[0]
-            args = args[0].args
-            check = False
-        else:
-            if iterable(args[0]):
-                args = args[0]
-            if len(args) != 2:
-                raise ValueError(
-                    "Only two dimensional points currently supported")
+        if iterable(args[0]):
+            args = args[0]
+        if len(args) != 2:
+            raise ValueError('Only two dimensional points currently supported')
         coords = Tuple(*args)
-        if check:
-            if any(a.is_number and im(a) for a in coords):
-                raise ValueError('Imaginary args not permitted.')
+        if any(a.is_number and im(a) for a in coords):
+            raise ValueError('Imaginary args not permitted.')
         if eval:
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
-
-    def __contains__(self, item):
-        return item == self
 
     @property
     def x(self):
@@ -685,8 +658,8 @@ class Point2D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 3x3 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 3x3 matrix')
         x, y = self.args
         return Point(*(Matrix(1, 3, [x, y, 1])*matrix).tolist()[0][:2])
 
@@ -698,14 +671,6 @@ class Point3D(Point):
     ==========
 
     coords : sequence of 3 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    z
-    diofant.geometry.Point.length
 
     Raises
     ======
@@ -750,7 +715,7 @@ class Point3D(Point):
                 args = args[0]
             if len(args) not in (2, 3):
                 raise TypeError(
-                    "Enter a 2 or 3 dimensional point")
+                    'Enter a 2 or 3 dimensional point')
         coords = Tuple(*args)
         if len(coords) == 2:
             coords += Integer(0),
@@ -758,9 +723,6 @@ class Point3D(Point):
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
-
-    def __contains__(self, item):
-        return item == self
 
     @property
     def x(self):
@@ -1045,8 +1007,8 @@ class Point3D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 4x4 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 4x4 matrix')
         from ..matrices import Transpose
         x, y, z = self.args
         m = Transpose(matrix)

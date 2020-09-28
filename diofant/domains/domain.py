@@ -12,41 +12,28 @@ from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
 
 
-__all__ = 'Domain',
-
-
 class Domain(DefaultPrinting, abc.ABC):
     """Represents an abstract domain."""
-
-    dtype = None
-    zero = None
-    one = None
 
     is_Ring = False
     is_Field = False
 
     has_assoc_Ring = False
-    has_assoc_Field = False
 
-    is_FiniteField = is_FF = False
-    is_IntegerRing = is_ZZ = False
-    is_RationalField = is_QQ = False
-    is_RealField = is_RR = False
-    is_ComplexField = is_CC = False
-    is_AlgebraicField = is_Algebraic = False
+    is_FiniteField = False
+    is_IntegerRing = False
+    is_RationalField = False
+    is_RealField = False
+    is_ComplexField = False
+    is_AlgebraicField = False
     is_RealAlgebraicField = False
     is_ComplexAlgebraicField = False
-    is_PolynomialRing = is_Poly = False
-    is_FractionField = is_Frac = False
-    is_SymbolicDomain = is_EX = False
+    is_PolynomialRing = False
+    is_FractionField = False
+    is_ExpressionDomain = False
 
     is_Exact = True
     is_Numerical = False
-
-    is_Simple = False
-    is_Composite = False
-
-    rep = None
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
@@ -59,19 +46,19 @@ class Domain(DefaultPrinting, abc.ABC):
         return {}
 
     @abc.abstractmethod
-    def from_expr(self, element):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, expr):
+        """Convert Diofant's expression ``expr`` to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
-        """Convert ``element`` to Diofant expression."""
+        """Convert domain ``element`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain."""
         for superclass in inspect.getmro(base.__class__):
-            method = "_from_" + superclass.__name__
+            method = '_from_' + superclass.__name__
 
             convert = getattr(self, method, None)
 
@@ -81,8 +68,8 @@ class Domain(DefaultPrinting, abc.ABC):
                 if result is not None:
                     return result
 
-        raise CoercionFailed("can't convert %s of type %s from %s "
-                             "to %s" % (element, type(element), base, self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} "
+                             f'from {base} to {self}')
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``."""
@@ -92,10 +79,10 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, self.dtype):
             return element
 
-        from .integerring import PythonIntegerRing, GMPYIntegerRing
-        from .rationalfield import PythonRationalField, GMPYRationalField
-        from . import RealField, ComplexField, PythonRational
+        from . import ComplexField, PythonRational, RealField
         from .expressiondomain import ExpressionDomain
+        from .integerring import GMPYIntegerRing, PythonIntegerRing
+        from .rationalfield import GMPYRationalField, PythonRationalField
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -132,7 +119,7 @@ class Domain(DefaultPrinting, abc.ABC):
             except (TypeError, ValueError):
                 pass
 
-        raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} to {self}")
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain."""
@@ -145,6 +132,10 @@ class Domain(DefaultPrinting, abc.ABC):
     def _from_PolynomialRing(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
+
+    def _from_FractionField(self, a, K0):
+        if a.numerator.is_ground and a.denominator.is_one:
+            return self.convert(a.numerator.LC, K0.domain.ring)
 
     def unify(self, K1, symbols=()):
         """
@@ -162,39 +153,50 @@ class Domain(DefaultPrinting, abc.ABC):
         - ``K(x, y, z)``
         - ``EX``
         """
+        from .compositedomain import CompositeDomain
+
         if symbols:
-            if any(d.is_Composite and (set(d.symbols) & set(symbols))
+            if any(isinstance(d, CompositeDomain) and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
-                raise UnificationFailed("Can't unify %s with %s, given %s"
-                                        " generators" % (self, K1, tuple(symbols)))
+                raise UnificationFailed(f"Can't unify {self} with {K1}, "
+                                        f'given {symbols} generators')
 
             return self.unify(K1)
 
         if self == K1:
             return self
 
-        if self.is_SymbolicDomain:
+        if self.is_ExpressionDomain:
             return self
-        if K1.is_SymbolicDomain:
+        if K1.is_ExpressionDomain:
             return K1
 
-        if self.is_Composite or K1.is_Composite:
-            self_ground = self.domain if self.is_Composite else self
-            K1_ground = K1.domain if K1.is_Composite else K1
+        if any(isinstance(d, CompositeDomain) for d in (self, K1)):
+            if isinstance(self, CompositeDomain):
+                self_ground = self.domain
+                self_symbols = self.symbols
+                order = self.order
+            else:
+                self_ground = self
+                self_symbols = ()
+                order = K1.order
 
-            self_symbols = self.symbols if self.is_Composite else ()
-            K1_symbols = K1.symbols if K1.is_Composite else ()
+            if isinstance(K1, CompositeDomain):
+                K1_ground = K1.domain
+                K1_symbols = K1.symbols
+            else:
+                K1_ground = K1
+                K1_symbols = ()
 
             domain = self_ground.unify(K1_ground)
             symbols = _unify_gens(self_symbols, K1_symbols)
-            order = self.order if self.is_Composite else K1.order
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
                     (not self_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
                 domain = domain.ring
 
-            if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
+            if isinstance(self, CompositeDomain) and (not isinstance(K1, CompositeDomain) or self.is_FractionField or K1.is_PolynomialRing):
                 cls = self.__class__
             else:
                 cls = K1.__class__
@@ -243,23 +245,14 @@ class Domain(DefaultPrinting, abc.ABC):
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
-        return PolynomialRing(self, symbols, kwargs.get("order", lex))
+        return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
         """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
-        return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a > 0
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0
+        return FractionField(self, symbols, kwargs.get('order', lex))

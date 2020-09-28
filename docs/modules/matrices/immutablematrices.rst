@@ -2,7 +2,7 @@ Immutable Matrices
 ==================
 
 The standard Matrix class in Diofant is mutable. This is important for
-performance reasons but means that standard matrices can not interact well with
+performance reasons but means that standard matrices cannot interact well with
 the rest of Diofant. This is because the :class:`~diofant.core.basic.Basic` object, from which most
 Diofant classes inherit, is immutable.
 

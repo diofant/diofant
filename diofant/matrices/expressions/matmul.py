@@ -56,8 +56,8 @@ class MatMul(MatrixExpr):
         X = head
         Y = MatMul(*tail)
 
-        from ...core import Dummy
         from ...concrete import Sum
+        from ...core import Dummy
         from .. import ImmutableMatrix
         k = Dummy('k', integer=True)
         if X.has(ImmutableMatrix) or Y.has(ImmutableMatrix):
@@ -122,7 +122,7 @@ def validate(*matrices):
     for i in range(len(matrices)-1):
         A, B = matrices[i:i+2]
         if A.cols != B.rows:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError(f'Matrices {A} and {B} are not aligned')
 
 # Rules
 
@@ -236,7 +236,7 @@ canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 def only_squares(*matrices):
     """Factor matrices only if they are square."""
     if matrices[0].rows != matrices[-1].cols:
-        raise RuntimeError("Invalid matrices being multiplied")
+        raise RuntimeError('Invalid matrices being multiplied')
     out = []
     start = 0
     for i, M in enumerate(matrices):

@@ -61,8 +61,6 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 class SingleDiscreteDomain(SingleDomain):
     """Base class for a discrete domain."""
 
-    pass
-
 
 class SingleDiscretePSpace(SinglePSpace):
     """Discrete probability space over a single univariate variable."""

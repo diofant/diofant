@@ -87,9 +87,3 @@ Partial fraction decomposition
 
 .. automodule:: diofant.polys.partfrac
     :members:
-
-Dispersion of Polynomials
-=========================
-
-.. automodule:: diofant.polys.dispersion
-    :members:

@@ -83,8 +83,8 @@ class Vector(BasisDependent):
         C.i
 
         """
-        from .functions import express
         from .deloperator import Del
+        from .functions import express
 
         # Check special cases
         if isinstance(other, Dyadic):
@@ -97,8 +97,8 @@ class Vector(BasisDependent):
             return outvec
 
         if not isinstance(other, Vector) and not isinstance(other, Del):
-            raise TypeError(str(other) + " is not a vector, dyadic or " +
-                            "del operator")
+            raise TypeError(str(other) + ' is not a vector, dyadic or ' +
+                            'del operator')
 
         # Check if the other is a del operator
         if isinstance(other, Del):
@@ -166,7 +166,7 @@ class Vector(BasisDependent):
                 outdyad += v * outer
             return outdyad
         elif not isinstance(other, Vector):
-            raise TypeError(str(other) + " is not a vector")
+            raise TypeError(str(other) + ' is not a vector')
         elif (isinstance(self, VectorZero) or
               isinstance(other, VectorZero)):
             return Vector.zero
@@ -223,7 +223,7 @@ class Vector(BasisDependent):
         """
         # Handle the special cases
         if not isinstance(other, Vector):
-            raise TypeError("Invalid operand for outer product")
+            raise TypeError('Invalid operand for outer product')
         elif (isinstance(self, VectorZero) or
               isinstance(other, VectorZero)):
             return Dyadic.zero
@@ -301,9 +301,9 @@ class BaseVector(Vector, AtomicExpr):
         latex_str = str(latex_str)
         # Verify arguments
         if index not in range(3):
-            raise ValueError("index must be 0, 1 or 2")
+            raise ValueError('index must be 0, 1 or 2')
         if not isinstance(system, CoordSysCartesian):
-            raise TypeError("system should be a CoordSysCartesian")
+            raise TypeError('system should be a CoordSysCartesian')
         # Initialize an object
         obj = super().__new__(cls, Symbol(name), Integer(index),
                               system, Symbol(pretty_str), Symbol(latex_str))
@@ -358,7 +358,7 @@ class VectorAdd(BasisDependentAdd, Vector):
             for x in base_vects:
                 if x in vect.components:
                     temp_vect = self.components[x]*x
-                    ret_str += temp_vect.__str__(printer) + " + "
+                    ret_str += temp_vect.__str__(printer) + ' + '
         return ret_str[:-3]
 
     __repr__ = __str__
@@ -401,10 +401,10 @@ class VectorZero(BasisDependentZero, Vector):
 def _vect_div(one, other):
     """Helper for division involving vectors."""
     if isinstance(other, Vector):
-        raise TypeError("Cannot divide two vectors")
+        raise TypeError('Cannot divide two vectors')
     else:
         if other == 0:
-            raise ValueError("Cannot divide a vector by zero")
+            raise ValueError('Cannot divide a vector by zero')
         return VectorMul(one, Pow(other, -1))
 
 

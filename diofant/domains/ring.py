@@ -6,9 +6,6 @@ from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
 
-__all__ = 'Ring',
-
-
 class Ring(Domain):
     """Represents a ring domain."""
 
@@ -40,12 +37,12 @@ class Ring(Domain):
 
     def invert(self, a, b):
         """Returns inversion of ``a mod b``."""
-        s, t, h = self.gcdex(a, b)
+        s, h = self.half_gcdex(a, b)
 
         if h == self.one:
             return s % b
         else:
-            raise NotInvertible("zero divisor")
+            raise NotInvertible('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
@@ -64,3 +61,7 @@ class Ring(Domain):
     def characteristic(self):
         """Return the characteristic of this ring."""
         raise NotImplementedError
+
+    def is_normal(self, a):
+        """Returns True if ``a`` is unit normal."""
+        return a >= 0

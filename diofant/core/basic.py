@@ -4,8 +4,9 @@ from collections import defaultdict
 from collections.abc import Mapping
 from itertools import zip_longest
 
+from ..utilities import ordered
 from .cache import cacheit
-from .compatibility import iterable, ordered
+from .compatibility import iterable
 from .decorators import _sympifyit
 from .sympify import SympifyError, sympify
 
@@ -443,11 +444,11 @@ class Basic:
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                raise ValueError("Expected a mapping or iterable "
-                                 "of (old, new) tuples.")
+                raise ValueError('Expected a mapping or iterable '
+                                 'of (old, new) tuples.')
             sequence = list(sequence)
         else:
-            raise ValueError("subs accepts one argument")
+            raise ValueError('subs accepts one argument')
 
         sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
@@ -694,7 +695,7 @@ class Basic:
         False
 
         """
-        from .function import UndefinedFunction, Function
+        from .function import Function, UndefinedFunction
 
         if len(patterns) != 1:
             return any(self.has(pattern) for pattern in patterns)
@@ -844,8 +845,8 @@ class Basic:
                     return value(*expr.args)
             else:
                 raise TypeError(
-                    "given a type, replace() expects another "
-                    "type or a callable")
+                    'given a type, replace() expects another '
+                    'type or a callable')
         elif isinstance(query, Basic):
             def _query(expr):
                 return expr.match(query)
@@ -879,8 +880,8 @@ class Basic:
                         return value(**{str(key)[:-1]: val for key, val in result.items()})
             else:
                 raise TypeError(
-                    "given an expression, replace() expects "
-                    "another expression or a callable")
+                    'given an expression, replace() expects '
+                    'another expression or a callable')
         elif callable(query):
             _query = query
 
@@ -889,12 +890,12 @@ class Basic:
                     return value(expr)
             else:
                 raise TypeError(
-                    "given a callable, replace() expects "
-                    "another callable")
+                    'given a callable, replace() expects '
+                    'another callable')
         else:
             raise TypeError(
-                "first argument to replace() must be a "
-                "type, an expression or a callable")
+                'first argument to replace() must be a '
+                'type, an expression or a callable')
 
         def rec_replace(expr):
             result = _query(expr)
@@ -989,8 +990,8 @@ class Basic:
         Examples
         ========
 
-        >>> p = Wild("p")
-        >>> q = Wild("q")
+        >>> p = Wild('p')
+        >>> q = Wild('q')
         >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}
@@ -1193,7 +1194,8 @@ def _aresame(a, b):
     False
 
     """
-    from .function import AppliedUndef, UndefinedFunction as UndefFunc
+    from .function import AppliedUndef
+    from .function import UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
         if i != j or type(i) != type(j):
             if (isinstance(i, (UndefFunc, AppliedUndef)) and

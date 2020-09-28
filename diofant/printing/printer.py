@@ -138,6 +138,7 @@ class Printer:
     def __init__(self, settings=None):
         import distutils
         import distutils.version
+
         from ..external import import_module
 
         self._str = str
@@ -154,17 +155,17 @@ class Printer:
             if len(self._settings) > len(self._default_settings):
                 for key in self._settings:  # pragma: no branch
                     if key not in self._default_settings:
-                        raise TypeError("Unknown setting '%s'." % key)
+                        raise TypeError(f"Unknown setting '{key}'.")
 
         # _print_level is the number of times self._print() was recursively
         # called. See StrPrinter._print_Float() for an example of usage
         self._print_level = 0
 
-        numpy = import_module("numpy")
+        numpy = import_module('numpy')
         if numpy is not None:  # pragma: no cover
             kwargs = {'formatter': {'object': str}}
             if numpy.__version__ >= distutils.version.LooseVersion('1.14.0'):
-                kwargs['legacy'] = "1.13"
+                kwargs['legacy'] = '1.13'
             numpy.set_printoptions(**kwargs)
 
     @classmethod
@@ -179,7 +180,7 @@ class Printer:
         if 'order' in self._settings:
             return self._settings['order']
         else:
-            raise AttributeError("No order defined.")
+            raise AttributeError('No order defined.')
 
     def doprint(self, expr):
         """Returns printer's representation for expr (as a string)."""

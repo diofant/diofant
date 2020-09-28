@@ -132,11 +132,11 @@ cse
 
 opt_cse
 ^^^^^^^
-.. autofunction:: diofant.simplify.cse_main.opt_cse
+.. autofunction:: opt_cse
 
 tree_cse
 ^^^^^^^^
-.. autofunction:: diofant.simplify.cse_main.tree_cse
+.. autofunction:: tree_cse
 
 Hypergeometric Function Expansion
 ---------------------------------

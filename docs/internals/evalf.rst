@@ -93,7 +93,7 @@ zero apart from one that is merely very small. The working precision is
 therefore capped, by default to around 100 digits. If we try with the 1000'th
 Fibonacci number, the following happens:
 
-    >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5))
+    >>> N(fibonacci(1000) - GoldenRatio**1000/sqrt(5))
     Traceback (most recent call last):
     ...
     PrecisionExhausted: ...
@@ -101,7 +101,7 @@ Fibonacci number, the following happens:
 The exception indicates that ``N`` failed to achieve full accuracy.  To force a
 higher working precision, the ``maxn`` keyword argument can be used:
 
-    >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5), maxn=500)
+    >>> N(fibonacci(1000) - GoldenRatio**1000/sqrt(5), maxn=500)
     -4.60123853010113e-210
 
 

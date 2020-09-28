@@ -1,10 +1,10 @@
 from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
                      diff, oo)
-from ...core.compatibility import default_sort_key
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
 from ...logic.boolalg import Boolean, distribute_and_over_or
 from ...sets import Reals
+from ...utilities import default_sort_key
 from .miscellaneous import Max, Min
 
 
@@ -84,8 +84,8 @@ class Piecewise(Function):
                 continue
             if not isinstance(cond, (bool, Relational, Boolean)):
                 raise TypeError(
-                    "Cond %s is of type %s, but must be a Relational,"
-                    " Boolean, or a built-in bool." % (cond, type(cond)))
+                    f'Cond {cond} is of type {type(cond)}, but must be a Relational,'
+                    ' Boolean, or a built-in bool.')
             newargs.append(pair)
             if cond == true:
                 break
@@ -324,7 +324,7 @@ class Piecewise(Function):
                         lower = Max(cond2.lts, lower)
                     else:
                         raise NotImplementedError(
-                            "Unable to handle interval evaluation of expression.")
+                            'Unable to handle interval evaluation of expression.')
             else:
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
@@ -333,7 +333,7 @@ class Piecewise(Function):
                     upper = oo           # e.g. x >= 0 --->  oo >= 0
                 else:
                     raise NotImplementedError(
-                        "Unable to handle interval evaluation of expression.")
+                        'Unable to handle interval evaluation of expression.')
 
             # part 1b: Reduce (-)infinity to what was passed in.
             lower, upper = Max(a, lower), Min(b, upper)
@@ -414,9 +414,9 @@ class Piecewise(Function):
             if targetcond == true:
                 return [(h[0], h[1], None) for h in holes]
         elif holes and default is None:
-            raise ValueError("Called interval evaluation over piecewise "
-                             "function on undefined intervals %s" %
-                             ", ".join([str((h[0], h[1])) for h in holes]))
+            raise ValueError('Called interval evaluation over piecewise '  # noqa: SFS101
+                             'function on undefined intervals %s' %
+                             ', '.join([str((h[0], h[1])) for h in holes]))
 
         return int_expr
 

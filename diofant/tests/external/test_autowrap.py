@@ -106,40 +106,41 @@ def runtest_ufuncify(language, backend):
     numpy.testing.assert_allclose(facb(grid, c, b), expected)
 
 
-def runtest_sympyissue_10274(language, backend):
+def runtest_autowrap_helpers(language, backend):
+    # issue sympy/sympy#10274
     expr = (a - b + c)**13
     tmp = tempfile.mkdtemp()
     f = autowrap(expr, language, backend, tempdir=tmp, helpers=[('helper', a - b + c, (a, b, c))])
     assert f(1, 1, 1) == 1
 
     for file in os.listdir(tmp):
-        if file.startswith("wrapped_code_") and file.endswith(".c"):
+        if file.startswith('wrapped_code_') and file.endswith('.c'):
             fil = open(tmp + '/' + file)
-            assert fil.read() == ("/******************************************************************************\n"
-                                  " *" + ("Code generated with diofant " + diofant.__version__).center(76) + "*\n"
-                                  " *                                                                            *\n"
-                                  " *         See https://diofant.readthedocs.io/ for more information.          *\n"
-                                  " *                                                                            *\n"
+            assert fil.read() == ('/******************************************************************************\n'
+                                  ' *' + ('Code generated with diofant ' + diofant.__version__).center(76) + '*\n'
+                                  ' *                                                                            *\n'
+                                  ' *         See https://diofant.readthedocs.io/ for more information.          *\n'
+                                  ' *                                                                            *\n'
                                   " *                      This file is part of 'autowrap'                       *\n"
-                                  " ******************************************************************************/\n"
-                                  "#include " + '"' + file[:-1] + 'h"' + "\n"
-                                  "#include <math.h>\n"
-                                  "\n"
-                                  "double helper(double a, double b, double c) {\n"
-                                  "\n"
-                                  "   double helper_result;\n"
-                                  "   helper_result = a - b + c;\n"
-                                  "   return helper_result;\n"
-                                  "\n"
-                                  "}\n"
-                                  "\n"
-                                  "double autofunc(double a, double b, double c) {\n"
-                                  "\n"
-                                  "   double autofunc_result;\n"
-                                  "   autofunc_result = pow(helper(a, b, c), 13);\n"
-                                  "   return autofunc_result;\n"
-                                  "\n"
-                                  "}\n")
+                                  ' ******************************************************************************/\n'
+                                  '#include ' + '"' + file[:-1] + 'h"' + '\n'
+                                  '#include <math.h>\n'
+                                  '\n'
+                                  'double helper(double a, double b, double c) {\n'
+                                  '\n'
+                                  '   double helper_result;\n'
+                                  '   helper_result = a - b + c;\n'
+                                  '   return helper_result;\n'
+                                  '\n'
+                                  '}\n'
+                                  '\n'
+                                  'double autofunc(double a, double b, double c) {\n'
+                                  '\n'
+                                  '   double autofunc_result;\n'
+                                  '   autofunc_result = pow(helper(a, b, c), 13);\n'
+                                  '   return autofunc_result;\n'
+                                  '\n'
+                                  '}\n')
 
 #
 # tests of language-backend combinations
@@ -196,7 +197,7 @@ def test_autowrap_verbose(capsys):
 
 @with_f2py
 def test_autowrap_command_err(monkeypatch):
-    monkeypatch.setattr(F2PyCodeWrapper, 'command', ["/bin/false"])
+    monkeypatch.setattr(F2PyCodeWrapper, 'command', ['/bin/false'])
     pytest.raises(CodeWrapError, lambda: autowrap(1, backend='f2py'))
 
 
@@ -232,8 +233,8 @@ def test_ufuncify_C_Cython():
 
 
 @with_cython
-def test_sympyissue_10274_C_cython():
-    runtest_sympyissue_10274('C', 'cython')
+def test_autowrap_helpers_C_cython():
+    runtest_autowrap_helpers('C', 'cython')
 
 
 # Numpy

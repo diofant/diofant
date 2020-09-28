@@ -1,27 +1,28 @@
 """Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
 import re
+import typing
 
 from ..core import Basic, I, sympify
 from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = "Options", "Order"
+__all__ = 'Options', 'Order'
 
 
 class Option:
     """Base class for all kinds of options."""
 
-    option = None
+    option: str
 
     is_Flag = False
 
-    requires = []
-    excludes = []
+    requires: typing.List[str] = []
+    excludes: typing.List[str] = []
 
-    after = []
-    before = []
+    after: typing.List[str] = []
+    before: typing.List[str] = []
 
     @classmethod
     def default(cls):
@@ -50,7 +51,7 @@ class BooleanOption(Option):
         if value in [True, False]:
             return bool(value)
         else:
-            raise OptionError("'%s' must have a boolean value assigned, got %s" % (cls.option, value))
+            raise OptionError(f"'{cls.option}' must have a boolean value assigned, got {value}")
 
 
 class OptionType(type):
@@ -110,8 +111,8 @@ class Options(dict):
 
     """
 
-    __order__ = None
-    __options__ = {}
+    __order__: typing.Union[None, typing.List[str]] = None
+    __options__: typing.Dict[str, typing.Type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):
         dict.__init__(self)
@@ -130,11 +131,11 @@ class Options(dict):
                 try:
                     cls = self.__options__[option]
                 except KeyError:
-                    raise OptionError("'%s' is not a valid option" % option)
+                    raise OptionError(f"'{option}' is not a valid option")
 
                 if issubclass(cls, Flag):
                     if strict and (flags is None or option not in flags):
-                        raise OptionError("'%s' flag is not allowed in this context" % option)
+                        raise OptionError(f"'{option}' flag is not allowed in this context")
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -159,7 +160,7 @@ class Options(dict):
 
             for exclude_option in cls.excludes:
                 if self.get(exclude_option) is not None:
-                    raise OptionError("'%s' option is not allowed together with '%s'" % (option, exclude_option))
+                    raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
         for option in self.__order__:
             self.__options__[option].postprocess(self)
@@ -182,8 +183,8 @@ class Options(dict):
             try:
                 cls.__order__ = topological_sort((vertices, list(edges)))
             except ValueError:
-                raise RuntimeError(
-                    "cycle detected in diofant.polys options framework")
+                raise RuntimeError('cycle detected in diofant.polys'
+                                   ' options framework')
 
     def clone(self, updates={}):
         """Clone ``self`` and update specified options."""
@@ -240,9 +241,6 @@ class Expand(BooleanOption, metaclass=OptionType):
 
     option = 'expand'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         return True
@@ -253,9 +251,6 @@ class Gens(Option, metaclass=OptionType):
 
     option = 'gens'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         return ()
@@ -264,15 +259,13 @@ class Gens(Option, metaclass=OptionType):
     def preprocess(cls, gens):
         if isinstance(gens, Basic):
             gens = gens,
-        elif len(gens) == 1 and hasattr(gens[0], '__iter__'):
-            gens = gens[0]
 
         if gens == (None,):
             gens = ()
         elif has_dups(gens):
-            raise GeneratorsError("duplicated generators: %s" % str(gens))
+            raise GeneratorsError(f'duplicated generators: {gens}')
         elif any(gen.is_commutative is False for gen in gens):
-            raise GeneratorsError("non-commutative generators: %s" % str(gens))
+            raise GeneratorsError(f'non-commutative generators: {gens}')
 
         return tuple(gens)
 
@@ -282,10 +275,7 @@ class Wrt(Option, metaclass=OptionType):
 
     option = 'wrt'
 
-    requires = []
-    excludes = []
-
-    _re_split = re.compile(r"\s*,\s*|\s+")
+    _re_split = re.compile(r'\s*,\s*|\s+')
 
     @classmethod
     def preprocess(cls, wrt):
@@ -309,9 +299,6 @@ class Sort(Option, metaclass=OptionType):
 
     option = 'sort'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         return []
@@ -331,9 +318,6 @@ class Order(Option, metaclass=OptionType):
 
     option = 'order'
 
-    requires = []
-    excludes = []
-
     @classmethod
     def default(cls):
         from .orderings import lex
@@ -350,7 +334,6 @@ class Field(BooleanOption, metaclass=OptionType):
 
     option = 'field'
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian']
 
 
@@ -359,7 +342,6 @@ class Greedy(BooleanOption, metaclass=OptionType):
 
     option = 'greedy'
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus']
 
 
@@ -372,7 +354,6 @@ class Composite(BooleanOption, metaclass=OptionType):
     def default(cls):
         return
 
-    requires = []
     excludes = ['domain', 'split', 'gaussian', 'modulus']
 
 
@@ -381,17 +362,16 @@ class Domain(Option, metaclass=OptionType):
 
     option = 'domain'
 
-    requires = []
     excludes = ['field', 'greedy', 'split', 'gaussian', 'extension']
 
     after = ['gens']
 
-    _re_realfield = re.compile(r"^(R|RR)(_(\d+))?$")
-    _re_complexfield = re.compile(r"^(C|CC)(_(\d+))?$")
-    _re_finitefield = re.compile(r"^(FF|GF)\((\d+)\)$")
-    _re_polynomial = re.compile(r"^(Z|ZZ|Q|QQ)\[(.+)\]$")
-    _re_fraction = re.compile(r"^(Z|ZZ|Q|QQ)\((.+)\)$")
-    _re_algebraic = re.compile(r"^(Q|QQ)\<(.+)\>$")
+    _re_realfield = re.compile(r'^(R|RR)(_(\d+))?$')
+    _re_complexfield = re.compile(r'^(C|CC)(_(\d+))?$')
+    _re_finitefield = re.compile(r'^(FF|GF)\((\d+)\)$')
+    _re_polynomial = re.compile(r'^(Z|ZZ|Q|QQ)\[(.+)\]$')
+    _re_fraction = re.compile(r'^(Z|ZZ|Q|QQ)\((.+)\)$')
+    _re_algebraic = re.compile(r'^(Q|QQ)\<(.+)\>$')
 
     @classmethod
     def preprocess(cls, domain):
@@ -441,9 +421,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return domains.ZZ.poly_ring(*gens)
+                    return domains.ZZ.inject(*gens)
                 else:
-                    return domains.QQ.poly_ring(*gens)
+                    return domains.QQ.inject(*gens)
 
             r = cls._re_fraction.match(domain)
 
@@ -453,9 +433,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return domains.ZZ.frac_field(*gens)
+                    return domains.ZZ.inject(*gens).field
                 else:
-                    return domains.QQ.frac_field(*gens)
+                    return domains.QQ.inject(*gens).field
 
             r = cls._re_algebraic.match(domain)
 
@@ -463,18 +443,21 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, r.groups()[1].split(',')))
                 return domains.QQ.algebraic_field(*gens)
 
-        raise OptionError('expected a valid domain specification, got %s' % str(domain))
+        raise OptionError(f'expected a valid domain specification, got {domain}')
 
     @classmethod
     def postprocess(cls, options):
         from .. import domains
-        if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
+        from ..domains.compositedomain import CompositeDomain
+
+        if 'gens' in options and 'domain' in options and isinstance(options['domain'], CompositeDomain) and \
                 (set(options['domain'].symbols) & set(options['gens'])):
-            raise GeneratorsError(
-                "ground domain and generators interfere together")
+            raise GeneratorsError('ground domain and generators '
+                                  'interfere together')
         elif ('gens' not in options or not options['gens']) and \
                 'domain' in options and options['domain'] == domains.EX:
-            raise GeneratorsError("you have to provide generators because EX domain was requested")
+            raise GeneratorsError('you have to provide generators because'
+                                  ' EX domain was requested')
 
 
 class Split(BooleanOption, metaclass=OptionType):
@@ -482,7 +465,6 @@ class Split(BooleanOption, metaclass=OptionType):
 
     option = 'split'
 
-    requires = []
     excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension', 'modulus']
 
     @classmethod
@@ -496,7 +478,6 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
     option = 'gaussian'
 
-    requires = []
     excludes = ['field', 'greedy', 'domain', 'split', 'extension', 'modulus']
 
     @classmethod
@@ -511,7 +492,6 @@ class Extension(Option, metaclass=OptionType):
 
     option = 'extension'
 
-    requires = []
     excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus']
 
     @classmethod
@@ -544,7 +524,6 @@ class Modulus(Option, metaclass=OptionType):
 
     option = 'modulus'
 
-    requires = []
     excludes = ['greedy', 'split', 'domain', 'gaussian', 'extension']
 
     @classmethod
@@ -555,7 +534,7 @@ class Modulus(Option, metaclass=OptionType):
             return int(modulus)
         else:
             raise OptionError(
-                "'modulus' must a positive integer, got %s" % modulus)
+                f"'modulus' must a positive integer, got {modulus}")
 
     @classmethod
     def postprocess(cls, options):
@@ -669,7 +648,8 @@ class Symbols(Flag, metaclass=OptionType):
         if hasattr(symbols, '__iter__'):
             return iter(symbols)
         else:
-            raise OptionError("expected an iterator or iterable container, got %s" % symbols)
+            raise OptionError('expected an iterator or '
+                              f'iterable container, got {symbols}')
 
 
 class Method(Flag, metaclass=OptionType):
@@ -682,7 +662,7 @@ class Method(Flag, metaclass=OptionType):
         if isinstance(method, str):
             return method.lower()
         else:
-            raise OptionError("expected a string, got %s" % method)
+            raise OptionError(f'expected a string, got {method}')
 
 
 def build_options(gens, args=None):
@@ -719,9 +699,9 @@ def allowed_flags(args, flags):
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
                 raise FlagError(
-                    "'%s' flag is not allowed in this context" % arg)
+                    f"'{arg}' flag is not allowed in this context")
         except KeyError:
-            raise OptionError("'%s' is not a valid option" % arg)
+            raise OptionError(f"'{arg}' is not a valid option")
 
 
 def set_defaults(options, **defaults):

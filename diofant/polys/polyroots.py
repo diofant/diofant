@@ -4,15 +4,16 @@ import functools
 import math
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
-                    factor_terms, pi, symbols, sympify)
-from ..core.compatibility import ordered
+                    factor_terms, igcd, pi, symbols, sympify)
 from ..core.mul import expand_2arg
+from ..domains.compositedomain import CompositeDomain
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify import powsimp, simplify
+from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
-from .polytools import Poly, cancel, discriminant, factor, gcd_list
+from .polytools import Poly, cancel, discriminant, factor
 from .rationaltools import together
 from .specialpolys import cyclotomic_poly
 
@@ -26,7 +27,7 @@ def roots_linear(f):
     dom = f.domain
 
     if not dom.is_Numerical:
-        if dom.is_Composite:
+        if isinstance(dom, CompositeDomain):
             r = factor(r)
         else:
             r = simplify(r)
@@ -46,7 +47,7 @@ def roots_quadratic(f):
     dom = f.domain
 
     def _simplify(expr):
-        if dom.is_Composite:
+        if isinstance(dom, CompositeDomain):
             return factor(expr)
         else:
             return simplify(expr)
@@ -437,7 +438,7 @@ def roots_cyclotomic(f, factor=False):
         if f == g:
             break
     else:  # pragma: no cover
-        raise RuntimeError("failed to find index of a cyclotomic polynomial")
+        raise RuntimeError('failed to find index of a cyclotomic polynomial')
 
     roots = []
 
@@ -628,9 +629,9 @@ def _integer_basis(poly):
     if poly.is_zero:
         return
 
-    monoms, coeffs = list(zip(*poly.terms()))
+    monoms, coeffs = zip(*poly.terms())
 
-    monoms, = list(zip(*monoms))
+    monoms, = zip(*monoms)
     coeffs = list(map(abs, coeffs))
 
     if coeffs[0] < coeffs[-1]:
@@ -643,7 +644,7 @@ def _integer_basis(poly):
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
 
-    divs = reversed(divisors(gcd_list(coeffs))[1:])
+    divs = reversed(divisors(igcd(*coeffs))[1:])
 
     try:
         div = next(divs)
@@ -672,8 +673,7 @@ def preprocess_roots(poly):
     poly = poly.primitive()[1]
     poly = poly.retract()
 
-    # TODO: This is fragile. Figure out how to make this independent of construct_domain().
-    if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.coeffs()):
+    if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.values()):
         poly = poly.inject()
 
         strips = list(zip(*poly.monoms()))
@@ -783,7 +783,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Cubic_function#Trigonometric_and_hyperbolic_solutions
+    * https://en.wikipedia.org/wiki/Cubic_equation#Trigonometric_and_hyperbolic_solutions
 
     """
     from .polytools import to_rational_coeffs
@@ -908,7 +908,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_SymbolicDomain:
+                    if f.domain.is_ExpressionDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:
@@ -943,7 +943,7 @@ def roots(f, *gens, **flags):
         try:
             query = handlers[filter]
         except KeyError:
-            raise ValueError("Invalid filter: %s" % filter)
+            raise ValueError(f'Invalid filter: {filter}')
 
         for zero in dict(result):
             if not query(zero):

@@ -38,9 +38,9 @@ def test_karr_convention():
     # where we intentionally used two different ways to typeset the
     # products and its limits.
 
-    i = Symbol("i", integer=True)
-    k = Symbol("k", integer=True)
-    j = Symbol("j", integer=True)
+    i = Symbol('i', integer=True)
+    k = Symbol('k', integer=True)
+    j = Symbol('j', integer=True)
 
     # A simple example with a concrete factors and symbolic limits.
 
@@ -74,7 +74,7 @@ def test_karr_convention():
 
     # Another example this time with an unspecified factor and
     # numeric limits. (We can not do both tests in the same example.)
-    f = Function("f")
+    f = Function('f')
 
     # The normal product with m < n:
     m = 2
@@ -107,9 +107,9 @@ def test_karr_convention():
 
 def test_karr_proposition_2a():
     # Test Karr, page 309, proposition 2, part a
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
 
     def test_the_product(m, n):
         # g
@@ -133,10 +133,10 @@ def test_karr_proposition_2a():
 
 def test_karr_proposition_2b():
     # Test Karr, page 309, proposition 2, part b
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
-    w = Symbol("w", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
+    w = Symbol('w', integer=True)
 
     def test_the_product(l, n, m):
         # Productmand
@@ -267,7 +267,7 @@ def test_conjugate_transpose():
     assert p.conjugate().doit() == p.doit().conjugate()
     assert p.transpose().doit() == p.doit().transpose()
 
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Product(A*B**k, (k, 1, 3))
     assert p.adjoint().doit() == p.doit().adjoint()
     assert p.conjugate().doit() == p.doit().conjugate()

@@ -3,9 +3,9 @@
 import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
-                     Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
-                     Rational, RootOf, S, Symbol, Union, false, log, oo, pi,
-                     reduce_inequalities, root, sin, solve, sqrt)
+                     Interval, Le, Lt, Max, Min, Ne, Or, Piecewise, Poly,
+                     PurePoly, Rational, RootOf, S, Symbol, Union, false, log,
+                     oo, pi, reduce_inequalities, root, sin, solve, sqrt)
 from diofant.abc import x, y
 from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
@@ -19,15 +19,59 @@ __all__ = ()
 inf = oo.evalf()
 
 
+def test_solve_linear_inequalities():
+    eqs = [x >= 0, 2*x + 4*y <= 14, x - 2*y <= 1]
+    ans = ((x >= Integer(0)) & (x <= Integer(4)) &
+           (y >= x/2 - Rational(1, 2)) & (y <= -x/2 + Rational(7, 2)))
+
+    assert reduce_inequalities(eqs) == ans
+
+    eqs = [x + y >= 4, x <= 1, y <= 1]
+
+    assert reduce_inequalities(eqs) == false
+
+    eqs = [x + 2*y <= 3, 2*x + y <= 5]
+
+    assert reduce_inequalities(eqs) == (y <= Min(-2*x + 5,
+                                                 -x/2 + Rational(3, 2)))
+
+    eqs = [x + 2*y < 3, 2*x + y < 5]
+
+    assert reduce_inequalities(eqs) == (y < Min(-2*x + 5,
+                                                -x/2 + Rational(3, 2)))
+
+    eqs = [x + 2*y <= 3, 2*x + y < 5]
+    ans = (((y <= -x/2 + Rational(3, 2)) & (-x/2 + Rational(3, 2) < -2*x + 5)) |
+           ((y < -2*x + 5) & (-2*x + 5 <= -x/2 + Rational(3, 2))))
+
+    assert reduce_inequalities(eqs) == ans
+
+    eqs = [x + 2*y >= 3, 2*x + y >= 5]
+
+    assert reduce_inequalities(eqs) == (y >= Max(-2*x + 5,
+                                                 -x/2 + Rational(3, 2)))
+
+    eqs = [x + 2*y > 3, 2*x + y > 5]
+
+    assert reduce_inequalities(eqs) == (y > Max(-2*x + 5,
+                                                -x/2 + Rational(3, 2)))
+
+    eqs = [x + 2*y >= 3, 2*x + y > 5]
+    ans = (((y >= -x/2 + Rational(3, 2)) & (-x/2 + Rational(3, 2) > -2*x + 5)) |
+           ((y > -2*x + 5) & (-2*x + 5 >= -x/2 + Rational(3, 2))))
+
+    assert reduce_inequalities(eqs) == ans
+
+
 def test_solve_poly_inequality():
     assert psolve(Poly(0, x), '==') == [S.Reals]
     assert psolve(Poly(1, x), '==') == [S.EmptySet]
-    assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
+    assert psolve(PurePoly(x + 1, x), '>') == [Interval(-1, oo, True, True)]
     pytest.raises(ValueError, lambda: psolve(x, '=='))
     pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
 
-    assert (solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-                                     (Poly(-x**2 + 1), ">"))) ==
+    assert (solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+                                     (Poly(-x**2 + 1), '>'))) ==
             Union(Interval(-oo, -sqrt(3), True, True),
                   Interval(-1, 1, True, True),
                   Interval(sqrt(3), oo, True, True)))
@@ -217,6 +261,10 @@ def test_reduce_inequalities_general():
     assert reduce_inequalities(Ge(sqrt(2)*x, 1)) == And(sqrt(2)/2 <= x, x < oo)
     assert reduce_inequalities(PurePoly(x + 1, x) > 0) == And(Integer(-1) < x, x < oo)
 
+    # issue sympy/sympy#10196
+    assert reduce_inequalities(x**2 >= 0)
+    assert reduce_inequalities(x**2 < 0) is false
+
 
 def test_reduce_inequalities_boolean():
     assert reduce_inequalities(
@@ -333,11 +381,6 @@ def test_sympyissue_8545():
 def test_sympyissue_8974():
     assert isolve(-oo < x, x) == And(-oo < x, x < oo)
     assert isolve(oo > x, x) == And(-oo < x, x < oo)
-
-
-def test_sympyissue_10196():
-    assert reduce_inequalities(x**2 >= 0)
-    assert reduce_inequalities(x**2 < 0) is false
 
 
 def test_sympyissue_10268():

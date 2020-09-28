@@ -212,7 +212,7 @@ def test_blockcut():
 
 
 def test_reblock_2x2():
-    B = BlockMatrix([[MatrixSymbol('A_%d%d' % (i, j), 2, 2)
+    B = BlockMatrix([[MatrixSymbol(f'A_{i:d}{j:d}', 2, 2)
                       for j in range(3)]
                      for i in range(3)])
     assert B.blocks.shape == (3, 3)
@@ -225,7 +225,7 @@ def test_reblock_2x2():
 
 
 def test_deblock():
-    B = BlockMatrix([[MatrixSymbol('A_%d%d' % (i, j), n, n)
+    B = BlockMatrix([[MatrixSymbol(f'A_{i:d}{j:d}', n, n)
                       for j in range(4)]
                      for i in range(4)])
 

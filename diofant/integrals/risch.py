@@ -24,17 +24,16 @@ will return the fraction (fa, fd). Other variable names probably come
 from the names used in Bronstein's book.
 """
 
-from functools import reduce
+import functools
 
 from ..abc import z
 from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, ilcm, oo,
                     sympify)
-from ..core.compatibility import default_sort_key, ordered
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
                      real_roots, reduced)
-from ..utilities import numbered_symbols
+from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
 
@@ -92,8 +91,8 @@ def integer_powers(exprs):
 
     newterms = {}
     for term in terms:
-        common_denom = reduce(ilcm, [i.as_numer_denom()[1] for _, i in
-                                     terms[term]])
+        common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in
+                                               terms[term]])
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
@@ -180,8 +179,8 @@ class DifferentialExtension:
 
         if extension:
             if 'D' not in extension:
-                raise ValueError("At least the key D must be included with "
-                                 "the extension flag to DifferentialExtension.")
+                raise ValueError('At least the key D must be included with '
+                                 'the extension flag to DifferentialExtension.')
             for attr in extension:
                 setattr(self, attr, extension[attr])
 
@@ -189,8 +188,8 @@ class DifferentialExtension:
 
             return
         elif f is None or x is None:
-            raise ValueError("Either both f and x or a manual extension must "
-                             "be given.")
+            raise ValueError('Either both f and x or a manual extension must '
+                             'be given.')
 
         from .prde import is_deriv_k
 
@@ -214,8 +213,8 @@ class DifferentialExtension:
                 self.newf = self.newf.rewrite(candidates, rule)
         else:
             if any(i.has(x) for i in self.f.atoms(sin, cos, tan, atan, asin, acos)):
-                raise NotImplementedError("Trigonometric extensions are not "
-                                          "supported (yet!)")
+                raise NotImplementedError('Trigonometric extensions are not '
+                                          'supported (yet!)')
 
         def update(seq, atoms, func):
             s = set(seq)
@@ -239,8 +238,8 @@ class DifferentialExtension:
                 # We couldn't find a new extension on the last pass, so I guess
                 # we can't do it.
                 raise NotImplementedError("Couldn't find an elementary "
-                                          "transcendental extension for %s.  Try using a " % str(f) +
-                                          "manual extension with the extension flag.")
+                                          'transcendental extension for %s.  Try using a ' % str(f) +
+                                          'manual extension with the extension flag.')
 
             # Pre-preparsing.
             #################
@@ -297,8 +296,8 @@ class DifferentialExtension:
                 # exp to do that :)
                 if i in sympows:
                     if i.exp.is_Rational:
-                        raise NotImplementedError("Algebraic extensions are "
-                                                  "not supported (%s)." % str(i))
+                        raise NotImplementedError('Algebraic extensions are '
+                                                  'not supported (%s).' % str(i))
                     # We can add a**b only if log(a) in the extension, because
                     # a**b == exp(b*log(a)).
                     basea, based = frac_in(i.base, self.t)
@@ -392,7 +391,7 @@ class DifferentialExtension:
         if attr not in ('f', 'x', 'T', 'D', 'fa', 'fd', 'Tfuncs', 'backsubs',
                         'E_K', 'E_args', 'L_K', 'L_args', 'cases', 'case', 't',
                         'd', 'newf', 'level', 'ts'):
-            raise AttributeError("%s has no attribute %s" % (repr(self), repr(attr)))
+            raise AttributeError(f'{self!r} has no attribute {attr!r}')
 
     def _auto_attrs(self):
         """Set attributes that are generated automatically."""
@@ -486,8 +485,8 @@ class DifferentialExtension:
                         break
                     else:
                         # TODO: give algebraic dependence in error string
-                        raise NotImplementedError("Cannot integrate over "
-                                                  "algebraic extensions.")
+                        raise NotImplementedError('Cannot integrate over '
+                                                  'algebraic extensions.')
 
             else:
                 arga, argd = frac_in(arg, self.t)
@@ -503,7 +502,7 @@ class DifferentialExtension:
                 self.D.append(darg.as_poly(self.t, expand=False)*Poly(self.t,
                                                                       self.t, expand=False))
                 if dummy:
-                    i = Dummy("i")
+                    i = Dummy('i')
                 else:
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs({self.x: i})))]
@@ -557,7 +556,7 @@ class DifferentialExtension:
                 self.D.append(cancel(darg.as_expr()/arg).as_poly(self.t,
                                                                  expand=False))
                 if dummy:
-                    i = Dummy("i")
+                    i = Dummy('i')
                 else:
                     i = Symbol('i')
                 self.Tfuncs = self.Tfuncs + [Lambda(i, log(arg.subs({self.x: i})))]
@@ -615,8 +614,8 @@ class DifferentialExtension:
 
         """
         if self.level >= -1:
-            raise ValueError("The level of the differential extension cannot "
-                             "be incremented any further.")
+            raise ValueError('The level of the differential extension cannot '
+                             'be incremented any further.')
 
         self.level += 1
         self.t = self.T[self.level]
@@ -633,8 +632,8 @@ class DifferentialExtension:
 
         """
         if self.level <= -len(self.T):
-            raise ValueError("The level of the differential extension cannot "
-                             "be decremented any further.")
+            raise ValueError('The level of the differential extension cannot '
+                             'be decremented any further.')
 
         self.level -= 1
         self.t = self.T[self.level]
@@ -667,7 +666,6 @@ class NonElementaryIntegralException(Exception):
 
     # TODO: Pass through information about why the integral was nonelementary,
     # and store that in the resulting NonElementaryIntegral somehow.
-    pass
 
 
 def gcdex_diophantine(a, b, c):
@@ -714,7 +712,7 @@ def frac_in(f, t, **kwargs):
     if cancel:
         fa, fd = fa.cancel(fd, include=True)
     if fa is None or fd is None:
-        raise ValueError("Could not turn %s into a fraction in %s." % (f, t))
+        raise ValueError(f'Could not turn {f} into a fraction in {t}.')
     return fa, fd
 
 
@@ -744,7 +742,7 @@ def as_poly_1t(p, t, z):
         # XXX: Is there a better Poly exception that we could raise here?
         # Either way, if you see this (from the Risch Algorithm) it indicates
         # a bug.
-        raise PolynomialError("%s is not an element of K[%s, 1/%s]." % (p, t, t))
+        raise PolynomialError(f'{p} is not an element of K[{t}, 1/{t}].')
     d = pd.degree(t)
     one_t_part = pa.slice(0, d + 1)
     r = pd.degree() - pa.degree()
@@ -756,7 +754,7 @@ def as_poly_1t(p, t, z):
         raise NotImplementedError(e)
     # Compute the negative degree parts.
     od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
-    one_t_part = Poly(list(reversed(one_t_part.rep.to_dense())) + [0]*od,
+    one_t_part = Poly(list(reversed(one_t_part.rep.all_coeffs())) + [0]*od,
                       *one_t_part.gens, domain=one_t_part.domain)
     if 0 < r < oo:
         one_t_part *= Poly(t**r, t)
@@ -1128,7 +1126,7 @@ def recognize_log_derivative(a, d, DE, z=None):
     pz = Poly(z, DE.t)
     Dd = derivation(d, DE)
     q = a - pz*Dd
-    r, R = d.resultant(q, includePRS=True)
+    r = d.resultant(q)
     r = Poly(r, z)
     Np, Sp = splitfactor_sqf(r, DE, coefficientD=True, z=z)
 
@@ -1291,7 +1289,7 @@ def integrate_primitive_polynomial(p, DE):
             try:
                 (ba, bd), c = limited_integrate(aa, ad, [(Dta, Dtb)], DE)
                 if len(c) != 1:
-                    raise ValueError("Length of c should  be 1")
+                    raise ValueError('Length of c should  be 1')
             except NonElementaryIntegralException:
                 return q, p, False
 
@@ -1319,7 +1317,7 @@ def integrate_primitive(a, d, DE, z=None):
 
     """
     # XXX: a and d must be canceled, or this might return incorrect results
-    z = z or Dummy("z")
+    z = z or Dummy('z')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))
 
     g1, h, r = hermite_reduce(a, d, DE)
@@ -1416,7 +1414,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     """
     # XXX: a and d must be canceled, or this might return incorrect results
-    z = z or Dummy("z")
+    z = z or Dummy('z')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))
 
     g1, h, r = hermite_reduce(a, d, DE)
@@ -1499,7 +1497,7 @@ def integrate_nonlinear_no_specials(a, d, DE, z=None):
     # TODO: Integral from k?
     # TODO: split out nonelementary integral
     # XXX: a and d must be canceled, or this might not return correct results
-    z = z or Dummy("z")
+    z = z or Dummy('z')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))
 
     g1, h, r = hermite_reduce(a, d, DE)
@@ -1566,7 +1564,6 @@ class NonElementaryIntegral(Integral):
     # elementary. But should we do more?  Perhaps a no-op .doit() if
     # elementary=True?  Or maybe some information on why the integral is
     # nonelementary.
-    pass
 
 
 def risch_integrate(f, x, extension=None, handle_first='log',
@@ -1622,7 +1619,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     For example,
 
     >>> pprint(risch_integrate((2*log(x)**2 - log(x) - x**2)/(log(x)**3 -
-    ... x**2*log(x)), x), use_unicode=False)
+    ...                        x**2*log(x)), x), use_unicode=False)
                                              /
                                             |
       log(-x + log(x))   log(x + log(x))    |   1
@@ -1694,8 +1691,8 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             b = False
             i = Integer(0)
         else:
-            raise NotImplementedError("Only exponential and logarithmic "
-                                      "extensions are currently supported.")
+            raise NotImplementedError('Only exponential and logarithmic '
+                                      'extensions are currently supported.')
 
         result += ans
         if b:

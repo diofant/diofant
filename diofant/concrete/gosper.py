@@ -39,12 +39,11 @@ def gosper_normal(f, g, n, polys=True):
      Poly(n + 1/4, n, domain='QQ'))
 
     """
-    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True)
+    (C, p, q), opt = parallel_poly_from_expr((1, f, g), n, field=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()
-
-    C, Z = A.one, a/b
+    Z = a/b
 
     J = A.dispersionset(B)
 
@@ -109,7 +108,7 @@ def gosper_term(f, n):
 
     d = max(D)
 
-    coeffs = symbols('c:%s' % (d + 1), cls=Dummy)
+    coeffs = symbols(f'c:{d + 1}', cls=Dummy)
     domain = A.domain.inject(*coeffs)
 
     x = sum(c*n**i for i, c in enumerate(reversed(coeffs)))

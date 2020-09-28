@@ -249,45 +249,45 @@ def test_RootOf_diff():
 def test_RootOf_evalf():
     real = RootOf(x**3 + x + 3, 0).evalf(20)
 
-    assert real.epsilon_eq(Float("-1.2134116627622296341"))
+    assert real.epsilon_eq(Float('-1.2134116627622296341'))
 
     re, im = RootOf(x**3 + x + 3, 1).evalf(20).as_real_imag()
 
-    assert re.epsilon_eq(+Float("0.60670583138111481707"))
-    assert im.epsilon_eq(-Float("1.45061224918844152650"))
+    assert re.epsilon_eq(+Float('0.60670583138111481707'))
+    assert im.epsilon_eq(-Float('1.45061224918844152650'))
 
     re, im = RootOf(x**3 + x + 3, 2).evalf(20).as_real_imag()
 
-    assert re.epsilon_eq(Float("0.60670583138111481707"))
-    assert im.epsilon_eq(Float("1.45061224918844152650"))
+    assert re.epsilon_eq(Float('0.60670583138111481707'))
+    assert im.epsilon_eq(Float('1.45061224918844152650'))
 
     p = legendre_poly(4, x, polys=True)
     roots = [str(r.evalf(17)) for r in p.real_roots()]
     assert roots == [
-        "-0.86113631159405258",
-        "-0.33998104358485626",
-        "0.33998104358485626",
-        "0.86113631159405258",
+        '-0.86113631159405258',
+        '-0.33998104358485626',
+        '0.33998104358485626',
+        '0.86113631159405258',
     ]
 
     re = RootOf(x**5 - 5*x + 12, 0).evalf(20)
-    assert re.epsilon_eq(Float("-1.84208596619025438271"))
+    assert re.epsilon_eq(Float('-1.84208596619025438271'))
 
     re, im = RootOf(x**5 - 5*x + 12, 1).evalf(20).as_real_imag()
-    assert re.epsilon_eq(Float("-0.351854240827371999559"))
-    assert im.epsilon_eq(Float("-1.709561043370328882010"))
+    assert re.epsilon_eq(Float('-0.351854240827371999559'))
+    assert im.epsilon_eq(Float('-1.709561043370328882010'))
 
     re, im = RootOf(x**5 - 5*x + 12, 2).evalf(20).as_real_imag()
-    assert re.epsilon_eq(Float("-0.351854240827371999559"))
-    assert im.epsilon_eq(Float("+1.709561043370328882010"))
+    assert re.epsilon_eq(Float('-0.351854240827371999559'))
+    assert im.epsilon_eq(Float('+1.709561043370328882010'))
 
     re, im = RootOf(x**5 - 5*x + 12, 3).evalf(20).as_real_imag()
-    assert re.epsilon_eq(Float("+1.272897223922499190910"))
-    assert im.epsilon_eq(Float("-0.719798681483861386681"))
+    assert re.epsilon_eq(Float('+1.272897223922499190910'))
+    assert im.epsilon_eq(Float('-0.719798681483861386681'))
 
     re, im = RootOf(x**5 - 5*x + 12, 4).evalf(20).as_real_imag()
-    assert re.epsilon_eq(Float("+1.272897223922499190910"))
-    assert im.epsilon_eq(Float("+0.719798681483861386681"))
+    assert re.epsilon_eq(Float('+1.272897223922499190910'))
+    assert im.epsilon_eq(Float('+0.719798681483861386681'))
 
     # issue sympy/sympy#6393
     assert str(RootOf(x**5 + 2*x**4 + x**3 - 68719476736, 0).evalf(3)) == '147.'
@@ -377,10 +377,10 @@ def test_RootOf_eval_rational():
     # to:
     roots = [str(r.evalf(17)) for r in roots]
     assert roots == [
-        "-0.86113631159405258",
-        "-0.33998104358485626",
-        "0.33998104358485626",
-        "0.86113631159405258",
+        '-0.86113631159405258',
+        '-0.33998104358485626',
+        '0.33998104358485626',
+        '0.86113631159405258',
     ]
 
     pytest.raises(NotImplementedError,
@@ -472,9 +472,9 @@ def test_RootSum_evalf():
     rs = RootSum(x**2 + 1, Lambda(x, exp(x)))
 
     assert rs.evalf(20, chop=True).epsilon_eq(
-        Float("1.0806046117362794348", 20), Float("1e-20")) is true
+        Float('1.0806046117362794348', 20), Float('1e-20')) is true
     assert rs.evalf(15, chop=True).epsilon_eq(
-        Float("1.08060461173628", 15), Float("1e-15")) is true
+        Float('1.08060461173628', 15), Float('1e-15')) is true
 
     rs = RootSum(x**2 + a, Lambda(x, exp(x)), x)
 
@@ -593,7 +593,7 @@ def test_diofantissue_730():
     assert e.conjugate().conjugate() == e
 
 
-@pytest.mark.timeout(130)
+@pytest.mark.timeout(150)
 @pytest.mark.slow
 def test_diofantissue_723():
     p = x**5 + sqrt(3)*x - 2
