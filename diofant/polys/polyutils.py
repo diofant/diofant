@@ -134,7 +134,7 @@ def _find_gens(exprs, opt):
             return factor in opt.domain
     elif opt.extension is not False:
         def _is_coeff(factor):
-            return factor.is_number and factor.is_algebraic
+            return factor.is_Number or factor.is_algebraic
     elif opt.greedy is not False:
         def _is_coeff(factor):
             return factor.is_Number and factor.is_finite is not False
