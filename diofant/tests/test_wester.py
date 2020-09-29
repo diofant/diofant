@@ -996,10 +996,9 @@ def test_N16():
     reduce_inequalities((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
-@pytest.mark.xfail
 def test_N17():
-    x, y = symbols('x y', real=True)
-    reduce_inequalities((x + y > 0, x - y < 0))
+    assert reduce_inequalities([x + y > 0,
+                                x - y < 0]) == ((y > 0) & (x < y) & (x > -y))
 
 
 # O. Vector Analysis

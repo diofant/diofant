@@ -1,6 +1,6 @@
 from ..matrices import Matrix
+from ..utilities import default_sort_key
 from .add import Add
-from .compatibility import default_sort_key
 from .containers import Tuple
 from .expr import Expr
 from .mul import Mul

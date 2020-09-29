@@ -2,6 +2,7 @@
 
 import collections
 import math
+import operator
 
 from ..core import Dummy, I
 from .orderings import ilex
@@ -805,6 +806,9 @@ class RealInterval:
             domain = ring.domain
             x = ring.gens[0]
 
+            if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
+                domain = domain.domain
+
             if s < 0:
                 if t <= 0:
                     f, s, t, self.neg = f.compose(x, -x), -t, -s, True
@@ -813,7 +817,7 @@ class RealInterval:
 
             a, b, c, d = _mobius_from_interval((s, t), domain.field)
 
-            f = ring._transform(f, a*x + b, c*x + d)
+            f = ring._transform(f, ring(a)*x + ring(b), ring(c)*x + ring(d))
 
             self.mobius = a, b, c, d
         else:
@@ -954,7 +958,7 @@ class ComplexInterval:
         rring = dom.poly_ring(*reversed(ring.symbols))
         resultants = []
         for i in (self, other):
-            re, im = map(lambda _: _.set_ring(rring), (i.f1, i.f2))
+            re, im = map(operator.methodcaller('set_ring', rring), (i.f1, i.f2))
             resultants.append(re.resultant(im))
         gcd = ring.drop(1).gcd(*resultants)
         gcd_roots = ring.drop(1)._isolate_real_roots(gcd,

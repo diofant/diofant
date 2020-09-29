@@ -5,8 +5,8 @@ be displayed in the sphinx documentation.
 from collections import defaultdict
 
 from ..core import Add, Eq, Symbol
-from ..core.compatibility import default_sort_key
 from ..printing import latex
+from ..utilities import default_sort_key
 from .meijerint import _create_lookup_table
 
 

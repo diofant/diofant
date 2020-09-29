@@ -173,6 +173,7 @@ class Ynm(Function):
     def _eval_rewrite_as_cos(self, n, m, theta, phi):
         # This method can be expensive due to extensive use of simplification!
         from ...simplify import simplify, trigsimp
+
         # TODO: Make sure n \in N
         # TODO: Assert |m| <= n ortherwise we should return 0
         term = simplify(self.expand(func=True))

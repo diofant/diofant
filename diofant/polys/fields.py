@@ -2,6 +2,7 @@
 
 import functools
 import operator
+import typing
 
 from ..core import Expr, Symbol, sympify
 from ..core.sympify import CantSympify
@@ -13,16 +14,10 @@ from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
-__all__ = 'FractionField', 'field'
-
-
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn)."""
     _field = FractionField(domain, symbols, order)
     return (_field,) + _field.gens
-
-
-_field_cache = {}
 
 
 class FractionField(Field, CompositeDomain):
@@ -39,7 +34,7 @@ class FractionField(Field, CompositeDomain):
         domain = ring.domain
         order = ring.order
 
-        key = (cls.__name__, symbols, ngens, domain, order)
+        key = cls.__name__, symbols, ngens, domain, order
         obj = _field_cache.get(key)
 
         if obj is None:
@@ -212,6 +207,9 @@ class FractionField(Field, CompositeDomain):
 
     def is_normal(self, a):
         return self.domain.is_normal(a.numerator.LC)
+
+
+_field_cache: typing.Dict[tuple, FractionField] = {}
 
 
 @functools.total_ordering

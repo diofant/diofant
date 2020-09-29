@@ -3,8 +3,8 @@
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
 from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
-from ..utilities.iterables import (filter_symbols, numbered_symbols, ordered,
-                                   sift, topological_sort)
+from ..utilities import numbered_symbols, ordered, sift, topological_sort
+from ..utilities.iterables import filter_symbols
 from . import cse_opts
 
 
@@ -443,8 +443,8 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     ([(x0, x + 1)], [x0*y**2, 3*x0*y**2])
 
     """
-    from ..matrices import (MatrixBase, Matrix, ImmutableMatrix,
-                            SparseMatrix, ImmutableSparseMatrix)
+    from ..matrices import (ImmutableMatrix, ImmutableSparseMatrix, Matrix,
+                            MatrixBase, SparseMatrix)
 
     # Handle the case if just one expression was passed.
     if isinstance(exprs, (Basic, MatrixBase)):

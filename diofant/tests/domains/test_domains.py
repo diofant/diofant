@@ -449,6 +449,14 @@ def test_Domain__contains__():
 
     assert (Rational(3, 2)*x/(y + 1) - z in QQ.inject(x, y, z)) is False
 
+    R = QQ.inject(x)
+
+    assert R(1) in ZZ
+
+    F = R.field
+
+    assert F(1) in ZZ
+
 
 def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
@@ -749,7 +757,8 @@ def test_FractionField_from_PolynomialRing():
 
 def test_FractionField_convert():
     F,  X, Y = field('x y', QQ)
-    F.convert(QQ_python(1, 3)) == F.one/3
+    assert F.convert(QQ_python(1, 3)) == F.one/3
+    assert F.convert(RR(1)) == F.one
 
 
 def test_FF_of_type():

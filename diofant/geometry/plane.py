@@ -635,8 +635,8 @@ class Plane(GeometryEntity):
         [Line3D(Point3D(78/23, -24/23, 0), Point3D(147/23, 321/23, 23))]
 
         """
-        from .line3d import LinearEntity3D
         from .line import LinearEntity
+        from .line3d import LinearEntity3D
         if isinstance(o, (Point, Point3D)):
             if o in self:
                 return [Point3D(o)]
@@ -692,8 +692,8 @@ class Plane(GeometryEntity):
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
 
     def __contains__(self, o):
-        from .line3d import LinearEntity3D
         from .line import LinearEntity
+        from .line3d import LinearEntity3D
         x, y, z = map(Dummy, 'xyz')
         k = self.equation(x, y, z)
         if isinstance(o, Point):

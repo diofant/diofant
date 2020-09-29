@@ -1,7 +1,7 @@
 from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
-from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..utilities import default_sort_key
 from .precedence import precedence
 from .str import StrPrinter
 
@@ -160,6 +160,7 @@ class CodePrinter(StrPrinter):
         assert self._settings['contract']
 
         from ..tensor import get_contraction_structure
+
         # Setup loops over non-dummy indices  --  all terms need these
         indices = self._get_expression_indices(expr, assign_to)
         # Setup loops over dummy indices  --  each term needs separate treatment

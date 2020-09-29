@@ -24,7 +24,7 @@ from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 
 
-__all__ = ('minimal_polynomial', 'primitive_element', 'field_isomorphism')
+__all__ = 'minimal_polynomial', 'primitive_element', 'field_isomorphism'
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -652,7 +652,7 @@ def minpoly_groebner(ex, x, domain):
         n, d = bottom_up_scan(ex), Integer(1)
 
     F = [d*x - n] + list(mapping.values())
-    G = groebner(F, list(symbols.values()) + [x], order='lex', domain=domain)
+    G = groebner(F, *(list(symbols.values()) + [x]), order='lex', domain=domain)
 
     return G[-1]  # by construction G[-1] has root `ex`
 
@@ -681,7 +681,7 @@ def primitive_element(extension, **args):
         coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
 
-        *H, g = groebner(F + [f], Y + [x], domain=domain)
+        *H, g = groebner(F + [f], *(Y + [x]), domain=domain)
 
         for i, (h, y) in enumerate(zip(H, Y)):
             H[i] = (y - h).eject(*Y).retract(field=True)

@@ -12,8 +12,7 @@ from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal,
                     sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import (default_sort_key, is_sequence, iterable,
-                                  ordered)
+from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef
 from ..core.logic import fuzzy_and
 from ..core.relational import Relational
@@ -30,7 +29,7 @@ from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
 from ..simplify.fu import TR1
 from ..simplify.sqrtdenest import unrad
-from ..utilities import filldedent
+from ..utilities import default_sort_key, filldedent, ordered
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
 from .utils import checksol
@@ -858,7 +857,7 @@ def _solve_system(exprs, symbols, **flags):
                         newresult.append(rnew)
                     hit = True
                     got_s.add(s)
-                if not hit:  # pragma: no cover
+                if not hit:
                     raise NotImplementedError(f'could not solve {eq2}')
             else:
                 result = newresult
@@ -993,6 +992,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         # We speed up slightly by starting at one less than the number of
         # variables the quick method manages.
         from itertools import combinations
+
         from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
@@ -1052,7 +1052,7 @@ def _tsolve(eq, sym, **flags):
     [LambertW(2)/2]
 
     """
-    from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
+    from .bivariate import _filtered_gens, _solve_lambert, bivariate_type
 
     if 'tsolve_saw' not in flags:
         flags['tsolve_saw'] = []

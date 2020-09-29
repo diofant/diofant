@@ -4,8 +4,8 @@ import pytest
 
 from diofant import QQ, ZZ, grlex, lex, ring
 from diofant.polys import polyconfig as config
-from diofant.polys.fglmtools import _representing_matrices
-from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
+from diofant.polys.groebnertools import (Num, Polyn, Sign,
+                                         _representing_matrices, cp_key,
                                          critical_pair, f5_reduce, groebner,
                                          groebner_gcd, groebner_lcm,
                                          is_groebner, is_minimal,

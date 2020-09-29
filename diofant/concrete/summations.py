@@ -409,9 +409,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         We use Sister Celine's algorithm, see :cite:`Petkovsek1997AeqB`, Ch. 4.
 
         """
-        from ..core import expand_func, Mul
+        from ..core import Mul, expand_func
         from ..functions import gamma
-        from ..polys import together, factor
+        from ..polys import factor, together
         from ..simplify import collect
 
         if len(self.variables) > 1:
@@ -553,8 +553,8 @@ def telescopic(L, R, limits):
 
 
 def eval_sum(f, limits):
-    from .delta import deltasummation, _has_simple_delta
     from ..functions import KroneckerDelta
+    from .delta import _has_simple_delta, deltasummation
 
     (i, a, b) = limits
     if f == 0:
@@ -594,7 +594,7 @@ def eval_sum_direct(expr, limits):
 
 
 def eval_sum_symbolic(f, limits):
-    from ..functions import harmonic, bernoulli
+    from ..functions import bernoulli, harmonic
 
     f_orig = f
     (i, a, b) = limits
@@ -682,8 +682,8 @@ def eval_sum_symbolic(f, limits):
 def _eval_sum_hyper(f, i, a):
     """Returns (res, cond). Sums from a to oo."""
     from ..functions import hyper
-    from ..simplify import hyperexpand, hypersimp, fraction, simplify
     from ..polys import Poly, factor
+    from ..simplify import fraction, hyperexpand, hypersimp, simplify
 
     if a != 0:
         return _eval_sum_hyper(f.subs({i: i + a}), i, 0)

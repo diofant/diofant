@@ -4,8 +4,9 @@ from collections import defaultdict
 from collections.abc import Mapping
 from itertools import zip_longest
 
+from ..utilities import ordered
 from .cache import cacheit
-from .compatibility import iterable, ordered
+from .compatibility import iterable
 from .decorators import _sympifyit
 from .sympify import SympifyError, sympify
 
@@ -694,7 +695,7 @@ class Basic:
         False
 
         """
-        from .function import UndefinedFunction, Function
+        from .function import Function, UndefinedFunction
 
         if len(patterns) != 1:
             return any(self.has(pattern) for pattern in patterns)
@@ -1193,7 +1194,8 @@ def _aresame(a, b):
     False
 
     """
-    from .function import AppliedUndef, UndefinedFunction as UndefFunc
+    from .function import AppliedUndef
+    from .function import UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
         if i != j or type(i) != type(j):
             if (isinstance(i, (UndefFunc, AppliedUndef)) and

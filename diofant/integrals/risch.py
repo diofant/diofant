@@ -24,17 +24,16 @@ will return the fraction (fa, fd). Other variable names probably come
 from the names used in Bronstein's book.
 """
 
-from functools import reduce
+import functools
 
 from ..abc import z
 from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, ilcm, oo,
                     sympify)
-from ..core.compatibility import default_sort_key, ordered
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
                      real_roots, reduced)
-from ..utilities import numbered_symbols
+from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
 
@@ -92,8 +91,8 @@ def integer_powers(exprs):
 
     newterms = {}
     for term in terms:
-        common_denom = reduce(ilcm, [i.as_numer_denom()[1] for _, i in
-                                     terms[term]])
+        common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in
+                                               terms[term]])
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
@@ -1127,7 +1126,7 @@ def recognize_log_derivative(a, d, DE, z=None):
     pz = Poly(z, DE.t)
     Dd = derivation(d, DE)
     q = a - pz*Dd
-    r, R = d.resultant(q, includePRS=True)
+    r = d.resultant(q)
     r = Poly(r, z)
     Np, Sp = splitfactor_sqf(r, DE, coefficientD=True, z=z)
 

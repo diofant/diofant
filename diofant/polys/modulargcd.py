@@ -1,3 +1,4 @@
+import operator
 import random
 
 from ..core import Dummy
@@ -5,88 +6,6 @@ from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
 from .polyerrors import ModularGCDFailed
-
-
-__all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
-
-
-def _gf_gcd(fp, gp, p):
-    r"""Compute the GCD of two univariate polynomials in `\mathbb{Z}_p[x]`."""
-    dom = fp.ring.domain
-
-    while gp:
-        rem = fp
-        deg = gp.degree()
-        lcinv = dom.invert(gp.LC, p)
-
-        while True:
-            degrem = rem.degree()
-            if degrem < deg:
-                break
-            rem = (rem - gp.mul_monom((degrem - deg,))*(lcinv * rem.LC)).trunc_ground(p)
-
-        fp = gp
-        gp = rem
-
-    return (fp*dom.invert(fp.LC, p)).trunc_ground(p)
-
-
-def _primitive(f, p):
-    r"""
-    Compute the content and the primitive part of a polynomial in
-    `\mathbb{Z}_p[x_0, \ldots, x_{k-2}, y] \cong \mathbb{Z}_p[y][x_0, \ldots, x_{k-2}]`.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        integer polynomial in `\mathbb{Z}_p[x0, \ldots, x{k-2}, y]`
-    p : Integer
-        modulus of `f`
-
-    Returns
-    =======
-
-    contf : PolyElement
-        integer polynomial in `\mathbb{Z}_p[y]`, content of `f`
-    ppf : PolyElement
-        primitive part of `f`, i.e. `\frac{f}{contf}`
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> p = 3
-
-    >>> f = x**2*y**2 + x**2*y - y**2 - y
-    >>> _primitive(f, p)
-    (y**2 + y, x**2 - 1)
-
-    >>> R, x, y, z = ring('x y z', ZZ)
-
-    >>> f = x*y*z - y**2*z**2
-    >>> _primitive(f, p)
-    (z, x*y - y**2*z)
-
-    """
-    ring = f.ring
-    dom = ring.domain
-
-    fy = f.eject(-1)
-    yring = fy.ring.domain
-    domp = dom.finite_field(p)
-
-    cont = yring.zero
-    cont = cont.set_domain(domp)
-    ypring = cont.ring
-
-    for coeff in fy.values():
-        coeff = coeff.set_domain(domp)
-        cont = ypring.gcd(cont, coeff)
-
-    contf = cont.set_domain(dom).trunc_ground(p)
-
-    return contf, f//contf.set_ring(ring)
 
 
 def _swap(f, i):
@@ -310,8 +229,14 @@ def _modgcd_p(f, g, p, degbound, contbound):
     ring = f.ring
     k = ring.ngens
 
-    if k == 1:
-        h = _gf_gcd(f, g, p).trunc_ground(p)
+    domain = ring.domain
+    pdomain = domain.finite_field(p)
+    pring = ring.clone(domain=pdomain)
+
+    f, g = map(operator.methodcaller('set_domain', pdomain), (f, g))
+
+    if ring.is_univariate:
+        h = pring.gcd(f, g)
         degh = h.degree()
 
         if degh > degbound[0]:
@@ -320,15 +245,20 @@ def _modgcd_p(f, g, p, degbound, contbound):
             degbound[0] = degh
             raise ModularGCDFailed
 
-        return h
+        return h.set_domain(domain)
 
-    degyf = f.degree(k-1)
-    degyg = g.degree(k-1)
+    ypring = pring.eject(-1).domain
 
-    contf, f = _primitive(f, p)
-    contg, g = _primitive(g, p)
+    degyf = f.degree(-1)
+    degyg = g.degree(-1)
 
-    conth = _gf_gcd(contf, contg, p)  # polynomial in Z_p[y]
+    contf, f = f.eject(-1).primitive()
+    contg, g = g.eject(-1).primitive()
+
+    f = f.inject()
+    g = g.inject()
+
+    conth = ypring.gcd(contf, contg)  # polynomial in Z_p[y]
 
     degcontf = contf.degree()
     degcontg = contg.degree()
@@ -343,13 +273,13 @@ def _modgcd_p(f, g, p, degbound, contbound):
     lcf = f.eject(-1).LC
     lcg = g.eject(-1).LC
 
-    delta = _gf_gcd(lcf, lcg, p)  # polynomial in Z_p[y]
+    delta = ypring.gcd(lcf, lcg)  # polynomial in Z_p[y]
 
     evaltest = delta
 
     for i in range(k-1):
-        evaltest *= _gf_gcd(_swap(f, i).eject(-1).LC,
-                            _swap(g, i).eject(-1).LC, p)
+        evaltest *= ypring.gcd(_swap(f, i).eject(-1).LC,
+                               _swap(g, i).eject(-1).LC)
 
     degdelta = delta.degree()
 
@@ -363,22 +293,23 @@ def _modgcd_p(f, g, p, degbound, contbound):
     d = 0
     evalpoints = []
     heval = []
-    points = set(range(p))
+    points = list(range(p))
 
     while points:
         a = random.sample(points, 1)[0]
         points.remove(a)
 
-        if not evaltest.eval(0, a) % p:
+        if not evaltest.eval(0, a):
             continue
 
-        deltaa = delta.eval(0, a) % p
+        deltaa = delta.eval(0, a)
 
-        fa = f.eval(k-1, a).trunc_ground(p)
-        ga = g.eval(k-1, a).trunc_ground(p)
+        fa = f.eval(-1, a)
+        ga = g.eval(-1, a)
 
         # polynomials in Z_p[x_0, ..., x_{k-2}]
-        ha = _modgcd_p(fa, ga, p, degbound, contbound)
+        ha = _modgcd_p(fa.set_domain(domain), ga.set_domain(domain),
+                       p, degbound, contbound)
 
         if ha is None:
             if d < n:
@@ -387,21 +318,25 @@ def _modgcd_p(f, g, p, degbound, contbound):
             else:
                 return
 
-        if ha.is_ground:
-            h = conth.set_ring(ring).trunc_ground(p)
-            return h
+        ha = ha.set_domain(pdomain)
 
-        ha = (ha*deltaa).trunc_ground(p)
+        if ha.is_ground:
+            return conth.set_ring(ring)
+
+        ha *= deltaa
 
         evalpoints.append(a)
         heval.append(ha)
         n += 1
 
         if n == N:
-            h = _interpolate(evalpoints, heval, ring, k-1, p)
+            heval = [_.set_domain(domain) for _ in heval]
+            h = _interpolate(evalpoints, heval, ring, -1, p)
 
-            h = _primitive(h, p)[1] * conth.set_ring(ring)
-            degyh = h.degree(k-1)
+            h = h.set_domain(pdomain)
+
+            h = h.eject(-1).primitive()[1].inject().set_ring(ring) * conth.set_ring(ring)
+            degyh = h.degree(-1)
 
             assert degyh <= degbound[k-1]
             if degyh < degbound[k-1]:
@@ -479,7 +414,7 @@ def modgcd(f, g):
     for i in range(k):
         badprimes *= ring.domain.gcd(_swap(f, i).LC, _swap(g, i).LC)
 
-    degbound = [min(fdeg, gdeg) for fdeg, gdeg in zip(f.degree_list(), g.degree_list())]
+    degbound = [min(f.degree(x), g.degree(x)) for x in ring.gens]
     contbound = list(degbound)
 
     m = 1
@@ -526,19 +461,6 @@ def modgcd(f, g):
             return h, cff, cfg
 
 
-def _gf_div(f, g, p):
-    r"""
-    Compute `\frac f g` modulo `p` for two univariate polynomials over
-    `\mathbb Z_p`.
-
-    """
-    ring = f.ring
-    dom = ring.domain
-    domp = dom.finite_field(p)
-    f, g = map(lambda x: x.set_domain(domp), (f, g))
-    return tuple(map(lambda x: x.set_domain(dom), divmod(f, g)))
-
-
 def _rational_function_reconstruction(c, p, m):
     r"""
     Reconstruct a rational function `\frac a b` in `\mathbb Z_p(t)` from
@@ -577,32 +499,35 @@ def _rational_function_reconstruction(c, p, m):
 
     """
     ring = c.ring
+    field = ring.field
     domain = ring.domain
     M = m.degree()
     N = M // 2
     D = M - N - 1
 
-    r0, s0 = m, ring.zero
-    r1, s1 = c, ring.one
+    pdomain = domain.finite_field(p)
+    pring = ring.clone(domain=pdomain)
+    c, m = map(operator.methodcaller('set_domain', pdomain), (c, m))
+
+    r0, s0 = m, pring.zero
+    r1, s1 = c, pring.one
 
     while r1.degree() > N:
-        quo = _gf_div(r0, r1, p)[0]
-        r0, r1 = r1, (r0 - quo*r1).trunc_ground(p)
-        s0, s1 = s1, (s0 - quo*s1).trunc_ground(p)
+        quo = divmod(r0, r1)[0]
+        r0, r1 = r1, r0 - quo*r1
+        s0, s1 = s1, s0 - quo*s1
 
-    a, b = r1, s1
-    if b.degree() > D or _gf_gcd(b, m, p) != 1:
+    if s1.degree() > D or pring.gcd(s1, m) != 1:
         return
 
-    lc = b.LC
+    lc = s1.LC
     if lc != 1:
-        lcinv = domain.invert(lc, p)
-        a = (a*lcinv).trunc_ground(p)
-        b = (b*lcinv).trunc_ground(p)
+        r1 /= lc
+        s1 /= lc
 
-    field = ring.field
+    r1, s1 = map(operator.methodcaller('set_domain', domain), (r1, s1))
 
-    return field(a) / field(b)
+    return field(r1) / field(s1)
 
 
 def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
@@ -687,8 +612,8 @@ def _gf_gcdex(f, g, p):
     ring = f.ring
     dom = ring.domain
     domp = dom.finite_field(p)
-    f, g = map(lambda x: x.set_domain(domp), (f, g))
-    return tuple(map(lambda x: x.set_domain(dom), f.gcdex(g)))
+    f, g = map(operator.methodcaller('set_domain', domp), (f, g))
+    return tuple(map(operator.methodcaller('set_domain', dom), f.gcdex(g)))
 
 
 def _trunc(f, minpoly, p):
@@ -928,7 +853,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     evalpoints = []
     heval = []
     LMlist = []
-    points = set(range(p))
+    points = list(range(p))
 
     while points:
         a = random.sample(points, 1)[0]
@@ -1163,7 +1088,7 @@ def _func_field_modgcd_m(f, g, minpoly):
         QQring = ring.clone(domain=QQdomain)
     else:
         k = 0
-        QQring = ring.clone(domain=ring.domain.field)
+        QQring = ring.clone(domain=domain.field)
 
     cf, f = f.primitive()
     cg, g = g.primitive()

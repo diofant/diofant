@@ -83,8 +83,8 @@ class Vector(BasisDependent):
         C.i
 
         """
-        from .functions import express
         from .deloperator import Del
+        from .functions import express
 
         # Check special cases
         if isinstance(other, Dyadic):

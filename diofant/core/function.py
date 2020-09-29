@@ -31,13 +31,13 @@ import inspect
 import mpmath
 import mpmath.libmp as mlib
 
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import (as_int, default_sort_key, is_sequence, iterable,
-                            ordered)
+from .compatibility import as_int, is_sequence, iterable
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted
@@ -162,6 +162,7 @@ class FunctionClass(ManagedProperties):
 
         """
         from ..sets.sets import FiniteSet
+
         # XXX it would be nice to handle this in __init__ but there are import
         # problems with trying to import FiniteSet there
         return FiniteSet(*self._nargs) if self._nargs else S.Naturals0
@@ -499,13 +500,14 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
-        from .symbol import Dummy
         from ..series import Order
         from ..sets.sets import FiniteSet
+        from .symbol import Dummy
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
             from .numbers import oo, zoo
+
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -525,7 +527,7 @@ class Function(Application, Expr):
             v = None
             for ai, zi, pi in zip(a0, z, p):
                 if zi.has(x):
-                    if v is not None:  # pragma: no cover
+                    if v is not None:
                         raise NotImplementedError
                     q.append(ai + pi)
                     v = pi
@@ -714,7 +716,7 @@ class WildFunction(Function, AtomicExpr):
     include = set()
 
     def __init__(self, name, **assumptions):
-        from ..sets.sets import Set, FiniteSet
+        from ..sets.sets import FiniteSet, Set
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
         if not isinstance(nargs, Set):
@@ -1072,8 +1074,8 @@ class Derivative(Expr):
                 )
 
         if nderivs > 1 and assumptions.get('simplify', True):
-            from .exprtools import factor_terms
             from ..simplify.simplify import signsimp
+            from .exprtools import factor_terms
             expr = factor_terms(signsimp(expr))
         return expr
 
@@ -1186,8 +1188,9 @@ class Derivative(Expr):
 
         """
         import mpmath
+
         from .expr import Expr
-        if len(self.free_symbols) != 1 or len(self.variables) != 1:  # pragma: no cover
+        if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
         z = list(self.free_symbols)[0]
 
@@ -2165,10 +2168,10 @@ def count_ops(expr, visual=False):
     2*ADD + SIN
 
     """
-    from .symbol import Symbol
     from ..integrals import Integral
-    from ..simplify.radsimp import fraction
     from ..logic.boolalg import BooleanFunction
+    from ..simplify.radsimp import fraction
+    from .symbol import Symbol
 
     expr = sympify(expr)
 
@@ -2303,9 +2306,9 @@ def nfloat(expr, n=15, exponent=False):
     x**4.0 + y**0.5
 
     """
+    from ..polys.rootoftools import RootOf
     from .power import Pow
     from .symbol import Dummy
-    from ..polys.rootoftools import RootOf
 
     if iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):

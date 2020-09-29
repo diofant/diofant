@@ -286,10 +286,11 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except Exception as exc:
         raise SympifyError(a, exc)
 
-    from ..parsing.sympy_parser import (parse_expr, TokenError,
-                                        standard_transformations)
+    from ..parsing.sympy_parser import TokenError
     from ..parsing.sympy_parser import convert_xor as t_convert_xor
+    from ..parsing.sympy_parser import parse_expr
     from ..parsing.sympy_parser import rationalize as t_rationalize
+    from ..parsing.sympy_parser import standard_transformations
 
     transformations = standard_transformations
 

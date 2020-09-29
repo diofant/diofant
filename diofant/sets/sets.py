@@ -5,13 +5,13 @@ import itertools
 from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
 from ..logic import And, Not, Or, false, true
-from ..utilities import subsets
+from ..utilities import ordered, subsets
 from .contains import Contains
 
 
@@ -928,7 +928,8 @@ class Interval(Set, EvalfMixin):
         if other.is_UniversalSet:
             return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
-            from ..functions import Min, Max
+            from ..functions import Max, Min
+
             # Non-overlapping intervals
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
@@ -979,11 +980,12 @@ class Interval(Set, EvalfMixin):
         return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
-        from ..functions import Min, Max
-        from ..solvers import solve
-        from ..core import diff, Lambda
-        from ..series import limit
         from ..calculus.singularities import singularities
+        from ..core import Lambda, diff
+        from ..functions import Max, Min
+        from ..series import limit
+        from ..solvers import solve
+
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)
         # TODO: handle multivariate functions
 

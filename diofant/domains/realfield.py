@@ -1,5 +1,7 @@
 """Implementation of :class:`RealField` class."""
 
+import typing
+
 import mpmath
 
 from ..core import Float
@@ -8,12 +10,6 @@ from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'RealField',
-
-
-_reals_cache = {}
 
 
 class RealField(CharacteristicZero, SimpleDomain, Field):
@@ -128,6 +124,9 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
+
+
+_reals_cache: typing.Dict[tuple, RealField] = {}
 
 
 RR = RealField()

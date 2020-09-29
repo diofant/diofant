@@ -194,7 +194,6 @@ from strategies.tree import greedy
 from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
                     expand_mul, factor_terms, gcd_terms, pi, sympify)
-from ..core.compatibility import ordered
 from ..core.exprtools import Factors
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
@@ -202,6 +201,7 @@ from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
 from ..polys.polytools import factor
+from ..utilities import ordered
 from .simplify import bottom_up
 
 
@@ -2091,8 +2091,8 @@ def hyper_as_trig(rv):
     https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
-    from .simplify import signsimp
     from .radsimp import collect
+    from .simplify import signsimp
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)

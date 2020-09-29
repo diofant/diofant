@@ -276,6 +276,14 @@ def test_evalf_integer_parts():
     check(2**112 + 2)
 
 
+def test_sympyissue_19991():
+    n = 1169809367327212570704813632106852886389036911
+    r = 744723773141314414542111064094745678855643068
+
+    assert floor(n/(pi/2)) == r
+    assert floor(80782*sqrt(2)) == 114242
+
+
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
     t = a.evalf(maxn=100, strict=False)
@@ -554,3 +562,8 @@ def test_evalf_bernoulli():
 
 def test_evalf_abs():
     assert Abs(0, evaluate=False).evalf() == 0
+
+
+def test_sympyissue_19774():
+    assert exp(x/2).evalf() == Float('2.7182818284590451',
+                                     dps=15)**(Float('0.5', dps=15)*x)

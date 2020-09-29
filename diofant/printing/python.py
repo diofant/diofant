@@ -44,7 +44,7 @@ def python(expr, **settings):
     """Return Python interpretation of passed expression
     (can be passed to the exec() function without any modifications)
     """
-    from ..core import Symbol, Function
+    from ..core import Function, Symbol
 
     printer = PythonPrinter(settings)
     exprp = printer.doprint(expr)

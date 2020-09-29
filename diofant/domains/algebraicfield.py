@@ -1,6 +1,7 @@
 """Implementation of :class:`AlgebraicField` class."""
 
 import functools
+import typing
 
 from ..core import I, cacheit, sympify
 from ..core.sympify import CantSympify
@@ -10,12 +11,6 @@ from .field import Field
 from .quotientring import QuotientRingElement
 from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'AlgebraicField',
-
-
-_algebraic_numbers_cache = {}
 
 
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
@@ -161,6 +156,9 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         for r in minpoly.all_roots(radicals=False):  # pragma: no branch
             if not minimal_polynomial(ext - r)(0):
                 return r.as_content_primitive()
+
+
+_algebraic_numbers_cache: typing.Dict[tuple, AlgebraicField] = {}
 
 
 class ComplexAlgebraicField(AlgebraicField):

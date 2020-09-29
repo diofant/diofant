@@ -1,5 +1,6 @@
 import decimal
 import fractions
+import sys
 from math import sqrt as _sqrt
 
 import mpmath
@@ -630,6 +631,7 @@ def test_Infinity():
     assert oo**e == Pow(oo, e, evaluate=False)
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 9), reason='Broken on 3.9')
 def test_Infinity_2():
     x = Symbol('x')
     assert oo*x != oo

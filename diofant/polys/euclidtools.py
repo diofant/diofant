@@ -1,5 +1,7 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
+import operator
+
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
 from .polyconfig import query
@@ -55,10 +57,11 @@ class _GCD:
             except DomainError:
                 return self.one, f, g
 
-            f, g = map(lambda x: x.set_domain(exact), (f, g))
+            f, g = map(operator.methodcaller('set_domain', exact), (f, g))
             ring = self.clone(domain=exact)
 
-            return tuple(map(lambda x: x.set_domain(domain), ring.cofactors(f, g)))
+            return tuple(map(operator.methodcaller('set_domain', domain),
+                             ring.cofactors(f, g)))
         elif domain.is_Field:
             return self._ff_prs_gcd(f, g)
         else:
@@ -87,7 +90,8 @@ class _GCD:
 
         ring = self.clone(domain=domain.ring)
 
-        h, cff, cfg = map(lambda _: _.set_ring(self), ring._gcd_ZZ(f, g))
+        h, cff, cfg = map(operator.methodcaller('set_ring', self),
+                          ring._gcd_ZZ(f, g))
 
         c, h = h.LC, h.monic()
 
@@ -222,8 +226,10 @@ class _GCD:
         ring = self
 
         if self.is_multivariate:
-            ring, f, g = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
-            return tuple(map(lambda _: _.inject(), ring._rr_prs_gcd(f, g)))
+            ring, f, g = map(operator.methodcaller('eject', *self.gens[1:]),
+                             (ring, f, g))
+            return tuple(map(operator.methodcaller('inject'),
+                             ring._rr_prs_gcd(f, g)))
 
         domain = ring.domain
 
@@ -243,12 +249,13 @@ class _GCD:
         ring = self
 
         if ring.is_multivariate:
-            ring, F, G = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
+            ring, F, G = map(operator.methodcaller('eject', *self.gens[1:]),
+                             (ring, f, g))
 
             fc, F = F.primitive()
             gc, G = G.primitive()
 
-            F, G = map(lambda _: _.inject(), (F, G))
+            F, G = map(operator.methodcaller('inject'), (F, G))
 
             h = F.subresultants(G)[-1]
             c, _, _ = ring.domain._ff_prs_gcd(fc, gc)
@@ -295,7 +302,8 @@ class _GCD:
         domain = ring.domain
 
         if ring.is_multivariate:
-            ring, f, g = map(lambda _: _.eject(*ring.gens[1:]), (ring, f, g))
+            ring, f, g = map(operator.methodcaller('eject', *ring.gens[1:]),
+                             (ring, f, g))
             res = ring._primitive_prs(f, g)
             return res[0], [_.inject() for _ in res[1]]
 
@@ -303,8 +311,10 @@ class _GCD:
         m = g.degree()
 
         if n < m:
-            f, g = g, f
-            n, m = m, n
+            res, sub = ring._primitive_prs(g, f)
+            if res:
+                res *= (-domain.one)**(n*m)
+            return res, sub
 
         c, r = domain.zero, []
 
@@ -394,7 +404,7 @@ class _GCD:
                     break
 
             p_domain = domain.finite_field(p)
-            F, G = map(lambda _: _.set_domain(p_domain), (f, g))
+            F, G = map(operator.methodcaller('set_domain', p_domain), (f, g))
 
             try:
                 R = ring.clone(domain=p_domain)._modular_resultant(F, G)

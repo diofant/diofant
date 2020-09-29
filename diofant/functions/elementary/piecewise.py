@@ -1,10 +1,10 @@
 from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
                      diff, oo)
-from ...core.compatibility import default_sort_key
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
 from ...logic.boolalg import Boolean, distribute_and_over_or
 from ...sets import Reals
+from ...utilities import default_sort_key
 from .miscellaneous import Max, Min
 
 

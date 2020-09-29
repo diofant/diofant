@@ -29,8 +29,8 @@ If there is a (anti)symmetric metric, the indices can be raised and
 lowered when the tensor is put in canonical form.
 """
 
+import functools
 from collections import defaultdict
-from functools import reduce
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
                                         get_symmetric_group_sgs, riemann_bsgs)
@@ -895,7 +895,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             # to .data_product_tensor(...)
             return data, TensMul.from_TIDS(Integer(1), TIDS(components, free, dum))
 
-        return reduce(data_mul, zip(data_list, tensmul_list))
+        return functools.reduce(data_mul, zip(data_list, tensmul_list))
 
     def _assign_data_to_tensor_expr(self, key, data):
         if isinstance(key, TensAdd):
@@ -3203,9 +3203,9 @@ class TensMul(TensExpr):
                     if not isinstance(arg, Tensor):
                         continue
                     is_canon_bp = kw_args.get('is_canon_bp', arg._is_canon_bp)
-            tids = reduce(lambda a, b: a*b, tids_list)
+            tids = functools.reduce(lambda a, b: a*b, tids_list)
 
-        coeff = reduce(lambda a, b: a*b, [Integer(1)] + [arg for arg in args if not isinstance(arg, TensExpr)])
+        coeff = functools.reduce(lambda a, b: a*b, [Integer(1)] + [arg for arg in args if not isinstance(arg, TensExpr)])
         args = tids.get_tensors()
         if coeff != 1:
             args = [coeff] + args

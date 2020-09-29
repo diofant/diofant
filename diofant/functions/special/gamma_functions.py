@@ -242,8 +242,8 @@ class lowergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from .hyper import meijerg
         from .. import unpolarify
+        from .hyper import meijerg
         if argindex == 2:
             a, z = self.args
             return exp(-unpolarify(z))*z**(a - 1)
@@ -386,8 +386,8 @@ class uppergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from .hyper import meijerg
         from .. import unpolarify
+        from .hyper import meijerg
         if argindex == 2:
             a, z = self.args
             return -exp(-unpolarify(z))*z**(a - 1)
@@ -406,8 +406,8 @@ class uppergamma(Function):
 
     @classmethod
     def eval(cls, a, z):
-        from .error_functions import expint
         from .. import unpolarify
+        from .error_functions import expint
         if z.is_Number:
             if z is oo:
                 return Integer(0)

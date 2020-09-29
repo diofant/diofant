@@ -442,6 +442,10 @@ def test__isolate_real_roots_sqf():
     assert R._isolate_real_roots_sqf(x - 1) == [(1, 1)]
     assert R._isolate_real_roots_sqf(x - I) == []
 
+    f = (x + I)*(x - 1)
+
+    assert [_.as_tuple() for _ in R._isolate_real_roots_sqf(f, blackbox=True)] == [(1, 1)]
+
     R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = (-x**3 + sqrt(2)*x - 1)*(x**2 + 1)
@@ -1169,9 +1173,9 @@ def test__isolate_complex_roots_sqf():
     pytest.raises(DomainError, lambda: R._isolate_complex_roots_sqf(x))
 
 
-@pytest.mark.timeout(100)
+@pytest.mark.timeout(200)
 @pytest.mark.slow
-@pytest.mark.skipif(ZZ.dtype is int, reason='gmpy2 is not used')
+@pytest.mark.skipif(isinstance(ZZ(42), int), reason='gmpy2 is not used')
 def test__isolate_complex_roots_sqf_2():
     R, x = ring('x', ZZ)
 

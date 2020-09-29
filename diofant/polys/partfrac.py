@@ -313,7 +313,7 @@ def apart_list(f, x=None, dummies=None, **options):
     options = set_defaults(options, extension=True)
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
-    if P.is_multivariate:  # pragma: no cover
+    if P.is_multivariate:
         raise NotImplementedError('multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)

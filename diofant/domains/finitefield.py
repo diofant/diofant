@@ -2,6 +2,7 @@
 
 import numbers
 import random
+import typing
 
 from ..core import Dummy, integer_digits
 from ..ntheory import factorint, is_primitive_root
@@ -11,12 +12,6 @@ from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
 from .quotientring import QuotientRingElement
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
-
-
-_modular_integer_cache = {}
 
 
 class FiniteField(Field, SimpleDomain):
@@ -138,6 +133,9 @@ class FiniteField(Field, SimpleDomain):
 
     def is_normal(self, a):
         return True
+
+
+_modular_integer_cache: typing.Dict[tuple, FiniteField] = {}
 
 
 class PythonFiniteField(FiniteField):

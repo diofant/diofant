@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9-dev]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:
@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     - run: git fetch --prune --unshallow --tags -f
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install libs
@@ -24,7 +24,13 @@ jobs:
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
-      run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+      run: |
+        if [ "${{ matrix.python-version }}" != "3.9-dev" ]
+        then
+          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        else
+          pip install -U .[interactive,develop,gmpy,exports,docs]
+        fi
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
@@ -33,12 +39,13 @@ jobs:
         flake8 --statistics
         flake8 --ignore= --statistics --exit-zero
         pylint diofant
+    - name: Run type checks with mypy
+      run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
     - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
       run: py.test
     - name: Tests
-      if: matrix.python-version != 3.7
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
       run: py.test
@@ -48,11 +55,6 @@ jobs:
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         py.test
-    - name: Extra coverage tests
-      if: matrix.python-version == 3.7
-      env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
-      run: |
         pip uninstall -y gmpy2
         DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
         py.test diofant/tests/polys

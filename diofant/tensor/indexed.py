@@ -127,10 +127,9 @@ class Indexed(Expr):
     is_commutative = True
 
     def __new__(cls, base, *args, **kw_args):
-        from ..utilities import filldedent
-
-        from .array.ndim_array import NDimArray
         from ..matrices.matrices import MatrixBase
+        from ..utilities import filldedent
+        from .array.ndim_array import NDimArray
 
         if not args:
             raise IndexException('Indexed needs at least one index.')

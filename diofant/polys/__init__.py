@@ -1,10 +1,10 @@
 """Polynomial manipulation algorithms and algebraic objects."""
 
 from .polytools import (Poly, PurePoly,
-                        parallel_poly_from_expr, degree, degree_list, LC,
+                        parallel_poly_from_expr, degree, LC,
                         LM, LT, prem, div, rem, quo,
                         exquo, half_gcdex, gcdex, invert, subresultants,
-                        resultant, discriminant, cofactors, gcd_list, gcd,
+                        resultant, discriminant, cofactors, gcd,
                         lcm_list, lcm, terms_gcd, trunc, monic, content,
                         primitive, compose, decompose,
                         sqf_norm, sqf_part, sqf_list, sqf, factor_list,
@@ -45,10 +45,10 @@ from .univar import UnivarPolynomialRing
 
 
 __all__ = ('Poly', 'PurePoly',
-           'parallel_poly_from_expr', 'degree', 'degree_list', 'LC',
+           'parallel_poly_from_expr', 'degree', 'LC',
            'LM', 'LT', 'prem', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
-           'cofactors', 'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd',
+           'cofactors', 'gcd', 'lcm_list', 'lcm', 'terms_gcd',
            'trunc', 'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf', 'factor_list',
            'factor', 'count_roots', 'real_roots', 'nroots', 'cancel',

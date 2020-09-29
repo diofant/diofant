@@ -3,10 +3,11 @@
 import numbers
 from collections import defaultdict
 
-from ..utilities.iterables import common_prefix, common_suffix, variations
+from ..utilities import default_sort_key, ordered, variations
+from ..utilities.iterables import common_prefix, common_suffix
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import default_sort_key, is_sequence, iterable, ordered
+from .compatibility import is_sequence, iterable
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpression
 from .expr import Expr
@@ -1049,8 +1050,8 @@ def factor_nc(expr):
     (x + A)*(x + B)
 
     """
+    from ..polys import factor, gcd
     from ..simplify.simplify import powsimp
-    from ..polys import gcd, factor
 
     def _pemexpand(expr):
         """Expand with the minimal set of hints necessary to check the result."""

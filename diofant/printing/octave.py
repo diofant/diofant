@@ -217,6 +217,7 @@ class OctaveCodePrinter(CodePrinter):
     def _print_Assignment(self, expr):
         from ..functions import Piecewise
         from ..tensor.indexed import IndexedBase
+
         # Copied from codeprinter, but remove special MatrixSymbol treatment
         lhs = expr.lhs
         rhs = expr.rhs
@@ -353,13 +354,13 @@ class OctaveCodePrinter(CodePrinter):
 
     # Note: as of 2015, Octave doesn't have spherical Bessel functions
     def _print_jn(self, expr):
-        from ..functions import sqrt, besselj
+        from ..functions import besselj, sqrt
         x = expr.argument
         expr2 = sqrt(pi/(2*x))*besselj(expr.order + Rational(1, 2), x)
         return self._print(expr2)
 
     def _print_yn(self, expr):
-        from ..functions import sqrt, bessely
+        from ..functions import bessely, sqrt
         x = expr.argument
         expr2 = sqrt(pi/(2*x))*bessely(expr.order + Rational(1, 2), x)
         return self._print(expr2)

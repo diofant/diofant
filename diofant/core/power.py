@@ -215,9 +215,9 @@ class Pow(Expr):
             else:
                 # recognize base as E
                 if not e.is_Atom and b is not E and not isinstance(b, exp_polar):
+                    from ..functions import im, log, sign
+                    from ..simplify import denom, numer
                     from .exprtools import factor_terms
-                    from ..functions import log, sign, im
-                    from ..simplify import numer, denom
                     c, ex = factor_terms(e, sign=False).as_coeff_Mul()
                     den = denom(ex)
                     if isinstance(den, log) and den.args[0] == b:
@@ -411,8 +411,8 @@ class Pow(Expr):
                 return True
 
     def _eval_is_extended_real(self):
-        from .mul import Mul
         from ..functions import arg, log
+        from .mul import Mul
 
         if self.base is E:
             if self.exp.is_extended_real:
@@ -526,8 +526,8 @@ class Pow(Expr):
             return True
 
     def _eval_subs(self, old, new):
-        from .symbol import Symbol
         from ..functions import log
+        from .symbol import Symbol
 
         def _check(ct1, ct2, old):
             """Return bool, pow where, if bool is True, then the exponent of
@@ -904,7 +904,7 @@ class Pow(Expr):
 
         """
         from ..functions import arg, cos, sin
-        from ..polys.polytools import poly
+        from ..polys import Poly
 
         if self.exp.is_Integer:
             exp = self.exp
@@ -918,7 +918,7 @@ class Pow(Expr):
                     expr = expand_multinomial(self.base**exp)
                     return expr.as_real_imag()
 
-                expr = poly(
+                expr = Poly(
                     (a + b)**exp)  # a = re, b = im; expr = (a + b*I)**exp
             else:
                 mag = re**2 + im**2
@@ -928,7 +928,7 @@ class Pow(Expr):
                     expr = expand_multinomial((re + im*I)**-exp)
                     return expr.as_real_imag()
 
-                expr = poly((a + b)**-exp)
+                expr = Poly((a + b)**-exp)
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]
@@ -969,7 +969,7 @@ class Pow(Expr):
             c, s = cos(im), sin(im)
             return exp(re)*c, exp(re)*s
         else:
-            from ..functions import re, im
+            from ..functions import im, re
             if deep:
                 hints['complex'] = False
 
@@ -1149,7 +1149,7 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        from ..functions import exp, log, floor, arg
+        from ..functions import arg, exp, floor, log
         from ..series import Order, limit
         from ..simplify import powsimp
         if self.base is E:

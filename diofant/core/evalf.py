@@ -822,8 +822,8 @@ def do_integral(expr, prec, options):
         # but it is better than nothing
 
         from ..functions import cos, sin
-        from .symbol import Wild
         from .numbers import pi
+        from .symbol import Wild
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -962,9 +962,9 @@ def hypsum(expr, n, start, prec):
     polynomials.
 
     """
-    from .numbers import Float
     from ..simplify import hypersimp
     from ..utilities import lambdify
+    from .numbers import Float
 
     if prec == float('inf'):
         raise NotImplementedError('does not support inf prec')
@@ -1048,7 +1048,7 @@ def evalf_sum(expr, prec, options):
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
-    if len(limits) != 1 or len(limits[0]) != 3:  # pragma: no cover
+    if len(limits) != 1 or len(limits[0]) != 3:
         raise NotImplementedError
     if func is S.Zero:
         return mpf(0), None, None, None
@@ -1109,21 +1109,20 @@ evalf_table = None
 
 def _create_evalf_table():
     global evalf_table
-    from ..functions.combinatorial.numbers import bernoulli
     from ..concrete.products import Product
     from ..concrete.summations import Sum
-    from .add import Add
-    from .mul import Mul
-    from .numbers import (Exp1, Float, Half, ImaginaryUnit,
-                          Integer, NaN, NegativeOne, One, Pi,
-                          Rational, Zero)
-    from .power import Pow
-    from .symbol import Dummy, Symbol
+    from ..functions.combinatorial.numbers import bernoulli
     from ..functions.elementary.complexes import Abs, im, re
     from ..functions.elementary.exponential import log
     from ..functions.elementary.piecewise import Piecewise
     from ..functions.elementary.trigonometric import atan, cos, sin
     from ..integrals.integrals import Integral
+    from .add import Add
+    from .mul import Mul
+    from .numbers import (Exp1, Float, Half, ImaginaryUnit, Integer, NaN,
+                          NegativeOne, One, Pi, Rational, Zero)
+    from .power import Pow
+    from .symbol import Dummy, Symbol
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
@@ -1165,7 +1164,8 @@ def _create_evalf_table():
 
 
 def evalf(x, prec, options):
-    from ..functions import re as re_, im as im_
+    from ..functions import im as im_
+    from ..functions import re as re_
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)

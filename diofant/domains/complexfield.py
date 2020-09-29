@@ -1,5 +1,7 @@
 """Implementation of :class:`ComplexField` class."""
 
+import typing
+
 import mpmath
 
 from ..core import Float, I
@@ -8,12 +10,6 @@ from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'ComplexField',
-
-
-_complexes_cache = {}
 
 
 class ComplexField(CharacteristicZero, SimpleDomain, Field):
@@ -120,6 +116,9 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
+
+
+_complexes_cache: typing.Dict[tuple, ComplexField] = {}
 
 
 CC = ComplexField()

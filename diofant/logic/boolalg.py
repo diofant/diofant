@@ -6,7 +6,6 @@ from collections import defaultdict
 from itertools import combinations, product
 
 from ..core import Atom, cacheit
-from ..core.compatibility import ordered
 from ..core.expr import Expr
 from ..core.function import Application, Derivative
 from ..core.numbers import Number
@@ -14,6 +13,7 @@ from ..core.operations import LatticeOp
 from ..core.singleton import S
 from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.sympify import converter, sympify
+from ..utilities import ordered
 
 
 class Boolean(Expr):
@@ -67,8 +67,8 @@ class Boolean(Expr):
         False
 
         """
-        from .inference import satisfiable
         from ..core.relational import Relational
+        from .inference import satisfiable
 
         other = sympify(other)
 
@@ -470,8 +470,8 @@ class Not(BooleanFunction):
 
     @classmethod
     def eval(cls, arg):
-        from ..core import (Equality, GreaterThan, LessThan,
-                            StrictGreaterThan, StrictLessThan, Unequality)
+        from ..core import (Equality, GreaterThan, LessThan, StrictGreaterThan,
+                            StrictLessThan, Unequality)
         if isinstance(arg, Number) or arg in (True, False):
             return false if arg else true
         if arg.is_Not:

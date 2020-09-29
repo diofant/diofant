@@ -138,6 +138,7 @@ class Printer:
     def __init__(self, settings=None):
         import distutils
         import distutils.version
+
         from ..external import import_module
 
         self._str = str

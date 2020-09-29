@@ -39,8 +39,6 @@ def test_apart():
 
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
-    pytest.raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
-
     assert apart(x/2, y) == x/2  # issue sympy/sympy#9123
 
     # issue sympy/sympy#12177

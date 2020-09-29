@@ -6,11 +6,6 @@ from .constructor import construct_domain
 from .polytools import Poly, PurePoly
 
 
-__all__ = ('jacobi_poly', 'chebyshevt_poly', 'chebyshevu_poly', 'hermite_poly',
-           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn',
-           'gegenbauer_poly')
-
-
 def _jacobi(n, a, b, K):
     """Low-level implementation of Jacobi polynomials."""
     ring = K.poly_ring('_0')

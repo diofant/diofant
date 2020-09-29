@@ -7,9 +7,6 @@ from .groundtypes import DiofantRational, GMPYRational, PythonRational
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'GMPYRationalField', 'PythonRationalField', 'RationalField'
-
-
 class RationalField(CharacteristicZero, SimpleDomain, Field):
     """General class for rational fields."""
 

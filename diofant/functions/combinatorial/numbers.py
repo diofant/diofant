@@ -853,7 +853,7 @@ class catalan(Function):
                 return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
-        from .. import polygamma, log
+        from .. import log, polygamma
         n = self.args[0]
         return catalan(n)*(polygamma(0, n + Rational(1, 2)) - polygamma(0, n + 2) + log(4))
 
@@ -865,6 +865,7 @@ class catalan(Function):
 
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
+
         # The gamma function allows to generalize Catalan numbers to complex n
         return 4**n*gamma(n + Rational(1, 2))/(gamma(Rational(1, 2))*gamma(n + 2))
 

@@ -4,10 +4,10 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, bell, bernoulli, binomial, cancel,
-                     catalan, cos, cot, diff, digamma, euler, expand_func,
-                     factorial, fibonacci, gamma, genocchi, harmonic, hyper,
-                     im, limit, log, lucas, nan, oo, pi, polygamma, re, sin,
+                     Rational, Sum, Symbol, bell, bernoulli, binomial, catalan,
+                     cos, cot, diff, digamma, euler, expand_func, factorial,
+                     fibonacci, gamma, genocchi, harmonic, hyper, im, limit,
+                     log, lucas, nan, oo, pi, polygamma, re, simplify, sin,
                      sqrt, sstr, subsets, symbols, trigamma, zeta, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
@@ -218,7 +218,7 @@ def test_harmonic_rational():
 
     for h, a in zip(H, A):
         e = expand_func(h).doit()
-        assert cancel(e/a, extension=False) == 1
+        assert simplify(e/a) == 1
         assert h.evalf() == a.evalf()
 
 

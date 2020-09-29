@@ -1,5 +1,5 @@
-from functools import reduce
-from operator import add
+import functools
+import operator
 
 from strategies import condition, do_one, exhaust
 
@@ -109,7 +109,7 @@ def merge_explicit(matadd):
     """
     groups = sift(matadd.args, lambda arg: isinstance(arg, MatrixBase))
     if len(groups[True]) > 1:
-        return MatAdd(*(groups[False] + [reduce(add, groups[True])]))
+        return MatAdd(*(groups[False] + [functools.reduce(operator.add, groups[True])]))
     else:
         return matadd
 

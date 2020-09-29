@@ -285,6 +285,21 @@ def test__zz_wang():
 
     assert R._zz_wang(f, mod=4, seed=1) == [x**2 - y, x**4 + 6*x**2*y + y**2]
 
+    # This tests a bug in the Wang algorithm that occured only with a very
+    # specific set of random numbers; issue sympy/sympy#6355.
+    random_sequence = [-1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 3, -1, 3, 3, 3,
+                       3, -1, 3]
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    f = 2*x**2 + y*z - y - z**2 + z
+
+    assert R._zz_wang(f, seed=random_sequence) == [f]
+
+    with using(eez_restart_if_needed=False):
+        pytest.raises(ExtraneousFactors,
+                      lambda: R._zz_wang(f, seed=random_sequence))
+
 
 def test__zz_diophantine():
     R, x, y = ring('x y', ZZ)
@@ -317,23 +332,6 @@ def test__zz_diophantine():
 
     assert R._zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
                              p) == [-6*z**3 + 6, 2*z]
-
-
-def test_sympyissue_6355():
-    # This tests a bug in the Wang algorithm that occured only with a very
-    # specific set of random numbers.
-    random_sequence = [-1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 3, -1, 3, 3, 3,
-                       3, -1, 3]
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    f = 2*x**2 + y*z - y - z**2 + z
-
-    assert R._zz_wang(f, seed=random_sequence) == [f]
-
-    with using(eez_restart_if_needed=False):
-        pytest.raises(ExtraneousFactors,
-                      lambda: R._zz_wang(f, seed=random_sequence))
 
 
 def test_dmp_zz_factor():
@@ -911,7 +909,7 @@ def test_PolyElement_is_irreducible():
     assert (x**2 + 2*x + 1).is_irreducible is False
 
 
-@pytest.mark.timeout(20)
+@pytest.mark.timeout(50)
 def test_sympyissue_16620():
     R, x = ring('x', FF(2))
 
