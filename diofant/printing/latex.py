@@ -1571,6 +1571,9 @@ class LatexPrinter(Printer):
     def _print_Reals(self, i):
         return r'\mathbb{R}'
 
+    def _print_ExtendedReals(self, i):
+        return r'\overline{\mathbb{R}}'
+
     def _print_Rationals(self, i):
         return r'\mathbb{Q}'
 

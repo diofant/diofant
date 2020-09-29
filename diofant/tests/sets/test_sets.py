@@ -285,7 +285,7 @@ def test_intersection():
     assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
-    x = Symbol('x', extended_real=True)
+    x = Symbol('x', real=True)
     i = Intersection(Interval(0, 3), Interval(x, 6))
     assert (5 in i) is False
     pytest.raises(TypeError, lambda: 2 in i)
@@ -293,6 +293,11 @@ def test_intersection():
     # Singleton special cases
     assert Intersection(Interval(0, 1), S.EmptySet) == S.EmptySet
     assert Intersection(S.Reals, Interval(-oo, x, True)) == Interval(-oo, x, True)
+    assert Intersection(S.Reals, Interval(-oo, x)) == Interval.Lopen(-oo, x)
+    assert Intersection(S.Reals, Interval(x, oo)) == Interval.Ropen(x, oo)
+    assert Intersection(S.Reals, Interval(-oo, 1)) == Interval.Lopen(-oo, 1)
+    assert Intersection(S.Reals, Interval(1, oo)) == Interval.Ropen(1, oo)
+    assert Intersection(S.ExtendedReals, Interval(1, 2)) == Interval(1, 2)
 
     # Products
     line = Interval(0, 5)
@@ -671,10 +676,10 @@ def test_product_basic():
     assert (d4*d4).is_subset(d6*d6)
 
     assert (square.complement(Interval(-oo, oo)*Interval(-oo, oo)) ==
-            Union((Interval(-oo, 0, True, True) +
-                   Interval(1, oo, True, True))*Interval(-oo, oo),
-                  Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
-                                     Interval(1, oo, True, True))))
+            Union((Interval(-oo, 0, False, True) +
+                   Interval(1, oo, True))*Interval(-oo, oo),
+                  Interval(-oo, oo)*(Interval(-oo, 0, False, True) +
+                                     Interval(1, oo, True))))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
     assert not (Interval(-10, 10)**3).is_subset(Interval(-5, 5)**3)

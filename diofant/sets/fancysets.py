@@ -228,6 +228,19 @@ class Reals(Interval, metaclass=Singleton):
         return hash(Interval(-oo, oo, True, True))
 
 
+class ExtendedReals(Interval, metaclass=Singleton):
+    """The set of all extended reals."""
+
+    def __new__(cls):
+        return Interval.__new__(cls, -oo, oo)
+
+    def __eq__(self, other):
+        return other == Interval(-oo, oo)
+
+    def __hash__(self):
+        return hash(Interval(-oo, oo))
+
+
 class ImageSet(Set):
     """Image of a set under a mathematical function.
 

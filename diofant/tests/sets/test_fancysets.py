@@ -225,6 +225,8 @@ def test_reals():
     assert sqrt(-1) not in S.Reals
     assert S.Reals == Interval.open(-oo, oo)
     assert hash(S.Reals) == hash(Interval.open(-oo, oo))
+    assert S.ExtendedReals == Interval(-oo, oo)
+    assert hash(S.ExtendedReals) == hash(Interval(-oo, oo))
 
 
 def test_intersections():

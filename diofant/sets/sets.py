@@ -867,8 +867,16 @@ class Interval(Set, EvalfMixin):
         if not other.is_Interval:
             return
 
-        # handle (-oo, oo)
-        if Eq(self, S.Reals) == true:
+        # handle unbounded self
+        if Eq(self, S.Reals) == true and all((abs(_) < oo) is true or
+                                             abs(_) == oo
+                                             for _ in other.boundary):
+            if other.is_left_unbounded and not other.left_open:
+                other = Interval(other.start, other.end, True, other.right_open)
+            if other.is_right_unbounded and not other.right_open:
+                other = Interval(other.start, other.end, other.left_open, True)
+            return other
+        elif Eq(self, S.ExtendedReals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -910,12 +918,11 @@ class Interval(Set, EvalfMixin):
         return Interval(start, end, left_open, right_open)
 
     def _complement(self, other):
-        if other is S.Reals:
+        if other in (S.Reals, S.ExtendedReals):
             a = Interval(-oo, self.start,
-                         True, not self.left_open)
-            b = Interval(self.end, oo, not self.right_open, True)
+                         other.left_open, not self.left_open)
+            b = Interval(self.end, oo, not self.right_open, other.right_open)
             return Union(a, b)
-
         return Set._complement(self, other)
 
     def _union(self, other):
@@ -972,10 +979,16 @@ class Interval(Set, EvalfMixin):
         else:
             expr = other >= self.start
 
+            if other == self.start:
+                return true
+
         if self.right_open:
             expr = And(expr, other < self.end)
         else:
             expr = And(expr, other <= self.end)
+
+            if other == self.end:
+                return true
 
         return sympify(expr, strict=True)
 

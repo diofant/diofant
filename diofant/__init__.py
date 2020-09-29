@@ -109,7 +109,7 @@ from .simplify import (FU, EPath, besselsimp, bottom_up, collect,
 from .sets import (Complement, Contains, EmptySet, FiniteSet, ImageSet,
                    Integers, Intersection, Interval, Naturals, Naturals0,
                    ProductSet, Range, Rationals, Reals, Set,
-                   SymmetricDifference, Union, imageset)
+                   SymmetricDifference, Union, imageset, ExtendedReals)
 from .solvers import dsolve, reduce_inequalities, rsolve, solve
 from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                        DiagonalMatrix, DiagonalOf, FunctionMatrix, GramSchmidt,
@@ -307,4 +307,4 @@ __all__ = (
     'plot_backends', 'plot_implicit', 'plot_parametric', 'StrPrinter', 'ccode',
     'dotprint', 'fcode', 'latex', 'mathematica_code', 'mathml', 'octave_code',
     'pprint', 'pprint_use_unicode', 'pretty', 'pretty_print', 'python', 'srepr',
-    'sstr', 'sstrrepr', 'init_printing')
+    'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals')

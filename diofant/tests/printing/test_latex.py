@@ -636,6 +636,14 @@ def test_latex_Rationals():
     assert latex(S.Rationals) == r'\mathbb{Q}'
 
 
+def test_latex_Reals():
+    assert latex(S.Reals) == r'\mathbb{R}'
+
+
+def test_latex_ExtendedReals():
+    assert latex(S.ExtendedReals) == r'\overline{\mathbb{R}}'
+
+
 def test_latex_ImageSet():
     x = Symbol('x')
     assert latex(ImageSet(Lambda(x, x**2), S.Naturals)) == \

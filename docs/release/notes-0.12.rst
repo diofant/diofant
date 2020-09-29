@@ -33,6 +33,7 @@ Minor changes
 
 * Special case univariate polynomials with :class:`~diofant.polys.univar.UnivarPolynomialRing` and :class:`diofant.polys.univar.UnivarPolyElement`, see :pull:`1024`.
 * Implement :attr:`~diofant.domains.finitefield.ModularInteger.is_primitive`, see :pull:`1035`.
+* Add :class:`~diofant.sets.fancysets.ExtendedReals` singleton, see :pull:`1067`.
 
 Developer changes
 =================
