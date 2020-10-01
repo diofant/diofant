@@ -66,3 +66,6 @@ Special Sets
 
 .. autoclass:: ExtendedReals
    :members:
+
+.. autoclass:: Reals
+   :members:
