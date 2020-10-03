@@ -11,7 +11,7 @@ from ..logic import And, Or, false, true
 from ..matrices import Matrix, diag
 from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
-from ..sets import FiniteSet, Interval, Reals, Union
+from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent, ordered
 
 
@@ -191,7 +191,7 @@ def solve_poly_inequality(poly, rel):
     >>> solve_poly_inequality(Poly(x), '==')
     [{0}]
     >>> solve_poly_inequality(Poly(x**2 - 1), '!=')
-    [(-oo, -1), (-1, 1), (1, oo)]
+    [[-oo, -1), (-1, 1), (1, oo]]
     >>> solve_poly_inequality(Poly(x**2 - 1), '==')
     [{-1}, {1}]
 
@@ -208,7 +208,7 @@ def solve_poly_inequality(poly, rel):
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
-            return [Reals]
+            return [S.ExtendedReals]
         elif t == false:
             return [S.EmptySet]
         else:
@@ -224,7 +224,7 @@ def solve_poly_inequality(poly, rel):
         left = -oo
 
         for right, _ in reals + [(oo, 1)]:
-            interval = Interval(left, right, True, True)
+            interval = Interval(left, right, left.is_finite, right.is_finite)
             intervals.append(interval)
             left = right
     else:
@@ -240,23 +240,23 @@ def solve_poly_inequality(poly, rel):
         else:
             eq_sign, equal = -1, True
 
-        right, right_open = oo, True
+        right, right_open = oo, False
 
         for left, multiplicity in reversed(reals):
             if multiplicity % 2:
                 if sign == eq_sign:
-                    intervals.insert(0, Interval(left, right, not equal, right_open))
+                    intervals.insert(0, Interval(left, right, not equal and left.is_finite, right_open and right.is_finite))
 
                 sign, right, right_open = -sign, left, not equal
             else:
                 if sign == eq_sign and not equal:
-                    intervals.insert(0, Interval(left, right, True, right_open))
+                    intervals.insert(0, Interval(left, right, left.is_finite, right_open and right.is_finite))
                     right, right_open = left, True
                 elif sign != eq_sign and equal:
                     intervals.insert(0, Interval(left, left))
 
         if sign == eq_sign:
-            intervals.insert(0, Interval(-oo, right, True, right_open))
+            intervals.insert(0, Interval(-oo, right, False, right_open and right.is_finite))
 
     return intervals
 
@@ -270,7 +270,7 @@ def solve_poly_inequalities(polys):
 
     >>> solve_poly_inequalities(((Poly(x**2 - 3), '>'),
     ...                          (Poly(-x**2 + 1), '>')))
-    (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
+    [-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo]
 
     """
     return Union(*[solve_poly_inequality(*p) for p in polys])
@@ -289,7 +289,7 @@ def solve_rational_inequalities(eqs):
 
     >>> solve_rational_inequalities([[((Poly(x), Poly(1, x)), '!='),
     ...                               ((Poly(-x + 1), Poly(1, x)), '>=')]])
-    (-oo, 0) U (0, 1]
+    [-oo, 0) U (0, 1]
 
     See Also
     ========
@@ -300,7 +300,7 @@ def solve_rational_inequalities(eqs):
     result = S.EmptySet
 
     for eq in eqs:
-        global_intervals = [Reals]
+        global_intervals = [S.ExtendedReals]
 
         for (numer, denom), rel in eq:
             intervals = []
@@ -341,8 +341,6 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
     >>> reduce_rational_inequalities([[x**2 <= 0]], x)
     Eq(x, 0)
     >>> reduce_rational_inequalities([[x + 2 > 0]], x)
@@ -355,7 +353,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     """
     exact = True
     eqs = []
-    solution = Reals if exprs else S.EmptySet
+    solution = S.ExtendedReals if exprs else S.EmptySet
     for _exprs in exprs:
         _eqs = []
 
@@ -410,8 +408,6 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     Examples
     ========
-
-    >>> x = Symbol('x', real=True)
 
     >>> reduce_piecewise_inequality(abs(x - 5) - 3, '<', x)
     (2 < x) & (x < 8)
@@ -506,8 +502,6 @@ def reduce_piecewise_inequalities(exprs, gen):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
     >>> reduce_piecewise_inequalities([(abs(3*x - 5) - 7, '<'),
     ...                                (abs(x + 25) - 13, '>')], x)
     (-2/3 < x) & (x < 4) & ((-12 < x) | (x < -38))
@@ -531,12 +525,10 @@ def solve_univariate_inequality(expr, gen, relational=True):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
     >>> solve_univariate_inequality(x**2 >= 4, x)
     (2 <= x) | (x <= -2)
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
-    (-oo, -2] U [2, oo)
+    [-oo, -2] U [2, oo]
 
     """
     from ..simplify import simplify
@@ -579,11 +571,11 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
         if end in [-oo, oo]:
             if valid(Integer(0)):
-                sol_sets.append(Interval(start, oo, True, True))
+                sol_sets.append(Interval(start, oo, start in reals, end == oo))
                 break
 
         if valid((start + end)/2 if start != -oo else end - 1):
-            sol_sets.append(Interval(start, end, True, True))
+            sol_sets.append(Interval(start, end, start.is_finite is not False, end.is_finite is not False))
 
         if x in singularities:
             singularities.remove(x)
@@ -595,7 +587,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     end = oo
 
     if valid(start + 1):
-        sol_sets.append(Interval(start, end, True, True))
+        sol_sets.append(Interval(start, end, True, end in reals))
 
     rv = Union(*sol_sets)
     return rv if not relational else rv.as_relational(gen)
@@ -668,9 +660,6 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     Examples
     ========
-
-    >>> x = Symbol('x', real=True)
-    >>> y = Symbol('y', real=True)
 
     >>> reduce_inequalities(0 <= x + 3, [])
     -3 <= x

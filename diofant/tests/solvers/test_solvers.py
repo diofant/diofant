@@ -5,9 +5,9 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      Mul, Or, Piecewise, Poly, Pow, Rational, RootOf, Symbol,
                      Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
                      cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, nan, nfloat, oo, ordered, pi, posify, re,
-                     real_root, reduce_inequalities, root, sec, sech, simplify,
-                     sin, sinh, solve, sqrt, sstr, symbols, sympify, tan, tanh)
+                     im, log, nan, nfloat, ordered, pi, posify, re, real_root,
+                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
+                     solve, sqrt, sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -603,7 +603,7 @@ def test_solve_inequalities():
 
     # issue sympy/sympy#6627, sympy/sympy#6547
     assert reduce_inequalities((x - 3)/(x - 2) < 0, x) == And(Lt(2, x), Lt(x, 3))
-    assert reduce_inequalities(x/(x + 1) > 1, x) == And(Lt(-oo, x), Lt(x, -1))
+    assert reduce_inequalities(x/(x + 1) > 1, x) == Lt(x, -1)
 
     assert reduce_inequalities(sin(x) > Rational(1, 2)) == And(pi/6 < x, x < 5*pi/6)
 
