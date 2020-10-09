@@ -66,14 +66,7 @@ jobs:
         py.test diofant/tests/external diofant/tests/utilities
     - name: Upload coverage data
       if: matrix.python-version == 3.7
-      run: |
-        for n in 1 2 3; do
-          if codecov --required; then
-            exit 0
-          fi
-          sleep $((n*160))
-        done
-        exit 1
+      run: codecov --required --tries 10
     - name: Building and testing docs
       id: release
       run: |
