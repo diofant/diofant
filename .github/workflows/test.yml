@@ -8,7 +8,7 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9-dev]
+        python-version: [3.7, 3.8, 3.9]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:
@@ -29,7 +29,7 @@ jobs:
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
-        if [ "${{ matrix.python-version }}" != "3.9-dev" ]
+        if [ "${{ matrix.python-version }}" != "3.9" ]
         then
           pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         else
