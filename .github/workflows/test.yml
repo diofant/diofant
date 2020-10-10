@@ -48,12 +48,12 @@ jobs:
       run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
     - name: Tests
       env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules
+        PYTEST_ADDOPTS: --doctest-modules
       run: pytest
     - name: Coverage tests
       if: matrix.python-version == 3.7
       env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         pytest
         pip uninstall -y gmpy2
