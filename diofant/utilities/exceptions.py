@@ -24,12 +24,13 @@ class DiofantDeprecationWarning(DeprecationWarning):
     The recommended way to use this class is, however, is by calling
     the warn method after constructing the message:
 
-        >>> DiofantDeprecationWarning("Don't do this, it's deprecated.").warn()  # doctest:+SKIP
-        __main__:1: DiofantDeprecationWarning:
+    >>> DiofantDeprecationWarning("Don't do this,"
+    ...                           " it's deprecated.").warn()  # doctest:+SKIP
+    __main__:1: DiofantDeprecationWarning:
 
-        Don't do this, it's deprecated.
+    Don't do this, it's deprecated.
 
-          warning (see_above, DiofantDeprecationWarning)
+        warning (see_above, DiofantDeprecationWarning)
 
     To provide additional information, create an instance of this
     class in this way:

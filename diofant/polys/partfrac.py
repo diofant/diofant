@@ -449,7 +449,8 @@ def assemble_partfrac_list(partial_list):
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
     >>> a = Dummy('a')
-    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)],
+    ...                         Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
