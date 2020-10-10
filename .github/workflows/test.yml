@@ -46,10 +46,6 @@ jobs:
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
-    - name: Run doctests
-      env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      run: py.test
     - name: Tests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
