@@ -81,7 +81,7 @@ jobs:
         zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
         cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
     - name: Archive production artifacts
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v2
       if: matrix.python-version == 3.7
       with:
         name: dist
