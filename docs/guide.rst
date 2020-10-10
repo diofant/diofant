@@ -74,11 +74,11 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
-       py.test
+       pytest
 
    To check also doctests, run::
 
-       py.test --doctest-modules
+       pytest --doctest-modules
 
 7. Please also check for potential flaws in your Python code with::
 

@@ -273,7 +273,7 @@ def test_sympyissue_5164():
 
 
 def test_sympyissue_5183():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([x, -x],
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
@@ -305,7 +305,7 @@ def test_sympyissue_5229():
 
 
 def test_sympyissue_4546():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([cot, tan],
                                    [-pi/2, 0, pi/2, pi, 3*pi/2],
                                    ['-', '+']))

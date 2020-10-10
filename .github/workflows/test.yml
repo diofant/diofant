@@ -49,18 +49,18 @@ jobs:
     - name: Tests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
-      run: py.test
+      run: pytest
     - name: Coverage tests
       if: matrix.python-version == 3.7
       env:
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
-        py.test
+        pytest
         pip uninstall -y gmpy2
-        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
-        py.test diofant/tests/polys
+        DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
+        pytest diofant/tests/polys
         pip uninstall -y numpy
-        py.test diofant/tests/external diofant/tests/utilities
+        pytest diofant/tests/external diofant/tests/utilities
     - name: Upload coverage data
       if: matrix.python-version == 3.7
       run: codecov --required --tries 10
