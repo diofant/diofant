@@ -539,12 +539,14 @@ def dsolve(eq, func=None, hint='default', simplify=True,
     [Eq(f(x), -acos(C1/cos(x)) + 2*pi), Eq(f(x), acos(C1/cos(x)))]
     >>> dsolve(eq, hint='almost_linear')
     [Eq(f(x), -acos(C1/sqrt(-cos(x)**2)) + 2*pi), Eq(f(x), acos(C1/sqrt(-cos(x)**2)))]
-    >>> eq = (Eq(Derivative(f(t), t), 12*t*f(t) + 8*g(t)), Eq(Derivative(g(t), t), 21*f(t) + 7*t*g(t)))
+    >>> eq = (Eq(Derivative(f(t), t), 12*t*f(t) + 8*g(t)),
+    ...       Eq(Derivative(g(t), t), 21*f(t) + 7*t*g(t)))
     >>> dsolve(eq)
     [Eq(f(t), C1*x0(t) + C2*x0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)),
     Eq(g(t), C1*y0(t) + C2*(E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t) +
     y0(t)*Integral(8*E**Integral(7*t, t)*E**Integral(12*t, t)/x0(t)**2, t)))]
-    >>> eq = (Eq(Derivative(f(t), t), f(t)*g(t)*sin(t)), Eq(Derivative(g(t), t), g(t)**2*sin(t)))
+    >>> eq = (Eq(Derivative(f(t), t), f(t)*g(t)*sin(t)),
+    ...       Eq(Derivative(g(t), t), g(t)**2*sin(t)))
     >>> dsolve(eq)
     {Eq(f(t), -E**C1/(E**C1*C2 - cos(t))), Eq(g(t), -1/(C1 - cos(t)))}
 
@@ -1395,7 +1397,8 @@ def classify_sysode(eq, funcs=None, **kwargs):
     ...       Eq(2*g(t).diff(t), 11*f(t) + 3*g(t)))
     >>> classify_sysode(eq)
     {'eq': [-12*f(t) + 6*g(t) + 5*Derivative(f(t), t), -11*f(t) - 3*g(t) + 2*Derivative(g(t), t)], 'func': [f(t), g(t)], 'func_coeff': {(0, f(t), 0): -12, (0, f(t), 1): 5, (0, g(t), 0): 6, (0, g(t), 1): 0, (1, f(t), 0): -11, (1, f(t), 1): 0, (1, g(t), 0): -3, (1, g(t), 1): 2}, 'is_linear': True, 'no_of_equation': 2, 'order': {f(t): 1, g(t): 1}, 'type_of_equation': 'type1'}
-    >>> eq = (Eq(diff(f(t), t), 5*t*f(t) + t**2*g(t)), Eq(diff(g(t), t), -t**2*f(t) + 5*t*g(t)))
+    >>> eq = (Eq(diff(f(t), t), 5*t*f(t) + t**2*g(t)),
+    ...       Eq(diff(g(t), t), -t**2*f(t) + 5*t*g(t)))
     >>> classify_sysode(eq)
     {'eq': [-t**2*g(t) - 5*t*f(t) + Derivative(f(t), t), t**2*f(t) - 5*t*g(t) + Derivative(g(t), t)], 'func': [f(t), g(t)], 'func_coeff': {(0, f(t), 0): -5*t, (0, f(t), 1): 1, (0, g(t), 0): -t**2, (0, g(t), 1): 0, (1, f(t), 0): t**2, (1, f(t), 1): 0, (1, g(t), 0): -5*t, (1, g(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {f(t): 1, g(t): 1}, 'type_of_equation': 'type4'}
 
@@ -1882,14 +1885,19 @@ def checksysodesol(eqs, sols, func=None):
     ========
 
     >>> C1, C2 = symbols('C1:3')
-    >>> eq = (Eq(diff(f(t), t), f(t) + g(t) + 17), Eq(diff(g(t), t), -2*f(t) + g(t) + 12))
-    >>> sol = [Eq(f(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - Rational(5, 3)),
-    ...        Eq(g(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
+    >>> eq = (Eq(diff(f(t), t), f(t) + g(t) + 17),
+    ...       Eq(diff(g(t), t), -2*f(t) + g(t) + 12))
+    >>> sol = [Eq(f(t), (C1*sin(sqrt(2)*t) +
+    ...                  C2*cos(sqrt(2)*t))*exp(t) - Rational(5, 3)),
+    ...        Eq(g(t), (sqrt(2)*C1*cos(sqrt(2)*t) -
+    ...                  sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
     >>> eq = (Eq(diff(f(t), t), f(t)*g(t)**4), Eq(diff(g(t), t), g(t)**3))
-    >>> sol = [Eq(f(t), C1*exp(-1/(4*(C2 + t)))), Eq(g(t), -sqrt(2)*sqrt(-1/(C2 + t))/2),
-    ...        Eq(f(t), C1*exp(-1/(4*(C2 + t)))), Eq(g(t), sqrt(2)*sqrt(-1/(C2 + t))/2)]
+    >>> sol = [Eq(f(t), C1*exp(-1/(4*(C2 + t)))),
+    ...        Eq(g(t), -sqrt(2)*sqrt(-1/(C2 + t))/2),
+    ...        Eq(f(t), C1*exp(-1/(4*(C2 + t)))),
+    ...        Eq(g(t), sqrt(2)*sqrt(-1/(C2 + t))/2)]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
 
@@ -3895,8 +3903,8 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
     ========
 
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - log(x)
-    >>> dsolve(eq, f(x),
-    ...        hint='nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients').expand()
+    >>> hint = 'nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'
+    >>> dsolve(eq, f(x), hint=hint).expand()
     Eq(f(x), C1*x + C2*x**2 + log(x)/2 + 3/4)
 
     """
@@ -3969,8 +3977,8 @@ def ode_nth_linear_euler_eq_nonhomogeneous_variation_of_parameters(eq, func, ord
     ========
 
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - x**4
-    >>> dsolve(eq, f(x),
-    ...        hint='nth_linear_euler_eq_nonhomogeneous_variation_of_parameters').expand()
+    >>> hint = 'nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'
+    >>> dsolve(eq, f(x), hint=hint).expand()
     Eq(f(x), C1*x + C2*x**2 + x**4/6)
 
     """

@@ -518,7 +518,8 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
                   d               d
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
                   dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'), use_unicode=False)
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'),
+        ...        use_unicode=False)
                   /         /          b*x + c*y
                   |         |              /
                   |         |             |

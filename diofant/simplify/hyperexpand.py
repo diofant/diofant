@@ -1526,14 +1526,16 @@ def devise_plan(target, origin, z):
 
     A slightly more complicated plan:
 
-    >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
+    >>> for i in devise_plan(Hyper_Function((1, 3), ()),
+    ...                      Hyper_Function((2, 2), ()), z):
     ...     i
     <Increment upper 2.>
     <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
-    >>> for i in devise_plan(Hyper_Function([1, -1], [2]), Hyper_Function([3, -2], [4]), z):
+    >>> for i in devise_plan(Hyper_Function([1, -1], [2]),
+    ...                      Hyper_Function([3, -2], [4]), z):
     ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>

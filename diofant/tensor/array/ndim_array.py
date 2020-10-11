@@ -17,7 +17,8 @@ class NDimArray(DefaultPrinting):
 
     >>> a = MutableDenseNDimArray.zeros(2, 3, 4)
     >>> a
-    [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+    [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+     [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
 
     Create an N-dim array from a list;
 
@@ -25,7 +26,8 @@ class NDimArray(DefaultPrinting):
     >>> a
     [[2, 3], [4, 5]]
 
-    >>> b = MutableDenseNDimArray([[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]])
+    >>> b = MutableDenseNDimArray([[[1, 2], [3, 4], [5, 6]],
+    ...                            [[7, 8], [9, 10], [11, 12]]])
     >>> b
     [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]
 
@@ -226,7 +228,8 @@ class NDimArray(DefaultPrinting):
         Examples
         ========
 
-        >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
+        >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2)
+        ...                              for j in range(2)], (2, 2))
         >>> m
         [[0, 1], [2, 3]]
         >>> m.applyfunc(lambda i: 2*i)

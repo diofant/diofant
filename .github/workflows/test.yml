@@ -1,5 +1,9 @@
 name: test
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 2'
 jobs:
   test:
     strategy:
@@ -11,7 +15,8 @@ jobs:
       TERM: xterm
     steps:
     - uses: actions/checkout@v2
-    - run: git fetch --prune --unshallow --tags -f
+      with:
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -41,35 +46,24 @@ jobs:
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
-    - name: Run doctests
-      env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      run: py.test
     - name: Tests
       env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules
-      run: py.test
+        PYTEST_ADDOPTS: --doctest-modules
+      run: pytest
     - name: Coverage tests
       if: matrix.python-version == 3.7
       env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
-        py.test
+        pytest
         pip uninstall -y gmpy2
-        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
-        py.test diofant/tests/polys
+        DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
+        pytest diofant/tests/polys
         pip uninstall -y numpy
-        py.test diofant/tests/external diofant/tests/utilities
+        pytest diofant/tests/external diofant/tests/utilities
     - name: Upload coverage data
       if: matrix.python-version == 3.7
-      run: |
-        for n in 1 2 3; do
-          if codecov --required; then
-            exit 0
-          fi
-          sleep $((n*160))
-        done
-        exit 1
+      run: codecov --required --tries 10
     - name: Building and testing docs
       id: release
       run: |
@@ -87,7 +81,7 @@ jobs:
         zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
         cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
     - name: Archive production artifacts
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v2
       if: matrix.python-version == 3.7
       with:
         name: dist

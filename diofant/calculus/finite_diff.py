@@ -55,7 +55,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
+    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2),
+    ...                               Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
       [1/2, 1/2, 0, 0],
@@ -81,7 +82,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
+    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1),
+    ...                               Integer(2), -Integer(2)], 0)[1]
     >>> res
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -100,7 +102,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
+    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0),
+    ...                               Integer(1), Integer(2)], 0)[1]
     >>> foo
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
