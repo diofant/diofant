@@ -132,12 +132,6 @@ html_css_files = [
     'custom.css',
 ]
 
-# A list of paths that contain extra files not directly related to the
-# documentation, such as robots.txt or .htaccess.  Relative paths are taken
-# as relative to the configuration directory.  They are copied to the
-# output directory. They will overwrite any existing file of the same name.
-html_extra_path = ['robots.txt']
-
 # Should we show "Created using Sphinx" in the HTML footer?
 html_show_sphinx = False
 
