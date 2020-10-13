@@ -809,10 +809,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.__mul__(other)
 
     def _sparsity(self):
-        from ..functions import binomial
         ring = self.ring
         d = self.total_degree()
-        return len(self)/int(binomial(ring.ngens + d, d)) if d > 0 else 1.0
+        return len(self)/int(math.factorial(ring.ngens + d)/(math.factorial(d)*math.factorial(ring.ngens))) if d > 0 else 1.0
 
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""
