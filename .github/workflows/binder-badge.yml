@@ -4,7 +4,7 @@ on:
 
 jobs:
   badge:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: manics/action-binderbadge@main
         with:
