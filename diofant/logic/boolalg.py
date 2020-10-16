@@ -411,7 +411,7 @@ class Or(LatticeOp, BooleanFunction):
         ========
 
         >>> Or(x > 2, x < -2).as_set()
-        (-oo, -2) U (2, oo)
+        [-oo, -2) U (2, oo]
 
         """
         from ..sets import Union

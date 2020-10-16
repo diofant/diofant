@@ -664,8 +664,8 @@ def test_true_false():
 
 def test_bool_as_set():
     assert And(x <= 2, x >= -2).as_set() == Interval(-2, 2)
-    assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
-                                            Interval(2, oo, False, True))
+    assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2) +
+                                            Interval(2, oo, False))
     assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
     # issue sympy/sympy#10240
     assert Not(And(x > 2, x < 3)).as_set() == \
@@ -704,8 +704,8 @@ def test_canonical_atoms():
 def test_sympyissue_8777():
     assert And(x > 2, x < oo).as_set() == Interval(2, oo, True, True)
     assert And(x >= 1, x < oo).as_set() == Interval(1, oo, False, True)
-    assert (x < oo).as_set() == Interval(-oo, oo, True, True)
-    assert (x > -oo).as_set() == Interval(-oo, oo, True, True)
+    assert (x < oo).as_set() == Interval(-oo, oo, False, True)
+    assert (x > -oo).as_set() == Interval(-oo, oo, True)
 
 
 def test_sympyissue_8975():

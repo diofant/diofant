@@ -16,6 +16,7 @@ Major changes
 * Module :mod:`~diofant.polys.sqfreetools` was ported to use sparse polynomial representation, see :pull:`1009`.
 * Module :mod:`~diofant.polys.factortools` was ported to use sparse polynomial representation, see :pull:`1015`, :pull:`1018`, :pull:`1019`, :pull:`1020` and :pull:`1021`.
 * Module :mod:`~diofant.polys.rootisolation` was ported to use sparse polynomial representation, finally the dense representation is used nowhere, see :pull:`1030`, :pull:`1031` and :pull:`1035`.
+* :func:`~diofant.solvers.inequalities.reduce_inequalities` uses :class:`~diofant.sets.fancysets.ExtendedReals` subsets to solve inequalities, see :pull:`1067`.
 
 Compatibility breaks
 ====================
@@ -31,8 +32,9 @@ Compatibility breaks
 Minor changes
 =============
 
-* Special case univariate polynomials with :class:`~diofant.polys.univar.UnivarPolynomialRing` and :class:`diofant.polys.univar.UnivarPolyElement`, see :pull:`1024`.
+* Special case univariate polynomials with :class:`~diofant.polys.univar.UnivarPolynomialRing` and :class:`~diofant.polys.univar.UnivarPolyElement`, see :pull:`1024`.
 * Implement :attr:`~diofant.domains.finitefield.ModularInteger.is_primitive`, see :pull:`1035`.
+* Add :class:`~diofant.sets.fancysets.ExtendedReals` singleton, see :pull:`1067`.
 
 Developer changes
 =================

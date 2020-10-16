@@ -285,7 +285,7 @@ def test_intersection():
     assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
-    x = Symbol('x', extended_real=True)
+    x = Symbol('x', real=True)
     i = Intersection(Interval(0, 3), Interval(x, 6))
     assert (5 in i) is False
     pytest.raises(TypeError, lambda: 2 in i)
@@ -293,6 +293,11 @@ def test_intersection():
     # Singleton special cases
     assert Intersection(Interval(0, 1), S.EmptySet) == S.EmptySet
     assert Intersection(S.Reals, Interval(-oo, x, True)) == Interval(-oo, x, True)
+    assert Intersection(S.Reals, Interval(-oo, x)) == Interval.Lopen(-oo, x)
+    assert Intersection(S.Reals, Interval(x, oo)) == Interval.Ropen(x, oo)
+    assert Intersection(S.Reals, Interval(-oo, 1)) == Interval.Lopen(-oo, 1)
+    assert Intersection(S.Reals, Interval(1, oo)) == Interval.Ropen(1, oo)
+    assert Intersection(S.ExtendedReals, Interval(1, 2)) == Interval(1, 2)
 
     # Products
     line = Interval(0, 5)
@@ -537,6 +542,7 @@ def test_Interval_is_right_unbounded():
 
 def test_Interval_as_relational():
     x = Symbol('x')
+
     assert Interval(-1, 2, False, False).as_relational(x) == \
         And(Le(-1, x), Le(x, 2))
     assert Interval(-1, 2, True, False).as_relational(x) == \
@@ -546,13 +552,20 @@ def test_Interval_as_relational():
     assert Interval(-1, 2, True, True).as_relational(x) == \
         And(Lt(-1, x), Lt(x, 2))
 
-    assert Interval(-oo, 2, right_open=False).as_relational(x) == And(Le(-oo, x), Le(x, 2))
-    assert Interval(-oo, 2, right_open=True).as_relational(x) == And(Le(-oo, x), Lt(x, 2))
+    assert Interval(-oo, 2, True, False).as_relational(x) == And(Lt(-oo, x), Le(x, 2))
+    assert Interval(-oo, 2, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, 2))
 
-    assert Interval(-2, oo, left_open=False).as_relational(x) == And(Le(-2, x), Le(x, oo))
-    assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Le(x, oo))
+    assert Interval(-oo, 2, False, False).as_relational(x) == Le(x, 2)
+    assert Interval(-oo, 2, False, True).as_relational(x) == Lt(x, 2)
 
-    assert Interval(-oo, oo).as_relational(x) == And(Le(-oo, x), Le(x, oo))
+    assert Interval(-2, oo, False, True).as_relational(x) == And(Le(-2, x), Lt(x, oo))
+    assert Interval(-2, oo, True, True).as_relational(x) == And(Lt(-2, x), Lt(x, oo))
+
+    assert Interval(-2, oo, False, False).as_relational(x) == Le(-2, x)
+    assert Interval(-2, oo, True, False).as_relational(x) == Lt(-2, x)
+
+    assert Interval(-oo, oo, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, oo))
+    assert Interval(-oo, oo).as_relational(x) == true
 
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
@@ -663,10 +676,10 @@ def test_product_basic():
     assert (d4*d4).is_subset(d6*d6)
 
     assert (square.complement(Interval(-oo, oo)*Interval(-oo, oo)) ==
-            Union((Interval(-oo, 0, True, True) +
-                   Interval(1, oo, True, True))*Interval(-oo, oo),
-                  Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
-                                     Interval(1, oo, True, True))))
+            Union((Interval(-oo, 0, False, True) +
+                   Interval(1, oo, True))*Interval(-oo, oo),
+                  Interval(-oo, oo)*(Interval(-oo, 0, False, True) +
+                                     Interval(1, oo, True))))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
     assert not (Interval(-10, 10)**3).is_subset(Interval(-5, 5)**3)

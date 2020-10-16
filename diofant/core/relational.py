@@ -198,9 +198,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> (x > 0).as_set()
-        (0, oo)
+        (0, oo]
         >>> Eq(x, 0).as_set()
         {0}
 
