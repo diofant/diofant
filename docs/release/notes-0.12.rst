@@ -41,6 +41,7 @@ Developer changes
 
 * Depend on `flake8-sfs <https://github.com/peterjc/flake8-sfs>`_, see :pull:`983`.
 * Depend on `mypy <http://mypy-lang.org/>`_, see :pull:`1022`.
+* Drop dependency on strategies, see :pull:`1074`.
 
 Issues closed
 =============
