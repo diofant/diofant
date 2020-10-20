@@ -4,7 +4,7 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
+from diofant import (E, Float, Function, I, Integral, Limit, Piecewise,
                      PoleError, Rational, Sum, Symbol, acos, atan, besselk,
                      binomial, cbrt, ceiling, cos, cot, diff, digamma, erf,
                      erfi, exp, factorial, floor, gamma, integrate, limit, log,
@@ -512,16 +512,6 @@ def test_sympyissue_11526():
 def test_sympyissue_11672():
     assert limit(Rational(-1, 2)**x, x, oo) == 0
     assert limit(1/(-2)**x, x, oo) == 0
-
-
-def test_sympyissue_11678():
-    p = Matrix([[1./2, 1./4, 1./4],
-                [1./2, 0, 1./2],
-                [1./4, 0, 3./4]])
-    e = (p**x).applyfunc(lambda i: limit(i, x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', dps=15),
-                         Float('0.090909090909090898', dps=15),
-                         Float('0.54545454545454541', dps=15)]]*3)
 
 
 def test_sympyissue_8635():
