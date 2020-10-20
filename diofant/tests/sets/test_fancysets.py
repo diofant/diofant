@@ -19,6 +19,7 @@ def test_naturals():
     assert 5 in N
     assert -5 not in N
     assert 5.5 not in N
+    assert (1, 2) not in N  # issue sympy/sympy#11732
     ni = iter(N)
     a, b, c, d = next(ni), next(ni), next(ni), next(ni)
     assert (a, b, c, d) == (1, 2, 3, 4)
@@ -39,6 +40,7 @@ def test_naturals0():
     N = S.Naturals0
     assert 0 in N
     assert -1 not in N
+    assert (1, 2) not in N  # issue sympy/sympy#11732
     assert next(iter(N)) == 0
 
 
@@ -47,6 +49,7 @@ def test_integers():
     assert 5 in Z
     assert -5 in Z
     assert 5.5 not in Z
+    assert (1, 2) not in Z  # issue sympy/sympy#11732
     zi = iter(Z)
     a, b, c, d = next(zi), next(zi), next(zi), next(zi)
     assert (a, b, c, d) == (0, 1, -1, 2)
@@ -308,7 +311,6 @@ def test_sympyissue_10497():
 def test_sympyissue_11732():
     interval12 = Interval(1, 2)
     finiteset1234 = FiniteSet(1, 2, 3, 4)
-    pointComplex = (1, 2)
 
     assert (interval12 in S.Naturals) is False
     assert (interval12 in S.Naturals0) is False
@@ -317,7 +319,3 @@ def test_sympyissue_11732():
     assert (finiteset1234 in S.Naturals) is False
     assert (finiteset1234 in S.Naturals0) is False
     assert (finiteset1234 in S.Integers) is False
-
-    assert (pointComplex in S.Naturals) is False
-    assert (pointComplex in S.Naturals0) is False
-    assert (pointComplex in S.Integers) is False
