@@ -188,3 +188,14 @@ def test_sympyissue_18531():
          1/mul2((x + 1)**2) + 1/mul2((x - 1)**2))
 
     assert apart(e, x, extension=sqrt(2)) == r
+
+
+@pytest.mark.slow
+def test_sympyissue_20163():
+    e = 6/(x**6 + 1)
+    r = ((sqrt(3) + I)/(2*x + sqrt(3) + I) -
+         (-sqrt(3) + I)/(2*x + sqrt(3) - I) +
+         (-sqrt(3) + I)/(2*x - sqrt(3) + I) -
+         (sqrt(3) + I)/(2*x - sqrt(3) - I) + I/(x + I) - I/(x - I))
+
+    assert apart(e, extension=sqrt(3) + I) == r

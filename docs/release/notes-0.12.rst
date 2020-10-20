@@ -63,3 +63,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14874` Limit x --> oo for besselk
 * :sympyissue:`19991` Wrong result from floor().evalf()
 * :sympyissue:`10666` resultant misses the sign
+* :sympyissue:`20163` Apart hangs with extension=[sqrt(3), I]

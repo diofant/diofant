@@ -107,7 +107,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             return self([expr])
 
         try:
-            _, (c,), (rep,) = primitive_element([expr])
+            _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
         except NotAlgebraic:
             raise CoercionFailed(f'{expr} is not an algebraic number')
 
