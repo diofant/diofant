@@ -143,6 +143,31 @@ def test_latex_basic():
         r'x_i \Rightarrow y_i'
     assert latex(Tuple(x, y)) == r'\left ( x, \quad y\right )'
 
+    # issue sympy/sympy#8470
+    e = parse_expr('-B*A', evaluate=False)
+    assert latex(e) == r'A \left(- B\right)'
+
+    # issue sympy/sympy#7117
+    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
+    e = Eq(x + 1, 2*x)
+    q = Mul(2, e, evaluate=False)
+    assert latex(q) == r'2 \left(x + 1 = 2 x\right)'
+    q = Add(6, e, evaluate=False)
+    assert latex(q) == r'6 + \left(x + 1 = 2 x\right)'
+    q = Pow(e, 2, evaluate=False)
+    assert latex(q) == r'\left(x + 1 = 2 x\right)^{2}'
+
+    # issue sympy/sympy#10889
+    A, B = symbols('A B', commutative=False)
+    e = Mul(-1, A*B - B*A)
+    assert latex(e) == '- (A B - B A)'
+
+    # issue sympy/sympy#10489
+    latexSymbolWithBrace = 'C_{x_{0}}'
+    s = Symbol(latexSymbolWithBrace)
+    assert latex(s) == latexSymbolWithBrace
+    assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
+
 
 def test_latex_builtins():
     assert latex(True) == r'\mathrm{True}'
@@ -1184,6 +1209,10 @@ def test_boolean_args_order():
 def test_booleans():
     assert latex(Not(And(x, y))) == r'\neg (x \wedge y)'
 
+    # issue sympy/sympy#7180
+    assert latex(Equivalent(x, y)) == r'x \equiv y'
+    assert latex(Not(Equivalent(x, y))) == r'x \not\equiv y'
+
 
 def test_imaginary():
     i = sqrt(-1)
@@ -1414,29 +1443,8 @@ def test_Pow():
     assert latex(1/sqrt(x)) == r'\frac{1}{\sqrt{x}}'
 
 
-def test_sympyissue_7180():
-    assert latex(Equivalent(x, y)) == r'x \equiv y'
-    assert latex(Not(Equivalent(x, y))) == r'x \not\equiv y'
-
-
 def test_sympyissue_8409():
     assert latex(Rational(1, 2)**n) == r'\left(\frac{1}{2}\right)^{n}'
-
-
-def test_sympyissue_8470():
-    e = parse_expr('-B*A', evaluate=False)
-    assert latex(e) == r'A \left(- B\right)'
-
-
-def test_sympyissue_7117():
-    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
-    e = Eq(x + 1, 2*x)
-    q = Mul(2, e, evaluate=False)
-    assert latex(q) == r'2 \left(x + 1 = 2 x\right)'
-    q = Add(6, e, evaluate=False)
-    assert latex(q) == r'6 + \left(x + 1 = 2 x\right)'
-    q = Pow(e, 2, evaluate=False)
-    assert latex(q) == r'\left(x + 1 = 2 x\right)^{2}'
 
 
 def test_sympyissue_2934():
@@ -1464,16 +1472,3 @@ def test_diffgeom():
     dg = Differential(s_field)
     assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
                         r'\boldsymbol{\mathrm{y}} \right )})'
-
-
-def test_sympyissue_10489():
-    latexSymbolWithBrace = 'C_{x_{0}}'
-    s = Symbol(latexSymbolWithBrace)
-    assert latex(s) == latexSymbolWithBrace
-    assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
-
-
-def test_sympyissue_10889():
-    A, B = symbols('A B', commutative=False)
-    e = Mul(-1, A*B - B*A)
-    assert latex(e) == '- (A B - B A)'
