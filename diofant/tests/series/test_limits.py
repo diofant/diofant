@@ -77,6 +77,9 @@ def test_basic1():
 
     pytest.raises(PoleError, lambda: limit(1/x, x, 0, dir='real'))
 
+    # issue diofant/diofant#74
+    assert limit(sign(log(1 - 1/x)), x, oo) == -1
+
 
 def test_basic2():
     assert limit(x**x, x, 0, dir='+') == 1
