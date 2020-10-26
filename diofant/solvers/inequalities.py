@@ -594,12 +594,15 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
 
 def _reduce_inequalities(inequalities, symbols):
-    # helper for reduce_inequalities
+    if len(symbols) > 1:
+        try:
+            return solve_linear_inequalities(inequalities, *symbols)
+        except (PolificationFailed, ValueError):
+            pass
 
     poly_part = collections.defaultdict(list)
     pw_part = poly_part.copy()
     other = []
-    rest = []
 
     for inequality in inequalities:
         if inequality == true:
@@ -621,9 +624,11 @@ def _reduce_inequalities(inequalities, symbols):
             if len(common) == 1:
                 gen = common.pop()
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
+                continue
             else:
-                rest.append(inequality)
-            continue
+                raise NotImplementedError('Solving multivariate inequalities '
+                                          'is implemented only for linear '
+                                          'case yet.')
 
         if expr.is_polynomial(gen):
             poly_part[gen].append((expr, rel))
@@ -644,12 +649,6 @@ def _reduce_inequalities(inequalities, symbols):
 
     for gen, exprs in pw_part.items():
         pw_reduced.append(reduce_piecewise_inequalities(exprs, gen))
-
-    if rest:
-        try:
-            return solve_linear_inequalities(inequalities, *symbols)
-        except (PolificationFailed, ValueError):
-            raise NotImplementedError
 
     return And(*(poly_reduced + pw_reduced + other))
 
@@ -703,7 +702,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     symbols = ordered(i.xreplace(recast) for i in symbols)
 
     # solve system
-    rv = _reduce_inequalities(inequalities, symbols)
+    rv = _reduce_inequalities(inequalities, list(symbols))
 
     # restore original symbols and return
     return rv.xreplace({v: k for k, v in recast.items()})

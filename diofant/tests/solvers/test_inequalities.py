@@ -389,3 +389,11 @@ def test_diofantissue_453():
     assert isolve(abs((x - 1)/(x - 5)) <= Rational(1, 3),
                   x) == And(Integer(-1) <= x, x <= 2)
     assert solve(abs((x - 1)/(x - 5)) - Rational(1, 3), x) == [{x: -1}, {x: 2}]
+
+
+def test_diofantissue_836():
+    assert reduce_inequalities(x + y > 1) == (y > -x + 1)
+
+    pytest.raises(NotImplementedError,
+                  lambda: reduce_inequalities([x**2*y**2 <= x**2*y,
+                                               x**2*y**2 > x**2*y]))
