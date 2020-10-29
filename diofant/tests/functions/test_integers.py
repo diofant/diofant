@@ -123,6 +123,10 @@ def test_floor():
 
     assert floor(x).as_leading_term(x) == floor(x)
 
+    # issue sympy/sympy#11207
+    assert floor(floor(x)) == floor(x)
+    assert floor(ceiling(x)) == ceiling(x)
+
 
 def test_ceiling():
     i = Symbol('i', imaginary=True)
@@ -229,6 +233,10 @@ def test_ceiling():
     assert (ceiling(x) >= y).is_Relational  # arg is not same as rhs
     assert (ceiling(x) < y).is_Relational
 
+    # issue sympy/sympy#11207
+    assert ceiling(floor(x)) == floor(x)
+    assert ceiling(ceiling(x)) == ceiling(x)
+
 
 def test_series():
     assert floor(x).series(x, y, 100) == floor(y)
@@ -247,10 +255,3 @@ def test_sympyissue_4149():
     assert floor(3 + pi*I + y*I) == 3 + floor(pi + y)*I
     assert floor(3*I + pi*I + y*I) == floor(3 + pi + y)*I
     assert floor(3 + E + pi*I + y*I) == 5 + floor(pi + y)*I
-
-
-def test_sympyissue_11207():
-    assert floor(floor(x)) == floor(x)
-    assert floor(ceiling(x)) == ceiling(x)
-    assert ceiling(floor(x)) == floor(x)
-    assert ceiling(ceiling(x)) == ceiling(x)

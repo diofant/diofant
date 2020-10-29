@@ -249,6 +249,10 @@ def test__eval_product():
     assert (product(log(i)**2*cos(i)**3, (i, n, m)) ==
             Product(log(i)**2*cos(i)**3, (i, n, m)))
 
+    # issue sympy/sympy#9983
+    expr = 1 + 1/n**Rational(2, 3)
+    assert product(expr, (n, 1, oo)) == Product(expr, (n, 1, oo))
+
 
 def test_product_pow():
     # issue sympy/sympy#4817
@@ -372,11 +376,6 @@ def test_reorder_limit():
     x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
     pytest.raises(ReorderError,
                   lambda: Product(x**2, (x, a, b), (y, x, d)).reorder_limit(1, 0))
-
-
-def test_sympyissue_9983():
-    p = Product(1 + 1/n**Rational(2, 3), (n, 1, oo))
-    assert p == p.doit()
 
 
 def test_rewrite_Sum():

@@ -233,6 +233,9 @@ def test_geometric_sums():
     assert summation(2**(-4*n + 3), (n, 1, oo)) == Rational(8, 15)
     assert summation(2**(n + 1), (n, 1, b)).expand() == 4*(2**b - 1)
 
+    # issue sympy/sympy#7097
+    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
+
     # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
         Piecewise((1/(-x + 1), abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
@@ -337,6 +340,9 @@ def test_evalf_fast_series():
                   fac(2*n + 1)**5, (n, 0, oo)), 100, strict=False) == astr
 
     pytest.raises(ValueError, lambda: Sum(factorial(n), (n, 0, oo)).evalf())
+
+    # issue sympy/sympy#6274
+    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
 
 
 def test_evalf_fast_series_sympyissue_4021():
@@ -615,6 +621,9 @@ def test_hypersum():
     m = Symbol('n', integer=True, positive=True)
     assert summation(binomial(m, k), (k, 0, m)) == 2**m
 
+    # issue sympy/sympy#8822
+    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
+
 
 def test_sympyissue_4170():
     assert summation(1/factorial(k), (k, 0, oo)) == E
@@ -697,7 +706,6 @@ def test_sympyissue_6274():
     assert Sum(x, (x, 1, 0)).doit() == 0
     assert NS(Sum(x, (x, 1, 0))) == '0'
     assert Sum(n, (n, 10, 5)).doit() == -30
-    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
 
 
 def test_simplify():
@@ -828,10 +836,6 @@ def test_findrecur():
             (-n + y + 1)*F(n - 1, k)/(-n + x + y + 2) + F(n - 2, k - 1))
 
 
-def test_sympyissue_7097():
-    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
-
-
 def test_factor_expand_subs():
     # test factoring
     assert Sum(4 * x, (x, 1, y)).factor() == 4 * Sum(x, (x, 1, y))
@@ -882,10 +886,6 @@ def test_sympyissue_2787():
 
 def test_sympyissue_4668():
     assert summation(1/n, (n, 2, oo)) == oo
-
-
-def test_sympyissue_8822():
-    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
 
 
 def test_sympyissue_8016():

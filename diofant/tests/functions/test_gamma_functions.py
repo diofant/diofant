@@ -237,6 +237,7 @@ def test_polygamma():
     assert polygamma(2, x).rewrite(zeta) == -2*zeta(3, x)
 
     assert polygamma(3, 7*x).diff(x) == 7*polygamma(4, 7*x)
+    pytest.raises(ArgumentIndexError, lambda: polygamma(3, 7*x).fdiff(3))
 
     assert polygamma(0, x).rewrite(harmonic) == harmonic(x - 1) - EulerGamma
     assert polygamma(2, x).rewrite(harmonic) == 2*harmonic(x - 1, 3) - 2*zeta(3)

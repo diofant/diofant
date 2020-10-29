@@ -386,6 +386,10 @@ def test_ei():
 
     pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
 
+    assert (Ei(exp_polar(I*pi)).evalf() ==
+            Float('-0.21938393439552029', dps=15) +
+            I*Float('3.1415926535897931', dps=15))
+
 
 def test_expint():
     assert mytn(expint(x, y), expint(x, y).rewrite(uppergamma),

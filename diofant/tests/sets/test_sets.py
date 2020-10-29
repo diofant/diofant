@@ -637,6 +637,15 @@ def test_finite_basic():
             FiniteSet(Float('2.7182818284590451', dps=15),
                       Float('3.1415926535897931', dps=15)))
 
+    # issue sympy/sympy#10337
+    assert (FiniteSet(2) == 3) is False
+    assert (FiniteSet(2) != 3) is True
+
+    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
+
 
 def test_powerset():
     # EmptySet
@@ -774,6 +783,10 @@ def test_image_interval():
         + Interval(2, oo)  # Single Infinite discontinuity
     assert imageset(x, 1/x + 1/(x - 1)**2, Interval(0, 2, True, False)) == \
         Interval(Rational(3, 2), oo, False, True)  # Multiple Infinite discontinuities
+
+    # issue sympy/sympy#10113
+    assert imageset(x, x**2/(x**2 - 4),
+                    Interval(-2, 2)) == Interval(-oo, 0, True)
 
     # Test for Python lambda
     assert imageset(lambda x: 2*x, Interval(-2, 1)) == Interval(-4, 2)
@@ -981,7 +994,6 @@ def test_sympyissue_10113():
     f = x**2/(x**2 - 4)
     assert imageset(x, f, S.Reals) == Union(Interval(-oo, 0, True),
                                             Interval(1, oo, True, True))
-    assert imageset(x, f, Interval(-2, 2)) == Interval(-oo, 0, True)
     assert imageset(x, f, Interval(-2, 3)) == Union(Interval(-oo, 0, True),
                                                     Interval(Rational(9, 5),
                                                              oo, False, True))
@@ -992,16 +1004,6 @@ def test_sympyissue_9808():
             Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
     assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==
             Complement(FiniteSet(1), FiniteSet(y), evaluate=False))
-
-
-def test_sympyissue_10337():
-    assert (FiniteSet(2) == 3) is False
-    assert (FiniteSet(2) != 3) is True
-
-    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
 
 
 def test_sympyissue_9447():

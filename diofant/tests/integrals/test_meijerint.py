@@ -144,6 +144,10 @@ def test_meijerint():
 
     assert meijerint_indefinite(exp(x), x) == exp(x)
 
+    # issue sympy/sympy#8368
+    assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
+        (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
+
     # TODO what simplifications should be done automatically?
     # This tests "extra case" for antecedents_1.
     a, b = symbols('a b', positive=True)
@@ -640,11 +644,6 @@ def test_fresnel():
 
 def test_sympyissue_6860():
     assert meijerint_indefinite(x**x**x, x) is None
-
-
-def test_sympyissue_8368():
-    assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
-        (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
 
 
 def test_meijerint_indefinite_abs():
