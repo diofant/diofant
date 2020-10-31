@@ -92,12 +92,11 @@ jobs:
         path: dist
     - name: Upload docs to Github Pages
       if: github.event_name == 'push' && matrix.coverage
-      uses: peaceiris/actions-gh-pages@v2.5.0
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        EXTERNAL_REPOSITORY: diofant/diofant.github.io
-        PUBLISH_BRANCH: master
-        PUBLISH_DIR: sphinx_docs
+      uses: peaceiris/actions-gh-pages@v3
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        external_repository: diofant/diofant.github.io
+        publish_branch: master
+        publish_dir: sphinx_docs
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
