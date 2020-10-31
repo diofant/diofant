@@ -33,7 +33,12 @@ jobs:
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
-        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        if [ "${{ matrix.python-version }}" != "3.9" ]
+        then
+          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        else
+          pip install -U .[interactive,develop,gmpy,exports,docs]
+        fi
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
