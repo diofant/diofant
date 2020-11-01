@@ -9,8 +9,11 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
-        os: [ubuntu]
-    runs-on: ${{ matrix.os }}-latest
+        coverage: [false]
+        include:
+          - python-version: 3.7
+            coverage: true
+    runs-on: ubuntu-latest
     env:
       TERM: xterm
     steps:
@@ -24,13 +27,18 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
-        sudo apt install libmpc-dev libmpfr-dev libgmp-dev
+        sudo apt install libmpc-dev
         sudo apt install libatlas-base-dev liblapack-dev gfortran
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
-        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        if [ "${{ matrix.python-version }}" != "3.9" ]
+        then
+          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        else
+          pip install -U .[interactive,develop,gmpy,exports,docs]
+        fi
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
@@ -42,11 +50,12 @@ jobs:
     - name: Run type checks with mypy
       run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
     - name: Tests
+      if: matrix.coverage == false
       env:
         PYTEST_ADDOPTS: --doctest-modules
       run: pytest
     - name: Coverage tests
-      if: matrix.python-version == 3.7
+      if: matrix.coverage
       env:
         PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
@@ -57,7 +66,7 @@ jobs:
         pip uninstall -y numpy
         pytest diofant/tests/external diofant/tests/utilities
     - name: Upload coverage data
-      if: matrix.python-version == 3.7
+      if: matrix.coverage
       run: codecov --required --tries 10
     - name: Building and testing docs
       id: release
@@ -77,21 +86,20 @@ jobs:
         cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
-      if: matrix.python-version == 3.7
+      if: matrix.coverage
       with:
         name: dist
         path: dist
     - name: Upload docs to Github Pages
-      if: github.event_name == 'push' && matrix.python-version == 3.7
-      uses: peaceiris/actions-gh-pages@v2.5.0
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        EXTERNAL_REPOSITORY: diofant/diofant.github.io
-        PUBLISH_BRANCH: master
-        PUBLISH_DIR: sphinx_docs
+      if: github.event_name == 'push' && matrix.coverage
+      uses: peaceiris/actions-gh-pages@v3
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        external_repository: diofant/diofant.github.io
+        publish_branch: master
+        publish_dir: sphinx_docs
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
@@ -102,10 +110,10 @@ jobs:
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
     - name: Cleanup extra artifacts from dist
-      if: matrix.python-version == 3.7
+      if: matrix.coverage
       run: rm -f dist/*.pdf dist/*.zip
     - name: Publish package on PyPI
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_password }}
