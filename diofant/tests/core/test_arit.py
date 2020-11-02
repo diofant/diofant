@@ -1009,6 +1009,13 @@ def test_Pow_is_real():
 
     assert sqrt(-I).is_extended_real is False  # issue sympy/sympy#7843
 
+    # issue sympy/sympy#6631
+    assert ((-1)**I).is_extended_real is True
+    assert ((-1)**(I*2)).is_extended_real is True
+    assert ((-1)**(I/2)).is_extended_real is True
+    assert ((-1)**(I*pi)).is_extended_real is True
+    assert (I**(I + 2)).is_extended_real is True
+
 
 def test_real_Pow():
     k = Symbol('k', integer=True, nonzero=True)
@@ -1125,6 +1132,7 @@ def test_Pow_is_negative_positive():
 
     s = Symbol('s', nonpositive=True)
     assert (s**n).is_negative is False
+    assert (s**m).is_positive is False
 
     i = Symbol('i', imaginary=True)
     assert (i**4).is_positive is None  # issue diofant/diofant#956
@@ -1454,6 +1462,14 @@ def test_Pow_as_content_primitive():
         (1, (Mul(2, (x + 1), evaluate=False))**y)
     assert ((2*x + 2)**3).as_content_primitive() == (8, (x + 1)**3)
     assert (2**(Float(0.1) + x)).as_content_primitive() == (1, 2**(Float(0.1) + x))
+
+
+def test_Pow_as_numer_denom():
+    # issue sympy/sympy#10095
+    assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
+    assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
+    e = Pow(1, oo, evaluate=False)
+    assert e.as_numer_denom() == (e, 1)
 
 
 def test_sympyissue_5460():

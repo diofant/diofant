@@ -232,6 +232,10 @@ def test_meijerint():
     assert simplify(integrate(x**s*exp(-a*x**2), (x, -oo, oo))) == \
         a**(-s/2 - Rational(1, 2))*((-1)**s + 1)*gamma(s/2 + Rational(1, 2))/2
 
+    # issue sympy/sympy#6348
+    assert integrate(exp(I*x)/(1 + x**2),
+                     (x, -oo, oo)).simplify().rewrite(exp) == pi*exp(-1)
+
 
 def test_bessel():
     assert simplify(integrate(besselj(a, z)*besselj(b, z)/z, (z, 0, oo),
@@ -630,11 +634,6 @@ def test_sympyissue_6252():
     # XXX the expression is a mess, but actually upon differentiation and
     # putting in numerical values seems to work...
     assert not anti.has(hyper)
-
-
-def test_sympyissue_6348():
-    assert integrate(exp(I*x)/(1 + x**2), (x, -oo, oo)).simplify().rewrite(exp) \
-        == pi*exp(-1)
 
 
 def test_fresnel():
