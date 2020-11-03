@@ -32,13 +32,7 @@ jobs:
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
-      run: |
-        if [ "${{ matrix.python-version }}" != "3.9" ]
-        then
-          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        else
-          pip install -U .[interactive,develop,gmpy,exports,docs]
-        fi
+      run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
@@ -68,28 +62,31 @@ jobs:
     - name: Upload coverage data
       if: matrix.coverage
       run: codecov --required --tries 10
-    - name: Building and testing docs
+    - name: Get version
       id: release
       run: |
-        python setup.py build_sphinx -W -b html,latex
-        make -C build/sphinx/latex all-pdf
-        git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
-        rm -rf sphinx_docs/.git
-        rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
-        pip install wheel
-        python setup.py sdist bdist_wheel
         export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
         echo ::set-output name=version::${VERSION}
         echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
-        cp -a build/sphinx/html diofant-docs-html-${VERSION}
-        zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
-        cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
+    - name: Building docs
+      run: |
+        python setup.py build_sphinx -W -b html,latex
+        make -C build/sphinx/latex all-pdf
+    - name: Prepare update for docs on Github Pages
+      run: |
+        wget -q https://github.com/diofant/diofant.github.io/archive/master.zip
+        unzip -x master.zip
+        rsync -a --delete build/sphinx/html/ diofant.github.io-master/en/latest/
+    - name: Make packages
+      run: python setup.py sdist bdist_wheel
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       if: matrix.coverage
       with:
-        name: dist
-        path: dist
+        path: |
+          dist/
+          build/sphinx/html/
+          build/sphinx/latex/diofant.pdf
     - name: Upload docs to Github Pages
       if: github.event_name == 'push' && matrix.coverage
       uses: peaceiris/actions-gh-pages@v3
@@ -97,24 +94,23 @@ jobs:
         deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         external_repository: diofant/diofant.github.io
         publish_branch: master
-        publish_dir: sphinx_docs
+        publish_dir: diofant.github.io-master
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
-        files: dist/*
+        files: |
+          dist/
+          build/sphinx/latex/diofant.pdf
         draft: true
         prerelease: true
         name: "Diofant ${{ steps.release.outputs.version }}"
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
-    - name: Cleanup extra artifacts from dist
-      if: matrix.coverage
-      run: rm -f dist/*.pdf dist/*.zip
     - name: Publish package on PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@v1.4.1
       with:
         password: ${{ secrets.pypi_password }}

@@ -337,6 +337,26 @@ def test_determinant():
     assert M.det(method='bareiss') == z**2 - x*y
     assert M.det(method='berkowitz') == z**2 - x*y
 
+    # issue diofant/diofant#288
+    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
+                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
+                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
+                [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,
+                 exp(I*k)/4 + 1/2 + exp(-I*k)/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
+    assert m.det() == 0
+    assert m.rank() != 4
+
 
 def test_det_LU_decomposition():
 
@@ -2606,27 +2626,6 @@ def test_sympyissue_9480():
     m = Matrix([[-5 + 5*sqrt(2), -5],
                 [-5*sqrt(2)/2 + 5, -5*sqrt(2)/2]])
     assert m.rank() == 1
-
-
-def test_diofantissue_288():
-    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
-                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
-                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
-                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
-                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
-                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
-                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
-                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
-                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
-                [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,
-                 exp(I*k)/4 + 1/2 + exp(-I*k)/4,
-                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4,
-                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
-    assert m.det() == 0
-    assert m.rank() != 4
 
 
 def test_sympyissue_11434():

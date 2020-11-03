@@ -1321,3 +1321,11 @@ def test_sympyissue_18384():
     assert integrate(e, (x, pi/2, pi)) == Rational(1, 2)
     assert integrate(e, (x, pi, 3*pi/2)) == Rational(1, 2)
     assert integrate(e, (x, 3*pi/2, 2*pi)) == Rational(1, 2)
+
+
+def test_sympyissue_20360():
+    e = exp(pi*x*(n - Rational(1, 2)))
+    r = Piecewise((y, Eq(2*pi*n - pi, 0)),
+                  (2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) -
+                   2/(2*pi*n - pi), True))
+    assert integrate(e, (x, 0, y)) == r

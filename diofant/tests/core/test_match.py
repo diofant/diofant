@@ -201,6 +201,16 @@ def test_functions():
     F = WildFunction('F', nargs=(1, 2))
     assert F.nargs == FiniteSet(1, 2)
 
+    # issue sympy/sympy#2711
+    f = meijerg(((), ()), ((0,), ()), x)
+    a = Wild('a')
+    b = Wild('b')
+
+    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
+                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
+    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+
 
 @pytest.mark.xfail
 def test_functions_X1():
@@ -575,17 +585,6 @@ def test_sympyissue_3539():
     assert (x - 2).match(a - x) is None
     assert (6/x).match(a*x) is None
     assert (6/x**2).match(a/x) == {a: 6/x}
-
-
-def test_sympyissue_2711():
-    f = meijerg(((), ()), ((0,), ()), x)
-    a = Wild('a')
-    b = Wild('b')
-
-    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
-                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
-    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
-    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
 
 
 def test_diofantissue_423():

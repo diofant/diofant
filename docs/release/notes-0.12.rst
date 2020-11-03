@@ -65,3 +65,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`10666` resultant misses the sign
 * :sympyissue:`20163` Apart hangs with extension=[sqrt(3), I]
 * :sympyissue:`9479` Cannot solve multivariate inequalities
+* :sympyissue:`20365` Limit Bug
+* :sympyissue:`20360` Incorrect definite integration of simple exponential involving pi

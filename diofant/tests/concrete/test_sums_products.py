@@ -413,7 +413,8 @@ def test_evalf_symbolic():
     assert expr.evalf(strict=False) == expr
 
 
-def test_evalf_sympyissue_6372():
+def test_evalf_other():
+    # issue sympy/sympy#6372
     assert Sum(0, (k, 1, oo)).evalf() == 0
 
 

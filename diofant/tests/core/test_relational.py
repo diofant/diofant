@@ -276,6 +276,12 @@ def test_new_relational():
     assert all(Relational(x, 0, op).rel_op == '>=' for op in ('ge', '>='))
     assert all(Relational(x, 0, op).rel_op == '<=' for op in ('le', '<='))
 
+    # issue sympy/sympy#10633
+    assert Eq(True, False) is false
+    assert Eq(False, True) is false
+    assert Eq(True, True) is true
+    assert Eq(False, False) is true
+
 
 def test_relational_bool_output():
     # https://github.com/sympy/sympy/issues/5931
@@ -534,7 +540,9 @@ def test_ineq_avoid_wild_symbol_flip():
     assert e == Ge(x, p, evaluate=False)
 
 
-def test_sympyissue_8245():
+def test_evalf():
+    # issue sympy/sympy#8245
+
     a = Rational(6506833320952669167898688709329, 5070602400912917605986812821504)
     q = a.evalf(10)
     assert (a == q) is True
@@ -562,7 +570,8 @@ def test_sympyissue_8245():
     assert (r <= a) is true
 
 
-def test_sympyissue_8449():
+def test_infinity():
+    # issue sympy/sympy#8449
     p = Symbol('p', nonnegative=True)
     assert Lt(-oo, p)
     assert Ge(-oo, p) is false
@@ -658,10 +667,3 @@ def test_sympyissue_8444():
     i = Symbol('i', integer=True)
     assert (i > floor(i)) is false
     assert (i < ceiling(i)) is false
-
-
-def test_sympyissue_10633():
-    assert Eq(True, False) is false
-    assert Eq(False, True) is false
-    assert Eq(True, True) is true
-    assert Eq(False, False) is true

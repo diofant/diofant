@@ -794,3 +794,7 @@ def test_sympyissue_19766():
 
 def test_sympyissue_14874():
     assert limit(besselk(0, x), x, oo) == 0
+
+
+def test_sympyissue_20365():
+    assert limit(((x + 1)**(1/x) - E)/x, x, 0) == -E/2
