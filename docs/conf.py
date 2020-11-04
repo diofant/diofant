@@ -64,7 +64,7 @@ latex_use_xindy = False
 # This value determines how to group the document tree into LaTeX source
 # files.  It must be a list of tuples (startdocname, targetname, title,
 # author, documentclass, toctree_only),
-latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
+latex_documents = [('index', 'Diofant-' + version + '.tex', 'Diofant Documentation',
                     'Diofant Development Team', 'manual', True)]
 
 # A dictionary that contains LaTeX snippets that override predefined.
