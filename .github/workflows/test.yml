@@ -104,7 +104,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
         files: |
-          dist/
+          dist/*
           build/sphinx/latex/diofant.pdf
         draft: true
         prerelease: true
