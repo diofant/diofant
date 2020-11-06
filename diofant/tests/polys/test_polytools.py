@@ -16,11 +16,10 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      count_roots, decompose, degree, diff, discriminant, div,
                      exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
-                     lcm, lcm_list, lex, monic, nroots, oo,
-                     parallel_poly_from_expr, pi, poly, prem, primitive, quo,
-                     re, real_roots, reduced, rem, resultant, sin, sqf,
-                     sqf_list, sqf_norm, sqf_part, sqrt, subresultants,
-                     symbols, tanh, terms_gcd, true, trunc)
+                     lcm, lex, monic, nroots, oo, parallel_poly_from_expr, pi,
+                     poly, prem, primitive, quo, re, real_roots, reduced, rem,
+                     resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
+                     subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -1818,25 +1817,15 @@ def test_dispersion():
     assert fpa.dispersionset(gpa) == {6}
 
 
-def test_lcm_list():
+def test_lcm():
     F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
 
-    assert lcm_list(F) == x**5 - x**4 - 2*x**3 - x**2 + x + 2
-    assert lcm_list(F, polys=True) == Poly(x**5 - x**4 - 2*x**3 - x**2 + x + 2)
+    assert functools.reduce(lcm, F) == x**5 - x**4 - 2*x**3 - x**2 + x + 2
+    assert functools.reduce(lambda x, y: lcm(x, y, polys=True),
+                            F) == Poly(x**5 - x**4 - 2*x**3 - x**2 + x + 2)
 
-    assert lcm_list([]) == 1
-    assert lcm_list([1, 2]) == 2
-    assert lcm_list([4, 6, 8]) == 24
-
-    assert lcm_list([x*(y + 42) - x*y - x*42]) == 0
-
-    lcm = lcm_list([], x)
-    assert lcm.is_Number and lcm is Integer(1)
-
-    lcm = lcm_list([], x, polys=True)
-    assert lcm.is_Poly and lcm.is_one
-
-    pytest.raises(ComputationFailed, lambda: lcm_list([], polys=True))
+    assert lcm(1, 2) == 2
+    assert functools.reduce(lcm, [4, 6, 8]) == 24
 
 
 def test_gcd():
@@ -1901,12 +1890,12 @@ def test_gcd():
 
     F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
 
-    assert functools.reduce(lambda x, y: gcd(x, y), F) == x - 1
+    assert functools.reduce(gcd, F) == x - 1
     assert functools.reduce(lambda x, y: gcd(x, y, polys=True), F) == Poly(x - 1)
 
     F = [x**3 - 1, x**2 - 2, x**2 - 3*x + 2]
 
-    assert functools.reduce(lambda x, y: gcd(x, y), F) == 1
+    assert functools.reduce(gcd, F) == 1
 
 
 def test_gcd_numbers_vs_polys():

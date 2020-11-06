@@ -9,7 +9,7 @@ from ..core.rules import Transform
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..logic import true
 from ..ntheory import multiplicity
-from ..polys import gcd, lcm_list
+from ..polys import gcd, lcm
 from ..utilities import default_sort_key, ordered
 
 
@@ -327,7 +327,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 # e.g. if base were x**(1/2)*y**(1/3) then we should
                 # exponentiate by 6 and look for powers of x and y in the ratio
                 # of 2 to 3
-                qlcm = lcm_list([ratq(bi) for bi in Mul.make_args(bstart)])
+                qlcm = functools.reduce(lcm, [ratq(bi) for bi in Mul.make_args(bstart)])
                 if qlcm == 1:
                     break  # we are done
                 b = bstart**qlcm
