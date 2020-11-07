@@ -35,7 +35,7 @@ __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
            'degree', 'LC', 'LM', 'LT', 'prem',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
-           'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
+           'gcd', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
@@ -3050,67 +3050,6 @@ def gcd(f, g, *gens, **args):
         return domain.to_expr(domain.gcd(a, b))
 
     result = F.gcd(G)
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
-
-
-def lcm_list(seq, *gens, **args):
-    """
-    Compute LCM of a list of polynomials.
-
-    Examples
-    ========
-
-    >>> lcm_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
-    x**5 - x**4 - 2*x**3 - x**2 + x + 2
-
-    """
-    seq = sympify(seq)
-
-    def try_non_polynomial_lcm(seq):
-        if not gens and not args:
-            domain, numbers = construct_domain(seq)
-
-            if not numbers:
-                return domain.one
-            elif domain.is_Numerical:
-                result, numbers = numbers[0], numbers[1:]
-
-                for number in numbers:
-                    result = domain.lcm(result, number)
-
-                return domain.to_expr(result)
-
-    result = try_non_polynomial_lcm(seq)
-
-    if result is not None:
-        return result
-
-    allowed_flags(args, ['polys'])
-
-    try:
-        polys, opt = parallel_poly_from_expr(seq, *gens, **args)
-    except PolificationFailed as exc:
-        result = try_non_polynomial_lcm(exc.exprs)
-
-        if result is not None:
-            return result
-        else:
-            raise ComputationFailed('lcm_list', len(seq), exc)
-
-    if not polys:
-        if not opt.polys:
-            return Integer(1)
-        else:
-            return Poly(1, opt=opt)
-
-    result, polys = polys[0], polys[1:]
-
-    for poly in polys:
-        result = result.lcm(poly)
 
     if not opt.polys:
         return result.as_expr()

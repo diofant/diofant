@@ -42,7 +42,7 @@ from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
 from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
-from ..polys import lcm_list
+from ..polys import lcm
 from ..simplify import collect, simplify
 from ..utilities import filldedent, has_dups
 from .deutils import _desolve, _preprocess, ode_order
@@ -879,7 +879,7 @@ def _separate(eq, dep, others):
         if sep.has(*others):
             return
         div.add(ext)
-    div = lcm_list(div)
+    div = functools.reduce(lcm, div)
     eq = Add(*[simplify(t/div) for t in eq.args])
 
     # SECOND PASS - separate the derivatives
