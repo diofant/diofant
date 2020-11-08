@@ -1122,6 +1122,9 @@ def test_Poly_degree():
 
     pytest.raises(ComputationFailed, lambda: degree(1))
 
+    # issue sympy/sympy#20389
+    assert degree(x*(x + 1) - x**2 - x, x) == -oo
+
 
 def test_Poly_degree_list():
     assert [Poly(0, x, y).degree(_) for _ in (x, y)] == [-oo, -oo]
