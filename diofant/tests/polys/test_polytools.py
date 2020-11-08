@@ -3121,3 +3121,7 @@ def test_sympyissue_19070():
     r = e*2
     assert r == Poly(10*x, modulus=19)
     assert r.get_modulus() == 19
+
+
+def test_sympyissue_19161():
+    assert Poly('x**2').simplify() == Poly(x**2)
