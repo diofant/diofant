@@ -68,3 +68,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20365` Limit Bug
 * :sympyissue:`20360` Incorrect definite integration of simple exponential involving pi
 * :sympyissue:`20389` TypeError: Argument of Integer should be of numeric type, got -oo
+* :sympyissue:`20391` Linear programming with simplex method
