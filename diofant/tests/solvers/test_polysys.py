@@ -256,8 +256,7 @@ def test_solve_biquadratic():
                                             {x: -sqrt(29)/2 - Rational(1, 2),
                                              y: Rational(-9, 2) - sqrt(29)/2}]
 
-
-def test_solve_sympyissue_6785():
+    # issue sympy/sympy#6785
     roots = solve_poly_system([((x - 5)**2/250000 +
                                 (y - Rational(5, 10))**2/250000) - 1, x],
                               x, y)

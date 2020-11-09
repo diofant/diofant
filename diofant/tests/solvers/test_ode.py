@@ -803,6 +803,15 @@ def test_classify_ode():
     pytest.raises(ValueError, lambda: classify_ode(Derivative(f(x), x) +
                                                    Derivative(g(x), x)))
 
+    # issue sympy/sympy4825
+    pytest.raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
+    assert classify_ode(f(x, y).diff(x) - y*f(x, y), f(x), dict=True) == \
+        {'default': None, 'order': 0}
+    # See also issue sympy/sympy#3793, test Z13.
+    pytest.raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
+    assert classify_ode(f(x).diff(x), f(y), dict=True) == \
+        {'default': None, 'order': 0}
+
 
 def test_classify_ode_init():
     # Dummy
@@ -2188,16 +2197,6 @@ def test_sympyissue_4785():
                                       '1st_homogeneous_coeff_subs_dep_div_indep_Integral')
 
 
-def test_sympyissue_4825():
-    pytest.raises(ValueError, lambda: dsolve(f(x, y).diff(x) - y*f(x, y), f(x)))
-    assert classify_ode(f(x, y).diff(x) - y*f(x, y), f(x), dict=True) == \
-        {'default': None, 'order': 0}
-    # See also issue sympy/sympy#3793, test Z13.
-    pytest.raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
-    assert classify_ode(f(x).diff(x), f(y), dict=True) == \
-        {'default': None, 'order': 0}
-
-
 def test_constant_renumber_order_sympyissue_5308():
     assert constant_renumber(C1*x + C2*y, 'C', 1, 2) == \
         constant_renumber(C1*y + C2*x, 'C', 1, 2) == \
@@ -2205,21 +2204,6 @@ def test_constant_renumber_order_sympyissue_5308():
     e = C1*(C2 + x)*(C3 + y)
     for a, b, c in variations([C1, C2, C3], 3):
         assert constant_renumber(a*(b + x)*(c + y), 'C', 1, 3) == e
-
-
-def test_sympyissue_5770():
-    k = Symbol('k', extended_real=True)
-    t = Symbol('t')
-    w = Function('w')
-    sol = dsolve(w(t).diff(t, 6) - k**6*w(t), w(t))
-    assert len([s for s in sol.free_symbols if s.name.startswith('C')]) == 6
-    assert constantsimp((C1*cos(x) + C2*cos(x))*exp(x), {C1, C2}) == \
-        C1*cos(x)*exp(x)
-    assert constantsimp(C1*cos(x) + C2*cos(x) + C3*sin(x), {C1, C2, C3}) == \
-        C1*cos(x) + C3*sin(x)
-    assert constantsimp(exp(C1 + x), {C1}) == C1*exp(x)
-    assert constantsimp(x + C1 + y, {C1, y}) == C1 + x
-    assert constantsimp(x + C1 + Integral(x, (x, 1, 2)), {C1}) == C1 + x
 
 
 def test_sympyissue_5112_5430():
@@ -2762,6 +2746,10 @@ def test_lie_group():
     assert sol == Eq(f(x), 2/(C1 + x**2))
     assert checkodesol(eq, sol)[0]
 
+    # issue diofant/diofant#309
+    assert dsolve(f(x).diff(x)**2 - 1, f(x)) == [Eq(f(x), C1 - x),
+                                                 Eq(f(x), C1 + x)]
+
 
 def test_user_infinitesimals():
     x = Symbol('x')  # assuming x is real generates an error
@@ -2872,14 +2860,6 @@ def test_C1_function_9239():
     assert dsolve(eq) == sol
 
 
-def test_diofantissue_293():
-    eqs = (-f(x) + Derivative(f(x), x) + Derivative(g(x), x),
-           g(x) + Derivative(f(x), x) - Derivative(g(x), x))
-    sol = [Eq(f(x), -exp(x*(1 - I)/2)*I*C1 + exp(x*(1 + I)/2)*I*C2),
-           Eq(g(x), +exp(x*(1 - I)/2)*C1 + exp(x*(1 + I)/2)*C2)]
-    assert dsolve(eqs) == sol
-
-
 def test_sympyissue_11290():
     eq = cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x)
     s0 = dsolve(eq, f(x), simplify=False, hint='1st_exact')
@@ -2895,11 +2875,6 @@ def test_sympyissue_7138():
     eqs = [Eq(f(x).diff(x), f(x) - 1), Eq(g(x).diff(x), f(x) + 2*g(x) - 3)]
     assert dsolve(eqs) == [Eq(f(x), -exp(x)*C1 + 1),
                            Eq(g(x), exp(2*x)*C2 + exp(x)*C1 + 1)]
-
-
-def test_diofantissue_309():
-    assert dsolve(f(x).diff(x)**2 - 1, f(x)) == [Eq(f(x), C1 - x),
-                                                 Eq(f(x), C1 + x)]
 
 
 def test_sympyissue_10379():
@@ -2981,6 +2956,13 @@ def test_dsolve_interface():
                                                                           match={-1: Integer(0), 0: Integer(0),
                                                                                  1: -3*x, 2: 2*x**2},
                                                                           returns='spam'))
+
+    # issue diofant/diofant#293
+    eqs = (-f(x) + Derivative(f(x), x) + Derivative(g(x), x),
+           g(x) + Derivative(f(x), x) - Derivative(g(x), x))
+    sol = [Eq(f(x), -exp(x*(1 - I)/2)*I*C1 + exp(x*(1 + I)/2)*I*C2),
+           Eq(g(x), +exp(x*(1 - I)/2)*C1 + exp(x*(1 + I)/2)*C2)]
+    assert dsolve(eqs) == sol
 
 
 def test_odesimp():
