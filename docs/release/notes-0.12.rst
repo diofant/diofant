@@ -67,3 +67,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`9479` Cannot solve multivariate inequalities
 * :sympyissue:`20365` Limit Bug
 * :sympyissue:`20360` Incorrect definite integration of simple exponential involving pi
+* :sympyissue:`20389` TypeError: Argument of Integer should be of numeric type, got -oo
+* :sympyissue:`20391` Linear programming with simplex method
+* :sympyissue:`19161` When applying simplify on a Poly it fails
+* :sympyissue:`20397` bug in dividing polynomials by module

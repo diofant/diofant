@@ -1122,6 +1122,9 @@ def test_Poly_degree():
 
     pytest.raises(ComputationFailed, lambda: degree(1))
 
+    # issue sympy/sympy#20389
+    assert degree(x*(x + 1) - x**2 - x, x) == -oo
+
 
 def test_Poly_degree_list():
     assert [Poly(0, x, y).degree(_) for _ in (x, y)] == [-oo, -oo]
@@ -3118,3 +3121,13 @@ def test_sympyissue_19070():
     r = e*2
     assert r == Poly(10*x, modulus=19)
     assert r.get_modulus() == 19
+
+
+def test_sympyissue_19161():
+    assert Poly('x**2').simplify() == Poly(x**2)
+
+
+def test_sympyissue_20397():
+    f, g = Poly(x**2 + x + 3, modulus=7), Poly(2*x + 2, modulus=7)
+
+    assert f.prem(g) == 5

@@ -846,7 +846,7 @@ def _solve_system(exprs, symbols, **flags):
                     # result in the new result list; use copy since the
                     # solution for s in being added in-place
                     for sol in soln:
-                        if got_s and any(ss in sol.free_symbols for ss in got_s):
+                        if got_s and got_s & sol.free_symbols:
                             # sol depends on previously solved symbols: discard it
                             continue
                         rnew = r.copy()

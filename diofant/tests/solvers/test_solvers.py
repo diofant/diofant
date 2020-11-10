@@ -179,6 +179,33 @@ def test_solve_polynomial2():
     assert solve(z**2*x - z**2*y**2, simplify=False) == [{x: y**2}, {z: 0}]
 
 
+def test_solve_polynomial3():
+    # issue sympy/sympy#12114
+    terms = (1 + a*b + d*e, 1 + a*c + d*f, 1 + b*c + e*f,
+             g - a**2 - d**2, g - b**2 - e**2, g - c**2 - f**2)
+    s = solve(terms, [a, b, c, d, e, f, g])
+    assert s == [{a: -sqrt(-f**2 - 1), b: -sqrt(-f**2 - 1),
+                  c: -sqrt(-f**2 - 1), d: f, e: f, g: -1},
+                 {a: sqrt(-f**2 - 1), b: sqrt(-f**2 - 1),
+                  c: sqrt(-f**2 - 1), d: f, e: f, g: -1},
+                 {a: -sqrt(3)*f/2 - sqrt(-f**2 + 2)/2,
+                  b: sqrt(3)*f/2 - sqrt(-f**2 + 2)/2, c: sqrt(-f**2 + 2),
+                  d: -f/2 + sqrt(-3*f**2 + 6)/2,
+                  e: -f/2 - sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
+                 {a: -sqrt(3)*f/2 + sqrt(-f**2 + 2)/2,
+                  b: sqrt(3)*f/2 + sqrt(-f**2 + 2)/2, c: -sqrt(-f**2 + 2),
+                  d: -f/2 - sqrt(-3*f**2 + 6)/2,
+                  e: -f/2 + sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
+                 {a: sqrt(3)*f/2 - sqrt(-f**2 + 2)/2,
+                  b: -sqrt(3)*f/2 - sqrt(-f**2 + 2)/2, c: sqrt(-f**2 + 2),
+                  d: -f/2 - sqrt(-3*f**2 + 6)/2,
+                  e: -f/2 + sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
+                 {a: sqrt(3)*f/2 + sqrt(-f**2 + 2)/2,
+                  b: -sqrt(3)*f/2 + sqrt(-f**2 + 2)/2, c: -sqrt(-f**2 + 2),
+                  d: -f/2 + sqrt(-3*f**2 + 6)/2,
+                  e: -f/2 - sqrt(3)*sqrt(-f**2 + 2)/2, g: 2}]
+
+
 def test_solve_polynomial_cv_1a():
     """
     Test for solving on equations that can be converted to a polynomial equation
@@ -283,6 +310,40 @@ def test_solve_nonlinear():
     assert solve(x**2 - y**2/exp(x), y, x) == [{y: -sqrt(E**x*x**2)},
                                                {y: sqrt(E**x*x**2)}]
 
+    # issue sympy/sympy#5132
+    assert (solve([exp(x) - sin(y), 1/y - 3], [x, y]) ==
+            [{x: log(sin(Rational(1, 3))), y: Rational(1, 3)}])
+    assert (solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4)) ==
+            [{x: 1, y: 3}, {x: 3, y: 1}])
+    eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
+    assert solve(eqs) == [{x: log(-sqrt(-z - sin(log(3)))),
+                           y: -log(3)},
+                          {x: log(sqrt(-z - sin(log(3)))),
+                           y: -log(3)}]
+
+    # issue sympy/sympy#6056
+    assert {simplify(w[x]) for w in solve(tanh(x - 1)*tanh(x + 1) + 1)} == {
+        -log(2)/2 + log(1 - I),
+        -log(2)/2 + log(-1 - I),
+        -log(2)/2 + log(1 + I),
+        -log(2)/2 + log(-1 + I), }
+
+    # issue sympy/sympy#6248
+    f = Function('f')
+    assert solve(f(x + 1) - f(2*x - 1)) == [{x: 2}]
+    assert solve(log(x + 1) - log(2*x - 1)) == [{x: 2}]
+
+
+def test_solve_matrix():
+    # issue sympy/sympy#3870
+    A = Matrix(2, 2, [a, b, c, d])
+    B = Matrix(2, 2, [0, 2, -3, 0])
+    C = Matrix(2, 2, [1, 2, 3, 4])
+
+    assert solve(A*B - C, [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
+    assert solve([A*B - C], [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
+    assert solve(Eq(A*B, C), [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
+
 
 def test_sympyissue_8666():
     assert solve(Eq(x**2 - 1/(x**2 - 4), 4 - 1/(x**2 - 4)), x) == []
@@ -312,6 +373,21 @@ def test_linear_system():
                                                               z: 21*y - 6}]
 
     assert solve([x + 3, x - 3]) == []
+
+    # issues sympy/sympy/5114 and sympy/sympy#6611
+    # See that it doesn't hang; this solves in about 2 seconds.
+    # Also check that the solution is relatively small.
+    # Note: the system in issue sympy/sympy#6611 solves in about 5 seconds and has
+    # an op-count of 138336 (with simplify=False).
+    eqs = Matrix([
+        [b - c/d + r/d], [c*(1/g + 1/e + 1/d) - f/g - r/d],
+        [-c/g + f*(1/j + 1/i + 1/g) - h/i], [-f/i + h*(1/m + 1/l + 1/i) - k/m],
+        [-h/m + k*(1/p + 1/o + 1/m) - n/p], [-k/p + n*(1/q + 1/p)]])
+    v = Matrix([f, h, k, n, b, c])
+    ans = solve(list(eqs), list(v), simplify=False)[0]
+    # If time is taken to simplify then then 3270 below becomes
+    # 3093 and the time is about 50 seconds instead of 2.
+    assert sum(s.count_ops() for s in ans.values()) <= 3270
 
 
 def test_linear_system_function():
@@ -549,10 +625,6 @@ def test_sympyissue_3870():
     B = Matrix(2, 2, [0, 2, -3, 0])
     C = Matrix(2, 2, [1, 2, 3, 4])
 
-    assert solve(A*B - C, [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
-    assert solve([A*B - C], [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
-    assert solve(Eq(A*B, C), [a, b, c, d]) == [{a: 1, b: -Rational(1, 3), c: 2, d: -1}]
-
     assert solve([A*B - B*A], [a, b, c, d]) == [{a: d, b: -Rational(2, 3)*c}]
     assert solve([A*C - C*A], [a, b, c, d]) == [{a: d - c, b: Rational(2, 3)*c}]
     assert solve([A*B - B*A, A*C - C*A], [a, b, c, d]) == [{a: d, b: 0, c: 0}]
@@ -735,8 +807,6 @@ def test_sympyissue_5132():
     assert (solve([r - x**2 - y**2, tan(t) - y/x], [x, y]) ==
             [{x: -sqrt(r*sin(t)**2)/tan(t), y: -sqrt(r*sin(t)**2)},
              {x: sqrt(r*sin(t)**2)/tan(t), y: sqrt(r*sin(t)**2)}])
-    assert (solve([exp(x) - sin(y), 1/y - 3], [x, y]) ==
-            [{x: log(sin(Rational(1, 3))), y: Rational(1, 3)}])
     assert (solve([exp(x) - sin(y), 1/exp(y) - 3], [x, y]) ==
             [{x: log(-sin(log(3))), y: -log(3)}])
     assert (solve([exp(x) - sin(y), y**2 - 4]) ==
@@ -755,18 +825,12 @@ def test_sympyissue_5132():
             [{y: -log(3), z: -sqrt(-exp(2*x) - sin(log(3)))},
              {y: -log(3), z: +sqrt(-exp(2*x) - sin(log(3)))}])
     eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
-    assert solve(eqs) == [{x: log(-sqrt(-z - sin(log(3)))),
-                           y: -log(3)},
-                          {x: log(sqrt(-z - sin(log(3)))),
-                           y: -log(3)}]
     assert solve(eqs, x, z) == [{x: log(-sqrt(-z + sin(y)))},
                                 {x: log(sqrt(-z + sin(y)))}]
     assert (solve(eqs, x, y) ==
             [{x: log(-sqrt(-z - sin(log(3)))), y: -log(3)},
              {x: log(+sqrt(-z - sin(log(3)))), y: -log(3)}])
     assert solve(eqs, z, y) == [{z: -exp(2*x) - sin(log(3)), y: -log(3)}]
-    assert (solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4)) ==
-            [{x: 1, y: 3}, {x: 3, y: 1}])
     assert (solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y) ==
             [{x: 1, y: 3}, {x: 3, y: 1}])
 
@@ -952,11 +1016,6 @@ solution(s)                 can't be checked:"""
 
 def test_sympyissue_6056():
     assert solve(tanh(x + 3)*tanh(x - 3) - 1) == []
-    assert {simplify(w[x]) for w in solve(tanh(x - 1)*tanh(x + 1) + 1)} == {
-        -log(2)/2 + log(1 - I),
-        -log(2)/2 + log(-1 - I),
-        -log(2)/2 + log(1 + I),
-        -log(2)/2 + log(-1 + I), }
     assert {simplify(w[x]) for w in solve((tanh(x + 3)*tanh(x - 3) + 1)**2)} == {
         -log(2)/2 + log(1 - I),
         -log(2)/2 + log(-1 - I),
@@ -965,15 +1024,10 @@ def test_sympyissue_6056():
 
 
 def test_sympyissue_6060():
-    x = Symbol('x')
     absxm3 = Piecewise(
         (x - 3, 0 <= x - 3),
         (3 - x, 0 > x - 3)
     )
-    y = Symbol('y')
-    assert (solve(absxm3 - y, x) ==
-            [{x: Piecewise((-y + 3, y > 0), (nan, True))},
-             {x: Piecewise((y + 3, 0 <= y), (nan, True))}])
     y = Symbol('y', positive=True)
     assert solve(absxm3 - y, x) == [{x: -y + 3}, {x: y + 3}]
 
@@ -1114,32 +1168,18 @@ def test_sympyissue_6792():
             [{x: r} for r in Poly(x**6 - x + 1).all_roots()])
 
 
-def test_sympyissues_6819_6820_6821_6248_8692():
+def test_sympyissues_6819_6820_6821_6248():
     # issue sympy/sympy#6821
     x, y = symbols('x y', extended_real=True)
     assert solve(abs(x + 3) - 2*abs(x - 3)) == [{x: 1}, {x: 9}]
-    assert solve([abs(x) - 2, arg(x) - pi], x) == [{x: -2}, {x: 2}]
     assert solve(abs(x - 7) - 8) == [{x: -1}, {x: 15}]
-
-    # issue sympy/sympy#8692
-    assert (solve(Eq(abs(x + 1) + abs(x**2 - 7), 9), x) ==
-            [{x: -Rational(1, 2) + sqrt(61)/2},
-             {x: -sqrt(69)/2 + Rational(1, 2)}])
 
     # issue sympy/sympy#7145
     assert solve(2*abs(x) - abs(x - 1)) == [{x: -1},
                                             {x: Rational(1, 3)}]
 
-    x = symbols('x')
-    assert solve([re(x) - 1, im(x) - 2], x) == [{re(x): 1,
-                                                 x: 1 + 2*I,
-                                                 im(x): 2}]
-
-    # check for 'dict' handling of solution
-    eq = sqrt(re(x)**2 + im(x)**2) - 3
-    assert solve(eq) == solve(eq, x)
-
     i = symbols('i', imaginary=True)
+    x = symbols('x')
     assert solve(abs(i) - 3) == [{i: -3*I}, {i: 3*I}]
     pytest.raises(NotImplementedError, lambda: solve(abs(x) - 3))
 
@@ -1147,8 +1187,6 @@ def test_sympyissues_6819_6820_6821_6248_8692():
     assert solve(2*x**w - 4*y**w, w) == solve((x/y)**w - 2, w)
 
     x, y = symbols('x y', extended_real=True)
-    assert solve(x + y*I + 3) == [{y: 0, x: -3}]
-    assert solve([x + y*I + 3, y]) == [{x: -3, y: 0}]
     # issue sympy/sympy#2642
     assert solve(x*(1 + I)) == [{x: 0}]
 
@@ -1159,10 +1197,6 @@ def test_sympyissues_6819_6820_6821_6248_8692():
     assert solve(x + y + 3 + 2*I) == [{x: -3, y: -2*I}]
 
     # issue sympy/sympy#6248
-    f = Function('f')
-    assert solve(f(x + 1) - f(2*x - 1)) == [{x: 2}]
-    assert solve(log(x + 1) - log(2*x - 1)) == [{x: 2}]
-
     x = symbols('x')
     assert solve(2**x + 4**x) == [{x: I*pi/log(2)}]
 
@@ -1305,27 +1339,30 @@ def test_sympyissue_2725():
                     cbrt(Rational(251, 27) + sqrt(111)*I/9)}]
 
 
-def test_sympyissue_5114_6611():
-    # See that it doesn't hang; this solves in about 2 seconds.
-    # Also check that the solution is relatively small.
-    # Note: the system in issue sympy/sympy#6611 solves in about 5 seconds and has
-    # an op-count of 138336 (with simplify=False).
-    eqs = Matrix([
-        [b - c/d + r/d], [c*(1/g + 1/e + 1/d) - f/g - r/d],
-        [-c/g + f*(1/j + 1/i + 1/g) - h/i], [-f/i + h*(1/m + 1/l + 1/i) - k/m],
-        [-h/m + k*(1/p + 1/o + 1/m) - n/p], [-k/p + n*(1/q + 1/p)]])
-    v = Matrix([f, h, k, n, b, c])
-    ans = solve(list(eqs), list(v), simplify=False)[0]
-    # If time is taken to simplify then then 3270 below becomes
-    # 3093 and the time is about 50 seconds instead of 2.
-    assert sum(s.count_ops() for s in ans.values()) <= 3270
-
-
 def test_piecewise():
+    x = symbols('x')
     # if no symbol is given the piecewise detection must still work
     assert solve(Piecewise((x - 2, Gt(x, 2)), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
 
     assert solve(abs(y)*x - 1, x) == [{x: 1/abs(y)}]
+
+    # issue sympy/sympy#6060
+    absxm3 = Piecewise(
+        (x - 3, 0 <= x - 3),
+        (3 - x, 0 > x - 3)
+    )
+    assert (solve(absxm3 - y, x) ==
+            [{x: Piecewise((-y + 3, y > 0), (nan, True))},
+             {x: Piecewise((y + 3, 0 <= y), (nan, True))}])
+
+    # issue sympy/sympy#6821
+    x = symbols('x', extended_real=True)
+    assert solve([abs(x) - 2, arg(x) - pi], x) == [{x: -2}, {x: 2}]
+
+    # issue sympy/sympy#8692
+    assert (solve(Eq(abs(x + 1) + abs(x**2 - 7), 9), x) ==
+            [{x: -Rational(1, 2) + sqrt(61)/2},
+             {x: -sqrt(69)/2 + Rational(1, 2)}])
 
 
 def test_real_imag_splitting():
@@ -1333,7 +1370,19 @@ def test_real_imag_splitting():
     assert solve(sqrt(a**2 + b**2) - 3, a) == [{a: -sqrt(-b**2 + 9)},
                                                {a: +sqrt(-b**2 + 9)}]
     a, b = symbols('a b', imaginary=True)
+    x = symbols('x')
     assert solve(sqrt(a**2 + b**2) - 3, a) == []
+
+    assert solve([re(x) - 1, im(x) - 2], x) == [{re(x): 1,
+                                                 x: 1 + 2*I,
+                                                 im(x): 2}]
+    # check for 'dict' handling of solution
+    eq = sqrt(re(x)**2 + im(x)**2) - 3
+    assert solve(eq) == solve(eq, x)
+
+    x, y = symbols('x y', extended_real=True)
+    assert solve(x + y*I + 3) == [{y: 0, x: -3}]
+    assert solve([x + y*I + 3, y]) == [{x: -3, y: 0}]
 
 
 def test_sympyissue_7110():
@@ -1436,32 +1485,6 @@ def test_sympyissue_10391():
 def test_sympyissue_11538():
     eqs = (x - y**3 + 4, x + y + 4 + 4*E)
     assert len(solve(eqs, x, y, check=False)) == 3
-
-
-def test_sympyissue_12114():
-    terms = (1 + a*b + d*e, 1 + a*c + d*f, 1 + b*c + e*f,
-             g - a**2 - d**2, g - b**2 - e**2, g - c**2 - f**2)
-    s = solve(terms, [a, b, c, d, e, f, g])
-    assert s == [{a: -sqrt(-f**2 - 1), b: -sqrt(-f**2 - 1),
-                  c: -sqrt(-f**2 - 1), d: f, e: f, g: -1},
-                 {a: sqrt(-f**2 - 1), b: sqrt(-f**2 - 1),
-                  c: sqrt(-f**2 - 1), d: f, e: f, g: -1},
-                 {a: -sqrt(3)*f/2 - sqrt(-f**2 + 2)/2,
-                  b: sqrt(3)*f/2 - sqrt(-f**2 + 2)/2, c: sqrt(-f**2 + 2),
-                  d: -f/2 + sqrt(-3*f**2 + 6)/2,
-                  e: -f/2 - sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
-                 {a: -sqrt(3)*f/2 + sqrt(-f**2 + 2)/2,
-                  b: sqrt(3)*f/2 + sqrt(-f**2 + 2)/2, c: -sqrt(-f**2 + 2),
-                  d: -f/2 - sqrt(-3*f**2 + 6)/2,
-                  e: -f/2 + sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
-                 {a: sqrt(3)*f/2 - sqrt(-f**2 + 2)/2,
-                  b: -sqrt(3)*f/2 - sqrt(-f**2 + 2)/2, c: sqrt(-f**2 + 2),
-                  d: -f/2 - sqrt(-3*f**2 + 6)/2,
-                  e: -f/2 + sqrt(3)*sqrt(-f**2 + 2)/2, g: 2},
-                 {a: sqrt(3)*f/2 + sqrt(-f**2 + 2)/2,
-                  b: -sqrt(3)*f/2 + sqrt(-f**2 + 2)/2, c: -sqrt(-f**2 + 2),
-                  d: -f/2 + sqrt(-3*f**2 + 6)/2,
-                  e: -f/2 - sqrt(3)*sqrt(-f**2 + 2)/2, g: 2}]
 
 
 def test_sympyissue_12180():

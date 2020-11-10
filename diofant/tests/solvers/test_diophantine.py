@@ -535,6 +535,14 @@ def test_diophantine():
     assert diophantine(1/x + 1/y - Rational(1, 2)) == {(6, 3), (-2, 1),
                                                        (4, 4), (1, -2), (3, 6)}
 
+    # issue sympy/sympy#9538
+    eq = x - 3*y + 2
+
+    assert diophantine(eq, syms=[y, x]) == {(t_0, 3*t_0 - 2)}
+    assert diophantine(eq, syms=[x, y]) == {(3*t_0 - 2, t_0)}
+
+    pytest.raises(TypeError, lambda: diophantine(eq, syms={y, x}))
+
 
 def test_general_pythagorean():
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
@@ -875,13 +883,6 @@ def test__can_do_sum_of_squares():
     assert _can_do_sum_of_squares(1, 2)
     assert _can_do_sum_of_squares(2, 2)
     assert _can_do_sum_of_squares(3, 2) is False
-
-
-def test_sympyissue_9538():
-    eq = x - 3*y + 2
-    assert diophantine(eq, syms=[y, x]) == {(t_0, 3*t_0 - 2)}
-    pytest.raises(TypeError, lambda: diophantine(eq, syms={y, x}))
-    assert diophantine(eq, syms=[x, y]) == {(3*t_0 - 2, t_0)}
 
 
 def test_sympyissue_11959():
