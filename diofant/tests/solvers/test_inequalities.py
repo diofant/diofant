@@ -246,7 +246,9 @@ def test_reduce_piecewise_inequalities():
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
-        Or(And(Lt(0, x), x < Rational(1, 2)), x < 0)
+        Or(And(Lt(0, x), x < Rational(1, 2)), And(-oo < x, x < Integer(0)))
+    assert reduce_inequalities(-1 + 1/abs(-1/x - 1) < 0) == \
+        Or(And(-Rational(1, 2) < x, x < Integer(0)), And(Integer(0) < x, x < oo))
 
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
@@ -353,7 +355,7 @@ def test_solve_univariate_inequality():
     # handle numerator and denominator; although these would be handled as
     # rational inequalities, these test confirm that the right thing is done
     # when the domain is EX (e.g. when 2 is replaced with sqrt(2))
-    assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x)
+    assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x) & (x < oo)
     den = ((x - 1)*(x - 2)).expand()
     assert isolve((x - 1)/den <= 0, x) == \
         Or(x < 1, And(Integer(1) < x, x < 2))
@@ -381,7 +383,7 @@ def test_sympyissue_8974():
 
 
 def test_sympyissue_10268():
-    assert reduce_inequalities(log(x) < 300) == (x < E**300)
+    assert reduce_inequalities(log(x) < 300) == (-oo < x) & (x < E**300)
 
 
 def test_diofantissue_453():
