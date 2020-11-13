@@ -6,7 +6,7 @@ import itertools
 from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
-from ..functions import Abs, Max, Min, Piecewise
+from ..functions import Abs, Max, Min, Piecewise, sign
 from ..logic import And, Or, false, true
 from ..matrices import Matrix, diag
 from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
@@ -75,22 +75,17 @@ def fourier_motzkin(A, b, c, j):
 
     """
     m = A.rows
-    Z, N, P = [], [], []
+    rows = [[], [], []]
     D, d, k = [Matrix()]*3
 
     assert m == b.rows == c.rows
     assert all(_.is_comparable for _ in A)
 
     for i, a in enumerate(A[:, j]):
-        if a > 0:
-            P.append(i)
-        elif a < 0:
-            N.append(i)
-        else:
-            Z.append(i)
+        rows[int(sign(a) + 1)].append(i)
 
-    for p in itertools.chain(Z, itertools.product(N, P)):
-        if p in Z:
+    for p in itertools.chain(rows[1], itertools.product(*rows[::2])):
+        if p in rows[1]:
             D = D.col_join(A[p, :])
             d = d.col_join(Matrix([b[p]]))
             k = k.col_join(Matrix([c[p]]))
@@ -129,6 +124,7 @@ def solve_linear_inequalities(eqs, *gens, **args):
     c = Matrix([e.func is Le for e in eqs])
     res = []
     failed = []
+    op_map = {(1, 1): Le, (1, 0): Lt, (0, 1): Ge, (0, 0): Gt}
 
     for i, g in reversed(list(enumerate(gens))):
         D, d, e = fourier_motzkin(A, b, c, i)
@@ -142,12 +138,10 @@ def solve_linear_inequalities(eqs, *gens, **args):
 
         for j, (r, x) in enumerate(zip(b - A*gens_g, c)):
             gc = A[j, i]
-            op = Le if x else Lt
+            if not gc:
+                continue
 
-            if gc > 0:
-                res.append(op(g, r/gc))
-            elif gc < 0:
-                res.append(op(r/gc, g).reversed)
+            res.append(op_map[(int(gc > 0), int(x))](g, r/gc))
 
         A, b, c = D, d, e
 
@@ -162,19 +156,16 @@ def solve_linear_inequalities(eqs, *gens, **args):
         for r, x in zip(diag(*A[:, i])**-1*(b - A*gens_g), c):
             non_strict.append(r) if x else strict.append(r)
 
-        if A[0, i] > 0:
-            if strict and non_strict:
-                a, b = Min(*non_strict), Min(*strict)
-                res.append(Or(And(Le(g, a), Lt(a, b)), And(Lt(g, b), Le(b, a))))
-            else:
-                res.append((Lt if strict else Le)(g, Min(*(non_strict + strict))))
+        pos = int(A[0, i] > 0)
+        other_op = Min if pos else Max
+
+        if strict and non_strict:
+            a, b = other_op(*non_strict), other_op(*strict)
+            opn, ops = op_map[(pos, 1)], op_map[(pos, 0)]
+            res.append(Or(And(opn(g, a), ops(a, b)), And(ops(g, b), opn(b, a))))
         else:
-            if strict and non_strict:
-                a, b = Max(*non_strict), Max(*strict)
-                res.append(Or(And(Le(a, g).reversed, Lt(b, a).reversed),
-                              And(Lt(b, g).reversed, Le(a, b).reversed)))
-            else:
-                res.append((Lt if strict else Le)(Max(*(non_strict + strict)), g).reversed)
+            both = non_strict + strict
+            res.append(op_map[(pos, int(strict == []))](g, other_op(*(both))))
     elif any(_ < 0 for _ in b):
         return false
 
