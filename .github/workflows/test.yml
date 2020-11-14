@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        pip install -U https://github.com/skirpichev/flake8-rst/archive/fix-22.zip
+        pip install -U https://github.com/kataev/flake8-rst/archive/master.zip
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q

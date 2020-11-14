@@ -87,6 +87,9 @@ class BooleanAtom(Atom, Boolean):
     def canonical(self):
         return self
 
+    def __int__(self):
+        return int(bool(self))
+
 
 class BooleanTrue(BooleanAtom, metaclass=Singleton):
     """Diofant version of True, a singleton that can be accessed via ``true``.

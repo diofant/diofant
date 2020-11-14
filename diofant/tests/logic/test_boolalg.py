@@ -547,6 +547,9 @@ def test_true_false():
     assert hash(false) == hash(False)
     assert len({true, True}) == len({false, False}) == 1
 
+    assert int(true) == 1
+    assert int(false) == 0
+
     assert isinstance(true, BooleanAtom)
     assert isinstance(false, BooleanAtom)
     # We don't want to subclass from bool, because bool subclasses from
