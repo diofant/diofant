@@ -17,7 +17,7 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
                      lcm, lex, monic, nroots, oo, parallel_poly_from_expr, pi,
-                     poly, prem, primitive, quo, re, real_roots, reduced, rem,
+                     prem, primitive, quo, re, real_roots, reduced, rem,
                      resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
                      subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
@@ -1487,7 +1487,7 @@ def test_parallel_poly_from_expr():
 
     pytest.raises(PolificationFailed, lambda: parallel_poly_from_expr([0, 1]))
 
-    assert (parallel_poly_from_expr([(x - 1)**2, 1], expand=False) ==
+    assert (parallel_poly_from_expr([(x - 1)**2, 1], x - 1, expand=False) ==
             ([Poly((x - 1)**2, x - 1, expand=False), Poly(1, x - 1)],
              {'domain': ZZ, 'expand': False, 'gens': (x - 1,),
               'polys': False}))
@@ -2931,69 +2931,67 @@ def test_GroebnerBasis():
     assert (G == 1) is False
 
 
-def test_poly():
-    assert poly(x) == Poly(x, x)
-    assert poly(y) == Poly(y, y)
+def test_Poly_from_expr_noexpand():
+    assert Poly(x, expand=False) == Poly(x, x)
+    assert Poly(y, expand=False) == Poly(y, y)
 
-    assert poly(x + y) == Poly(x + y, x, y)
-    assert poly(x + sin(x)) == Poly(x + sin(x), x, sin(x))
+    assert Poly(x + y, expand=False) == Poly(x + y, x, y)
+    assert Poly(x + sin(x), expand=False) == Poly(x + sin(x), x, sin(x))
 
-    assert poly(x + y, wrt=y) == Poly(x + y, y, x)
-    assert poly(x + sin(x), wrt=sin(x)) == Poly(x + sin(x), sin(x), x)
+    assert Poly(x + y, wrt=y, expand=False) == Poly(x + y, y, x)
+    assert Poly(x + sin(x), wrt=sin(x), expand=False) == Poly(x + sin(x), sin(x), x)
 
-    assert poly(x*y + 2*x*z**2 + 17) == Poly(x*y + 2*x*z**2 + 17, x, y, z)
+    assert Poly(x*y + 2*x*z**2 + 17, expand=False) == Poly(x*y + 2*x*z**2 + 17, x, y, z)
 
-    assert poly(2*(y + z)**2 - 1) == Poly(2*y**2 + 4*y*z + 2*z**2 - 1, y, z)
-    assert poly(
-        x*(y + z)**2 - 1) == Poly(x*y**2 + 2*x*y*z + x*z**2 - 1, x, y, z)
-    assert poly(2*x*(
-        y + z)**2 - 1) == Poly(2*x*y**2 + 4*x*y*z + 2*x*z**2 - 1, x, y, z)
+    assert Poly(2*(y + z)**2 - 1, expand=False) == Poly(2*y**2 + 4*y*z + 2*z**2 - 1, y, z)
+    assert Poly(
+        x*(y + z)**2 - 1, expand=False) == Poly(x*y**2 + 2*x*y*z + x*z**2 - 1, x, y, z)
+    assert Poly(2*x*(
+        y + z)**2 - 1, expand=False) == Poly(2*x*y**2 + 4*x*y*z + 2*x*z**2 - 1, x, y, z)
 
-    assert poly(2*(
-        y + z)**2 - x - 1) == Poly(2*y**2 + 4*y*z + 2*z**2 - x - 1, x, y, z)
-    assert poly(x*(
-        y + z)**2 - x - 1) == Poly(x*y**2 + 2*x*y*z + x*z**2 - x - 1, x, y, z)
-    assert poly(2*x*(y + z)**2 - x - 1) == Poly(2*x*y**2 + 4*x*y*z + 2 *
-                                                x*z**2 - x - 1, x, y, z)
+    assert Poly(2*(
+        y + z)**2 - x - 1, expand=False) == Poly(2*y**2 + 4*y*z + 2*z**2 - x - 1, x, y, z)
+    assert Poly(x*(
+        y + z)**2 - x - 1, expand=False) == Poly(x*y**2 + 2*x*y*z + x*z**2 - x - 1, x, y, z)
+    assert Poly(2*x*(y + z)**2 - x - 1, expand=False) == Poly(2*x*y**2 + 4*x*y*z + 2 *
+                                                              x*z**2 - x - 1, x, y, z)
 
-    assert poly(x*y + (x + y)**2 + (x + z)**2) == \
+    assert Poly(x*y + (x + y)**2 + (x + z)**2, expand=False) == \
         Poly(2*x*z + 3*x*y + y**2 + z**2 + 2*x**2, x, y, z)
-    assert poly(x*y*(x + y)*(x + z)**2) == \
+    assert Poly(x*y*(x + y)*(x + z)**2, expand=False) == \
         Poly(x**3*y**2 + x*y**2*z**2 + y*x**2*z**2 + 2*z*x**2 *
              y**2 + 2*y*z*x**3 + y*x**4, x, y, z)
 
-    assert poly(Poly(x + y + z, y, x, z)) == Poly(x + y + z, y, x, z)
+    assert Poly(Poly(x + y + z, y, x, z), expand=False) == Poly(x + y + z, y, x, z)
 
-    assert poly((x + y)**2, x) == Poly(x**2 + 2*x*y + y**2, x, domain=ZZ.inject(y))
-    assert poly((x + y)**2, x, expand=True) == Poly(x**2 + 2*x*y + y**2,
-                                                    x, domain=ZZ.inject(y))
-    assert poly((x + y)**2, y) == Poly(x**2 + 2*x*y + y**2, y, domain=ZZ.inject(x))
+    assert Poly((x + y)**2, x, expand=False) == Poly(x**2 + 2*x*y + y**2, x, domain=ZZ.inject(y))
+    assert Poly((x + y)**2, y, expand=False) == Poly(x**2 + 2*x*y + y**2, y, domain=ZZ.inject(x))
 
-    assert poly(1, x) == Poly(1, x)
+    assert Poly(1, x, expand=False) == Poly(1, x)
 
-    pytest.raises(GeneratorsNeeded, lambda: poly(1))
+    pytest.raises(GeneratorsNeeded, lambda: Poly(1, expand=False))
 
-    assert poly((x + y)**2 - y**2 - 2*x*y) == Poly(x**2)
-    assert poly((x + y)**2 - y**2 - 2*x*y, x, y) == Poly(x**2, x, y)
+    assert Poly((x + y)**2 - y**2 - 2*x*y, expand=False) == Poly(x**2)
+    assert Poly((x + y)**2 - y**2 - 2*x*y, x, y, expand=False) == Poly(x**2, x, y)
 
     e = x**2 + (1 + sqrt(2))*x + 1
 
-    assert (poly(e, greedy=False) == poly(e, x, greedy=False) ==
+    assert (Poly(e, expand=False, greedy=False) == Poly(e, x, expand=False, greedy=False) ==
             Poly(e, x, domain=QQ.algebraic_field(sqrt(2))))
 
     # issue sympy/sympy#6184
-    assert poly(x + y, x, y) == Poly(x + y, x, y)
-    assert poly(x + y, y, x) == Poly(x + y, y, x)
+    assert Poly(x + y, x, y, expand=False) == Poly(x + y, x, y)
+    assert Poly(x + y, y, x, expand=False) == Poly(x + y, y, x)
 
     # issue sympy/sympy#12400
-    assert (poly(1/(1 + sqrt(2)), x) ==
+    assert (Poly(1/(1 + sqrt(2)), x, expand=False) ==
             Poly(1/(1 + sqrt(2)), x,
                  domain=QQ.algebraic_field(1/(1 + sqrt(2)))))
 
     # issue sympy/sympy#19755
-    assert (poly(x + (2*x + 3)**2/5 + Rational(6, 5)) ==
+    assert (Poly(x + (2*x + 3)**2/5 + Rational(6, 5), expand=False) ==
             Poly(4*x**2/5 + 17*x/5 + 3, domain=QQ))
-    assert poly(((x + 1)**2)/2) == Poly(x**2/2 + x + Rational(1, 2), domain=QQ)
+    assert Poly(((x + 1)**2)/2, expand=False) == Poly(x**2/2 + x + Rational(1, 2), domain=QQ)
 
 
 def test_keep_coeff():

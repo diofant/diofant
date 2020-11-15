@@ -26,7 +26,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
 from .polyoptions import Modulus, Options, allowed_flags, build_options
-from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
+from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -40,7 +40,7 @@ __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
            'real_roots', 'nroots',
-           'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
+           'cancel', 'reduced', 'groebner', 'GroebnerBasis')
 
 
 class Poly(Expr):
@@ -176,8 +176,72 @@ class Poly(Expr):
     @classmethod
     def _from_expr(cls, rep, opt):
         """Construct a polynomial from an expression."""
-        (rep,), opt = _parallel_dict_from_expr([rep], opt)
-        return cls._from_dict(rep, opt)
+        def _poly(expr, opt):
+            terms, poly_terms = [], []
+
+            for term in Add.make_args(expr):
+                factors, poly_factors = [], []
+
+                for factor in Mul.make_args(term):
+                    if factor.is_Add:
+                        poly_factors.append(_poly(factor, opt))
+                    elif (factor.is_Pow and factor.base.is_Add and
+                          factor.exp.is_Integer and factor.exp >= 0):
+                        poly_factors.append(_poly(factor.base, opt)**factor.exp)
+                    else:
+                        factors.append(factor)
+
+                if not poly_factors:
+                    terms.append(term)
+                else:
+                    product = poly_factors[0]
+
+                    for factor in poly_factors[1:]:
+                        product *= factor
+
+                    if factors:
+                        factor = Mul(*factors)
+
+                        if factor.is_Number:
+                            product *= factor
+                        else:
+                            (factor,), _opt = _parallel_dict_from_expr([factor], opt)
+                            factor = cls._from_dict(factor, _opt)
+                            product *= factor
+
+                    poly_terms.append(product)
+
+            if not poly_terms:
+                (expr,), _opt = _parallel_dict_from_expr([expr], opt)
+                result = cls._from_dict(expr, _opt)
+            else:
+                result = poly_terms[0]
+
+                for term in poly_terms[1:]:
+                    result += term
+
+                if terms:
+                    term = Add(*terms)
+
+                    if term.is_Number:
+                        result += term
+                    else:
+                        (term,), _opt = _parallel_dict_from_expr([term], opt)
+                        term = cls._from_dict(term, _opt)
+                        result += term
+
+            return result.reorder(*opt.gens, sort=opt.sort, wrt=opt.wrt)
+
+        rep = sympify(rep)
+
+        if rep.is_Poly:
+            return cls._from_poly(rep, opt)
+
+        if opt.expand:
+            (rep,), opt = _parallel_dict_from_expr([rep], opt)
+            return cls._from_dict(rep, opt)
+        else:
+            return _poly(rep, opt.clone({'expand': False}))
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances."""
@@ -3108,18 +3172,9 @@ def terms_gcd(f, *gens, **args):
     >>> terms_gcd((3+3*x)*(x+x*y))
     3*x*(x*y + x + y + 1)
 
-    If this is not desired then the hint ``expand`` can be set to False.
-    In this case the expression will be treated as though it were comprised
-    of one or more terms:
-
-    >>> terms_gcd((3+3*x)*(x+x*y), expand=False)
-    (3*x + 3)*(x*y + x)
-
     In order to traverse factors of a Mul or the arguments of other
     functions, the ``deep`` hint can be used:
 
-    >>> terms_gcd((3 + 3*x)*(x + x*y), expand=False, deep=True)
-    3*x*(x + 1)*(y + 1)
     >>> terms_gcd(cos(x + x*y), deep=True)
     cos(x*(y + 1))
 
@@ -3281,12 +3336,8 @@ def primitive(f, *gens, **args):
     >>> primitive(eq)
     (2, x**2 + x + 1)
 
-    Set ``expand`` to False to shut this off. Note that the
-    extraction will not be recursive; use the as_content_primitive method
+    Use the as_content_primitive method
     for recursive, non-destructive Rational extraction.
-
-    >>> primitive(eq, expand=False)
-    (1, x*(2*x + 2) + 2)
 
     >>> eq.as_content_primitive()
     (2, x*(x + 1) + 1)
@@ -4320,91 +4371,3 @@ class GroebnerBasis(Basic):
 
         """
         return self.reduce(poly)[1] == 0
-
-
-def poly(expr, *gens, **args):
-    """
-    Efficiently transform an expression into a polynomial.
-
-    Examples
-    ========
-
-    >>> poly(x*(x**2 + x - 1)**2)
-    Poly(x**5 + 2*x**4 - x**3 - 2*x**2 + x, x, domain='ZZ')
-
-    """
-    allowed_flags(args, [])
-
-    def _poly(expr, opt):
-        terms, poly_terms = [], []
-
-        for term in Add.make_args(expr):
-            factors, poly_factors = [], []
-
-            for factor in Mul.make_args(term):
-                if factor.is_Add:
-                    poly_factors.append(_poly(factor, opt))
-                elif (factor.is_Pow and factor.base.is_Add and
-                      factor.exp.is_Integer and factor.exp >= 0):
-                    poly_factors.append(_poly(factor.base,
-                                              opt)**factor.exp)
-                else:
-                    factors.append(factor)
-
-            if not poly_factors:
-                terms.append(term)
-            else:
-                product = poly_factors[0]
-
-                for factor in poly_factors[1:]:
-                    product *= factor
-
-                if factors:
-                    factor = Mul(*factors)
-
-                    if factor.is_Number:
-                        product *= factor
-                    else:
-                        product *= Poly._from_expr(factor, opt)
-
-                poly_terms.append(product)
-
-        if not poly_terms:
-            result = Poly._from_expr(expr, opt)
-        else:
-            result = poly_terms[0]
-
-            for term in poly_terms[1:]:
-                result += term
-
-            if terms:
-                term = Add(*terms)
-
-                if term.is_Number:
-                    result += term
-                else:
-                    result += Poly._from_expr(term, opt)
-
-        return result.reorder(*opt.get('gens', ()), **args)
-
-    expr = sympify(expr)
-
-    if expr.is_Poly:
-        return Poly(expr, *gens, **args)
-
-    opt = build_options(gens, args)
-    no_gens = not opt.gens
-
-    if no_gens:
-        gens = _find_gens([expr], opt)
-        opt = opt.clone({'gens': gens})
-
-    if 'expand' not in args:
-        opt = opt.clone({'expand': False})
-
-    res = _poly(expr, opt)
-
-    if no_gens:
-        res = res.exclude()
-
-    return res
