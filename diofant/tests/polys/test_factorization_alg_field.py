@@ -5,15 +5,21 @@ import pytest
 from diofant import I, ring, root, sqrt
 from diofant.domains import QQ, ZZ
 from diofant.polys.factorization_alg_field import (_distinct_prime_divisors,
-                                                   efactor)
+                                                   _sqf_p, efactor)
 
 
-def test_distinct_prime_divisors():
+def test__distinct_prime_divisors():
     s = [20, 6, 7]
     assert _distinct_prime_divisors(s, ZZ) == [5, 3, 7]
 
     s = [15, 18, 11]
     assert _distinct_prime_divisors(s, ZZ) == [5, 2, 11]
+
+
+def test__sqf_p():
+    R, x, z = ring('x z', ZZ)
+
+    assert _sqf_p(z**2, (z**2 - 2).drop(0), 2) is True
 
 
 def test_efactor_1():
