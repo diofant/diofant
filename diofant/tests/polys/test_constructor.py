@@ -82,6 +82,9 @@ def test_construct_domain():
 
     assert construct_domain({}) == (ZZ, {})
 
+    assert construct_domain([-x*y + x*(y + 42) -
+                             42*x]) == (EX, [EX(-x*y + x*(y + 42) - 42*x)])
+
 
 def test_composite_option():
     assert construct_domain({(1,): sin(y)}, composite=False) == (EX, {(1,): EX(sin(y))})

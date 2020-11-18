@@ -1435,6 +1435,7 @@ def test_Poly___call__():
 
 
 def test_parallel_poly_from_expr():
+    pytest.raises(PolificationFailed, lambda: parallel_poly_from_expr([]))
     pytest.raises(PolificationFailed, lambda: parallel_poly_from_expr([[1, 2]]))
 
     assert parallel_poly_from_expr(
