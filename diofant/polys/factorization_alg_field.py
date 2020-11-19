@@ -383,26 +383,6 @@ def _subs_ground(f, A):
     return f_
 
 
-def _choose_particular_solution(solution, ring):
-    r"""
-    Choose a particular solution of the parametrized solution of a linear
-    system.
-
-    """
-    domain = ring.domain
-    gens = list(ring.gens)
-    sol = {}
-
-    for k, v in solution.items():
-        sol[k] = v.coeff(1)
-        gens.remove(k)
-
-    for k in gens:
-        sol[k] = domain.zero
-
-    return sol
-
-
 def _padic_lift(f, pfactors, lcs, B, minpoly, p):
     r"""
     Lift the factorization of a polynomial over `\mathbb Z_p[z]/(\mu(z))` to
@@ -494,8 +474,8 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
         else:
             solution = {k.set_domain(domain): v.set_domain(domain).trunc_ground(P)
                         for k, v in solution.items()}
+            assert len(solution) == coeffring.ngens
 
-        solution = _choose_particular_solution(solution, coeffring)
         subs = list(solution.items())
 
         H = [h + _subs_ground(s, subs).mul_ground(P) for h, s in zip(H, S)]
