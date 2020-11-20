@@ -3,8 +3,7 @@ import random
 import pytest
 
 from diofant import QQ, ZZ, I, ring, root, sqrt
-from diofant.polys.factorization_alg_field import (_diophantine,
-                                                   _distinct_prime_divisors,
+from diofant.polys.factorization_alg_field import (_distinct_prime_divisors,
                                                    _sqf_p, efactor)
 
 
@@ -20,26 +19,6 @@ def test__sqf_p():
     R, x, z = ring('x z', ZZ)
 
     assert _sqf_p(z**2, (z**2 - 2).drop(0), 2) is True
-
-
-def test__diophantine():
-    R, x, y, z = ring('x y z', ZZ)
-
-    F = [-3 + z, x**2 + 1, x**2 + 3]
-    c = x**3*y
-    minpoly = (z**2 - 3).drop(0).drop(0)
-
-    assert _diophantine(F, c, (5,), 1, minpoly,  2) is None
-
-    F = [-3 + z, x**2 + y]
-
-    assert _diophantine(F, x*y, (2,), 1, minpoly,  2) is None
-
-    F = [-x + z**5, x**2 + y]
-    c = x*y + 1
-    minpoly = (z**2 - 5).drop(0).drop(0)
-
-    assert _diophantine(F, c, (1,), 5, minpoly,  3) == [0, -x*y - 1]
 
 
 def test_efactor_1():

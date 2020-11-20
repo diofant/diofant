@@ -243,7 +243,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
         pi = gcd(omega, divisors[i])
         divisors[i] //= pi
         if divisors[i] == 1:
-            return
+            raise NotImplementedError
 
     e = []
 
@@ -502,7 +502,7 @@ def _div(f, g, minpoly, p):
     lcinv, _, gcd = _gf_gcdex(g.eject(*ring.gens[1:]).LC, minpoly, p)
 
     if not gcd == 1:
-        return
+        raise NotImplementedError
 
     quotient = ring.zero
 
@@ -539,7 +539,7 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
     while g:
         result = _div(f, g, minpoly, p)
         if result is None:
-            return
+            raise NotImplementedError
         else:
             quo, rem = result
         f, g = g, rem
@@ -567,7 +567,7 @@ def _diophantine_univariate(F, m, minpoly, p):
         f, g = F
         result = _extended_euclidean_algorithm(g, f, minpoly, p)
         if result is None:
-            return
+            raise NotImplementedError
         else:
             s, t, _ = result
 
@@ -594,7 +594,7 @@ def _diophantine_univariate(F, m, minpoly, p):
         for f, g in zip(F, G):
             result = _diophantine([g, f], T[-1], [], 0, minpoly, p)
             if result is None:
-                return
+                raise NotImplementedError
             else:
                 t, s = result
             T.append(t)
@@ -625,7 +625,7 @@ def _diophantine(F, c, A, d, minpoly, p):
         for (exp,), coeff in c.eject(1).items():
             T = _diophantine_univariate(F, exp, minpoly, p)
             if T is None:
-                return
+                raise NotImplementedError
 
             for j, (s, t) in enumerate(zip(S, T)):
                 S[j] = _trunc(s + t*coeff.set_ring(ring), minpoly, p)
@@ -644,7 +644,7 @@ def _diophantine(F, c, A, d, minpoly, p):
 
         S = _diophantine(G, C, A, d, minpoly, p)
         if S is None:
-            return
+            raise NotImplementedError
         else:
             S = [s.set_ring(ring) for s in S]
 
@@ -667,7 +667,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                 C = C.quo_ground(ring.domain.factorial(k + 1))
                 T = _diophantine(G, C, A, d, minpoly, p)
                 if T is None:
-                    return
+                    raise NotImplementedError
 
                 for i, t in enumerate(T):
                     T[i] = t.set_ring(ring) * M
@@ -679,6 +679,8 @@ def _diophantine(F, c, A, d, minpoly, p):
                     c = c - t * b
 
                 c = _trunc(c, minpoly, p)
+            else:
+                raise NotImplementedError
 
         S = [_trunc(s, minpoly, p) for s in S]
 
@@ -759,7 +761,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
                 C = C.quo_ground(ring.domain.factorial(k + 1))  # coeff of (x_{j-1} - a_{j-1})^(k + 1) in c
                 T = _diophantine(G, C, I, d, minpoly, p)
                 if T is None:
-                    return
+                    raise NotImplementedError
 
                 for i, (h, t) in enumerate(zip(H, T)):
                     H[i] = _trunc(h + t.set_ring(Hring)*M, minpoly, p)
