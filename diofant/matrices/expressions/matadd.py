@@ -1,11 +1,10 @@
-from functools import reduce
-from operator import add
-
-from strategies import condition, do_one, exhaust
+import functools
+import operator
 
 from ...core import Add, Expr, sympify
 from ...core.logic import _fuzzy_group
-from ...core.strategies import flatten, glom, rm_id, sort, unpack
+from ...core.strategies import (condition, do_one, exhaust, flatten, glom,
+                                rm_id, sort, unpack)
 from ...functions import adjoint
 from ...utilities import default_sort_key, sift
 from ..matrices import MatrixBase, ShapeError
@@ -109,7 +108,7 @@ def merge_explicit(matadd):
     """
     groups = sift(matadd.args, lambda arg: isinstance(arg, MatrixBase))
     if len(groups[True]) > 1:
-        return MatAdd(*(groups[False] + [reduce(add, groups[True])]))
+        return MatAdd(*(groups[False] + [functools.reduce(operator.add, groups[True])]))
     else:
         return matadd
 

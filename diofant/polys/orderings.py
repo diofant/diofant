@@ -1,5 +1,7 @@
 """Definitions of monomial orderings."""
 
+import typing
+
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
@@ -11,8 +13,8 @@ __all__ = ('lex', 'grlex', 'grevlex', 'ilex', 'igrlex', 'igrevlex',
 class MonomialOrder:
     """Base class for monomial orderings."""
 
-    alias = None
-    is_global = None
+    alias: str
+    is_global: typing.Union[bool, None] = None
     is_default = False
 
     def __str__(self):
@@ -230,7 +232,8 @@ def monomial_key(order=None, gens=None):
     if hasattr(order, '__call__'):
         if gens is not None:
             def _order(expr):
-                return order(expr.as_poly(*gens).degree_list())
+                poly = expr.as_poly(*gens)
+                return order([poly.degree(x) for x in gens])
             return _order
         return order
     else:

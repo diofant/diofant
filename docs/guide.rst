@@ -32,6 +32,11 @@ When opening a new issue, please take the following steps:
 4. Include any relevant details of your local setup (i.e. Python
    version, installed libraries).
 
+.. note::
+
+    Please avoid changing your messages on the GitHub, unless you
+    want fix a typo and so on.  Just add new comments.
+
 Contributing Code
 =================
 
@@ -69,11 +74,11 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
-       py.test
+       pytest
 
    To check also doctests, run::
 
-       py.test --doctest-modules
+       pytest --doctest-modules
 
 7. Please also check for potential flaws in your Python code with::
 

@@ -219,9 +219,9 @@ class Product(ExprWithIntLimits):
         return self.func(self.function.conjugate(), *self.limits)
 
     def _eval_product(self, term, limits):
-        from .delta import deltaproduct, _has_simple_delta
-        from .summations import summation
         from ..functions import KroneckerDelta, RisingFactorial
+        from .delta import _has_simple_delta, deltaproduct
+        from .summations import summation
 
         (k, a, n) = limits
 

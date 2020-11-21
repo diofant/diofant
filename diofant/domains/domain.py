@@ -12,15 +12,8 @@ from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
 
 
-__all__ = 'Domain',
-
-
 class Domain(DefaultPrinting, abc.ABC):
     """Represents an abstract domain."""
-
-    dtype = None
-    zero = None
-    one = None
 
     is_Ring = False
     is_Field = False
@@ -41,11 +34,6 @@ class Domain(DefaultPrinting, abc.ABC):
 
     is_Exact = True
     is_Numerical = False
-
-    is_Simple = False
-    is_Composite = False
-
-    rep = None
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
@@ -91,10 +79,10 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, self.dtype):
             return element
 
-        from .integerring import PythonIntegerRing, GMPYIntegerRing
-        from .rationalfield import PythonRationalField, GMPYRationalField
-        from . import RealField, ComplexField, PythonRational
+        from . import ComplexField, PythonRational, RealField
         from .expressiondomain import ExpressionDomain
+        from .integerring import GMPYIntegerRing, PythonIntegerRing
+        from .rationalfield import GMPYRationalField, PythonRationalField
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -145,6 +133,10 @@ class Domain(DefaultPrinting, abc.ABC):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 
+    def _from_FractionField(self, a, K0):
+        if a.numerator.is_ground and a.denominator.is_one:
+            return self.convert(a.numerator.LC, K0.domain.ring)
+
     def unify(self, K1, symbols=()):
         """
         Construct a minimal domain that contains elements of ``self`` and ``K1``.
@@ -161,8 +153,10 @@ class Domain(DefaultPrinting, abc.ABC):
         - ``K(x, y, z)``
         - ``EX``
         """
+        from .compositedomain import CompositeDomain
+
         if symbols:
-            if any(d.is_Composite and (set(d.symbols) & set(symbols))
+            if any(isinstance(d, CompositeDomain) and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
                 raise UnificationFailed(f"Can't unify {self} with {K1}, "
                                         f'given {symbols} generators')
@@ -177,23 +171,32 @@ class Domain(DefaultPrinting, abc.ABC):
         if K1.is_ExpressionDomain:
             return K1
 
-        if self.is_Composite or K1.is_Composite:
-            self_ground = self.domain if self.is_Composite else self
-            K1_ground = K1.domain if K1.is_Composite else K1
+        if any(isinstance(d, CompositeDomain) for d in (self, K1)):
+            if isinstance(self, CompositeDomain):
+                self_ground = self.domain
+                self_symbols = self.symbols
+                order = self.order
+            else:
+                self_ground = self
+                self_symbols = ()
+                order = K1.order
 
-            self_symbols = self.symbols if self.is_Composite else ()
-            K1_symbols = K1.symbols if K1.is_Composite else ()
+            if isinstance(K1, CompositeDomain):
+                K1_ground = K1.domain
+                K1_symbols = K1.symbols
+            else:
+                K1_ground = K1
+                K1_symbols = ()
 
             domain = self_ground.unify(K1_ground)
             symbols = _unify_gens(self_symbols, K1_symbols)
-            order = self.order if self.is_Composite else K1.order
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
                     (not self_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
                 domain = domain.ring
 
-            if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
+            if isinstance(self, CompositeDomain) and (not isinstance(K1, CompositeDomain) or self.is_FractionField or K1.is_PolynomialRing):
                 cls = self.__class__
             else:
                 cls = K1.__class__

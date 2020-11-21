@@ -39,8 +39,6 @@ def test_apart():
 
     assert apart(Eq((x**2 + 1)/(x + 1), x), x) == Eq(x - 1 + 2/(x + 1), x)
 
-    pytest.raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
-
     assert apart(x/2, y) == x/2  # issue sympy/sympy#9123
 
     # issue sympy/sympy#12177
@@ -190,3 +188,14 @@ def test_sympyissue_18531():
          1/mul2((x + 1)**2) + 1/mul2((x - 1)**2))
 
     assert apart(e, x, extension=sqrt(2)) == r
+
+
+@pytest.mark.slow
+def test_sympyissue_20163():
+    e = 6/(x**6 + 1)
+    r = ((sqrt(3) + I)/(2*x + sqrt(3) + I) -
+         (-sqrt(3) + I)/(2*x + sqrt(3) - I) +
+         (-sqrt(3) + I)/(2*x - sqrt(3) + I) -
+         (sqrt(3) + I)/(2*x - sqrt(3) - I) + I/(x + I) - I/(x - I))
+
+    assert apart(e, extension=sqrt(3) + I) == r

@@ -1,5 +1,5 @@
 from ..logic.boolalg import Boolean, BooleanAtom, false, true
-from .compatibility import ordered
+from ..utilities import ordered
 from .evalf import EvalfMixin
 from .evaluate import global_evaluate
 from .expr import Expr
@@ -198,9 +198,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> (x > 0).as_set()
-        (0, oo)
+        (0, oo]
         >>> Eq(x, 0).as_set()
         {0}
 

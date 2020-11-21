@@ -20,10 +20,6 @@ _GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
 FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
 GF = FF
 
-# Remove clash with functions of polys module:
-del ring
-del field
-
 
 __all__ = ('GROUND_TYPES', 'AlgebraicField', 'ComplexAlgebraicField',
            'RealAlgebraicField', 'CC', 'ComplexField', 'Domain', 'EX',

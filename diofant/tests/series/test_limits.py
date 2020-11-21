@@ -4,12 +4,12 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, binomial,
-                     cbrt, ceiling, cos, cot, diff, digamma, erf, erfi, exp,
-                     factorial, floor, gamma, integrate, limit, log, nan, oo,
-                     pi, polygamma, root, sign, simplify, sin, sinh, sqrt,
-                     subfactorial, symbols, tan)
+from diofant import (E, Float, Function, I, Integral, Limit, Piecewise,
+                     PoleError, Rational, Sum, Symbol, acos, atan, besselk,
+                     binomial, cbrt, ceiling, cos, cot, diff, digamma, erf,
+                     erfi, exp, factorial, floor, gamma, integrate, limit, log,
+                     nan, oo, pi, polygamma, root, sign, simplify, sin, sinh,
+                     sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -74,7 +74,11 @@ def test_basic1():
 
     assert limit(x**2, x, 0, dir='real') == 0
     assert limit(exp(x), x, 0, dir='real') == 1
+
     pytest.raises(PoleError, lambda: limit(1/x, x, 0, dir='real'))
+
+    # issue diofant/diofant#74
+    assert limit(sign(log(1 - 1/x)), x, oo) == -1
 
 
 def test_basic2():
@@ -99,6 +103,10 @@ def test_basic4():
     assert limit(2*x**8 + y*x**(-3), x, -2) == 512 - y/8
     assert limit(sqrt(x + 1) - sqrt(x), x, oo) == 0
     assert integrate(1/(x**3 + 1), (x, 0, oo)) == 2*pi*sqrt(3)/9
+
+    # coverage test
+    l = Limit(Piecewise((x, x > 1), (0, True)), x, -1)
+    assert l.doit() == l
 
 
 def test_basic5():
@@ -268,7 +276,7 @@ def test_sympyissue_5164():
 
 
 def test_sympyissue_5183():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([x, -x],
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
@@ -300,7 +308,7 @@ def test_sympyissue_5229():
 
 
 def test_sympyissue_4546():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([cot, tan],
                                    [-pi/2, 0, pi/2, pi, 3*pi/2],
                                    ['-', '+']))
@@ -507,16 +515,6 @@ def test_sympyissue_11526():
 def test_sympyissue_11672():
     assert limit(Rational(-1, 2)**x, x, oo) == 0
     assert limit(1/(-2)**x, x, oo) == 0
-
-
-def test_sympyissue_11678():
-    p = Matrix([[1./2, 1./4, 1./4],
-                [1./2, 0, 1./2],
-                [1./4, 0, 3./4]])
-    e = (p**x).applyfunc(lambda i: limit(i, x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', dps=15),
-                         Float('0.090909090909090898', dps=15),
-                         Float('0.54545454545454541', dps=15)]]*3)
 
 
 def test_sympyissue_8635():
@@ -782,3 +780,21 @@ def test_sympyissue_18992():
 
 def test_sympyissue_19026():
     assert limit(abs(log(x) + 1)/log(x), x, oo) == 1
+
+
+def test_sympyissue_19770():
+    m = Symbol('m', extended_real=True)
+
+    assert limit(cos(x*m)/x, x, oo) == 0
+
+
+def test_sympyissue_19766():
+    assert limit(2**(-x)*sqrt(4**(x + 1) + 1), x, oo) == 2
+
+
+def test_sympyissue_14874():
+    assert limit(besselk(0, x), x, oo) == 0
+
+
+def test_sympyissue_20365():
+    assert limit(((x + 1)**(1/x) - E)/x, x, 0) == -E/2

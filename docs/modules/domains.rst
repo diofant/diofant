@@ -88,3 +88,12 @@ Implementation Domains
 
 .. autoclass:: diofant.domains.rationalfield.PythonRationalField
 .. autoclass:: diofant.domains.rationalfield.GMPYRationalField
+
+Domain Elements
+***************
+
+.. autoclass:: diofant.domains.finitefield.ModularInteger
+   :members:
+
+.. autoclass:: diofant.domains.finitefield.GaloisFieldElement
+   :members:

@@ -24,53 +24,6 @@ Every object created by a domain has to implement the arithmetic operations
 `+`, `-` and `\times`. Other operations are accessed through the domain, e.g.
 as in ``ZZ.quo(ZZ(4), ZZ(2))``.
 
-Manipulation of dense, multivariate polynomials
-===============================================
-
-These functions can be used to manipulate polynomials in `K[X_0, \ldots, X_u]`.
-Functions for manipulating multivariate polynomials in the dense representation
-have the prefix ``dmp_``. Functions which only apply to univariate polynomials
-(i.e. `u = 0`)
-have the prefix ``dup_``. The ground domain `K` has to be passed explicitly.
-For many multivariate polynomial manipulation functions also the level `u`,
-i.e. the number of generators minus one, has to be passed.
-(Note that, in many cases, ``dup_`` versions of functions are available, which
-may be slightly more efficient.)
-
-**Basic manipulation:**
-
-.. automodule:: diofant.polys.densebasic
-    :members:
-
-**Arithmetic operations:**
-
-.. automodule:: diofant.polys.densearith
-    :members:
-
-**Further tools:**
-
-.. automodule:: diofant.polys.densetools
-    :members:
-
-.. automodule:: diofant.polys.rootisolation
-    :members:
-
-.. automodule:: diofant.polys.sqfreetools
-    :members:
-
-Manipulation of dense, univariate polynomials with finite field coefficients
-============================================================================
-
-Functions in this module carry the suffix ``gf_``, referring to the classical
-name "Galois Fields" for finite fields. Note that many polynomial
-factorization algorithms work by reduction to the finite field case, so having
-special implementations for this case is justified both by performance, and by
-the necessity of certain methods which do not even make sense over general
-fields.
-
-.. automodule:: diofant.polys.galoistools
-    :members:
-
 Manipulation of sparse, distributed polynomials
 ===============================================
 
@@ -83,7 +36,6 @@ there is code to manipulate polynomials in a *sparse* representation.
 Sparse polynomials are represented as dictionaries.
 
 .. autofunction:: ring
-.. autofunction:: sring
 
 .. autoclass:: PolyElement
    :members:
@@ -320,9 +272,6 @@ which is not needed after finding `f_{k+1} = 0`.
 Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
 
-.. autofunction:: dmp_resultant
-.. autofunction:: dmp_gcd
-
 Polynomial factorization in characteristic zero:
 
 .. automodule:: diofant.polys.factortools
@@ -338,9 +287,6 @@ Gröbner basis computation algorithms; please see the previous section of the
 manual for usage.
 
 .. automodule:: diofant.polys.groebnertools
-    :members:
-
-.. automodule:: diofant.polys.fglmtools
     :members:
 
 Algebraic number fields
@@ -359,6 +305,15 @@ Heuristic GCD
 =============
 
 .. automethod:: diofant.polys.euclidtools._GCD._zz_heu_gcd
+
+Further tools
+=============
+
+.. automodule:: diofant.polys.rootisolation
+    :members:
+
+.. automodule:: diofant.polys.sqfreetools
+    :members:
 
 Undocumented
 ============

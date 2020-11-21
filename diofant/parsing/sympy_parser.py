@@ -319,7 +319,7 @@ def function_exponentiation(tokens, local_dict, global_dict):
                 continue
         result.append(tok)
     result.append(tokens[-1])
-    if exponent:  # pragma: no cover
+    if exponent:
         raise NotImplementedError
     return result
 
@@ -503,9 +503,9 @@ def auto_symbol(tokens, local_dict, global_dict):
                 continue
             elif name in global_dict:
                 obj = global_dict[name]
-                if isinstance(obj, (Basic, type)) or callable(obj):
-                    result.append((NAME, name))
-                    continue
+                assert isinstance(obj, (Basic, type)) or callable(obj)
+                result.append((NAME, name))
+                continue
 
             result.extend([
                 (NAME, 'Symbol' if nextTokVal != '(' else 'Function'),
@@ -794,7 +794,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 right = ast.Call(
                     func=ast.Name(id='Pow', ctx=ast.Load()),
                     args=[right, ast.UnaryOp(op=ast.USub(), operand=ast.Num(1))],
-                    keywords=[ast.keyword(arg='evaluate', value=ast.Name(id='False', ctx=ast.Load()))],
+                    keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
                     starargs=None,
                     kwargs=None
                 )
@@ -802,7 +802,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
             new_node = ast.Call(
                 func=ast.Name(id=sympy_class, ctx=ast.Load()),
                 args=[self.visit(node.left), right],
-                keywords=[ast.keyword(arg='evaluate', value=ast.Name(id='False', ctx=ast.Load()))],
+                keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
                 starargs=None,
                 kwargs=None
             )

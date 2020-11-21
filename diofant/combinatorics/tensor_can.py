@@ -370,7 +370,8 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
     Examples
     ========
 
-    >>> gens = [Permutation(x) for x in [[2, 1, 0, 3, 4, 5, 7, 6], [4, 1, 2, 3, 0, 5, 7, 6]]]
+    >>> gens = [Permutation(x) for x in [[2, 1, 0, 3, 4, 5, 7, 6],
+    ...                                  [4, 1, 2, 3, 0, 5, 7, 6]]]
     >>> base = [0, 2]
     >>> g = Permutation([4, 2, 0, 1, 3, 5, 6, 7])
     >>> transversals = get_transversals(base, gens)
@@ -966,7 +967,8 @@ def _is_minimal_bsgs(base, gens):
 
     >>> _is_minimal_bsgs(*riemann_bsgs)
     True
-    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
+    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5),
+    ...                            Permutation(5)(0, 2)(1, 3)]))
     >>> _is_minimal_bsgs(*riemann_bsgs1)
     False
 
@@ -997,7 +999,8 @@ def get_minimal_bsgs(base, gens):
     ========
 
     >>> Permutation.print_cyclic = True
-    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
+    >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5),
+    ...                            Permutation(5)(0, 2)(1, 3)]))
     >>> get_minimal_bsgs(*riemann_bsgs1)
     ([0, 2], [Permutation(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3), Permutation(2, 3)(4, 5)])
 

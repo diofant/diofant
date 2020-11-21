@@ -315,7 +315,7 @@ class StrPrinter(Printer):
         return expr.__repr__()
 
     def _print_Permutation(self, expr):
-        from ..combinatorics import Permutation, Cycle
+        from ..combinatorics import Cycle, Permutation
         if Permutation.print_cyclic:
             if not expr.size:
                 return 'Permutation()'
@@ -361,7 +361,7 @@ class StrPrinter(Printer):
         return 'pi'
 
     def _print_PolyElement(self, poly):
-        return poly.str(self, PRECEDENCE, '%s**%d', '*')
+        return poly._str(self, PRECEDENCE, '%s**%d', '*')
 
     def _print_FracElement(self, frac):
         if frac.denominator == 1:
@@ -447,7 +447,7 @@ class StrPrinter(Printer):
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python
         return 'GF(%s, %s)(%s)' % (expr.parent.characteristic,
-                                   expr.mod.set_domain(ZZ_python).to_dense(),
+                                   expr.mod.set_domain(ZZ_python).all_coeffs(),
                                    int(expr))
 
     def _print_Pow(self, expr, rational=False):

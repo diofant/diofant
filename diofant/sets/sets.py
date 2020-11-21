@@ -5,13 +5,13 @@ import itertools
 from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
 from ..logic import And, Not, Or, false, true
-from ..utilities import subsets
+from ..utilities import ordered, subsets
 from .contains import Contains
 
 
@@ -867,8 +867,16 @@ class Interval(Set, EvalfMixin):
         if not other.is_Interval:
             return
 
-        # handle (-oo, oo)
-        if Eq(self, S.Reals) == true:
+        # handle unbounded self
+        if Eq(self, S.Reals) == true and all((abs(_) < oo) is true or
+                                             abs(_) == oo
+                                             for _ in other.boundary):
+            if other.is_left_unbounded and not other.left_open:
+                other = Interval(other.start, other.end, True, other.right_open)
+            if other.is_right_unbounded and not other.right_open:
+                other = Interval(other.start, other.end, other.left_open, True)
+            return other
+        elif Eq(self, S.ExtendedReals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -910,12 +918,11 @@ class Interval(Set, EvalfMixin):
         return Interval(start, end, left_open, right_open)
 
     def _complement(self, other):
-        if other is S.Reals:
+        if other in (S.Reals, S.ExtendedReals):
             a = Interval(-oo, self.start,
-                         True, not self.left_open)
-            b = Interval(self.end, oo, not self.right_open, True)
+                         other.left_open, not self.left_open)
+            b = Interval(self.end, oo, not self.right_open, other.right_open)
             return Union(a, b)
-
         return Set._complement(self, other)
 
     def _union(self, other):
@@ -928,7 +935,8 @@ class Interval(Set, EvalfMixin):
         if other.is_UniversalSet:
             return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
-            from ..functions import Min, Max
+            from ..functions import Max, Min
+
             # Non-overlapping intervals
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
@@ -971,19 +979,26 @@ class Interval(Set, EvalfMixin):
         else:
             expr = other >= self.start
 
+            if other == self.start:
+                return true
+
         if self.right_open:
             expr = And(expr, other < self.end)
         else:
             expr = And(expr, other <= self.end)
 
+            if other == self.end:
+                return true
+
         return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
-        from ..functions import Min, Max
-        from ..solvers import solve
-        from ..core import diff, Lambda
-        from ..series import limit
         from ..calculus.singularities import singularities
+        from ..core import Lambda, diff
+        from ..functions import Max, Min
+        from ..series import limit
+        from ..solvers import solve
+
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)
         # TODO: handle multivariate functions
 
@@ -1098,11 +1113,11 @@ class Interval(Set, EvalfMixin):
         if self.right_open:
             right = x < self.end
         else:
-            right = x <= self.end
+            right = true if self.is_right_unbounded else x <= self.end
         if self.left_open:
             left = self.start < x
         else:
-            left = self.start <= x
+            left = true if self.is_left_unbounded else self.start <= x
         return And(left, right)
 
     def _eval_Eq(self, other):

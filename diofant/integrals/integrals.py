@@ -232,8 +232,8 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
 
         """
-        from ..solvers import solve
         from ..simplify import posify
+        from ..solvers import solve
         d = Dummy('d')
 
         xfree = x.free_symbols.intersection(self.variables)
@@ -735,7 +735,7 @@ class Integral(AddWithLimits):
             except NotImplementedError:
                 return
 
-        # if it is a poly(x) then let the polynomial integrate itself (fast)
+        # if it is a Poly(x) then let the polynomial integrate itself (fast)
         #
         # It is important to make this check first, otherwise the other code
         # will return a diofant expression instead of a Polynomial.
@@ -752,7 +752,7 @@ class Integral(AddWithLimits):
         if not f.has(x):
             return f*x
 
-        # try to convert to poly(x) and then integrate if successful (fast)
+        # try to convert to Poly(x) and then integrate if successful (fast)
         poly = f.as_poly(x)
 
         if poly is not None and not meijerg:
@@ -827,9 +827,9 @@ class Integral(AddWithLimits):
                     parts.append(coeff * h / M[a])
                     continue
 
-            #        poly(x)
+            #        Poly(x)
             # g(x) = -------
-            #        poly(x)
+            #        Poly(x)
             if g.is_rational_function(x) and not meijerg:
                 parts.append(coeff * ratint(g, x))
                 continue

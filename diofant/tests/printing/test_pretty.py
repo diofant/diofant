@@ -718,6 +718,58 @@ x + 10\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    # issue sympy/sympy#7927
+    e = sin(x/2)**cos(x/2)
+    ucode_str = \
+        """\
+           ⎛x⎞\n\
+        cos⎜─⎟\n\
+           ⎝2⎠\n\
+⎛   ⎛x⎞⎞      \n\
+⎜sin⎜─⎟⎟      \n\
+⎝   ⎝2⎠⎠      \
+"""
+    assert upretty(e) == ucode_str
+    e = sin(x)**Rational(11, 13)
+    ucode_str = \
+        """\
+        11\n\
+        ──\n\
+        13\n\
+(sin(x))  \
+"""
+    assert upretty(e) == ucode_str
+
+    # issue sympy/sympy#7117
+    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
+    e = Eq(x + 1, x/2)
+    q = Mul(2, e, evaluate=False)
+    assert upretty(q) == """\
+  ⎛        x⎞\n\
+2⋅⎜x + 1 = ─⎟\n\
+  ⎝        2⎠\
+"""
+    q = Add(e, 6, evaluate=False)
+    assert upretty(q) == """\
+    ⎛        x⎞\n\
+6 + ⎜x + 1 = ─⎟\n\
+    ⎝        2⎠\
+"""
+    q = Pow(e, 2, evaluate=False)
+    assert upretty(q) == """\
+           2\n\
+⎛        x⎞ \n\
+⎜x + 1 = ─⎟ \n\
+⎝        2⎠ \
+"""
+    e2 = Eq(x, 2)
+    q = Mul(e, e2, evaluate=False)
+    assert upretty(q) == """\
+⎛        x⎞        \n\
+⎜x + 1 = ─⎟⋅(x = 2)\n\
+⎝        2⎠        \
+"""
+
 
 def test_negative_fractions():
     expr = -x/y
@@ -1055,37 +1107,6 @@ y + 1     \
 """
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
-
-
-def test_sympyissue_7117():
-    # See also issue sympy/sympy#5031 (hence the evaluate=False in these).
-    e = Eq(x + 1, x/2)
-    q = Mul(2, e, evaluate=False)
-    assert upretty(q) == """\
-  ⎛        x⎞\n\
-2⋅⎜x + 1 = ─⎟\n\
-  ⎝        2⎠\
-"""
-    q = Add(e, 6, evaluate=False)
-    assert upretty(q) == """\
-    ⎛        x⎞\n\
-6 + ⎜x + 1 = ─⎟\n\
-    ⎝        2⎠\
-"""
-    q = Pow(e, 2, evaluate=False)
-    assert upretty(q) == """\
-           2\n\
-⎛        x⎞ \n\
-⎜x + 1 = ─⎟ \n\
-⎝        2⎠ \
-"""
-    e2 = Eq(x, 2)
-    q = Mul(e, e2, evaluate=False)
-    assert upretty(q) == """\
-⎛        x⎞        \n\
-⎜x + 1 = ─⎟⋅(x = 2)\n\
-⎝        2⎠        \
-"""
 
 
 def test_pretty_rational():
@@ -2125,6 +2146,7 @@ dx            \
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
     # basic partial derivatives
+    y = Symbol('y')
     expr = Derivative(log(x + y) + x, x)
     ascii_str_1 = \
         """\
@@ -2293,6 +2315,24 @@ dalpha             \
 d       \n\
 ──(β(α))\n\
 dα      \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
+    # sympy/sympy#4335
+    y = Function('y')
+    expr = -y(x).diff(x)
+    ucode_str = \
+        """\
+ d       \n\
+-──(y(x))\n\
+ dx      \
+"""
+    ascii_str = \
+        """\
+  d       \n\
+- --(y(x))\n\
+  dx      \
 """
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
@@ -3391,6 +3431,11 @@ def test_pretty_Union():
     assert upretty(Union(a, b)) == ucode_str
     assert pretty(Union(a, b)) == ascii_str
 
+    # issue sympy/sympy#9877
+    ucode_str1 = '(2, 3) ∪ ([1, 2] \\ {x})'
+    a, b, c = Interval(2, 3, True, True), Interval(1, 2), FiniteSet(x)
+    assert upretty(Union(a, Complement(b, c))) == ucode_str1
+
 
 def test_pretty_Intersection():
     a, b = Interval(x, y), Interval(z, w)
@@ -3398,6 +3443,11 @@ def test_pretty_Intersection():
     ascii_str = '[x, y] n [z, w]'
     assert upretty(Intersection(a, b)) == ucode_str
     assert pretty(Intersection(a, b)) == ascii_str
+
+    # issue sympy/sympy#9877
+    ucode_str2 = '{x} ∩ {y} ∩ ({z} \\ [1, 2])'
+    d, e, f, g = FiniteSet(x), FiniteSet(y), FiniteSet(z), Interval(1, 2)
+    assert upretty(Intersection(d, e, Complement(f, g))) == ucode_str2
 
 
 def test_ProductSet_paranthesis():
@@ -3728,6 +3778,10 @@ def test_pretty_Boolean():
 
     expr = (y | z) & (x | z)
     assert upretty(expr) == '(x ∨ z) ∧ (y ∨ z)'
+
+    # issue sympy/sympy#7179
+    assert upretty(Not(Equivalent(x, y))) == 'x ≢ y'
+    assert upretty(Not(Implies(x, y))) == 'x ↛ y'
 
 
 def test_pretty_Domain():
@@ -5072,11 +5126,6 @@ def test_pretty_Mul():
     assert upretty(eq, order='none') == 'y⋅x'
 
 
-def test_sympyissue_7179():
-    assert upretty(Not(Equivalent(x, y))) == 'x ≢ y'
-    assert upretty(Not(Implies(x, y))) == 'x ↛ y'
-
-
 def test_sympyissue_7180():
     assert upretty(Equivalent(x, y)) == 'x ≡ y'
 
@@ -5129,25 +5178,6 @@ def test_sympyissue_8292():
     assert upretty(e) == ucode_str
 
 
-def test_sympyissue_4335():
-    y = Function('y')
-    expr = -y(x).diff(x)
-    ucode_str = \
-        """\
- d       \n\
--──(y(x))\n\
- dx      \
-"""
-    ascii_str = \
-        """\
-  d       \n\
-- --(y(x))\n\
-  dx      \
-"""
-    assert pretty(expr) == ascii_str
-    assert upretty(expr) == ucode_str
-
-
 def test_sympyissue_8344():
     e = Add(Mul(2, x, y**2,
                 Pow(Pow(1, 2, evaluate=False),
@@ -5179,29 +5209,6 @@ def test_sympyissue_6324():
     assert upretty(e) == ucode_str
 
 
-def test_sympyissue_7927():
-    e = sin(x/2)**cos(x/2)
-    ucode_str = \
-        """\
-           ⎛x⎞\n\
-        cos⎜─⎟\n\
-           ⎝2⎠\n\
-⎛   ⎛x⎞⎞      \n\
-⎜sin⎜─⎟⎟      \n\
-⎝   ⎝2⎠⎠      \
-"""
-    assert upretty(e) == ucode_str
-    e = sin(x)**Rational(11, 13)
-    ucode_str = \
-        """\
-        11\n\
-        ──\n\
-        13\n\
-(sin(x))  \
-"""
-    assert upretty(e) == ucode_str
-
-
 def test_sympyissue_6134():
     phi = Function('phi')
 
@@ -5215,16 +5222,6 @@ def test_sympyissue_6134():
      0                              0                   \
 """
     assert upretty(e) == ucode_str
-
-
-def test_sympyissue_9877():
-    ucode_str1 = '(2, 3) ∪ ([1, 2] \\ {x})'
-    a, b, c = Interval(2, 3, True, True), Interval(1, 2), FiniteSet(x)
-    assert upretty(Union(a, Complement(b, c))) == ucode_str1
-
-    ucode_str2 = '{x} ∩ {y} ∩ ({z} \\ [1, 2])'
-    d, e, f, g = FiniteSet(x), FiniteSet(y), FiniteSet(z), Interval(1, 2)
-    assert upretty(Intersection(d, e, Complement(f, g))) == ucode_str2
 
 
 def test_BaseVectorField():

@@ -4,9 +4,8 @@ import collections
 
 from ..domains import EX
 from ..matrices import Matrix
-from ..polys import groebner, poly, sring
-from ..polys.polyerrors import ComputationFailed, PolificationFailed
-from ..polys.polytools import parallel_poly_from_expr
+from ..polys import (ComputationFailed, PolificationFailed, groebner,
+                     parallel_poly_from_expr)
 from ..polys.solvers import solve_lin_sys
 from ..simplify import simplify
 from ..utilities import default_sort_key, numbered_symbols
@@ -67,9 +66,11 @@ def solve_linear_system(system, *symbols, **flags):
 
     """
     eqs = system*Matrix(symbols + (-1,))
-    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
+    polys, opt = parallel_poly_from_expr(eqs, *symbols, field=True)
+    domain = polys[0].rep.ring
+    polys = [_.rep for _ in polys]
 
-    res = solve_lin_sys(eqs, domain)
+    res = solve_lin_sys(polys, domain)
     if res is None:
         return
 
@@ -114,7 +115,7 @@ def solve_poly_system(eqs, *gens, **args):
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""
-        basis = groebner(system, gens, polys=True, extension=False)
+        basis = groebner(system, *gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []
 
@@ -134,7 +135,7 @@ def solve_poly_system(eqs, *gens, **args):
             # Now we should examine cases when leading coefficient of
             # some polynomial in the system is zero.
             for p in basis.polys:
-                lc = poly(p, *new_gens).LC(order=basis.order)
+                lc = p.as_poly(*new_gens).LC(order=basis.order)
                 for special in _solve_reduced_system(system + [lc], gens):
                     # This heuristics wipe out some redundant special
                     # solutions, which already there in solutions after

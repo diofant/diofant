@@ -262,6 +262,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     """
     from ..core import Symbol
+    from ..printing.lambdarepr import MpmathPrinter, NumPyPrinter
     from .iterables import flatten
 
     module_provided = True
@@ -304,11 +305,10 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
             namespace.update({str(term): term})
 
     if 'numpy' in namespaces and printer is None:
-        # XXX: This has to be done here because of circular imports
-        from ..printing.lambdarepr import NumPyPrinter as printer  # noqa: N813
+        printer = NumPyPrinter
 
     if 'mpmath' in namespaces and printer is None:
-        from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813
+        printer = MpmathPrinter
 
     # Get the names of the args, for creating a docstring
     if not iterable(args):
@@ -385,7 +385,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     """
     # Transforming everything to strings.
-    from ..core import Dummy, sympify, Symbol, Function
+    from ..core import Dummy, Function, Symbol, sympify
     from ..utilities import flatten
 
     if printer is not None:
@@ -572,6 +572,7 @@ def implemented_function(symfunc, implementation):
     """
     # Delayed import to avoid circular imports
     from ..core.function import UndefinedFunction
+
     # if name, create function to hold implementation
     if isinstance(symfunc, str):
         symfunc = UndefinedFunction(symfunc)

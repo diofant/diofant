@@ -1,10 +1,10 @@
+import functools
 import operator
 from collections import defaultdict
-from functools import reduce
 
+from ..utilities import default_sort_key
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import default_sort_key
 from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S
@@ -1467,7 +1467,7 @@ def prod(a, start=1):
     6
 
     """
-    return reduce(operator.mul, a, start)
+    return functools.reduce(operator.mul, a, start)
 
 
 def _keep_coeff(coeff, factors, clear=True, sign=False):

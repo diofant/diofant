@@ -168,10 +168,10 @@ def test_Dict():
     assert set(d.values()) == {0, 0, 0}
 
 
-def test_sympyissue_5788():
+def test_eq_and_args():
+    # issue sympy/sympy#5788
     args = [(1, 2), (2, 1)]
     for o in [Dict, Tuple, FiniteSet]:
-        # __eq__ and arg handling
         if o != Tuple:
             assert o(*args) == o(*reversed(args))
         pair = [o(*args), o(*reversed(args))]

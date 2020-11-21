@@ -8,7 +8,7 @@
 #   export DIOFANT_TEST_CLEAN_TEMP=never    : never remove the directories with the test code.
 # When a directory is not removed, the necessary information is printed on
 # screen to find the files that belong to the (failed) tests. If a test does
-# not fail, py.test captures all the output and you will not see the directories
+# not fail, pytest captures all the output and you will not see the directories
 # corresponding to the successful tests. Use the --nocapture option to see all
 # the output.
 

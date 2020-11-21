@@ -170,7 +170,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
     """Class to denote a base dyadic tensor component."""
 
     def __new__(cls, vector1, vector2):
-        from .vector import Vector, BaseVector, VectorZero
+        from .vector import BaseVector, Vector, VectorZero
 
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \

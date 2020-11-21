@@ -1,9 +1,6 @@
-from strategies import condition, do_one, exhaust
-from strategies.core import typed
-from strategies.traverse import bottom_up
-
 from ...core import Add, Expr, Integer, sympify
-from ...core.strategies import unpack
+from ...core.strategies import (bottom_up, condition, do_one, exhaust, typed,
+                                unpack)
 from ...logic import false
 from ...utilities import sift
 from .determinant import Determinant
@@ -97,6 +94,7 @@ class BlockMatrix(MatrixExpr):
 
     def _eval_transpose(self):
         from .. import Matrix
+
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy

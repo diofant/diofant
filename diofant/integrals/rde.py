@@ -21,8 +21,8 @@ See Chapter 6 of "Symbolic Integration I: Transcendental Functions" by
 Manuel Bronstein.  See also the docstring of risch.py.
 """
 
-from functools import reduce
-from operator import mul
+import functools
+import operator
 
 from ..core import Dummy, oo
 from ..domains import ZZ
@@ -125,8 +125,9 @@ def weak_normalizer(a, d, DE, z=None):
 
     N = [i for i in r.real_roots() if i in ZZ and i > 0]
 
-    q = reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
-               Poly(1, DE.t))
+    q = functools.reduce(operator.mul,
+                         [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
+                         Poly(1, DE.t))
     q = q.monic()
 
     dq = derivation(q, DE)
@@ -190,6 +191,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
     This constitutes step 2 of the outline given in the rde.py docstring.
     """
     from .prde import parametric_log_deriv
+
     # TODO: finish writing this and write tests
 
     if case == 'auto':
@@ -270,8 +272,9 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
 
     This constitutes step 3 of the outline given in the rde.py docstring.
     """
-    from .prde import (parametric_log_deriv, limited_integrate,
-                       is_log_deriv_k_t_radical_in_field)
+    from .prde import (is_log_deriv_k_t_radical_in_field, limited_integrate,
+                       parametric_log_deriv)
+
     # TODO: finish writing this and write tests
 
     if case == 'auto':

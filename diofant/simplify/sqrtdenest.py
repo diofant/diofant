@@ -1,10 +1,9 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
                     expand_mul, factor_terms, ilcm, sympify)
-from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import log, root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
-from ..utilities import default_sort_key
+from ..utilities import default_sort_key, ordered
 from .powsimp import powdenest
 
 
@@ -253,7 +252,7 @@ def _sqrtdenest_rec(expr):
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
 
     """
-    from .radsimp import radsimp, rad_rationalize, split_surds
+    from .radsimp import rad_rationalize, radsimp, split_surds
     if not expr.is_Pow:
         return sqrtdenest(expr)
     if expr.base < 0:
@@ -471,7 +470,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
 
     """
-    from .radsimp import radsimp, rad_rationalize
+    from .radsimp import rad_rationalize, radsimp
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
         return
     for x in (a, b, r):
@@ -813,8 +812,7 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv or any(isinstance(s[x], RootOf)
-                                  for s in inv):  # pragma: no cover
+                if not inv or any(isinstance(s[x], RootOf) for s in inv):
                     raise NotImplementedError
                 eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
@@ -845,7 +843,7 @@ def unrad(eq, *syms, **flags):
                         try:
                             sol = solve(c, x, **uflags)
                             if not sol or any(isinstance(s[x], RootOf)
-                                              for s in sol):  # pragma: no cover
+                                              for s in sol):
                                 raise NotImplementedError
                             neweq = r0.subs(sol[0]) + covsym*r1/_rads1 + others
                             tmp = unrad(neweq, covsym)

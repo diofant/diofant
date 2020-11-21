@@ -63,7 +63,7 @@ For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 Also, you may want to run full set of unit tests to make
 sure everything works::
 
-    py.test --pyargs diofant
+    pytest --pyargs diofant
 
 `pytest`_ and some other packages are required for testing, so be sure to
 install the Diofant first with extra dependecies::

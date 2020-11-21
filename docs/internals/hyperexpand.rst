@@ -496,7 +496,8 @@ from above:
 Next we compute `z\frac{\mathrm{d}}{\mathrm{d}z} B_0`. For this we can
 directly use Diofant!
 
-   >>> B0 = sqrt(pi)*exp(-I*pi/4)*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4))
+   >>> B0 = (sqrt(pi)*exp(-I*pi/4) *
+   ...       fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4)))
    >>> z * diff(B0, z)
    z*(cosh(2*sqrt(z))/(4*z) - E**(-I*pi/4)*sqrt(pi)*fresnelc(2*E**(I*pi/4)*z**(1/4)/sqrt(pi))/(8*z**(5/4)))
    >>> expand(_)

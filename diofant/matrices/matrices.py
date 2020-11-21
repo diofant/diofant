@@ -1,23 +1,23 @@
 import collections
-from functools import reduce
+import functools
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, ilcm, oo, symbols, sympify)
-from ..core.compatibility import as_int, default_sort_key, is_sequence
+from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
-from ..utilities import flatten
+from ..utilities import default_sort_key, flatten
 
 
 def _iszero(x):
     """Returns True if x is zero."""
     r = x.equals(0)
-    if r is None:  # pragma: no cover
+    if r is None:
         raise NotImplementedError(f'Zero-decision problem for {x}')
     return r
 
@@ -488,8 +488,8 @@ class MatrixBase(DefaultPrinting):
                 return NotImplemented
             alst = A.tolist()
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
-                                      reduce(lambda k, l: k + l,
-                                             [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
+                                      functools.reduce(lambda k, l: k + l,
+                                                       [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
         else:
             return self._new(self.rows, self.cols,
                              [i*other for i in self._mat])
@@ -500,8 +500,8 @@ class MatrixBase(DefaultPrinting):
         return self._new(self.rows, self.cols, [a*i for i in self._mat])
 
     def __pow__(self, num):
-        from . import eye, diag, MutableMatrix
         from ..functions import binomial
+        from . import MutableMatrix, diag, eye
 
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -1557,7 +1557,7 @@ class MatrixBase(DefaultPrinting):
             # normalize it
             R[j, j] = tmp.norm()
             Q[:, j] = tmp / R[j, j]
-            if Q[:, j].norm() != 1:  # pragma: no cover
+            if Q[:, j].norm() != 1:
                 raise NotImplementedError("Couldn't normalize the "
                                           f'vector {j:d}.')
             for i in range(j):
@@ -1894,6 +1894,7 @@ class MatrixBase(DefaultPrinting):
                 res = exp(l)
             else:
                 from . import eye
+
                 # extract the diagonal part
                 d = b[0, 0]*eye(nr)
                 # and the nilpotent part
@@ -2707,7 +2708,7 @@ class MatrixBase(DefaultPrinting):
                     if simplify:
                         v = simpfunc(v)
                     if v:
-                        if j in pivots:  # pragma: no cover
+                        if j in pivots:
                             # XXX: Is this the correct error?
                             raise NotImplementedError("Couldn't compute the "
                                                       'nullspace of `self`.')
@@ -3722,7 +3723,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         _cls = type(args[0])
-        return reduce(_cls.row_join, args)
+        return functools.reduce(_cls.row_join, args)
 
     @classmethod
     def vstack(cls, *args):
@@ -3741,7 +3742,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         _cls = type(args[0])
-        return reduce(_cls.col_join, args)
+        return functools.reduce(_cls.col_join, args)
 
     def row_join(self, rhs):
         """Concatenates two matrices along self's last and rhs's first column

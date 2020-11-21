@@ -19,12 +19,12 @@ from .orthopolys import chebyshevt_poly
 from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
-                        parallel_poly_from_expr, poly_from_expr, resultant)
+                        parallel_poly_from_expr, resultant)
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 
 
-__all__ = ('minimal_polynomial', 'primitive_element', 'field_isomorphism')
+__all__ = 'minimal_polynomial', 'primitive_element', 'field_isomorphism'
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -241,7 +241,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
 def _invertx(p, x):
     """Returns ``expand_mul(x**degree(p, x)*p.subs({x: 1/x}))``."""
-    p1 = poly_from_expr(p, x)[0]
+    (p1,) = parallel_poly_from_expr((p,), x)[0]
 
     n = degree(p1)
     a = [c * x**(n - i) for (i,), c in p1.terms()]
@@ -250,7 +250,7 @@ def _invertx(p, x):
 
 def _muly(p, x, y):
     """Returns ``_mexpand(y**deg*p.subs({x:x / y}))``."""
-    p1 = poly_from_expr(p, x)[0]
+    (p1,) = parallel_poly_from_expr((p,), x)[0]
 
     n = degree(p1)
     a = [c * x**i * y**(n - i) for (i,), c in p1.terms()]
@@ -652,7 +652,7 @@ def minpoly_groebner(ex, x, domain):
         n, d = bottom_up_scan(ex), Integer(1)
 
     F = [d*x - n] + list(mapping.values())
-    G = groebner(F, list(symbols.values()) + [x], order='lex', domain=domain)
+    G = groebner(F, *(list(symbols.values()) + [x]), order='lex', domain=domain)
 
     return G[-1]  # by construction G[-1] has root `ex`
 
@@ -681,7 +681,7 @@ def primitive_element(extension, **args):
         coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
 
-        *H, g = groebner(F + [f], Y + [x], domain=domain)
+        *H, g = groebner(F + [f], *(Y + [x]), domain=domain)
 
         for i, (h, y) in enumerate(zip(H, Y)):
             H[i] = (y - h).eject(*Y).retract(field=True)
@@ -754,7 +754,7 @@ def field_isomorphism_factor(a, b):
             root = -f.rep.coeff((0,))/f.rep.coeff((1,))
 
             if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
-                return root.rep.to_dense()
+                return root.rep.all_coeffs()
 
 
 def field_isomorphism(a, b, **args):
@@ -763,7 +763,7 @@ def field_isomorphism(a, b, **args):
         raise ValueError(f'Arguments should be algebraic fields, got {a} and {b}')
 
     if a == b:
-        return a.unit.rep.to_dense()
+        return a.unit.rep.all_coeffs()
 
     n = a.minpoly.degree()
     m = b.minpoly.degree()

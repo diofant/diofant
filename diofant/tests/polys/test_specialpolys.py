@@ -48,7 +48,6 @@ def test_symmetric_poly():
     pytest.raises(ValueError, lambda: symmetric_poly(5, x, y, z))
 
     assert symmetric_poly(1, x, y, z, polys=True) == Poly(x + y + z)
-    assert symmetric_poly(1, (x, y, z), polys=True) == Poly(x + y + z)
 
     assert symmetric_poly(0, x, y, z) == 1
     assert symmetric_poly(1, x, y, z) == x + y + z

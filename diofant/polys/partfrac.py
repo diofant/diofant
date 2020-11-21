@@ -313,7 +313,7 @@ def apart_list(f, x=None, dummies=None, **options):
     options = set_defaults(options, extension=True)
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
-    if P.is_multivariate:  # pragma: no cover
+    if P.is_multivariate:
         raise NotImplementedError('multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
@@ -449,7 +449,8 @@ def assemble_partfrac_list(partial_list):
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
     >>> a = Dummy('a')
-    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)],
+    ...                         Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))

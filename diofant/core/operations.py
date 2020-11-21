@@ -1,6 +1,6 @@
+from ..utilities import ordered
 from .basic import _aresame
 from .cache import cacheit
-from .compatibility import ordered
 from .evaluate import global_evaluate
 from .expr import Expr
 from .sympify import sympify
@@ -291,9 +291,9 @@ class AssocOp(Expr):
 
         """
         from .add import Add
+        from .function import AppliedUndef
         from .mul import Mul
         from .symbol import Symbol
-        from .function import AppliedUndef
 
         if isinstance(self, (Mul, Add)):
             x, tail = self.as_independent(Symbol, AppliedUndef)

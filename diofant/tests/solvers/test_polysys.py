@@ -256,8 +256,7 @@ def test_solve_biquadratic():
                                             {x: -sqrt(29)/2 - Rational(1, 2),
                                              y: Rational(-9, 2) - sqrt(29)/2}]
 
-
-def test_solve_sympyissue_6785():
+    # issue sympy/sympy#6785
     roots = solve_poly_system([((x - 5)**2/250000 +
                                 (y - Rational(5, 10))**2/250000) - 1, x],
                               x, y)
@@ -297,8 +296,8 @@ def test_sympyissue_16038():
             (7*y - 10*z)**2 + (8*y - z)**2 + (10*y - 9*z)**2 - 474,
             (-10*x + 10*z)**2 + (-5*x + 9*z)**2 + (-2*x + z)**2 - 885]
 
-    sols1 = solve_poly_system(sys1, (x, y, z))
-    sols2 = solve_poly_system(sys2, (x, y, z))
+    sols1 = solve_poly_system(sys1, x, y, z)
+    sols2 = solve_poly_system(sys2, x, y, z)
 
     assert len(sols1) == len(sols2) == 8
     assert {x: -1, y: -2, z: -3} in sols1

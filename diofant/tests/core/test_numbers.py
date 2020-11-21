@@ -1,5 +1,6 @@
 import decimal
 import fractions
+import sys
 from math import sqrt as _sqrt
 
 import mpmath
@@ -629,7 +630,20 @@ def test_Infinity():
     e = (I + cos(1)**2 + sin(1)**2 - 1)
     assert oo**e == Pow(oo, e, evaluate=False)
 
+    # issue sympy/sympy#10020
+    assert oo**I is nan
+    assert oo**(1 + I) is zoo
+    assert oo**(-1 + I) is Integer(0)
+    assert (-oo)**I is nan
+    assert (-oo)**(-1 + I) is Integer(0)
+    assert oo**t == Pow(oo, t, evaluate=False)
+    assert (-oo)**t == Pow(-oo, t, evaluate=False)
 
+    # issue sympy/sympy#7742
+    assert -oo % 1 == nan
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 9), reason='Broken on 3.9')
 def test_Infinity_2():
     x = Symbol('x')
     assert oo*x != oo
@@ -1461,10 +1475,6 @@ def test_latex():
     assert latex(I) == r'i'
 
 
-def test_sympyissue_7742():
-    assert -oo % 1 == nan
-
-
 def test_Float_idempotence():
     x = Float('1.23')
     y = Float(x)
@@ -1494,16 +1504,6 @@ def test_comp():
 
 def test_sympyissue_10063():
     assert 2**Float(3) == Float(8)
-
-
-def test_sympyissue_10020():
-    assert oo**I is nan
-    assert oo**(1 + I) is zoo
-    assert oo**(-1 + I) is Integer(0)
-    assert (-oo)**I is nan
-    assert (-oo)**(-1 + I) is Integer(0)
-    assert oo**t == Pow(oo, t, evaluate=False)
-    assert (-oo)**t == Pow(-oo, t, evaluate=False)
 
 
 def test_invert_numbers():

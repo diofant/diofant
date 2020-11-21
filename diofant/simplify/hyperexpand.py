@@ -64,7 +64,6 @@ from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
                     Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
                     sympify, zoo)
-from ..core.compatibility import default_sort_key
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
                          exp_polar, expint, factorial, floor, fresnelc,
@@ -77,10 +76,10 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_power1, HyperRep_power2,
                                        HyperRep_sinasin, HyperRep_sqrts1,
                                        HyperRep_sqrts2, hyper, meijerg)
-from ..polys import Poly, poly
+from ..polys import Poly, cancel
 from ..printing import sstr
 from ..series import residue
-from ..utilities.iterables import sift
+from ..utilities import default_sort_key, sift
 from .powsimp import powdenest
 from .simplify import simplify
 
@@ -467,9 +466,7 @@ def make_simp(z):
 
     def simp(expr):
         """Efficiently simplify the rational function ``expr``."""
-        numer, denom = expr.as_numer_denom()
-        c, numer, denom = poly(numer, z).cancel(poly(denom, z))
-        return c * numer.as_expr() / denom.as_expr()
+        return cancel(expr, z)
 
     return simp
 
@@ -1529,14 +1526,16 @@ def devise_plan(target, origin, z):
 
     A slightly more complicated plan:
 
-    >>> for i in devise_plan(Hyper_Function((1, 3), ()), Hyper_Function((2, 2), ()), z):
+    >>> for i in devise_plan(Hyper_Function((1, 3), ()),
+    ...                      Hyper_Function((2, 2), ()), z):
     ...     i
     <Increment upper 2.>
     <Decrement upper index #0 of [2, 2], [].>
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
-    >>> for i in devise_plan(Hyper_Function([1, -1], [2]), Hyper_Function([3, -2], [4]), z):
+    >>> for i in devise_plan(Hyper_Function([1, -1], [2]),
+    ...                      Hyper_Function([3, -2], [4]), z):
     ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>
@@ -1860,7 +1859,7 @@ def build_hypergeometric_formula(func):
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.
     # I'm not aware of a basis that works in all cases.
-    from ..matrices import zeros, Matrix, eye
+    from ..matrices import Matrix, eye, zeros
     z = Dummy('z')
     if func.ap:
         afactors = [_x + a for a in func.ap]

@@ -4,13 +4,8 @@ from ..polys.polyerrors import GeneratorsError
 from .domain import Domain
 
 
-__all__ = 'CompositeDomain',
-
-
 class CompositeDomain(Domain):
     """Base class for composite domains, e.g. ZZ[x], ZZ(X)."""
-
-    is_Composite = True
 
     gens, ngens, symbols, domain = [None]*4
 

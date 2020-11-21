@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 from ..core import Basic, Dict, sympify
-from ..core.compatibility import as_int, default_sort_key
+from ..core.compatibility import as_int
 from ..functions import bell
 from ..matrices import zeros
 from ..sets import FiniteSet
-from ..utilities import flatten, group, has_dups
+from ..utilities import default_sort_key, flatten, group, has_dups
 
 
 class Partition(FiniteSet):

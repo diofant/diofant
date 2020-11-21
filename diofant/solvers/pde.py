@@ -33,8 +33,8 @@ more information on each (run help(pde)):
 
 """
 
+import functools
 import operator
-from functools import reduce
 from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
@@ -42,7 +42,7 @@ from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
 from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
-from ..polys import lcm_list
+from ..polys import lcm
 from ..simplify import collect, simplify
 from ..utilities import filldedent, has_dups
 from .deutils import _desolve, _preprocess, ode_order
@@ -255,7 +255,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     """
     prep = kwargs.pop('prep', True)
 
-    if func and len(func.args) != 2:  # pragma: no cover
+    if func and len(func.args) != 2:
         raise NotImplementedError('Right now only partial '
                                   'differential equations of two '
                                   'variables are supported')
@@ -518,7 +518,8 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
                   d               d
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
                   dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'), use_unicode=False)
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'),
+        ...        use_unicode=False)
                   /         /          b*x + c*y
                   |         |              /
                   |         |             |
@@ -782,9 +783,9 @@ def pde_separate(eq, fun, sep, strategy='mul'):
             subs_args.append(s.args[j])
 
     if do_add:
-        functions = reduce(operator.add, sep)
+        functions = functools.reduce(operator.add, sep)
     else:
-        functions = reduce(operator.mul, sep)
+        functions = functools.reduce(operator.mul, sep)
 
     # Check whether variables match
     if len(subs_args) != len(orig_args):
@@ -878,7 +879,7 @@ def _separate(eq, dep, others):
         if sep.has(*others):
             return
         div.add(ext)
-    div = lcm_list(div)
+    div = functools.reduce(lcm, div)
     eq = Add(*[simplify(t/div) for t in eq.args])
 
     # SECOND PASS - separate the derivatives
@@ -898,7 +899,7 @@ def _separate(eq, dep, others):
         div.add(sep)
         rhs -= term.expand()
     # Do the division
-    fulldiv = reduce(operator.add, div)
+    fulldiv = functools.reduce(operator.add, div)
     lhs = simplify(lhs/fulldiv).expand()
     rhs = simplify(rhs/fulldiv).expand()
     # ...and check whether we were successful :)

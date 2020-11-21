@@ -1,5 +1,7 @@
 """Tests for user-friendly public interface to polynomial functions."""
 
+import functools
+
 import pytest
 
 from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
@@ -11,12 +13,11 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      PolificationFailed, Poly, PolynomialError, PurePoly,
                      Rational, RealField, RootOf, Sum, Symbol, Tuple,
                      UnificationFailed, cancel, cofactors, compose, content,
-                     count_roots, decompose, degree, degree_list, diff,
-                     discriminant, div, exp, expand, exquo, factor,
-                     factor_list, false, gcd, gcd_list, gcdex, grevlex, grlex,
-                     groebner, half_gcdex, im, invert, lcm, lcm_list, lex,
-                     monic, nroots, oo, parallel_poly_from_expr, pi, poly,
-                     prem, primitive, quo, re, real_roots, reduced, rem,
+                     count_roots, decompose, degree, diff, discriminant, div,
+                     exp, expand, exquo, factor, factor_list, false, gcd,
+                     gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
+                     lcm, lex, monic, nroots, oo, parallel_poly_from_expr, pi,
+                     poly, prem, primitive, quo, re, real_roots, reduced, rem,
                      resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
                      subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
@@ -38,36 +39,36 @@ def test_Poly_from_dict():
     K = FF(3)
 
     assert Poly.from_dict({0: 1, 1: 2}, gens=x,
-                          domain=K).rep.to_dense() == [K(2), K(1)]
+                          domain=K).rep.all_coeffs() == [K(2), K(1)]
     assert Poly.from_dict({0: 1, 1: 5}, gens=x,
-                          domain=K).rep.to_dense() == [K(2), K(1)]
+                          domain=K).rep.all_coeffs() == [K(2), K(1)]
 
     assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
-                          domain=K).rep.to_dense() == [K(2), K(1)]
+                          domain=K).rep.all_coeffs() == [K(2), K(1)]
     assert Poly.from_dict({(0,): 1, (1,): 5}, gens=x,
-                          domain=K).rep.to_dense() == [K(2), K(1)]
+                          domain=K).rep.all_coeffs() == [K(2), K(1)]
 
-    assert Poly.from_dict({(0, 0): 1, (1, 1): 2}, gens=(x, y),
-                          domain=K).rep.to_dense() == [[K(2), K(0)], [K(1)]]
+    assert dict(Poly.from_dict({(0, 0): 1, (1, 1): 2}, gens=(x, y),
+                               domain=K).rep) == {(0, 0): K(1), (1, 1): K(2)}
 
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x).rep.all_coeffs() == [ZZ(2), ZZ(1)]
     assert Poly.from_dict({0: 1, 1: 2}, gens=x,
-                          field=True).rep.to_dense() == [QQ(2), QQ(1)]
+                          field=True).rep.all_coeffs() == [QQ(2), QQ(1)]
 
     assert Poly.from_dict({0: 1, 1: 2}, gens=x,
-                          domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
+                          domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
     assert Poly.from_dict({0: 1, 1: 2}, gens=x,
-                          domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
+                          domain=QQ).rep.all_coeffs() == [QQ(2), QQ(1)]
 
     assert Poly.from_dict({(0,): 1, (1,): 2},
-                          gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
+                          gens=x).rep.all_coeffs() == [ZZ(2), ZZ(1)]
     assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
-                          field=True).rep.to_dense() == [QQ(2), QQ(1)]
+                          field=True).rep.all_coeffs() == [QQ(2), QQ(1)]
 
     assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
-                          domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
+                          domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
     assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
-                          domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
+                          domain=QQ).rep.all_coeffs() == [QQ(2), QQ(1)]
 
     assert Poly.from_dict({(1,): sin(y)}, gens=x, composite=False) == \
         Poly(sin(y)*x, x, domain='EX')
@@ -85,17 +86,17 @@ def test_Poly_from_dict():
 def test_Poly_from_list():
     K = FF(3)
 
-    assert Poly.from_list([2, 1], gens=x, domain=K).rep.to_dense() == [K(2), K(1)]
-    assert Poly.from_list([5, 1], gens=x, domain=K).rep.to_dense() == [K(2), K(1)]
+    assert Poly.from_list([2, 1], gens=x, domain=K).rep.all_coeffs() == [K(2), K(1)]
+    assert Poly.from_list([5, 1], gens=x, domain=K).rep.all_coeffs() == [K(2), K(1)]
 
-    assert Poly.from_list([2, 1], gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
-    assert Poly.from_list([2, 1], gens=x, field=True).rep.to_dense() == [QQ(2), QQ(1)]
+    assert Poly.from_list([2, 1], gens=x).rep.all_coeffs() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], gens=x, field=True).rep.all_coeffs() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([2, 1], gens=x, domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
-    assert Poly.from_list([2, 1], gens=x, domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
+    assert Poly.from_list([2, 1], gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], gens=x, domain=QQ).rep.all_coeffs() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([0, 1.0], gens=x).rep.to_dense() == [RR(1.0)]
-    assert Poly.from_list([1.0, 0], gens=x).rep.to_dense() == [RR(1.0), RR(0.0)]
+    assert Poly.from_list([0, 1.0], gens=x).rep.all_coeffs() == [RR(1.0)]
+    assert Poly.from_list([1.0, 0], gens=x).rep.all_coeffs() == [RR(1.0), RR(0.0)]
 
     pytest.raises(MultivariatePolynomialError, lambda: Poly.from_list([[]], gens=(x, y)))
     pytest.raises(GeneratorsError, lambda: Poly.from_list([x, 1], gens=(x,)))
@@ -109,14 +110,14 @@ def test_Poly_from_poly():
     K = FF(3)
 
     assert Poly.from_poly(f) == f
-    assert Poly.from_poly(f, domain=K).rep.to_dense() == [K(1), K(1)]
-    assert Poly.from_poly(f, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(7)]
-    assert Poly.from_poly(f, domain=QQ).rep.to_dense() == [QQ(1), QQ(7)]
+    assert Poly.from_poly(f, domain=K).rep.all_coeffs() == [K(1), K(1)]
+    assert Poly.from_poly(f, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(7)]
+    assert Poly.from_poly(f, domain=QQ).rep.all_coeffs() == [QQ(1), QQ(7)]
 
     assert Poly.from_poly(f, gens=x) == f
-    assert Poly.from_poly(f, gens=x, domain=K).rep.to_dense() == [K(1), K(1)]
-    assert Poly.from_poly(f, gens=x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(7)]
-    assert Poly.from_poly(f, gens=x, domain=QQ).rep.to_dense() == [QQ(1), QQ(7)]
+    assert Poly.from_poly(f, gens=x, domain=K).rep.all_coeffs() == [K(1), K(1)]
+    assert Poly.from_poly(f, gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(7)]
+    assert Poly.from_poly(f, gens=x, domain=QQ).rep.all_coeffs() == [QQ(1), QQ(7)]
 
     assert Poly.from_poly(f, gens=y) == Poly(x + 7, y, domain='ZZ[x]')
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(f, gens=y, domain=K))
@@ -134,21 +135,21 @@ def test_Poly_from_poly():
     K = FF(2)
 
     assert Poly.from_poly(g) == g
-    assert Poly.from_poly(g, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(2)]
+    assert Poly.from_poly(g, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(2)]
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, domain=QQ))
-    assert Poly.from_poly(g, domain=K).rep.to_dense() == [K(1), K(0)]
+    assert Poly.from_poly(g, domain=K).rep.all_coeffs() == [K(1), K(0)]
 
     assert Poly.from_poly(g, gens=x) == g
-    assert Poly.from_poly(g, gens=x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(2)]
+    assert Poly.from_poly(g, gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(2)]
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, gens=x, domain=QQ))
-    assert Poly.from_poly(g, gens=x, domain=K).rep.to_dense() == [K(1), K(0)]
+    assert Poly.from_poly(g, gens=x, domain=K).rep.all_coeffs() == [K(1), K(0)]
 
     K = FF(3)
 
     assert Poly.from_poly(h) == h
-    assert Poly.from_poly(h, domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
-    assert Poly.from_poly(h, domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
-    assert Poly.from_poly(h, domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
+    assert dict(Poly.from_poly(h, domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
+    assert dict(Poly.from_poly(h, domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
+    assert dict(Poly.from_poly(h, domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
     assert Poly.from_poly(h, gens=x) == Poly(x + y, x, domain=ZZ.inject(y))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=x, domain=ZZ))
@@ -169,25 +170,25 @@ def test_Poly_from_poly():
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=y, modulus=3))
 
     assert Poly.from_poly(h, gens=(x, y)) == h
-    assert Poly.from_poly(h, gens=(x, y),
-                          domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
-    assert Poly.from_poly(h, gens=(x, y),
-                          domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
-    assert Poly.from_poly(h, gens=(x, y),
-                          domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
+    assert dict(Poly.from_poly(h, gens=(x, y),
+                               domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
+    assert dict(Poly.from_poly(h, gens=(x, y),
+                               domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
+    assert dict(Poly.from_poly(h, gens=(x, y),
+                               domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
-    assert Poly.from_poly(h, gens=(y, x)).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
-    assert Poly.from_poly(h, gens=(y, x),
-                          domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
-    assert Poly.from_poly(h, gens=(y, x),
-                          domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
-    assert Poly.from_poly(h, gens=(y, x),
-                          domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
+    assert dict(Poly.from_poly(h, gens=(y, x)).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
+    assert dict(Poly.from_poly(h, gens=(y, x),
+                               domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
+    assert dict(Poly.from_poly(h, gens=(y, x),
+                               domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
+    assert dict(Poly.from_poly(h, gens=(y, x),
+                               domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
-    assert Poly.from_poly(h, gens=(x, y),
-                          field=True).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
-    assert Poly.from_poly(h, gens=(x, y),
-                          field=True).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
+    assert dict(Poly.from_poly(h, gens=(x, y),
+                               field=True).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
+    assert dict(Poly.from_poly(h, gens=(x, y),
+                               field=True).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
 
 
 def test_Poly_from_expr():
@@ -196,29 +197,29 @@ def test_Poly_from_expr():
 
     F3 = FF(3)
 
-    assert Poly.from_expr(x + 5, domain=F3).rep.to_dense() == [F3(1), F3(2)]
-    assert Poly.from_expr(y + 5, domain=F3).rep.to_dense() == [F3(1), F3(2)]
+    assert Poly.from_expr(x + 5, domain=F3).rep.all_coeffs() == [F3(1), F3(2)]
+    assert Poly.from_expr(y + 5, domain=F3).rep.all_coeffs() == [F3(1), F3(2)]
 
-    assert Poly.from_expr(x + 5, x, domain=F3).rep.to_dense() == [F3(1), F3(2)]
-    assert Poly.from_expr(y + 5, y, domain=F3).rep.to_dense() == [F3(1), F3(2)]
+    assert Poly.from_expr(x + 5, x, domain=F3).rep.all_coeffs() == [F3(1), F3(2)]
+    assert Poly.from_expr(y + 5, y, domain=F3).rep.all_coeffs() == [F3(1), F3(2)]
 
-    assert Poly.from_expr(x + y, domain=F3).rep.to_dense() == [[F3(1)], [F3(1), F3(0)]]
-    assert Poly.from_expr(x + y, x, y, domain=F3).rep.to_dense() == [[F3(1)], [F3(1), F3(0)]]
+    assert dict(Poly.from_expr(x + y, domain=F3).rep) == {(1, 0): F3(1), (0, 1): F3(1)}
+    assert dict(Poly.from_expr(x + y, x, y, domain=F3).rep) == {(1, 0): F3(1), (0, 1): F3(1)}
 
-    assert Poly.from_expr(x + 5).rep.to_dense() == [ZZ(1), ZZ(5)]
-    assert Poly.from_expr(y + 5).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(x + 5).rep.all_coeffs() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5).rep.all_coeffs() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x).rep.to_dense() == [ZZ(1), ZZ(5)]
-    assert Poly.from_expr(y + 5, y).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(x + 5, x).rep.all_coeffs() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, y).rep.all_coeffs() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
-    assert Poly.from_expr(y + 5, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(x + 5, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
-    assert Poly.from_expr(y + 5, y, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(x + 5, x, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, y, domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x, y, domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(5)]]
-    assert Poly.from_expr(y + 5, x, y, domain=ZZ).rep.to_dense() == [[ZZ(1), ZZ(5)]]
+    assert dict(Poly.from_expr(x + 5, x, y, domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 0): ZZ(5)}
+    assert dict(Poly.from_expr(y + 5, x, y, domain=ZZ).rep) == {(0, 1): ZZ(1), (0, 0): ZZ(5)}
 
 
 def test_Poly__new__():
@@ -244,8 +245,14 @@ def test_Poly__new__():
     pytest.raises(OptionError, lambda: Poly(x + 2, x, domain=ZZ, greedy=False))
     pytest.raises(OptionError, lambda: Poly(x + 2, x, domain=QQ, field=False))
 
-    pytest.raises(NotImplementedError, lambda: Poly(x + 1, x, modulus=3, order='grlex'))
-    pytest.raises(NotImplementedError, lambda: Poly(x + 1, x, order='grlex'))
+    f = Poly(x + 1, x, modulus=3, order='grlex')
+
+    assert f.get_modulus() == 3
+    assert f.rep.ring.order == grlex
+
+    f = Poly(x + 1, x, order='grlex')
+
+    assert f.rep.ring.order == grlex
 
     pytest.raises(GeneratorsNeeded, lambda: Poly({1: 2, 0: 1}))
     pytest.raises(GeneratorsNeeded, lambda: Poly([2, 1]))
@@ -270,7 +277,7 @@ def test_Poly__new__():
     assert Poly(3*x**2 + 2*x + 1, domain='QQ').all_coeffs() == [3, 2, 1]
     assert Poly(3*x**2 + 2*x + 1, domain='RR').all_coeffs() == [3.0, 2.0, 1.0]
 
-    pytest.raises(CoercionFailed, lambda: Poly(3*x**2/5 + 2*x/5 + 1, domain='ZZ'))
+    pytest.raises(CoercionFailed, lambda: Poly(3*x**2/5 + 2*x/5 + 1, x, domain='ZZ'))
     assert Poly(
         3*x**2/5 + 2*x/5 + 1, domain='QQ').all_coeffs() == [Rational(3, 5), Rational(2, 5), 1]
     assert _epsilon_eq(
@@ -281,7 +288,7 @@ def test_Poly__new__():
     assert Poly(
         3.0*x**2 + 2.0*x + 1, domain='RR').all_coeffs() == [3.0, 2.0, 1.0]
 
-    pytest.raises(CoercionFailed, lambda: Poly(3.1*x**2 + 2.1*x + 1, domain='ZZ'))
+    pytest.raises(CoercionFailed, lambda: Poly(3.1*x**2 + 2.1*x + 1, x, domain='ZZ'))
     assert Poly(3.1*x**2 + 2.1*x + 1, domain='QQ').all_coeffs() == [Rational(31, 10), Rational(21, 10), 1]
     assert Poly(3.1*x**2 + 2.1*x + 1, domain='RR').all_coeffs() == [3.1, 2.1, 1.0]
 
@@ -344,16 +351,6 @@ def test_Poly__gens():
 
     assert Poly((x - p)*(x - q), wrt='p', sort='q > x').gens == (p, q, x)
     assert Poly((x - p)*(x - q), wrt='q', sort='p > x').gens == (q, p, x)
-
-
-def test_Poly_zero():
-    assert Poly(x).zero == Poly(0, x, domain=ZZ)
-    assert Poly(x/2).zero == Poly(0, x, domain=QQ)
-
-
-def test_Poly_one():
-    assert Poly(x).one == Poly(1, x, domain=ZZ)
-    assert Poly(x/2).one == Poly(1, x, domain=QQ)
 
 
 def test_Poly_unify():
@@ -536,7 +533,8 @@ def test_Poly_domain():
 
     assert Poly(x/2).domain == QQ
 
-    pytest.raises(CoercionFailed, lambda: Poly(x/2, domain='ZZ'))
+    assert Poly(x/2, domain='ZZ') == Poly({(1, 1): 1}, x, Rational(1, 2),
+                                          domain='ZZ')
     assert Poly(x/2, domain='QQ').domain == QQ
 
     assert isinstance(Poly(0.2*x).domain, RealField)
@@ -663,6 +661,12 @@ def test_Poly_pow():
     assert Poly(x*y, x, y)**2 == Poly(x**2*y**2, x, y)
     assert Poly(x - 2, x)**2 == Poly(x**2 - 4*x + 4, x)
 
+    f, g = Poly(x**3 + x - 1), Poly(x**3 + 1)
+    r = pow(f, 3, g)
+
+    assert r == f**3 % g
+    assert r == Poly(-6*x**2 + 12*x - 9)
+
 
 def test_Poly_divmod():
     f, g = Poly(x**2), Poly(x)
@@ -730,12 +734,6 @@ def test_Poly_properties():
 
     assert Poly(x - 1, x).is_squarefree is True
     assert Poly((x - 1)**2, x).is_squarefree is False
-
-    assert Poly(x - 1, x).is_monic is True
-    assert Poly(2*x - 1, x).is_monic is False
-
-    assert Poly(3*x + 2, x).is_primitive is True
-    assert Poly(4*x + 2, x).is_primitive is False
 
     assert Poly(1, x).is_ground is True
     assert Poly(x, x).is_ground is False
@@ -1124,24 +1122,22 @@ def test_Poly_degree():
 
     pytest.raises(ComputationFailed, lambda: degree(1))
 
+    # issue sympy/sympy#20389
+    assert degree(x*(x + 1) - x**2 - x, x) == -oo
+
 
 def test_Poly_degree_list():
-    assert Poly(0, x).degree_list() == (-oo,)
-    assert Poly(0, x, y).degree_list() == (-oo, -oo)
-    assert Poly(0, x, y, z).degree_list() == (-oo, -oo, -oo)
+    assert [Poly(0, x, y).degree(_) for _ in (x, y)] == [-oo, -oo]
+    assert [Poly(0, x, y, z).degree(_) for _ in (x, y, z)] == [-oo, -oo, -oo]
 
-    assert Poly(1, x).degree_list() == (0,)
-    assert Poly(1, x, y).degree_list() == (0, 0)
-    assert Poly(1, x, y, z).degree_list() == (0, 0, 0)
+    assert [Poly(1, x, y).degree(_) for _ in (x, y)] == [0, 0]
+    assert [Poly(1, x, y, z).degree(_) for _ in (x, y, z)] == [0, 0, 0]
 
-    assert Poly(x**2*y + x**3*z**2 + 1).degree_list() == (3, 1, 2)
+    assert [Poly(x**2*y + x**3*z**2 + 1).degree(_)
+            for _ in (x, y, z)] == [3, 1, 2]
 
-    assert degree_list(1, x) == (0,)
-    assert degree_list(x, x) == (1,)
-
-    assert degree_list(x*y**2) == (1, 2)
-
-    pytest.raises(ComputationFailed, lambda: degree_list(1))
+    assert [degree(x*y**2, _) for _ in (x, y)] == [1, 2]
+    assert [degree(x**2 + y*x + 1, _) for _ in (x, y)] == [2, 1]
 
 
 def test_Poly_total_degree():
@@ -1362,14 +1358,13 @@ def test_Poly_diff():
     assert Poly(x**2*y**2 + x*y).diff(x, y) == Poly(4*x*y + 1)
     assert Poly(x**2*y**2 + x*y).diff(y, x) == Poly(4*x*y + 1)
 
-
-def test_sympyissue_9585():
+    # issue sympy/sympy#9585
     assert diff(Poly(x**2 + x)) == Poly(2*x + 1)
-    assert diff(Poly(x**2 + x), x, evaluate=False) == \
-        Derivative(Poly(x**2 + x), x)
+    assert diff(Poly(x**2 + x), x,
+                evaluate=False) == Derivative(Poly(x**2 + x), x)
     assert Derivative(Poly(x**2 + x), x).doit() == Poly(2*x + 1)
-    assert Poly(x**2 + x).diff(x, evaluate=False) == \
-        Derivative(Poly(x**2 + x), x)
+    assert Poly(x**2 +
+                x).diff(x, evaluate=False) == Derivative(Poly(x**2 + x), x)
 
 
 def test_Poly_eval():
@@ -1440,6 +1435,7 @@ def test_Poly___call__():
 
 
 def test_parallel_poly_from_expr():
+    pytest.raises(PolificationFailed, lambda: parallel_poly_from_expr([]))
     pytest.raises(PolificationFailed, lambda: parallel_poly_from_expr([[1, 2]]))
 
     assert parallel_poly_from_expr(
@@ -1508,7 +1504,6 @@ def test_prem():
 
     assert prem(f, g) == r
     assert prem(f, g, x, y) == r
-    assert prem(f, g, (x, y)) == r
     assert prem(F, G) == R
     assert prem(f, g, polys=True) == R
     assert prem(F, G, polys=False) == r
@@ -1536,11 +1531,6 @@ def test_div():
     assert rem(f, g, x, y) == r
     assert quo(f, g, x, y) == q
     assert exquo(f, g, x, y) == q
-
-    assert div(f, g, (x, y)) == (q, r)
-    assert rem(f, g, (x, y)) == r
-    assert quo(f, g, (x, y)) == q
-    assert exquo(f, g, (x, y)) == q
 
     assert div(F, G) == (Q, R)
     assert rem(F, G) == R
@@ -1649,10 +1639,6 @@ def test_gcdex():
     assert gcdex(f, g, x) == (s, t, h)
     assert invert(f, g, x) == s
 
-    assert half_gcdex(f, g, (x,)) == (s, h)
-    assert gcdex(f, g, (x,)) == (s, t, h)
-    assert invert(f, g, (x,)) == s
-
     assert half_gcdex(F, G) == (S, H)
     assert gcdex(F, G) == (S, T, H)
     assert invert(F, G) == S
@@ -1681,7 +1667,6 @@ def test_subresultants():
     assert F.subresultants(G) == [F, G, H]
     assert subresultants(f, g) == [f, g, h]
     assert subresultants(f, g, x) == [f, g, h]
-    assert subresultants(f, g, (x,)) == [f, g, h]
     assert subresultants(F, G) == [F, G, H]
     assert subresultants(f, g, polys=True) == [F, G, H]
     assert subresultants(F, G, polys=False) == [f, g, h]
@@ -1697,7 +1682,6 @@ def test_resultant():
     assert PurePoly(f).resultant(PurePoly(g)) == h
     assert resultant(f, g) == h
     assert resultant(f, g, x) == h
-    assert resultant(f, g, (x,)) == h
     assert resultant(F, G) == h
     assert resultant(f, g, polys=True) == h
     assert resultant(F, G, polys=False) == h
@@ -1711,7 +1695,6 @@ def test_resultant():
     assert F.resultant(G) == H
     assert resultant(f, g) == h
     assert resultant(f, g, x) == h
-    assert resultant(f, g, (x,)) == h
     assert resultant(F, G) == H
     assert resultant(f, g, polys=True) == H
     assert resultant(F, G, polys=False) == h
@@ -1736,7 +1719,6 @@ def test_discriminant():
     assert F.discriminant() == g
     assert discriminant(f) == g
     assert discriminant(f, x) == g
-    assert discriminant(f, (x,)) == g
     assert discriminant(F) == g
     assert discriminant(f, polys=True) == g
     assert discriminant(F, polys=False) == g
@@ -1747,7 +1729,6 @@ def test_discriminant():
     assert F.discriminant() == G
     assert discriminant(f) == g
     assert discriminant(f, x, a, b, c) == g
-    assert discriminant(f, (x, a, b, c)) == g
     assert discriminant(F) == G
     assert discriminant(f, polys=True) == G
     assert discriminant(F, polys=False) == g
@@ -1756,60 +1737,99 @@ def test_discriminant():
 
 
 def test_dispersion():
-    # We test only the API here. For more mathematical
-    # tests see the dedicated test file.
-    fp = poly((x + 1)*(x + 2), x)
-    assert sorted(fp.dispersionset()) == [0, 1]
-    assert fp.dispersion() == 1
+    pytest.raises(AttributeError, lambda: Poly(x*y).dispersionset(Poly(x)))
+    pytest.raises(ValueError, lambda: Poly(x).dispersionset(Poly(y)))
 
-    fp = poly(x**4 - 3*x**2 + 1, x)
+    fp = Poly(0, x)
+
+    assert fp.dispersionset() == {0}
+
+    fp = Poly(2, x)
+
+    assert fp.dispersionset() == {0}
+
+    fp = Poly(x + 1)
+
+    assert fp.dispersionset() == {0}
+
+    fp = Poly((x + 1)*(x + 2))
+
+    assert fp.dispersionset() == {0, 1}
+
+    fp = Poly(x**4 - 3*x**2 + 1)
     gp = fp.shift(-3)
-    assert sorted(fp.dispersionset(gp)) == [2, 3, 4]
-    assert fp.dispersion(gp) == 4
+
+    assert fp.dispersionset(gp) == {2, 3, 4}
+    assert gp.dispersionset(fp) == set()
+
+    fp = Poly(x*(x + 3))
+
+    assert fp.dispersionset() == {0, 3}
+
+    fp = Poly((x - 3)*(x + 3))
+
+    assert fp.dispersionset() == {0, 6}
+
+    fp = Poly(x**2 + 2*x - 1)
+    gp = Poly(x**2 + 2*x + 3)
+
+    assert fp.dispersionset(gp) == set()
+
+    fp = Poly(x*(3*x**2 + a)*(x - 2536)*(x**3 + a), x)
+    gp = fp.as_expr().subs({x: x - 345}).as_poly(x)
+
+    assert fp.dispersionset(gp) == {345, 2881}
+    assert gp.dispersionset(fp) == {2191}
+
+    fp = Poly((x - 2)**2*(x - 3)**3*(x - 5)**3)
+    gp = (fp + 4)**2
+
+    assert fp.dispersionset() == {0, 1, 2, 3}
+    assert fp.dispersionset(gp) == {1, 2}
+
+    fp = Poly(x*(x + 2)*(x - 1))
+
+    assert fp.dispersionset() == {0, 1, 2, 3}
+
+    fp = Poly(x**2 + sqrt(5)*x - 1, x)
+    gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
+
+    assert fp.dispersionset(gp) == {2}
+    assert gp.dispersionset(fp) == {1, 4}
+
+    # There are some difficulties if we compute over Z[a]
+    # and alpha happenes to lie in Z[a] instead of simply Z.
+    # Hence we can not decide if alpha is indeed integral
+    # in general.
+
+    fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+
+    assert fp.dispersionset() == {0, 1}
+
+    # For any specific value of a, the dispersion is 3*a
+    # but the algorithm can not find this in general.
+    # This is the point where the resultant based Ansatz
+    # is superior to the current one.
+    fp = Poly(a**2*x**3 + (a**3 + a**2 + a + 1)*x, x)
+    gp = fp.as_expr().subs({x: x - 3*a}).as_poly(x)
+
+    assert fp.dispersionset(gp) == set()
+
+    fpa = fp.as_expr().subs({a: 2}).as_poly(x)
+    gpa = gp.as_expr().subs({a: 2}).as_poly(x)
+
+    assert fpa.dispersionset(gpa) == {6}
 
 
-def test_gcd_list():
+def test_lcm():
     F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
 
-    assert gcd_list(F) == x - 1
-    assert gcd_list(F, polys=True) == Poly(x - 1)
+    assert functools.reduce(lcm, F) == x**5 - x**4 - 2*x**3 - x**2 + x + 2
+    assert functools.reduce(lambda x, y: lcm(x, y, polys=True),
+                            F) == Poly(x**5 - x**4 - 2*x**3 - x**2 + x + 2)
 
-    assert gcd_list([]) == 0
-    assert gcd_list([1, 2]) == 1
-    assert gcd_list([4, 6, 8]) == 2
-
-    assert gcd_list([x*(y + 42) - x*y - x*42]) == 0
-
-    gcd = gcd_list([], x)
-    assert gcd.is_Number and gcd is Integer(0)
-
-    gcd = gcd_list([], x, polys=True)
-    assert gcd.is_Poly and gcd.is_zero
-
-    pytest.raises(ComputationFailed, lambda: gcd_list([], polys=True))
-
-    assert gcd_list([x**3 - 1, x**2 - 2, x**2 - 3*x + 2]) == 1
-
-
-def test_lcm_list():
-    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
-
-    assert lcm_list(F) == x**5 - x**4 - 2*x**3 - x**2 + x + 2
-    assert lcm_list(F, polys=True) == Poly(x**5 - x**4 - 2*x**3 - x**2 + x + 2)
-
-    assert lcm_list([]) == 1
-    assert lcm_list([1, 2]) == 2
-    assert lcm_list([4, 6, 8]) == 24
-
-    assert lcm_list([x*(y + 42) - x*y - x*42]) == 0
-
-    lcm = lcm_list([], x)
-    assert lcm.is_Number and lcm is Integer(1)
-
-    lcm = lcm_list([], x, polys=True)
-    assert lcm.is_Poly and lcm.is_one
-
-    pytest.raises(ComputationFailed, lambda: lcm_list([], polys=True))
+    assert lcm(1, 2) == 2
+    assert functools.reduce(lcm, [4, 6, 8]) == 24
 
 
 def test_gcd():
@@ -1830,10 +1850,6 @@ def test_gcd():
     assert cofactors(f, g, x) == (h, s, t)
     assert gcd(f, g, x) == h
     assert lcm(f, g, x) == r
-
-    assert cofactors(f, g, (x,)) == (h, s, t)
-    assert gcd(f, g, (x,)) == h
-    assert lcm(f, g, (x,)) == r
 
     assert cofactors(F, G) == (H, S, T)
     assert gcd(F, G) == H
@@ -1875,6 +1891,15 @@ def test_gcd():
 
     pytest.raises(TypeError, lambda: gcd(x))
     pytest.raises(TypeError, lambda: lcm(x))
+
+    F = [x**3 - 1, x**2 - 1, x**2 - 3*x + 2]
+
+    assert functools.reduce(gcd, F) == x - 1
+    assert functools.reduce(lambda x, y: gcd(x, y, polys=True), F) == Poly(x - 1)
+
+    F = [x**3 - 1, x**2 - 2, x**2 - 3*x + 2]
+
+    assert functools.reduce(gcd, F) == 1
 
 
 def test_gcd_numbers_vs_polys():
@@ -1937,7 +1962,6 @@ def test_trunc():
     assert F.trunc(3) == G
     assert trunc(f, 3) == g
     assert trunc(f, 3, x) == g
-    assert trunc(f, 3, (x,)) == g
     assert trunc(F, 3) == G
     assert trunc(f, 3, polys=True) == G
     assert trunc(F, 3, polys=False) == g
@@ -1948,7 +1972,6 @@ def test_trunc():
     assert F.trunc(3) == G
     assert trunc(f, 3) == g
     assert trunc(f, 3, x) == g
-    assert trunc(f, 3, (x,)) == g
     assert trunc(F, 3) == G
     assert trunc(f, 3, polys=True) == G
     assert trunc(F, 3, polys=False) == g
@@ -1967,7 +1990,6 @@ def test_monic():
     assert F.monic() == G
     assert monic(f) == g
     assert monic(f, x) == g
-    assert monic(f, (x,)) == g
     assert monic(F) == G
     assert monic(f, polys=True) == G
     assert monic(F, polys=False) == g
@@ -1979,6 +2001,12 @@ def test_monic():
 
     assert monic(2.0*x**2 + 6.0*x + 4.0) == 1.0*x**2 + 3.0*x + 2.0
     assert monic(2*x**2 + 3*x + 4, modulus=5) == x**2 + 4*x + 2
+
+    assert monic(x + 2) == x + 2
+    assert monic(2*x + 2) == x + 1
+
+    assert monic(x - 1) == x - 1
+    assert monic(2*x - 1) == x - Rational(1, 2)
 
 
 def test_content():
@@ -2001,7 +2029,6 @@ def test_primitive():
     assert F.primitive() == (2, G)
     assert primitive(f) == (2, g)
     assert primitive(f, x) == (2, g)
-    assert primitive(f, (x,)) == (2, g)
     assert primitive(F) == (2, G)
     assert primitive(f, polys=True) == (2, G)
     assert primitive(F, polys=False) == (2, g)
@@ -2017,6 +2044,11 @@ def test_primitive():
     assert primitive(-3*x/4 + y + Rational(11, 8)) == \
         (Rational(-1, 8), 6*x - 8*y - 11)
 
+    assert primitive(3*x + 2) == (1, 3*x + 2)
+    assert primitive(4*x + 2) == (2, 2*x + 1)
+    assert primitive(2*x**2 + 6*x + 12) == (2, x**2 + 3*x + 6)
+    assert primitive(x**2 + 3*x + 6) == (1, x**2 + 3*x + 6)
+
 
 def test_compose():
     f = x**12 + 20*x**10 + 150*x**8 + 500*x**6 + 625*x**4 - 2*x**3 - 10*x + 9
@@ -2028,7 +2060,6 @@ def test_compose():
     assert G.compose(H) == F
     assert compose(g, h) == f
     assert compose(g, h, x) == f
-    assert compose(g, h, (x,)) == f
     assert compose(G, H) == F
     assert compose(g, h, polys=True) == F
     assert compose(G, H, polys=False) == f
@@ -2036,7 +2067,6 @@ def test_compose():
     assert F.decompose() == [G, H]
     assert decompose(f) == [g, h]
     assert decompose(f, x) == [g, h]
-    assert decompose(f, (x,)) == [g, h]
     assert decompose(F) == [G, H]
     assert decompose(f, polys=True) == [G, H]
     assert decompose(F, polys=False) == [g, h]
@@ -2084,7 +2114,6 @@ def test_sqf():
     assert F.sqf_part() == P
     assert sqf_part(f) == p
     assert sqf_part(f, x) == p
-    assert sqf_part(f, (x,)) == p
     assert sqf_part(F) == P
     assert sqf_part(f, polys=True) == P
     assert sqf_part(F, polys=False) == p
@@ -2092,7 +2121,6 @@ def test_sqf():
     assert F.sqf_list() == (1, [(G, 1), (H, 2)])
     assert sqf_list(f) == (1, [(g, 1), (h, 2)])
     assert sqf_list(f, x) == (1, [(g, 1), (h, 2)])
-    assert sqf_list(f, (x,)) == (1, [(g, 1), (h, 2)])
     assert sqf_list(F) == (1, [(G, 1), (H, 2)])
     assert sqf_list(f, polys=True) == (1, [(G, 1), (H, 2)])
     assert sqf_list(F, polys=False) == (1, [(g, 1), (h, 2)])
@@ -2107,13 +2135,11 @@ def test_sqf():
 
     assert sqf(f) == g*h**2
     assert sqf(f, x) == g*h**2
-    assert sqf(f, (x,)) == g*h**2
 
     d = x**2 + y**2
 
     assert sqf(f/d) == (g*h**2)/d
     assert sqf(f/d, x) == (g*h**2)/d
-    assert sqf(f/d, (x,)) == (g*h**2)/d
 
     assert sqf(x - 1) == x - 1
     assert sqf(-x - 1) == -x - 1
@@ -2149,7 +2175,6 @@ def test_factor():
     assert F.factor_list() == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(f) == (1, [(u, 1), (v, 2), (w, 1)])
     assert factor_list(f, x) == (1, [(u, 1), (v, 2), (w, 1)])
-    assert factor_list(f, (x,)) == (1, [(u, 1), (v, 2), (w, 1)])
     assert factor_list(F) == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(f, polys=True) == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(F, polys=False) == (1, [(u, 1), (v, 2), (w, 1)])
@@ -2177,13 +2202,11 @@ def test_factor():
 
     assert factor(f) == u*v**2*w
     assert factor(f, x) == u*v**2*w
-    assert factor(f, (x,)) == u*v**2*w
 
     g, p, q, r = x**2 - y**2, x - y, x + y, x**2 + 1
 
     assert factor(f/g) == (u*v**2*w)/(p*q)
     assert factor(f/g, x) == (u*v**2*w)/(p*q)
-    assert factor(f/g, (x,)) == (u*v**2*w)/(p*q)
 
     p = Symbol('p', positive=True)
     i = Symbol('i', integer=True)
@@ -2322,8 +2345,8 @@ def test_factor_large():
     assert factor(f) == (x + 2)**20000000*(x**2 + 1)*(x + 1)**2469134
     assert factor(g) == (x + 1)**6000*(y + 1)**2
 
-    assert factor_list(f) == (1, [(x + 1, 2469134), (x + 2, 20000000),
-                                  (x**2 + 1, 1)])
+    assert factor_list(f) == (1, [(x**2 + 1, 1), (x + 1, 2469134),
+                                  (x + 2, 20000000)])
     assert factor_list(g) == (1, [(y + 1, 2), (x + 1, 6000)])
 
     f = (x**2 - y**2)**200000*(x**7 + 1)
@@ -2528,7 +2551,6 @@ def test_cancel():
     assert F.cancel(G) == (1, P, Q)
     assert cancel((f, g)) == (1, p, q)
     assert cancel((f, g), x) == (1, p, q)
-    assert cancel((f, g), (x,)) == (1, p, q)
     assert cancel((F, G)) == (1, P, Q)
     assert cancel((f, g), polys=True) == (1, P, Q)
     assert cancel((F, G), polys=False) == (1, p, q)
@@ -2676,10 +2698,10 @@ def test_groebner():
     assert groebner([x**2 + 1, y**4*x + x**3], x, y, order='lex', polys=True) == \
         [Poly(1 + x**2, x, y), Poly(-1 + y**4, x, y)]
     assert groebner([x**2 + 1, y**4*x + x**3, x*y*z**3], x, y, z, order='grevlex', polys=True) == \
-        [Poly(-1 + y**4, x, y, z), Poly(z**3, x, y, z), Poly(1 + x**2, x, y, z)]
+        [Poly(-1 + y**4, x, y, z, order='grevlex'), Poly(z**3, x, y, z, order='grevlex'),
+         Poly(1 + x**2, x, y, z, order='grevlex')]
 
     assert groebner([x**3 - 1, x**2 - 1]) == [x - 1]
-    assert groebner([Eq(x**3, 1), Eq(x**2, 1)]) == [x - 1]
 
     F = [3*x**2 + y*z - 5*x - 1, 2*x + 3*x*y + y**2, x - 3*y + x*z - 2*z**2]
     f = z**9 - x**2*y**3 - 3*x*y**2*z + 11*y*z**2 + x**2*z**2 - 5
@@ -2723,7 +2745,7 @@ def test_groebner():
     pytest.raises(ValueError,
                   lambda: groebner([0.144*x*y + 0.018*x**2 + 0.05*x - 1.577,
                                     0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
-                                   [x, y]))
+                                   x, y))
 
 
 def test_set_order():
@@ -2810,7 +2832,7 @@ def test_dimension_and_independent_sets():
     S = (C2 - A21, C3 - A31 - A32, B1 + B2 + B3 - 1,
          B2*C2 + B3*C3 - QQ(1, 2), B2*C2**2 + B3*C3**2 - QQ(1, 3),
          B3*A32*C2 - QQ(1, 6))
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[C3, C2], [B3, C2], [B2, C3], [B2, B3], [A32, C3], [A32, B2]]
     assert G.dimension == 2
 
@@ -2824,7 +2846,7 @@ def test_dimension_and_independent_sets():
          B3*C3*A32*C2 - QQ(1, 8) - 3*B/8 - 7*B**2/4 - 3*B**3/2 - B**4 + A*B/2 + A*B**2/2 + A*B**3,
          B3*A32*C2**2 - QQ(1, 12) - B/12 - 7*B**2/6 - 3*B**3/2 - B**4 + 2*A*B/3 + A*B**2 + A*B**3,
          QQ(1, 24) + 7*B/24 + 13*B**2/12 + 3*B**3/2 + B**4 - A*B/3 - A*B**2 - A*B**3)
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[B3, C2], [A32, C3, C2], [A32, B2, C3], [A32, B2, B3]]
     assert G.dimension == 3
 
@@ -2843,7 +2865,7 @@ def test_dimension_and_independent_sets():
          15*L7*(L1*(5*L1 - 3*L2 + L3)) + (L1*(2*L6 - 4*L4))*(5*L4 - 2*L5) + L1*L7*(-120*L1 + 30*L2 - 6*L3)/2,
          -3*(L1*(5*L1 - 3*L2 + L3))*L7 + (L1*(2*L6 - 4*L4))*(-L4/2 + L5/4 - L6/2) + L1*L7/2*(24*L1 - 6*L2),
          3*(L1*(2*L6 - 4*L4))*L7 + L1*L7*(40*L4 - 8*L5 + 4*L6)/2)
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[L5, L3, L2], [L6, L3]]
     assert G.dimension == 3
 
@@ -2851,7 +2873,7 @@ def test_dimension_and_independent_sets():
     V = ax, bx, cx, gx, jx, lx, mx, nx, q = symbols('ax bx cx gx jx lx mx nx q')
     S = (ax*q - lx*q - mx, ax - gx*q - lx, bx*q**2 + cx*q - jx*q - nx,
          q*(-ax*q + lx*q + mx), q*(-ax + gx*q + lx))
-    G = groebner(S, V, domain=QQ)
+    G = groebner(S, *V, domain=QQ)
     assert G.independent_sets == [[cx, jx, lx, mx, nx, q], [cx, gx, jx, lx, mx, nx], [bx, cx, gx, jx, lx, nx]]
     assert G.dimension == 6
 
@@ -2862,10 +2884,10 @@ def test_GroebnerBasis():
     G = groebner(F, x, y, order='grevlex')
     assert groebner(F + [0], x, y, order='grevlex') == G
 
-    assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), (x, y))
+    assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), x, y)
 
     H = [y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y]
-    P = [Poly(h, x, y) for h in H]
+    P = [Poly(h, x, y, order='grevlex') for h in H]
 
     assert isinstance(G, GroebnerBasis) is True
 
@@ -2900,8 +2922,9 @@ def test_GroebnerBasis():
     assert G[1:] == P[1:] and all(g.is_Poly for g in G[1:])
     assert G[:2] == P[:2] and all(g.is_Poly for g in G[1:])
 
-    assert tuple(G) == (Poly(y**3 - 2*y, x, y), Poly(x**2 - 2*y**2, x, y),
-                        Poly(x*y - 2*y, x, y))
+    assert tuple(G) == (Poly(y**3 - 2*y, x, y, order='grevlex'),
+                        Poly(x**2 - 2*y**2, x, y, order='grevlex'),
+                        Poly(x*y - 2*y, x, y, order='grevlex'))
 
     G = groebner(F, x, y, order='grevlex', polys=True)
     assert hash(G) == hash(groebner([Poly(_) for _ in F], order='grevlex'))
@@ -2948,7 +2971,16 @@ def test_poly():
     assert poly((x + y)**2, y) == Poly(x**2 + 2*x*y + y**2, y, domain=ZZ.inject(x))
 
     assert poly(1, x) == Poly(1, x)
+
     pytest.raises(GeneratorsNeeded, lambda: poly(1))
+
+    assert poly((x + y)**2 - y**2 - 2*x*y) == Poly(x**2)
+    assert poly((x + y)**2 - y**2 - 2*x*y, x, y) == Poly(x**2, x, y)
+
+    e = x**2 + (1 + sqrt(2))*x + 1
+
+    assert (poly(e, greedy=False) == poly(e, x, greedy=False) ==
+            Poly(e, x, domain=QQ.algebraic_field(sqrt(2))))
 
     # issue sympy/sympy#6184
     assert poly(x + y, x, y) == Poly(x + y, x, y)
@@ -2958,6 +2990,11 @@ def test_poly():
     assert (poly(1/(1 + sqrt(2)), x) ==
             Poly(1/(1 + sqrt(2)), x,
                  domain=QQ.algebraic_field(1/(1 + sqrt(2)))))
+
+    # issue sympy/sympy#19755
+    assert (poly(x + (2*x + 3)**2/5 + Rational(6, 5)) ==
+            Poly(4*x**2/5 + 17*x/5 + 3, domain=QQ))
+    assert poly(((x + 1)**2)/2) == Poly(x**2/2 + x + Rational(1, 2), domain=QQ)
 
 
 def test_keep_coeff():
@@ -3040,7 +3077,7 @@ def test_sympyissue_8210():
 
 def test_sympyissue_11775():
     e = y**4 + x*y**3 + y**2 + x*y
-    assert factor_list(e, y) == (1, [(y, 1), (x + y, 1), (y**2 + 1, 1)])
+    assert factor_list(e, y) == (1, [(y, 1), (y**2 + 1, 1), (x + y, 1)])
 
 
 def test_sympyissue_5602():
@@ -3056,7 +3093,7 @@ def test_sympyissue_15798():
 
 
 @pytest.mark.timeout(20)
-def test_sympyissue_16222():
+def test_sympyissue_16222_19670():
     Poly(x**100000000)
 
 
@@ -3073,7 +3110,7 @@ def test_sympyissue_8695():
     e = (x**2 + 1) * (x - 1)**2 * (x - 2)**3 * (x - 3)**3
     r = (1, [(x**2 + 1, 1), (x - 1, 2), (x**2 - 5*x + 6, 3)])
     assert sqf_list(e) == r
-    assert poly(e).sqf_list() == r
+    assert Poly(e).sqf_list() == r
 
     # regression test from the issue thread, not related to the issue
     e = (x + 2)**2 * (y + 4)**5
@@ -3085,3 +3122,13 @@ def test_sympyissue_19070():
     r = e*2
     assert r == Poly(10*x, modulus=19)
     assert r.get_modulus() == 19
+
+
+def test_sympyissue_19161():
+    assert Poly('x**2').simplify() == Poly(x**2)
+
+
+def test_sympyissue_20397():
+    f, g = Poly(x**2 + x + 3, modulus=7), Poly(2*x + 2, modulus=7)
+
+    assert f.prem(g) == 5

@@ -8,11 +8,12 @@ Point3D
 """
 
 from ..core import Add, Float, Integer, Tuple, sympify
-from ..core.compatibility import iterable, ordered
+from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify
+from ..utilities import ordered
 from .entity import GeometryEntity
 
 
@@ -62,8 +63,6 @@ class Point(GeometryEntity):
         evaluate = kwargs.get('evaluate', global_evaluate[0])
 
         if iterable(args[0]):
-            if isinstance(args[0], Point) and not evaluate:
-                return args[0]
             args = args[0]
 
         # unpack the arguments into a friendly Tuple
@@ -448,29 +447,17 @@ class Point2D(Point):
 
     def __new__(cls, *args, **kwargs):
         eval = kwargs.get('evaluate', global_evaluate[0])
-        check = True
-        if isinstance(args[0], Point2D):
-            if not eval:
-                return args[0]
-            args = args[0].args
-            check = False
-        else:
-            if iterable(args[0]):
-                args = args[0]
-            if len(args) != 2:
-                raise ValueError(
-                    'Only two dimensional points currently supported')
+        if iterable(args[0]):
+            args = args[0]
+        if len(args) != 2:
+            raise ValueError('Only two dimensional points currently supported')
         coords = Tuple(*args)
-        if check:
-            if any(a.is_number and im(a) for a in coords):
-                raise ValueError('Imaginary args not permitted.')
+        if any(a.is_number and im(a) for a in coords):
+            raise ValueError('Imaginary args not permitted.')
         if eval:
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
-
-    def __contains__(self, item):
-        return item == self
 
     @property
     def x(self):
@@ -736,9 +723,6 @@ class Point3D(Point):
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})
         return GeometryEntity.__new__(cls, *coords)
-
-    def __contains__(self, item):
-        return item == self
 
     @property
     def x(self):

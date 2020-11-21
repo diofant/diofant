@@ -10,12 +10,11 @@ from mpmath.libmp import prec_to_dps
 
 from ..core import Add, Integer, Mod, Symbol, oo
 from ..core.alphabets import greeks
-from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
 from ..logic import true
-from ..utilities import has_variety
+from ..utilities import default_sort_key, has_variety
 from .conventions import requires_partial, split_super_sub
 from .precedence import PRECEDENCE, precedence
 from .printer import Printer
@@ -1322,7 +1321,7 @@ class LatexPrinter(Printer):
 
     def _print_MatMul(self, expr):
         from ..core import Add
-        from ..matrices import MatAdd, HadamardProduct
+        from ..matrices import HadamardProduct, MatAdd
 
         def parens(x):
             if isinstance(x, (Add, MatAdd, HadamardProduct)):
@@ -1572,6 +1571,9 @@ class LatexPrinter(Printer):
     def _print_Reals(self, i):
         return r'\mathbb{R}'
 
+    def _print_ExtendedReals(self, i):
+        return r'\overline{\mathbb{R}}'
+
     def _print_Rationals(self, i):
         return r'\mathbb{Q}'
 
@@ -1633,7 +1635,7 @@ class LatexPrinter(Printer):
 
     def _print_PolyElement(self, poly):
         mul_symbol = self._settings['mul_symbol_latex']
-        return poly.str(self, PRECEDENCE, '{%s}^{%d}', mul_symbol)
+        return poly._str(self, PRECEDENCE, '{%s}^{%d}', mul_symbol)
 
     def _print_FracElement(self, frac):
         if frac.denominator == 1:

@@ -8,7 +8,7 @@ __all__ = ()
 
 
 def test_chinese_remainder():
-    R, x, y = ring('x, y', ZZ)
+    R, x, y = ring('x y', ZZ)
     p, q = 3, 5
 
     hp = x**3*y - x**2 - 1
@@ -36,17 +36,17 @@ def test_to_ZZ_ANP_poly():
     R, x = ring('x', A)
     f = x*(sqrt(2) + 1)
 
-    T, x_, z_ = ring('x_, z_', ZZ)
+    T, x_, z_ = ring('x_ z_', ZZ)
     f_ = x_*z_ + x_
 
     assert _to_ZZ_poly(f, T) == f_
     assert _to_ANP_poly(f_, R) == f
 
-    R, x, t, s = ring('x, t, s', A)
+    R, x, t, s = ring('x t s', A)
     f = x*t**2 + x*s + sqrt(2)
 
-    D, t_, s_ = ring('t_, s_', ZZ)
-    T, x_, z_ = ring('x_, z_', D)
+    D, t_, s_ = ring('t_ s_', ZZ)
+    T, x_, z_ = ring('x_ z_', D)
     f_ = (t_**2 + s_)*x_ + z_
 
     assert _to_ZZ_poly(f, T) == f_
@@ -55,7 +55,7 @@ def test_to_ZZ_ANP_poly():
 
 def test_modgcd_func_field():
     D, t = ring('t', ZZ)
-    R, x, z = ring('x, z', D)
+    R, x, z = ring('x z', D)
 
     minpoly = (z**2*t**2 + z**2*t - 1).drop(0)
     f, g = x + 1, x - 1

@@ -199,6 +199,12 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == -1
 
+            # issue sympy/sympy#10666
+            f = x**3 - 7*x + 7
+            g = x
+
+            assert f.resultant(g) == -g.resultant(f) == -7
+
     Rt, t = ring('t', ZZ)
     Rx, x = ring('x', Rt)
 
@@ -705,7 +711,7 @@ def test_dmp_gcd():
 
                 assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z = ring('x, y, z', QQ.algebraic_field(sqrt(2), sqrt(3)))
+    R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2), sqrt(3)))
 
     with using(gcd_aa_method='modgcd'):
         h = x**2*y**7 + sqrt(6)/21*z

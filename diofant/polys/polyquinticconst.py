@@ -13,9 +13,6 @@ from ..functions import sqrt
 from .polytools import Poly
 
 
-__all__ = 'PolyQuintic',
-
-
 x = Dummy('dummy_for_polyquinticconst')
 
 

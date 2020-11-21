@@ -248,6 +248,12 @@ def test_power_expand():
     assert (A**(a + b)).expand() != A**(a + b)
 
 
+def test_expand_multinomial():
+    assert expand_multinomial((x + 1 + O(z))**2) == 1 + 2*x + x**2 + O(z)
+    assert expand_multinomial((x + 1 +
+                               O(z))**3) == 1 + 3*x + 3*x**2 + x**3 + O(z)
+
+
 def test_sympyissues_5919_6830():
     # issue sympy/sympy#5919
     n = -1 + 1/x
@@ -291,11 +297,6 @@ def test_sympyissues_5919_6830():
         for b in [3, Rational(1, 3)]:
             for n in range(2, 6):
                 assert ok(a, b, n)
-
-    assert expand_multinomial((x + 1 + O(z))**2) == \
-        1 + 2*x + x**2 + O(z)
-    assert expand_multinomial((x + 1 + O(z))**3) == \
-        1 + 3*x + 3*x**2 + x**3 + O(z)
 
     e = (sin(x) + y)**3
     assert (expand_multinomial(e.subs({y: O(x**4)})) ==

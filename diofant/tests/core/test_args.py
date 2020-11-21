@@ -94,8 +94,8 @@ from diofant.logic.boolalg import BooleanFunction
 from diofant.matrices.expressions.fourier import DFT, IDFT
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
-from diofant.sets.fancysets import (Integers, Naturals, Naturals0, Rationals,
-                                    Reals)
+from diofant.sets.fancysets import (ExtendedReals, Integers, Naturals,
+                                    Naturals0, Rationals, Reals)
 from diofant.sets.sets import EmptySet, UniversalSet
 from diofant.simplify.hyperexpand import G_Function, Hyper_Function
 from diofant.stats.crv import (ConditionalContinuousDomain,
@@ -564,6 +564,10 @@ def test_diofant__sets__fancysets__Rationals():
 
 def test_diofant__sets__fancysets__Reals():
     assert _test_args(Reals())
+
+
+def test_diofant__sets__fancysets__ExtendedReals():
+    assert _test_args(ExtendedReals())
 
 
 def test_diofant__sets__fancysets__ImageSet():

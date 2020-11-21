@@ -22,6 +22,13 @@ ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
 
 def pytest_configure(config):
     config.addinivalue_line('markers', 'slow: marks tests as slow')
+    config.addinivalue_line('markers', 'regression: marks a regression test')
+
+
+def pytest_collection_modifyitems(items):
+    for item in items:
+        if 'issue' in item.nodeid:
+            item.add_marker(pytest.mark.regression)
 
 
 @pytest.fixture(autouse=True, scope='module')

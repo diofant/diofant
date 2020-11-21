@@ -167,6 +167,14 @@ def test_multiple_integration():
     assert integrate(1/(x + 3)/(1 + x)**3, x) == \
         -Rational(1, 8)*log(3 + x) + Rational(1, 8)*log(1 + x) + x/(4 + 8*x + 4*x**2)
 
+    # issue sympy/sympy#5178
+    assert (integrate(sin(x)*f(y, z), (x, 0, pi), (y, 0, pi), (z, 0, pi)) ==
+            2*Integral(f(y, z), (y, 0, pi), (z, 0, pi)))
+
+    # issue sympy/sympy#5167
+    assert Integral(f(x), (x, 1, 2), (w, 1, x), (z, 1, y)).doit() == \
+        y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
+
 
 def test_sympyissue_3532():
     assert integrate(exp(-x), (x, 0, oo)) == 1
@@ -716,12 +724,9 @@ def test_as_dummy():
 
 
 def test_sympyissue_4884():
-    assert integrate(sqrt(x)*(1 + x)) == \
-        Piecewise(
-            (2*sqrt(x)*(x + 1)**2/5 - 2*sqrt(x)*(x + 1)/15 - 4*sqrt(x)/15,
-             abs(x + 1) > 1),
-            (2*I*sqrt(-x)*(x + 1)**2/5 - 2*I*sqrt(-x)*(x + 1)/15 -
-             4*I*sqrt(-x)/15, True))
+    assert integrate(sqrt(x)*(1 + x)).simplify() == \
+        Piecewise((2*sqrt(x)**3*(3*x + 5)/15, abs(x + 1) > 1),
+                  (2*I*x*sqrt(-x)*(3*x + 5)/15, True))
     assert integrate(x**x*(1 + log(x))) == x**x
 
 
@@ -834,7 +839,6 @@ def test_sympyissue_4100():
 
 
 def test_sympyissue_5167():
-    f = Function('f')
     assert Integral(Integral(f(x), x), x) == Integral(f(x), x, x)
     assert Integral(f(x)).args == (f(x), Tuple(x))
     assert Integral(Integral(f(x))).args == (f(x), Tuple(x), Tuple(x))
@@ -851,8 +855,6 @@ def test_sympyissue_5167():
     assert Integral(1, x, y).args != Integral(1, y, x).args
     # do as many as possibble
     assert Integral(f(x), y, x, y, x).doit() == y**2*Integral(f(x), x, x)/2
-    assert Integral(f(x), (x, 1, 2), (w, 1, x), (z, 1, y)).doit() == \
-        y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
 
 
 def test_sympyissue_4890():
@@ -959,11 +961,6 @@ def test_sympyissue_4892b():
 
     expr = (sin(y)*x**3 + 2*cos(y)*x**2 + 12)/(x**2 + 2)
     assert trigsimp(factor(integrate(expr, x).diff(x) - expr)) == 0
-
-
-def test_sympyissue_5178():
-    assert integrate(sin(x)*f(y, z), (x, 0, pi), (y, 0, pi), (z, 0, pi)) == \
-        2*Integral(f(y, z), (y, 0, pi), (z, 0, pi))
 
 
 def test_integrate_series():
@@ -1073,6 +1070,11 @@ def test_risch_option():
     assert integrate(erf(x), x, risch=True) == Integral(erf(x), x)
     # TODO: How to test risch=False?
 
+    # issue sympy/sympy#2708
+    f = 1/(a + z + log(z))
+    integral_f = NonElementaryIntegral(f, (z, 2, 3))
+    assert Integral(f, (z, 2, 3)).doit() == integral_f
+
 
 def test_sympyissue_6828():
     f = 1/(1.08*x**2 - 4.3)
@@ -1112,7 +1114,6 @@ def test_sympyissue_2708():
     # not be evaluated in closed form.  Update as needed.
     f = 1/(a + z + log(z))
     integral_f = NonElementaryIntegral(f, (z, 2, 3))
-    assert Integral(f, (z, 2, 3)).doit() == integral_f
     assert integrate(f + exp(z), (z, 2, 3)) == integral_f - exp(2) + exp(3)
 
     assert integrate(2*f + exp(z), (z, 2, 3)) == 2*integral_f - exp(2) + exp(3)
@@ -1320,3 +1321,11 @@ def test_sympyissue_18384():
     assert integrate(e, (x, pi/2, pi)) == Rational(1, 2)
     assert integrate(e, (x, pi, 3*pi/2)) == Rational(1, 2)
     assert integrate(e, (x, 3*pi/2, 2*pi)) == Rational(1, 2)
+
+
+def test_sympyissue_20360():
+    e = exp(pi*x*(n - Rational(1, 2)))
+    r = Piecewise((y, Eq(2*pi*n - pi, 0)),
+                  (2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) -
+                   2/(2*pi*n - pi), True))
+    assert integrate(e, (x, 0, y)) == r

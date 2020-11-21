@@ -658,8 +658,7 @@ def test_line_intersection():
         (-3 + tan(13*pi/45)**2)
     assert Line(Point(0, 0), Point(1, -sqrt(3))).contains(Point(x, y)) is True
 
-
-def test_sympyissue_2941():
+    # issue sympy/sympy#2941
     def _check():
         for f, g in itertools.product(*[(Line, Ray, Segment)]*2):
             l1 = f(a, b)

@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Basic, E, Float, I, Integer, Number, O, Pow, Rational,
+from diofant import (Basic, Float, I, Integer, Number, O, Pow, Rational,
                      Symbol, cbrt, cos, exp, log, nan, oo, pi, root, sin, sqrt,
                      symbols, true, zoo)
 from diofant.abc import a, b, c, x, y
@@ -40,6 +40,15 @@ def test_negative_real():
 
 def test_expand():
     assert (2**(-1 - x)).expand() == Rational(1, 2)*2**(-x)
+
+
+def test_sqrt():
+    # issue sympy/sympy#7638
+    e = (1 + I/5)
+    assert sqrt(e**5) == e**Rational(5, 2)
+    assert sqrt(e**6) == e**3
+    r = symbols('r', extended_real=True)
+    assert sqrt((1 + I*r)**6) != (1 + I*r)**3
 
 
 def test_sympyissue_3449():
@@ -311,10 +320,6 @@ def test_sympyissue_7638():
     assert sqrt((p + I)**Rational(4, 3)) == (p + I)**Rational(2, 3)
     assert sqrt((p - p**2*I)**2) == p - p**2*I
     assert sqrt((p + r*I)**2) != p + r*I
-    e = (1 + I/5)
-    assert sqrt(e**5) == e**Rational(5, 2)
-    assert sqrt(e**6) == e**3
-    assert sqrt((1 + I*r)**6) != (1 + I*r)**3
 
 
 def test_sympyissue_8582():
@@ -331,13 +336,6 @@ def test_sympyissue_8650():
     assert (n**n).is_positive is True
     x = 5*n+5
     assert (x**(5*(n+1))).is_positive is True
-
-
-def test_sympyissue_10095():
-    assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
-    assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
-    e = Pow(1, oo, evaluate=False)
-    assert e.as_numer_denom() == (e, 1)
 
 
 @pytest.mark.slow

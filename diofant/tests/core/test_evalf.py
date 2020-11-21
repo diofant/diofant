@@ -40,6 +40,9 @@ def test_evalf_basic():
     assert NS('355/113-pi', 6) == '2.66764e-7'
     assert NS('16*atan(1/5)-4*atan(1/239)', 15) == '3.14159265358979'
 
+    # issue sympy/sympy#4806
+    assert atan(0, evaluate=False).evalf() == 0
+
 
 def test_cancellation():
     assert NS(Add(pi, Rational(1, 10**1000), -pi, evaluate=False), 15,
@@ -276,6 +279,14 @@ def test_evalf_integer_parts():
     check(2**112 + 2)
 
 
+def test_sympyissue_19991():
+    n = 1169809367327212570704813632106852886389036911
+    r = 744723773141314414542111064094745678855643068
+
+    assert floor(n/(pi/2)) == r
+    assert floor(80782*sqrt(2)) == 114242
+
+
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
     t = a.evalf(maxn=100, strict=False)
@@ -370,9 +381,13 @@ def test_sympyissue_5486():
     assert not cos(sqrt(0.5 + I)).evalf(strict=False).is_Function
 
 
+def test_from_mpmath():
+    # issue sympy/sympy#5486
+    pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
+
+
 def test_sympyissue_5486_bug():
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
-    pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
 
 
 def test_bugs():
@@ -426,7 +441,6 @@ def test_old_docstring():
 
 def test_sympyissue_4806():
     assert integrate(atan(x)**2, (x, -1, 1)).evalf().round(1) == 0.5
-    assert atan(0, evaluate=False).evalf() == 0
 
 
 def test_evalf_mul():
@@ -554,3 +568,8 @@ def test_evalf_bernoulli():
 
 def test_evalf_abs():
     assert Abs(0, evaluate=False).evalf() == 0
+
+
+def test_sympyissue_19774():
+    assert exp(x/2).evalf() == Float('2.7182818284590451',
+                                     dps=15)**(Float('0.5', dps=15)*x)

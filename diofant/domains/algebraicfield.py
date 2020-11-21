@@ -1,6 +1,7 @@
 """Implementation of :class:`AlgebraicField` class."""
 
 import functools
+import typing
 
 from ..core import I, cacheit, sympify
 from ..core.sympify import CantSympify
@@ -10,12 +11,6 @@ from .field import Field
 from .quotientring import QuotientRingElement
 from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'AlgebraicField',
-
-
-_algebraic_numbers_cache = {}
 
 
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
@@ -112,7 +107,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             return self([expr])
 
         try:
-            _, (c,), (rep,) = primitive_element([expr])
+            _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
         except NotAlgebraic:
             raise CoercionFailed(f'{expr} is not an algebraic number')
 
@@ -161,6 +156,9 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         for r in minpoly.all_roots(radicals=False):  # pragma: no branch
             if not minimal_polynomial(ext - r)(0):
                 return r.as_content_primitive()
+
+
+_algebraic_numbers_cache: typing.Dict[tuple, AlgebraicField] = {}
 
 
 class ComplexAlgebraicField(AlgebraicField):
@@ -251,7 +249,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         ring = self.rep.ring
         rep = (self - other).rep.compose(0, self.parent.unit.rep*coeff)
 
-        while ring.dup_count_real_roots(rep, root.interval.a, root.interval.b):
+        while ring._count_real_roots(rep, root.interval.a, root.interval.b):
             root.refine()
 
         self.parent._ext_root = coeff, root
@@ -265,7 +263,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         rep = self.rep.compose(0, self.parent.unit.rep*coeff)
         df = rep.diff()
 
-        while (ring.dup_count_real_roots(df, root.interval.a, root.interval.b) or
+        while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
                int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
             root.refine()
 

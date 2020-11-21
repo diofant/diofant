@@ -1,6 +1,6 @@
+import functools
 import random
 from collections import defaultdict
-from functools import reduce
 
 from mpmath.libmp.libintmath import ifac
 
@@ -2128,7 +2128,7 @@ class Permutation(Basic):
         is_Identity, cardinality, length, rank, size
 
         """
-        return reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)
+        return functools.reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)
 
     def length(self):
         """

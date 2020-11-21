@@ -5,7 +5,7 @@ import contextlib
 import os
 
 
-__all__ = ('setup',)
+__all__ = 'setup',
 
 
 _default_config = {

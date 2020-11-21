@@ -2,9 +2,8 @@
 
 import collections
 
-from ..core import Mul, S, sympify
+from ..core import Integer, Mul
 from ..printing.defaults import DefaultPrinting
-from .polyutils import dict_from_expr
 
 
 def itermonomials(variables, degree):
@@ -19,7 +18,7 @@ def itermonomials(variables, degree):
 
     """
     if not variables:
-        yield S.One
+        yield Integer(1)
     else:
         x, tail = variables[0], variables[1:]
 
@@ -33,9 +32,13 @@ class Monomial(tuple, DefaultPrinting):
 
     def __new__(cls, monom, gens=None):
         """Create and return the Monomial object."""
+        from .polytools import Poly
+
         if not isinstance(monom, collections.abc.Iterable):
-            rep, gens = dict_from_expr(sympify(monom), gens=gens)
-            if len(rep) == 1 and list(rep.values())[0] == 1:
+            poly = Poly(monom, gens=gens)
+            rep = poly.rep
+            gens = poly.gens
+            if not rep.is_zero and rep.is_monomial:
                 monom = list(rep)[0]
             else:
                 raise ValueError(f'Expected a monomial got {monom}')

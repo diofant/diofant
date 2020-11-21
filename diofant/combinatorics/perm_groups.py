@@ -2311,11 +2311,6 @@ class PermutationGroup(Basic):
         is performed. Notice that if the attribute ``_random_gens``
         is empty, it needs to be initialized by ``_random_pr_init``.
 
-        See Also
-        ========
-
-        _random_pr_init
-
         """
         if self._random_gens == []:
             self._random_pr_init(gen_count, iterations)

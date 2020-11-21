@@ -1,10 +1,10 @@
 import pytest
-from strategies.core import null_safe
 
 from diofant import (Adjoint, Basic, I, Identity, ImmutableMatrix, Inverse,
                      MatMul, MatPow, Matrix, MatrixSymbol, ShapeError,
                      Transpose, ZeroMatrix, adjoint, det, eye, symbols,
                      transpose)
+from diofant.core.strategies import null_safe
 from diofant.matrices.expressions.matmul import (any_zeros, factor_in_front,
                                                  only_squares, remove_ids,
                                                  unpack, xxinv)

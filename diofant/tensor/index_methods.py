@@ -10,7 +10,7 @@ objects instead.  When things stabilize this could be a useful
 refactoring.
 """
 
-from functools import reduce
+import functools
 
 from ..core import Function
 from .indexed import Idx, Indexed
@@ -56,7 +56,7 @@ def _get_indices_Mul(expr, return_dummies=False):
     inds, syms = list(zip(*inds))
 
     inds = list(map(list, inds))
-    inds = list(reduce(lambda x, y: x + y, inds))
+    inds = list(functools.reduce(lambda x, y: x + y, inds))
     inds, dummies = _remove_repeated(inds)
 
     symmetry = {}

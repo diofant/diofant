@@ -1,17 +1,177 @@
-from .polyerrors import DomainError
+import random
+
+from ..domains import ZZ
+from .polyconfig import query
+from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
-
-
-__all__ = 'UnivarPolynomialRing', 'UnivarPolyElement'
 
 
 class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
 
+    def __call__(self, element):
+        if isinstance(element, list):
+            try:
+                return self.from_terms(element)
+            except (TypeError, ValueError):
+                return self.from_list(element)
+        return super().__call__(element)
+
+    def from_list(self, element):
+        return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+
+    def _random(self, n, a, b, percent=None):
+        domain = self.domain
+
+        if percent is None:
+            percent = 100//(b - a)
+        percent = min(max(0, percent), 100)
+        nz = ((n + 1)*percent)//100
+
+        f = []
+        while len(f) < n + 1:
+            v = domain.convert(random.randint(a, b))
+            if v:
+                f.append(v)
+
+        if nz:
+            f[-nz:] = [domain.zero]*nz
+            lt = f.pop(0)
+            random.shuffle(f)
+            f.insert(0, lt)
+
+        return self.from_list(f)
+
+    def _gf_random(self, n, irreducible=False):
+        domain = self.domain
+
+        assert domain.is_FiniteField
+
+        while True:
+            f = [domain.one] + [domain(random.randint(0, domain.order - 1))
+                                for i in range(n)]
+            f = self.from_list(f)
+            if not irreducible or f.is_irreducible:
+                return f
+
+    def dispersionset(self, p, q=None):
+        r"""Compute the *dispersion set* of two polynomials.
+
+        For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
+        and `\deg g > 0` the dispersion set `\operatorname{J}(f, g)` is defined as:
+
+        .. math::
+            \operatorname{J}(f, g)
+            & := \{a \in \mathbb{N}_0 | \gcd(f(x), g(x+a)) \neq 1\} \\
+            &  = \{a \in \mathbb{N}_0 | \deg \gcd(f(x), g(x+a)) \geq 1\}
+
+        For a single polynomial one defines `\operatorname{J}(f) := \operatorname{J}(f, f)`.
+
+        Examples
+        ========
+
+        Note that the definition of the dispersion is not symmetric:
+
+        >>> R, x = ring('x', QQ)
+
+        >>> fp = x**4 - 3*x**2 + 1
+        >>> gp = fp.shift(-3)
+
+        >>> R.dispersionset(fp, gp)
+        {2, 3, 4}
+        >>> R.dispersionset(gp, fp)
+        set()
+
+        Computing the dispersion also works over field extensions:
+
+        >>> R, x = ring('x', QQ.algebraic_field(sqrt(5)))
+
+        >>> fp = x**2 + sqrt(5)*x - 1
+        >>> gp = x**2 + (2 + sqrt(5))*x + sqrt(5)
+
+        >>> R.dispersionset(fp, gp)
+        {2}
+        >>> R.dispersionset(gp, fp)
+        {1, 4}
+
+        We can even perform the computations for polynomials
+        having symbolic coefficients:
+
+        >>> D, a = ring('a', QQ)
+        >>> R, x = ring('x', D)
+
+        >>> fp = 4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x
+        >>> R.dispersionset(fp)
+        {0, 1}
+
+        References
+        ==========
+
+        * :cite:`Man1994disp`
+        * :cite:`Koepf98`
+        * :cite:`Abramov71rat`
+        * :cite:`Man1993indefsum`
+
+        """
+        # Check for valid input
+        same = False if q is not None else True
+        if same:
+            q = p
+
+        if p.ring is not q.ring:
+            raise ValueError('Polynomials must have the same ring')
+
+        fdomain = self.domain.field
+
+        # We define the dispersion of constant polynomials to be zero
+        if p.degree() < 1 or q.degree() < 1:
+            return {0}
+
+        # Factor p and q over the rationals
+        fp = p.factor_list()
+        fq = q.factor_list() if not same else fp
+
+        # Iterate over all pairs of factors
+        J = set()
+        for s, unused in fp[1]:
+            for t, unused in fq[1]:
+                m = s.degree()
+                n = t.degree()
+                if n != m:
+                    continue
+                an = s.LC
+                bn = t.LC
+                if an - bn:
+                    continue
+                # Note that the roles of `s` and `t` below are switched
+                # w.r.t. the original paper. This is for consistency
+                # with the description in the book of W. Koepf.
+                anm1 = s.coeff((m - 1,))
+                bnm1 = t.coeff((n - 1,))
+                alpha = fdomain(anm1 - bnm1)/fdomain(n*bn)
+                if alpha not in ZZ:
+                    continue
+
+                alpha = ZZ.convert(alpha)
+
+                if alpha < 0 or alpha in J:
+                    continue
+                if n > 1 and not (s - t.shift(alpha)).is_zero:
+                    continue
+                J.add(alpha)
+
+        return J
+
 
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
+
+    def all_coeffs(self):
+        if self.is_zero:
+            return [self.parent.domain.zero]
+        else:
+            return [self.coeff((i,)) for i in range(self.degree(), -1, -1)]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
@@ -191,3 +351,47 @@ class UnivarPolyElement(PolyElement):
 
         """
         return self.ring._sturm(self)
+
+    def __mul__(self, other):
+        ring = self.ring
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        if max(self.degree(), other.degree()) > query('KARATSUBA_CUTOFF'):
+            return self._mul_karatsuba(other)
+        return super().__mul__(other)
+
+    def _mul_karatsuba(self, other):
+        """
+        Multiply dense polynomials in ``K[x]`` using Karatsuba's algorithm.
+
+        References
+        ==========
+
+        * :cite:`Hoeven02`
+
+        """
+        ring = self.ring
+        domain = ring.domain
+
+        df = self.degree()
+        dg = other.degree()
+
+        n = max(df, dg) + 1
+
+        n2 = n//2
+
+        fl = self.slice(0, n2)
+        gl = other.slice(0, n2)
+
+        fh = self.slice(n2, n).quo_term(((n2,), domain.one))
+        gh = other.slice(n2, n).quo_term(((n2,), domain.one))
+
+        lo = fl*gl
+        hi = fh*gh
+
+        mid = (fl + fh)*(gl + gh)
+        mid -= (lo + hi)
+
+        return lo + mid.mul_monom((n2,)) + hi.mul_monom((2*n2,))

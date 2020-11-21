@@ -1,6 +1,6 @@
 """Integral Transforms."""
 
-from functools import reduce, wraps
+import functools
 from itertools import repeat
 
 from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
@@ -191,7 +191,7 @@ def _noconds_(default):
 
     """
     def make_wrapper(func):
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             noconds = kwargs.pop('noconds', default)
             res = func(*args, **kwargs)
@@ -217,7 +217,8 @@ def _default_integrator(f, x):
 def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
     """Backend function to compute Mellin transforms."""
     from ..core import count_ops
-    from ..functions import re, Max, Min
+    from ..functions import Max, Min, re
+
     # We use a fresh dummy, because assumptions on s might drop conditions on
     # convergence of the integral.
     s = _dummy('s', 'mellin-transform', f)
@@ -447,9 +448,10 @@ def _rewrite_gamma(f, s, a, b):
     (([], []), ([], []), 1/2, 1, 8)
 
     """
-    from ..core import ilcm, igcd
-    from ..polys import Poly, roots, RootOf
-    from ..functions import gamma, re, sin, cos, tan, cot, exp_polar
+    from ..core import igcd, ilcm
+    from ..functions import cos, cot, exp_polar, gamma, re, sin, tan
+    from ..polys import Poly, RootOf, roots
+
     # Our strategy will be as follows:
     # 1) Guess a constant c such that the inversion integral should be
     #    performed wrt s'=c*s (instead of plain s). Write s for s'.
@@ -511,14 +513,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
-    s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.denominator)
-                                                    for x in s_multipliers], Integer(1))
+    s_multiplier = common_coefficient/functools.reduce(ilcm, [Integer(x.denominator)
+                                                              for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
+                * functools.reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)
@@ -700,7 +702,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     assumes x to be real and positive.
 
     """
-    from ..functions import meijerg, arg, re, Heaviside, gamma
+    from ..functions import Heaviside, arg, gamma, meijerg, re
     from ..polys import factor
     from ..simplify import hyperexpand
     x = _dummy('t', 'inverse-mellin-transform', F, positive=True)
@@ -794,8 +796,8 @@ class InverseMellinTransform(IntegralTransform):
         from ..utilities import postorder_traversal
         global _allowed
         if _allowed is None:
-            from ..functions import (exp, gamma, sin, cos, tan, cot, cosh,
-                                     sinh, tanh, coth, factorial, rf)
+            from ..functions import (cos, cosh, cot, coth, exp, factorial,
+                                     gamma, rf, sin, sinh, tan, tanh)
             _allowed = {exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
                         factorial, rf}
         for f in postorder_traversal(F):
@@ -889,8 +891,7 @@ def _simplifyconds(expr, s, a):
     Ne(1, x**3)
 
     """
-    from ..core.relational import (StrictGreaterThan, StrictLessThan,
-                                   Unequality)
+    from ..core.relational import StrictGreaterThan, StrictLessThan, Unequality
     from ..functions import Abs
 
     def power(ex):
@@ -950,8 +951,9 @@ def _simplifyconds(expr, s, a):
 def _laplace_transform(f, t, s_, simplify=True):
     """The backend function for Laplace transforms."""
     from ..core import Wild, symbols
-    from ..functions import (re, Max, exp, Min, periodic_argument as arg,
-                             cos, polar_lift)
+    from ..functions import Max, Min, cos, exp
+    from ..functions import periodic_argument as arg
+    from ..functions import polar_lift, re
     s = Dummy('s')
     F = integrate(exp(-s*t) * f, (t, 0, oo))
 
@@ -1120,9 +1122,10 @@ def laplace_transform(f, t, s, **hints):
 def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     """The backend function for inverse Laplace transforms."""
     from ..core import expand_complex
-    from ..functions import exp, Heaviside, log, Piecewise
+    from ..functions import Heaviside, Piecewise, exp, log
     from .integrals import Integral
-    from .meijerint import meijerint_inversion, _get_coeff_exp
+    from .meijerint import _get_coeff_exp, meijerint_inversion
+
     # There are two strategies we can try:
     # 1) Use inverse mellin transforms - related by a simple change of variables.
     # 2) Use the inversion integral.

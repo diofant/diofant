@@ -4,10 +4,10 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, bell, bernoulli, binomial, cancel,
-                     catalan, cos, cot, diff, digamma, euler, expand_func,
-                     factorial, fibonacci, gamma, genocchi, harmonic, hyper,
-                     im, limit, log, lucas, nan, oo, pi, polygamma, re, sin,
+                     Rational, Sum, Symbol, bell, bernoulli, binomial, catalan,
+                     cos, cot, diff, digamma, euler, expand_func, factorial,
+                     fibonacci, gamma, genocchi, harmonic, hyper, im, limit,
+                     log, lucas, nan, oo, pi, polygamma, re, simplify, sin,
                      sqrt, sstr, subsets, symbols, trigamma, zeta, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
@@ -218,7 +218,7 @@ def test_harmonic_rational():
 
     for h, a in zip(H, A):
         e = expand_func(h).doit()
-        assert cancel(e/a) == 1
+        assert simplify(e/a) == 1
         assert h.evalf() == a.evalf()
 
 
@@ -342,6 +342,17 @@ def test_catalan():
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
+
+    # issue sympy/sympy#8601
+    n = Symbol('n', integer=True, negative=True)
+
+    assert catalan(n - 1) == 0
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
+    c1 = catalan(-5.6).evalf(strict=False)
+    assert str(c1) == '6.93334070531408e-5'
+    c2 = catalan(-35.4).evalf(strict=False)
+    assert str(c2) == '-4.14189164517449e-24'
 
 
 def test_genocchi():
@@ -533,15 +544,3 @@ def test_sympyissue_8496():
 
     pytest.raises(TypeError, lambda: catalan(n, k))
     pytest.raises(TypeError, lambda: euler(n, k))
-
-
-def test_sympyissue_8601():
-    n = Symbol('n', integer=True, negative=True)
-
-    assert catalan(n - 1) == 0
-    assert catalan(Rational(-1, 2)) == zoo
-    assert catalan(-1) == Rational(-1, 2)
-    c1 = catalan(-5.6).evalf(strict=False)
-    assert str(c1) == '6.93334070531408e-5'
-    c2 = catalan(-35.4).evalf(strict=False)
-    assert str(c2) == '-4.14189164517449e-24'

@@ -432,7 +432,8 @@ def test_evalf_default():
     assert type(sin(Rational(1, 4))) == sin
 
 
-def test_sympyissue_5399():
+def test_diff_args():
+    # issue sympy/sympy#5399
     args = [x, y, Integer(2), Rational(1, 2)]
 
     def ok(a):
@@ -661,20 +662,6 @@ def test_sympyissue_7068():
     assert z1 != z2
 
 
-def test_sympyissue_7231():
-    ans1 = f(x).series(x, a)
-    _xi_1 = ans1.atoms(Dummy).pop()
-    res = (f(a) + (-a + x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, a)) +
-           (-a + x)**2*Subs(Derivative(f(_xi_1), _xi_1, _xi_1), (_xi_1, a))/2 +
-           (-a + x)**3*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1), (_xi_1, a))/6 +
-           (-a + x)**4*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1), (_xi_1, a))/24 +
-           (-a + x)**5*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1, _xi_1),
-                            (_xi_1, a))/120 + O((-a + x)**6, (x, a)))
-    assert res == ans1
-    ans2 = f(x).series(x, a)
-    assert res == ans2
-
-
 def test_sympyissue_7687():
     f = Function('f')(x)
     ff = Function('f')(x)
@@ -703,7 +690,8 @@ def test_mexpand():
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 
-def test_sympyissue_11313():
+def test_diff_series():
+    # issue sympy/sympy#11313
     # test Derivative series & as_leading_term
     assert Derivative(x**3 + x**4, x).as_leading_term(x).doit() == 3*x**2
     s = Derivative(sin(x), x).series(x, n=3)

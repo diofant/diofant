@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (And, Dict, Eq, FiniteSet, Integer, Matrix, Or, Rational,
-                     Symbol, Tuple, binomial, cancel, cos, pi, simplify, sqrt,
-                     symbols, sympify)
+                     Symbol, Tuple, binomial, cos, pi, simplify, sqrt, symbols,
+                     sympify)
 from diofant.abc import p, x
 from diofant.stats import (Bernoulli, Binomial, Coin, Die, DiscreteUniform, E,
                            FiniteRV, Hypergeometric, P, Rademacher, cdf,
@@ -235,7 +235,7 @@ def test_binomial_symbolic():
     X = Binomial('X', n, p)
     assert simplify(E(X)) == n*p == simplify(moment(X, 1))
     assert simplify(variance(X)) == n*p*(1 - p) == simplify(cmoment(X, 2))
-    assert cancel((skewness(X) - (1-2*p)/sqrt(n*p*(1-p)))) == 0
+    assert simplify(skewness(X) - (1-2*p)/sqrt(n*p*(1-p))) == 0
 
     # Test ability to change success/failure winnings
     H, T = symbols('H T')

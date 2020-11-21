@@ -9,9 +9,6 @@ from mpmath.rational import mpq
 from .domainelement import DomainElement
 
 
-__all__ = 'RealElement', 'ComplexElement', 'MPContext'
-
-
 class RealElement(_mpf, DomainElement):
     """An element of a real domain."""
 
@@ -60,13 +57,12 @@ class ComplexElement(_mpc, DomainElement):
         return self.parent.__call__, (*self._mpc_,)
 
 
-new = object.__new__
-
-
 class MPContext(PythonMPContext):
     """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
+        new = object.__new__
+
         self._prec_rounding = [prec, round_nearest]
 
         if dps is None:

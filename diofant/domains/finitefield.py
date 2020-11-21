@@ -2,22 +2,16 @@
 
 import numbers
 import random
+import typing
 
 from ..core import Dummy, integer_digits
-from ..ntheory import factorint
-from ..polys.galoistools import dup_gf_irreducible
+from ..ntheory import factorint, is_primitive_root
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
 from .quotientring import QuotientRingElement
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
-
-
-_modular_integer_cache = {}
 
 
 class FiniteField(Field, SimpleDomain):
@@ -45,7 +39,8 @@ class FiniteField(Field, SimpleDomain):
 
         if modulus is None:
             random.seed(0)
-            modulus = dup_gf_irreducible(deg, ZZ_python.finite_field(mod))
+            ring = ZZ_python.finite_field(mod).inject(Dummy('x'))
+            modulus = ring._gf_random(deg, irreducible=True).all_coeffs()
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')
@@ -140,6 +135,9 @@ class FiniteField(Field, SimpleDomain):
         return True
 
 
+_modular_integer_cache: typing.Dict[tuple, FiniteField] = {}
+
+
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers."""
 
@@ -165,8 +163,16 @@ class ModularInteger(QuotientRingElement):
     def denominator(self):
         return self.parent.one
 
+    @property
+    def is_primitive(self):
+        """Test if this is a primitive element."""
+        parent = self.parent
+        return is_primitive_root(int(self), parent.order)
+
 
 class GaloisFieldElement(ModularInteger):
+    """A class representing a Galois field element."""
+
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
             rep = integer_digits(rep % self.parent.order, self.parent.mod)
@@ -179,3 +185,24 @@ class GaloisFieldElement(ModularInteger):
     def __int__(self):
         rep = self.rep.set_domain(self.parent.domain)
         return int(rep.eval(0, self.parent.mod))
+
+    @property
+    def is_primitive(self):
+        parent = self.parent
+        p = parent.characteristic
+        f = self.rep
+        domain = self.domain
+        x = domain.gens[0]
+
+        if not f.is_irreducible:
+            return False
+
+        n = f.degree()
+        t = x**n
+
+        for m in range(n, p**n - 1):
+            r = t % f
+            if r == 1:
+                return False
+            t = r*x
+        return True

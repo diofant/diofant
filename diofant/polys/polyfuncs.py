@@ -7,11 +7,8 @@ from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
-from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
+from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
-
-
-__all__ = 'symmetrize', 'horner', 'interpolate', 'viete'
 
 
 def symmetrize(F, *gens, **args):
@@ -75,7 +72,7 @@ def symmetrize(F, *gens, **args):
     gens, dom = opt.gens, opt.domain
 
     for i in range(len(gens)):
-        poly = symmetric_poly(i + 1, gens, polys=True)
+        poly = symmetric_poly(i + 1, *gens, polys=True)
         polys.append((next(symbols), poly.set_domain(dom)))
 
     indices = range(len(gens) - 1)
@@ -176,9 +173,9 @@ def horner(f, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        return exc.expr
+        return exc.exprs[0]
 
     form, gen = Integer(0), F.gen
 
@@ -253,7 +250,7 @@ def viete(f, roots=None, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        f, opt = poly_from_expr(f, *gens, **args)
+        (f,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('viete', 1, exc)
 
@@ -279,7 +276,7 @@ def viete(f, roots=None, *gens, **args):
     result, sign = [], -1
 
     for i, coeff in enumerate(coeffs[1:]):
-        poly = symmetric_poly(i + 1, roots)
+        poly = symmetric_poly(i + 1, *roots)
         coeff = sign*(coeff/lc)
         result.append((poly, coeff))
         sign = -sign
