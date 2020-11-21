@@ -176,3 +176,13 @@ def test_efactor_wang():
     f = f1*f2*f3*f4
 
     assert efactor(f) == (1, [(f1, 1), (f2, 1), (f3, 1), (f4, 1)])
+
+
+@pytest.mark.timeout(60)
+def test_sympyissue_19196():
+    A = QQ.algebraic_field(sqrt(2), root(3, 3))
+    R, x, y, z = ring('x y z', A)
+
+    f1, f2 = x - z/root(3, 3), x**2 + 2*y + sqrt(2)
+    f = f1*f2
+    assert f.factor_list() == (1, [(f1, 1), (f2, 1)])

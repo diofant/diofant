@@ -73,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20391` Linear programming with simplex method
 * :sympyissue:`19161` When applying simplify on a Poly it fails
 * :sympyissue:`20397` bug in dividing polynomials by module
+* :sympyissue:`19196` Slow f.factor_list
