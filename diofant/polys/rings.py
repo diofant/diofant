@@ -80,14 +80,20 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
     has_assoc_Ring = True
 
     def __new__(cls, domain, symbols, order=lex):
-        from .univar import UnivarPolyElement, UnivarPolynomialRing
+        from .univar import (UnivarPolyElement, UnivarPolyElementFF,
+                             UnivarPolynomialRing, UnivarPolynomialRingFF)
 
         symbols = tuple(_parse_symbols(symbols))
         ngens = len(symbols)
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
 
-        new_cls = PolynomialRing if ngens > 1 else UnivarPolynomialRing
+        if ngens > 1:
+            new_cls = PolynomialRing
+        elif domain.is_FiniteField and (domain.characteristic == domain.order):
+            new_cls = UnivarPolynomialRingFF
+        else:
+            new_cls = UnivarPolynomialRing
 
         key = new_cls.__name__, symbols, ngens, domain, order
         obj = _ring_cache.get(key)
@@ -101,6 +107,8 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
 
             if new_cls == UnivarPolynomialRing:
                 dtype = UnivarPolyElement
+            elif new_cls == UnivarPolynomialRingFF:
+                dtype = UnivarPolyElementFF
             else:
                 dtype = PolyElement
             obj.dtype = type(dtype.__name__, (dtype,), {'ring': obj})
