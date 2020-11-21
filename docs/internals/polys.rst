@@ -307,6 +307,7 @@ Modular GCD
 
 .. automodule:: diofant.polys.modulargcd
     :members:
+    :private-members:
 
 Heuristic GCD
 =============
