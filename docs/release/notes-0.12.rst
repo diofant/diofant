@@ -9,6 +9,7 @@ New features
 
 * Support modular exponentiation of :class:`~diofant.polys.rings.PolyElement`'s, see :pull:`1032`.
 * :func:`~diofant.solvers.inequalities.reduce_inequalities` support solving linear inequalities with Fourier-Motzkin elimination algorithm, see :pull:`1063`.
+* Added :class:`~diofant.domains.FiniteRing` for modular integers, see :pull:`876`.
 
 Major changes
 =============
@@ -17,6 +18,7 @@ Major changes
 * Module :mod:`~diofant.polys.factortools` was ported to use sparse polynomial representation, see :pull:`1015`, :pull:`1018`, :pull:`1019`, :pull:`1020` and :pull:`1021`.
 * Module :mod:`~diofant.polys.rootisolation` was ported to use sparse polynomial representation, finally the dense representation is used nowhere, see :pull:`1030`, :pull:`1031` and :pull:`1035`.
 * :func:`~diofant.solvers.inequalities.reduce_inequalities` uses :class:`~diofant.sets.fancysets.ExtendedReals` subsets to solve inequalities, see :pull:`1067`.
+* Added new algorithm for factorization of multivariate polynomials over :class:`~diofant.domains.AlgebraicField`'s (uses Hensel lifting), see :pull:`876`.  Thanks to Katja Sophie Hotz.  Thanks to Kalevi Suominen for help with review.
 
 Compatibility breaks
 ====================
@@ -71,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20391` Linear programming with simplex method
 * :sympyissue:`19161` When applying simplify on a Poly it fails
 * :sympyissue:`20397` bug in dividing polynomials by module
+* :sympyissue:`19196` Slow f.factor_list

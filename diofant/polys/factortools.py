@@ -432,7 +432,12 @@ class _Factor:
                 for h in self._gf_factor_sqf(g):
                     factors.append((h, n))
         elif domain.is_AlgebraicField:
-            coeff, factors = self._aa_factor_trager(f)
+            from .factorization_alg_field import efactor
+
+            _factor_aa_methods = {'trager': self._aa_factor_trager,
+                                  'modular': efactor}
+            method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
+            coeff, factors = method(f)
         else:
             if not domain.is_Exact:
                 domain_inexact, domain = domain, domain.get_exact()
