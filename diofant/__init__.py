@@ -57,7 +57,7 @@ from .domains import (CC, EX, FF, GF, GROUND_TYPES, QQ, RR, ZZ, AlgebraicField,
                       ExpressionDomain, FF_gmpy, FF_python, FiniteField,
                       IntegerRing, PythonRational, QQ_gmpy, QQ_python,
                       RationalField, RealAlgebraicField, RealField, ZZ_gmpy,
-                      ZZ_python)
+                      ZZ_python, FiniteRing)
 from .series import Limit, O, Order, limit, residue, series
 from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         FallingFactorial, Heaviside, Id, KroneckerDelta,
@@ -307,4 +307,4 @@ __all__ = (
     'plot_backends', 'plot_implicit', 'plot_parametric', 'StrPrinter', 'ccode',
     'dotprint', 'fcode', 'latex', 'mathematica_code', 'mathml', 'octave_code',
     'pprint', 'pprint_use_unicode', 'pretty', 'pretty_print', 'python', 'srepr',
-    'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals')
+    'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals', 'FiniteRing')

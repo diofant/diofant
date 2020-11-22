@@ -401,44 +401,46 @@ def test_dmp_zz_factor():
                                       2*z*t, 1)])
 
 
-def test_dmp_ext_factor():
-    R, x = ring('x', QQ.algebraic_field(I))
+@pytest.mark.parametrize('method', ('modular', 'trager'))
+def test_dmp_ext_factor(method):
+    with using(aa_factor_method=method):
+        R, x = ring('x', QQ.algebraic_field(I))
 
-    assert R(0).factor_list() == (0, [])
-    assert (x + 1).factor_list() == (1, [(x + 1, 1)])
-    assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
-    assert (7*x**4 + 1).factor_list() == (7, [(x**4 + QQ(1, 7), 1)])
-    assert (x**4 + 1).factor_list() == (1, [(x**2 - I, 1), (x**2 + I, 1)])
-    assert (4*x**2 + 9).factor_list() == (4, [(x - 3*I/2, 1), (x + 3*I/2, 1)])
-    assert (4*x**4 + 8*x**3 + 77*x**2 + 18*x +
-            153).factor_list() == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
-                                       (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
-    assert (x**2 + 1).factor_list() == (1, [(x - I, 1), (x + I, 1)])
+        assert R(0).factor_list() == (0, [])
+        assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+        assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
+        assert (7*x**4 + 1).factor_list() == (7, [(x**4 + QQ(1, 7), 1)])
+        assert (x**4 + 1).factor_list() == (1, [(x**2 - I, 1), (x**2 + I, 1)])
+        assert (4*x**2 + 9).factor_list() == (4, [(x - 3*I/2, 1), (x + 3*I/2, 1)])
+        assert (4*x**4 + 8*x**3 + 77*x**2 + 18*x +
+                153).factor_list() == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
+                                           (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
+        assert (x**2 + 1).factor_list() == (1, [(x - I, 1), (x + I, 1)])
 
-    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
+        R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
-    assert (x**4 + 1).factor_list() == (1, [(x**2 - sqrt(2)*x + 1, 1),
-                                            (x**2 + sqrt(2)*x + 1, 1)])
+        assert (x**4 + 1).factor_list() == (1, [(x**2 - sqrt(2)*x + 1, 1),
+                                                (x**2 + sqrt(2)*x + 1, 1)])
 
-    f = x**2 + 2*sqrt(2)*x + 2
+        f = x**2 + 2*sqrt(2)*x + 2
 
-    assert f.factor_list() == (1, [(x + sqrt(2), 2)])
-    assert (f**3).factor_list() == (1, [(x + sqrt(2), 6)])
+        assert f.factor_list() == (1, [(x + sqrt(2), 2)])
+        assert (f**3).factor_list() == (1, [(x + sqrt(2), 6)])
 
-    f *= 2
+        f *= 2
 
-    assert f.factor_list() == (2, [(x + sqrt(2), 2)])
-    assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
+        assert f.factor_list() == (2, [(x + sqrt(2), 2)])
+        assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
 
-    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+        R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
-    assert R(0).factor_list() == (0, [])
-    assert (x + 1).factor_list() == (1, [(x + 1, 1)])
-    assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
-    assert (x**2 - 2*y**2).factor_list() == (1, [(x - sqrt(2)*y, 1),
-                                                 (x + sqrt(2)*y, 1)])
-    assert (2*x**2 - 4*y**2).factor_list() == (2, [(x - sqrt(2)*y, 1),
-                                                   (x + sqrt(2)*y, 1)])
+        assert R(0).factor_list() == (0, [])
+        assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+        assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
+        assert (x**2 - 2*y**2).factor_list() == (1, [(x - sqrt(2)*y, 1),
+                                                     (x + sqrt(2)*y, 1)])
+        assert (2*x**2 - 4*y**2).factor_list() == (2, [(x - sqrt(2)*y, 1),
+                                                       (x + sqrt(2)*y, 1)])
 
 
 def test_sympyissue_5786():
@@ -543,10 +545,9 @@ def test_factor_list():
 
     f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
 
-    assert f.factor_list() == r
-
-    with using(aa_factor_method='trager'):
-        assert f.factor_list() == r
+    for method in ('trager', 'modular'):
+        with using(aa_factor_method=method):
+            assert f.factor_list() == r
 
     R, x, y = ring('x y', RR)
 

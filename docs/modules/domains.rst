@@ -41,6 +41,9 @@ Abstract Domains
 Concrete Domains
 ****************
 
+.. autoclass:: FiniteRing
+   :members:
+
 .. autoclass:: FiniteField
    :members:
 
