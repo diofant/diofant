@@ -3132,3 +3132,7 @@ def test_sympyissue_20397():
     f, g = Poly(x**2 + x + 3, modulus=7), Poly(2*x + 2, modulus=7)
 
     assert f.prem(g) == 5
+
+
+def test_sympyissue_20484():
+    assert Poly(x*y*z).eval(x, y*z) == Poly(y**2*z**2)
