@@ -74,3 +74,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19161` When applying simplify on a Poly it fails
 * :sympyissue:`20397` bug in dividing polynomials by module
 * :sympyissue:`19196` Slow f.factor_list
+* :sympyissue:`20491` Inconsistencies in pretty printing in a notebook
