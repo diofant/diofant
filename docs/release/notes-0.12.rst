@@ -78,3 +78,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`20491` Inconsistencies in pretty printing in a notebook
 * :sympyissue:`20490` LaTeX printing of negative constant PolyElement
 * :sympyissue:`20484` Need more utility for polynomial substitution
+* :sympyissue:`20485` Rational powers for non-monomial PolyElement
+* :sympyissue:`20487` LaTeX printing errors for puiseux polynomial

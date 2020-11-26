@@ -1857,6 +1857,7 @@ def test_PolyElement___pow__():
 
     assert (2*x**4 + x + 7)**2 == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
 
+    pytest.raises(ValueError, lambda: R(1)**object())
     pytest.raises(ValueError, lambda: R(1)**-1)
 
     assert R(1)**0 == 1
@@ -1955,6 +1956,10 @@ def test_PolyElement___pow__():
     assert R(QQ(3, 7))**0 == 1
     assert R(QQ(3, 7))**1 == QQ(3, 7)
     assert R(QQ(3, 7))**7 == QQ(2187, 823543)
+
+    # issues sympy/sympy#20485 and sympy/sympy#20487
+    pytest.raises(ValueError, lambda: x**QQ(3, 2))
+    pytest.raises(ValueError, lambda: (x + y)**QQ(3, 2))
 
     R, x, y, z = ring('x y z', ZZ)
 

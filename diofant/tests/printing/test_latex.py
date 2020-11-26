@@ -1487,3 +1487,9 @@ def test_sympyissue_20490():
     R, x, y = ring('x y', QQ)
 
     assert latex(R(-2)) == '-2'
+
+
+def test_sympyissue_20487():
+    R, x, y = ring('x y', QQ)
+
+    pytest.raises(ValueError, lambda: latex(x**QQ(3, 2)))

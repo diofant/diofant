@@ -812,7 +812,7 @@ class _Factor:
                     break
 
                 M *= m
-                C = c.diff(x=n, m=k + 1).eval(x=n, a=a)
+                C = c.diff(x=n, m=int(k + 1)).eval(x=n, a=a)
 
                 if not C.is_zero:
                     C = C.quo_ground(domain.factorial(k + 1))
@@ -1110,7 +1110,7 @@ class _Factor:
                     break
 
                 M *= m
-                C = c.diff(x=w, m=k + 1).eval(x=w, a=a)
+                C = c.diff(x=w, m=int(k + 1)).eval(x=w, a=a)
 
                 if not C.is_zero:
                     C = C.quo_ground(domain.factorial(k + 1))

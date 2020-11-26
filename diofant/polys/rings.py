@@ -816,7 +816,9 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""
         ring = self.ring
-        n = int(n)
+
+        if not isinstance(n, int):
+            raise ValueError('exponent must be an integer')
 
         if n < 0:
             raise ValueError('negative exponent')
