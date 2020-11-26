@@ -26,6 +26,12 @@ class _GCD:
         elif g.is_zero:
             h, cfg, cff = self._gcd_zero(f)
             return h, cff, cfg
+        elif f.is_term:
+            h, cff, cfg = self._gcd_term(f, g)
+            return h, cff, cfg
+        elif g.is_term:
+            h, cfg, cff = self._gcd_term(g, f)
+            return h, cff, cfg
 
         J, (f, g) = f.deflate(g)
         h, cff, cfg = self._gcd(f, g)
@@ -41,6 +47,26 @@ class _GCD:
                 return -f, zero, -one
             else:
                 return f, zero, one
+
+    def _gcd_term(self, f, g):
+        domain = self.domain
+        ground_gcd = domain.gcd
+        ground_quo = domain.quo
+        mf, cf = f.LT
+        _mgcd, _cgcd = mf, cf
+        if domain.is_Field:
+            for mg, cg in g.items():
+                _mgcd = _mgcd.gcd(mg)
+            _cgcd = domain.one
+        else:
+            for mg, cg in g.items():
+                _mgcd = _mgcd.gcd(mg)
+                _cgcd = ground_gcd(_cgcd, cg)
+        h = self.term_new(_mgcd, _cgcd)
+        cff = self.term_new(mf/_mgcd, ground_quo(cf, _cgcd))
+        cfg = self.from_dict({mg/_mgcd: ground_quo(cg, _cgcd)
+                              for mg, cg in g.items()})
+        return h, cff, cfg
 
     def _gcd(self, f, g):
         domain = self.domain
