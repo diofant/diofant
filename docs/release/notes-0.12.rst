@@ -75,3 +75,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20397` bug in dividing polynomials by module
 * :sympyissue:`19196` Slow f.factor_list
 * :sympyissue:`20491` Inconsistencies in pretty printing in a notebook
+* :sympyissue:`20490` LaTeX printing of negative constant PolyElement

@@ -1481,3 +1481,9 @@ def test_sympyissue_20491():
     assert latex(s) == r'\psi'
     assert latex(f) == r'\psi'
     assert latex(f(t)) == r'\psi{\left (t \right )}'
+
+
+def test_sympyissue_20490():
+    R, x, y = ring('x y', QQ)
+
+    assert latex(R(-2)) == '-2'
