@@ -2017,6 +2017,24 @@ def test_PolyElement_div():
     pytest.raises(PolynomialDivisionFailed,
                   lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
 
+    R, x, y = ring('x y', ZZ)
+
+    f = x**3
+    qv = [x - y**2, x - y]
+
+    assert f.div(qv) == ([x**2 + x*y**2 + y**4, 0], y**6)
+
+    f = x**2*y
+    qv = x**2 - y, x*y - 1
+
+    assert f.div(qv) == ([y, 0], y**2)
+    assert f.div(list(reversed(qv))) == ([x, 0], x)
+
+    qv = x - y**2, y**3 - 1
+
+    assert f.div(qv) == ([x*y + y**3, y**2], y**2)
+    assert f.div(list(reversed(qv))) == ([x, x*y + 1], y**2)
+
     R, x, y = ring('x y', ZZ, grlex)
 
     f = 4*x**2*y - 2*x*y + 4*x - 2*y + 8
