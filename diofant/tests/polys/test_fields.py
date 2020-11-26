@@ -346,7 +346,15 @@ def test_FracElement_eval():
 
 
 def test_FracElement_compose():
-    pass
+    F, x, y, z = field('x y z', QQ)
+
+    f = x**3
+
+    assert f.compose([(x, x/(y + z)),
+                      (y, z/x)]) == x**3/(y**3 + 3*y**2*z + 3*y*z**2 + z**3)
+
+    # issue sympy/sympy#20484
+    assert f.compose(x, x/(y + z)) == x**3/(y**3 + 3*y**2*z + 3*y*z**2 + z**3)
 
 
 def test_cache():

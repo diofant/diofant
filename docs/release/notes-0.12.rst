@@ -10,6 +10,7 @@ New features
 * Support modular exponentiation of :class:`~diofant.polys.rings.PolyElement`'s, see :pull:`1032`.
 * :func:`~diofant.solvers.inequalities.reduce_inequalities` support solving linear inequalities with Fourier-Motzkin elimination algorithm, see :pull:`1063`.
 * Added :class:`~diofant.domains.FiniteRing` for modular integers, see :pull:`876`.
+* Implemented :meth:`~diofant.polys.fields.FracElement.compose` for functional composition in the fields of fractions, see :pull:`1100`.
 
 Major changes
 =============
