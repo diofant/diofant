@@ -816,7 +816,9 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""
         ring = self.ring
-        n = int(n)
+
+        if not isinstance(n, int):
+            raise ValueError('exponent must be an integer')
 
         if n < 0:
             raise ValueError('negative exponent')
@@ -947,28 +949,45 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.quo_ground(other)
 
     def div(self, fv):
-        """Division algorithm, see :cite:`Cox2015ideals`, p. 64.
+        """Division algorithm for multivariate polynomials.
 
-        fv array of polynomials
-           return qv, r such that
-           self = sum(fv[i]*qv[i]) + r
+        Parameters
+        ==========
 
-        All polynomials are required not to be Laurent polynomials.
+        fv : sequence of PolyElement's
+            List of divsors.
+
+        Returns
+        =======
+
+        (qv, r) : tuple
+            Where qv is the sequence of quotients and r is the remainder.
+
+        Notes
+        =====
+
+        For multivariate polynomials the remainder is not uniquely
+        determined, unless divisors form a Gröbner basis.
 
         Examples
         ========
 
         >>> _, x, y = ring('x y', ZZ)
-        >>> f = x**3
-        >>> f0 = x - y**2
-        >>> f1 = x - y
-        >>> qv, r = f.div((f0, f1))
-        >>> qv[0]
-        x**2 + x*y**2 + y**4
-        >>> qv[1]
-        0
-        >>> r
-        y**6
+        >>> f = x**2*y
+        >>> f1, f2 = x**2 - y, x*y - 1
+        >>> f.div([f1, f2])
+        ([y, 0], y**2)
+        >>> f.div([f2, f1])
+        ([x, 0], x)
+
+        >>> g1, g2 = x - y**2, y**3 - 1
+        >>> f.div([g1, g2])[1] == f.div([g2, g1])[1]
+        True
+
+        References
+        ==========
+
+        * :cite:`Cox2015ideals`, p. 64.
 
         """
         ring = self.ring

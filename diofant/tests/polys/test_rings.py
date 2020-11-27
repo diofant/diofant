@@ -1857,6 +1857,7 @@ def test_PolyElement___pow__():
 
     assert (2*x**4 + x + 7)**2 == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
 
+    pytest.raises(ValueError, lambda: R(1)**object())
     pytest.raises(ValueError, lambda: R(1)**-1)
 
     assert R(1)**0 == 1
@@ -1956,6 +1957,10 @@ def test_PolyElement___pow__():
     assert R(QQ(3, 7))**1 == QQ(3, 7)
     assert R(QQ(3, 7))**7 == QQ(2187, 823543)
 
+    # issues sympy/sympy#20485 and sympy/sympy#20487
+    pytest.raises(ValueError, lambda: x**QQ(3, 2))
+    pytest.raises(ValueError, lambda: (x + y)**QQ(3, 2))
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0)**2 == 0
@@ -2011,6 +2016,24 @@ def test_PolyElement_div():
 
     pytest.raises(PolynomialDivisionFailed,
                   lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
+
+    R, x, y = ring('x y', ZZ)
+
+    f = x**3
+    qv = [x - y**2, x - y]
+
+    assert f.div(qv) == ([x**2 + x*y**2 + y**4, 0], y**6)
+
+    f = x**2*y
+    qv = x**2 - y, x*y - 1
+
+    assert f.div(qv) == ([y, 0], y**2)
+    assert f.div(list(reversed(qv))) == ([x, 0], x)
+
+    qv = x - y**2, y**3 - 1
+
+    assert f.div(qv) == ([x*y + y**3, y**2], y**2)
+    assert f.div(list(reversed(qv))) == ([x, x*y + 1], y**2)
 
     R, x, y = ring('x y', ZZ, grlex)
 

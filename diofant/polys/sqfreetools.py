@@ -70,7 +70,7 @@ class _SQF:
         domain = self.domain
 
         n, factors, p = 1, [], domain.characteristic
-        m = domain.order // p
+        m = int(domain.order // p)
 
         while not f.is_ground:
             df = f.diff()

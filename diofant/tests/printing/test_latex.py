@@ -1472,3 +1472,24 @@ def test_diffgeom():
     dg = Differential(s_field)
     assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
                         r'\boldsymbol{\mathrm{y}} \right )})'
+
+
+def test_sympyissue_20491():
+    s = Symbol(r'\psi')
+    f = Function(r'\psi')
+
+    assert latex(s) == r'\psi'
+    assert latex(f) == r'\psi'
+    assert latex(f(t)) == r'\psi{\left (t \right )}'
+
+
+def test_sympyissue_20490():
+    R, x, y = ring('x y', QQ)
+
+    assert latex(R(-2)) == '-2'
+
+
+def test_sympyissue_20487():
+    R, x, y = ring('x y', QQ)
+
+    pytest.raises(ValueError, lambda: latex(x**QQ(3, 2)))
