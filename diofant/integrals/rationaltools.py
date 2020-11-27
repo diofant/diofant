@@ -21,15 +21,14 @@ def ratint(f, x, **flags):
     References
     ==========
 
-    * M. Bronstein, Symbolic Integration I: Transcendental
-      Functions, Second Edition, Springer-Verlag, 2005, pp. 35-70
+    * :cite:`Bronstein2005integration`, pp. 35-70
 
     See Also
     ========
 
     diofant.integrals.integrals.Integral.doit
-    diofant.integrals.rationaltools.ratint_logpart
-    diofant.integrals.rationaltools.ratint_ratpart
+    ratint_logpart
+    ratint_ratpart
 
     """
     if type(f) is not tuple:
@@ -118,20 +117,18 @@ def ratint_ratpart(f, g, x):
     Examples
     ========
 
-    >>> ratint_ratpart(Poly(1, x), Poly(x + 1, x), x)
+    >>> ratint_ratpart(1, x + 1, x)
     (0, 1/(x + 1))
-    >>> ratint_ratpart(Poly(1, x, domain=EX),
-    ...                Poly(x**2 + y**2, x, domain=EX), x)
+    >>> ratint_ratpart(1, x**2 + y**2, x)
     (0, 1/(x**2 + y**2))
-    >>> ratint_ratpart(Poly(36, x),
-    ...                Poly(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x), x)
+    >>> ratint_ratpart(36, x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x)
     ((12*x + 6)/(x**2 - 1), 12/(x**2 - x - 2))
 
     See Also
     ========
 
-    diofant.integrals.rationaltools.ratint
-    diofant.integrals.rationaltools.ratint_logpart
+    ratint
+    ratint_logpart
 
     """
     f = Poly(f, x)
@@ -180,18 +177,18 @@ def ratint_logpart(f, g, x, t=None):
     Examples
     ========
 
-    >>> ratint_logpart(Poly(1, x), Poly(x**2 + x + 1, x), x)
+    >>> ratint_logpart(1, x**2 + x + 1, x)
     [(Poly(x + 3*_t/2 + 1/2, x, domain='QQ[_t]'),
       Poly(3*_t**2 + 1, _t, domain='ZZ'))]
-    >>> ratint_logpart(Poly(12, x), Poly(x**2 - x - 2, x), x)
+    >>> ratint_logpart(12, x**2 - x - 2, x)
     [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
       Poly(_t**2 - 16, _t, domain='ZZ'))]
 
     See Also
     ========
 
-    diofant.integrals.rationaltools.ratint
-    diofant.integrals.rationaltools.ratint_ratpart
+    ratint
+    ratint_ratpart
 
     """
     f, g = Poly(f, x), Poly(g, x)

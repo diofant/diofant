@@ -28,7 +28,7 @@ def components(f, x):
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
     result = set()
@@ -95,7 +95,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
     from ..solvers.solvers import denoms, solve
@@ -192,15 +192,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     References
     ==========
 
-    * Manuel Bronstein's "Poor Man's Integrator",
-      http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
+    * :cite:`Bronstein2005pmint`
 
     See Also
     ========
 
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
-    diofant.integrals.heurisch.components
+    components
 
     """
     f = sympify(f)
