@@ -227,7 +227,7 @@ class GaloisFieldElement(ModularInteger):
 
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
-            rep = integer_digits(rep % self.parent.order, self.parent.mod)
+            rep = list(reversed(integer_digits(rep % self.parent.order, self.parent.mod)))
 
         if isinstance(rep, (list, tuple)):
             rep = self.domain.from_list(rep)

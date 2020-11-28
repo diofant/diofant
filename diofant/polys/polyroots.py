@@ -43,7 +43,7 @@ def roots_quadratic(f):
     sorted (but will be canonical).
 
     """
-    a, b, c = f.all_coeffs()
+    c, b, a = f.all_coeffs()
     dom = f.domain
 
     def _simplify(expr):
@@ -95,7 +95,7 @@ def roots_cubic(f, trig=False):
 
     """
     if trig:
-        a, b, c, d = f.all_coeffs()
+        d, c, b, a = f.all_coeffs()
         p = (3*a*c - b**2)/3/a**2
         q = (2*b**3 - 9*a*b*c + 27*a**2*d)/(27*a**3)
         D = 18*a*b*c*d - 4*b**3*d + b**2*c**2 - 4*a*c**3 - 27*a**2*d**2
@@ -105,7 +105,7 @@ def roots_cubic(f, trig=False):
                 rv.append(2*sqrt(-p/3)*cos(acos(3*q/2/p*sqrt(-3/p))/3 - k*2*pi/3))
             return [i - b/3/a for i in rv]
 
-    _, a, b, c = f.monic().all_coeffs()
+    c, b, a, _ = f.monic().all_coeffs()
 
     if c == 0:
         x1, x2 = roots([1, a, b], multiple=True)
@@ -251,7 +251,7 @@ def roots_quartic(f):
     * eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
 
     """
-    _, a, b, c, d = f.monic().all_coeffs()
+    d, c, b, a, _ = f.monic().all_coeffs()
 
     if not d:
         return [Integer(0)] + roots([1, a, b, c], multiple=True)
@@ -463,7 +463,7 @@ def roots_cyclotomic(f, factor=False):
 def roots_quintic(f):
     """Calulate exact roots of a solvable quintic."""
     result = []
-    coeff_5, coeff_4, p, q, r, s = f.all_coeffs()
+    s, r, q, p, coeff_4, coeff_5 = f.all_coeffs()
 
     # Eqn must be of the form x^5 + px^3 + qx^2 + rx + s
     if coeff_4:
