@@ -286,9 +286,6 @@ class FracElement(DomainElement, CantSympify):
     def __bool__(self):
         return bool(self.numerator)
 
-    def sort_key(self):
-        return self.denominator.sort_key(), self.numerator.sort_key()
-
     def __pos__(self):
         return self.raw_new(self.numerator, self.denominator)
 
