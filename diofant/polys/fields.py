@@ -212,7 +212,6 @@ class FractionField(Field, CompositeDomain):
 _field_cache: typing.Dict[tuple, FractionField] = {}
 
 
-@functools.total_ordering
 class FracElement(DomainElement, CantSympify):
     """Element of multivariate distributed rational function field.
 
@@ -289,12 +288,6 @@ class FracElement(DomainElement, CantSympify):
 
     def sort_key(self):
         return self.denominator.sort_key(), self.numerator.sort_key()
-
-    def __lt__(self, other):
-        if isinstance(other, self.field.dtype):
-            return self.sort_key() < other.sort_key()
-        else:
-            return NotImplemented
 
     def __pos__(self):
         return self.raw_new(self.numerator, self.denominator)
