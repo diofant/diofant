@@ -549,9 +549,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def sort_key(self):
-        return len(self), self.terms()
-
     def drop(self, gen):
         ring = self.ring
         i = ring.index(gen)
