@@ -37,10 +37,8 @@ jobs:
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
-        flake8-rst --statistics
-        flake8-rst --ignore= --statistics --exit-zero
-        flake8 --statistics
-        flake8 --ignore= --statistics --exit-zero
+        flake8-rst
+        flake8
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
