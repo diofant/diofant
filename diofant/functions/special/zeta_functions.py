@@ -124,7 +124,7 @@ class lerchphi(Function):
             p = Poly((t + a)**(-s), t)
             start = 1/(1 - t)
             res = Integer(0)
-            for c in reversed(p.all_coeffs()):
+            for c in p.all_coeffs():
                 res += c*start
                 start = t*start.diff(t)
             return res.subs({t: z})

@@ -564,7 +564,7 @@ def _rewrite_gamma(f, s, a, b):
             p = Poly(arg, s)
             if p.degree() != 1:
                 raise exception(fact)
-            return p.all_coeffs()
+            return list(reversed(p.all_coeffs()))
 
         # constants
         if not fact.has(s):
@@ -605,7 +605,7 @@ def _rewrite_gamma(f, s, a, b):
                 ufacs += [coeff]
                 args += [(s - c, is_numer) for c in rs]
                 continue
-            a, c = p.all_coeffs()
+            c, a = p.all_coeffs()
             ufacs += [a]
             c /= -a
             # Now need to convert s - c
