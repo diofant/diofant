@@ -92,13 +92,13 @@ def test_random_poly():
     assert all(-400 <= c <= 400 for c in poly.all_coeffs())
 
     random.seed(11)
-    assert random_poly(x, 10, -1, 1, polys=True).all_coeffs() == [1, 0, 0, -1,
-                                                                  0, 0, -1, 1,
-                                                                  1, 0, 1]
+    assert random_poly(x, 10, -1, 1, polys=True).all_coeffs() == [1, 0, 1, 1,
+                                                                  -1, 0, 0, -1,
+                                                                  0, 0, 1]
 
     for i in range(10):
         poly = random_poly(x, 3, -10, 10, percent=50, polys=True)
-        assert poly.all_coeffs()[0]
+        assert poly.all_coeffs()[-1]
         assert len([c for c in poly.all_coeffs() if c == 0]) == 2
 
 

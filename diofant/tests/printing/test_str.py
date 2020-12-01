@@ -752,7 +752,7 @@ def test_SymmetricDifference():
 
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
-    assert str(K([1, 0])) == 'sqrt(2)'
+    assert str(K([0, 1])) == 'sqrt(2)'
 
 
 def test_Differential():
