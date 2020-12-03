@@ -5,10 +5,9 @@ import pytest
 from diofant import (Derivative, Dummy, Float, Integral, Rational, Symbol,
                      Tuple, cos, oo, pi, root, solve, sqrt, symbols, tan)
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
-                              Point, Point2D, Point3D, Polygon, Ray,
-                              RegularPolygon, Segment, Triangle, are_similar,
-                              centroid, convex_hull, deg, idiff, intersection,
-                              rad)
+                              Point, Polygon, Ray, RegularPolygon, Segment,
+                              Triangle, are_similar, centroid, convex_hull,
+                              deg, idiff, intersection, rad)
 from diofant.geometry.entity import rotate, scale, translate
 from diofant.utilities.randtest import verify_numerically
 
@@ -96,7 +95,6 @@ def test_ellipse_geom():
 
     l1 = Line(p1, p2)
 
-    pytest.raises(ValueError, lambda: Ellipse(Point3D(0, 0, 0), 1, 1))
     pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
 
     assert e1.ambient_dimension == 2
@@ -220,6 +218,12 @@ def test_ellipse_geom():
     e = Ellipse((0, 0), x, 1)
     assert e.normal_lines((x + 1, 0)) == [Line(Point(0, 0), Point(1, 0))]
     pytest.raises(NotImplementedError, lambda: e.normal_lines((x + 1, 1)))
+
+    assert (c1.normal_lines(Point(1, 1)) ==
+            [Line(Point(-sqrt(2)/2, -sqrt(2)/2),
+                  Point(-sqrt(2)/2 + 1, -sqrt(2)/2 + 1)),
+             Line(Point(sqrt(2)/2, -sqrt(2)/2),
+                  Point(sqrt(2)/2 + 1, -1 - sqrt(2)/2))])
 
     # Properties
     major = 3
@@ -763,7 +767,7 @@ def test_util():
 
 
 def test_repr():
-    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(Integer(0), Integer(1)), Integer(2))'
+    assert repr(Circle((0, 1), 2)) == 'Circle(Point(Integer(0), Integer(1)), Integer(2))'
 
 
 def test_transform():
@@ -859,16 +863,16 @@ def test_reflect():
     rpent = pent.reflect(l)
     assert rpent.center == pent.center.reflect(l)
     assert [w.evalf(3) for w in rpent.vertices] == \
-        [Point2D(Float('-0.585815', dps=3),
-                 Float('4.27051', dps=3)),
-         Point2D(Float('-1.69409', dps=3),
-                 Float('4.66211', dps=3)),
-         Point2D(Float('-2.40918', dps=3),
-                 Float('3.72949', dps=3)),
-         Point2D(Float('-1.74292', dps=3),
-                 Float('2.76123', dps=3)),
-         Point2D(Float('-0.615967', dps=3),
-                 Float('3.0957', dps=3))]
+        [Point(Float('-0.585815', dps=3),
+               Float('4.27051', dps=3)),
+         Point(Float('-1.69409', dps=3),
+               Float('4.66211', dps=3)),
+         Point(Float('-2.40918', dps=3),
+               Float('3.72949', dps=3)),
+         Point(Float('-1.74292', dps=3),
+               Float('2.76123', dps=3)),
+         Point(Float('-0.615967', dps=3),
+               Float('3.0957', dps=3))]
     assert pent.area.equals(-rpent.area)
 
 

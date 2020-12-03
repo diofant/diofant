@@ -132,9 +132,8 @@ def test_Function():
 
 
 def test_Geometry():
-    assert sstr(Point(0, 0)) == 'Point2D(0, 0)'
-    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point2D(0, 0), 3)'
-    # TODO test other Geometry entities
+    assert sstr(Point(0, 0)) == 'Point(0, 0)'
+    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point(0, 0), 3)'
 
 
 def test_GoldenRatio():

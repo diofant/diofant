@@ -57,9 +57,9 @@ def test_Function():
 
 
 def test_Geometry():
-    sT(Point(0, 0), 'Point2D(Integer(0), Integer(0))')
+    sT(Point(0, 0), 'Point(Integer(0), Integer(0))')
     sT(Ellipse(Point(0, 0), 5, 1),
-       'Ellipse(Point2D(Integer(0), Integer(0)), Integer(5), Integer(1))')
+       'Ellipse(Point(Integer(0), Integer(0)), Integer(5), Integer(1))')
     # TODO more tests
 
 
