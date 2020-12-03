@@ -30,7 +30,7 @@ def test_construct_domain():
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==
-            (alg, [alg([7]), alg([Rational(1, 2)]), alg([1, 0])]))
+            (alg, [alg([7]), alg([Rational(1, 2)]), alg([0, 1])]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 

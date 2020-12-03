@@ -547,7 +547,7 @@ def test_Domain_convert():
     ALG2 = QQ.algebraic_field(sqrt(2))
     a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
-    assert a.rep.all_coeffs() == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert a.rep.all_coeffs() == [0, -QQ(9, 2), 0, QQ(1, 2)]
     assert RR.convert(a) == RR(1.4142135623730951)
     assert CC.convert(a) == CC(1.4142135623730951)
 
@@ -652,7 +652,7 @@ def test_Domain__algebraic_field():
     assert alg.from_expr(sqrt(3)).denominator == 1
     assert alg.from_expr(2*sqrt(3)).denominator == 1
     assert alg.from_expr(sqrt(3)/2).denominator == 2
-    assert alg([QQ(7, 38), QQ(3, 2)]).denominator == 38
+    assert alg([QQ(3, 2), QQ(7, 38)]).denominator == 38
 
     alg = QQ.algebraic_field(sqrt(2))
     assert alg.minpoly == Poly(x**2 - 2)
@@ -689,8 +689,8 @@ def test_Domain__algebraic_field():
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
-    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain([1])/3,
-                                                  alg.domain([2, 0])])
+    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain([0, 2]),
+                                                  alg.domain([1])/3])
     alg2 = QQ.algebraic_field(sqrt(2))
     assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
 
@@ -707,10 +707,11 @@ def test_Domain__algebraic_field():
     assert alg3.is_RealAlgebraicField
     assert int(alg3.unit) == 2
     assert 2.772 > alg3.unit > 2.771
-    assert int(alg3([3, 17, 11, -1, 2])) == 622
-    assert int(alg3([1, QQ(-11, 4), QQ(125326976730518, 44208605852241),
+    assert int(alg3([2, -1, 11, 17, 3])) == 622
+    assert int(alg3([QQ(2331359268715, 10459004949272),
                      QQ(-16742151878022, 12894796053515),
-                     QQ(2331359268715, 10459004949272)])) == 18
+                     QQ(125326976730518, 44208605852241),
+                     QQ(-11, 4), 1])) == 18
 
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
@@ -837,8 +838,8 @@ def test_AlgebraicElement():
     assert bool(A([])) is False
     assert bool(A([QQ(1)])) is True
 
-    a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.rep.all_coeffs() == [-1, 1]
+    a = A([QQ(2), -QQ(1), QQ(1)])
+    assert a.rep.all_coeffs() == [1, -1]
 
     A = QQ.algebraic_field(root(2, 3))
 
@@ -852,51 +853,51 @@ def test_AlgebraicElement():
     assert abs(+A.unit) == A.unit
     assert abs(-A.unit) == A.unit
 
-    a = A([QQ(2), QQ(-1), QQ(1)])
-    b = A([QQ(1), QQ(2)])
+    a = A([QQ(1), QQ(-1), QQ(2)])
+    b = A([QQ(2), QQ(1)])
 
-    c = A([QQ(-2), QQ(1), QQ(-1)])
+    c = A([QQ(-1), QQ(1), QQ(-2)])
 
     assert +a == a
     assert -a == c
 
-    c = A([QQ(2), QQ(0), QQ(3)])
+    c = A([QQ(3), QQ(0), QQ(2)])
 
     assert a + b == c
     assert b + a == c
 
-    assert c + 1 == A([QQ(2), QQ(0), QQ(4)])
+    assert c + 1 == A([QQ(4), QQ(0), QQ(2)])
     pytest.raises(TypeError, lambda: c + 'x')
     pytest.raises(TypeError, lambda: 'x' + c)
 
-    c = A([QQ(2), QQ(-2), QQ(-1)])
+    c = A([QQ(-1), QQ(-2), QQ(2)])
 
     assert a - b == c
 
-    c = A([QQ(-2), QQ(2), QQ(1)])
+    c = A([QQ(1), QQ(2), QQ(-2)])
 
     assert b - a == c
 
-    assert c - 1 == A([QQ(-2), QQ(2), QQ(0)])
+    assert c - 1 == A([QQ(0), QQ(2), QQ(-2)])
     pytest.raises(TypeError, lambda: c - 'x')
     pytest.raises(TypeError, lambda: 'x' - c)
 
-    c = A([QQ(3), QQ(-1), QQ(6)])
+    c = A([QQ(6), QQ(-1), QQ(3)])
 
     assert a*b == c
     assert b*a == c
 
-    assert c*2 == A([QQ(6), QQ(-2), QQ(12)])
+    assert c*2 == A([QQ(12), QQ(-2), QQ(6)])
     pytest.raises(TypeError, lambda: c*'x')
     pytest.raises(TypeError, lambda: 'x'*c)
 
-    c = A([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)])
+    c = A([-QQ(3, 5), -QQ(1, 5), QQ(11, 10)])
 
-    assert c/2 == A([QQ(11, 20), -QQ(1, 10), -QQ(3, 10)])
+    assert c/2 == A([-QQ(3, 10), -QQ(1, 10), QQ(11, 20)])
     pytest.raises(TypeError, lambda: c/'x')
     pytest.raises(TypeError, lambda: 'x'/c)
 
-    c = A([QQ(-1, 43), QQ(9, 43), QQ(5, 43)])
+    c = A([QQ(5, 43), QQ(9, 43), QQ(-1, 43)])
 
     assert a**0 == A(1)
     assert a**1 == a
@@ -908,9 +909,9 @@ def test_AlgebraicElement():
 
     A = QQ.algebraic_field(I)
 
-    a = A([QQ(1, 2), QQ(1), QQ(2)])
-    b = A([ZZ(1), ZZ(1), ZZ(2)])
-    c = A([QQ(3, 2), QQ(2), QQ(4)])
+    a = A([QQ(2), QQ(1), QQ(1, 2)])
+    b = A([ZZ(2), ZZ(1), ZZ(1)])
+    c = A([QQ(4), QQ(2), QQ(3, 2)])
     assert a + b == b + a == c
 
 
@@ -1046,31 +1047,31 @@ def test_ModularInteger():
     assert F9.zero == F9([0])
     assert F9.one == F9([1])
     assert F9(F9([2, 1])) == F9([2, 1])
-    assert F9([2, 1]) + F9([1, 2]) == F9([1, 2]) + F9([2, 1]) == F9.zero
-    assert F9([2, 1]) + F9([1, 3]) == F9.one
-    assert F9([2, 1]) * F9([1, 3]) == F9([1, 1])
+    assert F9([1, 2]) + F9([2, 1]) == F9([2, 1]) + F9([1, 2]) == F9.zero
+    assert F9([1, 2]) + F9([3, 1]) == F9.one
+    assert F9([1, 2]) * F9([3, 1]) == F9([1, 1])
     assert sum(F9.one for _ in range(3)) == F9.zero
 
     assert int(F9.zero) == 0
     assert int(F9.one) == 1
     assert int(F9([1, 1])) == int(F9(4)) == 4
-    assert int(F9([2, 0])) == int(F9(6)) == 6
+    assert int(F9([0, 2])) == int(F9(6)) == 6
 
-    F81 = FF(3, [1, 0, 0, 1, 2])
+    F81 = FF(3, [2, 1, 0, 0, 1])
 
-    assert F81([1, 2, 1])*F81([2, 2, 2]) == F81([2, 1, 1])
-    assert F81([5, 4, 3, 2, 1]) == F81([1, 0, 0, 0])
-    assert F81([0, 1, 0]) == F81([1, 0])
-    assert 1 + F81([1, 1]) == F81([1, 2])
+    assert F81([1, 2, 1])*F81([2, 2, 2]) == F81([1, 1, 2])
+    assert F81([1, 2, 3, 4, 5]) == F81([0, 0, 0, 1])
+    assert F81([0, 1, 0]) == F81([0, 1])
+    assert 1 + F81([1, 1]) == F81([2, 1])
 
     F8 = FF(8)
 
     assert F8.order == 8
     assert F8.characteristic == 2
-    assert F8.dtype.mod.all_coeffs() == [1, 0, 1, 1]
+    assert F8.dtype.mod.all_coeffs() == [1, 1, 0, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
     assert int(F8(-1)) == int(F8(7)) == 7
-    assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])(5)'
+    assert str(F8([1, 0, 1])) == 'GF(2, [1, 1, 0, 1])(5)'
 
     F4 = FF(2, [1, 1, 1])
 
@@ -1084,11 +1085,11 @@ def test_ModularInteger():
 
     pytest.raises(TypeError, lambda: object()*F4.one)
 
-    F1331 = FF(11, [1, 4, 8, 7])
+    F1331 = FF(11, [7, 8, 4, 1])
 
-    assert F1331([1, 2, 0]).is_primitive is False
-    assert F1331([1, 7, 5]).is_primitive is False
-    assert F1331([1, 2, 6]).is_primitive is True
+    assert F1331([0, 2, 1]).is_primitive is False
+    assert F1331([5, 7, 1]).is_primitive is False
+    assert F1331([6, 2, 1]).is_primitive is True
 
 
 def test_QQ_int():

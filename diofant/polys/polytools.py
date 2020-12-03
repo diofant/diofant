@@ -639,7 +639,7 @@ class Poly(Expr):
         ========
 
         >>> Poly(x**3 + 2*x - 1).all_coeffs()
-        [1, 0, 2, -1]
+        [-1, 2, 0, 1]
 
         """
         return [self.domain.to_expr(c) for c in self.rep.all_coeffs()]
@@ -1982,7 +1982,7 @@ class Poly(Expr):
         try:
             # We need to add extra precision to guard against losing accuracy.
             # 10 times the degree of the polynomial seems to work well.
-            roots = mpmath.polyroots(coeffs, maxsteps=maxsteps,
+            roots = mpmath.polyroots(list(reversed(coeffs)), maxsteps=maxsteps,
                                      cleanup=cleanup, error=False,
                                      extraprec=self.degree()*10)
 
@@ -3621,13 +3621,13 @@ def to_rational_coeffs(f):
         n = f.degree()
         lc = f.LC()
         f1 = f1 or f1.monic()
-        coeffs = f1.all_coeffs()[1:]
+        coeffs = f1.all_coeffs()[:-1]
         coeffs = [simplify(coeffx) for coeffx in coeffs]
-        if coeffs[-2]:
-            rescale1_x = simplify(coeffs[-2]/coeffs[-1])
+        if coeffs[1]:
+            rescale1_x = simplify(coeffs[1]/coeffs[0])
             coeffs1 = []
             for i in range(len(coeffs)):
-                coeffx = simplify(coeffs[i]*rescale1_x**(i + 1))
+                coeffx = simplify(coeffs[n - i - 1]*rescale1_x**(i + 1))
                 if not coeffx.is_rational:
                     break
                 coeffs1.append(coeffx)
@@ -3656,8 +3656,8 @@ def to_rational_coeffs(f):
             return
         n = f.degree()
         f1 = f1 or f1.monic()
-        coeffs = f1.all_coeffs()[1:]
-        c = simplify(coeffs[0])
+        coeffs = f1.all_coeffs()[:-1]
+        c = simplify(coeffs[-1])
         if c and not c.is_rational:
             func = Add
             if c.is_Add:

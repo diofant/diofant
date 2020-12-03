@@ -2878,7 +2878,7 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-        return PurePoly(list(map(simplify, self.berkowitz()[-1])), x)
+        return PurePoly(list(map(simplify, reversed(self.berkowitz()[-1]))), x)
 
     charpoly = berkowitz_charpoly
 

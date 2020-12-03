@@ -712,7 +712,7 @@ def _eval_sum_hyper(f, i, a):
             p = Poly(fac, i)
             if p.degree() != 1:
                 return
-            m, n = p.all_coeffs()
+            n, m = p.all_coeffs()
             ab[k] *= m**mul
             params[k] += [n/m]*mul
 

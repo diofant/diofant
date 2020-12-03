@@ -56,8 +56,8 @@ def _alpha_to_z(f, ring):
 
             for i in range(n):
                 m = monom + (n-i-1,)
-                if coeff[i]:
-                    f_[m] = coeff[i]
+                if coeff[n - i - 1]:
+                    f_[m] = coeff[n - i - 1]
 
     return f_
 
@@ -89,7 +89,7 @@ def _z_to_alpha(f, ring):
     f_ = ring.zero
     for monom, coeff in f.items():
         m = monom[:-1]
-        c = domain([domain.domain(coeff)] + [0]*monom[-1])
+        c = domain([0]*monom[-1] + [domain.domain(coeff)])
 
         if m not in f_:
             f_[m] = c

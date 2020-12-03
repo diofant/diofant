@@ -1427,15 +1427,15 @@ class _FindRoot:
         sturm = f.sturm()
 
         if inf is None:
-            f_inf = new_ring.from_list([s.LC*(-1)**s.degree() for s in sturm])
+            f_inf = new_ring.from_list([s.LC*(-1)**s.degree() for s in reversed(sturm)])
         else:
-            f_inf = new_ring.from_list([s.eval(a=inf) for s in sturm])
+            f_inf = new_ring.from_list([s.eval(a=inf) for s in reversed(sturm)])
         signs_inf = new_ring._sign_variations(f_inf)
 
         if sup is None:
-            f_sup = new_ring.from_list([s.LC for s in sturm])
+            f_sup = new_ring.from_list([s.LC for s in reversed(sturm)])
         else:
-            f_sup = new_ring.from_list([s.eval(a=sup) for s in sturm])
+            f_sup = new_ring.from_list([s.eval(a=sup) for s in reversed(sturm)])
         signs_sup = new_ring._sign_variations(f_sup)
 
         count = abs(signs_inf - signs_sup)
@@ -1755,7 +1755,7 @@ class _FindRoot:
         for i in range(n):
             Q.append(Q[-1]*q)
 
-        for c, q in zip(f.all_coeffs()[1:], Q[1:]):
+        for c, q in zip(reversed(f.all_coeffs()[:-1]), Q[1:]):
             h *= p
             q = q.mul_ground(c)
             h += q

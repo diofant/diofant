@@ -398,7 +398,7 @@ def _sqrt_symbolic_denest(a, b, r):
         except PolynomialError:
             return
         if newa.degree() == 2:
-            ca, cb, cc = newa.all_coeffs()
+            cc, cb, ca = newa.all_coeffs()
             cb += b
             if _mexpand(cb**2 - 4*ca*cc).equals(0):
                 z = sqrt(ca*(sqrt(r) + cb/(2*ca))**2)

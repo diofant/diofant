@@ -227,7 +227,7 @@ def test_RootSum():
 def test_AlgebraicElement():
     r = RootOf(x**7 + 3*x - 1, 3)
     K = QQ.algebraic_field(r)
-    a = K([1, 2, 3, 0, 1])
+    a = K([1, 0, 3, 2, 1])
     assert mathematica_code(a) == ('AlgebraicNumber[Root[#^7 + 3*# - 1 &, 4],'
                                    ' {1, 0, 3, 2, 1}]')
 

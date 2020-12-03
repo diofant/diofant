@@ -1209,8 +1209,8 @@ def _to_ZZ_poly(f, ring):
         n = len(coeff)
 
         for i in range(n):
-            if coeff[i]:
-                c = domain(coeff[i] * den) * m
+            if coeff[n - i - 1]:
+                c = domain(coeff[n - i - 1] * den) * m
 
                 if (monom[0], n-i-1) not in f_:
                     f_[(monom[0], n-i-1)] = c
@@ -1251,7 +1251,7 @@ def _to_ANP_poly(f, ring):
         for monom, coeff in f.items():
             for mon, coef in coeff.items():
                 m = (monom[0],) + mon
-                c = domain([domain.domain(coef)] + [0]*monom[1])
+                c = domain([0]*monom[1] + [domain.domain(coef)])
 
                 if m not in f_:
                     f_[m] = c
@@ -1261,7 +1261,7 @@ def _to_ANP_poly(f, ring):
     else:
         for monom, coeff in f.items():
             m = monom[0],
-            c = domain([domain.domain(coeff)] + [0]*monom[1])
+            c = domain([0]*monom[1] + [domain.domain(coeff)])
 
             if m not in f_:
                 f_[m] = c
