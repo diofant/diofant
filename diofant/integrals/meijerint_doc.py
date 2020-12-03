@@ -19,8 +19,9 @@ for about, category in sorted(t.items(), key=default_sort_key):
     if about == ():
         doc += 'Elementary functions:\n\n'
     else:
-        doc += 'Functions involving ' + ', '.join('`%s`' % latex(
-            list(category[0][0].atoms(func))[0]) for func in about) + ':\n\n'
+        doc += ('Functions involving ' +
+                ', '.join(f'`{latex(list(category[0][0].atoms(func))[0])}`'
+                          for func in about) + ':\n\n')
     for formula, gs, cond, hint in category:
         if not isinstance(gs, list):
             g = Symbol('\\text{generated}')
@@ -30,7 +31,7 @@ for about, category in sorted(t.items(), key=default_sort_key):
         if cond is True:
             cond = ''
         else:
-            cond = ',\\text{ if } %s' % latex(cond)
+            cond = f',\\text{{ if }} {latex(cond)}'
         doc += f'.. math::\n  {latex(obj)}{cond}\n\n'
 
 __doc__ = doc

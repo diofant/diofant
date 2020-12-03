@@ -118,12 +118,12 @@ def _uniquely_named_symbol(xname, *exprs):
     from any other already in the expressions given. The name is made
     unique by prepending underscores.
     """
-    prefix = '%s'
-    x = prefix % xname
+    prefix = '{0}'
+    x = prefix.format(xname)
     syms = set().union(*[e.free_symbols for e in exprs])
     while any(x == str(s) for s in syms):
         prefix = '_' + prefix
-        x = prefix % xname
+        x = prefix.format(xname)
     return _symbol(x)
 
 
@@ -196,7 +196,7 @@ def intersection(*entities):
             try:
                 entities[i] = Point(e)
             except NotImplementedError:
-                raise ValueError('%s is not a GeometryEntity and cannot be made into Point' % str(e))
+                raise ValueError(f'{e!s} is not a GeometryEntity and cannot be made into Point')
 
     res = entities[0].intersection(entities[1])
     for entity in entities[2:]:
@@ -259,7 +259,7 @@ def convex_hull(*args):
             try:
                 e = Point(e)
             except NotImplementedError:
-                raise ValueError('%s is not a GeometryEntity and cannot be made into Point' % str(e))
+                raise ValueError(f'{e!s} is not a GeometryEntity and cannot be made into Point')
         if isinstance(e, Point):
             p.add(e)
         elif isinstance(e, Segment):
@@ -268,7 +268,7 @@ def convex_hull(*args):
             p.update(e.vertices)
         else:
             raise NotImplementedError(
-                'Convex hull for %s not implemented.' % type(e))
+                f'Convex hull for {type(e)} not implemented.')
 
     # make sure all our points are of the same dimension
     if any(len(x) != 2 for x in p):

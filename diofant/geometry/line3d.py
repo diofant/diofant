@@ -731,8 +731,8 @@ class LinearEntity3D(GeometryEntity):
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError('Symbol %s already appears in object '
-                             'and cannot be used as a parameter.' % t.name)
+            raise ValueError(f'Symbol {t.name} already appears in object '
+                             'and cannot be used as a parameter.')
         x = simplify(self.p1.x + t*(self.p2.x - self.p1.x))
         y = simplify(self.p1.y + t*(self.p2.y - self.p1.y))
         z = simplify(self.p1.z + t*(self.p2.z - self.p1.z))

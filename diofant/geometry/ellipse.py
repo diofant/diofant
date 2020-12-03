@@ -841,8 +841,8 @@ class Ellipse(GeometrySet):
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError(filldedent('Symbol %s already appears in object '
-                                        'and cannot be used as a parameter.' % t.name))
+            raise ValueError(filldedent(f'Symbol {t.name} already appears in object '
+                                        'and cannot be used as a parameter.'))
         return Point(self.center.x + self.hradius*cos(t),
                      self.center.y + self.vradius*sin(t))
 

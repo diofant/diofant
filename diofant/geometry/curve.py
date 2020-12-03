@@ -62,10 +62,10 @@ class Curve(GeometrySet):
         fun = sympify(function)
         if not is_sequence(fun) or len(fun) != 2:
             raise ValueError('Function argument should be (x(t), y(t)) '
-                             'but got %s' % str(function))
+                             f'but got {function!s}')
         if not is_sequence(limits) or len(limits) != 3:
             raise ValueError('Limit argument should be (t, tmin, tmax) '
-                             'but got %s' % str(limits))
+                             f'but got {limits!s}')
 
         return GeometryEntity.__new__(cls, Tuple(*fun), Tuple(*limits))
 
@@ -269,8 +269,8 @@ class Curve(GeometrySet):
         t = self.parameter
         if (tnew.name != t.name and
                 tnew.name in (f.name for f in self.free_symbols)):
-            raise ValueError('Symbol %s already appears in object '
-                             'and cannot be used as a parameter.' % tnew.name)
+            raise ValueError(f'Symbol {tnew.name} already appears in object '
+                             'and cannot be used as a parameter.')
         return Point(*[w.subs({t: tnew}) for w in self.functions])
 
     def plot_interval(self, parameter='t'):

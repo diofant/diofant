@@ -15,6 +15,6 @@ doc = ''
 for f in c.formulae:
     obj = Eq(hyper(f.func.ap, f.func.bq, f.z),
              f.closed_form.rewrite('nonrepsmall'))
-    doc += '.. math::\n  %s\n' % latex(obj)
+    doc += f'.. math::\n  {latex(obj)}\n'
 
 __doc__ = doc

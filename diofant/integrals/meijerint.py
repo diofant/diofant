@@ -1302,8 +1302,8 @@ def _check_antecedents_inversion(g, x):
         epsilon = nan
     theta = ((1 - sigma)/2 + Add(*g.bq) - Add(*g.ap))/sigma
     delta = g.delta
-    _debug('  m=%s, n=%s, p=%s, q=%s, tau=%s, nu=%s, rho=%s, sigma=%s' % (
-        m, n, p, q, tau, nu, rho, sigma))
+    _debug(f'  m={m!s}, n={n!s}, p={p!s}, q={q!s}, tau={tau!s}, '
+           f'nu={nu!s}, rho={rho!s}, sigma={sigma!s}')
     _debug(f'  epsilon={epsilon}, theta={theta}, delta={delta}')
 
     # First check if the computation is valid.

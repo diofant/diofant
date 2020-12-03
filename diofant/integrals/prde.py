@@ -111,7 +111,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         return a, B, G, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-                         "'base'}, not %s." % case)
+                         f"'base'}}, not {case}.")
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
     nc = min(order_at(Ga, p, DE.t) - order_at(Gd, p, DE.t) for Ga, Gd in G)
@@ -851,7 +851,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     else:
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
-                         "'base', 'auto'}, not %s" % case)
+                         f"'base', 'auto'}}, not {case}")
 
     common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
                                                                            residueterms]] + [n], Integer(1))

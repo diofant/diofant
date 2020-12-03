@@ -328,7 +328,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
                 # Tanh expressions are recovered from sihn and cosh.
                 iterables.extend([(sinh, args), (cosh, args)])
             else:
-                dummys = symbols('d:%i' % len(args), cls=Dummy)
+                dummys = symbols(f'd:{len(args):d}', cls=Dummy)
                 expr = fn( Add(*dummys)).expand(trig=True).subs(list(zip(dummys, args)))
                 res.append(fn(Add(*args)) - expr)
 

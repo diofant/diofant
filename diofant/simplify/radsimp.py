@@ -342,14 +342,13 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
         for symbol in syms:
             if DIOFANT_DEBUG:
-                print('DEBUG: parsing of expression %s with symbol %s ' % (
-                    str(terms), str(symbol))
-                )
+                print(f'DEBUG: parsing of expression {terms} with'
+                      f' symbol {symbol} ')
 
             result = parse_expression(terms, symbol)
 
             if DIOFANT_DEBUG:
-                print('DEBUG: returned %s' % str(result))
+                print(f'DEBUG: returned {result}')
 
             if result is not None:
                 terms, elems, common_expo, has_deriv = result
