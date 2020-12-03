@@ -665,8 +665,8 @@ class RootOf(Expr):
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()
-        num = sum(c.diff(x)*self**n for n, c in enumerate(reversed(coeffs)))
-        den = sum(c*n*self**(n - 1) for n, c in enumerate(reversed(coeffs)))
+        num = sum(c.diff(x)*self**n for n, c in enumerate(coeffs))
+        den = sum(c*n*self**(n - 1) for n, c in enumerate(coeffs))
         return -num/den
 
 

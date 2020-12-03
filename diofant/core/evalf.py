@@ -949,8 +949,8 @@ def check_convergence(numer, denom, n):
         return rate, constant, None
     if npol.degree() == dpol.degree() == 0:
         return rate, constant, 0
-    pc = npol.all_coeffs()[1]
-    qc = dpol.all_coeffs()[1]
+    pc = npol.all_coeffs()[-2]
+    qc = dpol.all_coeffs()[-2]
     return rate, constant, (qc - pc)/dpol.LC()
 
 

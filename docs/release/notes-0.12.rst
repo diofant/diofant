@@ -32,6 +32,7 @@ Compatibility breaks
 * Functions and classes of the :mod:`~diofant.polys.polytools` module do not support anymore iterables as polynomial generator, see :pull:`1039`.
 * Drop unused functions ``dispersion()``, ``dispersionset()`` and ``degree_list()``, see :pull:`1051` and :pull:`1053`.
 * Drop rich comparison methods from the :class:`~diofant.polys.fields.FracElement`, see :pull:`1101`.
+* :func:`~diofant.polys.polytools.Poly.from_list` support now ascending order of coefficients (i.e., the leading coefficient of univariate polynomial is coming last), see :pull:`1103`.
 
 Minor changes
 =============

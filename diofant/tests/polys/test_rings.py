@@ -88,7 +88,7 @@ def test_PolynomialRing__call__():
     R, x = ring('x', ZZ)
 
     assert R({2: 1, 1: 0, 0: -1}) == x**2 - 1
-    assert R([1, 0, -1]) == x**2 - 1
+    assert R([-1, 0, 1]) == x**2 - 1
     assert R([((2,), 1), ((0,), -1)]) == x**2 - 1
 
     D, t = ring('t', ZZ)
@@ -301,12 +301,12 @@ def test_PolynomialRing_from_list():
 
     assert R.from_list([]) == R(0)
 
-    f = [ZZ(3), ZZ(0), ZZ(0), ZZ(2), ZZ(0), ZZ(0), ZZ(0), ZZ(0), ZZ(8)]
+    f = [ZZ(8), ZZ(0), ZZ(0), ZZ(0), ZZ(0), ZZ(2), ZZ(0), ZZ(0), ZZ(3)]
     g = 3*x**8 + 2*x**5 + 8
 
     assert R.from_list(f) == g
 
-    f = [ZZ(1), ZZ(0), ZZ(5), ZZ(0), ZZ(7)]
+    f = [ZZ(7), ZZ(0), ZZ(5), ZZ(0), ZZ(1)]
     g = x**4 + 5*x**2 + 7
 
     assert R.from_list(f) == g
@@ -314,7 +314,7 @@ def test_PolynomialRing_from_list():
     R, x, y = ring('x y', ZZ)
     R1, z = ring('z', R)
 
-    f = [R(3), R(0), R(2), R(0), R(0), R(8)]
+    f = [R(8), R(0), R(0), R(2), R(0), R(3)]
     g = 3*z**5 + 2*z**3 + 8
 
     assert R1.from_list(f) == g
@@ -752,8 +752,8 @@ def test_PolyElement_all_coeffs():
     R, x = ring('x', ZZ)
 
     assert R.zero.all_coeffs() == [0]
-    assert (3*x**2 + 2*x + 1).all_coeffs() == [3, 2, 1]
-    assert (7*x**4 + 2*x + 1).all_coeffs() == [7, 0, 0, 2, 1]
+    assert (3*x**2 + 2*x + 1).all_coeffs() == [1, 2, 3]
+    assert (7*x**4 + 2*x + 1).all_coeffs() == [1, 2, 0, 0, 7]
 
 
 def test_PolyElement__abs__():
@@ -1647,7 +1647,7 @@ def test_PolyElement___pow__():
     assert f**5 == f*f*f*f*f == x**5 + x**4 + x + 1
     assert f**8 == functools.reduce(operator.mul, [f]*8) == x**8 + 1
 
-    F9 = FF(3, [1, 2, 2])
+    F9 = FF(3, [2, 2, 1])
     R, x = ring('x', F9)
 
     f = x + F9(4)

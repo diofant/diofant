@@ -777,7 +777,7 @@ class _Factor:
                 if not coeff:
                     continue
 
-                T = self._univar_zz_diophantine(F, n - i, p)
+                T = self._univar_zz_diophantine(F, i, p)
 
                 for j, (s, t) in enumerate(zip(S, T)):
                     t = t.mul_ground(coeff)
@@ -1167,7 +1167,7 @@ class _Factor:
         for i in range(1, (n - 1)*q + 1):
             c, r[1:], r[0] = r[-1], r[:-1], domain.zero
             for j in range(n):
-                r[j] -= c*f[-j - 1]
+                r[j] -= c*f[j]
 
             if not (i % q):
                 Q[i//q] = r.copy()
@@ -1204,7 +1204,7 @@ class _Factor:
         V = Q.T.nullspace()
 
         for i, v in enumerate(V):
-            V[i] = self.from_list(list(reversed(v)))
+            V[i] = self.from_list(v)
 
         factors = [f]
 

@@ -20,7 +20,7 @@ class PolyQuintic:
     """Special functions for solvable quintics"""
 
     def __init__(self, poly):
-        _, _, self.p, self.q, self.r, self.s = poly.all_coeffs()
+        _, _, self.p, self.q, self.r, self.s = reversed(poly.all_coeffs())
         self.zeta1 = Rational(-1, 4) + (sqrt(5)/4) + I*sqrt((sqrt(5)/8) + Rational(5, 8))
         self.zeta2 = (-sqrt(5)/4) - Rational(1, 4) + I*sqrt((-sqrt(5)/8) + Rational(5, 8))
         self.zeta3 = (-sqrt(5)/4) - Rational(1, 4) - I*sqrt((-sqrt(5)/8) + Rational(5, 8))
@@ -153,7 +153,7 @@ class PolyQuintic:
     def l0(self, theta):
         F = self.F
         a = self.a
-        l0 = Poly(a, x).eval(theta)/F
+        l0 = Poly(list(reversed(a)), x).eval(theta)/F
         return l0
 
     def T(self, theta, d):
@@ -161,22 +161,22 @@ class PolyQuintic:
         T = [0]*5
         b = self.b
         # Note that the order of sublists of the b's has been reversed compared to the paper
-        T[1] = -Poly(b[1], x).eval(theta)/(2*F)
-        T[2] = Poly(b[2], x).eval(theta)/(2*d*F)
-        T[3] = Poly(b[3], x).eval(theta)/(2*F)
-        T[4] = Poly(b[4], x).eval(theta)/(2*d*F)
+        T[1] = -Poly(list(reversed(b[1])), x).eval(theta)/(2*F)
+        T[2] = Poly(list(reversed(b[2])), x).eval(theta)/(2*d*F)
+        T[3] = Poly(list(reversed(b[3])), x).eval(theta)/(2*F)
+        T[4] = Poly(list(reversed(b[4])), x).eval(theta)/(2*d*F)
         return T
 
     def order(self, theta, d):
         F = self.F
         o = self.o
-        order = Poly(o, x).eval(theta)/(d*F)
+        order = Poly(list(reversed(o)), x).eval(theta)/(d*F)
         return N(order)
 
     def uv(self, theta, d):
         c = self.c
         u = Rational(-25*self.q, 2)
-        v = Poly(c, x).eval(theta)/(2*d*self.F)
+        v = Poly(list(reversed(c)), x).eval(theta)/(2*d*self.F)
         return N(u), N(v)
 
     @property

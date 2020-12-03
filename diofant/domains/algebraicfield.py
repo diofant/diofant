@@ -74,7 +74,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
                              {'mod': mod, 'domain': rep_ring, '_parent': obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        obj.unit = obj.dtype([dom(1), dom(0)])
+        obj.unit = obj.dtype([dom(0), dom(1)])
 
         obj.zero = obj.dtype([dom(0)])
         obj.one = obj.dtype([dom(1)])

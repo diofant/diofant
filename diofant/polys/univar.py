@@ -19,7 +19,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
         return super().__call__(element)
 
     def from_list(self, element):
-        return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+        return self.from_dict({(i,): c for i, c in enumerate(element)})
 
     def _random(self, n, a, b, percent=None):
         domain = self.domain
@@ -41,7 +41,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
             random.shuffle(f)
             f.insert(0, lt)
 
-        return self.from_list(f)
+        return self.from_list(list(reversed(f)))
 
     def _gf_random(self, n, irreducible=False):
         domain = self.domain
@@ -49,8 +49,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
         assert domain.is_FiniteField
 
         while True:
-            f = [domain.one] + [domain(random.randint(0, domain.order - 1))
-                                for i in range(n)]
+            f = [domain(random.randint(0, domain.order - 1))
+                 for i in range(n)] + [domain.one]
             f = self.from_list(f)
             if not irreducible or f.is_irreducible:
                 return f
@@ -171,7 +171,7 @@ class UnivarPolyElement(PolyElement):
         if self.is_zero:
             return [self.parent.domain.zero]
         else:
-            return [self.coeff((i,)) for i in range(self.degree(), -1, -1)]
+            return [self.coeff((i,)) for i in range(self.degree() + 1)]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
