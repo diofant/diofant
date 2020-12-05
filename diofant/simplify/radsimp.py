@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from .. import DIOFANT_DEBUG
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols, sympify)
 from ..core.compatibility import iterable
@@ -341,15 +340,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         terms = [parse_term(i) for i in Mul.make_args(product)]
 
         for symbol in syms:
-            if DIOFANT_DEBUG:
-                print('DEBUG: parsing of expression %s with symbol %s ' % (
-                    str(terms), str(symbol))
-                )
-
             result = parse_expression(terms, symbol)
-
-            if DIOFANT_DEBUG:
-                print('DEBUG: returned %s' % str(result))
 
             if result is not None:
                 terms, elems, common_expo, has_deriv = result

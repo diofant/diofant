@@ -14,6 +14,8 @@ TODO:
 
 """
 
+import shutil
+
 from .pretty_symbology import hobj, pretty_use_unicode, vobj, xsym
 
 
@@ -252,15 +254,8 @@ class stringPict:
         return '\n'.join(svals)
 
     def terminal_width(self):
-        """Return the terminal width if possible, otherwise return 0.
-        """
-        import curses
-        import io
-        try:
-            curses.setupterm()
-            return curses.tigetnum('cols')
-        except io.UnsupportedOperation:
-            return 0
+        """Return the terminal width if possible, otherwise return 0."""
+        return shutil.get_terminal_size()[0]
 
     def __eq__(self, o):
         if isinstance(o, str):

@@ -1022,10 +1022,8 @@ class RegularPolygon(Polygon):
         return self._center, self._radius, self._n, self._rot
 
     def __str__(self):
-        return 'RegularPolygon(%s, %s, %s, %s)' % tuple(self.args)
-
-    def __repr__(self):
-        return 'RegularPolygon(%s, %s, %s, %s)' % tuple(self.args)
+        return 'RegularPolygon(' + ', '.join(f'{a!s}' for a in self.args) + ')'
+    __repr__ = __str__
 
     @property
     def area(self):

@@ -55,7 +55,7 @@ class Subset(Basic):
         for elem in subset:
             if elem not in superset:
                 raise ValueError('The superset provided is invalid as it '
-                                 'does not contain the element %s' % elem)
+                                 f'does not contain the element {elem}')
         obj = Basic.__new__(cls)
         obj._subset = subset
         obj._superset = superset

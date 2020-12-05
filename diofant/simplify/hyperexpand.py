@@ -749,7 +749,7 @@ class Formula:
                 symbol_values.append(bq)
             else:
                 raise ValueError('At least one of the parameters of the '
-                                 'formula must be equal to %s' % (a,))
+                                 f'formula must be equal to {(a,)}')
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -984,7 +984,7 @@ class ShiftA(Operator):
         self._poly = Poly(_x/ai + 1, _x)
 
     def __str__(self):
-        return '<Increment upper %s.>' % sstr(1/self._poly.LC())
+        return f'<Increment upper {sstr(1/self._poly.LC())}.>'
 
 
 class ShiftB(Operator):
@@ -997,7 +997,7 @@ class ShiftB(Operator):
         self._poly = Poly(_x/(bi - 1) + 1, _x)
 
     def __str__(self):
-        return '<Decrement lower %s.>' % sstr(1/self._poly.LC() + 1)
+        return f'<Decrement lower {sstr(1/self._poly.LC() + 1)}.>'
 
 
 class UnShiftA(Operator):
@@ -1037,8 +1037,8 @@ class UnShiftA(Operator):
         self._poly = Poly((n - m)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper index #%s of %s, %s.>' % (sstr(self._i),
-                                                           sstr(self._ap), sstr(self._bq))
+        return (f'<Decrement upper index #{sstr(self._i)} of '
+                f'{sstr(self._ap)}, {sstr(self._bq)}.>')
 
 
 class UnShiftB(Operator):
@@ -1078,8 +1078,8 @@ class UnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower index #%s of %s, %s.>' % (sstr(self._i),
-                                                           sstr(self._ap), sstr(self._bq))
+        return (f'<Increment lower index #{sstr(self._i)} of '
+                f'{sstr(self._ap)}, {sstr(self._bq)}.>')
 
 
 class MeijerShiftA(Operator):
@@ -1090,7 +1090,7 @@ class MeijerShiftA(Operator):
         self._poly = Poly(bi - _x, _x)
 
     def __str__(self):
-        return '<Increment upper b=%s.>' % sstr(self._poly.all_coeffs()[-2])
+        return f'<Increment upper b={sstr(self._poly.all_coeffs()[-2])}.>'
 
 
 class MeijerShiftB(Operator):
@@ -1101,7 +1101,7 @@ class MeijerShiftB(Operator):
         self._poly = Poly(1 - bi + _x, _x)
 
     def __str__(self):
-        return '<Decrement upper a=%s.>' % sstr(1 - self._poly.all_coeffs()[-2])
+        return f'<Decrement upper a={sstr(1 - self._poly.all_coeffs()[-2])}.>'
 
 
 class MeijerShiftC(Operator):
@@ -1112,7 +1112,7 @@ class MeijerShiftC(Operator):
         self._poly = Poly(-bi + _x, _x)
 
     def __str__(self):
-        return '<Increment lower b=%s.>' % sstr(-self._poly.all_coeffs()[-2])
+        return f'<Increment lower b={sstr(-self._poly.all_coeffs()[-2])}.>'
 
 
 class MeijerShiftD(Operator):
@@ -1123,7 +1123,7 @@ class MeijerShiftD(Operator):
         self._poly = Poly(bi - 1 - _x, _x)
 
     def __str__(self):
-        return '<Decrement lower a=%s.>' % sstr(self._poly.all_coeffs()[-2] + 1)
+        return f'<Decrement lower a={sstr(self._poly.all_coeffs()[-2] + 1)}.>'
 
 
 class MeijerUnShiftA(Operator):
@@ -1168,8 +1168,9 @@ class MeijerUnShiftA(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement upper b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+        return (f'<Decrement upper b index #{sstr(self._i)} of '
+                f'{sstr(self._an)}, {sstr(self._ap)}, {sstr(self._bm)},'
+                f' {sstr(self._bq)}.>')
 
 
 class MeijerUnShiftB(Operator):
@@ -1214,8 +1215,9 @@ class MeijerUnShiftB(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment upper a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+        return (f'<Increment upper a index #{sstr(self._i)} of '
+                f'{sstr(self._an)}, {sstr(self._ap)}, {sstr(self._bm)}, '
+                f'{sstr(self._bq)}.>')
 
 
 class MeijerUnShiftC(Operator):
@@ -1266,8 +1268,9 @@ class MeijerUnShiftC(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Decrement lower b index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+        return (f'<Decrement lower b index #{sstr(self._i)} of '
+                f'{sstr(self._an)}, {sstr(self._ap)}, {sstr(self._bm)},'
+                f' {sstr(self._bq)}.>')
 
 
 class MeijerUnShiftD(Operator):
@@ -1315,8 +1318,9 @@ class MeijerUnShiftD(Operator):
         self._poly = Poly((m - n)/b0, _x)
 
     def __str__(self):
-        return '<Increment lower a index #%s of %s, %s, %s, %s.>' % (sstr(self._i),
-                                                                     sstr(self._an), sstr(self._ap), sstr(self._bm), sstr(self._bq))
+        return (f'<Increment lower a index #{sstr(self._i)} of '
+                f'{sstr(self._an)}, {sstr(self._ap)}, {sstr(self._bm)},'
+                f' {sstr(self._bq)}.>')
 
 
 class ReduceOrder(Operator):
@@ -1381,8 +1385,8 @@ class ReduceOrder(Operator):
         return cls._meijer(1 - a, 1 - b, 1)
 
     def __str__(self):
-        return '<Reduce order by cancelling upper %s with lower %s.>' % \
-            (sstr(self._a), sstr(self._b))
+        return (f'<Reduce order by cancelling upper {sstr(self._a)}'
+                f' with lower {sstr(self._b)}.>')
 
 
 def _reduce_order(ap, bq, gen, key):

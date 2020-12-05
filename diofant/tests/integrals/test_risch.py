@@ -510,6 +510,9 @@ def test_DifferentialExtension_handle_first():
             [Lambda(i, log(i)), Lambda(i, exp(t0*i))], [(exp(x*log(x)), x**x)],
             [2], [t0*x], [1], [x])
 
+    pytest.raises(ValueError,
+                  lambda: DifferentialExtension(x, x, handle_first='spam'))
+
 
 def test_DifferentialExtension_all_attrs():
     # Test 'unimportant' attributes

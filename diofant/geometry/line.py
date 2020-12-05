@@ -818,8 +818,8 @@ class LinearEntity(GeometrySet):
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError('Symbol %s already appears in object '
-                             'and cannot be used as a parameter.' % t.name)
+            raise ValueError(f'Symbol {t.name} already appears in object '
+                             'and cannot be used as a parameter.')
         # multiply on the right so the variable gets
         # combined witht he coordinates of the point
         return self.p1 + (self.p2 - self.p1)*t

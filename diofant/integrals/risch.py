@@ -194,8 +194,7 @@ class DifferentialExtension:
         from .prde import is_deriv_k
 
         if handle_first not in ['log', 'exp']:
-            raise ValueError("handle_first must be 'log' or 'exp', not %s." %
-                             str(handle_first))
+            raise ValueError(f"handle_first must be 'log' or 'exp', not {handle_first!s}.")
 
         # f will be the original function, self.f might change if we reset
         # (e.g., we pull out a constant from an exponential)
@@ -238,7 +237,7 @@ class DifferentialExtension:
                 # We couldn't find a new extension on the last pass, so I guess
                 # we can't do it.
                 raise NotImplementedError("Couldn't find an elementary "
-                                          'transcendental extension for %s.  Try using a ' % str(f) +
+                                          f'transcendental extension for {f!s}.  Try using a '
                                           'manual extension with the extension flag.')
 
             # Pre-preparsing.
@@ -297,7 +296,7 @@ class DifferentialExtension:
                 if i in sympows:
                     if i.exp.is_Rational:
                         raise NotImplementedError('Algebraic extensions are '
-                                                  'not supported (%s).' % str(i))
+                                                  f'not supported ({i!s}).')
                     # We can add a**b only if log(a) in the extension, because
                     # a**b == exp(b*log(a)).
                     basea, based = frac_in(i.base, self.t)

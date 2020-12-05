@@ -374,7 +374,7 @@ class Integral(AddWithLimits):
 
         if conds not in ['separate', 'piecewise', 'none']:
             raise ValueError('conds must be one of "separate", "piecewise", '
-                             '"none", got: %s' % conds)
+                             f'"none", got: {conds}')
 
         if risch and any(len(xab) > 1 for xab in self.limits):
             raise ValueError('risch=True is only allowed for indefinite integrals.')
