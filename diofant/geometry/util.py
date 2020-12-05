@@ -193,10 +193,7 @@ def intersection(*entities):
     entities = list(entities)
     for i, e in enumerate(entities):
         if not isinstance(e, GeometryEntity):
-            try:
-                entities[i] = Point(e)
-            except NotImplementedError:
-                raise ValueError(f'{e!s} is not a GeometryEntity and cannot be made into Point')
+            entities[i] = Point(e)
 
     res = entities[0].intersection(entities[1])
     for entity in entities[2:]:
@@ -256,10 +253,7 @@ def convex_hull(*args):
     p = set()
     for e in args:
         if not isinstance(e, GeometryEntity):
-            try:
-                e = Point(e)
-            except NotImplementedError:
-                raise ValueError(f'{e!s} is not a GeometryEntity and cannot be made into Point')
+            e = Point(e)
         if isinstance(e, Point):
             p.add(e)
         elif isinstance(e, Segment):

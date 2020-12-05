@@ -88,6 +88,7 @@ def test_line_geom():
     assert l2.arbitrary_point() in l2
     for ind in range(5):
         assert l3.random_point() in l3
+    pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
 
     # Orthogonality
     p1_1 = Point(-x1, x1)
@@ -389,6 +390,8 @@ def test_line3d():
     assert Line3D.is_perpendicular(l1, l2) is False
     p = l1.arbitrary_point()
     pytest.raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
+
+    pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
 
     # Parallelity
     assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
