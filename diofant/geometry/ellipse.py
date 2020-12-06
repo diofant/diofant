@@ -87,9 +87,6 @@ class Ellipse(GeometrySet):
         else:
             center = Point(center)
 
-        if len(center) != 2:
-            raise ValueError(f'The center of "{cls}" must be a two dimensional point')
-
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
                              '"vradius", and "eccentricity" must not be None."')
@@ -456,6 +453,8 @@ class Ellipse(GeometrySet):
         elif hr == self.major:
             # foci on the x-axis
             return c + Point(-fd, 0), c + Point(fd, 0)
+        else:
+            raise NotImplementedError
 
     def rotate(self, angle=0, pt=None):
         """Rotate ``angle`` radians counterclockwise about Point ``pt``.
@@ -582,15 +581,12 @@ class Ellipse(GeometrySet):
         if p in self:
             return False
 
-        if len(self.foci) == 2:
-            # if the combined distance from the foci to p (h1 + h2) is less
-            # than the combined distance from the foci to the minor axis
-            # (which is the same as the major axis length) then p is inside
-            # the ellipse
-            h1, h2 = [f.distance(p) for f in self.foci]
-            test = 2*self.major - (h1 + h2)
-        else:
-            test = self.radius - self.center.distance(p)
+        # if the combined distance from the foci to p (h1 + h2) is less
+        # than the combined distance from the foci to the minor axis
+        # (which is the same as the major axis length) then p is inside
+        # the ellipse
+        h1, h2 = [f.distance(p) for f in self.foci]
+        test = 2*self.major - (h1 + h2)
 
         return fuzzy_bool(test.is_positive)
 
@@ -642,17 +638,8 @@ class Ellipse(GeometrySet):
                        simplify(p.y + rise))
             return [Line(p, p2)]
         else:
-            if len(self.foci) == 2:
-                f1, f2 = self.foci
-                maj = self.hradius
-                test = (2*maj -
-                        Point.distance(f1, p) -
-                        Point.distance(f2, p))
-            else:
-                test = self.radius - Point.distance(self.center, p)
-            if test.is_number and test.is_positive:
-                return []
-            # else p is outside the ellipse or we can't tell. In case of the
+            f1, f2 = self.foci
+            # p is outside the ellipse or we can't tell. In case of the
             # latter, the solutions returned will only be valid if
             # the point is not inside the ellipse; if it is, nan will result.
             x, y = Dummy('x'), Dummy('y')
@@ -938,15 +925,10 @@ class Ellipse(GeometrySet):
             rng = random.Random(seed)
         else:
             rng = random
-        for i in range(10):  # should be enough?
-            # simplify this now or else the Float will turn s into a Float
-            c = 2*Rational(rng.random()) - 1
-            s = sqrt(1 - c**2)
-            p1 = Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
-            if p1 in self:
-                return p1
-        raise GeometryError(
-            'Having problems generating a point in the ellipse.')
+        # simplify this now or else the Float will turn s into a Float
+        c = 2*Rational(rng.random()) - 1
+        s = sqrt(1 - c**2)
+        return Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
 
     def equation(self, x='x', y='y'):
         """The equation of the ellipse.

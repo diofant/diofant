@@ -264,6 +264,11 @@ def test_ellipse_geom():
     assert e1.intersection(Ellipse(Point(5, 0), 1, 1,)) == []
     assert e1.intersection(Point(2, 0)) == []
     assert e1.intersection(e1) == e1
+    assert e2.intersection(e2) == e2
+    assert e2.intersection(Circle(Point(0, 0), 10)) == []
+
+    pytest.raises(NotImplementedError,
+                  lambda: e2.intersection(Curve((t**2, t), (t, 0, 1))))
 
     # some special case intersections
     csmall = Circle(p1, 3)
