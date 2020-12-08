@@ -835,6 +835,7 @@ def test_reflect():
     b = Symbol('b')
     m = Symbol('m')
     l = Line((0, b), slope=m)
+    pytest.raises(ValueError, lambda: Line((0, b)))
     p = Point(x, y)
     r = p.reflect(l)
     dp = l.perpendicular_segment(p).length

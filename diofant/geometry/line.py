@@ -56,10 +56,6 @@ class LinearEntity(GeometrySet):
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
     @property
-    def ambient_dimension(self):
-        return len(self.p1)
-
-    @property
     def p1(self):
         """The first defining point of a linear entity.
 
@@ -184,19 +180,14 @@ class LinearEntity(GeometrySet):
         if len(lines) <= 1:
             return False
 
-        try:
-            # Get the intersection (if parallel)
-            p = lines[0].intersection(lines[1])
-            if len(p) == 0:
-                return False
+        # Get the intersection (if parallel)
+        p = lines[0].intersection(lines[1])
 
-            # Make sure the intersection is on every linear entity
-            for line in lines[2:]:
-                if p[0] not in line:
-                    return False
-            return True
-        except AttributeError:
-            return False
+        # Make sure the intersection is on every linear entity
+        for line in lines[2:]:
+            if p[0] not in line:
+                return False
+        return True
 
     def is_parallel(self, other):
         """Are two linear entities parallel?
@@ -233,12 +224,9 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        try:
-            a1, b1, c1 = self.coefficients
-            a2, b2, c2 = other.coefficients
-            return bool(simplify(a1*b2 - b1*a2) == 0)
-        except AttributeError:
-            return False
+        a1, b1, c1 = self.coefficients
+        a2, b2, c2 = other.coefficients
+        return bool(simplify(a1*b2 - b1*a2) == 0)
 
     def is_perpendicular(self, other):
         """Are two linear entities perpendicular?
@@ -274,12 +262,9 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        try:
-            a1, b1, c1 = self.coefficients
-            a2, b2, c2 = other.coefficients
-            return bool(simplify(a1*a2 + b1*b2) == 0)
-        except AttributeError:
-            return False
+        a1, b1, c1 = self.coefficients
+        a2, b2, c2 = other.coefficients
+        return bool(simplify(a1*a2 + b1*b2) == 0)
 
     def angle_between(self, other):
         """The angle formed between the two linear entities.
@@ -692,6 +677,8 @@ class LinearEntity(GeometrySet):
                         elif o.p2 in self:
                             return [Segment(o.p2, self.source)]
                         return []
+                    else:
+                        raise NotImplementedError
                 elif isinstance(self, Segment):
                     if isinstance(o, Ray):
                         return o.intersection(self)
@@ -724,9 +711,10 @@ class LinearEntity(GeometrySet):
                         # Both points of self in o so the whole segment
                         # is in o
                         return [self]
-
-                # Unknown linear entity
-                return []
+                    else:
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
 
             # Not parallel, so find the point of intersection
             px = simplify((b1*c2 - c1*b2) / t)
@@ -900,7 +888,7 @@ class LinearEntity(GeometrySet):
             elif b != 0:
                 return a/b, 1, c/b
             else:
-                return c
+                raise NotImplementedError
         return _norm(*self.coefficients) == _norm(*other.coefficients)
 
     def __contains__(self, other):
@@ -982,11 +970,7 @@ class Line(LinearEntity):
         else:
             p1 = Point(p1)
         if pt is not None and slope is None:
-            try:
-                p2 = Point(pt)
-            except NotImplementedError:
-                raise ValueError('The 2nd argument was not a valid Point. '
-                                 'If it was a slope, enter it with keyword "slope".')
+            p2 = Point(pt)
         elif slope is not None and pt is None:
             slope = sympify(slope)
             if slope.is_finite is False:
@@ -1132,8 +1116,7 @@ class Line(LinearEntity):
 
         """
         if not isinstance(o, Point):
-            if is_sequence(o):
-                o = Point(o)
+            o = Point(o)
         a, b, c = self.coefficients
         if 0 in (a, b):
             return self.perpendicular_segment(o).length
@@ -1218,12 +1201,14 @@ class Ray(LinearEntity):
                     if c.denominator == 2:
                         if c.numerator == 1:
                             p2 = p1 + Point(0, 1)
-                        elif c.numerator == 3:
+                        else:
+                            assert c.numerator == 3
                             p2 = p1 + Point(0, -1)
                     elif c.denominator == 1:
                         if c.numerator == 0:
                             p2 = p1 + Point(1, 0)
-                        elif c.numerator == 1:
+                        else:
+                            assert c.numerator == 1
                             p2 = p1 + Point(-1, 0)
                 if p2 is None:
                     c *= pi
@@ -1364,8 +1349,7 @@ class Ray(LinearEntity):
 
         """
         if not isinstance(o, Point):
-            if is_sequence(o):
-                o = Point(o)
+            o = Point(o)
         s = self.perpendicular_segment(o)
         if isinstance(s, Point):
             if self.contains(s):
@@ -1405,12 +1389,6 @@ class Ray(LinearEntity):
         """
         t = _symbol(parameter)
         return [t, 0, 10]
-
-    def equals(self, other):
-        """Returns True if self and other are the same mathematical entities."""
-        if not isinstance(other, Ray):
-            return False
-        return self.source == other.source and other.p2 in self
 
     def contains(self, o):
         """
@@ -1669,7 +1647,8 @@ class Segment(LinearEntity):
                 distance = Point.distance(
                     self.p1 + Point(t*seg_vector.x, t*seg_vector.y), o)
             return distance
-        raise NotImplementedError()
+        else:
+            raise NotImplementedError
 
     def contains(self, other):
         """

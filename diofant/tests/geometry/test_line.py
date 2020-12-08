@@ -89,6 +89,14 @@ def test_line_geom():
         assert l3.random_point() in l3
     pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
 
+    assert Line(Point(0, 0), Point(1, 0)).is_similar(Line(Point(1, 0),
+                                                          Point(2, 0))) is True
+
+    assert l1.equal(l1) is True
+    assert l1.equal(l2) is True
+    assert l1.equal(l3) is False
+    assert l1.equal(object()) is False
+
     # Orthogonality
     p1_1 = Point(-x1, x1)
     l1_1 = Line(p1, p1_1)
@@ -98,6 +106,8 @@ def test_line_geom():
     assert Line.is_perpendicular(l1, l2) is False
     p = l1.random_point()
     assert l1.perpendicular_segment(p) == p
+
+    assert l4.perpendicular_line(p2) == Line(Point(1, 1), Point(1, 0))
 
     # Parallelity
     l2_1 = Line(p3, p5)
@@ -135,6 +145,8 @@ def test_line_geom():
 
     # Testing Rays and Segments (very similar to Lines)
     pytest.raises(ValueError, lambda: Ray((1, 1), I))
+    pytest.raises(ValueError, lambda: Ray(p1, p1))
+    pytest.raises(ValueError, lambda: Ray(p1))
     assert Ray((1, 1), angle=pi/4) == Ray((1, 1), (2, 2))
     assert Ray((1, 1), angle=pi/2) == Ray((1, 1), (1, 2))
     assert Ray((1, 1), angle=-pi/2) == Ray((1, 1), (1, 0))
@@ -245,6 +257,7 @@ def test_line_geom():
     assert r.distance(Point(-1, 1)) == sqrt(2)
     assert Ray((1, 1), (2, 2)).distance(Point(1.5, 3)) == 3*sqrt(2)/4
     assert r.distance((1, 1)) == 0
+    assert r.distance((-1, Rational(1, 2))) == sqrt(5)/2
 
     # Line contains
     p1, p2 = Point(0, 1), Point(3, 4)
@@ -252,6 +265,8 @@ def test_line_geom():
     assert l.contains(p1) is True
     assert l.contains((0, 1)) is True
     assert l.contains((0, 0)) is False
+    assert l.contains(Circle(p1, 1)) is False
+    assert l.contains(Ray(p1, p1 + p2)) is False
 
     # Ray contains
     p1, p2 = Point(0, 0), Point(4, 4)
@@ -259,6 +274,7 @@ def test_line_geom():
     assert r.contains(p1) is True
     assert r.contains((1, 1)) is True
     assert r.contains((1, 3)) is False
+    assert r.contains(object()) is False
     s = Segment((1, 1), (2, 2))
     assert r.contains(s) is True
     s = Segment((1, 2), (2, 5))
@@ -267,6 +283,11 @@ def test_line_geom():
     assert r.contains(r1) is True
     r1 = Ray((2, 2), (3, 5))
     assert r.contains(r1) is False
+    r1 = Ray(p1, angle=-pi)
+    assert r1.contains(Point(1, 0)) is False
+    r1 = Ray(p1, angle=-pi/2)
+    assert r1.contains(Point(0, 1)) is False
+    pytest.raises(Undecidable, lambda: r1.contains(Point(0, x)))
 
     # Special cases of projection and intersection
     r1 = Ray(Point(1, 1), Point(2, 2))
@@ -366,6 +387,8 @@ def test_line_intersection():
         [Point(1, 1)]
     assert Ray((0, 0), (1, 1)).intersection(Segment((1, 0), (1, 2))) == \
         [Point(1, 1)]
+    assert (Ray((0, 0), angle=-pi).intersection(Segment((-1, 0), (2, 0))) ==
+            [Segment((-1, 0), (0, 0))])
     assert Ray((0, 0), (10, 10)).contains(Segment((1, 1), (2, 2))) is True
     assert Segment((1, 1), (2, 2)) in Line((0, 0), (10, 10))
     x = 8*tan(13*pi/45)/(tan(13*pi/45) + sqrt(3))
