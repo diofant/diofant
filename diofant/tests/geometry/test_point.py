@@ -42,8 +42,6 @@ def test_point():
     assert p1 in p1
     assert p1 not in p2
 
-    assert p1[0] == x1 and p1[1] == x2
-
     assert p1 in p1
     assert p1 not in p2
     assert p2.y == y2

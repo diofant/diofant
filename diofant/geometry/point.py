@@ -399,9 +399,6 @@ class Point(GeometryEntity):
     def __iter__(self):
         return self.args.__iter__()
 
-    def __getitem__(self, key):
-        return self.args[key]
-
     def __add__(self, other):
         """Add other to self by incrementing self's coordinates by those of other.
 
