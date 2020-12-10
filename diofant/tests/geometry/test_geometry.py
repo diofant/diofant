@@ -96,6 +96,7 @@ def test_ellipse_geom():
     l1 = Line(p1, p2)
 
     pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
+    pytest.raises(ValueError, lambda: e3.arbitrary_point(object()))
 
     assert e1.ambient_dimension == 2
 
@@ -754,6 +755,7 @@ def test_free_symbols():
 
 
 def test_util_centroid():
+    assert centroid() is None
     p = Polygon((0, 0), (10, 0), (10, 10))
     q = p.translate(0, 20)
     assert centroid(p, q) == Point(20, 40)/3
@@ -893,3 +895,4 @@ def test_idiff():
     assert ans.subs(solve(circ, y)[0]).equals(explicit)
     assert True in (sol[y].diff(x, 3).equals(explicit) for sol in solve(circ, y))
     assert idiff(x + t + y, [y, t], x) == -Derivative(t, x) - 1
+    pytest.raises(ValueError, lambda: idiff(x, object(), x))

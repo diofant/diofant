@@ -66,7 +66,7 @@ def idiff(eq, y, x, n=1):
     dydx = Function(y.name)(x).diff(x)
     eq = eq.subs(f)
     derivs = {}
-    for i in range(n):
+    for i in range(n):  # pragma: no branch
         yp = solve(eq.diff(x), dydx)[0][dydx].subs(derivs)
         if i == n - 1:
             return yp.subs([(v, k) for k, v in f.items()])
@@ -390,7 +390,7 @@ def centroid(*args):
 
     """
     from .point import Point
-    from .polygon import Polygon, Segment
+    from .polygon import Segment
     if args:
         if all(isinstance(g, Point) for g in args):
             c = Point(0, 0)
@@ -405,7 +405,7 @@ def centroid(*args):
                 c += g.midpoint*l
                 L += l
             den = L
-        elif all(isinstance(g, Polygon) for g in args):
+        else:
             c = Point(0, 0)
             A = 0
             for g in args:
