@@ -75,9 +75,8 @@ from diofant.functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                              HyperRep_power1, HyperRep_power2,
                                              HyperRep_sinasin, HyperRep_sqrts1,
                                              HyperRep_sqrts2)
-from diofant.geometry import (Circle, Curve, Ellipse, Line, Line3D, Plane,
-                              Point, Point2D, Point3D, Polygon, Ray, Ray3D,
-                              RegularPolygon, Segment, Segment3D, Triangle)
+from diofant.geometry import (Circle, Curve, Ellipse, Line, Point, Polygon,
+                              Ray, RegularPolygon, Segment, Triangle)
 from diofant.geometry.entity import GeometryEntity
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
@@ -1924,14 +1923,6 @@ def test_diofant__geometry__point__Point():
     assert _test_args(Point(0, 1))
 
 
-def test_diofant__geometry__point__Point2D():
-    assert _test_args(Point2D(0, 1))
-
-
-def test_diofant__geometry__point__Point3D():
-    assert _test_args(Point3D(0, 1, 2))
-
-
 def test_diofant__geometry__ellipse__Ellipse():
     assert _test_args(Ellipse((0, 1), 2, 3))
 
@@ -1954,26 +1945,6 @@ def test_diofant__geometry__line__Ray():
 
 def test_diofant__geometry__line__Segment():
     assert _test_args(Segment((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line3d__LinearEntity3D():
-    pass
-
-
-def test_diofant__geometry__line3d__Line3D():
-    assert _test_args(Line3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__line3d__Segment3D():
-    assert _test_args(Segment3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__line3d__Ray3D():
-    assert _test_args(Ray3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__plane__Plane():
-    assert _test_args(Plane((1, 1, 1), (-3, 4, -2), (1, 2, 3)))
 
 
 def test_diofant__geometry__polygon__Polygon():

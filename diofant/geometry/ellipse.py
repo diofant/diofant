@@ -70,7 +70,7 @@ class Ellipse(GeometrySet):
     (5, 1)
     >>> e2 = Ellipse(Point(3, 1), hradius=3, eccentricity=Rational(4, 5))
     >>> e2
-    Ellipse(Point2D(3, 1), 3, 9/5)
+    Ellipse(Point(3, 1), 3, 9/5)
 
     """
 
@@ -86,9 +86,6 @@ class Ellipse(GeometrySet):
             center = Point(0, 0)
         else:
             center = Point(center)
-
-        if len(center) != 2:
-            raise ValueError(f'The center of "{cls}" must be a two dimensional point')
 
         if len(list(filter(None, (hradius, vradius, eccentricity)))) != 2:
             raise ValueError('Exactly two arguments of "hradius", '
@@ -130,7 +127,7 @@ class Ellipse(GeometrySet):
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.center
-        Point2D(0, 0)
+        Point(0, 0)
 
         """
         return self.args[0]
@@ -439,7 +436,7 @@ class Ellipse(GeometrySet):
         >>> p1 = Point(0, 0)
         >>> e1 = Ellipse(p1, 3, 1)
         >>> e1.foci
-        (Point2D(-2*sqrt(2), 0), Point2D(2*sqrt(2), 0))
+        (Point(-2*sqrt(2), 0), Point(2*sqrt(2), 0))
 
         """
         c = self.center
@@ -456,6 +453,8 @@ class Ellipse(GeometrySet):
         elif hr == self.major:
             # foci on the x-axis
             return c + Point(-fd, 0), c + Point(fd, 0)
+        else:
+            raise NotImplementedError
 
     def rotate(self, angle=0, pt=None):
         """Rotate ``angle`` radians counterclockwise about Point ``pt``.
@@ -467,9 +466,9 @@ class Ellipse(GeometrySet):
         ========
 
         >>> Ellipse((1, 0), 2, 1).rotate(pi/2)
-        Ellipse(Point2D(0, 1), 1, 2)
+        Ellipse(Point(0, 1), 1, 2)
         >>> Ellipse((1, 0), 2, 1).rotate(pi)
-        Ellipse(Point2D(-1, 0), 2, 1)
+        Ellipse(Point(-1, 0), 2, 1)
 
         """
         if self.hradius == self.vradius:
@@ -489,9 +488,9 @@ class Ellipse(GeometrySet):
         ========
 
         >>> Ellipse((0, 0), 2, 1).scale(2, 4)
-        Circle(Point2D(0, 0), 4)
+        Circle(Point(0, 0), 4)
         >>> Ellipse((0, 0), 2, 1).scale(2)
-        Ellipse(Point2D(0, 0), 4, 1)
+        Ellipse(Point(0, 0), 4, 1)
 
         """
         c = self.center
@@ -510,7 +509,7 @@ class Ellipse(GeometrySet):
         ========
 
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
-        Circle(Point2D(1, 0), -1)
+        Circle(Point(1, 0), -1)
         >>> Ellipse(Point(3, 4), 1, 3).reflect(Line(Point(0, -4), Point(5, 0)))
         Traceback (most recent call last):
         ...
@@ -582,15 +581,12 @@ class Ellipse(GeometrySet):
         if p in self:
             return False
 
-        if len(self.foci) == 2:
-            # if the combined distance from the foci to p (h1 + h2) is less
-            # than the combined distance from the foci to the minor axis
-            # (which is the same as the major axis length) then p is inside
-            # the ellipse
-            h1, h2 = [f.distance(p) for f in self.foci]
-            test = 2*self.major - (h1 + h2)
-        else:
-            test = self.radius - self.center.distance(p)
+        # if the combined distance from the foci to p (h1 + h2) is less
+        # than the combined distance from the foci to the minor axis
+        # (which is the same as the major axis length) then p is inside
+        # the ellipse
+        h1, h2 = [f.distance(p) for f in self.foci]
+        test = 2*self.major - (h1 + h2)
 
         return fuzzy_bool(test.is_positive)
 
@@ -627,7 +623,7 @@ class Ellipse(GeometrySet):
 
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.tangent_lines(Point(3, 0))
-        [Line(Point2D(3, 0), Point2D(3, -12))]
+        [Line(Point(3, 0), Point(3, -12))]
 
         """
         p = Point(p)
@@ -642,17 +638,8 @@ class Ellipse(GeometrySet):
                        simplify(p.y + rise))
             return [Line(p, p2)]
         else:
-            if len(self.foci) == 2:
-                f1, f2 = self.foci
-                maj = self.hradius
-                test = (2*maj -
-                        Point.distance(f1, p) -
-                        Point.distance(f2, p))
-            else:
-                test = self.radius - Point.distance(self.center, p)
-            if test.is_number and test.is_positive:
-                return []
-            # else p is outside the ellipse or we can't tell. In case of the
+            f1, f2 = self.foci
+            # p is outside the ellipse or we can't tell. In case of the
             # latter, the solutions returned will only be valid if
             # the point is not inside the ellipse; if it is, nan will result.
             x, y = Dummy('x'), Dummy('y')
@@ -750,9 +737,9 @@ class Ellipse(GeometrySet):
         >>> e = Ellipse((0, 0), 2, 3)
         >>> c = e.center
         >>> e.normal_lines(c + Point(1, 0))
-        [Line(Point2D(0, 0), Point2D(1, 0))]
+        [Line(Point(0, 0), Point(1, 0))]
         >>> e.normal_lines(c)
-        [Line(Point2D(0, 0), Point2D(0, 1)), Line(Point2D(0, 0), Point2D(1, 0))]
+        [Line(Point(0, 0), Point(0, 1)), Line(Point(0, 0), Point(1, 0))]
 
         Off-axis points require the solution of a quartic equation. This
         often leads to very large expressions that may be of little practical
@@ -760,8 +747,8 @@ class Ellipse(GeometrySet):
         passing in the desired value:
 
         >>> e.normal_lines((3, 3), prec=2)
-        [Line(Point2D(-38/47, -85/31), Point2D(9/47, -21/17)),
-        Line(Point2D(19/13, -43/21), Point2D(32/13, -8/3))]
+        [Line(Point(-38/47, -85/31), Point(9/47, -21/17)),
+        Line(Point(19/13, -43/21), Point(32/13, -8/3))]
 
         Whereas the above solution has an operation count of 12, the exact
         solution has an operation count of 2020.
@@ -836,7 +823,7 @@ class Ellipse(GeometrySet):
 
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.arbitrary_point()
-        Point2D(3*cos(t), 2*sin(t))
+        Point(3*cos(t), 2*sin(t))
 
         """
         t = _symbol(parameter)
@@ -891,10 +878,10 @@ class Ellipse(GeometrySet):
 
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.random_point()  # gives some random point
-        Point2D(...)
+        Point(...)
         >>> p1 = e1.random_point(seed=0)
         >>> p1.evalf(2)
-        Point2D(2.1, 1.4)
+        Point(2.1, 1.4)
 
         The random_point method assures that the point will test as being
         in the ellipse:
@@ -917,7 +904,7 @@ class Ellipse(GeometrySet):
         exactly to zero:
 
         >>> e1.arbitrary_point(t)
-        Point2D(3*cos(t), 2*sin(t))
+        Point(3*cos(t), 2*sin(t))
         >>> p2 = _.subs({t: 0.1})
         >>> p2 in e1
         False
@@ -938,15 +925,10 @@ class Ellipse(GeometrySet):
             rng = random.Random(seed)
         else:
             rng = random
-        for i in range(10):  # should be enough?
-            # simplify this now or else the Float will turn s into a Float
-            c = 2*Rational(rng.random()) - 1
-            s = sqrt(1 - c**2)
-            p1 = Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
-            if p1 in self:
-                return p1
-        raise GeometryError(
-            'Having problems generating a point in the ellipse.')
+        # simplify this now or else the Float will turn s into a Float
+        c = 2*Rational(rng.random()) - 1
+        s = sqrt(1 - c**2)
+        return Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
 
     def equation(self, x='x', y='y'):
         """The equation of the ellipse.
@@ -1063,25 +1045,25 @@ class Ellipse(GeometrySet):
         >>> e.intersection(Point(0, 0))
         []
         >>> e.intersection(Point(5, 0))
-        [Point2D(5, 0)]
+        [Point(5, 0)]
         >>> e.intersection(Line(Point(0, 0), Point(0, 1)))
-        [Point2D(0, -7), Point2D(0, 7)]
+        [Point(0, -7), Point(0, 7)]
         >>> e.intersection(Line(Point(5, 0), Point(5, 1)))
-        [Point2D(5, 0)]
+        [Point(5, 0)]
         >>> e.intersection(Line(Point(6, 0), Point(6, 1)))
         []
         >>> e = Ellipse(Point(-1, 0), 4, 3)
         >>> e.intersection(Ellipse(Point(1, 0), 4, 3))
-        [Point2D(0, -3*sqrt(15)/4), Point2D(0, 3*sqrt(15)/4)]
+        [Point(0, -3*sqrt(15)/4), Point(0, 3*sqrt(15)/4)]
         >>> e.intersection(Ellipse(Point(5, 0), 4, 3))
-        [Point2D(2, -3*sqrt(7)/4), Point2D(2, 3*sqrt(7)/4)]
+        [Point(2, -3*sqrt(7)/4), Point(2, 3*sqrt(7)/4)]
         >>> e.intersection(Ellipse(Point(100500, 0), 4, 3))
         []
         >>> e.intersection(Ellipse(Point(0, 0), 3, 4))
-        [Point2D(-363/175, -48*sqrt(111)/175), Point2D(-363/175, 48*sqrt(111)/175), Point2D(3, 0)]
+        [Point(-363/175, -48*sqrt(111)/175), Point(-363/175, 48*sqrt(111)/175), Point(3, 0)]
 
         >>> e.intersection(Ellipse(Point(-1, 0), 3, 4))
-        [Point2D(-17/5, -12/5), Point2D(-17/5, 12/5), Point2D(7/5, -12/5), Point2D(7/5, 12/5)]
+        [Point(-17/5, -12/5), Point(-17/5, 12/5), Point(7/5, -12/5), Point(7/5, 12/5)]
 
         """
         if isinstance(o, Point):
@@ -1195,7 +1177,7 @@ class Circle(Ellipse):
     >>> # a circle constructed from three points
     >>> c2 = Circle(Point(0, 0), Point(1, 1), Point(1, 0))
     >>> c2.hradius, c2.vradius, c2.radius, c2.center
-    (sqrt(2)/2, sqrt(2)/2, sqrt(2)/2, Point2D(1/2, 1/2))
+    (sqrt(2)/2, sqrt(2)/2, sqrt(2)/2, Point(1/2, 1/2))
 
     """
 
@@ -1336,9 +1318,9 @@ class Circle(Ellipse):
         >>> c1.intersection(p2)
         []
         >>> c1.intersection(p4)
-        [Point2D(5, 0)]
+        [Point(5, 0)]
         >>> c1.intersection(Ray(p1, p2))
-        [Point2D(5*sqrt(2)/2, 5*sqrt(2)/2)]
+        [Point(5*sqrt(2)/2, 5*sqrt(2)/2)]
         >>> c1.intersection(Line(p2, p3))
         []
 
@@ -1383,9 +1365,9 @@ class Circle(Ellipse):
         ========
 
         >>> Circle((0, 0), 1).scale(2, 2)
-        Circle(Point2D(0, 0), 2)
+        Circle(Point(0, 0), 2)
         >>> Circle((0, 0), 1).scale(2, 4)
-        Ellipse(Point2D(0, 0), 2, 4)
+        Ellipse(Point(0, 0), 2, 4)
 
         """
         c = self.center
@@ -1407,7 +1389,7 @@ class Circle(Ellipse):
         ========
 
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
-        Circle(Point2D(1, 0), -1)
+        Circle(Point(1, 0), -1)
 
         """
         c = self.center

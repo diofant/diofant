@@ -52,9 +52,9 @@ class Curve(GeometrySet):
     >>> C
     Curve((t, t**2), (t, 0, 1))
     >>> C.subs({t: 4})
-    Point2D(4, 16)
+    Point(4, 16)
     >>> C.arbitrary_point(a)
-    Point2D(a, a**2)
+    Point(a, a**2)
 
     """
 
@@ -253,13 +253,13 @@ class Curve(GeometrySet):
         >>> from diofant.abc import s
         >>> C = Curve([2*s, s**2], (s, 0, 2))
         >>> C.arbitrary_point()
-        Point2D(2*t, t**2)
+        Point(2*t, t**2)
         >>> C.arbitrary_point(C.parameter)
-        Point2D(2*s, s**2)
+        Point(2*s, s**2)
         >>> C.arbitrary_point(None)
-        Point2D(2*s, s**2)
+        Point(2*s, s**2)
         >>> C.arbitrary_point(a)
-        Point2D(2*a, a**2)
+        Point(2*a, a**2)
 
         """
         if parameter is None:

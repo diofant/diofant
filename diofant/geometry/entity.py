@@ -41,12 +41,6 @@ class GeometryEntity(Basic):
                 and not isinstance(a, Point) else sympify(a) for a in args]
         return Basic.__new__(cls, *args)
 
-    def _diofant_(self):
-        return self
-
-    def __getnewargs__(self):
-        return tuple(self.args)
-
     def intersection(self, o):
         """
         Returns a list of all of the intersections of self with o.
@@ -79,9 +73,9 @@ class GeometryEntity(Basic):
 
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t  # vertex on x axis
-        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
+        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
         >>> t.rotate(pi/2)  # vertex on y axis now
-        Triangle(Point2D(0, 1), Point2D(-sqrt(3)/2, -1/2), Point2D(sqrt(3)/2, -1/2))
+        Triangle(Point(0, 1), Point(-sqrt(3)/2, -1/2), Point(sqrt(3)/2, -1/2))
 
         """
         newargs = []
@@ -108,11 +102,11 @@ class GeometryEntity(Basic):
 
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
-        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
+        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
         >>> t.scale(2)
-        Triangle(Point2D(2, 0), Point2D(-1, sqrt(3)/2), Point2D(-1, -sqrt(3)/2))
+        Triangle(Point(2, 0), Point(-1, sqrt(3)/2), Point(-1, -sqrt(3)/2))
         >>> t.scale(2, 2)
-        Triangle(Point2D(2, 0), Point2D(-1, sqrt(3)), Point2D(-1, -sqrt(3)))
+        Triangle(Point(2, 0), Point(-1, sqrt(3)), Point(-1, -sqrt(3)))
 
         """
         from .point import Point
@@ -134,12 +128,12 @@ class GeometryEntity(Basic):
 
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t
-        Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
+        Triangle(Point(1, 0), Point(-1/2, sqrt(3)/2), Point(-1/2, -sqrt(3)/2))
         >>> t.translate(2)
-        Triangle(Point2D(3, 0), Point2D(3/2, sqrt(3)/2), Point2D(3/2, -sqrt(3)/2))
+        Triangle(Point(3, 0), Point(3/2, sqrt(3)/2), Point(3/2, -sqrt(3)/2))
         >>> t.translate(2, 2)
-        Triangle(Point2D(3, 2), Point2D(3/2, sqrt(3)/2 + 2),
-            Point2D(3/2, -sqrt(3)/2 + 2))
+        Triangle(Point(3, 2), Point(3/2, sqrt(3)/2 + 2),
+            Point(3/2, -sqrt(3)/2 + 2))
 
         """
         newargs = []
@@ -165,11 +159,7 @@ class GeometryEntity(Basic):
             if not x:  # y-axis
                 return g.scale(x=-1)
             reps = [(p, p.translate(x=2*(x - p.x))) for p in g.atoms(Point)]
-        else:
-            if not hasattr(g, 'reflect') and not all(
-                    isinstance(arg, Point) for arg in g.args):
-                raise NotImplementedError(
-                    f'reflect undefined or non-Point args in {g}')
+        elif hasattr(g, 'reflect'):
             a = atan(l.slope)
             c = l.coefficients
             d = -c[-1]/c[1]  # y-intercept
@@ -180,6 +170,8 @@ class GeometryEntity(Basic):
             xf = xf.scale(y=-1).rotate(a, o).translate(y=d)
             # replace every point using that transform
             reps = [(p, xf.xreplace({x: p.x, y: p.y})) for p in g.atoms(Point)]
+        else:
+            raise NotImplementedError(f'reflect undefined or non-Point args in {g}')
         return g.xreplace(dict(reps))
 
     def encloses(self, o):
@@ -257,17 +249,11 @@ class GeometryEntity(Basic):
         """
         raise NotImplementedError()
 
-    def equals(self, o):
-        return self == o
-
     def __radd__(self, a):
         return a.__add__(self)
 
     def __rsub__(self, a):
         return a.__sub__(self)
-
-    def __rmul__(self, a):
-        return a.__mul__(self)
 
     def __str__(self):
         """String representation of a GeometryEntity."""
@@ -281,21 +267,11 @@ class GeometryEntity(Basic):
         """
         return type(self).__name__ + repr(self.args)
 
-    def __contains__(self, other):
-        """Subclasses should implement this method for anything more complex than equality."""
-        if type(self) == type(other):
-            return self == other
-        raise NotImplementedError()
-
     def _eval_subs(self, old, new):
-        from .point import Point, Point3D
+        from .point import Point
         if is_sequence(old) or is_sequence(new):
-            if isinstance(self, Point3D):
-                old = Point3D(old)
-                new = Point3D(new)
-            else:
-                old = Point(old)
-                new = Point(new)
+            old = Point(old)
+            new = Point(new)
             return self._subs(old, new)
 
 
@@ -307,9 +283,6 @@ class GeometrySet(GeometryEntity, Set):
 
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
-        if isinstance(other, Set) and other.is_FiniteSet:
-            return all(self.__contains__(i) for i in other)
-
         return self.__contains__(other)
 
     def _union(self, o):
@@ -337,12 +310,7 @@ class GeometrySet(GeometryEntity, Set):
         from ..sets import FiniteSet, Union
         from .point import Point
 
-        try:
-            inter = self.intersection(o)
-        except NotImplementedError:
-            # diofant.sets.Set.reduce expects None if an object
-            # doesn't know how to simplify
-            return
+        inter = self.intersection(o)
 
         # put the points in a FiniteSet
         points = FiniteSet(*[p for p in inter if isinstance(p, Point)])
@@ -386,9 +354,9 @@ def rotate(th):
 
     >>> rot_about_11 = translate(-1, -1)*rotate(pi/2)*translate(1, 1)
     >>> Point(1, 1).transform(rot_about_11)
-    Point2D(1, 1)
+    Point(1, 1)
     >>> Point(0, 0).transform(rot_about_11)
-    Point2D(2, 0)
+    Point(2, 0)
 
     """
     s = sin(th)

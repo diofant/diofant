@@ -3,12 +3,11 @@ import warnings
 import pytest
 
 from diofant import (Derivative, Dummy, Float, Integral, Rational, Symbol,
-                     Tuple, cos, oo, pi, root, solve, sqrt, symbols, tan)
+                     Tuple, acos, cos, oo, pi, root, solve, sqrt, symbols, tan)
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
-                              Point, Point2D, Point3D, Polygon, Ray,
-                              RegularPolygon, Segment, Triangle, are_similar,
-                              centroid, convex_hull, deg, idiff, intersection,
-                              rad)
+                              Point, Polygon, Ray, RegularPolygon, Segment,
+                              Triangle, are_similar, centroid, convex_hull,
+                              deg, idiff, intersection, rad)
 from diofant.geometry.entity import rotate, scale, translate
 from diofant.utilities.randtest import verify_numerically
 
@@ -96,8 +95,8 @@ def test_ellipse_geom():
 
     l1 = Line(p1, p2)
 
-    pytest.raises(ValueError, lambda: Ellipse(Point3D(0, 0, 0), 1, 1))
     pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
+    pytest.raises(ValueError, lambda: e3.arbitrary_point(object()))
 
     assert e1.ambient_dimension == 2
 
@@ -221,6 +220,12 @@ def test_ellipse_geom():
     assert e.normal_lines((x + 1, 0)) == [Line(Point(0, 0), Point(1, 0))]
     pytest.raises(NotImplementedError, lambda: e.normal_lines((x + 1, 1)))
 
+    assert (c1.normal_lines(Point(1, 1)) ==
+            [Line(Point(-sqrt(2)/2, -sqrt(2)/2),
+                  Point(-sqrt(2)/2 + 1, -sqrt(2)/2 + 1)),
+             Line(Point(sqrt(2)/2, -sqrt(2)/2),
+                  Point(sqrt(2)/2 + 1, -1 - sqrt(2)/2))])
+
     # Properties
     major = 3
     minor = 1
@@ -260,6 +265,11 @@ def test_ellipse_geom():
     assert e1.intersection(Ellipse(Point(5, 0), 1, 1,)) == []
     assert e1.intersection(Point(2, 0)) == []
     assert e1.intersection(e1) == e1
+    assert e2.intersection(e2) == e2
+    assert e2.intersection(Circle(Point(0, 0), 10)) == []
+
+    pytest.raises(NotImplementedError,
+                  lambda: e2.intersection(Curve((t**2, t), (t, 0, 1))))
 
     # some special case intersections
     csmall = Circle(p1, 3)
@@ -371,6 +381,8 @@ def test_polygon():
     a, b, c = Point(0, 0), Point(2, 0), Point(3, 3)
     t = Triangle(a, b, c)
     assert Polygon(a) == a
+    assert Polygon(a, a) == a
+    assert Polygon(a, b, b, c) == Polygon(a, b, c)
     assert Polygon(a, 1, 1, n=4) == RegularPolygon(a, 1, 4, 1)
     assert Polygon(a, Point(1, 0), b, c) == t
     assert Polygon(Point(1, 0), b, c, a) == t
@@ -416,6 +428,8 @@ def test_polygon():
     assert p1.perimeter == 5 + 2*sqrt(10) + sqrt(29) + sqrt(8)
     assert p1.area == 22
     assert not p1.is_convex()
+    assert p1.contains(Segment((0, 0), (1, 2))) is False
+    assert p1.contains(Ray((0, 0), angle=pi/3)) is False
     # ensure convex for both CW and CCW point specification
     assert p3.is_convex()
     assert p4.is_convex()
@@ -433,6 +447,10 @@ def test_polygon():
         Polygon(Point(10, 10), Point(14, 14), Point(10, 14))) == 6 * sqrt(2)
     assert p5.distance(
         Polygon(Point(1, 8), Point(5, 8), Point(8, 12), Point(1, 12))) == 4
+    p7 = Polygon(Point(1, 2), Point(3, 7), Point(0, 1))
+    assert p5.distance(p7) == 9*sqrt(29)/29
+    l1 = Line(Point(0, 0), Point(1, 0))
+    assert p5.reflect(l1).distance(p7.reflect(l1)) == 9*sqrt(29)/29
     warnings.filterwarnings(
         'error', message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning,
@@ -460,6 +478,9 @@ def test_polygon():
                                                                            1), Point(1, 1)))
     pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), 1, 2))
     pytest.raises(ValueError, lambda: RegularPolygon(Point(0, 0), 1, 2.5))
+
+    assert Polygon(Point(0, 0), 10, 5, pi,
+                   n=5) == RegularPolygon(Point(0, 0), 10, 5, pi)
 
     assert p1 != p2
     assert p1.interior_angle == 3*pi/5
@@ -518,6 +539,11 @@ def test_polygon():
     assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
     assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
     assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
+
+    assert (Polygon((0, 0), (10, 0), (2, 1), (0, 3)).angles ==
+            {Point(0, 0): pi/2, Point(0, 3): pi/4,
+             Point(2, 1): -acos(-9*sqrt(130)/130) + 2*pi,
+             Point(10, 0): acos(8*sqrt(65)/65)})
 
     #
     # Triangle
@@ -647,6 +673,7 @@ def test_polygon():
 
     t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
     assert t1.is_scalene() is True
+    assert t1.is_isosceles() is False
 
     p1 = Polygon((1, 0), (2, 0), (2, 2), (-4, 3))
     p2 = Polygon((1, 0), (2, 0), (3, 2), (-4, 3))
@@ -720,6 +747,8 @@ def test_encloses():
     assert s.encloses(Point(0, Rational(1, 2))) is False
     assert s.encloses(Point(Rational(1, 2), Rational(1, 2))) is False  # it's a vertex
     assert s.encloses(Point(Rational(3, 4), Rational(1, 2))) is True
+    l2 = Line(Point(0, 0), Point(0, 1))
+    assert s.reflect(l2).encloses(Point(0, Rational(1, 2)).reflect(l2)) is False
 
 
 def test_free_symbols():
@@ -745,6 +774,7 @@ def test_free_symbols():
 
 
 def test_util_centroid():
+    assert centroid() is None
     p = Polygon((0, 0), (10, 0), (10, 10))
     q = p.translate(0, 20)
     assert centroid(p, q) == Point(20, 40)/3
@@ -763,7 +793,7 @@ def test_util():
 
 
 def test_repr():
-    assert repr(Circle((0, 1), 2)) == 'Circle(Point2D(Integer(0), Integer(1)), Integer(2))'
+    assert repr(Circle((0, 1), 2)) == 'Circle(Point(Integer(0), Integer(1)), Integer(2))'
 
 
 def test_transform():
@@ -826,6 +856,7 @@ def test_reflect():
     b = Symbol('b')
     m = Symbol('m')
     l = Line((0, b), slope=m)
+    pytest.raises(ValueError, lambda: Line((0, b)))
     p = Point(x, y)
     r = p.reflect(l)
     dp = l.perpendicular_segment(p).length
@@ -859,16 +890,16 @@ def test_reflect():
     rpent = pent.reflect(l)
     assert rpent.center == pent.center.reflect(l)
     assert [w.evalf(3) for w in rpent.vertices] == \
-        [Point2D(Float('-0.585815', dps=3),
-                 Float('4.27051', dps=3)),
-         Point2D(Float('-1.69409', dps=3),
-                 Float('4.66211', dps=3)),
-         Point2D(Float('-2.40918', dps=3),
-                 Float('3.72949', dps=3)),
-         Point2D(Float('-1.74292', dps=3),
-                 Float('2.76123', dps=3)),
-         Point2D(Float('-0.615967', dps=3),
-                 Float('3.0957', dps=3))]
+        [Point(Float('-0.585815', dps=3),
+               Float('4.27051', dps=3)),
+         Point(Float('-1.69409', dps=3),
+               Float('4.66211', dps=3)),
+         Point(Float('-2.40918', dps=3),
+               Float('3.72949', dps=3)),
+         Point(Float('-1.74292', dps=3),
+               Float('2.76123', dps=3)),
+         Point(Float('-0.615967', dps=3),
+               Float('3.0957', dps=3))]
     assert pent.area.equals(-rpent.area)
 
 
@@ -883,3 +914,4 @@ def test_idiff():
     assert ans.subs(solve(circ, y)[0]).equals(explicit)
     assert True in (sol[y].diff(x, 3).equals(explicit) for sol in solve(circ, y))
     assert idiff(x + t + y, [y, t], x) == -Derivative(t, x) - 1
+    pytest.raises(ValueError, lambda: idiff(x, object(), x))
