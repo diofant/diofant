@@ -177,9 +177,8 @@ class Polygon(GeometrySet):
                         # the convex test passed, this will likely pass, too.
                         # But we are about to raise an error anyway so it
                         # won't matter too much.
-                        if all(i.is_number for i in hit.args):
-                            raise GeometryError(
-                                'Polygon has intersecting sides.')
+                        assert all(i.is_number for i in hit.args)
+                        raise GeometryError('Polygon has intersecting sides.')
 
         return rv
 
@@ -519,10 +518,9 @@ class Polygon(GeometrySet):
             if 0 > min(p1y, p2y):
                 if 0 <= max(p1y, p2y):
                     if 0 <= max(p1x, p2x):
-                        if p1y != p2y:
-                            xinters = (-p1y)*(p2x - p1x)/(p2y - p1y) + p1x
-                            if p1x == p2x or 0 <= xinters:
-                                hit_odd = not hit_odd
+                        xinters = (-p1y)*(p2x - p1x)/(p2y - p1y) + p1x
+                        if p1x == p2x or 0 <= xinters:
+                            hit_odd = not hit_odd
             p1x, p1y = p2x, p2y
         return hit_odd
 
@@ -645,8 +643,7 @@ class Polygon(GeometrySet):
         res = []
         for side in self.sides:
             inter = side.intersection(o)
-            if inter is not None:
-                res.extend(inter)
+            res.extend(inter)
         return list(uniq(res))
 
     def distance(self, o):
@@ -788,10 +785,8 @@ class Polygon(GeometrySet):
             e1_next = point1
         elif angle2 < angle1:
             e1_next = point2
-        elif Point.distance(e1_ymax, point1) > Point.distance(e1_ymax, point2):
-            e1_next = point2
         else:
-            e1_next = point1
+            raise NotImplementedError
 
         point1 = e2_connections[e2_ymin][0]
         point2 = e2_connections[e2_ymin][1]
@@ -801,10 +796,8 @@ class Polygon(GeometrySet):
             e2_next = point1
         elif angle2 > angle1:
             e2_next = point2
-        elif Point.distance(e2_ymin, point1) > Point.distance(e2_ymin, point2):
-            e2_next = point2
         else:
-            e2_next = point1
+            raise NotImplementedError
 
         # Loop which determins the distance between anti-podal pairs and updates the
         # minimum distance accordingly. It repeats until it reaches the starting position.

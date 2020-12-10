@@ -3,7 +3,7 @@ import warnings
 import pytest
 
 from diofant import (Derivative, Dummy, Float, Integral, Rational, Symbol,
-                     Tuple, cos, oo, pi, root, solve, sqrt, symbols, tan)
+                     Tuple, acos, cos, oo, pi, root, solve, sqrt, symbols, tan)
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Polygon, Ray, RegularPolygon, Segment,
                               Triangle, are_similar, centroid, convex_hull,
@@ -381,6 +381,8 @@ def test_polygon():
     a, b, c = Point(0, 0), Point(2, 0), Point(3, 3)
     t = Triangle(a, b, c)
     assert Polygon(a) == a
+    assert Polygon(a, a) == a
+    assert Polygon(a, b, b, c) == Polygon(a, b, c)
     assert Polygon(a, 1, 1, n=4) == RegularPolygon(a, 1, 4, 1)
     assert Polygon(a, Point(1, 0), b, c) == t
     assert Polygon(Point(1, 0), b, c, a) == t
@@ -426,6 +428,8 @@ def test_polygon():
     assert p1.perimeter == 5 + 2*sqrt(10) + sqrt(29) + sqrt(8)
     assert p1.area == 22
     assert not p1.is_convex()
+    assert p1.contains(Segment((0, 0), (1, 2))) is False
+    assert p1.contains(Ray((0, 0), angle=pi/3)) is False
     # ensure convex for both CW and CCW point specification
     assert p3.is_convex()
     assert p4.is_convex()
@@ -443,6 +447,10 @@ def test_polygon():
         Polygon(Point(10, 10), Point(14, 14), Point(10, 14))) == 6 * sqrt(2)
     assert p5.distance(
         Polygon(Point(1, 8), Point(5, 8), Point(8, 12), Point(1, 12))) == 4
+    p7 = Polygon(Point(1, 2), Point(3, 7), Point(0, 1))
+    assert p5.distance(p7) == 9*sqrt(29)/29
+    l1 = Line(Point(0, 0), Point(1, 0))
+    assert p5.reflect(l1).distance(p7.reflect(l1)) == 9*sqrt(29)/29
     warnings.filterwarnings(
         'error', message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning,
@@ -470,6 +478,9 @@ def test_polygon():
                                                                            1), Point(1, 1)))
     pytest.raises(GeometryError, lambda: RegularPolygon(Point(0, 0), 1, 2))
     pytest.raises(ValueError, lambda: RegularPolygon(Point(0, 0), 1, 2.5))
+
+    assert Polygon(Point(0, 0), 10, 5, pi,
+                   n=5) == RegularPolygon(Point(0, 0), 10, 5, pi)
 
     assert p1 != p2
     assert p1.interior_angle == 3*pi/5
@@ -528,6 +539,11 @@ def test_polygon():
     assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
     assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
     assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
+
+    assert (Polygon((0, 0), (10, 0), (2, 1), (0, 3)).angles ==
+            {Point(0, 0): pi/2, Point(0, 3): pi/4,
+             Point(2, 1): -acos(-9*sqrt(130)/130) + 2*pi,
+             Point(10, 0): acos(8*sqrt(65)/65)})
 
     #
     # Triangle
@@ -657,6 +673,7 @@ def test_polygon():
 
     t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
     assert t1.is_scalene() is True
+    assert t1.is_isosceles() is False
 
     p1 = Polygon((1, 0), (2, 0), (2, 2), (-4, 3))
     p2 = Polygon((1, 0), (2, 0), (3, 2), (-4, 3))
@@ -730,6 +747,8 @@ def test_encloses():
     assert s.encloses(Point(0, Rational(1, 2))) is False
     assert s.encloses(Point(Rational(1, 2), Rational(1, 2))) is False  # it's a vertex
     assert s.encloses(Point(Rational(3, 4), Rational(1, 2))) is True
+    l2 = Line(Point(0, 0), Point(0, 1))
+    assert s.reflect(l2).encloses(Point(0, Rational(1, 2)).reflect(l2)) is False
 
 
 def test_free_symbols():
