@@ -1,0 +1,84 @@
+{
+    "cited": {
+        "internals/g-functions": [
+            "Prudnikov1990",
+            "Luke1969"
+        ],
+        "internals/gruntz": [
+            "Gruntz1996limits"
+        ],
+        "internals/hyperexpand": [
+            "Roach1996",
+            "Roach1997",
+            "Luke1969",
+            "Prudnikov1990"
+        ],
+        "internals/polys": [
+            "Cox2015ideals",
+            "Knuth1985seminumerical",
+            "Kozen1989decomposition",
+            "Davenport1988systems",
+            "Collins1967subr",
+            "Brown1971subres",
+            "Brown1978prs",
+            "Bose03",
+            "Giovini1991sugar",
+            "Ajwa95groebner",
+            "BeckerWeispfenning93",
+            "SunWang2010f5",
+            "Faugere1993groebner",
+            "Adams1994intro",
+            "Javadi2009factor",
+            "Monagan2004algebraic",
+            "Monagan2000Brown",
+            "Brown1971gcd",
+            "vanHoeij2002modgcd",
+            "Liao1995heuristic"
+        ],
+        "modules/concrete": [
+            "Karr1981summation",
+            "Petkovsek1997AeqB"
+        ],
+        "modules/core": [
+            "Gruntz1996limits"
+        ],
+        "modules/domains": [
+            "Man1994disp",
+            "Koepf98",
+            "Abramov71rat",
+            "Man1993indefsum"
+        ],
+        "modules/integrals": [
+            "Bronstein2005integration",
+            "Bronstein2005pmint"
+        ],
+        "modules/ntheory": [
+            "Wang1981partial",
+            "Menezes97"
+        ],
+        "modules/polys": [
+            "Kredel1988indep",
+            "Faugere1993groebner",
+            "Buchberger2001systems",
+            "Cox2015ideals",
+            "Yokoyama1989primitive",
+            "Arno1996alg",
+            "Bronstein1993partial"
+        ],
+        "modules/solvers/ode": [
+            "TenenbaumPollard63",
+            "goldstein1973advanced",
+            "simmons2016differential",
+            "hairer2014solving"
+        ],
+        "modules/solvers/recurr": [
+            "Petkovsek1992hyper",
+            "Petkovsek1997AeqB",
+            "Abramov1995polynomial",
+            "Abramov1995rational"
+        ],
+        "modules/solvers/solvers": [
+            "Cox2015ideals"
+        ]
+    }
+}

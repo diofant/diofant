@@ -90,6 +90,12 @@ All work should be submitted via `Pull Requests (PR)`_.
 
    and check that it looks as expected.
 
+9. If you add new references, please run
+
+       python setup.py build_sphinx
+
+   twice and update the ``docs/bibtex.json``.
+
 Rosetta Stone
 =============
 
