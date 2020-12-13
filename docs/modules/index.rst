@@ -12,6 +12,11 @@ automatically generated using Diofant's docstrings.
     sure how to use something, just look into the ``tests`` subdirectories,
     find that feature and read the tests for it.
 
+.. warning::
+
+    The Diofant project in the early stage of developement and has no
+    stable API yet.
+
 .. toctree::
    :maxdepth: 2
 
