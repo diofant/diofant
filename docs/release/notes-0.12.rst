@@ -34,6 +34,7 @@ Compatibility breaks
 * Drop rich comparison methods from the :class:`~diofant.polys.fields.FracElement`, see :pull:`1101`.
 * :func:`~diofant.polys.polytools.Poly.from_list` support now ascending order of coefficients (i.e., the leading coefficient of univariate polynomial is coming last), see :pull:`1103`.
 * Removed support for 3D geometry in the :mod:`~diofant.geometry` module and ``Point.__getitem__()`` method, see :pull:`1105`.
+* 100% test coverage for :mod:`~diofant.geometry` module, see :pull:`1105`.  Overall test coverage is around 98%.
 
 Minor changes
 =============
@@ -83,3 +84,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20484` Need more utility for polynomial substitution
 * :sympyissue:`20485` Rational powers for non-monomial PolyElement
 * :sympyissue:`20487` LaTeX printing errors for puiseux polynomial
+* :sympyissue:`20610` Solve: GeneratorsNeeded with system involving constant equation

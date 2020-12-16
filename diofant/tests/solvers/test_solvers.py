@@ -1673,3 +1673,7 @@ def test_unrad_slow():
 def test_unrad2():
     assert solve(root(x**3 - 3*x**2, 3) + 1 - x) == []
     assert solve(root(x + 1, 3) + root(x**2 - 2, 5) + 1) == []
+
+
+def test_sympyissue_20610():
+    assert solve([x + y, sqrt(2)], [x, y]) == []

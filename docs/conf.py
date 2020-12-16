@@ -32,6 +32,9 @@ napoleon_google_docstring = False
 napoleon_use_param = False
 napoleon_use_rtype = False
 
+# List our *.bib files.
+bibtex_bibfiles = ['sources.bib']
+
 # Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
 
