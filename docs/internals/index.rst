@@ -1,7 +1,7 @@
 Internals
 =========
 
-This section covers developers-only documentation, part of the API
+This section covers the developers-only documentation, i.e part of the API
 that may be changed anytime by anyone.
 
 .. toctree::

@@ -14,7 +14,7 @@ automatically generated using Diofant's docstrings.
 
 .. warning::
 
-    The Diofant project in the early stage of developement and has no
+    The Diofant project is in the early stage of developement and has no
     stable API yet.
 
 .. toctree::
