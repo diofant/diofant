@@ -744,6 +744,9 @@ def test_Pow_is_algebraic():
     assert p.is_algebraic is None
     assert p.is_finite is None  # issue sympy/sympy#17453
 
+    # issue sympy/sympy#20617
+    assert exp(I*2*pi/3).is_algebraic is True
+
 
 def test_Mul_is_infinite():
     x = Symbol('x')
