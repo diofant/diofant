@@ -32,6 +32,7 @@ jobs:
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
+        pip install pip==20.2.4
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         pip install -U https://github.com/kataev/flake8-rst/archive/master.zip
     - name: Linting with flake8, flake8-rst and pylint
