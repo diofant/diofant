@@ -1035,6 +1035,8 @@ class Pow(Expr):
                         return False
                     elif (self.exp/pi).is_rational:
                         return False
+                    elif (self.exp/(I*pi)).is_rational:
+                        return True
             else:
                 return s.is_algebraic
         elif self.exp.is_rational and self.exp.is_nonzero:

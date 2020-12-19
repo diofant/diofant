@@ -3,6 +3,7 @@
 from ..core import I, sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
+from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_expr
@@ -84,12 +85,12 @@ def _construct_algebraic(coeffs, opt):
 
         result.append(coeff)
 
-    exts = list(exts)
+    exts = list(ordered(exts))
 
     if all(e.is_real for e in exts):
         domain = QQ.algebraic_field(*exts)
     else:
-        ground_exts = list(set().union(*[_.as_real_imag() for _ in exts]))
+        ground_exts = list(ordered(set().union(*[_.as_real_imag() for _ in exts])))
         domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
     H = [domain.from_expr(e).rep for e in exts]
