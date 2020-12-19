@@ -1130,13 +1130,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         23
 
         """
-        if element == 1:
+        if isinstance(element, tuple):
+            return self._get_coeff(element)
+        elif element == 1:
             return self._get_coeff(self.ring.zero_monom)
         elif isinstance(element, self.ring.dtype) and element.is_monomial:
             monom, = element
             return self._get_coeff(monom)
-        elif is_sequence(element) and all(isinstance(n, int) for n in element):
-            return self._get_coeff(element)
 
         raise ValueError(f'expected a monomial, got {element}')
 
