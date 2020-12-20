@@ -187,7 +187,7 @@ def test_sympyissue_3560():
 
 
 def test_integrate_poly():
-    p = Poly(x + x**2*y + y**3, x, y)
+    p = (x + x**2*y + y**3).as_poly()
 
     qx = integrate(p, x)
     qy = integrate(p, y)
@@ -203,7 +203,7 @@ def test_integrate_poly():
 
 
 def test_integrate_poly_defined():
-    p = Poly(x + x**2*y + y**3, x, y)
+    p = (x + x**2*y + y**3).as_poly()
 
     Qx = integrate(p, (x, 0, 1))
     Qy = integrate(p, (y, 0, pi))

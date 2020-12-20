@@ -1,11 +1,10 @@
 import pytest
 
 from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
-                     Integral, LambertW, Matrix, Mul, O, Piecewise, Poly,
-                     Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
-                     atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
-                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan,
-                     variations)
+                     Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
+                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
+                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
+                     simplify, sin, sinh, sqrt, sstr, symbols, tan, variations)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -2269,7 +2268,7 @@ def test_nth_order_linear_euler_eq_homogeneous():
     eq = x**3*f(x).diff(x, 3) + f(x)
     sol1 = dsolve(eq, f(x), hint=our_hint)
     _x = sol1.atoms(RootOf).pop().poly.gen
-    r0, r1, r2 = Poly(_x**3 - 3*_x**2 + 2*_x + 1).all_roots()
+    r0, r1, r2 = (_x**3 - 3*_x**2 + 2*_x + 1).as_poly().all_roots()
     sol0 = Eq(f(x), C1*x**r0 + C2*x**r1 + C3*x**r2)
     assert sol0 == sol1
 
@@ -2515,7 +2514,7 @@ def test_linear_coefficients():
 
 def test_constantsimp_take_problem():
     c = exp(C1) + 2
-    assert len(Poly(constantsimp(exp(C1) + c + c*x, [C1])).gens) == 2
+    assert len((constantsimp(exp(C1) + c + c*x, [C1])).as_poly().gens) == 2
 
 
 def test_sympyissue_6879():

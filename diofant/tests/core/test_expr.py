@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
-                     Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
+                     Max, Mul, Number, NumberSymbol, O, Piecewise, Pow,
                      Rational, Si, Subs, Sum, Symbol, Tuple, Wild,
                      WildFunction, apart, cancel, cbrt, collect, combsimp, cos,
                      default_sort_key, diff, exp, exp_polar, expand, factor,
@@ -309,14 +309,14 @@ def test_atoms():
 
     assert sin(oo).atoms(oo) == {oo}
 
-    assert Poly(0, x).atoms() == {0, x}
-    assert Poly(1, x).atoms() == {1, x}
+    assert Integer(0).as_poly(x).atoms() == {0, x}
+    assert Integer(1).as_poly(x).atoms() == {1, x}
 
-    assert Poly(x, x).atoms() == {x}
-    assert Poly(x, x, y).atoms() == {x, y}
-    assert Poly(x + y, x, y).atoms() == {x, y}
-    assert Poly(x + y, x, y, z).atoms() == {x, y, z}
-    assert Poly(x + y*t, x, y, z).atoms() == {t, x, y, z}
+    assert x.as_poly().atoms() == {x}
+    assert x.as_poly(x, y).atoms() == {x, y}
+    assert (x + y).as_poly().atoms() == {x, y}
+    assert (x + y).as_poly(x, y, z).atoms() == {x, y, z}
+    assert (x + y*t).as_poly(x, y, z).atoms() == {t, x, y, z}
 
     assert (I*pi).atoms(NumberSymbol) == {pi}
     assert (I*pi).atoms(NumberSymbol, I) == {pi, I}
@@ -822,7 +822,7 @@ def test_has_tuple():
 
 
 def test_has_polys():
-    poly = Poly(x**2 + x*y*sin(z), x, y, t)
+    poly = (x**2 + x*y*sin(z)).as_poly(x, y, t)
 
     assert poly.has(x)
     assert poly.has(x, y, z)
@@ -837,7 +837,7 @@ def test_as_poly_as_expr():
 
     assert (f + sin(x)).as_poly(x, y) is None
 
-    p = Poly(f, x, y)
+    p = f.as_poly(x, y)
 
     assert p.as_poly() == p
 

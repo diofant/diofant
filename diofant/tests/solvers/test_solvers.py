@@ -2,10 +2,10 @@ import pytest
 
 from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
-                     Mul, Or, Piecewise, Poly, Pow, Rational, RootOf, Symbol,
-                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
-                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, nan, nfloat, ordered, pi, posify, re, real_root,
+                     Mul, Or, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
+                     Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
+                     erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
+                     nfloat, ordered, pi, posify, re, real_root,
                      reduce_inequalities, root, sec, sech, simplify, sin, sinh,
                      solve, sqrt, sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
@@ -86,7 +86,7 @@ def test_solve_args():
                                              x**2 * y**2 > x**2 * y]))
 
     assert solve(Eq(x, 3), x) == [{x: 3}]
-    assert solve(Poly(x - 3), x) == [{x: 3}]
+    assert solve((x - 3).as_poly(), x) == [{x: 3}]
 
     assert solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
 
@@ -131,7 +131,7 @@ def test_solve_polynomial1():
                                            {x: +sqrt(sqrt(a) + 1)}]
 
     assert (solve(x**3 - x + a, x, cubics=False) ==
-            [{x: r} for r in Poly(x**3 - x + a, x).all_roots()])
+            [{x: r} for r in (x**3 - x + a).as_poly(x).all_roots()])
     assert (solve(x**3 + 3*x**2 + x - 1, cubics=False) ==
             [{x: -1}, {x: -1 + sqrt(2)}, {x: -sqrt(2) - 1}])
 
@@ -252,7 +252,7 @@ def test_solve_qubics():
              {x: -cbrt(3*sqrt(69)/2 + Rational(27, 2))/3 -
                  1/cbrt(3*sqrt(69)/2 + Rational(27, 2))}])
     assert (solve(x**3 - x + 1, cubics=False) ==
-            [{x: r} for r in Poly(x**3 - x + 1).all_roots()])
+            [{x: r} for r in (x**3 - x + 1).as_poly().all_roots()])
 
 
 def test_quintics_1():
@@ -268,7 +268,7 @@ def test_quintics_1():
     # doesn't fail. Note: if you want numerical solutions to a polynomial
     # it is *much* faster to use nroots to get them than to solve the
     # equation only to get RootOf solutions which are then numerically
-    # evaluated. So for eq = x**5 + 3*x + 7 do Poly(eq).nroots() rather
+    # evaluated. So for eq = x**5 + 3*x + 7 do eq.as_poly().nroots() rather
     # than [i[x].evalf() for i in solve(eq)] to get the numerical roots of eq.
     assert (nfloat(solve(x**5 + 3*x**3 + 7)[0][x], exponent=False) ==
             RootOf(x**5 + 3*x**3 + 7, 0).evalf())
@@ -528,12 +528,12 @@ def test_solve_transcendental():
     eq = Eq(expr, v)
     eq1 = Eq(expr1, v)
     assert solve(eq, check=False) == [{x: _**15}
-                                      for _ in Poly(-x**5 + x**3 + v,
-                                                    x, extension=False).all_roots()]
+                                      for _ in (-x**5 + x**3 +
+                                                v).as_poly(x, extension=False).all_roots()]
     for s, v in zip((x.subs(_) for _ in solve(eq1, check=False)),
-                    (_**15 for _ in Poly((-1)**Rational(2, 3)*x**5 -
-                                         (-1)**Rational(2, 5)*x**3 -
-                                         v, x, extension=False).all_roots())):
+                    (_**15 for _ in ((-1)**Rational(2, 3)*x**5 -
+                                     (-1)**Rational(2, 5)*x**3 -
+                                     v).as_poly(x, extension=False).all_roots())):
         assert simplify(s - v) == 0
 
     assert solve(+3**x - 10) == [{x: log(10)/log(3)}]
@@ -722,12 +722,12 @@ def test_sympypull_1964():
     assert solve(1/root(5 + x, 5) - 9, x) == [{x: Rational(-295244, 59049)}]
 
     assert solve(sqrt(x) + sqrt(sqrt(x)) - 4) == [{x: (Rational(-1, 2) + sqrt(17)/2)**4}]
-    assert (solve(Poly(sqrt(exp(x)) + sqrt(exp(-x)) - 4)) in
+    assert (solve((sqrt(exp(x)) + sqrt(exp(-x)) - 4).as_poly()) in
             [[{x: log((-sqrt(3) + 2)**2)}, {x: log((sqrt(3) + 2)**2)}],
              [{x: 2*log(-sqrt(3) + 2)}, {x: 2*log(sqrt(3) + 2)}],
              [{x: log(-4*sqrt(3) + 7)}, {x: log(4*sqrt(3) + 7)}]])
-    assert solve(Poly(exp(x) + exp(-x) - 4)) == [{x: log(-sqrt(3) + 2)},
-                                                 {x: log(+sqrt(3) + 2)}]
+    assert solve((exp(x) + exp(-x) - 4).as_poly()) == [{x: log(-sqrt(3) + 2)},
+                                                       {x: log(+sqrt(3) + 2)}]
     assert (solve(x**y + x**(2*y) - 1, x) ==
             [{x: (Rational(-1, 2) + sqrt(5)/2)**(1/y)},
              {x: (Rational(-1, 2) - sqrt(5)/2)**(1/y)}])
@@ -1165,7 +1165,7 @@ def test_sympyissue_6752():
 def test_sympyissue_6792():
     assert (solve(x*(x - 1)**2*(x + 1)*(x**6 - x + 1)) ==
             [{x: -1}, {x: 0}, {x: 1}] +
-            [{x: r} for r in Poly(x**6 - x + 1).all_roots()])
+            [{x: r} for r in (x**6 - x + 1).as_poly().all_roots()])
 
 
 def test_sympyissues_6819_6820_6821_6248():
@@ -1209,11 +1209,11 @@ def test_sympyissue_6989():
 
 def test_lambert_multivariate():
     for i in range(7):
-        assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
-        assert _filtered_gens(Poly(x + 1/x + exp(x)), x) == {exp(x), x}
-        assert _filtered_gens(Poly(x + log(x) + 1/x + exp(x)),
+        assert _filtered_gens((x + 1/x + exp(x) + y).as_poly(), x) == {x, exp(x)}
+        assert _filtered_gens((x + 1/x + exp(x)).as_poly(), x) == {exp(x), x}
+        assert _filtered_gens((x + log(x) + 1/x + exp(x)).as_poly(),
                               x) == {exp(x), log(x), x}
-        assert _filtered_gens(Poly(exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x),
+        assert _filtered_gens((exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x).as_poly(),
                               x) == {exp(I*x), x, log(x)}
     assert _lambert(x, x) == []
     assert solve((x**2 - 2*x + 1).subs({x: log(x) + 3*x})) == [{x: LambertW(3*E)/3}]
@@ -1248,7 +1248,7 @@ def test_lambert_multivariate():
              {x: log(exp(-LambertW(1/(b + 3))/3)*(-1 + sqrt(3)*I)/(2*a**_53))/log(a)}])
 
     eq = 4*2**(2*p + 3) - 2*p - 3
-    assert _solve_lambert(eq, p, _filtered_gens(Poly(eq), p)) == [
+    assert _solve_lambert(eq, p, _filtered_gens(eq.as_poly(), p)) == [
         -Rational(3, 2) - LambertW(-4*log(2))/(2*log(2))]
 
     # issue sympy/sympy#4271
@@ -1423,12 +1423,12 @@ def test_high_order_multivariate():
     assert len(solve(a*x**3 - x + 1, x)) == 3
     assert len(solve(a*x**4 - x + 1, x)) == 4
     assert (solve(a*x**5 - x + 1, x) ==
-            [{x: r} for r in Poly(a*x**5 - x + 1, x).all_roots()])
+            [{x: r} for r in (a*x**5 - x + 1).as_poly(x).all_roots()])
 
     # result checking must always consider the denominator and RootOf
     # must be checked, too
     d = x**5 - x + 1
-    assert solve(d*(1 + 1/d)) == [{x: r} for r in Poly(d + 1).all_roots()]
+    assert solve(d*(1 + 1/d)) == [{x: r} for r in (d + 1).as_poly().all_roots()]
     d = x - 1
     assert solve(d*(2 + 1/d)) == [{x: Rational(1, 2)}]
 
@@ -1528,7 +1528,7 @@ def test_sympyissue_14779():
 def test_diofantissue_709():
     eqs = [sqrt(x) + y + 2, root(y, 3)*x - 1]
     a1 = symbols('a1')
-    r5, r6 = Poly(a1**7 + 4*a1**4 + 4*a1 - 1).all_roots()[-2:]
+    r5, r6 = (a1**7 + 4*a1**4 + 4*a1 - 1).as_poly().all_roots()[-2:]
     res = [{x: 4 + 4*r5**3 + r5**6, y: r5**3},
            {x: 4 + r6**6 + 4*r6**3, y: r6**3}]
     assert solve(eqs) == res

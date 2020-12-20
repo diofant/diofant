@@ -15,7 +15,7 @@ def _filtered_gens(poly, symbol):
     Examples
     ========
 
-    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
+    >>> _filtered_gens((x + 1/x + exp(x)).as_poly(), x)
     {E**x, x}
 
     """

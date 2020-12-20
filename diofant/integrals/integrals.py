@@ -526,7 +526,7 @@ class Integral(AddWithLimits):
                         antideriv = antideriv.as_expr()
 
                         function = antideriv._eval_interval(x, a, b)
-                        function = Poly(function, *gens)
+                        function = function.as_poly(*gens)
                     elif (isinstance(antideriv, Add) and
                           any(isinstance(t, Integral) for t in antideriv.args)):
                         function = Add(*[i._eval_interval(x, a, b) for i in

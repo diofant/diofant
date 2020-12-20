@@ -936,9 +936,8 @@ def check_convergence(numer, denom, n):
         <= 1 for polynomial divergence of rate n**(-h)
 
     """
-    from ..polys import Poly
-    npol = Poly(numer, n)
-    dpol = Poly(denom, n)
+    npol = numer.as_poly(n)
+    dpol = denom.as_poly(n)
     p = npol.degree()
     q = dpol.degree()
     rate = q - p

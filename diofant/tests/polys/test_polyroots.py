@@ -5,7 +5,7 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (QQ, ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
+from diofant import (QQ, ZZ, I, Integer, Interval, Mul, Piecewise,
                      PolynomialError, Rational, RootOf, Symbol, Wild, acos,
                      cbrt, cos, cyclotomic_poly, exp, im, legendre_poly,
                      nroots, pi, powsimp, re, root, roots, sin, sqrt, symbols)
@@ -23,92 +23,92 @@ __all__ = ()
 
 
 def test_roots_linear():
-    assert roots_linear(Poly(2*x + 1, x)) == [-Rational(1, 2)]
+    assert roots_linear((2*x + 1).as_poly()) == [-Rational(1, 2)]
 
 
 def test_roots_quadratic():
-    assert roots_quadratic(Poly(2*x**2, x)) == [0, 0]
-    assert roots_quadratic(Poly(2*x**2 + 3*x, x)) == [-Rational(3, 2), 0]
-    assert roots_quadratic(Poly(2*x**2 + 3, x)) == [-I*sqrt(6)/2, I*sqrt(6)/2]
-    assert roots_quadratic(Poly(2*x**2 + 4*x + 3, x)) == [-1 - I*sqrt(2)/2, -1 + I*sqrt(2)/2]
+    assert roots_quadratic((2*x**2).as_poly()) == [0, 0]
+    assert roots_quadratic((2*x**2 + 3*x).as_poly()) == [-Rational(3, 2), 0]
+    assert roots_quadratic((2*x**2 + 3).as_poly()) == [-I*sqrt(6)/2, I*sqrt(6)/2]
+    assert roots_quadratic((2*x**2 + 4*x + 3).as_poly()) == [-1 - I*sqrt(2)/2, -1 + I*sqrt(2)/2]
 
     f = x**2 + (2*a*e + 2*c*e)/(a - c)*x + (d - b + a*e**2 - c*e**2)/(a - c)
-    assert (roots_quadratic(Poly(f, x)) ==
+    assert (roots_quadratic(f.as_poly(x)) ==
             [-e*(a + c)/(a - c) - sqrt((a*b + 4*a*c*e**2 -
                                         a*d - b*c + c*d)/(a - c)**2),
              -e*(a + c)/(a - c) + sqrt((a*b + 4*a*c*e**2 -
                                         a*d - b*c + c*d)/(a - c)**2)])
 
     # check for simplification
-    f = Poly(y*x**2 - 2*x - 2*y, x)
+    f = (y*x**2 - 2*x - 2*y).as_poly(x)
     assert roots_quadratic(f) == [-sqrt((2*y**2 + 1)/y**2) + 1/y,
                                   sqrt((2*y**2 + 1)/y**2) + 1/y]
-    f = Poly(x**2 + (-y**2 - 2)*x + y**2 + 1, x)
+    f = (x**2 + (-y**2 - 2)*x + y**2 + 1).as_poly(x)
     assert roots_quadratic(f) == [y**2/2 - sqrt(y**4)/2 + 1,
                                   y**2/2 + sqrt(y**4)/2 + 1]
 
-    f = Poly(sqrt(2)*x**2 - 1, x)
+    f = (sqrt(2)*x**2 - 1).as_poly(x)
     r = roots_quadratic(f)
     assert r == _nsort(r)
 
     # issue sympy/sympy#8255
-    f = Poly(-24*x**2 - 180*x + 264)
+    f = (-24*x**2 - 180*x + 264).as_poly()
     assert [w.evalf(2) for w in f.all_roots(radicals=True)] == \
            [w.evalf(2) for w in f.all_roots(radicals=False)]
     for _a, _b, _c in itertools.product((-2, 2), (-2, 2), (0, -1)):
-        f = Poly(_a*x**2 + _b*x + _c)
+        f = (_a*x**2 + _b*x + _c).as_poly()
         roots = roots_quadratic(f)
         assert roots == _nsort(roots)
 
 
 def test_sympyissue_8285():
-    roots = (Poly(4*x**8 - 1, x)*Poly(x**2 + 1)).all_roots()
+    roots = ((4*x**8 - 1).as_poly()*(x**2 + 1).as_poly()).all_roots()
     assert roots == _nsort(roots)
-    f = Poly(x**4 + 5*x**2 + 6, x)
+    f = (x**4 + 5*x**2 + 6).as_poly()
     ro = [RootOf(f, i) for i in range(4)]
-    roots = Poly(x**4 + 5*x**2 + 6, x).all_roots()
+    roots = (x**4 + 5*x**2 + 6).as_poly().all_roots()
     assert roots == ro
     assert roots == _nsort(roots)
     # more than 2 complex roots from which to identify the
     # imaginary ones
-    roots = Poly(2*x**8 - 1).all_roots()
+    roots = (2*x**8 - 1).as_poly().all_roots()
     assert roots == _nsort(roots)
-    assert len(Poly(2*x**10 - 1).all_roots()) == 10  # doesn't fail
+    assert len((2*x**10 - 1).as_poly().all_roots()) == 10  # doesn't fail
 
 
 def test_sympyissue_8289():
-    roots = (Poly(x**2 + 2)*Poly(x**4 + 2)).all_roots()
+    roots = ((x**2 + 2).as_poly()*(x**4 + 2).as_poly()).all_roots()
     assert roots == _nsort(roots)
-    roots = Poly(x**6 + 3*x**3 + 2, x).all_roots()
+    roots = (x**6 + 3*x**3 + 2).as_poly().all_roots()
     assert roots == _nsort(roots)
-    roots = Poly(x**6 - x + 1).all_roots()
+    roots = (x**6 - x + 1).as_poly().all_roots()
     assert roots == _nsort(roots)
     # all imaginary roots
-    roots = Poly(x**4 + 4*x**2 + 4, x).all_roots()
+    roots = (x**4 + 4*x**2 + 4).as_poly().all_roots()
     assert roots == _nsort(roots)
 
 
 def test_sympyissue_14293():
-    roots = Poly(x**8 + 2*x**6 + 37*x**4 - 36*x**2 + 324).all_roots()
+    roots = (x**8 + 2*x**6 + 37*x**4 - 36*x**2 + 324).as_poly().all_roots()
     assert roots == _nsort(roots)
 
 
 def test_roots_cubic():
-    assert roots_cubic(Poly(2*x**3, x)) == [0, 0, 0]
-    assert roots_cubic(Poly(x**3 - 3*x**2 + 3*x - 1, x)) == [1, 1, 1]
+    assert roots_cubic((2*x**3).as_poly()) == [0, 0, 0]
+    assert roots_cubic((x**3 - 3*x**2 + 3*x - 1).as_poly()) == [1, 1, 1]
 
-    assert roots_cubic(Poly(x**3 + 1, x)) == \
+    assert roots_cubic((x**3 + 1).as_poly()) == \
         [-1, Rational(1, 2) - I*sqrt(3)/2, Rational(1, 2) + I*sqrt(3)/2]
-    assert roots_cubic(Poly(2*x**3 - 3*x**2 - 3*x - 1, x))[0] == \
+    assert roots_cubic((2*x**3 - 3*x**2 - 3*x - 1).as_poly())[0] == \
         Rational(1, 2) + cbrt(3)/2 + 3**Rational(2, 3)/2
     eq = -x**3 + 2*x**2 + 3*x - 2
     assert roots(eq, trig=True, multiple=True) == \
-        roots_cubic(Poly(eq, x), trig=True) == [
+        roots_cubic(eq.as_poly(), trig=True) == [
         Rational(2, 3) + 2*sqrt(13)*cos(acos(8*sqrt(13)/169)/3)/3,
         -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Rational(2, 3),
         -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
     ]
-    res = roots_cubic(Poly(x**3 + 2*a/27, x))
+    res = roots_cubic((x**3 + 2*a/27).as_poly(x))
     assert res == [-root(a + sqrt(a**2), 3)/3,
                    Mul(Rational(-1, 3), Rational(-1, 2) + sqrt(3)*I/2,
                        root(a + sqrt(a**2), 3), evaluate=False),
@@ -116,31 +116,31 @@ def test_roots_cubic():
                        root(a + sqrt(a**2), 3), evaluate=False)]
 
     # issue sympy/sympy#8438
-    p = Poly([1, y, -2, -3], x).as_expr()
-    croots = roots_cubic(Poly(p, x), x)
+    p = -3*x**3 - 2*x**2 + x*y + 1
+    croots = roots_cubic(p.as_poly(x), x)
     z = -Rational(3, 2) - 7*I/2  # this will fail in code given in commit msg
     post = [r.subs({y: z}) for r in croots]
-    assert set(post) == set(roots_cubic(Poly(p.subs({y: z}), x)))
+    assert set(post) == set(roots_cubic(p.subs({y: z}).as_poly(x)))
     # /!\ if p is not made an expression, this is *very* slow
     assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
 
 
 def test_roots_quartic():
-    assert roots_quartic(Poly(x**4, x)) == [0, 0, 0, 0]
-    assert roots_quartic(Poly(x**4 + x**3, x)) in [
+    assert roots_quartic((x**4).as_poly()) == [0, 0, 0, 0]
+    assert roots_quartic((x**4 + x**3).as_poly()) in [
         [-1, 0, 0, 0],
         [0, -1, 0, 0],
         [0, 0, -1, 0],
         [0, 0, 0, -1]
     ]
-    assert roots_quartic(Poly(x**4 - x**3, x)) in [
+    assert roots_quartic((x**4 - x**3).as_poly()) in [
         [1, 0, 0, 0],
         [0, 1, 0, 0],
         [0, 0, 1, 0],
         [0, 0, 0, 1]
     ]
 
-    lhs = roots_quartic(Poly(x**4 + x, x))
+    lhs = roots_quartic((x**4 + x).as_poly())
     rhs = [Rational(1, 2) + I*sqrt(3)/2, Rational(1, 2) - I*sqrt(3)/2, 0, -1]
 
     assert sorted(lhs, key=hash) == sorted(rhs, key=hash)
@@ -158,34 +158,34 @@ def test_roots_quartic():
         elif i == 3:
             d = a*(a*(3*a**2/Integer(256) - b/Integer(16)) + c/Integer(4))
         eq = x**4 + a*x**3 + b*x**2 + c*x + d
-        ans = roots_quartic(Poly(eq, x))
+        ans = roots_quartic(eq.as_poly())
         assert all(eq.subs({x: ai}).evalf(chop=True) == 0 for ai in ans)
 
     # not all symbolic quartics are unresolvable
-    eq = Poly(q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3), x)
+    eq = (q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)).as_poly(x)
     sol = roots_quartic(eq)
     assert all(verify_numerically(eq.subs({x: i}), 0) for i in sol)
     z = symbols('z', negative=True)
     eq = x**4 + 2*x**3 + 3*x**2 + x*(z + 11) + 5
-    zans = roots_quartic(Poly(eq, x))
+    zans = roots_quartic(eq.as_poly(x))
     assert all(verify_numerically(eq.subs({x: i, z: -1}), 0) for i in zans)
     # but some are (see also issue sympy/sympy#4989)
     # it's ok if the solution is not Piecewise, but the tests below should pass
-    eq = Poly(y*x**4 + x**3 - x + z, x)
+    eq = (y*x**4 + x**3 - x + z).as_poly(x)
     ans = roots_quartic(eq)
     assert all(type(i) == Piecewise for i in ans)
     reps = ({y: -Rational(1, 3), z: -Rational(1, 4)},  # 4 real
             {y: -Rational(1, 3), z: -Rational(1, 2)},  # 2 real
             {y: -Rational(1, 3), z: -2})  # 0 real
     for rep in reps:
-        sol = roots_quartic(Poly(eq.subs(rep), x))
+        sol = roots_quartic(eq.subs(rep).as_poly(x))
         assert all(verify_numerically(w.subs(rep) - s, 0) for w, s in zip(ans, sol))
 
 
 def test_roots_quintic():
-    assert roots_quintic(Poly(x**5 + x**4 + 1)) == []
-    assert roots_quintic(Poly(x**5 - 6*x + 3)) == []
-    assert roots_quintic(Poly(6*x**5 + 9*x**3 - 10*x**2 - 9*x)) == []
+    assert roots_quintic((x**5 + x**4 + 1).as_poly()) == []
+    assert roots_quintic((x**5 - 6*x + 3).as_poly()) == []
+    assert roots_quintic((6*x**5 + 9*x**3 - 10*x**2 - 9*x).as_poly()) == []
 
 
 def test_roots_cyclotomic():
@@ -237,75 +237,75 @@ def test_roots_cyclotomic():
 
 
 def test_roots_binomial():
-    assert roots_binomial(Poly(5*x, x)) == [0]
-    assert roots_binomial(Poly(5*x**4, x)) == [0, 0, 0, 0]
-    assert roots_binomial(Poly(5*x + 2, x)) == [-Rational(2, 5)]
+    assert roots_binomial((5*x).as_poly()) == [0]
+    assert roots_binomial((5*x**4).as_poly()) == [0, 0, 0, 0]
+    assert roots_binomial((5*x + 2).as_poly()) == [-Rational(2, 5)]
 
     A = 10**Rational(3, 4)/10
 
-    assert roots_binomial(Poly(5*x**4 + 2, x)) == \
+    assert roots_binomial((5*x**4 + 2).as_poly()) == \
         [-A - A*I, -A + A*I, A - A*I, A + A*I]
 
     a1 = Symbol('a1', nonnegative=True)
     b1 = Symbol('b1', nonnegative=True)
 
-    r0 = roots_quadratic(Poly(a1*x**2 + b1, x))
-    r1 = roots_binomial(Poly(a1*x**2 + b1, x))
+    r0 = roots_quadratic((a1*x**2 + b1).as_poly(x))
+    r1 = roots_binomial((a1*x**2 + b1).as_poly(x))
 
     assert powsimp(r0[0]) == powsimp(r1[0])
     assert powsimp(r0[1]) == powsimp(r1[1])
     for a, b, s, n in itertools.product((1, 2), (1, 2), (-1, 1), (2, 3, 4, 5)):
         if a == b and a != 1:  # a == b == 1 is sufficient
             continue
-        p = Poly(a*x**n + s*b)
+        p = (a*x**n + s*b).as_poly()
         ans = roots_binomial(p)
         assert ans == _nsort(ans)
 
     # issue sympy/sympy#8813
-    assert roots(Poly(2*x**3 - 16*y**3, x)) == {
+    assert roots((2*x**3 - 16*y**3).as_poly(x)) == {
         2*y*(-Rational(1, 2) - sqrt(3)*I/2): 1,
         2*y: 1,
         2*y*(-Rational(1, 2) + sqrt(3)*I/2): 1}
 
-    p = Poly(exp(I*x/3)**4 + exp(I*x/3), exp(I*x/3))
+    p = (exp(I*x/3)**4 + exp(I*x/3)).as_poly(exp(I*x/3))
     assert roots(p) == roots(x**4 + x)
 
 
 def test_roots_preprocessing():
     f = a*y*x**2 + y - b
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 1
-    assert poly == Poly(a*y*x**2 + y - b, x)
+    assert poly == (a*y*x**2 + y - b).as_poly(x)
 
     f = c**3*x**3 + c**2*x**2 + c*x + a
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 1/c
-    assert poly == Poly(x**3 + x**2 + x + a, x)
+    assert poly == (x**3 + x**2 + x + a).as_poly(x)
 
     f = c**3*x**3 + c**2*x**2 + a
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 1/c
-    assert poly == Poly(x**3 + x**2 + a, x)
+    assert poly == (x**3 + x**2 + a).as_poly(x)
 
     f = c**3*x**3 + c*x + a
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 1/c
-    assert poly == Poly(x**3 + x + a, x)
+    assert poly == (x**3 + x + a).as_poly(x)
 
     f = c**3*x**3 + a
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 1/c
-    assert poly == Poly(x**3 + a, x)
+    assert poly == (x**3 + a).as_poly(x)
 
     E, F, J, L = symbols('E,F,J,L')
 
@@ -319,19 +319,19 @@ def test_roots_preprocessing():
         1153*E*J*F**7*x**7/(80*L**2) + \
         633*F**8*x**8/160000
 
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
 
     assert coeff == 20*E*J/(F*L**2)
     assert poly == 633*x**8 - 115300*x**7 + 4383520*x**6 + 296804300*x**5 - 27633173750*x**4 + \
         809735812500*x**3 - 10673859375000*x**2 + 63529101562500*x - 135006591796875
 
     f = J**8 + 7*E*x**2*L**16 + 5*F*x*E**5*J**7*L**2
-    coeff, poly = preprocess_roots(Poly(f, x))
+    coeff, poly = preprocess_roots(f.as_poly(x))
     assert coeff == 1
-    assert poly == Poly(f, x)
+    assert poly == f.as_poly(x)
 
-    f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.inject(x, exp(x)))
-    g = Poly(y**2 - exp(x), y, domain=ZZ.inject(exp(x)))
+    f = (-y**2 + x**2*exp(x)).as_poly(y, domain=ZZ.inject(x, exp(x)))
+    g = (y**2 - exp(x)).as_poly(y, domain=ZZ.inject(exp(x)))
 
     assert preprocess_roots(f) == (x, g)
 
@@ -489,20 +489,20 @@ def test_roots0():
     cr = 108 + 6*sqrt(1074)
     assert real_root == -2*root(cr, 3)/3 + 20/root(cr, 3)
 
-    eq = Poly((7 + 5*sqrt(2))*x**3 + (-6 - 4*sqrt(2))*x**2 + (-sqrt(2) - 1)*x + 2, x, domain='EX')
+    eq = ((7 + 5*sqrt(2))*x**3 + (-6 - 4*sqrt(2))*x**2 + (-sqrt(2) - 1)*x + 2).as_poly(x, domain='EX')
     assert roots(eq) == {-1 + sqrt(2): 1, -2 + 2*sqrt(2): 1, -sqrt(2) + 1: 1}
 
-    eq = Poly(41*x**5 + 29*sqrt(2)*x**5 - 153*x**4 - 108*sqrt(2)*x**4 +
-              175*x**3 + 125*sqrt(2)*x**3 - 45*x**2 - 30*sqrt(2)*x**2 - 26*sqrt(2)*x -
-              26*x + 24, x, domain='EX')
+    eq = (41*x**5 + 29*sqrt(2)*x**5 - 153*x**4 - 108*sqrt(2)*x**4 +
+          175*x**3 + 125*sqrt(2)*x**3 - 45*x**2 - 30*sqrt(2)*x**2 - 26*sqrt(2)*x -
+          26*x + 24).as_poly(x, domain='EX')
     assert roots(eq) == {-sqrt(2) + 1: 1, -2 + 2*sqrt(2): 1, -1 + sqrt(2): 1,
                          -4 + 4*sqrt(2): 1, -3 + 3*sqrt(2): 1}
 
-    eq = Poly(x**3 - 2*x**2 + 6*sqrt(2)*x**2 - 8*sqrt(2)*x + 23*x - 14 +
-              14*sqrt(2), x, domain='EX')
+    eq = (x**3 - 2*x**2 + 6*sqrt(2)*x**2 - 8*sqrt(2)*x + 23*x - 14 +
+          14*sqrt(2)).as_poly(x, domain='EX')
     assert roots(eq) == {-2*sqrt(2) + 2: 1, -2*sqrt(2) + 1: 1, -2*sqrt(2) - 1: 1}
 
-    assert roots(Poly((x + sqrt(2))**3 - 7, x, domain='EX')) == \
+    assert roots(((x + sqrt(2))**3 - 7).as_poly(x, domain='EX')) == \
         {-sqrt(2) - root(7, 3)/2 - sqrt(3)*root(7, 3)*I/2: 1,
          -sqrt(2) - root(7, 3)/2 + sqrt(3)*root(7, 3)*I/2: 1,
          -sqrt(2) + root(7, 3): 1}
@@ -517,8 +517,8 @@ def test_roots1():
     assert roots(x**3 - q, x) == {cbrt(q): 1,
                                   -cbrt(q)/2 - sqrt(3)*I*cbrt(q)/2: 1,
                                   -cbrt(q)/2 + sqrt(3)*I*cbrt(q)/2: 1}
-    assert roots_cubic(Poly(x**3 - 1)) == [1, Rational(-1, 2) + sqrt(3)*I/2,
-                                           Rational(-1, 2) - sqrt(3)*I/2]
+    assert roots_cubic((x**3 - 1).as_poly()) == [1, Rational(-1, 2) + sqrt(3)*I/2,
+                                                 Rational(-1, 2) - sqrt(3)*I/2]
 
     assert roots([1, x, y]) == {-x/2 - sqrt(x**2 - 4*y)/2: 1,
                                 -x/2 + sqrt(x**2 - 4*y)/2: 1}
@@ -599,7 +599,7 @@ def test_roots_mixed():
     f = -1936 - 5056*x - 7592*x**2 + 2704*x**3 - 49*x**4
 
     _re, _im = [], []
-    p = Poly(f)
+    p = f.as_poly()
     for r in p.all_roots():
         c, (r,) = r.as_coeff_mul()
         if r.is_real:
@@ -631,8 +631,8 @@ def test_roots_mixed():
 
 
 def test_root_factors():
-    assert root_factors(Poly(1, x)) == [Poly(1, x)]
-    assert root_factors(Poly(x, x)) == [Poly(x, x)]
+    assert root_factors(Integer(1).as_poly(x)) == [Integer(1).as_poly(x)]
+    assert root_factors(x.as_poly()) == [x.as_poly()]
 
     assert root_factors(x**2 - 1, x) == [x + 1, x - 1]
     assert root_factors(x**2 - y, x) == [x - sqrt(y), x + sqrt(y)]
@@ -640,12 +640,12 @@ def test_root_factors():
     assert root_factors((x**4 - 1)**2) == \
         [x + 1, x + 1, x - 1, x - 1, x - I, x - I, x + I, x + I]
 
-    assert root_factors(Poly(x**4 - 1, x), filter='Z') == \
-        [Poly(x + 1, x), Poly(x - 1, x), Poly(x**2 + 1, x)]
+    assert root_factors((x**4 - 1).as_poly(), filter='Z') == \
+        [(x + 1).as_poly(), (x - 1).as_poly(), (x**2 + 1).as_poly()]
     assert root_factors(8*x**2 + 12*x**4 + 6*x**6 + x**8, x, filter='Q') == \
         [x, x, x**6 + 6*x**4 + 12*x**2 + 8]
 
-    pytest.raises(ValueError, lambda: root_factors(Poly(x*y)))
+    pytest.raises(ValueError, lambda: root_factors((x*y).as_poly()))
 
 
 def test_nroots1():
@@ -671,7 +671,7 @@ def test_nroots1():
 
 
 def test_nroots2():
-    p = Poly(x**5 + 3*x + 1, x)
+    p = (x**5 + 3*x + 1).as_poly()
 
     roots = p.nroots(n=3)
     # The order of roots matters. The roots are ordered by their real
@@ -688,18 +688,18 @@ def test_nroots2():
 
 
 def test_roots_composite():
-    assert len(roots(Poly(y**3 + y**2*sqrt(x) + y + x, y, composite=True))) == 3
+    assert len(roots((y**3 + y**2*sqrt(x) + y + x).as_poly(y, composite=True))) == 3
 
 
 def test_sympyissue_7724():
     e = x**4*I + x**2 + I
-    r1, r2 = roots(e, x), Poly(e, x).all_roots()
+    r1, r2 = roots(e, x), e.as_poly(x).all_roots()
     assert len(r1) == 4
     assert {_.evalf() for _ in r1} == {_.evalf() for _ in r2}
 
 
 def test_sympyissue_14291():
-    p = Poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1))
+    p = (((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1)).as_poly()
     assert set(p.all_roots()) == {1, 1 - I, 1 + I, 1 - I*sqrt(2), 1 + sqrt(2)*I}
 
 

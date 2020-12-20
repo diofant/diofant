@@ -1,6 +1,6 @@
 """This module implements tools for integrating rational functions."""
 
-from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
+from ..core import Dummy, I, Integer, Lambda, Symbol, symbols, sympify
 from ..domains import ZZ
 from ..functions import atan, log
 from ..polys import Poly, RootSum, cancel, resultant, roots
@@ -36,7 +36,7 @@ def ratint(f, x, **flags):
     else:
         p, q = f
 
-    p, q = Poly(p, x, composite=False, field=True), Poly(q, x, composite=False, field=True)
+    p, q = p.as_poly(x, composite=False, field=True), q.as_poly(x, composite=False, field=True)
 
     coeff, p, q = p.cancel(q)
     poly, p = p.div(q)
@@ -50,8 +50,8 @@ def ratint(f, x, **flags):
 
     P, Q = h.as_numer_denom()
 
-    P = Poly(P, x)
-    Q = Poly(Q, x)
+    P = P.as_poly(x)
+    Q = Q.as_poly(x)
 
     q, r = P.div(Q)
 
@@ -131,8 +131,8 @@ def ratint_ratpart(f, g, x):
     ratint_logpart
 
     """
-    f = Poly(f, x)
-    g = Poly(g, x)
+    f = sympify(f).as_poly(x)
+    g = sympify(g).as_poly(x)
 
     u, v, _ = g.cofactors(g.diff())
 
@@ -191,13 +191,13 @@ def ratint_logpart(f, g, x, t=None):
     ratint_ratpart
 
     """
-    f, g = Poly(f, x), Poly(g, x)
+    f, g = sympify(f).as_poly(x), sympify(g).as_poly(x)
 
     t = t or Dummy('t')
-    a, b = g, f - g.diff()*Poly(t, x)
+    a, b = g, f - g.diff()*t.as_poly(x)
 
     res, R = resultant(a, b, includePRS=True)
-    res = Poly(res, t, composite=False)
+    res = res.as_poly(t, composite=False)
 
     assert res, f"BUG: resultant({a}, {b}) can't be zero"
 
@@ -221,13 +221,13 @@ def ratint_logpart(f, g, x, t=None):
             H.append((g, q))
         else:
             h = R_map[i]
-            h_lc = Poly(h.LC(), t, field=True)
+            h_lc = h.LC().as_poly(t, field=True)
 
             c, h_lc_sqf = h_lc.sqf_list()
             _include_sign(c, h_lc_sqf)
 
             for a, j in h_lc_sqf:
-                h = h.quo(Poly(a.gcd(q)**j, x))
+                h = h.quo((a.gcd(q)**j).as_poly(x))
 
             inv, coeffs = h_lc.invert(q), [Integer(1)]
 
@@ -255,9 +255,9 @@ def log_to_atan(f, g):
     Examples
     ========
 
-    >>> log_to_atan(Poly(x, x), Poly(1, x))
+    >>> log_to_atan(x.as_poly(), Integer(1).as_poly(x))
     2*atan(x)
-    >>> log_to_atan(Poly(x + Rational(1, 2), x), Poly(sqrt(3)/2, x))
+    >>> log_to_atan((x + Rational(1, 2)).as_poly(x), (sqrt(3)/2).as_poly(x))
     2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
 
     See Also
@@ -298,10 +298,10 @@ def log_to_real(h, q, x, t):
     Examples
     ========
 
-    >>> log_to_real(Poly(x + 3*y/2 + Rational(1, 2), x),
-    ...             Poly(3*y**2 + 1, y), x, y)
+    >>> log_to_real((x + 3*y/2 + Rational(1, 2)).as_poly(x),
+    ...             (3*y**2 + 1).as_poly(y), x, y)
     2*sqrt(3)*atan(2*sqrt(3)*x/3 + sqrt(3)/3)/3
-    >>> log_to_real(Poly(x**2 - 1, x), Poly(-2*y + 1, y), x, y)
+    >>> log_to_real((x**2 - 1).as_poly(), (-2*y + 1).as_poly(y), x, y)
     log(x**2 - 1)/2
 
     See Also
@@ -321,7 +321,7 @@ def log_to_real(h, q, x, t):
     a, b = H_map.get(Integer(1), Integer(0)), H_map.get(I, Integer(0))
     c, d = Q_map.get(Integer(1), Integer(0)), Q_map.get(I, Integer(0))
 
-    R = Poly(resultant(c, d, v), u)
+    R = resultant(c, d, v).as_poly(u)
 
     R_u_all = roots(R)
     R_q_all = roots(q)
@@ -335,7 +335,7 @@ def log_to_real(h, q, x, t):
     result = Integer(0)
 
     for r_u in R_u:
-        C = Poly(c.subs({u: r_u}), v, extension=False)
+        C = c.subs({u: r_u}).as_poly(v, extension=False)
 
         R_v_all = roots(C)
         if sum(R_v_all.values()) < C.degree():
@@ -354,8 +354,8 @@ def log_to_real(h, q, x, t):
             if D.evalf(2, chop=True) != 0:
                 continue
 
-            A = Poly(a.subs({u: r_u, v: r_v}), x, extension=False)
-            B = Poly(b.subs({u: r_u, v: r_v}), x, extension=False)
+            A = a.subs({u: r_u, v: r_v}).as_poly(x, extension=False)
+            B = b.subs({u: r_u, v: r_v}).as_poly(x, extension=False)
 
             AB = (A**2 + B**2).as_expr()
 

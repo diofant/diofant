@@ -195,7 +195,7 @@ class RootOf(Expr):
             return -p.TC()/p.LC()
         elif ((p.domain.is_IntegerRing or p.domain.is_AlgebraicField) and
               isinstance(expt, Integer) and (expt < 0 or expt >= p.degree())):
-            b = Poly(p.gen**abs(expt), p.gen, domain=p.domain)
+            b = (p.gen**abs(expt)).as_poly(p.gen, domain=p.domain)
             if expt < 0:
                 b = b.invert(p)
             x = self.doit()
@@ -481,7 +481,7 @@ class RootOf(Expr):
             elif all(sign(_) in (-1, 1) for _ in poly.coeffs()):
                 lc, tc = poly.LC(), poly.TC()
                 x, r = poly.gen, _root(abs(tc/lc), n)
-                poly = Poly(x**n + sign(lc*tc), x)
+                poly = (x**n + sign(lc*tc)).as_poly(x)
                 return [r*_ for _ in cls._roots_trivial(poly, radicals)]
 
     @classmethod
@@ -783,14 +783,14 @@ class RootSum(Expr):
         q = q.expand()
 
         try:
-            p = Poly(p, domain=domain, expand=False)
+            p = p.as_poly(domain=domain, expand=False)
         except GeneratorsNeeded:
             p, p_coeff = None, (p,)
         else:
             p_monom, p_coeff = zip(*p.terms())
 
         try:
-            q = Poly(q, domain=domain, expand=False)
+            q = q.as_poly(domain=domain, expand=False)
         except GeneratorsNeeded:
             q, q_coeff = None, (q,)
         else:

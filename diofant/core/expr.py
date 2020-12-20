@@ -1304,7 +1304,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x + 2
         >>> _.args[0]  # just want the exact match
         2
-        >>> p = Poly(2*E + x*E)
+        >>> p = (2*E + x*E).as_poly()
         >>> p
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)

@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (ComputationFailed, I, Matrix, Mul, Poly, PolynomialError,
+from diofant import (ComputationFailed, I, Matrix, Mul, PolynomialError,
                      Rational, RootOf, flatten, ordered, root, sqrt, symbols)
 from diofant.abc import n, t, x, y, z
 from diofant.solvers.polysys import (solve_linear_system, solve_poly_system,
@@ -60,7 +60,7 @@ def test_solve_poly_system():
 
     solution = [{x: 1, y: -1}, {x: 1, y: 1}]
 
-    assert solve_poly_system([Poly(x**2 - y**2), Poly(x - 1)]) == solution
+    assert solve_poly_system([(x**2 - y**2).as_poly(), (x - 1).as_poly()]) == solution
     assert solve_poly_system([x**2 - y**2, x - 1], x, y) == solution
     assert solve_poly_system([x**2 - y**2, x - 1]) == solution
 
@@ -73,7 +73,7 @@ def test_solve_poly_system():
     pytest.raises(PolynomialError, lambda: solve_poly_system([1/x], x))
 
     assert (solve_poly_system([x**6 + x - 1], x) ==
-            [{x: r} for r in Poly(x**6 + x - 1).all_roots()])
+            [{x: r} for r in (x**6 + x - 1).as_poly().all_roots()])
 
     # Arnold's problem on two walking old women
     eqs = (4*n + 9*t - y, n*(12 - x) - 9*t, -4*n + t*(12 - x))
@@ -94,7 +94,7 @@ def test_solve_poly_system():
 def test_solve_poly_system2():
     assert solve_poly_system((x, y)) == [{x: 0, y: 0}]
     assert (solve_poly_system((x**3 + y**2,)) ==
-            [{x: r} for r in Poly(x**3 + y**2, x).all_roots()])
+            [{x: r} for r in (x**3 + y**2).as_poly(x).all_roots()])
     assert solve_poly_system((x, y, z)) == [{x: 0, y: 0, z: 0}]
     assert solve_poly_system((x, y, z), x, y, z, t) == [{x: 0, y: 0, z: 0}]
     assert solve_poly_system((x*y - z, y*z - x,
@@ -106,7 +106,7 @@ def test_solve_poly_system2():
     assert solve_poly_system((x + y, 2*x + 2*y)) == [{x: -y}]
     assert solve_poly_system((x**2 + y**2,)) == [{x: -I*y}, {x: I*y}]
     assert (solve_poly_system((x**3*y**2 - 1,)) ==
-            [{x: r} for r in Poly(x**3*y**2 - 1, x).all_roots()])
+            [{x: r} for r in (x**3*y**2 - 1).as_poly(x).all_roots()])
     assert (solve_poly_system((x**3 - y**3,)) ==
             [{x: y}, {x: y*(Rational(-1, 2) - sqrt(3)*I/2)},
              {x: y*(Rational(-1, 2) + sqrt(3)*I/2)}])
@@ -273,8 +273,8 @@ def test_solve_biquadratic():
 
 def test_sympyissue_12345():
     eqs = (x**2 - y - sqrt(2), x**2 + x*y - y**2)
-    r0, r1, r2, r3 = Poly(y**4 - 3*y**3 + y**2*(-3*sqrt(2) + 1) +
-                          2*sqrt(2)*y + 2, y).all_roots()
+    r0, r1, r2, r3 = (y**4 - 3*y**3 + y**2*(-3*sqrt(2) + 1) +
+                      2*sqrt(2)*y + 2).as_poly(y).all_roots()
     sol = [{x: sqrt(2)*r0**3/2 - 3*sqrt(2)*r0**2/2 - 2*r0 + sqrt(2)*r0/2 + 1,
             y: r0},
            {x: sqrt(2)*r1**3/2 - 3*sqrt(2)*r1**2/2 - 2*r1 + sqrt(2)*r1/2 + 1,
@@ -330,7 +330,7 @@ def test_solve_surd_system():
     assert solve_surd_system(eqs) == res
 
     eqs = [sqrt(x) + y + 2, y*x - 1]
-    _, r1, r2 = Poly(a0**3 + 2*a0**2 + 1).all_roots()
+    _, r1, r2 = (a0**3 + 2*a0**2 + 1).as_poly().all_roots()
     res = [{x: r1**2, y: -2 - r1}, {x: r2**2, y: -2 - r2}]
     assert solve_surd_system(eqs) == res
 
