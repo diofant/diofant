@@ -86,3 +86,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20487` LaTeX printing errors for puiseux polynomial
 * :sympyissue:`20610` Solve: GeneratorsNeeded with system involving constant equation
 * :sympyissue:`20617` Complex exponentials are not recognized by domains
+* :sympyissue:`20640` Multivariate polynomial division

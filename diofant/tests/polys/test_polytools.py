@@ -3156,3 +3156,12 @@ def test_sympyissue_20397():
 
 def test_sympyissue_20484():
     assert (x*y*z).as_poly().eval(x, y*z) == (y**2*z**2).as_poly()
+
+
+def test_sympyissue_20640():
+    p = (x**2 + y).as_poly(field=True)
+    p0 = y.as_poly(x, y, field=True)
+
+    assert div(p, p0) == (Integer(1).as_poly(x, y, field=True),
+                          (x**2).as_poly(x, y, field=True))
+    assert div(p.as_expr(), p0.as_expr(), field=True) == (1, x**2)
