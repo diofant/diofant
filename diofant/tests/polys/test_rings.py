@@ -516,65 +516,65 @@ def test_PolyEelemet_total_degree():
 def test_PolyElement_coeff():
     R, x = ring('x', ZZ)
 
-    assert R(0).coeff(1) == 0
-    assert R(1).coeff(1) == 1
-    assert (x + 2).coeff(1) == 2
-    assert (3*x**2 + 1).coeff(1) == 1
-    assert (2*x**3 + 3*x**2 + 4*x + 5).coeff(1) == 5
-    assert (x**2 + 2*x + 3).coeff(1) == 3
+    assert R(0)[1] == 0
+    assert R(1)[1] == 1
+    assert (x + 2)[1] == 2
+    assert (3*x**2 + 1)[1] == 1
+    assert (2*x**3 + 3*x**2 + 4*x + 5)[1] == 5
+    assert (x**2 + 2*x + 3)[1] == 3
 
     R, x, y = ring('x y', ZZ)
 
     f = R(0)
 
-    assert f.coeff(1) == 0
-    assert f.eject(y).coeff(1) == 0
+    assert f[1] == 0
+    assert f.eject(y)[1] == 0
 
     f = 2*x*y**2 + 3*x*y + 4*x + 5
 
-    assert f.coeff(1) == 5
-    assert f.eject(y).coeff(1) == 5
+    assert f[1] == 5
+    assert f.eject(y)[1] == 5
 
     R, x, y, z = ring('x y z', ZZ)
 
     f = R(0)
 
-    assert f.coeff(1) == 0
-    assert f.eject(y, z).coeff(1) == 0
+    assert f[1] == 0
+    assert f.eject(y, z)[1] == 0
 
     f = 2*x*y + 3*x*z + 4*x + 5
 
-    assert f.coeff(1) == 5
-    assert f.eject(y, z).coeff(1) == 5
+    assert f[1] == 5
+    assert f.eject(y, z)[1] == 5
 
     f = y + 2*z + 3
 
-    assert f.coeff(1) == 3
+    assert f[1] == 3
 
     f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
-    assert f.coeff(1) == 23
+    assert f[1] == 23
 
-    pytest.raises(ValueError, lambda: f.coeff(3))
+    pytest.raises(ValueError, lambda: f[3])
 
-    assert f.coeff(x) == 0
-    assert f.coeff(y) == 0
-    assert f.coeff(z) == 0
+    assert f[x] == 0
+    assert f[y] == 0
+    assert f[z] == 0
 
-    assert f.coeff(x**2*y) == 3
-    assert f.coeff(x*y*z) == -1
-    assert f.coeff((1, 1, 1)) == -1
-    assert f.coeff(z**3) == 7
-    assert f.coeff((0, 0, 3)) == 7
+    assert f[x**2*y] == 3
+    assert f[x*y*z] == -1
+    assert f[(1, 1, 1)] == -1
+    assert f[z**3] == 7
+    assert f[(0, 0, 3)] == 7
 
-    pytest.raises(ValueError, lambda: f.coeff(3*x**2*y))
-    pytest.raises(ValueError, lambda: f.coeff(-x*y*z))
-    pytest.raises(ValueError, lambda: f.coeff(7*z**3))
-    pytest.raises(ValueError, lambda: f.coeff(x + y))
+    pytest.raises(ValueError, lambda: f[3*x**2*y])
+    pytest.raises(ValueError, lambda: f[-x*y*z])
+    pytest.raises(ValueError, lambda: f[7*z**3])
+    pytest.raises(ValueError, lambda: f[x + y])
 
     f = 2*x + 3*x*y + 4*z + 5
 
-    assert f.coeff(1) == R.domain(5)
+    assert f[1] == R.domain(5)
 
 
 def test_PolyElement_LC():

@@ -1066,7 +1066,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.coeff(1)
+        result = self.rep[1]
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1117,7 +1117,7 @@ class Poly(Expr):
         if len(N) != len(self.gens):
             raise ValueError('exponent of each generator must be specified')
 
-        result = self.rep.coeff(N)
+        result = self.rep[N]
         return self.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):

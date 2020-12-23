@@ -751,7 +751,7 @@ def field_isomorphism_factor(a, b):
 
     for f, _ in factors:
         if f.degree() == 1:
-            root = -f.rep.coeff((0,))/f.rep.coeff((1,))
+            root = -f.rep[(0,)]/f.rep[(1,)]
 
             if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
                 return root.rep.all_coeffs()

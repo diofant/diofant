@@ -35,6 +35,7 @@ Compatibility breaks
 * :func:`~diofant.polys.polytools.Poly.from_list` support now ascending order of coefficients (i.e., the leading coefficient of univariate polynomial is coming last), see :pull:`1103`.
 * Removed support for 3D geometry in the :mod:`~diofant.geometry` module and ``Point.__getitem__()`` method, see :pull:`1105`.
 * 100% test coverage for :mod:`~diofant.geometry` module, see :pull:`1105`.  Overall test coverage is around 98%.
+* Drop ``coeff()`` method of :class:`~diofant.polys.rings.PolyElement`, use dictionary indexing, see :pull:`1108`.
 
 Minor changes
 =============

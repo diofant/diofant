@@ -125,7 +125,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         if K0 == self.domain:
             return self([a])
         elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep.coeff(1) if a else self.zero
+            return a.rep[1] if a else self.zero
 
         from ..polys import field_isomorphism
 
@@ -218,7 +218,7 @@ class ComplexAlgebraicElement(AlgebraicElement):
     @property
     def real(self):
         """Returns real part of ``self``."""
-        return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
+        return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):

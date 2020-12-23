@@ -147,8 +147,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
                 # Note that the roles of `s` and `t` below are switched
                 # w.r.t. the original paper. This is for consistency
                 # with the description in the book of W. Koepf.
-                anm1 = s.coeff((m - 1,))
-                bnm1 = t.coeff((n - 1,))
+                anm1 = s[(m - 1,)]
+                bnm1 = t[(n - 1,)]
                 alpha = fdomain(anm1 - bnm1)/fdomain(n*bn)
                 if alpha not in ZZ:
                     continue
@@ -171,7 +171,7 @@ class UnivarPolyElement(PolyElement):
         if self.is_zero:
             return [self.parent.domain.zero]
         else:
-            return [self.coeff((i,)) for i in range(self.degree() + 1)]
+            return [self[(i,)] for i in range(self.degree() + 1)]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)

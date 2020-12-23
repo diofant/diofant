@@ -555,7 +555,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if ring.is_univariate:
             if self.is_ground:
-                return self.coeff(1)
+                return self[1]
             else:
                 raise ValueError(f"can't drop {gen}")
         else:
@@ -1107,7 +1107,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _get_coeff(self, expv):
         return self.get(expv, self.ring.domain.zero)
 
-    def coeff(self, element):
+    def __getitem__(self, element):
         """
         Returns the coefficient that stands next to the given monomial.
 
@@ -1122,11 +1122,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         >>> _, x, y, z = ring('x y z', ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
-        >>> f.coeff(x**2*y)
+        >>> f[x**2*y]
         3
-        >>> f.coeff(x*y)
+        >>> f[x*y]
         0
-        >>> f.coeff(1)
+        >>> f[1]
         23
 
         """

@@ -1087,14 +1087,14 @@ class _FindRoot:
             return int(math.log(a, 2))
 
         for i in range(n):
-            b = int(-f.coeff((n - 1 - i,)))
+            b = int(-f[(n - 1 - i,)])
             if b <= 0:
                 continue
 
             a, QL = ilog2(b), []
 
             for j in range(i + 1, n):
-                b = int(f.coeff((n - 1 - j,)))
+                b = int(f[(n - 1 - j,)])
 
                 if b <= 0:
                     continue
@@ -1139,7 +1139,7 @@ class _FindRoot:
             f = f.compose(x, x + A)
             b, d = A*a + b, A*c + d
 
-            assert f.coeff(1)
+            assert f[1]
 
         f, g = f.compose(x, x + 1), f
 
@@ -1155,7 +1155,7 @@ class _FindRoot:
         else:
             f = self._reverse(g).compose(x, x + 1)
 
-            assert f.coeff(1)
+            assert f[1]
 
             a, b, c, d = b, a + b, d, c + d
 
@@ -1269,7 +1269,7 @@ class _FindRoot:
                 f = f.compose(x, x + A)
                 b, d = A*a + b, A*c + d
 
-                assert f.coeff(1)
+                assert f[1]
 
                 k = self._sign_variations(f)
 
@@ -1284,7 +1284,7 @@ class _FindRoot:
 
             a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
-            if not f1.coeff(1):
+            if not f1[1]:
                 roots.append((f1, (b1, b1, d1, d1)))
                 f1, r = f1 // x, 1
 
@@ -1296,7 +1296,7 @@ class _FindRoot:
             if k2 > 1:
                 f2 = self._reverse(f).compose(x, x + 1)
 
-                if not f2.coeff(1):
+                if not f2[1]:
                     f2 //= x
 
                 k2 = self._sign_variations(f2)
@@ -1314,7 +1314,7 @@ class _FindRoot:
             if f1 is None:
                 f1 = self._reverse(f).compose(x, x + 1)
 
-                if not f1.coeff(1):
+                if not f1[1]:
                     f1 //= x
 
             if k1 == 1:
@@ -1329,7 +1329,7 @@ class _FindRoot:
             if f2 is None:
                 f2 = self._reverse(f).compose(x, x + 1)
 
-                if not f2.coeff(1):
+                if not f2[1]:
                     f2 //= x
 
             if k2 == 1:

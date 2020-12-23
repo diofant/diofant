@@ -966,7 +966,7 @@ def efactor(f, save=True):
     assert ring.domain.is_AlgebraicField
 
     if f.is_ground:
-        return (f.coeff(1), [])
+        return (f[1], [])
 
     n = ring.ngens
 
