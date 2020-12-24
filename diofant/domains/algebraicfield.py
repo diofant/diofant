@@ -253,7 +253,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return rep.eval(0, root.interval.center) < 0
+        return rep(root.interval.center) < 0
 
     @cacheit
     def __int__(self):
@@ -264,11 +264,11 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         df = rep.diff()
 
         while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
-               int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
+               int(rep(root.interval.b)) != int(rep(root.interval.a))):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return int(rep.eval(0, root.interval.a))
+        return int(rep(root.interval.a))
 
     @property
     def real(self):
