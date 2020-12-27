@@ -4,7 +4,7 @@ functions.
 
 import pytest
 
-from diofant import (Dummy, E, Eq, Expr, I, Integer, Lambda, Mul, Rational,
+from diofant import (ZZ, Dummy, E, Eq, Expr, I, Integer, Lambda, Mul, Rational,
                      RootSum, Symbol, apart, apart_list,
                      assemble_partfrac_list, factor, numbered_symbols, pi,
                      sqrt, symbols, together)
@@ -110,8 +110,9 @@ def test_apart_undetermined_coeffs():
 
     assert apart_undetermined_coeffs(p, q) == r
 
-    p = Integer(1).as_poly(x, domain='ZZ[a,b]')
-    q = ((x + a)*(x + b)).as_poly(x, domain='ZZ[a,b]')
+    dom = ZZ.inject(a, b)
+    p = Integer(1).as_poly(x, domain=dom)
+    q = ((x + a)*(x + b)).as_poly(x, domain=dom)
     r = 1/((a - b)*(b + x)) - 1/((a - b)*(a + x))
 
     assert apart_undetermined_coeffs(p, q) == r

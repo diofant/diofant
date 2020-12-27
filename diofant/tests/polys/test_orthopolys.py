@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (Rational, chebyshevt_poly, chebyshevu_poly, hermite_poly,
-                     jacobi_poly, laguerre_poly, legendre_poly,
+from diofant import (ZZ, Rational, chebyshevt_poly, chebyshevu_poly,
+                     hermite_poly, jacobi_poly, laguerre_poly, legendre_poly,
                      spherical_bessel_fn)
 from diofant.abc import a, b, x
 from diofant.polys.orthopolys import gegenbauer_poly
@@ -15,8 +15,10 @@ __all__ = ()
 def test_jacobi_poly():
     pytest.raises(ValueError, lambda: jacobi_poly(-1, a, b, x))
 
+    dom = ZZ.inject(a, b).field
+
     assert (jacobi_poly(1, a, b, x, polys=True) ==
-            ((a/2 + b/2 + 1)*x + a/2 - b/2).as_poly(x, domain='ZZ(a,b)'))
+            ((a/2 + b/2 + 1)*x + a/2 - b/2).as_poly(x, domain=dom))
 
     assert jacobi_poly(0, a, b, x) == 1
     assert jacobi_poly(1, a, b, x) == a/2 - b/2 + x*(a/2 + b/2 + 1)
@@ -27,14 +29,16 @@ def test_jacobi_poly():
                                        Rational(1, 2))
 
     assert (jacobi_poly(1, a, b, polys=True) ==
-            ((a/2 + b/2 + 1)*x + a/2 - b/2).as_poly(x, domain='ZZ(a,b)'))
+            ((a/2 + b/2 + 1)*x + a/2 - b/2).as_poly(x, domain=dom))
 
 
 def test_gegenbauer_poly():
     pytest.raises(ValueError, lambda: gegenbauer_poly(-1, a, x))
 
+    dom = ZZ.inject(a).field
+
     assert gegenbauer_poly(
-        1, a, x, polys=True) == (2*a*x).as_poly(x, domain='ZZ(a)')
+        1, a, x, polys=True) == (2*a*x).as_poly(x, domain=dom)
 
     assert gegenbauer_poly(0, a, x) == 1
     assert gegenbauer_poly(1, a, x) == 2*a*x
@@ -43,7 +47,7 @@ def test_gegenbauer_poly():
         3, a, x) == x**3*(4*a**3/3 + 4*a**2 + 8*a/3) + x*(-2*a**2 - 2*a)
 
     assert gegenbauer_poly(1, Rational(1, 2), x) == x
-    assert gegenbauer_poly(1, a, polys=True) == (2*a*x).as_poly(x, domain='ZZ(a)')
+    assert gegenbauer_poly(1, a, polys=True) == (2*a*x).as_poly(x, domain=dom)
 
 
 def test_chebyshevt_poly():

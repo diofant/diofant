@@ -5,7 +5,7 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (QQ, ZZ, I, Integer, Interval, Mul, Piecewise,
+from diofant import (EX, QQ, ZZ, I, Integer, Interval, Mul, Piecewise,
                      PolynomialError, Rational, RootOf, Symbol, Wild, acos,
                      cbrt, cos, cyclotomic_poly, exp, im, legendre_poly,
                      nroots, pi, powsimp, re, root, roots, sin, sqrt, symbols)
@@ -489,20 +489,20 @@ def test_roots0():
     cr = 108 + 6*sqrt(1074)
     assert real_root == -2*root(cr, 3)/3 + 20/root(cr, 3)
 
-    eq = ((7 + 5*sqrt(2))*x**3 + (-6 - 4*sqrt(2))*x**2 + (-sqrt(2) - 1)*x + 2).as_poly(x, domain='EX')
+    eq = ((7 + 5*sqrt(2))*x**3 + (-6 - 4*sqrt(2))*x**2 + (-sqrt(2) - 1)*x + 2).as_poly(x, domain=EX)
     assert roots(eq) == {-1 + sqrt(2): 1, -2 + 2*sqrt(2): 1, -sqrt(2) + 1: 1}
 
     eq = (41*x**5 + 29*sqrt(2)*x**5 - 153*x**4 - 108*sqrt(2)*x**4 +
           175*x**3 + 125*sqrt(2)*x**3 - 45*x**2 - 30*sqrt(2)*x**2 - 26*sqrt(2)*x -
-          26*x + 24).as_poly(x, domain='EX')
+          26*x + 24).as_poly(x, domain=EX)
     assert roots(eq) == {-sqrt(2) + 1: 1, -2 + 2*sqrt(2): 1, -1 + sqrt(2): 1,
                          -4 + 4*sqrt(2): 1, -3 + 3*sqrt(2): 1}
 
     eq = (x**3 - 2*x**2 + 6*sqrt(2)*x**2 - 8*sqrt(2)*x + 23*x - 14 +
-          14*sqrt(2)).as_poly(x, domain='EX')
+          14*sqrt(2)).as_poly(x, domain=EX)
     assert roots(eq) == {-2*sqrt(2) + 2: 1, -2*sqrt(2) + 1: 1, -2*sqrt(2) - 1: 1}
 
-    assert roots(((x + sqrt(2))**3 - 7).as_poly(x, domain='EX')) == \
+    assert roots(((x + sqrt(2))**3 - 7).as_poly(x, domain=EX)) == \
         {-sqrt(2) - root(7, 3)/2 - sqrt(3)*root(7, 3)*I/2: 1,
          -sqrt(2) - root(7, 3)/2 + sqrt(3)*root(7, 3)*I/2: 1,
          -sqrt(2) + root(7, 3): 1}
