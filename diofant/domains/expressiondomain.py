@@ -12,8 +12,6 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     is_ExpressionDomain = True
 
     class Expression:
-        """An arbitrary expression."""
-
         def __init__(self, ex):
             if not isinstance(ex, self.__class__):
                 self.ex = sympify(ex)
