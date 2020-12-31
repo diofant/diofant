@@ -312,7 +312,7 @@ class _GCD:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
         (4, [x**2 + 1, x**2 - 1, -2])

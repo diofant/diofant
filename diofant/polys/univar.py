@@ -186,7 +186,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', QQ)
+        >>> _, x = ring('x', QQ)
 
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
         >>> g = x**3 + x**2 - 4*x - 4
@@ -305,7 +305,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**4 - 2*x**3 + x**2).decompose()
         [x**2, x**2 - x]
@@ -344,7 +344,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', QQ)
+        >>> _, x = ring('x', QQ)
 
         >>> (x**3 - 2*x**2 + x - 3).sturm()
         [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]

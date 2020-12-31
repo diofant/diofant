@@ -80,12 +80,12 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (2*x**4 - 2).factor_list()
         (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
-        >>> R, x, y = ring('x y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
 
         >>> (2*x**2 - 2*y**2).factor_list()
         (2, [(x - y, 1), (x + y, 1)])
@@ -637,7 +637,7 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
         False
