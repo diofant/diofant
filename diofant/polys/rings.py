@@ -732,8 +732,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return True
 
-        tdeg = sum(self.LM)
-        return all(sum(monom) == tdeg for monom in self.monoms()[1:])
+        lm = self.LM
+        tdeg = sum(lm)
+        return all(sum(monom) == tdeg for monom in self.keys() if monom != lm)
 
     def __neg__(self):
         return self.__class__({monom: -self[monom] for monom in self})
@@ -1224,28 +1225,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return [coeff for _, coeff in self.terms(order)]
-
-    def monoms(self, order=None):
-        """Ordered list of polynomial monomials.
-
-        Parameters
-        ==========
-
-        order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ, lex)
-        >>> f = x*y**7 + 2*x**2*y**3
-
-        >>> f.monoms()
-        [(2, 3), (1, 7)]
-        >>> f.monoms(grlex)
-        [(1, 7), (2, 3)]
-
-        """
-        return [monom for monom, _ in self.terms(order)]
 
     def terms(self, order=None):
         """Ordered list of polynomial terms.

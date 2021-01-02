@@ -616,7 +616,7 @@ class Poly(Expr):
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
         """
-        return self.rep.monoms(order=order)
+        return [monom for monom, _ in self.rep.terms(order)]
 
     def terms(self, order=None):
         """

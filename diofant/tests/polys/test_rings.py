@@ -289,11 +289,23 @@ def test_PolyElement_set_domain():
 
 
 def test_PolyElement_items():
+    R, x, y = ring('x y', ZZ)
+
+    f = x*y**7 + 2*x**2*y**3
+
+    assert set(f.keys()) == {(2, 3), (1, 7)}
+
     R, x, y, z = ring('x y z', ZZ)
 
     f = x*y + 3*z
 
     assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
+
+    R, x, y, z = ring('x y z', QQ)
+
+    f = x**2/3 + y**3/4 + z**4/5
+
+    assert set(f.keys()) == {(2, 0, 0), (0, 3, 0), (0, 0, 4)}
 
 
 def test_PolynomialRing_from_list():
@@ -702,28 +714,6 @@ def test_PolyElement_terms():
     terms = (x**2/3 + y**3/4 + z**4/5).terms()
 
     assert terms == [((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)), ((0, 0, 4), QQ(1, 5))]
-
-
-def test_PolyElement_monoms():
-    R, x, y = ring('x y', ZZ)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.monoms() == f.monoms(lex) == f.monoms('lex') == [(2, 3), (1, 7)]
-    assert f.monoms(grlex) == f.monoms('grlex') == [(1, 7), (2, 3)]
-
-    R, x, y = ring('x y', ZZ, grlex)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.monoms() == f.monoms(grlex) == f.monoms('grlex') == [(1, 7), (2, 3)]
-    assert f.monoms(lex) == f.monoms('lex') == [(2, 3), (1, 7)]
-
-    R, x, y, z = ring('x y z', QQ)
-
-    monoms = (x**2/3 + y**3/4 + z**4/5).monoms()
-
-    assert monoms == [(2, 0, 0), (0, 3, 0), (0, 0, 4)]
 
 
 def test_PolyElement_coeffs():
