@@ -603,7 +603,7 @@ class Poly(Expr):
         coeff_monomial
 
         """
-        return [self.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
+        return [self.domain.to_expr(c) for _, c in self.rep.terms(order)]
 
     def monoms(self, order=None):
         """

@@ -294,6 +294,7 @@ def test_PolyElement_items():
     f = x*y**7 + 2*x**2*y**3
 
     assert set(f.keys()) == {(2, 3), (1, 7)}
+    assert set(f.values()) == {1, 2}
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -306,6 +307,7 @@ def test_PolyElement_items():
     f = x**2/3 + y**3/4 + z**4/5
 
     assert set(f.keys()) == {(2, 0, 0), (0, 3, 0), (0, 0, 4)}
+    assert set(f.values()) == {QQ(1, 3), QQ(1, 4), QQ(1, 5)}
 
 
 def test_PolynomialRing_from_list():
@@ -714,28 +716,6 @@ def test_PolyElement_terms():
     terms = (x**2/3 + y**3/4 + z**4/5).terms()
 
     assert terms == [((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)), ((0, 0, 4), QQ(1, 5))]
-
-
-def test_PolyElement_coeffs():
-    R, x, y = ring('x y', ZZ)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.coeffs() == f.coeffs(lex) == f.coeffs('lex') == [2, 1]
-    assert f.coeffs(grlex) == f.coeffs('grlex') == [1, 2]
-
-    R, x, y = ring('x y', ZZ, grlex)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.coeffs() == f.coeffs(grlex) == f.coeffs('grlex') == [1, 2]
-    assert f.coeffs(lex) == f.coeffs('lex') == [2, 1]
-
-    R, x, y, z = ring('x y z', QQ)
-
-    coeffs = (x**2/3 + y**3/4 + z**4/5).coeffs()
-
-    assert coeffs == [QQ(1, 3), QQ(1, 4), QQ(1, 5)]
 
 
 def test_PolyElement_all_coeffs():

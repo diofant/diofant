@@ -1204,28 +1204,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return sorted(seq, key=lambda monom: order(monom[0]), reverse=True)
 
-    def coeffs(self, order=None):
-        """Ordered list of polynomial coefficients.
-
-        Parameters
-        ==========
-
-        order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ, lex)
-        >>> f = x*y**7 + 2*x**2*y**3
-
-        >>> f.coeffs()
-        [2, 1]
-        >>> f.coeffs(grlex)
-        [1, 2]
-
-        """
-        return [coeff for _, coeff in self.terms(order)]
-
     def terms(self, order=None):
         """Ordered list of polynomial terms.
 

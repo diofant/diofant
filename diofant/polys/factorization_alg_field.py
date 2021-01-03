@@ -464,7 +464,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
 
         try:
             solution = solve_lin_sys([_.set_domain(P_domain)
-                                      for _ in poly.coeffs()],
+                                      for _ in poly.values()],
                                      coeffring.clone(domain=P_domain))
         except NotInvertible:
             return

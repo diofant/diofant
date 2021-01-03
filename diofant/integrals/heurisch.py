@@ -508,7 +508,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         except ValueError:
             raise PolynomialError
 
-        solution = solve_lin_sys(numer.coeffs(), coeff_ring)
+        solution = solve_lin_sys(numer.values(), coeff_ring)
 
         if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
