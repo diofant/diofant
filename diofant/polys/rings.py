@@ -18,7 +18,7 @@ from ..ntheory.modular import symmetric_residue
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
-from .orderings import ilex, lex
+from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, PolynomialDivisionFailed)
@@ -636,8 +636,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         symbols = ring.symbols
         ngens = ring.ngens
         zm = ring.zero_monom
+        order = ring.order
         sexpvs = []
-        for expv, coeff in self.terms():
+        for expv, coeff in sorted(self.items(),
+                                  key=lambda m: order(m[0]),
+                                  reverse=True):
             normal = ring.domain.is_normal(coeff)
             sign = ' + ' if normal else ' - '
             sexpvs.append(sign)
@@ -1196,36 +1199,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             p[expv] = self[expv]
         return p
 
-    def _sorted(self, seq, order):
-        if order is None:
-            order = self.ring.order
-        else:
-            order = OrderOpt.preprocess(order)
-
-        return sorted(seq, key=lambda monom: order(monom[0]), reverse=True)
-
-    def terms(self, order=None):
-        """Ordered list of polynomial terms.
-
-        Parameters
-        ==========
-
-        order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ, lex)
-        >>> f = x*y**7 + 2*x**2*y**3
-
-        >>> f.terms()
-        [((2, 3), 2), ((1, 7), 1)]
-        >>> f.terms(grlex)
-        [((1, 7), 1), ((2, 3), 2)]
-
-        """
-        return self._sorted(self.items(), order)
-
     def content(self):
         """Returns GCD of polynomial's coefficients."""
         ring = self.ring
@@ -1601,7 +1574,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if ring.is_univariate:
             [(i, g)] = replacements
             acc, d = ring.one, 0
-            for monom, coeff in self.terms(ilex):
+            for monom, coeff in sorted(self.items(), key=lambda x: x[0]):
                 n = monom[i]
                 acc *= g**(n - d)
                 d = n

@@ -5,7 +5,6 @@ import math
 import operator
 
 from ..core import Dummy, I
-from .orderings import ilex
 from .polyerrors import DomainError, RefinementFailed
 
 
@@ -1714,7 +1713,7 @@ class _FindRoot:
         t, h = new_ring.one, new_ring.zero
         g, d = x + y*z, 0
 
-        for (i,), coeff in f.terms(ilex):
+        for (i,), coeff in sorted(f.items(), key=lambda x: x[0]):
             t *= g**(i - d)
             d = i
             h += t*(coeff.real + z*coeff.imag)

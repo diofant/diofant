@@ -25,7 +25,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
-from .polyoptions import Modulus, Options, allowed_flags, build_options
+from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
 from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
@@ -603,7 +603,7 @@ class Poly(Expr):
         coeff_monomial
 
         """
-        return [self.domain.to_expr(c) for _, c in self.rep.terms(order)]
+        return [coeff for _, coeff in self.terms(order)]
 
     def monoms(self, order=None):
         """
@@ -616,7 +616,7 @@ class Poly(Expr):
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
         """
-        return [monom for monom, _ in self.rep.terms(order)]
+        return [monom for monom, _ in self.terms(order)]
 
     def terms(self, order=None):
         """
@@ -629,7 +629,16 @@ class Poly(Expr):
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
 
         """
-        return [(m, self.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
+        rep = self.rep
+        if order is None:
+            order = rep.ring.order
+        else:
+            order = Order.preprocess(order)
+
+        return [(m, self.domain.to_expr(c))
+                for m, c in sorted(rep.items(),
+                                   key=lambda monom: order(monom[0]),
+                                   reverse=True)]
 
     def all_coeffs(self):
         """

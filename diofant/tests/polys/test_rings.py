@@ -295,6 +295,7 @@ def test_PolyElement_items():
 
     assert set(f.keys()) == {(2, 3), (1, 7)}
     assert set(f.values()) == {1, 2}
+    assert set(f.items()) == {((2, 3), 2), ((1, 7), 1)}
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -308,6 +309,8 @@ def test_PolyElement_items():
 
     assert set(f.keys()) == {(2, 0, 0), (0, 3, 0), (0, 0, 4)}
     assert set(f.values()) == {QQ(1, 3), QQ(1, 4), QQ(1, 5)}
+    assert set(f.items()) == {((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)),
+                              ((0, 0, 4), QQ(1, 5))}
 
 
 def test_PolynomialRing_from_list():
@@ -694,28 +697,6 @@ def test_PolyElement_leading_term():
     assert R(0).leading_term() == 0
     assert (x/2).leading_term() == x/2
     assert (x*y/4 + x/2).leading_term() == x*y/4
-
-
-def test_PolyElement_terms():
-    R, x, y = ring('x y', ZZ)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.terms() == f.terms(lex) == f.terms('lex') == [((2, 3), 2), ((1, 7), 1)]
-    assert f.terms(grlex) == f.terms('grlex') == [((1, 7), 1), ((2, 3), 2)]
-
-    R, x, y = ring('x y', ZZ, grlex)
-
-    f = x*y**7 + 2*x**2*y**3
-
-    assert f.terms() == f.terms(grlex) == f.terms('grlex') == [((1, 7), 1), ((2, 3), 2)]
-    assert f.terms(lex) == f.terms('lex') == [((2, 3), 2), ((1, 7), 1)]
-
-    R, x, y, z = ring('x y z', QQ)
-
-    terms = (x**2/3 + y**3/4 + z**4/5).terms()
-
-    assert terms == [((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)), ((0, 0, 4), QQ(1, 5))]
 
 
 def test_PolyElement_all_coeffs():
@@ -1422,11 +1403,11 @@ def test_PolyElement___floordiv__truediv__():
     assert (x**2 - 1)//(2*x) == 0
     assert (x**2 - x)//(x - 1) == x
 
-    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 0
+    assert len((x**2/3 + y**3/4 + z**4/5).items()) == 0
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 3
+    assert len((x**2/3 + y**3/4 + z**4/5).items()) == 3
 
     pytest.raises(ZeroDivisionError, lambda: x/0)
 
