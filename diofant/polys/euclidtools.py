@@ -1,5 +1,6 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
+import math
 import operator
 
 from ..ntheory import nextprime
@@ -33,10 +34,49 @@ class _GCD:
             h, cfg, cff = self._gcd_term(g, f)
             return h, cff, cfg
 
-        J, (f, g) = f.deflate(g)
+        J, (f, g) = self._deflate(f, g)
         h, cff, cfg = self._gcd(f, g)
 
-        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
+        return self._inflate(h, J), self._inflate(cff, J), self._inflate(cfg, J)
+
+    def _deflate(self, *polys):
+        J = [0]*self.ngens
+
+        for p in polys:
+            for monom in p:
+                for i, m in enumerate(monom):
+                    J[i] = math.gcd(J[i], m)
+
+        for i, b in enumerate(J):
+            if not b:
+                J[i] = 1
+
+        J = tuple(J)
+
+        if all(b == 1 for b in J):
+            return J, polys
+
+        H = []
+
+        for p in polys:
+            h = self.zero
+
+            for I, coeff in p.items():
+                N = [i//j for i, j in zip(I, J)]
+                h[N] = coeff
+
+            H.append(h)
+
+        return J, H
+
+    def _inflate(self, f, J):
+        poly = self.zero
+
+        for I, coeff in f.items():
+            N = [i*j for i, j in zip(I, J)]
+            poly[N] = coeff
+
+        return poly
 
     def _gcd_zero(self, f):
         one, zero = self.one, self.zero

@@ -1342,69 +1342,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def l1_norm(self):
         return self._norm(sum)
 
-    def deflate(self, *G):
-        """Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> (x**2*y**3 + 2*x**2 + 3*y**3 + 4).deflate(x**2*y**2 + 2*x**2 +
-        ...                                           3*y**2 + 4)
-        ((2, 1), [x*y**3 + 2*x + 3*y**3 + 4, x*y**2 + 2*x + 3*y**2 + 4])
-
-        """
-        ring = self.ring
-        polys = [self] + list(G)
-
-        J = [0]*ring.ngens
-
-        for p in polys:
-            for monom in p:
-                for i, m in enumerate(monom):
-                    J[i] = math.gcd(J[i], m)
-
-        for i, b in enumerate(J):
-            if not b:
-                J[i] = 1
-
-        J = tuple(J)
-
-        if all(b == 1 for b in J):
-            return J, polys
-
-        H = []
-
-        for p in polys:
-            h = ring.zero
-
-            for I, coeff in p.items():
-                N = [i//j for i, j in zip(I, J)]
-                h[N] = coeff
-
-            H.append(h)
-
-        return J, H
-
-    def inflate(self, J):
-        """Map ``y_i`` to ``x_i**J_i`` in a polynomial in ``K[X]``.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> (x*y + 2*x + 3*y + 4).inflate((2, 3))
-        x**2*y**3 + 2*x**2 + 3*y**3 + 4
-
-        """
-        poly = self.ring.zero
-
-        for I, coeff in self.items():
-            N = [i*j for i, j in zip(I, J)]
-            poly[N] = coeff
-
-        return poly
-
     def lcm(self, g):
         f = self
         domain = f.ring.domain

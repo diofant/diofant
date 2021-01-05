@@ -573,14 +573,15 @@ class _Factor:
         return h == x
 
     def _cyclotomic_decompose(self, n):
-        H = [self.gens[0] - 1]
+        x = self.gens[0]
+        H = [x - 1]
 
         for p, k in factorint(n).items():
-            Q = [h.inflate((p,)) // h for h in H]
+            Q = [h.compose(x, x**p) // h for h in H]
             H.extend(Q)
 
             for i in range(1, k):
-                Q = [q.inflate((p,)) for q in Q]
+                Q = [q.compose(x, x**p) for q in Q]
                 H.extend(Q)
 
         return H
@@ -713,8 +714,8 @@ class _Factor:
         h = x - 1
 
         for p, k in factorint(n).items():
-            h = h.inflate((p,)) // h
-            h = h.inflate((p**(k - 1),))
+            h = h.compose(x, x**p) // h
+            h = h.compose(x, x**(p**(k - 1)))
 
         return h
 

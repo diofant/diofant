@@ -750,20 +750,6 @@ class Poly(Expr):
         rep = self.rep
         return rep.ring.to_expr(rep).subs(zip(self.gens, gens))
 
-    def deflate(self):
-        """
-        Reduce degree of ``self`` by mapping ``x_i**m`` to ``y_i``.
-
-        Examples
-        ========
-
-        >>> (x**6*y**2 + x**3 + 1).as_poly().deflate()
-        ((3, 2), Poly(x**2*y + x + 1, x, y, domain='ZZ'))
-
-        """
-        J, result = self.rep.deflate()
-        return J, self.per(result[0])
-
     def inject(self, front=False):
         """
         Inject ground domain generators into ``self``.
