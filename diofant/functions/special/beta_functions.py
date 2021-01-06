@@ -69,7 +69,7 @@ class beta(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Beta_function
-    * http://mathworld.wolfram.com/BetaFunction.html
+    * https://mathworld.wolfram.com/BetaFunction.html
     * https://dlmf.nist.gov/5.12
 
     """

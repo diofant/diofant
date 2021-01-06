@@ -9,7 +9,7 @@ from ..matrices import ShapeError
 
 
 class MatrixExpr(Expr):
-    """ Superclass for Matrix Expressions
+    """Superclass for Matrix Expressions
 
     MatrixExprs represent abstract matrices, linear transformations represented
     within a particular basis.
@@ -96,7 +96,7 @@ class MatrixExpr(Expr):
         from .inverse import Inverse
         from .matpow import MatPow
         if not self.is_square:
-            raise ShapeError("Power of non-square matrix %s" % self)
+            raise ShapeError(f'Power of non-square matrix {self}')
         elif self.is_Identity:
             return self
         elif other == -1:
@@ -110,7 +110,7 @@ class MatrixExpr(Expr):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__pow__')
     def __rpow__(self, other):  # pragma: no cover
-        raise NotImplementedError("Matrix Power not defined")
+        raise NotImplementedError('Matrix Power not defined')
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rtruediv__')
@@ -163,8 +163,8 @@ class MatrixExpr(Expr):
         return Adjoint(self)
 
     def _entry(self, i, j):  # pragma: no cover
-        raise NotImplementedError("Indexing not implemented "
-                                  "for %s" % self.__class__.__name__)
+        raise NotImplementedError('Indexing not implemented '
+                                  f'for {self.__class__.__name__}')
 
     def adjoint(self):
         return adjoint(self)
@@ -201,24 +201,24 @@ class MatrixExpr(Expr):
             if self.valid_index(i, j) is not False:
                 return self._entry(i, j)
             else:
-                raise IndexError("Invalid indices (%s, %s)" % (i, j))
+                raise IndexError(f'Invalid indices ({i}, {j})')
         elif isinstance(key, (int, Integer)):
             # row-wise decomposition of matrix
             rows, cols = self.shape
             if not (isinstance(rows, Integer) and isinstance(cols, Integer)):
-                raise IndexError("Single index only supported for "
-                                 "non-symbolic matrix shapes.")
+                raise IndexError('Single index only supported for '
+                                 'non-symbolic matrix shapes.')
             key = sympify(key)
             i = key // cols
             j = key % cols
             if self.valid_index(i, j) is not False:
                 return self._entry(i, j)
             else:
-                raise IndexError("Invalid index %s" % key)
+                raise IndexError(f'Invalid index {key}')
         elif isinstance(key, (Symbol, Expr)):
-            raise IndexError("Single index only supported for "
-                             "non-symbolic indices.")
-        raise IndexError("Invalid index, wanted %s[i,j]" % self)
+            raise IndexError('Single index only supported for '
+                             'non-symbolic indices.')
+        raise IndexError(f'Invalid index, wanted {self}[i,j]')
 
     def as_explicit(self):
         """
@@ -302,6 +302,8 @@ class MatrixExpr(Expr):
 
 
 class MatrixElement(Expr):
+    """Element of the matrix expression."""
+
     parent = property(lambda self: self.args[0])
     i = property(lambda self: self.args[1])
     j = property(lambda self: self.args[2])
@@ -329,8 +331,8 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
     Creates a Diofant Symbol to represent a Matrix. This matrix has a shape and
     can be included in Matrix Expressions
 
-    >>> A = MatrixSymbol('A', 3, 4) # A 3 by 4 Matrix
-    >>> B = MatrixSymbol('B', 4, 3) # A 4 by 3 Matrix
+    >>> A = MatrixSymbol('A', 3, 4)  # A 3 by 4 Matrix
+    >>> B = MatrixSymbol('B', 4, 3)  # A 4 by 3 Matrix
     >>> A.shape
     (3, 4)
     >>> 2*A*B + Identity(3)
@@ -371,7 +373,7 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
         return MatrixSymbol(self.name, *shape)
 
     def __call__(self, *args):
-        raise TypeError( "%s object is not callable" % self.__class__ )
+        raise TypeError( f'{self.__class__} object is not callable' )
 
     def _entry(self, i, j):
         return MatrixElement(self, i, j)
@@ -463,11 +465,11 @@ class ZeroMatrix(MatrixExpr):
     @call_highest_priority('__rpow__')
     def __pow__(self, other):
         if other != 1 and not self.is_square:
-            raise ShapeError("Power of non-square matrix %s" % self)
+            raise ShapeError(f'Power of non-square matrix {self}')
         if other == 0:
             return Identity(self.rows)
         if other < 1:
-            raise ValueError("Matrix det == 0; not invertible.")
+            raise ValueError('Matrix det == 0; not invertible.')
         return self
 
     def _eval_transpose(self):

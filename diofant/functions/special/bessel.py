@@ -414,7 +414,7 @@ class besselk(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if im(z) in (oo, -oo):
+        if z in (oo, -oo, I*oo, -I*oo):
             return Integer(0)
 
         if nu.is_integer:
@@ -658,14 +658,14 @@ class yn(SphericalBesselBase):
                (fn(-n - 1, z) * sin(z) + (-1)**(-n) * fn(n, z) * cos(z))
 
 
-def jn_zeros(n, k, method="diofant", dps=15):
+def jn_zeros(n, k, method='diofant', dps=15):
     """
     Zeros of the spherical Bessel function of the first kind.
 
     This returns an array of zeros of jn up to the k-th zero.
 
     * method = "diofant": uses mpmath's function ``besseljzero``
-    * method = "scipy": uses :func:`scipy.special.jn_zeros`.
+    * method = "scipy": uses :func:`scipy.special.spherical_jn`.
       and :func:`scipy.optimize.newton` to find all
       roots, which is faster than computing the zeros using a general
       numerical solver, but it requires SciPy and only works with low
@@ -687,31 +687,25 @@ def jn_zeros(n, k, method="diofant", dps=15):
     """
     from math import pi
 
-    if method == "diofant":
+    if method == 'diofant':
         prec = dps_to_prec(dps)
         return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
                                               int(l)), prec)
                 for l in range(1, k + 1)]
-    elif method == "scipy":
+    elif method == 'scipy':
         from scipy.optimize import newton
-        try:
-            from scipy.special import spherical_jn
-        except ImportError:  # pragma: no cover
-            from scipy.special import sph_jn
-
-            def spherical_jn(n, x):
-                return sph_jn(n, x)[0][-1]
+        from scipy.special import spherical_jn
 
         def f(x):
             return spherical_jn(n, x)
     else:
-        raise NotImplementedError("Unknown method.")
+        raise NotImplementedError('Unknown method.')
 
     def solver(f, x):
-        if method == "scipy":
+        if method == 'scipy':
             root = newton(f, x)
         else:
-            raise NotImplementedError("Unknown method.")
+            raise NotImplementedError('Unknown method.')
         return root
 
     # we need to approximate the position of the first root:
@@ -833,7 +827,7 @@ class airyai(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -892,10 +886,10 @@ class airyai(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -987,7 +981,7 @@ class airybi(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1050,10 +1044,10 @@ class airybi(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1074,8 +1068,8 @@ class _airyais(Function):
         return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:
@@ -1103,8 +1097,8 @@ class _airybis(Function):
         return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:
@@ -1192,7 +1186,7 @@ class airyaiprime(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1247,10 +1241,10 @@ class airyaiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1335,7 +1329,7 @@ class airybiprime(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1392,10 +1386,10 @@ class airybiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]

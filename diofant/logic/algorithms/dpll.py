@@ -11,7 +11,7 @@ References
 
 """
 
-from ...core.compatibility import default_sort_key
+from ...utilities import default_sort_key
 from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
 
 

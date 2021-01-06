@@ -1,16 +1,14 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
                     expand_mul, factor_terms, ilcm, sympify)
-from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import log, root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
-from ..utilities import default_sort_key
+from ..utilities import default_sort_key, ordered
 from .powsimp import powdenest
 
 
 def is_sqrt(expr):
     """Return True if expr is a sqrt, otherwise False."""
-
     return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) == Rational(1, 2)
 
 
@@ -30,7 +28,6 @@ def sqrt_depth(p):
     2
 
     """
-
     if p.is_Atom:
         return 0
     elif p.is_Add or p.is_Mul:
@@ -54,7 +51,6 @@ def is_algebraic(p):
     False
 
     """
-
     if p.is_Rational:
         return True
     elif p.is_Atom:
@@ -136,7 +132,7 @@ def _sqrt_match(p):
     Examples
     ========
 
-    >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
+    >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) + 2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
 
     """
@@ -207,12 +203,11 @@ def _sqrt_match(p):
 
 
 class SqrtdenestStopIteration(StopIteration):
-    pass
+    """Raised when sqrtdenest algorithm can't denest an expression."""
 
 
 def _sqrtdenest0(expr):
     """Returns expr after denesting its arguments."""
-
     if is_sqrt(expr):
         n, d = expr.as_numer_denom()
         if d == 1:  # n is a square root
@@ -257,7 +252,7 @@ def _sqrtdenest_rec(expr):
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
 
     """
-    from .radsimp import radsimp, rad_rationalize, split_surds
+    from .radsimp import rad_rationalize, radsimp, split_surds
     if not expr.is_Pow:
         return sqrtdenest(expr)
     if expr.base < 0:
@@ -300,7 +295,6 @@ def _sqrtdenest1(expr, denester=True):
     failing, using the denester.
 
     """
-
     from .simplify import radsimp
 
     if not is_sqrt(expr):
@@ -392,7 +386,6 @@ def _sqrt_symbolic_denest(a, b, r):
     sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2)
 
     """
-
     a, b, r = map(sympify, (a, b, r))
     rval = _sqrt_match(r)
     if not rval:
@@ -405,7 +398,7 @@ def _sqrt_symbolic_denest(a, b, r):
         except PolynomialError:
             return
         if newa.degree() == 2:
-            ca, cb, cc = newa.all_coeffs()
+            cc, cb, ca = newa.all_coeffs()
             cb += b
             if _mexpand(cb**2 - 4*ca*cc).equals(0):
                 z = sqrt(ca*(sqrt(r) + cb/(2*ca))**2)
@@ -433,10 +426,10 @@ def _sqrt_numeric_denest(a, b, r, d2):
 
 
 def sqrt_biquadratic_denest(expr, a, b, r, d2):
-    """denest expr = sqrt(a + b*sqrt(r))
+    """Denest expr = sqrt(a + b*sqrt(r))
     where a, b, r are linear combinations of square roots of
     positive rationals on the rationals (SQRR) and r > 0, b != 0,
-    d2 = a**2 - b**2*r > 0
+    d2 = a**2 - b**2*r > 0.
 
     If it cannot denest it returns None.
 
@@ -477,7 +470,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
 
     """
-    from .radsimp import radsimp, rad_rationalize
+    from .radsimp import rad_rationalize, radsimp
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
         return
     for x in (a, b, r):
@@ -500,7 +493,6 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
         if z < 0:
             z = -z
         return _mexpand(z)
-    return
 
 
 def _denester(nested, av0, h, max_depth_level):
@@ -548,7 +540,7 @@ def _denester(nested, av0, h, max_depth_level):
             nested2 = [av0[3], R]
             av0[0] = None
         else:
-            values = list(filter(None, [_sqrt_match(expr) for expr in nested]))
+            values = list(filter(None, (_sqrt_match(expr) for expr in nested)))
             for v in values:
                 if v[2]:  # Since if b=0, r is not defined
                     if R is not None:
@@ -600,7 +592,7 @@ def _denester(nested, av0, h, max_depth_level):
 
 
 def unrad(eq, *syms, **flags):
-    """ Remove radicals with symbolic arguments and return (eq, cov),
+    """Remove radicals with symbolic arguments and return (eq, cov),
     None or raise an error:
 
     None is returned if there are no radicals to remove.
@@ -820,8 +812,7 @@ def unrad(eq, *syms, **flags):
             x = list(x)[0]
             try:
                 inv = solve(covsym**lcm - b, x, **uflags)
-                if not inv or any(isinstance(s[x], RootOf)
-                                  for s in inv):  # pragma: no cover
+                if not inv or any(isinstance(s[x], RootOf) for s in inv):
                     raise NotImplementedError
                 eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
@@ -852,7 +843,7 @@ def unrad(eq, *syms, **flags):
                         try:
                             sol = solve(c, x, **uflags)
                             if not sol or any(isinstance(s[x], RootOf)
-                                              for s in sol):  # pragma: no cover
+                                              for s in sol):
                                 raise NotImplementedError
                             neweq = r0.subs(sol[0]) + covsym*r1/_rads1 + others
                             tmp = unrad(neweq, covsym)

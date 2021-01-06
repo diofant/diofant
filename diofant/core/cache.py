@@ -1,4 +1,4 @@
-""" Caching facility for Diofant. """
+"""Caching facility for Diofant."""
 
 import functools
 import os
@@ -12,7 +12,6 @@ CACHE = []
 
 def print_cache():
     """Print cache content."""
-
     for item in CACHE:
         print(item.__qualname__, item.cache_info())
 
@@ -36,9 +35,8 @@ def cacheit(f, maxsize=None):
 
     >>> @cacheit
     ... def f(a, b):
-    ...    print(a, b)
-    ...    return a + b
-
+    ...     print(a, b)
+    ...     return a + b
     >>> f(x, y)
     x y
     x + y
@@ -46,7 +44,6 @@ def cacheit(f, maxsize=None):
     x + y
 
     """
-
     if USE_CACHE:
         cfunc = functools.lru_cache(maxsize=maxsize, typed=True)(f)
 

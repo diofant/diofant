@@ -1,15 +1,6 @@
 Diofant
 =======
 
-.. image:: https://secure.travis-ci.org/diofant/diofant.svg?branch=master
-   :target: https://travis-ci.org/diofant/diofant
-
-.. image:: https://codecov.io/gh/diofant/diofant/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/diofant/diofant
-
-.. image:: https://readthedocs.org/projects/diofant/badge/?style=flat
-    :target: https://diofant.readthedocs.io/en/latest/
-
 A `Python`_ library for symbolic mathematics.
 
 For `installation instructions`_ and usage information,

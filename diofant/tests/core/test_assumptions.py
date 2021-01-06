@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import I, asin, cbrt, exp, false, log, simplify, sin, sqrt
-from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
-                          Rational, Symbol, Wild, nan, oo, pi, zoo)
+from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
+                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
+                     oo, pi, simplify, sin, sqrt, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -342,6 +342,12 @@ def test_symbol_zero():
     assert x.is_nonzero is False
     assert x.is_finite is True
 
+    # issue sympy/sympy#9165
+    f = Symbol('f', finite=False)
+    assert 0/x == nan
+    assert 0*(1/x) == nan
+    assert 0*f == nan
+
 
 def test_symbol_positive():
     x = Symbol('x', positive=True)
@@ -584,8 +590,8 @@ def test_other_symbol():
 
 def test_sympyissue_3825():
     """catch: hash instability"""
-    x = Symbol("x")
-    y = Symbol("y")
+    x = Symbol('x')
+    y = Symbol('y')
     a1 = x + y
     a2 = y + x
     a2.is_comparable
@@ -601,8 +607,7 @@ def test_sympyissue_4822():
 
 
 def test_hash_vs_typeinfo():
-    """seemingly different typeinfo, but in fact equal"""
-
+    """Seemingly different typeinfo, but in fact equal."""
     # the following two are semantically equal
     x1 = Symbol('x', even=True)
     x2 = Symbol('x', integer=True, odd=False)
@@ -612,7 +617,7 @@ def test_hash_vs_typeinfo():
 
 
 def test_hash_vs_typeinfo_2():
-    """different typeinfo should mean !eq"""
+    """Different typeinfo should mean !eq"""
     # the following two are semantically different
     x = Symbol('x')
     x1 = Symbol('x', even=True)
@@ -688,7 +693,7 @@ def test_Add_is_algebraic():
 
 def test_Mul_is_algebraic():
     a = Symbol('a', algebraic=True)
-    b = Symbol('a', algebraic=True)
+    b = Symbol('b', algebraic=True)
     na = Symbol('na', algebraic=False)
     an = Symbol('an', algebraic=True, nonzero=True)
     nb = Symbol('nb', algebraic=False)
@@ -708,12 +713,14 @@ def test_Pow_is_algebraic():
     assert Pow(0, e, evaluate=False).is_algebraic
 
     a = Symbol('a', algebraic=True)
+    an = Symbol('an', algebraic=True, nonzero=True)
     na = Symbol('na', algebraic=False)
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
     r = Symbol('r', rational=True, nonzero=True)
     x = Symbol('x')
-    assert (a**r).is_algebraic
+    assert (an**r).is_algebraic
+    assert (a**r**2).is_algebraic
     assert (a**x).is_algebraic is None
     assert (na**r).is_algebraic is False
     assert (ia**r).is_algebraic
@@ -731,6 +738,14 @@ def test_Pow_is_algebraic():
     n = Symbol('n', integer=True)
     assert (t**n).is_algebraic is None
     assert (t**n).is_integer is None
+
+    i = Symbol('i', integer=True)
+    p = 1/(i - 1)
+    assert p.is_algebraic is None
+    assert p.is_finite is None  # issue sympy/sympy#17453
+
+    # issue sympy/sympy#20617
+    assert exp(I*2*pi/3).is_algebraic is True
 
 
 def test_Mul_is_infinite():
@@ -827,14 +842,6 @@ def test_inconsistent():
                                                           commutative=False))
 
 
-def test_sympyissue_6631():
-    assert ((-1)**I).is_extended_real is True
-    assert ((-1)**(I*2)).is_extended_real is True
-    assert ((-1)**(I/2)).is_extended_real is True
-    assert ((-1)**(I*pi)).is_extended_real is True
-    assert (I**(I + 2)).is_extended_real is True
-
-
 def test_sympyissue_2730():
     assert (1/(1 + I)).is_extended_real is False
 
@@ -889,14 +896,6 @@ def test_sympyissue_8642():
     assert (x*2).is_integer is None
 
 
-def test_sympyissue_9165():
-    z = Symbol('z', zero=True)
-    f = Symbol('f', finite=False)
-    assert 0/z == nan
-    assert 0*(1/z) == nan
-    assert 0*f == nan
-
-
 def test_sympyissue_10024():
     x = Dummy('x')
     assert Mod(x, 2*pi).is_zero is None
@@ -907,3 +906,15 @@ def test_sympyissue_16530():
     e = 1/abs(x)
     assert e.is_real is None
     assert e.is_extended_real is None
+
+
+def test_sympyissue_17555():
+    x = Symbol('x', infinite=True, extended_real=True)
+    assert x.is_positive is None
+    assert (-x).is_positive is None
+
+
+def test_sympyissue_17556():
+    z = I*oo
+    assert z.is_imaginary is False
+    assert z.is_finite is False

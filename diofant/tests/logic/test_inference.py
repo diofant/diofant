@@ -4,7 +4,8 @@ import copy
 
 import pytest
 
-from diofant import numbered_symbols, pi
+from diofant import (And, Equivalent, Implies, Or, false, numbered_symbols, pi,
+                     satisfiable, true)
 from diofant.abc import A, B, C, x, y
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            find_pure_symbol, find_unit_clause,
@@ -12,10 +13,9 @@ from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
 from diofant.logic.algorithms.dpll2 import SATSolver
 from diofant.logic.algorithms.dpll2 import \
     dpll_satisfiable as dpll2_satisfiable
-from diofant.logic.boolalg import (And, Boolean, Equivalent, Implies, Or,
-                                   false, true)
+from diofant.logic.boolalg import Boolean
 from diofant.logic.inference import (PropKB, entails, literal_symbol, pl_true,
-                                     satisfiable, valid)
+                                     valid)
 
 
 __all__ = ()
@@ -215,24 +215,24 @@ def test_PropKB():
 
 
 def test_propKB_tolerant():
-    """tolerant to bad input"""
+    """Tolerant to bad input."""
     kb = PropKB()
     assert kb.ask(B) is False
 
 
 def test_satisfiable_non_symbols():
-    class zero(Boolean):
+    class Zero(Boolean):
         pass
 
-    assumptions = zero(x*y)
-    facts = Implies(zero(x*y), zero(x) | zero(y))
-    query = ~zero(x) & ~zero(y)
+    assumptions = Zero(x*y)
+    facts = Implies(Zero(x*y), Zero(x) | Zero(y))
+    query = ~Zero(x) & ~Zero(y)
     refutations = [
-        {zero(x): True, zero(x*y): True},
-        {zero(y): True, zero(x*y): True},
-        {zero(x): True, zero(y): True, zero(x*y): True},
-        {zero(x): True, zero(y): False, zero(x*y): True},
-        {zero(x): False, zero(y): True, zero(x*y): True}]
+        {Zero(x): True, Zero(x*y): True},
+        {Zero(y): True, Zero(x*y): True},
+        {Zero(x): True, Zero(y): True, Zero(x*y): True},
+        {Zero(x): True, Zero(y): False, Zero(x*y): True},
+        {Zero(x): False, Zero(y): True, Zero(x*y): True}]
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll')
     assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll') in refutations
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll2')

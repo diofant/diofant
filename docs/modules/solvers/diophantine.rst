@@ -82,10 +82,12 @@ Tutorial
 
 First, let's import the highest API of the Diophantine module.
 
+>>> from diofant.solvers.diophantine import diophantine
+
 Before we start solving the equations, we need to define the variables.
 
->>> x, y, z, t, p, q = symbols("x, y, z, t, p, q", integer=True)
->>> t1, t2, t3, t4, t5 = symbols("t1:6", integer=True)
+>>> x, y, z, t, p, q = symbols('x, y, z, t, p, q', integer=True)
+>>> t1, t2, t3, t4, t5 = symbols('t1:6', integer=True)
 
 Let's start by solving the easiest type of Diophantine equations, i.e. linear
 Diophantine equations. Let's solve `2x + 3y = 5`. Note that although we
@@ -128,7 +130,6 @@ Note that except for the highest level API, in case of no solutions, a tuple of
 Also, one can specifically set the parameter to be used in the solutions by
 passing a customized parameter. Consider the following example:
 
->>> m = symbols("m", integer=True)
 >>> diop_solve(2*x + 3*y - 5, m)
 (3*m_0 - 5, -2*m_0 + 5)
 
@@ -167,19 +168,20 @@ set()
 {(t_0, -t_0), (t_0, -t_0 + 3)}
 
 The most interesting case is when `\Delta > 0` and it is not a perfect square.
-In this case, the equation has either no solutions or an infinte number of
+In this case, the equation has either no solutions or an infinite number of
 solutions. Consider the below cases where `\Delta = 8`.
 
 >>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
 set()
->>> n = symbols("n", integer=True)
->>> s = diophantine(x**2 -  2*y**2 - 2*x - 4*y, n)
+>>> s = diophantine(x**2 - 2*y**2 - 2*x - 4*y, n)
 >>> x_1, y_1 = s.pop()
 >>> x_2, y_2 = s.pop()
->>> x_n = -(-2*sqrt(2) + 3)**n/2 + sqrt(2)*(-2*sqrt(2) + 3)**n/2 - sqrt(2)*(2*sqrt(2) + 3)**n/2 - (2*sqrt(2) + 3)**n/2 + 1
+>>> x_n = (-(-2*sqrt(2) + 3)**n/2 + sqrt(2)*(-2*sqrt(2) + 3)**n/2 -
+...        sqrt(2)*(2*sqrt(2) + 3)**n/2 - (2*sqrt(2) + 3)**n/2 + 1)
 >>> x_1 == x_n or x_2 == x_n
 True
->>> y_n = -sqrt(2)*(-2*sqrt(2) + 3)**n/4 + (-2*sqrt(2) + 3)**n/2 + sqrt(2)*(2*sqrt(2) + 3)**n/4 + (2*sqrt(2) + 3)**n/2 - 1
+>>> y_n = (-sqrt(2)*(-2*sqrt(2) + 3)**n/4 + (-2*sqrt(2) + 3)**n/2 +
+...        sqrt(2)*(2*sqrt(2) + 3)**n/4 + (2*sqrt(2) + 3)**n/2 - 1)
 >>> y_1 == y_n or y_2 == y_n
 True
 
@@ -255,7 +257,7 @@ this. The equation `w^2 = AX^2 + BY^2` can be solved more easily by using the
 Aforementioned :py:meth:`~diofant.solvers.diophantine.descent`.
 
 >>> from diofant.solvers.diophantine import descent
->>> descent(3, 1) # solves the equation w**2 = 3*Y**2 + Z**2
+>>> descent(3, 1)  # solves the equation w**2 = 3*Y**2 + Z**2
 (1, 0, 1)
 
 Here the solution tuple is in the order (w, Y, Z)
@@ -314,9 +316,9 @@ References
 * Andreescu, Titu. Andrica, Dorin. Cucurezeanu, Ion. An Introduction to
   Diophantine Equations
 * Diophantine Equation, Wolfram Mathworld, [online]. Available:
-  http://mathworld.wolfram.com/DiophantineEquation.html
+  https://mathworld.wolfram.com/DiophantineEquation.html
 * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-  Available: https://www.alpertron.com.ar/METHODS.HTM
+  Available: https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM
 * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
   Available: https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
@@ -379,10 +381,6 @@ find_DN
 diop_ternary_quadratic
 ^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diop_ternary_quadratic
-
-square_factor
-^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.square_factor
 
 descent
 ^^^^^^^

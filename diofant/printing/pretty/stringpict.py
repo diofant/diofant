@@ -1,4 +1,5 @@
 """Prettyprinter by Jurjen Bos.
+
 (I hate spammers: mail me at pietjepuk314 at the reverse of ku.oc.oohay).
 All objects have a method that create a "stringPict",
 that can be used in the str method for pretty printing.
@@ -10,7 +11,10 @@ Updates by Jason Gedge (email <my last name> at cs mun ca)
 TODO:
     - Allow left/center/right alignment options for above/below and
       top/center/bottom alignment options for left/right
+
 """
+
+import shutil
 
 from .pretty_symbology import hobj, pretty_use_unicode, vobj, xsym
 
@@ -92,7 +96,7 @@ class stringPict:
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
-        >>> print(stringPict("10").right(" + ", stringPict("1\r-\r2", 1))[0])
+        >>> print(stringPict('10').right(' + ', stringPict('1\r-\r2', 1))[0])
              1
         10 + -
              2
@@ -155,7 +159,7 @@ class stringPict:
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
-        >>> print(stringPict("x+3").below(stringPict.LINE, '3')[0])
+        >>> print(stringPict('x+3').below(stringPict.LINE, '3')[0])
         x+3
         ---
          3
@@ -206,12 +210,12 @@ class stringPict:
         break the expression in a form that can be printed
         on the terminal without being broken up.
         """
-        if kwargs["wrap_line"] is False:
-            return "\n".join(self.picture)
+        if kwargs['wrap_line'] is False:
+            return '\n'.join(self.picture)
 
-        if kwargs["num_columns"] is not None:
+        if kwargs['num_columns'] is not None:
             # Read the argument num_columns if it is not None
-            ncols = kwargs["num_columns"]
+            ncols = kwargs['num_columns']
         else:
             # Attempt to get a terminal width
             ncols = self.terminal_width()
@@ -241,24 +245,17 @@ class stringPict:
         while i < self.width():
             svals.extend([ sval[i:i + ncols] for sval in self.picture ])
             if do_vspacers:
-                svals.append("")  # a vertical spacer
+                svals.append('')  # a vertical spacer
             i += ncols
 
         if svals[-1] == '':
             del svals[-1]  # Get rid of the last spacer
 
-        return "\n".join(svals)
+        return '\n'.join(svals)
 
     def terminal_width(self):
-        """Return the terminal width if possible, otherwise return 0.
-        """
-        import curses
-        import io
-        try:
-            curses.setupterm()
-            return curses.tigetnum('cols')
-        except io.UnsupportedOperation:
-            return 0
+        """Return the terminal width if possible, otherwise return 0."""
+        return shutil.get_terminal_size()[0]
 
     def __eq__(self, o):
         if isinstance(o, str):
@@ -332,7 +329,7 @@ class prettyForm(stringPict):
         num = self
 
         if num.binding == prettyForm.NEG:
-            num = num.right(" ")[0]
+            num = num.right(' ')[0]
 
         return prettyForm(binding=prettyForm.DIV, *stringPict.stack(
             num,
@@ -404,4 +401,4 @@ class prettyForm(stringPict):
 
         return prettyForm(binding=prettyForm.POW, *bot.above(top))
 
-    simpleFunctions = ["sin", "cos", "tan"]
+    simpleFunctions = ['sin', 'cos', 'tan']

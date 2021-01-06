@@ -54,22 +54,20 @@ to strings of C code).
 
 Usage::
 
-    >>> print_ccode(sin(x)**2 + cos(x)**2)
+    >>> print(ccode(sin(x)**2 + cos(x)**2))
     pow(sin(x), 2) + pow(cos(x), 2)
-    >>> print_ccode(2*x + cos(x), assign_to="result")
+    >>> print(ccode(2*x + cos(x), assign_to='result'))
     result = 2*x + cos(x);
-    >>> print_ccode(Abs(x**2))
+    >>> print(ccode(abs(x**2)))
     fabs(pow(x, 2))
 
-.. autoclass:: diofant.printing.ccode.CCodePrinter
+.. autoclass:: CCodePrinter
    :members:
 
    .. autoattribute:: CCodePrinter.printmethod
 
 
-.. autofunction:: diofant.printing.ccode.ccode
-
-.. autofunction:: diofant.printing.ccode.print_ccode
+.. autofunction:: ccode
 
 Fortran Printing
 ----------------
@@ -108,7 +106,7 @@ An example where line wrapping is required:
 In case of line wrapping, it is handy to include the assignment so that lines
 are wrapped properly when the assignment part is added.
 
-    >>> print(fcode(expr, assign_to="var"))
+    >>> print(fcode(expr, assign_to='var'))
           var = -715.0d0/65536.0d0*x**18 - 429.0d0/32768.0d0*x**16 - 33.0d0/
          @ 2048.0d0*x**14 - 21.0d0/1024.0d0*x**12 - 7.0d0/256.0d0*x**10 -
          @ 5.0d0/128.0d0*x**8 - 1.0d0/16.0d0*x**6 - 1.0d0/8.0d0*x**4 - 1.0d0
@@ -116,7 +114,7 @@ are wrapped properly when the assignment part is added.
 
 For piecewise functions, the ``assign_to`` option is mandatory:
 
-    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), assign_to="var"))
+    >>> print(fcode(Piecewise((x, x < 1), (x**2, True)), assign_to='var'))
           if (x < 1) then
             var = x
           else
@@ -128,7 +126,7 @@ the lack of a conditional operator in Fortran 77. Inline conditionals can be
 supported using the ``merge`` function introduced in Fortran 95 by setting of
 the kwarg ``standard=95``:
 
-    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), standard=95))
+    >>> print(fcode(Piecewise((x, x < 1), (x**2, True)), standard=95))
           merge(x, x**2, x < 1)
 
 Loops are generated if there are Indexed objects in the expression. This
@@ -186,7 +184,7 @@ By default the output is human readable code, ready for copy and paste. With the
 option ``human=False``, the return value is suitable for post-processing with
 source code generators that write routines with multiple instructions. The
 return value is a three-tuple containing: (i) a set of number symbols that must
-be defined as 'Fortran parameters', (ii) a list functions that can not be
+be defined as 'Fortran parameters', (ii) a list functions that cannot be
 translated in pure Fortran and (iii) a string of Fortran code. A few examples:
 
     >>> fcode(1 - gamma(x)**2, human=False)
@@ -262,7 +260,7 @@ PythonPrinter
 
 This class implements Python printing. Usage::
 
-    >>> print_python(5*x**3 + sin(x))
+    >>> print(python(5*x**3 + sin(x)))
     x = Symbol('x')
     e = 5*x**3 + sin(x)
 

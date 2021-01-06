@@ -7,7 +7,7 @@ import numbers
 import random
 
 from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
-                    sympify)
+                    prod, sympify)
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
@@ -37,7 +37,6 @@ def smoothness(n):
     factorint, smoothness_p
 
     """
-
     if n == 1:
         return (1, 1)  # not prime, but otherwise this causes headaches
     facs = factorint(n)
@@ -132,7 +131,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
         k = 1
     if type(n) is not tuple:
         rv = (m, sorted(((f, tuple([M] + list(smoothness(f + m))))
-                         for f, M in [i for i in facs.items()]),
+                         for f, M in list(facs.items())),
                         key=lambda x: (x[1][k], x[0])))
     else:
         rv = n
@@ -143,7 +142,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     for dat in rv[1]:
         dat = flatten(dat)
         dat.insert(2, m)
-        lines.append('p**i=%i**%i has p%+i B=%i, B-pow=%i' % tuple(dat))
+        lines.append('p**i=%i**%i has p%+i B=%i, B-pow=%i' % tuple(dat))  # noqa: SFS101
     return '\n'.join(lines)
 
 
@@ -211,14 +210,14 @@ def multiplicity(p, n):
                 like = min(multiplicity(p.numerator, n.numerator), multiplicity(p.denominator, n.denominator))
                 cross = min(multiplicity(p.denominator, n.numerator), multiplicity(p.numerator, n.denominator))
                 return like - cross
-        raise ValueError('expecting ints or fractions, got %s and %s' % (p, n))
+        raise ValueError(f'expecting ints or fractions, got {p} and {n}')
 
     if n == 0:
         raise ValueError('multiplicity of 0 is not defined')
     if p == 2:
         return trailing(n)
     if p < 2:
-        raise ValueError('p must be an integer, 2 or larger, but got %s' % p)
+        raise ValueError(f'p must be an integer, 2 or larger, but got {p}')
     if p == n:
         return 1
 
@@ -267,7 +266,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
 
     >>> perfect_power(16)
     (2, 4)
-    >>> perfect_power(16, big = False)
+    >>> perfect_power(16, big=False)
     (4, 2)
 
     """
@@ -368,7 +367,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     so it is a good idea to allow for retries:
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
     ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
     ...
@@ -383,7 +383,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     >>> x = 2
     >>> for i in range(9):
-    ...     x = (x**2 + 12)%17
+    ...     x = (x**2 + 12) % 17
     ...     print(x)
     ...
     16
@@ -395,9 +395,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     14
     4
     11
-    >>> next(cycle_length(lambda x: (x**2+12)%17, 2))
+    >>> next(cycle_length(lambda x: (x**2+12) % 17, 2))
     (3, 2)
-    >>> list(cycle_length(lambda x: (x**2+12)%17, 2, values=True))
+    >>> list(cycle_length(lambda x: (x**2+12) % 17, 2, values=True))
     [16, 13, 11, 14, 4]
 
     Instead of checking the differences of all generated values for a gcd
@@ -411,7 +411,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
     257
 
@@ -458,7 +459,6 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
         V = prng.randint(0, n - 1)
         a = prng.randint(1, n - 3)  # for x**2 + a, a%n should not be 0 or -2
         F = None
-    return
 
 
 def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
@@ -518,8 +518,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     But does aM % d for every divisor of n give 1?
 
-        >>> aM = pow(255, M, n)
-        >>> [(d, aM%Pow(*d.args)) for d in factorint(n, visual=True).args]
+        >>> am = pow(255, M, n)
+        >>> [(d, am % Pow(*d.args)) for d in factorint(n, visual=True).args]
         [(257**1, 1), (1009**1, 1)]
 
     No, only one of them. So perhaps the principle is that a root will
@@ -586,7 +586,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
 
     """
-
     n = int(n)
     if n < 4 or B < 3:
         raise ValueError('pollard_pm1 should receive n > 3 and B > 2')
@@ -642,7 +641,6 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     the factorization and raises ``StopIteration``.
 
     """
-
     if verbose:
         print('Check for termination')
 
@@ -673,8 +671,8 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     return False
 
 
-trial_int_msg = "Trial division with ints [%i ... %i] and fail_max=%i"
-trial_msg = "Trial division with primes [%i ... %i]"
+trial_int_msg = 'Trial division with ints [%i ... %i] and fail_max=%i'
+trial_msg = 'Trial division with primes [%i ... %i]'
 rho_msg = "Pollard's rho with retries %i, max_steps %i and seed %i"
 pm1_msg = "Pollard's p-1 with smoothness bound %i and seed %i"
 factor_msg = '\t%i ** %i'
@@ -697,7 +695,7 @@ def _factorint_small(factors, n, limit, fail_max):
     """
 
     def done(n, d):
-        """return n, d if the sqrt(n) wasn't reached yet, else
+        """Return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
 
         """
@@ -848,13 +846,15 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     You can easily switch between the two forms by sending them back to
     factorint:
 
-    >>> regular = factorint(1764); regular
+    >>> regular = factorint(1764)
+    >>> regular
     {2: 2, 3: 2, 7: 2}
     >>> pprint(factorint(regular), use_unicode=False)
      2  2  2
     2 *3 *7
 
-    >>> visual = factorint(1764, visual=True); pprint(visual, use_unicode=False)
+    >>> visual = factorint(1764, visual=True)
+    >>> pprint(visual, use_unicode=False)
      2  2  2
     2 *3 *7
     >>> print(factorint(visual))
@@ -863,7 +863,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If you want to send a number to be factored in a partially factored form
     you can do so with a dictionary or unevaluated expression:
 
-    >>> factorint(factorint({4: 2, 12: 3})) # twice to toggle to dict form
+    >>> factorint(factorint({4: 2, 12: 3}))  # twice to toggle to dict form
     {2: 10, 3: 3}
     >>> factorint(Mul(4, 12, evaluate=False))
     {2: 4, 3: 1}
@@ -986,8 +986,8 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     if verbose:
         sn = str(n)
         if len(sn) > 50:
-            print('Factoring %s' % sn[:5] +
-                  '..(%i other digits)..' % (len(sn) - 10) + sn[-5:])
+            print(f'Factoring {sn[:5]}'
+                  f'..({str(len(sn) - 10) + sn[-5:]} other digits)..')
         else:
             print('Factoring', n)
 
@@ -1241,7 +1241,6 @@ def primefactors(n, limit=None, verbose=False):
 
 def _divisors(n):
     """Helper function for divisors which generates the divisors."""
-
     factordict = factorint(n)
     ps = sorted(factordict)
 
@@ -1292,7 +1291,6 @@ def divisors(n, generator=False):
     * https://stackoverflow.com/questions/1010381/python-factorization
 
     """
-
     n = as_int(abs(n))
     if isprime(n):
         return [1, n]
@@ -1329,7 +1327,6 @@ def divisor_count(n, modulus=1):
     factorint, divisors, totient
 
     """
-
     if not modulus:
         return 0
     elif modulus != 1:
@@ -1343,7 +1340,6 @@ def divisor_count(n, modulus=1):
 
 def _antidivisors(n):
     """Helper function for antidivisors which generates the antidivisors."""
-
     for d in _divisors(n):
         y = 2*d
         if n > y and n % y:
@@ -1382,7 +1378,6 @@ def antidivisors(n, generator=False):
     primefactors, factorint, divisors, divisor_count, antidivisor_count
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return []
@@ -1414,7 +1409,6 @@ def antidivisor_count(n):
     factorint, divisors, antidivisors, divisor_count, totient
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return 0
@@ -1442,7 +1436,7 @@ class totient(Function):
         n = sympify(n)
         if n.is_Integer:
             if n < 1:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             factors = factorint(n)
             t = 1
             for p, k in factors.items():
@@ -1513,7 +1507,7 @@ class divisor_sigma(Function):
             return 1 + n**k
         if n.is_Integer:
             if n <= 0:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             else:
                 return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
                              else e + 1 for p, e in factorint(n).items()])
@@ -1568,15 +1562,42 @@ def core(n, t=2):
     factorint, diofant.solvers.diophantine.square_factor
 
     """
-
     n = as_int(n)
     t = as_int(t)
     if n <= 0:
-        raise ValueError("n must be a positive integer")
+        raise ValueError('n must be a positive integer')
     elif t <= 1:
-        raise ValueError("t must be >= 2")
+        raise ValueError('t must be >= 2')
     else:
         y = 1
         for p, e in factorint(n).items():
             y *= p**(e % t)
         return y
+
+
+def square_factor(a):
+    r"""
+    Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
+    free. `a` can be given as an integer or a dictionary of factors.
+
+    Examples
+    ========
+
+    >>> square_factor(24)
+    2
+    >>> square_factor(-36*3)
+    6
+    >>> square_factor(1)
+    1
+    >>> square_factor({3: 2, 2: 1, -1: 1})
+    3
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.reconstruct
+    diofant.ntheory.factor_.core
+
+    """
+    f = a if isinstance(a, dict) else factorint(a)
+    return prod(p**(e//2) for p, e in f.items())

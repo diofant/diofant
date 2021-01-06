@@ -5,8 +5,8 @@ from .str import StrPrinter
 
 
 # A list of classes that should be printed using StrPrinter
-STRPRINT = ("Add", "Infinity", "Integer", "Mul", "NegativeInfinity",
-            "Pow", "Zero")
+STRPRINT = ('Add', 'Infinity', 'Integer', 'Mul', 'NegativeInfinity',
+            'Pow', 'Zero')
 
 
 class PythonPrinter(ReprPrinter, StrPrinter):
@@ -21,7 +21,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
         # Create print methods for classes that should use StrPrinter instead
         # of ReprPrinter.
         for name in STRPRINT:
-            f_name = "_print_%s" % name
+            f_name = f'_print_{name}'
             f = getattr(StrPrinter, f_name)
             setattr(PythonPrinter, f_name, f)
 
@@ -32,7 +32,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
             self.functions.append(func)
         return StrPrinter._print_Function(self, expr)
 
-    # procedure (!) for defining symbols which have be defined in print_python()
+    # procedure (!) for defining symbols which have be defined in python()
     def _print_Symbol(self, expr):
         symbol = self._str(expr)
         if symbol not in self.symbols:
@@ -44,7 +44,7 @@ def python(expr, **settings):
     """Return Python interpretation of passed expression
     (can be passed to the exec() function without any modifications)
     """
-    from ..core import Symbol, Function
+    from ..core import Function, Symbol
 
     printer = PythonPrinter(settings)
     exprp = printer.doprint(expr)
@@ -57,31 +57,26 @@ def python(expr, **settings):
         # Escape symbol names that are reserved python keywords
         if kw.iskeyword(newsymbolname):
             while True:
-                newsymbolname += "_"
+                newsymbolname += '_'
                 if (newsymbolname not in printer.symbols and
                         newsymbolname not in printer.functions):
                     renamings[Symbol(symbolname)] = Symbol(newsymbolname)
                     break
-        result += newsymbolname + ' = Symbol(\'' + symbolname + '\')\n'
+        result += newsymbolname + " = Symbol('" + symbolname + "')\n"
 
     for functionname in printer.functions:
         newfunctionname = functionname
         # Escape function names that are reserved python keywords
         if kw.iskeyword(newfunctionname):
             while True:
-                newfunctionname += "_"
+                newfunctionname += '_'
                 if (newfunctionname not in printer.symbols and
                         newfunctionname not in printer.functions):
                     renamings[Function(functionname)] = Function(newfunctionname)
                     break
-        result += newfunctionname + ' = Function(\'' + functionname + '\')\n'
+        result += newfunctionname + " = Function('" + functionname + "')\n"
 
     if not len(renamings) == 0:
         exprp = expr.subs(renamings)
     result += 'e = ' + printer._str(exprp)
     return result
-
-
-def print_python(expr, **settings):
-    """Print output of python() function"""
-    print(python(expr, **settings))

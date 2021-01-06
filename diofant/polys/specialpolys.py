@@ -1,17 +1,10 @@
-"""Functions for generating interesting polynomials, e.g. for benchmarking. """
+"""Functions for generating interesting polynomials, e.g. for benchmarking."""
 
-from ..core import Add, Dummy, Integer, Mul, Symbol, symbols, sympify
+from ..core import Add, Dummy, Integer, Mul, symbols, sympify
 from ..domains import ZZ
-from ..functions import sqrt
 from ..ntheory import nextprime
 from ..utilities import subsets
-from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
-from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
-                         dmp_to_dict, dmp_zero, dup_random)
-from .factortools import dup_zz_cyclotomic_poly
-from .polytools import Poly, PurePoly
-from .polyutils import _analyze_gens
-from .rings import ring
+from . import polytools, rings
 
 
 __all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
@@ -19,11 +12,12 @@ __all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
 
 
 def swinnerton_dyer_poly(n, x=None, **args):
-    """Generates n-th Swinnerton-Dyer polynomial in `x`.  """
+    """Generates n-th Swinnerton-Dyer polynomial in `x`."""
+    from ..functions import sqrt
     from .numberfields import minimal_polynomial
     if n <= 0:
         raise ValueError(
-            "can't generate Swinnerton-Dyer polynomial of order %s" % n)
+            f"can't generate Swinnerton-Dyer polynomial of order {n}")
 
     if x is not None:
         x = sympify(x)
@@ -47,21 +41,22 @@ def swinnerton_dyer_poly(n, x=None, **args):
     if not args.get('polys', False):
         return ex
     else:
-        return PurePoly(ex, x)
+        return polytools.PurePoly(ex, x)
 
 
 def cyclotomic_poly(n, x=None, **args):
-    """Generates cyclotomic polynomial of order `n` in `x`. """
+    """Generates cyclotomic polynomial of order `n` in `x`."""
     if n <= 0:
         raise ValueError(
-            "can't generate cyclotomic polynomial of order %s" % n)
+            f"can't generate cyclotomic polynomial of order {n}")
 
-    poly = dup_zz_cyclotomic_poly(int(n), ZZ)
+    R = ZZ.inject('_0')
+    poly = R._zz_cyclotomic_poly(int(n)).all_coeffs()
 
     if x is not None:
-        poly = Poly(poly, x)
+        poly = polytools.Poly(poly, x)
     else:
-        poly = PurePoly(poly, Dummy('x'))
+        poly = polytools.PurePoly(poly, Dummy('x'))
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -70,11 +65,9 @@ def cyclotomic_poly(n, x=None, **args):
 
 
 def symmetric_poly(n, *gens, **args):
-    """Generates symmetric polynomial of order `n`. """
-    gens = _analyze_gens(gens)
-
+    """Generates symmetric polynomial of order `n`."""
     if n < 0 or n > len(gens) or not gens:
-        raise ValueError("can't generate symmetric polynomial of order %s for %s" % (n, gens))
+        raise ValueError(f"can't generate symmetric polynomial of order {n} for {gens}")
     elif not n:
         poly = Integer(1)
     else:
@@ -83,12 +76,13 @@ def symmetric_poly(n, *gens, **args):
     if not args.get('polys', False):
         return poly
     else:
-        return Poly(poly, *gens)
+        return polytools.Poly(poly, *gens)
 
 
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
-    """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``. """
-    poly = Poly(dup_random(n, inf, sup, domain, percent), x, domain=domain)
+    """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``."""
+    ring = domain.inject(x)
+    poly = polytools.Poly(dict(ring._random(n, inf, sup, percent)), x, domain=domain)
 
     if not polys:
         return poly.as_expr()
@@ -97,12 +91,12 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
 
 
 def interpolating_poly(n, x, X='x', Y='y'):
-    """Construct Lagrange interpolating polynomial for ``n`` data points. """
+    """Construct Lagrange interpolating polynomial for ``n`` data points."""
     if isinstance(X, str):
-        X = symbols("%s:%s" % (X, n))
+        X = symbols(f'{X}:{n}')
 
     if isinstance(Y, str):
-        Y = symbols("%s:%s" % (Y, n))
+        Y = symbols(f'{Y}:{n}')
 
     coeffs = []
 
@@ -125,146 +119,83 @@ def interpolating_poly(n, x, X='x', Y='y'):
     return Add(*[coeff*y for coeff, y in zip(coeffs, Y)])
 
 
-def fateman_poly_F_1(n):
-    """Fateman's GCD benchmark: trivial GCD """
-    Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
+class _test_polys:
+    def fateman_poly_F_1(self):
+        """Fateman's GCD benchmark: trivial GCD."""
+        gens = self.gens
+        x, y = gens[0:2]
 
-    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
-                     dmp_fateman_poly_F_1(n, ZZ)))
+        return ((1 + sum(gens))*(2 + sum(gens)),
+                (1 + sum(_**2 for _ in gens))*(-3*y*x**2 + y**2 - 1),
+                self.one)
 
+    def fateman_poly_F_2(self):
+        """Fateman's GCD benchmark: linearly dense quartic inputs."""
+        gens = self.gens
+        x = gens[0]
 
-def dmp_fateman_poly_F_1(n, K):
-    """Fateman's GCD benchmark: trivial GCD """
-    u = [K(1), K(0)]
+        D = (1 + sum(gens))**2
 
-    for i in range(n):
-        u = [dmp_one(i, K), u]
+        return (D*(-2 + x - sum(gens[1:]))**2,
+                D*(2 + sum(gens))**2, D)
 
-    v = [K(1), K(0), K(0)]
+    def fateman_poly_F_3(self):
+        """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f)."""
+        gens = self.gens
+        x = gens[0]
+        n = self.ngens
 
-    for i in range(n):
-        v = [dmp_one(i, K), dmp_zero(i), v]
+        D = (1 + sum(_**n for _ in gens))**2
 
-    m = n - 1
-
-    U = dmp_add_term(u, dmp_ground(K(1), m), 0, n, K)
-    V = dmp_add_term(u, dmp_ground(K(2), m), 0, n, K)
-
-    f = [[-K(3), K(0)], [], [K(1), K(0), -K(1)]]
-
-    W = dmp_add_term(v, dmp_ground(K(1), m), 0, n, K)
-    Y = dmp_raise(f, m, 1, K)
-
-    F = dmp_mul(U, V, n, K)
-    G = dmp_mul(W, Y, n, K)
-
-    H = dmp_one(n, K)
-
-    return F, G, H
-
-
-def fateman_poly_F_2(n):
-    """Fateman's GCD benchmark: linearly dense quartic inputs """
-    Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
-
-    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
-                     dmp_fateman_poly_F_2(n, ZZ)))
-
-
-def dmp_fateman_poly_F_2(n, K):
-    """Fateman's GCD benchmark: linearly dense quartic inputs """
-    u = [K(1), K(0)]
-
-    for i in range(n - 1):
-        u = [dmp_one(i, K), u]
-
-    m = n - 1
-
-    v = dmp_add_term(u, dmp_ground(K(2), m - 1), 0, n, K)
-
-    f = dmp_sqr([dmp_one(m, K), dmp_neg(v, m, K)], n, K)
-    g = dmp_sqr([dmp_one(m, K), v], n, K)
-
-    v = dmp_add_term(u, dmp_one(m - 1, K), 0, n, K)
-
-    h = dmp_sqr([dmp_one(m, K), v], n, K)
-
-    return dmp_mul(f, h, n, K), dmp_mul(g, h, n, K), h
-
-
-def fateman_poly_F_3(n):
-    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
-    Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
-
-    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
-                     dmp_fateman_poly_F_3(n, ZZ)))
-
-
-def dmp_fateman_poly_F_3(n, K):
-    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
-    u = dmp_from_dict({(n + 1,): K.one}, 0, K)
-
-    for i in range(n - 1):
-        u = dmp_add_term([u], dmp_one(i, K), n + 1, i + 1, K)
-
-    v = dmp_add_term(u, dmp_ground(K(2), n - 2), 0, n, K)
-
-    f = dmp_sqr(
-        dmp_add_term([dmp_neg(v, n - 1, K)], dmp_one(n - 1, K), n + 1, n, K), n, K)
-    g = dmp_sqr(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), n, K)
-
-    v = dmp_add_term(u, dmp_one(n - 2, K), 0, n - 1, K)
-
-    h = dmp_sqr(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), n, K)
-
-    return dmp_mul(f, h, n, K), dmp_mul(g, h, n, K), h
+        return (D*(-2 + x**n - sum(_**n for _ in gens[1:]))**2,
+                D*(+2 + sum(_**n for _ in gens))**2, D)
 
 
 # A few useful polynomials from Wang's paper ('78).
 
 
 def _f_0():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return x**2*y*z**2 + 2*x**2*y*z + 3*x**2*y + 2*x**2 + 3*x + 4*y**2*z**2 + 5*y**2*z + 6*y**2 + y*z**2 + 2*y*z + y + 1
 
 
 def _f_1():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return x**3*y*z + x**2*y**2*z**2 + x**2*y**2 + 20*x**2*y*z + 30*x**2*y + x**2*z**2 + 10*x**2*z + x*y**3*z + 30*x*y**2*z + 20*x*y**2 + x*y*z**3 + 10*x*y*z**2 + x*y*z + 610*x*y + 20*x*z**2 + 230*x*z + 300*x + y**2*z**2 + 10*y**2*z + 30*y*z**2 + 320*y*z + 200*y + 600*z + 6000
 
 
 def _f_2():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return x**5*y**3 + x**5*y**2*z + x**5*y*z**2 + x**5*z**3 + x**3*y**2 + x**3*y*z + 90*x**3*y + 90*x**3*z + x**2*y**2*z - 11*x**2*y**2 + x**2*z**3 - 11*x**2*z**2 + y*z - 11*y + 90*z - 990
 
 
 def _f_3():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return x**5*y**2 + x**4*z**4 + x**4 + x**3*y**3*z + x**3*z + x**2*y**4 + x**2*y**3*z**3 + x**2*y*z**5 + x**2*y*z + x*y**2*z**4 + x*y**2 + x*y*z**7 + x*y*z**3 + x*y*z**2 + y**2*z + y*z**4
 
 
 def _f_4():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return -x**9*y**8*z - x**8*y**5*z**3 - x**7*y**12*z**2 - 5*x**7*y**8 - x**6*y**9*z**4 + x**6*y**7*z**3 + 3*x**6*y**7*z - 5*x**6*y**5*z**2 - x**6*y**4*z**3 + x**5*y**4*z**5 + 3*x**5*y**4*z**3 - x**5*y*z**5 + x**4*y**11*z**4 + 3*x**4*y**11*z**2 - x**4*y**8*z**4 + 5*x**4*y**7*z**2 + 15*x**4*y**7 - 5*x**4*y**4*z**2 + x**3*y**8*z**6 + 3*x**3*y**8*z**4 - x**3*y**5*z**6 + 5*x**3*y**4*z**4 + 15*x**3*y**4*z**2 + x**3*y**3*z**5 + 3*x**3*y**3*z**3 - 5*x**3*y*z**4 + x**2*z**7 + 3*x**2*z**5 + x*y**7*z**6 + 3*x*y**7*z**4 + 5*x*y**3*z**4 + 15*x*y**3*z**2 + y**4*z**8 + 3*y**4*z**6 + 5*z**6 + 15*z**4
 
 
 def _f_5():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return -x**3 - 3*x**2*y + 3*x**2*z - 3*x*y**2 + 6*x*y*z - 3*x*z**2 - y**3 + 3*y**2*z - 3*y*z**2 + z**3
 
 
 def _f_6():
-    R, x, y, z, t = ring("x,y,z,t", ZZ)
+    R, x, y, z, t = rings.ring('x y z t', ZZ)
     return 2115*x**4*y + 45*x**3*z**3*t**2 - 45*x**3*t**2 - 423*x*y**4 - 47*x*y**3 + 141*x*y*z**3 + 94*x*y*z*t - 9*y**3*z**3*t**2 + 9*y**3*t**2 - y**2*z**3*t**2 + y**2*t**2 + 3*z**6*t**2 + 2*z**4*t**3 - 3*z**3*t**2 - 2*z*t**3
 
 
 def _w_1():
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = rings.ring('x y z', ZZ)
     return 4*x**6*y**4*z**2 + 4*x**6*y**3*z**3 - 4*x**6*y**2*z**4 - 4*x**6*y*z**5 + x**5*y**4*z**3 + 12*x**5*y**3*z - x**5*y**2*z**5 + 12*x**5*y**2*z**2 - 12*x**5*y*z**3 - 12*x**5*z**4 + 8*x**4*y**4 + 6*x**4*y**3*z**2 + 8*x**4*y**3*z - 4*x**4*y**2*z**4 + 4*x**4*y**2*z**3 - 8*x**4*y**2*z**2 - 4*x**4*y*z**5 - 2*x**4*y*z**4 - 8*x**4*y*z**3 + 2*x**3*y**4*z + x**3*y**3*z**3 - x**3*y**2*z**5 - 2*x**3*y**2*z**3 + 9*x**3*y**2*z - 12*x**3*y*z**3 + 12*x**3*y*z**2 - 12*x**3*z**4 + 3*x**3*z**3 + 6*x**2*y**3 - 6*x**2*y**2*z**2 + 8*x**2*y**2*z - 2*x**2*y*z**4 - 8*x**2*y*z**3 + 2*x**2*y*z**2 + 2*x*y**3*z - 2*x*y**2*z**3 - 3*x*y*z + 3*x*z**3 - 2*y**2 + 2*y*z**2
 
 
 def _w_2():
-    R, x, y = ring("x,y", ZZ)
+    R, x, y = rings.ring('x y', ZZ)
     return 24*x**8*y**3 + 48*x**8*y**2 + 24*x**7*y**5 - 72*x**7*y**2 + 25*x**6*y**4 + 2*x**6*y**3 + 4*x**6*y + 8*x**6 + x**5*y**6 + x**5*y**3 - 12*x**5 + x**4*y**5 - x**4*y**4 - 2*x**4*y**3 + 292*x**4*y**2 - x**3*y**6 + 3*x**3*y**3 - x**2*y**5 + 12*x**2*y**3 + 48*x**2 - 12*y**3
 
 

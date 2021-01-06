@@ -1,9 +1,6 @@
-from strategies import condition, do_one, exhaust
-from strategies.core import typed
-from strategies.traverse import bottom_up
-
 from ...core import Add, Expr, Integer, sympify
-from ...core.strategies import unpack
+from ...core.strategies import (bottom_up, condition, do_one, exhaust, typed,
+                                unpack)
 from ...logic import false
 from ...utilities import sift
 from .determinant import Determinant
@@ -22,7 +19,6 @@ class BlockMatrix(MatrixExpr):
     The submatrices are stored in a Diofant Matrix object but accessed as part of
     a Matrix Expression
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
@@ -98,6 +94,7 @@ class BlockMatrix(MatrixExpr):
 
     def _eval_transpose(self):
         from .. import Matrix
+
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy
@@ -111,7 +108,7 @@ class BlockMatrix(MatrixExpr):
             return Add(*[Trace(self.blocks[i, i])
                          for i in range(self.blockshape[0])])
         raise NotImplementedError("Can't perform trace of irregular "
-                                  "blockshape")  # pragma: no cover
+                                  'blockshape')  # pragma: no cover
 
     def _eval_determinant(self):
         return Determinant(self)
@@ -122,7 +119,6 @@ class BlockMatrix(MatrixExpr):
         Examples
         ========
 
-        >>> from diofant.abc import l
         >>> X = MatrixSymbol('X', n, n)
         >>> Y = MatrixSymbol('Y', m, m)
         >>> Z = MatrixSymbol('Z', n, m)
@@ -181,7 +177,6 @@ class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> BlockDiagMatrix(X, Y)
@@ -248,7 +243,6 @@ class BlockDiagMatrix(BlockMatrix):
 def block_collapse(expr):
     """Evaluates a block matrix expression
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
@@ -395,7 +389,7 @@ def reblock_2x2(B):
 
 
 def bounds(sizes):
-    """ Convert sequence of numbers into pairs of low-high pairs
+    """Convert sequence of numbers into pairs of low-high pairs
 
     >>> bounds((1, 10, 50))
     [(0, 1), (1, 11), (11, 61)]
@@ -410,7 +404,7 @@ def bounds(sizes):
 
 
 def blockcut(expr, rowsizes, colsizes):
-    """ Cut a matrix expression into Blocks
+    """Cut a matrix expression into Blocks
 
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> B = blockcut(M, (1, 3), (1, 3))
@@ -420,7 +414,6 @@ def blockcut(expr, rowsizes, colsizes):
     Matrix([[1, 2, 3]])
 
     """
-
     rowbounds = bounds(rowsizes)
     colbounds = bounds(colsizes)
     return BlockMatrix([[MatrixSlice(expr, rowbound, colbound)

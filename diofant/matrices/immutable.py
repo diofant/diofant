@@ -61,7 +61,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __getitem__ = DenseMatrix.__getitem__
 
     def __setitem__(self, *args):
-        raise TypeError("Cannot set values of ImmutableMatrix")
+        raise TypeError('Cannot set values of ImmutableMatrix')
 
     def _eval_Eq(self, other):
         """Helper method for Equality with matrices.
@@ -75,11 +75,10 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
         """
         if not hasattr(other, 'shape') or self.shape != other.shape:
             return false
-        if isinstance(other, MatrixExpr) and not isinstance(
+        if not isinstance(other, MatrixExpr) or isinstance(
                 other, ImmutableMatrix):
-            return
-        diff = self - other
-        return sympify(diff.is_zero)
+            diff = self - other
+            return sympify(diff.is_zero)
 
     adjoint = MatrixBase.adjoint
     conjugate = MatrixBase.conjugate
@@ -110,6 +109,10 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
     __eq__ = DenseMatrix.__eq__
     __hash__ = Expr.__hash__
+
+    integrate = MatrixBase.integrate
+    diff = MatrixBase.diff
+    limit = MatrixBase.limit
 
 
 # This is included after the class definition as a workaround for issue sympy/sympy#7213.
@@ -160,7 +163,7 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
         return cls._new(*args, **kwargs)
 
     def __setitem__(self, *args):
-        raise TypeError("Cannot set values of ImmutableSparseMatrix")
+        raise TypeError('Cannot set values of ImmutableSparseMatrix')
 
     subs = MatrixBase.subs
 

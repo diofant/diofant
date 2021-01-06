@@ -93,7 +93,7 @@ zero apart from one that is merely very small. The working precision is
 therefore capped, by default to around 100 digits. If we try with the 1000'th
 Fibonacci number, the following happens:
 
-    >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5))
+    >>> N(fibonacci(1000) - GoldenRatio**1000/sqrt(5))
     Traceback (most recent call last):
     ...
     PrecisionExhausted: ...
@@ -101,7 +101,7 @@ Fibonacci number, the following happens:
 The exception indicates that ``N`` failed to achieve full accuracy.  To force a
 higher working precision, the ``maxn`` keyword argument can be used:
 
-    >>> N(fibonacci(1000) - (GoldenRatio)**1000/sqrt(5), maxn=500)
+    >>> N(fibonacci(1000) - GoldenRatio**1000/sqrt(5), maxn=500)
     -4.60123853010113e-210
 
 
@@ -133,7 +133,7 @@ imaginary portions of a number with exact zeros:
 In situations where you wish to remove meaningless digits, re-evaluation or
 the use of the ``round`` method are useful:
 
-    >>> Float('.1', '')*Float('.12345', '')
+    >>> Float('.1')*Float('.12345')
     0.012297
     >>> ans = _
     >>> N(ans, 1)
@@ -266,7 +266,6 @@ precision. For example, this Ramanujan formula for pi can be summed to 10,000
 digits in a fraction of a second with a simple command:
 
     >>> f = factorial
-    >>> n = Symbol('n', integer=True)
     >>> R = 9801/sqrt(8)/Sum(f(4*n)*(1103+26390*n)/f(n)**4/396**(4*n),
     ...                      (n, 0, oo))
     >>> N(R, 10000, strict=False)
@@ -337,7 +336,6 @@ Here are several more advanced examples:
      ----
       2
     E
-    >>> n = Symbol('n')
     >>> nsimplify(Sum(1/n**2, (n, 1, oo)), [pi])
       2
     pi
@@ -346,3 +344,60 @@ Here are several more advanced examples:
     >>> nsimplify(gamma('1/4')*gamma('3/4'), [pi])
       ___
     \/ 2 *pi
+
+uFuncify
+--------
+
+While NumPy operations are very efficient for vectorized data they sometimes
+incur unnecessary costs when chained together. Consider the following operation
+
+.. code:: python
+
+    x = get_numpy_array(...)
+    y = sin(x)/x
+
+The operators ``sin`` and ``/`` call routines that execute tight for loops in
+``C``. The resulting computation looks something like this
+
+.. code:: c
+
+    for(int i = 0; i < n; i++)
+    {
+        temp[i] = sin(x[i]);
+    }
+    for(int i = i; i < n; i++)
+    {
+        y[i] = temp[i] / x[i];
+    }
+
+This is slightly sub-optimal because
+
+1.  We allocate an extra ``temp`` array
+2.  We walk over ``x`` memory twice when once would have been sufficient
+
+A better solution would fuse both element-wise operations into a single for loop
+
+.. code:: c
+
+    for(int i = i; i < n; i++)
+    {
+        y[i] = sin(x[i]) / x[i];
+    }
+
+Statically compiled projects like NumPy are unable to take advantage of such
+optimizations. Fortunately, Diofant is able to generate efficient low-level C
+or Fortran code. It can then depend on projects like ``Cython`` or ``f2py`` to
+compile and reconnect that code back up to Python. Fortunately this process is
+well automated and a Diofant user wishing to make use of this code generation
+should call the ``ufuncify`` function
+
+    >>> expr = sin(x)/x
+
+    >>> from diofant.utilities.autowrap import ufuncify
+    >>> f = ufuncify((x,), expr)
+
+This function ``f`` consumes and returns a NumPy array. Generally ``ufuncify``
+performs at least as well as ``lambdify``. If the expression is complicated
+then ``ufuncify`` often significantly outperforms the NumPy backed solution.
+Jensen has a good `blog post <https://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/>`_
+on this topic.

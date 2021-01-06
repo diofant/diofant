@@ -56,7 +56,6 @@ class Dyadic(BasisDependent):
         N.i
 
         """
-
         from .vector import Vector
 
         if isinstance(other, BasisDependentZero):
@@ -76,8 +75,8 @@ class Dyadic(BasisDependent):
                     outdyad += vect_dot * v1 * v2 * outer_product
             return outdyad
         else:
-            raise TypeError("Inner product is not defined for " +
-                            str(type(other)) + " and Dyadics.")
+            raise TypeError('Inner product is not defined for ' +
+                            str(type(other)) + ' and Dyadics.')
 
     def __and__(self, other):
         return self.dot(other)
@@ -104,7 +103,6 @@ class Dyadic(BasisDependent):
         (N.i|N.k)
 
         """
-
         from .vector import Vector
 
         if other == Vector.zero:
@@ -117,8 +115,8 @@ class Dyadic(BasisDependent):
                 outdyad += v * outer
             return outdyad
         else:
-            raise TypeError(str(type(other)) + " not supported for " +
-                            "cross with dyadics")
+            raise TypeError(str(type(other)) + ' not supported for ' +
+                            'cross with dyadics')
 
     def __xor__(self, other):
         return self.cross(other)
@@ -161,7 +159,6 @@ class Dyadic(BasisDependent):
         [       0,         0, 0]])
 
         """
-
         if second_system is None:
             second_system = system
 
@@ -173,13 +170,13 @@ class BaseDyadic(Dyadic, AtomicExpr):
     """Class to denote a base dyadic tensor component."""
 
     def __new__(cls, vector1, vector2):
-        from .vector import Vector, BaseVector, VectorZero
+        from .vector import BaseVector, Vector, VectorZero
 
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
                 not isinstance(vector2, (BaseVector, VectorZero)):
-            raise TypeError("BaseDyadic cannot be composed of non-base " +
-                            "vectors")
+            raise TypeError('BaseDyadic cannot be composed of non-base ' +
+                            'vectors')
         # Handle special case of zero vector
         elif vector1 == Vector.zero or vector2 == Vector.zero:
             return Dyadic.zero
@@ -191,13 +188,13 @@ class BaseDyadic(Dyadic, AtomicExpr):
         obj._sys = vector1._sys
         obj._pretty_form = ('(' + vector1._pretty_form + '|' +
                             vector2._pretty_form + ')')
-        obj._latex_form = ('(' + vector1._latex_form + "{|}" +
+        obj._latex_form = ('(' + vector1._latex_form + '{|}' +
                            vector2._latex_form + ')')
 
         return obj
 
     def __str__(self, printer=None):
-        return "(" + str(self.args[0]) + "|" + str(self.args[1]) + ")"
+        return '(' + str(self.args[0]) + '|' + str(self.args[1]) + ')'
 
     _diofantstr = __str__
     _diofantrepr = _diofantstr
@@ -217,7 +214,7 @@ class DyadicMul(BasisDependentMul, Dyadic):
 
     @property
     def measure_number(self):
-        """ The scalar expression involved in the definition of
+        """The scalar expression involved in the definition of
         this DyadicMul.
 
         """
@@ -237,7 +234,7 @@ class DyadicAdd(BasisDependentAdd, Dyadic):
         items.sort(key=lambda x: x[0].__str__())
         for k, v in items:
             temp_dyad = k * v
-            ret_str += temp_dyad.__str__(printer) + " + "
+            ret_str += temp_dyad.__str__(printer) + ' + '
         return ret_str[:-3]
 
     __repr__ = __str__
@@ -259,7 +256,7 @@ class DyadicZero(BasisDependentZero, Dyadic):
 def _dyad_div(one, other):
     """Helper for division involving dyadics."""
     if isinstance(other, Dyadic):
-        raise TypeError("Cannot divide two dyadics")
+        raise TypeError('Cannot divide two dyadics')
     else:
         return DyadicMul(one, Pow(other, -1))
 

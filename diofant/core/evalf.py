@@ -47,7 +47,8 @@ DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
 
 
 class PrecisionExhausted(ArithmeticError):
-    pass
+    """Raised when precision is exhausted."""
+
 
 ############################################################################
 #                                                                          #
@@ -104,7 +105,6 @@ def fastlog(x):
     (10, 3.3, 4)
 
     """
-
     if not x or x == fzero:
         return MINUS_INF
     return x[2] + x[3]
@@ -213,7 +213,7 @@ def get_abs(expr, prec, options):
 
 
 def get_complex_part(expr, no, prec, options):
-    """no = 0 for real part, no = 1 for imaginary part."""
+    """Selector no = 0 for real part, no = 1 for imaginary part."""
     workprec = prec
     i = 0
     while 1:
@@ -270,9 +270,9 @@ def chop_parts(value, prec):
 def check_target(expr, result, prec):
     a = complex_accuracy(result)
     if a < prec:
-        raise PrecisionExhausted("Failed to distinguish the expression: \n\n%s\n\n"
-                                 "from zero. Try simplifying the input, using chop=True, or providing "
-                                 "a higher maxn for evalf" % expr)
+        raise PrecisionExhausted('Failed to distinguish the expression: \n\n%s\n\n'
+                                 'from zero. Try simplifying the input, using chop=True, or providing '
+                                 'a higher maxn for evalf' % expr)
 
 
 ############################################################################
@@ -305,7 +305,6 @@ def add_terms(terms, prec, target_prec):
     XXX explain why this is needed and why one can't just loop using mpf_add
 
     """
-
     terms = [t for t in terms if not iszero(t)]
     if not terms:
         return None, None
@@ -388,7 +387,7 @@ def evalf_add(v, prec, options):
             [a[1::2] for a in terms if a[1]], prec, target_prec)
         acc = complex_accuracy((re, im, re_acc, im_acc))
         if acc >= target_prec:
-            debug("ADD: wanted", target_prec, "accurate bits, got", re_acc, im_acc)
+            debug('ADD: wanted', target_prec, 'accurate bits, got', re_acc, im_acc)
             break
         else:
             if (prec - target_prec) > options['maxprec']:
@@ -396,7 +395,7 @@ def evalf_add(v, prec, options):
 
             prec = prec + max(10 + 2**i, target_prec - acc)
             i += 1
-            debug("ADD: restarting with prec", prec)
+            debug('ADD: restarting with prec', prec)
 
     options['maxprec'] = oldmaxprec
     if iszero(re, scaled=True):
@@ -515,7 +514,7 @@ def evalf_mul(v, prec, options):
             D = mpf_mul(im, wre, use_prec)
             re = mpf_add(A, B, use_prec)
             im = mpf_add(C, D, use_prec)
-        debug("MUL: wanted", prec, "accurate bits, got", acc)
+        debug('MUL: wanted', prec, 'accurate bits, got', acc)
         # multiply by I
         if direction & 1:
             re, im = mpf_neg(im), re
@@ -679,7 +678,7 @@ def evalf_trig(v, prec, options):
         gap = -ysize
         accuracy = (xprec - xsize) - gap
         if accuracy < prec:
-            debug("SIN/COS", accuracy, "wanted", prec, "gap", gap)
+            debug('SIN/COS', accuracy, 'wanted', prec, 'gap', gap)
             debug(to_str(y, 10))
             if xprec > options['maxprec']:
                 return y, None, accuracy, None
@@ -764,7 +763,7 @@ def evalf_piecewise(expr, prec, options):
 def evalf_bernoulli(expr, prec, options):
     arg = expr.args[0]
     if not arg.is_Integer:
-        raise ValueError("Bernoulli number index must be an integer")
+        raise ValueError('Bernoulli number index must be an integer')
     n = int(arg)
     b = mpf_bernoulli(n, prec, rnd)
     if b == fzero:
@@ -823,8 +822,8 @@ def do_integral(expr, prec, options):
         # but it is better than nothing
 
         from ..functions import cos, sin
-        from .symbol import Wild
         from .numbers import pi
+        from .symbol import Wild
 
         have_part = [False, False]
         max_real_term = [MINUS_INF]
@@ -851,8 +850,8 @@ def do_integral(expr, prec, options):
             if not m:
                 m = func.match(sin(A*x + B)*D)
             if not m:
-                raise ValueError("An integrand of the form sin(A*x+B)*f(x) "
-                                 "or cos(A*x+B)*f(x) is required for oscillatory quadrature")
+                raise ValueError('An integrand of the form sin(A*x+B)*f(x) '
+                                 'or cos(A*x+B)*f(x) is required for oscillatory quadrature')
             period = as_mpmath(2*pi/m[A], prec + 15, options)
             result = quadosc(f, [xlow, xhigh], period=period)
             # XXX: quadosc does not do error detection yet
@@ -950,8 +949,8 @@ def check_convergence(numer, denom, n):
         return rate, constant, None
     if npol.degree() == dpol.degree() == 0:
         return rate, constant, 0
-    pc = npol.all_coeffs()[1]
-    qc = dpol.all_coeffs()[1]
+    pc = npol.all_coeffs()[-2]
+    qc = dpol.all_coeffs()[-2]
     return rate, constant, (qc - pc)/dpol.LC()
 
 
@@ -963,9 +962,9 @@ def hypsum(expr, n, start, prec):
     polynomials.
 
     """
-    from .numbers import Float
     from ..simplify import hypersimp
     from ..utilities import lambdify
+    from .numbers import Float
 
     if prec == float('inf'):
         raise NotImplementedError('does not support inf prec')
@@ -974,7 +973,7 @@ def hypsum(expr, n, start, prec):
         expr = expr.subs({n: n + start})
     hs = hypersimp(expr, n)
     if hs is None:
-        raise NotImplementedError("a hypergeometric series is required")
+        raise NotImplementedError('a hypergeometric series is required')
     num, den = hs.as_numer_denom()
 
     func1 = lambdify(n, num)
@@ -983,11 +982,11 @@ def hypsum(expr, n, start, prec):
     h, g, p = check_convergence(num, den, n)
 
     if h < 0:
-        raise ValueError("Sum diverges like (n!)^%i" % (-h))
+        raise ValueError('Sum diverges like (n!)^%i' % (-h))
 
     term = expr.subs({n: 0})
     if not term.is_Rational:
-        raise NotImplementedError("Non rational term functionality is not implemented.")
+        raise NotImplementedError('Non rational term functionality is not implemented.')
 
     # Direct summation if geometric or faster
     if h > 0 or (h == 0 and abs(g) > 1):
@@ -1003,9 +1002,9 @@ def hypsum(expr, n, start, prec):
     else:
         alt = g < 0
         if abs(g) < 1:
-            raise ValueError("Sum diverges like (%i)^n" % abs(1/g))
+            raise ValueError('Sum diverges like (%i)^n' % abs(1/g))
         if p < 1 or (p == 1 and not alt):
-            raise ValueError("Sum diverges like n^%i" % (-p))
+            raise ValueError('Sum diverges like n^%i' % (-p))
         # We have polynomial convergence: use Richardson extrapolation
         vold = None
         ndig = prec_to_dps(prec)
@@ -1049,7 +1048,7 @@ def evalf_sum(expr, prec, options):
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
-    if len(limits) != 1 or len(limits[0]) != 3:  # pragma: no cover
+    if len(limits) != 1 or len(limits[0]) != 3:
         raise NotImplementedError
     if func is S.Zero:
         return mpf(0), None, None, None
@@ -1110,21 +1109,20 @@ evalf_table = None
 
 def _create_evalf_table():
     global evalf_table
-    from ..functions.combinatorial.numbers import bernoulli
     from ..concrete.products import Product
     from ..concrete.summations import Sum
-    from .add import Add
-    from .mul import Mul
-    from .numbers import (Exp1, Float, Half, ImaginaryUnit,
-                          Integer, NaN, NegativeOne, One, Pi,
-                          Rational, Zero)
-    from .power import Pow
-    from .symbol import Dummy, Symbol
+    from ..functions.combinatorial.numbers import bernoulli
     from ..functions.elementary.complexes import Abs, im, re
     from ..functions.elementary.exponential import log
     from ..functions.elementary.piecewise import Piecewise
     from ..functions.elementary.trigonometric import atan, cos, sin
     from ..integrals.integrals import Integral
+    from .add import Add
+    from .mul import Mul
+    from .numbers import (Exp1, Float, Half, ImaginaryUnit, Integer, NaN,
+                          NegativeOne, One, Pi, Rational, Zero)
+    from .power import Pow
+    from .symbol import Dummy, Symbol
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
@@ -1166,7 +1164,8 @@ def _create_evalf_table():
 
 
 def evalf(x, prec, options):
-    from ..functions import re as re_, im as im_
+    from ..functions import im as im_
+    from ..functions import re as re_
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)
@@ -1193,9 +1192,9 @@ def evalf(x, prec, options):
             r = re, im, reprec, imprec
         except AttributeError:
             raise NotImplementedError
-    debug("### input", x)
-    debug("### output", to_str(r[0] or fzero, 50))
-    debug("### raw", r)  # r[0], r[2]
+    debug('### input', x)
+    debug('### output', to_str(r[0] or fzero, 50))
+    debug('### raw', r)  # r[0], r[2]
     debug()
     chop = options.get('chop', False)
     if chop:
@@ -1207,7 +1206,7 @@ def evalf(x, prec, options):
             # i in the range +/-27 while 2e-i will not be chopped
             chop_prec = round(-3.321*math.log10(chop) + 2.5)
         r = chop_parts(r, chop_prec)
-    if options.get("strict"):
+    if options.get('strict'):
         check_target(x, r, prec)
     return r
 
@@ -1301,7 +1300,7 @@ class EvalfMixin:
 
     def _to_mpmath(self, prec):
         # mpmath functions accept ints as input
-        errmsg = "cannot convert to mpmath number"
+        errmsg = 'cannot convert to mpmath number'
         if hasattr(self, '_as_mpf_val'):
             return make_mpf(self._as_mpf_val(prec))
         try:

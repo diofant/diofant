@@ -1,14 +1,12 @@
 from diofant import ImmutableMatrix as Matrix
 from diofant import Integer, cos, sin, symbols
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.functions import express, matrix_to_vector
-from diofant.vector.vector import Vector
+from diofant.vector import CoordSysCartesian, Vector, express, matrix_to_vector
 
 
 __all__ = ()
 
 N = CoordSysCartesian('N')
-q1, q2, q3, q4, q5 = symbols('q1 q2 q3 q4 q5')
+q1, q2, q3, q4, q5 = symbols('q1:6')
 A = N.orient_new_axis('A', q1, N.k)
 B = A.orient_new_axis('B', q2, A.i)
 C = B.orient_new_axis('C', q3, B.j)

@@ -1,10 +1,8 @@
-"""Tests for tools for constructing domains for expressions. """
+"""Tests for tools for constructing domains for expressions."""
 
-from diofant import (E, Float, GoldenRatio, I, Integer, Poly, Rational, sin,
-                     sqrt)
+from diofant import (EX, QQ, RR, ZZ, E, Float, GoldenRatio, I, Integer, Poly,
+                     Rational, construct_domain, exp, pi, sin, sqrt)
 from diofant.abc import x, y
-from diofant.domains import EX, QQ, RR, ZZ
-from diofant.polys.constructor import construct_domain
 
 
 __all__ = ()
@@ -32,50 +30,50 @@ def test_construct_domain():
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==
-            (alg, [alg([7]), alg([Rational(1, 2)]), alg([1, 0])]))
+            (alg, [alg([7]), alg([Rational(1, 2)]), alg([0, 1])]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
     assert (construct_domain([7, sqrt(2), sqrt(3)]) ==
             (alg, [alg([7]), alg.from_expr(sqrt(2)), alg.from_expr(sqrt(3))]))
 
-    dom = ZZ.poly_ring(x)
+    dom = ZZ.inject(x)
 
     assert construct_domain([2*x, 3]) == (dom, [dom(2*x), dom(3)])
 
-    dom = ZZ.poly_ring(x, y)
+    dom = ZZ.inject(x, y)
 
     assert construct_domain([2*x, 3*y]) == (dom, [dom(2*x), dom(3*y)])
 
-    dom = QQ.poly_ring(x)
+    dom = QQ.inject(x)
 
     assert construct_domain([x/2, 3]) == (dom, [dom(x/2), dom(3)])
 
-    dom = QQ.poly_ring(x, y)
+    dom = QQ.inject(x, y)
 
     assert construct_domain([x/2, 3*y]) == (dom, [dom(x/2), dom(3*y)])
 
-    dom = RR.poly_ring(x)
+    dom = RR.inject(x)
 
     assert construct_domain([x/2, 3.5]) == (dom, [dom(x/2), dom(3.5)])
 
-    dom = RR.poly_ring(x, y)
+    dom = RR.inject(x, y)
 
     assert construct_domain([x/2, 3.5*y]) == (dom, [dom(x/2), dom(3.5*y)])
 
-    dom = ZZ.frac_field(x)
+    dom = ZZ.inject(x).field
 
     assert construct_domain([2/x, 3]) == (dom, [dom(2/x), dom(3)])
 
-    dom = ZZ.frac_field(x, y)
+    dom = ZZ.inject(x, y).field
 
     assert construct_domain([2/x, 3*y]) == (dom, [dom(2/x), dom(3*y)])
 
-    dom = RR.frac_field(x)
+    dom = RR.inject(x).field
 
     assert construct_domain([2/x, 3.5]) == (dom, [dom(2/x), dom(3.5)])
 
-    dom = RR.frac_field(x, y)
+    dom = RR.inject(x, y).field
 
     assert construct_domain([2/x, 3.5*y]) == (dom, [dom(2/x), dom(3.5*y)])
 
@@ -83,6 +81,9 @@ def test_construct_domain():
     assert construct_domain(Rational(2, 3)) == (QQ, QQ(2, 3))
 
     assert construct_domain({}) == (ZZ, {})
+
+    assert construct_domain([-x*y + x*(y + 42) -
+                             42*x]) == (EX, [EX(-x*y + x*(y + 42) - 42*x)])
 
 
 def test_composite_option():
@@ -93,8 +94,8 @@ def test_composite_option():
 
 
 def test_precision():
-    f1 = Float("1.01")
-    f2 = Float("1.0000000000000000000001")
+    f1 = Float('1.01')
+    f2 = Float('1.0000000000000000000001')
     for x in [1, 1e-2, 1e-6, 1e-13, 1e-14, 1e-16, 1e-20, 1e-100, 1e-300,
               f1, f2]:
         result = construct_domain([x])
@@ -109,11 +110,28 @@ def test_precision():
 
 
 def test_sympyissue_11538():
-    assert construct_domain(E)[0] == ZZ.poly_ring(E)
-    assert (construct_domain(x**2 + 2*x + E) == (ZZ.poly_ring(x, E), ZZ.poly_ring(x, E)(x**2 + 2*x + E)))
+    assert construct_domain(E)[0] == ZZ.inject(E)
+    assert (construct_domain(x**2 + 2*x + E) == (ZZ.inject(x, E), ZZ.inject(x, E)(x**2 + 2*x + E)))
     assert (construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio)))
 
 
 def test_sympyissue_5428_14337():
     assert Poly(x**2 + I, x).domain == QQ.algebraic_field(I)
     assert Poly(x**2 + sqrt(2), x).domain == QQ.algebraic_field(sqrt(2))
+
+
+def test_sympyissue_20617():
+    dom = QQ.algebraic_field(2*sqrt(3)).algebraic_field(I)
+
+    w = exp(I*2*pi/3)
+    l1 = [w**2, w, 1]
+
+    r1 = Poly(l1, x, extension=True)
+
+    w2 = w.expand()
+    l2 = [w2**2, w2, 1]
+
+    r2 = Poly(l2, x, extension=True)
+
+    assert r1 == r2
+    assert r1.domain == dom

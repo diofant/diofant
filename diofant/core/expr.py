@@ -1,12 +1,13 @@
+import functools
 from collections import defaultdict
-from functools import reduce
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
+from ..utilities import default_sort_key
 from .assumptions import ManagedProperties
 from .basic import Atom, Basic
 from .cache import cacheit
-from .compatibility import as_int, default_sort_key
+from .compatibility import as_int
 from .decorators import _sympifyit, call_highest_priority
 from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
 from .singleton import S
@@ -74,11 +75,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
-            expr, exp = expr.args
+            expr, exp = expr.base, expr.exp
         else:
             expr, exp = expr, Integer(1)
 
@@ -191,7 +191,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
         if r in (nan, oo, -oo):
-            raise TypeError("can't convert %s to int" % r)
+            raise TypeError(f"can't convert {r} to int")
         return int(r)
 
     def __floor__(self):
@@ -219,9 +219,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import GreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
@@ -234,9 +234,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import LessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
@@ -249,9 +249,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictGreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
@@ -264,9 +264,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictLessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError(f'Invalid comparison of complex {me}')
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
@@ -277,15 +277,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @staticmethod
     def _from_mpmath(x, prec):
         from .numbers import Float
-        if hasattr(x, "_mpf_"):
+        if hasattr(x, '_mpf_'):
             return Float._new(x._mpf_, prec)
-        elif hasattr(x, "_mpc_"):
+        elif hasattr(x, '_mpc_'):
             re, im = x._mpc_
             re = Float._new(re, prec)
             im = Float._new(im, prec)*I
             return re + im
         else:
-            raise TypeError("expected mpmath number (mpf or mpc)")
+            raise TypeError('expected mpmath number (mpf or mpc)')
 
     @property
     def is_number(self):
@@ -342,7 +342,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.utilities.randtest.random_complex_number
 
         """
-
         free = self.free_symbols
         prec = 1
         if free:
@@ -434,11 +433,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> one = cos(x)**2 + sin(x)**2
         >>> one.is_constant()
         True
-        >>> ((one - 1)**(x + 1)).is_constant() in (True, False) # could be 0 or 1
+        >>> ((one - 1)**(x + 1)).is_constant() in (True, False)  # could be 0 or 1
         True
 
         """
-
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -585,7 +583,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
         from .function import count_ops
-        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -606,7 +603,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    return minimal_polynomial(self)(Dummy()).is_Symbol
+                    return not minimal_polynomial(self)(0)
                 except NotImplementedError:  # pragma: no cover
                     return
 
@@ -666,7 +663,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         if b is None:
             B = 0
@@ -676,7 +673,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 B = limit(self, x, b)
                 B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         return B - A
 
@@ -704,13 +701,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return c(self)
 
     def _eval_transpose(self):
-        from ..functions.elementary.complexes import conjugate
         if self.is_complex or self.is_extended_real:
             return self
-        elif self.is_hermitian:
-            return conjugate(self)
-        elif self.is_antihermitian:
-            return -conjugate(self)
 
     def transpose(self):
         """Transpose self.
@@ -726,10 +718,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_adjoint(self):
         from ..functions.elementary.complexes import conjugate, transpose
-        if self.is_hermitian:
-            return self
-        elif self.is_antihermitian:
-            return -self
         obj = self._eval_conjugate()
         if obj is not None:
             return transpose(obj)
@@ -922,10 +910,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                             if oi.base.is_Symbol and oi.exp.is_Rational:
                                 return abs(oi.exp)
 
-        raise NotImplementedError('not sure of order of %s' % o)
+        raise NotImplementedError(f'not sure of order of {o}')
 
     def count_ops(self, visual=None):
-        """wrapper for count_ops that returns the operation count."""
+        """Wrapper for count_ops that returns the operation count."""
         from .function import count_ops
         return count_ops(self, visual)
 
@@ -956,11 +944,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (-2 + x + A).args_cnc()
         [[], [x - 2 + A]]
-        >>> (-oo).args_cnc() # -oo is a singleton
+        >>> (-oo).args_cnc()  # -oo is a singleton
         [[-1, oo], []]
 
         """
-
         if self.is_Mul:
             args = list(self.args)
         else:
@@ -1073,9 +1060,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1
         >>> (3*n).coeff(n)
         3
-        >>> (n*m + m*n*m).coeff(n) # = (1 + m)*n*m
+        >>> (n*m + m*n*m).coeff(n)  # = (1 + m)*n*m
         1 + m
-        >>> (n*m + m*n*m).coeff(n, right=True) # = (1 + m)*n*m
+        >>> (n*m + m*n*m).coeff(n, right=True)  # = (1 + m)*n*m
         m
 
         If there is more than one possible coefficient 0 is returned:
@@ -1209,7 +1196,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         return Mul(Add(*[Mul(*r) for r, c in co]), Mul(*co[0][1][:ii]))
                     else:
                         return Mul(*co[0][1][ii + len(nx):])
-            beg = reduce(incommon, (n[1] for n in co))
+            beg = functools.reduce(incommon, (n[1] for n in co))
             if beg:
                 ii = find(beg, nx, right)
                 if ii is not None:
@@ -1224,7 +1211,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         m = ii + len(nx)
                         return Add(*[Mul(*(list(r) + n[m:])) for r, n in co])
             end = list(reversed(
-                reduce(incommon, (list(reversed(n[1])) for n in co))))
+                functools.reduce(incommon, (list(reversed(n[1])) for n in co))))
             if end:
                 ii = find(end, nx, right)
                 if ii is not None:
@@ -1317,7 +1304,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x + 2
         >>> _.args[0]  # just want the exact match
         2
-        >>> p = Poly(2*E + x*E); p
+        >>> p = Poly(2*E + x*E)
+        >>> p
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
@@ -1346,7 +1334,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-
         r = self.extract_multiplicatively(expr)
         if r and not r.has(expr):
             return r
@@ -1463,7 +1450,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (x, y + 1)
         >>> (x*(1 + y)).expand(mul=True).as_independent(y)
         (x, x*y)
-        >>> a, b=symbols('a b', positive=True)
+        >>> a, b = symbols('a b', positive=True)
         >>> (log(a*b).expand(log=True)).as_independent(b)
         (log(a), log(b))
 
@@ -1493,7 +1480,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 other.append(d)
 
         def has(e):
-            """return the standard has() if there are no literal symbols, else
+            """Return the standard has() if there are no literal symbols, else
             check to see that symbol-deps are in the free symbols.
 
             """
@@ -1551,9 +1538,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..functions import im, re
-        if hints.get('ignore') == self:
-            return
-        else:
+        if hints.get('ignore') != self:
             return re(self), im(self)
 
     def as_powers_dict(self):
@@ -1685,9 +1670,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (3*(x + 1)**2).primitive()
         (3, (x + 1)**2)
-        >>> a = (6*x + 2); a.primitive()
+        >>> a = (6*x + 2)
+        >>> a.primitive()
         (2, 3*x + 1)
-        >>> b = (x/2 + 3); b.primitive()
+        >>> b = (x/2 + 3)
+        >>> b.primitive()
         (1/2, x + 6)
         >>> (a*b).primitive()
         (1, (x/2 + 3)*(6*x + 2))
@@ -1747,7 +1734,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Integer(1), self
 
     def as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         This is just a stub that should be defined by
         an object's class methods to get anything else.
@@ -1758,14 +1745,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         normal: return a/b instead of a, b
 
         """
-
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
             return self, Integer(1)
 
     def normal(self):
-        """canonicalize ratio, i.e. return numerator if denominator is 1."""
+        """Canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
         if d is S.One:
             return n
@@ -1902,7 +1888,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coefficient
 
         """
-
         c = sympify(c)
         if self is nan:
             return
@@ -2283,8 +2268,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             return self._eval_is_algebraic_expr(syms)
 
-    def is_hypergeometric(self, k):
-        """Test if self is a hypergeometric term in k.
+    def is_hypergeometric(self, n):
+        """Test if self is a hypergeometric term in ``n``.
+
+        Term `a(n)` is hypergeometric if it is annihilated by first order
+        linear difference equations with polynomial coefficients or, in
+        simpler words, if consecutive term ratio is a rational function.
 
         See Also
         ========
@@ -2293,7 +2282,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..simplify import hypersimp
-        return hypersimp(self, k) is not None
+        return hypersimp(self, n) is not None
 
     @property
     def is_comparable(self):
@@ -2328,7 +2317,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
-    def series(self, x=None, x0=0, n=6, dir="+", logx=None):
+    def series(self, x=None, x0=0, n=6, dir='+', logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2361,9 +2350,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for ``dir=-`` the series from the left. For smooth functions this
         flag will not alter the results.
 
-        >>> abs(x).series(dir="+")
+        >>> abs(x).series(dir='+')
         x
-        >>> abs(x).series(dir="-")
+        >>> abs(x).series(dir='-')
         -x
 
         For rational expressions this method may return original expression.
@@ -2384,8 +2373,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise ValueError('x must be given for multivariate functions.')
             x = syms.pop()
 
-        if not x.is_Symbol:  # pragma: no cover
-            raise NotImplementedError("x is not a symbol")
+        if not x.is_Symbol:
+            raise NotImplementedError('x is not a symbol')
 
         if not self.has(x):
             if n is None:
@@ -2755,7 +2744,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif is_zero is False:
                 break
             else:
-                raise NotImplementedError("Zero-decision problem for %s" % t)
+                raise NotImplementedError(f'Zero-decision problem for {t}')
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2788,14 +2777,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return self
         x = sympify(symbols[0])
         if not x.is_Symbol:
-            raise ValueError('expecting a Symbol but got %s' % x)
+            raise ValueError(f'expecting a Symbol but got {x}')
         if x not in self.free_symbols:
             return self
         obj = self._eval_as_leading_term(x)
         if obj is not None:
             return powsimp(obj, deep=True, combine='exp')
-        raise NotImplementedError('as_leading_term(%s, %s)' %
-                                  (self, x))  # pragma: no cover
+        raise NotImplementedError(f'as_leading_term({self}, {x})')
 
     def _eval_as_leading_term(self, x):
         return self
@@ -2841,9 +2829,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             V = self.variables
         except AttributeError:
             return {}
-        u = "_"
+        u = '_'
         while any(str(s).endswith(u) for s in V):
-            u += "_"
+            u += '_'
         name = '%%i%s' % u
         return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
@@ -2972,7 +2960,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             if not modulus.is_Integer or modulus <= 0:
                 raise ValueError(
-                    "modulus must be a positive integer, got %s" % modulus)
+                    f'modulus must be a positive integer, got {modulus}')
 
             terms = []
 

@@ -1,4 +1,4 @@
-"""Useful utility decorators. """
+"""Useful utility decorators."""
 
 import inspect
 
@@ -8,6 +8,7 @@ def conserve_mpmath_dps(func):
     the value it had before the function was run.
     """
     import functools
+
     import mpmath
 
     def func_wrapper():

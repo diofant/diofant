@@ -83,4 +83,4 @@ def test_Matrix_and_non_basics():
 def test_labelfunc():
     text = dotprint(x + 2, labelfunc=repr)
     assert "Symbol('x')" in text
-    assert "Integer(2)" in text
+    assert 'Integer(2)' in text

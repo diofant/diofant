@@ -2,19 +2,15 @@ import pytest
 
 from diofant import ImmutableMatrix as Matrix
 from diofant import Symbol, cos, pi, simplify, sin, symbols, zeros
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.functions import express
-from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
-                                      QuaternionOrienter, SpaceOrienter)
-from diofant.vector.point import Point
-from diofant.vector.scalar import BaseScalar
-from diofant.vector.vector import Vector
+from diofant.abc import a, b, c, q
+from diofant.vector import (AxisOrienter, BaseScalar, BodyOrienter,
+                            CoordSysCartesian, Point, QuaternionOrienter,
+                            SpaceOrienter, Vector, express)
 
 
 __all__ = ()
 
-a, b, c, q = symbols('a b c q')
-q1, q2, q3, q4 = symbols('q1 q2 q3 q4')
+q1, q2, q3, q4 = symbols('q1:5')
 
 
 def test_func_args():
@@ -33,7 +29,7 @@ def test_func_args():
                                                        rotation_matrix=a))
     pytest.raises(TypeError, lambda: CoordSysCartesian('B', parent=a))
     pytest.raises(ValueError, lambda: CoordSysCartesian('A', vector_names=(1,)))
-    pytest.raises(TypeError, lambda: CoordSysCartesian('A', vector_names=("a", "b", 1)))
+    pytest.raises(TypeError, lambda: CoordSysCartesian('A', vector_names=('a', 'b', 1)))
 
 
 def test_point():

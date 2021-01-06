@@ -10,6 +10,7 @@ from .ndim_array import ImmutableNDimArray, NDimArray
 
 
 class SparseNDimArray(NDimArray):
+    """Sparse N-dim array."""
 
     def __getitem__(self, index):
         """
@@ -106,6 +107,7 @@ class SparseNDimArray(NDimArray):
 
 
 class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
+    """An immutable version of a sparse N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
 
@@ -133,10 +135,11 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
         return self
 
     def __setitem__(self, index, value):
-        raise TypeError("immutable N-dim array")
+        raise TypeError('immutable N-dim array')
 
 
 class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
+    """A mutable version of a sparse N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
 

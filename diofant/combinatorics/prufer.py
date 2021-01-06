@@ -18,7 +18,7 @@ class Prufer(Basic):
     References
     ==========
 
-    * http://mathworld.wolfram.com/LabeledTree.html
+    * https://mathworld.wolfram.com/LabeledTree.html
 
     """
 
@@ -241,12 +241,12 @@ class Prufer(Basic):
         Examples
         ========
 
-        >>> Prufer.edges([1, 2, 3], [2, 4, 5]) # a T
+        >>> Prufer.edges([1, 2, 3], [2, 4, 5])  # a T
         ([[0, 1], [1, 2], [1, 3], [3, 4]], 5)
 
         Duplicate edges are removed:
 
-        >>> Prufer.edges([0, 1, 2, 3], [1, 4, 5], [1, 4, 6]) # a K
+        >>> Prufer.edges([0, 1, 2, 3], [1, 4, 5], [1, 4, 6])  # a K
         ([[0, 1], [1, 2], [1, 4], [2, 3], [4, 5], [4, 6]], 7)
 
         """
@@ -271,9 +271,9 @@ class Prufer(Basic):
         if missing:
             missing = [i + nmin for i in missing]
             if len(missing) == 1:
-                msg = 'Node %s is missing.' % missing.pop()
+                msg = f'Node {missing.pop()} is missing.'
             else:
-                msg = 'Nodes %s are missing.' % list(sorted(missing))
+                msg = f'Nodes {sorted(missing)} are missing.'
             raise ValueError(msg)
         if nmin != 0:
             for i, ei in enumerate(rv):
@@ -371,9 +371,9 @@ class Prufer(Basic):
                 if nnodes != len(nodes):
                     missing = set(range(nnodes)) - nodes
                     if len(missing) == 1:
-                        msg = 'Node %s is missing.' % missing.pop()
+                        msg = f'Node {missing.pop()} is missing.'
                     else:
-                        msg = 'Nodes %s are missing.' % list(sorted(missing))
+                        msg = f'Nodes {sorted(missing)} are missing.'
                     raise ValueError(msg)
             ret_obj._tree_repr = [list(i) for i in args[0]]
             ret_obj._nodes = nnodes
@@ -389,7 +389,7 @@ class Prufer(Basic):
         ========
 
         >>> a = Prufer([[0, 1], [0, 2], [0, 3]])
-        >>> b = a.next(1) # == a.next()
+        >>> b = a.next(1)  # == a.next()
         >>> b.tree_repr
         [[0, 2], [0, 1], [1, 3]]
         >>> b.rank

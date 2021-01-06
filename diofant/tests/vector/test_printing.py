@@ -109,6 +109,7 @@ def test_str_printing():
     assert str(d[5]) == 'a*(N.i|N.k) + (-b)*(N.j|N.k)'
     assert str(d[8]) == ('(N.j|N.k) + (C.x**2 - ' +
                          'Integral(f(b), b))*(N.k|N.k)')
+    assert str(N.origin) == 'N.origin'
 
 
 def test_pretty_print_unicode():
@@ -159,4 +160,4 @@ def test_custom_names():
     assert A.i._pretty_form == 'A_x'
     assert A.x._pretty_form == 'A_i'
     assert A.i._latex_form == r'\mathbf{\hat{x}_{A}}'
-    assert A.x._latex_form == r"\mathbf{{i}_{A}}"
+    assert A.x._latex_form == r'\mathbf{{i}_{A}}'

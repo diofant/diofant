@@ -1,18 +1,16 @@
-"""Tools for constructing domains for expressions. """
+"""Tools for constructing domains for expressions."""
 
 from ..core import I, sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
+from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_expr
 
 
-__all__ = 'construct_domain',
-
-
 def _construct_simple(coeffs, opt):
-    """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains. """
+    """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains."""
     result, rationals, reals, algebraics = {}, False, False, False
 
     if opt.extension is False:
@@ -65,8 +63,7 @@ def _construct_simple(coeffs, opt):
 
 
 def _construct_algebraic(coeffs, opt):
-    """We know that coefficients are algebraic so construct the extension. """
-
+    """We know that coefficients are algebraic so construct the extension."""
     result, exts = [], set()
 
     for coeff in coeffs:
@@ -88,12 +85,12 @@ def _construct_algebraic(coeffs, opt):
 
         result.append(coeff)
 
-    exts = list(exts)
+    exts = list(ordered(exts))
 
     if all(e.is_real for e in exts):
         domain = QQ.algebraic_field(*exts)
     else:
-        ground_exts = list(set().union(*[_.as_real_imag() for _ in exts]))
+        ground_exts = list(ordered(set().union(*[_.as_real_imag() for _ in exts])))
         domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
     H = [domain.from_expr(e).rep for e in exts]
@@ -110,7 +107,7 @@ def _construct_algebraic(coeffs, opt):
 
 
 def _construct_composite(coeffs, opt):
-    """Handle composite domains, e.g.: ZZ[X], QQ[X], ZZ(X), QQ(X). """
+    """Handle composite domains, e.g.: ZZ[X], QQ[X], ZZ(X), QQ(X)."""
     numers, denoms = [], []
 
     for coeff in coeffs:
@@ -191,7 +188,7 @@ def _construct_composite(coeffs, opt):
     result = []
 
     if not fractions:
-        domain = ground.poly_ring(*gens)
+        domain = ground.inject(*gens)
 
         for numer in numers:
             for monom, coeff in numer.items():
@@ -199,7 +196,7 @@ def _construct_composite(coeffs, opt):
 
             result.append(domain(numer))
     else:
-        domain = ground.frac_field(*gens)
+        domain = ground.inject(*gens).field
 
         for numer, denom in zip(numers, denoms):
             for monom, coeff in numer.items():
@@ -214,7 +211,7 @@ def _construct_composite(coeffs, opt):
 
 
 def _construct_expression(coeffs, opt):
-    """The last resort case, i.e. use the expression domain. """
+    """The last resort case, i.e. use the expression domain."""
     domain, result = EX, []
 
     for coeff in coeffs:
@@ -224,7 +221,7 @@ def _construct_expression(coeffs, opt):
 
 
 def construct_domain(obj, **args):
-    """Construct a minimal domain for the list of coefficients. """
+    """Construct a minimal domain for the list of coefficients."""
     opt = build_options(args)
 
     if hasattr(obj, '__iter__'):
@@ -232,7 +229,7 @@ def construct_domain(obj, **args):
             if not obj:
                 monoms, coeffs = [], []
             else:
-                monoms, coeffs = list(zip(*list(obj.items())))
+                monoms, coeffs = zip(*obj.items())
         else:
             coeffs = obj
     else:

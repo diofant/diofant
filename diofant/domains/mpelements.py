@@ -1,4 +1,4 @@
-"""Real and complex elements. """
+"""Real and complex elements."""
 
 from mpmath.ctx_mp_python import PythonMPContext, _constant, _mpc, _mpf
 from mpmath.libmp import (MPZ_ONE, finf, fnan, fninf, fone, from_float,
@@ -9,11 +9,8 @@ from mpmath.rational import mpq
 from .domainelement import DomainElement
 
 
-__all__ = 'RealElement', 'ComplexElement', 'MPContext'
-
-
 class RealElement(_mpf, DomainElement):
-    """An element of a real domain. """
+    """An element of a real domain."""
 
     def _set_mpf(self, val):
         self.__mpf__ = val
@@ -32,9 +29,12 @@ class RealElement(_mpf, DomainElement):
     def denominator(self):
         return self.parent.one
 
+    def __reduce__(self):
+        return self.parent.__call__, (self._mpf_,)
+
 
 class ComplexElement(_mpc, DomainElement):
-    """An element of a complex domain. """
+    """An element of a complex domain."""
 
     def _set_mpc(self, val):
         self.__mpc__ = val
@@ -53,13 +53,16 @@ class ComplexElement(_mpc, DomainElement):
     def denominator(self):
         return self.parent.one
 
-
-new = object.__new__
+    def __reduce__(self):
+        return self.parent.__call__, (*self._mpc_,)
 
 
 class MPContext(PythonMPContext):
+    """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
+        new = object.__new__
+
         self._prec_rounding = [prec, round_nearest]
 
         if dps is None:
@@ -102,6 +105,10 @@ class MPContext(PythonMPContext):
         self.ninf = self.make_mpf(fninf)
         self.nan = self.make_mpf(fnan)
 
+    def __eq__(self, other):
+        return (isinstance(other, MPContext) and self.prec == other.prec and
+                self.dps == other.dps and self.tolerance == other.tolerance)
+
     def _make_tol(self):
         hundred = (0, 25, 2, 5)
         eps = (0, MPZ_ONE, 1 - self.prec, 1)
@@ -112,15 +119,15 @@ class MPContext(PythonMPContext):
             return from_int(tol)
         if isinstance(tol, float):
             return from_float(tol)
-        if hasattr(tol, "_mpf_"):
+        if hasattr(tol, '_mpf_'):
             return tol._mpf_
         prec, rounding = self._prec_rounding
         if isinstance(tol, str):
             return from_str(tol, prec, rounding)
-        raise ValueError("expected a real number, got %s" % tol)
+        raise ValueError(f'expected a real number, got {tol}')
 
     def _convert_fallback(self, x, strings):
-        raise TypeError("cannot create mpf from " + str(x))
+        raise TypeError('cannot create mpf from ' + str(x))
 
     @property
     def _str_digits(self):

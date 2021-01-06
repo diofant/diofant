@@ -22,7 +22,7 @@ class PoissonDistribution(SingleDiscreteDistribution):
 
     @staticmethod
     def check(lamda):
-        _value_check(lamda > 0, "Lambda must be positive")
+        _value_check(lamda > 0, 'Lambda must be positive')
 
     def pdf(self, k):
         return self.lamda**k / factorial(k) * exp(-self.lamda)
@@ -52,10 +52,9 @@ def Poisson(name, lamda):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> rate = Symbol("lambda", positive=True)
-    >>> z = Symbol("z")
+    >>> rate = Symbol('lambda', positive=True)
 
-    >>> X = Poisson("x", rate)
+    >>> X = Poisson('x', rate)
 
     >>> density(X)(z)
     E**(-lambda)*lambda**z/factorial(z)
@@ -70,7 +69,7 @@ def Poisson(name, lamda):
     ==========
 
     [1] https://en.wikipedia.org/wiki/Poisson_distribution
-    [2] http://mathworld.wolfram.com/PoissonDistribution.html
+    [2] https://mathworld.wolfram.com/PoissonDistribution.html
 
     """
     return rv(name, PoissonDistribution, lamda)
@@ -82,7 +81,7 @@ class GeometricDistribution(SingleDiscreteDistribution):
 
     @staticmethod
     def check(p):
-        _value_check(0 < p and p <= 1, "p must be between 0 and 1")
+        _value_check(0 < p and p <= 1, 'p must be between 0 and 1')
 
     def pdf(self, k):
         return (1 - self.p)**(k - 1) * self.p
@@ -113,9 +112,8 @@ def Geometric(name, p):
     >>> from diofant.stats import density, E, variance
 
     >>> p = Rational(1, 5)
-    >>> z = Symbol("z")
 
-    >>> X = Geometric("x", p)
+    >>> X = Geometric('x', p)
 
     >>> density(X)(z)
     (4/5)**(z - 1)/5
@@ -130,7 +128,7 @@ def Geometric(name, p):
     ==========
 
     [1] https://en.wikipedia.org/wiki/Geometric_distribution
-    [2] http://mathworld.wolfram.com/GeometricDistribution.html
+    [2] https://mathworld.wolfram.com/GeometricDistribution.html
 
     """
     return rv(name, GeometricDistribution, p)

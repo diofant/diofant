@@ -1,12 +1,13 @@
-"""Tools for manipulating of large commutative expressions. """
+"""Tools for manipulating of large commutative expressions."""
 
 import numbers
 from collections import defaultdict
 
-from ..utilities.iterables import common_prefix, common_suffix, variations
+from ..utilities import default_sort_key, ordered, variations
+from ..utilities.iterables import common_prefix, common_suffix
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import default_sort_key, is_sequence, iterable, ordered
+from .compatibility import is_sequence, iterable
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpression
 from .expr import Expr
@@ -123,7 +124,7 @@ class Factors:
                     factors[Integer(n.numerator)] = Integer(1)
                 factors[Integer(n.denominator)] = Integer(-1)
             else:  # pragma: no cover
-                raise ValueError('Expected Float|Rational|Integer, not %s' % n)
+                raise ValueError(f'Expected Float|Rational|Integer, not {n}')
         elif isinstance(factors, Basic) and not factors.args:
             factors = {factors: Integer(1)}
         elif isinstance(factors, Expr):
@@ -167,7 +168,7 @@ class Factors:
                             factors[-a] = Integer(1)
                             factors[Integer(-1)] = Integer(1)
                         else:  # pragma: no cover
-                            raise RuntimeError('unexpected factor in i1: %s' % a)
+                            raise RuntimeError(f'unexpected factor in i1: {a}')
 
         self.factors = factors
         self.gens = frozenset(factors)
@@ -178,7 +179,7 @@ class Factors:
         return hash((keys, values))
 
     def __repr__(self):
-        return "Factors({%s})" % ', '.join(
+        return 'Factors({%s})' % ', '.join(
             ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
 
     @property
@@ -210,7 +211,6 @@ class Factors:
         x*y**2
 
         """
-
         args = []
         for factor, exp in self.factors.items():
             if exp != 1:
@@ -471,7 +471,7 @@ class Factors:
 
             return Factors(factors)
         else:
-            raise ValueError("expected non-negative integer, got %s" % other)
+            raise ValueError(f'expected non-negative integer, got {other}')
 
     def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are
@@ -665,11 +665,10 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
     denominator, the lcm of all term denominators.
 
     """
-
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
         terms = Add.make_args(terms)
 
-    terms = list(map(Term, [t for t in terms if t]))
+    terms = list(map(Term, (t for t in terms if t)))
 
     # there is some simplification that may happen if we leave this
     # here rather than duplicate it before the mapping of Term onto
@@ -764,8 +763,8 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
 
     """
     def mask(terms):
-        """replace nc portions of each term with a unique Dummy symbols
-        and return the replacements to restore them
+        """Replace nc portions of each term with a unique Dummy symbols
+        and return the replacements to restore them.
 
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]
@@ -1051,8 +1050,8 @@ def factor_nc(expr):
     (x + A)*(x + B)
 
     """
+    from ..polys import factor, gcd
     from ..simplify.simplify import powsimp
-    from ..polys import gcd, factor
 
     def _pemexpand(expr):
         """Expand with the minimal set of hints necessary to check the result."""

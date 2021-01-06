@@ -1,15 +1,15 @@
 import matchpy
 
+from ..utilities import ordered
 from .basic import _aresame
 from .cache import cacheit
-from .compatibility import ordered
 from .evaluate import global_evaluate
 from .expr import Expr
 from .sympify import sympify
 
 
 class AssocOp(Expr):
-    """ Associative operations, can separate noncommutative and
+    """Associative operations, can separate noncommutative and
     commutative parts.
 
     (a op b) op c == a op (b op c) == a op b op c.
@@ -74,7 +74,8 @@ class AssocOp(Expr):
            expression's numerators and denominators) they will not show up in
            the result but a Mul will be returned nonetheless:
 
-               >>> m = (x*y)._new_rawargs(Integer(1), x); m
+               >>> m = (x*y)._new_rawargs(Integer(1), x)
+               >>> m
                x
                >>> m == x
                False
@@ -124,9 +125,9 @@ class AssocOp(Expr):
 
         For instance:
 
-        >>> a = Wild("a")
-        >>> b = Wild("b")
-        >>> c = Wild("c")
+        >>> a = Wild('a')
+        >>> b = Wild('b')
+        >>> c = Wild('c')
         >>> (a + sin(b)*c)._matches_commutative(x + sin(y)*z)
         {a_: x, b_: y, c_: z}
 
@@ -246,8 +247,6 @@ class AssocOp(Expr):
 
                 break  # if we didn't continue, there is nothing more to do
 
-        return
-
     def _has_matcher(self):
         """Helper for .has()."""
         def _ncsplit(expr):
@@ -294,9 +293,9 @@ class AssocOp(Expr):
 
         """
         from .add import Add
+        from .function import AppliedUndef
         from .mul import Mul
         from .symbol import Symbol
-        from .function import AppliedUndef
 
         if isinstance(self, (Mul, Add)):
             x, tail = self.as_independent(Symbol, AppliedUndef)
@@ -357,7 +356,7 @@ matchpy.AssociativeOperation.register(AssocOp)
 
 
 class ShortCircuit(Exception):
-    pass
+    """Helper exception to detect absorbing element among arguments."""
 
 
 class LatticeOp(AssocOp):
@@ -373,16 +372,16 @@ class LatticeOp(AssocOp):
     This is an abstract base class, concrete derived classes must declare
     attributes zero and identity. All defining properties are then respected.
 
-    >>> class my_join(LatticeOp):
+    >>> class MyJoin(LatticeOp):
     ...     zero = Integer(0)
     ...     identity = Integer(1)
-    >>> my_join(2, 3) == my_join(3, 2)
+    >>> MyJoin(2, 3) == MyJoin(3, 2)
     True
-    >>> my_join(2, my_join(3, 4)) == my_join(2, 3, 4)
+    >>> MyJoin(2, MyJoin(3, 4)) == MyJoin(2, 3, 4)
     True
-    >>> my_join(0, 1, 4, 2, 3, 4)
+    >>> MyJoin(0, 1, 4, 2, 3, 4)
     0
-    >>> my_join(1, 2)
+    >>> MyJoin(1, 2)
     2
 
     References
@@ -409,7 +408,7 @@ class LatticeOp(AssocOp):
         else:
             _args = frozenset(args)
 
-        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj = super(AssocOp, cls).__new__(cls, _args)  # pylint: disable=bad-super-call
         obj._argset = _args
         return obj
 

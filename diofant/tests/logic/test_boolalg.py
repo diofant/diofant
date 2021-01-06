@@ -2,26 +2,25 @@ import itertools
 
 import pytest
 
-from diofant import (Dummy, EmptySet, Eq, Equality, Integer, Interval, S,
-                     Unequality, Union, oo, simplify, sqrt, symbols)
+from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
+                     Implies, Integer, Interval, Nand, Nor, Not, Or, POSform,
+                     S, SOPform, Unequality, Union, Xor, bool_map, false, oo,
+                     simplify, simplify_logic, sqrt, symbols, to_cnf, to_dnf,
+                     to_nnf, true)
 from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
-from diofant.logic.boolalg import (ITE, And, Boolean, BooleanAtom,
-                                   BooleanFunction, Equivalent, Implies, Nand,
-                                   Nor, Not, Or, POSform, SOPform, Xor,
-                                   bool_map, conjuncts, disjuncts,
+from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
+                                   conjuncts, disjuncts,
                                    distribute_and_over_or,
                                    distribute_or_over_and,
-                                   eliminate_implications, false, is_cnf,
-                                   is_dnf, is_literal, is_nnf, simplify_logic,
-                                   to_cnf, to_dnf, to_int_repr, to_nnf, true)
+                                   eliminate_implications, is_cnf, is_dnf,
+                                   is_literal, is_nnf, to_int_repr)
 
 
 __all__ = ()
 
 
 def test_overloading():
-    """Test that |, & are overloaded as expected"""
-
+    """Test that |, & are overloaded as expected."""
     assert A & B == And(A, B)
     assert A | B == Or(A, B)
     assert (A & B) | C == Or(And(A, B), C)
@@ -197,9 +196,7 @@ def test_equals():
 
 
 def test_simplification():
-    """
-    Test working of simplification methods.
-    """
+    """Test working of simplification methods."""
     set1 = [[0, 0, 1], [0, 1, 1], [1, 0, 0], [1, 1, 0]]
     set2 = [[0, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1]]
     assert SOPform([x, y, z], set1) == Or(And(Not(x), z), And(Not(z), x))
@@ -261,10 +258,7 @@ def test_simplification():
 
 
 def test_bool_map():
-    """
-    Test working of bool_map function.
-    """
-
+    """Test working of bool_map function."""
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
                 [1, 1, 1, 1]]
     assert bool_map(Not(Not(a)), a) == (a, {a: a})
@@ -285,10 +279,7 @@ def test_bool_map():
 
 
 def test_bool_symbol():
-    """Test that mixing symbols with boolean values
-    works as expected
-    """
-
+    """Test that mixing symbols with boolean values works as expected."""
     assert And(A, True) == A
     assert And(A, True, True) == A
     assert And(A, False) is false
@@ -327,7 +318,7 @@ see https://en.wikipedia.org/wiki/Boolean_algebra_(structure)
 
 
 def test_commutative():
-    """Test for commutativity of And and Or"""
+    """Test for commutativity of And and Or."""
     A, B = map(Boolean, symbols('A,B'))
 
     assert A & B == B & A
@@ -335,8 +326,7 @@ def test_commutative():
 
 
 def test_and_associativity():
-    """Test for associativity of And"""
-
+    """Test for associativity of And."""
     assert (A & B) & C == A & (B & C)
 
 
@@ -557,6 +547,9 @@ def test_true_false():
     assert hash(false) == hash(False)
     assert len({true, True}) == len({false, False}) == 1
 
+    assert int(true) == 1
+    assert int(false) == 0
+
     assert isinstance(true, BooleanAtom)
     assert isinstance(false, BooleanAtom)
     # We don't want to subclass from bool, because bool subclasses from
@@ -674,8 +667,8 @@ def test_true_false():
 
 def test_bool_as_set():
     assert And(x <= 2, x >= -2).as_set() == Interval(-2, 2)
-    assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2, True) +
-                                            Interval(2, oo, False, True))
+    assert Or(x >= 2, x <= -2).as_set() == (Interval(-oo, -2) +
+                                            Interval(2, oo, False))
     assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
     # issue sympy/sympy#10240
     assert Not(And(x > 2, x < 3)).as_set() == \
@@ -714,8 +707,8 @@ def test_canonical_atoms():
 def test_sympyissue_8777():
     assert And(x > 2, x < oo).as_set() == Interval(2, oo, True, True)
     assert And(x >= 1, x < oo).as_set() == Interval(1, oo, False, True)
-    assert (x < oo).as_set() == Interval(-oo, oo, True, True)
-    assert (x > -oo).as_set() == Interval(-oo, oo, True, True)
+    assert (x < oo).as_set() == Interval(-oo, oo, False, True)
+    assert (x > -oo).as_set() == Interval(-oo, oo, True)
 
 
 def test_sympyissue_8975():

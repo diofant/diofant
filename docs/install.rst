@@ -20,9 +20,10 @@ or to install also extra dependencies::
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
 <https://dejavu-fonts.github.io/>`_ seems to be an acceptable choice.  On
-Debian you can install this font with::
+Debian you can install this `font package
+<https://packages.debian.org/sid/fonts-dejavu>`_ with::
 
-    apt-get install fonts-dejavu
+    apt install fonts-dejavu
 
 .. _installation-src:
 
@@ -62,7 +63,7 @@ For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 Also, you may want to run full set of unit tests to make
 sure everything works::
 
-    py.test --pyargs diofant
+    pytest --pyargs diofant
 
 `pytest`_ and some other packages are required for testing, so be sure to
 install the Diofant first with extra dependecies::

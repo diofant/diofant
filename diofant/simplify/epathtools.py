@@ -1,4 +1,4 @@
-"""Tools for manipulation of expressions using paths. """
+"""Tools for manipulation of expressions using paths."""
 
 from ..core import Basic
 
@@ -33,14 +33,14 @@ class EPath:
             return path
 
         if not path:
-            raise ValueError("empty EPath")
+            raise ValueError('empty EPath')
 
         _path = path
 
         if path[0] == '/':
             path = path[1:]
         else:
-            raise NotImplementedError("non-root EPath")
+            raise NotImplementedError('non-root EPath')
 
         epath = []
 
@@ -48,7 +48,7 @@ class EPath:
             selector = selector.strip()
 
             if not selector:
-                raise ValueError("empty selector")
+                raise ValueError('empty selector')
 
             index = 0
 
@@ -69,7 +69,7 @@ class EPath:
                     element = element.strip()
 
                     if not element:
-                        raise ValueError("empty element")
+                        raise ValueError('empty element')
 
                     if element.endswith('?'):
                         attrs.append(element[:-1])
@@ -103,7 +103,7 @@ class EPath:
                     selector = selector[i + 1:]
 
                 if selector:
-                    raise ValueError("trailing characters in selector")
+                    raise ValueError('trailing characters in selector')
 
             epath.append((attrs, types, span))
 
@@ -115,7 +115,7 @@ class EPath:
         return obj
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, self._path)
+        return f'{self.__class__.__name__}({self._path!r})'
 
     def _get_ordered_args(self, expr):
         """Sort ``expr.args`` using printing order."""
@@ -159,13 +159,13 @@ class EPath:
         Examples
         ========
 
-        >>> path = EPath("/*/[0]/Symbol")
+        >>> path = EPath('/*/[0]/Symbol')
         >>> expr = [((x, 1), 2), ((3, y), z)]
 
         >>> path.apply(expr, lambda expr: expr**2)
         [((x**2, 1), 2), ((3, y**2), z)]
 
-        >>> path = EPath("/*/*/Symbol")
+        >>> path = EPath('/*/*/Symbol')
         >>> expr = t + sin(x + 1) + cos(x + y + E)
 
         >>> path.apply(expr, lambda expr: 2*expr)
@@ -227,13 +227,13 @@ class EPath:
         Examples
         ========
 
-        >>> path = EPath("/*/[0]/Symbol")
+        >>> path = EPath('/*/[0]/Symbol')
         >>> expr = [((x, 1), 2), ((3, y), z)]
 
         >>> path.select(expr)
         [x, y]
 
-        >>> path = EPath("/*/*/Symbol")
+        >>> path = EPath('/*/*/Symbol')
         >>> expr = t + sin(x + 1) + cos(x + y + E)
 
         >>> path.select(expr)
@@ -317,7 +317,7 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     Examples
     ========
 
-    >>> path = "/*/[0]/Symbol"
+    >>> path = '/*/[0]/Symbol'
     >>> expr = [((x, 1), 2), ((3, y), z)]
 
     >>> epath(path, expr)
@@ -325,7 +325,7 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     >>> epath(path, expr, lambda expr: expr**2)
     [((x**2, 1), 2), ((3, y**2), z)]
 
-    >>> path = "/*/*/Symbol"
+    >>> path = '/*/*/Symbol'
     >>> expr = t + sin(x + 1) + cos(x + y + E)
 
     >>> epath(path, expr)

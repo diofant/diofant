@@ -18,6 +18,7 @@ def _iszero(x):
 
 
 class DenseMatrix(MatrixBase):
+    """A dense matrix base class."""
 
     is_MatrixExpr = False
 
@@ -32,9 +33,7 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> m = Matrix([
-        ... [1, 2 + I],
-        ... [3, 4    ]])
+        >>> m = Matrix([[1, 2 + I], [3, 4]])
 
         If the key is a tuple that doesn't involve a slice then that element
         is returned:
@@ -69,7 +68,7 @@ class DenseMatrix(MatrixBase):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
                        ((i < 0) == true) or ((i >= self.shape[0]) == true):
-                        raise ValueError("index out of boundary")
+                        raise ValueError('index out of boundary')
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
 
@@ -255,16 +254,16 @@ class DenseMatrix(MatrixBase):
             return diag(*r)
 
         M = self.as_mutable()
-        if method == "GE":
+        if method == 'GE':
             rv = M.inverse_GE(iszerofunc=iszerofunc)
-        elif method == "LU":
+        elif method == 'LU':
             rv = M.inverse_LU(iszerofunc=iszerofunc)
-        elif method == "ADJ":
+        elif method == 'ADJ':
             rv = M.inverse_ADJ(iszerofunc=iszerofunc)
         else:
             # make sure to add an invertibility check (as in inverse_LU)
             # if a new method is added.
-            raise ValueError("Inversion method unrecognized")
+            raise ValueError('Inversion method unrecognized')
         return self._new(rv)
 
     def equals(self, other, failing_expression=False):
@@ -362,7 +361,7 @@ class DenseMatrix(MatrixBase):
         for j in range(rhs.cols):
             for i in range(self.rows):
                 if self[i, i] == 0:
-                    raise ValueError("Matrix must be non-singular.")
+                    raise ValueError('Matrix must be non-singular.')
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
                                            for k in range(i))) / self[i, i]
         return self._new(X)
@@ -376,7 +375,7 @@ class DenseMatrix(MatrixBase):
         for j in range(rhs.cols):
             for i in reversed(range(self.rows)):
                 if self[i, i] == 0:
-                    raise ValueError("Matrix must be non-singular.")
+                    raise ValueError('Matrix must be non-singular.')
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
                                            for k in range(i + 1, self.rows))) / self[i, i]
         return self._new(X)
@@ -406,7 +405,7 @@ class DenseMatrix(MatrixBase):
 
         """
         if not callable(f):
-            raise TypeError("`f` must be callable.")
+            raise TypeError('`f` must be callable.')
 
         out = self._new(self.rows, self.cols, list(map(f, self._mat)))
         return out
@@ -432,7 +431,7 @@ class DenseMatrix(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError("Invalid reshape parameters %d %d" % (rows, cols))
+            raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         return self._new(rows, cols, lambda i, j: self._mat[i*cols + j])
 
     def as_mutable(self):
@@ -443,7 +442,7 @@ class DenseMatrix(MatrixBase):
 
         >>> X = ImmutableMatrix([[1, 2], [3, 4]])
         >>> Y = X.as_mutable()
-        >>> Y[1, 1] = 5 # Can set values in Y
+        >>> Y[1, 1] = 5  # Can set values in Y
         >>> Y
         Matrix([
         [1, 2],
@@ -520,6 +519,8 @@ def _force_mutable(x):
 
 
 class MutableDenseMatrix(DenseMatrix, MatrixBase):
+    """A mutable version of the dense matrix."""
+
     @classmethod
     def _new(cls, *args, **kwargs):
         rows, cols, flat_list = cls._handle_creation_inputs(*args, **kwargs)
@@ -558,7 +559,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         >>> M = zeros(4)
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -567,7 +569,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -620,8 +623,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         dr, dc = rhi - rlo, chi - clo
         if shape != (dr, dc):
             raise ShapeError(filldedent("The Matrix `value` doesn't have the "
-                                        "same dimensions "
-                                        "as the in sub-Matrix given by `key`."))
+                                        'same dimensions '
+                                        'as the in sub-Matrix given by `key`.'))
 
         for i in range(value.rows):
             for j in range(value.cols):
@@ -642,7 +645,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> I = eye(3)
-        >>> I[:2, 0] = [1, 2] # col
+        >>> I[:2, 0] = [1, 2]  # col
         >>> I
         Matrix([
         [1, 0, 0],
@@ -662,7 +665,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         """
         if not is_sequence(value):
-            raise TypeError("`value` must be an ordered iterable, not %s." % type(value))
+            raise TypeError(f'`value` must be an ordered iterable, not {type(value)}.')
         return self.copyin_matrix(key, MutableMatrix(value))
 
     def zip_row_op(self, i, k, f):
@@ -673,7 +676,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
+        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u)
+        >>> M
         Matrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -702,7 +706,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.row_op(1, lambda v, j: v + 2*M[0, j]); M
+        >>> M.row_op(1, lambda v, j: v + 2*M[0, j])
+        >>> M
         Matrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -727,7 +732,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0]); M
+        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0])
+        >>> M
         Matrix([
         [1, 2, 0],
         [0, 1, 0],
@@ -816,12 +822,10 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         if isinstance(i, int) and j == slice(None):
             del self._mat[i*self.cols:(i + 1)*self.cols]
             self.rows -= 1
-            return
         elif i == slice(None) and isinstance(j, int):
             for i in range(self.rows - 1, -1, -1):
                 del self._mat[j + i*self.cols]
             self.cols -= 1
-            return
         else:
             raise NotImplementedError
 
@@ -964,7 +968,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
     from numpy import empty, ndindex
     arr = empty(shape, dtype=object)
     for index in ndindex(shape):
-        arr[index] = Symbol('%s_%s' % (prefix, '_'.join(map(str, index))),
+        arr[index] = Symbol(f"{prefix}_{'_'.join(map(str, index))}",
                             **kwargs)
     return arr
 
@@ -1270,7 +1274,7 @@ def diag(*values, **kwargs):
         from . import Matrix as cls  # noqa: N813
 
     if kwargs:
-        raise ValueError('unrecognized keyword%s: %s' % (
+        raise ValueError('unrecognized keyword%s: %s' % (  # noqa: SFS101
             's' if len(kwargs) > 1 else '',
             ', '.join(kwargs)))
     rows = 0
@@ -1384,26 +1388,26 @@ def hessian(f, varlist, constraints=[]):
     # f is the expression representing a function f, return regular matrix
     if isinstance(varlist, MatrixBase):
         if 1 not in varlist.shape:
-            raise ShapeError("`varlist` must be a column or row vector.")
+            raise ShapeError('`varlist` must be a column or row vector.')
         if varlist.cols == 1:
             varlist = varlist.T
         varlist = varlist.tolist()[0]
     if is_sequence(varlist):
         n = len(varlist)
         if not n:
-            raise ShapeError("`len(varlist)` must not be zero.")
+            raise ShapeError('`len(varlist)` must not be zero.')
     else:
-        raise ValueError("Improper variable list in hessian function")
+        raise ValueError('Improper variable list in hessian function')
     if not getattr(f, 'diff', None):
         # check differentiability
-        raise ValueError("Function `f` (%s) is not differentiable" % f)
+        raise ValueError(f'Function `f` ({f}) is not differentiable')
     m = len(constraints)
     N = m + n
     out = zeros(N)
     for k, g in enumerate(constraints):
         if not getattr(g, 'diff', None):
             # check differentiability
-            raise ValueError("Function `f` (%s) is not differentiable" % f)
+            raise ValueError(f'Function `f` ({f}) is not differentiable')
         for i in range(n):
             out[k, i + m] = g.diff(varlist[i])
     for i in range(n):
@@ -1430,7 +1434,7 @@ def GramSchmidt(vlist, orthonormal=False):
             tmp -= vlist[i].project(out[j])
         if not tmp.values():
             raise ValueError(
-                "GramSchmidt: vector set not linearly independent")
+                'GramSchmidt: vector set not linearly independent')
         out.append(tmp)
     if orthonormal:
         for i in range(len(out)):
@@ -1438,7 +1442,7 @@ def GramSchmidt(vlist, orthonormal=False):
     return out
 
 
-def wronskian(functions, var, method='bareis'):
+def wronskian(functions, var, method='bareiss'):
     """
     Compute Wronskian for [] of functions
 
@@ -1526,29 +1530,29 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     Examples
     ========
 
-    >>> randMatrix(3) # doctest:+SKIP
+    >>> randMatrix(3)  # doctest:+SKIP
     [25, 45, 27]
     [44, 54,  9]
     [23, 96, 46]
-    >>> randMatrix(3, 2) # doctest:+SKIP
+    >>> randMatrix(3, 2)  # doctest:+SKIP
     [87, 29]
     [23, 37]
     [90, 26]
-    >>> randMatrix(3, 3, 0, 2) # doctest:+SKIP
+    >>> randMatrix(3, 3, 0, 2)  # doctest:+SKIP
     [0, 2, 0]
     [2, 0, 1]
     [0, 0, 1]
-    >>> randMatrix(3, symmetric=True) # doctest:+SKIP
+    >>> randMatrix(3, symmetric=True)  # doctest:+SKIP
     [85, 26, 29]
     [26, 71, 43]
     [29, 43, 57]
     >>> A = randMatrix(3, seed=1)
     >>> B = randMatrix(3, seed=2)
-    >>> A == B # doctest:+SKIP
+    >>> A == B  # doctest:+SKIP
     False
     >>> A == randMatrix(3, seed=1)
     True
-    >>> randMatrix(3, symmetric=True, percent=50) # doctest:+SKIP
+    >>> randMatrix(3, symmetric=True, percent=50)  # doctest:+SKIP
     [0, 68, 43]
     [0, 68,  0]
     [0, 91, 34]
@@ -1564,7 +1568,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
         prng = random.Random(seed)
     if symmetric and r != c:
         raise ValueError(
-            'For symmetric matrices, r must equal c, but %i != %i' % (r, c))
+            f'For symmetric matrices, r must equal c, but {r:d} != {c:d}')
     if not symmetric:
         m = Matrix._new(r, c, lambda i, j: prng.randint(min, max))
     else:

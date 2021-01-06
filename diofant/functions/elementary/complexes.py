@@ -97,6 +97,10 @@ class re(Function):
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
 
+    def _eval_is_real(self):
+        if self.args[0].is_complex:
+            return True
+
 
 class im(Function):
     """Returns imaginary part of expression.
@@ -188,6 +192,10 @@ class im(Function):
 
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
+
+    def _eval_is_real(self):
+        if self.args[0].is_complex:
+            return True
 
 
 ###############################################################################
@@ -353,12 +361,10 @@ class Abs(Function):
     >>> Abs(-1)
     1
     >>> x = Symbol('x', real=True)
-    >>> Abs(-x)
+    >>> abs(-x)  # The Python built-in
     Abs(x)
-    >>> Abs(x**2)
+    >>> abs(x**2)
     x**2
-    >>> abs(-x) # The Python built-in
-    Abs(x)
 
     Note that the Python built-in will return either an Expr or int depending on
     the argument:
@@ -389,7 +395,7 @@ class Abs(Function):
         Examples
         ========
 
-        >>> Abs(-x).fdiff()
+        >>> abs(-x).fdiff()
         sign(x)
 
         """
@@ -406,7 +412,7 @@ class Abs(Function):
             if obj is not None:
                 return obj
         if not isinstance(arg, Expr):
-            raise TypeError("Bad argument type for Abs(): %s" % type(arg))
+            raise TypeError(f'Bad argument type for Abs(): {type(arg)}')
         # handle what we can
         arg = signsimp(arg, evaluate=False)
         if arg.is_Mul:
@@ -494,7 +500,6 @@ class Abs(Function):
                 return self.args[0]**exponent
             elif exponent != -1 and exponent.is_Integer:
                 return self.args[0]**(exponent - 1)*self
-        return
 
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
@@ -712,8 +717,8 @@ class polar_lift(Function):
 
     @classmethod
     def eval(cls, arg):
-        from .exponential import exp_polar
         from .complexes import arg as argument
+        from .exponential import exp_polar
         if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
@@ -808,7 +813,7 @@ class periodic_argument(Function):
         # NOTE evidently this means it is a rather bad idea to use this with
         # period != 2*pi and non-polar numbers.
         from .integers import ceiling
-        from .trigonometric import atan2, atan
+        from .trigonometric import atan, atan2
         if not period.is_positive:
             return
         if period == oo and isinstance(ar, principal_branch):

@@ -1,4 +1,4 @@
-"""High-level polynomials manipulation functions. """
+"""High-level polynomials manipulation functions."""
 
 import itertools
 
@@ -7,11 +7,8 @@ from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
-from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
+from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
-
-
-__all__ = 'symmetrize', 'horner', 'interpolate', 'viete'
 
 
 def symmetrize(F, *gens, **args):
@@ -75,7 +72,7 @@ def symmetrize(F, *gens, **args):
     gens, dom = opt.gens, opt.domain
 
     for i in range(len(gens)):
-        poly = symmetric_poly(i + 1, gens, polys=True)
+        poly = symmetric_poly(i + 1, *gens, polys=True)
         polys.append((next(symbols), poly.set_domain(dom)))
 
     indices = range(len(gens) - 1)
@@ -176,19 +173,19 @@ def horner(f, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        return exc.expr
+        return exc.exprs[0]
 
     form, gen = Integer(0), F.gen
 
     if F.is_univariate:
-        for coeff in F.all_coeffs():
+        for coeff in reversed(F.all_coeffs()):
             form = form*gen + coeff
     else:
         F, gens = Poly(F, gen), gens[1:]
 
-        for coeff in F.all_coeffs():
+        for coeff in reversed(F.all_coeffs()):
             form = form*gen + horner(coeff, *gens, **args)
 
     return form
@@ -224,10 +221,10 @@ def interpolate(data, x):
     n = len(data)
 
     if isinstance(data, dict):
-        X, Y = list(zip(*data.items()))
+        X, Y = zip(*data.items())
     else:
         if isinstance(data[0], tuple):
-            X, Y = list(zip(*data))
+            X, Y = zip(*data)
         else:
             X = list(range(1, n + 1))
             Y = list(data)
@@ -253,19 +250,19 @@ def viete(f, roots=None, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        f, opt = poly_from_expr(f, *gens, **args)
+        (f,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('viete', 1, exc)
 
     if f.is_multivariate:
-        raise MultivariatePolynomialError(
-            "multivariate polynomials are not allowed")
+        raise MultivariatePolynomialError('multivariate polynomials are'
+                                          ' not allowed')
 
     n = f.degree()
 
     if n < 1:
-        raise ValueError(
-            "can't derive Viete's formulas for a constant polynomial")
+        raise ValueError("can't derive Viete's formulas for "
+                         'a constant polynomial')
 
     if roots is None:
         roots = numbered_symbols('r', start=1)
@@ -273,13 +270,13 @@ def viete(f, roots=None, *gens, **args):
     roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
-        raise ValueError("required %s roots, got %s" % (n, len(roots)))
+        raise ValueError(f'required {n} roots, got {len(roots)}')
 
     lc, coeffs = f.LC(), f.all_coeffs()
     result, sign = [], -1
 
-    for i, coeff in enumerate(coeffs[1:]):
-        poly = symmetric_poly(i + 1, roots)
+    for i, coeff in enumerate(reversed(coeffs[:-1])):
+        poly = symmetric_poly(i + 1, *roots)
         coeff = sign*(coeff/lc)
         result.append((poly, coeff))
         sign = -sign

@@ -1,10 +1,11 @@
+"""Symbolic optimization tests."""
+
 import pytest
 
-from diofant.abc import x, y, z
-from diofant.calculus.optimization import (InfeasibleProblem, maximize,
-                                           minimize, simplex)
-from diofant.core import E, Eq, Rational, nan, oo, symbols
-from diofant.functions import exp, sign, sqrt
+from diofant import (E, Eq, Rational, exp, maximize, minimize, nan, oo, sign,
+                     sqrt)
+from diofant.abc import t, w, x, y, z
+from diofant.calculus.optimization import InfeasibleProblem, simplex
 
 
 __all__ = ()
@@ -36,6 +37,7 @@ def test_maximize():
 
 
 def test_minimize_linear():
+    # see also sympy/sympy#20391
     assert minimize([-2*x - 3*y - 2*z, 2*x + y + z <= 4,
                      x + 2*y + z <= 7, z <= 5, x >= 0,
                      y >= 0, z >= 0], x, y, z) == (-11, {x: 0, y: 3, z: 1})
@@ -61,16 +63,16 @@ def test_minimize_linear():
     assert minimize([2*x + 3*y - z, 1 <= x + y + z,
                      x + y + z <= 2, 1 <= x - y + z,
                      x - y + z <= 2, Eq(x - y - z, 3)],
-                    x, y, z) == (3, {x: 2, y: Rational(-1, 2), z: Rational(-1, 2)})
+                    x, y, z) == (3, {x: 2, y: Rational(-1, 2),
+                                     z: Rational(-1, 2)})
 
-    x1, x2, x3, x4, x5 = symbols('x1:6')
-    assert minimize([-2*x1 + 4*x2 + 7*x3 + x4 + 5*x5,
-                     Eq(-x1 + x2 + 2*x3 + x4 + 2*x5, 7),
-                     Eq(-x1 + 2*x2 + 3*x3 + x4 + x5, 6),
-                     Eq(-x1 + x2 + x3 + 2*x4 + x5, 4),
-                     x2 >= 0, x3 >= 0, x4 >= 0, x5 >= 0],
-                    x1, x2, x3, x4, x5) == (19, {x1: -1, x2: 0,
-                                                 x3: 1, x4: 0, x5: 2})
+    assert minimize([-2*t + 4*w + 7*x + y + 5*z,
+                     Eq(-t + w + 2*x + y + 2*z, 7),
+                     Eq(-t + 2*w + 3*x + y + z, 6),
+                     Eq(-t + w + x + 2*y + z, 4),
+                     w >= 0, x >= 0, y >= 0, z >= 0],
+                    t, w, x, y, z) == (19, {t: -1, w: 0,
+                                            x: 1, y: 0, z: 2})
     assert minimize([-x - y, x + 2*y <= 8, 3*x + 2*y <= 12,
                      x + 3*y >= 6, x >= 0, y >= 0],
                     x, y) == (-5, {x: 2, y: 3})

@@ -15,29 +15,30 @@ class DiofantDeprecationWarning(DeprecationWarning):
 
     >>> import warnings
     >>> warnings.simplefilter(
-    ...     "always", DiofantDeprecationWarning)
+    ...     'always', DiofantDeprecationWarning)
     >>> warnings.warn(
     ...     "Don't do this, it's deprecated",
-    ...     DiofantDeprecationWarning) #doctest:+SKIP
+    ...     DiofantDeprecationWarning)  # doctest:+SKIP
     __main__:1: DiofantDeprecationWarning: "Don't do this, it's deprecated"
 
     The recommended way to use this class is, however, is by calling
     the warn method after constructing the message:
 
-        >>> DiofantDeprecationWarning("Don't do this, it's deprecated.").warn() #doctest:+SKIP
-        __main__:1: DiofantDeprecationWarning:
+    >>> DiofantDeprecationWarning("Don't do this,"
+    ...                           " it's deprecated.").warn()  # doctest:+SKIP
+    __main__:1: DiofantDeprecationWarning:
 
-        Don't do this, it's deprecated.
+    Don't do this, it's deprecated.
 
-          warning (see_above, DiofantDeprecationWarning)
+        warning (see_above, DiofantDeprecationWarning)
 
     To provide additional information, create an instance of this
     class in this way:
 
     >>> print(DiofantDeprecationWarning(
-    ...     feature="Such and such",
-    ...     last_supported_version="1.2.3",
-    ...     useinstead="this other feature"))
+    ...     feature='Such and such',
+    ...     last_supported_version='1.2.3',
+    ...     useinstead='this other feature'))
     Such and such has been deprecated. It will be last supported in Diofant
     version 1.2.3. Use this other feature instead.
 
@@ -48,38 +49,35 @@ class DiofantDeprecationWarning(DeprecationWarning):
     ``useinstead`` can be omitted. In this case the corresponding sentence
     will not be shown:
 
-    >>> print(DiofantDeprecationWarning(feature="Such and such",
-    ...     useinstead="this other feature"))
+    >>> print(DiofantDeprecationWarning(feature='Such and such',
+    ...                                 useinstead='this other feature'))
     Such and such has been deprecated. Use this other feature instead.
 
     You can still provide the argument value.  If it is a string, it
     will be appended to the end of the message:
 
-    >>> print(DiofantDeprecationWarning(
-    ...     feature="Such and such",
-    ...     useinstead="this other feature",
-    ...     value="Contact the developers for further information."))
+    >>> print(DiofantDeprecationWarning(feature='Such and such',
+    ...       useinstead='this other feature',
+    ...       value='Contact the developers for further information.'))
     Such and such has been deprecated. Use this other feature instead.
     Contact the developers for further information.
 
     If, however, the argument value does not hold a string, a string
     representation of the object will be appended to the message:
 
-    >>> print(DiofantDeprecationWarning(
-    ...     feature="Such and such",
-    ...     useinstead="this other feature",
-    ...     value=[1,2,3]))
+    >>> print(DiofantDeprecationWarning(feature='Such and such',
+    ...                                 useinstead='this other feature',
+    ...                                 value=[1, 2, 3]))
     Such and such has been deprecated. Use this other feature instead.
     ([1, 2, 3])
 
     To associate an issue with a deprecation, use the ``issue`` flag.
 
-    >>> print(DiofantDeprecationWarning(
-    ...    feature="Old feature",
-    ...    useinstead="new feature",
-    ...    issue=5241))
+    >>> print(DiofantDeprecationWarning(feature='Old feature',
+    ...                                 useinstead='new feature',
+    ...                                 issue=5241))
     Old feature has been deprecated. Use new feature instead. See
-    https://github.com/sympy/sympy/issues/5241 for more info.
+    https://github.com/diofant/diofant/issues/5241 for more info.
 
     Every formal deprecation should have an associated issue in the GitHub
     issue tracker.  All such issues should have the DeprecationRemoval
@@ -89,10 +87,9 @@ class DiofantDeprecationWarning(DeprecationWarning):
     which it was deprecated.  Use the ``deprecated_since_version`` flag for
     this.
 
-    >>> print(DiofantDeprecationWarning(
-    ...    feature="Old feature",
-    ...    useinstead="new feature",
-    ...    deprecated_since_version="0.7.2"))
+    >>> print(DiofantDeprecationWarning(feature='Old feature',
+    ...                                 useinstead='new feature',
+    ...                                 deprecated_since_version='0.7.2'))
     Old feature has been deprecated since Diofant 0.7.2. Use new feature
     instead.
 
@@ -112,31 +109,31 @@ class DiofantDeprecationWarning(DeprecationWarning):
 
     def __init__(self, value=None, feature=None, last_supported_version=None,
                  useinstead=None, issue=None, deprecated_since_version=None):
-        self.fullMessage = ""
+        self.fullMessage = ''
 
         if feature:
             if deprecated_since_version:
-                self.fullMessage = "%s has been deprecated since Diofant %s. " % \
+                self.fullMessage = '%s has been deprecated since Diofant %s. ' % \
                                    (feature, deprecated_since_version)
             else:
-                self.fullMessage = "%s has been deprecated. " % feature
+                self.fullMessage = f'{feature} has been deprecated. '
 
         if last_supported_version:
-            self.fullMessage += ("It will be last supported in Diofant "
-                                 "version %s. ") % last_supported_version
+            self.fullMessage += ('It will be last supported in Diofant '
+                                 'version %s. ') % last_supported_version
         if useinstead:
-            self.fullMessage += "Use %s instead. " % useinstead
+            self.fullMessage += f'Use {useinstead} instead. '
         if issue:
-            self.fullMessage += ("See "
-                                 "https://github.com/sympy/sympy/issues/%d for more "
-                                 "info. ") % issue
+            self.fullMessage += ('See '
+                                 'https://github.com/diofant/diofant/issues/%d for more '
+                                 'info. ') % issue
 
         if value:
             if not isinstance(value, str):
-                value = "(%s)" % repr(value)
-            value = " " + value
+                value = '(%s)' % repr(value)
+            value = ' ' + value
         else:
-            value = ""
+            value = ''
 
         self.fullMessage += value
 

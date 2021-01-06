@@ -1,9 +1,6 @@
-from strategies import do_one, exhaust
-from strategies.core import typed
-
 from ...core import Add, Expr, Mul, Number, sympify
 from ...core.logic import _fuzzy_group
-from ...core.strategies import flatten, rm_id, unpack
+from ...core.strategies import do_one, exhaust, flatten, rm_id, typed, unpack
 from ...functions import adjoint
 from ..matrices import MatrixBase, ShapeError
 from .matexpr import Identity, MatrixExpr, ZeroMatrix
@@ -28,7 +25,8 @@ class MatMul(MatrixExpr):
     is_MatMul = True
 
     def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
+        return _fuzzy_group((a.is_commutative for a in self.args),
+                            quick_exit=True)
 
     def __new__(cls, *args, **kwargs):
         check = kwargs.get('check', True)
@@ -55,8 +53,8 @@ class MatMul(MatrixExpr):
         X = head
         Y = MatMul(*tail)
 
-        from ...core import Dummy
         from ...concrete import Sum
+        from ...core import Dummy
         from .. import ImmutableMatrix
         k = Dummy('k', integer=True)
         if X.has(ImmutableMatrix) or Y.has(ImmutableMatrix):
@@ -121,7 +119,7 @@ def validate(*matrices):
     for i in range(len(matrices)-1):
         A, B = matrices[i:i+2]
         if A.cols != B.rows:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError(f'Matrices {A} and {B} are not aligned')
 
 # Rules
 
@@ -197,7 +195,7 @@ def xxinv(mul):
 
 
 def remove_ids(mul):
-    """ Remove Identities from a MatMul
+    """Remove Identities from a MatMul
 
     This is a modified version of diofant.core.strategies.rm_id.
     This is necesssary because MatMul may contain both MatrixExprs and Exprs
@@ -233,9 +231,9 @@ canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 
 
 def only_squares(*matrices):
-    """factor matrices only if they are square."""
+    """Factor matrices only if they are square."""
     if matrices[0].rows != matrices[-1].cols:
-        raise RuntimeError("Invalid matrices being multiplied")
+        raise RuntimeError('Invalid matrices being multiplied')
     out = []
     start = 0
     for i, M in enumerate(matrices):

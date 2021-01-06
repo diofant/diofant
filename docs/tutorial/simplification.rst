@@ -349,6 +349,20 @@ of more standard functions.
     z ___
     ╲╱ ℯ
 
+Another type of expand rule is expanding complex valued expressions and putting
+them into a normal form. For this :func:`~diofant.core.function.expand_complex`
+is used.   Note that it will always perform arithmetic expand to obtain the
+desired normal form.
+
+    >>> expand_complex(x + I*y)
+    ⅈ⋅(re(y) + im(x)) + re(x) - im(y)
+
+The same behavior can be obtained by using
+:meth:`~diofant.core.expr.Expr.as_real_imag` method.
+
+    >>> (x + I*y).as_real_imag()
+    (re(x) - im(y), re(y) + im(x))
+
 To simplify combinatorial expressions, involving
 :class:`~diofant.functions.combinatorial.factorials.factorial`,
 :class:`~diofant.functions.combinatorial.factorials.binomial` or
@@ -365,3 +379,39 @@ To simplify combinatorial expressions, involving
        π
     ────────
     sin(π⋅x)
+
+CSE
+===
+
+Before evaluating a large expression, it is often useful to identify common
+subexpressions, collect them and evaluate them at once. This is called common
+subexpression elimination (CSE) and implemented in the
+:func:`~diofant.simplify.cse_main.cse` function.
+
+    >>> cse(sqrt(sin(x)))
+    ⎛    ⎡  ________⎤⎞
+    ⎝[], ⎣╲╱ sin(x) ⎦⎠
+
+    >>> cse(sqrt(sin(x) + 5)*sqrt(sin(x) + 4))
+    ⎛                ⎡  ________   ________⎤⎞
+    ⎝[(x₀, sin(x))], ⎣╲╱ x₀ + 4 ⋅╲╱ x₀ + 5 ⎦⎠
+
+    >>> cse(sqrt(sin(x + 1) + 5 + cos(y))*sqrt(sin(x + 1) + 4 + cos(y)))
+    ⎛                             ⎡  ________   ________⎤⎞
+    ⎝[(x₀, sin(x + 1) + cos(y))], ⎣╲╱ x₀ + 4 ⋅╲╱ x₀ + 5 ⎦⎠
+
+    >>> cse((x - y)*(z - y) + sqrt((x - y)*(z - y)))
+    ⎛                                     ⎡  ____     ⎤⎞
+    ⎝[(x₀, -y), (x₁, (x + x₀)⋅(x₀ + z))], ⎣╲╱ x₁  + x₁⎦⎠
+
+Optimizations to be performed before and after common subexpressions
+elimination can be passed in the``optimizations`` optional argument.
+
+    >>> cse((x - y)*(z - y) + sqrt((x - y)*(z - y)), optimizations='basic')
+    ⎛                          ⎡  ____     ⎤⎞
+    ⎝[(x₀, -(x - y)⋅(y - z))], ⎣╲╱ x₀  + x₀⎦⎠
+
+However, these optimizations can be very slow for large expressions. Moreover,
+if speed is a concern, one can pass the option ``order='none'``. Order of
+terms will then be dependent on hashing algorithm implementation, but speed
+will be greatly improved.

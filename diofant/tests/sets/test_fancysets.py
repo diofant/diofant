@@ -1,14 +1,14 @@
+"""Special sets tests."""
+
 import itertools
 
 import pytest
 
-from diofant import (Abs, Basic, I, Integer, Lambda, Rational, S, Symbol, cos,
-                     exp, log, oo, pi, sin, sqrt, symbols, tan)
+from diofant import (Basic, Contains, EmptySet, FiniteSet, I, ImageSet,
+                     Integer, Intersection, Interval, Lambda, Range, Rational,
+                     S, Set, Symbol, cos, exp, imageset, log, oo, pi, sin,
+                     sqrt, symbols, tan)
 from diofant.abc import m, n, t, x, y
-from diofant.sets.contains import Contains
-from diofant.sets.fancysets import ImageSet, Range
-from diofant.sets.sets import (EmptySet, FiniteSet, Intersection, Interval,
-                               Set, imageset)
 
 
 __all__ = ()
@@ -19,6 +19,7 @@ def test_naturals():
     assert 5 in N
     assert -5 not in N
     assert 5.5 not in N
+    assert (1, 2) not in N  # issue sympy/sympy#11732
     ni = iter(N)
     a, b, c, d = next(ni), next(ni), next(ni), next(ni)
     assert (a, b, c, d) == (1, 2, 3, 4)
@@ -39,6 +40,7 @@ def test_naturals0():
     N = S.Naturals0
     assert 0 in N
     assert -1 not in N
+    assert (1, 2) not in N  # issue sympy/sympy#11732
     assert next(iter(N)) == 0
 
 
@@ -47,6 +49,7 @@ def test_integers():
     assert 5 in Z
     assert -5 in Z
     assert 5.5 not in Z
+    assert (1, 2) not in Z  # issue sympy/sympy#11732
     zi = iter(Z)
     a, b, c, d = next(zi), next(zi), next(zi), next(zi)
     assert (a, b, c, d) == (0, 1, -1, 2)
@@ -223,6 +226,10 @@ def test_reals():
     assert -sqrt(2) in S.Reals
     assert (2, 5) not in S.Reals
     assert sqrt(-1) not in S.Reals
+    assert S.Reals == Interval.open(-oo, oo)
+    assert hash(S.Reals) == hash(Interval.open(-oo, oo))
+    assert S.ExtendedReals == Interval(-oo, oo)
+    assert hash(S.ExtendedReals) == hash(Interval(-oo, oo))
 
 
 def test_intersections():
@@ -271,7 +278,7 @@ def test_imageset_intersection_real():
                      S.Integers).intersection(S.Reals) ==
             FiniteSet(-1, 1))
 
-    s = ImageSet(Lambda(n, -I*(I*(2*pi*n - pi/4) + log(Abs(sqrt(-I))))), S.Integers)
+    s = ImageSet(Lambda(n, -I*(I*(2*pi*n - pi/4) + log(abs(sqrt(-I))))), S.Integers)
     assert s.intersection(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
 
 
@@ -304,7 +311,6 @@ def test_sympyissue_10497():
 def test_sympyissue_11732():
     interval12 = Interval(1, 2)
     finiteset1234 = FiniteSet(1, 2, 3, 4)
-    pointComplex = (1, 2)
 
     assert (interval12 in S.Naturals) is False
     assert (interval12 in S.Naturals0) is False
@@ -313,7 +319,3 @@ def test_sympyissue_11732():
     assert (finiteset1234 in S.Naturals) is False
     assert (finiteset1234 in S.Naturals0) is False
     assert (finiteset1234 in S.Integers) is False
-
-    assert (pointComplex in S.Naturals) is False
-    assert (pointComplex in S.Naturals0) is False
-    assert (pointComplex in S.Integers) is False

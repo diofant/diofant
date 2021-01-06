@@ -3,7 +3,7 @@ from itertools import combinations_with_replacement
 from ..core import Add, Dummy, Rational, symbols
 from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
                      reduced)
-from ..polys.monomials import Monomial, monomial_divides
+from ..polys.monomials import Monomial
 from ..utilities.misc import debug
 
 
@@ -18,7 +18,6 @@ def ratsimp(expr):
     (x + y)/(x*y)
 
     """
-
     f, g = cancel(expr).as_numer_denom()
     try:
         Q, r = reduced(f, [g], field=True, expand=False)
@@ -87,7 +86,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             m = [0]*len(opt.gens)
             for i in mi:
                 m[i] += 1
-            if all(not monomial_divides(lmg, m) for lmg in leading_monomials):
+            if all(not lmg.divides(m) for lmg in leading_monomials):
                 S.append(m)
 
         return [Monomial(s).as_expr(*opt.gens) for s in S] + staircase(n - 1)
@@ -134,18 +133,18 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
             M1 = staircase(N)
             M2 = staircase(D)
-            debug('%s / %s: %s, %s' % (N, D, M1, M2))
+            debug(f'{N} / {D}: {M1}, {M2}')
 
-            Cs = symbols("c:%d" % len(M1), cls=Dummy)
-            Ds = symbols("d:%d" % len(M2), cls=Dummy)
+            Cs = symbols(f'c:{len(M1):d}', cls=Dummy)
+            Ds = symbols(f'd:{len(M2):d}', cls=Dummy)
             ng = Cs + Ds
 
             c_hat = Poly(
-                sum(Cs[i] * M1[i] for i in range(len(M1))), opt.gens + ng)
+                sum(Cs[i] * M1[i] for i in range(len(M1))), *(opt.gens + ng))
             d_hat = Poly(
-                sum(Ds[i] * M2[i] for i in range(len(M2))), opt.gens + ng)
+                sum(Ds[i] * M2[i] for i in range(len(M2))), *(opt.gens + ng))
 
-            r = reduced(a * d_hat - b * c_hat, G, opt.gens + ng,
+            r = reduced(a * d_hat - b * c_hat, G, *(opt.gens + ng),
                         order=opt.order, polys=True)[1]
 
             S = Poly(r, gens=opt.gens).coeffs()
@@ -164,8 +163,8 @@ def ratsimpmodprime(expr, G, *gens, **args):
                 c = c.subs(dict(zip(Cs + Ds, [1] * (len(Cs) + len(Ds)))))
                 d = d.subs(dict(zip(Cs + Ds, [1] * (len(Cs) + len(Ds)))))
 
-                c = Poly(c, opt.gens)
-                d = Poly(d, opt.gens)
+                c = Poly(c, *opt.gens)
+                d = Poly(d, *opt.gens)
                 if d == 0:
                     raise ValueError('Ideal not prime?')
 
@@ -187,16 +186,16 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
     # preprocessing. this improves performance a bit when deg(num)
     # and deg(denom) are large:
-    num = reduced(num, G, opt.gens, order=opt.order)[1]
-    denom = reduced(denom, G, opt.gens, order=opt.order)[1]
+    num = reduced(num, G, *opt.gens, order=opt.order)[1]
+    denom = reduced(denom, G, *opt.gens, order=opt.order)[1]
 
     if polynomial:
         return (num/denom).cancel()
 
     c, d, allsol = _ratsimpmodprime(
-        Poly(num, opt.gens, domain=opt.domain), Poly(denom, opt.gens, domain=opt.domain), [])
+        Poly(num, *opt.gens, domain=opt.domain), Poly(denom, *opt.gens, domain=opt.domain), [])
     if not quick and allsol:
-        debug('Looking for best minimal solution. Got: %s' % len(allsol))
+        debug(f'Looking for best minimal solution. Got: {len(allsol)}')
         newsol = []
         for c_hat, d_hat, S, ng in allsol:
             Sm = zeros(len(S), len(ng) + 1)
@@ -211,7 +210,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
     else:
         cn, dn = 1, 1
 
-    cf, c, d = cancel((c, d), opt.gens, order=opt.order)  # canonicalize signs
+    cf, c, d = cancel((c, d), *opt.gens, order=opt.order)  # canonicalize signs
     r = cf*Rational(cn, dn)
 
     return (c*r.denominator)/(d*r.numerator)

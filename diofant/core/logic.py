@@ -64,9 +64,8 @@ def fuzzy_bool(x):
     for the None value.
 
     """
-    if x is None:
-        return
-    return bool(x)
+    if x is not None:
+        return bool(x)
 
 
 def fuzzy_and(args):
@@ -93,7 +92,6 @@ def fuzzy_and(args):
     False
 
     """
-
     rv = True
     for ai in args:
         ai = fuzzy_bool(ai)
@@ -196,10 +194,10 @@ class Logic:
             if term in '&|':
                 if schedop is not None:
                     raise ValueError(
-                        'double op forbidden: "%s %s"' % (term, schedop))
+                        f'double op forbidden: "{term} {schedop}"')
                 if lexpr is None:
                     raise ValueError(
-                        '%s cannot be in the beginning of expression' % term)
+                        f'{term} cannot be in the beginning of expression')
                 schedop = term
                 continue
             if '&' in term or '|' in term:
@@ -218,21 +216,23 @@ class Logic:
             # this should be atom
             if lexpr is not None:
                 raise ValueError(
-                    'missing op between "%s" and "%s"' % (lexpr, term))
+                    f'missing op between "{lexpr}" and "{term}"')
 
             lexpr = term
 
         # let's check that we ended up in correct state
         if schedop is not None:
-            raise ValueError('premature end-of-expression in "%s"' % text)
+            raise ValueError(f'premature end-of-expression in "{text}"')
         if lexpr is None:
-            raise ValueError('"%s" is empty' % text)
+            raise ValueError(f'"{text}" is empty')
 
         # everything looks good now
         return lexpr
 
 
 class AndOr_Base(Logic):
+    """Base class for And and Or."""
+
     def __new__(cls, *args):
         bargs = []
         for a in args:
@@ -277,6 +277,8 @@ class AndOr_Base(Logic):
 
 
 class And(AndOr_Base):
+    """Logical And."""
+
     op_x_notx = False
 
     def _eval_propagate_not(self):
@@ -303,6 +305,8 @@ class And(AndOr_Base):
 
 
 class Or(AndOr_Base):
+    """Logical Or."""
+
     op_x_notx = True
 
     def _eval_propagate_not(self):
@@ -311,6 +315,8 @@ class Or(AndOr_Base):
 
 
 class Not(Logic):
+    """Logical Not."""
+
     def __new__(cls, arg):
         if isinstance(arg, str):
             return Logic.__new__(cls, arg)
@@ -326,7 +332,7 @@ class Not(Logic):
             return arg
 
         else:
-            raise ValueError('Not: unknown argument %r' % (arg,))
+            raise ValueError(f'Not: unknown argument {arg!r}')
 
     @property
     def arg(self):

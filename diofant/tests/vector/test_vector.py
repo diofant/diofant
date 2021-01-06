@@ -2,19 +2,17 @@ import pytest
 
 from diofant import Add, Derivative, Function
 from diofant import ImmutableMatrix as Matrix
-from diofant import Integral, Mul, Pow, cos, diff, pi, sin, sqrt, symbols
-from diofant.simplify import simplify, trigsimp
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.vector import (BaseVector, Vector, VectorAdd, VectorMul,
-                                   VectorZero)
+from diofant import (Integral, Mul, Pow, cos, diff, pi, simplify, sin, sqrt,
+                     symbols, trigsimp)
+from diofant.abc import a, b, c
+from diofant.vector import (BaseVector, CoordSysCartesian, Vector, VectorAdd,
+                            VectorMul, VectorZero)
 
 
 __all__ = ()
 
 C = CoordSysCartesian('C')
-
 i, j, k = C.base_vectors()
-a, b, c = symbols('a b c')
 
 
 def test_vector_diofant():
@@ -99,6 +97,10 @@ def test_vector():
     assert VectorMul(1, i) == i
     assert VectorAdd(v1, Vector.zero) == v1
     assert VectorMul(0, Vector.zero) == Vector.zero
+
+    v = (a*b + a*c + b**2 + b*c)*i + j
+
+    assert v.factor() == (a + b)*(b + c)*i + j
 
 
 def test_vector_magnitude_normalize():

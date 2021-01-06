@@ -1,16 +1,19 @@
-"""Solvers of systems of polynomial equations. """
+"""Solvers of systems of polynomial equations."""
+
+import collections
 
 from ..domains import EX
 from ..matrices import Matrix
-from ..polys import groebner, poly, sring
-from ..polys.polyerrors import ComputationFailed, PolificationFailed
-from ..polys.polytools import parallel_poly_from_expr
+from ..polys import (ComputationFailed, PolificationFailed, groebner,
+                     parallel_poly_from_expr)
 from ..polys.solvers import solve_lin_sys
 from ..simplify import simplify
-from ..utilities import default_sort_key
+from ..utilities import default_sort_key, numbered_symbols
+from .utils import checksol
 
 
-__all__ = 'solve_linear_system', 'solve_poly_system'
+__all__ = ('solve_linear_system', 'solve_poly_system',
+           'solve_surd_system')
 
 
 def solve_linear_system(system, *symbols, **flags):
@@ -62,17 +65,18 @@ def solve_linear_system(system, *symbols, **flags):
     diofant.matrices.matrices.MatrixBase.rref
 
     """
-
     eqs = system*Matrix(symbols + (-1,))
-    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
+    polys, opt = parallel_poly_from_expr(eqs, *symbols, field=True)
+    domain = polys[0].rep.ring
+    polys = [_.rep for _ in polys]
 
-    res = solve_lin_sys(eqs, domain)
+    res = solve_lin_sys(polys, domain)
     if res is None:
         return
 
     for k in list(res):
         s = domain.symbols[domain.index(k)]
-        res[s] = res[k].as_expr()
+        res[s] = domain.to_expr(res[k])
         del res[k]
         if flags.get('simplify', True):
             res[s] = simplify(res[s])
@@ -111,8 +115,7 @@ def solve_poly_system(eqs, *gens, **args):
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""
-
-        basis = groebner(system, gens, polys=True, extension=False)
+        basis = groebner(system, *gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []
 
@@ -132,7 +135,7 @@ def solve_poly_system(eqs, *gens, **args):
             # Now we should examine cases when leading coefficient of
             # some polynomial in the system is zero.
             for p in basis.polys:
-                lc = poly(p, *new_gens).LC(order=basis.order)
+                lc = p.as_poly(*new_gens).LC(order=basis.order)
                 for special in _solve_reduced_system(system + [lc], gens):
                     # This heuristics wipe out some redundant special
                     # solutions, which already there in solutions after
@@ -147,7 +150,7 @@ def solve_poly_system(eqs, *gens, **args):
             f = basis[-1]
             gen = gens[-1]
 
-            zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
+            zeros = {k.doit() for k in f.exclude().all_roots()}
 
             if len(basis) == 1:
                 return [{gen: zero} for zero in zeros]
@@ -178,3 +181,66 @@ def solve_poly_system(eqs, *gens, **args):
         result = [{k: r[k].evalf(opt.domain.dps) for k in r} for r in result]
 
     return sorted(result, key=default_sort_key)
+
+
+def solve_surd_system(eqs, *gens, **args):
+    """
+    Solve a system of algebraic equations.
+
+    Examples
+    ========
+
+    >>> solve_surd_system([x + sqrt(x + 1) - 2])
+    [{x: -sqrt(13)/2 + 5/2}]
+
+    """
+    eqs = list(eqs)
+
+    if not gens:
+        gens = set().union(*[_.free_symbols for _ in eqs])
+        gens = sorted(gens, key=default_sort_key)
+    else:
+        gens = list(gens)
+
+    aux = numbered_symbols('a')
+    neqs = len(eqs)
+    orig_eqs = eqs[:]
+    ngens = len(gens)
+    bases = collections.defaultdict(dict)
+
+    def q_surd(e):
+        return e.is_Pow and e.exp.is_Rational and not e.exp.is_Integer
+
+    def tr_surd(e):
+        n, d = e.exp.as_numer_denom()
+        for v2, d2 in sorted(bases.get(e.base, {}).items(),
+                             key=lambda _: -_[1]):
+            if not d2 % d:
+                return v2**(d2 // d)
+        v = next(aux)
+        bases[e.base][v] = d
+        gens.append(v)
+        eqs.append(v**d - e.base)
+        return v**n
+
+    for i in range(neqs):
+        eqs[i] = eqs[i].replace(q_surd, tr_surd)
+
+    denoms = []
+    for i, e in enumerate(eqs):
+        eqs[i], d = e.as_numer_denom()
+        if not d.is_constant(*gens):
+            denoms.insert(0, d)
+
+    weaksols = solve_poly_system(eqs, *gens, **args)
+
+    for i in range(len(weaksols) - 1, -1, -1):
+        if any(checksol(_, weaksols[i], warn=True) for _ in denoms):
+            del weaksols[i]
+        elif any(checksol(_, weaksols[i], warn=True) is False for _ in orig_eqs):
+            del weaksols[i]
+        else:
+            for g in gens[ngens:]:
+                del weaksols[i][g]
+
+    return weaksols

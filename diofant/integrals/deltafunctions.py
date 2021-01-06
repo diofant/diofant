@@ -1,6 +1,6 @@
 from ..core import Mul
-from ..core.compatibility import default_sort_key
 from ..functions import DiracDelta, Heaviside
+from ..utilities import default_sort_key
 
 
 def change_mul(node, x):
@@ -128,8 +128,8 @@ def deltaintegrate(f, x):
     if not f.has(DiracDelta):
         return
 
-    from .integrals import Integral, integrate
     from ..solvers import solve
+    from .integrals import Integral, integrate
 
     # g(x) = DiracDelta(h(x))
     if f.func == DiracDelta:
@@ -167,4 +167,3 @@ def deltaintegrate(f, x):
                     rest_mult = rest_mult*rest_mult_2
                 point = solve(dg.args[0], x)[0][x]
                 return (rest_mult.subs({x: point})*Heaviside(x - point))
-    return

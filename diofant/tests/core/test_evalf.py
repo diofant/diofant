@@ -40,6 +40,9 @@ def test_evalf_basic():
     assert NS('355/113-pi', 6) == '2.66764e-7'
     assert NS('16*atan(1/5)-4*atan(1/239)', 15) == '3.14159265358979'
 
+    # issue sympy/sympy#4806
+    assert atan(0, evaluate=False).evalf() == 0
+
 
 def test_cancellation():
     assert NS(Add(pi, Rational(1, 10**1000), -pi, evaluate=False), 15,
@@ -128,9 +131,9 @@ def test_evalf_complex_cancellation():
 
 
 def test_evalf_logs():
-    assert NS("log(3+pi*I)", 15) == '1.46877619736226 + 0.808448792630022*I'
-    assert NS("log(pi*I)", 15) == '1.14472988584940 + 1.57079632679490*I'
-    assert NS('log(-1 + 0.00001)', 2) == '-1.0e-5 + 3.1*I'
+    assert NS('log(3+pi*I)', 15) == '1.46877619736226 + 0.808448792630022*I'
+    assert NS('log(pi*I)', 15) == '1.14472988584940 + 1.57079632679490*I'
+    assert NS('log(-1.000000 + 0.000001)', 2) == '-1.0e-6 + 3.1*I'
     assert NS('log(100, 10, evaluate=False)', 15) == '2.00000000000000'
 
 
@@ -156,7 +159,7 @@ def test_evalf_near_integers():
         return ((1 + sqrt(5))**n)/(2**n * sqrt(5))
     assert NS(f(5000) - fibonacci(5000), 10, maxn=1500) == '5.156009964e-1046'
     # Some near-integer identities from
-    # http://mathworld.wolfram.com/AlmostInteger.html
+    # https://mathworld.wolfram.com/AlmostInteger.html
     assert NS('sin(2017*2**(1/5))', 15) == '-1.00000000000000'
     assert NS('sin(2017*2**(1/5))', 20) == '-0.99999999999999997857'
     assert NS('1+sin(2017*2**(1/5))', 15) == '2.14322287389390e-17'
@@ -276,6 +279,14 @@ def test_evalf_integer_parts():
     check(2**112 + 2)
 
 
+def test_sympyissue_19991():
+    n = 1169809367327212570704813632106852886389036911
+    r = 744723773141314414542111064094745678855643068
+
+    assert floor(n/(pi/2)) == r
+    assert floor(80782*sqrt(2)) == 114242
+
+
 def test_evalf_trig_zero_detection():
     a = sin(160*pi, evaluate=False)
     t = a.evalf(maxn=100, strict=False)
@@ -339,14 +350,14 @@ def test_evalf_power_subs_bugs():
 
 
 def test_evalf_arguments():
-    pytest.raises(TypeError, lambda: pi.evalf(method="garbage"))
+    pytest.raises(TypeError, lambda: pi.evalf(method='garbage'))
 
 
 def test_implemented_function_evalf():
     f = Function('f')
     f = implemented_function(f, lambda x: x + 1)
-    assert str(f(x)) == "f(x)"
-    assert str(f(2)) == "f(2)"
+    assert str(f(x)) == 'f(x)'
+    assert str(f(2)) == 'f(2)'
     assert f(2).evalf(strict=False) == 3
     assert f(x).evalf(strict=False) == f(x)
     f = implemented_function(Function('sin'), lambda x: x + 1)
@@ -370,9 +381,13 @@ def test_sympyissue_5486():
     assert not cos(sqrt(0.5 + I)).evalf(strict=False).is_Function
 
 
+def test_from_mpmath():
+    # issue sympy/sympy#5486
+    pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
+
+
 def test_sympyissue_5486_bug():
     assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
-    pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
 
 
 def test_bugs():
@@ -426,7 +441,6 @@ def test_old_docstring():
 
 def test_sympyissue_4806():
     assert integrate(atan(x)**2, (x, -1, 1)).evalf().round(1) == 0.5
-    assert atan(0, evaluate=False).evalf() == 0
 
 
 def test_evalf_mul():
@@ -483,9 +497,9 @@ def test_evalf_integral():
 def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = N(s)
-    assert Abs(sin(p)) < 1e-15
+    assert abs(sin(p)) < 1e-15
     p = N(s, 64)
-    assert Abs(sin(p)) < 1e-64
+    assert abs(sin(p)) < 1e-64
 
 
 def test_sympyissue_8853():
@@ -554,3 +568,8 @@ def test_evalf_bernoulli():
 
 def test_evalf_abs():
     assert Abs(0, evaluate=False).evalf() == 0
+
+
+def test_sympyissue_19774():
+    assert exp(x/2).evalf() == Float('2.7182818284590451',
+                                     dps=15)**(Float('0.5', dps=15)*x)

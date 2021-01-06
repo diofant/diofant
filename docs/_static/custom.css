@@ -9,5 +9,5 @@
 
 .rst-content div[class^="highlight"] pre {
     line-height: normal;
-    font-family: 'DejaVuSansMonoBook', 'DejaVuSansMonoBookFallback', 'DejaVu Sans Mono', monospace;
+    font-family: 'DejaVu Sans Mono', 'DejaVuSansMonoBook', 'DejaVuSansMonoBookFallback', monospace;
 }

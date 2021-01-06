@@ -28,7 +28,7 @@ configure pretty printing, please use the
 
 Lets take this simple expression
 
-    >>> expr = Integral(sqrt(1/x), x)
+    >>> expr = Integral(sqrt(1/x))
 
 and try several available printers.
 

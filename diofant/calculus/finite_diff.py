@@ -55,7 +55,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
+    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2),
+    ...                               Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
       [1/2, 1/2, 0, 0],
@@ -81,7 +82,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
+    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1),
+    ...                               Integer(2), -Integer(2)], 0)[1]
     >>> res
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -100,7 +102,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
+    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0),
+    ...                               Integer(1), Integer(2)], 0)[1]
     >>> foo
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -121,12 +124,12 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     The capability to generate weights at arbitrary points can be
     used e.g. to minimize Runge's phenomenon by using Chebyshev nodes:
 
-    >>> N, (h, x) = 4, symbols('h x')
-    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)] # chebyshev nodes
+    >>> N, h = 4, symbols('h')
+    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)]  # chebyshev nodes
     >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
-    >>> [simplify(c) for c in  mycoeffs]
+    >>> [simplify(c) for c in mycoeffs]
     [(h**3/2 + h**2*x - 3*h*x**2 - 4*x**3)/h**4,
     (-sqrt(2)*h**3 - 4*h**2*x + 3*sqrt(2)*h*x**2 + 8*x**3)/h**4,
     6*x/h**2 - 8*x**3/h**4,
@@ -160,9 +163,9 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     """
     # The notation below closely corresponds to the one used in the paper.
     if order < 0:
-        raise ValueError("Negative derivative order illegal.")
+        raise ValueError('Negative derivative order illegal.')
     if int(order) != order:
-        raise ValueError("Non-integer order illegal")
+        raise ValueError('Non-integer order illegal')
     M = order
     N = len(x_list) - 1
     delta = [[[0 for nu in range(N+1)] for n in range(N+1)] for
@@ -217,7 +220,8 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> cube = lambda arg: (1.0*arg)**3
+    >>> def cube(arg):
+    ...     return (1.0*arg)**3
     >>> xlist = range(-3, 4)
     >>> apply_finite_diff(2, xlist, list(map(cube, xlist)), 2) - 12
     -3.55271367880050e-15
@@ -255,14 +259,13 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     .. _finitediff: https://github.com/bjodah/finitediff
 
     """
-
     # In the original paper the following holds for the notation:
     # M = order
     # N = len(x_list) - 1
 
     N = len(x_list) - 1
     if len(x_list) != len(y_list):
-        raise ValueError("x_list and y_list not equal in length.")
+        raise ValueError('x_list and y_list not equal in length.')
 
     delta = finite_diff_weights(order, x_list, x0)
 
@@ -305,7 +308,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     Examples
     ========
 
-    >>> x, h = symbols('x h')
+    >>> h = symbols('h')
     >>> as_finite_diff(f(x).diff(x))
     -f(x - 1/2) + f(x + 1/2)
 
@@ -336,7 +339,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     Partial derivatives are also supported:
 
-    >>> y = Symbol('y')
     >>> d2fdxdy = f(x, y).diff(x, y)
     >>> as_finite_diff(d2fdxdy, wrt=x)
     -f(x - 1/2, y) + f(x + 1/2, y)
@@ -373,6 +375,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
                       in range(-order, order + 1, 2)]
 
     if len(points) < order+1:
-        raise ValueError("Too few points for order %d" % order)
+        raise ValueError(f'Too few points for order {order:d}')
     return apply_finite_diff(order, points, [
         derivative.expr.subs({wrt: x}) for x in points], x0)

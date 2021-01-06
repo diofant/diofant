@@ -13,10 +13,10 @@ class Point(Basic):
         name = str(name)
         # Check the args first
         if not isinstance(position, Vector):
-            raise TypeError("position should be an instance of Vector, not %s" % type(position))
+            raise TypeError(f'position should be an instance of Vector, not {type(position)}')
         if (not isinstance(parent_point, Point)
                 and parent_point is not None):
-            raise TypeError("parent_point should be an instance of Point, not %s" % type(parent_point))
+            raise TypeError(f'parent_point should be an instance of Point, not {type(parent_point)}')
         # Super class construction
         if parent_point is None:
             obj = super().__new__(cls, Symbol(name), position)
@@ -58,11 +58,10 @@ class Point(Basic):
         (-10)*N.i
 
         """
-
         if (not isinstance(other, Point)
                 and not isinstance(other, CoordSysCartesian)):
             raise TypeError(str(other) +
-                            "is not a Point or CoordSysCartesian")
+                            'is not a Point or CoordSysCartesian')
         if isinstance(other, CoordSysCartesian):
             other = other.origin
         # Handle special cases
@@ -135,7 +134,6 @@ class Point(Basic):
         (10, 5, 0)
 
         """
-
         # Determine the position vector
         pos_vect = self.position_wrt(coordinate_system.origin)
         # Express it in the given coordinate system

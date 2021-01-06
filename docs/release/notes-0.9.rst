@@ -52,7 +52,7 @@ Compatibility breaks
 * Removed ``canonical_variables()`` property to :meth:`~diofant.core.expr.Expr.canonical_variables`, see :pull:`534`.
 * Removed ``group`` option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`, see :pull:`529`.
 * Removed support for Python 3.4, see :pull:`543`.
-* Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
+* Second argument of :func:`~diofant.solvers.utils.checksol` must be a :class:`dict`.  See :pull:`549`.
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 * Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.
@@ -193,7 +193,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`10770` Adding a row or a column to an empty matrix
 * :sympyissue:`10773` sympify evaluates Div Operation in case of Unary Operator when evaluate = False
 * :sympyissue:`13332` limit(): AttributeError: 'NoneType' object has no attribute 'rewrite'
-* :sympyissue:`13382` Incorrect Result for limit(n*(((n+1)**2+1)/((n)**2+1)-1), n ,oo)
+* :sympyissue:`13382` Incorrect Result for limit(n*(((n+1)**2+1)/(n**2+1)-1), n ,oo)
 * :sympyissue:`13403` Incorrect Result for limit(n*(-1 + (n + log(n + 1) + 1)/(n + log(n))), n ,oo)
 * :sympyissue:`13416` Incorrect Result for limit((-n**3*log(n)**3 + (n - 1)*(n + 1)**2*log(n + 1)**3)/(n**2*log(n)**3), n ,oo)
 * :sympyissue:`13462` Bug in sympy.limit()

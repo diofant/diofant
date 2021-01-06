@@ -3,11 +3,11 @@ This module implements sums and products containing the Kronecker Delta function
 """
 
 from ..core import Add, Dummy, Integer, Mul, cacheit
-from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
 from ..logic import true
 from ..polys import factor
 from ..sets import Interval
+from ..utilities import default_sort_key
 
 
 @cacheit
@@ -186,7 +186,7 @@ def deltaproduct(f, limit):
                                        (limit[0], ik + 1, limit[2]))
                           for ik in range(int(limit[1]), int(limit[2] + 1)))
         else:
-            k = Dummy("kprime", integer=True)
+            k = Dummy('kprime', integer=True)
             result += deltasummation(deltaproduct(newexpr,
                                                   (limit[0],
                                                    limit[1], k - 1)) *
@@ -273,8 +273,8 @@ def deltasummation(f, limit, no_piecewise=False):
     diofant.concrete.sums.summation
 
     """
-    from .summations import summation
     from ..solvers import solve
+    from .summations import summation
 
     if (limit[2] - limit[1] < 0) == true:
         return Integer(0)

@@ -2,11 +2,10 @@ from random import randint
 
 import pytest
 
-from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, factorint, oo,
-                     pi, powsimp, symbols)
+from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, default_sort_key,
+                     oo, pi, powsimp, sin, symbols)
 from diofant.abc import a, b, c, d, e
 from diofant.core.function import _mexpand
-from diofant.functions.elementary.trigonometric import sin
 from diofant.solvers.diophantine import (_can_do_sum_of_squares,
                                          _diop_general_sum_of_squares,
                                          _diop_ternary_quadratic_normal, _even,
@@ -26,18 +25,16 @@ from diofant.solvers.diophantine import (_can_do_sum_of_squares,
                                          partition, power_representation,
                                          prime_as_sum_of_two_squares,
                                          reconstruct, sqf_normal,
-                                         square_factor, sum_of_four_squares,
-                                         sum_of_powers, sum_of_squares,
-                                         sum_of_three_squares,
+                                         sum_of_four_squares, sum_of_powers,
+                                         sum_of_squares, sum_of_three_squares,
                                          transformation_to_DN,
                                          transformation_to_normal)
-from diofant.utilities import default_sort_key
 
 
 __all__ = ()
 
-n1, p, q, x, y, z, w, t, u, v, X, Y, Z = symbols("n1, p, q, x, y, z, w, t, u, v, X, Y, Z", integer=True)
-t_0, t_1, t_2, t_3, t_4, t_5, t_6 = symbols("t_:7", integer=True)
+n1, p, q, x, y, z, w, t, u, v, X, Y, Z = symbols('n1, p, q, x, y, z, w, t, u, v, X, Y, Z', integer=True)
+t_0, t_1, t_2, t_3, t_4, t_5, t_6 = symbols('t_:7', integer=True)
 m1, m2, m3 = symbols('m1:4', integer=True)
 n1 = symbols('n1', integer=True)
 
@@ -434,20 +431,6 @@ def test_diop_ternary_quadratic():
     assert diop_solve(x*y + 2*y*z) == (-4*p*q, -2*n1*p**2 + 2*p**2, 2*p*q)
 
 
-def test_square_factor():
-    assert square_factor(1) == square_factor(-1) == 1
-    assert square_factor(0) == 1
-    assert square_factor(5) == square_factor(-5) == 1
-    assert square_factor(4) == square_factor(-4) == 2
-    assert square_factor(12) == square_factor(-12) == 2
-    assert square_factor(6) == 1
-    assert square_factor(18) == 3
-    assert square_factor(52) == 2
-    assert square_factor(49) == 7
-    assert square_factor(392) == 14
-    assert square_factor(factorint(-12)) == 2
-
-
 def test_parametrize_ternary_quadratic():
     assert check_solutions(x**2 + y**2 - z**2)
     assert check_solutions(x**2 + 2*x*y + z**2)
@@ -552,6 +535,14 @@ def test_diophantine():
     assert diophantine(1/x + 1/y - Rational(1, 2)) == {(6, 3), (-2, 1),
                                                        (4, 4), (1, -2), (3, 6)}
 
+    # issue sympy/sympy#9538
+    eq = x - 3*y + 2
+
+    assert diophantine(eq, syms=[y, x]) == {(t_0, 3*t_0 - 2)}
+    assert diophantine(eq, syms=[x, y]) == {(3*t_0 - 2, t_0)}
+
+    pytest.raises(TypeError, lambda: diophantine(eq, syms={y, x}))
+
 
 def test_general_pythagorean():
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
@@ -565,7 +556,7 @@ def test_general_pythagorean():
 
 def test_diop_general_sum_of_squares_quick():
     for i in range(3, 10):
-        assert check_solutions(sum(i**2 for i in symbols(':%i' % i)) - i)
+        assert check_solutions(sum(i**2 for i in symbols(f':{i:d}')) - i)
     pytest.raises(ValueError, lambda: _diop_general_sum_of_squares((x, y), 2))
     assert _diop_general_sum_of_squares((x, y, z), -2) == set()
     eq = x**2 + y**2 + z**2 - (1 + 4 + 9)
@@ -597,7 +588,7 @@ def test_diop_partition():
         for k in range(1, 8):
             for p in partition(n, k):
                 assert len(p) == k
-    assert [p for p in partition(3, 5)] == []
+    assert list(partition(3, 5)) == []
     assert [list(p) for p in partition(3, 5, 1)] == [
         [0, 0, 0, 0, 3], [0, 0, 0, 1, 2], [0, 0, 1, 1, 1]]
     assert list(partition(0)) == [()]
@@ -742,6 +733,7 @@ def test_diopcoverage():
     assert cornacchia(1, 1, 5) == {(2, 1)}
     assert cornacchia(1, 2, 17) == {(3, 2)}
     assert cornacchia(2, 3, 31) == set()
+    assert cornacchia(1, 4, 52) == {(4, 3)}
 
     pytest.raises(ValueError, lambda: reconstruct(4, 20, 1))
 
@@ -891,13 +883,6 @@ def test__can_do_sum_of_squares():
     assert _can_do_sum_of_squares(1, 2)
     assert _can_do_sum_of_squares(2, 2)
     assert _can_do_sum_of_squares(3, 2) is False
-
-
-def test_sympyissue_9538():
-    eq = x - 3*y + 2
-    assert diophantine(eq, syms=[y, x]) == {(t_0, 3*t_0 - 2)}
-    pytest.raises(TypeError, lambda: diophantine(eq, syms={y, x}))
-    assert diophantine(eq, syms=[x, y]) == {(3*t_0 - 2, t_0)}
 
 
 def test_sympyissue_11959():

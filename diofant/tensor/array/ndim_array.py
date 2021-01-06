@@ -3,10 +3,11 @@ import collections
 from ...core import Expr, Integer, sympify
 from ...logic import true
 from ...matrices import MatrixBase
+from ...printing.defaults import DefaultPrinting
 from ..indexed import Indexed
 
 
-class NDimArray:
+class NDimArray(DefaultPrinting):
     """N-dim array.
 
     Examples
@@ -16,7 +17,8 @@ class NDimArray:
 
     >>> a = MutableDenseNDimArray.zeros(2, 3, 4)
     >>> a
-    [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
+    [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+     [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
 
     Create an N-dim array from a list;
 
@@ -24,7 +26,8 @@ class NDimArray:
     >>> a
     [[2, 3], [4, 5]]
 
-    >>> b = MutableDenseNDimArray([[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]])
+    >>> b = MutableDenseNDimArray([[[1, 2], [3, 4], [5, 6]],
+    ...                            [[7, 8], [9, 10], [11, 12]]])
     >>> b
     [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]
 
@@ -61,7 +64,7 @@ class NDimArray:
 
         if isinstance(index, (int, Integer)):
             if index >= self._loop_size:
-                raise ValueError("index out of range")
+                raise ValueError('index out of range')
             return index
 
         if len(index) != self._rank:
@@ -91,7 +94,7 @@ class NDimArray:
             for i, nth_dim in zip(tuple_index, self.shape):
                 i = sympify(i)
                 if ((i < 0) is true) or ((i >= nth_dim) is true):
-                    raise ValueError("index out of range")
+                    raise ValueError('index out of range')
             return Indexed(self, *tuple_index)
 
     def _setter_iterable_check(self, value):
@@ -107,7 +110,7 @@ class NDimArray:
             result = []
             elems, shapes = zip(*[f(i) for i in pointer])
             if len(set(shapes)) != 1:
-                raise ValueError("could not determine shape unambiguously")
+                raise ValueError('could not determine shape unambiguously')
             for i in elems:
                 result.extend(i)
             return result, (len(shapes),)+shapes[0]
@@ -139,15 +142,27 @@ class NDimArray:
             pass
 
         else:
-            raise TypeError("Data type not understood")
+            raise TypeError('Data type not understood')
 
         if isinstance(shape, (int, Integer)):
             shape = shape,
 
-        if any(not isinstance(dim, (int, Integer)) for dim in shape):
-            raise TypeError("Shape should contain integers only.")
+        shape = tuple(shape)
 
-        return tuple(shape), iterable
+        if any(not isinstance(dim, (int, Integer)) for dim in shape):
+            raise TypeError('Shape should contain integers only.')
+
+        if isinstance(iterable, collections.abc.Mapping):
+            for k, v in list(iterable.items()):
+                if not isinstance(k, collections.abc.Sequence):
+                    continue
+                new_key = 0
+                for i, idx in enumerate(k):
+                    new_key = new_key * shape[i] + idx
+                iterable[new_key] = iterable[k]
+                del iterable[k]
+
+        return shape, iterable
 
     def __len__(self):
         """Overload common function len(). Returns number of elements in array.
@@ -213,7 +228,8 @@ class NDimArray:
         Examples
         ========
 
-        >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
+        >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2)
+        ...                              for j in range(2)], (2, 2))
         >>> m
         [[0, 1], [2, 3]]
         >>> m.applyfunc(lambda i: 2*i)
@@ -235,10 +251,10 @@ class NDimArray:
         """
         def f(sh, shape_left, i, j):
             if len(shape_left) == 1:
-                return "["+", ".join([str(self[e]) for e in range(i, j)])+"]"
+                return '['+', '.join([str(self[e]) for e in range(i, j)])+']'
 
             sh //= shape_left[0]
-            return "[" + ", ".join([f(sh, shape_left[1:], i+e*sh, i+(e+1)*sh) for e in range(shape_left[0])]) + "]"  # + "\n"*len(shape_left)
+            return '[' + ', '.join([f(sh, shape_left[1:], i+e*sh, i+(e+1)*sh) for e in range(shape_left[0])]) + ']'  # + '\n'*len(shape_left)
 
         return f(self._loop_size, self.shape, 0, self._loop_size)
 
@@ -274,7 +290,7 @@ class NDimArray:
             raise TypeError(str(other))
 
         if self.shape != other.shape:
-            raise ValueError("array shape mismatch")
+            raise ValueError('array shape mismatch')
         result_list = [i + j for i, j in zip(self, other)]
 
         return type(self)(result_list, self.shape)
@@ -284,28 +300,28 @@ class NDimArray:
             raise TypeError(str(other))
 
         if self.shape != other.shape:
-            raise ValueError("array shape mismatch")
+            raise ValueError('array shape mismatch')
         result_list = [i - j for i, j in zip(self, other)]
 
         return type(self)(result_list, self.shape)
 
     def __mul__(self, other):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
-            raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
+            raise ValueError('scalar expected, use tensorproduct(...) for tensorial product')
         other = sympify(other)
         result_list = [i*other for i in self]
         return type(self)(result_list, self.shape)
 
     def __rmul__(self, other):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
-            raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
+            raise ValueError('scalar expected, use tensorproduct(...) for tensorial product')
         other = sympify(other)
         result_list = [other*i for i in self]
         return type(self)(result_list, self.shape)
 
     def __truediv__(self, other):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
-            raise ValueError("scalar expected")
+            raise ValueError('scalar expected')
         other = sympify(other)
         result_list = [i/other for i in self]
         return type(self)(result_list, self.shape)
@@ -315,7 +331,8 @@ class NDimArray:
 
     def __eq__(self, other):
         """
-        NDimArray instances can be compared to each other.
+        Compare NDimArray instances.
+
         Instances equal if they have same shape and data.
 
         Examples
@@ -341,7 +358,7 @@ class NDimArray:
     def _eval_transpose(self):
         from .arrayop import permutedims
         if self.rank() != 2:
-            raise ValueError("array rank not 2")
+            raise ValueError('array rank not 2')
         return permutedims(self, (1, 0))
 
     def transpose(self):
@@ -361,6 +378,8 @@ class NDimArray:
 
 
 class ImmutableNDimArray(NDimArray, Expr):
+    """An immutable version of the N-dim array."""
+
     _op_priority = 11.0
 
     def _subs(self, old, new, **hints):

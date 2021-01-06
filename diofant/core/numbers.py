@@ -91,13 +91,9 @@ def _str_to_Decimal_dps(s):
     try:
         num = decimal.Decimal(s)
     except decimal.InvalidOperation:
-        raise ValueError('string-float not recognized: %s' % s)
+        raise ValueError(f'string-float not recognized: {s}')
     else:
-        dps = len(num.as_tuple().digits)
-        if num.is_finite():
-            if num.as_integer_ratio()[1] == 1 and '.' not in s:
-                dps = max(dps, num.adjusted() + 1)
-        return num, dps
+        return num, len(num.as_tuple().digits)
 
 
 @cacheit
@@ -118,7 +114,7 @@ def igcd(*args):
     for b in args:
         if a == 1:
             break
-        a = math.gcd(a, abs(b))
+        a = math.gcd(a, b)
     return a
 
 
@@ -141,7 +137,7 @@ def ilcm(*args):
     for b in args:
         if a == 0:
             break
-        a = a*b // igcd(a, b)
+        a = a*b // math.gcd(a, b)
     return a
 
 
@@ -155,7 +151,8 @@ def igcdex(a, b):
 
     >>> igcdex(100, 2004)
     (-20, 1, 4)
-    >>> x, y = _[:-1]; x*100 + y*2004
+    >>> x, y = _[:-1]
+    >>> x*100 + y*2004
     4
 
     """
@@ -237,19 +234,19 @@ def mod_inverse(a, m):
     except ValueError:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
-            raise TypeError(filldedent('''
+            raise TypeError(filldedent("""
                 Expected numbers for arguments; symbolic `mod_inverse`
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert'''))
+                sympy.polys.polytools.invert"""))
         big = (m > 1)
         if not (big is S.true or big is S.false):
-            raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)
+            raise ValueError(f'm > 1 did not evaluate; try to simplify {m}')
         elif big:
             c = 1/a
     if c is None:
-        raise ValueError('inverse of %s (mod %s) does not exist' % (a, m))
+        raise ValueError(f'inverse of {a} (mod {m}) does not exist')
     return c
 
 
@@ -299,8 +296,8 @@ class Number(AtomicExpr):
             if isinstance(val, Number):
                 return val
             else:
-                raise ValueError('String "%s" does not denote a Number' % obj)
-        msg = "expected str|int|float|Decimal|Number object but got %r"
+                raise ValueError(f'String "{obj}" does not denote a Number')
+        msg = 'expected str|int|float|Decimal|Number object but got %r'
         raise TypeError(msg % type(obj).__name__)
 
     def invert(self, other, *gens, **args):
@@ -330,8 +327,7 @@ class Number(AtomicExpr):
 
     def _as_mpf_val(self, prec):  # pragma: no cover
         """Evaluation of mpf tuple accurate to at least prec bits."""
-        raise NotImplementedError('%s needs ._as_mpf_val() method' %
-                                  (self.__class__.__name__))
+        raise NotImplementedError(f'{self.__class__.__name__} needs ._as_mpf_val() method')
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -442,18 +438,18 @@ class Float(Number):
     >>> Float(3.5)
     3.50000000000000
     >>> Float(3)
-    3.00000000000000
+    3.
 
     Creating Floats from strings (and Python ``int`` type) will
     give a minimum precision of 15 digits, but the precision
     will automatically increase to capture all digits entered.
 
     >>> Float(1)
-    1.00000000000000
+    1.
     >>> Float(10**20)
     100000000000000000000.
     >>> Float('1e20')
-    100000000000000000000.
+    1.e+20
 
     However, *floating-point* numbers (Python ``float`` types) retain
     only 15 digits of precision:
@@ -476,23 +472,18 @@ class Float(Number):
     >>> Float(100, 4)
     100.0
 
-    Float can automatically count significant figures if a null string is sent
-    for the precision. (Auto-counting is only allowed for strings and ints).
+    Float can automatically count significant figures if decimal precision
+    argument is omitted. (Auto-counting is only allowed for strings and ints).
 
-    >>> Float('12e-3', '')
+    >>> Float('12e-3')
     0.012
-    >>> Float(3, '')
+    >>> Float(3)
     3.
-
-    If a number is written in scientific notation, only the digits before the
-    exponent are considered significant if a decimal appears, otherwise the
-    "e" signifies only how to move the decimal:
-
-    >>> Float('60.e2', '')  # 2 digits significant
+    >>> Float('60.e2')  # 2 digits significant
     6.0e+3
-    >>> Float('60e2', '')  # 4 digits significant
+    >>> Float('6000.')  # 4 digits significant
     6000.
-    >>> Float('600e-2', '')  # 3 digits significant
+    >>> Float('600e-2')  # 3 digits significant
     6.00
 
     Notes
@@ -549,18 +540,18 @@ class Float(Number):
     Although you can increase the precision of an existing Float using Float
     it will not increase the accuracy -- the underlying value is not changed:
 
-    >>> def show(f): # binary rep of Float
+    >>> def show(f):  # binary rep of Float
     ...     from diofant import Mul, Pow
     ...     s, m, e, b = f._mpf_
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
-    ...     print('%s at prec=%s' % (v, f._prec))
+    ...     print(f'{v} at prec={f._prec}')
     ...
     >>> t = Float('0.3', 3)
     >>> show(t)
     4915/2**14 at prec=13
-    >>> show(Float(t, 20)) # higher prec, not higher accuracy
+    >>> show(Float(t, 20))  # higher prec, not higher accuracy
     4915/2**14 at prec=70
-    >>> show(Float(t, 2)) # lower prec
+    >>> show(Float(t, 2))  # lower prec
     307/2**10 at prec=10
 
     """
@@ -580,17 +571,12 @@ class Float(Number):
             num = 'nan'
 
         if dps is None:
-            dps = 15
             if isinstance(num, Float):
                 return num
             elif isinstance(num, (str, numbers.Integral)):
                 num, dps = _str_to_Decimal_dps(str(num))
-                dps = max(15, dps)
-        elif dps == '':
-            if not isinstance(num, (str, numbers.Integral)):
-                raise ValueError('The null string can only be used when '
-                                 'the number to Float is passed as a string or an integer.')
-            num, dps = _str_to_Decimal_dps(str(num))
+            else:
+                dps = 15
 
         prec = mlib.libmpf.dps_to_prec(dps)
 
@@ -626,10 +612,7 @@ class Float(Number):
         return obj
 
     def __getnewargs__(self):
-        return self._mpf_,
-
-    def __getstate__(self):
-        return {'_prec': self._prec}
+        return self._mpf_, mlib.libmpf.prec_to_dps(self._prec)
 
     def _hashable_content(self):
         return self._mpf_, self._prec
@@ -730,7 +713,7 @@ class Float(Number):
 
     def _eval_power(self, expt):
         """
-        expt is symbolic object but not equal to 0, 1
+        Expt is symbolic object but not equal to 0, 1.
 
         (-p)**r -> exp(r*log(-p)) -> exp(r*(log(p) + I*Pi)) ->
                   -> p**r*(sin(Pi*r) + cos(Pi*r)*I)
@@ -845,7 +828,7 @@ class Float(Number):
     def __hash__(self):
         return super().__hash__()
 
-    def epsilon_eq(self, other, epsilon="1e-15"):
+    def epsilon_eq(self, other, epsilon='1e-15'):
         """Test approximate equality."""
         return abs(self - other) < Float(epsilon)
 
@@ -889,11 +872,11 @@ class Rational(Number):
     An arbitrarily precise Rational is obtained when a string literal is
     passed:
 
-    >>> Rational("1.23")
+    >>> Rational('1.23')
     123/100
     >>> Rational('1e-2')
     1/100
-    >>> Rational(".1")
+    >>> Rational('.1')
     1/10
 
     The conversion of floats to expressions or simple fractions can
@@ -955,7 +938,7 @@ class Rational(Number):
             f = fractions.Fraction(p)/fractions.Fraction(q)
             p, q = f.numerator, f.denominator
         except ValueError:
-            raise TypeError('invalid input: %s, %s' % (p, q))
+            raise TypeError(f'invalid input: {p}, {q}')
         except ZeroDivisionError:
             if p == 0:
                 return nan
@@ -1088,6 +1071,9 @@ class Rational(Number):
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.numerator, self.denominator, prec, rnd)
 
+    def _mpmath_(self, prec, rnd):
+        return mpmath.make_mpf(mlib.from_rational(self.numerator, self.denominator, prec, rnd))
+
     def __abs__(self):
         return Rational(abs(self.numerator), self.denominator)
 
@@ -1215,7 +1201,7 @@ class Rational(Number):
         return Number.lcm(self, other)
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1241,7 +1227,6 @@ class Rational(Number):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         if self:
             if self.is_positive:
                 return self, S.One
@@ -1261,6 +1246,7 @@ numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
+    """Represents integer numbers."""
 
     is_integer = True
     is_number = True
@@ -1301,6 +1287,9 @@ class Integer(Rational):
 
     def __index__(self):
         return int(self.numerator)
+
+    def __format__(self, format_spec):
+        return int(self.numerator).__format__(format_spec)
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -1450,6 +1439,7 @@ class RationalConstant(Rational):
 
 
 class IntegerConstant(Integer):
+    """Abstract class for integer constants."""
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
@@ -1628,7 +1618,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     oo
     >>> 42/oo
     0
-    >>> x = Symbol('x')
     >>> limit(exp(x), x, oo)
     oo
 
@@ -1716,14 +1705,13 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('-inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return oo
-                else:
+                elif other < 0:
                     return -oo
+                else:
+                    return zoo
         return NotImplemented
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return S.NegativeInfinity
@@ -1896,14 +1884,13 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return -oo
-                else:
+                elif other < 0:
                     return oo
+                else:
+                    return zoo
         return NotImplemented
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return oo
@@ -2114,9 +2101,6 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def __abs__(self):
-        return oo
-
     def __neg__(self):
         return self
 
@@ -2131,6 +2115,7 @@ zoo = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
+    """Base class for symbolic numbers."""
 
     is_commutative = True
     is_finite = True
@@ -2142,7 +2127,7 @@ class NumberSymbol(AtomicExpr):
         return AtomicExpr.__new__(cls)
 
     def approximation_interval(self, number_cls):
-        """ Return an interval with number_cls endpoints that contains the
+        """Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
 
         """
@@ -2334,7 +2319,6 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     true
     >>> pi.is_irrational
     True
-    >>> x = Symbol('x')
     >>> sin(x + 2*pi)
     sin(x)
     >>> integrate(exp(-x**2), (x, -oo, oo))
@@ -2541,7 +2525,8 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         return -I
 
     def _eval_power(self, expt):
-        """
+        """Helper for Pow constructor.
+
         b is I = sqrt(-1)
         e is symbolic object but not equal to 0, 1
 
@@ -2552,7 +2537,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
                 expt = expt.numerator % 4
@@ -2564,7 +2548,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
                     return -S.One
                 return -I
             return S.NegativeOne**(expt*S.Half)
-        return
 
     def as_base_exp(self):
         return S.NegativeOne, S.Half
@@ -2576,6 +2559,16 @@ I = S.ImaginaryUnit
 # Add sympify converters
 
 converter[float] = converter[decimal.Decimal] = Float
+
+try:
+    import numpy as np
+
+    def _sympify_numpy(x):
+        return Float(mpmath.mpmathify(x))
+
+    converter[np.floating] = _sympify_numpy
+except ImportError:
+    pass
 
 converter[int] = Integer
 converter[fractions.Fraction] = Rational

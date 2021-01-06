@@ -2,9 +2,8 @@
 import pytest
 
 from diofant import (E, Eq, Function, I, Integer, Lambda, Piecewise, Poly,
-                     Rational, Symbol, exp, factor, log, sin, sqrt, symbols,
-                     tan)
-from diofant.abc import a, nu, t, x, y, z
+                     Rational, exp, factor, log, sin, sqrt, symbols, tan)
+from diofant.abc import a, i, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
                                      NonElementaryIntegral, as_poly_1t,
                                      canonical_representation, derivation,
@@ -24,7 +23,6 @@ from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
 __all__ = ()
 
 t0, t1, t2 = symbols('t:3')
-i = Symbol('i')
 
 
 def test_gcdex_diophantine():
@@ -123,7 +121,7 @@ def test_hermite_reduce():
     assert hermite_reduce(
         Poly(x**2*t**5 + x*t**4 - nu**2*t**3 - x*(x**2 + 1)*t**2 - (x**2 - nu**2)*t - x**5/4, t),
         Poly(x**2*t**4 + x**2*(x**2 + 2)*t**2 + x**2 + x**4 + x**6/4, t), DE) == \
-        ((Poly(-x**2 - 4, t), Poly(4*t**2 + 2*x**2 + 4, t)),
+        ((Poly(-x**2/4 - 1, t), Poly(t**2 + x**2/2 + 1, t)),
          (Poly((-8*nu**2 - 4*x**4)*t - 8*x**3 - 8*x, t), Poly(8*x**2*t**2 + 4*x**4 + 8*x**2, t)),
          (Poly(x*t + 1, t), Poly(x, t)))
 
@@ -132,7 +130,7 @@ def test_hermite_reduce():
     assert hermite_reduce(
         Poly(-t**2 + 2*t + 2, t),
         Poly(-x*t**2 + 2*x*t - x, t), DE) == \
-        ((Poly(1, t), Poly((t - 1)/3, t)),
+        ((Poly(3, t), Poly(t - 1, t)),
          (Poly(0, t), Poly(1, t)),
          (Poly(1, t), Poly(x, t)))
 
@@ -512,6 +510,9 @@ def test_DifferentialExtension_handle_first():
             [Lambda(i, log(i)), Lambda(i, exp(t0*i))], [(exp(x*log(x)), x**x)],
             [2], [t0*x], [1], [x])
 
+    pytest.raises(ValueError,
+                  lambda: DifferentialExtension(x, x, handle_first='spam'))
+
 
 def test_DifferentialExtension_all_attrs():
     # Test 'unimportant' attributes
@@ -601,8 +602,6 @@ def test_DecrementLevel():
     class TestingException(Exception):
         """Dummy Exception class for testing."""
 
-        pass
-
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)
     assert DE.level == -1
     assert DE.t == t1
@@ -638,7 +637,7 @@ def test_DecrementLevel():
     except TestingException:
         pass
     else:
-        raise AssertionError("Did not raise.")
+        raise AssertionError('Did not raise.')
 
     assert DE.level == -1
     assert DE.t == t1

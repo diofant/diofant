@@ -8,7 +8,7 @@ from ..core.numbers import igcdex, mod_inverse
 from ..core.power import isqrt
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
-from .modular import crt
+from .modular import crt, crt1, crt2
 from .primetest import isprime
 
 
@@ -29,7 +29,7 @@ def n_order(a, n):
     """
     a, n = as_int(a), as_int(n)
     if math.gcd(a, n) != 1:
-        raise ValueError("The two numbers should be relatively prime")
+        raise ValueError('The two numbers should be relatively prime')
     factors = collections.defaultdict(int)
     f = factorint(n)
     for px, kx in f.items():
@@ -168,7 +168,7 @@ def is_primitive_root(a, p):
     """
     a, p = as_int(a), as_int(p)
     if math.gcd(a, p) != 1:
-        raise ValueError("The two numbers should be relatively prime")
+        raise ValueError('The two numbers should be relatively prime')
     if a > p:
         a = a % p
     return n_order(a, p) == totient(p)
@@ -273,7 +273,6 @@ def sqrt_mod_iter(a, p, domain=int):
     [21, 22]
 
     """
-    from ..polys.galoistools import gf_crt1, gf_crt2
     from ..domains import ZZ
     a, p = as_int(a), abs(as_int(p))
     if isprime(p):
@@ -304,14 +303,14 @@ def sqrt_mod_iter(a, p, domain=int):
                     return
             v.append(rx)
             pv.append(px**ex)
-        mm, e, s = gf_crt1(pv, ZZ)
+        mm, e, s = crt1(pv)
         if domain is ZZ:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield r
         else:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield domain(r)
 
 
@@ -728,7 +727,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     if not is_nthpow_residue(a, n, p):
         return
     if primitive_root(p) is None:
-        raise NotImplementedError("Not Implemented for m without primitive root")
+        raise NotImplementedError('Not Implemented for m without primitive root')
 
     if (p - 1) % n == 0:
         return _nthroot_mod1(a, n, p, all_roots)
@@ -817,7 +816,7 @@ def legendre_symbol(a, p):
     """
     a, p = as_int(a), as_int(p)
     if not isprime(p) or p == 2:
-        raise ValueError("p should be an odd prime")
+        raise ValueError('p should be an odd prime')
     a = a % p
     if not a:
         return 0
@@ -884,7 +883,7 @@ def jacobi_symbol(m, n):
     """
     m, n = as_int(m), as_int(n)
     if not n % 2:
-        raise ValueError("n should be an odd integer")
+        raise ValueError('n should be an odd integer')
     if m < 0 or m > n:
         m = m % n
     if not m:
@@ -954,9 +953,9 @@ class mobius(Function):
     def eval(cls, n):
         if n.is_integer:
             if n.is_positive is not True:
-                raise ValueError("n should be a positive integer")
+                raise ValueError('n should be a positive integer')
         else:
-            raise TypeError("n should be an integer")
+            raise TypeError('n should be an integer')
         if n.is_prime:
             return Integer(-1)
         elif n == 1:
@@ -987,7 +986,7 @@ def _discrete_log_trial_mul(n, a, b, order=None):
         if x == a:
             return i
         x = x * b % n
-    raise ValueError("Log does not exist")
+    raise ValueError('Log does not exist')
 
 
 def _discrete_log_shanks_steps(n, a, b, order=None):
@@ -1016,7 +1015,7 @@ def _discrete_log_shanks_steps(n, a, b, order=None):
         if x in T:
             return i * m + T[x]
         x = x * z % n
-    raise ValueError("Log does not exist")
+    raise ValueError('Log does not exist')
 
 
 def _discrete_log_pohlig_hellman(n, a, b, order=None):
@@ -1071,7 +1070,7 @@ def discrete_log(n, a, b, order=None, prime_order=None):
     References
     ==========
 
-    * http://mathworld.wolfram.com/DiscreteLogarithm.html
+    * https://mathworld.wolfram.com/DiscreteLogarithm.html
     * :cite:`Menezes97`
 
     Examples

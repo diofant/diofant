@@ -1,11 +1,8 @@
-"""Trait for implementing domain elements. """
+"""Trait for implementing domain elements."""
 
 import abc
 
 from ..printing.defaults import DefaultPrinting
-
-
-__all__ = 'DomainElement',
 
 
 class DomainElement(abc.ABC, DefaultPrinting):

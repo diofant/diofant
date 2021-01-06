@@ -1,5 +1,5 @@
 from ..logic.boolalg import Boolean, BooleanAtom, false, true
-from .compatibility import ordered
+from ..utilities import ordered
 from .evalf import EvalfMixin
 from .evaluate import global_evaluate
 from .expr import Expr
@@ -54,7 +54,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             new_cls = cls.ValidRelationOperator[rop]
             return new_cls(lhs, rhs, **assumptions)
         except KeyError:
-            raise ValueError("Invalid relational operator symbol: %r" % rop)
+            raise ValueError(f'Invalid relational operator symbol: {rop!r}')
 
     @property
     def lhs(self):
@@ -189,7 +189,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             return self
 
     def __bool__(self):
-        raise TypeError("cannot determine truth value of Relational")
+        raise TypeError('cannot determine truth value of Relational')
 
     def as_set(self):
         """
@@ -198,9 +198,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> (x > 0).as_set()
-        (0, oo)
+        (0, oo]
         >>> Eq(x, 0).as_set()
         {0}
 
@@ -211,9 +210,9 @@ class Relational(Boolean, Expr, EvalfMixin):
         if len(syms) == 1:
             sym = syms.pop()
         else:
-            raise NotImplementedError("Sorry, Relational.as_set procedure"
-                                      " is not yet implemented for"
-                                      " multivariate expressions")
+            raise NotImplementedError('Sorry, Relational.as_set procedure'
+                                      ' is not yet implemented for'
+                                      ' multivariate expressions')
 
         return solve_univariate_inequality(self, sym, relational=False)
 
@@ -474,7 +473,7 @@ class GreaterThan(_Greater):
     >>> e = GreaterThan(x, 1)
     >>> e
     x >= 1
-    >>> '%s >= %s is the same as %s <= %s' % (e.gts, e.lts, e.lts, e.gts)
+    >>> f'{e.gts} >= {e.lts} is the same as {e.lts} <= {e.gts}'
     'x >= 1 is the same as 1 <= x'
 
     Examples
@@ -503,7 +502,7 @@ class GreaterThan(_Greater):
     >>> e2 = x >= 2
     >>> print(e2)
     x >= 2
-    >>> print("e1: %s,    e2: %s" % (e1, e2))
+    >>> print('e1: %s,    e2: %s' % (e1, e2))
     e1: x >= 2,    e2: x >= 2
     >>> e1 == e2
     True
@@ -524,7 +523,7 @@ class GreaterThan(_Greater):
     x > 1
 
     >>> rels = Rel(x, 1, '<='), Relational(x, 1, '<='), LessThan(x, 1)
-    >>> print("%s\n%s\n%s" % rels)
+    >>> print('%s\n%s\n%s' % rels)
     x <= 1
     x <= 1
     x <= 1
@@ -550,15 +549,15 @@ class GreaterThan(_Greater):
     no way available to Diofant to recognize this has happened, so the statement
     (1 < x) will turn silently into (x > 1).
 
-    >>> e1 = x >  1
+    >>> e1 = x > 1
     >>> e2 = x >= 1
-    >>> e3 = x <  1
+    >>> e3 = x < 1
     >>> e4 = x <= 1
-    >>> e5 = 1 >  x
+    >>> e5 = 1 > x
     >>> e6 = 1 >= x
-    >>> e7 = 1 <  x
+    >>> e7 = 1 < x
     >>> e8 = 1 <= x
-    >>> print("%s     %s\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
+    >>> print('%s     %s\n'*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
     x > 1     x >= 1
     x < 1     x <= 1
     x < 1     x <= 1
@@ -569,15 +568,15 @@ class GreaterThan(_Greater):
     "sympify" the literal before comparison, (2) use one of the wrappers, or (3)
     use the less succinct methods described above:
 
-    >>> e1 = Integer(1) >  x
+    >>> e1 = Integer(1) > x
     >>> e2 = Integer(1) >= x
-    >>> e3 = Integer(1) <  x
+    >>> e3 = Integer(1) < x
     >>> e4 = Integer(1) <= x
     >>> e5 = Gt(1, x)
     >>> e6 = Ge(1, x)
     >>> e7 = Lt(1, x)
     >>> e8 = Le(1, x)
-    >>> print("%s     %s\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
+    >>> print('%s     %s\n'*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
     1 > x     1 >= x
     1 < x     1 <= x
     1 > x     1 >= x
@@ -610,7 +609,7 @@ class GreaterThan(_Greater):
 Ge = GreaterThan
 
 
-class LessThan(_Less):
+class LessThan(_Less):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '<='
@@ -623,7 +622,7 @@ class LessThan(_Less):
 Le = LessThan
 
 
-class StrictGreaterThan(_Greater):
+class StrictGreaterThan(_Greater):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '>'
@@ -636,7 +635,7 @@ class StrictGreaterThan(_Greater):
 Gt = StrictGreaterThan
 
 
-class StrictLessThan(_Less):
+class StrictLessThan(_Less):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '<'

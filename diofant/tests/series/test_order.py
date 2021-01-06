@@ -46,6 +46,10 @@ def test_simple_1():
 
     assert O(x**2).is_commutative
 
+    # issue sympy/sympy#9192
+    assert O(1)*O(1) == O(1)
+    assert O(1)**O(1) == O(1)
+
 
 def test_simple_2():
     assert O(2*x)*x == O(x**2)
@@ -430,11 +434,6 @@ def test_order_subs_limits():
 
 def test_sympyissue_9351():
     assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, (x, 10))
-
-
-def test_sympyissue_9192():
-    assert O(1)*O(1) == O(1)
-    assert O(1)**O(1) == O(1)
 
 
 def test_sympyissue_7599():

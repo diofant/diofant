@@ -1,8 +1,7 @@
-"""Gröbner bases algorithms. """
+"""Gröbner bases algorithms."""
 
 from ..core import Dummy
-from .monomials import (monomial_div, monomial_divides, monomial_lcm,
-                        monomial_mul)
+from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 
@@ -28,11 +27,11 @@ def groebner(seq, ring, method=None):
     try:
         _groebner = _groebner_methods[method]
     except KeyError:
-        raise ValueError("'%s' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')" % method)
+        raise ValueError(f"'{method}' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')")
 
     domain, orig = ring.domain, None
 
-    if not domain.is_Field or not domain.has_assoc_Field:
+    if not domain.is_Field and hasattr(domain, 'field'):
         orig, ring = ring, ring.clone(domain=domain.field)
         seq = [s.set_ring(ring) for s in seq]
 
@@ -89,7 +88,7 @@ def buchberger(f, ring):
     def select(P):
         # normal selection strategy
         # select the pair with minimum LCM(LM(f), LM(g))
-        pr = min(P, key=lambda pair: order(monomial_lcm(f[pair[0]].LM, f[pair[1]].LM)))
+        pr = min(P, key=lambda pair: order(f[pair[0]].LM.lcm(f[pair[1]].LM)))
         return pr
 
     def normal(g, J):
@@ -119,15 +118,15 @@ def buchberger(f, ring):
             ig = C.pop()
             g = f[ig]
             mg = g.LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
             def lcm_divides(ip):
                 # LCM(LM(h), LM(p)) divides LCM(LM(h), LM(g))
-                m = monomial_lcm(mh, f[ip].LM)
-                return monomial_divides(m, LCMhg)
+                m = mh.lcm(f[ip].LM)
+                return m.divides(LCMhg)
 
             # HT(h) and HT(g) disjoint: mh*mg == LCMhg
-            if monomial_mul(mh, mg) == LCMhg or (
+            if mh*mg == LCMhg or (
                 not any(lcm_divides(ipx) for ipx in C) and
                     not any(lcm_divides(pr[1]) for pr in D)):
                 D.add((ih, ig))
@@ -138,9 +137,9 @@ def buchberger(f, ring):
             # select h, g from D (h the same as above)
             ih, ig = D.pop()
             mg = f[ig].LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
-            if not monomial_mul(mh, mg) == LCMhg:
+            if not mh*mg == LCMhg:
                 E.add((ih, ig))
 
         # filter old pairs
@@ -151,12 +150,10 @@ def buchberger(f, ring):
             ig1, ig2 = B.pop()
             mg1 = f[ig1].LM
             mg2 = f[ig2].LM
-            LCM12 = monomial_lcm(mg1, mg2)
+            LCM12 = mg1.lcm(mg2)
 
             # if HT(h) does not divide lcm(HT(g1), HT(g2))
-            if not monomial_divides(mh, LCM12) or \
-                monomial_lcm(mg1, mh) == LCM12 or \
-                    monomial_lcm(mg2, mh) == LCM12:
+            if not mh.divides(LCM12) or mg1.lcm(mh) == LCM12 or mg2.lcm(mh) == LCM12:
                 B_new.add((ig1, ig2))
 
         B_new |= E
@@ -168,7 +165,7 @@ def buchberger(f, ring):
             ig = G.pop()
             mg = f[ig].LM
 
-            if not monomial_divides(mh, mg):
+            if not mh.divides(mg):
                 G_new.add(ig)
 
         G_new.add(ih)
@@ -259,9 +256,9 @@ def spoly(p1, p2):
     """
     LM1 = p1.LM
     LM2 = p2.LM
-    LCM12 = monomial_lcm(LM1, LM2)
-    m1 = monomial_div(LCM12, LM1)
-    m2 = monomial_div(LCM12, LM2)
+    LCM12 = LM1.lcm(LM2)
+    m1 = LCM12/LM1
+    m2 = LCM12/LM2
     s1 = p1.mul_monom(m1)
     s2 = p2.mul_monom(m2)
     s = s1 - s2
@@ -334,7 +331,7 @@ def sig_mult(s, m):
     (m * t, i).
 
     """
-    return sig(monomial_mul(s[0], m), s[1])
+    return sig(Monomial(s[0])*m, s[1])
 
 # labeled polynomial functions
 
@@ -412,7 +409,7 @@ def critical_pair(f, g, ring):
 
     ltf = Polyn(f).LT
     ltg = Polyn(g).LT
-    lt = ring.from_terms([(monomial_lcm(ltf[0], ltg[0]), domain.one)])
+    lt = ring.from_terms([(Monomial(ltf[0]).lcm(ltg[0]), domain.one)])
 
     um = lt.quo_term(ltf).LT
     vm = lt.quo_term(ltg).LT
@@ -461,13 +458,13 @@ def is_rewritable_or_comparable(sign, num, B):
     for h in B:
         # comparable
         if sign[1] < Sign(h)[1]:
-            if monomial_divides(Polyn(h).LM, sign[0]):
+            if Polyn(h).LM.divides(sign[0]):
                 return True
 
         # rewritable
         if sign[1] == Sign(h)[1]:
             if num < Num(h):
-                if monomial_divides(Sign(h)[0], sign[0]):
+                if Monomial(Sign(h)[0]).divides(sign[0]):
                     return True
     return False
 
@@ -485,10 +482,10 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> R, x, y, z = ring("x y z", QQ, lex)
+    >>> R, x, y, z = ring('x y z', QQ, lex)
 
-    >>> f = lbp(sig((1, 1, 1), 4), x, 3)
-    >>> g = lbp(sig((0, 0, 0), 2), x, 2)
+    >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
+    >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)
 
     >>> Polyn(f).div([Polyn(g)])[1]
     0
@@ -505,7 +502,7 @@ def f5_reduce(f, B):
         g = f
 
         for h in B:
-            if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
+            if Polyn(h) and Polyn(h).LM.divides(Polyn(f).LM):
                 t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
@@ -670,7 +667,7 @@ def red_groebner(G, ring):
     while F:
         f0 = F.pop()
 
-        if not any(monomial_divides(f.LM, f0.LM) for f in F + H):
+        if not any(f.LM.divides(f0.LM) for f in F + H):
             H.append(f0)
 
     # Becker, Weispfenning, p. 217: H is Gröbner basis of the ideal generated by G.
@@ -701,7 +698,7 @@ def is_minimal(G, ring):
             return False
 
         for h in G[:i] + G[i + 1:]:
-            if monomial_divides(h.LM, g.LM):
+            if h.LM.divides(g.LM):
                 return False
 
     return True
@@ -711,7 +708,7 @@ def groebner_lcm(f, g):
     """
     Computes LCM of two polynomials using Gröbner bases.
 
-    The LCM is computed as the unique generater of the intersection
+    The LCM is computed as the unique generator of the intersection
     of the two ideals generated by `f` and `g`. The approach is to
     compute a Gröbner basis with respect to lexicographic ordering
     of `t*f` and `(1 - t)*g`, where `t` is an unrelated variable and
@@ -724,7 +721,7 @@ def groebner_lcm(f, g):
 
     """
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
 
     ring = f.ring
     domain = ring.domain
@@ -732,43 +729,22 @@ def groebner_lcm(f, g):
     if not f or not g:
         return ring.zero
 
-    if len(f) <= 1 and len(g) <= 1:
-        monom = monomial_lcm(f.LM, g.LM)
-        coeff = domain.lcm(f.LC, g.LC)
-        return ring.term_new(monom, coeff)
-
     fc, f = f.primitive()
     gc, g = g.primitive()
 
-    lcm = domain.lcm(fc, gc)
+    t_ring = ring.clone(order=lex).inject(Dummy('t'), front=True)
+    t = t_ring.gens[0]
 
-    f_terms = [((1,) + monom, coeff) for monom, coeff in f.terms()]
-    g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
-        + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
+    basis = groebner([t*f, (1 - t)*g], t_ring)
+    H = [h for h in basis if h.degree() <= 0]
 
-    t = Dummy("t")
-    t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
-
-    F = t_ring.from_terms(f_terms)
-    G = t_ring.from_terms(g_terms)
-
-    basis = groebner([F, G], t_ring)
-
-    def is_independent(h, j):
-        return all(not monom[j] for monom in h.monoms())
-
-    H = [h for h in basis if is_independent(h, 0)]
-
-    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].terms()]
-    h = ring.from_terms(h_terms)
-
-    return h
+    return H[0].drop(0)*domain.lcm(fc, gc)
 
 
 def groebner_gcd(f, g):
     """Computes GCD of two polynomials using Gröbner bases."""
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
     domain = f.ring.domain
 
     if not domain.is_Field:
@@ -782,3 +758,152 @@ def groebner_gcd(f, g):
         return gcd*h
     else:
         return h.monic()
+
+
+def matrix_fglm(F, ring, O_to):
+    """
+    Converts the reduced Gröbner basis ``F`` of a zero-dimensional
+    ideal w.r.t. ``O_from`` to a reduced Gröbner basis
+    w.r.t. ``O_to``.
+
+    References
+    ==========
+
+    * :cite:`Faugere1993groebner`
+
+    """
+    domain = ring.domain
+    ngens = ring.ngens
+
+    ring_to = ring.clone(order=O_to)
+
+    old_basis = _basis(F, ring)
+    M = _representing_matrices(old_basis, F, ring)
+
+    # V contains the normalforms (wrt O_from) of S
+    S = [ring.zero_monom]
+    V = [[domain.one] + [domain.zero] * (len(old_basis) - 1)]
+    G = []
+
+    L = [(i, 0) for i in range(ngens)]  # (i, j) corresponds to x_i * S[j]
+    L.sort(key=lambda k_l: O_to(_incr_k(S[k_l[1]], k_l[0])), reverse=True)
+    t = L.pop()
+
+    P = _identity_matrix(len(old_basis), domain)
+
+    while True:
+        s = len(S)
+        v = _matrix_mul(M[t[0]], V[t[1]])
+        _lambda = _matrix_mul(P, v)
+
+        if all(_lambda[i] == domain.zero for i in range(s, len(old_basis))):
+            # there is a linear combination of v by V
+            lt = ring.term_new(_incr_k(S[t[1]], t[0]), domain.one)
+            rest = ring.from_dict({S[i]: _lambda[i] for i in range(s)})
+
+            g = (lt - rest).set_ring(ring_to)
+            if g:
+                G.append(g)
+        else:
+            # v is linearly independant from V
+            P = _update(s, _lambda, P)
+            S.append(_incr_k(S[t[1]], t[0]))
+            V.append(v)
+
+            L.extend([(i, s) for i in range(ngens)])
+            L = list(set(L))
+            L.sort(key=lambda k_l: O_to(_incr_k(S[k_l[1]], k_l[0])), reverse=True)
+
+        L = [(k, l) for (k, l) in L if all(not g.LM.divides(_incr_k(S[l], k)) for g in G)]
+
+        if not L:
+            G = [g.monic() for g in G]
+            return sorted(G, key=lambda g: O_to(g.LM), reverse=True)
+
+        t = L.pop()
+
+
+def _incr_k(m, k):
+    return tuple(list(m[:k]) + [m[k] + 1] + list(m[k + 1:]))
+
+
+def _identity_matrix(n, domain):
+    M = [[domain.zero]*n for _ in range(n)]
+
+    for i in range(n):
+        M[i][i] = domain.one
+
+    return M
+
+
+def _matrix_mul(M, v):
+    return [sum(row[i] * v[i] for i in range(len(v))) for row in M]
+
+
+def _update(s, _lambda, P):
+    """Update ``P`` such that for the updated `P'` `P' v = e_{s}`."""
+    k = min(j for j in range(s, len(_lambda)) if _lambda[j] != 0)
+
+    for r in range(len(_lambda)):
+        if r != k:
+            P[r] = [P[r][j] - (P[k][j] * _lambda[r]) / _lambda[k] for j in range(len(P[r]))]
+
+    P[k] = [P[k][j] / _lambda[k] for j in range(len(P[k]))]
+    P[k], P[s] = P[s], P[k]
+
+    return P
+
+
+def _representing_matrices(basis, G, ring):
+    r"""
+    Compute the matrices corresponding to the linear maps `m \mapsto
+    x_i m` for all variables `x_i`.
+
+    """
+    domain = ring.domain
+    u = ring.ngens-1
+
+    def var(i):
+        return ring._monomial_basis(i)
+
+    def representing_matrix(m):
+        M = [[domain.zero] * len(basis) for _ in range(len(basis))]
+
+        for i, v in enumerate(basis):
+            r = ring.term_new(m*v, domain.one).div(G)[1]
+
+            for monom, coeff in r.items():
+                j = basis.index(monom)
+                M[j][i] = coeff
+
+        return M
+
+    return [representing_matrix(var(i)) for i in range(u + 1)]
+
+
+def _basis(G, ring):
+    r"""
+    Computes a list of monomials which are not divisible by the leading
+    monomials wrt to ``O`` of ``G``. These monomials are a basis of
+    `K[X_1, \ldots, X_n]/(G)`.
+
+    """
+    order = ring.order
+
+    leading_monomials = [g.LM for g in G]
+    candidates = [ring.zero_monom]
+    basis = []
+
+    while candidates:
+        t = candidates.pop()
+        basis.append(t)
+
+        new_candidates = [_incr_k(t, k) for k in range(ring.ngens)
+                          if all(not lmg.divides(_incr_k(t, k))
+                                 for lmg in leading_monomials)]
+        candidates.extend(new_candidates)
+        candidates.sort(key=lambda m: order(m), reverse=True)
+
+    basis = list(set(basis))
+
+    return sorted(basis, key=lambda m: order(m))

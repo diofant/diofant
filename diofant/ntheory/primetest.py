@@ -70,8 +70,9 @@ def is_square(n, prep=True):
         m = n % 63
         if not ((m*0x3d491df7) & (m*0xc824a9f9) & 0x10f14008):
             from . import perfect_power
-            if perfect_power(n, [2]):
-                return True
+            test = perfect_power(n)
+            if test:
+                return test[1] % 2 == 0
     return False
 
 
@@ -117,8 +118,8 @@ def mr(n, bases):
     True
 
     """
-    from .factor_ import trailing
     from ..domains import ZZ
+    from .factor_ import trailing
 
     n = int(n)
     if n < 2:
@@ -164,7 +165,6 @@ def _mr_safe(n):
     * http://uucode.com/obf/dalbec/alg.html#sprp
 
     """
-
     if n < 1373653:
         return mr(n, [2, 3])
         # [2, 3] stot = 1 clear == bases
@@ -199,7 +199,7 @@ def _mr_safe(n):
     if n < 10000000000000000:
         return mr(n, [2, 3, 7, 61, 24251]) and n not in _pseudos
         # [2, 3, 7, 61, 24251] stot = 5 clear == bases
-    raise ValueError("n too large")
+    raise ValueError('n too large')
 
 
 def isprime(n):
@@ -266,7 +266,7 @@ def _mr_safe_helper(_s):
 
     e.g.
 
-    >>> print(_mr_safe_helper("if n < 170584961: return mr(n, [350, 3958281543])"))
+    >>> print(_mr_safe_helper('if n < 170584961: return mr(n, [350, 3958281543])'))
      # [350, 3958281543] stot = 1 clear [2, 3, 5, 7, 29, 67, 679067]
     >>> print(_mr_safe_helper('return mr(n, [2, 379215, 457083754])'))
      # [2, 379215, 457083754] stot = 1 clear [2, 3, 5, 53, 228541877]
@@ -298,7 +298,7 @@ def _mr_safe_helper(_s):
             factors = '== bases'
         else:
             factors = str(factors)
-        return ' # %s stot = %s clear %s' % tuple(str(x).replace('L', '')
+        return ' # %s stot = %s clear %s' % tuple(str(x).replace('L', '')  # noqa: SFS101
                                                   for x in (list(bases), tot,
                                                             factors))
 

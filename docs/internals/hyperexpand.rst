@@ -36,7 +36,7 @@ and the symbol `b` will always denote a denominator parameter. The
 subscripts `p, q, r, s` denote vectors of that length, so e.g.
 `a_p` denotes a vector of `p` numerator parameters. The subscripts
 `i` and `j` denote "running indices", so they should usually be used in
-conjuction with a "for all `i`". E.g. `a_i < 4` for all `i`.
+conjunction with a "for all `i`". E.g. `a_i < 4` for all `i`.
 Uppercase subscripts `I` and `J` denote a chosen, fixed index. So
 for example `a_I > 0` is true if the inequality holds for the one index
 `I` we are currently interested in.
@@ -160,7 +160,7 @@ If `r \ne 0`, then any such `a_p, b_q` is reachable from any
 congruent mod 1, such that `a_i < c < b_j` for all `i` and
 `j`, and similarly `a_i^0 < c^0 < b_j^0`. If `n = c - c^0 > 0` then
 we first inverse-shift all the `b_j^0` `n` times up, and then
-similarly shift shift up all the `a_i^0` `n` times. If `n <
+similarly shift up all the `a_i^0` `n` times. If `n <
 0` then we first inverse-shift down the `a_i^0` and then shift down the
 `b_j^0`. This reduces to the case `c = c^0`. But evidently we can
 now shift or inverse-shift around the `a_i^0` arbitrarily so long as we
@@ -325,6 +325,7 @@ and
 Hence
 
 .. math ::
+    \begin{aligned}
     res_{s = b + l_u + t} =& -z^{b + l_u}
        \frac{(-1)^{l_u}}{l_u!}
        \prod_{i=1}^{u} \frac{(-1)^{\delta_i}}{(l_u - k_i + 1)_{\delta_i}}
@@ -340,6 +341,7 @@ Hence
              \prod_{j=n+1}^p (-1)^t (l_u + b + 1 - a_j)_t^*}
             {\prod_{j=1}^m (-1)^t (l_u + b + 1 - b_j)_t^*
              \prod_{j=m+1}^q (1 - b_j + l_u + b)_t},
+    \end{aligned}
 
 where the `*` means to omit the terms we treated specially.
 
@@ -426,11 +428,13 @@ We get these functions mainly by guessing and testing the result. Hence
 we proceed by computing `f(g(w))` (and simplifying naively)
 
 .. math ::
+   \begin{aligned}
    f(g(w)) &= -\frac{\pi^2 g(w)^4}{16} \\
            &= -\frac{\pi^2 g\left(\frac{2}{\sqrt{\pi}} \exp\left(\frac{i \pi}{4}\right) w^{\frac{1}{4}}\right)^4}{16} \\
            &= -\frac{\pi^2 \frac{2^4}{\sqrt{\pi}^4} \exp\left(\frac{i \pi}{4}\right)^4 {w^{\frac{1}{4}}}^4}{16} \\
            &= -\exp\left(i \pi\right) w \\
            &= w
+   \end{aligned}
 
 and indeed get back `w`. (In case of branched functions we have to be
 aware of branch cuts. In that case we take `w` to be a positive real
@@ -456,7 +460,7 @@ and trivially
    = \frac{C\left(\frac{2}{\sqrt{\pi}} \exp\left(\frac{i \pi}{4}\right) w^{\frac{1}{4}}\right)}
           {\frac{2}{\sqrt{\pi}} \exp\left(\frac{i \pi}{4}\right) w^{\frac{1}{4}}}
 
-which is exactly what is needed for the third paramenter,
+which is exactly what is needed for the third parameter,
 ``res``, in ``add``. Finally, the whole function call to add
 this rule to the table looks like::
 
@@ -492,7 +496,8 @@ from above:
 Next we compute `z\frac{\mathrm{d}}{\mathrm{d}z} B_0`. For this we can
 directly use Diofant!
 
-   >>> B0 = sqrt(pi)*exp(-I*pi/4)*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4))
+   >>> B0 = (sqrt(pi)*exp(-I*pi/4) *
+   ...       fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4)))
    >>> z * diff(B0, z)
    z*(cosh(2*sqrt(z))/(4*z) - E**(-I*pi/4)*sqrt(pi)*fresnelc(2*E**(I*pi/4)*z**(1/4)/sqrt(pi))/(8*z**(5/4)))
    >>> expand(_)
@@ -512,8 +517,8 @@ Formatting this result nicely we obtain
 
 Computing the second derivative we find
 
-   >>> B1prime = cosh(2*sqrt(z))/4 - sqrt(pi)*exp(-I*pi/4)*\
-   ...           fresnelc(2*root(z,4)*exp(I*pi/4)/sqrt(pi))/(8*root(z,4))
+   >>> B1prime = cosh(2*sqrt(z))/4 - sqrt(pi)*exp(-I*pi/4) * \
+   ...     fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(8*root(z, 4))
    >>> z * diff(B1prime, z)
    z*(-cosh(2*sqrt(z))/(16*z) + sinh(2*sqrt(z))/(4*sqrt(z)) + E**(-I*pi/4)*sqrt(pi)*fresnelc(2*E**(I*pi/4)*z**(1/4)/sqrt(pi))/(32*z**(5/4)))
    >>> expand(_)
@@ -604,4 +609,5 @@ derived from them). These formulae are mostly taken from :cite:`Luke1969` and
 
 .. automodule:: diofant.simplify.hyperexpand_doc
 
-.. autofunction:: diofant.simplify.hyperexpand.add_formulae
+.. currentmodule:: diofant.simplify.hyperexpand
+.. autofunction:: add_formulae

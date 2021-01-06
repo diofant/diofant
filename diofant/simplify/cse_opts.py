@@ -1,4 +1,4 @@
-""" Optimizations of the expression tree representation for better CSE
+"""Optimizations of the expression tree representation for better CSE
 opportunities.
 """
 
@@ -7,7 +7,7 @@ from ..utilities.iterables import default_sort_key
 
 
 def sub_pre(e):
-    """ Replace y - x with -(x - y) if -1 can be extracted from y - x.
+    """Replace y - x with -(x - y) if -1 can be extracted from y - x.
     """
     reps = [a for a in e.atoms(Add) if a.could_extract_minus_sign()]
 
@@ -26,7 +26,7 @@ def sub_pre(e):
 
 
 def sub_post(e):
-    """ Replace 1*-1*x with -x.
+    """Replace 1*-1*x with -x.
     """
     replacements = []
     for node in preorder_traversal(e):

@@ -117,7 +117,7 @@ def multinomial_coefficients(m, n):
 
 
 def multinomial_coefficients_iterator(m, n, _tuple=tuple):
-    """multinomial coefficient iterator
+    """Multinomial coefficient iterator.
 
     This routine has been optimized for `m` large with respect to `n` by taking
     advantage of the fact that when the monomial tuples `t` are stripped of
@@ -126,7 +126,8 @@ def multinomial_coefficients_iterator(m, n, _tuple=tuple):
     precomputed to save memory and time.
 
     >>> m53, m33 = multinomial_coefficients(5, 3), multinomial_coefficients(3, 3)
-    >>> m53[(0, 0, 0, 1, 2)] == m53[(0, 0, 1, 0, 2)] == m53[(1, 0, 2, 0, 0)] == m33[(0, 1, 2)]
+    >>> (m53[(0, 0, 0, 1, 2)] == m53[(0, 0, 1, 0, 2)] ==
+    ...  m53[(1, 0, 2, 0, 0)] == m33[(0, 1, 2)])
     True
 
     Examples

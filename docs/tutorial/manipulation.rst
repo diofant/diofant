@@ -196,7 +196,8 @@ generic interface --- attributes :attr:`~diofant.core.basic.Basic.func` and
 The head of the object is encoded in the :attr:`~diofant.core.basic.Basic.func`
 attribute
 
-    >>> expr = 2 + x*y; expr
+    >>> expr = 2 + x*y
+    >>> expr
     x⋅y + 2
     >>> expr.func
     <class 'diofant.core.add.Add'>

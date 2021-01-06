@@ -1,15 +1,15 @@
 import pytest
 
-from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
-                     Piecewise, Rational, Sum, Symbol, acos, asin, asinh,
-                     besselj, cos, cosh, diff, erf, exp, li, log, pi, ratsimp,
-                     root, simplify, sin, sinh, sqrt, symbols, tan)
+from diofant import (Add, Derivative, E, Ei, Eq, Function, I, Integral,
+                     LambertW, Piecewise, Rational, Sum, Symbol, acos, asin,
+                     asinh, besselj, cos, cosh, diff, erf, erfi, exp, li, log,
+                     pi, ratsimp, root, simplify, sin, sinh, sqrt, tan)
+from diofant.abc import nu, x, y, z
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 
 __all__ = ()
 
-x, y, z, nu = symbols('x,y,z,nu')
 f = Function('f')
 
 
@@ -91,7 +91,7 @@ def test_heurisch_trigonometric():
     assert heurisch(sin(x)*sin(y), x) == -cos(x)*sin(y)
     assert heurisch(sin(x)*sin(y), y) == -cos(y)*sin(x)
 
-    # gives sin(x) in answer when run via setup.py and cos(x) when run via py.test
+    # gives sin(x) in answer when run via setup.py and cos(x) when run via pytest
     assert heurisch(sin(x)*cos(x), x) in [sin(x)**2 / 2, -cos(x)**2 / 2]
     assert heurisch(cos(x)/sin(x), x) == log(sin(x))
 
@@ -101,6 +101,8 @@ def test_heurisch_trigonometric():
 
     assert heurisch(acos(x/4) * asin(x/4), x) == 2*x - (sqrt(16 - x**2))*asin(x/4) \
         + (sqrt(16 - x**2))*acos(x/4) + x*asin(x/4)*acos(x/4)
+
+    assert heurisch(1/sin(1/x)/x**2, x) == -log(tan(1/x/2))
 
 
 def test_heurisch_hyperbolic():
@@ -163,17 +165,28 @@ def test_heurisch_hacking():
     assert (heurisch(sqrt(1 - 7*x**2), x, hints=[]) ==
             x*sqrt(1 - 7*x**2)/2 + sqrt(7)*asin(sqrt(7)*x)/14)
 
+    assert heurisch(sqrt(y*x**2 - 1), x, hints=[]) is None
+
     assert (heurisch(1/sqrt(1 + 7*x**2), x, hints=[]) ==
             sqrt(7)*asinh(sqrt(7)*x)/7)
     assert (heurisch(1/sqrt(1 - 7*x**2), x, hints=[]) ==
             sqrt(7)*asin(sqrt(7)*x)/7)
 
-    assert (heurisch(exp(-7*x**2), x, hints=[]) == sqrt(7*pi)*erf(sqrt(7)*x)/14)
+    assert heurisch(exp(-7*x**2), x, hints=[]) == sqrt(7*pi)*erf(sqrt(7)*x)/14
+    assert heurisch(exp(2*x**2), x,
+                    hints=[]) == sqrt(2)*sqrt(pi)*erfi(sqrt(2)*x)/4
+
+    assert (heurisch(exp(2*x**2 - 3*x), x, hints=[]) ==
+            sqrt(2)*sqrt(pi)*erfi(sqrt(2)*x - 3*sqrt(2)/4)/(4*E**Rational(9, 8)))
 
     assert heurisch(1/sqrt(9 - 4*x**2), x, hints=[]) == asin(2*x/3)/2
     assert heurisch(1/sqrt(9 + 4*x**2), x, hints=[]) == asinh(2*x/3)/2
 
     assert heurisch(li(x), x, hints=[]) == x*li(x) - Ei(2*log(x))
+    assert heurisch(li(log(x)), x, hints=[]) is None
+
+    assert (heurisch(sqrt(1 + x), x, hints=[x, sqrt(1 + x)]) ==
+            2*x*sqrt(x + 1)/3 + 2*sqrt(x + 1)/3)
 
 
 def test_heurisch_function():
@@ -181,6 +194,7 @@ def test_heurisch_function():
 
 
 def test_heurisch_wrapper():
+    assert heurisch_wrapper(1, x) == x
     f = 1/(y + x)
     assert heurisch_wrapper(f, x) == log(x + y)
     f = 1/(y - x)
@@ -272,7 +286,7 @@ def test_pmint_WrightOmega():
         return LambertW(exp(x))
 
     f = (1 + omega(x) * (2 + cos(omega(x)) * (x + omega(x))))/(1 + omega(x))/(x + omega(x))
-    g = log(x + LambertW(exp(x))) + sin(LambertW(exp(x)))
+    g = log(x + omega(x)) + sin(omega(x))
 
     assert heurisch(f, x) == g
 

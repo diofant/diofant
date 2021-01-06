@@ -1,15 +1,13 @@
 from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
-from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..utilities import default_sort_key
 from .precedence import precedence
 from .str import StrPrinter
 
 
 class AssignmentError(Exception):
     """Raised if an assignment variable for a loop is missing."""
-
-    pass
 
 
 class Assignment(Relational):
@@ -57,7 +55,7 @@ class Assignment(Relational):
         # Tuple of things that can be on the lhs of an assignment
         assignable = (Symbol, MatrixSymbol, MatrixElement, Indexed)
         if not isinstance(lhs, assignable):
-            raise TypeError("Cannot assign to lhs of type %s." % type(lhs))
+            raise TypeError('Cannot assign to lhs of type %s.' % type(lhs))
         # Indexed types implement shape, but don't define it until later. This
         # causes issues in assignment validation. For now, matrices are defined
         # as anything with a shape that is not an Indexed
@@ -66,11 +64,11 @@ class Assignment(Relational):
         # If lhs and rhs have same structure, then this assignment is ok
         if lhs_is_mat:
             if not rhs_is_mat:
-                raise ValueError("Cannot assign a scalar to a matrix.")
+                raise ValueError('Cannot assign a scalar to a matrix.')
             elif lhs.shape != rhs.shape:
                 raise ValueError("Dimensions of lhs and rhs don't align.")
         elif rhs_is_mat and not lhs_is_mat:
-            raise ValueError("Cannot assign a matrix to a scalar.")
+            raise ValueError('Cannot assign a matrix to a scalar.')
         return Relational.__new__(cls, lhs, rhs, **assumptions)
 
 
@@ -117,8 +115,7 @@ class CodePrinter(StrPrinter):
             else:
                 assign_to = Symbol(assign_to)
         elif not isinstance(assign_to, (Basic, type(None))):
-            raise TypeError("{0} cannot assign to object of type {1}".format(
-                type(self).__name__, type(assign_to)))
+            raise TypeError(f'{type(self).__name__} cannot assign to object of type {type(assign_to)}')
 
         if assign_to:
             expr = Assignment(assign_to, expr)
@@ -134,22 +131,22 @@ class CodePrinter(StrPrinter):
         lines = self._print(expr).splitlines()
 
         # format the output
-        if self._settings["human"]:
+        if self._settings['human']:
             frontlines = []
             if len(self._not_supported) > 0:
                 frontlines.append(self._get_comment(
-                    "Not supported in {0}:".format(self.language)))
+                    f'Not supported in {self.language}:'))
                 for expr in sorted(self._not_supported, key=str):
                     frontlines.append(self._get_comment(type(expr).__name__))
             for name, value in sorted(self._number_symbols, key=str):
                 frontlines.append(self._declare_number_const(name, value))
             lines = frontlines + lines
             lines = self._format_code(lines)
-            result = "\n".join(lines)
+            result = '\n'.join(lines)
         else:
             lines = self._format_code(lines)
             result = (self._number_symbols, self._not_supported,
-                      "\n".join(lines))
+                      '\n'.join(lines))
         del self._not_supported
         del self._number_symbols
         return result
@@ -163,6 +160,7 @@ class CodePrinter(StrPrinter):
         assert self._settings['contract']
 
         from ..tensor import get_contraction_structure
+
         # Setup loops over non-dummy indices  --  all terms need these
         indices = self._get_expression_indices(expr, assign_to)
         # Setup loops over dummy indices  --  each term needs separate treatment
@@ -183,7 +181,7 @@ class CodePrinter(StrPrinter):
         if text != lhs_printed:
             lines.extend(openloop)
             assert assign_to is not None
-            text = self._get_statement("%s = %s" % (lhs_printed, text))
+            text = self._get_statement(f'{lhs_printed} = {text}')
             lines.append(text)
             lines.extend(closeloop)
 
@@ -201,7 +199,7 @@ class CodePrinter(StrPrinter):
                         # contractions, those must be computed first.
                         # (temporary variables?)
                         raise NotImplementedError(
-                            "FIXME: no support for contractions in factor yet")
+                            'FIXME: no support for contractions in factor yet')
                     else:
 
                         # We need the lhs expression as an accumulator for
@@ -220,13 +218,13 @@ class CodePrinter(StrPrinter):
 
                         lines.extend(openloop)
                         lines.extend(openloop_d)
-                        text = "%s = %s" % (lhs_printed, StrPrinter.doprint(
+                        text = '%s = %s' % (lhs_printed, StrPrinter.doprint(
                             self, assign_to + term))
                         lines.append(self._get_statement(text))
                         lines.extend(closeloop_d)
                         lines.extend(closeloop)
 
-        return "\n".join(lines)
+        return '\n'.join(lines)
 
     def _get_expression_indices(self, expr, assign_to):
         from ..tensor import get_indices
@@ -237,8 +235,7 @@ class CodePrinter(StrPrinter):
         if linds and not rinds:
             rinds = linds
         if rinds != linds:
-            raise ValueError("lhs indices must match non-dummy"
-                             " rhs indices in %s" % expr)
+            raise ValueError(f'lhs indices must match non-dummy rhs indices in {expr}')
 
         return self._sort_optimized(rinds, assign_to)
 
@@ -265,29 +262,29 @@ class CodePrinter(StrPrinter):
         return sorted(indices, key=lambda x: score_table[x])
 
     def _rate_index_position(self, p):
-        """function to calculate score based on position among indices
+        """Function to calculate score based on position among indices.
 
         This method is used to sort loops in an optimized order, see
-        CodePrinter._sort_optimized()
+        CodePrinter._sort_optimized().
 
         """
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _get_statement(self, codestring):
         """Formats a codestring with the proper line ending."""
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _get_comment(self, text):
         """Formats a text string as a comment."""
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _declare_number_const(self, name, value):
         """Declare a numeric constant at the top of a function."""
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _format_code(self, lines):
         """Take in a list of lines of code, and format them accordingly.
@@ -295,16 +292,16 @@ class CodePrinter(StrPrinter):
         This may include indenting, wrapping long lines, etc...
 
         """
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
         of codelines
 
         """
-        raise NotImplementedError("This function must be implemented by "
-                                  "subclass of CodePrinter.")  # pragma: no cover
+        raise NotImplementedError('This function must be implemented by '
+                                  'subclass of CodePrinter.')  # pragma: no cover
 
     def _print_Assignment(self, expr):
         from ..functions import Piecewise
@@ -331,8 +328,8 @@ class CodePrinter(StrPrinter):
                 temp = Assignment(lhs[i, j], rhs[i, j])
                 code0 = self._print(temp)
                 lines.append(code0)
-            return "\n".join(lines)
-        elif self._settings["contract"] and (lhs.has(IndexedBase) or
+            return '\n'.join(lines)
+        elif self._settings['contract'] and (lhs.has(IndexedBase) or
                                              rhs.has(IndexedBase)):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
@@ -340,7 +337,7 @@ class CodePrinter(StrPrinter):
         else:
             lhs_code = self._print(lhs)
             rhs_code = self._print(rhs)
-            return self._get_statement("%s = %s" % (lhs_code, rhs_code))
+            return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Symbol(self, expr):
 
@@ -370,7 +367,7 @@ class CodePrinter(StrPrinter):
             try:
                 return func(*[self.parenthesize(item, 0) for item in expr.args])
             except TypeError:
-                return "%s(%s)" % (func, self.stringify(expr.args, ", "))
+                return '%s(%s)' % (func, self.stringify(expr.args, ', '))
         elif hasattr(expr, '_imp_') and isinstance(expr._imp_, Lambda):
             # inlined function
             return self._print(expr._imp_(*expr.args))
@@ -383,12 +380,12 @@ class CodePrinter(StrPrinter):
         # A Number symbol that is not implemented here or with _printmethod
         # is registered and evaluated
         self._number_symbols.add((expr,
-                                  self._print(expr.evalf(self._settings["precision"]))))
+                                  self._print(expr.evalf(self._settings['precision']))))
         return str(expr)
 
     def _print_Dummy(self, expr):
         # dummies must be printed as unique symbols
-        return "%s_%i" % (expr.name, expr.dummy_index)  # Dummy
+        return f'{expr.name}_{expr.dummy_index:d}'  # Dummy
 
     def _print_Catalan(self, expr):
         return self._print_NumberSymbol(expr)
@@ -407,26 +404,26 @@ class CodePrinter(StrPrinter):
 
     def _print_And(self, expr):
         PREC = precedence(expr)
-        return (" %s " % self._operators['and']).join(self.parenthesize(a, PREC)
+        return (' %s ' % self._operators['and']).join(self.parenthesize(a, PREC)
                                                       for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Or(self, expr):
         PREC = precedence(expr)
-        return (" %s " % self._operators['or']).join(self.parenthesize(a, PREC)
+        return (' %s ' % self._operators['or']).join(self.parenthesize(a, PREC)
                                                      for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Xor(self, expr):
         if self._operators.get('xor') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
-        return (" %s " % self._operators['xor']).join(self.parenthesize(a, PREC)
+        return (' %s ' % self._operators['xor']).join(self.parenthesize(a, PREC)
                                                       for a in expr.args)
 
     def _print_Equivalent(self, expr):
         if self._operators.get('equivalent') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
-        return (" %s " % self._operators['equivalent']).join(self.parenthesize(a, PREC)
+        return (' %s ' % self._operators['equivalent']).join(self.parenthesize(a, PREC)
                                                              for a in expr.args)
 
     def _print_Not(self, expr):
@@ -440,9 +437,9 @@ class CodePrinter(StrPrinter):
         c, e = expr.as_coeff_Mul()
         if c < 0:
             expr = _keep_coeff(-c, e)
-            sign = "-"
+            sign = '-'
         else:
-            sign = ""
+            sign = ''
 
         a = []  # items in the numerator
         b = []  # items that are in the denominator (if any)
@@ -471,9 +468,9 @@ class CodePrinter(StrPrinter):
         if len(b) == 0:
             return sign + '*'.join(a_str)
         elif len(b) == 1:
-            return sign + '*'.join(a_str) + "/" + b_str[0]
+            return sign + '*'.join(a_str) + '/' + b_str[0]
         else:
-            return sign + '*'.join(a_str) + "/(%s)" % '*'.join(b_str)
+            return sign + '*'.join(a_str) + '/(%s)' % '*'.join(b_str)
 
     def _print_not_supported(self, expr):
         self._not_supported.add(expr)
@@ -495,7 +492,6 @@ class CodePrinter(StrPrinter):
     _print_ImmutableMatrix = _print_not_supported
     _print_MutableDenseMatrix = _print_not_supported
     _print_MatrixBase = _print_not_supported
-    _print_DeferredVector = _print_not_supported
     _print_NaN = _print_not_supported
     _print_NegativeInfinity = _print_not_supported
     _print_Normal = _print_not_supported

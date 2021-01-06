@@ -615,16 +615,16 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_tractable(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tractable", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg)
 
     def _eval_rewrite_as_tanh(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tanh", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tanh', arg)
 
     def _eval_rewrite_as_coth(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_coth", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_coth', arg)
 
     def as_real_imag(self, deep=True, **hints):
         return (1 / self._reciprocal_of(self.args[0])).as_real_imag(deep, **hints)
@@ -918,6 +918,16 @@ class acosh(Function):
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
         return cosh
+
+    def _eval_rewrite_as_log(self, x):
+        return log(x + sqrt(x - 1)*sqrt(x + 1))
+
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 == 1:
+            return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
+        else:
+            return super()._eval_nseries(x, n, logx)
 
 
 class atanh(Function):

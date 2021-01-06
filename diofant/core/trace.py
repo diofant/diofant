@@ -1,6 +1,6 @@
 from ..matrices import Matrix
+from ..utilities import default_sort_key
 from .add import Add
-from .compatibility import default_sort_key
 from .containers import Tuple
 from .expr import Expr
 from .mul import Mul
@@ -10,7 +10,6 @@ from .sympify import sympify
 
 def _is_scalar(e):
     """Helper method used in Tr."""
-
     # sympify to set proper attributes
     e = sympify(e)
     if isinstance(e, Expr):
@@ -22,7 +21,7 @@ def _is_scalar(e):
 
 
 def _cycle_permute(l):
-    """ Cyclic permutations based on canonical ordering
+    """Cyclic permutations based on canonical ordering.
 
     This method does the sort based ascii values while
     a better approach would be to used lexicographic sort.
@@ -56,8 +55,8 @@ def _cycle_permute(l):
 
 
 def _rearrange_args(l):
-    """ Just moves the last arg to first position
-    to enable expansion of args A,B,A ==> A**2,B
+    """Just moves the last arg to first position
+    to enable expansion of args A,B,A ==> A**2,B.
 
     """
     assert len(l) > 1
@@ -68,7 +67,7 @@ def _rearrange_args(l):
 
 
 class Tr(Expr):
-    """ Generic Trace operation than can trace over:
+    """Generic Trace operation than can trace over:
 
     a) diofant matrix
     b) operators
@@ -98,7 +97,7 @@ class Tr(Expr):
     """
 
     def __new__(cls, *args):
-        """ Construct a Trace object.
+        """Construct a Trace object.
 
         Parameters
         ==========
@@ -106,7 +105,6 @@ class Tr(Expr):
         indices = tuple/list if indices, optional
 
         """
-
         # expect no indices,int or a tuple/list/Tuple
         if (len(args) == 2):
             if not isinstance(args[1], (list, Tuple, tuple)):
@@ -119,8 +117,8 @@ class Tr(Expr):
             indices = Tuple()
             expr = args[0]
         else:
-            raise ValueError("Arguments to Tr should be of form "
-                             "(expr[, [indices]])")
+            raise ValueError('Arguments to Tr should be of form '
+                             '(expr[, [indices]])')
 
         if isinstance(expr, Matrix):
             return expr.trace()
@@ -158,7 +156,7 @@ class Tr(Expr):
     # TODO: Review if the permute method is needed
     # and if it needs to return a new instance
     def permute(self, pos):
-        """ Permute the arguments cyclically.
+        """Permute the arguments cyclically.
 
         Parameters
         ==========

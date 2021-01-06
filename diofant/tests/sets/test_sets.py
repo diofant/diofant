@@ -1,3 +1,5 @@
+"""Generic set theory tests."""
+
 import pytest
 from mpmath import mpi
 
@@ -283,7 +285,7 @@ def test_intersection():
     assert set(i) == {Integer(2), Integer(3)}
 
     # challenging intervals
-    x = Symbol('x', extended_real=True)
+    x = Symbol('x', real=True)
     i = Intersection(Interval(0, 3), Interval(x, 6))
     assert (5 in i) is False
     pytest.raises(TypeError, lambda: 2 in i)
@@ -291,6 +293,11 @@ def test_intersection():
     # Singleton special cases
     assert Intersection(Interval(0, 1), S.EmptySet) == S.EmptySet
     assert Intersection(S.Reals, Interval(-oo, x, True)) == Interval(-oo, x, True)
+    assert Intersection(S.Reals, Interval(-oo, x)) == Interval.Lopen(-oo, x)
+    assert Intersection(S.Reals, Interval(x, oo)) == Interval.Ropen(x, oo)
+    assert Intersection(S.Reals, Interval(-oo, 1)) == Interval.Lopen(-oo, 1)
+    assert Intersection(S.Reals, Interval(1, oo)) == Interval.Ropen(1, oo)
+    assert Intersection(S.ExtendedReals, Interval(1, 2)) == Interval(1, 2)
 
     # Products
     line = Interval(0, 5)
@@ -524,17 +531,18 @@ def test_is_number():
 def test_Interval_is_left_unbounded():
     assert Interval(3, 4).is_left_unbounded is False
     assert Interval(-oo, 3).is_left_unbounded is True
-    assert Interval(Float("-inf"), 3).is_left_unbounded is True
+    assert Interval(Float('-inf'), 3).is_left_unbounded is True
 
 
 def test_Interval_is_right_unbounded():
     assert Interval(3, 4).is_right_unbounded is False
     assert Interval(3, oo).is_right_unbounded is True
-    assert Interval(3, Float("+inf")).is_right_unbounded is True
+    assert Interval(3, Float('+inf')).is_right_unbounded is True
 
 
 def test_Interval_as_relational():
     x = Symbol('x')
+
     assert Interval(-1, 2, False, False).as_relational(x) == \
         And(Le(-1, x), Le(x, 2))
     assert Interval(-1, 2, True, False).as_relational(x) == \
@@ -544,13 +552,20 @@ def test_Interval_as_relational():
     assert Interval(-1, 2, True, True).as_relational(x) == \
         And(Lt(-1, x), Lt(x, 2))
 
-    assert Interval(-oo, 2, right_open=False).as_relational(x) == And(Le(-oo, x), Le(x, 2))
-    assert Interval(-oo, 2, right_open=True).as_relational(x) == And(Le(-oo, x), Lt(x, 2))
+    assert Interval(-oo, 2, True, False).as_relational(x) == And(Lt(-oo, x), Le(x, 2))
+    assert Interval(-oo, 2, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, 2))
 
-    assert Interval(-2, oo, left_open=False).as_relational(x) == And(Le(-2, x), Le(x, oo))
-    assert Interval(-2, oo, left_open=True).as_relational(x) == And(Lt(-2, x), Le(x, oo))
+    assert Interval(-oo, 2, False, False).as_relational(x) == Le(x, 2)
+    assert Interval(-oo, 2, False, True).as_relational(x) == Lt(x, 2)
 
-    assert Interval(-oo, oo).as_relational(x) == And(Le(-oo, x), Le(x, oo))
+    assert Interval(-2, oo, False, True).as_relational(x) == And(Le(-2, x), Lt(x, oo))
+    assert Interval(-2, oo, True, True).as_relational(x) == And(Lt(-2, x), Lt(x, oo))
+
+    assert Interval(-2, oo, False, False).as_relational(x) == Le(-2, x)
+    assert Interval(-2, oo, True, False).as_relational(x) == Lt(-2, x)
+
+    assert Interval(-oo, oo, True, True).as_relational(x) == And(Lt(-oo, x), Lt(x, oo))
+    assert Interval(-oo, oo).as_relational(x) == true
 
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
@@ -622,6 +637,15 @@ def test_finite_basic():
             FiniteSet(Float('2.7182818284590451', dps=15),
                       Float('3.1415926535897931', dps=15)))
 
+    # issue sympy/sympy#10337
+    assert (FiniteSet(2) == 3) is False
+    assert (FiniteSet(2) != 3) is True
+
+    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
+    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
+
 
 def test_powerset():
     # EmptySet
@@ -661,10 +685,10 @@ def test_product_basic():
     assert (d4*d4).is_subset(d6*d6)
 
     assert (square.complement(Interval(-oo, oo)*Interval(-oo, oo)) ==
-            Union((Interval(-oo, 0, True, True) +
-                   Interval(1, oo, True, True))*Interval(-oo, oo),
-                  Interval(-oo, oo)*(Interval(-oo, 0, True, True) +
-                                     Interval(1, oo, True, True))))
+            Union((Interval(-oo, 0, False, True) +
+                   Interval(1, oo, True))*Interval(-oo, oo),
+                  Interval(-oo, oo)*(Interval(-oo, 0, False, True) +
+                                     Interval(1, oo, True))))
 
     assert (Interval(-5, 5)**3).is_subset(Interval(-10, 10)**3)
     assert not (Interval(-10, 10)**3).is_subset(Interval(-5, 5)**3)
@@ -759,6 +783,10 @@ def test_image_interval():
         + Interval(2, oo)  # Single Infinite discontinuity
     assert imageset(x, 1/x + 1/(x - 1)**2, Interval(0, 2, True, False)) == \
         Interval(Rational(3, 2), oo, False, True)  # Multiple Infinite discontinuities
+
+    # issue sympy/sympy#10113
+    assert imageset(x, x**2/(x**2 - 4),
+                    Interval(-2, 2)) == Interval(-oo, 0, True)
 
     # Test for Python lambda
     assert imageset(lambda x: 2*x, Interval(-2, 1)) == Interval(-4, 2)
@@ -966,7 +994,6 @@ def test_sympyissue_10113():
     f = x**2/(x**2 - 4)
     assert imageset(x, f, S.Reals) == Union(Interval(-oo, 0, True),
                                             Interval(1, oo, True, True))
-    assert imageset(x, f, Interval(-2, 2)) == Interval(-oo, 0, True)
     assert imageset(x, f, Interval(-2, 3)) == Union(Interval(-oo, 0, True),
                                                     Interval(Rational(9, 5),
                                                              oo, False, True))
@@ -977,16 +1004,6 @@ def test_sympyissue_9808():
             Complement(FiniteSet(y), FiniteSet(1), evaluate=False))
     assert (Complement(FiniteSet(1, 2, x), FiniteSet(x, y, 2, 3)) ==
             Complement(FiniteSet(1), FiniteSet(y), evaluate=False))
-
-
-def test_sympyissue_10337():
-    assert (FiniteSet(2) == 3) is False
-    assert (FiniteSet(2) != 3) is True
-
-    pytest.raises(TypeError, lambda: FiniteSet(2) < 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) <= 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) > 3)
-    pytest.raises(TypeError, lambda: FiniteSet(2) >= 3)
 
 
 def test_sympyissue_9447():

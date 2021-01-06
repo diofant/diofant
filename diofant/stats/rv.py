@@ -1,5 +1,5 @@
 """
-Main Random Variables Module
+Main Random Variables Module.
 
 Defines abstract random variable type.
 Contains interfaces for probability space object (PSpace) as well as standard
@@ -16,6 +16,7 @@ diofant.stats.rv_interface
 from ..abc import x
 from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, Symbol, Tuple,
                     oo, sympify)
+from ..core.logic import fuzzy_or
 from ..core.relational import Relational
 from ..functions import DiracDelta
 from ..logic.boolalg import Boolean, false, true
@@ -110,7 +111,7 @@ class ConditionalDomain(RandomDomain):
 
     @property
     def set(self):  # pragma: no cover
-        raise NotImplementedError("Set of Conditional Domain not Implemented")
+        raise NotImplementedError('Set of Conditional Domain not Implemented')
 
 
 class PSpace(Expr):
@@ -166,7 +167,7 @@ class SinglePSpace(PSpace):
         if isinstance(s, str):
             s = Symbol(s)
         if not isinstance(s, Symbol):
-            raise TypeError("s should have been string or Symbol")
+            raise TypeError('s should have been string or Symbol')
         return Expr.__new__(cls, s, distribution)
 
     @property
@@ -211,9 +212,9 @@ class RandomSymbol(Expr):
 
     def __new__(cls, pspace, symbol):
         if not isinstance(symbol, Symbol):
-            raise TypeError("symbol should be of type Symbol")
+            raise TypeError('symbol should be of type Symbol')
         if not isinstance(pspace, PSpace):
-            raise TypeError("pspace variable should be of type PSpace")
+            raise TypeError('pspace variable should be of type PSpace')
         return Expr.__new__(cls, pspace, symbol)
 
     is_finite = True
@@ -233,7 +234,8 @@ class RandomSymbol(Expr):
         return self.symbol.is_integer
 
     def _eval_is_extended_real(self):
-        return self.symbol.is_extended_real or self.pspace.is_extended_real
+        return fuzzy_or([self.symbol.is_extended_real,
+                         self.pspace.is_extended_real])
 
     def _eval_is_commutative(self):
         return self.symbol.is_commutative
@@ -265,7 +267,7 @@ class ProductPSpace(PSpace):
 
         # Overlapping symbols
         if len(symbols) < sum(len(space.symbols) for space in spaces):
-            raise ValueError("Overlapping Random Variables")
+            raise ValueError('Overlapping Random Variables')
 
         new_cls = cls
         if all(space.is_Finite for space in spaces):
@@ -312,7 +314,7 @@ class ProductPSpace(PSpace):
 
     @property
     def density(self):  # pragma: no cover
-        raise NotImplementedError("Density not available for ProductSpaces")
+        raise NotImplementedError('Density not available for ProductSpaces')
 
     def sample(self):
         return {k: v for space in self.spaces
@@ -402,11 +404,10 @@ def pspace(expr):
     True
 
     """
-
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        raise ValueError("Expression containing Random Variable expected, not %s" % expr)
+        raise ValueError(f'Expression containing Random Variable expected, not {expr}')
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -440,7 +441,8 @@ def rs_swap(a, b):
 
 
 def given(expr, condition=None, **kwargs):
-    r""" Conditional Random Expression
+    r"""Conditional Random Expression.
+
     From a random expression and a condition on that expression creates a new
     probability space from the condition and returns the same expression on that
     conditional probability space.
@@ -472,7 +474,6 @@ def given(expr, condition=None, **kwargs):
          2*\/ pi
 
     """
-
     if not random_symbols(condition) or pspace_independent(expr, condition):
         return expr
 
@@ -526,11 +527,10 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     >>> E(2*X + 1)
     8
 
-    >>> E(X, X > 3) # Expectation of X given that it is above 3
+    >>> E(X, X > 3)  # Expectation of X given that it is above 3
     5
 
     """
-
     if not random_symbols(expr):  # expr isn't random?
         return expr
     if numsamples:  # Computing by monte carlo sampling?
@@ -579,25 +579,22 @@ def probability(condition, given_condition=None, numsamples=None,
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2
-    >>> P(Eq(X, 5), X > 2) # Probability that X == 5 given that X > 2
+    >>> P(Eq(X, 5), X > 2)  # Probability that X == 5 given that X > 2
     1/4
     >>> P(X > Y)
     5/12
 
     """
-
     condition = sympify(condition)
     given_condition = sympify(given_condition)
 
     if given_condition is not None and \
             not isinstance(given_condition, (Relational, Boolean)):
-        raise ValueError("%s is not a relational or combination of relationals"
-                         % (given_condition))
+        raise ValueError(f'{given_condition} is not a relational or combination of relationals')
     if given_condition == false:
         return Integer(0)
     if not isinstance(condition, (Relational, Boolean)):
-        raise ValueError("%s is not a relational or combination of relationals"
-                         % condition)
+        raise ValueError(f'{condition} is not a relational or combination of relationals')
     if condition == true:
         return Integer(1)
     if condition == false:
@@ -619,14 +616,14 @@ def probability(condition, given_condition=None, numsamples=None,
 
 
 class Density(Expr):
+    """Probability density."""
+
     expr = property(lambda self: self.args[0])
 
     @property
     def condition(self):
         if len(self.args) > 1:
             return self.args[1]
-        else:
-            return
 
     def doit(self, **kwargs):
         evaluate = kwargs.pop('evaluate', True)
@@ -674,7 +671,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
 
     >>> from diofant.stats import Die, Normal
 
-    >>> x = Symbol('x')
     >>> D = Die('D', 6)
     >>> X = Normal(x, 0, 1)
 
@@ -686,7 +682,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
 
     """
-
     if numsamples:
         return sampling_density(expr, condition, numsamples=numsamples,
                                 **kwargs)
@@ -752,14 +747,14 @@ def where(condition, given_condition=None, **kwargs):
     >>> a, b = D1.symbol, D2.symbol
     >>> X = Normal('x', 0, 1)
 
-    >>> where(X**2<1)
+    >>> where(X**2 < 1)
     Domain: (-1 < x) & (x < 1)
 
-    >>> where(X**2<1).set
+    >>> where(X**2 < 1).set
     (-1, 1)
 
-    >>> where(And(D1<=D2, D2<3))
-    Domain: ((Eq(a, 1)) & (Eq(b, 1))) | ((Eq(a, 1)) & (Eq(b, 2))) | ((Eq(a, 2)) & (Eq(b, 2)))
+    >>> where(And(D1 <= D2, D2 < 3))
+    Domain: (Eq(a, 1) & Eq(b, 1)) | (Eq(a, 1) & Eq(b, 2)) | (Eq(a, 2) & Eq(b, 2))
 
     """
     if given_condition is not None:  # If there is a condition
@@ -780,7 +775,7 @@ def sample(expr, condition=None, **kwargs):
     >>> from diofant.stats import Die
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
-    >>> die_roll = sample(X + Y + Z) # A random realization of three dice
+    >>> die_roll = sample(X + Y + Z)  # A random realization of three dice
 
     """
     return next(sample_iter(expr, condition, numsamples=1))
@@ -801,7 +796,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     >>> X = Normal('X', 0, 1)
     >>> expr = X*X + 3
     >>> iterator = sample_iter(expr, numsamples=3)
-    >>> list(iterator) # doctest: +SKIP
+    >>> list(iterator)  # doctest: +SKIP
     [12, 4, 7]
 
     See Also
@@ -831,7 +826,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
         if condition is not None:
             given_fn(*args)
     except (TypeError, ValueError):
-        raise TypeError("Expr/condition too complex for lambdify")
+        raise TypeError('Expr/condition too complex for lambdify')
 
     def return_generator():
         count = 0
@@ -843,7 +838,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
                 gd = given_fn(*args)
                 if gd not in (True, False):
                     raise ValueError(
-                        "Conditions must not contain free symbols")
+                        'Conditions must not contain free symbols')
                 if not gd:  # If the values don't satisfy then try again
                     continue
 
@@ -864,7 +859,6 @@ def sampling_P(condition, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     count_true = 0
     count_false = 0
 
@@ -893,7 +887,6 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     samples = sample_iter(expr, given_condition,
                           numsamples=numsamples, **kwargs)
 
@@ -912,7 +905,6 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     diofant.stats.rv.sampling_E
 
     """
-
     results = {}
     for result in sample_iter(expr, given_condition,
                               numsamples=numsamples, **kwargs):
@@ -1003,7 +995,6 @@ def pspace_independent(a, b):
 
     if len(a_symbols.intersection(b_symbols)) == 0:
         return True
-    return
 
 
 def rv_subs(expr):
@@ -1016,14 +1007,15 @@ def rv_subs(expr):
 
 
 class NamedArgsMixin:
+    """Helper class for named arguments."""
+
     _argnames = ()
 
     def __getattr__(self, attr):
         try:
             return self.args[self._argnames.index(attr)]
         except ValueError:
-            raise AttributeError("'%s' object has not attribute '%s'" % (
-                type(self).__name__, attr))
+            raise AttributeError(f"'{type(self).__name__}' object has not attribute '{attr}'")
 
 
 def _value_check(condition, message):

@@ -1,4 +1,4 @@
-""" Helpers for randomized testing """
+"""Helpers for randomized testing."""
 
 import random
 from random import uniform
@@ -80,10 +80,10 @@ def _randrange(seed=None):
     ========
 
     >>> rr = _randrange()
-    >>> rr(1000) # doctest: +SKIP
+    >>> rr(1000)  # doctest: +SKIP
     999
     >>> rr = _randrange(3)
-    >>> rr(1000) # doctest: +SKIP
+    >>> rr(1000)  # doctest: +SKIP
     238
     >>> rr = _randrange([0, 5, 1, 3, 4])
     >>> rr(3), rr(3)
@@ -107,8 +107,6 @@ def _randrange(seed=None):
                 raise ValueError('_randrange got empty range')
             try:
                 x = seq.pop()
-            except AttributeError:
-                raise ValueError('_randrange expects a list-like sequence')
             except IndexError:
                 raise ValueError('_randrange sequence was too short')
             if a <= x < b:
@@ -131,10 +129,10 @@ def _randint(seed=None):
     ========
 
     >>> ri = _randint()
-    >>> ri(1, 1000) # doctest: +SKIP
+    >>> ri(1, 1000)  # doctest: +SKIP
     999
     >>> ri = _randint(3)
-    >>> ri(1, 1000) # doctest: +SKIP
+    >>> ri(1, 1000)  # doctest: +SKIP
     238
     >>> ri = _randint([0, 5, 1, 2, 4])
     >>> ri(1, 3), ri(1, 3)
@@ -156,8 +154,6 @@ def _randint(seed=None):
                 raise ValueError('_randint got empty range')
             try:
                 x = seq.pop()
-            except AttributeError:
-                raise ValueError('_randint expects a list-like sequence')
             except IndexError:
                 raise ValueError('_randint sequence was too short')
             if a <= x <= b:

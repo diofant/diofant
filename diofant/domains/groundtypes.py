@@ -1,19 +1,17 @@
-"""Ground types for various mathematical domains in Diofant. """
-
-__all__ = ()
+"""Ground types for various mathematical domains in Diofant."""
 
 import builtins
 import fractions
-
-import mpmath.libmp as mlib
+from math import factorial as python_factorial  # noqa: F401
+from math import gcd as python_gcd  # noqa: F401
 
 from ..core.compatibility import HAS_GMPY
 from ..core.numbers import Float as DiofantReal  # noqa: F401
 from ..core.numbers import Integer as DiofantInteger  # noqa: F401
 from ..core.numbers import Rational as DiofantRational  # noqa: F401
-from ..core.numbers import igcd as python_gcd  # noqa: F401
 from ..core.numbers import igcdex as python_gcdex  # noqa: F401
 from ..core.numbers import ilcm as python_lcm  # noqa: F401
+from ..core.power import isqrt as python_sqrt  # noqa: F401
 
 
 PythonInteger = builtins.int
@@ -23,26 +21,27 @@ PythonRational = fractions.Fraction
 
 
 if HAS_GMPY:
-    from gmpy2 import (  # noqa: N812
-        mpz as GMPYInteger,
-        mpq as GMPYRational,
-        fac as gmpy_factorial,
-        numer as gmpy_numer,
-        denom as gmpy_denom,
-        gcdext as gmpy_gcdex,
-        gcd as gmpy_gcd,
-        lcm as gmpy_lcm,
-        isqrt as gmpy_sqrt,
-        qdiv as gmpy_qdiv)
+    from gmpy2 import denom as gmpy_denom
+    from gmpy2 import fac as gmpy_factorial
+    from gmpy2 import gcd as gmpy_gcd
+    from gmpy2 import gcdext as gmpy_gcdex
+    from gmpy2 import isqrt as gmpy_sqrt
+    from gmpy2 import lcm as gmpy_lcm
+    from gmpy2 import mpq as GMPYRational  # noqa: N812
+    from gmpy2 import mpz as GMPYInteger  # noqa: N812
+    from gmpy2 import numer as gmpy_numer
+    from gmpy2 import qdiv as gmpy_qdiv
 else:
-    class GMPYInteger:
+    class _GMPYInteger:
         def __init__(self, obj):
             pass
 
-    class GMPYRational:
+    class _GMPYRational:
         def __init__(self, obj):
             pass
 
+    GMPYInteger = _GMPYInteger
+    GMPYRational = _GMPYRational
     gmpy_factorial = None
     gmpy_numer = None
     gmpy_denom = None
@@ -51,11 +50,3 @@ else:
     gmpy_lcm = None
     gmpy_sqrt = None
     gmpy_qdiv = None
-
-
-def python_sqrt(n):
-    return int(mlib.isqrt(n))
-
-
-def python_factorial(n):
-    return int(mlib.ifac(n))

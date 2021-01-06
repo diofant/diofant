@@ -1,10 +1,12 @@
-from ..core import Eq, Ge, Gt, Integer, Le, Lt, Ne, diff, nan, oo, sympify
-from ..core.compatibility import is_sequence, ordered
+from ..core import Integer, Lt, diff, nan, oo, sympify
+from ..core.compatibility import is_sequence
 from ..functions import Min
 from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
+from ..solvers.inequalities import canonicalize_inequalities
+from ..utilities import ordered
 from .singularities import singularities
 
 
@@ -48,27 +50,16 @@ def minimize(f, *v):
 
     assert all(x.is_Symbol for x in v)
 
-    # Canonicalize constraints, Ne -> pair Lt, Eq -> pair Le
-    constraints |= {Lt(*c.args) for c in constraints if isinstance(c, Ne)}
-    constraints |= {Lt(c.rhs, c.lhs) for c in constraints if isinstance(c, Ne)}
-    constraints |= {Le(*c.args) for c in constraints if isinstance(c, Eq)}
-    constraints |= {Le(c.rhs, c.lhs) for c in constraints if isinstance(c, Eq)}
-    constraints -= {c for c in constraints if isinstance(c, (Ne, Eq))}
-
-    # Gt/Ge -> Lt, Le
-    constraints = {c.reversed if c.func in (Gt, Ge) else c
-                   for c in constraints}
-
-    # Now we have only Lt/Le
-    constraints = list(ordered(c.func(c.lhs - c.rhs, 0)
-                               for c in constraints))
+    constraints = canonicalize_inequalities(constraints)
 
     if dim == 1:
+        x = v[0]
         if constraints:
-            dom = reduce_inequalities(constraints, *v).as_set()
+            constraints.extend([x - oo < 0, -oo - x < 0])
+            dom = reduce_inequalities(constraints, x).as_set()
         else:
             dom = Interval(-oo, oo, True, True)**len(v)
-        return minimize_univariate(obj, v[0], dom)
+        return minimize_univariate(obj, x, dom)
 
     polys = [obj.as_poly(*v)] + [c.lhs.as_poly(*v) for c in constraints]
     is_polynomial = all(p is not None for p in polys)
@@ -126,10 +117,10 @@ def minimize_univariate(f, x, dom):
         if not dom.left_open:
             extr[dom.start] = limit(f, x, dom.start)
         if not dom.right_open:
-            extr[dom.end] = limit(f, x, dom.end, dir="-")
+            extr[dom.end] = limit(f, x, dom.end, dir='-')
         for s in singularities(f, x):
             if s in dom:
-                m = Min(limit(f, x, s), limit(f, x, s, dir="-"))
+                m = Min(limit(f, x, s), limit(f, x, s, dir='-'))
                 if m == -oo:
                     return -oo, dict({x: s})
                 else:
@@ -177,7 +168,6 @@ def simplex(c, m, b):
       Programming and Game Theory, Third edition, 2008, Ch. 3.
 
     """
-
     rows, cols = len(b), len(c)
 
     if len(m) != rows or any(len(_) != cols for _ in m):

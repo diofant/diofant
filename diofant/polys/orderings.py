@@ -1,18 +1,20 @@
-"""Definitions of monomial orderings. """
+"""Definitions of monomial orderings."""
+
+import typing
 
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
 
-__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex",
-           "LexOrder", "GradedLexOrder", "ReversedGradedLexOrder")
+__all__ = ('lex', 'grlex', 'grevlex', 'ilex', 'igrlex', 'igrevlex',
+           'LexOrder', 'GradedLexOrder', 'ReversedGradedLexOrder')
 
 
 class MonomialOrder:
     """Base class for monomial orderings."""
 
-    alias = None
-    is_global = None
+    alias: str
+    is_global: typing.Union[bool, None] = None
     is_default = False
 
     def __str__(self):
@@ -85,7 +87,7 @@ class ProductOrder(MonomialOrder):
     y_1, y_2, y_3, and their product on {x_i, y_i} as follows:
 
     >>> P = ProductOrder(
-    ...     (lex, lambda m: m[:2]), # lex order on x_1 and x_2 of monomial
+    ...     (lex, lambda m: m[:2]),  # lex order on x_1 and x_2 of monomial
     ...     (grlex, lambda m: m[2:]))  # grlex on y_1, y_2, y_3
     >>> P((2, 1, 1, 0, 0)) > P((1, 10, 0, 2, 0))
     True
@@ -153,7 +155,7 @@ class InverseOrder(MonomialOrder):
         self.O = O
 
     def __str__(self):
-        return "i" + str(self.O)
+        return 'i' + str(self.O)
 
     def __call__(self, monomial):
         def inv(l):
@@ -226,15 +228,16 @@ def monomial_key(order=None, gens=None):
         try:
             order = _monomial_key[order]
         except KeyError:
-            raise ValueError("supported monomial orderings are 'lex', 'grlex' and 'grevlex', got %r" % order)
+            raise ValueError(f"supported monomial orderings are 'lex', 'grlex' and 'grevlex', got {order!r}")
     if hasattr(order, '__call__'):
         if gens is not None:
             def _order(expr):
-                return order(expr.as_poly(*gens).degree_list())
+                poly = expr.as_poly(*gens)
+                return order([poly.degree(x) for x in gens])
             return _order
         return order
     else:
-        raise ValueError("monomial ordering specification must be a string or a callable, got %s" % order)
+        raise ValueError(f'monomial ordering specification must be a string or a callable, got {order}')
 
 
 class _ItemGetter:
@@ -264,7 +267,7 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
+    >>> O = build_product_order((('grlex', x, y), ('grlex', z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))
 

@@ -1,14 +1,14 @@
 from collections import defaultdict
 
-from .. import DIOFANT_DEBUG
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols, sympify)
-from ..core.compatibility import default_sort_key, iterable, ordered
+from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
 from ..functions import log, sqrt
 from ..polys import gcd
+from ..utilities import default_sort_key, ordered
 from .sqrtdenest import sqrtdenest
 
 
@@ -126,7 +126,8 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     >>> collect(a*Derivative(f, x, 2) + b*Derivative(f, x, 2), f)
     (a + b)*Derivative(f(x), x, x)
 
-    >>> collect(a*Derivative(f, x, 2) + b*Derivative(f, x, 2), Derivative(f, x), exact=True)
+    >>> collect(a*Derivative(f, x, 2) + b*Derivative(f, x, 2),
+    ...         Derivative(f, x), exact=True)
     a*Derivative(f(x), x, x) + b*Derivative(f(x), x, x)
 
     >>> collect(a*Derivative(f, x) + b*Derivative(f, x) + a*f + b*f, f)
@@ -242,11 +243,9 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         """
         pattern = Mul.make_args(pattern)
 
-        if len(terms) < len(pattern):
-            # pattern is longer than matched product
-            # so no chance for positive parsing result
-            return
-        else:
+        if len(terms) >= len(pattern):
+            # if pattern is longer than matched product - there
+            # no chance for positive parsing result
             pattern = [parse_term(elem) for elem in pattern]
 
             terms = terms[:]  # need a copy
@@ -341,15 +340,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         terms = [parse_term(i) for i in Mul.make_args(product)]
 
         for symbol in syms:
-            if DIOFANT_DEBUG:
-                print("DEBUG: parsing of expression %s with symbol %s " % (
-                    str(terms), str(symbol))
-                )
-
             result = parse_expression(terms, symbol)
-
-            if DIOFANT_DEBUG:
-                print("DEBUG: returned %s" % str(result))
 
             if result is not None:
                 terms, elems, common_expo, has_deriv = result
@@ -638,7 +629,8 @@ def radsimp(expr, symbolic=True, max_terms=4):
     5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
 
     >>> n, d = fraction(ans)
-    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True), use_unicode=False)
+    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True),
+    ...        use_unicode=False)
             ___             ___
           \/ 5 *(a + b) - \/ 2 *(x + y)
     ------------------------------------------
@@ -668,7 +660,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
     """
     from .simplify import signsimp
 
-    syms = symbols("a:d A:D")
+    syms = symbols('a:d A:D')
 
     def _num(rterms):
         # return the multiplier that will simplify the expression described
@@ -805,7 +797,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                     keep = False
                 break
 
-            from .powsimp import powsimp, powdenest
+            from .powsimp import powdenest, powsimp
 
             num = powsimp(_num(rterms))
             n *= num
@@ -968,9 +960,9 @@ expand_fraction = fraction_expand
 
 def split_surds(expr):
     """
-    split an expression with terms whose squares are rationals
+    Split an expression with terms whose squares are rationals
     into a sum of terms whose surds squared have gcd equal to g
-    and a sum of terms with surds squared prime with g
+    and a sum of terms with surds squared prime with g.
 
     Examples
     ========
@@ -1008,9 +1000,9 @@ def split_surds(expr):
 
 def _split_gcd(*a):
     """
-    split the list of integers ``a`` into a list of integers, ``a1`` having
+    Split the list of integers ``a`` into a list of integers, ``a1`` having
     ``g = gcd(a1)``, and a list ``a2`` whose elements are not divisible by
-    ``g``.  Returns ``g, a1, a2``
+    ``g``.  Returns ``g, a1, a2``.
 
     Examples
     ========

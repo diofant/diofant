@@ -15,7 +15,7 @@ References
 from collections import defaultdict
 from heapq import heappop, heappush
 
-from ...core.compatibility import default_sort_key, ordered
+from ...utilities import default_sort_key, ordered
 from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
 
 
@@ -171,7 +171,6 @@ class SATSolver:
         [{a: True, b: False, c: False}, {a: True, b: True, c: True}]
 
         """
-
         # We use this variable to keep track of if we should flip a
         #  variable setting in successive rounds
         flip_var = False
@@ -499,7 +498,6 @@ class SATSolver:
 
     def _vsids_lit_assigned(self, lit):
         """Handle the assignment of a literal for the VSIDS heuristic."""
-        pass
 
     def _vsids_lit_unset(self, lit):
         """Handle the unsetting of a literal for the VSIDS heuristic.
@@ -585,7 +583,7 @@ class SATSolver:
         self.heur_clause_added(cls)
 
     def _simple_compute_conflict(self):
-        """ Build a clause representing the fact that at least one decision made
+        """Build a clause representing the fact that at least one decision made
         so far is wrong.
 
         Examples

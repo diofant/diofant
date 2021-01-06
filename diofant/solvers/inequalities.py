@@ -1,19 +1,175 @@
-"""Tools for solving inequalities and systems of inequalities. """
+"""Tools for solving inequalities and systems of inequalities."""
 
-from collections import defaultdict
+import collections
+import itertools
 
-from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
+from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
-from ..functions import Abs, Piecewise
-from ..logic import And, false, true
-from ..polys import Poly, parallel_poly_from_expr
+from ..functions import Abs, Max, Min, Piecewise, sign
+from ..logic import And, Or, false, true
+from ..matrices import Matrix, diag
+from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
-from ..sets import FiniteSet, Interval, Reals, Union
-from ..utilities import filldedent
+from ..sets import FiniteSet, Interval, Union
+from ..utilities import filldedent, ordered
 
 
 __all__ = 'reduce_inequalities',
+
+
+def canonicalize_inequalities(eqs):
+    """Canonicalize system of inequalities to have only Lt/Le."""
+    eqs = set(eqs)
+
+    # Canonicalize constraints, Ne -> pair Lt, Eq -> pair Le
+    eqs |= {Lt(*e.args) for e in eqs if isinstance(e, Ne)}
+    eqs |= {Lt(e.rhs, e.lhs) for e in eqs if isinstance(e, Ne)}
+    eqs |= {Le(*e.args) for e in eqs if isinstance(e, Eq)}
+    eqs |= {Le(e.rhs, e.lhs) for e in eqs if isinstance(e, Eq)}
+    eqs -= {e for e in eqs if isinstance(e, (Ne, Eq))}
+
+    # Gt/Ge -> Lt, Le
+    eqs = {e.reversed if e.func in (Gt, Ge) else e for e in eqs}
+
+    # Now we have only Lt/Le
+    return list(ordered(e.func(e.lhs - e.rhs, 0) for e in eqs))
+
+
+def fourier_motzkin(A, b, c, j):
+    """
+    Fourier-Motzkin elimination for `j`-th variable.
+
+    Parameters
+    ==========
+
+    A : Matrix
+        The coefficients of the system.
+    b : Matrix
+        The constant terms in the right hand side of relations.
+    c : Matrix
+        The vector of boolean elements, which determine the
+        type of relation (1 for Le and 0 - for Lt).
+    j : int
+        The variable index.
+
+    Example
+    =======
+
+    >>> A = Matrix([[-1, 0], [2, 4], [1, -2]])
+    >>> b = Matrix([-1, 14, -1])
+    >>> c = Matrix([1, 1, 1])
+    >>> fourier_motzkin(A, b, c, 0)
+    (Matrix([
+    [0,  4],
+    [0, -2]]), Matrix([
+    [12],
+    [-2]]), Matrix([
+    [1],
+    [1]]))
+
+    References
+    ==========
+
+    * :cite:`Schrijver1998theory`, pp. 155–156.
+
+    """
+    m = A.rows
+    rows = [[], [], []]
+    D, d, k = [Matrix()]*3
+
+    assert m == b.rows == c.rows
+    assert all(_.is_comparable for _ in A)
+
+    for i, a in enumerate(A[:, j]):
+        rows[int(sign(a) + 1)].append(i)
+
+    for p in itertools.chain(rows[1], itertools.product(*rows[::2])):
+        if p in rows[1]:
+            D = D.col_join(A[p, :])
+            d = d.col_join(Matrix([b[p]]))
+            k = k.col_join(Matrix([c[p]]))
+        else:
+            s, t = p
+            D = D.col_join(A[t, j]*A[s, :] - A[s, j]*A[t, :])
+            d = d.col_join(Matrix([A[t, j]*b[s] - A[s, j]*b[t]]))
+            k = k.col_join(Matrix([c[s] and c[t]]))
+
+    return D, d, k
+
+
+def solve_linear_inequalities(eqs, *gens, **args):
+    """
+    Solve system of linear inequalities.
+
+    Examples
+    ========
+
+    >>> solve_linear_inequalities([x >= 0, 2*x + 4*y <= 14, x - 2*y <= 1])
+    (x >= 0) & (x <= 4) & (y >= x/2 - 1/2) & (y <= -x/2 + 7/2)
+
+    """
+    assert all(e.is_Relational for e in eqs)
+
+    eqs = canonicalize_inequalities(eqs)
+
+    polys, opt = parallel_poly_from_expr([e.lhs for e in eqs], *gens, **args)
+
+    if not all(p.is_linear for p in polys):
+        raise ValueError(f'Got non-linear inequality in {eqs}')
+
+    gens = Matrix(opt.gens)
+    A = Matrix([[p.coeff_monomial(x) for x in gens] for p in polys])
+    b = Matrix([-p.coeff_monomial(1) for p in polys])
+    c = Matrix([e.func is Le for e in eqs])
+    res = []
+    failed = []
+    op_map = {(1, 1): Le, (1, 0): Lt, (0, 1): Ge, (0, 0): Gt}
+
+    for i, g in reversed(list(enumerate(gens))):
+        D, d, e = fourier_motzkin(A, b, c, i)
+
+        if not D:
+            failed.append(i)
+            continue
+
+        gens_g = gens.copy()
+        gens_g[i] = 0
+
+        for j, (r, x) in enumerate(zip(b - A*gens_g, c)):
+            gc = A[j, i]
+            if not gc:
+                continue
+
+            res.append(op_map[(int(gc > 0), int(x))](g, r/gc))
+
+        A, b, c = D, d, e
+
+    if not A.is_zero:
+        i = failed.pop(0)
+        g = gens[i]
+        gens_g = gens.copy()
+        gens_g[i] = 0
+        strict = []
+        non_strict = []
+
+        for r, x in zip(diag(*A[:, i])**-1*(b - A*gens_g), c):
+            non_strict.append(r) if x else strict.append(r)
+
+        pos = int(A[0, i] > 0)
+        other_op = Min if pos else Max
+
+        if strict and non_strict:
+            a, b = other_op(*non_strict), other_op(*strict)
+            opn, ops = op_map[(pos, 1)], op_map[(pos, 0)]
+            res.append(Or(And(opn(g, a), ops(a, b)), And(ops(g, b), opn(b, a))))
+        else:
+            both = non_strict + strict
+            res.append(op_map[(pos, int(strict == []))](g, other_op(*(both))))
+    elif any(_ < 0 for _ in b):
+        return false
+
+    return And(*res)
 
 
 def solve_poly_inequality(poly, rel):
@@ -26,7 +182,7 @@ def solve_poly_inequality(poly, rel):
     >>> solve_poly_inequality(Poly(x), '==')
     [{0}]
     >>> solve_poly_inequality(Poly(x**2 - 1), '!=')
-    [(-oo, -1), (-1, 1), (1, oo)]
+    [[-oo, -1), (-1, 1), (1, oo]]
     >>> solve_poly_inequality(Poly(x**2 - 1), '==')
     [{-1}, {1}]
 
@@ -39,15 +195,15 @@ def solve_poly_inequality(poly, rel):
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
     if rel not in {'>', '<', '>=', '<=', '==', '!='}:
-        raise ValueError("Invalid relational operator symbol: %r" % rel)
+        raise ValueError(f'Invalid relational operator symbol: {rel!r}')
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
-            return [Reals]
+            return [S.ExtendedReals]
         elif t == false:
             return [S.EmptySet]
         else:
-            raise NotImplementedError("Couldn't determine truth value of %s" % t)
+            raise NotImplementedError(f"Couldn't determine truth value of {t}")
 
     reals, intervals = poly.real_roots(multiple=False), []
 
@@ -59,7 +215,7 @@ def solve_poly_inequality(poly, rel):
         left = -oo
 
         for right, _ in reals + [(oo, 1)]:
-            interval = Interval(left, right, True, True)
+            interval = Interval(left, right, left.is_finite, right.is_finite)
             intervals.append(interval)
             left = right
     else:
@@ -75,23 +231,23 @@ def solve_poly_inequality(poly, rel):
         else:
             eq_sign, equal = -1, True
 
-        right, right_open = oo, True
+        right, right_open = oo, False
 
         for left, multiplicity in reversed(reals):
             if multiplicity % 2:
                 if sign == eq_sign:
-                    intervals.insert(0, Interval(left, right, not equal, right_open))
+                    intervals.insert(0, Interval(left, right, not equal and left.is_finite, right_open and right.is_finite))
 
                 sign, right, right_open = -sign, left, not equal
             else:
                 if sign == eq_sign and not equal:
-                    intervals.insert(0, Interval(left, right, True, right_open))
+                    intervals.insert(0, Interval(left, right, left.is_finite, right_open and right.is_finite))
                     right, right_open = left, True
                 elif sign != eq_sign and equal:
                     intervals.insert(0, Interval(left, left))
 
         if sign == eq_sign:
-            intervals.insert(0, Interval(-oo, right, True, right_open))
+            intervals.insert(0, Interval(-oo, right, False, right_open and right.is_finite))
 
     return intervals
 
@@ -103,9 +259,9 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-    ...                          (Poly(-x**2 + 1), ">")))
-    (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
+    >>> solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+    ...                          (Poly(-x**2 + 1), '>')))
+    [-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo]
 
     """
     return Union(*[solve_poly_inequality(*p) for p in polys])
@@ -124,7 +280,7 @@ def solve_rational_inequalities(eqs):
 
     >>> solve_rational_inequalities([[((Poly(x), Poly(1, x)), '!='),
     ...                               ((Poly(-x + 1), Poly(1, x)), '>=')]])
-    (-oo, 0) U (0, 1]
+    [-oo, 0) U (0, 1]
 
     See Also
     ========
@@ -135,7 +291,7 @@ def solve_rational_inequalities(eqs):
     result = S.EmptySet
 
     for eq in eqs:
-        global_intervals = [Reals]
+        global_intervals = [S.ExtendedReals]
 
         for (numer, denom), rel in eq:
             intervals = []
@@ -176,13 +332,11 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
     >>> reduce_rational_inequalities([[x**2 <= 0]], x)
     Eq(x, 0)
     >>> reduce_rational_inequalities([[x + 2 > 0]], x)
     -2 < x
-    >>> reduce_rational_inequalities([[(x + 2, ">")]], x)
+    >>> reduce_rational_inequalities([[(x + 2, '>')]], x)
     -2 < x
     >>> reduce_rational_inequalities([[x + 2]], x)
     Eq(x, -2)
@@ -190,7 +344,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     """
     exact = True
     eqs = []
-    solution = Reals if exprs else S.EmptySet
+    solution = S.ExtendedReals if exprs else S.EmptySet
     for _exprs in exprs:
         _eqs = []
 
@@ -246,11 +400,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
-    >>> reduce_piecewise_inequality(Abs(x - 5) - 3, '<', x)
+    >>> reduce_piecewise_inequality(abs(x - 5) - 3, '<', x)
     (2 < x) & (x < 8)
-    >>> reduce_piecewise_inequality(Abs(x + 2)*3 - 13, '<', x)
+    >>> reduce_piecewise_inequality(abs(x + 2)*3 - 13, '<', x)
     (-19/3 < x) & (x < 7/3)
 
     >>> reduce_piecewise_inequality(Piecewise((1, x < 1),
@@ -264,9 +416,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     """
     if gen.is_extended_real is False:
-        raise TypeError(filldedent('''
+        raise TypeError(filldedent("""
             can't solve inequalities with piecewise
-            functions containing non-real variables'''))
+            functions containing non-real variables"""))
 
     def _bottom_up_scan(expr):
         exprs = []
@@ -290,8 +442,8 @@ def reduce_piecewise_inequality(expr, rel, gen):
         elif expr.is_Pow:
             n = expr.exp
 
-            if not n.is_Integer:  # pragma: no cover
-                raise NotImplementedError("only integer powers are supported")
+            if not n.is_Integer:
+                raise NotImplementedError('only integer powers are supported')
 
             _exprs = _bottom_up_scan(expr.base)
 
@@ -341,12 +493,10 @@ def reduce_piecewise_inequalities(exprs, gen):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
-    >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
-    ...                                (Abs(x + 25) - 13, '>')], x)
+    >>> reduce_piecewise_inequalities([(abs(3*x - 5) - 7, '<'),
+    ...                                (abs(x + 25) - 13, '>')], x)
     (-2/3 < x) & (x < 4) & ((-12 < x) | (x < -38))
-    >>> reduce_piecewise_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
+    >>> reduce_piecewise_inequalities([(abs(x - 4) + abs(3*x - 5) - 7, '<')], x)
     (1/2 < x) & (x < 4)
 
     See Also
@@ -366,16 +516,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True)
-
     >>> solve_univariate_inequality(x**2 >= 4, x)
     (2 <= x) | (x <= -2)
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
-    (-oo, -2] U [2, oo)
+    [-oo, -2] U [2, oo]
 
     """
     from ..simplify import simplify
-    from .solvers import solve, denoms
+    from .solvers import denoms, solve
 
     e = expr.lhs - expr.rhs
     parts = n, d = e.as_numer_denom()
@@ -414,11 +562,11 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
         if end in [-oo, oo]:
             if valid(Integer(0)):
-                sol_sets.append(Interval(start, oo, True, True))
+                sol_sets.append(Interval(start, oo, start in reals, end == oo))
                 break
 
         if valid((start + end)/2 if start != -oo else end - 1):
-            sol_sets.append(Interval(start, end, True, True))
+            sol_sets.append(Interval(start, end, start.is_finite is not False, end.is_finite is not False))
 
         if x in singularities:
             singularities.remove(x)
@@ -430,16 +578,21 @@ def solve_univariate_inequality(expr, gen, relational=True):
     end = oo
 
     if valid(start + 1):
-        sol_sets.append(Interval(start, end, True, True))
+        sol_sets.append(Interval(start, end, True, end in reals))
 
     rv = Union(*sol_sets)
     return rv if not relational else rv.as_relational(gen)
 
 
 def _reduce_inequalities(inequalities, symbols):
-    # helper for reduce_inequalities
+    if len(symbols) > 1:
+        try:
+            return solve_linear_inequalities(inequalities, *symbols)
+        except (PolificationFailed, ValueError):
+            pass
 
-    poly_part, pw_part = defaultdict(list), defaultdict(list)
+    poly_part = collections.defaultdict(list)
+    pw_part = poly_part.copy()
     other = []
 
     for inequality in inequalities:
@@ -458,15 +611,15 @@ def _reduce_inequalities(inequalities, symbols):
         if len(gens) == 1:
             gen = gens.pop()
         else:
-            common = expr.free_symbols & symbols
+            common = expr.free_symbols & set(symbols)
             if len(common) == 1:
                 gen = common.pop()
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
             else:
-                raise NotImplementedError(filldedent('''
-                    inequality has more than one
-                    symbol of interest'''))
+                raise NotImplementedError('Solving multivariate inequalities '
+                                          'is implemented only for linear '
+                                          'case yet.')
 
         if expr.is_polynomial(gen):
             poly_part[gen].append((expr, rel))
@@ -497,9 +650,6 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     Examples
     ========
-
-    >>> x = Symbol('x', real=True)
-    >>> y = Symbol('y', real=True)
 
     >>> reduce_inequalities(0 <= x + 3, [])
     -3 <= x
@@ -534,16 +684,16 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     if not iterable(symbols):
         symbols = [symbols]
-    symbols = set(symbols) or gens
+    symbols = ordered(set(symbols) or gens)
 
     # make vanilla symbol real
     recast = {i: Dummy(i.name, extended_real=True)
               for i in gens if i.is_extended_real is None}
     inequalities = [i.xreplace(recast) for i in inequalities]
-    symbols = {i.xreplace(recast) for i in symbols}
+    symbols = ordered(i.xreplace(recast) for i in symbols)
 
     # solve system
-    rv = _reduce_inequalities(inequalities, symbols)
+    rv = _reduce_inequalities(inequalities, list(symbols))
 
     # restore original symbols and return
     return rv.xreplace({v: k for k, v in recast.items()})

@@ -1,6 +1,9 @@
 Internals
 =========
 
+This section covers the developers-only documentation, i.e part of the API
+that may be changed anytime by anyone.
+
 .. toctree::
    :maxdepth: 2
 
@@ -9,5 +12,3 @@ Internals
    hyperexpand
    g-functions
    evalf
-   numeric-computation
-   rewriting

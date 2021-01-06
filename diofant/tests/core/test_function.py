@@ -3,19 +3,17 @@ from random import random
 
 import pytest
 
-from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
-                     Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
-                     Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
-                     floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
-                     re, sin, sqrt, symbols, zoo)
+from diofant import (Derivative, Dummy, E, Eq, Expr, FiniteSet, Float,
+                     Function, I, Integer, Lambda, O, PoleError, Rational,
+                     RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, cos,
+                     diff, exp, expand, expint, floor, im, log, loggamma, nan,
+                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, subsets,
+                     symbols, variations, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
-from diofant.core.function import (ArgumentIndexError, PoleError,
-                                   UndefinedFunction, _mexpand)
-from diofant.sets.sets import FiniteSet
-from diofant.solvers import solve
-from diofant.utilities.iterables import subsets, variations
+from diofant.core.function import (ArgumentIndexError, UndefinedFunction,
+                                   _mexpand)
 
 
 __all__ = ()
@@ -105,22 +103,22 @@ def test_diff_symbols():
 
 
 def test_Function():
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, x):  # one arg
             return
 
-    assert myfunc.nargs == FiniteSet(1)
-    assert myfunc(x).nargs == FiniteSet(1)
-    pytest.raises(TypeError, lambda: myfunc(x, y).nargs)
+    assert MyFunc.nargs == FiniteSet(1)
+    assert MyFunc(x).nargs == FiniteSet(1)
+    pytest.raises(TypeError, lambda: MyFunc(x, y).nargs)
 
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, *x):  # star args
             return
 
-    assert myfunc.nargs == S.Naturals0
-    assert myfunc(x).nargs == S.Naturals0
+    assert MyFunc.nargs == S.Naturals0
+    assert MyFunc(x).nargs == S.Naturals0
 
 
 def test_nargs():
@@ -338,18 +336,18 @@ def test_suppressed_evaluation():
 def test_function_evalf():
     def eq(a, b, eps):
         return abs(a - b) < eps
-    assert eq(sin(1).evalf(15), Float("0.841470984807897"), 1e-13)
+    assert eq(sin(1).evalf(15), Float('0.841470984807897'), 1e-13)
     assert eq(
-        sin(2).evalf(25), Float("0.9092974268256816953960199", 25), 1e-23)
+        sin(2).evalf(25), Float('0.9092974268256816953960199', 25), 1e-23)
     assert eq(sin(1 + I).evalf(
-        15), Float("1.29845758141598") + Float("0.634963914784736")*I, 1e-13)
+        15), Float('1.29845758141598') + Float('0.634963914784736')*I, 1e-13)
     assert eq(exp(1 + I).evalf(15), Float(
-        "1.46869393991588") + Float("2.28735528717884239")*I, 1e-13)
+        '1.46869393991588') + Float('2.28735528717884239')*I, 1e-13)
     assert eq(exp(-0.5 + 1.5*I).evalf(15, strict=False), Float(
-        "0.0429042815937374") + Float("0.605011292285002")*I, 1e-13)
+        '0.0429042815937374') + Float('0.605011292285002')*I, 1e-13)
     assert eq(log(pi + sqrt(2)*I).evalf(
-        15), Float("1.23699044022052") + Float("0.422985442737893")*I, 1e-13)
-    assert eq(cos(100).evalf(15), Float("0.86231887228768"), 1e-13)
+        15), Float('1.23699044022052') + Float('0.422985442737893')*I, 1e-13)
+    assert eq(cos(100).evalf(15), Float('0.86231887228768'), 1e-13)
 
 
 def test_extensibility_eval():
@@ -434,7 +432,8 @@ def test_evalf_default():
     assert type(sin(Rational(1, 4))) == sin
 
 
-def test_sympyissue_5399():
+def test_diff_args():
+    # issue sympy/sympy#5399
     args = [x, y, Integer(2), Rational(1, 2)]
 
     def ok(a):
@@ -466,21 +465,21 @@ def test_derivative_numerically():
 
 
 def test_fdiff_argument_index_error():
-    class myfunc(Function):
+    class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
         def fdiff(self, idx):
             raise ArgumentIndexError
-    mf = myfunc(x)
+    mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)
-    pytest.raises(TypeError, lambda: myfunc(x, x))
+    pytest.raises(TypeError, lambda: MyFunc(x, x))
 
     pytest.raises(ArgumentIndexError, lambda: f(x).fdiff(2))
 
     with pytest.raises(ArgumentIndexError) as err:
         sin(x).fdiff(2)
-    assert str(err.value) == ("Invalid operation with argument number 2 "
-                              "for Function sin(x)")
+    assert str(err.value) == ('Invalid operation with argument number 2 '
+                              'for Function sin(x)')
 
 
 def test_deriv_wrt_function():
@@ -611,8 +610,6 @@ def test_unhandled():
         def _eval_derivative(self, s):
             if not s.name.startswith('xi'):
                 return self
-            else:
-                return
 
     expr = MyExpr(x, y, z)
     assert diff(expr, x, y, f(x), z) == Derivative(expr, f(x), z)
@@ -620,7 +617,7 @@ def test_unhandled():
 
 
 def test_nfloat():
-    x = Symbol("x")
+    x = Symbol('x')
     eq = x**Rational(4, 3) + 4*cbrt(x)/3
     assert _aresame(nfloat(eq), x**Rational(4, 3) + (4.0/3)*cbrt(x))
     assert _aresame(nfloat(eq, exponent=True), x**(4.0/3) + (4.0/3)*x**(1.0/3))
@@ -665,20 +662,6 @@ def test_sympyissue_7068():
     assert z1 != z2
 
 
-def test_sympyissue_7231():
-    ans1 = f(x).series(x, a)
-    _xi_1 = ans1.atoms(Dummy).pop()
-    res = (f(a) + (-a + x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, a)) +
-           (-a + x)**2*Subs(Derivative(f(_xi_1), _xi_1, _xi_1), (_xi_1, a))/2 +
-           (-a + x)**3*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1), (_xi_1, a))/6 +
-           (-a + x)**4*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1), (_xi_1, a))/24 +
-           (-a + x)**5*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1, _xi_1),
-                            (_xi_1, a))/120 + O((-a + x)**6, (x, a)))
-    assert res == ans1
-    ans2 = f(x).series(x, a)
-    assert res == ans2
-
-
 def test_sympyissue_7687():
     f = Function('f')(x)
     ff = Function('f')(x)
@@ -707,7 +690,8 @@ def test_mexpand():
     assert _mexpand(x*(x + 1)**2) == (x*(x + 1)**2).expand()
 
 
-def test_sympyissue_11313():
+def test_diff_series():
+    # issue sympy/sympy#11313
     # test Derivative series & as_leading_term
     assert Derivative(x**3 + x**4, x).as_leading_term(x).doit() == 3*x**2
     s = Derivative(sin(x), x).series(x, n=3)

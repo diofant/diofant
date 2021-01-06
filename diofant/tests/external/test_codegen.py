@@ -8,7 +8,7 @@
 #   export DIOFANT_TEST_CLEAN_TEMP=never    : never remove the directories with the test code.
 # When a directory is not removed, the necessary information is printed on
 # screen to find the files that belong to the (failed) tests. If a test does
-# not fail, py.test captures all the output and you will not see the directories
+# not fail, pytest captures all the output and you will not see the directories
 # corresponding to the successful tests. Use the --nocapture option to see all
 # the output.
 
@@ -87,27 +87,27 @@ numerical_test_template['F95'] = """
 
 compile_commands = {}
 compile_commands['cc'] = [
-    "cc -c codegen.c -o codegen.o",
-    "cc -c main.c -o main.o",
-    "cc main.o codegen.o -lm -o test.exe"
+    'cc -c codegen.c -o codegen.o',
+    'cc -c main.c -o main.o',
+    'cc main.o codegen.o -lm -o test.exe'
 ]
 
 compile_commands['gfortran'] = [
-    "gfortran -c codegen.f90 -o codegen.o",
-    "gfortran -ffree-line-length-none -c main.f90 -o main.o",
-    "gfortran main.o codegen.o -o test.exe"
+    'gfortran -c codegen.f90 -o codegen.o',
+    'gfortran -ffree-line-length-none -c main.f90 -o main.o',
+    'gfortran main.o codegen.o -o test.exe'
 ]
 
 compile_commands['g95'] = [
-    "g95 -c codegen.f90 -o codegen.o",
-    "g95 -ffree-line-length-huge -c main.f90 -o main.o",
-    "g95 main.o codegen.o -o test.exe"
+    'g95 -c codegen.f90 -o codegen.o',
+    'g95 -ffree-line-length-huge -c main.f90 -o main.o',
+    'g95 main.o codegen.o -o test.exe'
 ]
 
 compile_commands['ifort'] = [
-    "ifort -c codegen.f90 -o codegen.o",
-    "ifort -c main.f90 -o main.o",
-    "ifort main.o codegen.o -o test.exe"
+    'ifort -c codegen.f90 -o codegen.o',
+    'ifort -c main.f90 -o main.o',
+    'ifort main.o codegen.o -o test.exe'
 ]
 
 combinations_lang_compiler = [
@@ -138,7 +138,6 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     generated code. The test passes when the compilation and the validation
     run correctly.
     """
-
     # Check input arguments before touching the file system
     language = language.upper()
     assert language in main_template
@@ -151,7 +150,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
 
     # Do all the magic to compile, run and validate the test code
     # 1) prepare the temporary working directory, switch to that dir
-    work = tempfile.mkdtemp("_diofant_%s_test" % language, "%s_" % label)
+    work = tempfile.mkdtemp(f'_diofant_{language}_test', f'{label}_')
     oldwork = os.getcwd()
     os.chdir(work)
 
@@ -159,43 +158,43 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     if friendly:
         # interpret the routines as a name_expr list and call the friendly
         # function codegen
-        codegen(routines, language, "codegen", to_files=True)
+        codegen(routines, language, 'codegen', to_files=True)
     else:
-        code_gen = get_code_generator(language, "codegen")
-        code_gen.write(routines, "codegen", to_files=True)
+        code_gen = get_code_generator(language, 'codegen')
+        code_gen.write(routines, 'codegen', to_files=True)
 
     # 3) write a simple main program that links to the generated code, and that
     #    includes the numerical tests
     test_strings = []
     for fn_name, args, expected, threshold in numerical_tests:
-        call_string = "%s(%s)-(%s)" % (
-            fn_name, ",".join(str(arg) for arg in args), expected)
-        if language == "F95":
+        call_string = '%s(%s)-(%s)' % (
+            fn_name, ','.join(str(arg) for arg in args), expected)
+        if language == 'F95':
             call_string = fortranize_double_constants(call_string)
             threshold = fortranize_double_constants(str(threshold))
         test_strings.append(numerical_test_template[language] % {
-            "call": call_string,
-            "threshold": threshold,
+            'call': call_string,
+            'threshold': threshold,
         })
 
-    if language == "F95":
-        f_name = "main.f90"
-    elif language == "C":
-        f_name = "main.c"
+    if language == 'F95':
+        f_name = 'main.f90'
+    elif language == 'C':
+        f_name = 'main.c'
     else:
         raise NotImplementedError(
-            "FIXME: filename extension unknown for language: %s" % language)
+            f'FIXME: filename extension unknown for language: {language}')
 
-    with open(f_name, "w") as f:
+    with open(f_name, 'w') as f:
         f.write(
-            main_template[language] % {'statements': "".join(test_strings)})
+            main_template[language] % {'statements': ''.join(test_strings)})
 
     # 4) Compile and link
     compiled = try_run(commands)
 
     # 5) Run if compiled
     if compiled:
-        executed = try_run(["./test.exe"])
+        executed = try_run(['./test.exe'])
     else:
         executed = False
 
@@ -204,25 +203,25 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
         def safe_remove(filename):
             if os.path.isfile(filename):
                 os.remove(filename)
-        safe_remove("codegen.f90")
-        safe_remove("codegen.c")
-        safe_remove("codegen.h")
-        safe_remove("codegen.o")
-        safe_remove("main.f90")
-        safe_remove("main.c")
-        safe_remove("main.o")
-        safe_remove("test.exe")
+        safe_remove('codegen.f90')
+        safe_remove('codegen.c')
+        safe_remove('codegen.h')
+        safe_remove('codegen.o')
+        safe_remove('main.f90')
+        safe_remove('main.c')
+        safe_remove('main.o')
+        safe_remove('test.exe')
         os.chdir(oldwork)
         os.rmdir(work)
     else:
-        print("TEST NOT REMOVED: %s" % work, file=sys.stderr)
+        print(f'TEST NOT REMOVED: {work}', file=sys.stderr)
         os.chdir(oldwork)
 
     # 7) Do the assertions in the end
-    assert compiled, "failed to compile %s code with:\n%s" % (
-        language, "\n".join(commands))
-    assert executed, "failed to execute %s code from:\n%s" % (
-        language, "\n".join(commands))
+    assert compiled, 'failed to compile %s code with:\n%s' % (
+        language, '\n'.join(commands))
+    assert executed, 'failed to execute %s code from:\n%s' % (
+        language, '\n'.join(commands))
 
 
 def fortranize_double_constants(code_string):
@@ -236,7 +235,7 @@ def fortranize_double_constants(code_string):
         return re.sub('[eE]', 'd', matchobj.group(0))
 
     def subs_float(matchobj):
-        return "%sd0" % matchobj.group(0)
+        return '%sd0' % matchobj.group(0)
 
     code_string = pattern_exp.sub(subs_exp, code_string)
     code_string = pattern_float.sub(subs_float, code_string)
@@ -246,13 +245,13 @@ def fortranize_double_constants(code_string):
 
 def is_feasible(language, commands):
     # This test should always work, otherwise the compiler is not present.
-    routine = make_routine("test", x)
+    routine = make_routine('test', x)
     numerical_tests = [
-        ("test", ( 1.0,), 1.0, 1e-15),
-        ("test", (-1.0,), -1.0, 1e-15),
+        ('test', ( 1.0,), 1.0, 1e-15),
+        ('test', (-1.0,), -1.0, 1e-15),
     ]
     try:
-        run_test("is_feasible", [routine], numerical_tests, language, commands,
+        run_test('is_feasible', [routine], numerical_tests, language, commands,
                  friendly=False)
         return True
     except AssertionError:
@@ -271,25 +270,25 @@ for lang, compiler in combinations_lang_compiler:
 # We test all language-compiler combinations, just to report what is skipped
 
 
-@pytest.mark.skipif(("C", 'cc') in invalid_lang_compilers,
+@pytest.mark.skipif(('C', 'cc') in invalid_lang_compilers,
                     reason="`cc' command didn't work as expected")
 def test_C_cc():
     pass
 
 
-@pytest.mark.skipif(("F95", 'ifort') in invalid_lang_compilers,
+@pytest.mark.skipif(('F95', 'ifort') in invalid_lang_compilers,
                     reason="`ifort' command didn't work as expected")
 def test_F95_ifort():
     pass
 
 
-@pytest.mark.skipif(("F95", 'gfortran') in invalid_lang_compilers,
+@pytest.mark.skipif(('F95', 'gfortran') in invalid_lang_compilers,
                     reason="`gfortran' command didn't work as expected")
 def test_F95_gfortran():
     pass
 
 
-@pytest.mark.skipif(("F95", 'g95') in invalid_lang_compilers,
+@pytest.mark.skipif(('F95', 'g95') in invalid_lang_compilers,
                     reason="`g95' command didn't work as expected")
 def test_F95_g95():
     pass
@@ -300,30 +299,30 @@ def test_F95_g95():
 
 def test_basic_codegen():
     numerical_tests = [
-        ("test", (1.0, 6.0, 3.0), 21.0, 1e-15),
-        ("test", (-1.0, 2.0, -2.5), -2.5, 1e-15),
+        ('test', (1.0, 6.0, 3.0), 21.0, 1e-15),
+        ('test', (-1.0, 2.0, -2.5), -2.5, 1e-15),
     ]
-    name_expr = [("test", (x + y)*z)]
+    name_expr = [('test', (x + y)*z)]
     for lang, commands in valid_lang_commands:
-        run_test("basic_codegen", name_expr, numerical_tests, lang, commands)
+        run_test('basic_codegen', name_expr, numerical_tests, lang, commands)
 
 
 def test_intrinsic_math1_codegen():
     # not included: log10
     name_expr = [
-        ("test_fabs", abs(x)),
-        ("test_acos", acos(x)),
-        ("test_asin", asin(x)),
-        ("test_atan", atan(x)),
-        ("test_cos", cos(x)),
-        ("test_cosh", cosh(x)),
-        ("test_log", log(x)),
-        ("test_ln", ln(x)),
-        ("test_sin", sin(x)),
-        ("test_sinh", sinh(x)),
-        ("test_sqrt", sqrt(x)),
-        ("test_tan", tan(x)),
-        ("test_tanh", tanh(x)),
+        ('test_fabs', abs(x)),
+        ('test_acos', acos(x)),
+        ('test_asin', asin(x)),
+        ('test_atan', atan(x)),
+        ('test_cos', cos(x)),
+        ('test_cosh', cosh(x)),
+        ('test_log', log(x)),
+        ('test_ln', ln(x)),
+        ('test_sin', sin(x)),
+        ('test_sinh', sinh(x)),
+        ('test_sqrt', sqrt(x)),
+        ('test_tan', tan(x)),
+        ('test_tanh', tanh(x)),
     ]
     numerical_tests = []
     for name, expr in name_expr:
@@ -331,19 +330,19 @@ def test_intrinsic_math1_codegen():
             expected = N(expr.subs({x: xval}), strict=False)
             numerical_tests.append((name, (xval,), expected, 1e-14))
     for lang, commands in valid_lang_commands:
-        if lang == "C":
-            name_expr_C = [("test_floor", floor(x)), ("test_ceil", ceiling(x))]
+        if lang == 'C':
+            name_expr_C = [('test_floor', floor(x)), ('test_ceil', ceiling(x))]
         else:
             name_expr_C = []
-        run_test("intrinsic_math1", name_expr + name_expr_C,
+        run_test('intrinsic_math1', name_expr + name_expr_C,
                  numerical_tests, lang, commands)
 
 
 def test_instrinsic_math2_codegen():
     # not included: frexp, ldexp, modf, fmod
     name_expr = [
-        ("test_atan2", atan2(x, y)),
-        ("test_pow", x**y),
+        ('test_atan2', atan2(x, y)),
+        ('test_pow', x**y),
     ]
     numerical_tests = []
     for name, expr in name_expr:
@@ -351,13 +350,13 @@ def test_instrinsic_math2_codegen():
             expected = N(expr.subs({x: xval, y: yval}), strict=False)
             numerical_tests.append((name, (xval, yval), expected, 1e-14))
     for lang, commands in valid_lang_commands:
-        run_test("intrinsic_math2", name_expr, numerical_tests, lang, commands)
+        run_test('intrinsic_math2', name_expr, numerical_tests, lang, commands)
 
 
 def test_complicated_codegen():
     name_expr = [
-        ("test1", ((sin(x) + cos(y) + tan(z))**7).expand()),
-        ("test2", cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
+        ('test1', ((sin(x) + cos(y) + tan(z))**7).expand()),
+        ('test2', cos(cos(cos(cos(cos(cos(cos(cos(x + y + z))))))))),
     ]
     numerical_tests = []
     for name, expr in name_expr:
@@ -367,4 +366,4 @@ def test_complicated_codegen():
             numerical_tests.append((name, (xval, yval, zval), expected, 1e-12))
     for lang, commands in valid_lang_commands:
         run_test(
-            "complicated_codegen", name_expr, numerical_tests, lang, commands)
+            'complicated_codegen', name_expr, numerical_tests, lang, commands)

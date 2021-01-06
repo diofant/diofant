@@ -1,3 +1,5 @@
+"""Special sets."""
+
 from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
 from ..core.compatibility import as_int
 from ..core.singleton import Singleton
@@ -125,7 +127,7 @@ class Integers(Set, metaclass=Singleton):
     is_iterable = True
 
     def _intersection(self, other):
-        from ..functions import floor, ceiling
+        from ..functions import ceiling, floor
         if other is Interval(-oo, oo, True, True) or other is S.Reals:
             return self
         elif other.is_Interval:
@@ -214,8 +216,29 @@ class Rationals(Set, metaclass=Singleton):
 
 
 class Reals(Interval, metaclass=Singleton):
+    """The set of all reals."""
+
     def __new__(cls):
         return Interval.__new__(cls, -oo, oo, True, True)
+
+    def __eq__(self, other):
+        return other == Interval(-oo, oo, True, True)
+
+    def __hash__(self):
+        return hash(Interval(-oo, oo, True, True))
+
+
+class ExtendedReals(Interval, metaclass=Singleton):
+    """The set of all extended reals."""
+
+    def __new__(cls):
+        return Interval.__new__(cls, -oo, oo)
+
+    def __eq__(self, other):
+        return other == Interval(-oo, oo)
+
+    def __hash__(self):
+        return hash(Interval(-oo, oo))
 
 
 class ImageSet(Set):
@@ -313,8 +336,8 @@ class ImageSet(Set):
                 return imageset(Lambda(t, f.subs({a: solns[0][0]})), S.Integers)
 
         if other == S.Reals:
-            from ..solvers.diophantine import diophantine
             from ..core import expand_complex
+            from ..solvers.diophantine import diophantine
 
             if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
                 return  # pragma: no cover
@@ -369,11 +392,11 @@ class Range(Set):
             start, stop, step = [w if w in [-oo, oo] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
-            raise ValueError("Inputs to Range must be Integer Valued\n" +
-                             "Use ImageSets of Ranges for other cases")
+            raise ValueError('Inputs to Range must be Integer Valued\n' +
+                             'Use ImageSets of Ranges for other cases')
 
         if not step.is_finite:
-            raise ValueError("Infinite step is not allowed")
+            raise ValueError('Infinite step is not allowed')
         if start == stop:
             return S.EmptySet
 
@@ -390,8 +413,8 @@ class Range(Set):
 
         step = abs(step)
         if (start, stop) == (-oo, oo):
-            raise ValueError("Both the start and end value of "
-                             "Range cannot be unbounded")
+            raise ValueError('Both the start and end value of '
+                             'Range cannot be unbounded')
         else:
             return Basic.__new__(cls, start, stop + step, step)
 
@@ -400,7 +423,7 @@ class Range(Set):
     step = property(lambda self: self.args[2])
 
     def _intersection(self, other):
-        from ..functions import floor, ceiling, Min, Max
+        from ..functions import Max, Min, ceiling, floor
         if other.is_Interval:
             osup = other.sup
             oinf = other.inf

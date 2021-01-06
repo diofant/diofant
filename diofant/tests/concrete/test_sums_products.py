@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma, Float,
+from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log,
@@ -40,9 +40,9 @@ def test_karr_convention():
     # where we intentionally used two different ways to typeset the
     # sum and its limits.
 
-    i = Symbol("i", integer=True)
-    k = Symbol("k", integer=True)
-    j = Symbol("j", integer=True)
+    i = Symbol('i', integer=True)
+    k = Symbol('k', integer=True)
+    j = Symbol('j', integer=True)
 
     # A simple example with a concrete summand and symbolic limits.
 
@@ -76,7 +76,7 @@ def test_karr_convention():
 
     # Another example this time with an unspecified summand and
     # numeric limits. (We can not do both tests in the same example.)
-    f = Function("f")
+    f = Function('f')
 
     # The normal sum with m < n:
     m = 2
@@ -113,9 +113,9 @@ def test_karr_convention():
 
 def test_karr_proposition_2a():
     # Test Karr, page 309, proposition 2, part a
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
 
     def test_the_sum(m, n):
         # g
@@ -139,10 +139,10 @@ def test_karr_proposition_2a():
 
 def test_karr_proposition_2b():
     # Test Karr, page 309, proposition 2, part b
-    i = Symbol("i", integer=True)
-    u = Symbol("u", integer=True)
-    v = Symbol("v", integer=True)
-    w = Symbol("w", integer=True)
+    i = Symbol('i', integer=True)
+    u = Symbol('u', integer=True)
+    v = Symbol('v', integer=True)
+    w = Symbol('w', integer=True)
 
     def test_the_sum(l, n, m):
         # Summand
@@ -233,9 +233,12 @@ def test_geometric_sums():
     assert summation(2**(-4*n + 3), (n, 1, oo)) == Rational(8, 15)
     assert summation(2**(n + 1), (n, 1, b)).expand() == 4*(2**b - 1)
 
+    # issue sympy/sympy#7097
+    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
+
     # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
-        Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
+        Piecewise((1/(-x + 1), abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
 
     assert summation(-2**n, (n, 0, oo)) == -oo
     assert summation(I**n, (n, 0, oo)) == Sum(I**n, (n, 0, oo))
@@ -338,6 +341,9 @@ def test_evalf_fast_series():
 
     pytest.raises(ValueError, lambda: Sum(factorial(n), (n, 0, oo)).evalf())
 
+    # issue sympy/sympy#6274
+    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
+
 
 def test_evalf_fast_series_sympyissue_4021():
     # Catalan's constant
@@ -407,7 +413,8 @@ def test_evalf_symbolic():
     assert expr.evalf(strict=False) == expr
 
 
-def test_evalf_sympyissue_6372():
+def test_evalf_other():
+    # issue sympy/sympy#6372
     assert Sum(0, (k, 1, oo)).evalf() == 0
 
 
@@ -476,7 +483,7 @@ def test_wallis_product():
 def test_telescopic_sums():
     # checks also input 2 of comment 1 issue sympy/sympy#4127
     assert Sum(1/k - 1/(k + 1), (k, 1, n)).doit() == 1 - 1/(1 + n)
-    f = Function("f")
+    f = Function('f')
     assert Sum(
         f(k) - f(k + 2), (k, m, n)).doit() == -f(1 + n) - f(2 + n) + f(m) + f(1 + m)
     assert Sum(cos(k) - cos(k + 3), (k, 1, n)).doit() == -cos(1 + n) - \
@@ -508,7 +515,7 @@ def test_limit_subs():
 
 
 def test_function_subs():
-    f = Function("f")
+    f = Function('f')
     s = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
     assert s.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
     assert s.subs({f(x): x}) == s
@@ -615,6 +622,9 @@ def test_hypersum():
     m = Symbol('n', integer=True, positive=True)
     assert summation(binomial(m, k), (k, 0, m)) == 2**m
 
+    # issue sympy/sympy#8822
+    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
+
 
 def test_sympyissue_4170():
     assert summation(1/factorial(k), (k, 0, oo)) == E
@@ -677,7 +687,7 @@ def test_free_symbols():
 
 
 def test_conjugate_transpose():
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Sum(A*B**n, (n, 1, 3))
     assert p.adjoint().doit() == p.doit().adjoint()
     assert p.conjugate().doit() == p.doit().conjugate()
@@ -697,7 +707,6 @@ def test_sympyissue_6274():
     assert Sum(x, (x, 1, 0)).doit() == 0
     assert NS(Sum(x, (x, 1, 0))) == '0'
     assert Sum(n, (n, 10, 5)).doit() == -30
-    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
 
 
 def test_simplify():
@@ -807,8 +816,8 @@ def test_findrecur():
     pytest.raises(ValueError, lambda: Sum(sin(x*y)/(x**2 + 1),
                                           (x, 0, oo)).findrecur())
 
-    n, k = symbols("n, k", integer=True)
-    F = symbols("F", cls=Function)
+    n, k = symbols('n, k', integer=True)
+    F = symbols('F', cls=Function)
 
     f = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
     g = Sum(k*factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
@@ -826,10 +835,6 @@ def test_findrecur():
     assert (fb.findrecur(F, n) == -n*F(n, k)/(-n + x + y + 2) +
             (-n + x + 1)*F(n - 1, k - 1)/(-n + x + y + 2) +
             (-n + y + 1)*F(n - 1, k)/(-n + x + y + 2) + F(n - 2, k - 1))
-
-
-def test_sympyissue_7097():
-    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
 
 
 def test_factor_expand_subs():
@@ -875,17 +880,13 @@ def test_sympyissue_2787():
     s = Sum(binomial_dist*k, (k, 0, n))
     res = s.doit().simplify()
     assert res == Piecewise(
-        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/Abs(p - 1) <= 1)),
+        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/abs(p - 1) <= 1)),
         (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
          True))
 
 
 def test_sympyissue_4668():
     assert summation(1/n, (n, 2, oo)) == oo
-
-
-def test_sympyissue_8822():
-    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
 
 
 def test_sympyissue_8016():

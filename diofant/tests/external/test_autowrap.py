@@ -4,10 +4,11 @@ import tempfile
 import pytest
 
 import diofant
-from diofant import Eq, symbols
+from diofant import Eq, Idx, IndexedBase, sin, symbols
+from diofant.abc import a, b, c
 from diofant.external import import_module
-from diofant.tensor import Idx, IndexedBase
-from diofant.utilities.autowrap import CodeWrapError, autowrap, ufuncify
+from diofant.utilities.autowrap import (CodeWrapError, F2PyCodeWrapper,
+                                        autowrap, ufuncify)
 
 
 __all__ = ()
@@ -32,7 +33,6 @@ if f2py:
     else:
         f2pyworks = True
 
-a, b, c = symbols('a b c')
 n, m, d = symbols('n m d', integer=True)
 A, B, C = symbols('A B C', cls=IndexedBase)
 i = Idx('i', m)
@@ -87,50 +87,60 @@ def runtest_autowrap_matrix_matrix(language, backend):
 @with_numpy
 def runtest_ufuncify(language, backend):
     a, b, c = symbols('a b c')
+
+    if backend == 'numpy':
+        pytest.raises(ValueError, lambda: ufuncify((a, b), Eq(b, a + b), backend=backend))
+        pytest.raises(ValueError, lambda: ufuncify((a, b, c), [Eq(b, a), Eq(c, a**2)], backend=backend))
+
+    helpers = [('helper', a*b, (a, b)), ('spam', sin(a), (a,))]
+
     fabc = ufuncify((a, b, c), a*b + c, backend=backend)
+    fabc_2 = ufuncify((a, b, c), a*b + c, backend=backend, helpers=helpers)
     facb = ufuncify((a, c, b), a*b + c, backend=backend)
     grid = numpy.linspace(-2, 2, 50)
     b = numpy.linspace(-5, 4, 50)
     c = numpy.linspace(-1, 1, 50)
     expected = grid*b + c
     numpy.testing.assert_allclose(fabc(grid, b, c), expected)
+    numpy.testing.assert_allclose(fabc_2(grid, b, c), expected)
     numpy.testing.assert_allclose(facb(grid, c, b), expected)
 
 
-def runtest_sympyissue_10274(language, backend):
+def runtest_autowrap_helpers(language, backend):
+    # issue sympy/sympy#10274
     expr = (a - b + c)**13
     tmp = tempfile.mkdtemp()
-    f = autowrap(expr, language, backend, tempdir=tmp, helpers=('helper', a - b + c, (a, b, c)))
+    f = autowrap(expr, language, backend, tempdir=tmp, helpers=[('helper', a - b + c, (a, b, c))])
     assert f(1, 1, 1) == 1
 
     for file in os.listdir(tmp):
-        if file.startswith("wrapped_code_") and file.endswith(".c"):
+        if file.startswith('wrapped_code_') and file.endswith('.c'):
             fil = open(tmp + '/' + file)
-            assert fil.read() == ("/******************************************************************************\n"
-                                  " *" + ("Code generated with diofant " + diofant.__version__).center(76) + "*\n"
-                                  " *                                                                            *\n"
-                                  " *         See https://diofant.readthedocs.io/ for more information.          *\n"
-                                  " *                                                                            *\n"
+            assert fil.read() == ('/******************************************************************************\n'
+                                  ' *' + ('Code generated with diofant ' + diofant.__version__).center(76) + '*\n'
+                                  ' *                                                                            *\n'
+                                  ' *         See https://diofant.readthedocs.io/ for more information.          *\n'
+                                  ' *                                                                            *\n'
                                   " *                      This file is part of 'autowrap'                       *\n"
-                                  " ******************************************************************************/\n"
-                                  "#include " + '"' + file[:-1] + 'h"' + "\n"
-                                  "#include <math.h>\n"
-                                  "\n"
-                                  "double helper(double a, double b, double c) {\n"
-                                  "\n"
-                                  "   double helper_result;\n"
-                                  "   helper_result = a - b + c;\n"
-                                  "   return helper_result;\n"
-                                  "\n"
-                                  "}\n"
-                                  "\n"
-                                  "double autofunc(double a, double b, double c) {\n"
-                                  "\n"
-                                  "   double autofunc_result;\n"
-                                  "   autofunc_result = pow(helper(a, b, c), 13);\n"
-                                  "   return autofunc_result;\n"
-                                  "\n"
-                                  "}\n")
+                                  ' ******************************************************************************/\n'
+                                  '#include ' + '"' + file[:-1] + 'h"' + '\n'
+                                  '#include <math.h>\n'
+                                  '\n'
+                                  'double helper(double a, double b, double c) {\n'
+                                  '\n'
+                                  '   double helper_result;\n'
+                                  '   helper_result = a - b + c;\n'
+                                  '   return helper_result;\n'
+                                  '\n'
+                                  '}\n'
+                                  '\n'
+                                  'double autofunc(double a, double b, double c) {\n'
+                                  '\n'
+                                  '   double autofunc_result;\n'
+                                  '   autofunc_result = pow(helper(a, b, c), 13);\n'
+                                  '   return autofunc_result;\n'
+                                  '\n'
+                                  '}\n')
 
 #
 # tests of language-backend combinations
@@ -142,6 +152,14 @@ def runtest_sympyissue_10274(language, backend):
 @with_f2py
 def test_wrap_twice_f95_f2py():
     runtest_autowrap_twice('f95', 'f2py')
+
+    f = ufuncify(a, 2*a, backend='f2py')
+    f2 = ufuncify((a,), 2*a, backend='f2py')
+    f3 = ufuncify((a,), 2*a, backend='f2py', language='f95')
+
+    grid = numpy.linspace(-2, 2, 50)
+    numpy.testing.assert_allclose(f(grid), f2(grid))
+    numpy.testing.assert_allclose(f(grid), f3(grid))
 
 
 @with_f2py
@@ -164,6 +182,25 @@ def test_ufuncify_f95_f2py():
     runtest_ufuncify('f95', 'f2py')
 
 
+@with_numpy
+def test_ufuncify_f95_numpy():
+    runtest_ufuncify('f95', 'numpy')
+
+
+@with_f2py
+def test_autowrap_verbose(capsys):
+    f = autowrap((((a + b)/c)**5).expand(), backend='f2py', verbose=True)
+
+    assert capsys.readouterr().out.find('running build') == 2
+    assert f(1, -2, 1) == -1.0
+
+
+@with_f2py
+def test_autowrap_command_err(monkeypatch):
+    monkeypatch.setattr(F2PyCodeWrapper, 'command', ['/bin/false'])
+    pytest.raises(CodeWrapError, lambda: autowrap(1, backend='f2py'))
+
+
 # Cython
 
 @with_cython
@@ -172,33 +209,38 @@ def test_wrap_twice_c_cython():
 
 
 @with_cython
+@with_numpy
 def test_autowrap_trace_C_Cython():
     runtest_autowrap_trace('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_autowrap_matrix_vector_C_cython():
     runtest_autowrap_matrix_vector('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_autowrap_matrix_matrix_C_cython():
     runtest_autowrap_matrix_matrix('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_ufuncify_C_Cython():
     runtest_ufuncify('C', 'cython')
 
 
 @with_cython
-def test_sympyissue_10274_C_cython():
-    runtest_sympyissue_10274('C', 'cython')
+def test_autowrap_helpers_C_cython():
+    runtest_autowrap_helpers('C', 'cython')
 
 
 # Numpy
 
 @with_cython
+@with_numpy
 def test_ufuncify_numpy():
     # This test doesn't use Cython, but if Cython works, then there is a valid
     # C compiler, which is needed.

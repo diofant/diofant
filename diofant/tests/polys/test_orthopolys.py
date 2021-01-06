@@ -1,13 +1,12 @@
-"""Tests for efficient functions for generating orthogonal polynomials. """
+"""Tests for efficient functions for generating orthogonal polynomials."""
 
 import pytest
 
-from diofant import Poly, Rational
+from diofant import (Poly, Rational, chebyshevt_poly, chebyshevu_poly,
+                     hermite_poly, jacobi_poly, laguerre_poly, legendre_poly,
+                     spherical_bessel_fn)
 from diofant.abc import a, b, x
-from diofant.polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
-                                      gegenbauer_poly, hermite_poly,
-                                      jacobi_poly, laguerre_poly,
-                                      legendre_poly, spherical_bessel_fn)
+from diofant.polys.orthopolys import gegenbauer_poly
 
 
 __all__ = ()

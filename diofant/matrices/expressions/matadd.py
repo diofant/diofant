@@ -1,11 +1,10 @@
-from functools import reduce
-from operator import add
-
-from strategies import condition, do_one, exhaust
+import functools
+import operator
 
 from ...core import Add, Expr, sympify
 from ...core.logic import _fuzzy_group
-from ...core.strategies import flatten, glom, rm_id, sort, unpack
+from ...core.strategies import (condition, do_one, exhaust, flatten, glom,
+                                rm_id, sort, unpack)
 from ...functions import adjoint
 from ...utilities import default_sort_key, sift
 from ..matrices import MatrixBase, ShapeError
@@ -68,12 +67,12 @@ class MatAdd(MatrixExpr):
 
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):
-        raise TypeError("Mix of Matrix and Scalar symbols")
+        raise TypeError('Mix of Matrix and Scalar symbols')
 
     A = args[0]
     for B in args[1:]:
         if A.shape != B.shape:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError(f'Matrices {A} and {B} are not aligned')
 
 
 def factor_of(arg):
@@ -92,7 +91,7 @@ def combine(cnt, mat):
 
 
 def merge_explicit(matadd):
-    """ Merge explicit MatrixBase arguments
+    """Merge explicit MatrixBase arguments
 
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = eye(2)
@@ -109,7 +108,7 @@ def merge_explicit(matadd):
     """
     groups = sift(matadd.args, lambda arg: isinstance(arg, MatrixBase))
     if len(groups[True]) > 1:
-        return MatAdd(*(groups[False] + [reduce(add, groups[True])]))
+        return MatAdd(*(groups[False] + [functools.reduce(operator.add, groups[True])]))
     else:
         return matadd
 

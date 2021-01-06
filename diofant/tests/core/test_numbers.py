@@ -1,5 +1,6 @@
 import decimal
 import fractions
+import sys
 from math import sqrt as _sqrt
 
 import mpmath
@@ -8,12 +9,12 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     cos, exp, factorial, false, latex, log, nan, nextprime,
-                     oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, igcd, ilcm,
+                     integer_digits, integer_nthroot, latex, log, mod_inverse,
+                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm)
-from diofant.core.power import integer_nthroot, isqrt
+from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.power import isqrt
 
 
 __all__ = ()
@@ -251,7 +252,7 @@ def test_Integer_new():
 
     assert _strictly_equal(Integer(0.9), Integer(0))
     assert _strictly_equal(Integer(10.5), Integer(10))
-    pytest.raises(ValueError, lambda: Integer("10.5"))
+    pytest.raises(ValueError, lambda: Integer('10.5'))
     assert Integer(Rational('1.' + '9'*20)) == 1
 
 
@@ -347,12 +348,12 @@ def test_Rational_cmp():
 
 def test_Float():
     def eq(a, b):
-        t = Float("1.0E-15")
+        t = Float('1.0E-15')
         return -t < a - b < t
 
     a = Float(2) ** Float(3)
     assert eq(a, Float(8))
-    assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
+    assert eq((pi ** -1).evalf(), Float('0.31830988618379067'))
     a = Float(2) ** Float(4)
     assert eq(a, Float(16))
     assert (Float(.3) == Float(.5)) is False
@@ -364,7 +365,7 @@ def test_Float():
     assert Float((0, int(0), -456, -2)) == Float('inf') == Float('+inf')
     assert Float((1, int(0), -789, -3)) == Float('-inf')
 
-    pytest.raises(ValueError, lambda: Float((0, 7, 1, 3), ''))
+    assert Float((0, int(7), 1, 3)) == Float('14.0', dps=15)
 
     assert Float('+inf').is_finite is False
     assert Float('+inf').is_negative is False
@@ -403,29 +404,30 @@ def test_Float():
 
     # integer
     i = 12345678901234567890
-    assert same_and_same_prec(Float(12, ''), Float('12', ''))
-    assert same_and_same_prec(Float(Integer(i), ''), Float(i, ''))
-    assert same_and_same_prec(Float(i, ''), Float(str(i), 20))
-    assert same_and_same_prec(Float(str(i)), Float(i, ''))
-    assert same_and_same_prec(Float(i), Float(i, ''))
+    assert same_and_same_prec(Float(12), Float('12'))
+    assert same_and_same_prec(Float(Integer(i)), Float(i))
+    assert same_and_same_prec(Float(i), Float(str(i), 20))
+    assert same_and_same_prec(Float(str(i)), Float(i))
+    assert same_and_same_prec(Float(i), Float(i))
 
     # inexact floats (repeating binary = denom not multiple of 2)
     # cannot have precision greater than 15
     assert Float(.125, 22) == .125
     assert Float(2.0, 22) == 2
-    assert float(Float('.12500000000000001', '')) == .125
-    pytest.raises(ValueError, lambda: Float(.12500000000000001, ''))
+    assert float(Float('.12500000000000001')) == .125
+    assert Float(.12500000000000001) == Float('0.125', dps=15)
 
     # allow auto precision detection
-    assert Float('.1', '') == Float(.1, 1)
-    assert Float('.125', '') == Float(.125, 3)
-    assert Float('.100', '') == Float(.1, 3)
-    assert Float('2.0', '') == Float('2', 2)
+    assert Float('.1') == Float(.1, 1)
+    assert Float('.125') == Float(.125, 3)
+    assert Float('.100') == Float(.1, 3)
+    assert Float('2.0') == Float('2', 2)
 
-    pytest.raises(ValueError, lambda: Float("12.3d-4", ""))
-    pytest.raises(ValueError, lambda: Float(12.3, ""))
+    pytest.raises(ValueError, lambda: Float('12.3d-4'))
     pytest.raises(ValueError, lambda: Float('.'))
     pytest.raises(ValueError, lambda: Float('-.'))
+
+    assert Float(12.3) == Float('12.300000000000001', dps=15)
 
     zero = Float('0.0')
     assert Float('-0') == zero
@@ -434,7 +436,7 @@ def test_Float():
     assert Float('-0.0') == zero
     assert Float(0.0) == zero
     assert Float(0) == zero
-    assert Float(0, '') == Float('0', '')
+    assert Float(0) == Float('0')
     assert Float(1) == Float(1.0)
     assert Float(Integer(0)) == zero
     assert Float(Integer(1)) == Float(1.0)
@@ -444,21 +446,14 @@ def test_Float():
     assert Float(decimal.Decimal('+Infinity')) == +oo
     assert Float(decimal.Decimal('-Infinity')) == -oo
 
-    assert '{0:.3f}'.format(Float(4.236622)) == '4.237'
-    assert '{0:.35f}'.format(Float(pi.evalf(40), 40)) == '3.14159265358979323846264338327950288'
+    assert f'{Float(4.236622):.3f}' == '4.237'
+    assert f'{Float(pi.evalf(40), 40):.35f}' == '3.14159265358979323846264338327950288'
 
     assert Float(+oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
 
-    assert Float('inf', dps='') == Float('inf')
-
     assert Float(0)**2 is Integer(0)
     assert Float(0)**t == Pow(Float(0), t, evaluate=False)
-
-
-def test_Float_default_to_highprec_from_str():
-    s = str(pi.evalf(128))
-    assert same_and_same_prec(Float(s), Float(s, ''))
 
 
 def test_Float_eval():
@@ -468,7 +463,7 @@ def test_Float_eval():
 
 def test_Float_sympyissue_5206():
     a = Float(0.1, 10)
-    b = Float("0.1", 10)
+    b = Float('0.1', 10)
 
     assert a - a == 0
     assert a + (-a) == 0
@@ -486,7 +481,7 @@ def test_Infinity():
     assert 1*oo == oo
     assert 1 != oo
     assert oo != -oo
-    assert oo != Symbol("x")**3
+    assert oo != Symbol('x')**3
     assert oo + 1 == oo
     assert 2 + oo == oo
     assert 3*oo + 2 == oo
@@ -521,8 +516,8 @@ def test_Infinity():
     assert -oo*oo == -oo
     assert oo*-oo == -oo
     assert -oo*-oo == oo
-    assert oo/0 == oo
-    assert -oo/0 == -oo
+    assert oo/0 == zoo
+    assert -oo/0 == zoo
     assert 0/oo == 0
     assert 0/-oo == 0
     assert oo*0 == nan
@@ -635,7 +630,20 @@ def test_Infinity():
     e = (I + cos(1)**2 + sin(1)**2 - 1)
     assert oo**e == Pow(oo, e, evaluate=False)
 
+    # issue sympy/sympy#10020
+    assert oo**I is nan
+    assert oo**(1 + I) is zoo
+    assert oo**(-1 + I) is Integer(0)
+    assert (-oo)**I is nan
+    assert (-oo)**(-1 + I) is Integer(0)
+    assert oo**t == Pow(oo, t, evaluate=False)
+    assert (-oo)**t == Pow(-oo, t, evaluate=False)
 
+    # issue sympy/sympy#7742
+    assert -oo % 1 == nan
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 9), reason='Broken on 3.9')
 def test_Infinity_2():
     x = Symbol('x')
     assert oo*x != oo
@@ -753,7 +761,7 @@ def test_NaN():
     assert 1*nan == nan
     assert 1 != nan
     assert nan == -nan
-    assert oo != Symbol("x")**3
+    assert oo != Symbol('x')**3
     assert nan + 1 == nan
     assert 2 + nan == nan
     assert Integer(2) + nan == nan
@@ -781,10 +789,10 @@ def test_NaN():
     assert nan*1 == nan
     assert nan + 1 == nan
     assert nan/1 == nan
-    assert nan**0 == 1  # as per IEEE 754
-    assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
+    assert nan**0 == nan
+    assert 1**nan == nan
     # test Pow._eval_power's handling of NaN
-    assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Pow(nan, 0, evaluate=False)**2 == nan
     assert Integer(0)/Integer(0) == nan
 
 
@@ -858,11 +866,19 @@ def test_integer_nthroot_overflow():
 
 
 def test_isqrt():
+    pytest.raises(ValueError, lambda: isqrt(-1))
+
+    assert isqrt(0) == 0
+
     limit = 17984395633462800708566937239551
     assert int(_sqrt(limit)) == integer_nthroot(limit, 2)[0]
     assert int(_sqrt(limit + 1)) != integer_nthroot(limit + 1, 2)[0]
     assert isqrt(limit + 1) == integer_nthroot(limit + 1, 2)[0]
     assert isqrt(limit + 1 + Rational(1, 2)) == integer_nthroot(limit + 1, 2)[0]
+
+    # issue sympy/sympy#17034
+    assert isqrt(4503599761588224) == 67108864
+    assert isqrt(9999999999999999) == 99999999
 
 
 def test_powers_Integer():
@@ -908,7 +924,7 @@ def test_powers_Integer():
     assert sqrt(2) * sqrt(3) == sqrt(6)
 
     # separate symbols & constansts
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(49 * x) == 7 * sqrt(x)
     assert sqrt((3 - sqrt(pi)) ** 2) == 3 - sqrt(pi)
 
@@ -1019,8 +1035,8 @@ def test_accept_int():
 
 
 def test_dont_accept_str():
-    assert Float("0.2") != "0.2"
-    assert not (Float("0.2") == "0.2")
+    assert Float('0.2') != '0.2'
+    assert not (Float('0.2') == '0.2')
 
 
 def test_int():
@@ -1038,9 +1054,9 @@ def test_int():
 
 
 def test_real_bug():
-    x = Symbol("x")
-    assert str(2.0*x*x) in ["(2.0*x)*x", "2.0*x**2", "2.00000000000000*x**2"]
-    assert str(2.1*x*x) != "(2.0*x)*x"
+    x = Symbol('x')
+    assert str(2.0*x*x) in ['(2.0*x)*x', '2.0*x**2', '2.00000000000000*x**2']
+    assert str(2.1*x*x) != '(2.0*x)*x'
 
 
 def test_bug_sqrt():
@@ -1071,13 +1087,13 @@ def test_sympyissue_3692():
 
 
 def test_sympyissue_3423():
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(x - 1).as_base_exp() == (x - 1, Rational(1, 2))
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
 def test_sympyissue_3449():
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(x - 1).subs({x: 5}) == 2
 
 
@@ -1220,7 +1236,7 @@ def test_sympyissue_4611():
     assert abs(Catalan._evalf(50) - 0.915965594177219) < 1e-10
     assert abs(EulerGamma._evalf(50) - 0.577215664901533) < 1e-10
     assert abs(GoldenRatio._evalf(50) - 1.61803398874989) < 1e-10
-    x = Symbol("x")
+    x = Symbol('x')
     assert (pi + x).evalf(strict=False) == pi.evalf() + x
     assert (E + x).evalf(strict=False) == E.evalf() + x
     assert (Catalan + x).evalf(strict=False) == Catalan.evalf() + x
@@ -1232,6 +1248,8 @@ def test_conversion_to_mpmath():
     assert mpmath.mpmathify(Integer(1)) == mpmath.mpf(1)
     assert mpmath.mpmathify(Rational(1, 2)) == mpmath.mpf(0.5)
     assert mpmath.mpmathify(Float('1.23', 15)) == mpmath.mpf('1.23')
+
+    assert mpmath.mpf(Rational(1, 3)) == mpmath.mpf('0.33333333333333331')
 
 
 def test_relational():
@@ -1434,10 +1452,10 @@ def test_sympyissue_6640():
 
 
 def test_sympyissue_6349():
-    assert Float('23.e3', '')._prec == 10
-    assert Float('23e3', '')._prec == 20
-    assert Float('23000', '')._prec == 20
-    assert Float('-23000', '')._prec == 20
+    assert Float('23.e3')._prec == 10
+    assert Float('23e3')._prec == 10
+    assert Float('23000')._prec == 20
+    assert Float('-23000')._prec == 20
 
 
 def test_mpf_norm():
@@ -1446,23 +1464,19 @@ def test_mpf_norm():
 
 
 def test_latex():
-    assert latex(pi) == r"\pi"
-    assert latex(E) == r"e"
-    assert latex(GoldenRatio) == r"\phi"
-    assert latex(EulerGamma) == r"\gamma"
-    assert latex(oo) == r"\infty"
-    assert latex(-oo) == r"-\infty"
-    assert latex(zoo) == r"\tilde{\infty}"
-    assert latex(nan) == r"\mathrm{NaN}"
-    assert latex(I) == r"i"
-
-
-def test_sympyissue_7742():
-    assert -oo % 1 == nan
+    assert latex(pi) == r'\pi'
+    assert latex(E) == r'e'
+    assert latex(GoldenRatio) == r'\phi'
+    assert latex(EulerGamma) == r'\gamma'
+    assert latex(oo) == r'\infty'
+    assert latex(-oo) == r'-\infty'
+    assert latex(zoo) == r'\tilde{\infty}'
+    assert latex(nan) == r'\mathrm{NaN}'
+    assert latex(I) == r'i'
 
 
 def test_Float_idempotence():
-    x = Float('1.23', '')
+    x = Float('1.23')
     y = Float(x)
     z = Float(x, 15)
     assert same_and_same_prec(y, x)
@@ -1484,22 +1498,12 @@ def test_comp():
     assert comp(sqrt(2).evalf(2), '1.4')
     assert comp(sqrt(2).evalf(2), Float(1.4, 2), '')
     pytest.raises(ValueError, lambda: comp(sqrt(2).evalf(2), 1.4, ''))
-    assert comp(sqrt(2).evalf(2), Float(1.4, 3), '') is False
+    assert comp(sqrt(2).evalf(2), Float(1.4, 3)) is False
     pytest.raises(ValueError, lambda: comp('123', '123'))
 
 
 def test_sympyissue_10063():
     assert 2**Float(3) == Float(8)
-
-
-def test_sympyissue_10020():
-    assert oo**I is nan
-    assert oo**(1 + I) is zoo
-    assert oo**(-1 + I) is Integer(0)
-    assert (-oo)**I is nan
-    assert (-oo)**(-1 + I) is Integer(0)
-    assert oo**t == Pow(oo, t, evaluate=False)
-    assert (-oo)**t == Pow(-oo, t, evaluate=False)
 
 
 def test_invert_numbers():

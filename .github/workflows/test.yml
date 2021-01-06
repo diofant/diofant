@@ -1,0 +1,116 @@
+name: test
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 2'
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+        coverage: [false]
+        include:
+          - python-version: 3.7
+            coverage: true
+    runs-on: ubuntu-latest
+    env:
+      TERM: xterm
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install libs
+      run: |
+        sudo apt update
+        sudo apt install libmpc-dev
+        sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
+                         fonts-freefont-otf latexmk lmodern
+    - name: Install dependencies
+      run: |
+        pip install -U pip setuptools
+        pip install -U https://github.com/kataev/flake8-rst/archive/master.zip
+        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+    - name: Linting with flake8, flake8-rst and pylint
+      run: |
+        python -We:invalid -m compileall -f diofant -q
+        flake8-rst
+        flake8
+        pylint diofant
+    - name: Run type checks with mypy
+      run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
+    - name: Tests
+      if: matrix.coverage == false
+      env:
+        PYTEST_ADDOPTS: --doctest-modules
+      run: pytest
+    - name: Coverage tests
+      if: matrix.coverage
+      env:
+        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+      run: |
+        pytest
+        pip uninstall -y gmpy2
+        DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
+        pytest diofant/tests/polys
+        pip uninstall -y numpy
+        pytest diofant/tests/external diofant/tests/utilities
+    - name: Upload coverage data
+      if: matrix.coverage
+      run: codecov --required --tries 10
+    - name: Get version
+      id: release
+      run: |
+        export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
+        echo ::set-output name=version::${VERSION}
+        echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
+    - name: Building docs
+      run: |
+        python setup.py build_sphinx -W -b html,latex
+        make -C build/sphinx/latex all-pdf
+    - name: Prepare update for docs on Github Pages
+      run: |
+        wget -q https://github.com/diofant/diofant.github.io/archive/master.zip
+        unzip -x master.zip
+        rsync -a --delete build/sphinx/html/ diofant.github.io-master/en/latest/
+    - name: Make packages
+      run: python setup.py sdist bdist_wheel
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      if: matrix.coverage
+      with:
+        path: |
+          dist/
+          build/sphinx/html/
+          build/sphinx/latex/Diofant-*.pdf
+    - name: Upload docs to Github Pages
+      if: github.event_name == 'push' && matrix.coverage
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        external_repository: diofant/diofant.github.io
+        publish_branch: master
+        publish_dir: diofant.github.io-master
+    - name: Publish on Github Releases
+      uses: softprops/action-gh-release@v1
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
+      with:
+        files: |
+          dist/*
+          build/sphinx/latex/Diofant-*.pdf
+        draft: true
+        prerelease: true
+        name: "Diofant ${{ steps.release.outputs.version }}"
+        body: "See [release notes](https://diofant.readthedocs.io/\
+               en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
+    - name: Publish package on PyPI
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
+      uses: pypa/gh-action-pypi-publish@v1.4.1
+      with:
+        password: ${{ secrets.pypi_password }}

@@ -106,7 +106,9 @@ If the expression where factored first, this would take time but the
 resulting expression would be transformed very quickly:
 
 >>> def clock(f, n=2):
-...    t = time(); f(); return round(time() - t, n)
+...     t = time()
+...     f()
+...     return round(time() - t, n)
 ...
 >>> clock(lambda: factor(expr))  # doctest: +SKIP
 0.86
@@ -132,8 +134,8 @@ paths is very expensive. Here is a simple example. There are 6 terms
 in the following sum:
 
 >>> expr = (sin(x)**2*cos(y)*cos(z) + sin(x)*sin(y)*cos(x)*cos(z) +
-... sin(x)*sin(z)*cos(x)*cos(y) + sin(y)*sin(z)*cos(x)**2 + sin(y)*sin(z) +
-... cos(y)*cos(z))
+...         sin(x)*sin(z)*cos(x)*cos(y) + sin(y)*sin(z)*cos(x)**2 +
+...         sin(y)*sin(z) + cos(y)*cos(z))
 >>> args = expr.args
 
 Serendipitously, fu gives the best result:
@@ -186,20 +188,17 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 
 from collections import defaultdict
 
-from strategies.core import debug, identity
-from strategies.tree import greedy
-
-from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
                     expand_mul, factor_terms, gcd_terms, pi, sympify)
-from ..core.compatibility import ordered
 from ..core.exprtools import Factors
+from ..core.strategies import greedy, identity
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
 from ..polys.polytools import factor
+from ..utilities import ordered
 from .simplify import bottom_up
 
 
@@ -427,7 +426,7 @@ def TR4(rv):
     ========
 
     >>> for s in (0, pi/6, pi/4, pi/3, pi/2):
-    ...    print('%s %s %s %s' % (cos(s), sin(s), tan(s), cot(s)))
+    ...     print(f'{cos(s)} {sin(s)} {tan(s)} {cot(s)}')
     ...
     1 0 0 zoo
     sqrt(3)/2 1/2 sqrt(3)/3 sqrt(3)
@@ -452,7 +451,8 @@ def _TR56(rv, f, g, h, max, pow):
             e.g. if pow=True (and max >= 6) then f**6 will not be changed
             but f**8 will be changed to h(g**2)**4
 
-    >>> h = lambda x: 1 - x
+    >>> def h(x):
+    ...     return 1 - x
     >>> _TR56(sin(x)**3, sin, cos, h, 4, False)
     sin(x)**3
     >>> _TR56(sin(x)**6, sin, cos, h, 6, False)
@@ -524,7 +524,7 @@ def TR6(rv, max=4, pow=False):
 
     >>> TR6(cos(x)**2)
     -sin(x)**2 + 1
-    >>> TR6(cos(x)**-2)  #unchanged
+    >>> TR6(cos(x)**-2)  # unchanged
     cos(x)**(-2)
     >>> TR6(cos(x)**4)
     (-sin(x)**2 + 1)**2
@@ -1569,16 +1569,6 @@ def L(rv):
 
 # ============== end of basic Fu-like tools =====================
 
-if DIOFANT_DEBUG:  # pragma: no cover
-    (TR0, TR1, TR2, TR3, TR4, TR5,
-     TR6, TR7, TR8, TR9, TR10, TR11, TR12, TR13,
-     TR2i, TRmorrie, TR14, TR15, TR16,
-     TR12i, TR111, TR22) = list(map(debug, (TR0, TR1, TR2, TR3, TR4, TR5,
-                                            TR6, TR7, TR8, TR9, TR10, TR11,
-                                            TR12, TR13, TR2i, TRmorrie, TR14,
-                                            TR15, TR16, TR12i, TR111, TR22)))
-
-
 # tuples are chains  --  (f, g) -> lambda x: g(f(x))
 # lists are choices  --  [f, g] -> lambda x: min(f(x), g(x), key=objective)
 
@@ -1664,7 +1654,7 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
 
     >>> fu(sin(x)/cos(x))  # default objective function
     tan(x)
-    >>> fu(sin(x)/cos(x), measure=lambda x: -x.count_ops()) # maximize op count
+    >>> fu(sin(x)/cos(x), measure=lambda x: -x.count_ops())  # maximize op count
     sin(x)/cos(x)
 
     References
@@ -1701,7 +1691,6 @@ def process_common_addends(rv, do, key2=None, key1=True):
     will be the only key applied.
 
     """
-
     # collect by absolute value of coefficient and key2
     absc = defaultdict(list)
     if key1:
@@ -1737,10 +1726,10 @@ def process_common_addends(rv, do, key2=None, key1=True):
     return rv
 
 
-fufuncs = '''
+fufuncs = """
     TR0 TR1 TR2 TR3 TR4 TR5 TR6 TR7 TR8 TR9 TR10 TR10i TR11
     TR12 TR13 L TR2i TRmorrie TR12i
-    TR14 TR15 TR16 TR111 TR22'''.split()
+    TR14 TR15 TR16 TR111 TR22""".split()
 FU = dict(zip(fufuncs, list(map(locals().get, fufuncs))))
 
 
@@ -2021,7 +2010,7 @@ def _osborne(e, d):
         elif isinstance(rv, coth):
             return cot(a)/I
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2060,7 +2049,7 @@ def _osbornei(e, d):
         elif isinstance(rv, csc):
             return I/sinh(a)
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2089,8 +2078,8 @@ def hyper_as_trig(rv):
     https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
-    from .simplify import signsimp
     from .radsimp import collect
+    from .simplify import signsimp
 
     # mask off trig functions
     trigs = rv.atoms(TrigonometricFunction)
@@ -2119,5 +2108,4 @@ def sincos_to_sum(expr):
     7*sin(x) - 5*sin(3*x) + 3*sin(5*x) - sin(7*x)
 
     """
-
     return TR8(expand_mul(TRpower(expr)))

@@ -1,8 +1,7 @@
-from functools import reduce
+import functools
 from itertools import permutations
 
 from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
-from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
                          binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
                          log, root, sin, sinh, sqrt, tan, tanh)
@@ -12,6 +11,7 @@ from ..polys.constructor import construct_domain
 from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
 from ..polys.solvers import solve_lin_sys
+from ..utilities import ordered
 from ..utilities.iterables import uniq
 
 
@@ -28,7 +28,7 @@ def components(f, x):
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
     result = set()
@@ -62,7 +62,7 @@ _symbols_cache = {}
 
 # NB @cacheit is not convenient here
 def _symbols(name, n):
-    """get vector of symbols local to this module."""
+    """Get vector of symbols local to this module."""
     try:
         lsyms = _symbols_cache[name]
     except KeyError:
@@ -70,7 +70,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy('%s%i' % (name, len(lsyms))) )
+        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
 
     return lsyms[:n]
 
@@ -95,10 +95,10 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
-    from ..solvers.solvers import solve, denoms
+    from ..solvers.solvers import denoms, solve
     f = sympify(f)
     if x not in f.free_symbols:
         return f*x
@@ -112,24 +112,18 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     # conditions for these cases are stored in the list slns.
     slns = []
     for d in denoms(res):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns += solve(d, *ds)
     if not slns:
         return res
     slns = list(uniq(slns))
     # Remove the solutions corresponding to poles in the original expression.
     slns0 = []
     for d in denoms(f):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns0 += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns0 += solve(d, *ds)
     slns = [s for s in slns if s not in slns0]
     if not slns:
         return res
@@ -198,15 +192,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     References
     ==========
 
-    * Manuel Bronstein's "Poor Man's Integrator",
-      http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
+    * :cite:`Bronstein2005pmint`
 
     See Also
     ========
 
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
-    diofant.integrals.heurisch.components
+    components
 
     """
     f = sympify(f)
@@ -325,7 +318,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         diffs = [ _substitute(cancel(g.diff(x))) for g in terms ]
         denoms = [ g.as_numer_denom()[1] for g in diffs ]
         if all(h.is_polynomial(*V) for h in denoms) and _substitute(f).is_rational_function(*V):
-            denom = reduce(lambda p, q: lcm(p, q, *V), denoms)
+            denom = functools.reduce(lambda p, q: lcm(p, q, *V), denoms)
             break
     else:
         if not rewrite:
@@ -517,11 +510,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         solution = solve_lin_sys(numer.coeffs(), coeff_ring)
 
-        if solution is None:
-            return
-        else:
+        if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
-                         v.as_expr()) for k, v in solution.items()]
+                         coeff_ring.to_expr(v)) for k, v in solution.items()]
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
@@ -547,5 +538,3 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             if result is not None:
                 return indep*result
-
-        return

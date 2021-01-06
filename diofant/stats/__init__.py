@@ -23,15 +23,15 @@ Examples
 ========
 
 >>> from diofant.stats import P, E, variance, Die, Normal
->>> X, Y = Die('X', 6), Die('Y', 6) # Define two six sided dice
->>> Z = Normal('Z', 0, 1) # Declare a Normal random variable with mean 0, std 1
->>> P(X>3) # Probability X is greater than 3
+>>> X, Y = Die('X', 6), Die('Y', 6)  # Define two six sided dice
+>>> Z = Normal('Z', 0, 1)  # Declare a Normal random variable with mean 0, std 1
+>>> P(X > 3)  # Probability X is greater than 3
 1/2
->>> E(X+Y) # Expectation of the sum of two dice
+>>> E(X + Y)  # Expectation of the sum of two dice
 7
->>> variance(X+Y) # Variance of the sum of two dice
+>>> variance(X + Y)  # Variance of the sum of two dice
 35/6
->>> simplify(P(Z>1)) # Probability of Z being greater than 1
+>>> simplify(P(Z > 1))  # Probability of Z being greater than 1
 -erf(sqrt(2)/2)/2 + 1/2
 
 """
@@ -52,3 +52,18 @@ from .rv_interface import (E, P, cdf, cmoment, correlation, covariance,
                            pspace, random_symbols, sample, sample_iter,
                            sampling_density, skewness, smoment, std, variance,
                            where)
+
+
+__all__ = ('Arcsin', 'Benini', 'Beta', 'BetaPrime', 'Cauchy', 'Chi',
+           'ChiNoncentral', 'ChiSquared', 'ContinuousRV', 'Dagum', 'Erlang',
+           'Exponential', 'FDistribution', 'FisherZ', 'Frechet', 'Gamma',
+           'GammaInverse', 'Kumaraswamy', 'Laplace', 'Logistic', 'LogNormal',
+           'Maxwell', 'Nakagami', 'Normal', 'Pareto', 'QuadraticU',
+           'RaisedCosine', 'Rayleigh', 'StudentT', 'Triangular', 'Uniform',
+           'UniformSum', 'VonMises', 'Weibull', 'WignerSemicircle',
+           'Geometric', 'Poisson', 'Bernoulli', 'Binomial', 'Coin', 'Die',
+           'DiscreteUniform', 'FiniteRV', 'Hypergeometric', 'Rademacher',
+           'E', 'P', 'cdf', 'cmoment', 'correlation', 'covariance', 'density',
+           'dependent', 'given', 'independent', 'moment', 'pspace',
+           'random_symbols', 'sample', 'sample_iter', 'sampling_density',
+           'skewness', 'smoment', 'std', 'variance', 'where')
