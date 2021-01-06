@@ -123,9 +123,9 @@ def test_core_symbol():
     # make the Symbol a unique name that doesn't class with any other
     # testing variable in this file since after this test the symbol
     # having the same name will be cached as noncommutative
-    for c in (Dummy, Dummy("x", commutative=False), Symbol,
-              Symbol("_sympyissue_6229", commutative=False),
-              Wild, Wild("x"), Wild("x", fixed_size=False)):
+    for c in (Dummy, Dummy('x', commutative=False), Symbol,
+              Symbol('_sympyissue_6229', commutative=False),
+              Wild, Wild('x'), Wild('x', fixed_size=False)):
         check(c)
 
 
