@@ -17,7 +17,7 @@ def test_no_stdlib_collections():
     larger list.
     """
     matplotlib = import_module('matplotlib',
-                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               import__kwargs={'fromlist': ['cm', 'collections']},
                                min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
@@ -29,7 +29,7 @@ def test_no_stdlib_collections2():
     larger list.
     """
     matplotlib = import_module('matplotlib',
-                               __import__kwargs={'fromlist': ['collections']},
+                               import__kwargs={'fromlist': ['collections']},
                                min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
@@ -38,7 +38,7 @@ def test_no_stdlib_collections2():
 def test_no_stdlib_collections3():
     """Make sure we get the right collections with no catch."""
     matplotlib = import_module('matplotlib',
-                               __import__kwargs={'fromlist': ['cm', 'collections']},
+                               import__kwargs={'fromlist': ['cm', 'collections']},
                                min_module_version='1.1.0')
     if matplotlib:
         assert collections != matplotlib.collections

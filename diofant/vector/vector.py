@@ -18,6 +18,7 @@ class Vector(BasisDependent):
 
     is_Vector = True
     _op_priority = 12.0
+    zero: VectorZero = None
 
     @property
     def components(self):

@@ -11,7 +11,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
                   warn_not_installed=False, warn_old_version=True,
                   module_version_attr='__version__',
                   module_version_attr_call_args=None,
-                  __import__kwargs={}, catch=()):
+                  import__kwargs={}, catch=()):
     """
     Import and return a module if it is installed.
 
@@ -44,7 +44,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
     min_module_version or min_python_version options.
 
     This function uses __import__() to import the module.  To pass additional
-    options to __import__(), use the __import__kwargs keyword argument.  For
+    options to __import__(), use the import__kwargs keyword argument.  For
     example, to import a submodule A.B, you must pass a nonempty fromlist option
     to __import__.
 
@@ -76,12 +76,12 @@ def import_module(module, min_module_version=None, min_python_version=None,
     __import__().  The values do not matter.
 
     >>> p3 = import_module('mpl_toolkits.mplot3d',
-    ...                    __import__kwargs={'fromlist': ['something']})
+    ...                    import__kwargs={'fromlist': ['something']})
 
     matplotlib.pyplot can raise RuntimeError when the display cannot be opened
 
     >>> matplotlib = import_module('matplotlib',
-    ...                            __import__kwargs={'fromlist': ['pyplot']},
+    ...                            import__kwargs={'fromlist': ['pyplot']},
     ...                            catch=(RuntimeError,))
 
     See Also
@@ -104,7 +104,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
             return
 
     try:
-        mod = __import__(module, **__import__kwargs)
+        mod = __import__(module, **import__kwargs)
     except ImportError:
         if warn_not_installed:
             warnings.warn(f'{module} module is not installed', UserWarning)

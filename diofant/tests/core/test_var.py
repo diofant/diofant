@@ -44,11 +44,11 @@ def test_var():
     assert v == [d, e, fg]
 
     # see if var() really injects into global namespace
-    pytest.raises(NameError, lambda: z1)
+    pytest.raises(NameError, lambda: z1)  # type: ignore[name-defined]
     _make_z1()
     assert z1 == Symbol('z1')
 
-    pytest.raises(NameError, lambda: z2)
+    pytest.raises(NameError, lambda: z2)  # type: ignore[name-defined]
     _make_z2()
     assert z2 == Symbol('z2')
 
