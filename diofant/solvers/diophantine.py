@@ -11,7 +11,7 @@ from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
                        nextprime, perfect_power, sqrt_mod, square_factor)
-from ..polys import GeneratorsNeeded, Poly, factor_list
+from ..polys import GeneratorsNeeded, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
@@ -147,7 +147,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
         eq = factor_terms(eq)
         assert not eq.is_number
         eq = eq.as_independent(*var, as_Add=False)[1]
-        p = Poly(eq)
+        p = eq.as_poly()
         assert not any(g.is_number for g in p.gens)
         eq = p.as_expr()
         assert eq.is_polynomial()
@@ -351,7 +351,7 @@ def classify_diop(eq, _dict=True):
         raise TypeError('Coefficients should be Integers')
 
     diop_type = None
-    total_degree = Poly(eq).total_degree()
+    total_degree = eq.as_poly().total_degree()
     homogeneous = 1 not in coeff
     if total_degree == 1:
         diop_type = 'linear'

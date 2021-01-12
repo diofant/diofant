@@ -4,9 +4,8 @@ import random
 
 import pytest
 
-from diofant import (ZZ, Poly, cyclotomic_poly, interpolating_poly,
-                     random_poly, ring, swinnerton_dyer_poly, symbols,
-                     symmetric_poly)
+from diofant import (ZZ, cyclotomic_poly, interpolating_poly, random_poly,
+                     ring, swinnerton_dyer_poly, symbols, symmetric_poly)
 from diofant.abc import x, y, z
 
 
@@ -16,8 +15,8 @@ __all__ = ()
 def test_swinnerton_dyer_poly():
     pytest.raises(ValueError, lambda: swinnerton_dyer_poly(0, x))
 
-    assert swinnerton_dyer_poly(1, x, polys=True) == Poly(x**2 - 2)
-    assert swinnerton_dyer_poly(1, polys=True) == Poly(x**2 - 2)
+    assert swinnerton_dyer_poly(1, x, polys=True) == (x**2 - 2).as_poly()
+    assert swinnerton_dyer_poly(1, polys=True) == (x**2 - 2).as_poly()
 
     assert swinnerton_dyer_poly(1, x) == x**2 - 2
     assert swinnerton_dyer_poly(2, x) == x**4 - 10*x**2 + 1
@@ -32,8 +31,8 @@ def test_swinnerton_dyer_poly():
 def test_cyclotomic_poly():
     pytest.raises(ValueError, lambda: cyclotomic_poly(0, x))
 
-    assert cyclotomic_poly(1, x, polys=True) == Poly(x - 1)
-    assert cyclotomic_poly(1, polys=True) == Poly(x - 1)
+    assert cyclotomic_poly(1, x, polys=True) == (x - 1).as_poly()
+    assert cyclotomic_poly(1, polys=True) == (x - 1).as_poly()
 
     assert cyclotomic_poly(1, x) == x - 1
     assert cyclotomic_poly(2, x) == x + 1
@@ -47,7 +46,7 @@ def test_symmetric_poly():
     pytest.raises(ValueError, lambda: symmetric_poly(-1, x, y, z))
     pytest.raises(ValueError, lambda: symmetric_poly(5, x, y, z))
 
-    assert symmetric_poly(1, x, y, z, polys=True) == Poly(x + y + z)
+    assert symmetric_poly(1, x, y, z, polys=True) == (x + y + z).as_poly()
 
     assert symmetric_poly(0, x, y, z) == 1
     assert symmetric_poly(1, x, y, z) == x + y + z
@@ -56,10 +55,10 @@ def test_symmetric_poly():
 
 
 def test_random_poly():
-    poly = random_poly(x, 10, -100, 100, polys=False)
+    poly = random_poly(x, 10, -100, 100)
 
-    assert Poly(poly).degree() == 10
-    assert all(-100 <= coeff <= 100 for coeff in Poly(poly).coeffs()) is True
+    assert poly.as_poly().degree() == 10
+    assert all(-100 <= coeff <= 100 for coeff in poly.as_poly().coeffs()) is True
 
     poly = random_poly(x, 10, -100, 100, polys=True)
 

@@ -125,7 +125,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         if K0 == self.domain:
             return self([a])
         elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep.coeff(1) if a else self.zero
+            return a.rep[1] if a else self.zero
 
         from ..polys import field_isomorphism
 
@@ -218,7 +218,7 @@ class ComplexAlgebraicElement(AlgebraicElement):
     @property
     def real(self):
         """Returns real part of ``self``."""
-        return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
+        return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):
@@ -253,7 +253,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return rep.eval(0, root.interval.center) < 0
+        return rep(root.interval.center) < 0
 
     @cacheit
     def __int__(self):
@@ -264,11 +264,11 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         df = rep.diff()
 
         while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
-               int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
+               int(rep(root.interval.b)) != int(rep(root.interval.a))):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return int(rep.eval(0, root.interval.a))
+        return int(rep(root.interval.a))
 
     @property
     def real(self):

@@ -171,14 +171,14 @@ class ReprPrinter(Printer):
                                    self._print(field.domain), self._print(field.symbols), self._print(field.order))
 
     def _print_PolyElement(self, poly):
-        terms = list(poly.terms())
+        terms = list(poly.items())
         terms.sort(key=poly.ring.order, reverse=True)
         return f'{poly.__class__.__name__}({self._print(poly.ring)}, {self._print(terms)})'
 
     def _print_FracElement(self, frac):
-        numer_terms = list(frac.numerator.terms())
+        numer_terms = list(frac.numerator.items())
         numer_terms.sort(key=frac.field.order, reverse=True)
-        denom_terms = list(frac.denominator.terms())
+        denom_terms = list(frac.denominator.items())
         denom_terms.sort(key=frac.field.order, reverse=True)
         numer = self._print(numer_terms)
         denom = self._print(denom_terms)

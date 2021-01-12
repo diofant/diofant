@@ -59,6 +59,7 @@ jobs:
         pytest diofant/tests/polys
         pip uninstall -y numpy
         pytest diofant/tests/external diofant/tests/utilities
+        coverage html
     - name: Upload coverage data
       if: matrix.coverage
       run: codecov --required --tries 10
@@ -87,6 +88,8 @@ jobs:
           dist/
           build/sphinx/html/
           build/sphinx/latex/Diofant-*.pdf
+          coverage.xml
+          build/coverage/html/
     - name: Upload docs to Github Pages
       if: github.event_name == 'push' && matrix.coverage
       uses: peaceiris/actions-gh-pages@v3

@@ -156,7 +156,7 @@ def apart_undetermined_coeffs(P, Q):
             symbols.extend(coeffs)
 
     dom = Q.domain.inject(*symbols)
-    F = Poly(0, Q.gen, domain=dom)
+    F = Integer(0).as_poly(Q.gen, domain=dom)
 
     for i, (coeffs, q, f, k) in enumerate(partial):
         h = Poly(coeffs, Q.gen, domain=dom)
@@ -365,7 +365,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
         if Q_sqf[0][1] == 1:
             Q_sqf[0] = Q_c*Q_sqf[0][0], 1
         else:
-            Q_sqf.insert(0, (Poly(Q_c, x), 1))
+            Q_sqf.insert(0, (Q_c.as_poly(x), 1))
 
     partial = []
 
@@ -391,8 +391,8 @@ def apart_list_full_decomposition(P, Q, dummygen):
 
             Q = Q.subs([subs[0]])
 
-            P = Poly(P, x)
-            Q = Poly(Q, x)
+            P = P.as_poly(x)
+            Q = Q.as_poly(x)
 
             G = P.gcd(d)
             D = d.quo(G)
@@ -449,8 +449,9 @@ def assemble_partfrac_list(partial_list):
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
     >>> a = Dummy('a')
-    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)],
-    ...                         Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> pfd = (1, Integer(0).as_poly(x),
+    ...        [([sqrt(2), -sqrt(2)],
+    ...          Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))

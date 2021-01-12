@@ -798,3 +798,7 @@ def test_sympyissue_14874():
 
 def test_sympyissue_20365():
     assert limit(((x + 1)**(1/x) - E)/x, x, 0) == -E/2
+
+
+def test_sympyissue_20704():
+    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, 0) == 0

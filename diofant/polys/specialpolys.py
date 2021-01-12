@@ -76,7 +76,7 @@ def symmetric_poly(n, *gens, **args):
     if not args.get('polys', False):
         return poly
     else:
-        return polytools.Poly(poly, *gens)
+        return poly.as_poly(*gens)
 
 
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):

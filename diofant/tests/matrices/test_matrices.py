@@ -2,7 +2,7 @@ import collections
 
 import pytest
 
-from diofant import (Basic, E, Float, Function, GramSchmidt, I,
+from diofant import (ZZ, Basic, E, Float, Function, GramSchmidt, I,
                      ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
                      Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
                      Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
@@ -1675,7 +1675,7 @@ def test_Matrix_berkowitz_charpoly():
 
     assert charpoly == \
         Poly(x**2 + (K_i*UA + K_w*UA + 2*K_i*K_w)/(K_i + K_w)*x +
-             K_i*K_w*UA/(K_i + K_w), x, domain='ZZ(K_i,K_w,UA)')
+             K_i*K_w*UA/(K_i + K_w), x, domain=ZZ.inject(K_i, K_w, UA).field)
 
     assert type(charpoly) is PurePoly
 

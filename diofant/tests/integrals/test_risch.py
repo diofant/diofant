@@ -1,8 +1,8 @@
 """Most of these tests come from the examples in Bronstein's book."""
 import pytest
 
-from diofant import (E, Eq, Function, I, Integer, Lambda, Piecewise, Poly,
-                     Rational, exp, factor, log, sin, sqrt, symbols, tan)
+from diofant import (EX, ZZ, E, Eq, Function, I, Integer, Lambda, Piecewise,
+                     Poly, Rational, exp, factor, log, sin, sqrt, symbols, tan)
 from diofant.abc import a, i, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
                                      NonElementaryIntegral, as_poly_1t,
@@ -66,7 +66,7 @@ def test_derivation():
     assert derivation(Poly(1, t), DE) == Poly(0, t)
     assert derivation(Poly(t, t), DE) == DE.d
     assert derivation(Poly(t**2 + 1/x*t + (1 - 2*x)/(4*x**2), t), DE) == \
-        Poly(-2*t**3 - 4/x*t**2 - (5 - 2*x)/(2*x**2)*t - (1 - 2*x)/(2*x**3), t, domain='ZZ(x)')
+        Poly(-2*t**3 - 4/x*t**2 - (5 - 2*x)/(2*x**2)*t - (1 - 2*x)/(2*x**3), t, domain=ZZ.inject(x).field)
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t1), Poly(t, t)]})
     assert derivation(Poly(x*t*t1, t), DE) == Poly(t*t1 + x*t*t1 + t, t)
     assert derivation(Poly(x*t*t1, t), DE, coefficientD=True) == \
@@ -85,7 +85,7 @@ def test_splitfactor():
              (2*x + 7*x**2 + 2*x**3)*t**2 + (1 - 4*x - 4*x**2)*t - 1 + 2*x, t, field=True)
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(-t**2 - 3/(2*x)*t + 1/(2*x), t)]})
     assert splitfactor(p, DE) == (Poly(4*x**4*t**3 + (-8*x**3 - 4*x**4)*t**2 +
-                                       (4*x**2 + 8*x**3)*t - 4*x**2, t), Poly(t**2 + 1/x*t + (1 - 2*x)/(4*x**2), t, domain='ZZ(x)'))
+                                       (4*x**2 + 8*x**3)*t - 4*x**2, t), Poly(t**2 + 1/x*t + (1 - 2*x)/(4*x**2), t, domain=ZZ.inject(x).field))
     assert splitfactor(Poly(x, t), DE) == (Poly(x, t), Poly(1, t))
     r = Poly(-4*x**4*z**2 + 4*x**6*z**2 - z*x**3 - 4*x**5*z**3 + 4*x**3*z**3 + x**4 + z*x**5 - x**6, t)
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1/x, t)]})
@@ -225,7 +225,7 @@ def test_residue_reduce():
     # TODO: Skip or make faster
     assert residue_reduce(Poly((-2*nu**2 - x**4)/(2*x**2)*t - (1 + x**2)/x, t),
                           Poly(t**2 + 1 + x**2/2, t), DE, z) == \
-        ([(Poly(z + Rational(1, 2), z, domain='QQ'), Poly(t**2 + 1 + x**2/2, t, domain='EX'))], True)
+        ([(Poly(z + Rational(1, 2)), Poly(t**2 + 1 + x**2/2, t, domain=EX))], True)
     DE = DifferentialExtension(extension={'D': [Poly(1, x), Poly(1 + t**2, t)]})
     assert residue_reduce(Poly(-2*x*t + 1 - x**2, t),
                           Poly(t**2 + 2*x*t + 1 + x**2, t), DE, z) == \
@@ -568,8 +568,8 @@ def test_DifferentialExtension_extension_flag():
 def test_DifferentialExtension_misc():
     # Odd ends
     assert DifferentialExtension(sin(y)*exp(x), x, dummy=False)._important_attrs == \
-        (Poly(sin(y)*t0, t0, domain='ZZ[sin(y)]'), Poly(1, t0, domain='ZZ'),
-         [Poly(1, x, domain='ZZ'), Poly(t0, t0, domain='ZZ')], [x, t0],
+        (Poly(sin(y)*t0, t0, domain=ZZ.inject(sin(y))), Poly(1, t0),
+         [Poly(1, x), Poly(t0)], [x, t0],
          [Lambda(i, exp(i))], [], [1], [x], [], [])
     pytest.raises(NotImplementedError, lambda: DifferentialExtension(sin(x), x))
     assert DifferentialExtension(10**x, x, dummy=False)._important_attrs == \
@@ -593,7 +593,7 @@ def test_DifferentialExtension_Rothstein():
         (Poly((1757211400 + 2581284541*t0)*t1, t1), Poly(39916800 +
                                                          119750400*t0 + 119750400*t0**2 + 39916800*t0**3, t1),
          [Poly(1, x), Poly(t0, t0), Poly(-(10 + 21*t0 + 10*t0**2)/(1 + 2*t0 +
-                                                                   t0**2)*t1, t1, domain='ZZ(t0)')], [x, t0, t1],
+                                                                   t0**2)*t1, t1, domain=ZZ.inject(t0).field)], [x, t0, t1],
          [Lambda(i, exp(i)), Lambda(i, exp(1/(t0 + 1) - 10*i))], [], [1, 2],
          [x, 1/(t0 + 1) - 10*x], [], [])
 

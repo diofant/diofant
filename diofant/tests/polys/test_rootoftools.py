@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (Eq, Float, Function, GeneratorsNeeded, I, Lambda,
-                     MultivariatePolynomialError, Poly, PolynomialError, Pow,
+from diofant import (Eq, Float, Function, GeneratorsNeeded, I, Integer, Lambda,
+                     MultivariatePolynomialError, PolynomialError, Pow,
                      PurePoly, Rational, RootOf, RootSum, Symbol, conjugate,
                      exp, expand_func, false, legendre_poly, log, oo, root,
                      solve, sqrt, tan, true)
@@ -67,8 +67,8 @@ def test_RootOf___new__():
     pytest.raises(GeneratorsNeeded, lambda: RootOf(0, 0))
     pytest.raises(GeneratorsNeeded, lambda: RootOf(1, 0))
 
-    pytest.raises(PolynomialError, lambda: RootOf(Poly(0, x), 0))
-    pytest.raises(PolynomialError, lambda: RootOf(Poly(1, x), 0))
+    pytest.raises(PolynomialError, lambda: RootOf(Integer(0).as_poly(x), 0))
+    pytest.raises(PolynomialError, lambda: RootOf(Integer(1).as_poly(x), 0))
 
     pytest.raises(PolynomialError, lambda: RootOf(x - y, 0))
 
@@ -81,13 +81,13 @@ def test_RootOf___new__():
                   lambda: RootOf(Symbol('a', nonzero=False)*x**5 +
                                  2*x - 1, x, 0))
     pytest.raises(NotImplementedError,
-                  lambda: Poly(Symbol('a', nonzero=False)*x**5 +
-                               2*x - 1, x).all_roots())
+                  lambda: (Symbol('a', nonzero=False)*x**5 +
+                           2*x - 1).as_poly(x).all_roots())
 
-    assert RootOf(Poly(x - y, x), 0) == y
+    assert RootOf((x - y).as_poly(x), 0) == y
 
-    assert RootOf(Poly(x**2 - y, x), 0) == -sqrt(y)
-    assert RootOf(Poly(x**2 - y, x), 1) == sqrt(y)
+    assert RootOf((x**2 - y).as_poly(x), 0) == -sqrt(y)
+    assert RootOf((x**2 - y).as_poly(x), 1) == sqrt(y)
 
     assert isinstance(RootOf(x**3 - y, x, 0), RootOf)
     p = Symbol('p', positive=True)
@@ -220,7 +220,7 @@ def test_RootOf_conjugate():
     assert RootOf(p2, 3).conjugate() == RootOf(p2, 2)
     assert RootOf(p2, 7).conjugate() == RootOf(p2, 6)
 
-    p3 = Poly(x**7 + x*y + 1, x)
+    p3 = (x**7 + x*y + 1).as_poly(x)
     assert RootOf(p3, x, 0).conjugate() == conjugate(RootOf(p3, x, 0),
                                                      evaluate=False)
 
@@ -334,14 +334,14 @@ def test_RootOf_evalf_caching_bug():
 
 
 def test_RootOf_real_roots():
-    assert Poly(x**5 + x + 1).real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
-    assert Poly(x**5 + x + 1).real_roots(radicals=False) == [RootOf(
+    assert (x**5 + x + 1).as_poly().real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
+    assert (x**5 + x + 1).as_poly().real_roots(radicals=False) == [RootOf(
         x**3 - x**2 + 1, 0)]
-    assert Poly(x**7 - 0.1*x + 1, x).real_roots() == [RootOf(10*x**7 - x + 10, 0)]
+    assert (x**7 - 0.1*x + 1).as_poly(x).real_roots() == [RootOf(10*x**7 - x + 10, 0)]
 
 
 def test_RootOf_all_roots():
-    assert Poly(x**5 + x + 1).all_roots() == [
+    assert (x**5 + x + 1).as_poly().all_roots() == [
         RootOf(x**3 - x**2 + 1, 0),
         -Rational(1, 2) - sqrt(3)*I/2,
         -Rational(1, 2) + sqrt(3)*I/2,
@@ -349,7 +349,7 @@ def test_RootOf_all_roots():
         RootOf(x**3 - x**2 + 1, 2),
     ]
 
-    assert Poly(x**5 + x + 1).all_roots(radicals=False) == [
+    assert (x**5 + x + 1).as_poly().all_roots(radicals=False) == [
         RootOf(x**3 - x**2 + 1, 0),
         RootOf(x**2 + x + 1, 0, radicals=False),
         RootOf(x**2 + x + 1, 1, radicals=False),
@@ -357,7 +357,7 @@ def test_RootOf_all_roots():
         RootOf(x**3 - x**2 + 1, 2),
     ]
 
-    r = Poly((x**3 + x + 20)*(x**3 + x + 21)).all_roots()
+    r = ((x**3 + x + 20)*(x**3 + x + 21)).as_poly().all_roots()
 
     assert r[0].is_real and r[1].is_real
     assert all(not _.is_real for _ in r[2:])
@@ -526,15 +526,15 @@ def test_RootSum_independent():
 
 
 def test_sympyissue_7876():
-    l1 = Poly(x**6 - x + 1, x).all_roots()
+    l1 = (x**6 - x + 1).as_poly().all_roots()
     l2 = [RootOf(x**6 - x + 1, i) for i in range(6)]
     assert frozenset(l1) == frozenset(l2)
 
 
 def test_sympyissue_8316():
-    f = Poly(7*x**8 - 9)
+    f = (7*x**8 - 9).as_poly()
     assert len(f.all_roots()) == 8
-    f = Poly(7*x**8 - 10)
+    f = (7*x**8 - 10).as_poly()
     assert len(f.all_roots()) == 8
 
 
@@ -603,5 +603,5 @@ def test_diofantissue_723():
 
 
 def test_sympyissue_15413():
-    assert Poly(sqrt(2)*x**3 + x, x).all_roots() == [0, -I*root(2, -4),
-                                                     I*root(2, -4)]
+    assert (sqrt(2)*x**3 + x).as_poly(x).all_roots() == [0, -I*root(2, -4),
+                                                         I*root(2, -4)]

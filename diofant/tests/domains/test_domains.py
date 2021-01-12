@@ -5,7 +5,7 @@ import pytest
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      CoercionFailed, ComplexField, DomainError, Float,
                      GeneratorsError, GeneratorsNeeded, I, Integer,
-                     NotInvertible, Poly, PythonRational, QQ_python, Rational,
+                     NotInvertible, PythonRational, QQ_python, Rational,
                      RealField, RootOf, UnificationFailed, ZZ_python, field,
                      oo, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
@@ -290,7 +290,7 @@ def test_Domain_unify_algebraic_slow():
     assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
 
     # here domain created from tuple, not Expr
-    p = Poly(x**3 - sqrt(2)*x - 1, x)
+    p = (x**3 - sqrt(2)*x - 1).as_poly(x)
     sqrt2 = p.domain
     assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
 
@@ -647,7 +647,7 @@ def test_Domain___eq__():
 
 def test_Domain__algebraic_field():
     alg = QQ.algebraic_field(sqrt(3))
-    assert alg.minpoly == Poly(x**2 - 3)
+    assert alg.minpoly == (x**2 - 3).as_poly()
     assert alg.domain == QQ
     assert alg.from_expr(sqrt(3)).denominator == 1
     assert alg.from_expr(2*sqrt(3)).denominator == 1
@@ -655,11 +655,11 @@ def test_Domain__algebraic_field():
     assert alg([QQ(3, 2), QQ(7, 38)]).denominator == 38
 
     alg = QQ.algebraic_field(sqrt(2))
-    assert alg.minpoly == Poly(x**2 - 2)
+    assert alg.minpoly == (x**2 - 2).as_poly()
     assert alg.domain == QQ
 
     alg = QQ.algebraic_field(sqrt(2), sqrt(3))
-    assert alg.minpoly == Poly(x**4 - 10*x**2 + 1)
+    assert alg.minpoly == (x**4 - 10*x**2 + 1).as_poly()
     assert alg.domain == QQ
 
     assert alg(1).numerator == alg(1)
@@ -683,7 +683,7 @@ def test_Domain__algebraic_field():
     pytest.raises(TypeError, lambda: int(alg([1, 1])))
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
-    assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
+    assert alg.minpoly == (x**2 - 3).as_poly(x, domain=QQ.algebraic_field(sqrt(2)))
 
     # issue sympy/sympy#14476
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
@@ -1164,9 +1164,9 @@ def test_EX():
 
 
 def test_sympyissue_13545():
-    assert Poly(x + 1, x, modulus=2) + 1 == Poly(x, x, modulus=2)
+    assert (x + 1).as_poly(x, modulus=2) + 1 == x.as_poly(x, modulus=2)
     pytest.raises(NotImplementedError,
-                  lambda: Poly(x, modulus=2) + Poly(x, modulus=3))
+                  lambda: x.as_poly(modulus=2) + x.as_poly(modulus=3))
 
 
 def test_sympyissue_14294():

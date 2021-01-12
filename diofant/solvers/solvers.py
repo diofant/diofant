@@ -535,12 +535,12 @@ def _solve(f, symbol, **flags):
         if len(gens) > 1:
             # If there is more than one generator, it could be that the
             # generators have the same base but different powers, e.g.
-            #   >>> Poly(exp(x) + 1/exp(x))
+            #   >>> (exp(x) + 1/exp(x)).as_poly()
             #   Poly(exp(-x) + exp(x), exp(-x), exp(x), domain='ZZ')
             #
             # If unrad was not disabled then there should be no rational
             # exponents appearing as in
-            #   >>> Poly(sqrt(x) + sqrt(sqrt(x)))
+            #   >>> (sqrt(x) + sqrt(sqrt(x))).as_poly()
             #   Poly(sqrt(x) + x**(1/4), sqrt(x), x**(1/4), domain='ZZ')
 
             bases, qs = list(zip(*[_as_base_q(g) for g in gens]))

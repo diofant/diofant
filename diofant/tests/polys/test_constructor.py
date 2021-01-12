@@ -116,8 +116,8 @@ def test_sympyissue_11538():
 
 
 def test_sympyissue_5428_14337():
-    assert Poly(x**2 + I, x).domain == QQ.algebraic_field(I)
-    assert Poly(x**2 + sqrt(2), x).domain == QQ.algebraic_field(sqrt(2))
+    assert (x**2 + I).as_poly(x).domain == QQ.algebraic_field(I)
+    assert (x**2 + sqrt(2)).as_poly(x).domain == QQ.algebraic_field(sqrt(2))
 
 
 def test_sympyissue_20617():

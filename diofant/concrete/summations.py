@@ -682,7 +682,7 @@ def eval_sum_symbolic(f, limits):
 def _eval_sum_hyper(f, i, a):
     """Returns (res, cond). Sums from a to oo."""
     from ..functions import hyper
-    from ..polys import Poly, factor
+    from ..polys import factor
     from ..simplify import fraction, hyperexpand, hypersimp, simplify
 
     if a != 0:
@@ -709,7 +709,7 @@ def _eval_sum_hyper(f, i, a):
             if fac.is_Pow:
                 mul = fac.exp
                 fac = fac.base
-            p = Poly(fac, i)
+            p = fac.as_poly(i)
             if p.degree() != 1:
                 return
             n, m = p.all_coeffs()

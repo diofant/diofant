@@ -80,12 +80,12 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (2*x**4 - 2).factor_list()
         (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
-        >>> R, x, y = ring('x y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
 
         >>> (2*x**2 - 2*y**2).factor_list()
         (2, [(x - y, 1), (x + y, 1)])
@@ -171,7 +171,7 @@ class _Factor:
         if n == 1:
             return [f]
 
-        fc = f.coeff(1)
+        fc = f[1]
         A = f.max_norm()
         b = f.LC
         B = int(self._zz_mignotte_bound(f))
@@ -220,7 +220,7 @@ class _Factor:
                 if b == 1:
                     q = 1
                     for i in S:
-                        q = q*g[i].coeff(1)
+                        q = q*g[i][1]
                     q = q % pl
                     qs = symmetric_residue(q, pl)
                     if qs and fc % qs != 0:
@@ -231,7 +231,7 @@ class _Factor:
                         G *= g[i]
                     G = G.trunc_ground(pl)
                     _, G = G.primitive()
-                    q = G.coeff(1)
+                    q = G[1]
                     if q and fc % q != 0:
                         continue
 
@@ -491,7 +491,7 @@ class _Factor:
         assert self.is_univariate
 
         lc = f.LC
-        tc = f.coeff(1)
+        tc = f[1]
 
         f -= f.leading_term()
         e_fc = f.content()
@@ -573,14 +573,15 @@ class _Factor:
         return h == x
 
     def _cyclotomic_decompose(self, n):
-        H = [self.gens[0] - 1]
+        x = self.gens[0]
+        H = [x - 1]
 
         for p, k in factorint(n).items():
-            Q = [h.inflate((p,)) // h for h in H]
+            Q = [h.compose(x, x**p) // h for h in H]
             H.extend(Q)
 
             for i in range(1, k):
-                Q = [q.inflate((p,)) for q in Q]
+                Q = [q.compose(x, x**p) for q in Q]
                 H.extend(Q)
 
         return H
@@ -605,7 +606,7 @@ class _Factor:
         """
         domain = self.domain
 
-        lc_f, tc_f = f.LC, f.coeff(1)
+        lc_f, tc_f = f.LC, f[1]
 
         if f.is_ground:
             return
@@ -637,7 +638,7 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
         False
@@ -660,7 +661,7 @@ class _Factor:
         x = self.gens[0]
 
         lc = f.LC
-        tc = f.coeff(1)
+        tc = f[1]
 
         if lc != 1 or (tc != -1 and tc != 1):
             return False
@@ -675,10 +676,10 @@ class _Factor:
         g, h = self.zero, self.zero
 
         for j, i in enumerate(range(n, -1, -2)):
-            g += f.coeff((i,))*x**j
+            g += f[(i,)]*x**j
 
         for j, i in enumerate(range(n - 1, -1, -2)):
-            h += f.coeff((i,))*x**j
+            h += f[(i,)]*x**j
 
         g = g**2
         h = h**2
@@ -713,8 +714,8 @@ class _Factor:
         h = x - 1
 
         for p, k in factorint(n).items():
-            h = h.inflate((p,)) // h
-            h = h.inflate((p**(k - 1),))
+            h = h.compose(x, x**p) // h
+            h = h.compose(x, x**(p**(k - 1)))
 
         return h
 

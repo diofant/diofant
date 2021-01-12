@@ -236,7 +236,7 @@ class GaloisFieldElement(ModularInteger):
 
     def __int__(self):
         rep = self.rep.set_domain(self.parent.domain)
-        return int(rep.eval(0, self.parent.mod))
+        return int(rep(self.parent.mod))
 
     @property
     def is_primitive(self):

@@ -3,9 +3,9 @@
 import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
-                     Interval, Le, Lt, Max, Min, Ne, Or, Piecewise, Poly,
-                     PurePoly, Rational, RootOf, S, Symbol, Union, false, log,
-                     oo, pi, reduce_inequalities, root, sin, solve, sqrt, true)
+                     Interval, Le, Lt, Max, Min, Ne, Or, Piecewise, PurePoly,
+                     Rational, RootOf, S, Symbol, Union, false, log, oo, pi,
+                     reduce_inequalities, root, sin, solve, sqrt, true)
 from diofant.abc import x, y
 from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
@@ -64,14 +64,14 @@ def test_solve_linear_inequalities():
 
 
 def test_solve_poly_inequality():
-    assert psolve(Poly(0, x), '==') == [S.ExtendedReals]
-    assert psolve(Poly(1, x), '==') == [S.EmptySet]
+    assert psolve(Integer(0).as_poly(x), '==') == [S.ExtendedReals]
+    assert psolve(Integer(1).as_poly(x), '==') == [S.EmptySet]
     assert psolve(PurePoly(x + 1, x), '>') == [Interval(-1, oo, True, False)]
     pytest.raises(ValueError, lambda: psolve(x, '=='))
-    pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
+    pytest.raises(ValueError, lambda: psolve(x.as_poly(), '??'))
 
-    assert (solve_poly_inequalities(((Poly(x**2 - 3), '>'),
-                                     (Poly(-x**2 + 1), '>'))) ==
+    assert (solve_poly_inequalities((((x**2 - 3).as_poly(), '>'),
+                                     ((-x**2 + 1).as_poly(), '>'))) ==
             Union(Interval(-oo, -sqrt(3), False, True),
                   Interval(-1, 1, True, True),
                   Interval(sqrt(3), oo, True, False)))

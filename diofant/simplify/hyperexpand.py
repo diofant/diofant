@@ -952,7 +952,7 @@ class Operator:
         Apply ``self`` to the object ``obj``, where the generator is ``op``.
 
         >>> op = Operator()
-        >>> op._poly = Poly(x**2 + z*x + y, x)
+        >>> op._poly = (x**2 + z*x + y).as_poly(x)
         >>> op.apply(z**7, lambda f: f.diff(z))
         y*z**7 + 7*z**7 + 42*z**5
 
