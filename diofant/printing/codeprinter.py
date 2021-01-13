@@ -1,3 +1,5 @@
+import typing
+
 from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -81,10 +83,12 @@ class CodePrinter(StrPrinter):
         'not': '!',
     }
 
-    _default_settings = {'order': None,
-                         'full_prec': 'auto',
-                         'error_on_reserved': False,
-                         'reserved_word_suffix': '_'}
+    _default_settings: typing.Dict[str, typing.Any] = {
+        'order': None,
+        'full_prec': 'auto',
+        'error_on_reserved': False,
+        'reserved_word_suffix': '_'
+    }
 
     def __init__(self, settings=None):
 

@@ -6,6 +6,8 @@ builtin repr, except for optional arguments) that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
+import typing
+
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
 
@@ -20,7 +22,7 @@ class ReprPrinter(Printer):
 
     printmethod = '_diofantrepr'
 
-    _default_settings = {
+    _default_settings: typing.Dict[str, typing.Any] = {
         'order': None
     }
 

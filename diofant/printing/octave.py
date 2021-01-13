@@ -9,7 +9,8 @@ in `diofant.utilities.codegen`.  The `codegen` module can be used to generate
 complete source code files.
 """
 
-from re import search
+import re
+import typing
 
 from ..core import I, Integer, Mul, Pow, Rational, oo, pi
 from ..core.mul import _keep_coeff
@@ -58,7 +59,7 @@ class OctaveCodePrinter(CodePrinter):
         'not': '~',
     }
 
-    _default_settings = {
+    _default_settings: typing.Dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 16,
@@ -437,9 +438,9 @@ class OctaveCodePrinter(CodePrinter):
         # pre-strip left-space from the code
         code = [ line.lstrip(' \t') for line in code ]
 
-        increase = [int(any(search(re, line) for re in inc_regex))
+        increase = [int(any(re.search(_, line) for _ in inc_regex))
                     for line in code]
-        decrease = [int(any(search(re, line) for re in dec_regex))
+        decrease = [int(any(re.search(_, line) for _ in dec_regex))
                     for line in code]
 
         pretty = []

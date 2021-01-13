@@ -67,6 +67,8 @@ Some more information how the single concepts work and who should use which:
     not defined in the Printer subclass this will be the same as str(expr).
 """
 
+import typing
+
 
 class Printer:
     """Generic printer
@@ -128,12 +130,12 @@ class Printer:
 
     """
 
-    _global_settings = {}
+    _global_settings: typing.Dict[str, typing.Any] = {}
 
-    _default_settings = {}
+    _default_settings: typing.Dict[str, typing.Any] = {}
 
     emptyPrinter = str
-    printmethod = None
+    printmethod: typing.Union[str, None] = None
 
     def __init__(self, settings=None):
         import distutils

@@ -1,5 +1,6 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
+import typing
 import unicodedata
 
 from ...core.alphabets import greeks
@@ -58,7 +59,7 @@ greek_letters = list(greeks)  # make a copy
 greek_letters[greek_letters.index('lambda')] = 'lamda'
 
 # {}  greek letter -> (g,G)
-greek_unicode = {l: (g(l), G(l)) for l in greek_letters}
+greek_unicode: typing.Dict[str, typing.Union[tuple, str]] = {l: (g(l), G(l)) for l in greek_letters}
 greek_unicode = {L: g(L) for L in greek_letters}
 greek_unicode.update((L[0].upper() + L[1:], G(L)) for L in greek_letters)
 
