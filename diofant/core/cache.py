@@ -2,12 +2,13 @@
 
 import functools
 import os
+import typing
 
 from .evaluate import global_evaluate
 
 
 # global cache registry: [] of (item, {})
-CACHE = []
+CACHE: typing.List[typing.Any] = []
 
 
 def print_cache():

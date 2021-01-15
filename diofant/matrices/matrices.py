@@ -45,7 +45,7 @@ class MatrixBase(DefaultPrinting):
     _class_priority = 3
     _sympify = staticmethod(sympify)
 
-    __hash__ = None  # Mutable
+    __hash__ = None  # type: ignore[assignment]
 
     @classmethod
     def _handle_creation_inputs(cls, *args, **kwargs):

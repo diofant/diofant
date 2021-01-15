@@ -27,6 +27,7 @@ There are three types of functions implemented in Diofant:
 
 import collections
 import inspect
+import typing
 
 import mpmath
 import mpmath.libmp as mlib
@@ -713,7 +714,7 @@ class WildFunction(Function, AtomicExpr):
 
     """
 
-    include = set()
+    include: typing.Set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
         from ..sets.sets import FiniteSet, Set

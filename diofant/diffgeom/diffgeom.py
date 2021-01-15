@@ -1,4 +1,5 @@
 import functools
+import typing
 from itertools import permutations
 
 from ..combinatorics import Permutation
@@ -511,7 +512,7 @@ class BaseScalarField(Expr):
         return simplify(coords[self._index]).doit()
 
     # XXX Workaround for limitations on the content of args
-    free_symbols = set()
+    free_symbols: typing.Set[typing.Any] = set()
 
     def doit(self, **hints):
         return self

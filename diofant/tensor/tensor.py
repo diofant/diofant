@@ -30,6 +30,7 @@ lowered when the tensor is put in canonical form.
 """
 
 import functools
+import typing
 from collections import defaultdict
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
@@ -750,8 +751,8 @@ class _TensorDataLazyEvaluator(CantSympify):
 
     """
 
-    _substitutions_dict = {}
-    _substitutions_dict_tensmul = {}
+    _substitutions_dict: typing.Dict[typing.Any, typing.Any] = {}
+    _substitutions_dict_tensmul: typing.Dict[typing.Any, typing.Any] = {}
 
     def __getitem__(self, key):
         dat = self._get(key)

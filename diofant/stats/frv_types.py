@@ -64,7 +64,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
     def p(self):
         return Rational(1, len(self.args))
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {k: self.p for k in self.set}
@@ -114,7 +114,7 @@ class DieDistribution(SingleFiniteDistribution):
         else:
             return super().__new__(cls, sides)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         as_int(self.sides)
@@ -160,7 +160,7 @@ def Die(name, sides=6):
 class BernoulliDistribution(SingleFiniteDistribution):
     _argnames = ('p', 'succ', 'fail')
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {self.succ: self.p, self.fail: 1 - self.p}
@@ -230,7 +230,7 @@ class BinomialDistribution(SingleFiniteDistribution):
     def n(self):
         return self.args[self._argnames.index('n')]
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         n, p, succ, fail = self.n, self.p, self.succ, self.fail
@@ -261,7 +261,7 @@ def Binomial(name, n, p, succ=1, fail=0):
 class HypergeometricDistribution(SingleFiniteDistribution):
     _argnames = ('N', 'm', 'n')
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         N, m, n = self.N, self.m, self.n
@@ -297,7 +297,7 @@ def Hypergeometric(name, N, m, n):
 
 
 class RademacherDistribution(SingleFiniteDistribution):
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {-1: Rational(1, 2), 1: Rational(1, 2)}
