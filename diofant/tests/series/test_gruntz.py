@@ -401,6 +401,9 @@ def test_intractable():
     assert limitinf(airyai(2 + 1/x), x) == airyai(2)
     assert limitinf(airybi(2 + 1/x), x) == airybi(2)
 
+    # issue sympy/sympy#10976
+    assert limitinf(erf(m/x)/erf(1/x), x) == m
+
 
 def test_branch_cuts():
     assert limitinf(sqrt(-1 + I/x), x) == +I
@@ -489,7 +492,3 @@ def test_sympyissue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
     pytest.raises(NotImplementedError, lambda: limitinf(e, x))
     assert isinstance(e.limit(x, oo), Limit)
-
-
-def test_sympyissue_10976():
-    assert limitinf(erf(m/x)/erf(1/x), x) == m
