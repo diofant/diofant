@@ -333,7 +333,9 @@ def test_trigsimp_old(capsys):
     assert capsys.readouterr().out == '\tfutrig: tan(x)**2\n'
 
 
-def test_sympyissue_2827_trigsimp_methods():
+def test_trigsimp_methods():
+    # issue sympy/sympy#2827
+
     def measure1(expr):
         return len(str(expr))
 

@@ -154,7 +154,8 @@ def test_sqrt_symbolic_denest():
     assert sqrtdenest(z) == z
 
 
-def test_sympyissue_5857():
+def test_sqrtdenest5():
+    # issue sympy/sympy#5857
     z = sqrt(1/(4*r3 + 7) + 1)
     ans = (r2 + r6)/(r3 + 2)
     assert sqrtdenest(z) == ans

@@ -2345,6 +2345,9 @@ def test_factor():
 
     assert factor(x**6 - 4*x**4 + 4*x**3 - x**2) == x**2*(x - 1)**2*(x**2 + 2*x - 1)
 
+    # issue sympy/sympy#9607
+    assert factor(1e-20*x - 7.292115e-5) == 1e-20*x - 7.292115e-5
+
 
 def test_factor_large():
     f = (x**2 + 4*x + 4)**10000000*(x**2 + 1)*(x**2 + 2*x + 1)**1234567
@@ -3054,10 +3057,6 @@ def test_to_rational_coeffs():
         (x**3 + y*x**2 + sqrt(y)).as_poly(x, domain=EX)) is None
     assert to_rational_coeffs((((x**2 - 1)*(x - 2)*y).subs({x: x*(1 + sqrt(2))})).as_poly(x, y, domain=EX)) is None
     assert to_rational_coeffs((x**5 + sqrt(2)*x**2 + 1).as_poly(x, domain=EX)) is None
-
-
-def test_sympyissue_9607():
-    assert factor(1e-20*x - 7.292115e-5) == 1e-20*x - 7.292115e-5
 
 
 def test_sympyissue_8754():
