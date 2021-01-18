@@ -2,7 +2,7 @@
 Diofant 0.12
 ============
 
-Not Released Yet
+18 Jan 2021
 
 New features
 ============
