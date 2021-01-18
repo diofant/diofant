@@ -3,7 +3,9 @@ Mathematica code printer
 """
 
 import types
+import typing
 
+from ..core import Expr
 from .codeprinter import CodePrinter
 from .precedence import precedence
 from .str import StrPrinter
@@ -61,7 +63,7 @@ class MCodePrinter(CodePrinter):
 
     printmethod = '_mcode'
 
-    _default_settings = {
+    _default_settings: typing.Dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,
@@ -69,8 +71,8 @@ class MCodePrinter(CodePrinter):
         'human': True,
     }
 
-    _number_symbols = set()
-    _not_supported = set()
+    _number_symbols: typing.Set[tuple] = set()
+    _not_supported: typing.Set[Expr] = set()
 
     def __init__(self, settings={}):
         """Register function mappings supplied by user."""

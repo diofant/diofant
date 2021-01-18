@@ -1,5 +1,7 @@
 """repr() printing tests."""
 
+import typing
+
 import pytest
 
 from diofant import (FF, QQ, ZZ, Abs, Catalan, Dummy, E, EulerGamma, Float,
@@ -17,7 +19,7 @@ __all__ = ()
 
 # eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
-ENV = {}
+ENV: typing.Dict[str, typing.Any] = {}
 imports = ['from diofant import *',
            'from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing',
            'from diofant.domains.rationalfield import GMPYRationalField, PythonRationalField',

@@ -1,5 +1,7 @@
 """Singleton mechanism"""
 
+import typing
+
 from .assumptions import ManagedProperties
 
 
@@ -118,7 +120,7 @@ class Singleton(type):
 
     """
 
-    _instances = {}
+    _instances: typing.Dict[typing.Type[typing.Any], typing.Any] = {}
     'Maps singleton classes to their instances.'
 
     def __new__(cls, *args, **kwargs):

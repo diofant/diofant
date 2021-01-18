@@ -1,3 +1,5 @@
+import typing
+
 from ..core import Add, Expr, Integer, Mul, count_ops, diff
 from ..core.assumptions import StdFactKB
 from ..core.decorators import _sympifyit, call_highest_priority
@@ -47,9 +49,7 @@ class BasisDependent(Expr):
         for k, v in self.components.items():
             vec += v.evalf(dps, **options) * k
         return vec
-    evalf.__doc__ += Expr.evalf.__doc__
-
-    n = evalf
+    evalf.__doc__ += Expr.evalf.__doc__  # type: ignore[operator]
 
     def simplify(self, ratio=1.7, measure=count_ops):
         """
@@ -253,7 +253,7 @@ class BasisDependentMul(BasisDependent, Mul):
 class BasisDependentZero(BasisDependent):
     """Class to denote a zero basis dependent instance."""
 
-    components = {}
+    components: typing.Dict[typing.Any, Expr] = {}
 
     def __new__(cls):
         obj = super().__new__(cls)

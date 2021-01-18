@@ -8,6 +8,8 @@ as attributes of the coordinate systems (eg `R2_r.x` and `R2_p.theta`), or by
 using the usual `coord_sys.coord_function(index, name)` interface.
 """
 
+import typing
+
 from ..core import Dummy
 from ..functions import acos, atan2, cos, sin, sqrt
 from .diffgeom import CoordSystem, Manifold, Patch
@@ -16,11 +18,11 @@ from .diffgeom import CoordSystem, Manifold, Patch
 ###############################################################################
 # R2
 ###############################################################################
-R2 = Manifold('R', 2)
+R2: typing.Any = Manifold('R', 2)
 # Patch and coordinate systems.
-R2_origin = Patch('origin', R2)
-R2_r = CoordSystem('rectangular', R2_origin, ['x', 'y'])
-R2_p = CoordSystem('polar', R2_origin, ['r', 'theta'])
+R2_origin: typing.Any = Patch('origin', R2)
+R2_r: typing.Any = CoordSystem('rectangular', R2_origin, ['x', 'y'])
+R2_p: typing.Any = CoordSystem('polar', R2_origin, ['r', 'theta'])
 
 # Connecting the coordinate charts.
 x, y, r, theta = [Dummy(s) for s in ['x', 'y', 'r', 'theta']]
@@ -50,12 +52,12 @@ R2.dr, R2.dtheta = R2_origin.dr, R2_origin.dtheta = R2_p.dr, R2_p.dtheta = R2_p.
 ###############################################################################
 # R3
 ###############################################################################
-R3 = Manifold('R', 3)
+R3: typing.Any = Manifold('R', 3)
 # Patch and coordinate systems.
-R3_origin = Patch('origin', R3)
-R3_r = CoordSystem('rectangular', R3_origin, ['x', 'y', 'z'])
-R3_c = CoordSystem('cylindrical', R3_origin, ['rho', 'psi', 'z'])
-R3_s = CoordSystem('spherical', R3_origin, ['r', 'theta', 'phi'])
+R3_origin: typing.Any = Patch('origin', R3)
+R3_r: typing.Any = CoordSystem('rectangular', R3_origin, ['x', 'y', 'z'])
+R3_c: typing.Any = CoordSystem('cylindrical', R3_origin, ['rho', 'psi', 'z'])
+R3_s: typing.Any = CoordSystem('spherical', R3_origin, ['r', 'theta', 'phi'])
 
 # Connecting the coordinate charts.
 x, y, z, rho, psi, r, theta, phi = [Dummy(s) for s in ['x', 'y', 'z',

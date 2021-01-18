@@ -294,7 +294,7 @@ def multiproduct(seq=(), start=1):
 
 
 @hypothesis.given(x=hypothesis.strategies.integers(min_value=0,
-                                                   max_value=1e+10))
+                                                   max_value=10000000000))
 def test_factorint_invariant(x):
     assert Mul(*[v**p for v, p in factorint(x).items()]) == x
 

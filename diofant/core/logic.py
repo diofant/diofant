@@ -8,6 +8,8 @@ this stuff for general purpose.
 
 """
 
+import typing
+
 
 def _fuzzy_group(args, quick_exit=False):
     """
@@ -153,7 +155,7 @@ class Logic:
     """Logical expression."""
 
     # {} 'op' -> LogicClass
-    op_2class = {}
+    op_2class: typing.Dict[str, typing.Type['Logic']] = {}
 
     def __new__(cls, *args):
         obj = object.__new__(cls)

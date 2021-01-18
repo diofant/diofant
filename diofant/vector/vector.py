@@ -1,3 +1,5 @@
+import typing
+
 from ..core import AtomicExpr, Integer, Pow, Symbol, diff
 from ..core.assumptions import StdFactKB
 from ..functions import sqrt
@@ -18,6 +20,14 @@ class Vector(BasisDependent):
 
     is_Vector = True
     _op_priority = 12.0
+
+    zero: 'VectorZero'
+
+    _add_func: typing.Type['VectorAdd']
+    _mul_func: typing.Type['VectorMul']
+    _base_func: typing.Type['BaseVector']
+    _expr_type: typing.Type['Vector']
+    _zero_func: typing.Type['VectorZero']
 
     @property
     def components(self):
@@ -291,6 +301,15 @@ class Vector(BasisDependent):
                                   vect*measure)
         return parts
 
+    def _div_helper(self, other):
+        """Helper for division involving vectors."""
+        if isinstance(other, Vector):
+            raise TypeError('Cannot divide two vectors')
+        else:
+            if other == 0:
+                raise ValueError('Cannot divide a vector by zero')
+            return VectorMul(self, Pow(other, -1))
+
 
 class BaseVector(Vector, AtomicExpr):
     """Class to denote a base vector."""
@@ -398,20 +417,9 @@ class VectorZero(BasisDependentZero, Vector):
         return obj
 
 
-def _vect_div(one, other):
-    """Helper for division involving vectors."""
-    if isinstance(other, Vector):
-        raise TypeError('Cannot divide two vectors')
-    else:
-        if other == 0:
-            raise ValueError('Cannot divide a vector by zero')
-        return VectorMul(one, Pow(other, -1))
-
-
 Vector._expr_type = Vector
 Vector._mul_func = VectorMul
 Vector._add_func = VectorAdd
 Vector._zero_func = VectorZero
 Vector._base_func = BaseVector
-Vector._div_helper = _vect_div
 Vector.zero = VectorZero()

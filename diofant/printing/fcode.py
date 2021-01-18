@@ -18,6 +18,7 @@ the responsibility for generating properly cased Fortran code to the user.
 """
 
 import string
+import typing
 
 from ..core import Add, Function, I, N
 from ..logic import true
@@ -51,7 +52,7 @@ class FCodePrinter(CodePrinter):
     printmethod = '_fcode'
     language = 'Fortran'
 
-    _default_settings = {
+    _default_settings: typing.Dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,

@@ -1,3 +1,5 @@
+import typing
+
 from ..logic.boolalg import Boolean, BooleanAtom, false, true
 from ..utilities import ordered
 from .evalf import EvalfMixin
@@ -40,6 +42,9 @@ class Relational(Boolean, Expr, EvalfMixin):
     """
 
     is_Relational = True
+
+    ValidRelationOperator: typing.Dict[typing.Union[str, None],
+                                       typing.Type['Relational']]
 
     # ValidRelationOperator - Defined below, because the necessary classes
     #   have not yet been defined

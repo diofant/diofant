@@ -1148,7 +1148,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
             elif (i, j) in self._smat:
                 del self._smat[(i, j)]
 
-    __hash__ = None
+    __hash__ = None  # type: ignore[assignment]
 
     def __delitem__(self, key):
         """Delete portion of self defined by key.
