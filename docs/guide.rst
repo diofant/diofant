@@ -66,7 +66,8 @@ All work should be submitted via `Pull Requests (PR)`_.
       or adding comment with issue number).
    2. All new functionality should be tested, every new line
       should be covered by tests.  Please use in tests only
-      public interfaces.
+      public interfaces.  Regression tests are not accounted in
+      the coverage statistics.
    3. Optionally, provide doctests to illustrate usage.  But keep in
       mind, doctests are not tests.  Think of them as examples that
       happen to be tested.
