@@ -172,7 +172,10 @@ class Limit(Expr):
             if any(isinstance(a, Limit) for a in [ll, rl]):
                 return self
             else:
-                return e.func(ll, rl)
+                try:
+                    return e.func(ll, rl)
+                except TypeError:
+                    return self
 
         if e.has(Order):
             e = e.expand()
