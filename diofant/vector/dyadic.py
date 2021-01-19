@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 from ..core import AtomicExpr, Integer, Pow
@@ -20,13 +22,13 @@ class Dyadic(BasisDependent):
 
     _op_priority = 13.0
 
-    zero: 'DyadicZero'
+    zero: DyadicZero
 
-    _expr_type: typing.Type['Dyadic']
-    _mul_func: typing.Type['DyadicMul']
-    _add_func: typing.Type['DyadicAdd']
-    _zero_func: typing.Type['DyadicZero']
-    _base_func: typing.Type['BaseDyadic']
+    _expr_type: typing.Type[Dyadic]
+    _mul_func: typing.Type[DyadicMul]
+    _add_func: typing.Type[DyadicAdd]
+    _zero_func: typing.Type[DyadicZero]
+    _base_func: typing.Type[BaseDyadic]
 
     @property
     def components(self):
