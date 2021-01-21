@@ -1,3 +1,5 @@
+import typing
+
 from ...core import (Add, Function, Integer, Rational, Symbol, cacheit,
                      expand_mul, sympify)
 from ...core.function import ArgumentIndexError
@@ -1186,7 +1188,7 @@ class sec(ReciprocalTrigonometricFunction):
     """
 
     _reciprocal_of = cos
-    _is_even = True
+    _is_even: typing.Optional[bool] = True
 
     def _eval_rewrite_as_cot(self, arg):
         cot_half_sq = cot(arg/2)**2
@@ -1262,7 +1264,7 @@ class csc(ReciprocalTrigonometricFunction):
     """
 
     _reciprocal_of = sin
-    _is_odd = True
+    _is_odd: typing.Optional[bool] = True
 
     def _eval_rewrite_as_sin(self, arg):
         return 1/sin(arg)
@@ -1339,7 +1341,7 @@ class cot(ReciprocalTrigonometricFunction):
     """
 
     _reciprocal_of = tan
-    _is_odd = True
+    _is_odd: typing.Optional[bool] = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:

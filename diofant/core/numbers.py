@@ -1798,7 +1798,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     __rmod__ = __mod__
 
 
-oo = S.Infinity
+oo: Infinity = S.Infinity
 
 
 class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):

@@ -14,7 +14,7 @@ class MonomialOrder:
     """Base class for monomial orderings."""
 
     alias: str
-    is_global: typing.Union[bool, None] = None
+    is_global: typing.Optional[bool] = None
     is_default = False
 
     def __str__(self):

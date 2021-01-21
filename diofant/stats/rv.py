@@ -131,8 +131,8 @@ class PSpace(Expr):
 
     """
 
-    is_Finite: typing.Union[bool, None] = None
-    is_Continuous: typing.Union[bool, None] = None
+    is_Finite: typing.Optional[bool] = None
+    is_Continuous: typing.Optional[bool] = None
 
     @property
     def values(self):

@@ -1,6 +1,7 @@
 """Generic set theory interfaces."""
 
 import itertools
+import typing
 
 from mpmath import mpf, mpi
 
@@ -1371,7 +1372,7 @@ class Intersection(Set):
 
     """
 
-    is_Intersection = True
+    is_Intersection: typing.Optional[bool] = True
 
     def __new__(cls, *args, **kwargs):
         evaluate = kwargs.get('evaluate', global_evaluate[0])
@@ -1520,7 +1521,7 @@ class Complement(Set, EvalfMixin):
 
     """
 
-    is_Complement = True
+    is_Complement: typing.Optional[bool] = True
 
     def __new__(cls, a, b, evaluate=True):
         if evaluate:
@@ -1636,7 +1637,7 @@ class UniversalSet(Set, metaclass=Singleton):
 
     """
 
-    is_UniversalSet = True
+    is_UniversalSet: typing.Optional[bool] = True
 
     def _intersection(self, other):
         return other
@@ -1879,7 +1880,7 @@ class SymmetricDifference(Set):
 
     """
 
-    is_SymmetricDifference = True
+    is_SymmetricDifference: typing.Optional[bool] = True
 
     def __new__(cls, a, b, evaluate=True):
         if evaluate:

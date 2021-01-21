@@ -111,7 +111,7 @@ class Options(dict):
 
     """
 
-    __order__: typing.Union[None, typing.List[str]] = None
+    __order__: typing.Optional[typing.List[str]] = None
     __options__: typing.Dict[str, typing.Type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):

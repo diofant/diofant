@@ -1,3 +1,5 @@
+import typing
+
 from ...core import (Function, I, Integer, Rational, cacheit, nan, oo, pi,
                      sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
@@ -665,7 +667,7 @@ class csch(ReciprocalHyperbolicFunction):
     """
 
     _reciprocal_of = sinh
-    _is_odd = True
+    _is_odd: typing.Optional[bool] = True
 
     def fdiff(self, argindex=1):
         """Returns the first derivative of this function."""
@@ -715,7 +717,7 @@ class sech(ReciprocalHyperbolicFunction):
     """
 
     _reciprocal_of = cosh
-    _is_even = True
+    _is_even: typing.Optional[bool] = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:
