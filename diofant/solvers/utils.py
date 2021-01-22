@@ -4,7 +4,7 @@ import warnings
 
 from ..core import (expand_mul, expand_multinomial, nan, oo,
                     preorder_traversal, sympify, zoo)
-from ..simplify import posify, simplify
+from ..simplify.simplify import posify, simplify
 
 
 __all__ = 'checksol',

@@ -43,7 +43,8 @@ from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
 from ..polys import lcm
-from ..simplify import collect, simplify
+from ..simplify.radsimp import collect
+from ..simplify.simplify import simplify
 from ..utilities import filldedent, has_dups
 from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve

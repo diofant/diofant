@@ -25,9 +25,10 @@ from ..logic import false, true
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, factor, roots
 from ..polys.polyerrors import PolynomialError
-from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
-                        powsimp, simplify)
 from ..simplify.fu import TR1
+from ..simplify.powsimp import powdenest, powsimp
+from ..simplify.radsimp import denom
+from ..simplify.simplify import logcombine, nsimplify, posify, simplify
 from ..simplify.sqrtdenest import unrad
 from ..utilities import default_sort_key, filldedent, ordered
 from ..utilities.iterables import uniq

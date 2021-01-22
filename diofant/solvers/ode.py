@@ -245,8 +245,11 @@ from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series import Order, series
-from ..simplify import (collect, collect_const, cse, logcombine, posify,
-                        powsimp, separatevars, simplify, trigsimp)
+from ..simplify.cse_main import cse
+from ..simplify.powsimp import powsimp
+from ..simplify.radsimp import collect, collect_const
+from ..simplify.simplify import logcombine, posify, separatevars, simplify
+from ..simplify.trigsimp import trigsimp
 from ..utilities import default_sort_key, numbered_symbols, ordered, sift
 from .deutils import _desolve, _preprocess, ode_order
 from .pde import pdsolve
