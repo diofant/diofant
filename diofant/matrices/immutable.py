@@ -1,5 +1,6 @@
-from ..core import Basic, Dict, Expr, Integer, Tuple, sympify
+from ..core import Basic, Dict, Expr, Integer, Tuple
 from ..core.sympify import converter as sympify_converter
+from ..core.sympify import sympify
 from ..logic import false
 from .dense import DenseMatrix
 from .expressions import MatrixExpr

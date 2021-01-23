@@ -1,6 +1,7 @@
 """Tools for constructing domains for expressions."""
 
-from ..core import I, sympify
+from ..core import I
+from ..core.sympify import sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from ..utilities import ordered

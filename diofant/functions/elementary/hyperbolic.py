@@ -1,8 +1,8 @@
 import typing
 
-from ...core import (Function, I, Integer, Rational, cacheit, nan, oo, pi,
-                     sympify, zoo)
+from ...core import Function, I, Integer, Rational, cacheit, nan, oo, pi, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
+from ...core.sympify import sympify
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
 from .miscellaneous import sqrt
@@ -590,8 +590,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
 
     # To be defined in class
     _reciprocal_of = None
-    _is_even = None
-    _is_odd = None
+    _is_even: typing.Optional[bool] = None
+    _is_odd: typing.Optional[bool] = None
 
     @classmethod
     def eval(cls, arg):
@@ -667,7 +667,7 @@ class csch(ReciprocalHyperbolicFunction):
     """
 
     _reciprocal_of = sinh
-    _is_odd: typing.Optional[bool] = True
+    _is_odd = True
 
     def fdiff(self, argindex=1):
         """Returns the first derivative of this function."""
@@ -717,7 +717,7 @@ class sech(ReciprocalHyperbolicFunction):
     """
 
     _reciprocal_of = cosh
-    _is_even: typing.Optional[bool] = True
+    _is_even = True
 
     def fdiff(self, argindex=1):
         if argindex == 1:

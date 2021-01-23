@@ -84,7 +84,7 @@ class SingletonRegistry:
 
 
 #: Alias for instance of :class:`SingletonRegistry`.
-S = SingletonRegistry()
+S: SingletonRegistry = SingletonRegistry()
 
 
 class Singleton(type):

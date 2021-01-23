@@ -5,9 +5,10 @@ Contains
 Point
 """
 
-from ..core import Add, Float, Integer, Tuple, sympify
+from ..core import Add, Float, Integer, Tuple
 from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
+from ..core.sympify import sympify
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify

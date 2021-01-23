@@ -189,9 +189,10 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 from collections import defaultdict
 
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
-                    expand_mul, factor_terms, gcd_terms, pi, sympify)
+                    expand_mul, factor_terms, gcd_terms, pi)
 from ..core.exprtools import Factors
 from ..core.strategies import greedy, identity
+from ..core.sympify import sympify
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
 from ..functions.elementary.hyperbolic import HyperbolicFunction

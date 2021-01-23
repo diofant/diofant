@@ -241,7 +241,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
 
 true = BooleanTrue()
-false = BooleanFalse()
+false: BooleanFalse = BooleanFalse()
 # We want S.true and S.false to work, rather than S.BooleanTrue and
 # S.BooleanFalse, but making the class and instance names the same causes some
 # major issues (like the inability to import the class directly from this
@@ -631,7 +631,7 @@ class Xor(BooleanFunction):
             obj._argset = frozenset(argset)
             return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
@@ -837,7 +837,7 @@ class Equivalent(BooleanFunction):
         obj._argset = _args
         return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))

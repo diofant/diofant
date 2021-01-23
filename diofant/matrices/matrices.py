@@ -3,9 +3,10 @@ import functools
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
-                    Symbol, count_ops, ilcm, oo, symbols, sympify)
+                    Symbol, count_ops, ilcm, oo, symbols)
 from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
+from ..core.sympify import sympify
 from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing.defaults import DefaultPrinting

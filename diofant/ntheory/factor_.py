@@ -6,10 +6,10 @@ import math
 import numbers
 import random
 
-from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
-                    prod, sympify)
+from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot, prod
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
+from ..core.sympify import sympify
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
 

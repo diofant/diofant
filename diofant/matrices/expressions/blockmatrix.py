@@ -1,6 +1,7 @@
-from ...core import Add, Expr, Integer, sympify
+from ...core import Add, Expr, Integer
 from ...core.strategies import (bottom_up, condition, do_one, exhaust, typed,
                                 unpack)
+from ...core.sympify import sympify
 from ...logic import false
 from ...utilities import sift
 from .determinant import Determinant

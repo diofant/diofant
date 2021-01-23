@@ -3,7 +3,8 @@
 import re
 import typing
 
-from ..core import Basic, I, sympify
+from ..core import Basic, I
+from ..core.sympify import sympify
 from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 

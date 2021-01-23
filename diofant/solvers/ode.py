@@ -232,10 +232,11 @@ from itertools import islice
 from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
-                    oo, symbols, sympify, zoo)
+                    oo, symbols, zoo)
 from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
+from ..core.sympify import sympify
 from ..functions import (atan2, conjugate, cos, exp, factorial, im, log, re,
                          sin, sqrt, tan)
 from ..integrals import Integral, integrate
@@ -244,7 +245,8 @@ from ..matrices import BlockDiagMatrix, Matrix, wronskian
 from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
-from ..series import Order, series
+from ..series.order import Order
+from ..series.series import series
 from ..simplify.cse_main import cse
 from ..simplify.powsimp import powsimp
 from ..simplify.radsimp import collect, collect_const

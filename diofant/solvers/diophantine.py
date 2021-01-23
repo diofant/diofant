@@ -319,26 +319,6 @@ def diop_solve(eq, param=symbols('t', integer=True)):
 
 
 def classify_diop(eq, _dict=True):
-    """
-    Helper routine used by diop_solve() to find the type of the ``eq`` etc.
-
-    Parameters
-    ==========
-
-    eq : Expr
-        an expression, which is assumed to be zero.
-
-    Examples
-    ========
-
-    >>> classify_diop(4*x + 6*y - 4)
-    ([x, y], {1: -4, x: 4, y: 6}, 'linear')
-    >>> classify_diop(x + 3*y - 4*z + 5)
-    ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
-    >>> classify_diop(x**2 + y**2 - x*y + x + 5)
-    ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
-
-    """
     try:
         var = list(eq.free_symbols)
         assert var
@@ -416,7 +396,25 @@ def classify_diop(eq, _dict=True):
         diop_classify()."""))
 
 
-classify_diop.__doc__ += """
+classify_diop.__doc__ = """
+    Helper routine used by diop_solve() to find the type of the ``eq`` etc.
+
+    Parameters
+    ==========
+
+    eq : Expr
+        an expression, which is assumed to be zero.
+
+    Examples
+    ========
+
+    >>> classify_diop(4*x + 6*y - 4)
+    ([x, y], {1: -4, x: 4, y: 6}, 'linear')
+    >>> classify_diop(x + 3*y - 4*z + 5)
+    ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
+    >>> classify_diop(x**2 + y**2 - x*y + x + 5)
+    ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
+
     Returns
     =======
 

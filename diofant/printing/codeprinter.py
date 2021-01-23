@@ -1,8 +1,9 @@
 import typing
 
-from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
+from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..core.sympify import sympify
 from ..utilities import default_sort_key
 from .precedence import precedence
 from .str import StrPrinter

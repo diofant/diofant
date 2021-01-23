@@ -26,7 +26,8 @@ import warnings
 from collections.abc import Callable
 from inspect import getfullargspec
 
-from ..core import Dummy, Expr, Symbol, Tuple, sympify
+from ..core import Dummy, Expr, Symbol, Tuple
+from ..core.sympify import sympify
 from ..external import import_module
 from ..utilities import lambdify
 from ..utilities.decorator import doctest_depends_on

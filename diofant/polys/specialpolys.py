@@ -1,6 +1,7 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking."""
 
-from ..core import Add, Dummy, Integer, Mul, symbols, sympify
+from ..core import Add, Dummy, Integer, Mul, symbols
+from ..core.sympify import sympify
 from ..domains import ZZ
 from ..ntheory import nextprime
 from ..utilities import subsets

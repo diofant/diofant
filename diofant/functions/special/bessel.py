@@ -2,8 +2,9 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
-                     cacheit, nan, oo, pi, sympify, zoo)
+                     cacheit, nan, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs, im, re

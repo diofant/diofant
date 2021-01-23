@@ -1,7 +1,8 @@
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
-                    diff, nan, oo, sympify)
+                    diff, nan, oo)
 from ..core.compatibility import is_sequence
+from ..core.sympify import sympify
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..logic import false, true
 from ..matrices import MatrixBase

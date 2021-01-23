@@ -3,7 +3,8 @@
 import warnings
 
 from ..core import (expand_mul, expand_multinomial, nan, oo,
-                    preorder_traversal, sympify, zoo)
+                    preorder_traversal, zoo)
+from ..core.sympify import sympify
 from ..simplify.simplify import posify, simplify
 
 

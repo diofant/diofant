@@ -8,8 +8,9 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, Integer, factor_terms, oo, pi, sympify
+from ..core import Dummy, Eq, Integer, factor_terms, oo, pi
 from ..core.compatibility import is_sequence
+from ..core.sympify import sympify
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
 from ..logic import And, false, true

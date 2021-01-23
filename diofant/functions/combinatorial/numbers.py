@@ -8,6 +8,7 @@ the separate 'factorials' module.
 """
 
 import numbers
+import typing
 
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
@@ -585,7 +586,7 @@ class harmonic(Function):
 
     # Generate one memoized Harmonic number-generating function for each
     # order and store it in a dictionary
-    _functions = {}
+    _functions: typing.Dict[Integer, typing.Callable[[int], Rational]] = {}
 
     @classmethod
     def eval(cls, n, m=None):

@@ -1,8 +1,9 @@
 import functools
 import math
 
-from ...core import Dummy, E, Function, Integer, cacheit, oo, sympify, zoo
+from ...core import Dummy, E, Function, Integer, cacheit, oo, zoo
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...ntheory import sieve
 
 

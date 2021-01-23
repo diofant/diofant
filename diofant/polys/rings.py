@@ -7,9 +7,8 @@ import typing
 
 from ..core import Expr, Integer, Symbol, cacheit, oo
 from ..core import symbols as _symbols
-from ..core import sympify
 from ..core.compatibility import is_sequence
-from ..core.sympify import CantSympify
+from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring

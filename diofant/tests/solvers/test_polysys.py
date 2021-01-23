@@ -302,8 +302,8 @@ def test_sympyissue_16038():
     assert len(sols1) == len(sols2) == 8
     assert {x: -1, y: -2, z: -3} in sols1
     assert {x: +1, y: +2, z: +3} in sols2
-    assert (list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols1])) ==
-            list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols2])))
+    assert (list(ordered([{k: v.evalf(7) for k, v in _.items()} for _ in sols1])) ==
+            list(ordered([{k: v.evalf(7) for k, v in _.items()} for _ in sols2])))
 
 
 def test_solve_surd_system():

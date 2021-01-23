@@ -1,5 +1,6 @@
-from ...core import Mul, sympify
+from ...core import Mul
 from ...core.strategies import condition, do_one, exhaust, flatten, unpack
+from ...core.sympify import sympify
 from ..matrices import ShapeError
 from .matexpr import MatrixExpr
 

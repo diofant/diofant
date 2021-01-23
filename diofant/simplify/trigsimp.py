@@ -3,10 +3,11 @@ from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, Rational, Wild, cacheit, count_ops, expand,
-                    expand_mul, factor_terms, igcd, symbols, sympify)
+                    expand_mul, factor_terms, igcd, symbols)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
 from ..core.strategies import greedy, identity
+from ..core.sympify import sympify
 from ..domains import ZZ
 from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
 from ..functions.elementary.hyperbolic import HyperbolicFunction

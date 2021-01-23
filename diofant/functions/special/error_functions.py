@@ -3,8 +3,9 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
-                     cacheit, expand_mul, oo, pi, sympify, zoo)
+                     cacheit, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import polar_lift
 from ..elementary.exponential import exp, log

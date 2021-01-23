@@ -1,4 +1,5 @@
 import functools
+import typing
 from itertools import permutations
 
 from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
@@ -57,7 +58,7 @@ def components(f, x):
 
 
 # name -> [] of symbols
-_symbols_cache = {}
+_symbols_cache: typing.Dict[str, typing.List[Dummy]] = {}
 
 
 # NB @cacheit is not convenient here

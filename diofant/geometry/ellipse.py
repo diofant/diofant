@@ -7,8 +7,9 @@ Contains
 
 import random
 
-from ..core import Dummy, Rational, oo, pi, sympify
+from ..core import Dummy, Rational, oo, pi
 from ..core.logic import fuzzy_bool
+from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
 from ..logic import false, true
 from ..simplify import simplify, trigsimp

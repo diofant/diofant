@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed ``n()`` method from :class:`~diofant.core.evalf.EvalfMixin`, see :pull:`1114`.
+
 Minor changes
 =============
 

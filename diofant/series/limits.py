@@ -1,5 +1,6 @@
 from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
-                    nan, oo, sympify)
+                    nan, oo)
+from ..core.sympify import sympify
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order

@@ -1,6 +1,11 @@
 """sympify -- convert objects Diofant internal format"""
 
+from __future__ import annotations
+
+import typing
 from inspect import getmro
+
+import diofant
 
 from .compatibility import iterable
 from .evaluate import global_evaluate
@@ -24,7 +29,9 @@ class SympifyError(ValueError):
                                      str(self.base_exc)))
 
 
-converter = {}  # See sympify docstring.
+converter: typing.Dict[typing.Type[typing.Any],
+                       typing.Callable[[typing.Any],
+                                       diofant.core.basic.Basic]] = {}  # See sympify docstring.
 
 
 class CantSympify:

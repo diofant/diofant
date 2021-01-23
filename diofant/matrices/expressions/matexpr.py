@@ -1,7 +1,10 @@
-from ...core import AtomicExpr, Expr, Integer, Symbol, Tuple, sympify
+import typing
+
+from ...core import AtomicExpr, Expr, Integer, Symbol, Tuple
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
 from ...core.logic import fuzzy_bool
+from ...core.sympify import sympify
 from ...functions import adjoint, conjugate
 from ...logic import false
 from ...simplify import simplify
@@ -35,7 +38,7 @@ class MatrixExpr(Expr):
 
     is_Matrix = True
     is_MatrixExpr = True
-    is_Identity = None
+    is_Identity: typing.Optional[bool] = None
     is_Inverse = False
     is_Transpose = False
     is_ZeroMatrix = False
@@ -152,11 +155,12 @@ class MatrixExpr(Expr):
         from .matpow import MatPow
         return MatPow(self, exp)
 
-    def _eval_simplify(self, **kwargs):
+    def _eval_simplify(self, ratio, measure):
         if self.is_Atom:
             return self
         else:
-            return self.__class__(*[simplify(x, **kwargs) for x in self.args])
+            return self.__class__(*[simplify(x, ratio=ratio, measure=measure)
+                                    for x in self.args])
 
     def _eval_adjoint(self):
         from .adjoint import Adjoint

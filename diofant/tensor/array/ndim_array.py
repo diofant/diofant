@@ -1,6 +1,7 @@
 import collections
 
-from ...core import Expr, Integer, sympify
+from ...core import Expr, Integer
+from ...core.sympify import sympify
 from ...logic import true
 from ...matrices import MatrixBase
 from ...printing.defaults import DefaultPrinting
