@@ -117,7 +117,7 @@ class ImmutableMatrix(DenseMatrix, MatrixExpr):  # type: ignore[misc]
 ImmutableDenseMatrix = ImmutableMatrix
 
 
-class ImmutableSparseMatrix(Basic, SparseMatrixBase):
+class ImmutableSparseMatrix(SparseMatrixBase, Basic):
     """Create an immutable version of a sparse matrix.
 
     Examples

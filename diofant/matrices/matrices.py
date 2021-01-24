@@ -3898,7 +3898,7 @@ class MatrixBase(DefaultPrinting):
         newmat[:, j:] = self[:, i:]
         return type(self)(newmat)
 
-    def replace(self, F, G):
+    def replace(self, F, G, exact=False):
         """Replaces Function F in Matrix entries with Function G.
 
         Examples
