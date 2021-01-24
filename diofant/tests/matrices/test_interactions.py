@@ -24,7 +24,7 @@ ideye = Identity(3)
 
 
 def test_IM_MM():
-    assert isinstance(MM + IM, ImmutableMatrix)
+    assert isinstance(MM + IM, Matrix)
     assert isinstance(IM + MM, ImmutableMatrix)
     assert isinstance(2*IM + MM, ImmutableMatrix)
     assert MM.equals(IM)

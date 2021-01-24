@@ -1,5 +1,6 @@
 import collections
 import functools
+import typing
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
@@ -42,7 +43,7 @@ class MatrixBase(DefaultPrinting):
     __array_priority__ = 11
 
     is_Matrix = True
-    is_Identity = None
+    is_Identity: typing.Optional[bool] = None
     _class_priority = 3
     _sympify = staticmethod(sympify)
 
@@ -445,9 +446,6 @@ class MatrixBase(DefaultPrinting):
 
     def __sub__(self, a):
         return self + (-a)
-
-    def __rsub__(self, a):
-        return (-self) + a
 
     def __mul__(self, other):
         """Return self*other where other is either a scalar or a matrix

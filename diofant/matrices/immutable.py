@@ -15,7 +15,7 @@ def sympify_matrix(arg):
 sympify_converter[MatrixBase] = sympify_matrix
 
 
-class ImmutableMatrix(MatrixExpr, DenseMatrix):  # type: ignore[misc]
+class ImmutableMatrix(DenseMatrix, MatrixExpr):  # type: ignore[misc]
     """Create an immutable version of a matrix.
 
     Examples
@@ -96,7 +96,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):  # type: ignore[misc]
     _eval_simplify = DenseMatrix._eval_simplify
 
     equals = DenseMatrix.equals
-    is_Identity = DenseMatrix.is_Identity
 
     __add__ = MatrixBase.__add__
     __radd__ = MatrixBase.__radd__
@@ -104,21 +103,15 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):  # type: ignore[misc]
     __rmul__ = MatrixBase.__rmul__
     __pow__ = MatrixBase.__pow__
     __sub__ = MatrixBase.__sub__
-    __rsub__ = MatrixBase.__rsub__
     __neg__ = MatrixBase.__neg__
     __truediv__ = MatrixBase.__truediv__
 
-    __eq__ = DenseMatrix.__eq__
-    __hash__ = Expr.__hash__
+    def __hash__(self):
+        return Expr.__hash__(self)
 
     integrate = MatrixBase.integrate
     diff = MatrixBase.diff
     limit = MatrixBase.limit
-
-
-# This is included after the class definition as a workaround for issue sympy/sympy#7213.
-# See https://github.com/sympy/sympy/issues/7213
-ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
 
 ImmutableDenseMatrix = ImmutableMatrix
@@ -174,8 +167,3 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
         return hash((type(self).__name__,) + (self.shape, tuple(self._smat)))
 
     _eval_Eq = ImmutableMatrix._eval_Eq
-
-
-# This is included after the class definition as a workaround for issue sympy/sympy#7213.
-# See https://github.com/sympy/sympy/issues/7213
-ImmutableSparseMatrix.is_zero = SparseMatrixBase.is_zero
