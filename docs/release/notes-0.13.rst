@@ -21,6 +21,8 @@ Minor changes
 Developer changes
 =================
 
+* Turn on type checking for the whole codebase, see :pull:`1114`.
+
 Issues closed
 =============
 
