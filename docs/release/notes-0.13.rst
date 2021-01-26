@@ -30,3 +30,5 @@ See the `release milestone <https://github.com/diofant/diofant/milestone/7?close
 for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
+
+* :sympyissue:`20861`: reduce_inequalities() gives impossible answer
