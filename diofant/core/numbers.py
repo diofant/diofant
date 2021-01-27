@@ -1798,7 +1798,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     __rmod__ = __mod__
 
 
-oo = S.Infinity
+oo: Infinity = S.Infinity
 
 
 class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
@@ -2111,7 +2111,7 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
             return S.Zero
 
 
-zoo = S.ComplexInfinity
+zoo: ComplexInfinity = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
@@ -2352,7 +2352,7 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
             return Rational(223, 71), Rational(22, 7)
 
 
-pi = S.Pi
+pi: Pi = S.Pi
 
 
 class GoldenRatio(NumberSymbol, metaclass=SingletonWithManagedProperties):

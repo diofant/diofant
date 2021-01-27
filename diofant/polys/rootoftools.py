@@ -6,9 +6,10 @@ from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
 from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational,
-                    cacheit, symbols, sympify)
+                    cacheit, symbols)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
+from ..core.sympify import sympify
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign

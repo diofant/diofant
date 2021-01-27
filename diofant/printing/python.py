@@ -38,6 +38,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
         if symbol not in self.symbols:
             self.symbols.append(symbol)
         return StrPrinter._print_Symbol(self, expr)
+    _print_BaseSymbol = StrPrinter._print_BaseSymbol
 
 
 def python(expr, **settings):

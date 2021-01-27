@@ -30,8 +30,8 @@ from collections import defaultdict
 
 from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
                     Pow, Rational, Tuple, Wild, cacheit, expand, expand_mul,
-                    expand_power_base, factor_terms, nan, oo, pi, symbols,
-                    sympify, zoo)
+                    expand_power_base, factor_terms, nan, oo, pi, symbols, zoo)
+from ..core.sympify import sympify
 from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
                                                _rewrite_hyperbolics_as_exp)

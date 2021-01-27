@@ -594,8 +594,6 @@ class PrettyPrinter(Printer):
         D.baseline = D.height()//2
         D = prettyForm(*D.parens('[', ']'))
         return D
-    _print_ImmutableMatrix = _print_MatrixBase
-    _print_Matrix = _print_MatrixBase
 
     def _print_Trace(self, e):
         D = self._print(e.arg)

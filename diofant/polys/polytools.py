@@ -6,11 +6,12 @@ import operator
 import mpmath
 
 from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
-                    preorder_traversal, sympify)
+                    preorder_traversal)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..core.sympify import sympify
 from ..domains import FF, QQ, ZZ
 from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom

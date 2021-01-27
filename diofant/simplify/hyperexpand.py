@@ -63,7 +63,8 @@ from itertools import chain, product
 from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
                     Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
-                    sympify, zoo)
+                    zoo)
+from ..core.sympify import sympify
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
                          exp_polar, expint, factorial, floor, fresnelc,

@@ -5,8 +5,9 @@ import functools
 
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
-                    Rational, Symbol, Wild, oo, sympify)
+                    Rational, Symbol, Wild, oo)
 from ..core.compatibility import iterable
+from ..core.sympify import sympify
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, lcm, quo, resultant, roots

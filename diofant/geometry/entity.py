@@ -20,8 +20,9 @@ R3 are currently the only ambient spaces implemented.
 
 """
 
-from ..core import Basic, Dummy, Tuple, oo, sympify
+from ..core import Basic, Dummy, Tuple, oo
 from ..core.compatibility import is_sequence
+from ..core.sympify import sympify
 from ..functions import atan, cos, sin
 from ..matrices import eye
 from ..sets import Set

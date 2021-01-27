@@ -1,8 +1,9 @@
 """Riemann zeta and related function."""
 
 from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
-                     oo, pi, sympify, zoo)
+                     oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
 

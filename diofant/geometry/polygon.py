@@ -1,7 +1,8 @@
 import warnings
 
-from ..core import Expr, Integer, Symbol, oo, pi, sympify
+from ..core import Expr, Integer, Symbol, oo, pi
 from ..core.compatibility import as_int
+from ..core.sympify import sympify
 from ..functions import Piecewise, cos, sign, sin, tan
 from ..logic import And, true
 from ..matrices import Matrix

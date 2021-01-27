@@ -8,6 +8,8 @@ this stuff for general purpose.
 
 """
 
+from __future__ import annotations
+
 import typing
 
 
@@ -154,8 +156,7 @@ def fuzzy_or(args):
 class Logic:
     """Logical expression."""
 
-    # {} 'op' -> LogicClass
-    op_2class: typing.Dict[str, typing.Type['Logic']] = {}
+    op_2class: typing.Dict[str, typing.Type[Logic]] = {}
 
     def __new__(cls, *args):
         obj = object.__new__(cls)

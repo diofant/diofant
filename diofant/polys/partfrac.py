@@ -2,8 +2,8 @@
 
 import itertools
 
-from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
-                    sympify)
+from ..core import Add, Dummy, Function, Integer, Lambda, preorder_traversal
+from ..core.sympify import sympify
 from ..utilities import numbered_symbols
 from . import Poly, RootSum, cancel, factor
 from .polyerrors import PolynomialError

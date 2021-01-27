@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 from ..core import AtomicExpr, Integer, Pow, Symbol, diff
@@ -21,13 +23,13 @@ class Vector(BasisDependent):
     is_Vector = True
     _op_priority = 12.0
 
-    zero: 'VectorZero'
+    zero: VectorZero
 
-    _add_func: typing.Type['VectorAdd']
-    _mul_func: typing.Type['VectorMul']
-    _base_func: typing.Type['BaseVector']
-    _expr_type: typing.Type['Vector']
-    _zero_func: typing.Type['VectorZero']
+    _add_func: typing.Type[VectorAdd]
+    _mul_func: typing.Type[VectorMul]
+    _base_func: typing.Type[BaseVector]
+    _expr_type: typing.Type[Vector]
+    _zero_func: typing.Type[VectorZero]
 
     @property
     def components(self):

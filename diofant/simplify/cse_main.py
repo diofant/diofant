@@ -1,8 +1,9 @@
 """Tools for doing common subexpression elimination."""
 
-from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
+from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms
 from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
+from ..core.sympify import sympify
 from ..utilities import numbered_symbols, ordered, sift, topological_sort
 from ..utilities.iterables import filter_symbols
 from . import cse_opts

@@ -4,12 +4,12 @@ import mpmath
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, expand_func, expand_log,
-                    expand_mul, expand_power_exp, factor_terms, oo, pi,
-                    sympify)
+                    expand_mul, expand_power_exp, factor_terms, oo, pi)
 from ..core.compatibility import as_int, iterable
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
+from ..core.sympify import sympify
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
                          exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
                          unpolarify)

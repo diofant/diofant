@@ -1,7 +1,8 @@
 from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
                      Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
-                     sympify, zoo)
+                     zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
+from ...core.sympify import sympify
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt

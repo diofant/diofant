@@ -21,7 +21,7 @@ class Basic:
 
     # To be overridden with True in the appropriate subclasses
     is_number = False
-    is_Atom = False
+    is_Atom: bool = False
     is_Symbol = False
     is_Dummy = False
     is_Wild = False
@@ -42,7 +42,7 @@ class Basic:
     is_Equality = False
     is_Boolean = False
     is_Not = False
-    is_Matrix = False
+    is_Matrix: bool = False
     is_MatMul = False
     is_Vector = False
 

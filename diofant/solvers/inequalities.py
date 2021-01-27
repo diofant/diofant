@@ -616,8 +616,8 @@ def _reduce_inequalities(inequalities, symbols):
         except (PolificationFailed, ValueError):
             pass
 
-    poly_part = collections.defaultdict(list)
-    pw_part = poly_part.copy()
+    rat_part = collections.defaultdict(list)
+    pw_part = rat_part.copy()
     other = []
 
     for inequality in inequalities:
@@ -646,8 +646,8 @@ def _reduce_inequalities(inequalities, symbols):
                                           'is implemented only for linear '
                                           'case yet.')
 
-        if expr.is_polynomial(gen):
-            poly_part[gen].append((expr, rel))
+        if expr.is_rational_function(gen):
+            rat_part[gen].append((expr, rel))
         else:
             components = set(expr.find(lambda u: u.has(gen) and
                                        (u.is_Function or u.is_Pow and
@@ -657,16 +657,16 @@ def _reduce_inequalities(inequalities, symbols):
             else:
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
 
-    poly_reduced = []
+    rat_reduced = []
     pw_reduced = []
 
-    for gen, exprs in poly_part.items():
-        poly_reduced.append(reduce_rational_inequalities([exprs], gen))
+    for gen, exprs in rat_part.items():
+        rat_reduced.append(reduce_rational_inequalities([exprs], gen))
 
     for gen, exprs in pw_part.items():
         pw_reduced.append(reduce_piecewise_inequalities(exprs, gen))
 
-    return And(*(poly_reduced + pw_reduced + other))
+    return And(*(rat_reduced + pw_reduced + other))
 
 
 def reduce_inequalities(inequalities, symbols=[]):

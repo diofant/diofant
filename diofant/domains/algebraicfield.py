@@ -3,8 +3,8 @@
 import functools
 import typing
 
-from ..core import I, cacheit, sympify
-from ..core.sympify import CantSympify
+from ..core import I, cacheit
+from ..core.sympify import CantSympify, sympify
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .field import Field

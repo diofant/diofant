@@ -5,6 +5,7 @@ lambda functions which can be used to calculate numerical values very fast.
 
 import inspect
 import textwrap
+import typing
 
 from ..core.compatibility import is_sequence, iterable
 from ..external import import_module  # noqa: F401
@@ -12,19 +13,19 @@ from .decorator import doctest_depends_on
 
 
 # These are the namespaces the lambda functions will use.
-MATH = {}
-MPMATH = {}
-NUMPY = {}
-DIOFANT = {}
+MATH: typing.Dict[str, typing.Any] = {}
+MPMATH: typing.Dict[str, typing.Any] = {}
+NUMPY: typing.Dict[str, typing.Any] = {}
+DIOFANT: typing.Dict[str, typing.Any] = {}
 
 # Default namespaces, letting us define translations that can't be defined
 # by simple variable maps, like I => 1j
 # These are separate from the names above because the above names are modified
 # throughout this file, whereas these should remain unmodified.
-MATH_DEFAULT = {}
-MPMATH_DEFAULT = {}
-NUMPY_DEFAULT = {'I': 1j}
-DIOFANT_DEFAULT = {}
+MATH_DEFAULT: typing.Dict[str, typing.Any] = {}
+MPMATH_DEFAULT: typing.Dict[str, typing.Any] = {}
+NUMPY_DEFAULT: typing.Dict[str, typing.Any] = {'I': 1j}
+DIOFANT_DEFAULT: typing.Dict[str, typing.Any] = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {

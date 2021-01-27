@@ -1,6 +1,7 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
-                    expand_mul, factor_terms, ilcm, sympify)
+                    expand_mul, factor_terms, ilcm)
 from ..core.function import _mexpand
+from ..core.sympify import sympify
 from ..functions import log, root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
 from ..utilities import default_sort_key, ordered

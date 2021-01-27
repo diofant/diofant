@@ -42,7 +42,7 @@ jobs:
         flake8
         pylint diofant
     - name: Run type checks with mypy
-      run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
+      run: mypy diofant
     - name: Tests
       if: matrix.coverage == false
       env:

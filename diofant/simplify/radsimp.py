@@ -1,11 +1,12 @@
 from collections import defaultdict
 
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
-                    expand_mul, expand_power_base, gcd_terms, symbols, sympify)
+                    expand_mul, expand_power_base, gcd_terms, symbols)
 from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
+from ..core.sympify import sympify
 from ..functions import log, sqrt
 from ..polys import gcd
 from ..utilities import default_sort_key, ordered

@@ -4,7 +4,8 @@ import functools
 from itertools import repeat
 
 from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
-                    expand_mul, oo, pi, sympify)
+                    expand_mul, oo, pi)
+from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
 from ..logic import And, Or, false, to_cnf, true
 from ..logic.boolalg import conjuncts, disjuncts

@@ -5,9 +5,10 @@ import functools
 import mpmath
 
 from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
-                    cacheit, pi, prod, sympify)
+                    cacheit, pi, prod)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
+from ..core.sympify import sympify
 from ..domains import QQ, AlgebraicField
 from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
 from ..ntheory import divisors, factorint

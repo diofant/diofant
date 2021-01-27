@@ -1,5 +1,6 @@
-from ...core import Dummy, Function, I, pi, sympify
+from ...core import Dummy, Function, I, pi
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs
 from ..elementary.exponential import exp

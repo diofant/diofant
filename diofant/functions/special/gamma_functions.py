@@ -1,8 +1,9 @@
 from mpmath import mp, workprec
 
 from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
-                     Rational, oo, pi, sympify, zoo)
+                     Rational, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
 from ..elementary.exponential import exp, log

@@ -1,15 +1,17 @@
 """Generic set theory interfaces."""
 
 import itertools
+import typing
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
+from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
+from ..core.sympify import sympify
 from ..logic import And, Not, Or, false, true
 from ..utilities import ordered, subsets
 from .contains import Contains
@@ -36,11 +38,11 @@ class Set(Basic):
     is_Interval = False
     is_ProductSet = False
     is_Union = False
-    is_Intersection = None
-    is_EmptySet = None
-    is_UniversalSet = None
-    is_Complement = None
-    is_SymmetricDifference = None
+    is_Intersection: typing.Optional[bool] = None
+    is_EmptySet: typing.Optional[bool] = None
+    is_UniversalSet: typing.Optional[bool] = None
+    is_Complement: typing.Optional[bool] = None
+    is_SymmetricDifference: typing.Optional[bool] = None
 
     @staticmethod
     def _infimum_key(expr):

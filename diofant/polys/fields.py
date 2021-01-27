@@ -4,8 +4,8 @@ import functools
 import operator
 import typing
 
-from ..core import Expr, Symbol, sympify
-from ..core.sympify import CantSympify
+from ..core import Expr, Symbol
+from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field

@@ -399,3 +399,7 @@ def test_diofantissue_836():
     pytest.raises(NotImplementedError,
                   lambda: reduce_inequalities([x**2*y**2 <= x**2*y,
                                                x**2*y**2 > x**2*y]))
+
+
+def test_sympyissue_20861():
+    assert reduce_inequalities([3/x < 0, x >= 2, x >= 7], x) is false

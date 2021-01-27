@@ -135,7 +135,7 @@ class Printer:
     _default_settings: typing.Dict[str, typing.Any] = {}
 
     emptyPrinter = str
-    printmethod: typing.Union[str, None] = None
+    printmethod: typing.Optional[str] = None
 
     def __init__(self, settings=None):
         import distutils

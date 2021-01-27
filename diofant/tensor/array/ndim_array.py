@@ -1,6 +1,7 @@
 import collections
 
-from ...core import Expr, Integer, sympify
+from ...core import Expr, Integer
+from ...core.sympify import sympify
 from ...logic import true
 from ...matrices import MatrixBase
 from ...printing.defaults import DefaultPrinting
@@ -208,7 +209,7 @@ class NDimArray(DefaultPrinting):
         """
         return self._rank
 
-    def diff(self, *args):
+    def diff(self, *args, **kwargs):
         """
         Calculate the derivative of each element in the array.
 
@@ -220,7 +221,7 @@ class NDimArray(DefaultPrinting):
         [[1, 0], [0, y]]
 
         """
-        return type(self)(map(lambda x: x.diff(*args), self), self.shape)
+        return type(self)(map(lambda x: x.diff(*args, **kwargs), self), self.shape)
 
     def applyfunc(self, f):
         """Apply a function to each element of the N-dim array.
