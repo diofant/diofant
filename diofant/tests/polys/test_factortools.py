@@ -7,7 +7,7 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
                      nextprime, pi, ring, sin, sqrt)
-from diofant.polys.polyconfig import using
+from diofant.config import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
 

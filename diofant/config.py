@@ -1,4 +1,4 @@
-"""Configuration utilities for polynomial manipulation algorithms."""
+"""Configuration utilities."""
 
 import ast
 import contextlib

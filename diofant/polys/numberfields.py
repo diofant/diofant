@@ -4,6 +4,7 @@ import functools
 
 import mpmath
 
+from ..config import query
 from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
                     cacheit, pi, prod)
 from ..core.exprtools import Factors
@@ -17,7 +18,6 @@ from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
 from ..utilities.iterables import uniq
 from .orthopolys import chebyshevt_poly
-from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, resultant)
@@ -527,7 +527,7 @@ def minimal_polynomial(ex, method=None, **args):
         of ``ex`` are computed, then the arithmetic operations on them are
         performed using the resultant and factorization.  If ``groebner``,
         a bottom-up algorithm, using Gröbner bases is used.
-        Defaults are determined by :func:`~diofant.polys.polyconfig.setup`.
+        Defaults are determined by :func:`~diofant.config.setup`.
     domain : Domain, optional
         If no ground domain is given, it will be generated automatically
         from the expression.

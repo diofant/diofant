@@ -5,6 +5,7 @@ import math
 import operator
 import typing
 
+from ..config import query
 from ..core import Expr, Integer, Symbol, cacheit, oo
 from ..core import symbols as _symbols
 from ..core.compatibility import is_sequence
@@ -18,7 +19,6 @@ from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import lex
-from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, PolynomialDivisionFailed)
 from .polyoptions import Domain as DomainOpt

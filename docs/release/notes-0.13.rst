@@ -14,6 +14,7 @@ Compatibility breaks
 ====================
 
 * Removed ``n()`` method from :class:`~diofant.core.evalf.EvalfMixin`, see :pull:`1114`.
+* Former submodule ``diofant.polys.polyconfig`` now is :mod:`diofant.config`, see :pull:`1115`.
 
 Minor changes
 =============

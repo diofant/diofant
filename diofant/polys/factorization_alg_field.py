@@ -2,13 +2,13 @@ import functools
 import operator
 import random
 
+from ..config import using
 from ..core import Dummy
 from ..domains.algebraicfield import AlgebraicElement
 from ..integrals.heurisch import _symbols
 from ..ntheory import nextprime
 from .modulargcd import (_euclidean_algorithm, _gf_gcdex, _minpoly_from_dense,
                          _trunc)
-from .polyconfig import using
 from .polyerrors import NotInvertible, UnluckyLeadingCoefficient
 from .polyutils import _sort_factors
 from .rings import PolynomialRing
