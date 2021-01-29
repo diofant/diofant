@@ -10,7 +10,8 @@ from ..core.sympify import sympify
 from ..domains.compositedomain import CompositeDomain
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
-from ..simplify import powsimp, simplify
+from ..simplify.powsimp import powsimp
+from ..simplify.simplify import simplify
 from ..utilities import ordered
 from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic

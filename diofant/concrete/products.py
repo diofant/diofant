@@ -1,7 +1,7 @@
 from ..core import Integer, Mul, nan
 from ..functions import exp, log
 from ..polys import quo, roots
-from ..simplify import powsimp
+from ..simplify.powsimp import powsimp
 from .expr_with_intlimits import ExprWithIntLimits
 
 
