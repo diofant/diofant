@@ -4,8 +4,6 @@ import sys
 import warnings
 from distutils.version import LooseVersion
 
-from .. import DIOFANT_DEBUG
-
 
 def import_module(module, min_module_version=None, min_python_version=None,
                   warn_not_installed=False, warn_old_version=True,
@@ -34,12 +32,11 @@ def import_module(module, min_module_version=None, min_python_version=None,
     min_python_version keyword argument.  This should be comparable against
     sys.version_info.
 
-    If the keyword argument warn_not_installed is set to True (or
-    DIOFANT_DEBUG is True), the function will emit a UserWarning when
-    the module is not installed.
+    If the keyword argument warn_not_installed is set to True, the function
+    will emit a UserWarning when the module is not installed.
 
-    By default, or if the keyword argument warn_old_version is set to True (or
-    DIOFANT_DEBUG is True), the function will emit a UserWarning when
+    By default, or if the keyword argument warn_old_version is set to True,
+    the function will emit a UserWarning when
     the library is installed, but cannot be imported because of the
     min_module_version or min_python_version options.
 
@@ -90,9 +87,6 @@ def import_module(module, min_module_version=None, min_python_version=None,
     __import__
 
     """
-    warn_old_version = True if DIOFANT_DEBUG else warn_old_version
-    warn_not_installed = True if DIOFANT_DEBUG else warn_not_installed
-
     # Check Python first so we don't waste time importing a module we can't use
     if min_python_version:
         if sys.version_info < min_python_version:

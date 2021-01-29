@@ -16,13 +16,12 @@ from mpmath.libmp import (fhalf, fnan, fnone, fone, from_int, from_man_exp,
                           mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_log,
                           mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
                           mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
-                          round_nearest, to_str)
+                          round_nearest)
 from mpmath.libmp.backend import MPZ
 from mpmath.libmp.gammazeta import mpf_bernoulli
 from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 
-from ..utilities.misc import debug
 from .compatibility import is_sequence
 from .singleton import S
 from .sympify import sympify
@@ -387,7 +386,6 @@ def evalf_add(v, prec, options):
             [a[1::2] for a in terms if a[1]], prec, target_prec)
         acc = complex_accuracy((re, im, re_acc, im_acc))
         if acc >= target_prec:
-            debug('ADD: wanted', target_prec, 'accurate bits, got', re_acc, im_acc)
             break
         else:
             if (prec - target_prec) > options['maxprec']:
@@ -395,7 +393,6 @@ def evalf_add(v, prec, options):
 
             prec = prec + max(10 + 2**i, target_prec - acc)
             i += 1
-            debug('ADD: restarting with prec', prec)
 
     options['maxprec'] = oldmaxprec
     if iszero(re, scaled=True):
@@ -514,7 +511,6 @@ def evalf_mul(v, prec, options):
             D = mpf_mul(im, wre, use_prec)
             re = mpf_add(A, B, use_prec)
             im = mpf_add(C, D, use_prec)
-        debug('MUL: wanted', prec, 'accurate bits, got', acc)
         # multiply by I
         if direction & 1:
             re, im = mpf_neg(im), re
@@ -678,8 +674,6 @@ def evalf_trig(v, prec, options):
         gap = -ysize
         accuracy = (xprec - xsize) - gap
         if accuracy < prec:
-            debug('SIN/COS', accuracy, 'wanted', prec, 'gap', gap)
-            debug(to_str(y, 10))
             if xprec > options['maxprec']:
                 return y, None, accuracy, None
             xprec += gap
@@ -1191,10 +1185,6 @@ def evalf(x, prec, options):
             r = re, im, reprec, imprec
         except AttributeError:
             raise NotImplementedError
-    debug('### input', x)
-    debug('### output', to_str(r[0] or fzero, 50))
-    debug('### raw', r)  # r[0], r[2]
-    debug()
     chop = options.get('chop', False)
     if chop:
         if chop is True:
