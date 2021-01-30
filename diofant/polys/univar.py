@@ -1,7 +1,7 @@
 import random
 
+from ..config import query
 from ..domains import ZZ
-from .polyconfig import query
 from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot

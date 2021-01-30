@@ -994,12 +994,10 @@ def minsolve_linear_system(system, *symbols, **flags):
         # variables the quick method manages.
         from itertools import combinations
 
-        from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
         n0 = len([x for x in bestsol.values() if x != 0])
         for n in range(n0 - 1, 1, -1):
-            debug(f'minsolve: {n}')
             thissol = None
             for nonzeros in combinations(list(range(N)), n):
                 subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T

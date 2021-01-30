@@ -436,8 +436,6 @@ class Integral(AddWithLimits):
                     try:
                         res = meijerint_definite(function, x, a, b)
                     except NotImplementedError:
-                        from .meijerint import _debug
-                        _debug('NotImplementedError from meijerint_definite')
                         res = None
                     if res is not None:
                         f, cond = res
@@ -880,8 +878,7 @@ class Integral(AddWithLimits):
                 try:
                     h = meijerint_indefinite(g, x)
                 except NotImplementedError:
-                    from .meijerint import _debug
-                    _debug('NotImplementedError from meijerint_definite')
+                    pass
                 if h is not None:
                     parts.append(coeff * h)
                     continue

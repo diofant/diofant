@@ -1,9 +1,5 @@
 """Diofant is a Python library for symbolic mathematics."""
 
-import os
-DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'
-del os
-
 import pkg_resources
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources

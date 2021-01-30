@@ -20,6 +20,7 @@ automatically generated using Diofant's docstrings.
 .. toctree::
    :maxdepth: 2
 
+   config
    core
    combinatorics/index
    ntheory

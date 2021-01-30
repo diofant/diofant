@@ -332,9 +332,6 @@ documentation it is scarce. Please contribute!
 .. automodule:: diofant.polys.polyoptions
     :members:
 
-.. automodule:: diofant.polys.polyconfig
-    :members:
-
 .. automodule:: diofant.polys.polyerrors
     :members:
 

@@ -15,7 +15,6 @@ from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr
 from ..polys.polyerrors import PolificationFailed
 from ..polys.polytools import groebner
-from ..utilities.misc import debug
 
 
 def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
@@ -247,8 +246,6 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
         """
         # First parse the hints
         n, funcs, iterables, extragens = parse_hints(hints)
-        debug(f'n={n}', 'funcs:', funcs, 'iterables:',
-              iterables, 'extragens:', extragens)
 
         # We just add the extragens to gens and analyse them as before
         gens = list(gens)
@@ -349,17 +346,12 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
         (pnum, pdenom), opt = parallel_poly_from_expr([num, denom])
     except PolificationFailed:
         return expr
-    debug('initial gens:', opt.gens)
     ideal, freegens, gens = analyse_gens(opt.gens, hints)
-    debug('ideal:', ideal)
-    debug('new gens:', gens, ' -- len', len(gens))
-    debug('free gens:', freegens, ' -- len', len(gens))
     # NOTE we force the domain to be ZZ to stop polys from injecting generators
     #      (which is usually a sign of a bug in the way we build the ideal)
     if not gens:
         return expr
     G = groebner(ideal, order=order, gens=gens, domain=ZZ)
-    debug('groebner basis:', list(G), ' -- len', len(G))
 
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:

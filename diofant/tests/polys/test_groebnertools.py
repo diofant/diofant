@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import QQ, ZZ, grlex, lex, ring
-from diofant.polys import polyconfig as config
+from diofant.config import using
 from diofant.polys.groebnertools import (Num, Polyn, Sign,
                                          _representing_matrices, cp_key,
                                          critical_pair, f5_reduce, groebner,
@@ -19,7 +19,7 @@ __all__ = ()
 
 @pytest.mark.parametrize('method', ('buchberger', 'f5b'))
 def test_groebner(method):
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  x, y = ring('x y', QQ, lex)
         f = x**2 + 2*x*y**2
         g = x*y + 2*y**3 - 1
@@ -150,7 +150,7 @@ def test_groebner(method):
 
 @pytest.mark.parametrize('method', ('buchberger', 'f5b'))
 def test_benchmark_minimal_polynomial(method):
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  x, y, z = ring('x y z', QQ, lex)
 
         F = [x**3 + x + 1, y**2 + y + 1, (x + y) * z - (x**2 + y)]
@@ -198,7 +198,7 @@ def test_benchmark_coloring():
 
 @pytest.mark.parametrize('method', ('buchberger', 'f5b'))
 def test_benchmark_katsura_3(method):
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  x0, x1, x2 = ring('x:3', ZZ, lex)
         I = [x0 + 2*x1 + 2*x2 - 1,
              x0**2 + 2*x1**2 + 2*x2**2 - x0,
@@ -223,7 +223,7 @@ def test_benchmark_katsura_3(method):
 
 @pytest.mark.parametrize('method', ('buchberger', 'f5b'))
 def test_benchmark_katsura_4(method):
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  x0, x1, x2, x3 = ring('x:4', ZZ, lex)
         I = [x0 + 2*x1 + 2*x2 + 2*x3 - 1,
              x0**2 + 2*x1**2 + 2*x2**2 + 2*x3**2 - x0,
@@ -258,7 +258,7 @@ def test_benchmark_katsura_4(method):
 def test_benchmark_czichowski(method):
     # This is very slow (> 2 minutes on 3.4 GHz) without GMPY
 
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  x, t = ring('x t', ZZ, lex)
         I = [9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
              (-72 - 72*t)*x**7 + (-256 - 252*t)*x**6 + (192 + 192*t)*x**5 + (1280 + 1260*t)*x**4 + (312 + 312*t)*x**3 + (-404*t)*x**2 + (-576 - 576*t)*x + 96 + 108*t]
@@ -329,7 +329,7 @@ def test_benchmark_czichowski(method):
 
 @pytest.mark.parametrize('method', ('buchberger', 'f5b'))
 def test_benchmark_cyclic_4(method):
-    with config.using(groebner=method):
+    with using(groebner=method):
         R,  a, b, c, d = ring('a b c d', ZZ, lex)
 
         I = [a + b + c + d,

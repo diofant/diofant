@@ -60,7 +60,6 @@ It is described in great(er) detail in the Sphinx documentation.
 from collections import defaultdict
 from itertools import chain, product
 
-from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
                     Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
                     zoo)
@@ -470,13 +469,6 @@ def make_simp(z):
         return cancel(expr, z)
 
     return simp
-
-
-def debug(*args):
-    if DIOFANT_DEBUG:
-        for a in args:
-            print(a, end='')
-        print()
 
 
 class Hyper_Function(Expr):
@@ -2001,19 +1993,14 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     if _collection is None:
         _collection = FormulaCollection()
 
-    debug('Trying to expand hypergeometric function ', func)
+    # Trying to expand hypergeometric function
 
     # First reduce order as much as possible.
     func, ops = reduce_order(func)
-    if ops:
-        debug('  Reduced order to ', func)
-    else:
-        debug('  Could not reduce order.')
 
     # Now try polynomial cases
     res = try_polynomial(func, z0)
     if res is not None:
-        debug('  Recognised polynomial.')
         p = apply_operators(res, ops, lambda f: z0*f.diff(z0))
         p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
         return unpolarify(simplify(p).subs({z0: z}))
@@ -2023,7 +2010,6 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     res = try_shifted_sum(func, z0)
     if res is not None:
         func, nops, p = res
-        debug('  Recognised shifted sum, reduced order to ', func)
         ops += nops
 
     # apply the plan for poly
@@ -2046,12 +2032,9 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         formula = try_lerchphi(func)
 
     if formula is None:
-        debug('  Could not find an origin. ',
-              'Will return answer in terms of '
-              'simpler hypergeometric functions.')
+        # Could not find an origin.  Will return answer in terms of
+        # simpler hypergeometric functions.
         formula = build_hypergeometric_formula(func)
-
-    debug('  Found an origin: ', formula.closed_form, ' ', formula.func)
 
     # We need to find the operators that convert formula into func.
     ops += devise_plan(func, formula.func, z0)
@@ -2217,21 +2200,17 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
         rewrite = None
 
     func0 = func
-    debug('Try to expand Meijer G function corresponding to ', func)
+
+    # Try to expand Meijer G function corresponding to func.
 
     # We will play games with analytic continuation - rather use a fresh symbol
     z = Dummy('z')
 
     func, ops = reduce_order_meijer(func)
-    if ops:
-        debug('  Reduced order to ', func)
-    else:
-        debug('  Could not reduce order.')
 
     # Try to find a direct formula
     f = _meijercollection.lookup_origin(func)
     if f is not None:
-        debug('  Found a Meijer G formula: ', f.func)
         ops += devise_plan_meijer(f.func, func, z)
 
         # Now carry out the plan.
@@ -2243,7 +2222,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
         r = r[0].subs({z: z0})
         return powdenest(r, polar=True)
 
-    debug("  Could not find a direct formula. Trying Slater's theorem.")
+    # Could not find a direct formula. Trying Slater's theorem.
 
     # TODO the following would be possible:
     # *) Paired Index Theorems
@@ -2447,9 +2426,6 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
     # TODO it would be helpful to give conditions under which the integral
     #      is known to diverge.
     r = Piecewise((slater1, cond1), (slater2, cond2), (func0(z0), True))
-    if r.has(hyper) and not allow_hyper:
-        debug('  Could express using hypergeometric functions, '
-              'but not allowed.')
     if not r.has(hyper) or allow_hyper:
         return r
 
