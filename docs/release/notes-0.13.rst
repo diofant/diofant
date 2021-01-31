@@ -34,3 +34,4 @@ for complete list of issues and pull requests involved in this release.
 These Sympy issues also were addressed:
 
 * :sympyissue:`20861`: reduce_inequalities() gives impossible answer
+* :sympyissue:`20874`: Port the PRS algorithm to the sparse polynomial implementation
