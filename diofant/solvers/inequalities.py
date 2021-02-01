@@ -329,7 +329,6 @@ def solve_rational_inequalities(eqs):
 
             for interval in global_intervals:
                 if interval.contains(oo) is true and expr.limit(gen, oo, '-') is false:
-                    print(111)
                     interval -= FiniteSet(oo)
                 elif interval.contains(-oo) is true and expr.limit(gen, -oo) is false:
                     interval -= FiniteSet(-oo)
