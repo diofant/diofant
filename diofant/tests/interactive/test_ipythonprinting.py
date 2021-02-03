@@ -1,7 +1,5 @@
 """Tests that the IPython printing module is properly loaded."""
 
-import sys
-
 import pytest
 
 from diofant.core import Float, Rational, Symbol
@@ -12,7 +10,6 @@ __all__ = ()
 ipython = pytest.importorskip('IPython', minversion='2.3.0')
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 8), reason='Broken on 3.8')
 def test_ipython_printing(monkeypatch):
     app = ipython.terminal.ipapp.TerminalIPythonApp()
     app.display_banner = False
