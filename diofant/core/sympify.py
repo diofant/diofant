@@ -29,9 +29,9 @@ class SympifyError(ValueError):
                                      str(self.base_exc)))
 
 
-converter: typing.Dict[typing.Type[typing.Any],
-                       typing.Callable[[typing.Any],
-                                       diofant.core.basic.Basic]] = {}  # See sympify docstring.
+converter: dict[type[typing.Any],
+                typing.Callable[[typing.Any],
+                                diofant.core.basic.Basic]] = {}  # See sympify docstring.
 
 
 class CantSympify:

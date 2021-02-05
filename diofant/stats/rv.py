@@ -13,6 +13,8 @@ diofant.stats.rv_interface
 
 """
 
+from __future__ import annotations
+
 import typing
 
 from ..abc import x
@@ -1011,7 +1013,7 @@ def rv_subs(expr):
 class NamedArgsMixin:
     """Helper class for named arguments."""
 
-    _argnames: typing.Tuple[str, ...] = ()
+    _argnames: tuple[str, ...] = ()
 
     def __getattr__(self, attr):
         try:

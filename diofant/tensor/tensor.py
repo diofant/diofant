@@ -29,6 +29,8 @@ If there is a (anti)symmetric metric, the indices can be raised and
 lowered when the tensor is put in canonical form.
 """
 
+from __future__ import annotations
+
 import functools
 import typing
 from collections import defaultdict
@@ -751,8 +753,8 @@ class _TensorDataLazyEvaluator(CantSympify):
 
     """
 
-    _substitutions_dict: typing.Dict[typing.Any, typing.Any] = {}
-    _substitutions_dict_tensmul: typing.Dict[typing.Any, typing.Any] = {}
+    _substitutions_dict: dict[typing.Any, typing.Any] = {}
+    _substitutions_dict_tensmul: dict[typing.Any, typing.Any] = {}
 
     def __getitem__(self, key):
         dat = self._get(key)

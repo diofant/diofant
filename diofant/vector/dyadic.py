@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import typing
-
 from ..core import AtomicExpr, Integer, Pow
 from ..matrices import ImmutableMatrix
 from .basisdependent import (BasisDependent, BasisDependentAdd,
@@ -24,11 +22,11 @@ class Dyadic(BasisDependent):
 
     zero: DyadicZero
 
-    _expr_type: typing.Type[Dyadic]
-    _mul_func: typing.Type[DyadicMul]
-    _add_func: typing.Type[DyadicAdd]
-    _zero_func: typing.Type[DyadicZero]
-    _base_func: typing.Type[BaseDyadic]
+    _expr_type: type[Dyadic]
+    _mul_func: type[DyadicMul]
+    _add_func: type[DyadicAdd]
+    _zero_func: type[DyadicZero]
+    _base_func: type[BaseDyadic]
 
     @property
     def components(self):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol
@@ -84,7 +86,7 @@ class CodePrinter(StrPrinter):
         'not': '!',
     }
 
-    _default_settings: typing.Dict[str, typing.Any] = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'error_on_reserved': False,

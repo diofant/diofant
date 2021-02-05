@@ -9,6 +9,8 @@ diofant.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
 """
 
+from __future__ import annotations
+
 import typing
 
 from ..core import Integer
@@ -86,7 +88,7 @@ class CCodePrinter(CodePrinter):
     printmethod = '_ccode'
     language = 'C'
 
-    _default_settings: typing.Dict[str, typing.Any] = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,

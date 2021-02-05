@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 from ..core import Add, Expr, Integer, Mul, count_ops, diff
@@ -253,7 +255,7 @@ class BasisDependentMul(BasisDependent, Mul):
 class BasisDependentZero(BasisDependent):
     """Class to denote a zero basis dependent instance."""
 
-    components: typing.Dict[typing.Any, Expr] = {}
+    components: dict[typing.Any, Expr] = {}
 
     def __new__(cls):
         obj = super().__new__(cls)

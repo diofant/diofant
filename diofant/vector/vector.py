@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import typing
-
 from ..core import AtomicExpr, Integer, Pow, Symbol, diff
 from ..core.assumptions import StdFactKB
 from ..functions import sqrt
@@ -25,11 +23,11 @@ class Vector(BasisDependent):
 
     zero: VectorZero
 
-    _add_func: typing.Type[VectorAdd]
-    _mul_func: typing.Type[VectorMul]
-    _base_func: typing.Type[BaseVector]
-    _expr_type: typing.Type[Vector]
-    _zero_func: typing.Type[VectorZero]
+    _add_func: type[VectorAdd]
+    _mul_func: type[VectorMul]
+    _base_func: type[BaseVector]
+    _expr_type: type[Vector]
+    _zero_func: type[VectorZero]
 
     @property
     def components(self):

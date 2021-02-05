@@ -1,6 +1,6 @@
 """Implementation of :class:`RealField` class."""
 
-import typing
+from __future__ import annotations
 
 import mpmath
 
@@ -126,7 +126,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         return self._context.almosteq(a, b, tolerance)
 
 
-_reals_cache: typing.Dict[tuple, RealField] = {}
+_reals_cache: dict[tuple, RealField] = {}
 
 
 RR = RealField()

@@ -2,6 +2,8 @@
 be displayed in the sphinx documentation.
 """
 
+from __future__ import annotations
+
 import typing
 from collections import defaultdict
 
@@ -11,8 +13,7 @@ from ..utilities import default_sort_key
 from .meijerint import _create_lookup_table
 
 
-t: typing.Dict[typing.Tuple[typing.Type, ...],
-               typing.List[typing.Any]] = defaultdict(list)
+t: dict[tuple[type, ...], list[typing.Any]] = defaultdict(list)
 _create_lookup_table(t)
 
 doc = ''

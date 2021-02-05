@@ -1,6 +1,6 @@
 """Implementation of :class:`ComplexField` class."""
 
-import typing
+from __future__ import annotations
 
 import mpmath
 
@@ -118,7 +118,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self._context.almosteq(a, b, tolerance)
 
 
-_complexes_cache: typing.Dict[tuple, ComplexField] = {}
+_complexes_cache: dict[tuple, ComplexField] = {}
 
 
 CC = ComplexField()

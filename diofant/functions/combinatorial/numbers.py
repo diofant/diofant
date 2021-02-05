@@ -7,6 +7,8 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
+from __future__ import annotations
+
 import numbers
 import typing
 
@@ -586,7 +588,7 @@ class harmonic(Function):
 
     # Generate one memoized Harmonic number-generating function for each
     # order and store it in a dictionary
-    _functions: typing.Dict[Integer, typing.Callable[[int], Rational]] = {}
+    _functions: dict[Integer, typing.Callable[[int], Rational]] = {}
 
     @classmethod
     def eval(cls, n, m=None):

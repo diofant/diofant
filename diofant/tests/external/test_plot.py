@@ -1,5 +1,7 @@
 """Generic plotting tests."""
 
+from __future__ import annotations
+
 import errno
 import functools
 import os
@@ -46,7 +48,7 @@ unset_show()
 # XXX: We could implement this as a context manager instead
 class TmpFileManager:
 
-    tmp_files: typing.List[typing.Any] = []
+    tmp_files: list[typing.Any] = []
 
     @classmethod
     def tmp_file(cls, name=''):

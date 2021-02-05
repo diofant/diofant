@@ -1,9 +1,10 @@
 """Sparse polynomial rings."""
 
+from __future__ import annotations
+
 import functools
 import math
 import operator
-import typing
 
 from ..config import query
 from ..core import Expr, Integer, Symbol, cacheit, oo
@@ -389,7 +390,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
         return a.lcm(b)
 
 
-_ring_cache: typing.Dict[tuple, PolynomialRing] = {}
+_ring_cache: dict[tuple, PolynomialRing] = {}
 
 
 class PolyElement(DomainElement, CantSympify, dict):

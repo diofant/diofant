@@ -2,6 +2,8 @@
 A Printer for generating readable representation of most diofant classes.
 """
 
+from __future__ import annotations
+
 import typing
 
 import mpmath.libmp as mlib
@@ -19,12 +21,12 @@ class StrPrinter(Printer):
     """Str printer."""
 
     printmethod = '_diofantstr'
-    _default_settings: typing.Dict[str, typing.Any] = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
     }
 
-    _relationals: typing.Dict[str, str] = {}
+    _relationals: dict[str, str] = {}
 
     def parenthesize(self, item, level):
         if precedence(item) <= level:

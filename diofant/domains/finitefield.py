@@ -1,8 +1,9 @@
 """Implementation of :class:`FiniteField` class."""
 
+from __future__ import annotations
+
 import numbers
 import random
-import typing
 
 from ..core import Dummy, integer_digits
 from ..ntheory import factorint, is_primitive_root, isprime
@@ -173,7 +174,7 @@ class FiniteField(Field, FiniteRing):
         return self.mod
 
 
-_modular_integer_cache: typing.Dict[tuple, FiniteRing] = {}
+_modular_integer_cache: dict[tuple, FiniteRing] = {}
 
 
 class PythonFiniteRing(FiniteRing):

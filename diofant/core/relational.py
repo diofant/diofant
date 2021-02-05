@@ -45,8 +45,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
     is_Relational = True
 
-    ValidRelationOperator: typing.Dict[typing.Optional[str],
-                                       typing.Type[Relational]]
+    ValidRelationOperator: dict[typing.Optional[str], type[Relational]]
 
     # ValidRelationOperator - Defined below, because the necessary classes
     #   have not yet been defined

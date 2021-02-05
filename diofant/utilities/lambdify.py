@@ -3,6 +3,8 @@ This module provides convenient functions to transform diofant expressions to
 lambda functions which can be used to calculate numerical values very fast.
 """
 
+from __future__ import annotations
+
 import inspect
 import textwrap
 import typing
@@ -13,19 +15,19 @@ from .decorator import doctest_depends_on
 
 
 # These are the namespaces the lambda functions will use.
-MATH: typing.Dict[str, typing.Any] = {}
-MPMATH: typing.Dict[str, typing.Any] = {}
-NUMPY: typing.Dict[str, typing.Any] = {}
-DIOFANT: typing.Dict[str, typing.Any] = {}
+MATH: dict[str, typing.Any] = {}
+MPMATH: dict[str, typing.Any] = {}
+NUMPY: dict[str, typing.Any] = {}
+DIOFANT: dict[str, typing.Any] = {}
 
 # Default namespaces, letting us define translations that can't be defined
 # by simple variable maps, like I => 1j
 # These are separate from the names above because the above names are modified
 # throughout this file, whereas these should remain unmodified.
-MATH_DEFAULT: typing.Dict[str, typing.Any] = {}
-MPMATH_DEFAULT: typing.Dict[str, typing.Any] = {}
-NUMPY_DEFAULT: typing.Dict[str, typing.Any] = {'I': 1j}
-DIOFANT_DEFAULT: typing.Dict[str, typing.Any] = {}
+MATH_DEFAULT: dict[str, typing.Any] = {}
+MPMATH_DEFAULT: dict[str, typing.Any] = {}
+NUMPY_DEFAULT: dict[str, typing.Any] = {'I': 1j}
+DIOFANT_DEFAULT: dict[str, typing.Any] = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {

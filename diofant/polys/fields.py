@@ -1,8 +1,9 @@
 """Sparse rational function fields."""
 
+from __future__ import annotations
+
 import functools
 import operator
-import typing
 
 from ..core import Expr, Symbol
 from ..core.sympify import CantSympify, sympify
@@ -209,7 +210,7 @@ class FractionField(Field, CompositeDomain):
         return self.domain.is_normal(a.numerator.LC)
 
 
-_field_cache: typing.Dict[tuple, FractionField] = {}
+_field_cache: dict[tuple, FractionField] = {}
 
 
 class FracElement(DomainElement, CantSympify):

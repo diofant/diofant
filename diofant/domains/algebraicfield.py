@@ -1,7 +1,8 @@
 """Implementation of :class:`AlgebraicField` class."""
 
+from __future__ import annotations
+
 import functools
-import typing
 
 from ..core import I, cacheit
 from ..core.sympify import CantSympify, sympify
@@ -158,7 +159,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
                 return r.as_content_primitive()
 
 
-_algebraic_numbers_cache: typing.Dict[tuple, AlgebraicField] = {}
+_algebraic_numbers_cache: dict[tuple, AlgebraicField] = {}
 
 
 class ComplexAlgebraicField(AlgebraicField):

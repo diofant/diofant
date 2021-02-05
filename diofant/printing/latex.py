@@ -2,6 +2,8 @@
 A Printer which converts an expression into its LaTeX equivalent.
 """
 
+from __future__ import annotations
+
 import itertools
 import re
 import typing
@@ -113,7 +115,7 @@ class LatexPrinter(Printer):
 
     printmethod = '_latex'
 
-    _default_settings: typing.Dict[str, typing.Any] = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'mode': 'plain',
         'itex': False,
