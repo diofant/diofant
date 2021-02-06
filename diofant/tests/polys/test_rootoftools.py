@@ -335,9 +335,10 @@ def test_RootOf_evalf_caching_bug():
 
 def test_RootOf_real_roots():
     assert (x**5 + x + 1).as_poly().real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
-    assert (x**5 + x + 1).as_poly().real_roots(radicals=False) == [RootOf(
-        x**3 - x**2 + 1, 0)]
+    assert (x**5 + x + 1).as_poly().real_roots(radicals=False) == [RootOf(x**3 - x**2 + 1, 0)]
     assert (x**7 - 0.1*x + 1).as_poly(x).real_roots() == [RootOf(10*x**7 - x + 10, 0)]
+    assert ((x - 2)*(x - 1)*(x**2 - 2)).as_poly().real_roots() == [-sqrt(2), 1, sqrt(2), 2]
+    assert ((x + 1)**3*(3*x + 1)).as_poly().real_roots(multiple=False) == [(-1, 3), (Rational(-1, 3), 1)]
 
 
 def test_RootOf_all_roots():

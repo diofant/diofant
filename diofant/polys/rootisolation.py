@@ -859,7 +859,7 @@ class RealInterval:
 
     def is_disjoint(self, other):
         """Return ``True`` if two isolation intervals are disjoint."""
-        return self.b <= other.a or other.b <= self.a
+        return self.b < other.a or other.b < self.a
 
     def refine(self):
         """Perform one step of real root refinement algorithm."""

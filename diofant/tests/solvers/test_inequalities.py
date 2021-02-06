@@ -403,3 +403,16 @@ def test_diofantissue_836():
 
 def test_sympyissue_20861():
     assert reduce_inequalities([3/x < 0, x >= 2, x >= 7], x) is false
+
+
+def test_sympyissue_20902():
+    eq = y/((1 + y)**2)
+
+    assert (reduce_inequalities(eq.subs({y: 3*x + 2}).diff(x) > 0) ==
+            (Integer(-1) < x) & (x < Rational(-1, 3)))
+    assert (reduce_inequalities(eq.subs({y: 3*x + 3}).diff(x) > 0) ==
+            (Rational(-4, 3) < x) & (x < Rational(-2, 3)))
+    assert (reduce_inequalities(eq.subs({y: 3*x + 4}).diff(x) > 0) ==
+            (Rational(-5, 3) < x) & (x < Integer(-1)))
+    assert (reduce_inequalities(eq.subs({y: 3*x + 2}).diff(x) > 0) ==
+            (Integer(-1) < x) & (x < Rational(-1, 3)))
