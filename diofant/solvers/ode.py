@@ -2301,6 +2301,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
                 s = simplify(num).xreplace(reps).xreplace({_func: func})
                 testnum += 1
         else:
+            testnum  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
     if not s:
@@ -4601,6 +4602,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
                 if check*x**mult in trialset:
                     mult += 1
                 else:
+                    mult  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
             trialset.add(check*x**mult)
             notneedset.add(check)

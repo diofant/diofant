@@ -169,6 +169,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
                 if N + D != maxdeg:
                     allsol = [allsol[-1]]
 
+                N  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
             steps += 1

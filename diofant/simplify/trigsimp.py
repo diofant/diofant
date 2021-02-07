@@ -1025,6 +1025,7 @@ def __trigsimp(expr, deep=False):
                 was = expr
                 if m[a_t] == 0 or \
                         -m[a_t] in m[c].args or m[a_t] + m[c] == 0:
+                    m  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
                 if d in m and m[a_t]*m[d] + m[c] == 0:
                     break
