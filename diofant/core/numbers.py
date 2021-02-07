@@ -1645,7 +1645,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
-            if other in (-oo, nan):
+            if other in (-oo, nan, Float('-inf')):
                 return nan
             elif other.is_Float:
                 return Float('inf')
@@ -1657,13 +1657,10 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Number):
-            if other is oo or other is nan:
+            if other in (oo, nan, Float('inf')):
                 return nan
             elif other.is_Float:
-                if other == Float('inf'):
-                    return nan
-                else:
-                    return Float('inf')
+                return Float('inf')
             else:
                 return oo
         return NotImplemented
@@ -1697,7 +1694,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Number):
-            if other in (oo, -oo, nan):
+            if other in (oo, -oo, nan, Float('inf'), Float('-inf')):
                 return nan
             elif other.is_Float:
                 if other.is_nonnegative:
@@ -1824,13 +1821,10 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
-            if other is oo or other is nan:
+            if other in (oo, nan, Float('inf')):
                 return nan
             elif other.is_Float:
-                if other == Float('inf'):
-                    return Float('nan')
-                else:
-                    return Float('-inf')
+                return Float('-inf')
             else:
                 return -oo
         return NotImplemented
@@ -1839,7 +1833,7 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Number):
-            if other in (-oo, nan):
+            if other in (-oo, nan, Float('-inf')):
                 return nan
             elif other.is_Float:
                 return Float('-inf')
@@ -1876,7 +1870,7 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Number):
-            if other in (oo, -oo, nan):
+            if other in (oo, -oo, nan, Float('-inf'), Float('inf')):
                 return nan
             elif other.is_Float:
                 if other.is_nonnegative:

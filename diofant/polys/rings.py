@@ -751,17 +751,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __add__(self, other):
         """Add two polynomials."""
         ring = self.ring
-        domain = ring.domain
         try:
             other = ring.convert(other)
         except CoercionFailed:
             return NotImplemented
         result = self.copy()
-        get = result.get
-        zero = domain.zero
-        for k in other:
-            result[k] = get(k, zero) + other[k]
-        result._strip_zero()
+        for t in other.items():
+            result = result._iadd_term(t)
         return result
 
     def __radd__(self, other):
@@ -770,17 +766,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __sub__(self, other):
         """Subtract polynomial other from self."""
         ring = self.ring
-        domain = ring.domain
         try:
             other = ring.convert(other)
         except CoercionFailed:
             return NotImplemented
         result = self.copy()
-        get = result.get
-        zero = domain.zero
-        for k in other:
-            result[k] = get(k, zero) - other[k]
-        result._strip_zero()
+        for k, v in other.items():
+            result = result._iadd_term((k, -v))
         return result
 
     def __rsub__(self, other):
@@ -790,19 +782,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __mul__(self, other):
         """Multiply two polynomials."""
         ring = self.ring
-        domain = ring.domain
         try:
             other = ring.convert(other)
         except CoercionFailed:
             return NotImplemented
         result = ring.zero
-        get = result.get
-        zero = domain.zero
-        for exp1 in self:
-            for exp2 in other:
-                exp = exp1*exp2
-                result[exp] = get(exp, zero) + self[exp1]*other[exp2]
-        result._strip_zero()
+        for t in self.items():
+            result = result._iadd_poly_term(other, t)
         return result
 
     def __rmul__(self, other):
@@ -859,10 +845,10 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _pow_multinomial(self, n):
         multinomials = multinomial_coefficients(len(self), n).items()
-        zero_monom = self.ring.zero_monom
+        ring = self.ring
+        zero_monom = ring.zero_monom
         terms = self.items()
-        zero = self.ring.domain.zero
-        poly = self.ring.zero
+        poly = ring.zero
 
         for multinomial, multinomial_coeff in multinomials:
             product_monom = zero_monom
@@ -873,13 +859,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     product_monom *= monom**exp
                     product_coeff *= coeff**exp
 
-            monom = product_monom
-            coeff = poly.get(monom, zero) + product_coeff
-
-            if coeff:
-                poly[monom] = coeff
-            elif monom in poly:
-                del poly[monom]
+            poly = poly._iadd_term((product_monom, product_coeff))
 
         return poly
 
