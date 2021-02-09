@@ -75,7 +75,6 @@ class FloatRationalizer(ast.NodeTransformer):
                             args=[ast.Str(s=repr(node.n))], keywords=[],
                             starargs=None, kwargs=None)
         return node
-    visit_Num = visit_Constant
 
     def visit_Call(self, node):
         if isinstance(node.func, ast.Name) and node.func.id == 'Float':

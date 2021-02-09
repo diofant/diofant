@@ -1449,6 +1449,7 @@ class Subs(Expr):
                    for _, r in reps):
                 pre += '_'
                 continue
+            reps  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))

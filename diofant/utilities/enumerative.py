@@ -255,6 +255,7 @@ def multiset_partitions_taocp(multiplicities):
                 f[lpart + 1] = b
                 # Return to M2
             else:
+                k  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break  # Continue to M4
 
         # M4  Visit a partition
