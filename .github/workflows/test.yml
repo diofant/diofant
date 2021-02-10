@@ -114,7 +114,7 @@ jobs:
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
     - name: Publish package on PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-      uses: pypa/gh-action-pypi-publish@f91f98d65eb3eb032447201d64f2c25d67c28efe
+      uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
