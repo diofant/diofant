@@ -1330,3 +1330,7 @@ def test_sympyissue_20360():
                   (2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) -
                    2/(2*pi*n - pi), True))
     assert integrate(e, (x, 0, y)) == r
+
+
+def test_sympyissue_20941():
+    assert integrate(x**2*sqrt(1 - x**2), (x, 0, 1)) == pi/16
