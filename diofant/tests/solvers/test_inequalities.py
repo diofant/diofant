@@ -362,6 +362,9 @@ def test_solve_univariate_inequality():
 
     assert isolve(x > oo, x) is false
 
+    # issue sympy/sympy#10268
+    assert reduce_inequalities(log(x) < 300) == (-oo < x) & (x < E**300)
+
 
 def test_slow_general_univariate():
     r = RootOf(x**5 - x**2 + 1, 0)
@@ -380,10 +383,6 @@ def test_sympyissue_8545():
 def test_sympyissue_8974():
     assert isolve(-oo < x, x) == (-oo < x)
     assert isolve(oo > x, x) == (x < oo)
-
-
-def test_sympyissue_10268():
-    assert reduce_inequalities(log(x) < 300) == (-oo < x) & (x < E**300)
 
 
 def test_diofantissue_453():
