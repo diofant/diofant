@@ -6,7 +6,6 @@ from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
-from ..core.power import isqrt
 from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
@@ -807,8 +806,8 @@ def _diop_quadratic(var, coeff, t):
             a = A // g
             c = C // g
             e = sign(B/A)
-            sqa = isqrt(a)
-            sqc = isqrt(c)
+            sqa = math.isqrt(a)
+            sqc = math.isqrt(c)
             _c = e*sqc*D - sqa*E
             if not _c:
                 z = symbols('z', extended_real=True)
