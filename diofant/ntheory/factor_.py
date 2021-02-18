@@ -471,7 +471,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     first attempt, a new ``a`` will be generated randomly (using the ``seed``)
     and the process repeated.
 
-    Note: the value of M is lcm(1..B) = reduce(ilcm, range(2, B + 1)).
+    Note: the value of M is lcm(1..B) = reduce(lcm, range(2, B + 1)).
 
     A search is made for factors next to even numbers having a power smoothness
     less than ``B``. Choosing a larger B increases the likelihood of finding a
@@ -510,7 +510,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
         >>> M = 1
         >>> for i in range(2, 256):
-        ...     M = ilcm(M, i)
+        ...     M = math.lcm(M, i)
         ...
         >>> {math.gcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
         ...  math.gcd(pow(a, M, n) - 1, n) != n}

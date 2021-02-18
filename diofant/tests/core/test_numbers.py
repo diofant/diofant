@@ -7,9 +7,9 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     comp, cos, exp, factorial, false, igcd, ilcm,
-                     integer_digits, integer_nthroot, latex, log, mod_inverse,
-                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, igcd, integer_digits,
+                     integer_nthroot, latex, log, mod_inverse, nan, nextprime,
+                     oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import igcdex, mpf_norm
 
@@ -191,20 +191,6 @@ def test_igcd():
     assert igcd(*[10, 20, 30]) == 10
     pytest.raises(ValueError, lambda: igcd(45.1, 30))
     pytest.raises(ValueError, lambda: igcd(45, 30.1))
-
-
-def test_ilcm():
-    assert ilcm(0, 0) == 0
-    assert ilcm(1, 0) == 0
-    assert ilcm(0, 1) == 0
-    assert ilcm(1, 1) == 1
-    assert ilcm(2, 1) == 2
-    assert ilcm(8, 2) == 8
-    assert ilcm(8, 6) == 24
-    assert ilcm(8, 7) == 56
-    assert ilcm(*[10, 20, 30]) == 60
-    pytest.raises(ValueError, lambda: ilcm(8.1, 7))
-    pytest.raises(ValueError, lambda: ilcm(8, 7.1))
 
 
 def test_igcdex():

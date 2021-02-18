@@ -8,7 +8,7 @@ from .singleton import S
 from .expr import Expr, AtomicExpr
 from .symbol import Symbol, Wild, Dummy, symbols, var
 from .numbers import (Number, Float, Rational, Integer,
-                      NumberSymbol, igcd, ilcm, E, I, nan, oo,
+                      NumberSymbol, igcd, E, I, nan, oo,
                       pi, zoo, comp, mod_inverse, integer_digits)
 from .power import Pow, integer_nthroot
 from .mul import Mul, prod
@@ -37,7 +37,7 @@ GoldenRatio = S.GoldenRatio
 __all__ = ('sympify', 'SympifyError', 'cacheit', 'Basic', 'Atom',
            'preorder_traversal', 'S', 'Expr', 'AtomicExpr', 'Symbol',
            'Wild', 'Dummy', 'symbols', 'var', 'Number', 'Float', 'Rational',
-           'Integer', 'NumberSymbol', 'igcd', 'ilcm', 'E', 'I', 'nan', 'oo',
+           'Integer', 'NumberSymbol', 'igcd', 'E', 'I', 'nan', 'oo',
            'pi', 'zoo', 'comp', 'mod_inverse', 'integer_digits', 'Pow',
            'integer_nthroot', 'Mul', 'prod', 'Add', 'Mod', 'Rel', 'Eq', 'Ne',
            'Lt', 'Le', 'Gt', 'Ge', 'Equality', 'GreaterThan', 'LessThan',

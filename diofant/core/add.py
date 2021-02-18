@@ -1,11 +1,12 @@
 import collections
 import functools
+import math
 
 from ..utilities import default_sort_key
 from .cache import cacheit
 from .compatibility import is_sequence
 from .logic import _fuzzy_group
-from .numbers import Integer, igcd, ilcm, nan, oo, zoo
+from .numbers import Integer, igcd, nan, oo, zoo
 from .operations import AssocOp
 
 
@@ -724,10 +725,10 @@ class Add(AssocOp):
 
         if not inf:
             ngcd = functools.reduce(igcd, [t[0] for t in terms], 0)
-            dlcm = functools.reduce(ilcm, [t[1] for t in terms], 1)
+            dlcm = functools.reduce(math.lcm, [t[1] for t in terms], 1)
         else:
             ngcd = functools.reduce(igcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = functools.reduce(ilcm, [t[1] for t in terms if t[1]], 1)
+            dlcm = functools.reduce(math.lcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
             return Integer(1), self

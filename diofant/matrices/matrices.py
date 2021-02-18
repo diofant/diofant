@@ -1,10 +1,11 @@
 import collections
 import functools
+import math
 import typing
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
-                    Symbol, count_ops, ilcm, oo, symbols)
+                    Symbol, count_ops, oo, symbols)
 from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..core.sympify import sympify
@@ -2968,7 +2969,7 @@ class MatrixBase(DefaultPrinting):
                     c, p = signsimp(b).as_content_primitive()
                     if c != 1:
                         b = c*p
-                        l = ilcm(l, c.denominator)
+                        l = math.lcm(l, c.denominator)
                     basis[0][i] = b
                 if l != 1:
                     basis[0] *= l
