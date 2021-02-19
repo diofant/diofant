@@ -1,8 +1,9 @@
 import functools
+import math
 
 import mpmath
 
-from ..core import igcd, prod
+from ..core import igcd
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from .primetest import isprime
@@ -81,7 +82,7 @@ def crt(M, U, symmetric=False, check=True):
         M = list(map(as_int, M))
         U = list(map(as_int, U))
 
-    p = prod(M, start=ZZ.one)
+    p = math.prod(M, start=ZZ.one)
     v = ZZ.zero
 
     for u, m in zip(U, M):
@@ -90,7 +91,7 @@ def crt(M, U, symmetric=False, check=True):
         v += e*(u*s % m)
 
     result = v % p
-    mm = prod(M)
+    mm = math.prod(M)
 
     if check:
         if not all(v % m == result % m for v, m in zip(U, M)):
@@ -118,7 +119,7 @@ def crt1(M):
     from ..domains import ZZ
 
     E, S = [], []
-    p = prod(M, start=ZZ.one)
+    p = math.prod(M, start=ZZ.one)
 
     for m in M:
         E.append(p // m)

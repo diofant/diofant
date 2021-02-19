@@ -1,12 +1,13 @@
 """Computational algebraic field theory."""
 
 import functools
+import math
 
 import mpmath
 
 from ..config import query
 from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
-                    cacheit, pi, prod)
+                    cacheit, pi)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..core.sympify import sympify
@@ -678,7 +679,7 @@ def primitive_element(extension, **args):
     F = [minimal_polynomial(e, domain=domain) for e in extension]
     Y = [p.gen for p in F]
 
-    for u in range(1, (len(F) - 1)*prod(f.degree() for f in F) + 1):
+    for u in range(1, (len(F) - 1)*math.prod(f.degree() for f in F) + 1):
         coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
 

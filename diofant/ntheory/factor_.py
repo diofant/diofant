@@ -6,7 +6,7 @@ import math
 import numbers
 import random
 
-from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot, prod
+from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from ..core.sympify import sympify
@@ -1600,4 +1600,4 @@ def square_factor(a):
 
     """
     f = a if isinstance(a, dict) else factorint(a)
-    return prod(p**(e//2) for p, e in f.items())
+    return math.prod(p**(e//2) for p, e in f.items())

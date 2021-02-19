@@ -1,4 +1,6 @@
-from ...core import Function, Integer, prod
+import math
+
+from ...core import Function, Integer
 from ...utilities import default_sort_key, has_dups
 
 
@@ -26,8 +28,8 @@ def eval_levicivita(*args):
     """Evaluate Levi-Civita symbol."""
     from .. import factorial
     n = len(args)
-    return prod(
-        prod(args[j] - args[i] for j in range(i + 1, n))
+    return math.prod(
+        math.prod(args[j] - args[i] for j in range(i + 1, n))
         / factorial(i) for i in range(n))
     # converting factorial(i) to int is slightly faster
 

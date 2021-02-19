@@ -775,7 +775,7 @@ class Add(AssocOp):
 
         """
         from ..functions import root
-        from .mul import Mul, _keep_coeff, prod
+        from .mul import Mul, _keep_coeff
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
@@ -808,7 +808,7 @@ class Add(AssocOp):
                         if q not in common_q:
                             r.pop(q)
                     for q in r:
-                        r[q] = prod(r[q])
+                        r[q] = math.prod(r[q])
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:

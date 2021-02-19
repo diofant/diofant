@@ -233,10 +233,6 @@ Mul
 .. autoclass:: Mul
    :members:
 
-prod
-^^^^
-.. autofunction:: prod
-
 add
 ---
 .. module:: diofant.core.add
