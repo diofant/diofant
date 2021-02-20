@@ -96,28 +96,6 @@ def _str_to_Decimal_dps(s):
         return num, len(num.as_tuple().digits)
 
 
-@cacheit
-def igcd(*args):
-    """Computes positive integer greatest common divisor.
-
-    Examples
-    ========
-
-    >>> igcd(2, 4)
-    2
-    >>> igcd(5, 10, 15)
-    5
-
-    """
-    args = map(as_int, args)
-    a = next(args)
-    for b in args:
-        if a == 1:
-            break
-        a = math.gcd(a, b)
-    return a
-
-
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 

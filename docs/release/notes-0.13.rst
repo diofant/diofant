@@ -19,7 +19,7 @@ Compatibility breaks
 * Renamed ``Ring`` as :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`1123`.
 * Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
-* Removed ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
+* Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
 
 Minor changes
 =============

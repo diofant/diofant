@@ -115,10 +115,6 @@ NumberSymbol
 .. autoclass:: NumberSymbol
    :members:
 
-igcd
-^^^^
-.. autofunction:: igcd
-
 mod_inverse
 ^^^^^^^^^^^
 .. autofunction:: mod_inverse

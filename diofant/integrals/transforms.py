@@ -450,7 +450,6 @@ def _rewrite_gamma(f, s, a, b):
     (([], []), ([], []), 1/2, 1, 8)
 
     """
-    from ..core import igcd
     from ..functions import cos, cot, exp_polar, gamma, re, sin, tan
     from ..polys import Poly, RootOf, roots
 
@@ -522,7 +521,7 @@ def _rewrite_gamma(f, s, a, b):
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * functools.reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
+                * functools.reduce(math.gcd, [Integer(x.numerator) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)

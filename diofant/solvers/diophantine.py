@@ -1,6 +1,6 @@
 import math
 
-from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms, igcd,
+from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
                     integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
@@ -48,9 +48,9 @@ def _sorted_tuple(*i):
 
 def _remove_gcd(*x):
     try:
-        g = igcd(*x)
+        g = math.gcd(*x)
         return tuple(i//g for i in x)
-    except ValueError:
+    except (TypeError, ValueError):
         return x
 
 

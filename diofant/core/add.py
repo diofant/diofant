@@ -6,7 +6,7 @@ from ..utilities import default_sort_key
 from .cache import cacheit
 from .compatibility import is_sequence
 from .logic import _fuzzy_group
-from .numbers import Integer, igcd, nan, oo, zoo
+from .numbers import Integer, nan, oo, zoo
 from .operations import AssocOp
 
 
@@ -724,10 +724,10 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = functools.reduce(igcd, [t[0] for t in terms], 0)
+            ngcd = functools.reduce(math.gcd, [t[0] for t in terms], 0)
             dlcm = functools.reduce(math.lcm, [t[1] for t in terms], 1)
         else:
-            ngcd = functools.reduce(igcd, [t[0] for t in terms if t[1]], 0)
+            ngcd = functools.reduce(math.gcd, [t[0] for t in terms if t[1]], 0)
             dlcm = functools.reduce(math.lcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
@@ -812,7 +812,7 @@ class Add(AssocOp):
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = functools.reduce(igcd, [r[q] for r in rads], 0)
+                    g = functools.reduce(math.gcd, [r[q] for r in rads], 0)
                     if g != 1:
                         G.append(root(g, q))
                 if G:
