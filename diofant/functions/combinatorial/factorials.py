@@ -4,7 +4,6 @@ import math
 from ...core import Dummy, E, Function, Integer, cacheit, oo, zoo
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
-from ...ntheory import sieve
 
 
 class CombinatorialFunction(Function):
@@ -497,11 +496,6 @@ class binomial(CombinatorialFunction):
     >>> [binomial(N, i) for i in range(1 - N)]
     [1, -4, 10, -20, 35]
 
-    >>> binomial(Rational(5, 4), 3)
-    -5/128
-    >>> binomial(Rational(-5, 4), 3)
-    -195/128
-
     >>> binomial(n, 3)
     binomial(n, 3)
 
@@ -529,45 +523,6 @@ class binomial(CombinatorialFunction):
             raise ArgumentIndexError(self, argindex)
 
     @classmethod
-    def _eval(cls, n, k):
-        assert n.is_Number and k.is_Integer and k != 1 and n != k
-        if n.is_Integer and n >= 0:
-            n, k = int(n), int(k)
-
-            if k > n // 2:
-                k = n - k
-
-            M, result = int(math.sqrt(n)), 1
-
-            for prime in sieve.primerange(2, n + 1):
-                if prime > n - k:
-                    result *= prime
-                elif prime > n // 2:
-                    continue
-                elif prime > M:
-                    if n % prime < k % prime:
-                        result *= prime
-                else:
-                    N, K = n, k
-                    exp = a = 0
-
-                    while N > 0:
-                        a = int((N % prime) < (K % prime + a))
-                        N, K = N // prime, K // prime
-                        exp = a + exp
-
-                    if exp > 0:
-                        result *= prime**exp
-            return Integer(result)
-        else:
-            d = result = n - k + 1
-            for i in range(2, k + 1):
-                d += 1
-                result *= d
-                result /= i
-            return result
-
-    @classmethod
     def eval(cls, n, k):
         n, k = map(sympify, (n, k))
         d = n - k
@@ -580,8 +535,11 @@ class binomial(CombinatorialFunction):
                 return Integer(0)
             elif n.is_integer and n.is_nonnegative and d.is_negative:
                 return Integer(0)
-        if k.is_Integer and k > 0 and n.is_Number:
-            return cls._eval(n, k)
+        if n.is_Integer and k.is_Integer and k > 0:
+            if n >= 0:
+                return Integer(math.comb(n, k))
+            else:
+                return Integer((-1)**k*math.comb(abs(n) + k - 1, k))
 
     def _eval_expand_func(self, **hints):
         """Function to expand binomial(n,k) when n is positive integer."""
