@@ -37,3 +37,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20874`: Port the PRS algorithm to the sparse polynomial implementation
 * :sympyissue:`20902`: Incorrect inequality solving: False returned instead of answer
 * :sympyissue:`20941`: Fails to Solve Definite Integral
+* :sympyissue:`20973`: cancel raises PolynomialError for exp(1+O(x))
