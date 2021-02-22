@@ -420,14 +420,10 @@ _xsym = {
     '!=':  ('!=', '\N{NOT EQUAL TO}'),
     '*':   ('*', '\N{DOT OPERATOR}'),
     '-->': ('-->', '\N{EM DASH}' + '\N{EM DASH}' +
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' if '\N{EM DASH}'
-            and '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+            '\N{BLACK RIGHT-POINTING TRIANGLE}'),
     '==>': ('==>', '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
             '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' if
-            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
-            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+            '\N{BLACK RIGHT-POINTING TRIANGLE}'),
     '.':   ('*', '\N{RING OPERATOR}'),
 }
 
