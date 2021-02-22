@@ -38,3 +38,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20902`: Incorrect inequality solving: False returned instead of answer
 * :sympyissue:`20941`: Fails to Solve Definite Integral
 * :sympyissue:`20973`: cancel raises PolynomialError for exp(1+O(x))
+* :sympyissue:`20985`: TypeErrors appearing for simple plynomial manipulations (did not happen in v1.6.1)

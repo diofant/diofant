@@ -4,7 +4,7 @@ import functools
 
 import pytest
 
-from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
+from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      ComputationFailed, Derivative, DomainError, Eq,
                      ExactQuotientFailed, Expr, FlagError, Float,
                      GeneratorsError, GeneratorsNeeded, GroebnerBasis, I,
@@ -3157,3 +3157,7 @@ def test_sympyissue_20640():
 
 def test_sympyissue_20973():
     assert cancel(exp(1 + O(x))) == exp(1)*exp(O(x))
+
+
+def test_sympyissue_20985():
+    assert degree(1.0 + I*x/y, domain=CC.frac_field(y)) == 1
