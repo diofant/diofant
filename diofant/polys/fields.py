@@ -190,6 +190,9 @@ class FractionField(Field, CompositeDomain):
     def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
+    def _from_ComplexField(self, a, K0):
+        return self(self.domain.convert(a, K0))
+
     def _from_PolynomialRing(self, a, K0):
         try:
             return self.field_new(a)

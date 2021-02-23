@@ -117,6 +117,9 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
 
+    def is_normal(self, element):
+        return True
+
 
 _complexes_cache: dict[tuple, ComplexField] = {}
 

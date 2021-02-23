@@ -4,12 +4,12 @@ import functools
 
 import pytest
 
-from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
+from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      ComputationFailed, Derivative, DomainError, Eq,
                      ExactQuotientFailed, Expr, FlagError, Float,
                      GeneratorsError, GeneratorsNeeded, GroebnerBasis, I,
                      Integer, Integral, MatrixSymbol, Mul,
-                     MultivariatePolynomialError, OptionError, Piecewise,
+                     MultivariatePolynomialError, O, OptionError, Piecewise,
                      PolificationFailed, Poly, PolynomialError, PurePoly,
                      Rational, RealField, RootOf, Sum, Symbol, Tuple,
                      UnificationFailed, cancel, cofactors, compose, content,
@@ -3153,3 +3153,11 @@ def test_sympyissue_20640():
     assert div(p, p0) == (Integer(1).as_poly(x, y, field=True),
                           (x**2).as_poly(x, y, field=True))
     assert div(p.as_expr(), p0.as_expr(), field=True) == (1, x**2)
+
+
+def test_sympyissue_20973():
+    assert cancel(exp(1 + O(x))) == exp(1)*exp(O(x))
+
+
+def test_sympyissue_20985():
+    assert degree(1.0 + I*x/y, domain=CC.frac_field(y)) == 1
