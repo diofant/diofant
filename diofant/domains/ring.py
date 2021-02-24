@@ -1,4 +1,4 @@
-"""Implementation of :class:`Ring` class."""
+"""Implementation of :class:`CommutativeRing` class."""
 
 import abc
 
@@ -6,7 +6,7 @@ from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
 
-class Ring(Domain):
+class CommutativeRing(Domain):
     """Represents a ring domain."""
 
     is_Ring = True
