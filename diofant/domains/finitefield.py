@@ -12,11 +12,11 @@ from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
 from .quotientring import QuotientRingElement
-from .ring import Ring
+from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
 
-class FiniteRing(Ring, SimpleDomain):
+class FiniteRing(CommutativeRing, SimpleDomain):
     """General class for quotient rings over integers."""
 
     is_Numerical = True

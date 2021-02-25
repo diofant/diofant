@@ -13,7 +13,7 @@ from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
-from ..domains.ring import Ring
+from ..domains.ring import CommutativeRing
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
 from .euclidtools import _GCD
@@ -71,7 +71,7 @@ def _parse_symbols(symbols):
                           'Symbols or expressions')
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, _SQF, _Factor, _test_polys):
+class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True

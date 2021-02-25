@@ -8,11 +8,11 @@ from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
                           gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_lcm,
                           gmpy_sqrt, python_factorial, python_gcd,
                           python_gcdex, python_lcm, python_sqrt)
-from .ring import Ring
+from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
 
-class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
+class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     """General class for integer rings."""
 
     rep = 'ZZ'

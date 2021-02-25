@@ -1,9 +1,9 @@
 """Implementation of :class:`Field` class."""
 
-from .ring import Ring
+from .ring import CommutativeRing
 
 
-class Field(Ring):
+class Field(CommutativeRing):
     """Represents a field domain."""
 
     is_Field = True
