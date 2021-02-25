@@ -17,6 +17,7 @@ Compatibility breaks
 * Former submodule ``diofant.polys.polyconfig`` now is :mod:`diofant.config`, see :pull:`1115`.
 * Drop support for ``DIOFANT_DEBUG`` environment variable, see :pull:`1115`.
 * Renamed ``Ring`` as :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`1123`.
+* Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 
 Minor changes
 =============
