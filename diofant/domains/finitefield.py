@@ -16,7 +16,7 @@ from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
 
-class FiniteRing(CommutativeRing, SimpleDomain):
+class IntegerModRing(CommutativeRing, SimpleDomain):
     """General class for quotient rings over integers."""
 
     is_Numerical = True
@@ -35,7 +35,7 @@ class FiniteRing(CommutativeRing, SimpleDomain):
         obj.mod = mod
         obj.order = order
 
-        obj.rep = f'FiniteRing({obj.order})'
+        obj.rep = f'IntegerModRing({obj.order})'
 
         try:
             obj.dtype = _modular_integer_cache[key]
@@ -102,7 +102,7 @@ class FiniteRing(CommutativeRing, SimpleDomain):
         return True
 
 
-class FiniteField(Field, FiniteRing):
+class FiniteField(Field, IntegerModRing):
     """General class for finite fields."""
 
     is_FiniteField = True
@@ -138,7 +138,7 @@ class FiniteField(Field, FiniteRing):
 
         key = cls, order, dom, mod, modulus
 
-        obj = super(FiniteRing, cls).__new__(cls)  # pylint: disable=bad-super-call
+        obj = super(IntegerModRing, cls).__new__(cls)  # pylint: disable=bad-super-call
 
         obj.domain = dom
         obj.mod = mod
@@ -174,17 +174,17 @@ class FiniteField(Field, FiniteRing):
         return self.mod
 
 
-_modular_integer_cache: dict[tuple, FiniteRing] = {}
+_modular_integer_cache: dict[tuple, IntegerModRing] = {}
 
 
-class PythonFiniteRing(FiniteRing):
+class PythonIntegerModRing(IntegerModRing):
     """Quotient ring based on Python's integers."""
 
     def __new__(cls, order):
         return super().__new__(cls, order, PythonIntegerRing())
 
 
-class GMPYFiniteRing(FiniteRing):
+class GMPYIntegerModRing(IntegerModRing):
     """Quotient ring based on GMPY's integers."""
 
     def __new__(cls, order):
