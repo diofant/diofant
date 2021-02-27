@@ -30,7 +30,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U pip setuptools
-        pip install -U https://github.com/kataev/flake8-rst/archive/master.zip
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571
         pip install git+https://github.com/fredrik-johansson/mpmath.git@7db68c5
