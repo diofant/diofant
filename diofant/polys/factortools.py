@@ -1396,7 +1396,7 @@ class _Factor:
         domain = self.domain
 
         n, q = f.degree(), domain.order
-        k = math.ceil(math.sqrt(n//2))
+        k = math.isqrt(n//2 - 1) + 1 if n > 1 else 0
         x = self.gens[0]
 
         h = pow(x, q, f)
