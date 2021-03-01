@@ -399,6 +399,33 @@ _ring_cache: dict[tuple, PolynomialRing] = {}
 class PolyElement(DomainElement, CantSympify, dict):
     """Element of multivariate distributed polynomial ring.
 
+    Polynomial element is mutable, until the hash is computed, e.g.
+    when the polynomial was added to the :class:`set`.
+
+    If one is interested in preserving a polynomial, and one plans
+    to use inplace operations, one can copy the polynomial first.
+
+    Examples
+    ========
+
+    >>> _, x, y = ring('x y', ZZ)
+
+    >>> p = (x + y)**2
+    >>> p1 = p.copy()
+    >>> p2 = p
+
+    >>> p[(0, 0)] = 3
+    >>> p1
+    x**2 + 2*x*y + y**2
+    >>> p2
+    x**2 + 2*x*y + y**2 + 3
+
+    >>> _ = hash(p)
+    >>> p[(1, 1)] = 2
+    Traceback (most recent call last):
+    ...
+    RuntimeError: ... Polynomial element ... can't be modified ...
+
     See Also
     ========
 
@@ -413,11 +440,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     _hash = None
 
     def __hash__(self):
-        # XXX: This computes a hash of a dictionary, but currently we don't
-        # protect dictionary from being changed so any use site modifications
-        # will make hashing go wrong. Use this feature with caution until we
-        # figure out how to make a safe API without compromising speed of this
-        # low-level class.
         _hash = self._hash
         if _hash is None:
             self._hash = _hash = hash((self.ring, frozenset(self.items())))
@@ -427,28 +449,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.parent.__call__, (dict(self),)
 
     def copy(self):
-        """Return a copy of polynomial self.
-
-        Polynomials are mutable; if one is interested in preserving
-        a polynomial, and one plans to use inplace operations, one
-        can copy the polynomial. This method makes a shallow copy.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> p = (x + y)**2
-        >>> p1 = p.copy()
-        >>> p2 = p
-        >>> p[(0, 0)] = 3
-        >>> p
-        x**2 + 2*x*y + y**2 + 3
-        >>> p1
-        x**2 + 2*x*y + y**2
-        >>> p2
-        x**2 + 2*x*y + y**2 + 3
-
-        """
+        """Return a shallow copy of self."""
         return self.__class__(self)
 
     def set_ring(self, new_ring):
@@ -520,6 +521,9 @@ class PolyElement(DomainElement, CantSympify, dict):
                 del self[k]
 
     def __setitem__(self, key, item):
+        if self._hash is not None:
+            raise RuntimeError(f"Polynomial element {self} can't be"
+                               ' modified anymore.')
         if not isinstance(key, Monomial):
             key = Monomial(key)
         super().__setitem__(key, item)
