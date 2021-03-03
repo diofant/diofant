@@ -42,3 +42,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20941`: Fails to Solve Definite Integral
 * :sympyissue:`20973`: cancel raises PolynomialError for exp(1+O(x))
 * :sympyissue:`20985`: TypeErrors appearing for simple plynomial manipulations (did not happen in v1.6.1)
+* :sympyissue:`21031`: Limit of "limit (((1+x)**(1/x)-(1+2*x)**(1/(2*x)))/asin (x),x,0)" is wrong with v1.7.1
