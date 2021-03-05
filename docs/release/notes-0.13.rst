@@ -45,3 +45,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20985`: TypeErrors appearing for simple plynomial manipulations (did not happen in v1.6.1)
 * :sympyissue:`21031`: Limit of "limit (((1+x)**(1/x)-(1+2*x)**(1/(2*x)))/asin (x),x,0)" is wrong with v1.7.1
 * :sympyissue:`21034`: (Integration) regressions?
+* :sympyissue:`21038`: Incorrect computation of a basic limit, regression from 1.6.2 to 1.7.1

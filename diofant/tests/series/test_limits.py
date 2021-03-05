@@ -806,3 +806,7 @@ def test_sympyissue_20704():
 def test_sympyissue_21031():
     assert limit(((1 + x)**(1/x) -
                   (1 + 2*x)**(1/(2*x)))/asin(x), x, 0) == E/2
+
+
+def test_sympyissue_21038():
+    assert limit(sin(pi*x)/(3*x - 12), x, 4) == pi/3
