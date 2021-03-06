@@ -1344,3 +1344,10 @@ def test_sympyissue_21034():
     assert (f1.integrate(x).diff(x) - f1).simplify() == 0
     assert (f2.integrate(x).diff(x) -
             f2).simplify().rewrite(exp).simplify() == 0
+
+
+def test_sympyissue_21041():
+    eq = sin(k*x)*exp(-x**2)
+
+    assert integrate(eq.subs({k: 2}),
+                     (x, 0, oo)) == -I*sqrt(pi)*erf(I)/(2*E)
