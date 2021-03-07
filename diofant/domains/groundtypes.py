@@ -4,14 +4,14 @@ import builtins
 import fractions
 from math import factorial as python_factorial  # noqa: F401
 from math import gcd as python_gcd  # noqa: F401
+from math import isqrt as python_sqrt  # noqa: F401
+from math import lcm as python_lcm  # noqa: F401
 
 from ..core.compatibility import HAS_GMPY
 from ..core.numbers import Float as DiofantReal  # noqa: F401
 from ..core.numbers import Integer as DiofantInteger  # noqa: F401
 from ..core.numbers import Rational as DiofantRational  # noqa: F401
 from ..core.numbers import igcdex as python_gcdex  # noqa: F401
-from ..core.numbers import ilcm as python_lcm  # noqa: F401
-from ..core.power import isqrt as python_sqrt  # noqa: F401
 
 
 PythonInteger = builtins.int

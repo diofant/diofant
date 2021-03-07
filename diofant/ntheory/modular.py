@@ -1,8 +1,8 @@
 import functools
+import math
 
 import mpmath
 
-from ..core import igcd, prod
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from .primetest import isprime
@@ -81,7 +81,7 @@ def crt(M, U, symmetric=False, check=True):
         M = list(map(as_int, M))
         U = list(map(as_int, U))
 
-    p = prod(M, start=ZZ.one)
+    p = math.prod(M, start=ZZ.one)
     v = ZZ.zero
 
     for u, m in zip(U, M):
@@ -90,7 +90,7 @@ def crt(M, U, symmetric=False, check=True):
         v += e*(u*s % m)
 
     result = v % p
-    mm = prod(M)
+    mm = math.prod(M)
 
     if check:
         if not all(v % m == result % m for v, m in zip(U, M)):
@@ -118,7 +118,7 @@ def crt1(M):
     from ..domains import ZZ
 
     E, S = [], []
-    p = prod(M, start=ZZ.one)
+    p = math.prod(M, start=ZZ.one)
 
     for m in M:
         E.append(p // m)
@@ -215,7 +215,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         a1, m1 = c1
         a2, m2 = c2
         a, b, c = m1, a2 - a1, m2
-        g = functools.reduce(igcd, [a, b, c])
+        g = functools.reduce(math.gcd, [a, b, c])
         a, b, c = [i//g for i in [a, b, c]]
         if a != 1:
             inv_a, _, g = igcdex(a, c)

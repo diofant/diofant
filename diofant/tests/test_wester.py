@@ -6,6 +6,7 @@ See also http://math.unm.edu/~wester/cas_review.html for detailed output of
 each tested system.
 """
 import itertools
+import math
 
 import pytest
 
@@ -26,15 +27,14 @@ from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
                      exp, expand, expand_func, eye, factor, factorial,
                      factorial2, factorint, fibonacci, floor,
                      fourier_transform, gamma, gcd, groebner, hessian, hyper,
-                     hyperexpand, igcd, im, integrate,
-                     inverse_laplace_transform, laplace_transform,
-                     legendre_poly, limit, log, logcombine, maximize,
-                     mellin_transform, minimize, nan, npartitions, oo, pi,
-                     polygamma, polylog, powdenest, powsimp, primerange,
-                     primitive, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, root, rsolve,
-                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
-                     sqrtdenest, summation, symbols, tan, tanh, totient,
+                     hyperexpand, im, integrate, inverse_laplace_transform,
+                     laplace_transform, legendre_poly, limit, log, logcombine,
+                     maximize, mellin_transform, minimize, nan, npartitions,
+                     oo, pi, polygamma, polylog, powdenest, powsimp,
+                     primerange, primitive, primitive_root, product, radsimp,
+                     re, reduce_inequalities, residue, resultant, rf, root,
+                     rsolve, sec, series, sign, simplify, sin, sinh, solve,
+                     sqrt, sqrtdenest, summation, symbols, tan, tanh, totient,
                      trigsimp, trunc, wronskian, zeta, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.functions.combinatorial.numbers import stirling
@@ -100,7 +100,7 @@ def test_C8():
 
 
 def test_C9():
-    assert igcd(1776, 1554, 5698) == 74
+    assert math.gcd(1776, 1554, 5698) == 74
 
 
 def test_C10():

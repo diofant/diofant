@@ -96,51 +96,6 @@ def _str_to_Decimal_dps(s):
         return num, len(num.as_tuple().digits)
 
 
-@cacheit
-def igcd(*args):
-    """Computes positive integer greatest common divisor.
-
-    Examples
-    ========
-
-    >>> igcd(2, 4)
-    2
-    >>> igcd(5, 10, 15)
-    5
-
-    """
-    args = map(as_int, args)
-    a = next(args)
-    for b in args:
-        if a == 1:
-            break
-        a = math.gcd(a, b)
-    return a
-
-
-def ilcm(*args):
-    """Computes integer least common multiple.
-
-    Examples
-    ========
-
-    >>> ilcm(5, 10)
-    10
-    >>> ilcm(7, 3)
-    21
-    >>> ilcm(5, 10, 15)
-    30
-
-    """
-    args = map(as_int, args)
-    a = next(args)
-    for b in args:
-        if a == 0:
-            break
-        a = a*b // math.gcd(a, b)
-    return a
-
-
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
@@ -1188,7 +1143,7 @@ class Rational(Number):
         if isinstance(other, Rational):
             return Rational(
                 Integer(math.gcd(self.numerator, other.numerator)),
-                Integer(ilcm(self.denominator, other.denominator)))
+                Integer(math.lcm(self.denominator, other.denominator)))
         return Number.gcd(self, other)
 
     @_sympifyit('other', NotImplemented)

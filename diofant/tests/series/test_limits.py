@@ -5,11 +5,11 @@ import itertools
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, besselk,
-                     binomial, cbrt, ceiling, cos, cot, diff, digamma, erf,
-                     erfi, exp, factorial, floor, gamma, integrate, limit, log,
-                     nan, oo, pi, polygamma, root, sign, simplify, sin, sinh,
-                     sqrt, subfactorial, symbols, tan)
+                     PoleError, Rational, Sum, Symbol, acos, asin, atan,
+                     besselk, binomial, cbrt, ceiling, cos, cot, diff, digamma,
+                     erf, erfi, exp, factorial, floor, gamma, integrate, limit,
+                     log, nan, oo, pi, polygamma, root, sign, simplify, sin,
+                     sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -801,3 +801,12 @@ def test_sympyissue_20365():
 
 def test_sympyissue_20704():
     assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, 0) == 0
+
+
+def test_sympyissue_21031():
+    assert limit(((1 + x)**(1/x) -
+                  (1 + 2*x)**(1/(2*x)))/asin(x), x, 0) == E/2
+
+
+def test_sympyissue_21038():
+    assert limit(sin(pi*x)/(3*x - 12), x, 4) == pi/3

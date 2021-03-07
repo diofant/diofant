@@ -4,7 +4,7 @@ import functools
 import math
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
-                    factor_terms, igcd, pi, symbols)
+                    factor_terms, pi, symbols)
 from ..core.mul import expand_2arg
 from ..core.sympify import sympify
 from ..domains.compositedomain import CompositeDomain
@@ -646,7 +646,7 @@ def _integer_basis(poly):
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
 
-    divs = reversed(divisors(igcd(*coeffs))[1:])
+    divs = reversed(divisors(math.gcd(*coeffs))[1:])
 
     try:
         div = next(divs)

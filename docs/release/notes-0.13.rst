@@ -19,6 +19,7 @@ Compatibility breaks
 * Renamed ``Ring`` as :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`1123`.
 * Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
+* Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
 
 Minor changes
 =============
@@ -42,3 +43,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`20941`: Fails to Solve Definite Integral
 * :sympyissue:`20973`: cancel raises PolynomialError for exp(1+O(x))
 * :sympyissue:`20985`: TypeErrors appearing for simple plynomial manipulations (did not happen in v1.6.1)
+* :sympyissue:`21031`: Limit of "limit (((1+x)**(1/x)-(1+2*x)**(1/(2*x)))/asin (x),x,0)" is wrong with v1.7.1
+* :sympyissue:`21034`: (Integration) regressions?
+* :sympyissue:`21038`: Incorrect computation of a basic limit, regression from 1.6.2 to 1.7.1
+* :sympyissue:`21041`: integrate error

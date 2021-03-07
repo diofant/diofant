@@ -1,6 +1,7 @@
 """User-friendly public interface to polynomial functions."""
 
 import functools
+import math
 import operator
 
 import mpmath
@@ -1961,8 +1962,7 @@ class Poly(Expr):
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
         elif self.domain is QQ:
             denoms = [coeff.denominator for coeff in self.all_coeffs()]
-            from ..core import ilcm
-            fac = ilcm(*denoms)
+            fac = math.lcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
             coeffs = [coeff.evalf(n, strict=False).as_real_imag()

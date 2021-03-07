@@ -6,7 +6,7 @@ import math
 import numbers
 import random
 
-from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot, prod
+from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from ..core.sympify import sympify
@@ -471,7 +471,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     first attempt, a new ``a`` will be generated randomly (using the ``seed``)
     and the process repeated.
 
-    Note: the value of M is lcm(1..B) = reduce(ilcm, range(2, B + 1)).
+    Note: the value of M is lcm(1..B) = reduce(lcm, range(2, B + 1)).
 
     A search is made for factors next to even numbers having a power smoothness
     less than ``B``. Choosing a larger B increases the likelihood of finding a
@@ -510,7 +510,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
         >>> M = 1
         >>> for i in range(2, 256):
-        ...     M = ilcm(M, i)
+        ...     M = math.lcm(M, i)
         ...
         >>> {math.gcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
         ...  math.gcd(pow(a, M, n) - 1, n) != n}
@@ -1600,4 +1600,4 @@ def square_factor(a):
 
     """
     f = a if isinstance(a, dict) else factorint(a)
-    return prod(p**(e//2) for p, e in f.items())
+    return math.prod(p**(e//2) for p, e in f.items())

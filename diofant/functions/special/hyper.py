@@ -1,11 +1,12 @@
 """Hypergeometric and Meijer G-functions."""
 
 import functools
+import math
 
 import mpmath
 
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, Tuple, ilcm, oo, pi, zoo)
+                     Ne, Rational, Tuple, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
                 sin, sinh, sqrt)
@@ -585,14 +586,14 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return functools.reduce(ilcm, (x.denominator for x in l), 1)
+            return functools.reduce(math.lcm, (x.denominator for x in l), 1)
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)
         if p == q:
             if beta == oo or alpha == oo:
                 return oo
-            return 2*pi*ilcm(alpha, beta)
+            return 2*pi*math.lcm(alpha, beta)
         elif p < q:
             return 2*pi*beta
         else:

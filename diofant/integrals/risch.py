@@ -25,10 +25,10 @@ from the names used in Bronstein's book.
 """
 
 import functools
+import math
 
 from ..abc import z
-from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, ilcm, oo,
-                    sympify)
+from ..core import Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, oo, sympify
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
@@ -91,8 +91,8 @@ def integer_powers(exprs):
 
     newterms = {}
     for term in terms:
-        common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in
-                                               terms[term]])
+        common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
+                                                   terms[term]])
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults

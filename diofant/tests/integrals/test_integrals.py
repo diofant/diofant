@@ -1334,3 +1334,20 @@ def test_sympyissue_20360():
 
 def test_sympyissue_20941():
     assert integrate(x**2*sqrt(1 - x**2), (x, 0, 1)) == pi/16
+
+
+@pytest.mark.slow
+def test_sympyissue_21034():
+    f1 = x*(-x**4/asin(5)**4 - x*sinh(x + log(asin(5))) + 5)
+    f2 = (x + cosh(cos(4)))/(x*(x + 1/(12*x)))
+
+    assert (f1.integrate(x).diff(x) - f1).simplify() == 0
+    assert (f2.integrate(x).diff(x) -
+            f2).simplify().rewrite(exp).simplify() == 0
+
+
+def test_sympyissue_21041():
+    eq = sin(k*x)*exp(-x**2)
+
+    assert integrate(eq.subs({k: 2}),
+                     (x, 0, oo)) == -I*sqrt(pi)*erf(I)/(2*E)

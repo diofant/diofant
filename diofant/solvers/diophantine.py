@@ -1,12 +1,11 @@
 import math
 
-from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms, igcd,
-                    ilcm, integer_nthroot, oo, symbols, sympify)
+from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
+                    integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
-from ..core.power import isqrt
 from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
@@ -49,9 +48,9 @@ def _sorted_tuple(*i):
 
 def _remove_gcd(*x):
     try:
-        g = igcd(*x)
+        g = math.gcd(*x)
         return tuple(i//g for i in x)
-    except ValueError:
+    except (TypeError, ValueError):
         return x
 
 
@@ -807,8 +806,8 @@ def _diop_quadratic(var, coeff, t):
             a = A // g
             c = C // g
             e = sign(B/A)
-            sqa = isqrt(a)
-            sqc = isqrt(c)
+            sqa = math.isqrt(a)
+            sqc = math.isqrt(c)
             _c = e*sqc*D - sqa*E
             if not _c:
                 z = symbols('z', extended_real=True)
@@ -897,7 +896,7 @@ def _diop_quadratic(var, coeff, t):
                     sol.add(tuple(s))
 
             else:
-                L = ilcm(*[_.denominator for _ in P[:4] + Q[:2]])
+                L = math.lcm(*[_.denominator for _ in P[:4] + Q[:2]])
 
                 k = 1
 
@@ -2061,7 +2060,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
     y_0 = reconstruct(a_1, c_1, y_0)
     z_0 = reconstruct(a_1, b_1, z_0)
 
-    sq_lcm = ilcm(sqf_of_a, sqf_of_b, sqf_of_c)
+    sq_lcm = math.lcm(sqf_of_a, sqf_of_b, sqf_of_c)
 
     x_0 = abs(x_0*sq_lcm//sqf_of_a)
     y_0 = abs(y_0*sq_lcm//sqf_of_b)
@@ -2440,10 +2439,10 @@ def _diop_general_pythagorean(var, coeff, t):
     lcm = 1
     for i, v in enumerate(var):
         if i == index or (index > 0 and i == 0) or (index == 0 and i == 1):
-            lcm = ilcm(lcm, sqrt(abs(coeff[v**2])))
+            lcm = math.lcm(lcm, sqrt(abs(coeff[v**2])))
         else:
             s = sqrt(coeff[v**2])
-            lcm = ilcm(lcm, s if _odd(s) else s//2)
+            lcm = math.lcm(lcm, s if _odd(s) else s//2)
 
     for i, v in enumerate(var):
         sol[i] = (lcm*sol[i]) / sqrt(abs(coeff[v**2]))

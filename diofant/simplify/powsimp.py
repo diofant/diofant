@@ -1,8 +1,9 @@
 import functools
+import math
 from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms, prod)
+                    count_ops, expand_log, expand_mul, factor_terms)
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..core.sympify import sympify
@@ -458,7 +459,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                     if e.is_Add:
                         return sum(_terms(ai) for ai in e.args)
                     if e.is_Mul:
-                        return prod([_terms(mi) for mi in e.args])
+                        return math.prod(_terms(mi) for mi in e.args)
                     return 1
                 xnew_base = expand_mul(new_base, deep=False)
                 if len(Add.make_args(xnew_base)) < _terms(new_base):

@@ -1,6 +1,7 @@
 """Integral Transforms."""
 
 import functools
+import math
 from itertools import repeat
 
 from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
@@ -449,7 +450,6 @@ def _rewrite_gamma(f, s, a, b):
     (([], []), ([], []), 1/2, 1, 8)
 
     """
-    from ..core import igcd, ilcm
     from ..functions import cos, cot, exp_polar, gamma, re, sin, tan
     from ..polys import Poly, RootOf, roots
 
@@ -514,14 +514,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
-    s_multiplier = common_coefficient/functools.reduce(ilcm, [Integer(x.denominator)
-                                                              for x in s_multipliers], Integer(1))
+    s_multiplier = common_coefficient/functools.reduce(math.lcm, [Integer(x.denominator)
+                                                                  for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * functools.reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
+                * functools.reduce(math.gcd, [Integer(x.numerator) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)

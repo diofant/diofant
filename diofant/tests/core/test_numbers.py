@@ -1,6 +1,5 @@
 import decimal
 import fractions
-from math import sqrt as _sqrt
 
 import mpmath
 import pytest
@@ -8,12 +7,11 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     comp, cos, exp, factorial, false, igcd, ilcm,
-                     integer_digits, integer_nthroot, latex, log, mod_inverse,
-                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, integer_digits,
+                     integer_nthroot, latex, log, mod_inverse, nan, nextprime,
+                     oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import igcdex, mpf_norm
-from diofant.core.power import isqrt
 
 
 __all__ = ()
@@ -169,44 +167,6 @@ def test_divmod():
     assert divmod(Integer(4), Float(-2.1)) == divmod(4, -2.1)
     f = fractions.Fraction(-31, 10)
     assert divmod(Integer(4), Rational(f)) == divmod(4, f)
-
-
-def test_igcd():
-    assert igcd(0, 0) == 0
-    assert igcd(0, 1) == 1
-    assert igcd(1, 0) == 1
-    assert igcd(0, 7) == 7
-    assert igcd(7, 0) == 7
-    assert igcd(7, 1) == 1
-    assert igcd(1, 7) == 1
-    assert igcd(-1, 0) == 1
-    assert igcd(0, -1) == 1
-    assert igcd(-1, -1) == 1
-    assert igcd(-1, 7) == 1
-    assert igcd(7, -1) == 1
-    assert igcd(8, 2) == 2
-    assert igcd(4, 8) == 4
-    assert igcd(8, 16) == 8
-    assert igcd(7, -3) == 1
-    assert igcd(-7, 3) == 1
-    assert igcd(-7, -3) == 1
-    assert igcd(*[10, 20, 30]) == 10
-    pytest.raises(ValueError, lambda: igcd(45.1, 30))
-    pytest.raises(ValueError, lambda: igcd(45, 30.1))
-
-
-def test_ilcm():
-    assert ilcm(0, 0) == 0
-    assert ilcm(1, 0) == 0
-    assert ilcm(0, 1) == 0
-    assert ilcm(1, 1) == 1
-    assert ilcm(2, 1) == 2
-    assert ilcm(8, 2) == 8
-    assert ilcm(8, 6) == 24
-    assert ilcm(8, 7) == 56
-    assert ilcm(*[10, 20, 30]) == 60
-    pytest.raises(ValueError, lambda: ilcm(8.1, 7))
-    pytest.raises(ValueError, lambda: ilcm(8, 7.1))
 
 
 def test_igcdex():
@@ -861,22 +821,6 @@ def test_powers():
 def test_integer_nthroot_overflow():
     assert integer_nthroot(10**(50*50), 50) == (10**50, True)
     assert integer_nthroot(10**100000, 10000) == (10**10, True)
-
-
-def test_isqrt():
-    pytest.raises(ValueError, lambda: isqrt(-1))
-
-    assert isqrt(0) == 0
-
-    limit = 17984395633462800708566937239551
-    assert int(_sqrt(limit)) == integer_nthroot(limit, 2)[0]
-    assert int(_sqrt(limit + 1)) != integer_nthroot(limit + 1, 2)[0]
-    assert isqrt(limit + 1) == integer_nthroot(limit + 1, 2)[0]
-    assert isqrt(limit + 1 + Rational(1, 2)) == integer_nthroot(limit + 1, 2)[0]
-
-    # issue sympy/sympy#17034
-    assert isqrt(4503599761588224) == 67108864
-    assert isqrt(9999999999999999) == 99999999
 
 
 def test_powers_Integer():

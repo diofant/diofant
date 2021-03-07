@@ -26,6 +26,7 @@ The main references for this are:
     Gordon and Breach Science Publisher
 """
 
+import math
 from collections import defaultdict
 
 from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
@@ -852,8 +853,6 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     meijerg(((), ()), ((m/2,), (-m/2,)), t/4)
 
     """
-    from ..core.numbers import ilcm
-
     def pb(g):
         a, b = _get_coeff_exp(g.argument, x)
         per = g.get_period()
@@ -873,7 +872,7 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
         return
     m1, n1 = b1.numerator, b1.denominator
     m2, n2 = b2.numerator, b2.denominator
-    tau = ilcm(m1*n2, m2*n1)
+    tau = math.lcm(m1*n2, m2*n1)
     r1 = tau//(m1*n2)
     r2 = tau//(m2*n1)
 

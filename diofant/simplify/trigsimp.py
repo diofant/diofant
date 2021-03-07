@@ -1,9 +1,10 @@
 import functools
+import math
 from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, Rational, Wild, cacheit, count_ops, expand,
-                    expand_mul, factor_terms, igcd, symbols)
+                    expand_mul, factor_terms, symbols)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
 from ..core.strategies import greedy, identity
@@ -289,7 +290,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
             # from this list.
             fns = [x[1] for x in val]
             val = [x[0] for x in val]
-            gcd = functools.reduce(igcd, val)
+            gcd = functools.reduce(math.gcd, val)
             terms = [(fn, v/gcd) for (fn, v) in zip(fns, val)]
             fs = set(funcs + fns)
             for c, s, t in ([cos, sin, tan], [cosh, sinh, tanh]):
