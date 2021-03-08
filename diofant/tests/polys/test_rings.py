@@ -3115,3 +3115,18 @@ def test__gf_random():
 
         assert f.monic() == f
         assert f.is_irreducible is True
+
+
+def test_PolyElement__setitem__():
+    R, x = ring('x', ZZ)
+
+    p = x + 1
+    p[(2,)] = 3
+
+    assert p == 3*x**2 + x + 1
+
+    p_set = {p}
+    p_set.pop()
+
+    with pytest.raises(RuntimeError):
+        p[(3,)] = 1

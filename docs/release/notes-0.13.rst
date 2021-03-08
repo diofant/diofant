@@ -24,6 +24,8 @@ Compatibility breaks
 Minor changes
 =============
 
+* Protect hashed :class:`~diofant.polys.rings.PolyElement`'s from modifications, see :pull:`1033`.
+
 Developer changes
 =================
 

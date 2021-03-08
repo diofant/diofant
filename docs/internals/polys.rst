@@ -39,6 +39,7 @@ Sparse polynomials are represented as dictionaries.
 
 .. autoclass:: PolyElement
    :members:
+   :special-members:
 
 .. currentmodule:: diofant.polys.univar
 
