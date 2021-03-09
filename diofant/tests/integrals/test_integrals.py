@@ -2,13 +2,13 @@ import pytest
 
 from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
                      Expr, Function, I, Integral, Interval, Lambda, LambertW,
-                     Matrix, Max, Min, Ne, O, Piecewise, Poly, Rational, Si,
-                     Sum, Symbol, Tuple, acos, acosh, asin, asinh, atan, cbrt,
-                     cos, cosh, diff, erf, erfi, exp, expand_func, expand_mul,
-                     factor, fresnels, gamma, im, integrate, log, lowergamma,
-                     meijerg, nan, oo, pi, polar_lift, polygamma, re, sign,
-                     simplify, sin, sinh, sqrt, sstr, symbols, sympify, tan,
-                     tanh, trigsimp)
+                     Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly, Rational,
+                     Si, Sum, Symbol, Tuple, acos, acosh, asin, asinh, atan,
+                     cbrt, cos, cosh, diff, erf, erfi, exp, expand_func,
+                     expand_mul, factor, fresnels, gamma, im, integrate, log,
+                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
+                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
+                     sympify, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -1351,3 +1351,8 @@ def test_sympyissue_21041():
 
     assert integrate(eq.subs({k: 2}),
                      (x, 0, oo)) == -I*sqrt(pi)*erf(I)/(2*E)
+
+
+def test_sympyissue_21063():
+    assert integrate(exp(-x**2),
+                     (x, Mul(-1, oo, evaluate=False), oo)) == sqrt(pi)
