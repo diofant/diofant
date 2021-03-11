@@ -8,8 +8,11 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.9]
-        coverage: [false, true]
+        python-version: [3.9, 3.10-dev]
+        coverage: [false]
+        include:
+          - python-version: 3.9
+            coverage: true
     runs-on: ubuntu-latest
     env:
       TERM: xterm
