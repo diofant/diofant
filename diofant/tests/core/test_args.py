@@ -347,7 +347,7 @@ def test_diofant__core__function__AppliedUndef():
 
 
 def test_diofant__core__function__Derivative():
-    assert _test_args(Derivative(2, x, y, 3))
+    assert _test_args(Derivative(2, x, (y, 3)))
 
 
 def test_diofant__core__function__Function():

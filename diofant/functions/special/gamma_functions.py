@@ -502,22 +502,22 @@ class polygamma(Function):
 
     >>> diff(polygamma(0, x), x)
     polygamma(1, x)
-    >>> diff(polygamma(0, x), x, 2)
+    >>> diff(polygamma(0, x), (x, 2))
     polygamma(2, x)
-    >>> diff(polygamma(0, x), x, 3)
+    >>> diff(polygamma(0, x), (x, 3))
     polygamma(3, x)
     >>> diff(polygamma(1, x), x)
     polygamma(2, x)
-    >>> diff(polygamma(1, x), x, 2)
+    >>> diff(polygamma(1, x), (x, 2))
     polygamma(3, x)
     >>> diff(polygamma(2, x), x)
     polygamma(3, x)
-    >>> diff(polygamma(2, x), x, 2)
+    >>> diff(polygamma(2, x), (x, 2))
     polygamma(4, x)
 
     >>> diff(polygamma(n, x), x)
     polygamma(n + 1, x)
-    >>> diff(polygamma(n, x), x, 2)
+    >>> diff(polygamma(n, x), (x, 2))
     polygamma(n + 2, x)
 
     We can rewrite polygamma functions in terms of harmonic numbers:

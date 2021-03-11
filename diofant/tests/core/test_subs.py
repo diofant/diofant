@@ -442,8 +442,8 @@ def test_derivative_subs2():
     assert (Derivative(f, x, y, z).subs({Derivative(f, x, z): g}) == Derivative(g, y))
     assert (Derivative(f, x, y, z).subs({Derivative(f, z, y): g}) == Derivative(g, x))
     assert (Derivative(f, x, y, z).subs({Derivative(f, z, y, x): g}) == g)
-    assert (Derivative(sin(x), x, 2).subs({Derivative(sin(x), f_func(x)): g_func}) ==
-            Derivative(sin(x), x, 2))
+    assert (Derivative(sin(x), (x, 2)).subs({Derivative(sin(x), f_func(x)): g_func}) ==
+            Derivative(sin(x), (x, 2)))
 
     # issue sympy/sympy#9135
     assert (Derivative(f, x, x, y).subs({Derivative(f, y, y): g}) == Derivative(f, x, x, y))

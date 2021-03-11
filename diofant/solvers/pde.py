@@ -751,7 +751,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='add')
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
 
-    >>> eq = Eq(Derivative(u(x, t), x, 2), Derivative(u(x, t), t, 2))
+    >>> eq = Eq(Derivative(u(x, t), (x, 2)), Derivative(u(x, t), (t, 2)))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='mul')
     [Derivative(X(x), x, x)/X(x), Derivative(T(t), t, t)/T(t)]
 
@@ -851,7 +851,7 @@ def pde_separate_mul(eq, fun, sep):
 
     >>> u, X, Y = map(Function, 'uXY')
 
-    >>> eq = Eq(Derivative(u(x, y), x, 2), Derivative(u(x, y), y, 2))
+    >>> eq = Eq(Derivative(u(x, y), (x, 2)), Derivative(u(x, y), (y, 2)))
     >>> pde_separate_mul(eq, u(x, y), [X(x), Y(y)])
     [Derivative(X(x), x, x)/X(x), Derivative(Y(y), y, y)/Y(y)]
 

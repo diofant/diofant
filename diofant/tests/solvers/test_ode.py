@@ -631,22 +631,22 @@ def test_checkodesol():
     sol1 = Eq(f(x)**5 + 11*f(x) - 2*f(x) + x, 0)
     assert checkodesol(diff(sol1.lhs, x), sol1) == (True, 0)
     assert checkodesol(diff(sol1.lhs, x)*exp(f(x)), sol1) == (True, 0)
-    assert checkodesol(diff(sol1.lhs, x, 2), sol1) == (True, 0)
-    assert checkodesol(diff(sol1.lhs, x, 2)*exp(f(x)), sol1) == (True, 0)
-    assert checkodesol(diff(sol1.lhs, x, 3), sol1) == (True, 0)
-    assert checkodesol(diff(sol1.lhs, x, 3)*exp(f(x)), sol1) == (True, 0)
-    assert checkodesol(diff(sol1.lhs, x, 3), Eq(f(x), x*log(x))) == \
+    assert checkodesol(diff(sol1.lhs, (x, 2)), sol1) == (True, 0)
+    assert checkodesol(diff(sol1.lhs, (x, 2))*exp(f(x)), sol1) == (True, 0)
+    assert checkodesol(diff(sol1.lhs, (x, 3)), sol1) == (True, 0)
+    assert checkodesol(diff(sol1.lhs, (x, 3))*exp(f(x)), sol1) == (True, 0)
+    assert checkodesol(diff(sol1.lhs, (x, 3)), Eq(f(x), x*log(x))) == \
         (False, 60*x**4*((log(x) + 1)**2 + log(x))*(
             log(x) + 1)*log(x)**2 - 5*x**4*log(x)**4 - 9)
     assert checkodesol(diff(exp(f(x)) + x, x)*x, Eq(exp(f(x)) + x, 0)) == \
         (True, 0)
     assert checkodesol(diff(exp(f(x)) + x, x)*x, Eq(exp(f(x)) + x, 0),
                        solve_for_func=False) == (True, 0)
-    assert checkodesol(f(x).diff(x, 2), [Eq(f(x), C1 + C2*x),
-                                         Eq(f(x), C2 + C1*x), Eq(f(x), C1*x + C2*x**2)]) == \
+    assert checkodesol(f(x).diff((x, 2)), [Eq(f(x), C1 + C2*x),
+                                           Eq(f(x), C2 + C1*x), Eq(f(x), C1*x + C2*x**2)]) == \
         [(True, 0), (True, 0), (False, 2*C2)]
-    assert checkodesol(f(x).diff(x, 2), {Eq(f(x), C1 + C2*x),
-                                         Eq(f(x), C2 + C1*x), Eq(f(x), C1*x + C2*x**2)}) == \
+    assert checkodesol(f(x).diff((x, 2)), {Eq(f(x), C1 + C2*x),
+                                           Eq(f(x), C2 + C1*x), Eq(f(x), C1*x + C2*x**2)}) == \
         {(True, 0), (True, 0), (False, 2*C2)}
     assert checkodesol(f(x).diff(x) - 1/f(x)/2, Eq(f(x)**2, x)) == \
         [(True, 0), (True, 0)]
@@ -729,7 +729,7 @@ def test_dsolve_options():
 
 
 def test_classify_ode():
-    assert classify_ode(f(x).diff(x, 2), f(x)) == \
+    assert classify_ode(f(x).diff((x, 2)), f(x)) == \
         ('nth_linear_constant_coeff_homogeneous', 'Liouville',
          '2nd_power_series_ordinary', 'Liouville_Integral')
     assert classify_ode(f(x), f(x)) == ()
@@ -1100,12 +1100,12 @@ def test_solve_init():
     # and Subs
     init1 = {f(0): 0,
              f(x).diff(x).subs({x: 0}): 0,
-             f(L).diff(L, 2): 0,
-             f(L).diff(L, 3): 0}
+             f(L).diff((L, 2)): 0,
+             f(L).diff((L, 3)): 0}
     init2 = {f(0): 0,
              f(x).diff(x).subs({x: 0}): 0,
-             Subs(f(x).diff(x, 2), (x, L)): 0,
-             Subs(f(x).diff(x, 3), (x, L)): 0}
+             Subs(f(x).diff((x, 2)), (x, L)): 0,
+             Subs(f(x).diff((x, 3)), (x, L)): 0}
 
     solved_constants1 = solve_init(sols, funcs, constants, init1)
     solved_constants2 = solve_init(sols, funcs, constants, init2)
@@ -1556,39 +1556,39 @@ def test_nth_linear_constant_coeff_homogeneous():
     #                      Tenenbaum and Pollard, pg. 220
     a = Symbol('a', positive=True)
     k = Symbol('k', extended_real=True)
-    eq1 = f(x).diff(x, 2) + 2*f(x).diff(x)
-    eq2 = f(x).diff(x, 2) - 3*f(x).diff(x) + 2*f(x)
-    eq3 = f(x).diff(x, 2) - f(x)
-    eq4 = f(x).diff(x, 3) + f(x).diff(x, 2) - 6*f(x).diff(x)
-    eq5 = 6*f(x).diff(x, 2) - 11*f(x).diff(x) + 4*f(x)
-    eq6 = Eq(f(x).diff(x, 2) + 2*f(x).diff(x) - f(x), 0)
-    eq7 = diff(f(x), x, 3) + diff(f(x), x, 2) - 10*diff(f(x), x) - 6*f(x)
-    eq8 = f(x).diff(x, 4) - f(x).diff(x, 3) - 4*f(x).diff(x, 2) + \
+    eq1 = f(x).diff((x, 2)) + 2*f(x).diff(x)
+    eq2 = f(x).diff((x, 2)) - 3*f(x).diff(x) + 2*f(x)
+    eq3 = f(x).diff((x, 2)) - f(x)
+    eq4 = f(x).diff((x, 3)) + f(x).diff((x, 2)) - 6*f(x).diff(x)
+    eq5 = 6*f(x).diff((x, 2)) - 11*f(x).diff(x) + 4*f(x)
+    eq6 = Eq(f(x).diff((x, 2)) + 2*f(x).diff(x) - f(x), 0)
+    eq7 = diff(f(x), (x, 3)) + diff(f(x), (x, 2)) - 10*diff(f(x), x) - 6*f(x)
+    eq8 = f(x).diff((x, 4)) - f(x).diff((x, 3)) - 4*f(x).diff((x, 2)) + \
         4*f(x).diff(x)
-    eq9 = f(x).diff(x, 4) + 4*f(x).diff(x, 3) + f(x).diff(x, 2) - \
+    eq9 = f(x).diff((x, 4)) + 4*f(x).diff((x, 3)) + f(x).diff((x, 2)) - \
         4*f(x).diff(x) - 2*f(x)
-    eq10 = f(x).diff(x, 4) - a**2*f(x)
-    eq11 = f(x).diff(x, 2) - 2*k*f(x).diff(x) - 2*f(x)
-    eq12 = f(x).diff(x, 2) + 4*k*f(x).diff(x) - 12*k**2*f(x)
-    eq13 = f(x).diff(x, 4)
-    eq14 = f(x).diff(x, 2) + 4*f(x).diff(x) + 4*f(x)
-    eq15 = 3*f(x).diff(x, 3) + 5*f(x).diff(x, 2) + f(x).diff(x) - f(x)
-    eq16 = f(x).diff(x, 3) - 6*f(x).diff(x, 2) + 12*f(x).diff(x) - 8*f(x)
-    eq17 = f(x).diff(x, 2) - 2*a*f(x).diff(x) + a**2*f(x)
-    eq18 = f(x).diff(x, 4) + 3*f(x).diff(x, 3)
-    eq19 = f(x).diff(x, 4) - 2*f(x).diff(x, 2)
-    eq20 = f(x).diff(x, 4) + 2*f(x).diff(x, 3) - 11*f(x).diff(x, 2) - \
+    eq10 = f(x).diff((x, 4)) - a**2*f(x)
+    eq11 = f(x).diff((x, 2)) - 2*k*f(x).diff(x) - 2*f(x)
+    eq12 = f(x).diff((x, 2)) + 4*k*f(x).diff(x) - 12*k**2*f(x)
+    eq13 = f(x).diff((x, 4))
+    eq14 = f(x).diff((x, 2)) + 4*f(x).diff(x) + 4*f(x)
+    eq15 = 3*f(x).diff((x, 3)) + 5*f(x).diff((x, 2)) + f(x).diff(x) - f(x)
+    eq16 = f(x).diff((x, 3)) - 6*f(x).diff((x, 2)) + 12*f(x).diff(x) - 8*f(x)
+    eq17 = f(x).diff((x, 2)) - 2*a*f(x).diff(x) + a**2*f(x)
+    eq18 = f(x).diff((x, 4)) + 3*f(x).diff((x, 3))
+    eq19 = f(x).diff((x, 4)) - 2*f(x).diff((x, 2))
+    eq20 = f(x).diff((x, 4)) + 2*f(x).diff((x, 3)) - 11*f(x).diff((x, 2)) - \
         12*f(x).diff(x) + 36*f(x)
-    eq21 = 36*f(x).diff(x, 4) - 37*f(x).diff(x, 2) + 4*f(x).diff(x) + 5*f(x)
-    eq22 = f(x).diff(x, 4) - 8*f(x).diff(x, 2) + 16*f(x)
-    eq23 = f(x).diff(x, 2) - 2*f(x).diff(x) + 5*f(x)
-    eq24 = f(x).diff(x, 2) - f(x).diff(x) + f(x)
-    eq25 = f(x).diff(x, 4) + 5*f(x).diff(x, 2) + 6*f(x)
-    eq26 = f(x).diff(x, 2) - 4*f(x).diff(x) + 20*f(x)
-    eq27 = f(x).diff(x, 4) + 4*f(x).diff(x, 2) + 4*f(x)
-    eq28 = f(x).diff(x, 3) + 8*f(x)
-    eq29 = f(x).diff(x, 4) + 4*f(x).diff(x, 2)
-    eq30 = f(x).diff(x, 5) + 2*f(x).diff(x, 3) + f(x).diff(x)
+    eq21 = 36*f(x).diff((x, 4)) - 37*f(x).diff((x, 2)) + 4*f(x).diff(x) + 5*f(x)
+    eq22 = f(x).diff((x, 4)) - 8*f(x).diff((x, 2)) + 16*f(x)
+    eq23 = f(x).diff((x, 2)) - 2*f(x).diff(x) + 5*f(x)
+    eq24 = f(x).diff((x, 2)) - f(x).diff(x) + f(x)
+    eq25 = f(x).diff((x, 4)) + 5*f(x).diff((x, 2)) + 6*f(x)
+    eq26 = f(x).diff((x, 2)) - 4*f(x).diff(x) + 20*f(x)
+    eq27 = f(x).diff((x, 4)) + 4*f(x).diff((x, 2)) + 4*f(x)
+    eq28 = f(x).diff((x, 3)) + 8*f(x)
+    eq29 = f(x).diff((x, 4)) + 4*f(x).diff((x, 2))
+    eq30 = f(x).diff((x, 5)) + 2*f(x).diff((x, 3)) + f(x).diff(x)
     sol1 = Eq(f(x), C1 + C2*exp(-2*x))
     sol2 = Eq(f(x), (C1 + C2*exp(x))*exp(x))
     sol3 = Eq(f(x), C1*exp(x) + C2*exp(-x))
@@ -1722,7 +1722,7 @@ def test_nth_linear_constant_coeff_homogeneous():
 
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
     c = [C1, C2, C3, C4, C5]
-    eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
+    eq = f(x).diff((x, 5)) + 11*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x), sum(exp(x*RootOf(x**5 + 11*x - 2, i))*c[i]
                        for i in range(5)))
     assert dsolve(eq) == sol
@@ -1732,7 +1732,7 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
 @pytest.mark.slow
 def test_sympyissue_15520():
     c = [C1, C2, C3, C4, C5]
-    eq = f(x).diff(x, 5) + sqrt(3)*f(x).diff(x) - 2*f(x)
+    eq = f(x).diff((x, 5)) + sqrt(3)*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x), sum(exp(x*RootOf(x**5 + sqrt(3)*x - 2, i))*c[i]
                        for i in range(5)))
     assert dsolve(eq) == sol
@@ -1853,8 +1853,8 @@ def test_undetermined_coefficients_match():
 def test_nth_linear_constant_coeff_undetermined_coefficients():
     hint = 'nth_linear_constant_coeff_undetermined_coefficients'
     g = exp(-x)
-    f2 = f(x).diff(x, 2)
-    c = 3*f(x).diff(x, 3) + 5*f2 + f(x).diff(x) - f(x) - x
+    f2 = f(x).diff((x, 2))
+    c = 3*f(x).diff((x, 3)) + 5*f2 + f(x).diff(x) - f(x) - x
     eq1 = c - x*g
     eq2 = c - g
     # 3-27 below are from Ordinary Differential Equations,
@@ -1868,24 +1868,24 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     eq9 = f2 + f(x).diff(x) + f(x) - x**2
     eq10 = f2 - 2*f(x).diff(x) - 8*f(x) - 9*x*exp(x) - 10*exp(-x)
     eq11 = f2 - 3*f(x).diff(x) - 2*exp(2*x)*sin(x)
-    eq12 = f(x).diff(x, 4) - 2*f2 + f(x) - x + sin(x)
+    eq12 = f(x).diff((x, 4)) - 2*f2 + f(x) - x + sin(x)
     eq13 = f2 + f(x).diff(x) - x**2 - 2*x
     eq14 = f2 + f(x).diff(x) - x - sin(2*x)
     eq15 = f2 + f(x) - 4*x*sin(x)
     eq16 = f2 + 4*f(x) - x*sin(2*x)
     eq17 = f2 + 2*f(x).diff(x) + f(x) - x**2*exp(-x)
-    eq18 = f(x).diff(x, 3) + 3*f2 + 3*f(x).diff(x) + f(x) - 2*exp(-x) + \
+    eq18 = f(x).diff((x, 3)) + 3*f2 + 3*f(x).diff(x) + f(x) - 2*exp(-x) + \
         x**2*exp(-x)
     eq19 = f2 + 3*f(x).diff(x) + 2*f(x) - exp(-2*x) - x**2
     eq20 = f2 - 3*f(x).diff(x) + 2*f(x) - x*exp(-x)
     eq21 = f2 + f(x).diff(x) - 6*f(x) - x - exp(2*x)
     eq22 = f2 + f(x) - sin(x) - exp(-x)
-    eq23 = f(x).diff(x, 3) - 3*f2 + 3*f(x).diff(x) - f(x) - exp(x)
+    eq23 = f(x).diff((x, 3)) - 3*f2 + 3*f(x).diff(x) - f(x) - exp(x)
     # sin(x)**2
     eq24 = f2 + f(x) - Rational(1, 2) - cos(2*x)/2
     # exp(2*x)*sin(x)**2
-    eq25 = f(x).diff(x, 3) - f(x).diff(x) - exp(2*x)*(Rational(1, 2) - cos(2*x)/2)
-    eq26 = (f(x).diff(x, 5) + 2*f(x).diff(x, 3) + f(x).diff(x) - 2*x -
+    eq25 = f(x).diff((x, 3)) - f(x).diff(x) - exp(2*x)*(Rational(1, 2) - cos(2*x)/2)
+    eq26 = (f(x).diff((x, 5)) + 2*f(x).diff((x, 3)) + f(x).diff(x) - 2*x -
             sin(x) - cos(x))
     # sin(2*x)*sin(x), skip 3127 for now, match bug
     eq27 = f2 + f(x) - cos(x)/2 + cos(3*x)/2
@@ -2035,8 +2035,8 @@ def test_nth_linear_constant_coeff_undetermined_coefficients_imaginary_exp():
 def test_nth_linear_constant_coeff_variation_of_parameters():
     hint = 'nth_linear_constant_coeff_variation_of_parameters'
     g = exp(-x)
-    f2 = f(x).diff(x, 2)
-    c = 3*f(x).diff(x, 3) + 5*f2 + f(x).diff(x) - f(x) - x
+    f2 = f(x).diff((x, 2))
+    c = 3*f(x).diff((x, 3)) + 5*f2 + f(x).diff(x) - f(x) - x
     eq1 = c - x*g
     eq2 = c - g
     eq3 = f(x).diff(x) - 1
@@ -2045,10 +2045,10 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     eq6 = f2 - 2*f(x).diff(x) - 8*f(x) - 9*x*exp(x) - 10*exp(-x)
     eq7 = f2 + 2*f(x).diff(x) + f(x) - x**2*exp(-x)
     eq8 = f2 - 3*f(x).diff(x) + 2*f(x) - x*exp(-x)
-    eq9 = f(x).diff(x, 3) - 3*f2 + 3*f(x).diff(x) - f(x) - exp(x)
+    eq9 = f(x).diff((x, 3)) - 3*f2 + 3*f(x).diff(x) - f(x) - exp(x)
     eq10 = f2 + 2*f(x).diff(x) + f(x) - exp(-x)/x
     eq11 = f2 + f(x) - 1/sin(x)*1/cos(x)
-    eq12 = f(x).diff(x, 4) - 1/x
+    eq12 = f(x).diff((x, 4)) - 1/x
     sol1 = Eq(f(x),
               -1 - x + (C1 + C2*x - 3*x**2/32 - x**3/24)*exp(-x) + C3*exp(x/3))
     sol2 = Eq(f(x), -1 - x + (C1 + C2*x - x**2/8)*exp(-x) + C3*exp(x/3))
@@ -2102,7 +2102,7 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
 
 def test_nth_linear_constant_coeff_variation_of_parameters_coverage():
     hint = 'nth_linear_constant_coeff_variation_of_parameters'
-    eq = (f(x).diff(x, 3) - 3*f(x).diff(x, 2) + 3*f(x).diff(x) -
+    eq = (f(x).diff((x, 3)) - 3*f(x).diff((x, 2)) + 3*f(x).diff(x) -
           f(x) - exp(x)*log(x))
     sol = Eq(f(x), exp(x)*(C1 + C2*x + C3*x**2 + x**3*(6*log(x) - 11)/36))
     assert dsolve(eq, f(x), hint=hint) == sol
@@ -2113,9 +2113,9 @@ def test_nth_linear_constant_coeff_variation_of_parameters_simplify_False():
     # Wronskian if simplify=False.  If wronskian() ever gets good enough
     # to simplify the result itself, this test might fail.
     hint = 'nth_linear_constant_coeff_variation_of_parameters'
-    assert dsolve(f(x).diff(x, 5) + 2*f(x).diff(x, 3) + f(x).diff(x) -
+    assert dsolve(f(x).diff((x, 5)) + 2*f(x).diff((x, 3)) + f(x).diff(x) -
                   2*x - exp(I*x), f(x), hint + '_Integral', simplify=False) != \
-        dsolve(f(x).diff(x, 5) + 2*f(x).diff(x, 3) + f(x).diff(x) -
+        dsolve(f(x).diff((x, 5)) + 2*f(x).diff((x, 3)) + f(x).diff(x) -
                2*x - exp(I*x), f(x), hint + '_Integral', simplify=True)
 
 
@@ -2215,10 +2215,10 @@ def test_nth_order_linear_euler_eq_homogeneous():
     y = Function('y')
     our_hint = 'nth_linear_euler_eq_homogeneous'
 
-    eq = diff(f(t), t, 4)*t**4 - 13*diff(f(t), t, 2)*t**2 + 36*f(t)
+    eq = diff(f(t), (t, 4))*t**4 - 13*diff(f(t), (t, 2))*t**2 + 36*f(t)
     assert our_hint in classify_ode(eq)
 
-    eq = a*y(t) + b*t*diff(y(t), t) + c*t**2*diff(y(t), t, 2)
+    eq = a*y(t) + b*t*diff(y(t), t) + c*t**2*diff(y(t), (t, 2))
     assert our_hint in classify_ode(eq)
 
     eq = Eq(-3*diff(f(x), x)*x + 2*x**2*diff(f(x), x, x), 0)
@@ -2258,21 +2258,21 @@ def test_nth_order_linear_euler_eq_homogeneous():
     assert dsolve(eq, f(x), hint=our_hint).rhs in sols
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
-    eq = t**2*diff(y(t), t, 2) + t*diff(y(t), t) - 9*y(t)
+    eq = t**2*diff(y(t), (t, 2)) + t*diff(y(t), t) - 9*y(t)
     sol = C1*t**3 + C2*t**-3
     sols = constant_renumber(sol, 'C', 1, 3)
     assert our_hint in classify_ode(eq)
     assert dsolve(eq, y(t), hint=our_hint).rhs in (sol, sols)
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
-    eq = x**3*f(x).diff(x, 3) + f(x)
+    eq = x**3*f(x).diff((x, 3)) + f(x)
     sol1 = dsolve(eq, f(x), hint=our_hint)
     _x = sol1.atoms(RootOf).pop().poly.gen
     r0, r1, r2 = (_x**3 - 3*_x**2 + 2*_x + 1).as_poly().all_roots()
     sol0 = Eq(f(x), C1*x**r0 + C2*x**r1 + C3*x**r2)
     assert sol0 == sol1
 
-    eq = x**2*f(x).diff(x, 2) + f(x)
+    eq = x**2*f(x).diff((x, 2)) + f(x)
     sol = Eq(f(x), sqrt(x)*(C1*sin(sqrt(3)*log(x)/2) + C2*cos(sqrt(3)*log(x)/2)))
     assert dsolve(eq, f(x), hint=our_hint) == sol
 
@@ -2282,10 +2282,10 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
     a, b, c, d = symbols('a b c d', integer=True)
     our_hint = 'nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'
 
-    eq = x**4*diff(f(x), x, 4) - 13*x**2*diff(f(x), x, 2) + 36*f(x) + x
+    eq = x**4*diff(f(x), (x, 4)) - 13*x**2*diff(f(x), (x, 2)) + 36*f(x) + x
     assert our_hint in classify_ode(eq, f(x))
 
-    eq = a*x**2*diff(f(x), x, 2) + b*x*diff(f(x), x) + c*f(x) + d*log(x)
+    eq = a*x**2*diff(f(x), (x, 2)) + b*x*diff(f(x), x) + c*f(x) + d*log(x)
     assert our_hint in classify_ode(eq, f(x))
 
     eq = Eq(x**2*diff(f(x), x, x) + x*diff(f(x), x), 1)
@@ -2329,10 +2329,10 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
     a, b, c, d = symbols('a, b, c, d', integer=True)
     our_hint = 'nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'
 
-    eq = Eq(x**2*diff(f(x), x, 2) - 8*x*diff(f(x), x) + 12*f(x), x**2)
+    eq = Eq(x**2*diff(f(x), (x, 2)) - 8*x*diff(f(x), x) + 12*f(x), x**2)
     assert our_hint in classify_ode(eq, f(x))
 
-    eq = Eq(a*x**3*diff(f(x), x, 3) + b*x**2*diff(f(x), x, 2) + c*x*diff(f(x), x) + d*f(x), x*log(x))
+    eq = Eq(a*x**3*diff(f(x), (x, 3)) + b*x**2*diff(f(x), (x, 2)) + c*x*diff(f(x), x) + d*f(x), x*log(x))
     assert our_hint in classify_ode(eq, f(x))
 
     eq = Eq(x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x), x**4)
@@ -2363,7 +2363,7 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
     assert dsolve(eq, f(x), hint=our_hint).rhs in (sol, sols)
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
-    eq = x**2*f(x).diff(x, 2) + f(x) - 1
+    eq = x**2*f(x).diff((x, 2)) + f(x) - 1
     sol = Eq(f(x), sqrt(x)*(C1*sin(sqrt(3)*log(x)/2) + C2*cos(sqrt(3)*log(x)/2) + sin(sqrt(3)*log(x)/2)*Integral(2*sqrt(3)*cos(sqrt(3)*log(x)/2)/(3*x**Rational(3, 2)), x) - cos(sqrt(3)*log(x)/2)*Integral(2*sqrt(3)*sin(sqrt(3)*log(x)/2)/(3*x**Rational(3, 2)), x)))
     assert dsolve(eq, f(x), hint=our_hint + '_Integral') == sol
 
@@ -2519,7 +2519,7 @@ def test_constantsimp_take_problem():
 
 def test_sympyissue_6879():
     f = Function('f')
-    eq = Eq(Derivative(f(x), x, 2) - 2*Derivative(f(x), x) + f(x), sin(x))
+    eq = Eq(Derivative(f(x), (x, 2)) - 2*Derivative(f(x), x) + f(x), sin(x))
     sol = (C1 + C2*x)*exp(x) + cos(x)/2
     assert dsolve(eq).rhs == sol
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
@@ -2768,7 +2768,7 @@ def test_sympyissue_7081():
 
 def test_2nd_power_series_ordinary():
     C1, C2 = symbols('C1 C2')
-    eq = f(x).diff(x, 2) - x*f(x)
+    eq = f(x).diff((x, 2)) - x*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x),
                             C2*(x**3/6 + 1) + C1*x*(x**3/12 + 1) + O(x**6))
@@ -2778,26 +2778,26 @@ def test_2nd_power_series_ordinary():
                                    + O(x**6))
     assert dsolve(eq, n=2) == Eq(f(x), C2*x + C1 + O(x**2))
 
-    eq = (1 + x**2)*(f(x).diff(x, 2)) + 2*x*(f(x).diff(x)) - 2*f(x)
+    eq = (1 + x**2)*(f(x).diff((x, 2))) + 2*x*(f(x).diff(x)) - 2*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/3 + x**2 + 1) + C1*x
                             + O(x**6))
 
-    eq = f(x).diff(x, 2) + x*(f(x).diff(x)) + f(x)
+    eq = f(x).diff((x, 2)) + x*(f(x).diff(x)) + f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x), C2*(
         x**4/8 - x**2/2 + 1) + C1*x*(-x**2/3 + 1) + O(x**6))
     # for coverage
-    assert classify_ode(f(x).diff(x, 2) +
+    assert classify_ode(f(x).diff((x, 2)) +
                         sin(x)*(f(x).diff(x)) + f(x)) == ()
 
-    eq = f(x).diff(x, 2) + f(x).diff(x) - x*f(x)
+    eq = f(x).diff((x, 2)) + f(x).diff(x) - x*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x), C2*(
         -x**4/24 + x**3/6 + 1) + C1*x*(x**3/24 + x**2/6 - x/2
                                        + 1) + O(x**6))
 
-    eq = f(x).diff(x, 2) + x*f(x)
+    eq = f(x).diff((x, 2)) + x*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq, n=7) == Eq(f(x), C2*(
         x**6/180 - x**3/6 + 1) + C1*x*(-x**3/12 + 1) + O(x**7))
@@ -2805,31 +2805,31 @@ def test_2nd_power_series_ordinary():
 
 def test_2nd_power_series_regular():
     C1, C2 = symbols('C1 C2')
-    eq = x**2*(f(x).diff(x, 2)) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
+    eq = x**2*(f(x).diff((x, 2))) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*x**2*(-16*x**3/9 +
                                            4*x**2 - 4*x + 1) + O(x**6))
 
-    eq = 4*x**2*(f(x).diff(x, 2)) - 8*x**2*(f(x).diff(x)) + (4*x**2 +
-                                                             1)*f(x)
+    eq = 4*x**2*(f(x).diff((x, 2))) - 8*x**2*(f(x).diff(x)) + (4*x**2 +
+                                                               1)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*sqrt(x)*(
         x**4/24 + x**3/6 + x**2/2 + x + 1) + O(x**6))
 
-    eq = x**2*(f(x).diff(x, 2)) - x**2*(f(x).diff(x)) + (
+    eq = x**2*(f(x).diff((x, 2))) - x**2*(f(x).diff(x)) + (
         x**2 - 2)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*(-x**6/720 - 3*x**5/80 - x**4/8 +
                                       x**2/2 + x/2 + 1)/x + C2*x**2*(-x**3/60 + x**2/20 + x/2 + 1)
                             + O(x**6))
 
-    eq = x**2*(f(x).diff(x, 2)) + x*(f(x).diff(x)) + (x**2 - Rational(1, 4))*f(x)
+    eq = x**2*(f(x).diff((x, 2))) + x*(f(x).diff(x)) + (x**2 - Rational(1, 4))*f(x)
     assert dsolve(eq) == Eq(f(x), C1*(x**4/24 - x**2/2 + 1)/sqrt(x) +
                             C2*sqrt(x)*(x**4/120 - x**2/6 + 1) + O(x**6))
 
-    eq = x*(f(x).diff(x, 2)) - f(x).diff(x) + 4*x**3*f(x)
+    eq = x*(f(x).diff((x, 2))) - f(x).diff(x) + 4*x**3*f(x)
     assert dsolve(eq) == Eq(f(x), C2*(-x**4/2 + 1) + C1*x**2 + O(x**6))
 
-    eq = x**3*(f(x).diff(x, 2)) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
+    eq = x**3*(f(x).diff((x, 2))) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
     assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
-    eq = x**3*(f(x).diff(x, 2)) - 3*x*2*(f(x).diff(x)) + 4*f(x)
+    eq = x**3*(f(x).diff((x, 2))) - 3*x*2*(f(x).diff(x)) + 4*f(x)
     assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
 
 
@@ -2899,7 +2899,7 @@ def test_sympyissue_15407():
 
 
 def test_sympyissue_15311():
-    eqn = sqrt(2) * f(x).diff(x, 3) + f(x).diff(x)
+    eqn = sqrt(2) * f(x).diff((x, 3)) + f(x).diff(x)
     assert dsolve(eqn) == Eq(f(x), C1 + C2*sin(root(8, 4)*x/2) + C3*cos(root(8, 4)*x/2))
 
 
@@ -2945,12 +2945,12 @@ def test_get_numbered_constants():
 
 
 def test_dsolve_interface():
-    pytest.raises(ValueError, lambda: dsolve((f(t).diff(t) - g(t), g(t).diff(t, 2) + t)))
+    pytest.raises(ValueError, lambda: dsolve((f(t).diff(t) - g(t), g(t).diff((t, 2)) + t)))
     pytest.raises(ValueError, lambda: dsolve((f(t).diff(t) - g(t),)))
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t),)))
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t),)))
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t), g(t, x))))
-    pytest.raises(ValueError, lambda: ode_nth_linear_euler_eq_homogeneous(2*x**2*f(x).diff(x, 2) - 3*x*f(x).diff(x),
+    pytest.raises(ValueError, lambda: ode_nth_linear_euler_eq_homogeneous(2*x**2*f(x).diff((x, 2)) - 3*x*f(x).diff(x),
                                                                           f(x), 2,
                                                                           match={-1: Integer(0), 0: Integer(0),
                                                                                  1: -3*x, 2: 2*x**2},

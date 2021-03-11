@@ -2260,7 +2260,7 @@ dx        \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Derivative(2*x*y, x, 17)
+    expr = Derivative(2*x*y, (x, 17))
     ascii_str = \
         """\
  17        \n\

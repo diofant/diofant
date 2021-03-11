@@ -7,7 +7,7 @@ from itertools import combinations, product
 
 from ..core import Atom, cacheit
 from ..core.expr import Expr
-from ..core.function import Application, Derivative
+from ..core.function import Application
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
 from ..core.singleton import S
@@ -898,12 +898,6 @@ class ITE(BooleanFunction):
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
-
-    # the diff method below is copied from Expr class
-    def diff(self, *symbols, **assumptions):
-        new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault('evaluate', True)
-        return Derivative(self, *new_symbols, **assumptions)
 
 
 # end class definitions. Some useful methods
