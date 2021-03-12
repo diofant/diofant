@@ -31,8 +31,8 @@ jobs:
       run: |
         pip install -U pip setuptools
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        # workaround fredrik-johansson/mpmath#571
-        pip install git+https://github.com/fredrik-johansson/mpmath.git@7db68c5
+        # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
+        pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q

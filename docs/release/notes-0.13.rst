@@ -49,3 +49,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21034`: (Integration) regressions?
 * :sympyissue:`21038`: Incorrect computation of a basic limit, regression from 1.6.2 to 1.7.1
 * :sympyissue:`21041`: integrate error
+* :sympyissue:`21063`: Wrong value of improper integral when using unevaluated -oo as boundary
