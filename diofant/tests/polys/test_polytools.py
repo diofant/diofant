@@ -1343,6 +1343,10 @@ def test_Poly_diff():
     assert Derivative(f, x).doit() == (2*x + 1).as_poly()
     assert f.diff(x, evaluate=False) == Derivative(f, x)
 
+    f = (x**2 + 2*x + 1).as_poly()
+
+    assert f.diff() == (2*x + 2).as_poly()
+
     f = (x**2*y**2 + x*y).as_poly()
 
     assert f.diff(x) == (2*x*y**2 + y).as_poly()
@@ -1356,6 +1360,10 @@ def test_Poly_diff():
 
     assert f.diff(x, y) == (4*x*y + 1).as_poly()
     assert f.diff(y, x) == (4*x*y + 1).as_poly()
+
+    f = (x*y**2 + x).as_poly()
+
+    assert f.diff((x, 0), (y, 1)) == (2*x*y).as_poly()
 
 
 def test_Poly_eval():
