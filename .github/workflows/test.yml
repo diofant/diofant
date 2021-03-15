@@ -37,11 +37,9 @@ jobs:
         if [[ ${{ matrix.python-version }} != "3.9" ]]
         then
           pip install git+https://github.com/python/typed_ast.git@adfe297
-          pip install -U .[interactive,develop,gmpy,docs]
           pip install git+https://github.com/numpy/numpy.git@1900913b
-        else
-          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         fi
+        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
         pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
     - name: Install ~/.python_history
