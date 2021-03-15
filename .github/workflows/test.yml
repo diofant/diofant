@@ -30,6 +30,7 @@ jobs:
         sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
+        sudo apt install libatlas-base-dev liblapack-dev
     - name: Install dependencies
       run: |
         pip install -U pip setuptools wheel
@@ -37,6 +38,7 @@ jobs:
         then
           pip install git+https://github.com/python/typed_ast.git@adfe297
           pip install -U .[interactive,develop,gmpy,docs]
+          pip install git+https://github.com/numpy/numpy.git@1900913b
         else
           pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         fi
