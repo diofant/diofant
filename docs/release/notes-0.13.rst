@@ -51,3 +51,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21041`: integrate error
 * :sympyissue:`21063`: Wrong value of improper integral when using unevaluated -oo as boundary
 * :sympyissue:`21075`: Order term being added to exact expansion
+* :sympyissue:`21091`: Invalid comparison of non-real when using integrate()
