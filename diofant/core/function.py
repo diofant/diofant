@@ -1431,7 +1431,6 @@ class Subs(Expr):
                    for _, r in reps):
                 pre += '_'
                 continue
-            reps  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))
@@ -2184,8 +2183,6 @@ def count_ops(expr, visual=False):
                         ops.append(NEG)
                     if a.denominator != 1:
                         ops.append(DIV)
-                    # XXX "peephole" optimization, http://bugs.python.org/issue2506
-                    a
                     continue
             elif a.is_Mul:
                 if _coeff_isneg(a):
@@ -2222,8 +2219,6 @@ def count_ops(expr, visual=False):
                     ops.append(NEG)
                 elif _coeff_isneg(aargs[0]):  # -x + y = SUB, but already recorded ADD
                     ops.append(SUB - ADD)
-                # XXX "peephole" optimization, http://bugs.python.org/issue2506
-                a
                 continue
             elif isinstance(expr, BooleanFunction):
                 ops = []

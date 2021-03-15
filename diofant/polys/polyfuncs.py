@@ -100,7 +100,6 @@ def symmetrize(F, *gens, **args):
             if _height != -1:
                 monom, coeff = _monom, _coeff
             else:
-                _height  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
             exponents = []

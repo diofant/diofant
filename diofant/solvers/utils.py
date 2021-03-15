@@ -124,7 +124,6 @@ def checksol(f, sol, **flags):
             if flags.get('force', True):
                 # don't do a zero check with the positive assumptions in place
                 val = val.subs(reps)
-            val  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         if val == was:

@@ -28,7 +28,6 @@ class _Factor:
                 if not r:
                     f, k = q, k + 1
                 else:
-                    r  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
 
             result.append((factor, k))

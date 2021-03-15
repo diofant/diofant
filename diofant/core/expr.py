@@ -2457,7 +2457,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         do = (si - yielded + o).removeO()
                         o *= x
                         if not do or do.is_Order:
-                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         if do.is_Add:
                             ndid += len(do.args)
