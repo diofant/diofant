@@ -35,6 +35,7 @@ jobs:
         pip install -U pip setuptools wheel
         if [[ ${{ matrix.python-version }} != "3.9" ]]
         then
+          pip install git+https://github.com/python/typed_ast.git@adfe297
           pip install -U .[interactive,develop,gmpy,docs]
         else
           pip install -U .[interactive,develop,gmpy,exports,plot,docs]
