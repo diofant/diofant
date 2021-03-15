@@ -30,16 +30,15 @@ jobs:
         sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
-        sudo apt install libatlas-base-dev liblapack-dev
     - name: Install dependencies
       run: |
         pip install -U pip setuptools wheel
-        # workaround numpy/numpy##18389
         if [[ ${{ matrix.python-version }} != "3.9" ]]
         then
-          pip install git+https://github.com/numpy/numpy.git@1900913b
+          pip install -U .[interactive,develop,gmpy,docs]
+        else
+          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         fi
-        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
         pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
     - name: Install ~/.python_history
