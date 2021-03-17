@@ -161,8 +161,8 @@ class _GCD:
 
         c, h = h.LC, h.monic()
 
-        cff = cff.mul_ground(domain.quo(c, cf))
-        cfg = cfg.mul_ground(domain.quo(c, cg))
+        cff *= domain.quo(c, cf)
+        cfg *= domain.quo(c, cg)
 
         return h, cff, cfg
 
