@@ -280,18 +280,18 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
         dj = denominators[j]
         ljA = lj.eval(list(zip(lcring.gens, A)))
 
-        lcs[j] = lj.mul_ground(dj)
-        U[j] = U[j].mul_ground(dj).set_ring(zring) * ljA.set_ring(zring)
+        lcs[j] = lj*dj
+        U[j] = (U[j]*dj).set_ring(zring) * ljA.set_ring(zring)
 
         if omega == 1:
-            f = f.mul_ground(dj)
+            f *= dj
         else:
             d = gcd(omega, dj)
-            f = f.mul_ground(dj // d)
+            f *= (dj // d)
 
     if omega != 1:
-        lcs[0] = lcs[0].mul_ground(omega)
-        U[0] = U[0].mul_ground(omega)
+        lcs[0] *= omega
+        U[0] *= omega
 
     return f, lcs, U
 
@@ -451,7 +451,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
     prod = functools.reduce(operator.mul, H)
     e = (f - prod) % m
 
-    P = p
+    P = domain(p)
     while e and P < 2*B:
         poly = e // P
 
@@ -478,7 +478,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
 
         subs = list(solution.items())
 
-        H = [h + _subs_ground(s, subs).mul_ground(P) for h, s in zip(H, S)]
+        H = [h + _subs_ground(s, subs)*P for h, s in zip(H, S)]
         P = P**2
         prod = functools.reduce(operator.mul, H)
         e = (f - prod) % m
@@ -863,7 +863,7 @@ def _factor(f, save):
         gamma_ *= cont**exp
         lcfactors_.append((l_, exp))
 
-    f_ = f_.mul_ground(D_)
+    f_ *= D_
     p = 2
 
     N = 0
@@ -889,7 +889,7 @@ def _factor(f, save):
 
                 for i, ci in zip(range(1, n + 1), C):
                     xi = gens[i]
-                    f_ = f_.compose(xi, x + xi.mul_ground(ci))
+                    f_ = f_.compose(xi, x + xi*ci)
 
                 lc, factors = _factor(_z_to_alpha(f_, ring), save)
                 gens = factors[0].ring.gens
@@ -923,7 +923,7 @@ def _factor(f, save):
                 prod *= lc.LC
             delta = (ground(prod, f_.LC)).numerator
 
-            f_ = f_.mul_ground(delta)
+            f_ *= delta
 
             while not _test_prime(fA, D, minpoly, p, zring.domain):
                 p = nextprime(p)

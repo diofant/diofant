@@ -1175,7 +1175,7 @@ def test__isolate_complex_roots_sqf():
     pytest.raises(DomainError, lambda: R._isolate_complex_roots_sqf(x))
 
 
-@pytest.mark.timeout(200)
+@pytest.mark.timeout(300)
 @pytest.mark.slow
 @pytest.mark.skipif(isinstance(ZZ(42), int), reason='gmpy2 is not used')
 def test__isolate_complex_roots_sqf_2():

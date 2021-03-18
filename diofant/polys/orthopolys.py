@@ -21,7 +21,7 @@ def _jacobi(n, a, b, K):
         f0 = (a + b + K(2)*i - K.one) * (a*a - b*b) / (K(2)*den)
         f1 = (a + b + K(2)*i - K.one) * (a + b + K(2)*i - K(2)) * (a + b + K(2)*i) / (K(2)*den)
         f2 = (a + i - K.one)*(b + i - K.one)*(a + b + K(2)*i) / den
-        j0, j1 = j1, j1.mul_ground(f0) + (j1*x).mul_ground(f1) - j0.mul_ground(f2)
+        j0, j1 = j1, j1*f0 + j1*x*f1 - j0*f2
 
     return j1
 
@@ -58,7 +58,7 @@ def _gegenbauer(n, a, K):
     for i in range(2, n + 1):
         f1 = K(2) * (i + a - K.one) / i
         f2 = (i + K(2)*a - K(2)) / i
-        g0, g1 = g1, (g1*x).mul_ground(f1) - g0.mul_ground(f2)
+        g0, g1 = g1, g1*x*f1 - g0*f2
 
     return g1
 
@@ -94,7 +94,7 @@ def _chebyshevt(n, K):
     c1 = x
 
     for i in range(2, n + 1):
-        a = (c1*x).mul_ground(K(2))
+        a = c1*x*K(2)
         c0, c1 = c1, a - c0
 
     return c1
@@ -127,7 +127,7 @@ def _chebyshevu(n, K):
     seq = [ring.one, K(2)*x]
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(2))
+        a = seq[-1]*x*K(2)
         seq.append(a - seq[-2])
 
     return seq[n]
@@ -164,9 +164,9 @@ def _hermite(n, K):
 
     for i in range(2, n + 1):
         a = h1*x
-        b = h0.mul_ground(K(i - 1))
+        b = h0*K(i - 1)
 
-        h0, h1 = h1, (a - b).mul_ground(K(2))
+        h0, h1 = h1, (a - b)*K(2)
 
     return h1
 
@@ -200,7 +200,7 @@ def _legendre(n, K):
     l1 = x
 
     for i in range(2, n + 1):
-        l0, l1 = l1, (l1*x).mul_ground(K(2*i - 1, i)) - l0.mul_ground(K(i - 1, i))
+        l0, l1 = l1, l1*x*K(2*i - 1, i) - l0*K(i - 1, i)
 
     return l1
 
@@ -231,7 +231,7 @@ def _laguerre(n, alpha, K):
     l0, l1 = ring.zero, ring.one
 
     for i in range(1, n + 1):
-        l0, l1 = l1, l1*(-K.one/i*x + alpha/i + K(2*i - 1)/i) - l0.mul_ground(alpha/i + K(i - 1)/i)
+        l0, l1 = l1, l1*(-K.one/i*x + alpha/i + K(2*i - 1)/i) - l0*(alpha/i + K(i - 1)/i)
 
     return l1
 
@@ -271,7 +271,7 @@ def _spherical_bessel_fn(n, K):
     s1 = x
 
     for i in range(2, n + 1):
-        s0, s1 = s1, (s1*x).mul_ground(K(2*i - 1)) - s0
+        s0, s1 = s1, s1*x*K(2*i - 1) - s0
 
     return s1*x
 
@@ -284,7 +284,7 @@ def _spherical_bessel_fn_minus(n, K):
     s0, s1 = x, ring.zero
 
     for i in range(2, n + 1):
-        s0, s1 = s1, (s1*x).mul_ground(K(3 - 2*i)) - s0
+        s0, s1 = s1, s1*x*K(3 - 2*i) - s0
 
     return s1
 

@@ -1356,3 +1356,7 @@ def test_sympyissue_21041():
 def test_sympyissue_21063():
     assert integrate(exp(-x**2),
                      (x, Mul(-1, oo, evaluate=False), oo)) == sqrt(pi)
+
+
+def test_sympyissue_21091():
+    assert integrate(exp(-x**2)*sin(x), (x, -oo, oo)) == 0
