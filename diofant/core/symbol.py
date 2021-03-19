@@ -141,7 +141,9 @@ class BaseSymbol(AtomicExpr, Boolean):
         return self.name,
 
     def __getstate__(self):
-        return {'_assumptions': self._assumptions}
+        state = super().__getstate__()
+        state['_assumptions'] = self._assumptions
+        return state
 
     def _hashable_content(self):
         # Note: user-specified assumptions not hashed, just derived ones
@@ -264,7 +266,9 @@ class Dummy(BaseSymbol):
         return obj
 
     def __getstate__(self):
-        return {'_assumptions': self._assumptions, 'dummy_index': self.dummy_index}
+        state = super().__getstate__()
+        state['dummy_index'] = self.dummy_index
+        return state
 
     @classmethod
     def class_key(cls):

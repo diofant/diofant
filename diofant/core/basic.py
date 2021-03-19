@@ -65,7 +65,7 @@ class Basic:
         return self.args
 
     def __getstate__(self):
-        return {}
+        return {'_hash': None}
 
     def __setstate__(self, state):
         for k, v in state.items():
