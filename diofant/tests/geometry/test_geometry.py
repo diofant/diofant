@@ -912,6 +912,6 @@ def test_idiff():
     assert idiff(circ, y, x, 3).simplify() == ans
     explicit = 12*x/sqrt(-x**2 + 4)**5
     assert ans.subs(solve(circ, y)[0]).equals(explicit)
-    assert True in (sol[y].diff(x, 3).equals(explicit) for sol in solve(circ, y))
+    assert True in (sol[y].diff((x, 3)).equals(explicit) for sol in solve(circ, y))
     assert idiff(x + t + y, [y, t], x) == -Derivative(t, x) - 1
     pytest.raises(ValueError, lambda: idiff(x, object(), x))

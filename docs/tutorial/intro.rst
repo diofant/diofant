@@ -164,7 +164,7 @@ Solve `x^2 - 2 = 0`.
 Solve the differential equation `f'' - f = e^x`.
 
    >>> f = symbols('f', cls=Function)
-   >>> dsolve(Eq(f(x).diff(x, 2) - f(x), exp(x)))
+   >>> dsolve(Eq(f(x).diff((x, 2)) - f(x), exp(x)))
            x ⎛     x⎞    -x
    f(x) = ℯ ⋅⎜C₂ + ─⎟ + ℯ  ⋅C₁
              ⎝     2⎠

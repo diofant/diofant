@@ -309,7 +309,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 break
             if k <= n:
                 s += term
-                g = g.diff(i, 2, simplify=False)
+                g = g.diff((i, 2), simplify=False)
         return s + iterm, abs(term)
 
     def reverse_order(self, *indices):
