@@ -18,19 +18,20 @@ class _SQF:
         >>> R.sqf_list(x**5 + 2*x**4*y + x**3*y**2)
         (1, [(x + y, 2), (x, 3)])
 
-        >>> _, x = ring('x', FF(11))
-        >>> f = x**11 + 1
+        >>> R, x, y = ring('x y', FF(5))
 
-        Note that:
+        >>> f = x**5*y**5 + 1
 
-        >>> f.diff()
-        0 mod 11
+        Note that e.g.:
+
+        >>> f.diff(x)
+        0 mod 5
 
         This phenomenon doesn't happen in characteristic zero. However we can
         still compute square-free decomposition of ``f``:
 
-        >>> f.sqf_list()
-        (1 mod 11, [(x + 1 mod 11, 11)])
+        >>> R.sqf_list(f)
+        (1 mod 5, [(x*y + 1 mod 5, 5)])
 
         """
         domain = self.domain
@@ -46,31 +47,34 @@ class _SQF:
             return coeff, self._rr_yun0_sqf_list(f)
 
     def _gf_sqf_list(self, f):
-        """Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``."""
-        if self.is_multivariate:
-            raise NotImplementedError('multivariate polynomials over finite fields')
-        else:
-            return self._gf_musser_sqf_list(f)
+        """
+        Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``.
 
-    def _gf_musser_sqf_list(self, f):
-        """Compute square-free decomposition of the monic ``f`` in ``GF(q)[x]``.
+        Notes
+        =====
+
+        Uses a modified version of Musser's algorithm for square-free
+        decomposition of univariate polynomials over finite fields.
 
         References
         ==========
 
         * :cite:`Geddes1992algorithms`, algorithm 8.3
+        * :cite:`Musser1971factor`, p.54, algorithm V (modified)
 
         """
         domain = self.domain
 
-        n, factors, p = 1, [], domain.characteristic
+        n, factors, p = 1, [], int(domain.characteristic)
         m = int(domain.order // p)
 
         while not f.is_ground:
-            df = f.diff()
+            df = [f.diff(x) for x in self.gens]
 
-            if not df.is_zero:
-                g = self.gcd(f, df)
+            if not all(_.is_zero for _ in df):
+                g = f
+                for q in df:
+                    g = self.gcd(g, q)
                 h, f, i = f // g, g, 1
 
                 while not h.is_one:
@@ -87,10 +91,8 @@ class _SQF:
             n *= p
 
             g = self.zero
-            for i in range(f.degree()//p + 1):
-                k = (i*p,)
-                if k in f:
-                    g[(i,)] = f[k]**m
+            for monom, coeff in f.items():
+                g[(_ // p for _ in monom)] = coeff**m
             f = g
 
         return factors

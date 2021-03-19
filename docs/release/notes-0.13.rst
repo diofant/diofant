@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Support square-free factorization of multivariate polynomials over finite fields (with adaptation of Musser's algorithm), see :pull:`1132`.
+
 Major changes
 =============
 
