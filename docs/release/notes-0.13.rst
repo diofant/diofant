@@ -20,6 +20,7 @@ Compatibility breaks
 * Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
 * Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
+* Changed the :class:`~diofant.core.function.Derivative` (and similary :func:`~diofant.core.function.diff`) syntax to ``Derivative(foo, (x, 2))`` from ``Derivative(foo, x, 2)``, see :pull:`1131`.
 
 Minor changes
 =============
@@ -52,4 +53,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`21063`: Wrong value of improper integral when using unevaluated -oo as boundary
 * :sympyissue:`21075`: Order term being added to exact expansion
 * :sympyissue:`21091`: Invalid comparison of non-real when using integrate()
+* :sympyissue:`19590`: Poly.diff() doesn't support higher order derivatives
 * :sympyissue:`21121`: Same symbols created in different processes are not resolved as being equal

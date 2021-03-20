@@ -1252,7 +1252,7 @@ def test_lambert_multivariate():
         -Rational(3, 2) - LambertW(-4*log(2))/(2*log(2))]
 
     # issue sympy/sympy#4271
-    assert (solve((a/x + exp(x/2)).diff(x, 2), x) ==
+    assert (solve((a/x + exp(x/2)).diff((x, 2)), x) ==
             [{x: 6*LambertW(root(-1, 3)*root(a, 3)/3)}])
 
     assert (solve((log(x) + x).subs({x: x**2 + 1})) ==

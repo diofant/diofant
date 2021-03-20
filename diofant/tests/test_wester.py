@@ -1080,8 +1080,8 @@ def test_P5_workaround():
 def test_P6():
     M = Matrix([[cos(x), sin(x)],
                 [-sin(x), cos(x)]])
-    assert M.diff(x, 2) == Matrix([[-cos(x), -sin(x)],
-                                   [sin(x), -cos(x)]])
+    assert M.diff((x, 2)) == Matrix([[-cos(x), -sin(x)],
+                                     [sin(x), -cos(x)]])
 
 
 def test_P7():
@@ -1429,7 +1429,7 @@ def test_P44():
 
 def test_P45():
     def __my_wronskian(Y, v):
-        M = Matrix([Matrix(Y).T.diff(x, n) for n in range(len(Y))])
+        M = Matrix([Matrix(Y).T.diff((x, n)) for n in range(len(Y))])
         return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 
@@ -2169,7 +2169,7 @@ def test_Z4():
 
 
 def test_Z5():
-    eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
+    eq = Derivative(f(x), (x, 2)) + 4*f(x) - sin(2*x)
     sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs({x: 0}): 0})
     assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 

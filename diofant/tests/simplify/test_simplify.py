@@ -665,7 +665,7 @@ def test_sympyissue_12792():
 
 def test_sympyissue_12506():
     expr = 1.0 * cos(x) + 2.0 * cos(asin(0.5 * sin(x)))
-    expr = expr.diff(x, 2)
+    expr = expr.diff((x, 2))
     expr_simp = expr.simplify()
     assert expr_simp.equals(expr)
 

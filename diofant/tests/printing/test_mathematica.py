@@ -124,9 +124,9 @@ def test_Derivative():
     assert mathematica_code(Derivative(f(x), x, x)) == 'Hold[D[f[x], x, x]]'
     assert mathematica_code(Derivative(sin(x), x)) == 'Hold[D[Sin[x], x]]'
     assert mathematica_code(Derivative(x, x)) == 'Hold[D[x, x]]'
-    assert mathematica_code(Derivative(sin(x)*y**4, x, 2)) == 'Hold[D[y^4*Sin[x], x, x]]'
+    assert mathematica_code(Derivative(sin(x)*y**4, (x, 2))) == 'Hold[D[y^4*Sin[x], x, x]]'
     assert mathematica_code(Derivative(sin(x)*y**4, x, y, x)) == 'Hold[D[y^4*Sin[x], x, y, x]]'
-    assert mathematica_code(Derivative(sin(x)*y**4, x, y, 3, x)) == 'Hold[D[y^4*Sin[x], x, y, y, y, x]]'
+    assert mathematica_code(Derivative(sin(x)*y**4, x, (y, 3), x)) == 'Hold[D[y^4*Sin[x], x, y, y, y, x]]'
 
 
 def test_Pow():

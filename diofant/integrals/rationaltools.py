@@ -134,7 +134,7 @@ def ratint_ratpart(f, g, x):
     f = sympify(f).as_poly(x)
     g = sympify(g).as_poly(x)
 
-    u, v, _ = g.cofactors(g.diff())
+    u, v, _ = g.cofactors(g.diff(x))
 
     n = u.degree()
     m = v.degree()
@@ -147,7 +147,7 @@ def ratint_ratpart(f, g, x):
     A = Poly(A_coeffs, x, domain=ZZ.inject(*C_coeffs))
     B = Poly(B_coeffs, x, domain=ZZ.inject(*C_coeffs))
 
-    H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
+    H = f - A.diff(x)*v + A*(u.diff(x)*v).quo(u) - B*u
 
     result = solve(H.coeffs(), C_coeffs)[0]
 
@@ -194,7 +194,7 @@ def ratint_logpart(f, g, x, t=None):
     f, g = sympify(f).as_poly(x), sympify(g).as_poly(x)
 
     t = t or Dummy('t')
-    a, b = g, f - g.diff()*t.as_poly(x)
+    a, b = g, f - g.diff(x)*t.as_poly(x)
 
     res, R = resultant(a, b, includePRS=True)
     res = res.as_poly(t, composite=False)

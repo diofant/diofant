@@ -6,7 +6,7 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
+from ..core import (Add, Basic, E, Expr, Integer, Mul, Tuple, oo,
                     preorder_traversal)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
@@ -1288,39 +1288,11 @@ class Poly(Expr):
 
         return f.per(rep)
 
-    def diff(self, *specs, **kwargs):
-        """
-        Computes partial derivative of ``self``.
-
-        Examples
-        ========
-
-        >>> (x**2 + 2*x + 1).as_poly().diff()
-        Poly(2*x + 2, x, domain='ZZ')
-
-        >>> (x*y**2 + x).as_poly().diff((0, 0), (1, 1))
-        Poly(2*x*y, x, y, domain='ZZ')
-
-        """
-        if not kwargs.get('evaluate', True):
-            return Derivative(self, *specs, **kwargs)
-
-        if not specs:
-            return self.per(self.rep.diff())
-
+    def _eval_derivative(self, v):
         rep = self.rep
-
-        for spec in specs:
-            if type(spec) is tuple:
-                gen, m = spec
-            else:
-                gen, m = spec, 1
-
-            rep = rep.diff(self._gen_to_level(gen), int(m))
-
+        v = self._gen_to_level(v)
+        rep = rep.diff(v)
         return self.per(rep)
-
-    _eval_derivative = diff
 
     def eval(self, x, a=None, auto=True):
         """

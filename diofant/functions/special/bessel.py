@@ -796,7 +796,7 @@ class airyai(AiryBase):
 
     >>> diff(airyai(z), z)
     airyaiprime(z)
-    >>> diff(airyai(z), z, 2)
+    >>> diff(airyai(z), (z, 2))
     z*airyai(z)
 
     Series expansion is also supported:
@@ -950,7 +950,7 @@ class airybi(AiryBase):
 
     >>> diff(airybi(z), z)
     airybiprime(z)
-    >>> diff(airybi(z), z, 2)
+    >>> diff(airybi(z), (z, 2))
     z*airybi(z)
 
     Series expansion is also supported:
@@ -1155,7 +1155,7 @@ class airyaiprime(AiryBase):
 
     >>> diff(airyaiprime(z), z)
     z*airyai(z)
-    >>> diff(airyaiprime(z), z, 2)
+    >>> diff(airyaiprime(z), (z, 2))
     z*airyaiprime(z) + airyai(z)
 
     Series expansion is also supported:
@@ -1298,7 +1298,7 @@ class airybiprime(AiryBase):
 
     >>> diff(airybiprime(z), z)
     z*airybi(z)
-    >>> diff(airybiprime(z), z, 2)
+    >>> diff(airybiprime(z), (z, 2))
     z*airybiprime(z) + airybi(z)
 
     Series expansion is also supported:

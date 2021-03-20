@@ -7,8 +7,8 @@ from diofant import (Derivative, Dummy, E, Eq, Expr, FiniteSet, Float,
                      Function, I, Integer, Lambda, O, PoleError, Rational,
                      RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, cos,
                      diff, exp, expand, expint, floor, im, log, loggamma, nan,
-                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, subsets,
-                     symbols, variations, zoo)
+                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, symbols,
+                     zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -83,18 +83,18 @@ def test_derivative_evaluate():
     assert Derivative(sin(x), x).doit() == diff(sin(x), x)
 
     assert Derivative(Derivative(f(x), x), x) == diff(f(x), x, x)
-    assert Derivative(sin(x), x, 0) == sin(x)
+    assert Derivative(sin(x), (x, 0)) == sin(x)
 
 
 def test_diff_symbols():
     assert diff(f(x, y, z), x, y, z) == Derivative(f(x, y, z), x, y, z)
     assert diff(f(x, y, z), x, x, x) == Derivative(f(x, y, z), x, x, x)
-    assert diff(f(x, y, z), x, 3) == Derivative(f(x, y, z), x, 3)
+    assert diff(f(x, y, z), (x, 3)) == Derivative(f(x, y, z), (x, 3))
 
     # issue sympy/sympy#5028
     assert [diff(-z + x/y, sym) for sym in (z, x, y)] == [-1, 1/y, -x/y**2]
-    assert diff(f(x, y, z), x, y, z, 2) == Derivative(f(x, y, z), x, y, z, z)
-    assert diff(f(x, y, z), x, y, z, 2, evaluate=False) == \
+    assert diff(f(x, y, z), x, y, (z, 2)) == Derivative(f(x, y, z), x, y, z, z)
+    assert diff(f(x, y, z), x, y, (z, 2), evaluate=False) == \
         Derivative(f(x, y, z), x, y, z, z)
     assert Derivative(f(x, y, z), x, y, z)._eval_derivative(z) == \
         Derivative(f(x, y, z), x, y, z, z)
@@ -434,29 +434,10 @@ def test_evalf_default():
 
 def test_diff_args():
     # issue sympy/sympy#5399
-    args = [x, y, Integer(2), Rational(1, 2)]
-
-    def ok(a):
-        """Return True if the input args for diff are ok"""
-        if not a:
-            return False
-        if a[0].is_Symbol is False:
-            return False
-        s_at = [i for i in range(len(a)) if a[i].is_Symbol]
-        n_at = [i for i in range(len(a)) if not a[i].is_Symbol]
-        # every symbol is followed by symbol or int
-        # every number is followed by a symbol
-        return (all(a[i + 1].is_Symbol or a[i + 1].is_Integer
-                    for i in s_at if i + 1 < len(a)) and
-                all(a[i + 1].is_Symbol
-                    for i in n_at if i + 1 < len(a)))
-    eq = x**10*y**8
-    for a in subsets(args):
-        for v in variations(a, len(a)):
-            if ok(v):
-                eq.diff(*v)   # not raises
-            else:
-                pytest.raises(ValueError, lambda: eq.diff(*v))
+    pytest.raises(ValueError, lambda: x.diff(Integer(4)))
+    pytest.raises(ValueError, lambda: x.diff(x, Integer(4)))
+    pytest.raises(ValueError, lambda: x.diff(Integer(4), x))
+    pytest.raises(ValueError, lambda: (x*y).diff())
 
 
 def test_derivative_numerically():
@@ -579,8 +560,8 @@ def test_sho_lagrangian():
     assert eqna == eqnb
 
     assert diff(L, x, t) == diff(L, t, x)
-    assert diff(L, diff(x, t), t) == m*diff(x, t, 2)
-    assert diff(L, t, diff(x, t)) == -k*x + m*diff(x, t, 2)
+    assert diff(L, diff(x, t), t) == m*diff(x, (t, 2))
+    assert diff(L, t, diff(x, t)) == -k*x + m*diff(x, (t, 2))
 
 
 def test_straight_line():

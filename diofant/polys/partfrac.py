@@ -371,7 +371,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
 
     for d, n in Q_sqf:
         b = d.as_expr()
-        U += [u.diff(x, n - 1)]
+        U += [u.diff((x, n - 1))]
 
         h = cancel(f*b**n) / u**n
 
@@ -381,7 +381,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
             H += [H[-1].diff(x) / j]
 
         for j in range(1, n + 1):
-            subs += [(U[j - 1], b.diff(x, j) / j)]
+            subs += [(U[j - 1], b.diff((x, j)) / j)]
 
         for j in range(n):
             P, Q = cancel(H[j]).as_numer_denom()

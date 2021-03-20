@@ -1107,17 +1107,17 @@ def test_coeff():
 
 def test_coeff2():
     psi = Function('psi')
-    g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
+    g = 1/r**2 * (2*r*psi(r).diff((r, 1)) + r**2 * psi(r).diff((r, 2)))
     g = g.expand()
     assert g.coeff((psi(r).diff(r))) == 2/r
 
 
 def test_coeff2_0():
     psi = Function('psi')
-    g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
+    g = 1/r**2 * (2*r*psi(r).diff((r, 1)) + r**2 * psi(r).diff((r, 2)))
     g = g.expand()
 
-    assert g.coeff(psi(r).diff(r, 2)) == 1
+    assert g.coeff(psi(r).diff((r, 2))) == 1
 
 
 def test_coeff_expand():
@@ -1654,9 +1654,9 @@ def test_sympyissue_6325():
     ans = (b**2 + z**2 - (b*(a + b*t) + z*(c + t*z))**2/(
         (a + b*t)**2 + (c + t*z)**2))/sqrt((a + b*t)**2 + (c + t*z)**2)
     e = sqrt((a + b*t)**2 + (c + z*t)**2)
-    assert diff(e, t, 2) == ans
-    e.diff(t, 2) == ans
-    assert diff(e, t, 2, simplify=False) != ans
+    assert diff(e, (t, 2)) == ans
+    assert e.diff((t, 2)) == ans
+    assert diff(e, (t, 2), simplify=False) != ans
 
 
 def test_sympyissue_7426():

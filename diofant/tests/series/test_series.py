@@ -43,7 +43,7 @@ def test_simple():
     pytest.raises(ValueError, lambda: x.series(dir=''))
 
     D = Derivative
-    assert D(x**2 + x**3*y**2, x, 2, y, 1).series(x).doit().removeO() == 12*x*y
+    assert D(x**2 + x**3*y**2, (x, 2), (y, 1)).series(x).doit().removeO() == 12*x*y
 
     assert (1 + x).getn() is None
 
