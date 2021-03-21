@@ -1360,3 +1360,22 @@ def test_sympyissue_21063():
 
 def test_sympyissue_21091():
     assert integrate(exp(-x**2)*sin(x), (x, -oo, oo)) == 0
+
+
+def test_sympyissue_21132():
+    f = exp(I*sqrt(k)*t)*cos(a*t)
+    r = [Piecewise((t, Eq(a, 0) & Eq(k, 0)),
+                   (exp(I*sqrt(k)*t)*(-I*cos(sqrt(k)*t) +
+                                      exp(-I*sqrt(k)*t)*sqrt(k)*t)/(2*sqrt(k)),
+                    Eq(a, sqrt(k)) | Eq(a, -sqrt(k))),
+                   (exp(I*sqrt(k)*t)*(a*sin(a*t) +
+                                      I*sqrt(k)*cos(a*t))/(a**2 - k), True)),
+         Piecewise((t, Eq(a, 0) & Eq(k, 0)),
+                   (exp(I*sqrt(k)*t)*(sin(sqrt(k)*t) +
+                                      exp(-I*sqrt(k)*t)*sqrt(k)*t)/(2*sqrt(k)),
+                    Eq(a, sqrt(k)) | Eq(a, -sqrt(k))),
+                   (exp(I*sqrt(k)*t)*(a*sin(a*t) +
+                                      I*sqrt(k)*cos(a*t))/(a**2 - k), True))]
+    ans = f.integrate(t)
+    assert ans.simplify() in r
+    assert ans.subs({k: 0}).subs({a: 0}) == t

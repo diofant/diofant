@@ -56,3 +56,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19590`: Poly.diff() doesn't support higher order derivatives
 * :sympyissue:`21121`: Same symbols created in different processes are not resolved as being equal
 * :sympyissue:`21107`: S.Infinity.is_nonzero returns False
+* :sympyissue:`21132`: Integral with parametres: wrong and too long result
