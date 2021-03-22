@@ -54,3 +54,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`21075`: Order term being added to exact expansion
 * :sympyissue:`21091`: Invalid comparison of non-real when using integrate()
 * :sympyissue:`19590`: Poly.diff() doesn't support higher order derivatives
+* :sympyissue:`21121`: Same symbols created in different processes are not resolved as being equal
+* :sympyissue:`21107`: S.Infinity.is_nonzero returns False
+* :sympyissue:`21132`: Integral with parametres: wrong and too long result

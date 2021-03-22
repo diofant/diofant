@@ -470,3 +470,15 @@ def test_sympyissue_7457():
     b = pickle.loads(pickle.dumps(a))
     b.evalf(strict=False)  # not raises
     assert a == b
+
+
+def test_sympyissue_21121():
+    x1 = Symbol('x', real=True)
+    x2 = Symbol('x', real=True)
+
+    assert hash(x1) == hash(x2)
+
+    x2_pickled = pickle.dumps(x2)
+    x2_unpickled = pickle.loads(x2_pickled)
+
+    assert hash(x1) == hash(x2_unpickled)

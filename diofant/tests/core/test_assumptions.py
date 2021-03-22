@@ -119,6 +119,8 @@ def test_infinity():
     assert oo.is_prime is False
     assert oo.is_composite is False
     assert oo.is_number is True
+    assert oo.is_zero is False
+    assert oo.is_nonzero is True  # issue sympy/sympy#21107
 
 
 def test_neg_infinity():
