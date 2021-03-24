@@ -220,14 +220,10 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     def from_expr(self, expr):
         expr = sympify(expr)
-
-        domain = self.domain
         mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            generator = mapping.get(expr)
-
-            if generator is not None:
+            if (generator := mapping.get(expr)) is not None:
                 return generator
             elif expr.is_Add:
                 return functools.reduce(operator.add, map(_rebuild, expr.args))
@@ -237,16 +233,13 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c > 1:
                     return _rebuild(expr.base**a)**int(c)
-
-            return domain.convert(expr)
+            return self.ground_new(self.domain.convert(expr))
 
         try:
-            poly = _rebuild(expr)
+            return _rebuild(expr)
         except CoercionFailed:
             raise ValueError('expected an expression convertible to a '
                              f'polynomial in {self}, got {expr}')
-        else:
-            return self(poly)
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""
