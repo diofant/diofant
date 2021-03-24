@@ -250,34 +250,19 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""
-        if isinstance(gen, int):
-            i = gen
-
-            if 0 <= i and i < self.ngens:
-                pass
-            elif -self.ngens <= i and i <= -1:
-                i = self.ngens + i
-            else:
-                raise ValueError(f'invalid generator index: {gen}')
-        elif isinstance(gen, self.dtype):
-            try:
-                i = self.gens.index(gen)
-            except ValueError:
-                raise ValueError(f'invalid generator: {gen}')
-        elif isinstance(gen, str):
-            try:
-                i = self.symbols.index(Symbol(gen))
-            except ValueError:
-                raise ValueError(f'invalid generator: {gen}')
-        elif isinstance(gen, Expr):
-            try:
-                i = self.symbols.index(gen)
-            except ValueError:
-                raise ValueError(f'invalid generator: {gen}')
-        else:
-            raise ValueError(f'expected a polynomial generator, an integer, a string, an expression or None, got {gen}')
-
-        return i
+        try:
+            if isinstance(gen, int) and -self.ngens <= gen < self.ngens:
+                return gen % self.ngens
+            elif isinstance(gen, self.dtype):
+                return self.gens.index(gen)
+            elif isinstance(gen, str):
+                return self.symbols.index(Symbol(gen))
+            elif isinstance(gen, Expr):
+                return self.symbols.index(gen)
+        except ValueError:
+            pass
+        raise ValueError('expected a polynomial generator, an integer, '
+                         f'a string, an expression or None, got {gen}')
 
     def drop(self, *gens):
         """Remove specified generators from this ring."""
