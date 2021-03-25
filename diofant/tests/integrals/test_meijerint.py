@@ -13,7 +13,7 @@ from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      lowergamma, meijerg, nan, oo, pi, piecewise_fold,
                      polygamma, powdenest, powsimp, re, simplify, sin, sinh,
                      sqrt, symbols, unpolarify)
-from diofant.abc import R, a, b, c, d, h, r, s, t, w, x, y, z
+from diofant.abc import R, a, b, c, d, r, s, t, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
@@ -235,6 +235,10 @@ def test_meijerint():
     # issue sympy/sympy#6348
     assert integrate(exp(I*x)/(1 + x**2),
                      (x, -oo, oo)).simplify().rewrite(exp) == pi*exp(-1)
+
+    # issue sympy/sympy#13536
+    a = Symbol('a', real=True, positive=True)
+    assert integrate(1/x**2, (x, oo, a)) == -1/a
 
 
 def test_bessel():
@@ -654,21 +658,11 @@ def test_meijerint_indefinite_abs():
     assert meijerint_indefinite(abs(x + 1), x) is not nan
 
 
-def test_sympyissue_13536():
-    a = Symbol('a', real=True, positive=True)
-    assert integrate(1/x**2, (x, oo, a)) == -1/a
-
-
 def test_sympyissue_10681():
     f = integrate(r**2*(R**2 - r**2)**0.5, r, meijerg=True)
     g = (1.0/3)*R**1.0*r**3*hyper((-0.5, Rational(3, 2)), (Rational(5, 2),),
                                   r**2*exp_polar(2*I*pi)/R**2)
     assert RR.almosteq((f/g).evalf(), 1.0, 1e-12)
-
-
-def test_sympyissue_10211():
-    assert integrate((1/sqrt(((y - x)**2 + h**2))**3),
-                     (x, 0, w), (y, 0, w)) == 2*sqrt(1 + w**2/h**2)/h - 2/h
 
 
 def test_sympyissue_11806():

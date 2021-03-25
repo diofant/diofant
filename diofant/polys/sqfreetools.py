@@ -18,26 +18,6 @@ class _SQF:
         >>> R.sqf_list(x**5 + 2*x**4*y + x**3*y**2)
         (1, [(x + y, 2), (x, 3)])
 
-        """
-        domain = self.domain
-
-        if domain.is_Field:
-            coeff, f = f.LC, f.monic()
-        else:
-            coeff, f = f.primitive()
-
-        if domain.is_FiniteField:
-            return coeff, self._gf_sqf_list(f)
-        else:
-            return coeff, self._rr_yun0_sqf_list(f)
-
-    def _gf_sqf_list(self, f):
-        """
-        Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``.
-
-        Examples
-        ========
-
         >>> _, x = ring('x', FF(11))
         >>> f = x**11 + 1
 
@@ -53,6 +33,20 @@ class _SQF:
         (1 mod 11, [(x + 1 mod 11, 11)])
 
         """
+        domain = self.domain
+
+        if domain.is_Field:
+            coeff, f = f.LC, f.monic()
+        else:
+            coeff, f = f.primitive()
+
+        if domain.is_FiniteField:
+            return coeff, self._gf_sqf_list(f)
+        else:
+            return coeff, self._rr_yun0_sqf_list(f)
+
+    def _gf_sqf_list(self, f):
+        """Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``."""
         if self.is_multivariate:
             raise NotImplementedError('multivariate polynomials over finite fields')
         else:

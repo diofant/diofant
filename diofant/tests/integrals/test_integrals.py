@@ -41,6 +41,22 @@ def test_improper_integral():
     # issue sympy/sympy#10445:
     assert integrate(1/(1 + exp(x)), (x, 0, oo)) == log(2)
 
+    # issue sympy/sympy#8945
+    assert integrate(sin(x)**3/x, (x, 0, 1)) == -Si(3)/4 + 3*Si(1)/4
+    assert integrate(sin(x)**3/x, (x, 0, oo)) == pi/4
+
+    # issue sympy/sympy#4527
+    k, m = symbols('k m', integer=True)
+    assert integrate(sin(k*x)*sin(m*x), (x, 0, pi)) == Piecewise(
+        (0, And(Eq(k, 0), Eq(m, 0))),
+        (-pi/2, Eq(k, -m)),
+        (pi/2, Eq(k, m)),
+        (0, True))
+
+    # issue sympy/sympy#10211
+    assert integrate((1/sqrt(((y - x)**2 + h**2))**3),
+                     (x, 0, w), (y, 0, w)) == 2*sqrt(1 + w**2/h**2)/h - 2/h
+
 
 def test_constructor():
     # this is shared by Sum, so testing Integral's constructor
@@ -160,6 +176,36 @@ def test_integration():
     assert integrate(a*t**4, (t, 0, x)) == a*x**5/5
     assert integrate(a*t**2 + b*t + c, (t, 0, x)) == a*x**3/3 + b*x**2/2 + c*x
 
+    # issue sympy/sympy#6253
+    # Note: this used to raise NotImplementedError
+    # Note: psi in _check_antecedents becomes NaN.
+    assert integrate((sqrt(1 - x) + sqrt(1 + x))**2/x, x, meijerg=True) == \
+        Integral((sqrt(-x + 1) + sqrt(x + 1))**2/x, x)
+
+    # issue sympy/sympy#8945
+    assert integrate(cos(x)**2/x**2, x) == -Si(2*x) - cos(2*x)/(2*x) - 1/(2*x)
+
+    # issue sympy/sympy#10680
+    integrate(x**log(x**log(x**log(x))), x)  # not raises
+
+    # issue sympy/sympy#4890
+    assert integrate(exp(-log(x)**2), x) == \
+        sqrt(pi)*exp(Rational(1, 4))*erf(log(x) - Rational(1, 2))/2
+    assert integrate(exp(log(x)**2), x) == \
+        sqrt(pi)*exp(-Rational(1, 4))*erfi(log(x) + Rational(1, 2))/2
+
+    # issue sympy/sympy#8901
+    assert integrate(tanh(x)) == x - log(tanh(x) + 1)
+
+    # issue sympy/sympy#4403
+    z = Symbol('z', positive=True)
+    assert integrate(sqrt(x**2 + z**2), x) == \
+        z**2*asinh(x/z)/2 + x*sqrt(x**2 + z**2)/2
+    assert integrate(sqrt(x**2 - z**2), x) == \
+        -z**2*acosh(x/z)/2 + x*sqrt(x**2 - z**2)/2
+    assert integrate(sqrt(-x**2 - 4), x) == \
+        -2*atan(x/sqrt(-4 - x**2)) + x*sqrt(-4 - x**2)/2
+
 
 def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == 1
@@ -174,6 +220,9 @@ def test_multiple_integration():
     # issue sympy/sympy#5167
     assert Integral(f(x), (x, 1, 2), (w, 1, x), (z, 1, y)).doit() == \
         y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
+
+    # issue sympy/sympy#14782
+    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
 
 
 def test_sympyissue_3532():
@@ -408,6 +457,19 @@ def test_evalf_integrals():
     assert NS(
         2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 22, chop=True) == NS(2, 22)
 
+    # issue sympy/sympy#4038
+
+    # The output form of an integral may differ by a step function between
+    # revisions, making this test a bit useless. This can't be said about
+    # other two tests. For now, all values of this evaluation are used here,
+    # but in future this should be reconsidered.
+    assert NS(integrate(1/(x**5 + 1), x).subs({x: 4}), chop=True) in \
+        ['-0.000976138910649103', '0.965906660135753', '1.93278945918216']
+
+    assert NS(Integral(1/(x**5 + 1), (x, 2, 4))) == '0.0144361088886740'
+    assert NS(
+        integrate(1/(x**5 + 1), (x, 2, 4)), chop=True) == '0.0144361088886740'
+
 
 @pytest.mark.slow
 def test_evalf_integrals_slow():
@@ -450,19 +512,6 @@ def test_evalf_integrals_slow():
     # indefinite integrals aren't evaluated
     assert NS(Integral(x, x)) == 'Integral(x, x)'
     assert NS(Integral(x, (x, y))) == 'Integral(x, (x, y))'
-
-
-def test_evalf_sympyissue_4038():
-    # The output form of an integral may differ by a step function between
-    # revisions, making this test a bit useless. This can't be said about
-    # other two tests. For now, all values of this evaluation are used here,
-    # but in future this should be reconsidered.
-    assert NS(integrate(1/(x**5 + 1), x).subs({x: 4}), chop=True) in \
-        ['-0.000976138910649103', '0.965906660135753', '1.93278945918216']
-
-    assert NS(Integral(1/(x**5 + 1), (x, 2, 4))) == '0.0144361088886740'
-    assert NS(
-        integrate(1/(x**5 + 1), (x, 2, 4)), chop=True) == '0.0144361088886740'
 
 
 @pytest.mark.xfail
@@ -679,6 +728,14 @@ def test_integrate_conds():
     assert integrate(x**a*exp(-x), (x, 0, oo),
                      conds='separate') == (gamma(a + 1), -re(a) < 1)
 
+    # issue sympy/sympy#4199
+    ypos = Symbol('y', positive=True)
+    # TODO: Remove conds='none' below, let the assumption take care of it.
+    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo), conds='none') ==
+            Integral(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo)))
+    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, 0, oo), conds='none') ==
+            Integral(exp(-2*I*pi*x*ypos)*x, (x, 0, oo)))
+
 
 def test_nested_doit():
     e = Integral(Integral(x, x), x)
@@ -815,22 +872,10 @@ def test_series():
 
 
 def test_sympyissue_4403():
-    x = Symbol('x')
-    z = Symbol('z', positive=True)
-    assert integrate(sqrt(x**2 + z**2), x) == \
-        z**2*asinh(x/z)/2 + x*sqrt(x**2 + z**2)/2
-    assert integrate(sqrt(x**2 - z**2), x) == \
-        -z**2*acosh(x/z)/2 + x*sqrt(x**2 - z**2)/2
-
     x = Symbol('x', extended_real=True)
     y = Symbol('y', positive=True)
     assert integrate(1/(x**2 + y**2)**Rational(3, 2), x) == \
         x/(y**2*sqrt(x**2 + y**2))
-
-
-def test_sympyissue_4403_2():
-    assert integrate(sqrt(-x**2 - 4), x) == \
-        -2*atan(x/sqrt(-4 - x**2)) + x*sqrt(-4 - x**2)/2
 
 
 def test_sympyissue_4100():
@@ -859,10 +904,6 @@ def test_sympyissue_5167():
 
 def test_sympyissue_4890():
     z = Symbol('z', positive=True)
-    assert integrate(exp(-log(x)**2), x) == \
-        sqrt(pi)*exp(Rational(1, 4))*erf(log(x)-Rational(1, 2))/2
-    assert integrate(exp(log(x)**2), x) == \
-        sqrt(pi)*exp(-Rational(1, 4))*erfi(log(x)+Rational(1, 2))/2
     assert integrate(exp(-z*log(x)**2), x) == \
         sqrt(pi)*exp(1/(4*z))*erf(sqrt(z)*log(x) - 1/(2*sqrt(z)))/(2*sqrt(z))
 
@@ -881,26 +922,12 @@ def test_sympyissue_4517():
 
 def test_sympyissue_4527():
     k, m = symbols('k m', integer=True)
-    assert integrate(sin(k*x)*sin(m*x), (x, 0, pi)) == Piecewise(
-        (0, And(Eq(k, 0), Eq(m, 0))),
-        (-pi/2, Eq(k, -m)),
-        (pi/2, Eq(k, m)),
-        (0, True))
     assert integrate(sin(k*x)*sin(m*x), (x,)) == Piecewise(
         (0, And(Eq(k, 0), Eq(m, 0))),
         (-x*sin(m*x)**2/2 - x*cos(m*x)**2/2 + sin(m*x)*cos(m*x)/(2*m), Eq(k, -m)),
         (x*sin(m*x)**2/2 + x*cos(m*x)**2/2 - sin(m*x)*cos(m*x)/(2*m), Eq(k, m)),
         (m*sin(k*x)*cos(m*x)/(k**2 - m**2) -
          k*sin(m*x)*cos(k*x)/(k**2 - m**2), True))
-
-
-def test_sympyissue_4199():
-    ypos = Symbol('y', positive=True)
-    # TODO: Remove conds='none' below, let the assumption take care of it.
-    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo), conds='none') ==
-            Integral(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo)))
-    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, 0, oo), conds='none') ==
-            Integral(exp(-2*I*pi*x*ypos)*x, (x, 0, oo)))
 
 
 @pytest.mark.slow
@@ -1038,13 +1065,6 @@ def test_sympyissue_4400():
         x*x**n/(n**2 + 2*n + 1)
 
 
-def test_sympyissue_6253():
-    # Note: this used to raise NotImplementedError
-    # Note: psi in _check_antecedents becomes NaN.
-    assert integrate((sqrt(1 - x) + sqrt(1 + x))**2/x, x, meijerg=True) == \
-        Integral((sqrt(-x + 1) + sqrt(x + 1))**2/x, x)
-
-
 def test_sympyissue_4153():
     assert integrate(1/(1 + x + y + z), (x, 0, 1), (y, 0, 1), (z, 0, 1)) in [
         -12*log(3) - 3*log(6)/2 + 3*log(8)/2 + 5*log(2) + 7*log(4),
@@ -1071,9 +1091,18 @@ def test_risch_option():
     # TODO: How to test risch=False?
 
     # issue sympy/sympy#2708
+    # This test needs to use an integration function that can
+    # not be evaluated in closed form.  Update as needed.
+
     f = 1/(a + z + log(z))
     integral_f = NonElementaryIntegral(f, (z, 2, 3))
     assert Integral(f, (z, 2, 3)).doit() == integral_f
+    assert integrate(f + exp(z), (z, 2, 3)) == integral_f - exp(2) + exp(3)
+
+    assert integrate(2*f + exp(z), (z, 2, 3)) == 2*integral_f - exp(2) + exp(3)
+    assert (integrate(exp(1.2*n*s*z*(-t + z)/t), (z, 0, x)) ==
+            1.0*NonElementaryIntegral(exp(-1.2*n*s*z)*exp(1.2*n*s*z**2/t),
+                                      (z, 0, x)))
 
 
 def test_sympyissue_6828():
@@ -1109,19 +1138,6 @@ def test_sympyissue_4492():
             (8*sqrt(-x**2 + 5)), True))
 
 
-def test_sympyissue_2708():
-    # This test needs to use an integration function that can
-    # not be evaluated in closed form.  Update as needed.
-    f = 1/(a + z + log(z))
-    integral_f = NonElementaryIntegral(f, (z, 2, 3))
-    assert integrate(f + exp(z), (z, 2, 3)) == integral_f - exp(2) + exp(3)
-
-    assert integrate(2*f + exp(z), (z, 2, 3)) == 2*integral_f - exp(2) + exp(3)
-    assert (integrate(exp(1.2*n*s*z*(-t + z)/t), (z, 0, x)) ==
-            1.0*NonElementaryIntegral(exp(-1.2*n*s*z)*exp(1.2*n*s*z**2/t),
-                                      (z, 0, x)))
-
-
 def test_sympyissue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
         Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), abs(s**2) < 1),
@@ -1144,13 +1160,6 @@ def test_sympyissue_8368():
 def test_sympyissue_8901():
     assert integrate(sinh(1.0*x)) == 1.0*cosh(1.0*x)
     assert integrate(tanh(1.0*x)) == 1.0*x - 1.0*log(tanh(1.0*x) + 1)
-    assert integrate(tanh(x)) == x - log(tanh(x) + 1)
-
-
-def test_sympyissue_8945():
-    assert integrate(sin(x)**3/x, (x, 0, 1)) == -Si(3)/4 + 3*Si(1)/4
-    assert integrate(sin(x)**3/x, (x, 0, oo)) == pi/4
-    assert integrate(cos(x)**2/x**2, x) == -Si(2*x) - cos(2*x)/(2*x) - 1/(2*x)
 
 
 @pytest.mark.slow
@@ -1242,10 +1251,6 @@ def test_sympyissue_13312():
                                                          (-exp(-oo*sign(a))/a + exp(-a*b)/a, True))
 
 
-def test_sympyissue_10680():
-    integrate(x**log(x**log(x**log(x))), x)  # not raises
-
-
 def test_sympyissue_13501():
     a = Symbol('a', real=True)
     assert integrate(1/(1 + a**2*x**2), x) == atan(a*x)/a
@@ -1255,10 +1260,6 @@ def test_diofantissue_447():
     assert integrate(1/(2*sin(x) + cos(x)),
                      x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
                             sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)
-
-
-def test_sympyissue_14782():
-    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
 
 
 def test_sympyissue_4511():
