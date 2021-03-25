@@ -49,7 +49,7 @@ jobs:
     - name: Coverage tests
       if: matrix.coverage
       env:
-        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
       run: |
         pytest
         pip uninstall -y gmpy2
