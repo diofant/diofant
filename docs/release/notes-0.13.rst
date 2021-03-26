@@ -31,6 +31,7 @@ Developer changes
 =================
 
 * Turn on type checking for the whole codebase, see :pull:`1114`.
+* Don't include regression tests in the coverage statistics, see :pull:`1060`.
 
 Issues closed
 =============
