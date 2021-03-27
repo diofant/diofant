@@ -9,13 +9,13 @@ from types import GeneratorType
 
 from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
                     Integer, Lambda, Mul, Symbol, expand_log, expand_mul,
-                    expand_power_exp, nan, nfloat, pi, preorder_traversal,
-                    sympify)
+                    expand_power_exp, nan, nfloat, pi, preorder_traversal)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef
 from ..core.logic import fuzzy_and
 from ..core.relational import Relational
+from ..core.sympify import sympify
 from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
                          atan2, cos, exp, im, log, piecewise_fold, re, sin,
                          sqrt, tan)
@@ -25,9 +25,10 @@ from ..logic import false, true
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, factor, roots
 from ..polys.polyerrors import PolynomialError
-from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
-                        powsimp, simplify)
 from ..simplify.fu import TR1
+from ..simplify.powsimp import powdenest, powsimp
+from ..simplify.radsimp import denom
+from ..simplify.simplify import logcombine, nsimplify, posify, simplify
 from ..utilities import default_sort_key, filldedent, ordered
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
@@ -534,12 +535,12 @@ def _solve(f, symbol, **flags):
         if len(gens) > 1:
             # If there is more than one generator, it could be that the
             # generators have the same base but different powers, e.g.
-            #   >>> Poly(exp(x) + 1/exp(x))
+            #   >>> (exp(x) + 1/exp(x)).as_poly()
             #   Poly(exp(-x) + exp(x), exp(-x), exp(x), domain='ZZ')
             #
             # If unrad was not disabled then there should be no rational
             # exponents appearing as in
-            #   >>> Poly(sqrt(x) + sqrt(sqrt(x)))
+            #   >>> (sqrt(x) + sqrt(sqrt(x))).as_poly()
             #   Poly(sqrt(x) + x**(1/4), sqrt(x), x**(1/4), domain='ZZ')
 
             bases, qs = list(zip(*[_as_base_q(g) for g in gens]))
@@ -840,7 +841,7 @@ def _solve_system(exprs, symbols, **flags):
                     # result in the new result list; use copy since the
                     # solution for s in being added in-place
                     for sol in soln:
-                        if got_s and any(ss in sol.free_symbols for ss in got_s):
+                        if got_s and got_s & sol.free_symbols:
                             # sol depends on previously solved symbols: discard it
                             continue
                         rnew = r.copy()
@@ -987,12 +988,10 @@ def minsolve_linear_system(system, *symbols, **flags):
         # variables the quick method manages.
         from itertools import combinations
 
-        from ..utilities.misc import debug
         N = len(symbols)
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
         n0 = len([x for x in bestsol.values() if x != 0])
         for n in range(n0 - 1, 1, -1):
-            debug(f'minsolve: {n}')
             thissol = None
             for nonzeros in combinations(list(range(N)), n):
                 subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T

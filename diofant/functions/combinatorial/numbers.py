@@ -7,13 +7,17 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
+from __future__ import annotations
+
+import math
 import numbers
+import typing
 
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
-                     Rational, cacheit, expand_mul, nan, oo, pi, prod)
+                     Rational, cacheit, expand_mul, nan, oo, pi)
 from ...core.compatibility import as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -585,7 +589,7 @@ class harmonic(Function):
 
     # Generate one memoized Harmonic number-generating function for each
     # order and store it in a dictionary
-    _functions = {}
+    _functions: dict[Integer, typing.Callable[[int], Rational]] = {}
 
     @classmethod
     def eval(cls, n, m=None):
@@ -1104,7 +1108,7 @@ def _nP(n, k=None, replacement=False):
         elif replacement:
             return n[_ITEMS]**k
         elif k == n[_N]:
-            return factorial(k)/prod([factorial(i) for i in n[_M] if i > 1])
+            return factorial(k)/math.prod(factorial(i) for i in n[_M] if i > 1)
         elif k > n[_N]:
             return 0
         elif k == 1:
@@ -1265,7 +1269,7 @@ def nC(n, k=None, replacement=False):
         N = n[_N]
         if k is None:
             if not replacement:
-                return prod(m + 1 for m in n[_M])
+                return math.prod(m + 1 for m in n[_M])
             return sum(nC(n, i, replacement) for i in range(N + 1))
         elif replacement:
             return nC(n[_ITEMS], k, replacement)

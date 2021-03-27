@@ -13,7 +13,7 @@ from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      lowergamma, meijerg, nan, oo, pi, piecewise_fold,
                      polygamma, powdenest, powsimp, re, simplify, sin, sinh,
                      sqrt, symbols, unpolarify)
-from diofant.abc import R, a, b, c, d, h, r, s, t, w, x, y, z
+from diofant.abc import R, a, b, c, d, r, s, t, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
                                          meijerint_definite,
@@ -144,6 +144,10 @@ def test_meijerint():
 
     assert meijerint_indefinite(exp(x), x) == exp(x)
 
+    # issue sympy/sympy#8368
+    assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
+        (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
+
     # TODO what simplifications should be done automatically?
     # This tests "extra case" for antecedents_1.
     a, b = symbols('a b', positive=True)
@@ -184,7 +188,7 @@ def test_meijerint():
 
     # Test a bug
     def res(n):
-        return (1/(1 + x**2)).diff(x, n).subs({x: 1})*(-1)**n
+        return (1/(1 + x**2)).diff((x, n)).subs({x: 1})*(-1)**n
     for n in range(6):
         assert integrate(exp(-x)*sin(x)*x**n, (x, 0, oo), meijerg=True) == \
             res(n)
@@ -227,6 +231,14 @@ def test_meijerint():
     a, s = symbols('a s', positive=True)
     assert simplify(integrate(x**s*exp(-a*x**2), (x, -oo, oo))) == \
         a**(-s/2 - Rational(1, 2))*((-1)**s + 1)*gamma(s/2 + Rational(1, 2))/2
+
+    # issue sympy/sympy#6348
+    assert integrate(exp(I*x)/(1 + x**2),
+                     (x, -oo, oo)).simplify().rewrite(exp) == pi*exp(-1)
+
+    # issue sympy/sympy#13536
+    a = Symbol('a', real=True, positive=True)
+    assert integrate(1/x**2, (x, oo, a)) == -1/a
 
 
 def test_bessel():
@@ -628,11 +640,6 @@ def test_sympyissue_6252():
     assert not anti.has(hyper)
 
 
-def test_sympyissue_6348():
-    assert integrate(exp(I*x)/(1 + x**2), (x, -oo, oo)).simplify().rewrite(exp) \
-        == pi*exp(-1)
-
-
 def test_fresnel():
     assert expand_func(integrate(sin(pi*x**2/2), x)) == fresnels(x)
     assert expand_func(integrate(cos(pi*x**2/2), x)) == fresnelc(x)
@@ -640,11 +647,6 @@ def test_fresnel():
 
 def test_sympyissue_6860():
     assert meijerint_indefinite(x**x**x, x) is None
-
-
-def test_sympyissue_8368():
-    assert meijerint_indefinite(cosh(x)*exp(-x*t), x) == (
-        (-t - 1)*exp(x) + (-t + 1)*exp(-x))*exp(-t*x)/2/(t**2 - 1)
 
 
 def test_meijerint_indefinite_abs():
@@ -656,21 +658,11 @@ def test_meijerint_indefinite_abs():
     assert meijerint_indefinite(abs(x + 1), x) is not nan
 
 
-def test_sympyissue_13536():
-    a = Symbol('a', real=True, positive=True)
-    assert integrate(1/x**2, (x, oo, a)) == -1/a
-
-
 def test_sympyissue_10681():
     f = integrate(r**2*(R**2 - r**2)**0.5, r, meijerg=True)
     g = (1.0/3)*R**1.0*r**3*hyper((-0.5, Rational(3, 2)), (Rational(5, 2),),
                                   r**2*exp_polar(2*I*pi)/R**2)
-    assert RR.almosteq((f/g).n(), 1.0, 1e-12)
-
-
-def test_sympyissue_10211():
-    assert integrate((1/sqrt(((y - x)**2 + h**2))**3),
-                     (x, 0, w), (y, 0, w)) == 2*sqrt(1 + w**2/h**2)/h - 2/h
+    assert RR.almosteq((f/g).evalf(), 1.0, 1e-12)
 
 
 def test_sympyissue_11806():

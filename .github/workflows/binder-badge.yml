@@ -1,0 +1,10 @@
+name: binder-badge
+on:
+  pull_request_target:
+jobs:
+  badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: manics/action-binderbadge@7bd3913eba11f1758b93be39b7251d20243017b2
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}

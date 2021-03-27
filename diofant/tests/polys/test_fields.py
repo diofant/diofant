@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (QQ, ZZ, CoercionFailed, I, Rational, field, ring, sqrt,
-                     symbols)
+from diofant import (CC, QQ, ZZ, CoercionFailed, I, Rational, field, ring,
+                     sqrt, symbols)
 from diofant.polys.fields import FracElement
 
 
@@ -130,26 +130,15 @@ def test_FracElement_from_expr():
     f = F.convert(2**(2*x) + 1)
     assert f == X**2 + 1
 
+    # issue sympy/sympy#20985
+    F, X = field(x, CC)
+
+    assert F.convert(I/x) == F.convert(CC(0, 1))/X
+
 
 def test_FracElement_to_poly():
     F, x, y = field('x y', ZZ)
     pytest.raises(ValueError, lambda: (x/y).to_poly())
-
-
-def test_FracElement__lt_le_gt_ge__():
-    F, x, y = field('x y', ZZ)
-
-    assert F(1) < 1/x < 1/x**2 < 1/x**3
-    assert F(1) <= 1/x <= 1/x**2 <= 1/x**3
-
-    assert -7/x < 1/x < 3/x < y/x < 1/x**2
-    assert -7/x <= 1/x <= 3/x <= y/x <= 1/x**2
-
-    assert 1/x**3 > 1/x**2 > 1/x > F(1)
-    assert 1/x**3 >= 1/x**2 >= 1/x >= F(1)
-
-    assert 1/x**2 > y/x > 3/x > 1/x > -7/x
-    assert 1/x**2 >= y/x >= 3/x >= 1/x >= -7/x
 
 
 def test_FracElement__pos_neg__():
@@ -346,7 +335,15 @@ def test_FracElement_eval():
 
 
 def test_FracElement_compose():
-    pass
+    F, x, y, z = field('x y z', QQ)
+
+    f = x**3
+
+    assert f.compose([(x, x/(y + z)),
+                      (y, z/x)]) == x**3/(y**3 + 3*y**2*z + 3*y*z**2 + z**3)
+
+    # issue sympy/sympy#20484
+    assert f.compose(x, x/(y + z)) == x**3/(y**3 + 3*y**2*z + 3*y*z**2 + z**3)
 
 
 def test_cache():

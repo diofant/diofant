@@ -1,10 +1,11 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
+import math
 import operator
 
+from ..config import query
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyconfig import query
 from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
 
 
@@ -26,11 +27,56 @@ class _GCD:
         elif g.is_zero:
             h, cfg, cff = self._gcd_zero(f)
             return h, cff, cfg
+        elif f.is_term:
+            h, cff, cfg = self._gcd_term(f, g)
+            return h, cff, cfg
+        elif g.is_term:
+            h, cfg, cff = self._gcd_term(g, f)
+            return h, cff, cfg
 
-        J, (f, g) = f.deflate(g)
+        J, (f, g) = self._deflate(f, g)
         h, cff, cfg = self._gcd(f, g)
 
-        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
+        return self._inflate(h, J), self._inflate(cff, J), self._inflate(cfg, J)
+
+    def _deflate(self, *polys):
+        J = [0]*self.ngens
+
+        for p in polys:
+            for monom in p:
+                for i, m in enumerate(monom):
+                    J[i] = math.gcd(J[i], m)
+
+        for i, b in enumerate(J):
+            if not b:
+                J[i] = 1
+
+        J = tuple(J)
+
+        if all(b == 1 for b in J):
+            return J, polys
+
+        H = []
+
+        for p in polys:
+            h = self.zero
+
+            for I, coeff in p.items():
+                N = [i//j for i, j in zip(I, J)]
+                h[N] = coeff
+
+            H.append(h)
+
+        return J, H
+
+    def _inflate(self, f, J):
+        poly = self.zero
+
+        for I, coeff in f.items():
+            N = [i*j for i, j in zip(I, J)]
+            poly[N] = coeff
+
+        return poly
 
     def _gcd_zero(self, f):
         one, zero = self.one, self.zero
@@ -41,6 +87,26 @@ class _GCD:
                 return -f, zero, -one
             else:
                 return f, zero, one
+
+    def _gcd_term(self, f, g):
+        domain = self.domain
+        ground_gcd = domain.gcd
+        ground_quo = domain.quo
+        mf, cf = f.LT
+        _mgcd, _cgcd = mf, cf
+        if domain.is_Field:
+            for mg, cg in g.items():
+                _mgcd = _mgcd.gcd(mg)
+            _cgcd = domain.one
+        else:
+            for mg, cg in g.items():
+                _mgcd = _mgcd.gcd(mg)
+                _cgcd = ground_gcd(_cgcd, cg)
+        h = self.term_new(_mgcd, _cgcd)
+        cff = self.term_new(mf/_mgcd, ground_quo(cf, _cgcd))
+        cfg = self.from_dict({mg/_mgcd: ground_quo(cg, _cgcd)
+                              for mg, cg in g.items()})
+        return h, cff, cfg
 
     def _gcd(self, f, g):
         domain = self.domain
@@ -95,8 +161,8 @@ class _GCD:
 
         c, h = h.LC, h.monic()
 
-        cff = cff.mul_ground(domain.quo(c, cf))
-        cfg = cfg.mul_ground(domain.quo(c, cg))
+        cff *= domain.quo(c, cf)
+        cfg *= domain.quo(c, cg)
 
         return h, cff, cfg
 
@@ -286,7 +352,7 @@ class _GCD:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
         (4, [x**2 + 1, x**2 - 1, -2])

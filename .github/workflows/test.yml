@@ -1,17 +1,22 @@
 name: test
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 2'
 jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9-dev]
-        os: [ubuntu]
-    runs-on: ${{ matrix.os }}-latest
+        python-version: [3.9]
+        coverage: [false, true]
+    runs-on: ubuntu-latest
     env:
       TERM: xterm
     steps:
     - uses: actions/checkout@v2
-    - run: git fetch --prune --unshallow --tags -f
+      with:
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -19,104 +24,95 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
-        sudo apt install libmpc-dev libmpfr-dev libgmp-dev
-        sudo apt install libatlas-base-dev liblapack-dev gfortran
+        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
-        if [ "${{ matrix.python-version }}" != "3.9-dev" ]
-        then
-          pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        else
-          pip install -U .[interactive,develop,gmpy,exports,docs]
-        fi
+        pip install -U pip setuptools
+        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
+        pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
-        flake8-rst --statistics
-        flake8-rst --ignore= --statistics --exit-zero
-        flake8 --statistics
-        flake8 --ignore= --statistics --exit-zero
+        flake8-rst
+        flake8
         pylint diofant
     - name: Run type checks with mypy
-      run: mypy diofant/domains/ diofant/polys/ diofant/tests/domains/ diofant/tests/polys/
-    - name: Run doctests
-      env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      run: py.test
+      run: mypy diofant
     - name: Tests
+      if: matrix.coverage == false
       env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules
-      run: py.test
+        PYTEST_ADDOPTS: --doctest-modules
+      run: pytest
     - name: Coverage tests
-      if: matrix.python-version == 3.7
+      if: matrix.coverage
       env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
       run: |
-        py.test
+        pytest
         pip uninstall -y gmpy2
-        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
-        py.test diofant/tests/polys
+        DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
+        pytest diofant/tests/polys
         pip uninstall -y numpy
-        py.test diofant/tests/external diofant/tests/utilities
+        pytest diofant/tests/external diofant/tests/utilities
+        coverage html
     - name: Upload coverage data
-      if: matrix.python-version == 3.7
-      run: |
-        for n in 1 2 3; do
-          if codecov --required; then
-            exit 0
-          fi
-          sleep $((n*160))
-        done
-        exit 1
-    - name: Building and testing docs
+      if: matrix.coverage
+      run: codecov --required --tries 10
+    - name: Get version
       id: release
       run: |
-        python setup.py build_sphinx -W -b html,latex
-        make -C build/sphinx/latex all-pdf
-        git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
-        rm -rf sphinx_docs/.git
-        rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
-        pip install wheel
-        python setup.py sdist bdist_wheel
         export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
         echo ::set-output name=version::${VERSION}
         echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
-        cp -a build/sphinx/html diofant-docs-html-${VERSION}
-        zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
-        cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
+    - name: Building docs
+      run: |
+        python setup.py build_sphinx -W -b html,latex
+        make -C build/sphinx/latex all-pdf
+    - name: Prepare update for docs on Github Pages
+      run: |
+        wget -q https://github.com/diofant/diofant.github.io/archive/master.zip
+        unzip -x master.zip
+        rsync -a --delete build/sphinx/html/ diofant.github.io-master/en/latest/
+    - name: Make packages
+      run: python setup.py sdist bdist_wheel
     - name: Archive production artifacts
-      uses: actions/upload-artifact@master
-      if: matrix.python-version == 3.7
+      uses: actions/upload-artifact@v2
+      if: matrix.coverage
       with:
-        name: dist
-        path: dist
+        path: |
+          dist/
+          build/sphinx/html/
+          build/sphinx/latex/Diofant-*.pdf
+          coverage.xml
+          build/coverage/html/
     - name: Upload docs to Github Pages
-      if: github.event_name == 'push' && matrix.python-version == 3.7
-      uses: peaceiris/actions-gh-pages@v2.5.0
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        EXTERNAL_REPOSITORY: diofant/diofant.github.io
-        PUBLISH_BRANCH: master
-        PUBLISH_DIR: sphinx_docs
+      if: github.event_name == 'push' && matrix.coverage
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        external_repository: diofant/diofant.github.io
+        publish_branch: master
+        publish_dir: diofant.github.io-master
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
-        files: dist/*
+        files: |
+          dist/*
+          build/sphinx/latex/Diofant-*.pdf
         draft: true
         prerelease: true
         name: "Diofant ${{ steps.release.outputs.version }}"
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
-    - name: Cleanup extra artifacts from dist
-      if: matrix.python-version == 3.7
-      run: rm -f dist/*.pdf dist/*.zip
     - name: Publish package on PyPI
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
-      uses: pypa/gh-action-pypi-publish@master
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
+      uses: pypa/gh-action-pypi-publish@v1.4.2
       with:
-        password: ${{ secrets.pypi_password }}
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

@@ -21,7 +21,7 @@ Cython = import_module('Cython', min_module_version='0.15.1')
 with_cython = pytest.mark.skipif(Cython is None,
                                  reason="Couldn't import Cython.")
 
-f2py = import_module('numpy.f2py', __import__kwargs={'fromlist': ['f2py']})
+f2py = import_module('numpy.f2py', import__kwargs={'fromlist': ['f2py']})
 with_f2py = pytest.mark.skipif(f2py is None, reason="Couldn't run f2py.")
 
 f2pyworks = False

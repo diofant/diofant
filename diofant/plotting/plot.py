@@ -26,7 +26,8 @@ import warnings
 from collections.abc import Callable
 from inspect import getfullargspec
 
-from ..core import Dummy, Expr, Symbol, Tuple, sympify
+from ..core import Dummy, Expr, Symbol, Tuple
+from ..core.sympify import sympify
 from ..external import import_module
 from ..utilities import lambdify
 from ..utilities.decorator import doctest_depends_on
@@ -797,7 +798,7 @@ class MatplotlibBackend(BaseBackend):
         super().__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]
         self.matplotlib = import_module('matplotlib',
-                                        __import__kwargs={'fromlist': ['pyplot', 'cm', 'collections']},
+                                        import__kwargs={'fromlist': ['pyplot', 'cm', 'collections']},
                                         min_module_version='1.1.0', catch=(RuntimeError,))
         self.plt = self.matplotlib.pyplot
         self.cm = self.matplotlib.cm
@@ -832,7 +833,7 @@ class MatplotlibBackend(BaseBackend):
             elif s.is_3Dline:
                 # TODO too complicated, I blame matplotlib
                 mpl_toolkits = import_module('mpl_toolkits',
-                                             __import__kwargs={'fromlist': ['mplot3d']})
+                                             import__kwargs={'fromlist': ['mplot3d']})
                 art3d = mpl_toolkits.mplot3d.art3d
                 collection = art3d.Line3DCollection(s.get_segments())
                 self.ax.add_collection(collection)
@@ -897,7 +898,7 @@ class MatplotlibBackend(BaseBackend):
         # XXX The order of those is important.
 
         mpl_toolkits = import_module('mpl_toolkits',
-                                     __import__kwargs={'fromlist': ['mplot3d']})
+                                     import__kwargs={'fromlist': ['mplot3d']})
         Axes3D = mpl_toolkits.mplot3d.Axes3D
         if parent.xscale and not isinstance(self.ax, Axes3D):
             self.ax.set_xscale(parent.xscale)

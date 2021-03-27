@@ -1,9 +1,12 @@
 """Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
+from __future__ import annotations
+
 import re
 import typing
 
-from ..core import Basic, I, sympify
+from ..core import Basic, I
+from ..core.sympify import sympify
 from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
@@ -18,11 +21,11 @@ class Option:
 
     is_Flag = False
 
-    requires: typing.List[str] = []
-    excludes: typing.List[str] = []
+    requires: list[str] = []
+    excludes: list[str] = []
 
-    after: typing.List[str] = []
-    before: typing.List[str] = []
+    after: list[str] = []
+    before: list[str] = []
 
     @classmethod
     def default(cls):
@@ -111,8 +114,8 @@ class Options(dict):
 
     """
 
-    __order__: typing.Union[None, typing.List[str]] = None
-    __options__: typing.Dict[str, typing.Type[Option]] = {}
+    __order__: typing.Optional[list[str]] = None
+    __options__: dict[str, type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):
         dict.__init__(self)

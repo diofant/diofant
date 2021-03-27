@@ -3,8 +3,9 @@
 import warnings
 
 from ..core import (expand_mul, expand_multinomial, nan, oo,
-                    preorder_traversal, sympify, zoo)
-from ..simplify import posify, simplify
+                    preorder_traversal, zoo)
+from ..core.sympify import sympify
+from ..simplify.simplify import posify, simplify
 
 
 __all__ = 'checksol',
@@ -123,6 +124,7 @@ def checksol(f, sol, **flags):
             if flags.get('force', True):
                 # don't do a zero check with the positive assumptions in place
                 val = val.subs(reps)
+            val  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         if val == was:

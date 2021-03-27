@@ -2,8 +2,12 @@
 Mathematica code printer
 """
 
-import types
+from __future__ import annotations
 
+import types
+import typing
+
+from ..core import Expr
 from .codeprinter import CodePrinter
 from .precedence import precedence
 from .str import StrPrinter
@@ -61,7 +65,7 @@ class MCodePrinter(CodePrinter):
 
     printmethod = '_mcode'
 
-    _default_settings = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,
@@ -69,8 +73,8 @@ class MCodePrinter(CodePrinter):
         'human': True,
     }
 
-    _number_symbols = set()
-    _not_supported = set()
+    _number_symbols: set[tuple] = set()
+    _not_supported: set[Expr] = set()
 
     def __init__(self, settings={}):
         """Register function mappings supplied by user."""
@@ -201,7 +205,7 @@ class MCodePrinter(CodePrinter):
                                     self.doprint(f))
 
     def _print_AlgebraicElement(self, expr):
-        coeffs = list(reversed(expr.rep.all_coeffs()))
+        coeffs = expr.rep.all_coeffs()
         return 'AlgebraicNumber[%s, %s]' % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 

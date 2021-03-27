@@ -207,7 +207,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
         return a, B, C, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-                         "'base'}, not %s." % case)
+                         f"'base'}}, not {case!s}.")
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
     nc = order_at(ca, p, DE.t) - order_at(cd, p, DE.t)
@@ -366,7 +366,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
 
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-                         "'other_nonlinear', 'base'}, not %s." % case)
+                         f"'other_nonlinear', 'base'}}, not {case!s}.")
 
     return n
 
@@ -719,7 +719,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
             else:
                 raise NotImplementedError('Other Poly (P)RDE cancellation '
-                                          'cases are not yet implemented (%s).' % DE.case)
+                                          f'cases are not yet implemented ({DE.case!s}).')
 
         raise NotImplementedError('Remaining cases for Poly RDE not yet '
                                   'implemented.')

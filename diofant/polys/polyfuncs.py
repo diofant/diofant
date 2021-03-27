@@ -100,6 +100,7 @@ def symmetrize(F, *gens, **args):
             if _height != -1:
                 monom, coeff = _monom, _coeff
             else:
+                _height  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
             exponents = []
@@ -180,12 +181,12 @@ def horner(f, *gens, **args):
     form, gen = Integer(0), F.gen
 
     if F.is_univariate:
-        for coeff in F.all_coeffs():
+        for coeff in reversed(F.all_coeffs()):
             form = form*gen + coeff
     else:
         F, gens = Poly(F, gen), gens[1:]
 
-        for coeff in F.all_coeffs():
+        for coeff in reversed(F.all_coeffs()):
             form = form*gen + horner(coeff, *gens, **args)
 
     return form
@@ -275,7 +276,7 @@ def viete(f, roots=None, *gens, **args):
     lc, coeffs = f.LC(), f.all_coeffs()
     result, sign = [], -1
 
-    for i, coeff in enumerate(coeffs[1:]):
+    for i, coeff in enumerate(reversed(coeffs[:-1])):
         poly = symmetric_poly(i + 1, *roots)
         coeff = sign*(coeff/lc)
         result.append((poly, coeff))

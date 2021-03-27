@@ -6,6 +6,7 @@ See also http://math.unm.edu/~wester/cas_review.html for detailed output of
 each tested system.
 """
 import itertools
+import math
 
 import pytest
 
@@ -13,8 +14,8 @@ from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
                      E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
                      GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
                      LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
-                     N, O, Or, Piecewise, Poly, Product, Rational, Subs, Sum,
-                     Symbol, ZeroMatrix, acos, acot, apart, asin, asinh,
+                     N, O, Or, Piecewise, Product, Rational, Subs, Sum, Symbol,
+                     ZeroMatrix, acos, acot, apart, asin, asinh,
                      assoc_legendre, atan, bernoulli, besselj, binomial,
                      block_collapse, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
@@ -26,15 +27,14 @@ from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
                      exp, expand, expand_func, eye, factor, factorial,
                      factorial2, factorint, fibonacci, floor,
                      fourier_transform, gamma, gcd, groebner, hessian, hyper,
-                     hyperexpand, igcd, im, integrate,
-                     inverse_laplace_transform, laplace_transform,
-                     legendre_poly, limit, log, logcombine, maximize,
-                     mellin_transform, minimize, nan, npartitions, oo, pi,
-                     polygamma, polylog, powdenest, powsimp, primerange,
-                     primitive, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, root, rsolve,
-                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
-                     sqrtdenest, summation, symbols, tan, tanh, totient,
+                     hyperexpand, im, integrate, inverse_laplace_transform,
+                     laplace_transform, legendre_poly, limit, log, logcombine,
+                     maximize, mellin_transform, minimize, nan, npartitions,
+                     oo, pi, polygamma, polylog, powdenest, powsimp,
+                     primerange, primitive, primitive_root, product, radsimp,
+                     re, reduce_inequalities, residue, resultant, rf, root,
+                     rsolve, sec, series, sign, simplify, sin, sinh, solve,
+                     sqrt, sqrtdenest, summation, symbols, tan, tanh, totient,
                      trigsimp, trunc, wronskian, zeta, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.functions.combinatorial.numbers import stirling
@@ -100,7 +100,7 @@ def test_C8():
 
 
 def test_C9():
-    assert igcd(1776, 1554, 5698) == 74
+    assert math.gcd(1776, 1554, 5698) == 74
 
 
 def test_C10():
@@ -397,7 +397,7 @@ def test_H18():
 
 def test_H19():
     # The idea is to let a**2 == 2, then solve 1/(a-1). Answer is a+1")
-    assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
+    assert (a - 1).as_poly().invert((a**2 - 2).as_poly()) == a + 1
 
 
 def test_H20():
@@ -695,8 +695,8 @@ def test_M2():
 
 def test_M5():
     assert (solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) ==
-            [{x: r} for r in Poly(x**6 - 9*x**4 - 4*x**3 + 27*x**2 -
-                                  36*x - 23).all_roots()])
+            [{x: r} for r in (x**6 - 9*x**4 - 4*x**3 + 27*x**2 -
+                              36*x - 23).as_poly().all_roots()])
 
 
 def test_M6():
@@ -915,8 +915,8 @@ def test_M38():
 
 @pytest.mark.slow
 def test_M39():
-    r0, r1, r2, r3, r4 = Poly(6*z**5 - 6*z**4 - 9*z**3 -
-                              7*z**2 - 3*z - 1).all_roots()
+    r0, r1, r2, r3, r4 = (6*z**5 - 6*z**4 - 9*z**3 -
+                          7*z**2 - 3*z - 1).as_poly().all_roots()
     sol = [{x: -1, y: 1, z: 1}, {x: 1, y: 1, z: 1}]
     for r in [r1, r2, r3, r4, r0]:
         sol.extend([{x: -sqrt(3)*sqrt(r*(-12*r**3 + 12*r**2 + 30*r - 7))/3,
@@ -1080,8 +1080,8 @@ def test_P5_workaround():
 def test_P6():
     M = Matrix([[cos(x), sin(x)],
                 [-sin(x), cos(x)]])
-    assert M.diff(x, 2) == Matrix([[-cos(x), -sin(x)],
-                                   [sin(x), -cos(x)]])
+    assert M.diff((x, 2)) == Matrix([[-cos(x), -sin(x)],
+                                     [sin(x), -cos(x)]])
 
 
 def test_P7():
@@ -1429,7 +1429,7 @@ def test_P44():
 
 def test_P45():
     def __my_wronskian(Y, v):
-        M = Matrix([Matrix(Y).T.diff(x, n) for n in range(len(Y))])
+        M = Matrix([Matrix(Y).T.diff((x, n)) for n in range(len(Y))])
         return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 
@@ -2169,7 +2169,7 @@ def test_Z4():
 
 
 def test_Z5():
-    eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
+    eq = Derivative(f(x), (x, 2)) + 4*f(x) - sin(2*x)
     sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs({x: 0}): 0})
     assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 

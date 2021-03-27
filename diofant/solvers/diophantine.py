@@ -1,17 +1,16 @@
 import math
 
-from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms, igcd,
-                    ilcm, integer_nthroot, oo, symbols, sympify)
+from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
+                    integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
-from ..core.power import isqrt
 from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
                        nextprime, perfect_power, sqrt_mod, square_factor)
-from ..polys import GeneratorsNeeded, Poly, factor_list
+from ..polys import GeneratorsNeeded, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
@@ -49,9 +48,9 @@ def _sorted_tuple(*i):
 
 def _remove_gcd(*x):
     try:
-        g = igcd(*x)
+        g = math.gcd(*x)
         return tuple(i//g for i in x)
-    except ValueError:
+    except (TypeError, ValueError):
         return x
 
 
@@ -147,7 +146,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
         eq = factor_terms(eq)
         assert not eq.is_number
         eq = eq.as_independent(*var, as_Add=False)[1]
-        p = Poly(eq)
+        p = eq.as_poly()
         assert not any(g.is_number for g in p.gens)
         eq = p.as_expr()
         assert eq.is_polynomial()
@@ -319,26 +318,6 @@ def diop_solve(eq, param=symbols('t', integer=True)):
 
 
 def classify_diop(eq, _dict=True):
-    """
-    Helper routine used by diop_solve() to find the type of the ``eq`` etc.
-
-    Parameters
-    ==========
-
-    eq : Expr
-        an expression, which is assumed to be zero.
-
-    Examples
-    ========
-
-    >>> classify_diop(4*x + 6*y - 4)
-    ([x, y], {1: -4, x: 4, y: 6}, 'linear')
-    >>> classify_diop(x + 3*y - 4*z + 5)
-    ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
-    >>> classify_diop(x**2 + y**2 - x*y + x + 5)
-    ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
-
-    """
     try:
         var = list(eq.free_symbols)
         assert var
@@ -351,7 +330,7 @@ def classify_diop(eq, _dict=True):
         raise TypeError('Coefficients should be Integers')
 
     diop_type = None
-    total_degree = Poly(eq).total_degree()
+    total_degree = eq.as_poly().total_degree()
     homogeneous = 1 not in coeff
     if total_degree == 1:
         diop_type = 'linear'
@@ -416,7 +395,25 @@ def classify_diop(eq, _dict=True):
         diop_classify()."""))
 
 
-classify_diop.__doc__ += """
+classify_diop.__doc__ = """
+    Helper routine used by diop_solve() to find the type of the ``eq`` etc.
+
+    Parameters
+    ==========
+
+    eq : Expr
+        an expression, which is assumed to be zero.
+
+    Examples
+    ========
+
+    >>> classify_diop(4*x + 6*y - 4)
+    ([x, y], {1: -4, x: 4, y: 6}, 'linear')
+    >>> classify_diop(x + 3*y - 4*z + 5)
+    ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
+    >>> classify_diop(x**2 + y**2 - x*y + x + 5)
+    ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
+
     Returns
     =======
 
@@ -809,8 +806,8 @@ def _diop_quadratic(var, coeff, t):
             a = A // g
             c = C // g
             e = sign(B/A)
-            sqa = isqrt(a)
-            sqc = isqrt(c)
+            sqa = math.isqrt(a)
+            sqc = math.isqrt(c)
             _c = e*sqc*D - sqa*E
             if not _c:
                 z = symbols('z', extended_real=True)
@@ -899,7 +896,7 @@ def _diop_quadratic(var, coeff, t):
                     sol.add(tuple(s))
 
             else:
-                L = ilcm(*[_.denominator for _ in P[:4] + Q[:2]])
+                L = math.lcm(*[_.denominator for _ in P[:4] + Q[:2]])
 
                 k = 1
 
@@ -2063,7 +2060,7 @@ def _diop_ternary_quadratic_normal(var, coeff):
     y_0 = reconstruct(a_1, c_1, y_0)
     z_0 = reconstruct(a_1, b_1, z_0)
 
-    sq_lcm = ilcm(sqf_of_a, sqf_of_b, sqf_of_c)
+    sq_lcm = math.lcm(sqf_of_a, sqf_of_b, sqf_of_c)
 
     x_0 = abs(x_0*sq_lcm//sqf_of_a)
     y_0 = abs(y_0*sq_lcm//sqf_of_b)
@@ -2442,10 +2439,10 @@ def _diop_general_pythagorean(var, coeff, t):
     lcm = 1
     for i, v in enumerate(var):
         if i == index or (index > 0 and i == 0) or (index == 0 and i == 1):
-            lcm = ilcm(lcm, sqrt(abs(coeff[v**2])))
+            lcm = math.lcm(lcm, sqrt(abs(coeff[v**2])))
         else:
             s = sqrt(coeff[v**2])
-            lcm = ilcm(lcm, s if _odd(s) else s//2)
+            lcm = math.lcm(lcm, s if _odd(s) else s//2)
 
     for i, v in enumerate(var):
         sol[i] = (lcm*sol[i]) / sqrt(abs(coeff[v**2]))

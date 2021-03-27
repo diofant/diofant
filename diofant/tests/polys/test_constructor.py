@@ -1,7 +1,7 @@
 """Tests for tools for constructing domains for expressions."""
 
 from diofant import (EX, QQ, RR, ZZ, E, Float, GoldenRatio, I, Integer, Poly,
-                     Rational, construct_domain, sin, sqrt)
+                     Rational, construct_domain, exp, pi, sin, sqrt)
 from diofant.abc import x, y
 
 
@@ -30,7 +30,7 @@ def test_construct_domain():
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==
-            (alg, [alg([7]), alg([Rational(1, 2)]), alg([1, 0])]))
+            (alg, [alg([7]), alg([Rational(1, 2)]), alg([0, 1])]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
@@ -82,6 +82,9 @@ def test_construct_domain():
 
     assert construct_domain({}) == (ZZ, {})
 
+    assert construct_domain([-x*y + x*(y + 42) -
+                             42*x]) == (EX, [EX(-x*y + x*(y + 42) - 42*x)])
+
 
 def test_composite_option():
     assert construct_domain({(1,): sin(y)}, composite=False) == (EX, {(1,): EX(sin(y))})
@@ -113,5 +116,22 @@ def test_sympyissue_11538():
 
 
 def test_sympyissue_5428_14337():
-    assert Poly(x**2 + I, x).domain == QQ.algebraic_field(I)
-    assert Poly(x**2 + sqrt(2), x).domain == QQ.algebraic_field(sqrt(2))
+    assert (x**2 + I).as_poly(x).domain == QQ.algebraic_field(I)
+    assert (x**2 + sqrt(2)).as_poly(x).domain == QQ.algebraic_field(sqrt(2))
+
+
+def test_sympyissue_20617():
+    dom = QQ.algebraic_field(2*sqrt(3)).algebraic_field(I)
+
+    w = exp(I*2*pi/3)
+    l1 = [w**2, w, 1]
+
+    r1 = Poly(l1, x, extension=True)
+
+    w2 = w.expand()
+    l2 = [w2**2, w2, 1]
+
+    r2 = Poly(l2, x, extension=True)
+
+    assert r1 == r2
+    assert r1.domain == dom

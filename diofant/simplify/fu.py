@@ -188,13 +188,11 @@ http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
 
 from collections import defaultdict
 
-from strategies.core import debug, identity
-from strategies.tree import greedy
-
-from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
-                    expand_mul, factor_terms, gcd_terms, pi, sympify)
+                    expand_mul, factor_terms, gcd_terms, pi)
 from ..core.exprtools import Factors
+from ..core.strategies import greedy, identity
+from ..core.sympify import sympify
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
@@ -1571,16 +1569,6 @@ def L(rv):
 
 
 # ============== end of basic Fu-like tools =====================
-
-if DIOFANT_DEBUG:  # pragma: no cover
-    (TR0, TR1, TR2, TR3, TR4, TR5,
-     TR6, TR7, TR8, TR9, TR10, TR11, TR12, TR13,
-     TR2i, TRmorrie, TR14, TR15, TR16,
-     TR12i, TR111, TR22) = list(map(debug, (TR0, TR1, TR2, TR3, TR4, TR5,
-                                            TR6, TR7, TR8, TR9, TR10, TR11,
-                                            TR12, TR13, TR2i, TRmorrie, TR14,
-                                            TR15, TR16, TR12i, TR111, TR22)))
-
 
 # tuples are chains  --  (f, g) -> lambda x: g(f(x))
 # lists are choices  --  [f, g] -> lambda x: min(f(x), g(x), key=objective)

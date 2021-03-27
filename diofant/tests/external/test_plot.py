@@ -1,10 +1,13 @@
 """Generic plotting tests."""
 
+from __future__ import annotations
+
 import errno
 import functools
 import os
 import sys
 import tempfile
+import typing
 
 import pytest
 
@@ -45,7 +48,7 @@ unset_show()
 # XXX: We could implement this as a context manager instead
 class TmpFileManager:
 
-    tmp_files = []
+    tmp_files: list[typing.Any] = []
 
     @classmethod
     def tmp_file(cls, name=''):
@@ -186,6 +189,27 @@ def test_matplotlib_intro():
             (sin(x + y), cos(x - y), x - y, (x, -5, 5), (y, -5, 5)))
         p.save(tmp_file(f'{name}_parametric_surface'))
         del p
+
+        # issue sympy/sympy#7140
+        p1 = plot(x)
+        p2 = plot(x**2)
+
+        # append a series
+        p2.append(p1[0])
+        assert len(p2._series) == 2
+
+        with pytest.raises(TypeError):
+            p1.append(p2)
+
+        with pytest.raises(TypeError):
+            p1.append(p2._series)
+
+        # issue sympy/sympy#10925
+        f = Piecewise((-1, x < -1), (x, And(-1 <= x, x < 0)),
+                      (x**2, And(0 <= x, x < 1)), (x**3, True))
+        p = plot(f, (x, -3, 3))
+        p.save(tmp_file(f'{name}_10925'))
+        del p
     finally:
         TmpFileManager.cleanup()
 
@@ -297,22 +321,6 @@ def test_matplotlib_advanced_2():
 
 
 @disable_print
-def test_append_sympyissue_7140():
-    p1 = plot(x)
-    p2 = plot(x**2)
-
-    # append a series
-    p2.append(p1[0])
-    assert len(p2._series) == 2
-
-    with pytest.raises(TypeError):
-        p1.append(p2)
-
-    with pytest.raises(TypeError):
-        p1.append(p2._series)
-
-
-@disable_print
 def test_sympyissue_11461():
     try:
         name = 'test'
@@ -320,21 +328,6 @@ def test_sympyissue_11461():
 
         p = plot(real_root((log(x/(x-2))), 3), (x, 3, 4))
         p.save(tmp_file(f'{name}_11461'))
-        del p
-    finally:
-        TmpFileManager.cleanup()
-
-
-@disable_print
-def test_sympyissue_10925():
-    try:
-        name = 'test'
-        tmp_file = TmpFileManager.tmp_file
-
-        f = Piecewise((-1, x < -1), (x, And(-1 <= x, x < 0)),
-                      (x**2, And(0 <= x, x < 1)), (x**3, True))
-        p = plot(f, (x, -3, 3))
-        p.save(tmp_file(f'{name}_10925'))
         del p
     finally:
         TmpFileManager.cleanup()

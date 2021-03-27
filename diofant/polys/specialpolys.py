@@ -1,6 +1,7 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking."""
 
-from ..core import Add, Dummy, Integer, Mul, symbols, sympify
+from ..core import Add, Dummy, Integer, Mul, symbols
+from ..core.sympify import sympify
 from ..domains import ZZ
 from ..ntheory import nextprime
 from ..utilities import subsets
@@ -76,7 +77,7 @@ def symmetric_poly(n, *gens, **args):
     if not args.get('polys', False):
         return poly
     else:
-        return polytools.Poly(poly, *gens)
+        return poly.as_poly(*gens)
 
 
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):

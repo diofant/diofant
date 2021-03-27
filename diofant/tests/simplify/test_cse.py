@@ -185,7 +185,8 @@ def test_powers():
     assert cse(x*y**2 + x*y) == ([(x0, x*y)], [x0*y + x0])
 
 
-def test_sympyissue_4498():
+def test_basic_optimization():
+    # issue sympy/sympy#4498
     assert cse(w/(x - y) + z/(y - x), optimizations='basic') == \
         ([], [(w - z)/(x - y)])
 
@@ -375,7 +376,8 @@ def test_sympyissue_7840():
     assert len(substitutions) < 1
 
 
-def test_sympyissue_8891():
+def test_matrices():
+    # issue sympy/sympy#8891
     for cls in (MutableDenseMatrix, MutableSparseMatrix,
                 ImmutableDenseMatrix, ImmutableSparseMatrix):
         m = cls(2, 2, [x + y, 0, 0, 0])

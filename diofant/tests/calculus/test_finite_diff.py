@@ -139,57 +139,57 @@ def test_as_finite_diff():
                        + Rational(1, 24)*f(x + 7*h))).simplify() == 0
 
     # Central 2nd derivative at gridpoint
-    assert (as_finite_diff(f(x).diff(x, 2), [x-h, x, x+h]) -
+    assert (as_finite_diff(f(x).diff((x, 2)), [x-h, x, x+h]) -
             h**-2 * (f(x-h) + f(x+h) - 2*f(x))).simplify() == 0
 
-    assert (as_finite_diff(f(x).diff(x, 2), [x - 2*h, x-h, x, x+h, x + 2*h]) -
+    assert (as_finite_diff(f(x).diff((x, 2)), [x - 2*h, x-h, x, x+h, x + 2*h]) -
             h**-2 * (-Rational(1, 12)*(f(x - 2*h) + f(x + 2*h)) +
                      Rational(4, 3)*(f(x+h) + f(x-h)) - Rational(5, 2)*f(x))).simplify() == 0
 
     # Central 2nd derivative "half-way"
-    assert (as_finite_diff(f(x).diff(x, 2), [x - 3*h, x-h, x+h, x + 3*h]) -
+    assert (as_finite_diff(f(x).diff((x, 2)), [x - 3*h, x-h, x+h, x + 3*h]) -
             (2*h)**-2 * ((f(x - 3*h) + f(x + 3*h))/2 -
                          (f(x+h) + f(x-h))/2)).simplify() == 0
 
     # One sided 2nd derivative at gridpoint
-    assert (as_finite_diff(f(x).diff(x, 2), [x, x+h, x + 2*h, x + 3*h]) -
+    assert (as_finite_diff(f(x).diff((x, 2)), [x, x+h, x + 2*h, x + 3*h]) -
             h**-2 * (2*f(x) - 5*f(x+h) +
                      4*f(x+2*h) - f(x+3*h))).simplify() == 0
 
     # One sided 2nd derivative at "half-way"
-    assert (as_finite_diff(f(x).diff(x, 2), [x-h, x+h, x + 3*h, x + 5*h]) -
+    assert (as_finite_diff(f(x).diff((x, 2)), [x-h, x+h, x + 3*h, x + 5*h]) -
             (2*h)**-2 * (Rational(3, 2)*f(x-h) - Rational(7, 2)*f(x+h) + Rational(5, 2)*f(x + 3*h) -
                          f(x + 5*h)/2)).simplify() == 0
 
     # Central 3rd derivative at gridpoint
-    assert (as_finite_diff(f(x).diff(x, 3)) -
+    assert (as_finite_diff(f(x).diff((x, 3))) -
             (-f(x - Rational(3, 2)) + 3*f(x - Rational(1, 2)) -
              3*f(x + Rational(1, 2)) + f(x + Rational(3, 2)))).simplify() == 0
 
     assert (as_finite_diff(
-        f(x).diff(x, 3), [x - 3*h, x - 2*h, x-h, x, x+h, x + 2*h, x + 3*h]) -
+        f(x).diff((x, 3)), [x - 3*h, x - 2*h, x-h, x, x+h, x + 2*h, x + 3*h]) -
         h**-3 * (Rational(1, 8)*(f(x - 3*h) - f(x + 3*h)) - f(x - 2*h) +
                  f(x + 2*h) + Rational(13, 8)*(f(x-h) - f(x+h)))).simplify() == 0
 
     # Central 3rd derivative at "half-way"
-    assert (as_finite_diff(f(x).diff(x, 3), [x - 3*h, x-h, x+h, x + 3*h]) -
+    assert (as_finite_diff(f(x).diff((x, 3)), [x - 3*h, x-h, x+h, x + 3*h]) -
             (2*h)**-3 * (f(x + 3*h)-f(x - 3*h) +
                          3*(f(x-h)-f(x+h)))).simplify() == 0
 
     # One sided 3rd derivative at gridpoint
-    assert (as_finite_diff(f(x).diff(x, 3), [x, x+h, x + 2*h, x + 3*h]) -
+    assert (as_finite_diff(f(x).diff((x, 3)), [x, x+h, x + 2*h, x + 3*h]) -
             h**-3 * (f(x + 3*h)-f(x) + 3*(f(x+h)-f(x + 2*h)))).simplify() == 0
 
     # One sided 3rd derivative at "half-way"
-    assert (as_finite_diff(f(x).diff(x, 3), [x-h, x+h, x + 3*h, x + 5*h]) -
+    assert (as_finite_diff(f(x).diff((x, 3)), [x-h, x+h, x + 3*h, x + 5*h]) -
             (2*h)**-3 * (f(x + 5*h)-f(x-h) +
                          3*(f(x+h)-f(x + 3*h)))).simplify() == 0
 
-    assert as_finite_diff(f(x).diff(x, 2)) == -2*f(x) + f(x - 1) + f(x + 1)
+    assert as_finite_diff(f(x).diff((x, 2))) == -2*f(x) + f(x - 1) + f(x + 1)
 
     d2fdxdy = f(x, y).diff(x, y)
     assert as_finite_diff(d2fdxdy, wrt=x) == (-f(x - Rational(1, 2), y) +
                                               f(x + Rational(1, 2), y))
     pytest.raises(ValueError, lambda: as_finite_diff(d2fdxdy))
-    pytest.raises(ValueError, lambda: as_finite_diff(f(x).diff(x, 2),
+    pytest.raises(ValueError, lambda: as_finite_diff(f(x).diff((x, 2)),
                                                      [x, x + h]))

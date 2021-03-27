@@ -1,5 +1,9 @@
 """repr() printing tests."""
 
+from __future__ import annotations
+
+import typing
+
 import pytest
 
 from diofant import (FF, QQ, ZZ, Abs, Catalan, Dummy, E, EulerGamma, Float,
@@ -17,7 +21,7 @@ __all__ = ()
 
 # eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
-ENV = {}
+ENV: dict[str, typing.Any] = {}
 imports = ['from diofant import *',
            'from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing',
            'from diofant.domains.rationalfield import GMPYRationalField, PythonRationalField',
@@ -57,9 +61,9 @@ def test_Function():
 
 
 def test_Geometry():
-    sT(Point(0, 0), 'Point2D(Integer(0), Integer(0))')
+    sT(Point(0, 0), 'Point(Integer(0), Integer(0))')
     sT(Ellipse(Point(0, 0), 5, 1),
-       'Ellipse(Point2D(Integer(0), Integer(0)), Integer(5), Integer(1))')
+       'Ellipse(Point(Integer(0), Integer(0)), Integer(5), Integer(1))')
     # TODO more tests
 
 
@@ -116,10 +120,10 @@ def test_Factors():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     a = K.unit
-    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])')
+    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(2), Rational(1, 2)))([Integer(0), Integer(1)])')
     K = QQ.algebraic_field(root(-2, 3))
     a = K.unit
-    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])')
+    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(-2), Rational(1, 3)))([Integer(0), Integer(1)])')
 
 
 def test_Float():

@@ -1,5 +1,3 @@
-import functools
-import operator
 from collections import defaultdict
 
 from ..utilities import default_sort_key
@@ -1443,31 +1441,6 @@ class Mul(AssocOp):
     @property
     def _sorted_args(self):
         return tuple(self.as_ordered_factors())
-
-
-def prod(a, start=1):
-    """Return product of elements of a. Start with int 1 so if only
-       ints are included then an int result is returned.
-
-    Examples
-    ========
-
-    >>> prod(range(3))
-    0
-    >>> type(_) is int
-    True
-    >>> prod([Integer(2), 3])
-    6
-    >>> _.is_Integer
-    True
-
-    You can start the product at something other than 1:
-
-    >>> prod([1, 2], 3)
-    6
-
-    """
-    return functools.reduce(operator.mul, a, start)
 
 
 def _keep_coeff(coeff, factors, clear=True, sign=False):

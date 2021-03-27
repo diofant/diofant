@@ -6,8 +6,7 @@ perform simple informational queries.
 Notes
 =====
 
-Currently the geometry module supports 2-dimensional
-and 3-dimensional Euclidean space.
+Currently the geometry module supports 2-dimensional Euclidean space.
 
 """
 
@@ -15,15 +14,12 @@ from .curve import Curve
 from .ellipse import Circle, Ellipse
 from .exceptions import GeometryError
 from .line import Line, Ray, Segment
-from .line3d import Line3D, Ray3D, Segment3D
-from .plane import Plane
-from .point import Point, Point2D, Point3D
+from .point import Point
 from .polygon import Polygon, RegularPolygon, Triangle, deg, rad
 from .util import are_similar, centroid, convex_hull, idiff, intersection
 
 
 __all__ = ('Curve', 'Circle', 'Ellipse', 'GeometryError', 'Line', 'Ray',
-           'Segment', 'Line3D', 'Ray3D', 'Segment3D', 'Plane', 'Point',
-           'Point2D', 'Point3D', 'Polygon', 'RegularPolygon', 'Triangle',
-           'deg', 'rad', 'are_similar', 'centroid', 'convex_hull',
+           'Segment', 'Point', 'Polygon', 'RegularPolygon',
+           'Triangle', 'deg', 'rad', 'are_similar', 'centroid', 'convex_hull',
            'idiff', 'intersection')

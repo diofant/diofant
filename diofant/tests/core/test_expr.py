@@ -2,9 +2,9 @@ import pytest
 
 from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Function, Ge, Gt, Heaviside, I, Integer, Integral, Le, Lt,
-                     Max, Mul, Number, NumberSymbol, O, Piecewise, Poly, Pow,
-                     Rational, Si, Sum, Symbol, Tuple, Wild, WildFunction,
-                     apart, cancel, cbrt, collect, combsimp, cos,
+                     Max, Mul, Number, NumberSymbol, O, Piecewise, Pow,
+                     Rational, Si, Subs, Sum, Symbol, Tuple, Wild,
+                     WildFunction, apart, cancel, cbrt, collect, combsimp, cos,
                      default_sort_key, diff, exp, exp_polar, expand, factor,
                      factorial, false, gamma, log, lucas, nan, nsimplify, oo,
                      pi, posify, powsimp, radsimp, ratsimp, root, simplify,
@@ -225,6 +225,22 @@ def test_basic_nostr():
         pytest.raises(TypeError, lambda: obj ** '1')
 
 
+def test_series0():
+    # issue sympy/sympy#7231
+    f = Function('f')
+    ans1 = f(x).series(x, a)
+    _xi_1 = ans1.atoms(Dummy).pop()
+    res = (f(a) + (-a + x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, a)) +
+           (-a + x)**2*Subs(Derivative(f(_xi_1), _xi_1, _xi_1), (_xi_1, a))/2 +
+           (-a + x)**3*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1), (_xi_1, a))/6 +
+           (-a + x)**4*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1), (_xi_1, a))/24 +
+           (-a + x)**5*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1, _xi_1),
+                            (_xi_1, a))/120 + O((-a + x)**6, (x, a)))
+    assert res == ans1
+    ans2 = f(x).series(x, a)
+    assert res == ans2
+
+
 def test_series_expansion_for_uniform_order():
     assert (1/x + y + x).series(x, 0, 0) == 1/x + O(1, x)
     assert (1/x + y + x).series(x, 0, 1) == 1/x + y + O(x)
@@ -293,14 +309,14 @@ def test_atoms():
 
     assert sin(oo).atoms(oo) == {oo}
 
-    assert Poly(0, x).atoms() == {0, x}
-    assert Poly(1, x).atoms() == {1, x}
+    assert Integer(0).as_poly(x).atoms() == {0, x}
+    assert Integer(1).as_poly(x).atoms() == {1, x}
 
-    assert Poly(x, x).atoms() == {x}
-    assert Poly(x, x, y).atoms() == {x, y}
-    assert Poly(x + y, x, y).atoms() == {x, y}
-    assert Poly(x + y, x, y, z).atoms() == {x, y, z}
-    assert Poly(x + y*t, x, y, z).atoms() == {t, x, y, z}
+    assert x.as_poly().atoms() == {x}
+    assert x.as_poly(x, y).atoms() == {x, y}
+    assert (x + y).as_poly().atoms() == {x, y}
+    assert (x + y).as_poly(x, y, z).atoms() == {x, y, z}
+    assert (x + y*t).as_poly(x, y, z).atoms() == {t, x, y, z}
 
     assert (I*pi).atoms(NumberSymbol) == {pi}
     assert (I*pi).atoms(NumberSymbol, I) == {pi, I}
@@ -806,7 +822,7 @@ def test_has_tuple():
 
 
 def test_has_polys():
-    poly = Poly(x**2 + x*y*sin(z), x, y, t)
+    poly = (x**2 + x*y*sin(z)).as_poly(x, y, t)
 
     assert poly.has(x)
     assert poly.has(x, y, z)
@@ -821,7 +837,7 @@ def test_as_poly_as_expr():
 
     assert (f + sin(x)).as_poly(x, y) is None
 
-    p = Poly(f, x, y)
+    p = f.as_poly(x, y)
 
     assert p.as_poly() == p
 
@@ -998,6 +1014,12 @@ def test_extractions():
     assert (x - y).could_extract_minus_sign() is False
     assert (-x + y).could_extract_minus_sign() is True
 
+    # issue sympy/sympy#5843
+    e = 1 + x
+    assert (2*e).extract_multiplicatively(e) == 2
+    assert (4*e).extract_multiplicatively(2*e) == 2
+    assert ((3*e)*(2*e)).extract_multiplicatively(e) == 6*e
+
 
 def test_nan_extractions():
     for r in (1, 0, I, nan):
@@ -1085,17 +1107,17 @@ def test_coeff():
 
 def test_coeff2():
     psi = Function('psi')
-    g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
+    g = 1/r**2 * (2*r*psi(r).diff((r, 1)) + r**2 * psi(r).diff((r, 2)))
     g = g.expand()
     assert g.coeff((psi(r).diff(r))) == 2/r
 
 
 def test_coeff2_0():
     psi = Function('psi')
-    g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
+    g = 1/r**2 * (2*r*psi(r).diff((r, 1)) + r**2 * psi(r).diff((r, 2)))
     g = g.expand()
 
-    assert g.coeff(psi(r).diff(r, 2)) == 1
+    assert g.coeff(psi(r).diff((r, 2))) == 1
 
 
 def test_coeff_expand():
@@ -1359,7 +1381,8 @@ def test_as_ordered_terms():
     assert f.as_ordered_terms(order='rev-grlex') == [2, y, x**2*y**2, x*y**4]
 
 
-def test_sympyissue_4199():
+def test__eval_interval():
+    # issue sympy/sympy#4199
     # first subs and limit gives nan
     a = x/y
     assert a._eval_interval(x, 0, oo)._eval_interval(y, oo, 0) is nan
@@ -1373,8 +1396,6 @@ def test_sympyissue_4199():
     assert a._eval_interval(x, -oo, oo) == -y
     assert a._eval_interval(x, oo, -oo) == y
 
-
-def test_eval_interval_zoo():
     # Test that limit is used when zoo is returned
     assert Si(1/x)._eval_interval(x, 0, 1) == -pi/2 + Si(1)
 
@@ -1398,13 +1419,6 @@ def test_primitive():
     assert (oo + 2*x/3 + 4*y/7).primitive() == \
         (Rational(1, 21), 14*x + 12*y + oo)
     assert Integer(0).primitive() == (1, 0)
-
-
-def test_sympyissue_5843():
-    a = 1 + x
-    assert (2*a).extract_multiplicatively(a) == 2
-    assert (4*a).extract_multiplicatively(2*a) == 2
-    assert ((3*a)*(2*a)).extract_multiplicatively(a) == 6*a
 
 
 def test_is_constant():
@@ -1640,9 +1654,9 @@ def test_sympyissue_6325():
     ans = (b**2 + z**2 - (b*(a + b*t) + z*(c + t*z))**2/(
         (a + b*t)**2 + (c + t*z)**2))/sqrt((a + b*t)**2 + (c + t*z)**2)
     e = sqrt((a + b*t)**2 + (c + z*t)**2)
-    assert diff(e, t, 2) == ans
-    e.diff(t, 2) == ans
-    assert diff(e, t, 2, simplify=False) != ans
+    assert diff(e, (t, 2)) == ans
+    assert e.diff((t, 2)) == ans
+    assert diff(e, (t, 2), simplify=False) != ans
 
 
 def test_sympyissue_7426():

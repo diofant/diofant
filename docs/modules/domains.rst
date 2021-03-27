@@ -26,7 +26,7 @@ Abstract Domains
 .. autoclass:: diofant.domains.field.Field
    :members:
 
-.. autoclass:: diofant.domains.ring.Ring
+.. autoclass:: diofant.domains.ring.CommutativeRing
    :members:
 
 .. autoclass:: diofant.domains.simpledomain.SimpleDomain
@@ -40,6 +40,9 @@ Abstract Domains
 
 Concrete Domains
 ****************
+
+.. autoclass:: IntegerModRing
+   :members:
 
 .. autoclass:: FiniteField
    :members:

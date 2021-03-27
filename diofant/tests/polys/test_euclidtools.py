@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import CC, FF, QQ, RR, ZZ, I, NotInvertible, field, ring, sqrt
-from diofant.polys.polyconfig import using
+from diofant.config import using
 from diofant.polys.specialpolys import f_polys
 
 

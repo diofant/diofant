@@ -3,9 +3,7 @@ import math
 from mpmath.libmp import (bitcount, fhalf, fone, from_int, from_man_exp,
                           from_rational, fzero, mpf_add, mpf_cos,
                           mpf_cosh_sinh, mpf_div, mpf_mul, mpf_pi, mpf_sqrt,
-                          mpf_sub, pi_fixed, to_int, to_str)
-
-from ..utilities.misc import debug
+                          mpf_sub, pi_fixed, to_int)
 
 
 __all__ = 'npartitions',
@@ -91,7 +89,6 @@ def npartitions(n):
         a = _a(n, q, p)
         d = _d(n, q, p, sq23pi, sqrt8)
         s = mpf_add(s, mpf_mul(a, d), prec)
-        debug('step', q, 'of', M, to_str(a, 10), to_str(d, 10))
         # On average, the terms decrease rapidly in magnitude. Dynamically
         # reducing the precision greatly improves performance.
         p = bitcount(abs(to_int(d))) + 50

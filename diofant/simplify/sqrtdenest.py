@@ -1,6 +1,7 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
-                    expand_mul, sympify)
+                    expand_mul)
 from ..core.function import _mexpand
+from ..core.sympify import sympify
 from ..functions import root, sign, sqrt
 from ..polys import Poly, PolynomialError
 from ..utilities import default_sort_key
@@ -392,7 +393,7 @@ def _sqrt_symbolic_denest(a, b, r):
         except PolynomialError:
             return
         if newa.degree() == 2:
-            ca, cb, cc = newa.all_coeffs()
+            cc, cb, ca = newa.all_coeffs()
             cb += b
             if _mexpand(cb**2 - 4*ca*cc).equals(0):
                 z = sqrt(ca*(sqrt(r) + cb/(2*ca))**2)

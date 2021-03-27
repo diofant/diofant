@@ -2,12 +2,12 @@
 
 import pytest
 
-from diofant import (QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan, Complement,
-                     Derivative, Dict, Dummy, E, Eq, Equivalent, EulerGamma,
-                     Expr, FiniteSet, Float, Function, GoldenRatio, I, Integer,
-                     Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
-                     Mul, Ne, O, Poly, Pow, Rational, Rel, RootOf, RootSum, S,
-                     SparseMatrix, StrPrinter, Sum, Symbol,
+from diofant import (CC, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
+                     Complement, Derivative, Dict, Dummy, E, Eq, Equivalent,
+                     EulerGamma, Expr, FiniteSet, Float, Function, GoldenRatio,
+                     I, Integer, Integral, Interval, Lambda, Limit, Matrix,
+                     MatrixSymbol, Mul, Ne, O, Poly, Pow, Rational, Rel,
+                     RootOf, RootSum, S, SparseMatrix, StrPrinter, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor,
                      ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
                      false, field, grlex, groebner, nan, oo, pi, ring, root,
@@ -132,9 +132,8 @@ def test_Function():
 
 
 def test_Geometry():
-    assert sstr(Point(0, 0)) == 'Point2D(0, 0)'
-    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point2D(0, 0), 3)'
-    # TODO test other Geometry entities
+    assert sstr(Point(0, 0)) == 'Point(0, 0)'
+    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point(0, 0), 3)'
 
 
 def test_GoldenRatio():
@@ -403,6 +402,8 @@ def test_PolyElement():
     R, x = ring('x', K)
 
     assert str(x/t) == '1/t*x'
+
+    assert str(CC.inject(w).convert(I)) == '(0.0 + 1.0j)'
 
 
 def test_FracElement():
@@ -752,7 +753,7 @@ def test_SymmetricDifference():
 
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
-    assert str(K([1, 0])) == 'sqrt(2)'
+    assert str(K([0, 1])) == 'sqrt(2)'
 
 
 def test_Differential():

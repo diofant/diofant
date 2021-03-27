@@ -522,3 +522,8 @@ def test_diofantissue_210():
                                  x**9/6 - 11*x**12/24 + O(x**15))
     assert f.series(x, n=16) == (1 + x**3 + x**6/2 + x**9/6 - 11*x**12/24 -
                                  59*x**15/120 + O(x**16))
+
+
+def test_sympyissue_21075():
+    e = (sqrt(x) + cbrt(x))**2
+    assert e.nseries(x) == e.expand()

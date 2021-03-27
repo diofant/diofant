@@ -41,10 +41,13 @@ def test_simple():
     assert not next((x/(x + y)).lseries(y)).has(O)
     assert [t.doit() for t in Derivative(1 + x, x).lseries(x)] == [0, 1]
 
+    # issue sympy/sympy#5183
+    s = (x + 1/x).lseries()
+    assert list(s) == [1/x, x]
+
 
 def test_sympyissue_5183():
     s = (x + 1/x).lseries()
-    assert list(s) == [1/x, x]
     assert next((x + x**2).lseries()) == x
     assert next(((1 + x)**7).lseries(x)) == 1
     assert next((sin(x + y)).series(x, n=3).lseries(y)) == x
@@ -55,7 +58,8 @@ def test_sympyissue_5183():
     assert [next(s) for i in range(2)] == [128, -448 + 448*x]
 
 
-def test_sympyissue_6999():
+def test_tanh():
+    # issue sympy/sympy#6999
     s = tanh(x).lseries(x, 1)
     assert next(s) == tanh(1)
     assert next(s) == x - (x - 1)*tanh(1)**2 - 1

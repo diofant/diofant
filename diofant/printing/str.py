@@ -2,6 +2,10 @@
 A Printer for generating readable representation of most diofant classes.
 """
 
+from __future__ import annotations
+
+import typing
+
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
@@ -17,12 +21,12 @@ class StrPrinter(Printer):
     """Str printer."""
 
     printmethod = '_diofantstr'
-    _default_settings = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
     }
 
-    _relationals = {}
+    _relationals: dict[str, str] = {}
 
     def parenthesize(self, item, level):
         if precedence(item) <= level:
@@ -198,15 +202,6 @@ class StrPrinter(Printer):
 
     def _print_MatrixBase(self, expr):
         return expr._format_str(self)
-    _print_SparseMatrix = \
-        _print_MutableSparseMatrix = \
-        _print_ImmutableSparseMatrix = \
-        _print_Matrix = \
-        _print_DenseMatrix = \
-        _print_MutableDenseMatrix = \
-        _print_ImmutableMatrix = \
-        _print_ImmutableDenseMatrix = \
-        _print_MatrixBase
 
     def _print_MatrixElement(self, expr):
         return self._print(expr.parent) + f'[{expr.i}, {expr.j}]'

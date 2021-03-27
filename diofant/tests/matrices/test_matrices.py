@@ -2,7 +2,7 @@ import collections
 
 import pytest
 
-from diofant import (Basic, E, Float, Function, GramSchmidt, I,
+from diofant import (ZZ, Basic, E, Float, Function, GramSchmidt, I,
                      ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
                      Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
                      Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
@@ -60,6 +60,10 @@ def test_addition():
     ))
 
     assert a + b == a.add(b) == Matrix([[2, 4], [6, 1]])
+
+    # issue sympy/sympy#7201
+    assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
+    assert ones(1, 0) + ones(1, 0) == Matrix(1, 0, [])
 
 
 def test_fancy_index_matrix():
@@ -333,6 +337,26 @@ def test_determinant():
     assert M.det(method='bareiss') == z**2 - x*y
     assert M.det(method='berkowitz') == z**2 - x*y
 
+    # issue diofant/diofant#288
+    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
+                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
+                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
+                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
+                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
+                [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,
+                 exp(I*k)/4 + 1/2 + exp(-I*k)/4,
+                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4,
+                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
+    assert m.det() == 0
+    assert m.rank() != 4
+
 
 def test_det_LU_decomposition():
 
@@ -474,6 +498,15 @@ def test_applyfunc():
     m0 = eye(3)
     assert m0.applyfunc(lambda x: 2*x) == eye(3)*2
     assert m0.applyfunc(lambda x: 0) == zeros(3)
+
+    # issue sympy/sympy#11678
+    p = Matrix([[1./2, 1./4, 1./4],
+                [1./2, 0, 1./2],
+                [1./4, 0, 3./4]])
+    e = (p**x).applyfunc(lambda i: i.limit(x, oo))
+    assert e == Matrix([[Float('0.36363636363636359', dps=15),
+                         Float('0.090909090909090898', dps=15),
+                         Float('0.54545454545454541', dps=15)]]*3)
 
 
 def test_expand():
@@ -1642,7 +1675,7 @@ def test_Matrix_berkowitz_charpoly():
 
     assert charpoly == \
         Poly(x**2 + (K_i*UA + K_w*UA + 2*K_i*K_w)/(K_i + K_w)*x +
-             K_i*K_w*UA/(K_i + K_w), x, domain='ZZ(K_i,K_w,UA)')
+             K_i*K_w*UA/(K_i + K_w), x, domain=ZZ.inject(K_i, K_w, UA).field)
 
     assert type(charpoly) is PurePoly
 
@@ -2529,11 +2562,6 @@ def test_pinv_rank_deficient():
     assert A * A.pinv() * B != B
 
 
-def test_sympyissue_7201():
-    assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
-    assert ones(1, 0) + ones(1, 0) == Matrix(1, 0, [])
-
-
 def test_free_symbols():
     for M in ImmutableMatrix, ImmutableSparseMatrix, Matrix, SparseMatrix:
         assert M([[x], [0]]).free_symbols == {x}
@@ -2600,27 +2628,6 @@ def test_sympyissue_9480():
     assert m.rank() == 1
 
 
-def test_diofantissue_288():
-    m = Matrix([[-exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
-                 exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
-                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4],
-                [exp(I*k)*I/(4*k) + Rational(1, 2) - exp(-I*k)*I/(4*k),
-                 -exp(I*k)*I/(4*k) + Rational(1, 2) + exp(-I*k)*I/(4*k),
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
-                 exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4],
-                [exp(I*k)/4 + Rational(1, 2) + exp(-I*k)/4,
-                 -exp(I*k)/4 - Rational(1, 2) - exp(-I*k)/4,
-                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4,
-                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4],
-                [-exp(I*k)/4 - 1/2 - exp(-I*k)/4,
-                 exp(I*k)/4 + 1/2 + exp(-I*k)/4,
-                 -exp(I*k)*I*k/4 + exp(-I*k)*I*k/4,
-                 exp(I*k)*I*k/4 - exp(-I*k)*I*k/4]])
-    assert m.det() == 0
-    assert m.rank() != 4
-
-
 def test_sympyissue_11434():
     ax, ay, bx, by, cx, cy, dx, dy, ex, ey, t0, t1 = \
         symbols('a_x a_y b_x b_y c_x c_y d_x d_y e_x e_y t_0 t_1')
@@ -2680,7 +2687,8 @@ def test_sympyissue_10770():
             assert new == m and id(new) != id(m)
 
 
-def test_sympyissue_11944():
+def test_vstack():
+    # issue sympy/sympy#11944
     A = Matrix([[1]])
     AIm = A.as_immutable()
     assert Matrix.hstack(AIm, A) == Matrix([[1, 1]])

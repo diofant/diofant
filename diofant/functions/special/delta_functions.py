@@ -1,5 +1,6 @@
-from ...core import Eq, Function, Integer, Rational, diff, sympify
+from ...core import Eq, Function, Integer, Rational, diff
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...polys.polyerrors import PolynomialError
 from ..elementary.complexes import im, sign
 from ..elementary.piecewise import Piecewise

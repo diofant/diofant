@@ -1,9 +1,7 @@
-from strategies import do_one, exhaust
-from strategies.core import typed
-
-from ...core import Add, Expr, Mul, Number, sympify
+from ...core import Add, Expr, Mul, Number
 from ...core.logic import _fuzzy_group
-from ...core.strategies import flatten, rm_id, unpack
+from ...core.strategies import do_one, exhaust, flatten, rm_id, typed, unpack
+from ...core.sympify import sympify
 from ...functions import adjoint
 from ..matrices import MatrixBase, ShapeError
 from .matexpr import Identity, MatrixExpr, ZeroMatrix

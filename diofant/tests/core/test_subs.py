@@ -63,6 +63,9 @@ def test_powers():
     assert (4**x).subs({2**x: y}) == y**2
     assert (9**x).subs({3**x: y}) == y**2
 
+    # issue sympy/sympy#6923
+    assert (-2*x*sqrt(2)).subs({2*x: y}) == -sqrt(2)*y
+
 
 def test_logexppow():   # no eval()
     x = Symbol('x', extended_real=True)
@@ -301,6 +304,13 @@ def test_subs_noncommutative():
     assert (w*x*y*z*x*y).subs({x*y*z: L}) == w*L*x*y
     assert (w*x*y*y*w*x*x*y*x*y*y*x*y).subs({x*y: L}) == w*L*y*w*x*L**2*y*L
 
+    # issue sympy/sympy#5284
+    A, B = symbols('A B', commutative=False)
+    x = symbols('x')
+    assert (x*A).subs({x**2*A: B}) == x*A
+    assert (A**2).subs({A**3: B}) == A**2
+    assert (A**6).subs({A**3: B}) == B**2
+
 
 def test_subs_basic_funcs():
     a, b, c, d, K = symbols('a b c d K', commutative=True)
@@ -432,8 +442,8 @@ def test_derivative_subs2():
     assert (Derivative(f, x, y, z).subs({Derivative(f, x, z): g}) == Derivative(g, y))
     assert (Derivative(f, x, y, z).subs({Derivative(f, z, y): g}) == Derivative(g, x))
     assert (Derivative(f, x, y, z).subs({Derivative(f, z, y, x): g}) == g)
-    assert (Derivative(sin(x), x, 2).subs({Derivative(sin(x), f_func(x)): g_func}) ==
-            Derivative(sin(x), x, 2))
+    assert (Derivative(sin(x), (x, 2)).subs({Derivative(sin(x), f_func(x)): g_func}) ==
+            Derivative(sin(x), (x, 2)))
 
     # issue sympy/sympy#9135
     assert (Derivative(f, x, x, y).subs({Derivative(f, y, y): g}) == Derivative(f, x, x, y))
@@ -447,13 +457,6 @@ def test_derivative_subs3():
     dex = Derivative(exp(x), x)
     assert Derivative(dex, x).subs({dex: exp(x)}) == dex
     assert dex.subs({exp(x): dex}) == Derivative(exp(x), x, x)
-
-
-def test_sympyissue_5284():
-    A, B = symbols('A B', commutative=False)
-    assert (x*A).subs({x**2*A: B}) == x*A
-    assert (A**2).subs({A**3: B}) == A**2
-    assert (A**6).subs({A**3: B}) == B**2
 
 
 def test_subs_iter():
@@ -586,10 +589,6 @@ def test_sympyissue_5261():
     assert eq.subs({(-2)**x: y}) == eq
 
 
-def test_sympyissue_6923():
-    assert (-2*x*sqrt(2)).subs({2*x: y}) == -sqrt(2)*y
-
-
 @pytest.mark.xfail
 def test_mul2():
     """When this fails, remove things labelled "2-arg hack"
@@ -670,7 +669,8 @@ def test_sympyissue_11746():
     assert (1/x).subs({x**2: 1}) != 1
 
 
-def test_diofantissue_376():
+def test_diff_subs():
+    # issue diofant/diofant#376
     f = symbols('f', cls=Function)
     e1 = Subs(Derivative(f(x), x), (x, y*z))
     e2 = Subs(Derivative(f(t), t), (t, y*z))

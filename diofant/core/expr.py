@@ -1304,7 +1304,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x + 2
         >>> _.args[0]  # just want the exact match
         2
-        >>> p = Poly(2*E + x*E)
+        >>> p = (2*E + x*E).as_poly()
         >>> p
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
@@ -2481,7 +2481,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..functions import factorial
         x = sympify(x)
         _x = Dummy('x')
-        return self.subs({x: _x}).diff(_x, n).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
+        return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
     def lseries(self, x=None, x0=0, dir='+', logx=None):
         """Wrapper for series yielding an iterator of the terms of the series.
@@ -2839,10 +2839,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
     ###################################################################################
 
-    def diff(self, *symbols, **kwargs):
+    def diff(self, *args, **kwargs):
         """Alias for :func:`~diofant.core.function.diff`."""
         from .function import diff
-        return diff(self, *symbols, **kwargs)
+        return diff(self, *args, **kwargs)
 
     ###########################################################################
     # #################### EXPRESSION EXPANSION METHODS ##################### #

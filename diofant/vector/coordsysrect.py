@@ -305,7 +305,7 @@ class CoordSysCartesian(Basic):
                        ImmutableMatrix(relocated_scalars))
         mapping = {}
         for i, x in enumerate(self.base_scalars()):
-            mapping[x] = trigsimp(vars_matrix[i])
+            mapping[x] = trigsimp(vars_matrix[i]).doit()
         return mapping
 
     def locate_new(self, name, position, vector_names=None,
@@ -422,7 +422,7 @@ class CoordSysCartesian(Basic):
                 else:
                     final_matrix *= orienter.rotation_matrix()
 
-        return CoordSysCartesian(name, rotation_matrix=final_matrix,
+        return CoordSysCartesian(name, rotation_matrix=final_matrix.doit(),
                                  vector_names=vector_names,
                                  variable_names=variable_names,
                                  location=location,

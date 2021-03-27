@@ -343,6 +343,17 @@ def test_catalan():
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
 
+    # issue sympy/sympy#8601
+    n = Symbol('n', integer=True, negative=True)
+
+    assert catalan(n - 1) == 0
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
+    c1 = catalan(-5.6).evalf(strict=False)
+    assert str(c1) == '6.93334070531408e-5'
+    c2 = catalan(-35.4).evalf(strict=False)
+    assert str(c2) == '-4.14189164517449e-24'
+
 
 def test_genocchi():
     genocchis = [1, -1, 0, 1, 0, -3, 0, 17]
@@ -533,15 +544,3 @@ def test_sympyissue_8496():
 
     pytest.raises(TypeError, lambda: catalan(n, k))
     pytest.raises(TypeError, lambda: euler(n, k))
-
-
-def test_sympyissue_8601():
-    n = Symbol('n', integer=True, negative=True)
-
-    assert catalan(n - 1) == 0
-    assert catalan(Rational(-1, 2)) == zoo
-    assert catalan(-1) == Rational(-1, 2)
-    c1 = catalan(-5.6).evalf(strict=False)
-    assert str(c1) == '6.93334070531408e-5'
-    c2 = catalan(-35.4).evalf(strict=False)
-    assert str(c2) == '-4.14189164517449e-24'

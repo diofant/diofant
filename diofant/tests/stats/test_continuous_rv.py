@@ -266,6 +266,12 @@ def test_exponential():
 
     assert where(X <= 1).set == Interval(0, 1)
 
+    # issue sympy/sympy#10003
+    X = Exponential('x', 3)
+    G = Gamma('g', 1, 2)
+    assert P(X < -1) == 0
+    assert P(G < -1) == 0
+
 
 def test_f_distribution():
     d1 = Symbol('d1', positive=True)
@@ -667,10 +673,3 @@ def test_difficult_univariate():
     assert density(x**3)
     assert density(exp(x**2))
     assert density(log(x))
-
-
-def test_sympyissue_10003():
-    X = Exponential('x', 3)
-    G = Gamma('g', 1, 2)
-    assert P(X < -1) == 0
-    assert P(G < -1) == 0

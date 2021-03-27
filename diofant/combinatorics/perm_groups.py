@@ -177,7 +177,7 @@ class PermutationGroup(Basic):
         """
         if not isinstance(i, Permutation):
             raise TypeError('A PermutationGroup contains only Permutations as '
-                            'elements, not elements of type %s' % type(i))
+                            f'elements, not elements of type {type(i)}')
         return self.contains(i)
 
     def __len__(self):

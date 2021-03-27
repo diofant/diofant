@@ -1,14 +1,15 @@
 """Implementation of RootOf class and related tools."""
 
-import typing
+from __future__ import annotations
 
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
 from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational,
-                    cacheit, symbols, sympify)
+                    cacheit, symbols)
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
+from ..core.sympify import sympify
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
@@ -24,8 +25,8 @@ from .rationaltools import together
 from .rootisolation import ComplexInterval, RealInterval
 
 
-_reals_cache: typing.Dict[Poly, RealInterval] = {}
-_complexes_cache: typing.Dict[Poly, ComplexInterval] = {}
+_reals_cache: dict[Poly, RealInterval] = {}
+_complexes_cache: dict[Poly, ComplexInterval] = {}
 _x = Dummy('x')
 
 
@@ -195,7 +196,7 @@ class RootOf(Expr):
             return -p.TC()/p.LC()
         elif ((p.domain.is_IntegerRing or p.domain.is_AlgebraicField) and
               isinstance(expt, Integer) and (expt < 0 or expt >= p.degree())):
-            b = Poly(p.gen**abs(expt), p.gen, domain=p.domain)
+            b = (p.gen**abs(expt)).as_poly(p.gen, domain=p.domain)
             if expt < 0:
                 b = b.invert(p)
             x = self.doit()
@@ -481,7 +482,7 @@ class RootOf(Expr):
             elif all(sign(_) in (-1, 1) for _ in poly.coeffs()):
                 lc, tc = poly.LC(), poly.TC()
                 x, r = poly.gen, _root(abs(tc/lc), n)
-                poly = Poly(x**n + sign(lc*tc), x)
+                poly = (x**n + sign(lc*tc)).as_poly(x)
                 return [r*_ for _ in cls._roots_trivial(poly, radicals)]
 
     @classmethod
@@ -665,8 +666,8 @@ class RootOf(Expr):
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()
-        num = sum(c.diff(x)*self**n for n, c in enumerate(reversed(coeffs)))
-        den = sum(c*n*self**(n - 1) for n, c in enumerate(reversed(coeffs)))
+        num = sum(c.diff(x)*self**n for n, c in enumerate(coeffs))
+        den = sum(c*n*self**(n - 1) for n, c in enumerate(coeffs))
         return -num/den
 
 
@@ -783,14 +784,14 @@ class RootSum(Expr):
         q = q.expand()
 
         try:
-            p = Poly(p, domain=domain, expand=False)
+            p = p.as_poly(domain=domain, expand=False)
         except GeneratorsNeeded:
             p, p_coeff = None, (p,)
         else:
             p_monom, p_coeff = zip(*p.terms())
 
         try:
-            q = Poly(q, domain=domain, expand=False)
+            q = q.as_poly(domain=domain, expand=False)
         except GeneratorsNeeded:
             q, q_coeff = None, (q,)
         else:

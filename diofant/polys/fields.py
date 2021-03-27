@@ -1,11 +1,12 @@
 """Sparse rational function fields."""
 
+from __future__ import annotations
+
 import functools
 import operator
-import typing
 
-from ..core import Expr, Symbol, sympify
-from ..core.sympify import CantSympify
+from ..core import Expr, Symbol
+from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
@@ -189,6 +190,9 @@ class FractionField(Field, CompositeDomain):
     def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
+    def _from_ComplexField(self, a, K0):
+        return self(self.domain.convert(a, K0))
+
     def _from_PolynomialRing(self, a, K0):
         try:
             return self.field_new(a)
@@ -209,10 +213,9 @@ class FractionField(Field, CompositeDomain):
         return self.domain.is_normal(a.numerator.LC)
 
 
-_field_cache: typing.Dict[tuple, FractionField] = {}
+_field_cache: dict[tuple, FractionField] = {}
 
 
-@functools.total_ordering
 class FracElement(DomainElement, CantSympify):
     """Element of multivariate distributed rational function field.
 
@@ -286,15 +289,6 @@ class FracElement(DomainElement, CantSympify):
 
     def __bool__(self):
         return bool(self.numerator)
-
-    def sort_key(self):
-        return self.denominator.sort_key(), self.numerator.sort_key()
-
-    def __lt__(self, other):
-        if isinstance(other, self.field.dtype):
-            return self.sort_key() < other.sort_key()
-        else:
-            return NotImplemented
 
     def __pos__(self):
         return self.raw_new(self.numerator, self.denominator)
@@ -545,4 +539,20 @@ class FracElement(DomainElement, CantSympify):
         return field((field.ring(numer), field.ring(denom)))
 
     def compose(self, x, a=None):
-        raise NotImplementedError
+        """Computes the functional composition."""
+        field = self.field
+
+        if isinstance(x, list) and a is None:
+            x = [(X.to_poly(), a) for X, a in x]
+            numer = (self.numerator.compose([(X, a.numerator) for X, a in x]) *
+                     self.denominator.compose([(X, a.denominator) for X, a in x]))
+            denom = (self.numerator.compose([(X, a.denominator) for X, a in x]) *
+                     self.denominator.compose([(X, a.numerator) for X, a in x]))
+        else:
+            x = x.to_poly()
+            numer = (self.numerator.compose(x, a.numerator) *
+                     self.denominator.compose(x, a.denominator))
+            denom = (self.numerator.compose(x, a.denominator) *
+                     self.denominator.compose(x, a.numerator))
+
+        return field((field.ring(numer), field.ring(denom)))

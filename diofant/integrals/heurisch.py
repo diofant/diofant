@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import functools
 from itertools import permutations
 
@@ -28,7 +30,7 @@ def components(f, x):
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
     result = set()
@@ -57,7 +59,7 @@ def components(f, x):
 
 
 # name -> [] of symbols
-_symbols_cache = {}
+_symbols_cache: dict[str, list[Dummy]] = {}
 
 
 # NB @cacheit is not convenient here
@@ -95,7 +97,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     See Also
     ========
 
-    diofant.integrals.heurisch.heurisch
+    heurisch
 
     """
     from ..solvers.solvers import denoms, solve
@@ -192,15 +194,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     References
     ==========
 
-    * Manuel Bronstein's "Poor Man's Integrator",
-      http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
+    * :cite:`Bronstein2005pmint`
 
     See Also
     ========
 
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
-    diofant.integrals.heurisch.components
+    components
 
     """
     f = sympify(f)
@@ -509,7 +510,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         except ValueError:
             raise PolynomialError
 
-        solution = solve_lin_sys(numer.coeffs(), coeff_ring)
+        solution = solve_lin_sys(numer.values(), coeff_ring)
 
         if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],

@@ -231,6 +231,7 @@ def test_cos():
 
     assert cos.nargs == FiniteSet(1)
     assert cos(nan) == nan
+    assert cos(oo) == cos(oo, evaluate=False)
 
     assert cos(oo*I) == oo
     assert cos(-oo*I) == oo
@@ -619,6 +620,9 @@ def test_cot():
     assert cot(x).subs({x: 3*pi}) == zoo
 
     pytest.raises(ArgumentIndexError, lambda: cot(x).fdiff(2))
+
+    # issue sympy/sympy#4547
+    assert cot(x).fdiff() == -1 - cot(x)**2
 
 
 def test_cot_series():
@@ -1021,10 +1025,15 @@ def test_sympyissue_4547():
     assert sin(x).rewrite(cot) == 2*cot(x/2)/(1 + cot(x/2)**2)
     assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
     assert tan(x).rewrite(cot) == 1/cot(x)
-    assert cot(x).fdiff() == -1 - cot(x)**2
 
 
-def test_as_leading_term_sympyissue_5272():
+def test_leading_terms():
+    for func in [sin, cos, tan, cot, asin, acos, atan, acot]:
+        for arg in (1/x, Rational(1, 2)):
+            eq = func(arg)
+            assert eq.as_leading_term(x) == eq
+
+    # issue sympy/sympy#5272
     assert sin(x).as_leading_term(x) == x
     assert cos(x).as_leading_term(x) == 1
     assert tan(x).as_leading_term(x) == x
@@ -1033,13 +1042,6 @@ def test_as_leading_term_sympyissue_5272():
     assert acos(x).as_leading_term(x) == x
     assert atan(x).as_leading_term(x) == x
     assert acot(x).as_leading_term(x) == x
-
-
-def test_leading_terms():
-    for func in [sin, cos, tan, cot, asin, acos, atan, acot]:
-        for arg in (1/x, Rational(1, 2)):
-            eq = func(arg)
-            assert eq.as_leading_term(x) == eq
 
 
 def test_atan2_expansion():

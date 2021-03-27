@@ -1,9 +1,9 @@
 """Gröbner bases algorithms."""
 
+from ..config import query
 from ..core import Dummy
 from .monomials import Monomial
 from .orderings import lex
-from .polyconfig import query
 
 
 def groebner(seq, ring, method=None):
@@ -12,7 +12,7 @@ def groebner(seq, ring, method=None):
 
     Wrapper around the (default) improved Buchberger and the other algorithms
     for computing Gröbner bases. The choice of algorithm can be changed via
-    ``method`` argument or :func:`~diofant.polys.polyconfig.setup`,
+    ``method`` argument or :func:`~diofant.config.setup`,
     where ``method`` can be either ``buchberger`` or ``f5b``.
 
     """
@@ -482,7 +482,7 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> R, x, y, z = ring('x y z', QQ, lex)
+    >>> _, x, y, z = ring('x y z', QQ, lex)
 
     >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
     >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)

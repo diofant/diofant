@@ -1,10 +1,11 @@
 """Implementation of :class:`AlgebraicField` class."""
 
-import functools
-import typing
+from __future__ import annotations
 
-from ..core import I, cacheit, sympify
-from ..core.sympify import CantSympify
+import functools
+
+from ..core import I, cacheit
+from ..core.sympify import CantSympify, sympify
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .field import Field
@@ -74,7 +75,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
                              {'mod': mod, 'domain': rep_ring, '_parent': obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        obj.unit = obj.dtype([dom(1), dom(0)])
+        obj.unit = obj.dtype([dom(0), dom(1)])
 
         obj.zero = obj.dtype([dom(0)])
         obj.one = obj.dtype([dom(1)])
@@ -107,7 +108,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             return self([expr])
 
         try:
-            _, (c,), (rep,) = primitive_element([expr])
+            _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
         except NotAlgebraic:
             raise CoercionFailed(f'{expr} is not an algebraic number')
 
@@ -125,7 +126,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         if K0 == self.domain:
             return self([a])
         elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep.coeff(1) if a else self.zero
+            return a.rep[1] if a else self.zero
 
         from ..polys import field_isomorphism
 
@@ -158,7 +159,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
                 return r.as_content_primitive()
 
 
-_algebraic_numbers_cache: typing.Dict[tuple, AlgebraicField] = {}
+_algebraic_numbers_cache: dict[tuple, AlgebraicField] = {}
 
 
 class ComplexAlgebraicField(AlgebraicField):
@@ -218,7 +219,7 @@ class ComplexAlgebraicElement(AlgebraicElement):
     @property
     def real(self):
         """Returns real part of ``self``."""
-        return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
+        return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):
@@ -253,7 +254,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return rep.eval(0, root.interval.center) < 0
+        return rep(root.interval.center) < 0
 
     @cacheit
     def __int__(self):
@@ -264,11 +265,11 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         df = rep.diff()
 
         while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
-               int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
+               int(rep(root.interval.b)) != int(rep(root.interval.a))):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return int(rep.eval(0, root.interval.a))
+        return int(rep(root.interval.a))
 
     @property
     def real(self):

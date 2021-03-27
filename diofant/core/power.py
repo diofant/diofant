@@ -20,26 +20,6 @@ from .symbol import Dummy, symbols
 from .sympify import sympify
 
 
-def isqrt(n):
-    """Return the largest integer less than or equal to sqrt(n)."""
-    n = int(n)
-
-    if n < 0:
-        raise ValueError('n argument must be nonnegative')
-    if n == 0:
-        return 0
-
-    c = (n.bit_length() - 1) // 2
-    a = 1
-    d = 0
-    for s in reversed(range(c.bit_length())):
-        e = d
-        d = c >> s
-        a = (a << d - e - 1) + (n >> 2*c - e - d + 1) // a
-
-    return a - (a*a > n)
-
-
 def integer_nthroot(y, n):
     """
     Return a tuple containing x = floor(y**(1/n))
@@ -904,7 +884,6 @@ class Pow(Expr):
 
         """
         from ..functions import arg, cos, sin
-        from ..polys import Poly
 
         if self.exp.is_Integer:
             exp = self.exp
@@ -918,8 +897,7 @@ class Pow(Expr):
                     expr = expand_multinomial(self.base**exp)
                     return expr.as_real_imag()
 
-                expr = Poly(
-                    (a + b)**exp)  # a = re, b = im; expr = (a + b*I)**exp
+                expr = ((a + b)**exp).as_poly()  # a = re, b = im; expr = (a + b*I)**exp
             else:
                 mag = re**2 + im**2
                 re, im = re/mag, -im/mag
@@ -928,7 +906,7 @@ class Pow(Expr):
                     expr = expand_multinomial((re + im*I)**-exp)
                     return expr.as_real_imag()
 
-                expr = Poly((a + b)**-exp)
+                expr = ((a + b)**-exp).as_poly()
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]
@@ -1035,6 +1013,8 @@ class Pow(Expr):
                         return False
                     elif (self.exp/pi).is_rational:
                         return False
+                    elif (self.exp/(I*pi)).is_rational:
+                        return True
             else:
                 return s.is_algebraic
         elif self.exp.is_rational and self.exp.is_nonzero:

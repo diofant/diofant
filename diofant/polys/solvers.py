@@ -15,16 +15,14 @@ def eqs_to_matrix(eqs, ring):
 
     for j, e_j in enumerate(eqs):
         for i, x_i in enumerate(ring.gens):
-            m[j, i] = e_j.coeff(x_i)
-        m[j, -1] = -e_j.coeff(1)
+            m[j, i] = e_j[x_i]
+        m[j, -1] = -e_j[1]
 
     return m
 
 
 def solve_lin_sys(eqs, ring):
     """Solve a system of linear equations."""
-    assert ring.domain.is_Field
-
     # transform from equations to matrix form
     matrix = eqs_to_matrix(eqs, ring)
 

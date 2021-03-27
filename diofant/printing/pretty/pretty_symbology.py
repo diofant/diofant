@@ -1,5 +1,8 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
+from __future__ import annotations
+
+import typing
 import unicodedata
 
 from ...core.alphabets import greeks
@@ -58,7 +61,7 @@ greek_letters = list(greeks)  # make a copy
 greek_letters[greek_letters.index('lambda')] = 'lamda'
 
 # {}  greek letter -> (g,G)
-greek_unicode = {l: (g(l), G(l)) for l in greek_letters}
+greek_unicode: dict[str, typing.Union[tuple, str]] = {l: (g(l), G(l)) for l in greek_letters}
 greek_unicode = {L: g(L) for L in greek_letters}
 greek_unicode.update((L[0].upper() + L[1:], G(L)) for L in greek_letters)
 
@@ -417,14 +420,10 @@ _xsym = {
     '!=':  ('!=', '\N{NOT EQUAL TO}'),
     '*':   ('*', '\N{DOT OPERATOR}'),
     '-->': ('-->', '\N{EM DASH}' + '\N{EM DASH}' +
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' if '\N{EM DASH}'
-            and '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+            '\N{BLACK RIGHT-POINTING TRIANGLE}'),
     '==>': ('==>', '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
             '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' +
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' if
-            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
-            '\N{BOX DRAWINGS DOUBLE HORIZONTAL}' and
-            '\N{BLACK RIGHT-POINTING TRIANGLE}' else None),
+            '\N{BLACK RIGHT-POINTING TRIANGLE}'),
     '.':   ('*', '\N{RING OPERATOR}'),
 }
 

@@ -8,6 +8,7 @@ from .domain import Domain
 from .expressiondomain import EX, ExpressionDomain
 from .finitefield import FiniteField
 from .finitefield import GMPYFiniteField as FF_gmpy
+from .finitefield import IntegerModRing
 from .finitefield import PythonFiniteField as FF_python
 from .groundtypes import PythonRational
 from .integerring import IntegerRing, ZZ_gmpy, ZZ_python
@@ -26,4 +27,4 @@ __all__ = ('GROUND_TYPES', 'AlgebraicField', 'ComplexAlgebraicField',
            'ExpressionDomain', 'FiniteField', 'FF_gmpy', 'FF_python',
            'PythonRational', 'IntegerRing', 'ZZ_gmpy', 'ZZ_python',
            'QQ_gmpy', 'QQ_python', 'RationalField', 'RR', 'RealField',
-           'FF', 'ZZ', 'QQ', 'GF')
+           'FF', 'ZZ', 'QQ', 'GF', 'IntegerModRing')

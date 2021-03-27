@@ -84,12 +84,12 @@ def ode_order(expr, func):
     Examples
     ========
 
-    >>> ode_order(f(x).diff(x, 2) + f(x).diff(x)**2 +
+    >>> ode_order(f(x).diff((x, 2)) + f(x).diff(x)**2 +
     ...           f(x).diff(x), f(x))
     2
-    >>> ode_order(f(x).diff(x, 2) + g(x).diff(x, 3), f(x))
+    >>> ode_order(f(x).diff((x, 2)) + g(x).diff((x, 3)), f(x))
     2
-    >>> ode_order(f(x).diff(x, 2) + g(x).diff(x, 3), g(x))
+    >>> ode_order(f(x).diff((x, 2)) + g(x).diff((x, 3)), g(x))
     3
 
     """

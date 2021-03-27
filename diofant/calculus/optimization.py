@@ -53,11 +53,13 @@ def minimize(f, *v):
     constraints = canonicalize_inequalities(constraints)
 
     if dim == 1:
+        x = v[0]
         if constraints:
-            dom = reduce_inequalities(constraints, *v).as_set()
+            constraints.extend([x - oo < 0, -oo - x < 0])
+            dom = reduce_inequalities(constraints, x).as_set()
         else:
             dom = Interval(-oo, oo, True, True)**len(v)
-        return minimize_univariate(obj, v[0], dom)
+        return minimize_univariate(obj, x, dom)
 
     polys = [obj.as_poly(*v)] + [c.lhs.as_poly(*v) for c in constraints]
     is_polynomial = all(p is not None for p in polys)

@@ -25,8 +25,11 @@ There are three types of functions implemented in Diofant:
 
 """
 
+from __future__ import annotations
+
 import collections
 import inspect
+import typing
 
 import mpmath
 import mpmath.libmp as mlib
@@ -713,7 +716,7 @@ class WildFunction(Function, AtomicExpr):
 
     """
 
-    include = set()
+    include: set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
         from ..sets.sets import FiniteSet, Set
@@ -765,9 +768,9 @@ class Derivative(Expr):
     keyword ``simplify`` is set to False.
 
         >>> e = sqrt((x + 1)**2 + x)
-        >>> diff(e, x, 5, simplify=False).count_ops()
+        >>> diff(e, (x, 5), simplify=False).count_ops()
         136
-        >>> diff(e, x, 5).count_ops()
+        >>> diff(e, (x, 5)).count_ops()
         30
 
     Ordering of variables:
@@ -872,9 +875,9 @@ class Derivative(Expr):
 
     The same is true for derivatives of different orders::
 
-        >>> diff(f(x), x, 2).diff(diff(f(x), x, 1))
+        >>> diff(f(x), (x, 2)).diff(diff(f(x), (x, 1)))
         0
-        >>> diff(f(x), x, 1).diff(diff(f(x), x, 2))
+        >>> diff(f(x), (x, 1)).diff(diff(f(x), (x, 2)))
         0
 
     Note, any class can allow derivatives to be taken with respect to itself.
@@ -888,7 +891,7 @@ class Derivative(Expr):
         2*x
         >>> Derivative(Derivative(f(x, y), x), y)
         Derivative(f(x, y), x, y)
-        >>> Derivative(f(x), x, 3)
+        >>> Derivative(f(x), (x, 3))
         Derivative(f(x), x, x, x)
         >>> Derivative(f(x, y), y, x, evaluate=True)
         Derivative(f(x, y), x, y)
@@ -922,59 +925,41 @@ class Derivative(Expr):
         else:
             return False
 
-    def __new__(cls, expr, *variables, **assumptions):
+    def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy
 
         expr = sympify(expr)
 
-        # There are no variables, we differentiate wrt all of the free symbols
+        # There are no args, we differentiate wrt all of the free symbols
         # in expr.
-        if not variables:
+        if not args:
             variables = expr.free_symbols
+            args = tuple(variables)
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
                 raise ValueError(filldedent("""
                     The variable(s) of differentiation
                     must be supplied to differentiate %s""" % expr))
 
-        # Standardize the variables by sympifying them and making appending a
-        # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
-        variables = list(sympify(variables))
-        if not variables[-1].is_Integer or len(variables) == 1:
-            variables.append(Integer(1))
+        # Standardize the args by sympifying them and making appending a
+        # count of 1 if there is only variable: diff(e, x) -> diff(e, (x, 1)).
+        args = list(sympify(args))
+        for i, a in enumerate(args):
+            if not isinstance(a, Tuple):
+                args[i] = (a, Integer(1))
 
-        # Split the list of variables into a list of the variables we are diff
-        # wrt, where each element of the list has the form (s, count) where
-        # s is the entity to diff wrt and count is the order of the
-        # derivative.
         variable_count = []
         all_zero = True
-        i = 0
-        while i < len(variables) - 1:  # process up to final Integer
-            v, count = variables[i: i + 2]
-            iwas = i
-            if v._diff_wrt:
-                # We need to test the more specific case of count being an
-                # Integer first.
-                if count.is_Integer:
-                    count = int(count)
-                    i += 2
-                elif count._diff_wrt:
-                    count = 1
-                    i += 1
-
-            if i == iwas:  # didn't get an update because of bad input
+        for v, count in args:
+            if not v._diff_wrt:
                 from ..utilities.misc import filldedent
-                last_digit = int(str(count)[-1])
-                ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
+                ordinal = 'st' if count == 1 else 'nd' if count == 2 else 'rd' if count == 3 else 'th'
                 raise ValueError(filldedent("""
                 Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
-
-            if all_zero and not count == 0:
-                all_zero = False
-
             if count:
-                variable_count.append((v, count))
+                if all_zero:
+                    all_zero = False
+                variable_count.append(Tuple(v, count))
 
         # We make a special case for 0th derivative, because there is no
         # good way to unambiguously print this.
@@ -1446,6 +1431,7 @@ class Subs(Expr):
                    for _, r in reps):
                 pre += '_'
                 continue
+            reps  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))
@@ -1535,18 +1521,18 @@ class Subs(Expr):
                      for v, p in zip(self.variables, self.point)])
 
 
-def diff(f, *symbols, **kwargs):
+def diff(f, *args, **kwargs):
     """
     Differentiate f with respect to symbols.
 
     This is just a wrapper to unify .diff() and the Derivative class; its
     interface is similar to that of integrate().  You can use the same
     shortcuts for multiple variables as with Derivative.  For example,
-    diff(f(x), x, x, x) and diff(f(x), x, 3) both return the third derivative
+    diff(f(x), x, x, x) and diff(f(x), (x, 3)) both return the third derivative
     of f(x).
 
     You can pass evaluate=False to get an unevaluated Derivative class.  Note
-    that if there are 0 symbols (such as diff(f(x), x, 0), then the result will
+    that if there are 0 symbols (such as diff(f(x), (x, 0)), then the result will
     be the function (the zeroth derivative), even if evaluate=False.
 
     Examples
@@ -1556,18 +1542,18 @@ def diff(f, *symbols, **kwargs):
     cos(x)
     >>> diff(f(x), x, x, x)
     Derivative(f(x), x, x, x)
-    >>> diff(f(x), x, 3)
+    >>> diff(f(x), (x, 3))
     Derivative(f(x), x, x, x)
-    >>> diff(sin(x)*cos(y), x, 2, y, 2)
+    >>> diff(sin(x)*cos(y), (x, 2), (y, 2))
     sin(x)*cos(y)
 
     >>> type(diff(sin(x), x))
     cos
     >>> type(diff(sin(x), x, evaluate=False))
     <class 'diofant.core.function.Derivative'>
-    >>> type(diff(sin(x), x, 0))
+    >>> type(diff(sin(x), (x, 0)))
     sin
-    >>> type(diff(sin(x), x, 0, evaluate=False))
+    >>> type(diff(sin(x), (x, 0), evaluate=False))
     sin
 
     >>> diff(sin(x))
@@ -1593,7 +1579,7 @@ def diff(f, *symbols, **kwargs):
 
     """
     kwargs.setdefault('evaluate', True)
-    return Derivative(f, *symbols, **kwargs)
+    return Derivative(f, *args, **kwargs)
 
 
 def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,

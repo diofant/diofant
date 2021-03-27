@@ -7,7 +7,7 @@ from ..matrices import Matrix
 from ..polys import (ComputationFailed, PolificationFailed, groebner,
                      parallel_poly_from_expr)
 from ..polys.solvers import solve_lin_sys
-from ..simplify import simplify
+from ..simplify.simplify import simplify
 from ..utilities import default_sort_key, numbered_symbols
 from .utils import checksol
 

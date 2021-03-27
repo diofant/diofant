@@ -1,15 +1,16 @@
 import functools
+import math
 from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms, prod,
-                    sympify)
+                    count_ops, expand_log, expand_mul, factor_terms)
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
+from ..core.sympify import sympify
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..logic import true
 from ..ntheory import multiplicity
-from ..polys import gcd, lcm_list
+from ..polys import gcd, lcm
 from ..utilities import default_sort_key, ordered
 
 
@@ -321,13 +322,14 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 if (last  # no more radicals in base
                         or len(common_b) == 1  # nothing left to join with
                         or all(k[1] == 1 for k in common_b)):  # no rad's in common_b
+                    common_b  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
                 # see what we can exponentiate base by to remove any radicals
                 # so we know what to search for
                 # e.g. if base were x**(1/2)*y**(1/3) then we should
                 # exponentiate by 6 and look for powers of x and y in the ratio
                 # of 2 to 3
-                qlcm = lcm_list([ratq(bi) for bi in Mul.make_args(bstart)])
+                qlcm = functools.reduce(lcm, [ratq(bi) for bi in Mul.make_args(bstart)])
                 if qlcm == 1:
                     break  # we are done
                 b = bstart**qlcm
@@ -457,7 +459,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                     if e.is_Add:
                         return sum(_terms(ai) for ai in e.args)
                     if e.is_Mul:
-                        return prod([_terms(mi) for mi in e.args])
+                        return math.prod(_terms(mi) for mi in e.args)
                     return 1
                 xnew_base = expand_mul(new_base, deep=False)
                 if len(Add.make_args(xnew_base)) < _terms(new_base):

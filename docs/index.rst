@@ -4,9 +4,6 @@
 Diofant's documentation
 =======================
 
-.. image:: https://static.mybinder.org/badge_logo.svg
-    :target: https://mybinder.org/v2/gh/diofant/diofant/master
-
 `Diofant <https://diofant.readthedocs.io/en/latest/>`_ is a Python
 library for symbolic mathematics.  If you are new to Diofant, start
 with the :ref:`Tutorial <tutorial>`.

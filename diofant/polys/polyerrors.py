@@ -73,6 +73,10 @@ class ModularGCDFailed(BasePolynomialError):
     """Raised when a modular GCD is failed."""
 
 
+class UnluckyLeadingCoefficient(BasePolynomialError):
+    """Raised when there are unlucky LC."""
+
+
 class HomomorphismFailed(BasePolynomialError):
     """Raised when a homomorphism is failed."""
 

@@ -1,9 +1,11 @@
 """Tests for real and complex root isolation and refinement algorithms."""
 
+import math
+
 import pytest
 
-from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, prod, ring,
-                     sqrt, subsets)
+from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, ring, sqrt,
+                     subsets)
 from diofant.polys.rootisolation import RealInterval
 
 
@@ -303,7 +305,7 @@ def test__isolate_real_roots_sqf():
 
     for r in range(2, 7):
         for s in (1, 10, -1, -10):
-            f = R(prod(x - s*_ for _ in range(1, r)))
+            f = R(math.prod(x - s*_ for _ in range(1, r)))
             ans = sorted((s*_, s*_) for _ in range(1, r))
             assert R._isolate_real_roots_sqf(f) == ans
 
@@ -317,7 +319,7 @@ def test__isolate_real_roots_sqf():
     assert R._isolate_real_roots_sqf(x**9 - 5) == [(1, 2)]
 
     for roots in subsets(range(1, 4)):
-        f = R(prod(x - r for r in roots))
+        f = R(math.prod(x - r for r in roots))
         ans = sorted((_, _) for _ in roots)
         assert R._isolate_real_roots_sqf(f) == ans
 
@@ -1173,7 +1175,7 @@ def test__isolate_complex_roots_sqf():
     pytest.raises(DomainError, lambda: R._isolate_complex_roots_sqf(x))
 
 
-@pytest.mark.timeout(200)
+@pytest.mark.timeout(300)
 @pytest.mark.slow
 @pytest.mark.skipif(isinstance(ZZ(42), int), reason='gmpy2 is not used')
 def test__isolate_complex_roots_sqf_2():

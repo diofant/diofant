@@ -4,12 +4,12 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, besselk,
-                     binomial, cbrt, ceiling, cos, cot, diff, digamma, erf,
-                     erfi, exp, factorial, floor, gamma, integrate, limit, log,
-                     nan, oo, pi, polygamma, root, sign, simplify, sin, sinh,
-                     sqrt, subfactorial, symbols, tan)
+from diofant import (E, Float, Function, I, Integral, Limit, Piecewise,
+                     PoleError, Rational, Sum, Symbol, acos, asin, atan,
+                     besselk, binomial, cbrt, ceiling, cos, cot, diff, digamma,
+                     erf, erfi, exp, factorial, floor, gamma, integrate, limit,
+                     log, nan, oo, pi, polygamma, root, sign, simplify, sin,
+                     sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -77,6 +77,9 @@ def test_basic1():
 
     pytest.raises(PoleError, lambda: limit(1/x, x, 0, dir='real'))
 
+    # issue diofant/diofant#74
+    assert limit(sign(log(1 - 1/x)), x, oo) == -1
+
 
 def test_basic2():
     assert limit(x**x, x, 0, dir='+') == 1
@@ -104,6 +107,10 @@ def test_basic4():
     # coverage test
     l = Limit(Piecewise((x, x > 1), (0, True)), x, -1)
     assert l.doit() == l
+
+    # issue sympy/sympy#16714
+    e = ((n**(n + 1) + (n + 1)**n)/n**(n + 1))**n
+    assert limit(e, n, oo) == E**E
 
 
 def test_basic5():
@@ -273,7 +280,7 @@ def test_sympyissue_5164():
 
 
 def test_sympyissue_5183():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([x, -x],
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
@@ -305,7 +312,7 @@ def test_sympyissue_5229():
 
 
 def test_sympyissue_4546():
-    # using list(...) so py.test can recalculate values
+    # using list(...) so pytest can recalculate values
     tests = list(itertools.product([cot, tan],
                                    [-pi/2, 0, pi/2, pi, 3*pi/2],
                                    ['-', '+']))
@@ -514,16 +521,6 @@ def test_sympyissue_11672():
     assert limit(1/(-2)**x, x, oo) == 0
 
 
-def test_sympyissue_11678():
-    p = Matrix([[1./2, 1./4, 1./4],
-                [1./2, 0, 1./2],
-                [1./4, 0, 3./4]])
-    e = (p**x).applyfunc(lambda i: limit(i, x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', dps=15),
-                         Float('0.090909090909090898', dps=15),
-                         Float('0.54545454545454541', dps=15)]]*3)
-
-
 def test_sympyissue_8635():
     n = Symbol('n', integer=True, positive=True)
 
@@ -657,11 +654,6 @@ def test_sympyissue_16222():
     assert limit(exp(x), x, 10000000) == exp(10000000)
     assert limit(exp(x), x, 100000000) == exp(100000000)
     assert limit(exp(x), x, 1000000000) == exp(1000000000)
-
-
-def test_sympyissue_16714():
-    e = ((n**(n + 1) + (n + 1)**n)/n**(n + 1))**n
-    assert limit(e, n, oo) == E**E
 
 
 @pytest.mark.timeout(20)
@@ -801,3 +793,20 @@ def test_sympyissue_19766():
 
 def test_sympyissue_14874():
     assert limit(besselk(0, x), x, oo) == 0
+
+
+def test_sympyissue_20365():
+    assert limit(((x + 1)**(1/x) - E)/x, x, 0) == -E/2
+
+
+def test_sympyissue_20704():
+    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, 0) == 0
+
+
+def test_sympyissue_21031():
+    assert limit(((1 + x)**(1/x) -
+                  (1 + 2*x)**(1/(2*x)))/asin(x), x, 0) == E/2
+
+
+def test_sympyissue_21038():
+    assert limit(sin(pi*x)/(3*x - 12), x, 4) == pi/3

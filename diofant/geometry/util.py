@@ -66,7 +66,7 @@ def idiff(eq, y, x, n=1):
     dydx = Function(y.name)(x).diff(x)
     eq = eq.subs(f)
     derivs = {}
-    for i in range(n):
+    for i in range(n):  # pragma: no branch
         yp = solve(eq.diff(x), dydx)[0][dydx].subs(derivs)
         if i == n - 1:
             return yp.subs([(v, k) for k, v in f.items()])
@@ -118,12 +118,12 @@ def _uniquely_named_symbol(xname, *exprs):
     from any other already in the expressions given. The name is made
     unique by prepending underscores.
     """
-    prefix = '%s'
-    x = prefix % xname
+    prefix = '{0}'
+    x = prefix.format(xname)
     syms = set().union(*[e.free_symbols for e in exprs])
     while any(x == str(s) for s in syms):
         prefix = '_' + prefix
-        x = prefix % xname
+        x = prefix.format(xname)
     return _symbol(x)
 
 
@@ -171,16 +171,16 @@ def intersection(*entities):
     >>> l1, l2 = Line(p1, p2), Line(p3, p2)
     >>> c = Circle(p2, 1)
     >>> intersection(l1, p2)
-    [Point2D(1, 1)]
+    [Point(1, 1)]
     >>> intersection(l1, l2)
-    [Point2D(1, 1)]
+    [Point(1, 1)]
     >>> intersection(c, p2)
     []
     >>> intersection(c, Point(1, 0))
-    [Point2D(1, 0)]
+    [Point(1, 0)]
     >>> intersection(c, l2)
-    [Point2D(-sqrt(5)/5 + 1, 2*sqrt(5)/5 + 1),
-     Point2D(sqrt(5)/5 + 1, -2*sqrt(5)/5 + 1)]
+    [Point(-sqrt(5)/5 + 1, 2*sqrt(5)/5 + 1),
+     Point(sqrt(5)/5 + 1, -2*sqrt(5)/5 + 1)]
 
     """
     from .entity import GeometryEntity
@@ -193,10 +193,7 @@ def intersection(*entities):
     entities = list(entities)
     for i, e in enumerate(entities):
         if not isinstance(e, GeometryEntity):
-            try:
-                entities[i] = Point(e)
-            except NotImplementedError:
-                raise ValueError('%s is not a GeometryEntity and cannot be made into Point' % str(e))
+            entities[i] = Point(e)
 
     res = entities[0].intersection(entities[1])
     for entity in entities[2:]:
@@ -245,7 +242,7 @@ def convex_hull(*args):
 
     >>> points = [(1, 1), (1, 2), (3, 1), (-5, 2), (15, 4)]
     >>> convex_hull(*points)
-    Polygon(Point2D(-5, 2), Point2D(1, 1), Point2D(3, 1), Point2D(15, 4))
+    Polygon(Point(-5, 2), Point(1, 1), Point(3, 1), Point(15, 4))
 
     """
     from .entity import GeometryEntity
@@ -256,10 +253,7 @@ def convex_hull(*args):
     p = set()
     for e in args:
         if not isinstance(e, GeometryEntity):
-            try:
-                e = Point(e)
-            except NotImplementedError:
-                raise ValueError('%s is not a GeometryEntity and cannot be made into Point' % str(e))
+            e = Point(e)
         if isinstance(e, Point):
             p.add(e)
         elif isinstance(e, Segment):
@@ -268,11 +262,7 @@ def convex_hull(*args):
             p.update(e.vertices)
         else:
             raise NotImplementedError(
-                'Convex hull for %s not implemented.' % type(e))
-
-    # make sure all our points are of the same dimension
-    if any(len(x) != 2 for x in p):
-        raise ValueError('Can only compute the convex hull in two dimensions')
+                f'Convex hull for {type(e)} not implemented.')
 
     p = list(p)
     if len(p) == 1:
@@ -303,77 +293,6 @@ def convex_hull(*args):
     if len(convexHull) == 2:
         return Segment(convexHull[0], convexHull[1])
     return Polygon(*convexHull)
-
-
-def are_coplanar(*e):
-    """Returns True if the given entities are coplanar otherwise False.
-
-    Parameters
-    ==========
-
-    e: entities to be checked for being coplanar
-
-    Returns
-    =======
-
-    Boolean
-
-    Examples
-    ========
-
-    >>> a = Line3D(Point3D(5, 0, 0), Point3D(1, -1, 1))
-    >>> b = Line3D(Point3D(0, -2, 0), Point3D(3, 1, 1))
-    >>> c = Line3D(Point3D(0, -1, 0), Point3D(5, -1, 9))
-    >>> are_coplanar(a, b, c)
-    False
-
-    """
-    from .entity import GeometryEntity
-    from .line3d import LinearEntity3D
-    from .plane import Plane
-    from .point import Point, Point3D
-
-    # XXX update tests for coverage
-
-    e = set(e)
-    # first work with a Plane if present
-    for i in list(e):
-        if isinstance(i, Plane):
-            e.remove(i)
-            return all(p.is_coplanar(i) for p in e)
-
-    if all(isinstance(i, Point3D) for i in e):
-        if len(e) < 3:
-            return False
-
-        # remove pts that are collinear with 2 pts
-        a, b = e.pop(), e.pop()
-        for i in list(e):
-            if Point3D.are_collinear(a, b, i):
-                e.remove(i)
-
-        if not e:
-            return False
-        else:
-            # define a plane
-            p = Plane(a, b, e.pop())
-            for i in e:
-                if i not in p:
-                    return False
-            return True
-    else:
-        pt3d = []
-        for i in e:
-            if isinstance(i, Point3D):
-                pt3d.append(i)
-            elif isinstance(i, LinearEntity3D):
-                pt3d.extend(i.args)
-            elif isinstance(i, GeometryEntity):  # XXX we should have a GeometryEntity3D class so we can tell the difference between 2D and 3D -- here we just want to deal with 2D objects; if new 3D objects are encountered that we didn't hanlde above, an error should be raised
-                # all 2D objects have some Point that defines them; so convert those points to 3D pts by making z=0
-                for p in i.args:
-                    if isinstance(p, Point):
-                        pt3d.append(Point3D(*(p.args + (0,))))
-        return are_coplanar(*pt3d)
 
 
 def are_similar(e1, e2):
@@ -444,14 +363,14 @@ def centroid(*args):
     >>> p = Polygon((0, 0), (10, 0), (10, 10))
     >>> q = p.translate(0, 20)
     >>> p.centroid, q.centroid
-    (Point2D(20/3, 10/3), Point2D(20/3, 70/3))
+    (Point(20/3, 10/3), Point(20/3, 70/3))
     >>> centroid(p, q)
-    Point2D(20/3, 40/3)
+    Point(20/3, 40/3)
     >>> p, q = Segment((0, 0), (2, 0)), Segment((0, 0), (2, 2))
     >>> centroid(p, q)
-    Point2D(1, -sqrt(2) + 2)
+    Point(1, -sqrt(2) + 2)
     >>> centroid(Point(0, 0), Point(2, 0))
-    Point2D(1, 0)
+    Point(1, 0)
 
     Stacking 3 polygons on top of each other effectively triples the
     weight of that polygon:
@@ -459,19 +378,19 @@ def centroid(*args):
         >>> p = Polygon((0, 0), (1, 0), (1, 1), (0, 1))
         >>> q = Polygon((1, 0), (3, 0), (3, 1), (1, 1))
         >>> centroid(p, q)
-        Point2D(3/2, 1/2)
+        Point(3/2, 1/2)
         >>> centroid(p, p, p, q)  # centroid x-coord shifts left
-        Point2D(11/10, 1/2)
+        Point(11/10, 1/2)
 
     Stacking the squares vertically above and below p has the same
     effect:
 
         >>> centroid(p, p.translate(0, 1), p.translate(0, -1), q)
-        Point2D(11/10, 1/2)
+        Point(11/10, 1/2)
 
     """
     from .point import Point
-    from .polygon import Polygon, Segment
+    from .polygon import Segment
     if args:
         if all(isinstance(g, Point) for g in args):
             c = Point(0, 0)
@@ -486,7 +405,7 @@ def centroid(*args):
                 c += g.midpoint*l
                 L += l
             den = L
-        elif all(isinstance(g, Polygon) for g in args):
+        else:
             c = Point(0, 0)
             A = 0
             for g in args:

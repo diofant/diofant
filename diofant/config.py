@@ -1,4 +1,4 @@
-"""Configuration utilities for polynomial manipulation algorithms."""
+"""Configuration utilities."""
 
 import ast
 import contextlib
@@ -27,7 +27,7 @@ _default_config = {
     'GF_IRRED_METHOD':            'rabin',
     'GF_FACTOR_METHOD':           'zassenhaus',
 
-    'AA_FACTOR_METHOD':           'trager',
+    'AA_FACTOR_METHOD':           'modular',
 
     'GROEBNER':                   'buchberger',
     'MINPOLY_METHOD':             'compose',

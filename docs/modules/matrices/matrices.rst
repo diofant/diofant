@@ -9,7 +9,8 @@ Creating Matrices
 The linear algebra module is designed to be as simple as possible. First, we
 import and declare our first ``Matrix`` object:
 
-    >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
+    >>> init_printing(pretty_print=True, use_unicode=False,
+    ...               wrap_line=False, no_global=True)
     >>> M = Matrix([[1, 0, 0], [0, 0, 0]])
     >>> M
     [1  0  0]

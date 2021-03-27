@@ -1,55 +1,33 @@
 """Implementation of :class:`FiniteField` class."""
 
+from __future__ import annotations
+
 import numbers
 import random
-import typing
 
 from ..core import Dummy, integer_digits
-from ..ntheory import factorint, is_primitive_root
+from ..ntheory import factorint, is_primitive_root, isprime
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
 from .quotientring import QuotientRingElement
+from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
 
-class FiniteField(Field, SimpleDomain):
-    """General class for finite fields."""
+class IntegerModRing(CommutativeRing, SimpleDomain):
+    """General class for quotient rings over integers."""
 
-    is_FiniteField = True
     is_Numerical = True
 
-    def __new__(cls, order, dom, modulus=None):
-        try:
-            pp = factorint(order)
-            if not order or len(pp) != 1:
-                raise ValueError
-            mod, deg = pp.popitem()
-        except ValueError:
-            raise ValueError(f'order must be a prime power, got {order}')
+    def __new__(cls, order, dom):
+        if isprime(order):
+            return dom.finite_field(order)
 
-        if deg == 1:
-            if modulus:
-                deg = len(modulus) - 1
-            else:
-                modulus = [1, 0]
+        mod = dom.convert(order)
 
-        order = mod**deg
-
-        if modulus is None:
-            random.seed(0)
-            ring = ZZ_python.finite_field(mod).inject(Dummy('x'))
-            modulus = ring._gf_random(deg, irreducible=True).all_coeffs()
-        elif deg != len(modulus) - 1:
-            raise ValueError('degree of a defining polynomial for the field'
-                             ' does not match extension degree')
-
-        modulus = tuple(map(dom.dtype, modulus))
-
-        mod = dom.convert(mod)
-
-        key = order, dom, mod, modulus
+        key = cls, order, dom
 
         obj = super().__new__(cls)
 
@@ -57,24 +35,13 @@ class FiniteField(Field, SimpleDomain):
         obj.mod = mod
         obj.order = order
 
-        if order > mod:
-            obj.rep = f'GF({obj.mod}, {list(map(ZZ_python, modulus))})'
-        else:
-            obj.rep = f'GF({obj.mod})'
+        obj.rep = f'IntegerModRing({obj.order})'
 
         try:
             obj.dtype = _modular_integer_cache[key]
         except KeyError:
-            if deg == 1:
-                obj.dtype = type('ModularInteger', (ModularInteger,),
-                                 {'mod': mod, 'domain': dom, '_parent': obj})
-            else:
-                ff = dom.finite_field(mod).inject(Dummy('x'))
-                mod = ff.from_list(modulus)
-                if not mod.is_irreducible:
-                    raise ValueError('defining polynomial must be irreducible')
-                obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
-                                 {'mod': mod, 'domain': ff, '_parent': obj})
+            obj.dtype = type('ModularInteger', (ModularInteger,),
+                             {'mod': mod, 'domain': dom, '_parent': obj})
             _modular_integer_cache[key] = obj.dtype
 
         obj.zero = obj.dtype(0)
@@ -86,7 +53,7 @@ class FiniteField(Field, SimpleDomain):
         return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
     def __eq__(self, other):
-        return isinstance(other, FiniteField) and \
+        return isinstance(other, self.__class__) and \
             self.order == other.order and self.domain == other.domain
 
     def __getnewargs_ex__(self):
@@ -94,7 +61,7 @@ class FiniteField(Field, SimpleDomain):
 
     @property
     def characteristic(self):
-        return self.mod
+        return self.order
 
     def to_expr(self, element):
         return DiofantInteger(int(element))
@@ -135,7 +102,93 @@ class FiniteField(Field, SimpleDomain):
         return True
 
 
-_modular_integer_cache: typing.Dict[tuple, FiniteField] = {}
+class FiniteField(Field, IntegerModRing):
+    """General class for finite fields."""
+
+    is_FiniteField = True
+
+    def __new__(cls, order, dom, modulus=None):
+        try:
+            pp = factorint(order)
+            if not order or len(pp) != 1:
+                raise ValueError
+            mod, deg = pp.popitem()
+        except ValueError:
+            raise ValueError(f'order must be a prime power, got {order}')
+
+        if deg == 1:
+            if modulus:
+                deg = len(modulus) - 1
+            else:
+                modulus = [1, 0]
+
+        order = mod**deg
+
+        if modulus is None:
+            random.seed(0)
+            ring = ZZ_python.finite_field(mod).inject(Dummy('x'))
+            modulus = ring._gf_random(deg, irreducible=True).all_coeffs()
+        elif deg != len(modulus) - 1:
+            raise ValueError('degree of a defining polynomial for the field'
+                             ' does not match extension degree')
+
+        modulus = tuple(map(dom.dtype, modulus))
+
+        mod = dom.convert(mod)
+
+        key = cls, order, dom, mod, modulus
+
+        obj = super(IntegerModRing, cls).__new__(cls)  # pylint: disable=bad-super-call
+
+        obj.domain = dom
+        obj.mod = mod
+        obj.order = order
+
+        if order > mod:
+            obj.rep = f'GF({obj.mod}, {list(map(ZZ_python, modulus))})'
+        else:
+            obj.rep = f'GF({obj.mod})'
+
+        try:
+            obj.dtype = _modular_integer_cache[key]
+        except KeyError:
+            if deg == 1:
+                obj.dtype = type('ModularInteger', (ModularInteger,),
+                                 {'mod': mod, 'domain': dom, '_parent': obj})
+            else:
+                ff = dom.finite_field(mod).inject(Dummy('x'))
+                mod = ff.from_list(modulus)
+                if not mod.is_irreducible:
+                    raise ValueError('defining polynomial must be irreducible')
+                obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
+                                 {'mod': mod, 'domain': ff, '_parent': obj})
+            _modular_integer_cache[key] = obj.dtype
+
+        obj.zero = obj.dtype(0)
+        obj.one = obj.dtype(1)
+
+        return obj
+
+    @property
+    def characteristic(self):
+        return self.mod
+
+
+_modular_integer_cache: dict[tuple, IntegerModRing] = {}
+
+
+class PythonIntegerModRing(IntegerModRing):
+    """Quotient ring based on Python's integers."""
+
+    def __new__(cls, order):
+        return super().__new__(cls, order, PythonIntegerRing())
+
+
+class GMPYIntegerModRing(IntegerModRing):
+    """Quotient ring based on GMPY's integers."""
+
+    def __new__(cls, order):
+        return super().__new__(cls, order, GMPYIntegerRing())
 
 
 class PythonFiniteField(FiniteField):
@@ -175,7 +228,7 @@ class GaloisFieldElement(ModularInteger):
 
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
-            rep = integer_digits(rep % self.parent.order, self.parent.mod)
+            rep = list(reversed(integer_digits(rep % self.parent.order, self.parent.mod)))
 
         if isinstance(rep, (list, tuple)):
             rep = self.domain.from_list(rep)
@@ -184,7 +237,7 @@ class GaloisFieldElement(ModularInteger):
 
     def __int__(self):
         rep = self.rep.set_domain(self.parent.domain)
-        return int(rep.eval(0, self.parent.mod))
+        return int(rep(self.parent.mod))
 
     @property
     def is_primitive(self):
