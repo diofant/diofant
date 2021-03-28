@@ -25,7 +25,7 @@ def test_basic1():
     assert limit(x**2, x, -oo) == oo
     assert limit(-x**2, x, oo) == -oo
     assert limit(x*log(x), x, 0, dir='+') == 0
-    assert limit(1/x, x, oo) == 0
+    assert limit(1/x, x, oo) == 0  # issue sympy/sympy#11667
     assert limit(exp(x), x, oo) == oo
     assert limit(-exp(x), x, oo) == -oo
     assert limit(exp(x)/x, x, oo) == oo
@@ -846,3 +846,7 @@ def test_sympyissue_19453():
 
     assert limit(e - h*w/2, beta, oo) == 0
     assert limit(e.simplify() - h*w/2, beta, oo) == 0
+
+
+def test_sympyissue_19442():
+    pytest.raises(PoleError, lambda: limit(1/x, x, 0, 'real'))

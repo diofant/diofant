@@ -67,3 +67,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`20578`: A strange behavior of limit function
 * :sympyissue:`20444`: Leading Term with log
 * :sympyissue:`19453`: Limit changes from simplification of original expression
+* :sympyissue:`19442`: Non-existent bi-directional limit gives ValueError
+* :sympyissue:`11667`: limit(1/x, x, 0) == oo ??
