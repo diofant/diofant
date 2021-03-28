@@ -820,3 +820,11 @@ def test_sympyissue_21029():
     assert limit(e, x, 0) == ans0
     assert limit(e, x, z) == ansz
     assert limit(ansz, z, 0) == ans0
+
+
+def test_sympyissue_20578():
+    e = abs(x)*sin(1/x)
+
+    assert all(_ == 0 for _ in [limit(e, x, 0, '+'),
+                                limit(e, x, 0, '-'),
+                                limit(e, x, 0, 'real')])
