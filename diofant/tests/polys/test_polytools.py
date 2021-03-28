@@ -16,11 +16,11 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      count_roots, decompose, degree, diff, discriminant, div,
                      exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
-                     lcm, lex, monic, nroots, oo, parallel_poly_from_expr, pi,
-                     poly, prem, primitive, quo, re, real_roots, reduced, rem,
-                     resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
-                     subresultants, symbols, sympify, tanh, terms_gcd, true,
-                     trunc)
+                     lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
+                     pi, poly, prem, primitive, quo, re, real_roots, reduced,
+                     rem, resultant, sin, sqf, sqf_list, sqf_norm, sqf_part,
+                     sqrt, subresultants, symbols, sympify, tanh, terms_gcd,
+                     true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -3174,3 +3174,9 @@ def test_sympyissue_20985():
 def test_sympyissue_21180():
     f = (x**4 + 6*x**3 + 4*x**2 - 30*x - 45).as_poly()
     assert factor(f) == (x + 3)**2*(x**2 - 5)
+
+
+def test_sympyissue_20444():
+    e = 33*log(x) + log(8) + 58
+
+    assert LT(e) == 3*log(2)
