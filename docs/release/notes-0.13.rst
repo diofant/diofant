@@ -66,3 +66,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20697`: Series is not simplified to final answer in output in sympy 1.7.1
 * :sympyissue:`20578`: A strange behavior of limit function
 * :sympyissue:`20444`: Leading Term with log
+* :sympyissue:`19453`: Limit changes from simplification of original expression

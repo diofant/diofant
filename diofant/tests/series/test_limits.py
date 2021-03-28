@@ -828,3 +828,21 @@ def test_sympyissue_20578():
     assert all(_ == 0 for _ in [limit(e, x, 0, '+'),
                                 limit(e, x, 0, '-'),
                                 limit(e, x, 0, 'real')])
+
+
+def test_sympyissue_19453():
+    beta = Symbol('beta', real=True, positive=True)
+    h = Symbol('h', real=True, positive=True)
+    m = Symbol('m', real=True, positive=True)
+    w = Symbol('omega', real=True, positive=True)
+    g = Symbol('g', real=True, positive=True)
+
+    q = 3*h**2*beta*g*exp(h*beta*w/2)
+    p = m**2*w**2
+    s = exp(h*beta*w) - 1
+    z = (-q/(4*p*s) - q/(2*p*s**2) -
+         q*(exp(h*beta*w) + 1)/(2*p*s**3) + exp(h*beta*w/2)/s)
+    e = -diff(log(z), beta)
+
+    assert limit(e - h*w/2, beta, oo) == 0
+    assert limit(e.simplify() - h*w/2, beta, oo) == 0
