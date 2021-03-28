@@ -177,21 +177,11 @@ class FractionField(Field, CompositeDomain):
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
-
-    def _from_PythonRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_RealField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_ComplexField(self, a, K0):
-        return self(self.domain.convert(a, K0))
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PolynomialRing(self, a, K0):
         try:

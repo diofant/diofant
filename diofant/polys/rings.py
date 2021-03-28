@@ -304,36 +304,20 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
                                  for k, v in element.items()),
                                 Integer(0))
 
-    def _from_PythonIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
     def _from_PythonFiniteField(self, a, K0):
         if self.domain == K0:
             return self(a)
     _from_GMPYFiniteField = _from_PythonFiniteField
+    _from_AlgebraicField = _from_PythonFiniteField
+    _from_ExpressionDomain = _from_PythonFiniteField
 
-    def _from_PythonRationalField(self, a, K0):
+    def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_RealField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_ComplexField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_ExpressionDomain(self, a, K0):
-        if self.domain == K0:
-            return self(a)
-
-    def _from_AlgebraicField(self, a, K0):
-        if self.domain == K0:
-            return self(a)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PolynomialRing(self, a, K0):
         try:
