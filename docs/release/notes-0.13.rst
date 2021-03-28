@@ -63,3 +63,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21180`: Bug: sympy.factor doesn't work for Poly !!!
 * :sympyissue:`21167`: Empty list of solutions returned for equation with cubic roots
 * :sympyissue:`21029`: Continuous limits involving division by x
+* :sympyissue:`20697`: Series is not simplified to final answer in output in sympy 1.7.1
