@@ -3169,3 +3169,8 @@ def test_sympyissue_20973():
 
 def test_sympyissue_20985():
     assert degree(1.0 + I*x/y, domain=CC.frac_field(y)) == 1
+
+
+def test_sympyissue_21180():
+    f = (x**4 + 6*x**3 + 4*x**2 - 30*x - 45).as_poly()
+    assert factor(f) == (x + 3)**2*(x**2 - 5)
