@@ -62,3 +62,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21132`: Integral with parametres: wrong and too long result
 * :sympyissue:`21180`: Bug: sympy.factor doesn't work for Poly !!!
 * :sympyissue:`21167`: Empty list of solutions returned for equation with cubic roots
+* :sympyissue:`21029`: Continuous limits involving division by x
