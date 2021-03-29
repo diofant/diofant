@@ -134,13 +134,13 @@ class FractionField(Field, CompositeDomain):
 
     __call__ = field_new
 
-    def _rebuild_expr(self, expr, mapping):
+    def from_expr(self, expr):
+        expr = sympify(expr)
         domain = self.domain
+        mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            generator = mapping.get(expr)
-
-            if generator is not None:
+            if (generator := mapping.get(expr)) is not None:
                 return generator
             elif expr.is_Add:
                 return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
@@ -152,21 +152,17 @@ class FractionField(Field, CompositeDomain):
                     return _rebuild(expr.base**a)**int(c)
 
             if not domain.is_Field and hasattr(domain, 'field'):
-                return domain.field.convert(expr)
+                frac = domain.field.convert(expr)
             else:
-                return domain.convert(expr)
+                frac = domain.convert(expr)
 
-        return _rebuild(sympify(expr))
-
-    def from_expr(self, expr):
-        mapping = dict(zip(self.symbols, self.gens))
+            return self.field_new(frac)
 
         try:
-            frac = self._rebuild_expr(expr, mapping)
+            return _rebuild(expr)
         except CoercionFailed:
-            raise ValueError(f'expected an expression convertible to a rational function in {self}, got {expr}')
-        else:
-            return self.field_new(frac)
+            raise ValueError('expected an expression convertible to a '
+                             f'rational function in {self}, got {expr}')
 
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
