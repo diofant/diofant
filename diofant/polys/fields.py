@@ -110,7 +110,7 @@ class FractionField(Field, CompositeDomain):
             else:
                 raise NotImplementedError
 
-    def field_new(self, element):
+    def __call__(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
@@ -131,8 +131,6 @@ class FractionField(Field, CompositeDomain):
             return self.convert(element)
         else:
             return self.ground_new(element)
-
-    __call__ = field_new
 
     def from_expr(self, expr):
         expr = sympify(expr)
@@ -156,7 +154,7 @@ class FractionField(Field, CompositeDomain):
             else:
                 frac = domain.convert(expr)
 
-            return self.field_new(frac)
+            return self(frac)
 
         try:
             return _rebuild(expr)
@@ -181,7 +179,7 @@ class FractionField(Field, CompositeDomain):
 
     def _from_PolynomialRing(self, a, K0):
         try:
-            return self.field_new(a)
+            return self(a)
         except (CoercionFailed, GeneratorsError):
             return
 
