@@ -177,9 +177,8 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
         return self.term_new(self.zero_monom, coeff)
 
     def term_new(self, monom, coeff):
-        coeff = self.domain_new(coeff)
         poly = self.zero
-        if coeff:
+        if coeff := self.domain.convert(coeff):
             poly[monom] = coeff
         return poly
 
@@ -203,14 +202,13 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             return self.ground_new(element)
 
     def from_dict(self, element):
-        domain_new = self.domain_new
+        domain_new = self.domain.convert
         poly = self.zero
 
         for monom, coeff in element.items():
             if isinstance(monom, int):
                 monom = monom,
-            coeff = domain_new(coeff)
-            if coeff:
+            if coeff := domain_new(coeff):
                 poly[monom] = coeff
 
         return poly
@@ -1112,8 +1110,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LM(self):
-        expv = self.leading_expv()
-        if expv is None:
+        if (expv := self.leading_expv()) is None:
             return self.ring.zero_monom
         else:
             return expv
@@ -1131,15 +1128,13 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        expv = self.leading_expv()
-        if expv:
+        if expv := self.leading_expv():
             p[expv] = self.ring.domain.one
         return p
 
     @property
     def LT(self):
-        expv = self.leading_expv()
-        if expv is None:
+        if (expv := self.leading_expv()) is None:
             return self.ring.zero_monom, self.ring.domain.zero
         else:
             return expv, self._get_coeff(expv)
@@ -1156,8 +1151,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        expv = self.leading_expv()
-        if expv:
+        if expv := self.leading_expv():
             p[expv] = self[expv]
         return p
 
@@ -1487,9 +1481,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes discriminant of a polynomial."""
         ring = self.ring
 
-        d = self.degree()
-
-        if d <= 0:
+        if (d := self.degree()) <= 0:
             return ring.zero.drop(0)
         else:
             s = (-1)**((d*(d - 1)) // 2)
@@ -1553,7 +1545,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         r, dr = f, df
 
-        if df < dg:
+        if dr < dg:
             return r
 
         x = ring.gens[0]
