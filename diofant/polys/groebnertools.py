@@ -362,7 +362,8 @@ def lbp_mul_term(f, cx):
     defined as (m * s, m * p, k).
 
     """
-    return lbp(sig_mult(Sign(f), cx[0]), Polyn(f).mul_term(cx), Num(f))
+    return lbp(sig_mult(Sign(f), cx[0]),
+               Polyn(f)*Polyn(f).ring.from_terms([cx]), Num(f))
 
 
 def lbp_cmp(f, g):

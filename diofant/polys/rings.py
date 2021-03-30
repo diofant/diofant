@@ -765,6 +765,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
 
+        if len(other) == 1:
+            [(m, c)] = other.items()
+            return self.__class__({monom*m: self[monom]*c for monom in self})
+
         result = zero
         for t in self.items():
             result = result._iadd_poly_term(other, t)
@@ -1186,17 +1190,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def mul_monom(self, m):
         return self.__class__({monom*m: self[monom] for monom in self})
 
-    def mul_term(self, term):
-        ring = self.ring
-        m, c = term
-
-        if not self or not c:
-            return ring.zero
-        elif m == ring.zero_monom:
-            return self*c
-
-        return self.__class__({monom*m: self[monom]*c for monom in self})
-
     def quo_ground(self, x):
         domain = self.ring.domain
 
@@ -1472,7 +1465,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                 n, monom[i] = monom[i], 0
                 subpoly *= g**n
 
-            subpoly = subpoly.mul_term((monom, coeff))
+            monom = Monomial(monom)
+            subpoly *= ring.from_terms([(monom, coeff)])
             poly += subpoly
 
         return poly
