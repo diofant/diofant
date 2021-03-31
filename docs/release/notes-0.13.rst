@@ -69,3 +69,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19453`: Limit changes from simplification of original expression
 * :sympyissue:`19442`: Non-existent bi-directional limit gives ValueError
 * :sympyissue:`11667`: limit(1/x, x, 0) == oo ??
+* :sympyissue:`21202`: laplace_transform(cosh(2*x), x, s) raises RecursionError

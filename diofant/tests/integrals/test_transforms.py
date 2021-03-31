@@ -5,9 +5,9 @@ from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
                      Integral, InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseSineTransform,
                      LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
-                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
-                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
-                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     Or, Piecewise, Rational, Si, SineTransform, Symbol, atan,
+                     atan2, besseli, besselj, besselk, bessely, combsimp, cos,
+                     cosh, cosine_transform, cot, erf, exp, exp_polar, expand,
                      expand_complex, expand_mul, expand_trig, expint, eye,
                      factor_terms, factorial, fourier_transform, fresnelc,
                      fresnels, gamma, hankel_transform, hyperexpand,
@@ -742,3 +742,10 @@ def test_sympyissue_8514():
 def test__simplifyconds():
     assert _simplifyconds(1 < abs(x), x, 1) is True
     assert _simplifyconds(abs(x**2) < 1, x, 0) == (abs(x**2) < 1)
+
+
+def test_sympyissue_21202():
+    res = (Piecewise((s/(s**2 - 4), (4*abs(s**-2) < 1) | (abs(s**2)/4 < 1)),
+                     (pi*meijerg(((Rational(1, 2),), (0, 0)), ((0, Rational(1, 2)),
+                                 (0,)), s**2/4)/2, True)), 2, Ne(s**2/4, 1))
+    assert laplace_transform(cosh(2*x), x, s) == res
