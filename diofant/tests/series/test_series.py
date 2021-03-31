@@ -243,3 +243,14 @@ def test_sympyissue_18008():
     s = e.series(x, x0=oo, n=4)
     ss = es.series(x, x0=oo, n=4)
     assert s == ss
+
+
+def test_sympyissue_20697():
+    p0, p1, p2, p3 = symbols('p:4')
+    b0, b1, b2 = symbols('b:3')
+
+    e = ((p0 + (p1 + (p2 + p3/y)/y)/y) /
+         (1 + ((p3/(b0*y) + (b0*p2 - b1*p3)/b0**2)/y +
+               (b0**2*p1 - b0*b1*p2 - p3*(b0*b2 - b1**2))/b0**3)/y))
+
+    assert e.series(y, n=3) == b2*y**2 + b1*y + b0 + O(y**3)

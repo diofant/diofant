@@ -177,9 +177,8 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
         return self.term_new(self.zero_monom, coeff)
 
     def term_new(self, monom, coeff):
-        coeff = self.domain_new(coeff)
         poly = self.zero
-        if coeff:
+        if coeff := self.domain.convert(coeff):
             poly[monom] = coeff
         return poly
 
@@ -203,14 +202,13 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             return self.ground_new(element)
 
     def from_dict(self, element):
-        domain_new = self.domain_new
+        domain_new = self.domain.convert
         poly = self.zero
 
         for monom, coeff in element.items():
             if isinstance(monom, int):
                 monom = monom,
-            coeff = domain_new(coeff)
-            if coeff:
+            if coeff := domain_new(coeff):
                 poly[monom] = coeff
 
         return poly
@@ -304,36 +302,20 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
                                  for k, v in element.items()),
                                 Integer(0))
 
-    def _from_PythonIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
     def _from_PythonFiniteField(self, a, K0):
         if self.domain == K0:
             return self(a)
     _from_GMPYFiniteField = _from_PythonFiniteField
+    _from_AlgebraicField = _from_PythonFiniteField
+    _from_ExpressionDomain = _from_PythonFiniteField
 
-    def _from_PythonRationalField(self, a, K0):
+    def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_RealField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_ComplexField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_ExpressionDomain(self, a, K0):
-        if self.domain == K0:
-            return self(a)
-
-    def _from_AlgebraicField(self, a, K0):
-        if self.domain == K0:
-            return self(a)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PolynomialRing(self, a, K0):
         try:
@@ -783,6 +765,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
 
+        if len(other) == 1:
+            [(m, c)] = other.items()
+            return self.__class__({monom*m: self[monom]*c for monom in self})
+
         result = zero
         for t in self.items():
             result = result._iadd_poly_term(other, t)
@@ -1128,8 +1114,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LM(self):
-        expv = self.leading_expv()
-        if expv is None:
+        if (expv := self.leading_expv()) is None:
             return self.ring.zero_monom
         else:
             return expv
@@ -1147,15 +1132,13 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        expv = self.leading_expv()
-        if expv:
+        if expv := self.leading_expv():
             p[expv] = self.ring.domain.one
         return p
 
     @property
     def LT(self):
-        expv = self.leading_expv()
-        if expv is None:
+        if (expv := self.leading_expv()) is None:
             return self.ring.zero_monom, self.ring.domain.zero
         else:
             return expv, self._get_coeff(expv)
@@ -1172,8 +1155,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        expv = self.leading_expv()
-        if expv:
+        if expv := self.leading_expv():
             p[expv] = self[expv]
         return p
 
@@ -1207,17 +1189,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def mul_monom(self, m):
         return self.__class__({monom*m: self[monom] for monom in self})
-
-    def mul_term(self, term):
-        ring = self.ring
-        m, c = term
-
-        if not self or not c:
-            return ring.zero
-        elif m == ring.zero_monom:
-            return self*c
-
-        return self.__class__({monom*m: self[monom]*c for monom in self})
 
     def quo_ground(self, x):
         domain = self.ring.domain
@@ -1494,7 +1465,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                 n, monom[i] = monom[i], 0
                 subpoly *= g**n
 
-            subpoly = subpoly.mul_term((monom, coeff))
+            monom = Monomial(monom)
+            subpoly *= ring.from_terms([(monom, coeff)])
             poly += subpoly
 
         return poly
@@ -1503,9 +1475,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes discriminant of a polynomial."""
         ring = self.ring
 
-        d = self.degree()
-
-        if d <= 0:
+        if (d := self.degree()) <= 0:
             return ring.zero.drop(0)
         else:
             s = (-1)**((d*(d - 1)) // 2)
@@ -1569,7 +1539,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         r, dr = f, df
 
-        if df < dg:
+        if dr < dg:
             return r
 
         x = ring.gens[0]

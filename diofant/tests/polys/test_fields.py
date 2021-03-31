@@ -54,7 +54,7 @@ def test_FractionField_methods():
     assert F.domain_new(2) == ZZ(2)
 
     x = symbols('x')
-    assert F.field_new(x**2 + x) == F.x**2 + F.x
+    assert F(x**2 + x) == F.x**2 + F.x
 
 
 def test_FracElement___hash__():

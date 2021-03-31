@@ -1677,3 +1677,7 @@ def test_unrad2():
 
 def test_sympyissue_20610():
     assert solve([x + y, sqrt(2)], [x, y]) == []
+
+
+def test_sympyissue_21167():
+    assert solve(cbrt(x - 1) + cbrt(x) + cbrt(x + 1)) == []

@@ -943,7 +943,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
                 c, _ = c.clear_denoms()
                 den = den.ring.lcm(den, c)
 
-            den = new_dom.field_new((den, new_dom.ring.one))
+            den = new_dom((den, new_dom.ring.one))
 
             for key, coeff in h.items():
                 coeff = coeff.set_domain(new_dom)

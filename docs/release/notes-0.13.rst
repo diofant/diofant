@@ -60,3 +60,12 @@ These Sympy issues also were addressed:
 * :sympyissue:`21121`: Same symbols created in different processes are not resolved as being equal
 * :sympyissue:`21107`: S.Infinity.is_nonzero returns False
 * :sympyissue:`21132`: Integral with parametres: wrong and too long result
+* :sympyissue:`21180`: Bug: sympy.factor doesn't work for Poly !!!
+* :sympyissue:`21167`: Empty list of solutions returned for equation with cubic roots
+* :sympyissue:`21029`: Continuous limits involving division by x
+* :sympyissue:`20697`: Series is not simplified to final answer in output in sympy 1.7.1
+* :sympyissue:`20578`: A strange behavior of limit function
+* :sympyissue:`20444`: Leading Term with log
+* :sympyissue:`19453`: Limit changes from simplification of original expression
+* :sympyissue:`19442`: Non-existent bi-directional limit gives ValueError
+* :sympyissue:`11667`: limit(1/x, x, 0) == oo ??
