@@ -676,6 +676,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
 
     """
     ring = f.ring
+    domain = ring.domain
 
     f = _trunc(f, minpoly, p)
     g = _trunc(g, minpoly, p)
@@ -693,7 +694,8 @@ def _euclidean_algorithm(f, g, minpoly, p):
             if degrem < deg:
                 break
             quo = (lcinv * rem.eject(-1).LC).set_ring(ring)
-            rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
+            m = ring.from_terms([((degrem - deg, 0), domain.one)])
+            rem = _trunc(rem - g*m*quo, minpoly, p)
 
         f = g
         g = rem
@@ -737,6 +739,7 @@ def trial_division(f, h, minpoly, p=None):
 
     """
     ring = f.ring
+    domain = ring.domain
     zxring = ring.clone(symbols=(ring.symbols[1], ring.symbols[0]))
     minpoly = minpoly.set_ring(ring)
     rem = f
@@ -751,7 +754,8 @@ def trial_division(f, h, minpoly, p=None):
     while rem and degrem >= degh:
         # polynomial in Z[t_1, ..., t_k][z]
         lcrem = rem.eject(-1).LC.set_ring(ring)
-        rem = rem*lch - h.mul_monom((degrem - degh, 0))*lcrem
+        rem = rem*lch - h*ring.from_terms([((degrem - degh, 0),
+                                            domain.one)])*lcrem
         if p:
             rem = rem.trunc_ground(p)
         degrem = rem.degree(1)
@@ -759,7 +763,8 @@ def trial_division(f, h, minpoly, p=None):
         while rem and degrem >= degm:
             # polynomial in Z[t_1, ..., t_k][x]
             lcrem = rem.set_ring(zxring).eject(-1).LC.set_ring(ring)
-            rem = rem*lcm - minpoly.mul_monom((0, degrem - degm))*lcrem
+            rem = rem*lcm - minpoly*ring.from_terms([((0, degrem - degm),
+                                                     domain.one)])*lcrem
             if p:
                 rem = rem.trunc_ground(p)
             degrem = rem.degree(1)
@@ -1205,7 +1210,7 @@ def _to_ZZ_poly(f, ring):
         coeff = coeff.rep.all_coeffs()
         m = ring.domain.one
         if isinstance(ring.domain, rings.PolynomialRing):
-            m = m.mul_monom(monom[1:])
+            m *= ring.domain.from_terms([(monom[1:], domain.one)])
         n = len(coeff)
 
         for i in range(n):

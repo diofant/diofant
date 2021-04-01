@@ -1508,17 +1508,17 @@ def test_PolyElement_mul_term():
 def test_PolyElement_mul_monom():
     R, x = ring('x', ZZ)
 
-    assert R(0).mul_monom((3,)) == 0
-    assert R(1).mul_monom((3,)) == x**3
+    assert R(0)*R([((3,), ZZ(1))]) == 0
+    assert R(1)*R([((3,), ZZ(1))]) == x**3
 
     f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
 
-    assert f.mul_monom((1,)) == x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x
-    assert f.mul_monom((2,)) == x**6 + 2*x**5 + 3*x**4 + 4*x**3 + 5*x**2
+    assert f*R([((1,), ZZ(1))]) == x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x
+    assert f*R([((2,), ZZ(1))]) == x**6 + 2*x**5 + 3*x**4 + 4*x**3 + 5*x**2
 
     f = x**2 + 1
 
-    assert f.mul_monom((2,)) == x**4 + x**2
+    assert f*R([((2,), ZZ(1))]) == x**4 + x**2
 
 
 def test_PolyElement___pow__():
