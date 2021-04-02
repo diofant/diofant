@@ -85,24 +85,16 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
-
-    def _from_GMPYIntegerRing(self, element, base):
-        return self.dtype(int(element))
-
-    def _from_GMPYRationalField(self, element, base):
-        return self.dtype(int(element.numerator)) / int(element.denominator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_AlgebraicField(self, element, base):
         return self.from_expr(base.to_expr(element))
-
-    def _from_RealField(self, element, base):
-        return self.dtype(element)
-
-    def _from_ComplexField(self, element, base):
-        return self.dtype(element)
 
     def get_exact(self):
         raise DomainError(f'there is no exact domain associated with {self}')

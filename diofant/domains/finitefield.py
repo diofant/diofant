@@ -76,6 +76,7 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
+    _from_GMPYFiniteField = _from_PythonFiniteField
 
     def _from_PythonIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0) % self.characteristic)
@@ -84,13 +85,7 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
     def _from_PythonRationalField(self, a, K0=None):
         if a.denominator == 1:
             return self.convert(a.numerator)
-
-    def _from_GMPYFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.rep, K0.domain))
-
-    def _from_GMPYRationalField(self, a, K0=None):
-        if a.denominator == 1:
-            return self.convert(a.numerator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)
