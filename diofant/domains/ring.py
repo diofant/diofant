@@ -56,6 +56,10 @@ class CommutativeRing(Domain):
         cfb = self.quo(b, gcd)
         return gcd, cfa, cfb
 
+    def lcm(self, a, b):
+        """Returns LCM of ``a`` and ``b``."""
+        return abs(a*b)//self.gcd(a, b)
+
     @property
     @abc.abstractmethod
     def characteristic(self):

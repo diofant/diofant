@@ -16,6 +16,22 @@ class _GCD:
         """Returns GCD of ``f`` and ``g``."""
         return self.cofactors(f, g)[0]
 
+    def lcm(self, f, g):
+        """Returns LCM of ``f`` and ``g``."""
+        domain = self.domain
+
+        if not domain.is_Field:
+            fc, f = f.primitive()
+            gc, g = g.primitive()
+            c = domain.lcm(fc, gc)
+
+        h = (f*g)//f.gcd(g)
+
+        if not domain.is_Field:
+            return h*c
+        else:
+            return h.monic()
+
     def cofactors(self, f, g):
         """Returns GCD and cofactors of ``f`` and ``g``."""
         if f.is_zero and g.is_zero:

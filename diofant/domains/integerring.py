@@ -5,9 +5,9 @@ import abc
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
-                          gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_lcm,
-                          gmpy_sqrt, python_factorial, python_gcd,
-                          python_gcdex, python_lcm, python_sqrt)
+                          gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_sqrt,
+                          python_factorial, python_gcd, python_gcdex,
+                          python_sqrt)
 from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
@@ -42,13 +42,10 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
     _from_GMPYIntegerRing = _from_PythonIntegerRing
-
-    def _from_PythonFiniteField(self, a, K0):
-        return self.dtype(int(a))
-    _from_GMPYFiniteField = _from_PythonFiniteField
-
-    _from_GMPYIntegerModRing = _from_PythonFiniteField
-    _from_PythonIntegerModRing = _from_PythonFiniteField
+    _from_PythonFiniteField = _from_PythonIntegerRing
+    _from_GMPYFiniteField = _from_PythonIntegerRing
+    _from_GMPYIntegerModRing = _from_PythonIntegerRing
+    _from_PythonIntegerModRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
@@ -91,10 +88,6 @@ class PythonIntegerRing(IntegerRing):
         """Compute GCD of ``a`` and ``b``."""
         return python_gcd(a, b)
 
-    def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``."""
-        return python_lcm(a, b)
-
     def sqrt(self, a):
         """Compute square root of ``a``."""
         return python_sqrt(a)
@@ -129,10 +122,6 @@ class GMPYIntegerRing(IntegerRing):
     def gcd(self, a, b):
         """Compute GCD of ``a`` and ``b``."""
         return gmpy_gcd(a, b)
-
-    def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``."""
-        return gmpy_lcm(a, b)
 
     def sqrt(self, a):
         """Compute square root of ``a``."""

@@ -114,9 +114,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def gcd(self, a, b):
         return self.one
 
-    def lcm(self, a, b):
-        return a*b
-
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)

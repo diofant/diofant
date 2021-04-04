@@ -348,10 +348,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
         """Half extended GCD of ``a`` and ``b``."""
         return a.half_gcdex(b)
 
-    def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
-        return a.lcm(b)
-
 
 _ring_cache: dict[tuple, PolynomialRing] = {}
 
@@ -1279,24 +1275,11 @@ class PolyElement(DomainElement, CantSympify, dict):
     def l1_norm(self):
         return self._norm(sum)
 
-    def lcm(self, g):
-        f = self
-        domain = f.ring.domain
-
-        if not domain.is_Field:
-            fc, f = f.primitive()
-            gc, g = g.primitive()
-            c = domain.lcm(fc, gc)
-
-        h = (f*g)//f.gcd(g)
-
-        if not domain.is_Field:
-            return h*c
-        else:
-            return h.monic()
-
     def gcd(self, other):
         return self.ring.gcd(self, other)
+
+    def lcm(self, other):
+        return self.ring.lcm(self, other)
 
     def cofactors(self, other):
         return self.ring.cofactors(self, other)
