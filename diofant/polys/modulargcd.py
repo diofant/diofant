@@ -294,10 +294,10 @@ def _modgcd_p(f, g, p, degbound, contbound):
     evalpoints = []
     heval = []
     points = list(range(p))
+    random.shuffle(points)
 
     while points:
-        a = random.sample(points, 1)[0]
-        points.remove(a)
+        a = points.pop()
 
         if not evaltest.eval(0, a):
             continue
@@ -852,10 +852,10 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     heval = []
     LMlist = []
     points = list(range(p))
+    random.shuffle(points)
 
     while points:
-        a = random.sample(points, 1)[0]
-        points.remove(a)
+        a = points.pop()
 
         if k == 1:
             test = delta.eval(k-1, a) % p == 0
