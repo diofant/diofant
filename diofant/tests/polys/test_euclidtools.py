@@ -532,7 +532,7 @@ def test_dmp_gcd():
 
     f, g = x**2 - 1, x**3 - 3*x + 2
 
-    assert f.cofactors(g) == (1, f, g)
+    assert f.cofactors(g) == (x - 1, x + 1, x**2 + x - 2)
 
     R, x, y = ring('x y', ZZ)
 

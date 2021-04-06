@@ -28,6 +28,7 @@ Minor changes
 =============
 
 * Protect hashed :class:`~diofant.polys.rings.PolyElement`'s from modifications, see :pull:`1033`.
+* Add gaussian rationals as an exact domain, associated with :class:`~diofant.domains.ComplexField`, see :pull:`1138`.
 
 Developer changes
 =================

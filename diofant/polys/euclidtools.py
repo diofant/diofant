@@ -6,7 +6,7 @@ import operator
 from ..config import query
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
+from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
 
 
 class _GCD:
@@ -115,15 +115,10 @@ class _GCD:
         elif domain.is_AlgebraicField:
             return self._gcd_AA(f, g)
         elif not domain.is_Exact:
-            try:
-                exact = domain.get_exact()
-            except DomainError:
-                return self.one
-
-            f, g = map(operator.methodcaller('set_domain', exact), (f, g))
+            exact = domain.get_exact()
             ring = self.clone(domain=exact)
+            f, g = map(operator.methodcaller('set_domain', exact), (f, g))
             h = ring._gcd(f, g)
-
             return h.set_domain(domain)
         elif domain.is_Field:
             return self._ff_prs_gcd(f, g)

@@ -5,7 +5,7 @@ from __future__ import annotations
 import mpmath
 
 from ..core import Float, I
-from ..polys.polyerrors import CoercionFailed, DomainError
+from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -97,7 +97,8 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self.from_expr(base.to_expr(element))
 
     def get_exact(self):
-        raise DomainError(f'there is no exact domain associated with {self}')
+        from . import QQ
+        return QQ.algebraic_field(I)
 
     def gcd(self, a, b):
         return self.one
