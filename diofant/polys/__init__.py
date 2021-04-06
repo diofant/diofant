@@ -2,7 +2,7 @@
 
 from .polytools import (Poly, PurePoly,
                         parallel_poly_from_expr, degree, LC,
-                        LM, LT, prem, div, rem, quo,
+                        LM, LT, div, rem, quo,
                         exquo, half_gcdex, gcdex, invert, subresultants,
                         resultant, discriminant, cofactors, gcd,
                         lcm, terms_gcd, trunc, monic, content,
@@ -46,7 +46,7 @@ from .univar import UnivarPolynomialRing
 
 __all__ = ('Poly', 'PurePoly',
            'parallel_poly_from_expr', 'degree', 'LC',
-           'LM', 'LT', 'prem', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
+           'LM', 'LT', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
            'cofactors', 'gcd', 'lcm', 'terms_gcd',
            'trunc', 'monic', 'content', 'primitive', 'compose', 'decompose',

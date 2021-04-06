@@ -17,10 +17,10 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
                      lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
-                     pi, poly, prem, primitive, quo, re, real_roots, reduced,
-                     rem, resultant, sin, sqf, sqf_list, sqf_norm, sqf_part,
-                     sqrt, subresultants, symbols, sympify, tanh, terms_gcd,
-                     true, trunc)
+                     pi, poly, primitive, quo, re, real_roots, reduced, rem,
+                     resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
+                     subresultants, symbols, sympify, tanh, terms_gcd, true,
+                     trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -1509,23 +1509,6 @@ def test_parallel_poly_from_expr():
             ([((x - 1)**2).as_poly(x - 1, expand=False), Integer(1).as_poly(x - 1)],
              {'domain': ZZ, 'expand': False, 'gens': (x - 1,),
               'polys': False}))
-
-
-def test_prem():
-    f, g = x**2 - y**2, x - y
-    q, r = x + y, Integer(0)
-
-    F, G, Q, R = [h.as_poly(x, y) for h in (f, g, q, r)]
-
-    assert F.prem(G) == R
-
-    assert prem(f, g) == r
-    assert prem(f, g, x, y) == r
-    assert prem(F, G) == R
-    assert prem(f, g, polys=True) == R
-    assert prem(F, G, polys=False) == r
-
-    pytest.raises(ComputationFailed, lambda: prem(4, 2))
 
 
 def test_div():
@@ -3142,12 +3125,6 @@ def test_sympyissue_19070():
 
 def test_sympyissue_19161():
     assert sympify('x**2').as_poly().simplify() == (x**2).as_poly()
-
-
-def test_sympyissue_20397():
-    f, g = (x**2 + x + 3).as_poly(modulus=7), (2*x + 2).as_poly(modulus=7)
-
-    assert f.prem(g) == 5
 
 
 def test_sympyissue_20484():

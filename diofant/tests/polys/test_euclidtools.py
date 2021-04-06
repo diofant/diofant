@@ -66,6 +66,13 @@ def test_dup_invert():
 
 
 def test_dmp_prem():
+    R, x = ring('x', FF(7))
+
+    f = x**2 + x + 3
+    g = 2*x + 2
+
+    assert f.prem(g) == 5  # issue sympy/sympy#20397
+
     R, x = ring('x', ZZ)
 
     f = 3*x**3 + x**2 + x + 5
