@@ -6,7 +6,7 @@ import operator
 from ..config import query
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
+from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
 
 
 class _GCD:
@@ -14,30 +14,37 @@ class _GCD:
 
     def gcd(self, f, g):
         """Returns GCD of ``f`` and ``g``."""
-        return self.cofactors(f, g)[0]
-
-    def cofactors(self, f, g):
-        """Returns GCD and cofactors of ``f`` and ``g``."""
         if f.is_zero and g.is_zero:
-            zero = self.zero
-            return zero, zero, zero
+            return self.zero
         elif f.is_zero:
-            h, cff, cfg = self._gcd_zero(g)
-            return h, cff, cfg
+            return self._gcd_zero(g)
         elif g.is_zero:
-            h, cfg, cff = self._gcd_zero(f)
-            return h, cff, cfg
+            return self._gcd_zero(f)
         elif f.is_term:
-            h, cff, cfg = self._gcd_term(f, g)
-            return h, cff, cfg
+            return self._gcd_term(f, g)
         elif g.is_term:
-            h, cfg, cff = self._gcd_term(g, f)
-            return h, cff, cfg
+            return self._gcd_term(g, f)
 
         J, (f, g) = self._deflate(f, g)
-        h, cff, cfg = self._gcd(f, g)
+        h = self._gcd(f, g)
 
-        return self._inflate(h, J), self._inflate(cff, J), self._inflate(cfg, J)
+        return self._inflate(h, J)
+
+    def lcm(self, f, g):
+        """Returns LCM of ``f`` and ``g``."""
+        domain = self.domain
+
+        if not domain.is_Field:
+            fc, f = f.primitive()
+            gc, g = g.primitive()
+            c = domain.lcm(fc, gc)
+
+        h = (f*g)//f.gcd(g)
+
+        if not domain.is_Field:
+            return h*c
+        else:
+            return h.monic()
 
     def _deflate(self, *polys):
         J = [0]*self.ngens
@@ -79,21 +86,15 @@ class _GCD:
         return poly
 
     def _gcd_zero(self, f):
-        one, zero = self.one, self.zero
         if self.domain.is_Field:
-            return f.monic(), zero, self.ground_new(f.LC)
+            return f.monic()
         else:
-            if not self.is_normal(f):
-                return -f, zero, -one
-            else:
-                return f, zero, one
+            return f if self.is_normal(f) else -f
 
     def _gcd_term(self, f, g):
         domain = self.domain
         ground_gcd = domain.gcd
-        ground_quo = domain.quo
-        mf, cf = f.LT
-        _mgcd, _cgcd = mf, cf
+        _mgcd, _cgcd = f.LT
         if domain.is_Field:
             for mg, cg in g.items():
                 _mgcd = _mgcd.gcd(mg)
@@ -102,11 +103,7 @@ class _GCD:
             for mg, cg in g.items():
                 _mgcd = _mgcd.gcd(mg)
                 _cgcd = ground_gcd(_cgcd, cg)
-        h = self.term_new(_mgcd, _cgcd)
-        cff = self.term_new(mf/_mgcd, ground_quo(cf, _cgcd))
-        cfg = self.from_dict({mg/_mgcd: ground_quo(cg, _cgcd)
-                              for mg, cg in g.items()})
-        return h, cff, cfg
+        return self.term_new(_mgcd, _cgcd)
 
     def _gcd(self, f, g):
         domain = self.domain
@@ -118,16 +115,11 @@ class _GCD:
         elif domain.is_AlgebraicField:
             return self._gcd_AA(f, g)
         elif not domain.is_Exact:
-            try:
-                exact = domain.get_exact()
-            except DomainError:
-                return self.one, f, g
-
-            f, g = map(operator.methodcaller('set_domain', exact), (f, g))
+            exact = domain.get_exact()
             ring = self.clone(domain=exact)
-
-            return tuple(map(operator.methodcaller('set_domain', domain),
-                             ring.cofactors(f, g)))
+            f, g = map(operator.methodcaller('set_domain', exact), (f, g))
+            h = ring._gcd(f, g)
+            return h.set_domain(domain)
         elif domain.is_Field:
             return self._ff_prs_gcd(f, g)
         else:
@@ -151,20 +143,15 @@ class _GCD:
     def _gcd_QQ(self, f, g):
         domain = self.domain
 
-        cf, f = f.clear_denoms(convert=True)
-        cg, g = g.clear_denoms(convert=True)
+        _, f = f.clear_denoms(convert=True)
+        _, g = g.clear_denoms(convert=True)
 
         ring = self.clone(domain=domain.ring)
 
-        h, cff, cfg = map(operator.methodcaller('set_ring', self),
-                          ring._gcd_ZZ(f, g))
+        h = ring._gcd_ZZ(f, g)
+        h = h.set_ring(self)
 
-        c, h = h.LC, h.monic()
-
-        cff *= domain.quo(c, cf)
-        cfg *= domain.quo(c, cg)
-
-        return h, cff, cfg
+        return h.monic()
 
     def _gcd_AA(self, f, g):
         from .modulargcd import func_field_modgcd
@@ -180,10 +167,9 @@ class _GCD:
         Heuristic polynomial GCD in ``Z[X]``.
 
         Given univariate polynomials ``f`` and ``g`` in ``Z[X]``, returns
-        their GCD and cofactors, i.e. polynomials ``h``, ``cff`` and ``cfg``
-        such that::
+        their GCD, i.e. polynomial ``h``::
 
-              h = gcd(f, g), cff = quo(f, h) and cfg = quo(g, h)
+              h = gcd(f, g)
 
         The algorithm is purely heuristic which means it may fail to compute
         the GCD. This will be signaled by raising an exception. In this case
@@ -194,8 +180,7 @@ class _GCD:
         of those evaluations. The polynomial GCD is recovered from the integer
         image by interpolation. The evaluation proces reduces f and g variable
         by variable into a large integer. The final step is to verify if the
-        interpolated polynomial is the correct GCD. This gives cofactors of
-        the input polynomials as a side effect.
+        interpolated polynomial is the correct GCD.
 
         References
         ==========
@@ -220,7 +205,7 @@ class _GCD:
                 2*min(f_norm // abs(f.LC),
                       g_norm // abs(g.LC)) + 4)
 
-        cofactors = domain.cofactors if ring.is_univariate else ring.drop(0)._zz_heu_gcd
+        cofactors = domain.cofactors if ring.is_univariate else ring.drop(0).cofactors
 
         for i in range(query('HEU_GCD_MAX')):
             ff = f.eval(x0, x)
@@ -231,36 +216,33 @@ class _GCD:
                 h = ring._gcd_interpolate(h, x)
                 h = h.primitive()[1]
 
-                cff_, r = divmod(f, h)
+                _, r = divmod(f, h)
 
                 if not r:
-                    cfg_, r = divmod(g, h)
+                    _, r = divmod(g, h)
 
                     if not r:
-                        h *= gcd
-                        return h, cff_, cfg_
+                        return h*gcd
 
                 cff = ring._gcd_interpolate(cff, x)
 
                 h, r = divmod(f, cff)
 
                 if not r:
-                    cfg_, r = divmod(g, h)
+                    _, r = divmod(g, h)
 
                     if not r:
-                        h *= gcd
-                        return h, cff, cfg_
+                        return h*gcd
 
                 cfg = ring._gcd_interpolate(cfg, x)
 
                 h, r = divmod(g, cfg)
 
                 if not r:
-                    cff_, r = divmod(f, h)
+                    _, r = divmod(f, h)
 
                     if not r:
-                        h *= gcd
-                        return h, cff_, cfg
+                        return h*gcd
 
             x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
 
@@ -294,8 +276,8 @@ class _GCD:
         if self.is_multivariate:
             ring, f, g = map(operator.methodcaller('eject', *self.gens[1:]),
                              (ring, f, g))
-            return tuple(map(operator.methodcaller('inject'),
-                             ring._rr_prs_gcd(f, g)))
+            h = ring._rr_prs_gcd(f, g)
+            return h.inject()
 
         domain = ring.domain
 
@@ -304,11 +286,9 @@ class _GCD:
 
         h = ff.subresultants(fg)[-1]
         _, h = h.primitive()
-
         c = domain.gcd(fc, gc)
-        h *= c
 
-        return h, f // h, g // h
+        return h*c
 
     def _ff_prs_gcd(self, f, g):
         """Computes polynomial GCD using subresultants over a field."""
@@ -324,19 +304,17 @@ class _GCD:
             F, G = map(operator.methodcaller('inject'), (F, G))
 
             h = F.subresultants(G)[-1]
-            c, _, _ = ring.domain._ff_prs_gcd(fc, gc)
+            c = ring.domain._ff_prs_gcd(fc, gc)
             h = h.eject(*self.gens[1:])
             _, h = h.primitive()
             h = h.inject()
             h *= c
-            h = h.monic()
 
-            return h, f // h, g // h
+            return h.monic()
 
         h = f.subresultants(g)[-1]
-        h = h.monic()
 
-        return h, f // h, g // h
+        return h.monic()
 
     def _primitive_prs(self, f, g):
         """

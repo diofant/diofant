@@ -39,7 +39,6 @@ def test_Domain_interface():
     pytest.raises(ValueError, lambda: RealField(tol=object()))
 
     pytest.raises(AttributeError, lambda: CC.ring)
-    pytest.raises(DomainError, lambda: CC.get_exact())
 
     assert str(EX(1)) == 'EX(1)'
 
@@ -508,6 +507,7 @@ def test_Domain_get_exact():
     assert ZZ.get_exact() == ZZ
     assert QQ.get_exact() == QQ
     assert RR.get_exact() == QQ
+    assert CC.get_exact() == QQ.algebraic_field(I)
     assert ALG.get_exact() == ALG
     assert ZZ.inject(x).get_exact() == ZZ.inject(x)
     assert QQ.inject(x).get_exact() == QQ.inject(x)
@@ -558,6 +558,8 @@ def test_Domain_convert():
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
 
+    pytest.raises(CoercionFailed, lambda: ALG2.convert(CC(1j)))
+
     assert RR.convert(complex(2 + 0j)) == RR(2)
     pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
 
@@ -572,6 +574,7 @@ def test_arithmetics():
     assert ZZ.div(ZZ(2), ZZ(3)) == (0, 2)
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+    assert QQ.lcm(QQ(2, 3), QQ(4, 9)) == QQ(4, 3)
 
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2

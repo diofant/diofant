@@ -527,3 +527,21 @@ def test_diofantissue_210():
 def test_sympyissue_21075():
     e = (sqrt(x) + cbrt(x))**2
     assert e.nseries(x) == e.expand()
+
+
+def test_sympyissue_21227():
+    f = log(x)
+
+    assert f.nseries(x, logx=y) == y
+    assert f.nseries(x, logx=-x) == -x
+
+    f = log(-log(x))
+
+    assert f.nseries(x, logx=y) == log(-y)
+    assert f.nseries(x, logx=-x) == log(x)
+
+    f = log(log(x))
+
+    assert f.nseries(x, logx=y) == log(y)
+    assert f.nseries(x, logx=-x) == log(-x)
+    assert f.nseries(x, logx=x) == log(x)

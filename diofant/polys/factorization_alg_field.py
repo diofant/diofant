@@ -496,6 +496,7 @@ def _div(f, g, minpoly, p):
 
     """
     ring = f.ring
+    domain = ring.domain
 
     rem = f
     deg = g.degree(0)
@@ -510,7 +511,8 @@ def _div(f, g, minpoly, p):
         degrem = rem.degree(0)
         if degrem < deg:
             break
-        quo = (lcinv * rem.eject(*ring.gens[1:]).LC).set_ring(ring).mul_monom((degrem - deg, 0))
+        m = ring.from_terms([((degrem - deg, 0), domain.one)])
+        quo = (lcinv * rem.eject(*ring.gens[1:]).LC).set_ring(ring)*m
         rem = _trunc(rem - g*quo, minpoly, p)
         quotient += quo
 
@@ -563,6 +565,10 @@ def _diophantine_univariate(F, m, minpoly, p):
     over `\mathbb Z_p[z]/(\mu(z))`.
 
     """
+    ring = F[0].ring
+    domain = ring.domain
+    m = ring.from_terms([((m, 0), domain.one)])
+
     if len(F) == 2:
         f, g = F
         result = _extended_euclidean_algorithm(g, f, minpoly, p)
@@ -571,8 +577,8 @@ def _diophantine_univariate(F, m, minpoly, p):
         else:
             s, t, _ = result
 
-        s = s.mul_monom((m, 0))
-        t = t.mul_monom((m, 0))
+        s *= m
+        t *= m
 
         q, s = _div(s, f, minpoly, p)
 
@@ -583,7 +589,6 @@ def _diophantine_univariate(F, m, minpoly, p):
 
         result = [s, t]
     else:
-        ring = F[0].ring
         G = [F[-1]]
 
         for f in reversed(F[1:-1]):
@@ -603,7 +608,7 @@ def _diophantine_univariate(F, m, minpoly, p):
         result, S = [], S + [T[-1]]
 
         for s, f in zip(S, F):
-            r = _div(s.mul_monom((m, 0)), f, minpoly, p)[1]
+            r = _div(s*m, f, minpoly, p)[1]
             s = _trunc(r, minpoly, p)
 
             result.append(s)

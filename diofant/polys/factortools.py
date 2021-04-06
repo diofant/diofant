@@ -685,7 +685,7 @@ class _Factor:
         g = g**2
         h = h**2
 
-        F = g - h.mul_monom((1,))
+        F = g - h*self.from_terms([((1,), domain.one)])
 
         if F.LC < 0:
             F = -F
@@ -723,6 +723,7 @@ class _Factor:
     def _univar_zz_diophantine(self, F, m, p):
         """Wang/EEZ: Solve univariate Diophantine equations."""
         domain = self.domain
+        m = self.from_terms([((m,), domain.one)])
 
         if len(F) == 2:
             p_domain = domain.finite_field(p)
@@ -731,8 +732,8 @@ class _Factor:
 
             s, t, _ = p_ring.gcdex(g, f)
 
-            s = s.mul_monom((m,))
-            t = t.mul_monom((m,))
+            s *= m
+            t *= m
 
             q, s = divmod(s, f)
             s = s.set_domain(domain)
@@ -758,7 +759,7 @@ class _Factor:
             p_domain = domain.finite_field(p)
 
             for s, f in zip(S, F):
-                s = s.mul_monom((m,))
+                s *= m
                 s, f = map(operator.methodcaller('set_domain', p_domain),
                            (s, f))
                 s = (s % f).set_domain(domain)

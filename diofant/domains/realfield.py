@@ -84,15 +84,11 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
-
-    def _from_GMPYIntegerRing(self, element, base):
-        return self.dtype(int(element))
-
-    def _from_GMPYRationalField(self, element, base):
-        return self.dtype(int(element.numerator)) / int(element.denominator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_AlgebraicField(self, element, base):
         return self.from_expr(base.to_expr(element))
@@ -117,9 +113,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
 
     def gcd(self, a, b):
         return self.one
-
-    def lcm(self, a, b):
-        return a*b
 
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal."""

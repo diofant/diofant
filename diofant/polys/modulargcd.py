@@ -294,10 +294,10 @@ def _modgcd_p(f, g, p, degbound, contbound):
     evalpoints = []
     heval = []
     points = list(range(p))
+    random.shuffle(points)
 
     while points:
-        a = random.sample(points, 1)[0]
-        points.remove(a)
+        a = points.pop()
 
         if not evaltest.eval(0, a):
             continue
@@ -373,10 +373,6 @@ def modgcd(f, g):
 
     h : PolyElement
         GCD of the polynomials `f` and `g`
-    cff : PolyElement
-        cofactor of `f`, i.e. `\frac{f}{h}`
-    cfg : PolyElement
-        cofactor of `g`, i.e. `\frac{g}{h}`
 
     Examples
     ========
@@ -384,12 +380,12 @@ def modgcd(f, g):
     >>> _, x, y = ring('x y', ZZ)
 
     >>> modgcd((x - y)*(x + y), (x + y)**2)
-    (x + y, x - y, x + y)
+    x + y
 
     >>> _, x, y, z = ring('x y z', ZZ)
 
     >>> modgcd((x - y)*z**2, (x**2 + 1)*z)
-    (z, x*z - y*z, x**2 + 1)
+    z
 
     References
     ==========
@@ -452,13 +448,10 @@ def modgcd(f, g):
             continue
 
         h = hm.primitive()[1]
-        fquo, frem = divmod(f, h)
-        gquo, grem = divmod(g, h)
+        _, frem = divmod(f, h)
+        _, grem = divmod(g, h)
         if not frem and not grem:
-            h *= ch
-            cff = fquo*(cf // ch)
-            cfg = gquo*(cg // ch)
-            return h, cff, cfg
+            return h*ch
 
 
 def _rational_function_reconstruction(c, p, m):
@@ -676,6 +669,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
 
     """
     ring = f.ring
+    domain = ring.domain
 
     f = _trunc(f, minpoly, p)
     g = _trunc(g, minpoly, p)
@@ -693,7 +687,8 @@ def _euclidean_algorithm(f, g, minpoly, p):
             if degrem < deg:
                 break
             quo = (lcinv * rem.eject(-1).LC).set_ring(ring)
-            rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
+            m = ring.from_terms([((degrem - deg, 0), domain.one)])
+            rem = _trunc(rem - g*m*quo, minpoly, p)
 
         f = g
         g = rem
@@ -737,6 +732,7 @@ def trial_division(f, h, minpoly, p=None):
 
     """
     ring = f.ring
+    domain = ring.domain
     zxring = ring.clone(symbols=(ring.symbols[1], ring.symbols[0]))
     minpoly = minpoly.set_ring(ring)
     rem = f
@@ -751,7 +747,8 @@ def trial_division(f, h, minpoly, p=None):
     while rem and degrem >= degh:
         # polynomial in Z[t_1, ..., t_k][z]
         lcrem = rem.eject(-1).LC.set_ring(ring)
-        rem = rem*lch - h.mul_monom((degrem - degh, 0))*lcrem
+        rem = rem*lch - h*ring.from_terms([((degrem - degh, 0),
+                                            domain.one)])*lcrem
         if p:
             rem = rem.trunc_ground(p)
         degrem = rem.degree(1)
@@ -759,7 +756,8 @@ def trial_division(f, h, minpoly, p=None):
         while rem and degrem >= degm:
             # polynomial in Z[t_1, ..., t_k][x]
             lcrem = rem.set_ring(zxring).eject(-1).LC.set_ring(ring)
-            rem = rem*lcm - minpoly.mul_monom((0, degrem - degm))*lcrem
+            rem = rem*lcm - minpoly*ring.from_terms([((0, degrem - degm),
+                                                     domain.one)])*lcrem
             if p:
                 rem = rem.trunc_ground(p)
             degrem = rem.degree(1)
@@ -854,10 +852,10 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     heval = []
     LMlist = []
     points = list(range(p))
+    random.shuffle(points)
 
     while points:
-        a = random.sample(points, 1)[0]
-        points.remove(a)
+        a = points.pop()
 
         if k == 1:
             test = delta.eval(k-1, a) % p == 0
@@ -1205,7 +1203,7 @@ def _to_ZZ_poly(f, ring):
         coeff = coeff.rep.all_coeffs()
         m = ring.domain.one
         if isinstance(ring.domain, rings.PolynomialRing):
-            m = m.mul_monom(monom[1:])
+            m *= ring.domain.from_terms([(monom[1:], domain.one)])
         n = len(coeff)
 
         for i in range(n):
@@ -1298,7 +1296,7 @@ def _primitive_in_x0(f):
     cont = dom.zero
 
     for coeff in f_.values():
-        cont = func_field_modgcd(cont, coeff)[0]
+        cont = func_field_modgcd(cont, coeff)
         if cont == dom.one:
             return cont, f
 
@@ -1350,10 +1348,6 @@ def func_field_modgcd(f, g):
 
     h : PolyElement
         monic GCD of the polynomials `f` and `g`
-    cff : PolyElement
-        cofactor of `f`, i.e. `\frac f h`
-    cfg : PolyElement
-        cofactor of `g`, i.e. `\frac g h`
 
     Examples
     ========
@@ -1362,15 +1356,15 @@ def func_field_modgcd(f, g):
     >>> _, x = ring('x', A)
 
     >>> func_field_modgcd(x**2 - 2, x + sqrt(2))
-    (x + sqrt(2), x - sqrt(2), 1)
+    x + sqrt(2)
 
     >>> _, x, y = ring('x y', A)
 
     >>> func_field_modgcd((x + sqrt(2)*y)**2, x + sqrt(2)*y)
-    (x + sqrt(2)*y, x + sqrt(2)*y, 1)
+    x + sqrt(2)*y
 
     >>> func_field_modgcd(x + sqrt(2)*y, x + y)
-    (1, x + sqrt(2)*y, x + y)
+    1
 
     References
     ==========
@@ -1403,7 +1397,7 @@ def func_field_modgcd(f, g):
         # contx0f in Q(a)[x_1, ..., x_{n-1}], f in Q(a)[x_0, ..., x_{n-1}]
         contx0f, f = _primitive_in_x0(f)
         contx0g, g = _primitive_in_x0(g)
-        contx0h = func_field_modgcd(contx0f, contx0g)[0]
+        contx0h = func_field_modgcd(contx0f, contx0g)
 
         ZZring_ = ZZring.eject(*range(1, n))
 
@@ -1419,6 +1413,4 @@ def func_field_modgcd(f, g):
         f *= contx0f.set_ring(ring)
         g *= contx0g.set_ring(ring)
 
-    h = h.quo_ground(h.LC)
-
-    return h, f//h, g//h
+    return h.quo_ground(h.LC)

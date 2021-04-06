@@ -5,7 +5,6 @@ import fractions
 from math import factorial as python_factorial  # noqa: F401
 from math import gcd as python_gcd  # noqa: F401
 from math import isqrt as python_sqrt  # noqa: F401
-from math import lcm as python_lcm  # noqa: F401
 
 from ..core.compatibility import HAS_GMPY
 from ..core.numbers import Float as DiofantReal  # noqa: F401
@@ -26,7 +25,6 @@ if HAS_GMPY:
     from gmpy2 import gcd as gmpy_gcd
     from gmpy2 import gcdext as gmpy_gcdex
     from gmpy2 import isqrt as gmpy_sqrt
-    from gmpy2 import lcm as gmpy_lcm
     from gmpy2 import mpq as GMPYRational  # noqa: N812
     from gmpy2 import mpz as GMPYInteger  # noqa: N812
     from gmpy2 import numer as gmpy_numer
@@ -47,6 +45,5 @@ else:
     gmpy_denom = None
     gmpy_gcdex = None
     gmpy_gcd = None
-    gmpy_lcm = None
     gmpy_sqrt = None
     gmpy_qdiv = None
