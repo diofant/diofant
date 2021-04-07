@@ -1115,23 +1115,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return expv
 
-    def leading_monom(self):
-        """
-        Leading monomial as a polynomial element.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> (3*x*y + y**2).leading_monom()
-        x*y
-
-        """
-        p = self.ring.zero
-        if expv := self.leading_expv():
-            p[expv] = self.ring.domain.one
-        return p
-
     @property
     def LT(self):
         if (expv := self.leading_expv()) is None:

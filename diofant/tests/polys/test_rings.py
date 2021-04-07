@@ -663,6 +663,7 @@ def test_PolyElement_LM():
     assert R(0).LM == (0, 0)
     assert (x/2).LM == (1, 0)
     assert (x*y/4 + x/2).LM == (1, 1)
+    assert (3*x*y + y**2).LM == (1, 1)
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -681,14 +682,6 @@ def test_PolyElement_LT():
     assert R(0).LT == ((0, 0), QQ(0))
     assert (x/2).LT == ((1, 0), QQ(1, 2))
     assert (x*y/4 + x/2).LT == ((1, 1), QQ(1, 4))
-
-
-def test_PolyElement_leading_monom():
-    R, x, y = ring('x y', QQ)
-
-    assert R(0).leading_monom() == 0
-    assert (x/2).leading_monom() == x
-    assert (x*y/4 + x/2).leading_monom() == x*y
 
 
 def test_PolyElement_leading_term():
