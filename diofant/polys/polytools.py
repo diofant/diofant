@@ -987,7 +987,7 @@ class Poly(Expr):
         """
         Returns degree of ``self`` in ``x_j``.
 
-        The degree of 0 is negative infinity.
+        The degree of 0 is negative floating-point infinity.
 
         Examples
         ========
@@ -997,7 +997,7 @@ class Poly(Expr):
         >>> (x**2 + y*x + y).as_poly().degree(y)
         1
         >>> Integer(0).as_poly(x).degree()
-        -oo
+        -inf
 
         """
         j = self._gen_to_level(gen)
@@ -2536,7 +2536,7 @@ def degree(f, *gens, **args):
     >>> degree(x**2 + y*x + 1, gen=y)
     1
     >>> degree(0, x)
-    -oo
+    -inf
 
     """
     allowed_flags(args, ['gen', 'polys'])

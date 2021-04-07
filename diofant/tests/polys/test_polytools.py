@@ -1,6 +1,7 @@
 """Tests for user-friendly public interface to polynomial functions."""
 
 import functools
+import math
 
 import pytest
 
@@ -1062,19 +1063,19 @@ def test_Poly__gen_to_level():
 
 
 def test_Poly_degree():
-    assert Integer(0).as_poly(x).degree() == -oo
+    assert Integer(0).as_poly(x).degree() == -math.inf
     assert Integer(1).as_poly(x).degree() == 0
     assert x.as_poly().degree() == 1
 
-    assert Integer(0).as_poly(x).degree(gen=0) == -oo
+    assert Integer(0).as_poly(x).degree(gen=0) == -math.inf
     assert Integer(1).as_poly(x).degree(gen=0) == 0
     assert x.as_poly().degree(gen=0) == 1
 
-    assert Integer(0).as_poly(x).degree(gen=x) == -oo
+    assert Integer(0).as_poly(x).degree(gen=x) == -math.inf
     assert Integer(1).as_poly(x).degree(gen=x) == 0
     assert x.as_poly().degree(gen=x) == 1
 
-    assert Integer(0).as_poly(x).degree(gen='x') == -oo
+    assert Integer(0).as_poly(x).degree(gen='x') == -math.inf
     assert Integer(1).as_poly(x).degree(gen='x') == 0
     assert x.as_poly().degree(gen='x') == 1
 
@@ -1112,8 +1113,8 @@ def test_Poly_degree():
 
 
 def test_Poly_degree_list():
-    assert [Integer(0).as_poly(x, y).degree(_) for _ in (x, y)] == [-oo, -oo]
-    assert [Integer(0).as_poly(x, y, z).degree(_) for _ in (x, y, z)] == [-oo, -oo, -oo]
+    assert [Integer(0).as_poly(x, y).degree(_) for _ in (x, y)] == [-math.inf]*2
+    assert [Integer(0).as_poly(x, y, z).degree(_) for _ in (x, y, z)] == [-math.inf]*3
 
     assert [Integer(1).as_poly(x, y).degree(_) for _ in (x, y)] == [0, 0]
     assert [Integer(1).as_poly(x, y, z).degree(_) for _ in (x, y, z)] == [0, 0, 0]

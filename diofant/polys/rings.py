@@ -7,7 +7,7 @@ import math
 import operator
 
 from ..config import query
-from ..core import Expr, Integer, Symbol, cacheit, oo
+from ..core import Expr, Integer, Symbol, cacheit
 from ..core import symbols as _symbols
 from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify, sympify
@@ -1031,25 +1031,25 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         The leading degree in ``x`` or the main variable.
 
-        Note that the degree of 0 is negative infinity (the Diofant object -oo).
+        Note that the degree of 0 is negative floating-point infinity.
 
         """
         i = self.ring.index(x)
-        return max((monom[i] for monom in self), default=-oo)
+        return max((monom[i] for monom in self), default=-math.inf)
 
     def tail_degree(self, x=0):
         """
         The tail degree in ``x`` or the main variable.
 
-        Note that the degree of 0 is negative infinity (the Diofant object -oo)
+        Note that the degree of 0 is negative floating-point infinity.
 
         """
         i = self.ring.index(x)
-        return min((monom[i] for monom in self), default=-oo)
+        return min((monom[i] for monom in self), default=-math.inf)
 
     def total_degree(self):
         """Returns the total degree."""
-        return max((sum(m) for m in self), default=-oo)
+        return max((sum(m) for m in self), default=-math.inf)
 
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
