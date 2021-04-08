@@ -1727,7 +1727,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                 return S.true
             elif other.is_nonpositive:
                 return S.true
-            elif other is oo:
+            elif other == oo:
                 return S.false
         return Expr.__gt__(self, other)
 
