@@ -5,7 +5,7 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (EX, QQ, ZZ, I, Integer, Interval, Mul, Piecewise,
+from diofant import (EX, QQ, ZZ, I, Integer, Interval, Piecewise,
                      PolynomialError, Rational, RootOf, Symbol, Wild, acos,
                      cbrt, cos, cyclotomic_poly, exp, im, legendre_poly,
                      nroots, pi, powsimp, re, root, roots, sin, sqrt, symbols)
@@ -109,11 +109,13 @@ def test_roots_cubic():
         -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
     ]
     res = roots_cubic((x**3 + 2*a/27).as_poly(x))
-    assert res == [-root(a + sqrt(a**2), 3)/3,
-                   Mul(Rational(-1, 3), Rational(-1, 2) + sqrt(3)*I/2,
-                       root(a + sqrt(a**2), 3), evaluate=False),
-                   Mul(Rational(-1, 3), Rational(-1, 2) - sqrt(3)*I/2,
-                       root(a + sqrt(a**2), 3), evaluate=False)]
+    assert res == [-root(2, 3)*root(a, 3)/3,
+                   -root(2, 3)*root(a, 3)*(-Rational(1, 2) + sqrt(3)*I/2)/3,
+                   -root(2, 3)*root(a, 3)*(-Rational(1, 2) - sqrt(3)*I/2)/3]
+    res = roots_cubic((x**3 - 2*a/27).as_poly(x))
+    assert res == [root(2, 3)*root(a, 3)/3,
+                   root(2, 3)*root(a, 3)*(-Rational(1, 2) + sqrt(3)*I/2)/3,
+                   root(2, 3)*root(a, 3)*(-Rational(1, 2) - sqrt(3)*I/2)/3]
 
     # issue sympy/sympy#8438
     p = -3*x**3 - 2*x**2 + x*y + 1
@@ -708,3 +710,11 @@ def test_sympyissue_16589():
     rs = roots(e, x)
     assert 0 in rs
     assert all(not e.evalf(chop=True, subs={x: r}) for r in rs)
+
+
+def test_sympyissue_21263():
+    e = x**3 + 3*x**2 + 3*x + y + 1
+    r = roots(e, x)
+    assert r == {-root(y, 3) - 1: 1,
+                 -root(y, 3)*(-Rational(1, 2) - sqrt(3)*I/2) - 1: 1,
+                 -root(y, 3)*(-Rational(1, 2) + sqrt(3)*I/2) - 1: 1}

@@ -73,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11667`: limit(1/x, x, 0) == oo ??
 * :sympyissue:`21202`: laplace_transform(cosh(2*x), x, s) raises RecursionError
 * :sympyissue:`21227`: Nested logarithms add unnecessary order term to series expansions
+* :sympyissue:`21263`: Solutions of cubic equation
