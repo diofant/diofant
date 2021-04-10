@@ -2868,7 +2868,6 @@ def test_PolyElement_is_():
     assert R(0).is_ground is True
     assert R(0).is_zero is True
     assert R(1).is_ground is True
-    assert R(1).is_one is True
     assert R(2).is_ground is True
 
     f = x**16 + x**14 - x**10 - x**8 - x**6 + x**2
@@ -2883,7 +2882,6 @@ def test_PolyElement_is_():
     assert R(0).is_ground is True
     assert R(0).is_zero is True
     assert R(1).is_ground is True
-    assert R(1).is_one is True
     assert R(2).is_ground is True
 
     assert R.zero.is_homogeneous is True
@@ -2893,10 +2891,7 @@ def test_PolyElement_is_():
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0).is_zero is True
-    assert R(1).is_one is True
     assert R(1).is_zero is False
-    assert R(12).is_one is False
-    assert (y + 1).is_one is False
 
     R, x, y, z = ring('x y z', QQ)
 
@@ -2937,9 +2932,6 @@ def test_PolyElement_is_():
 
     assert R(0).is_zero
     assert R(1).is_zero is False
-
-    assert R(0).is_one is False
-    assert R(1).is_one
 
     assert (x + y + z + 1).is_linear
     assert (x*y*z + 1).is_linear is False

@@ -981,7 +981,7 @@ def efactor(f, save=True):
     else:
         cont, f = f.eject(*ring.gens[1:]).primitive()
         f = f.inject()
-        if not cont.is_one:
+        if cont != 1:
             lccont, contfactors = efactor(cont)
             lc, factors = efactor(f)
             contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]

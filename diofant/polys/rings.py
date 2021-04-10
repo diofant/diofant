@@ -657,10 +657,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return not self
 
     @property
-    def is_one(self):
-        return self == self.ring.one
-
-    @property
     def is_linear(self):
         return all(sum(monom) <= 1 for monom in self)
 

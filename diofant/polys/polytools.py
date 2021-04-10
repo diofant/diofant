@@ -2011,7 +2011,7 @@ class Poly(Expr):
         True
 
         """
-        return self.rep.is_one
+        return self.rep == 1
 
     @property
     def is_squarefree(self):
