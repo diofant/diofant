@@ -71,7 +71,7 @@ class _SQF:
         while not f.is_ground:
             df = [f.diff(x) for x in self.gens]
 
-            if not all(_.is_zero for _ in df):
+            if any(_ for _ in df):
                 g = f
                 for q in df:
                     g = self.gcd(g, q)
@@ -179,7 +179,7 @@ class _SQF:
 
             return g
 
-        if f.is_zero:
+        if not f:
             return f
 
         gcd = f

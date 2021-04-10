@@ -1995,7 +1995,7 @@ class Poly(Expr):
         False
 
         """
-        return self.rep.is_zero
+        return not self.rep
 
     @property
     def is_one(self):

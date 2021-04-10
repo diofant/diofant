@@ -329,7 +329,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
         (q,), r = a.numerator.div([a.denominator])
 
-        if r.is_zero:
+        if not r:
             return self.convert(q, K0.field.ring)
 
     @property
@@ -653,10 +653,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return len(self) <= 1
 
     @property
-    def is_zero(self):
-        return not self
-
-    @property
     def is_linear(self):
         return all(sum(monom) <= 1 for monom in self)
 
@@ -691,7 +687,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_homogeneous(self):
-        if self.is_zero:
+        if not self:
             return True
 
         lm = self.LM
@@ -1151,7 +1147,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Returns content and a primitive polynomial."""
         cont = self.content()
         prim = self.copy()
-        if not prim.is_zero:
+        if prim:
             prim = prim.quo_ground(cont)
         return cont, prim
 
@@ -1266,7 +1262,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def terms_gcd(self):
         ring = self.ring
 
-        if self.is_zero:
+        if not self:
             return (0,)*ring.ngens, self
 
         G = functools.reduce(Monomial.gcd, self)

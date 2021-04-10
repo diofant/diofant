@@ -25,7 +25,7 @@ class _Factor:
             while f:
                 q, r = divmod(f, factor)
 
-                if r.is_zero:
+                if not r:
                     f, k = q, k + 1
                 else:
                     r  # XXX "peephole" optimization, http://bugs.python.org/issue2506
@@ -125,7 +125,7 @@ class _Factor:
             factors = self._trial_division(f, H)
             return cont, factors
 
-        if f.is_zero:
+        if not f:
             return domain.zero, []
 
         cont, g = f.primitive()
@@ -811,13 +811,13 @@ class _Factor:
 
             for k in range(d):
                 k = domain(k)
-                if c.is_zero:
+                if not c:
                     break
 
                 M *= m
                 C = c.diff(x=n, m=int(k + 1)).eval(x=n, a=a)
 
-                if not C.is_zero:
+                if C:
                     C = C.quo_ground(domain.factorial(k + 1))
                     T = C.ring._zz_diophantine(G, C, A, d, p)
 
@@ -1111,13 +1111,13 @@ class _Factor:
 
             for k in range(dj):
                 k = domain(k)
-                if c.is_zero:
+                if not c:
                     break
 
                 M *= m
                 C = c.diff(x=w, m=int(k + 1)).eval(x=w, a=a)
 
-                if not C.is_zero:
+                if C:
                     C = C.quo_ground(domain.factorial(k + 1))
                     T = C.ring._zz_diophantine(G, C, I, d, p)
 
