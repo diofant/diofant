@@ -35,7 +35,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
         if expr.is_Integer:
             return self.dtype(expr.numerator)
         elif expr.is_Float and int(expr) == expr:
-            return self.dtype(int(expr))
+            return self.dtype(expr)
         else:
             raise CoercionFailed(f'expected an integer, got {expr}')
 
@@ -97,12 +97,10 @@ class PythonIntegerRing(IntegerRing):
         return python_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field."""
         from .finitefield import PythonFiniteField
         return PythonFiniteField(p)
 
     def finite_ring(self, n):
-        """Returns a finite ring."""
         from .finitefield import PythonIntegerModRing
         return PythonIntegerModRing(n)
 
@@ -132,12 +130,10 @@ class GMPYIntegerRing(IntegerRing):
         return gmpy_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field."""
         from .finitefield import GMPYFiniteField
         return GMPYFiniteField(p)
 
     def finite_ring(self, n):
-        """Returns a finite ring."""
         from .finitefield import GMPYIntegerModRing
         return GMPYIntegerModRing(n)
 
