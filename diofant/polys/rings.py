@@ -7,7 +7,7 @@ import math
 import operator
 
 from ..config import query
-from ..core import Expr, Integer, Symbol, cacheit, oo
+from ..core import Expr, Integer, Symbol, cacheit
 from ..core import symbols as _symbols
 from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify, sympify
@@ -114,8 +114,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
             obj._one = [(obj.zero_monom, domain.one)]
 
-            obj.leading_expv = lambda f: Monomial(max(f, key=order))
-
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
             for symbol, generator in zip(obj.symbols, obj.gens):
@@ -131,6 +129,10 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     def __getnewargs_ex__(self):
         return (self.domain, self.symbols), {'order': self.order}
+
+    def leading_expv(self, f, order=None):
+        order = self.order if order is None else OrderOpt.preprocess(order)
+        return Monomial(max(f, key=order))
 
     @property
     def characteristic(self):
@@ -329,7 +331,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
         (q,), r = a.numerator.div([a.denominator])
 
-        if r.is_zero:
+        if not r:
             return self.convert(q, K0.field.ring)
 
     @property
@@ -653,14 +655,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return len(self) <= 1
 
     @property
-    def is_zero(self):
-        return not self
-
-    @property
-    def is_one(self):
-        return self == self.ring.one
-
-    @property
     def is_linear(self):
         return all(sum(monom) <= 1 for monom in self)
 
@@ -695,7 +689,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def is_homogeneous(self):
-        if self.is_zero:
+        if not self:
             return True
 
         lm = self.LM
@@ -1031,27 +1025,27 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         The leading degree in ``x`` or the main variable.
 
-        Note that the degree of 0 is negative infinity (the Diofant object -oo).
+        Note that the degree of 0 is negative floating-point infinity.
 
         """
         i = self.ring.index(x)
-        return max((monom[i] for monom in self), default=-oo)
+        return max((monom[i] for monom in self), default=-math.inf)
 
     def tail_degree(self, x=0):
         """
         The tail degree in ``x`` or the main variable.
 
-        Note that the degree of 0 is negative infinity (the Diofant object -oo)
+        Note that the degree of 0 is negative floating-point infinity.
 
         """
         i = self.ring.index(x)
-        return min((monom[i] for monom in self), default=-oo)
+        return min((monom[i] for monom in self), default=-math.inf)
 
     def total_degree(self):
         """Returns the total degree."""
-        return max((sum(m) for m in self), default=-oo)
+        return max((sum(m) for m in self), default=-math.inf)
 
-    def leading_expv(self):
+    def leading_expv(self, order=None):
         """Leading monomial tuple according to the monomial ordering.
 
         Examples
@@ -1064,7 +1058,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         if self:
-            return self.ring.leading_expv(self)
+            return self.ring.leading_expv(self, order=order)
 
     def _get_coeff(self, expv):
         return self.get(expv, self.ring.domain.zero)
@@ -1115,23 +1109,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return expv
 
-    def leading_monom(self):
-        """
-        Leading monomial as a polynomial element.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x y', ZZ)
-        >>> (3*x*y + y**2).leading_monom()
-        x*y
-
-        """
-        p = self.ring.zero
-        if expv := self.leading_expv():
-            p[expv] = self.ring.domain.one
-        return p
-
     @property
     def LT(self):
         if (expv := self.leading_expv()) is None:
@@ -1139,7 +1116,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return expv, self._get_coeff(expv)
 
-    def leading_term(self):
+    def leading_term(self, order=None):
         """Leading term as a polynomial element.
 
         Examples
@@ -1151,7 +1128,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        if expv := self.leading_expv():
+        if expv := self.leading_expv(order=order):
             p[expv] = self[expv]
         return p
 
@@ -1172,7 +1149,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Returns content and a primitive polynomial."""
         cont = self.content()
         prim = self.copy()
-        if not prim.is_zero:
+        if prim:
             prim = prim.quo_ground(cont)
         return cont, prim
 
@@ -1287,7 +1264,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def terms_gcd(self):
         ring = self.ring
 
-        if self.is_zero:
+        if not self:
             return (0,)*ring.ngens, self
 
         G = functools.reduce(Monomial.gcd, self)

@@ -14,11 +14,11 @@ class _GCD:
 
     def gcd(self, f, g):
         """Returns GCD of ``f`` and ``g``."""
-        if f.is_zero and g.is_zero:
+        if not (f or g):
             return self.zero
-        elif f.is_zero:
+        elif not f:
             return self._gcd_zero(g)
-        elif g.is_zero:
+        elif not g:
             return self._gcd_zero(f)
         elif f.is_term:
             return self._gcd_term(f, g)
@@ -362,12 +362,12 @@ class _GCD:
 
         c, r = domain.zero, []
 
-        if f.is_zero:
+        if not f:
             return c, r
 
         r.append(f)
 
-        if g.is_zero:
+        if not g:
             return c, r
 
         r.append(g)
@@ -379,7 +379,7 @@ class _GCD:
         lc = g.LC
         c = -lc**d
 
-        while not h.is_zero:
+        while h:
             k = h.degree()
             r.append(h)
 
@@ -411,7 +411,7 @@ class _GCD:
         ring = self
         domain = ring.domain
 
-        if f.is_zero or g.is_zero:
+        if not (f and g):
             return ring.drop(0).zero
 
         n = f.degree()

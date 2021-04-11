@@ -71,13 +71,13 @@ class _SQF:
         while not f.is_ground:
             df = [f.diff(x) for x in self.gens]
 
-            if not all(_.is_zero for _ in df):
+            if any(_ for _ in df):
                 g = f
                 for q in df:
                     g = self.gcd(g, q)
                 h, f, i = f // g, g, 1
 
-                while not h.is_one:
+                while h != 1:
                     g = self.gcd(f, h)
                     h //= g
 
@@ -117,7 +117,7 @@ class _SQF:
         for q in qs:
             g = self.gcd(g, q)
 
-        while not f.is_one:
+        while f != 1:
             qs = [q // g for q in qs]
             f //= g
             qs = [q - f.diff(x) for x, q in zip(self.gens, qs)]
@@ -125,7 +125,7 @@ class _SQF:
             g = f
             for q in qs:
                 g = self.gcd(g, q)
-            if not g.is_one:
+            if g != 1:
                 result.append((g, count))
 
             count += 1
@@ -179,7 +179,7 @@ class _SQF:
 
             return g
 
-        if f.is_zero:
+        if not f:
             return f
 
         gcd = f

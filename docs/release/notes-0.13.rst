@@ -23,6 +23,7 @@ Compatibility breaks
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
 * Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
 * Changed the :class:`~diofant.core.function.Derivative` (and similary :func:`~diofant.core.function.diff`) syntax to ``Derivative(foo, (x, 2))`` from ``Derivative(foo, x, 2)``, see :pull:`1131`.
+* Removed ``prem()`` function, see :pull:`1140`.
 
 Minor changes
 =============
@@ -72,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11667`: limit(1/x, x, 0) == oo ??
 * :sympyissue:`21202`: laplace_transform(cosh(2*x), x, s) raises RecursionError
 * :sympyissue:`21227`: Nested logarithms add unnecessary order term to series expansions
+* :sympyissue:`21263`: Solutions of cubic equation

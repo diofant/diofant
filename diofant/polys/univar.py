@@ -157,7 +157,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
                 if alpha < 0 or alpha in J:
                     continue
-                if n > 1 and not (s - t.shift(alpha)).is_zero:
+                if n > 1 and s - t.shift(alpha):
                     continue
                 J.add(alpha)
 
@@ -168,10 +168,10 @@ class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
 
     def all_coeffs(self):
-        if self.is_zero:
-            return [self.parent.domain.zero]
-        else:
+        if self:
             return [self[(i,)] for i in range(self.degree() + 1)]
+        else:
+            return [self.parent.domain.zero]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)

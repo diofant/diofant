@@ -34,7 +34,7 @@ from .rings import PolyElement
 
 
 __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
-           'degree', 'LC', 'LM', 'LT', 'prem',
+           'degree', 'LC', 'LM', 'LT',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd', 'lcm', 'terms_gcd', 'trunc',
@@ -845,22 +845,6 @@ class Poly(Expr):
         result = self.rep.exquo_ground(coeff)
         return self.per(result)
 
-    def prem(self, other):
-        """
-        Polynomial pseudo-remainder of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> (x**2 + 1).as_poly().prem((2*x - 4).as_poly())
-        Poly(20, x, domain='ZZ')
-
-        """
-        _, per, F, G = self._unify(other)
-
-        result = F.prem(G)
-        return per(result)
-
     def div(self, other, auto=True):
         """
         Polynomial division with remainder of ``self`` by ``other``.
@@ -1003,7 +987,7 @@ class Poly(Expr):
         """
         Returns degree of ``self`` in ``x_j``.
 
-        The degree of 0 is negative infinity.
+        The degree of 0 is negative floating-point infinity.
 
         Examples
         ========
@@ -1013,7 +997,7 @@ class Poly(Expr):
         >>> (x**2 + y*x + y).as_poly().degree(y)
         1
         >>> Integer(0).as_poly(x).degree()
-        -oo
+        -inf
 
         """
         j = self._gen_to_level(gen)
@@ -2011,7 +1995,7 @@ class Poly(Expr):
         False
 
         """
-        return self.rep.is_zero
+        return not self.rep
 
     @property
     def is_one(self):
@@ -2027,7 +2011,7 @@ class Poly(Expr):
         True
 
         """
-        return self.rep.is_one
+        return self.rep == 1
 
     @property
     def is_squarefree(self):
@@ -2552,7 +2536,7 @@ def degree(f, *gens, **args):
     >>> degree(x**2 + y*x + 1, gen=y)
     1
     >>> degree(0, x)
-    -oo
+    -inf
 
     """
     allowed_flags(args, ['gen', 'polys'])
@@ -2628,32 +2612,6 @@ def LT(f, *gens, **args):
 
     monom, coeff = F.LT(order=opt.order)
     return coeff*monom.as_expr()
-
-
-def prem(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-remainder of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> prem(x**2 + 1, 2*x - 4)
-    20
-
-    """
-    allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('prem', 2, exc)
-
-    r = F.prem(G)
-
-    if not opt.polys:
-        return r.as_expr()
-    else:
-        return r
 
 
 def div(f, g, *gens, **args):

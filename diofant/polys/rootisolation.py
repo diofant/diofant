@@ -1707,7 +1707,7 @@ class _FindRoot:
 
         f1 = f2 = new_ring.drop(0).zero
 
-        if f.is_zero:
+        if not f:
             return f1, f2
 
         t, h = new_ring.one, new_ring.zero
@@ -1745,7 +1745,7 @@ class _FindRoot:
         x**4 - 2*x**3 + 5*x**2 - 4*x + 4
 
         """
-        if f.is_zero:
+        if not f:
             return self.zero
 
         n = f.degree()

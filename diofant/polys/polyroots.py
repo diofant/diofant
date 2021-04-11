@@ -8,7 +8,7 @@ from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
 from ..core.mul import expand_2arg
 from ..core.sympify import sympify
 from ..domains.compositedomain import CompositeDomain
-from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
+from ..functions import Piecewise, acos, cos, exp, im, root, sign, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify.powsimp import powsimp
 from ..simplify.simplify import simplify
@@ -123,10 +123,13 @@ def roots_cubic(f, trig=False):
     if p == 0:
         if q == 0:
             return [-aon3]*3
-        elif q.is_positive:
-            u1 = -root(q, 3)
-        elif q.is_negative:
-            u1 = root(-q, 3)
+        elif q.is_nonnegative or q.is_negative:
+            u1 = -sign(q)*root(abs(q), 3)
+        else:
+            if q.could_extract_minus_sign():
+                u1 = +root(-q, 3)
+            else:
+                u1 = -root(+q, 3)
     elif q.is_extended_real and q.is_negative:
         u1 = -root(-q/2 + sqrt(q**2/4 + pon3**3), 3)
 
