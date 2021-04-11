@@ -114,8 +114,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
             obj._one = [(obj.zero_monom, domain.one)]
 
-            obj.leading_expv = lambda f: Monomial(max(f, key=order))
-
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
             for symbol, generator in zip(obj.symbols, obj.gens):
@@ -131,6 +129,10 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     def __getnewargs_ex__(self):
         return (self.domain, self.symbols), {'order': self.order}
+
+    def leading_expv(self, f, order=None):
+        order = self.order if order is None else OrderOpt.preprocess(order)
+        return Monomial(max(f, key=order))
 
     @property
     def characteristic(self):
@@ -1043,7 +1045,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Returns the total degree."""
         return max((sum(m) for m in self), default=-math.inf)
 
-    def leading_expv(self):
+    def leading_expv(self, order=None):
         """Leading monomial tuple according to the monomial ordering.
 
         Examples
@@ -1056,7 +1058,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         if self:
-            return self.ring.leading_expv(self)
+            return self.ring.leading_expv(self, order=order)
 
     def _get_coeff(self, expv):
         return self.get(expv, self.ring.domain.zero)
@@ -1114,7 +1116,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return expv, self._get_coeff(expv)
 
-    def leading_term(self):
+    def leading_term(self, order=None):
         """Leading term as a polynomial element.
 
         Examples
@@ -1126,7 +1128,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         p = self.ring.zero
-        if expv := self.leading_expv():
+        if expv := self.leading_expv(order=order):
             p[expv] = self[expv]
         return p
 
