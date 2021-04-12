@@ -459,7 +459,7 @@ def test_f5_reduce():
     cp = critical_pair(F[0], F[1], R)
     s = s_poly(cp)
 
-    assert f5_reduce(s, F) == (((0, 2, 0), 1), R.zero, 1)
+    assert f5_reduce(s, F) == (((0, 2, 0), 1), 0, 1)
 
     s = lbp(sig(Sign(s)[0], 100), Polyn(s), Num(s))
     assert f5_reduce(s, F) == s

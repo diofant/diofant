@@ -1297,7 +1297,7 @@ def _primitive_in_x0(f):
 
     for coeff in f_.values():
         cont = func_field_modgcd(cont, coeff)
-        if cont == dom.one:
+        if cont == 1:
             return cont, f
 
     return cont, f//cont.set_ring(fring)

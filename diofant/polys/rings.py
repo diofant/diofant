@@ -1168,7 +1168,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not x:
             raise ZeroDivisionError('polynomial division')
-        if not self or x == domain.one:
+        if not self or x == 1:
             return self
 
         if domain.is_Field:
@@ -1185,7 +1185,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not x:
             raise ZeroDivisionError('polynomial division')
-        if not self or x == domain.one:
+        if not self or x == 1:
             return self
 
         p = self.__class__({monom: domain.exquo(self[monom], x) for monom in self})

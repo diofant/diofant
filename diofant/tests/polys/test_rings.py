@@ -111,7 +111,7 @@ def test_PolynomialRing_domain_new():
     R1 = ZZ.frac_field(t).poly_ring(y)
     R2 = R1.poly_ring(x, z)
 
-    assert R2.domain_new(R1.ring.domain.one) == R2.one
+    assert R2.domain_new(R1.ring.domain.one) == 1
 
 
 def test_PolynomialRing_drop():
@@ -1164,7 +1164,7 @@ def test_PolyElement___mul__():
     R, x, y, z = ring('x y z', EX)
 
     assert dict(EX(pi)*x*y*z) == dict(x*y*z*EX(pi)) == {(1, 1, 1): EX(pi)}
-    assert (x + 2*y)*R(0) == R.zero
+    assert (x + 2*y)*R(0) == 0
 
 
 def test_PolyElement_misc_ariths():
@@ -1212,7 +1212,7 @@ def test_PolyElement___floordiv__truediv__():
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
-    assert divmod(R.zero, f) == (R.zero, R.zero)
+    assert divmod(R.zero, f) == (0, 0)
 
     f, g = 3*x**3 + x**2 + x + 5, 5*x**2 - 3*x + 1
     q, r = R(0), f
@@ -1363,9 +1363,9 @@ def test_PolyElement___floordiv__truediv__():
     pytest.raises(ZeroDivisionError, lambda: f.quo_term(((1, 1), 0)))
     pytest.raises(ZeroDivisionError, lambda: f.exquo_ground(0))
 
-    assert R.zero.exquo_ground(2) == R.zero
+    assert R.zero.exquo_ground(2) == 0
 
-    assert R.zero.quo_term(((1, 0), 1)) == R.zero
+    assert R.zero.quo_term(((1, 0), 1)) == 0
     assert g.quo_term((R.zero_monom, 2)) == x - y
     assert f.quo_term(((1, 0), 2)) == x/2
 
@@ -1538,7 +1538,7 @@ def test_PolyElement___pow__():
 
     f = x**4 + x + 8
 
-    assert f**0 == R.one
+    assert f**0 == 1
     assert f**1 == f
     assert f**2 == x**8 + 2*x**5 + 5*x**4 + x**2 + 5*x + 9
     assert f**5 == (x**20 + 5*x**17 + 7*x**16 + 10*x**14 + 6*x**13 +
@@ -1573,7 +1573,7 @@ def test_PolyElement___pow__():
 
     f = x + 1
 
-    assert f**0 == R.one
+    assert f**0 == 1
     assert f**1 == f
     assert f**2 == f*f == x**2 + 1
     assert f**3 == f*f*f == x**3 + x**2 + x + 1
@@ -1632,7 +1632,7 @@ def test_PolyElement___pow__():
 
     R, x = ring('x', ZZ, grlex)
 
-    assert R.zero**0 == R.one
+    assert R.zero**0 == 1
 
     f = 2*x + 3
 
@@ -1733,7 +1733,7 @@ def test_PolyElement_div():
     pytest.raises(ValueError, lambda: u.div([x]))
     pytest.raises(ZeroDivisionError, lambda: R.one.div([R.zero]))
 
-    assert R.zero.div([x**2 + 1]) == ([R.zero], R.zero)
+    assert R.zero.div([x**2 + 1]) == ([0], 0)
 
     R, x = ring('x', ZZ, grlex)
 
@@ -2382,11 +2382,11 @@ def test_PolyElement_diff():
 
     R, x = ring('x', FF(11))
 
-    assert R.zero.diff() == R.zero
-    assert R(7).diff() == R.zero
+    assert R.zero.diff() == 0
+    assert R(7).diff() == 0
     assert (7*x + 3).diff() == R(7)
     assert (7*x**2 + 3*x + 1).diff() == 3*x + 3
-    assert (x**11 + 1).diff() == R.zero
+    assert (x**11 + 1).diff() == 0
 
     R, x = ring('x', ZZ)
 
@@ -2750,9 +2750,9 @@ def test_PolyElement_compose():
 
     R, x = ring('x', FF(11))
 
-    assert R.zero.compose(x, x) == R.zero
-    assert R.one.compose(x, R.zero) == R.one
-    assert x.compose(x, R.zero) == R.zero
+    assert R.zero.compose(x, x) == 0
+    assert R.one.compose(x, R.zero) == 1
+    assert x.compose(x, R.zero) == 0
     assert x.compose(x, x) == x
 
     f = x**2 + x + 1
