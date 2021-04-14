@@ -76,3 +76,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21263`: Solutions of cubic equation
 * :sympyissue:`21334`: RecursionError while calculating leading term
 * :sympyissue:`21342`: 1/(exp(it) - 2) integrates wrong
+* :sympyissue:`21319`: Primitive part of zero polynomial

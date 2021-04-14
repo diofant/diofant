@@ -2077,7 +2077,7 @@ def test_PolyElement_content():
 def test_PolyElement_primitive():
     R, x = ring('x', ZZ)
 
-    assert R(0).primitive() == (0, 0)
+    assert R(0).primitive() == (0, 0)  # issue sympy/sympy#21319
     assert R(1).primitive() == (1, 1)
     assert (x + 1).primitive() == (1, x + 1)
     assert (2*x + 2).primitive() == (2, x + 1)
