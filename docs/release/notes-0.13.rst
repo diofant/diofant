@@ -74,3 +74,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21202`: laplace_transform(cosh(2*x), x, s) raises RecursionError
 * :sympyissue:`21227`: Nested logarithms add unnecessary order term to series expansions
 * :sympyissue:`21263`: Solutions of cubic equation
+* :sympyissue:`21334`: RecursionError while calculating leading term
