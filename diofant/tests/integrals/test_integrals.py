@@ -1380,3 +1380,7 @@ def test_sympyissue_21132():
     ans = f.integrate(t)
     assert ans.simplify() in r
     assert ans.subs({k: 0}).subs({a: 0}) == t
+
+
+def test_sympyissue_21342():
+    assert (1/(exp(I*x) - 2)).integrate((x, 0, 2*pi)) == -pi

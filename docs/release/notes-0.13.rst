@@ -75,3 +75,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21227`: Nested logarithms add unnecessary order term to series expansions
 * :sympyissue:`21263`: Solutions of cubic equation
 * :sympyissue:`21334`: RecursionError while calculating leading term
+* :sympyissue:`21342`: 1/(exp(it) - 2) integrates wrong
