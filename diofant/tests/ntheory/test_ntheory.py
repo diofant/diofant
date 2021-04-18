@@ -12,6 +12,7 @@ from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
                      binomial_coefficients_list)
 from diofant import factorial as fac
 from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
+from diofant.abc import x
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
 from diofant.domains import QQ, ZZ
@@ -1082,3 +1083,12 @@ def test_square_factor():
     assert square_factor(49) == 7
     assert square_factor(392) == 14
     assert square_factor(factorint(-12)) == 2
+
+
+def test_sympyissue_21341():
+    r0 = (x**5 - x + 1).as_poly().real_roots()[0]
+
+    assert list(itertools.islice(cf_i(r0), 10)) == [-2, 1, 4, 1, 42, 1, 3,
+                                                    24, 2, 2]
+    assert list(itertools.islice(cf_i(-r0), 10)) == [1, 5, 1, 42, 1, 3,
+                                                     24, 2, 2, 1]
