@@ -605,8 +605,6 @@ class _Factor:
         * :cite:`MathWorld-Cyclotomic-Poly`
 
         """
-        domain = self.domain
-
         lc_f, tc_f = f.LC, f[1]
 
         if f.is_ground:
@@ -621,7 +619,7 @@ class _Factor:
         n = f.degree()
         F = self._cyclotomic_decompose(n)
 
-        if tc_f != domain.one:
+        if tc_f != 1:
             return F
         else:
             H = []
@@ -670,7 +668,7 @@ class _Factor:
         if not irreducible:
             coeff, factors = f.factor_list()
 
-            if coeff != domain.one or factors != [(f, 1)]:
+            if coeff != 1 or factors != [(f, 1)]:
                 return False
 
         n = f.degree()

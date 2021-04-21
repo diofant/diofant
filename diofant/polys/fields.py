@@ -229,7 +229,7 @@ class FracElement(DomainElement, CantSympify):
         return self.raw_new(*numer.cancel(denom))
 
     def to_poly(self):
-        if self.denominator != self.field.ring.one:
+        if self.denominator != 1:
             raise ValueError('self.denominator should be 1')
         return self.numerator
 
@@ -269,7 +269,7 @@ class FracElement(DomainElement, CantSympify):
         if isinstance(other, self.field.dtype):
             return self.numerator == other.numerator and self.denominator == other.denominator
         else:
-            return self.numerator == other and self.denominator == self.field.ring.one
+            return self.numerator == other and self.denominator == 1
 
     def __bool__(self):
         return bool(self.numerator)

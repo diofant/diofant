@@ -74,3 +74,8 @@ These Sympy issues also were addressed:
 * :sympyissue:`21202`: laplace_transform(cosh(2*x), x, s) raises RecursionError
 * :sympyissue:`21227`: Nested logarithms add unnecessary order term to series expansions
 * :sympyissue:`21263`: Solutions of cubic equation
+* :sympyissue:`21334`: RecursionError while calculating leading term
+* :sympyissue:`21342`: 1/(exp(it) - 2) integrates wrong
+* :sympyissue:`21319`: Primitive part of zero polynomial
+* :sympyissue:`21341`: Issues with continued fraction for real roots of cubic polynomials
+* :sympyissue:`21024`: sympy.polys.polyerrors.CoercionFailed integration regressions?

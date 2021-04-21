@@ -1380,3 +1380,18 @@ def test_sympyissue_21132():
     ans = f.integrate(t)
     assert ans.simplify() in r
     assert ans.subs({k: 0}).subs({a: 0}) == t
+
+
+def test_sympyissue_21342():
+    assert (1/(exp(I*x) - 2)).integrate((x, 0, 2*pi)) == -pi
+
+
+def test_sympyissue_21024():
+    assert ((x + exp(3))/x**2).integrate(x) == log(x) - exp(3)/x
+    assert ((x**2 + exp(5))/x).integrate(x) == x**2/2 + exp(5)*log(x)
+    assert ((x/(2*x + tanh(1))).integrate(x) ==
+            x/2 - (-1 + E)*(1 + E)*log(2*x + tanh(1))/Mul(4, 1 + E**2,
+                                                          evaluate=False))
+    assert ((log(x)*log(4*x) + log(3*x + exp(2))).integrate(x) ==
+            x*log(x)**2 + x*log(3*x + E**2) - x + x*(-2*log(2) + 2) +
+            (-2*x + 2*x*log(2))*log(x) + E**2*log(3*x + E**2)/3)

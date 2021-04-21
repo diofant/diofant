@@ -455,7 +455,7 @@ class _GCD:
             except HomomorphismFailed:
                 continue
 
-            if P == domain.one:
+            if P == 1:
                 r = R
             else:
                 def _crt(r, R):

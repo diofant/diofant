@@ -1698,3 +1698,9 @@ def test_sympyissue_13645():
 
     # not hangs
     (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))
+
+
+def test_sympyissue_21334():
+    e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
+
+    assert e.as_leading_term(y) == 0

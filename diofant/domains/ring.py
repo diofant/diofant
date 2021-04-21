@@ -39,7 +39,7 @@ class CommutativeRing(Domain):
         """Returns inversion of ``a mod b``."""
         s, h = self.half_gcdex(a, b)
 
-        if h == self.one:
+        if h == 1:
             return s % b
         else:
             raise NotInvertible('zero divisor')

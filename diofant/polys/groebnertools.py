@@ -692,12 +692,11 @@ def is_groebner(G):
 def is_minimal(G, ring):
     """Checks if G is a minimal Gröbner basis."""
     order = ring.order
-    domain = ring.domain
 
     G.sort(key=lambda g: order(g.LM))
 
     for i, g in enumerate(G):
-        if g.LC != domain.one:
+        if g.LC != 1:
             return False
 
         for h in G[:i] + G[i + 1:]:
@@ -799,7 +798,7 @@ def matrix_fglm(F, ring, O_to):
         v = _matrix_mul(M[t[0]], V[t[1]])
         _lambda = _matrix_mul(P, v)
 
-        if all(_lambda[i] == domain.zero for i in range(s, len(old_basis))):
+        if all(_lambda[i] == 0 for i in range(s, len(old_basis))):
             # there is a linear combination of v by V
             lt = ring.term_new(_incr_k(S[t[1]], t[0]), domain.one)
             rest = ring.from_dict({S[i]: _lambda[i] for i in range(s)})
