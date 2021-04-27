@@ -13,7 +13,7 @@ Development
     programming language and the Git Version Control System.
 
 This project adheres to `No Code of Conduct`_.  Contributions will
-be judged by their technical merit.  Nothing else matters.
+be judged by their technical merit.
 
 .. _reporting-issues:
 
@@ -26,16 +26,16 @@ When opening a new issue, please take the following steps:
 
 2. If possible, try updating to master and reproducing your issue.
 
-3. Try to include a minimal reproducible code example that demonstrates the
-   problem.  Avoid screenshots, if possible.
+3. Try to include a minimal reproducible code example that
+   demonstrates the problem.
 
-4. Include any relevant details of your local setup (i.e. Python
+4. Include any relevant details of your local setup (Python
    version, installed libraries).
 
 .. note::
 
-    Please avoid changing your messages on the GitHub, unless you
-    want fix a typo and so on.  Just add new comments.
+    Please avoid changing your messages on the GitHub, unless you want fix a
+    typo and so on.  Just expand your comment or add a new one.
 
 Contributing Code
 =================
@@ -54,9 +54,15 @@ All work should be submitted via `Pull Requests (PR)`_.
    verbose description of your changes.  Please `mention closed
    issues`_ with commit message.
 
-4. Please conform to `PEP 8`_ and `PEP 257`_, enable `flake8 git hook
-   <http://flake8.pycqa.org/en/stable/user/using-hooks.html>`_ to
-   prevent badly formatted commits.
+4. Please conform to `PEP 8`_ and `PEP 257`_; run::
+
+       flake8
+
+   to check formatting and::
+
+       flake8-rst
+
+   if your change affects doctests.
 
 5. PR should include tests:
 
@@ -140,8 +146,6 @@ and publish this release tag::
     git pull
     git tag -s vX.Y.Z
     git push origin vX.Y.Z
-
-.. XXX adopt http://www.contribution-guide.org
 
 .. _SymPy : https://www.sympy.org/
 .. _Semantic Versioning: https://semver.org/
