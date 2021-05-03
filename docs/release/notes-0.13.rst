@@ -79,3 +79,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`21319`: Primitive part of zero polynomial
 * :sympyissue:`21341`: Issues with continued fraction for real roots of cubic polynomials
 * :sympyissue:`21024`: sympy.polys.polyerrors.CoercionFailed integration regressions?
+* :sympyissue:`21396`: Pow.as_base_exp inconsistent with I.as_base_exp
+* :sympyissue:`21410`: Polynomial power raises KeyError
