@@ -112,8 +112,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             obj.zero_monom = Monomial((0,)*ngens)
             obj.gens = obj._gens()
 
-            obj._one = [(obj.zero_monom, domain.one)]
-
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
             for symbol, generator in zip(obj.symbols, obj.gens):
@@ -170,7 +168,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     @property
     def one(self):
-        return self.dtype(self._one)
+        return self.ground_new(self.domain.one)
 
     def domain_new(self, element, orig_domain=None):
         return self.domain.convert(element, orig_domain)
