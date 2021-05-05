@@ -866,7 +866,8 @@ def _representing_matrices(basis, G, ring):
     u = ring.ngens-1
 
     def var(i):
-        return ring._monomial_basis(i)
+        m, = ring.gens[i]
+        return m
 
     def representing_matrix(m):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]

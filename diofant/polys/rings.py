@@ -110,7 +110,17 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             obj.order = order
 
             obj.zero_monom = Monomial((0,)*ngens)
-            obj.gens = obj._gens()
+
+            gens = []
+            one = domain.one
+            expv = [0]*ngens
+            for i in range(ngens):
+                expv[i] = 1
+                poly = obj.zero
+                poly[expv] = one
+                gens.append(poly)
+                expv[i] = 0
+            obj.gens = tuple(gens)
 
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
@@ -136,17 +146,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
     def characteristic(self):
         return self.domain.characteristic
 
-    def _gens(self):
-        """Return a list of polynomial generators."""
-        one = self.domain.one
-        _gens = []
-        for i in range(self.ngens):
-            expv = self._monomial_basis(i)
-            poly = self.zero
-            poly[expv] = one
-            _gens.append(poly)
-        return tuple(_gens)
-
     def __hash__(self):
         return self._hash
 
@@ -155,12 +154,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
-
-    def _monomial_basis(self, i):
-        """Return the ith-basis element."""
-        basis = [0]*self.ngens
-        basis[i] = 1
-        return Monomial(basis)
 
     @property
     def zero(self):
@@ -1341,7 +1334,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        x = ring._monomial_basis(i)
+        x, = ring.gens[i]
         x = x**m
         g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
@@ -1357,7 +1350,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes indefinite integral in ``x``."""
         ring = self.ring
         i = ring.index(x)
-        x = ring._monomial_basis(i)
+        x, = ring.gens[i]
         x = x**m
         g = ring.zero
         for expv, coeff in self.items():
