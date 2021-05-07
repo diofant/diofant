@@ -81,3 +81,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21024`: sympy.polys.polyerrors.CoercionFailed integration regressions?
 * :sympyissue:`21396`: Pow.as_base_exp inconsistent with I.as_base_exp
 * :sympyissue:`21410`: Polynomial power raises KeyError
+* :sympyissue:`21437`: log(Abs)

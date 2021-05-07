@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (E, Float, I, LambertW, O, Product, Rational, Sum, Symbol,
-                     arg, conjugate, cos, cosh, exp, exp_polar, expand_log,
-                     log, nan, oo, pi, re, sign, simplify, sin, sinh, sqrt,
-                     symbols, tanh, zoo)
+from diofant import (Abs, E, Float, I, LambertW, O, Product, Rational, Sum,
+                     Symbol, arg, conjugate, cos, cosh, exp, exp_polar,
+                     expand_log, log, nan, oo, pi, re, sign, simplify, sin,
+                     sinh, sqrt, symbols, tanh, zoo)
 from diofant.abc import m, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -487,3 +487,7 @@ def test_log_product():
 
     expr = log(Product(-2, (n, 0, 4)))
     assert simplify(expr) == expr
+
+
+def test_sympyissue_21437():
+    pytest.raises(TypeError, lambda: log(Abs))
