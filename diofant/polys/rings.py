@@ -259,10 +259,11 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             return self.clone(symbols=symbols)
 
     def to_ground(self):
-        if isinstance(self.domain, CompositeDomain) or self.domain.is_AlgebraicField:
-            return self.clone(domain=self.domain.domain)
+        domain = self.domain
+        if isinstance(domain, CompositeDomain) or domain.is_AlgebraicField:
+            return self.clone(domain=domain.domain)
         else:
-            raise ValueError(f'{self.domain} is not a composite or algebraic domain')
+            raise ValueError(f'{domain} is not a composite or algebraic domain')
 
     @property
     def is_univariate(self):
@@ -1103,7 +1104,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     @property
     def LT(self):
         if (expv := self.leading_expv()) is None:
-            return self.ring.zero_monom, self.ring.domain.zero
+            ring = self.ring
+            return ring.zero_monom, ring.domain.zero
         else:
             return expv, self._get_coeff(expv)
 
