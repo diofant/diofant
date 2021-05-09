@@ -1221,18 +1221,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         poly._strip_zero()
         return poly
 
-    def extract_ground(self, g):
-        f = self
-        fc = f.content()
-        gc = g.content()
-
-        gcd = f.ring.domain.gcd(fc, gc)
-
-        f = f.quo_ground(gcd)
-        g = g.quo_ground(gcd)
-
-        return gcd, f, g
-
     def _norm(self, norm_func):
         if not self:
             return self.ring.domain.zero

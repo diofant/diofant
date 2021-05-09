@@ -194,7 +194,13 @@ class _GCD:
         x0 = ring.gens[0]
         domain = ring.domain
 
-        gcd, f, g = f.extract_ground(g)
+        fc = f.content()
+        gc = g.content()
+
+        gcd = self.domain.gcd(fc, gc)
+
+        f = f.quo_ground(gcd)
+        g = g.quo_ground(gcd)
 
         f_norm = f.max_norm()
         g_norm = g.max_norm()
