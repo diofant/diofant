@@ -14,7 +14,7 @@ class _GCD:
 
     def gcd(self, f, g):
         """Returns GCD of ``f`` and ``g``."""
-        if not (f or g):
+        if not f and not g:
             return self.zero
         elif not f:
             return self._gcd_zero(g)
@@ -222,33 +222,22 @@ class _GCD:
                 h = ring._gcd_interpolate(h, x)
                 h = h.primitive()[1]
 
-                _, r = divmod(f, h)
-
-                if not r:
-                    _, r = divmod(g, h)
-
-                    if not r:
-                        return h*gcd
+                if not f % h and not g % h:
+                    return h*gcd
 
                 cff = ring._gcd_interpolate(cff, x)
 
                 h, r = divmod(f, cff)
 
-                if not r:
-                    _, r = divmod(g, h)
-
-                    if not r:
-                        return h*gcd
+                if not r and not g % h:
+                    return h*gcd
 
                 cfg = ring._gcd_interpolate(cfg, x)
 
                 h, r = divmod(g, cfg)
 
-                if not r:
-                    _, r = divmod(f, h)
-
-                    if not r:
-                        return h*gcd
+                if not r and not f % h:
+                    return h*gcd
 
             x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
 
@@ -417,7 +406,7 @@ class _GCD:
         ring = self
         domain = ring.domain
 
-        if not (f and g):
+        if not f or not g:
             return ring.drop(0).zero
 
         n = f.degree()
@@ -450,7 +439,7 @@ class _GCD:
         while P <= B:
             while True:
                 p = domain(nextprime(p))
-                if (a % p) and (b % p):
+                if a % p and b % p:
                     break
 
             p_domain = domain.finite_field(p)

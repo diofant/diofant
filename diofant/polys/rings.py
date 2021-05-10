@@ -738,7 +738,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return zero
         elif isinstance(other, domain.dtype):
             result = ring.dtype({monom: self[monom]*other for monom in self})
-            if not (domain.is_Field or domain.is_IntegerRing):
+            if not domain.is_Field and not domain.is_IntegerRing:
                 result._strip_zero()
             return result
 
@@ -1277,7 +1277,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = f.ring
         domain = ring.domain
 
-        if not (domain.is_Field and domain.has_assoc_Ring):
+        if not domain.is_Field or not domain.has_assoc_Ring:
             _, p, q = f.cofactors(g)
             cp, cq = domain.one, domain.one
         else:

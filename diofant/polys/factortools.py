@@ -501,7 +501,7 @@ class _Factor:
             e_ff = factorint(int(e_fc))
 
             for p in e_ff:
-                if (lc % p) and (tc % p**2):
+                if lc % p and tc % p**2:
                     return True
 
     def _gf_irreducible_p_ben_or(self, f):
@@ -1172,7 +1172,7 @@ class _Factor:
             for j in range(n):
                 r[j] -= c*f[j]
 
-            if not (i % q):
+            if not i % q:
                 Q[i//q] = r.copy()
 
         return Q

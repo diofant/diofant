@@ -89,9 +89,9 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     """
     hpmonoms = set(hp)
     hqmonoms = set(hq)
-    monoms = hpmonoms.intersection(hqmonoms)
-    hpmonoms.difference_update(monoms)
-    hqmonoms.difference_update(monoms)
+    monoms = hpmonoms & hqmonoms
+    hpmonoms -= monoms
+    hqmonoms -= monoms
 
     zero = hp.ring.domain.zero
 
@@ -260,8 +260,6 @@ def _modgcd_p(f, g, p, degbound, contbound):
 
     conth = ypring.gcd(contf, contg)  # polynomial in Z_p[y]
 
-    degcontf = contf.degree()
-    degcontg = contg.degree()
     degconth = conth.degree()
 
     if degconth > contbound[k-1]:
@@ -283,7 +281,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
 
     degdelta = delta.degree()
 
-    N = min(degyf - degcontf, degyg - degcontg,
+    N = min(degyf - contf.degree(), degyg - contg.degree(),
             degbound[k-1] - contbound[k-1] + degdelta) + 1
 
     if p < N:
@@ -448,9 +446,7 @@ def modgcd(f, g):
             continue
 
         h = hm.primitive()[1]
-        _, frem = divmod(f, h)
-        _, grem = divmod(g, h)
-        if not frem and not grem:
+        if not f % h and not g % h:
             return h*ch
 
 
@@ -506,7 +502,7 @@ def _rational_function_reconstruction(c, p, m):
     r1, s1 = c, pring.one
 
     while r1.degree() > N:
-        quo = divmod(r0, r1)[0]
+        quo = r0 // r1
         r0, r1 = r1, r0 - quo*r1
         s0, s1 = s1, s0 - quo*s1
 
@@ -1155,8 +1151,8 @@ def _func_field_modgcd_m(f, g, minpoly):
         h = h.set_ring(ring)
         h = h.primitive()[1]
 
-        if not (trial_division(f*cf, h, minpoly) or
-                trial_division(g*cg, h, minpoly)):
+        if (not trial_division(f*cf, h, minpoly) and
+                not trial_division(g*cg, h, minpoly)):
             return h
 
 

@@ -432,7 +432,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
             if indices[1] % 2 == 1:
                 f2_sgn = -f2_sgn
 
-        if not (a == b and b == t):
+        if a != b or b != t:
             Q.append(sgn[(f1_sgn, f2_sgn)])
 
     return Q
@@ -1214,7 +1214,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         f = f.clear_denoms()[1]
 
-        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+        if not domain.is_RationalField and not domain.is_RealAlgebraicField:
             raise DomainError(f'real root refinement not supported over {domain}')
 
         if s == t:
@@ -1417,7 +1417,7 @@ class _FindRoot:
 
         f = f.set_domain(domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
@@ -1473,7 +1473,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't isolate real roots in domain {domain}")
 
         f = f.clear_denoms()[1]
@@ -1507,7 +1507,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f'isolation of real roots not supported over {domain}')
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
@@ -1592,7 +1592,7 @@ class _FindRoot:
         domain = self.domain.field
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+        if not domain.is_RationalField and not domain.is_RealAlgebraicField:
             raise DomainError(f'isolation of real roots not supported over {domain}')
 
         if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
@@ -1767,7 +1767,7 @@ class _FindRoot:
         new_ring = self.clone(domain=domain)
         f = f.set_ring(new_ring)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't count complex roots in domain {domain}")
 
         if not all(isinstance(_, tuple) for _ in (inf, sup)):
@@ -1800,7 +1800,7 @@ class _FindRoot:
         new_ring = self.clone(domain=domain)
         f = f.set_ring(new_ring)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't isolate complex roots in domain {domain}")
 
         if not all(isinstance(_, tuple) for _ in (inf, sup)):

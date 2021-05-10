@@ -203,7 +203,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                     monom[indices[base]] += exp
                     continue
                 except KeyError:
-                    if factor.free_symbols.intersection(opt.gens):
+                    if factor.free_symbols & set(opt.gens):
                         raise PolynomialError(f'{factor} contains an element'
                                               ' of the generators set')
 
