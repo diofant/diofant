@@ -5,17 +5,8 @@ from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
+from .orderings import build_product_order
 from .polyerrors import ModularGCDFailed
-
-
-def _swap(f, i):
-    """Make the variable `x_i` the leading one in a multivariate polynomial `f`."""
-    ring = f.ring
-    fswap = ring.zero
-    for monom, coeff in f.items():
-        monomswap = (monom[i],) + monom[:i] + monom[i+1:]
-        fswap[monomswap] = coeff
-    return fswap
 
 
 def _chinese_remainder_reconstruction(hp, hq, p, q):
@@ -171,17 +162,20 @@ def _interpolate(evalpoints, hpeval, ring, i, p, ground=False):
             numer *= y - b
             denom *= a - b
 
-        denom = domain.invert(denom, p)
+        if domain.is_FiniteField:
+            denom = denom**-1
+        else:
+            denom = domain.invert(denom, p)
+
         coeff = numer*denom
-        hp += hpa.set_ring(ring) * coeff
+        hp += hpa * coeff
 
-    return hp.trunc_ground(p)
+    return hp
 
 
-def _modgcd_p(f, g, p, degbound, contbound):
+def _modgcd_p(f, g, degbound, contbound):
     r"""
-    Compute the GCD of two polynomials in
-    `\mathbb{Z}_p[x0, \ldots, x{k-1}]`.
+    Compute the GCD of two polynomials in `\mathbb{Z}_p[x0, \ldots, x{k-1}]`.
 
     The algorithm reduces the problem step by step by evaluating the
     polynomials `f` and `g` at `x_{k-1} = a` for suitable
@@ -202,16 +196,13 @@ def _modgcd_p(f, g, p, degbound, contbound):
         multivariate integer polynomial with coefficients in `\mathbb{Z}_p`
     g : PolyElement
         multivariate integer polynomial with coefficients in `\mathbb{Z}_p`
-    p : Integer
-        prime number, modulus of `f` and `g`
     degbound : list of Integer objects
         ``degbound[i]`` is an upper bound for the degree of the GCD of `f`
         and `g` in the variable `x_i`
     contbound : list of Integer objects
         ``contbound[i]`` is an upper bound for the degree of the content of
-        the GCD in `\mathbb{Z}_p[x_i][x_0, \ldots, x_{i-1}]`,
-        ``contbound[0]`` is not used can therefore be chosen
-        arbitrarily.
+        the GCD in `\mathbb{Z}_p[x_i][x_0, \ldots, x_{i-1}]`, ``contbound[0]``
+        is not used can therefore be chosen arbitrarily.
 
     Returns
     =======
@@ -227,16 +218,11 @@ def _modgcd_p(f, g, p, degbound, contbound):
 
     """
     ring = f.ring
+    domain = ring.domain
     k = ring.ngens
 
-    domain = ring.domain
-    pdomain = domain.finite_field(p)
-    pring = ring.clone(domain=pdomain)
-
-    f, g = map(operator.methodcaller('set_domain', pdomain), (f, g))
-
     if ring.is_univariate:
-        h = pring.gcd(f, g)
+        h = ring.gcd(f, g)
         degh = h.degree()
 
         if degh > degbound[0]:
@@ -245,9 +231,9 @@ def _modgcd_p(f, g, p, degbound, contbound):
             degbound[0] = degh
             raise ModularGCDFailed
 
-        return h.set_domain(domain)
+        return h
 
-    ypring = pring.eject(-1).domain
+    yring = ring.eject(-1).domain
 
     degyf = f.degree(-1)
     degyg = g.degree(-1)
@@ -258,7 +244,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
     f = f.inject()
     g = g.inject()
 
-    conth = ypring.gcd(contf, contg)  # polynomial in Z_p[y]
+    conth = yring.gcd(contf, contg)  # polynomial in Z_p[y]
 
     degconth = conth.degree()
 
@@ -271,19 +257,25 @@ def _modgcd_p(f, g, p, degbound, contbound):
     lcf = f.eject(-1).LC
     lcg = g.eject(-1).LC
 
-    delta = ypring.gcd(lcf, lcg)  # polynomial in Z_p[y]
+    delta = yring.gcd(lcf, lcg)  # polynomial in Z_p[y]
 
     evaltest = delta
 
     for i in range(k-1):
-        evaltest *= ypring.gcd(_swap(f, i).eject(-1).LC,
-                               _swap(g, i).eject(-1).LC)
+        order = build_product_order((('lex', i),
+                                     ('lex', *range(k-1))),
+                                    list(range(k-1)))
+        evaltest *= yring.gcd(f.eject(-1).leading_term(order).LC,
+                              g.eject(-1).leading_term(order).LC)
+#       evaltest *= yring.gcd(_swap(f, i).eject(-1).LC,
+#                             _swap(g, i).eject(-1).LC)
 
     degdelta = delta.degree()
 
     N = min(degyf - contf.degree(), degyg - contg.degree(),
             degbound[k-1] - contbound[k-1] + degdelta) + 1
 
+    p = domain.characteristic
     if p < N:
         return
 
@@ -291,7 +283,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
     d = 0
     evalpoints = []
     heval = []
-    points = list(range(p))
+    points = list(map(domain, range(p)))
     random.shuffle(points)
 
     while points:
@@ -306,8 +298,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
         ga = g.eval(-1, a)
 
         # polynomials in Z_p[x_0, ..., x_{k-2}]
-        ha = _modgcd_p(fa.set_domain(domain), ga.set_domain(domain),
-                       p, degbound, contbound)
+        ha = _modgcd_p(fa, ga, degbound, contbound)
 
         if ha is None:
             if d < n:
@@ -315,8 +306,6 @@ def _modgcd_p(f, g, p, degbound, contbound):
                 continue
             else:
                 return
-
-        ha = ha.set_domain(pdomain)
 
         if ha.is_ground:
             return conth.set_ring(ring)
@@ -328,12 +317,9 @@ def _modgcd_p(f, g, p, degbound, contbound):
         n += 1
 
         if n == N:
-            heval = [_.set_domain(domain) for _ in heval]
             h = _interpolate(evalpoints, heval, ring, -1, p)
 
-            h = h.set_domain(pdomain)
-
-            h = h.eject(-1).primitive()[1].inject().set_ring(ring) * conth.set_ring(ring)
+            h = h.eject(-1).primitive()[1].inject()*conth
             degyh = h.degree(-1)
 
             assert degyh <= degbound[k-1]
@@ -395,6 +381,7 @@ def modgcd(f, g):
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     ring = f.ring
+    domain = ring.domain
     k = ring.ngens
 
     # divide out integer content
@@ -406,7 +393,11 @@ def modgcd(f, g):
 
     badprimes = ring.domain.one
     for i in range(k):
-        badprimes *= ring.domain.gcd(_swap(f, i).LC, _swap(g, i).LC)
+        order = build_product_order((('lex', i),
+                                     ('lex', *range(k))),
+                                    list(range(k)))
+        badprimes *= ring.domain.gcd(f.leading_term(order).LC,
+                                     g.leading_term(order).LC)
 
     degbound = [min(f.degree(x), g.degree(x)) for x in ring.gens]
     contbound = list(degbound)
@@ -419,12 +410,12 @@ def modgcd(f, g):
         while badprimes % p == 0:
             p = nextprime(p)
 
-        fp = f.trunc_ground(p)
-        gp = g.trunc_ground(p)
+        fp, gp = map(operator.methodcaller('set_domain',
+                                           domain.finite_field(p)), (f, g))
 
         try:
             # monic GCD of fp, gp in Z_p[x_0, ..., x_{k-2}, y]
-            hp = _modgcd_p(fp, gp, p, degbound, contbound)
+            hp = _modgcd_p(fp, gp, degbound, contbound)
         except ModularGCDFailed:
             m = 1
             continue
@@ -432,7 +423,7 @@ def modgcd(f, g):
         if hp is None:
             continue
 
-        hp = (hp*gamma).trunc_ground(p)
+        hp *= gamma
         if m == 1:
             m = p
             hlastm = hp
@@ -440,6 +431,7 @@ def modgcd(f, g):
 
         hm = _chinese_remainder_reconstruction(hp, hlastm, p, m)
         m *= p
+        hm = hm.set_domain(domain)
 
         if not hm == hlastm:
             hlastm = hm
