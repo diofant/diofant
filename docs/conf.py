@@ -152,7 +152,7 @@ html_theme_options = {
 
 # The inline configuration options for mathjax.  The value is used as
 # a parameter of MathJax.Hub.Config().
-mathjax_config = {
+mathjax3_config = {
     'CommonHTML': {'linebreaks': {'automatic': True}},
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},
