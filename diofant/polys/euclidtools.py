@@ -190,9 +190,8 @@ class _GCD:
         """
         assert self == f.ring == g.ring and self.domain.is_IntegerRing
 
-        ring = self
-        x0 = ring.gens[0]
-        domain = ring.domain
+        x0 = self.gens[0]
+        domain = self.domain
 
         fc = f.content()
         gc = g.content()
@@ -211,7 +210,7 @@ class _GCD:
                 2*min(f_norm // abs(f.LC),
                       g_norm // abs(g.LC)) + 4)
 
-        cofactors = domain.cofactors if ring.is_univariate else ring.drop(0).cofactors
+        cofactors = domain.cofactors if self.is_univariate else self.drop(0).cofactors
 
         for i in range(query('HEU_GCD_MAX')):
             ff = f.eval(x0, x)
@@ -219,20 +218,20 @@ class _GCD:
 
             if ff and gg:
                 h, cff, cfg = cofactors(ff, gg)
-                h = ring._gcd_interpolate(h, x)
+                h = self._gcd_interpolate(h, x)
                 h = h.primitive()[1]
 
                 if not f % h and not g % h:
                     return h*gcd
 
-                cff = ring._gcd_interpolate(cff, x)
+                cff = self._gcd_interpolate(cff, x)
 
                 h, r = divmod(f, cff)
 
                 if not r and not g % h:
                     return h*gcd
 
-                cfg = ring._gcd_interpolate(cfg, x)
+                cfg = self._gcd_interpolate(cfg, x)
 
                 h, r = divmod(g, cfg)
 
@@ -266,15 +265,13 @@ class _GCD:
 
     def _rr_prs_gcd(self, f, g):
         """Computes polynomial GCD using subresultants over a ring."""
-        ring = self
-
         if self.is_multivariate:
             ring, f, g = map(operator.methodcaller('eject', *self.gens[1:]),
-                             (ring, f, g))
+                             (self, f, g))
             h = ring._rr_prs_gcd(f, g)
             return h.inject()
 
-        domain = ring.domain
+        domain = self.domain
 
         fc, ff = f.primitive()
         gc, fg = g.primitive()
@@ -287,11 +284,9 @@ class _GCD:
 
     def _ff_prs_gcd(self, f, g):
         """Computes polynomial GCD using subresultants over a field."""
-        ring = self
-
-        if ring.is_multivariate:
+        if self.is_multivariate:
             ring, F, G = map(operator.methodcaller('eject', *self.gens[1:]),
-                             (ring, f, g))
+                             (self, f, g))
 
             fc, F = F.primitive()
             gc, G = G.primitive()
@@ -337,12 +332,11 @@ class _GCD:
         * :cite:`Geddes1992algorithms`, example 7.6
 
         """
-        ring = self
-        domain = ring.domain
+        domain = self.domain
 
-        if ring.is_multivariate:
-            ring, f, g = map(operator.methodcaller('eject', *ring.gens[1:]),
-                             (ring, f, g))
+        if self.is_multivariate:
+            ring, f, g = map(operator.methodcaller('eject', *self.gens[1:]),
+                             (self, f, g))
             res = ring._primitive_prs(f, g)
             return res[0], [_.inject() for _ in res[1]]
 
@@ -350,7 +344,7 @@ class _GCD:
         m = g.degree()
 
         if n < m:
-            res, sub = ring._primitive_prs(g, f)
+            res, sub = self._primitive_prs(g, f)
             if res:
                 res *= (-domain.one)**(n*m)
             return res, sub
@@ -403,11 +397,10 @@ class _GCD:
         * :cite:`Collins1971mod`, algorithm PRES
 
         """
-        ring = self
-        domain = ring.domain
+        domain = self.domain
 
         if not f or not g:
-            return ring.drop(0).zero
+            return self.drop(0).zero
 
         n = f.degree()
         m = g.degree()
@@ -416,7 +409,7 @@ class _GCD:
             cf, f = f.clear_denoms(convert=True)
             cg, g = g.clear_denoms(convert=True)
 
-            ring = ring.clone(domain=domain.ring)
+            ring = self.clone(domain=domain.ring)
             r = ring._collins_resultant(f, g)
             r = r.set_domain(domain)
 
@@ -433,7 +426,7 @@ class _GCD:
         a, b = f.LC, g.LC
 
         B = domain(2)*domain.factorial(domain(n + m))*A**m*B**n
-        new_ring = ring.drop(0)
+        new_ring = self.drop(0)
         r, p, P = new_ring.zero, domain.one, domain.one
 
         while P <= B:
@@ -446,7 +439,7 @@ class _GCD:
             F, G = map(operator.methodcaller('set_domain', p_domain), (f, g))
 
             try:
-                R = ring.clone(domain=p_domain)._modular_resultant(F, G)
+                R = self.clone(domain=p_domain)._modular_resultant(F, G)
             except HomomorphismFailed:
                 continue
 
@@ -480,13 +473,12 @@ class _GCD:
         * :cite:`Collins1971mod`, algorithm CPRES
 
         """
-        ring = self
-        domain = ring.domain
+        domain = self.domain
 
         assert domain.is_FiniteField
 
-        if ring.is_univariate:
-            return ring._primitive_prs(f, g)[0]
+        if self.is_univariate:
+            return self._primitive_prs(f, g)[0]
 
         n = f.degree()
         m = g.degree()
@@ -496,9 +488,9 @@ class _GCD:
 
         B = n*M + m*N
 
-        new_ring = ring.drop(0)
+        new_ring = self.drop(0)
         r = new_ring.zero
-        D = ring.eject(1).domain.one
+        D = self.eject(1).domain.one
         domain_elts = iter(range(domain.order))
 
         while D.degree() <= B:
@@ -516,7 +508,7 @@ class _GCD:
                     if G.degree() == m:
                         break
 
-            R = ring.drop(1)._modular_resultant(F, G)
+            R = self.drop(1)._modular_resultant(F, G)
             e = r.eval(x=0, a=a)
 
             if new_ring.is_univariate:
