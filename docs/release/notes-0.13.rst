@@ -83,3 +83,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21410`: Polynomial power raises KeyError
 * :sympyissue:`21437`: log(Abs)
 * :sympyissue:`21460`: Polynomial GCD result is different for dense trivial polynomial
+* :sympyissue:`21466`: Regression for match for differential binomial expression
