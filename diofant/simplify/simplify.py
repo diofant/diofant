@@ -372,6 +372,7 @@ def hypersimp(f, k):
     g = g.rewrite(gamma)
     g = expand_func(g)
     g = powsimp(g, deep=True, combine='exp')
+    g = g.cancel()
     g = combsimp(g)
 
     if g.is_rational_function(k):

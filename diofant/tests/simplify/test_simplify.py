@@ -292,6 +292,8 @@ def test_hypersimp():
     term = binomial(n, k)*(-1)**k/factorial(k)
     assert hypersimp(term, k) == (k - n)/(k + 1)**2
 
+    assert hypersimp(2**(I*k) * 2**k, k) == 2**(1 + I)
+
 
 def test_nsimplify():
     assert nsimplify(0) == 0
