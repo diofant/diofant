@@ -162,10 +162,10 @@ def _interpolate(evalpoints, hpeval, ring, i, p, ground=False):
             numer *= y - b
             denom *= a - b
 
-        if domain.is_FiniteField:
-            denom = denom**-1
-        else:
+        if ground:
             denom = domain.invert(denom, p)
+        else:
+            denom = denom**-1
 
         coeff = numer*denom
         hp += hpa * coeff
@@ -175,7 +175,7 @@ def _interpolate(evalpoints, hpeval, ring, i, p, ground=False):
 
 def _modgcd_p(f, g, degbound, contbound):
     r"""
-    Compute the GCD of two polynomials in `\mathbb{Z}_p[x0, \ldots, x{k-1}]`.
+    Compute the GCD of two polynomials in `\mathbb{Z}_p[x_0, \ldots, x_{k-1}]`.
 
     The algorithm reduces the problem step by step by evaluating the
     polynomials `f` and `g` at `x_{k-1} = a` for suitable
@@ -193,9 +193,9 @@ def _modgcd_p(f, g, degbound, contbound):
     ==========
 
     f : PolyElement
-        multivariate integer polynomial with coefficients in `\mathbb{Z}_p`
+        multivariate polynomial with coefficients in `\mathbb{Z}_p`
     g : PolyElement
-        multivariate integer polynomial with coefficients in `\mathbb{Z}_p`
+        multivariate polynomial with coefficients in `\mathbb{Z}_p`
     degbound : list of Integer objects
         ``degbound[i]`` is an upper bound for the degree of the GCD of `f`
         and `g` in the variable `x_i`
@@ -223,17 +223,16 @@ def _modgcd_p(f, g, degbound, contbound):
 
     if ring.is_univariate:
         h = ring.gcd(f, g)
-        degh = h.degree()
 
-        if degh > degbound[0]:
+        if (degh := h.degree()) > degbound[0]:
             return
-        if degh < degbound[0]:
+        elif degh < degbound[0]:
             degbound[0] = degh
             raise ModularGCDFailed
 
         return h
 
-    yring = ring.eject(-1).domain
+    yring = ring.eject(-1).domain  # Z_p[y]
 
     degyf = f.degree(-1)
     degyg = g.degree(-1)
@@ -241,23 +240,21 @@ def _modgcd_p(f, g, degbound, contbound):
     contf, f = f.eject(-1).primitive()
     contg, g = g.eject(-1).primitive()
 
+    yf, yg = f, g
+
     f = f.inject()
     g = g.inject()
 
-    conth = yring.gcd(contf, contg)  # polynomial in Z_p[y]
+    conth = yring.gcd(contf, contg)
+    conth = conth.set_ring(ring)
 
-    degconth = conth.degree()
-
-    if degconth > contbound[k-1]:
+    if (degconth := conth.degree(-1)) > contbound[k-1]:
         return
-    if degconth < contbound[k-1]:
+    elif degconth < contbound[k-1]:
         contbound[k-1] = degconth
         raise ModularGCDFailed
 
-    lcf = f.eject(-1).LC
-    lcg = g.eject(-1).LC
-
-    delta = yring.gcd(lcf, lcg)  # polynomial in Z_p[y]
+    delta = yring.gcd(yf.LC, yg.LC)
 
     evaltest = delta
 
@@ -265,15 +262,11 @@ def _modgcd_p(f, g, degbound, contbound):
         order = build_product_order((('lex', i),
                                      ('lex', *range(k-1))),
                                     list(range(k-1)))
-        evaltest *= yring.gcd(f.eject(-1).leading_term(order).LC,
-                              g.eject(-1).leading_term(order).LC)
-#       evaltest *= yring.gcd(_swap(f, i).eject(-1).LC,
-#                             _swap(g, i).eject(-1).LC)
-
-    degdelta = delta.degree()
+        evaltest *= yring.gcd(yf[yf.leading_expv(order)],
+                              yg[yg.leading_expv(order)])
 
     N = min(degyf - contf.degree(), degyg - contg.degree(),
-            degbound[k-1] - contbound[k-1] + degdelta) + 1
+            degbound[k-1] - contbound[k-1] + delta.degree()) + 1
 
     p = domain.characteristic
     if p < N:
@@ -292,8 +285,6 @@ def _modgcd_p(f, g, degbound, contbound):
         if not evaltest.eval(0, a):
             continue
 
-        deltaa = delta.eval(0, a)
-
         fa = f.eval(-1, a)
         ga = g.eval(-1, a)
 
@@ -306,24 +297,22 @@ def _modgcd_p(f, g, degbound, contbound):
                 continue
             else:
                 return
+        else:
+            n += 1
 
         if ha.is_ground:
-            return conth.set_ring(ring)
+            return conth
 
-        ha *= deltaa
+        ha *= delta.eval(0, a)
 
         evalpoints.append(a)
         heval.append(ha)
-        n += 1
 
         if n == N:
             h = _interpolate(evalpoints, heval, ring, -1, p)
-
             h = h.eject(-1).primitive()[1].inject()*conth
-            degyh = h.degree(-1)
 
-            assert degyh <= degbound[k-1]
-            if degyh < degbound[k-1]:
+            if (degyh := h.degree(-1)) < degbound[k-1]:
                 degbound[k-1] = degyh
                 raise ModularGCDFailed
 
@@ -396,8 +385,8 @@ def modgcd(f, g):
         order = build_product_order((('lex', i),
                                      ('lex', *range(k))),
                                     list(range(k)))
-        badprimes *= ring.domain.gcd(f.leading_term(order).LC,
-                                     g.leading_term(order).LC)
+        badprimes *= ring.domain.gcd(f[f.leading_expv(order)],
+                                     g[g.leading_expv(order)])
 
     degbound = [min(f.degree(x), g.degree(x)) for x in ring.gens]
     contbound = list(degbound)
