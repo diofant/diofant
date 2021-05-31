@@ -1399,3 +1399,7 @@ def test_sympyissue_21024():
 
 def test_sympyissue_21166():
     assert integrate(sin(x/sqrt(abs(x))), (x, -1, 1)) == 0
+
+
+def test_sympyissue_21549():
+    assert integrate(x*sqrt(abs(x)), (x, -1, 0)) == Rational(-2, 5)
