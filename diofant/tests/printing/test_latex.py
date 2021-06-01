@@ -208,7 +208,7 @@ def test_latex_symbols():
     assert latex(taU) == r'\tau'
     # Check that all capitalized greek letters are handled explicitly
     capitalized_letters = {l.capitalize() for l in greek_letters_set}
-    assert len(capitalized_letters - set(tex_greek_dictionary.keys())) == 0
+    assert len(capitalized_letters - set(tex_greek_dictionary)) == 0
     assert latex(Gamma + lmbda) == r'\Gamma + \lambda'
     assert latex(Gamma * lmbda) == r'\Gamma \lambda'
     assert latex(Symbol('q1')) == r'q_{1}'

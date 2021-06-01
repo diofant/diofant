@@ -412,7 +412,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif ring == new_ring.domain:
             return new_ring.ground_new(self)
         elif set(new_symbols).issuperset(symbols):
-            monoms = self.keys()
             coeffs = self.values()
 
             new_monoms = [[] for _ in range(len(self))]
@@ -421,7 +420,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 try:
                     j = symbols.index(gen)
 
-                    for M, new_M in zip(monoms, new_monoms):
+                    for M, new_M in zip(self, new_monoms):
                         new_M.append(M[j])
                 except ValueError:
                     for new_M in new_monoms:
@@ -686,7 +685,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         lm = self.LM
         tdeg = sum(lm)
-        return all(sum(monom) == tdeg for monom in self.keys() if monom != lm)
+        return all(sum(monom) == tdeg for monom in self if monom != lm)
 
     def __neg__(self):
         return self.__class__({monom: -self[monom] for monom in self})

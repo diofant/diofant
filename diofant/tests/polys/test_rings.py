@@ -293,7 +293,7 @@ def test_PolyElement_items():
 
     f = x*y**7 + 2*x**2*y**3
 
-    assert set(f.keys()) == {(2, 3), (1, 7)}
+    assert set(f) == {(2, 3), (1, 7)}
     assert set(f.values()) == {1, 2}
     assert set(f.items()) == {((2, 3), 2), ((1, 7), 1)}
 
@@ -307,7 +307,7 @@ def test_PolyElement_items():
 
     f = x**2/3 + y**3/4 + z**4/5
 
-    assert set(f.keys()) == {(2, 0, 0), (0, 3, 0), (0, 0, 4)}
+    assert set(f) == {(2, 0, 0), (0, 3, 0), (0, 0, 4)}
     assert set(f.values()) == {QQ(1, 3), QQ(1, 4), QQ(1, 5)}
     assert set(f.items()) == {((2, 0, 0), QQ(1, 3)), ((0, 3, 0), QQ(1, 4)),
                               ((0, 0, 4), QQ(1, 5))}
