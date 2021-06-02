@@ -654,13 +654,13 @@ def eval_sum_symbolic(f, limits):
                 else:
                     return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
 
-    if not (a.has(oo, -oo) or
-            b.has(oo, -oo)):
+    if not (a.has(oo, -oo) or b.has(oo, -oo)):
         # Geometric terms
         c1 = Wild('c1', exclude=[i])
         c2 = Wild('c2', exclude=[i])
         c3 = Wild('c3', exclude=[i])
 
+        f = f.powsimp().cancel()
         e = f.match(c1**(c2*i + c3))
 
         if e is not None:

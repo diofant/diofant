@@ -911,3 +911,12 @@ def test_sympyissue_10156():
 def test_sympyissue_15943():
     s = Sum(binomial(n, k)*factorial(n - k), (k, 0, n))
     assert s.doit().simplify() == E*(gamma(n + 1) - lowergamma(n + 1, 1))
+
+
+def test_sympyissue_21557():
+    f1 = 2**(-k)*exp(I*k)
+    assert summation(f1, (k, 1, oo)).simplify() == E**I/(2 - E**I)
+    f2 = 2**(k*(I - 1))
+    assert summation(f2, (k, 1, oo)).simplify() == 2**I/(2 - 2**I)
+    assert (summation(f2, (k, 1, x)).simplify() ==
+            2**(-x + I)*(-2**x + 2**(I*x))/(-2 + 2**I))

@@ -88,3 +88,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21486`: expand_func(besselj(oo, x)) -> RecursionError
 * :sympyissue:`21530`: Incorrect limit
 * :sympyissue:`21549`: Bug: integrate(x*sqrt(abs(x)),(x,-1,0)) returns wrong result
+* :sympyissue:`21557`: Summation of geometric series with non-real exponent does not evaluate
