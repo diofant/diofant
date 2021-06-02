@@ -1174,7 +1174,7 @@ def test_sympyissue_4950():
 
 
 def test_sympyissue_4968():
-    assert integrate(sin(log(x**2))) == x*sin(2*log(x))/5 - 2*x*cos(2*log(x))/5
+    assert integrate(sin(log(x**2))) == x*sin(log(x**2))/5 - 2*x*cos(log(x**2))/5
 
 
 def test_sympyissue_7098():
@@ -1395,3 +1395,11 @@ def test_sympyissue_21024():
     assert ((log(x)*log(4*x) + log(3*x + exp(2))).integrate(x) ==
             x*log(x)**2 + x*log(3*x + E**2) - x + x*(-2*log(2) + 2) +
             (-2*x + 2*x*log(2))*log(x) + E**2*log(3*x + E**2)/3)
+
+
+def test_sympyissue_21166():
+    assert integrate(sin(x/sqrt(abs(x))), (x, -1, 1)) == 0
+
+
+def test_sympyissue_21549():
+    assert integrate(x*sqrt(abs(x)), (x, -1, 0)) == Rational(-2, 5)

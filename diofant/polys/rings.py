@@ -110,9 +110,17 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             obj.order = order
 
             obj.zero_monom = Monomial((0,)*ngens)
-            obj.gens = obj._gens()
 
-            obj._one = [(obj.zero_monom, domain.one)]
+            gens = []
+            one = domain.one
+            expv = [0]*ngens
+            for i in range(ngens):
+                expv[i] = 1
+                poly = obj.zero
+                poly[expv] = one
+                gens.append(poly)
+                expv[i] = 0
+            obj.gens = tuple(gens)
 
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
@@ -138,17 +146,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
     def characteristic(self):
         return self.domain.characteristic
 
-    def _gens(self):
-        """Return a list of polynomial generators."""
-        one = self.domain.one
-        _gens = []
-        for i in range(self.ngens):
-            expv = self._monomial_basis(i)
-            poly = self.zero
-            poly[expv] = one
-            _gens.append(poly)
-        return tuple(_gens)
-
     def __hash__(self):
         return self._hash
 
@@ -158,19 +155,13 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
-    def _monomial_basis(self, i):
-        """Return the ith-basis element."""
-        basis = [0]*self.ngens
-        basis[i] = 1
-        return Monomial(basis)
-
     @property
     def zero(self):
         return self.dtype()
 
     @property
     def one(self):
-        return self.dtype(self._one)
+        return self.ground_new(self.domain.one)
 
     def domain_new(self, element, orig_domain=None):
         return self.domain.convert(element, orig_domain)
@@ -268,10 +259,11 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             return self.clone(symbols=symbols)
 
     def to_ground(self):
-        if isinstance(self.domain, CompositeDomain) or self.domain.is_AlgebraicField:
-            return self.clone(domain=self.domain.domain)
+        domain = self.domain
+        if isinstance(domain, CompositeDomain) or domain.is_AlgebraicField:
+            return self.clone(domain=domain.domain)
         else:
-            raise ValueError(f'{self.domain} is not a composite or algebraic domain')
+            raise ValueError(f'{domain} is not a composite or algebraic domain')
 
     @property
     def is_univariate(self):
@@ -746,7 +738,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return zero
         elif isinstance(other, domain.dtype):
             result = ring.dtype({monom: self[monom]*other for monom in self})
-            if not (domain.is_Field or domain.is_IntegerRing):
+            if not domain.is_Field and not domain.is_IntegerRing:
                 result._strip_zero()
             return result
 
@@ -1112,7 +1104,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     @property
     def LT(self):
         if (expv := self.leading_expv()) is None:
-            return self.ring.zero_monom, self.ring.domain.zero
+            ring = self.ring
+            return ring.zero_monom, ring.domain.zero
         else:
             return expv, self._get_coeff(expv)
 
@@ -1228,18 +1221,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         poly._strip_zero()
         return poly
 
-    def extract_ground(self, g):
-        f = self
-        fc = f.content()
-        gc = g.content()
-
-        gcd = f.ring.domain.gcd(fc, gc)
-
-        f = f.quo_ground(gcd)
-        g = g.quo_ground(gcd)
-
-        return gcd, f, g
-
     def _norm(self, norm_func):
         if not self:
             return self.ring.domain.zero
@@ -1296,7 +1277,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = f.ring
         domain = ring.domain
 
-        if not (domain.is_Field and domain.has_assoc_Ring):
+        if not domain.is_Field or not domain.has_assoc_Ring:
             _, p, q = f.cofactors(g)
             cp, cq = domain.one, domain.one
         else:
@@ -1343,7 +1324,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        x = ring._monomial_basis(i)
+        x, = ring.gens[i]
         x = x**m
         g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
@@ -1359,7 +1340,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes indefinite integral in ``x``."""
         ring = self.ring
         i = ring.index(x)
-        x = ring._monomial_basis(i)
+        x, = ring.gens[i]
         x = x**m
         g = ring.zero
         for expv, coeff in self.items():

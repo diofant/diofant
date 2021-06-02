@@ -150,9 +150,10 @@ def test_heurisch_symbolic_coeffs():
 
 def test_heurisch_symbolic_coeffs_1130():
     y = Symbol('y')
-    assert heurisch_wrapper(1/(x**2 + y), x) == Piecewise(
-        (-1/x, Eq(y, 0)),
-        (-I*log(x - I*sqrt(y))/(2*sqrt(y)) + I*log(x + I*sqrt(y))/(2*sqrt(y)), True))
+    assert (heurisch_wrapper(1/(x**2 + y), x) ==
+            Piecewise((-1/x, Eq(y, 0)),
+                      (log(x - sqrt(-y))/(2*sqrt(-y)) -
+                       log(x + sqrt(-y))/(2*sqrt(-y)), True)))
     y = Symbol('y', positive=True)
     assert heurisch_wrapper(1/(x**2 + y), x) in [I/sqrt(y)*log(x + sqrt(-y))/2 -
                                                  I/sqrt(y)*log(x - sqrt(-y))/2, I*log(x + I*sqrt(y)) /
@@ -204,8 +205,8 @@ def test_heurisch_wrapper():
         Piecewise((1/x, Eq(y, 0)), (log(x + y)/2/y - log(x - y)/2/y, True))
     # issue sympy/sympy#6926
     f = sqrt(x**2/((y - x)*(y + x)))
-    assert heurisch_wrapper(f, x) == x*sqrt(x**2)*sqrt(1/(-x**2 + y**2)) \
-        - y**2*sqrt(x**2)*sqrt(1/(-x**2 + y**2))/x
+    assert (heurisch_wrapper(f, x) ==
+            x*sqrt(x**2/(-x**2 + y**2)) - y**2*sqrt(x**2/(-x**2 + y**2))/x)
 
 
 def test_sympyissue_3609():

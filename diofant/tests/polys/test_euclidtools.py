@@ -1015,3 +1015,15 @@ def test_sympyissue_10996():
 
     assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
     assert H*cff == f and H*cfg == g
+
+
+def test_sympyissue_21460():
+    R = ZZ.inject('x')
+
+    r = R.gcd(R(4), R(6))
+    assert type(r) is R.dtype and r == 2
+
+    R = QQ.inject('x')
+
+    r = R.gcd(R(4), R(6))
+    assert type(r) is R.dtype and r == 1

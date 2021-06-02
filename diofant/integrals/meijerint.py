@@ -873,8 +873,8 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     m1, n1 = b1.numerator, b1.denominator
     m2, n2 = b2.numerator, b2.denominator
     tau = math.lcm(m1*n2, m2*n1)
-    r1 = tau//(m1*n2)
-    r2 = tau//(m2*n1)
+    r1 = Integer(tau//(m1*n2))
+    r2 = Integer(tau//(m2*n1))
 
     C1, g1 = _inflate_g(g1, r1)
     C2, g2 = _inflate_g(g2, r2)

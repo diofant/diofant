@@ -774,9 +774,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
                 c = _trunc(s - functools.reduce(operator.mul, H), minpoly, p)
 
     prod = functools.reduce(operator.mul, H)
-    if _trunc(prod, minpoly, p) != f.trunc_ground(p):
-        return
-    else:
+    if _trunc(prod, minpoly, p) == f.trunc_ground(p):
         return H
 
 

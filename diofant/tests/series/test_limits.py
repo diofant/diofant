@@ -850,3 +850,7 @@ def test_sympyissue_19453():
 
 def test_sympyissue_19442():
     pytest.raises(PoleError, lambda: limit(1/x, x, 0, 'real'))
+
+
+def test_sympyissue_21530():
+    assert limit(sinh(n + 1)/sinh(n), n, oo) == E

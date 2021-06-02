@@ -81,3 +81,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`21024`: sympy.polys.polyerrors.CoercionFailed integration regressions?
 * :sympyissue:`21396`: Pow.as_base_exp inconsistent with I.as_base_exp
 * :sympyissue:`21410`: Polynomial power raises KeyError
+* :sympyissue:`21437`: log(Abs)
+* :sympyissue:`21460`: Polynomial GCD result is different for dense trivial polynomial
+* :sympyissue:`21466`: Regression for match for differential binomial expression
+* :sympyissue:`21166`: Wrong integration result involving square root of absolute value
+* :sympyissue:`21486`: expand_func(besselj(oo, x)) -> RecursionError
+* :sympyissue:`21530`: Incorrect limit
+* :sympyissue:`21549`: Bug: integrate(x*sqrt(abs(x)),(x,-1,0)) returns wrong result
+* :sympyissue:`21557`: Summation of geometric series with non-real exponent does not evaluate
