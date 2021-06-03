@@ -241,11 +241,11 @@ class GaloisFieldElement(ModularInteger):
         f = self.rep
         domain = self.domain
         x = domain.gens[0]
+        n = f.degree()
 
-        if not f.is_irreducible:
+        if not (f.is_irreducible and n):
             return False
 
-        n = f.degree()
         t = x**n
 
         for m in range(n, p**n - 1):
