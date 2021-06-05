@@ -1032,7 +1032,7 @@ def test_ModularInteger():
     assert F5.is_normal(a) is True
     assert F5.is_normal(F5.zero) is True
 
-    assert F5 == FF(5, [1, 0])
+    assert F5 == FF(5, [0, 1])
 
     assert F5(2).is_primitive is True
 

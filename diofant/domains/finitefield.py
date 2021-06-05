@@ -115,7 +115,7 @@ class FiniteField(Field, IntegerModRing):
             if modulus:
                 deg = len(modulus) - 1
             else:
-                modulus = [1, 0]
+                modulus = [0, 1]
 
         order = mod**deg
 
