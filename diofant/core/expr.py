@@ -2483,29 +2483,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         _x = Dummy('x')
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
-    def lseries(self, x=None, x0=0, dir='+', logx=None):
-        """Wrapper for series yielding an iterator of the terms of the series.
-
-        Note: an infinite series will yield an infinite iterator. The following,
-        for exaxmple, will never terminate. It will just keep printing terms
-        of the sin(x) series::
-
-          for term in sin(x).lseries(x):
-              print term
-
-        The advantage of lseries() over nseries() is that many times you are
-        just interested in the next term in the series (i.e. the first term for
-        example), but you don't know how many you should ask for in nseries()
-        using the "n" parameter.
-
-        See Also
-        ========
-
-        nseries
-
-        """
-        return self.series(x, x0, n=None, dir=dir, logx=logx)
-
     def _eval_lseries(self, x, logx=None):
         # default implementation of lseries is using nseries(), and adaptively
         # increasing the "n". As you can see, it is not very efficient, because
@@ -2564,7 +2541,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         series
-        lseries
 
         Examples
         ========
@@ -2735,7 +2711,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         d = logx if logx else Dummy('logx')
 
-        for t in self.lseries(x, logx=d):
+        for t in self.series(x, n=None, logx=d):
             t = t.cancel()
 
             is_zero = t.equals(0)

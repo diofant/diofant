@@ -24,6 +24,7 @@ Compatibility breaks
 * Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
 * Changed the :class:`~diofant.core.function.Derivative` (and similary :func:`~diofant.core.function.diff`) syntax to ``Derivative(foo, (x, 2))`` from ``Derivative(foo, x, 2)``, see :pull:`1131`.
 * Removed ``prem()`` function, see :pull:`1140`.
+* Removed ``lseries()`` method of :class:`~diofant.core.expr.Expr`, use :meth:`~diofant.core.expr.Expr.series` with ``n=None``, see :pull:`1146`.
 
 Minor changes
 =============

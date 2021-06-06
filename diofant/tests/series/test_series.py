@@ -65,7 +65,7 @@ def test_simple():
 
 
 def test_sympyissue_5223():
-    assert next(Integer(0).lseries(x)) == 0
+    assert next(Integer(0).series(x, n=None)) == 0
     assert cos(x).series() == cos(x).series(x)
 
     e = cos(x).series(x, 1, n=None)
@@ -78,7 +78,7 @@ def test_sympyissue_5223():
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
     D = Derivative
-    assert next(D(cos(x), x).lseries()) == D(1, x)
+    assert next(D(cos(x), x).series(n=None)) == D(1, x)
     assert D(exp(x), x).series(n=3) == (D(1, x) + D(x, x) + D(x**2/2, x) +
                                         D(x**3/6, x) + O(x**3))
 
