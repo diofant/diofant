@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Derivative, E, Function, Integer, Integral, O, Rational,
-                     Subs, Symbol, cos, exp, log, oo, pi, series, sin, sqrt,
-                     symbols)
+from diofant import (Derivative, E, Function, Integer, Integral, Mul, O,
+                     Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
+                     sin, sqrt, symbols)
 from diofant.abc import x, y
 
 
@@ -254,3 +254,16 @@ def test_sympyissue_20697():
                (b0**2*p1 - b0*b1*p2 - p3*(b0*b2 - b1**2))/b0**3)/y))
 
     assert e.series(y, n=3) == b2*y**2 + b1*y + b0 + O(y**3)
+
+
+def test_sympyissue_21245():
+    fi = (1 + sqrt(5))/2
+    e = 1/(1 - x - x**2)
+    assert (e.series(x, 1/fi, 2) ==
+            -sqrt(5)/(Mul(5, x - 1/(Rational(1, 2) + sqrt(5)/2),
+                      evaluate=False)) + sqrt(5)/(5 + 5*sqrt(5)) +
+            1/(5 + 5*sqrt(5)) +
+            (x - 1/(Rational(1, 2) + sqrt(5)/2))*(-6*sqrt(5)/(50*sqrt(5) + 150) -
+                                                  10/(50*sqrt(5) + 150)) +
+            O((x - sqrt(5)/2 + Rational(1, 2))**2,
+              (x, -Rational(1, 2) + sqrt(5)/2)))
