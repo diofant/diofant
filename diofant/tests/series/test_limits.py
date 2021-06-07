@@ -854,3 +854,8 @@ def test_sympyissue_19442():
 
 def test_sympyissue_21530():
     assert limit(sinh(n + 1)/sinh(n), n, oo) == E
+
+
+def test_sympyissue_21550():
+    r = (sqrt(5) - 1)/2
+    assert limit((x - r)/(x**2 + x - 1), x, r).simplify() == sqrt(5)/5

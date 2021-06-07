@@ -115,7 +115,7 @@ class FiniteField(Field, IntegerModRing):
             if modulus:
                 deg = len(modulus) - 1
             else:
-                modulus = [1, 0]
+                modulus = [0, 1]
 
         order = mod**deg
 
@@ -241,11 +241,11 @@ class GaloisFieldElement(ModularInteger):
         f = self.rep
         domain = self.domain
         x = domain.gens[0]
+        n = f.degree()
 
-        if not f.is_irreducible:
+        if not (f.is_irreducible and n):
             return False
 
-        n = f.degree()
         t = x**n
 
         for m in range(n, p**n - 1):

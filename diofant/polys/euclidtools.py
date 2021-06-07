@@ -453,7 +453,7 @@ class _GCD:
                 if new_ring.is_PolynomialRing:
                     r_new = new_ring.zero
 
-                    for monom in set(r.keys()) | set(R.keys()):
+                    for monom in r | R:
                         r_new[monom] = _crt(r.get(monom, 0), R.get(monom, 0))
                     r = r_new
                 else:

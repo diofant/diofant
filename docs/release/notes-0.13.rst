@@ -24,6 +24,7 @@ Compatibility breaks
 * Removed ``igcd()``, ``ilcm()`` and ``prod()`` functions, see :pull:`1125`.
 * Changed the :class:`~diofant.core.function.Derivative` (and similary :func:`~diofant.core.function.diff`) syntax to ``Derivative(foo, (x, 2))`` from ``Derivative(foo, x, 2)``, see :pull:`1131`.
 * Removed ``prem()`` function, see :pull:`1140`.
+* Removed ``lseries()`` method of :class:`~diofant.core.expr.Expr`, use :meth:`~diofant.core.expr.Expr.series` with ``n=None``, see :pull:`1146`.
 
 Minor changes
 =============
@@ -89,3 +90,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`21530`: Incorrect limit
 * :sympyissue:`21549`: Bug: integrate(x*sqrt(abs(x)),(x,-1,0)) returns wrong result
 * :sympyissue:`21557`: Summation of geometric series with non-real exponent does not evaluate
+* :sympyissue:`21550`: Bug: limit returns wrong result for rational function
+* :sympyissue:`21177`: Incorrect residue for cot(pi*x)/(x**2 - 3*x + 3)
+* :sympyissue:`21245`: laurent series Fibonacci generating fuction

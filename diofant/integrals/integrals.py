@@ -916,7 +916,7 @@ class Integral(AddWithLimits):
             if x in l[1:]:
                 symb = l[0]
                 break
-        for term in expr.function.lseries(symb, logx):
+        for term in expr.function.series(symb, n=None, logx=logx):  # pragma: no branch
             yield integrate(term, *expr.limits)
 
     def _eval_nseries(self, x, n, logx):

@@ -301,7 +301,7 @@ def diop_solve(eq, param=symbols('t', integer=True)):
         return _diop_general_sum_of_squares(var, -int(coeff[1]), limit=oo)
 
     elif eq_type == 'general_sum_of_even_powers':
-        for k in coeff.keys():
+        for k in coeff:
             if k.is_Pow and coeff[k]:
                 p = k.exp
         return _diop_general_sum_of_even_powers(var, p, -int(coeff[1]), limit=oo)
@@ -2549,7 +2549,7 @@ def diop_general_sum_of_even_powers(eq, limit=1):
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
     if diop_type == 'general_sum_of_even_powers':
-        for k in coeff.keys():
+        for k in coeff:
             if k.is_Pow and coeff[k]:
                 p = k.exp
         return _diop_general_sum_of_even_powers(var, p, -coeff[1], limit)

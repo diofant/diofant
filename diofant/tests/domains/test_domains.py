@@ -1032,13 +1032,15 @@ def test_ModularInteger():
     assert F5.is_normal(a) is True
     assert F5.is_normal(F5.zero) is True
 
-    assert F5 == FF(5, [1, 0])
+    assert F5 == FF(5, [0, 1])
 
     assert F5(2).is_primitive is True
 
     F7 = FF(7)
 
+    assert F7(1).is_primitive is False
     assert F7(2).is_primitive is False
+    assert F7(3).is_primitive is True
 
     F9 = FF(9, [1, 0, 1])
 
@@ -1059,6 +1061,9 @@ def test_ModularInteger():
     assert int(F9.one) == 1
     assert int(F9([1, 1])) == int(F9(4)) == 4
     assert int(F9([0, 2])) == int(F9(6)) == 6
+
+    assert F9([0, 1]).is_primitive is True
+    assert F9([2]).is_primitive is False
 
     F81 = FF(3, [2, 1, 0, 0, 1])
 

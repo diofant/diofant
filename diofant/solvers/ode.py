@@ -3478,8 +3478,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     # Stripping of terms so that the sum starts with the same number.
     teq = Integer(0)
     suminit = seriesdict.values()
-    rkeys = seriesdict.keys()
-    req = Add(*rkeys)
+    req = Add(*seriesdict)
     if any(suminit):
         maxval = max(suminit)
         for term in seriesdict:
