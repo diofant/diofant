@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, E, Function, Integer, Integral, Mul, O,
+from diofant import (Derivative, E, Function, I, Integer, Integral, Mul, O,
                      Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
                      sin, sqrt, symbols)
 from diofant.abc import x, y
@@ -267,3 +267,16 @@ def test_sympyissue_21245():
                                                   10/(50*sqrt(5) + 150)) +
             O((x - sqrt(5)/2 + Rational(1, 2))**2,
               (x, -Rational(1, 2) + sqrt(5)/2)))
+
+
+def test_diofantissue_1139():
+    res = (sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
+           24*I/(16*(1 - I)**3 + 16*I*(1 - I)**3) +
+           (x - sqrt(2)/2 + sqrt(2)*I/2)*(9*sqrt(2)*I/(8*(1 - I)**3) -
+                                          8*sqrt(2)*I/(16*(1 - I)**3 +
+                                                       16*I*(1 - I)**3) +
+                                          8*sqrt(2)/(16*(1 - I)**3 +
+                                                     16*I*(1 - I)**3)) +
+           O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
+    x0 = sqrt(2)/2 - sqrt(2)*I/2
+    assert (1/(x**4 + 1)).series(x, x0=x0, n=2) == res
