@@ -658,7 +658,7 @@ class Add(AssocOp):
             # if it simplifies to an x-free expression, return that;
             # tests don't fail if we don't but it seems nicer to do this
             if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and not plain.is_zero:
+                if rv_simplify.is_zero and plain:
                     return (expr - plain)._eval_as_leading_term(x)
                 return rv_simplify
             return rv

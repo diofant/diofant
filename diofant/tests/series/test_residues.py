@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Function, I, Rational, Symbol, exp, factorial, log, pi,
-                     residue, root, sin)
+from diofant import (Function, I, Rational, Symbol, cot, exp, factorial, log,
+                     pi, residue, root, sin, sqrt, tanh)
 from diofant.abc import a, s, x, z
 
 
@@ -75,3 +75,13 @@ def test_sympyissue_5654():
 
 def test_sympyissue_6499():
     assert residue(1/(exp(z) - 1), z, 0) == 1
+
+
+def test_sympyissue_21177():
+    e1 = cot(pi*x)/((x - 1)*(x - 2) + 1)
+    e2 = cot(pi*x)/(x**2 - 3*x + 3)
+    pt = Rational(3, 2) - sqrt(3)*I/2
+    ans = -sqrt(3)*tanh(sqrt(3)*pi/2)/3
+
+    assert residue(e1, x, pt) == ans
+    assert residue(e2, x, pt) == ans
