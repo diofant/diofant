@@ -93,3 +93,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21550`: Bug: limit returns wrong result for rational function
 * :sympyissue:`21177`: Incorrect residue for cot(pi*x)/(x**2 - 3*x + 3)
 * :sympyissue:`21245`: laurent series Fibonacci generating fuction
+* :sympyissue:`11833`: error in limit involving exp, sinh and an assumption (maybe related to caching)

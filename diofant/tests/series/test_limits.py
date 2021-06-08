@@ -124,8 +124,7 @@ def test_basic5():
     assert limit(4/x > 8, x, 0)  # relational test
     assert limit(MyFunction(x) > 0, x, oo) == Limit(MyFunction(x) > 0, x, oo)
 
-    # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
-    # fix bisected to ade6d20 and c459d18
+    # issue sympy/sympy#11833
     a = Symbol('a', positive=True)
     f = exp(x*(-a - 1)) * sinh(x)
     assert limit(f, x, oo) == 0
