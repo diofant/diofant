@@ -1099,17 +1099,17 @@ class Mul(AssocOp):
         is_integer = self.is_integer
 
         if is_integer:
-            r, acc = True, 1
-            for t in self.args:
+            r = True
+            for i, t in enumerate(self.args):
                 if not t.is_integer:
                     return
-                elif t.is_even or (acc + t).is_odd:
+                elif t.is_even or any((a + t).is_odd
+                                      for a in self.args[i + 1:]):
                     r = False
                 elif r is False:
                     pass
                 elif r and t.is_odd is None:
                     r = None
-                acc = t
             return r
         else:
             return is_integer
