@@ -439,10 +439,11 @@ def test_Mul_is_even_odd():
     assert (x*y*(y + m)).is_odd is None
 
 
-@pytest.mark.xfail
 def test_even_odd_in_ternary_integer_product():
     # Tests that oddness inference is independent of term ordering.
     # We try to force a different order by modifying symbol names.
+
+    # issues sympy/sympy#9127 and diofant/diofant#1003
 
     x = Symbol('x', integer=True)
     y = Symbol('y', integer=True)
