@@ -1,5 +1,9 @@
 import ast
 import builtins
+import io
+import tokenize
+import unicodedata
+import uuid
 
 
 class IntegerDivisionWrapper(ast.NodeTransformer):
@@ -80,3 +84,23 @@ class FloatRationalizer(ast.NodeTransformer):
         if isinstance(node.func, ast.Name) and node.func.id == 'Float':
             return node
         return self.generic_visit(node)
+
+
+_NAMES_MAP = {}
+
+
+def unicode_identifiers(lines):
+    """Transform original code to allow any unicode identifiers."""
+    new_lines = []
+    for line in lines:
+        result = []
+        g = tokenize.tokenize(io.BytesIO(line.encode()).readline)
+        for toknum, tokval, _, _, _ in g:
+            if toknum == tokenize.NAME:
+                if unicodedata.normalize('NFKC', tokval) != tokval:
+                    if tokval not in _NAMES_MAP:
+                        _NAMES_MAP[tokval] = f'_{uuid.uuid4().hex!s}'
+                    tokval = _NAMES_MAP[tokval]
+            result.append((toknum, tokval))
+        new_lines.append(tokenize.untokenize(result).decode())
+    return new_lines
