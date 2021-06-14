@@ -19,11 +19,6 @@ or to install also extra dependencies::
 
     pip install diofant[gmpy,plot]
 
-.. tip::
-
-    Use :mod:`venv` to create isolated Python environment first,
-    instead of installing everything system-wide.
-
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
 <https://dejavu-fonts.github.io/>`_ seems to be an acceptable choice.  On
