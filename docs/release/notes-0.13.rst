@@ -95,3 +95,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21245`: laurent series Fibonacci generating fuction
 * :sympyissue:`11833`: error in limit involving exp, sinh and an assumption (maybe related to caching)
 * :sympyissue:`9127`: ntheory.AskEvenHandler.Mul is order-dependent
+* :sympyissue:`21606`: Notimplemented in simple limit

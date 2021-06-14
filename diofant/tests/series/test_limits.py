@@ -858,3 +858,8 @@ def test_sympyissue_21530():
 def test_sympyissue_21550():
     r = (sqrt(5) - 1)/2
     assert limit((x - r)/(x**2 + x - 1), x, r).simplify() == sqrt(5)/5
+
+
+def test_sympyissue_21606():
+    assert limit(cos(x)/sign(x), x, pi, '+') == -1
+    assert limit(cos(x)/sign(x), x, pi, '-') == -1
