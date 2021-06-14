@@ -97,7 +97,7 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 8. If your change affects documentation, please build it by::
 
-       python setup.py build_sphinx -W
+       sphinx-build -W -b html docs build/sphinx/html
 
    and check that it looks as expected.
 

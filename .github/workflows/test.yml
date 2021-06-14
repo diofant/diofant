@@ -69,7 +69,8 @@ jobs:
         echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
     - name: Building docs
       run: |
-        python setup.py build_sphinx -W -b html,latex
+        sphinx-build --color -W --keep-going -b html docs build/sphinx/html
+        sphinx-build --color -W --keep-going -b latex docs build/sphinx/latex
         make -C build/sphinx/latex all-pdf
     - name: Prepare update for docs on Github Pages
       run: |

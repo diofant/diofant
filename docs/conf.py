@@ -94,7 +94,7 @@ graphviz_output_format = 'svg'
 # Contains mapping the locations and names of other projects that
 # should be linked to in this documentation.
 intersphinx_mapping = {
-    'python3': ('https://docs.python.org/3/', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
