@@ -39,10 +39,6 @@ be sure to install from git::
     cd diofant
     pip install -e .[develop,docs]
 
-.. note::
-
-    Diofant requires `setuptools`_ for installation from sources.
-
 Run Diofant
 ===========
 
@@ -80,7 +76,6 @@ request a feature, please :ref:`open an issue ticket
 <reporting-issues>`.  General questions and comments can be `sent
 <mailto:diofant@googlegroups.com>`_ to the `Diofant mailing list`_.
 
-.. _setuptools: https://setuptools.readthedocs.io/en/latest/
 .. _IPython: https://ipython.readthedocs.io/en/stable/
 .. _pytest: https://docs.pytest.org/en/latest/
 .. _Diofant mailing list: https://groups.google.com/forum/#!forum/diofant

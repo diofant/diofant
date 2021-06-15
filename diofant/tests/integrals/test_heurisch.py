@@ -91,8 +91,7 @@ def test_heurisch_trigonometric():
     assert heurisch(sin(x)*sin(y), x) == -cos(x)*sin(y)
     assert heurisch(sin(x)*sin(y), y) == -cos(y)*sin(x)
 
-    # gives sin(x) in answer when run via setup.py and cos(x) when run via pytest
-    assert heurisch(sin(x)*cos(x), x) in [sin(x)**2 / 2, -cos(x)**2 / 2]
+    assert heurisch(sin(x)*cos(x), x) in [sin(x)**2/2, -cos(x)**2/2]
     assert heurisch(cos(x)/sin(x), x) == log(sin(x))
 
     assert heurisch(x*sin(7*x), x) == sin(7*x) / 49 - x*cos(7*x) / 7

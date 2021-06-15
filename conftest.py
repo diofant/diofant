@@ -5,7 +5,6 @@ import pytest
 import diofant
 
 
-collect_ignore = ['setup.py']
 try:
     import matplotlib
     matplotlib.rc('figure', max_open_warning=0)

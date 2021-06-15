@@ -78,7 +78,7 @@ jobs:
         unzip -x master.zip
         rsync -a --delete build/sphinx/html/ diofant.github.io-master/en/latest/
     - name: Make packages
-      run: python setup.py sdist bdist_wheel
+      run: python -m build
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       if: matrix.coverage
