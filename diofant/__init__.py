@@ -1,5 +1,6 @@
 """Diofant is a Python library for symbolic mathematics."""
 
+from fractions import Fraction
 import pkg_resources
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
@@ -271,7 +272,7 @@ __all__ = (
     'jordan_cell', 'list2numpy', 'matrix2numpy', 'matrix_multiply_elementwise',
     'ones', 'randMatrix', 'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray',
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Circle', 'Curve', 'Ellipse',
-    'GeometryError', 'Line', 'Point',
+    'GeometryError', 'Line', 'Point', 'Fraction',
     'Polygon', 'Ray', 'RegularPolygon', 'Segment',
     'Triangle', 'are_similar', 'centroid', 'convex_hull', 'deg', 'idiff',
     'intersection', 'rad', 'cantor_product', 'capture', 'default_sort_key',
