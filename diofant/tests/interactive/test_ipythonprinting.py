@@ -48,7 +48,7 @@ def test_ipython_printing(monkeypatch):
 
     app.run_cell('from diofant.interactive.session import AutomaticSymbols')
     app.run_cell('ip.ast_transformers.clear()')
-    app.run_cell('ip.ast_transformers.append(AutomaticSymbols())')
+    app.run_cell('ip.ast_transformers.append(AutomaticSymbols(ip.user_ns))')
 
     symbol = 'verylongsymbolname'
     assert symbol not in app.user_ns

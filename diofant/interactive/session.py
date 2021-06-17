@@ -35,15 +35,13 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 class AutomaticSymbols(ast.NodeTransformer):
     """Add missing Symbol definitions automatically."""
 
-    def __init__(self):
+    def __init__(self, ns={}):
         super().__init__()
         self.names = []
+        self.ns = ns
 
     def visit_Module(self, node):
-        import IPython
-
-        app = IPython.get_ipython()
-        ignored_names = list(app.user_ns) + dir(builtins)
+        ignored_names = list(self.ns) + dir(builtins)
 
         for s in node.body:
             self.visit(s)
@@ -59,7 +57,7 @@ class AutomaticSymbols(ast.NodeTransformer):
                                                starargs=None, kwargs=None))
             node.body.insert(0, assign)
 
-        newnode = ast.Module(body=node.body)
+        newnode = ast.Module(body=node.body, type_ignores=[])
         ast.copy_location(newnode, node)
         ast.fix_missing_locations(newnode)
         return newnode
