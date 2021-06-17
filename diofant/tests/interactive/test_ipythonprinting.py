@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.core import Float, Rational, Symbol
+from diofant import Float, Fraction, Symbol
 
 
 __all__ = ()
@@ -22,7 +22,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('import warnings')
     app.run_cell('import IPython')
     app.run_cell('import diofant')
-    app.run_cell('from diofant import Float, Rational, Symbol, QQ, '
+    app.run_cell('from diofant import Float, Fraction, Symbol, QQ, '
                  'factorial, sqrt, init_printing, pretty, '
                  'Matrix, sstrrepr')
 
@@ -36,13 +36,13 @@ def test_ipython_printing(monkeypatch):
     assert isinstance(app.user_ns['a'], int)
 
     app.run_cell('a = 1/2')
-    assert isinstance(app.user_ns['a'], Rational)
+    assert isinstance(app.user_ns['a'], Fraction)
     app.run_cell('a = 1')
     assert isinstance(app.user_ns['a'], int)
     app.run_cell('a = int(1)')
     assert isinstance(app.user_ns['a'], int)
     app.run_cell('a = (1/\n2)')
-    assert app.user_ns['a'] == Rational(1, 2)
+    assert app.user_ns['a'] == Fraction(1, 2)
 
     # Test AutomaticSymbols
 
@@ -73,7 +73,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('ip.ast_transformers.clear()')
     app.run_cell('ip.ast_transformers.append(FloatRationalizer())')
     app.run_cell('a = 0.3')
-    assert isinstance(app.user_ns['a'], Rational)
+    assert isinstance(app.user_ns['a'], Fraction)
     app.run_cell('a = float(0.3)')
     assert isinstance(app.user_ns['a'], float)
     app.run_cell('a = Float(1.23)')

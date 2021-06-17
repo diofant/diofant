@@ -26,7 +26,7 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
         if (isinstance(node.op, ast.Div) and
                 all(is_integer(_) for _ in [node.left, node.right])):
-            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
                             args=[node.left, node.right], keywords=[],
                             starargs=None, kwargs=None)
         return self.generic_visit(node)
@@ -73,7 +73,7 @@ class FloatRationalizer(ast.NodeTransformer):
 
     def visit_Constant(self, node):
         if isinstance(node.n, float):
-            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
                             args=[ast.Str(s=repr(node.n))], keywords=[],
                             starargs=None, kwargs=None)
         return node
