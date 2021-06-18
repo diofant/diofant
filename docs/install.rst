@@ -17,7 +17,7 @@ or above.  You can install latest release with pip::
 
 or to install also extra dependencies::
 
-    pip install diofant[gmpy,plot]
+    pip install diofant[gmpy,interactive]
 
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
@@ -33,11 +33,11 @@ From Sources
 ============
 
 If you are a developer or like to get the latest updates as they come,
-be sure to install from git::
+be sure to install from git and include required extra dependencies::
 
     git clone git://github.com/diofant/diofant.git
     cd diofant
-    pip install -e .[develop,docs]
+    pip install -e .[develop,docs,tests]
 
 Run Diofant
 ===========
@@ -64,7 +64,7 @@ sure everything works::
     pytest --pyargs diofant
 
 `pytest`_ and some other packages are required for testing, so be sure to
-install the Diofant first with extra dependecies::
+install the Diofant first with the optional "tests" list of dependencies::
 
     pip install diofant[tests]
 
