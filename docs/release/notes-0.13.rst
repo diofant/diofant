@@ -97,3 +97,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`9127`: ntheory.AskEvenHandler.Mul is order-dependent
 * :sympyissue:`21606`: Notimplemented in simple limit
 * :sympyissue:`21641`: Simplify hangs
+* :sympyissue:`21651`: doit() method *sometimes* ignores floor and ceiling within Sum
