@@ -98,3 +98,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21606`: Notimplemented in simple limit
 * :sympyissue:`21641`: Simplify hangs
 * :sympyissue:`21651`: doit() method *sometimes* ignores floor and ceiling within Sum
+* :sympyissue:`20461`: Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) incorrectly gives False

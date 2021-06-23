@@ -927,3 +927,8 @@ def test_sympyissue_21651():
     b = floor(2*2**(-1)) + floor(2*2**(-2))
 
     assert a.doit() == b.doit()
+
+
+@pytest.mark.timeout(10)
+def test_sympyissue_20461():
+    assert Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) is not False
