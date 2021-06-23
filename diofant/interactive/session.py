@@ -7,7 +7,7 @@ import uuid
 
 
 class IntegerDivisionWrapper(ast.NodeTransformer):
-    """Wrap all int divisions in a call to Rational."""
+    """Wrap all int divisions in a call to :class:`~fractions.Fraction`."""
 
     def visit_BinOp(self, node):
         def is_integer(x):
@@ -33,7 +33,7 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
 
 class AutomaticSymbols(ast.NodeTransformer):
-    """Add missing Symbol definitions automatically."""
+    """Add missing :class:`~diofant.core.symbol.Symbol` definitions automatically."""
 
     def __init__(self, ns={}):
         super().__init__()
@@ -69,7 +69,7 @@ class AutomaticSymbols(ast.NodeTransformer):
 
 
 class FloatRationalizer(ast.NodeTransformer):
-    """Wraps all floats in a call to Rational."""
+    """Wraps all floats in a call to :class:`~fractions.Fraction`."""
 
     def visit_Constant(self, node):
         if isinstance(node.n, float):

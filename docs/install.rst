@@ -17,7 +17,7 @@ or above.  You can install latest release with pip::
 
 or to install also extra dependencies::
 
-    pip install diofant[gmpy,plot]
+    pip install diofant[gmpy,interactive]
 
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
@@ -32,19 +32,22 @@ Debian you can install this `font package
 From Sources
 ============
 
-If you are a developer or like to get the latest updates as they come,
-be sure to install from git::
+If you are a developer or like to get the latest updates as they come, be sure
+to install from the git repository and include required extra dependencies::
 
     git clone git://github.com/diofant/diofant.git
     cd diofant
-    pip install -e .[develop,docs]
+    pip install -e .[develop,docs,tests]
 
 Run Diofant
 ===========
 
 To verify that your freshly-installed Diofant works, please start up
-the Python interpreter and execute some simple statements like the
-ones below::
+the Python interpreter::
+
+    python
+
+and execute some simple statements like the ones below::
 
     >>> from diofant.abc import x
     >>> ((1 + x)**(1/x)).limit(x, 0)
@@ -64,7 +67,7 @@ sure everything works::
     pytest --pyargs diofant
 
 `pytest`_ and some other packages are required for testing, so be sure to
-install the Diofant first with extra dependecies::
+install the Diofant first with the optional "tests" list of dependencies::
 
     pip install diofant[tests]
 

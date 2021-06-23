@@ -3,9 +3,9 @@ import pytest
 from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, cos, exp, factorial, gamma, harmonic, log,
-                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
-                     summation, symbols, sympify, zeta)
+                     binomial, cos, exp, factorial, floor, gamma, harmonic,
+                     log, lowergamma, nan, oo, pi, product, simplify, sin,
+                     sqrt, summation, symbols, sympify, zeta)
 from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
@@ -920,3 +920,15 @@ def test_sympyissue_21557():
     assert summation(f2, (k, 1, oo)).simplify() == 2**I/(2 - 2**I)
     assert (summation(f2, (k, 1, x)).simplify() ==
             2**(-x + I)*(-2**x + 2**(I*x))/(-2 + 2**I))
+
+
+def test_sympyissue_21651():
+    a = Sum(floor(2*2**(-n)), (n, 1, 2))
+    b = floor(2*2**(-1)) + floor(2*2**(-2))
+
+    assert a.doit() == b.doit()
+
+
+@pytest.mark.timeout(10)
+def test_sympyissue_20461():
+    assert Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) is not False

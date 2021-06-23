@@ -7,8 +7,12 @@ objects symbolically.  This means that the mathematical objects are
 represented exactly, not approximately, and mathematical expressions
 with unevaluated variables are left in symbolic form.
 
-Let's take an example.  Say we wanted to use the built-in Python
-functions to compute square roots.  We might do something like this
+Let's take an example.  Start the Python interpreter::
+
+   python
+
+Say we wanted to use the built-in Python functions to compute square
+roots.  We might do something like this
 
    >>> import math
    >>> math.sqrt(9)
@@ -53,10 +57,9 @@ expression `x + 2y`.
 .. note::
 
    Unlike many symbolic manipulation systems you may have used, in
-   Diofant, symbols are not defined automatically.  To define symbols,
-   we must use :func:`~diofant.core.symbol.symbols`, that takes a
-   string of symbol names separated by spaces or commas, and creates
-   :class:`~diofant.core.symbol.Symbol` instances out of them.
+   Diofant symbols are not defined automatically.  To define symbols
+   (instances of :class:`~diofant.core.symbol.Symbol`) you may
+   use :func:`~diofant.core.symbol.symbols`.
 
 Note that we wrote ``x + 2*y``, using Python's mathematical syntax,
 just as we would if ``x`` and ``y`` were ordinary Python variables.
