@@ -33,7 +33,7 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
 
 class AutomaticSymbols(ast.NodeTransformer):
-    """Add missing Symbol definitions automatically."""
+    """Add missing :class:`~diofant.core.symbol.Symbol` definitions automatically."""
 
     def __init__(self, ns={}):
         super().__init__()
