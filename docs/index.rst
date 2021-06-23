@@ -24,6 +24,7 @@ with the :ref:`Tutorial <tutorial>`.
 
    install
    tutorial/index
+   cli
    modules/index
    internals/index
    guide

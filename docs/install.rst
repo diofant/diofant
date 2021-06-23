@@ -55,9 +55,9 @@ and execute some simple statements like the ones below::
 
 .. tip::
 
-    Use `IPython`_ for interactive work.  Please refer to the
-    documentation of module :mod:`~diofant.interactive` for details
-    of available configuration settings.
+    :ref:`Run Diofant as a module <cli>` for interactive work::
+
+        python -m diofant
 
 For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 
@@ -79,6 +79,5 @@ request a feature, please :ref:`open an issue ticket
 <reporting-issues>`.  General questions and comments can be `sent
 <mailto:diofant@googlegroups.com>`_ to the `Diofant mailing list`_.
 
-.. _IPython: https://ipython.readthedocs.io/en/stable/
 .. _pytest: https://docs.pytest.org/en/latest/
 .. _Diofant mailing list: https://groups.google.com/forum/#!forum/diofant
