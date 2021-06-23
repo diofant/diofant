@@ -32,8 +32,8 @@ Debian you can install this `font package
 From Sources
 ============
 
-If you are a developer or like to get the latest updates as they come,
-be sure to install from git and include required extra dependencies::
+If you are a developer or like to get the latest updates as they come, be sure
+to install from the git repository and include required extra dependencies::
 
     git clone git://github.com/diofant/diofant.git
     cd diofant
@@ -43,8 +43,11 @@ Run Diofant
 ===========
 
 To verify that your freshly-installed Diofant works, please start up
-the Python interpreter and execute some simple statements like the
-ones below::
+the Python interpreter::
+
+    python
+
+and execute some simple statements like the ones below::
 
     >>> from diofant.abc import x
     >>> ((1 + x)**(1/x)).limit(x, 0)
