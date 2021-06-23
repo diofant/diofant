@@ -3,9 +3,9 @@ import pytest
 from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, cos, exp, factorial, floor, gamma, harmonic,
-                     log, lowergamma, nan, oo, pi, product, simplify, sin,
-                     sqrt, summation, symbols, sympify, zeta)
+                     binomial, ceiling, cos, exp, factorial, floor, gamma,
+                     harmonic, log, lowergamma, nan, oo, pi, product, simplify,
+                     sin, sqrt, summation, symbols, sympify, zeta)
 from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
@@ -923,10 +923,12 @@ def test_sympyissue_21557():
 
 
 def test_sympyissue_21651():
-    a = Sum(floor(2*2**(-n)), (n, 1, 2))
-    b = floor(2*2**(-1)) + floor(2*2**(-2))
-
+    a = Sum(floor(2*2**-n), (n, 1, 2))
+    b = floor(2*2**-1) + floor(2*2**-2)
     assert a.doit() == b.doit()
+    c = Sum(ceiling(2*2**-n), (n, 1, 2))
+    d = ceiling(2*2**-1) + ceiling(2*2**-2)
+    assert c.doit() == d.doit()
 
 
 @pytest.mark.timeout(10)
