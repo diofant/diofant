@@ -7,7 +7,7 @@ import mpmath
 
 from ..config import query
 from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
-                    cacheit, pi, symbols)
+                    cacheit, pi)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..core.sympify import sympify
@@ -735,12 +735,14 @@ def field_isomorphism_pslq(a, b):
                 reB = lambdify((), re(b.ext), 'mpmath')()
                 imB = lambdify((), im(b.ext), 'mpmath')()
 
-                d1, d2 = symbols('d1, d2', cls=Dummy)
-                R2 = QQ.poly_ring(d1, d2)
+                d1 = Dummy('d1')
+                d2 = Dummy('d2')
+                R = QQ.inject(d1)
+                R2 = R.inject(d2)
 
-                basis_re = [R2.dup_real_imag(R2.gens[0]**i)[0].as_expr().subs({d1: reB, d2: imB})
+                basis_re = [R2.to_expr(R._real_imag(R.gens[0]**i, d2)[0]).subs({d1: reB, d2: imB})
                             for i in range(m)] + [reA]
-                basis_im = [R2.dup_real_imag(R2.gens[0]**i)[1].as_expr().subs({d1: reB, d2: imB})
+                basis_im = [R2.to_expr(R._real_imag(R.gens[0]**i, d2)[1]).subs({d1: reB, d2: imB})
                             for i in range(1, m)] + [imA]
                 coeffs_re = mpmath.pslq(basis_re, maxcoeff=10**10, maxsteps=10**3)
                 coeffs_im = mpmath.pslq(basis_im, maxcoeff=10**10, maxsteps=10**3)
