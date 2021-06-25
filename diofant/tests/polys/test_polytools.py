@@ -3158,3 +3158,7 @@ def test_sympyissue_20444():
     e = 33*log(x) + log(8) + 58
 
     assert LT(e) == 3*log(2)
+
+
+def test_sympyissue_13029():
+    assert sqf_part(a*(x - 1)**2*(y - 3)**3, x, y) == x*y - 3*x - y + 3

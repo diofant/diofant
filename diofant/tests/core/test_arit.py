@@ -1133,7 +1133,18 @@ def test_Pow_is_negative_positive():
 
     s = Symbol('s', nonpositive=True)
     assert (s**n).is_negative is False
+    assert (s**m).is_positive is None
+    n = Symbol('n', even=True, nonnegative=True)
+    m = Symbol('m', odd=True, nonnegative=True)
+    assert ((-p)**n).is_positive is True
+    assert ((-p)**m).is_positive is False
     assert (s**m).is_positive is False
+    assert ((-p)**(n + 1)).is_negative is True
+    s = Symbol('s', nonpositive=True, finite=True)
+    assert ((s - 1)**n).is_positive is True
+    assert ((s - 1)**m).is_positive is False
+    assert (s**m).is_positive is False
+    assert ((s - 1)**m).is_negative is True
 
     i = Symbol('i', imaginary=True)
     assert (i**4).is_positive is None  # issue diofant/diofant#956
@@ -1926,3 +1937,9 @@ def test_diofantissue_849():
     assert (a - b).is_extended_real is None
 
     assert (a*b).is_extended_real is None
+
+
+def test_diofantissue_1004():
+    assert Pow(Dummy(negative=True), -3,
+               evaluate=False).is_negative is not True
+    assert Pow(-oo, -3, evaluate=False).is_negative is not True

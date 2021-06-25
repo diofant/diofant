@@ -274,7 +274,7 @@ def test_powsimp_other():
 
 
 def test_sympyissue_from_PR1599():
-    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
+    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True, finite=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
             -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
