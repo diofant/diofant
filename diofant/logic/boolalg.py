@@ -6,14 +6,14 @@ from collections import defaultdict
 from itertools import combinations, product
 
 from ..core import Atom, cacheit
-from ..core.compatibility import ordered
 from ..core.expr import Expr
-from ..core.function import Application, Derivative
+from ..core.function import Application
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
 from ..core.singleton import S
 from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.sympify import converter, sympify
+from ..utilities import ordered
 
 
 class Boolean(Expr):
@@ -67,8 +67,8 @@ class Boolean(Expr):
         False
 
         """
-        from .inference import satisfiable
         from ..core.relational import Relational
+        from .inference import satisfiable
 
         other = sympify(other)
 
@@ -86,6 +86,9 @@ class BooleanAtom(Atom, Boolean):
     @property
     def canonical(self):
         return self
+
+    def __int__(self):
+        return int(bool(self))
 
 
 class BooleanTrue(BooleanAtom, metaclass=Singleton):
@@ -238,7 +241,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
 
 true = BooleanTrue()
-false = BooleanFalse()
+false: BooleanFalse = BooleanFalse()
 # We want S.true and S.false to work, rather than S.BooleanTrue and
 # S.BooleanFalse, but making the class and instance names the same causes some
 # major issues (like the inability to import the class directly from this
@@ -350,9 +353,9 @@ class And(LatticeOp, BooleanFunction):
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, And.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, And.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Or(LatticeOp, BooleanFunction):
@@ -411,16 +414,16 @@ class Or(LatticeOp, BooleanFunction):
         ========
 
         >>> Or(x > 2, x < -2).as_set()
-        (-oo, -2) U (2, oo)
+        [-oo, -2) U (2, oo]
 
         """
         from ..sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, Or.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Or.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Not(BooleanFunction):
@@ -470,8 +473,8 @@ class Not(BooleanFunction):
 
     @classmethod
     def eval(cls, arg):
-        from ..core import (Equality, GreaterThan, LessThan,
-                            StrictGreaterThan, StrictLessThan, Unequality)
+        from ..core import (Equality, GreaterThan, LessThan, StrictGreaterThan,
+                            StrictLessThan, Unequality)
         if isinstance(arg, Number) or arg in (True, False):
             return false if arg else true
         if arg.is_Not:
@@ -504,9 +507,9 @@ class Not(BooleanFunction):
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
         else:
-            raise NotImplementedError("Sorry, Not.as_set has not yet been"
-                                      " implemented for mutivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Not.as_set has not yet been'
+                                      ' implemented for mutivariate'
+                                      ' expressions')
 
     def to_nnf(self, simplify=True):
         if is_literal(self):
@@ -541,7 +544,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError("Illegal operator %s in expression" % func)
+        raise ValueError(f'Illegal operator {func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -628,7 +631,7 @@ class Xor(BooleanFunction):
             obj._argset = frozenset(argset)
             return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
@@ -755,9 +758,8 @@ class Implies(BooleanFunction):
                     newargs.append(x)
             A, B = newargs
         except ValueError:
-            raise ValueError(
-                "%d operand(s) used for an Implies "
-                "(pairs are required): %s" % (len(args), str(args)))
+            raise ValueError(f'{len(args)} operand(s) used for an Implies '
+                             f'(pairs are required): {args!s}')
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -835,7 +837,7 @@ class Equivalent(BooleanFunction):
         obj._argset = _args
         return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
@@ -878,7 +880,7 @@ class ITE(BooleanFunction):
         try:
             a, b, c = args
         except ValueError:
-            raise ValueError("ITE expects exactly 3 arguments")
+            raise ValueError('ITE expects exactly 3 arguments')
         if a == true:
             return b
         elif a == false:
@@ -896,12 +898,6 @@ class ITE(BooleanFunction):
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
-
-    # the diff method below is copied from Expr class
-    def diff(self, *symbols, **assumptions):
-        new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault("evaluate", True)
-        return Derivative(self, *new_symbols, **assumptions)
 
 
 # end class definitions. Some useful methods
@@ -1412,7 +1408,7 @@ def SOPform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     old = None
     new = minterms + dontcares
@@ -1461,7 +1457,7 @@ def POSform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     maxterms = []
     for t in product([0, 1], repeat=len(variables)):
@@ -1538,7 +1534,7 @@ def simplify_logic(expr, form=None, deep=True):
         elif form == 'cnf' or form is None:  # pragma: no branch
             return POSform(variables, truthtable)
     else:
-        raise ValueError("form can be cnf or dnf only")
+        raise ValueError('form can be cnf or dnf only')
 
 
 def _finger(eq):

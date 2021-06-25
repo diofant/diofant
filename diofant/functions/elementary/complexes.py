@@ -1,11 +1,12 @@
 from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
                      Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
-                     sympify, zoo)
+                     zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
+from ...core.sympify import sympify
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt
-from .piecewise import Piecewise
+from .piecewise import ExprCondPair, Piecewise
 from .trigonometric import atan2
 
 
@@ -412,7 +413,7 @@ class Abs(Function):
             if obj is not None:
                 return obj
         if not isinstance(arg, Expr):
-            raise TypeError("Bad argument type for Abs(): %s" % type(arg))
+            raise TypeError(f'Bad argument type for Abs(): {type(arg)}')
         # handle what we can
         arg = signsimp(arg, evaluate=False)
         if arg.is_Mul:
@@ -717,8 +718,8 @@ class polar_lift(Function):
 
     @classmethod
     def eval(cls, arg):
-        from .exponential import exp_polar
         from .complexes import arg as argument
+        from .exponential import exp_polar
         if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
             # In general we want to affirm that something is known,
@@ -813,7 +814,7 @@ class periodic_argument(Function):
         # NOTE evidently this means it is a rather bad idea to use this with
         # period != 2*pi and non-polar numbers.
         from .integers import ceiling
-        from .trigonometric import atan2, atan
+        from .trigonometric import atan, atan2
         if not period.is_positive:
             return
         if period == oo and isinstance(ar, principal_branch):
@@ -1042,6 +1043,9 @@ def _unpolarify(eq, exponents_only, pause=False):
         return base**expo
     elif eq.is_Pow and eq.base is E:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
+    elif isinstance(eq, ExprCondPair):
+        return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),
+                       _unpolarify(eq.cond, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)

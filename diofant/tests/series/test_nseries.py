@@ -210,13 +210,13 @@ def test_seriesbug2b():
 
 
 def test_seriesbug2d():
-    w = Symbol("w", extended_real=True)
+    w = Symbol('w', extended_real=True)
     e = log(sin(2*w)/w)
     assert e.series(w, n=5) == log(2) - 2*w**2/3 - 4*w**4/45 + O(w**5)
 
 
 def test_seriesbug2c():
-    w = Symbol("w", extended_real=True)
+    w = Symbol('w', extended_real=True)
     # more complicated case, but sin(x)~x, so the result is the same as in (1)
     e = (sin(2*w)/w)**(1 + w)
     assert e.series(w, 0, 1) == 2 + O(w)
@@ -226,7 +226,7 @@ def test_seriesbug2c():
 
 
 def test_expbug4():
-    x = Symbol("x", extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert (log(
         sin(2*x)/x)*(1 + x)).series(x, 0, 2) == log(2) + x*log(2) + O(x**2)
     assert exp(
@@ -256,7 +256,7 @@ def test_sympyissue_3258():
 
 
 def test_sympyissue_3204():
-    x = Symbol("x", nonnegative=True)
+    x = Symbol('x', nonnegative=True)
     f = cbrt(sin(x**3))
     assert f.nseries(x) == x - x**7/18 - x**13/3240 + O(x**19)
 
@@ -320,7 +320,7 @@ def test_sympyissue_3506():
 
 
 def test_sympyissue_3508():
-    x = Symbol("x", extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert log(sin(x)).series(x, n=5) == log(x) - x**2/6 - x**4/180 + O(x**5)
     e = -log(x) + x*(-log(x) + log(sin(2*x))) + log(sin(2*x))
     assert e.series(x, n=5) == \
@@ -352,14 +352,14 @@ def test_hyperbolic():
 
 
 def test_series2():
-    w = Symbol("w", extended_real=True)
-    x = Symbol("x", extended_real=True)
+    w = Symbol('w', extended_real=True)
+    x = Symbol('x', extended_real=True)
     e = w**(-2)*(w*exp(1/x - w) - w*exp(1/x))
     assert e.nseries(w, n=3) == -exp(1/x) + w*exp(1/x)/2 + O(w**2)
 
 
 def test_series3():
-    w = Symbol("w", extended_real=True)
+    w = Symbol('w', extended_real=True)
     e = w**(-6)*(w**3*tan(w) - w**3*sin(w))
     assert e.nseries(w, n=5) == Rational(1, 2) + O(w**2)
 
@@ -441,8 +441,8 @@ def test_abs():
 
 
 def test_dir():
-    assert abs(x).series(x, 0, dir="+") == x
-    assert abs(x).series(x, 0, dir="-") == -x
+    assert abs(x).series(x, 0, dir='+') == x
+    assert abs(x).series(x, 0, dir='-') == -x
     assert floor(x + 2).series(x, 0, dir='+') == 2
     assert floor(x + 2).series(x, 0, dir='-') == 1
     assert floor(x + 2.2).series(x, 0, dir='-') == 2
@@ -522,3 +522,26 @@ def test_diofantissue_210():
                                  x**9/6 - 11*x**12/24 + O(x**15))
     assert f.series(x, n=16) == (1 + x**3 + x**6/2 + x**9/6 - 11*x**12/24 -
                                  59*x**15/120 + O(x**16))
+
+
+def test_sympyissue_21075():
+    e = (sqrt(x) + cbrt(x))**2
+    assert e.nseries(x) == e.expand()
+
+
+def test_sympyissue_21227():
+    f = log(x)
+
+    assert f.nseries(x, logx=y) == y
+    assert f.nseries(x, logx=-x) == -x
+
+    f = log(-log(x))
+
+    assert f.nseries(x, logx=y) == log(-y)
+    assert f.nseries(x, logx=-x) == log(x)
+
+    f = log(log(x))
+
+    assert f.nseries(x, logx=y) == log(y)
+    assert f.nseries(x, logx=-x) == log(-x)
+    assert f.nseries(x, logx=x) == log(x)

@@ -2,8 +2,8 @@
 
 import itertools
 
-from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
-                    sympify)
+from ..core import Add, Dummy, Function, Integer, Lambda, preorder_traversal
+from ..core.sympify import sympify
 from ..utilities import numbered_symbols
 from . import Poly, RootSum, cancel, factor
 from .polyerrors import PolynomialError
@@ -114,7 +114,7 @@ def apart(f, x=None, full=False, **options):
             return apart(fc, x=x, full=full, **_options)
 
         raise NotImplementedError(
-            "multivariate partial fraction decomposition")
+            'multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -156,7 +156,7 @@ def apart_undetermined_coeffs(P, Q):
             symbols.extend(coeffs)
 
     dom = Q.domain.inject(*symbols)
-    F = Poly(0, Q.gen, domain=dom)
+    F = Integer(0).as_poly(Q.gen, domain=dom)
 
     for i, (coeffs, q, f, k) in enumerate(partial):
         h = Poly(coeffs, Q.gen, domain=dom)
@@ -313,8 +313,8 @@ def apart_list(f, x=None, dummies=None, **options):
     options = set_defaults(options, extension=True)
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
-    if P.is_multivariate:  # pragma: no cover
-        raise NotImplementedError("multivariate partial fraction decomposition")
+    if P.is_multivariate:
+        raise NotImplementedError('multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -329,7 +329,7 @@ def apart_list(f, x=None, dummies=None, **options):
             while True:
                 yield d
 
-        dummies = dummies("w")
+        dummies = dummies('w')
 
     rationalpart = apart_list_full_decomposition(P, Q, dummies)
 
@@ -365,13 +365,13 @@ def apart_list_full_decomposition(P, Q, dummygen):
         if Q_sqf[0][1] == 1:
             Q_sqf[0] = Q_c*Q_sqf[0][0], 1
         else:
-            Q_sqf.insert(0, (Poly(Q_c, x), 1))
+            Q_sqf.insert(0, (Q_c.as_poly(x), 1))
 
     partial = []
 
     for d, n in Q_sqf:
         b = d.as_expr()
-        U += [u.diff(x, n - 1)]
+        U += [u.diff((x, n - 1))]
 
         h = cancel(f*b**n) / u**n
 
@@ -381,7 +381,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
             H += [H[-1].diff(x) / j]
 
         for j in range(1, n + 1):
-            subs += [(U[j - 1], b.diff(x, j) / j)]
+            subs += [(U[j - 1], b.diff((x, j)) / j)]
 
         for j in range(n):
             P, Q = cancel(H[j]).as_numer_denom()
@@ -391,8 +391,8 @@ def apart_list_full_decomposition(P, Q, dummygen):
 
             Q = Q.subs([subs[0]])
 
-            P = Poly(P, x)
-            Q = Poly(Q, x)
+            P = P.as_poly(x)
+            Q = Q.as_poly(x)
 
             G = P.gcd(d)
             D = d.quo(G)
@@ -448,8 +448,10 @@ def assemble_partfrac_list(partial_list):
     >>> pfda.doit()
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
-    >>> a = Dummy("a")
-    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> a = Dummy('a')
+    >>> pfd = (1, Integer(0).as_poly(x),
+    ...        [([sqrt(2), -sqrt(2)],
+    ...          Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))

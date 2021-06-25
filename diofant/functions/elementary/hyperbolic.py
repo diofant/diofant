@@ -1,6 +1,8 @@
-from ...core import (Function, I, Integer, Rational, cacheit, nan, oo, pi,
-                     sympify, zoo)
+import typing
+
+from ...core import Function, I, Integer, Rational, cacheit, nan, oo, pi, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
+from ...core.sympify import sympify
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
 from .miscellaneous import sqrt
@@ -588,8 +590,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
 
     # To be defined in class
     _reciprocal_of = None
-    _is_even = None
-    _is_odd = None
+    _is_even: typing.Optional[bool] = None
+    _is_odd: typing.Optional[bool] = None
 
     @classmethod
     def eval(cls, arg):
@@ -615,16 +617,16 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_tractable(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tractable", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg)
 
     def _eval_rewrite_as_tanh(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tanh", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tanh', arg)
 
     def _eval_rewrite_as_coth(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_coth", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_coth', arg)
 
     def as_real_imag(self, deep=True, **hints):
         return (1 / self._reciprocal_of(self.args[0])).as_real_imag(deep, **hints)

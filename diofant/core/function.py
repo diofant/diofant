@@ -25,19 +25,22 @@ There are three types of functions implemented in Diofant:
 
 """
 
+from __future__ import annotations
+
 import collections
 import inspect
+import typing
 
 import mpmath
 import mpmath.libmp as mlib
 
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import (as_int, default_sort_key, is_sequence, iterable,
-                            ordered)
+from .compatibility import as_int, is_sequence, iterable
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted
@@ -75,14 +78,12 @@ def _coeff_isneg(a):
 class PoleError(Exception):
     """Raised when an expansion pole is encountered."""
 
-    pass
-
 
 class ArgumentIndexError(ValueError):
     """Raised when an invalid operation for positional argument happened."""
 
     def __str__(self):
-        return ("Invalid operation with argument number %s for Function %s" %
+        return ('Invalid operation with argument number %s for Function %s' %
                 (self.args[1], self.args[0]))
 
 
@@ -116,7 +117,7 @@ class FunctionClass(ManagedProperties):
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             if not nargs:
-                raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
+                raise ValueError('Incorrectly specified nargs as %s' % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = as_int(nargs),
@@ -164,13 +165,14 @@ class FunctionClass(ManagedProperties):
 
         """
         from ..sets.sets import FiniteSet
+
         # XXX it would be nice to handle this in __init__ but there are import
         # problems with trying to import FiniteSet there
         return FiniteSet(*self._nargs) if self._nargs else S.Naturals0
 
     def __repr__(self):
         if issubclass(self, AppliedUndef):
-            return 'Function(%r)' % (self.__name__)
+            return f'Function({self.__name__!r})'
         else:
             return self.__name__
 
@@ -201,7 +203,7 @@ class Application(Expr, metaclass=FunctionClass):
         options.pop('nargs', None)
 
         if options:
-            raise ValueError("Unknown options: %s" % options)
+            raise ValueError(f'Unknown options: {options}')
 
         if evaluate:
             if nan in args:
@@ -501,13 +503,14 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
-        from .symbol import Dummy
         from ..series import Order
         from ..sets.sets import FiniteSet
+        from .symbol import Dummy
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
             from .numbers import oo, zoo
+
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -527,7 +530,7 @@ class Function(Application, Expr):
             v = None
             for ai, zi, pi in zip(a0, z, p):
                 if zi.has(x):
-                    if v is not None:  # pragma: no cover
+                    if v is not None:
                         raise NotImplementedError
                     q.append(ai + pi)
                     v = pi
@@ -550,7 +553,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs({x: 0})
                 if term.is_finite is False:
-                    raise PoleError("Cannot expand %s around 0" % self)
+                    raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
@@ -596,7 +599,7 @@ class Function(Application, Expr):
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
         # See issue sympy/sympy#4624 and issue sympy/sympy#4719
         # and issue sympy/sympy#5600
-        arg_dummy = Dummy('xi_%i' % argindex)
+        arg_dummy = Dummy(f'xi_{argindex:d}')
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
         new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
@@ -628,7 +631,7 @@ class Function(Application, Expr):
             #      sin(x)        x        <- _eval_as_leading_term needed
             #
             raise NotImplementedError(
-                '%s has no _eval_as_leading_term routine' % self.func)
+                f'{self.func} has no _eval_as_leading_term routine')
         else:
             return self.func(*args)
 
@@ -713,10 +716,10 @@ class WildFunction(Function, AtomicExpr):
 
     """
 
-    include = set()
+    include: set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
-        from ..sets.sets import Set, FiniteSet
+        from ..sets.sets import FiniteSet, Set
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
         if not isinstance(nargs, Set):
@@ -765,9 +768,9 @@ class Derivative(Expr):
     keyword ``simplify`` is set to False.
 
         >>> e = sqrt((x + 1)**2 + x)
-        >>> diff(e, x, 5, simplify=False).count_ops()
+        >>> diff(e, (x, 5), simplify=False).count_ops()
         136
-        >>> diff(e, x, 5).count_ops()
+        >>> diff(e, (x, 5)).count_ops()
         30
 
     Ordering of variables:
@@ -872,9 +875,9 @@ class Derivative(Expr):
 
     The same is true for derivatives of different orders::
 
-        >>> diff(f(x), x, 2).diff(diff(f(x), x, 1))
+        >>> diff(f(x), (x, 2)).diff(diff(f(x), (x, 1)))
         0
-        >>> diff(f(x), x, 1).diff(diff(f(x), x, 2))
+        >>> diff(f(x), (x, 1)).diff(diff(f(x), (x, 2)))
         0
 
     Note, any class can allow derivatives to be taken with respect to itself.
@@ -888,7 +891,7 @@ class Derivative(Expr):
         2*x
         >>> Derivative(Derivative(f(x, y), x), y)
         Derivative(f(x, y), x, y)
-        >>> Derivative(f(x), x, 3)
+        >>> Derivative(f(x), (x, 3))
         Derivative(f(x), x, x, x)
         >>> Derivative(f(x, y), y, x, evaluate=True)
         Derivative(f(x, y), x, y)
@@ -922,59 +925,41 @@ class Derivative(Expr):
         else:
             return False
 
-    def __new__(cls, expr, *variables, **assumptions):
+    def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy
 
         expr = sympify(expr)
 
-        # There are no variables, we differentiate wrt all of the free symbols
+        # There are no args, we differentiate wrt all of the free symbols
         # in expr.
-        if not variables:
+        if not args:
             variables = expr.free_symbols
+            args = tuple(variables)
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
                 raise ValueError(filldedent("""
                     The variable(s) of differentiation
                     must be supplied to differentiate %s""" % expr))
 
-        # Standardize the variables by sympifying them and making appending a
-        # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
-        variables = list(sympify(variables))
-        if not variables[-1].is_Integer or len(variables) == 1:
-            variables.append(Integer(1))
+        # Standardize the args by sympifying them and making appending a
+        # count of 1 if there is only variable: diff(e, x) -> diff(e, (x, 1)).
+        args = list(sympify(args))
+        for i, a in enumerate(args):
+            if not isinstance(a, Tuple):
+                args[i] = (a, Integer(1))
 
-        # Split the list of variables into a list of the variables we are diff
-        # wrt, where each element of the list has the form (s, count) where
-        # s is the entity to diff wrt and count is the order of the
-        # derivative.
         variable_count = []
         all_zero = True
-        i = 0
-        while i < len(variables) - 1:  # process up to final Integer
-            v, count = variables[i: i + 2]
-            iwas = i
-            if v._diff_wrt:
-                # We need to test the more specific case of count being an
-                # Integer first.
-                if count.is_Integer:
-                    count = int(count)
-                    i += 2
-                elif count._diff_wrt:
-                    count = 1
-                    i += 1
-
-            if i == iwas:  # didn't get an update because of bad input
+        for v, count in args:
+            if not v._diff_wrt:
                 from ..utilities.misc import filldedent
-                last_digit = int(str(count)[-1])
-                ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
+                ordinal = 'st' if count == 1 else 'nd' if count == 2 else 'rd' if count == 3 else 'th'
                 raise ValueError(filldedent("""
                 Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
-
-            if all_zero and not count == 0:
-                all_zero = False
-
             if count:
-                variable_count.append((v, count))
+                if all_zero:
+                    all_zero = False
+                variable_count.append(Tuple(v, count))
 
         # We make a special case for 0th derivative, because there is no
         # good way to unambiguously print this.
@@ -1036,7 +1021,7 @@ class Derivative(Expr):
                 obj = None
             else:
                 if not is_symbol:
-                    new_v = Dummy('xi_%i' % i)
+                    new_v = Dummy(f'xi_{i:d}')
                     new_v.dummy_index = hash(v)
                     expr = expr.xreplace({v: new_v})
                     old_v = v
@@ -1074,8 +1059,8 @@ class Derivative(Expr):
                 )
 
         if nderivs > 1 and assumptions.get('simplify', True):
-            from .exprtools import factor_terms
             from ..simplify.simplify import signsimp
+            from .exprtools import factor_terms
             expr = factor_terms(signsimp(expr))
         return expr
 
@@ -1188,8 +1173,9 @@ class Derivative(Expr):
 
         """
         import mpmath
+
         from .expr import Expr
-        if len(self.free_symbols) != 1 or len(self.variables) != 1:  # pragma: no cover
+        if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
         z = list(self.free_symbols)[0]
 
@@ -1246,7 +1232,7 @@ class Derivative(Expr):
         return Derivative(*(x._subs(old, new) for x in self.args))
 
     def _eval_lseries(self, x, logx):
-        for term in self.expr.lseries(x, logx=logx):
+        for term in self.expr.series(x, n=None, logx=logx):
             yield self.func(term, *self.variables)
 
     def _eval_nseries(self, x, n, logx):
@@ -1295,7 +1281,7 @@ class Lambda(Expr):
         v = list(variables) if iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
-                raise TypeError('variable is not a symbol: %s' % i)
+                raise TypeError(f'variable is not a symbol: {i}')
         if len(v) == 1 and v[0] == expr:
             return S.IdentityFunction
 
@@ -1406,7 +1392,7 @@ class Subs(Expr):
         if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
-            raise ValueError("Subs support two or more arguments")
+            raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
             repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
@@ -1417,7 +1403,7 @@ class Subs(Expr):
 
         # use symbols with names equal to the point value (with preppended _)
         # to give a variable-independent expression
-        pre = "_"
+        pre = '_'
         pts = sorted(set(point), key=default_sort_key)
         from ..printing import StrPrinter
 
@@ -1443,8 +1429,9 @@ class Subs(Expr):
                    r in variables and
                    Symbol(pre + mystr(point[variables.index(r)])) != r
                    for _, r in reps):
-                pre += "_"
+                pre += '_'
                 continue
+            reps  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))
@@ -1534,18 +1521,18 @@ class Subs(Expr):
                      for v, p in zip(self.variables, self.point)])
 
 
-def diff(f, *symbols, **kwargs):
+def diff(f, *args, **kwargs):
     """
     Differentiate f with respect to symbols.
 
     This is just a wrapper to unify .diff() and the Derivative class; its
     interface is similar to that of integrate().  You can use the same
     shortcuts for multiple variables as with Derivative.  For example,
-    diff(f(x), x, x, x) and diff(f(x), x, 3) both return the third derivative
+    diff(f(x), x, x, x) and diff(f(x), (x, 3)) both return the third derivative
     of f(x).
 
     You can pass evaluate=False to get an unevaluated Derivative class.  Note
-    that if there are 0 symbols (such as diff(f(x), x, 0), then the result will
+    that if there are 0 symbols (such as diff(f(x), (x, 0)), then the result will
     be the function (the zeroth derivative), even if evaluate=False.
 
     Examples
@@ -1555,18 +1542,18 @@ def diff(f, *symbols, **kwargs):
     cos(x)
     >>> diff(f(x), x, x, x)
     Derivative(f(x), x, x, x)
-    >>> diff(f(x), x, 3)
+    >>> diff(f(x), (x, 3))
     Derivative(f(x), x, x, x)
-    >>> diff(sin(x)*cos(y), x, 2, y, 2)
+    >>> diff(sin(x)*cos(y), (x, 2), (y, 2))
     sin(x)*cos(y)
 
     >>> type(diff(sin(x), x))
     cos
     >>> type(diff(sin(x), x, evaluate=False))
     <class 'diofant.core.function.Derivative'>
-    >>> type(diff(sin(x), x, 0))
+    >>> type(diff(sin(x), (x, 0)))
     sin
-    >>> type(diff(sin(x), x, 0, evaluate=False))
+    >>> type(diff(sin(x), (x, 0), evaluate=False))
     sin
 
     >>> diff(sin(x))
@@ -1592,7 +1579,7 @@ def diff(f, *symbols, **kwargs):
 
     """
     kwargs.setdefault('evaluate', True)
-    return Derivative(f, *symbols, **kwargs)
+    return Derivative(f, *args, **kwargs)
 
 
 def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
@@ -1848,12 +1835,9 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     ...         return Expr.__new__(cls, *args)
     ...
     ...     def _eval_expand_double(self, **hints):
-    ...         '''
-    ...         Doubles the args of MyClass.
-    ...
-    ...         If there more than four args, doubling is not performed,
-    ...         unless force=True is also used (False by default).
-    ...         '''
+    ...         # Doubles the args of MyClass.
+    ...         # If there more than four args, doubling is not performed,
+    ...         # unless force=True is also used (False by default).
     ...         force = hints.pop('force', False)
     ...         if not force and len(self.args) > 4:
     ...             return self
@@ -1883,7 +1867,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     References
     ==========
 
-    * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+    * https://mathworld.wolfram.com/Multiple-AngleFormulas.html
 
     """
     # don't modify this; modify the Expr.expand method
@@ -2170,10 +2154,10 @@ def count_ops(expr, visual=False):
     2*ADD + SIN
 
     """
-    from .symbol import Symbol
     from ..integrals import Integral
-    from ..simplify.radsimp import fraction
     from ..logic.boolalg import BooleanFunction
+    from ..simplify.radsimp import fraction
+    from .symbol import Symbol
 
     expr = sympify(expr)
 
@@ -2308,9 +2292,9 @@ def nfloat(expr, n=15, exponent=False):
     x**4.0 + y**0.5
 
     """
+    from ..polys.rootoftools import RootOf
     from .power import Pow
     from .symbol import Dummy
-    from ..polys.rootoftools import RootOf
 
     if iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):

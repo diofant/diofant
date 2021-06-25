@@ -1,15 +1,6 @@
 Diofant
 =======
 
-.. image:: https://github.com/diofant/diofant/workflows/test/badge.svg
-   :target: https://github.com/diofant/diofant/actions?workflow=test
-
-.. image:: https://codecov.io/gh/diofant/diofant/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/diofant/diofant
-
-.. image:: https://readthedocs.org/projects/diofant/badge/?style=flat
-    :target: https://diofant.readthedocs.io/en/latest/
-
 A `Python`_ library for symbolic mathematics.
 
 For `installation instructions`_ and usage information,

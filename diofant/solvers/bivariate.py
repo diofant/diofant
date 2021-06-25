@@ -1,9 +1,9 @@
 from ..core import Add, Dummy, Pow, expand_log
-from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import LambertW, exp, log, root
 from ..polys.polytools import Poly, factor
 from ..simplify import collect, separatevars
+from ..utilities import ordered
 from .solvers import _invert, solve
 
 
@@ -15,7 +15,7 @@ def _filtered_gens(poly, symbol):
     Examples
     ========
 
-    >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
+    >>> _filtered_gens((x + 1/x + exp(x)).as_poly(), x)
     {E**x, x}
 
     """
@@ -184,7 +184,7 @@ def _solve_lambert(f, symbol, gens):
         rhs = log(rhs)
 
     lhs = factor(lhs, deep=True)
-    # make sure we are inverted as completely as possible
+    # make sure we have inverted as completely as possible
     r = Dummy()
     i, lhs = _invert(lhs - r, symbol)
     rhs = i.xreplace({r: rhs})
@@ -242,8 +242,8 @@ def _solve_lambert(f, symbol, gens):
                 soln = _lambert(expand_log(diff), symbol)
 
     if not soln:
-        raise NotImplementedError('%s does not appear to have a solution in '
-                                  'terms of LambertW' % f)
+        raise NotImplementedError(f'{f} does not appear to have a solution in '
+                                  'terms of LambertW')
 
     return list(ordered(soln))
 

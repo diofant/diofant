@@ -4,14 +4,12 @@ import sys
 import warnings
 from distutils.version import LooseVersion
 
-from .. import DIOFANT_DEBUG
-
 
 def import_module(module, min_module_version=None, min_python_version=None,
                   warn_not_installed=False, warn_old_version=True,
                   module_version_attr='__version__',
                   module_version_attr_call_args=None,
-                  __import__kwargs={}, catch=()):
+                  import__kwargs={}, catch=()):
     """
     Import and return a module if it is installed.
 
@@ -34,17 +32,16 @@ def import_module(module, min_module_version=None, min_python_version=None,
     min_python_version keyword argument.  This should be comparable against
     sys.version_info.
 
-    If the keyword argument warn_not_installed is set to True (or
-    DIOFANT_DEBUG is True), the function will emit a UserWarning when
-    the module is not installed.
+    If the keyword argument warn_not_installed is set to True, the function
+    will emit a UserWarning when the module is not installed.
 
-    By default, or if the keyword argument warn_old_version is set to True (or
-    DIOFANT_DEBUG is True), the function will emit a UserWarning when
+    By default, or if the keyword argument warn_old_version is set to True,
+    the function will emit a UserWarning when
     the library is installed, but cannot be imported because of the
     min_module_version or min_python_version options.
 
     This function uses __import__() to import the module.  To pass additional
-    options to __import__(), use the __import__kwargs keyword argument.  For
+    options to __import__(), use the import__kwargs keyword argument.  For
     example, to import a submodule A.B, you must pass a nonempty fromlist option
     to __import__.
 
@@ -76,12 +73,12 @@ def import_module(module, min_module_version=None, min_python_version=None,
     __import__().  The values do not matter.
 
     >>> p3 = import_module('mpl_toolkits.mplot3d',
-    ...                    __import__kwargs={'fromlist': ['something']})
+    ...                    import__kwargs={'fromlist': ['something']})
 
     matplotlib.pyplot can raise RuntimeError when the display cannot be opened
 
     >>> matplotlib = import_module('matplotlib',
-    ...                            __import__kwargs={'fromlist': ['pyplot']},
+    ...                            import__kwargs={'fromlist': ['pyplot']},
     ...                            catch=(RuntimeError,))
 
     See Also
@@ -90,25 +87,21 @@ def import_module(module, min_module_version=None, min_python_version=None,
     __import__
 
     """
-    warn_old_version = True if DIOFANT_DEBUG else warn_old_version
-    warn_not_installed = True if DIOFANT_DEBUG else warn_not_installed
-
     # Check Python first so we don't waste time importing a module we can't use
     if min_python_version:
         if sys.version_info < min_python_version:
             min_python_version = '.'.join(map(str, min_python_version))
             if warn_old_version:
-                warnings.warn("Python version is too old to use %s "
-                              "(%s or newer required)" % (module,
-                                                          min_python_version),
+                warnings.warn(f'Python version is too old to use {module} '
+                              f'({min_python_version} or newer required)',
                               UserWarning)
             return
 
     try:
-        mod = __import__(module, **__import__kwargs)
+        mod = __import__(module, **import__kwargs)
     except ImportError:
         if warn_not_installed:
-            warnings.warn("%s module is not installed" % module, UserWarning)
+            warnings.warn(f'{module} module is not installed', UserWarning)
         return
 
     if min_module_version:
@@ -117,9 +110,8 @@ def import_module(module, min_module_version=None, min_python_version=None,
             modversion = modversion(*module_version_attr_call_args)
         if LooseVersion(modversion) < LooseVersion(min_module_version):
             if warn_old_version:
-                warnings.warn("%s version is too old to use "
-                              "(%s or newer required)" % (module,
-                                                          min_module_version),
+                warnings.warn(f'{module} version is too old to use '
+                              f'({min_module_version} or newer required)',
                               UserWarning)
             return
 

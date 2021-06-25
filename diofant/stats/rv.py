@@ -13,6 +13,10 @@ diofant.stats.rv_interface
 
 """
 
+from __future__ import annotations
+
+import typing
+
 from ..abc import x
 from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, Symbol, Tuple,
                     oo, sympify)
@@ -111,7 +115,7 @@ class ConditionalDomain(RandomDomain):
 
     @property
     def set(self):  # pragma: no cover
-        raise NotImplementedError("Set of Conditional Domain not Implemented")
+        raise NotImplementedError('Set of Conditional Domain not Implemented')
 
 
 class PSpace(Expr):
@@ -129,8 +133,8 @@ class PSpace(Expr):
 
     """
 
-    is_Finite = None
-    is_Continuous = None
+    is_Finite: typing.Optional[bool] = None
+    is_Continuous: typing.Optional[bool] = None
 
     @property
     def values(self):
@@ -167,7 +171,7 @@ class SinglePSpace(PSpace):
         if isinstance(s, str):
             s = Symbol(s)
         if not isinstance(s, Symbol):
-            raise TypeError("s should have been string or Symbol")
+            raise TypeError('s should have been string or Symbol')
         return Expr.__new__(cls, s, distribution)
 
     @property
@@ -212,9 +216,9 @@ class RandomSymbol(Expr):
 
     def __new__(cls, pspace, symbol):
         if not isinstance(symbol, Symbol):
-            raise TypeError("symbol should be of type Symbol")
+            raise TypeError('symbol should be of type Symbol')
         if not isinstance(pspace, PSpace):
-            raise TypeError("pspace variable should be of type PSpace")
+            raise TypeError('pspace variable should be of type PSpace')
         return Expr.__new__(cls, pspace, symbol)
 
     is_finite = True
@@ -267,7 +271,7 @@ class ProductPSpace(PSpace):
 
         # Overlapping symbols
         if len(symbols) < sum(len(space.symbols) for space in spaces):
-            raise ValueError("Overlapping Random Variables")
+            raise ValueError('Overlapping Random Variables')
 
         new_cls = cls
         if all(space.is_Finite for space in spaces):
@@ -314,7 +318,7 @@ class ProductPSpace(PSpace):
 
     @property
     def density(self):  # pragma: no cover
-        raise NotImplementedError("Density not available for ProductSpaces")
+        raise NotImplementedError('Density not available for ProductSpaces')
 
     def sample(self):
         return {k: v for space in self.spaces
@@ -407,7 +411,7 @@ def pspace(expr):
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        raise ValueError("Expression containing Random Variable expected, not %s" % expr)
+        raise ValueError(f'Expression containing Random Variable expected, not {expr}')
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -590,13 +594,11 @@ def probability(condition, given_condition=None, numsamples=None,
 
     if given_condition is not None and \
             not isinstance(given_condition, (Relational, Boolean)):
-        raise ValueError("%s is not a relational or combination of relationals"
-                         % (given_condition))
+        raise ValueError(f'{given_condition} is not a relational or combination of relationals')
     if given_condition == false:
         return Integer(0)
     if not isinstance(condition, (Relational, Boolean)):
-        raise ValueError("%s is not a relational or combination of relationals"
-                         % condition)
+        raise ValueError(f'{condition} is not a relational or combination of relationals')
     if condition == true:
         return Integer(1)
     if condition == false:
@@ -756,7 +758,7 @@ def where(condition, given_condition=None, **kwargs):
     (-1, 1)
 
     >>> where(And(D1 <= D2, D2 < 3))
-    Domain: ((Eq(a, 1)) & (Eq(b, 1))) | ((Eq(a, 1)) & (Eq(b, 2))) | ((Eq(a, 2)) & (Eq(b, 2)))
+    Domain: (Eq(a, 1) & Eq(b, 1)) | (Eq(a, 1) & Eq(b, 2)) | (Eq(a, 2) & Eq(b, 2))
 
     """
     if given_condition is not None:  # If there is a condition
@@ -828,7 +830,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
         if condition is not None:
             given_fn(*args)
     except (TypeError, ValueError):
-        raise TypeError("Expr/condition too complex for lambdify")
+        raise TypeError('Expr/condition too complex for lambdify')
 
     def return_generator():
         count = 0
@@ -840,7 +842,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
                 gd = given_fn(*args)
                 if gd not in (True, False):
                     raise ValueError(
-                        "Conditions must not contain free symbols")
+                        'Conditions must not contain free symbols')
                 if not gd:  # If the values don't satisfy then try again
                     continue
 
@@ -1011,14 +1013,13 @@ def rv_subs(expr):
 class NamedArgsMixin:
     """Helper class for named arguments."""
 
-    _argnames = ()
+    _argnames: tuple[str, ...] = ()
 
     def __getattr__(self, attr):
         try:
             return self.args[self._argnames.index(attr)]
         except ValueError:
-            raise AttributeError("'%s' object has not attribute '%s'" % (
-                type(self).__name__, attr))
+            raise AttributeError(f"'{type(self).__name__}' object has not attribute '{attr}'")
 
 
 def _value_check(condition, message):

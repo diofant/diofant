@@ -1,4 +1,5 @@
-from ..core import Integer, Mul, sympify
+from ..core import Integer, Mul
+from ..core.sympify import sympify
 
 
 def residue(expr, x, x0):
@@ -59,7 +60,7 @@ def residue(expr, x, x0):
         c, m = arg.as_coeff_mul(x)
         m = Mul(*m)
         if not (m == 1 or m == x or (m.is_Pow and m.exp.is_Integer)):
-            raise NotImplementedError('term of unexpected form: %s' % m)
+            raise NotImplementedError(f'term of unexpected form: {m}')
         if m == 1/x:
             res += c
     return res

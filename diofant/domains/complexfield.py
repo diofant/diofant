@@ -1,19 +1,15 @@
 """Implementation of :class:`ComplexField` class."""
 
+from __future__ import annotations
+
 import mpmath
 
 from ..core import Float, I
-from ..polys.polyerrors import CoercionFailed, DomainError
+from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
 from .simpledomain import SimpleDomain
-
-
-__all__ = 'ComplexField',
-
-
-_complexes_cache = {}
 
 
 class ComplexField(CharacteristicZero, SimpleDomain, Field):
@@ -21,13 +17,10 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'CC'
 
-    is_ComplexField = is_CC = True
+    is_ComplexField = True
 
     is_Exact = False
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     _default_precision = 53
 
@@ -79,55 +72,46 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number."""
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
         else:
-            raise CoercionFailed("expected complex number, got %s" % expr)
+            raise CoercionFailed(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, element, base):
         return self.dtype(element.numerator) / element.denominator
-
-    def _from_GMPYIntegerRing(self, element, base):
-        return self.dtype(int(element))
-
-    def _from_GMPYRationalField(self, element, base):
-        return self.dtype(int(element.numerator)) / int(element.denominator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_AlgebraicField(self, element, base):
         return self.from_expr(base.to_expr(element))
 
-    def _from_RealField(self, element, base):
-        return self.dtype(element)
-
-    def _from_ComplexField(self, element, base):
-        return self.dtype(element)
-
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
-        raise DomainError("there is no exact domain associated with %s" % self)
+        from . import QQ
+        return QQ.algebraic_field(I)
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
         return self.one
-
-    def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
-        return a*b
 
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
+
+    def is_normal(self, element):
+        return True
+
+
+_complexes_cache: dict[tuple, ComplexField] = {}
 
 
 CC = ComplexField()

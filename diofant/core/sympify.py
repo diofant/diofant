@@ -1,6 +1,11 @@
 """sympify -- convert objects Diofant internal format"""
 
+from __future__ import annotations
+
+import typing
 from inspect import getmro
+
+import diofant
 
 from .compatibility import iterable
 from .evaluate import global_evaluate
@@ -20,11 +25,13 @@ class SympifyError(ValueError):
             s = repr(self.expr)
 
         return ("Sympify of expression '%s' failed, because of exception being "
-                "raised:\n%s: %s" % (s, self.base_exc.__class__.__name__,
+                'raised:\n%s: %s' % (s, self.base_exc.__class__.__name__,
                                      str(self.base_exc)))
 
 
-converter = {}  # See sympify docstring.
+converter: dict[type[typing.Any],
+                typing.Callable[[typing.Any],
+                                diofant.core.basic.Basic]] = {}  # See sympify docstring.
 
 
 class CantSympify:
@@ -49,8 +56,6 @@ class CantSympify:
     SympifyError: SympifyError: {}
 
     """
-
-    pass
 
 
 def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
@@ -80,14 +85,14 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> sympify(2.0).is_real
     True
-    >>> sympify("2.0").is_real
+    >>> sympify('2.0').is_real
     True
-    >>> sympify("2e-45").is_real
+    >>> sympify('2e-45').is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.
 
-    >>> sympify("x***2")
+    >>> sympify('x***2')
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: "could not parse u'x***2'"
@@ -104,9 +109,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> s = 'bitcount(42)'
     >>> sympify(s)
     bitcount(42)
-    >>> sympify("O(x)")
+    >>> sympify('O(x)')
     O(x)
-    >>> sympify("O + 1")
+    >>> sympify('O + 1')
     Traceback (most recent call last):
     ...
     TypeError: unbound method...
@@ -123,10 +128,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
-    >>> ns["O"] = Symbol("O")  # method 1
+    >>> ns['O'] = Symbol('O')  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
-    >>> ns.update({O: Symbol("O")})  # method 3
-    >>> sympify("O + 1", locals=ns)
+    >>> ns.update({O: Symbol('O')})  # method 3
+    >>> sympify('O + 1', locals=ns)
     O + 1
 
     If you want *all* single-letter and Greek-letter variables to be symbols
@@ -288,10 +293,11 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except Exception as exc:
         raise SympifyError(a, exc)
 
-    from ..parsing.sympy_parser import (parse_expr, TokenError,
-                                        standard_transformations)
+    from ..parsing.sympy_parser import TokenError
     from ..parsing.sympy_parser import convert_xor as t_convert_xor
+    from ..parsing.sympy_parser import parse_expr
     from ..parsing.sympy_parser import rationalize as t_rationalize
+    from ..parsing.sympy_parser import standard_transformations
 
     transformations = standard_transformations
 
@@ -304,6 +310,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         a = a.replace('\n', '')
         expr = parse_expr(a, local_dict=locals, transformations=transformations, evaluate=evaluate)
     except (TokenError, SyntaxError) as exc:
-        raise SympifyError('could not parse %r' % a, exc)
+        raise SympifyError(f'could not parse {a!r}', exc)
 
     return expr

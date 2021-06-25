@@ -4,10 +4,10 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, bell, bernoulli, binomial, cancel,
-                     catalan, cos, cot, diff, digamma, euler, expand_func,
-                     factorial, fibonacci, gamma, genocchi, harmonic, hyper,
-                     im, limit, log, lucas, nan, oo, pi, polygamma, re, sin,
+                     Rational, Sum, Symbol, bell, bernoulli, binomial, catalan,
+                     cos, cot, diff, digamma, euler, expand_func, factorial,
+                     fibonacci, gamma, genocchi, harmonic, hyper, im, limit,
+                     log, lucas, nan, oo, pi, polygamma, re, simplify, sin,
                      sqrt, sstr, subsets, symbols, trigamma, zeta, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
@@ -123,7 +123,7 @@ def test_bell():
 
 
 def test_harmonic():
-    n = Symbol("n")
+    n = Symbol('n')
 
     assert harmonic(n, 0) == n
     assert harmonic(n).evalf() == harmonic(n)
@@ -218,7 +218,7 @@ def test_harmonic_rational():
 
     for h, a in zip(H, A):
         e = expand_func(h).doit()
-        assert cancel(e/a) == 1
+        assert simplify(e/a) == 1
         assert h.evalf() == a.evalf()
 
 
@@ -228,8 +228,8 @@ def test_harmonic_evalf():
 
 
 def test_harmonic_rewrite_polygamma():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
     assert harmonic(n).rewrite(digamma) == polygamma(0, n + 1) + EulerGamma
     assert harmonic(n).rewrite(trigamma) == polygamma(0, n + 1) + EulerGamma
@@ -241,7 +241,7 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(n+4)) == harmonic(n) + 1/(n + 4) + 1/(n + 3) + 1/(n + 2) + 1/(n + 1)
     assert expand_func(harmonic(n-4)) == harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
 
-    assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
+    assert harmonic(n, m).rewrite('tractable') == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite('tractable')
 
     assert isinstance(expand_func(harmonic(n, 2)), harmonic)
 
@@ -251,8 +251,8 @@ def test_harmonic_rewrite_polygamma():
 
 
 def test_harmonic_limit():
-    n = Symbol("n")
-    m = Symbol("m", positive=True)
+    n = Symbol('n')
+    m = Symbol('m', positive=True)
     assert limit(harmonic(n, m + 1), n, oo) == zeta(m + 1)
 
     assert limit(harmonic(n, 2), n, oo) == pi**2/6
@@ -261,10 +261,10 @@ def test_harmonic_limit():
 
 @pytest.mark.xfail
 def test_harmonic_rewrite_sum_fail():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
-    _k = Dummy("k")
+    _k = Dummy('k')
     assert harmonic(n).rewrite(Sum) == Sum(1/_k, (_k, 1, n))
     assert harmonic(n, m).rewrite(Sum) == Sum(_k**(-m), (_k, 1, n))
 
@@ -278,10 +278,10 @@ def replace_dummy(expr, sym):
 
 
 def test_harmonic_rewrite_sum():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
-    _k = Dummy("k")
+    _k = Dummy('k')
     assert replace_dummy(harmonic(n).rewrite(Sum), _k) == Sum(1/_k, (_k, 1, n))
     assert replace_dummy(harmonic(n, m).rewrite(Sum), _k) == Sum(_k**(-m), (_k, 1, n))
 
@@ -342,6 +342,17 @@ def test_catalan():
     assert str(c) == '0.848826363156775'
     c = catalan(I).evalf(3)
     assert sstr((re(c), im(c))) == '(0.398, -0.0209)'
+
+    # issue sympy/sympy#8601
+    n = Symbol('n', integer=True, negative=True)
+
+    assert catalan(n - 1) == 0
+    assert catalan(Rational(-1, 2)) == zoo
+    assert catalan(-1) == Rational(-1, 2)
+    c1 = catalan(-5.6).evalf(strict=False)
+    assert str(c1) == '6.93334070531408e-5'
+    c2 = catalan(-35.4).evalf(strict=False)
+    assert str(c2) == '-4.14189164517449e-24'
 
 
 def test_genocchi():
@@ -528,20 +539,8 @@ def test_nC_nP_nT():
 
 
 def test_sympyissue_8496():
-    n = Symbol("n")
-    k = Symbol("k")
+    n = Symbol('n')
+    k = Symbol('k')
 
     pytest.raises(TypeError, lambda: catalan(n, k))
     pytest.raises(TypeError, lambda: euler(n, k))
-
-
-def test_sympyissue_8601():
-    n = Symbol('n', integer=True, negative=True)
-
-    assert catalan(n - 1) == 0
-    assert catalan(Rational(-1, 2)) == zoo
-    assert catalan(-1) == Rational(-1, 2)
-    c1 = catalan(-5.6).evalf(strict=False)
-    assert str(c1) == '6.93334070531408e-5'
-    c2 = catalan(-35.4).evalf(strict=False)
-    assert str(c2) == '-4.14189164517449e-24'

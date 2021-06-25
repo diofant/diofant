@@ -55,7 +55,6 @@ def test_Tuple_concatenation():
 
 
 def test_Tuple_equality():
-    assert Tuple(1, 2) is not (1, 2)
     assert (Tuple(1, 2) == (1, 2)) is True
     assert (Tuple(1, 2) != (1, 2)) is False
     assert (Tuple(1, 2) == (1, 3)) is False
@@ -165,14 +164,14 @@ def test_Dict():
     assert Dict(d)
     d = Dict(d)
     assert len(d) == 3
-    assert set(d.keys()) == {x, y, z}
+    assert set(d) == {x, y, z}
     assert set(d.values()) == {0, 0, 0}
 
 
-def test_sympyissue_5788():
+def test_eq_and_args():
+    # issue sympy/sympy#5788
     args = [(1, 2), (2, 1)]
     for o in [Dict, Tuple, FiniteSet]:
-        # __eq__ and arg handling
         if o != Tuple:
             assert o(*args) == o(*reversed(args))
         pair = [o(*args), o(*reversed(args))]

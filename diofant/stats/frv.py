@@ -125,9 +125,9 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         # where 'z' is a symbol that we don't know about
         # We will never be able to test this equality through iteration
         if not cond.free_symbols.issubset(domain.free_symbols):
-            raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (
+            raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (  # noqa: SFS101
                 condition, tuple(cond.free_symbols - domain.free_symbols)) +
-                "Will be unable to iterate using this condition")
+                'Will be unable to iterate using this condition')
 
         return Expr.__new__(cls, domain, cond)
 
@@ -137,7 +137,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
             return val
         elif val.is_Equality:
             return val.lhs == val.rhs
-        raise ValueError("Undeciable if %s" % str(val))
+        raise ValueError(f'Undeciable if {val!s}')
 
     def __contains__(self, other):
         return other in self.fulldomain and self._test(other)
@@ -152,7 +152,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
                                if frozenset(((self.fulldomain.symbol, elem),)) in self])
         else:
             raise NotImplementedError(
-                "Not implemented on multi-dimensional conditional domain")
+                'Not implemented on multi-dimensional conditional domain')
 
     def as_boolean(self):
         return FiniteDomain.as_boolean(self)
@@ -165,7 +165,7 @@ class SingleFiniteDistribution(Expr, NamedArgsMixin):
         args = list(map(sympify, args))
         return Expr.__new__(cls, *args)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {k: self.pdf(k) for k in self.set}
@@ -296,7 +296,7 @@ class FinitePSpace(PSpace):
                 # return dictionary mapping RandomSymbols to values
                 return dict(zip(expr, value))
 
-        assert False, "We should never have gotten to this point"  # pragma: no cover
+        assert False, 'We should never have gotten to this point'  # pragma: no cover
 
 
 class SingleFinitePSpace(SinglePSpace, FinitePSpace):
@@ -315,7 +315,7 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
     def domain(self):
         return SingleFiniteDomain(self.symbol, self.distribution.set)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def _density(self):
         return {frozenset(((self.symbol, val),)): prob
@@ -329,7 +329,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     def domain(self):
         return ProductFiniteDomain(*[space.domain for space in self.spaces])
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def _density(self):
         proditer = product(*[iter(space._density.items())
@@ -342,7 +342,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
             d[elem] = d.get(elem, 0) + prob
         return Dict(d)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def density(self):
         return self._density

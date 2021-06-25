@@ -75,9 +75,8 @@ from diofant.functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                              HyperRep_power1, HyperRep_power2,
                                              HyperRep_sinasin, HyperRep_sqrts1,
                                              HyperRep_sqrts2)
-from diofant.geometry import (Circle, Curve, Ellipse, Line, Line3D, Plane,
-                              Point, Point2D, Point3D, Polygon, Ray, Ray3D,
-                              RegularPolygon, Segment, Segment3D, Triangle)
+from diofant.geometry import (Circle, Curve, Ellipse, Line, Point, Polygon,
+                              Ray, RegularPolygon, Segment, Triangle)
 from diofant.geometry.entity import GeometryEntity
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
@@ -94,8 +93,8 @@ from diofant.logic.boolalg import BooleanFunction
 from diofant.matrices.expressions.fourier import DFT, IDFT
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
-from diofant.sets.fancysets import (Integers, Naturals, Naturals0, Rationals,
-                                    Reals)
+from diofant.sets.fancysets import (ExtendedReals, Integers, Naturals,
+                                    Naturals0, Rationals, Reals)
 from diofant.sets.sets import EmptySet, UniversalSet
 from diofant.simplify.hyperexpand import G_Function, Hyper_Function
 from diofant.stats.crv import (ConditionalContinuousDomain,
@@ -166,20 +165,20 @@ def test_all_classes_are_tested():
     diofant_path = os.path.abspath(path)
     prefix = os.path.split(diofant_path)[0] + os.sep
 
-    re_cls = re.compile(r"^class ([A-Za-z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
+    re_cls = re.compile(r'^class ([A-Za-z][A-Za-z0-9_]*)\s*\(', re.MULTILINE)
 
     modules = {}
 
     for root, dirs, files in os.walk(diofant_path):
-        module = root.replace(prefix, "").replace(os.sep, ".")
+        module = root.replace(prefix, '').replace(os.sep, '.')
 
         for file in files:
-            if file.startswith(("_", "test_", "bench_")):
+            if file.startswith(('_', 'test_', 'bench_')):
                 continue
-            if not file.endswith(".py"):
+            if not file.endswith('.py'):
                 continue
 
-            with io.open(os.path.join(root, file), "r", encoding='utf-8') as f:
+            with io.open(os.path.join(root, file), 'r', encoding='utf-8') as f:
                 text = f.read()
 
             submodule = module + '.' + file[:-3]
@@ -215,9 +214,9 @@ def test_all_classes_are_tested():
                 failed.append(module + '.' + name)
 
     # reset all DiofantDeprecationWarning into errors
-    warnings.simplefilter("error", category=DiofantDeprecationWarning)
+    warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
-    assert not failed, "Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py." % ", ".join(failed)
+    assert not failed, f"Missing classes: {', '.join(failed)}.  Please add tests for these to diofant/core/tests/test_args.py."
 
 
 def _test_args(obj):
@@ -348,7 +347,7 @@ def test_diofant__core__function__AppliedUndef():
 
 
 def test_diofant__core__function__Derivative():
-    assert _test_args(Derivative(2, x, y, 3))
+    assert _test_args(Derivative(2, x, (y, 3)))
 
 
 def test_diofant__core__function__Function():
@@ -564,6 +563,10 @@ def test_diofant__sets__fancysets__Rationals():
 
 def test_diofant__sets__fancysets__Reals():
     assert _test_args(Reals())
+
+
+def test_diofant__sets__fancysets__ExtendedReals():
+    assert _test_args(ExtendedReals())
 
 
 def test_diofant__sets__fancysets__ImageSet():
@@ -1920,14 +1923,6 @@ def test_diofant__geometry__point__Point():
     assert _test_args(Point(0, 1))
 
 
-def test_diofant__geometry__point__Point2D():
-    assert _test_args(Point2D(0, 1))
-
-
-def test_diofant__geometry__point__Point3D():
-    assert _test_args(Point3D(0, 1, 2))
-
-
 def test_diofant__geometry__ellipse__Ellipse():
     assert _test_args(Ellipse((0, 1), 2, 3))
 
@@ -1950,26 +1945,6 @@ def test_diofant__geometry__line__Ray():
 
 def test_diofant__geometry__line__Segment():
     assert _test_args(Segment((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line3d__LinearEntity3D():
-    pass
-
-
-def test_diofant__geometry__line3d__Line3D():
-    assert _test_args(Line3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__line3d__Segment3D():
-    assert _test_args(Segment3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__line3d__Ray3D():
-    assert _test_args(Ray3D((0, 1, 1), (2, 3, 4)))
-
-
-def test_diofant__geometry__plane__Plane():
-    assert _test_args(Plane((1, 1, 1), (-3, 4, -2), (1, 2, 3)))
 
 
 def test_diofant__geometry__polygon__Polygon():

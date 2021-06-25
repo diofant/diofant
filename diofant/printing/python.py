@@ -5,8 +5,8 @@ from .str import StrPrinter
 
 
 # A list of classes that should be printed using StrPrinter
-STRPRINT = ("Add", "Infinity", "Integer", "Mul", "NegativeInfinity",
-            "Pow", "Zero")
+STRPRINT = ('Add', 'Infinity', 'Integer', 'Mul', 'NegativeInfinity',
+            'Pow', 'Zero')
 
 
 class PythonPrinter(ReprPrinter, StrPrinter):
@@ -21,7 +21,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
         # Create print methods for classes that should use StrPrinter instead
         # of ReprPrinter.
         for name in STRPRINT:
-            f_name = "_print_%s" % name
+            f_name = f'_print_{name}'
             f = getattr(StrPrinter, f_name)
             setattr(PythonPrinter, f_name, f)
 
@@ -38,13 +38,14 @@ class PythonPrinter(ReprPrinter, StrPrinter):
         if symbol not in self.symbols:
             self.symbols.append(symbol)
         return StrPrinter._print_Symbol(self, expr)
+    _print_BaseSymbol = StrPrinter._print_BaseSymbol
 
 
 def python(expr, **settings):
     """Return Python interpretation of passed expression
     (can be passed to the exec() function without any modifications)
     """
-    from ..core import Symbol, Function
+    from ..core import Function, Symbol
 
     printer = PythonPrinter(settings)
     exprp = printer.doprint(expr)
@@ -57,7 +58,7 @@ def python(expr, **settings):
         # Escape symbol names that are reserved python keywords
         if kw.iskeyword(newsymbolname):
             while True:
-                newsymbolname += "_"
+                newsymbolname += '_'
                 if (newsymbolname not in printer.symbols and
                         newsymbolname not in printer.functions):
                     renamings[Symbol(symbolname)] = Symbol(newsymbolname)
@@ -69,7 +70,7 @@ def python(expr, **settings):
         # Escape function names that are reserved python keywords
         if kw.iskeyword(newfunctionname):
             while True:
-                newfunctionname += "_"
+                newfunctionname += '_'
                 if (newfunctionname not in printer.symbols and
                         newfunctionname not in printer.functions):
                     renamings[Function(functionname)] = Function(newfunctionname)

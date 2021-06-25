@@ -154,17 +154,17 @@ def test_ContinuousRV():
 
 
 def test_arcsin():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
 
     X = Arcsin('x', a, b)
     assert density(X)(x) == 1/(pi*sqrt((-x + b)*(x - a)))
 
 
 def test_benini():
-    alpha = Symbol("alpha", positive=True)
-    b = Symbol("beta", positive=True)
-    sigma = Symbol("sigma", positive=True)
+    alpha = Symbol('alpha', positive=True)
+    b = Symbol('beta', positive=True)
+    sigma = Symbol('sigma', positive=True)
 
     X = Benini('x', alpha, b, sigma)
     assert density(X)(x) == ((alpha/x + 2*b*log(x/sigma)/x)
@@ -195,58 +195,58 @@ def test_beta():
 
 
 def test_betaprime():
-    alpha = Symbol("alpha", positive=True)
-    betap = Symbol("beta", positive=True)
+    alpha = Symbol('alpha', positive=True)
+    betap = Symbol('beta', positive=True)
 
     X = BetaPrime('x', alpha, betap)
     assert density(X)(x) == x**(alpha - 1)*(x + 1)**(-alpha - betap)/beta(alpha, betap)
 
 
 def test_cauchy():
-    x0 = Symbol("x0")
-    gamma = Symbol("gamma", positive=True)
+    x0 = Symbol('x0')
+    gamma = Symbol('gamma', positive=True)
 
     X = Cauchy('x', x0, gamma)
     assert density(X)(x) == 1/(pi*gamma*(1 + (x - x0)**2/gamma**2))
 
 
 def test_chi():
-    k = Symbol("k", integer=True)
+    k = Symbol('k', integer=True)
 
     X = Chi('x', k)
     assert density(X)(x) == 2**(-k/2 + 1)*x**(k - 1)*exp(-x**2/2)/gamma(k/2)
 
 
 def test_chi_noncentral():
-    k = Symbol("k", integer=True)
-    l = Symbol("l")
+    k = Symbol('k', integer=True)
+    l = Symbol('l')
 
-    X = ChiNoncentral("x", k, l)
+    X = ChiNoncentral('x', k, l)
     assert density(X)(x) == (x**k*l*(x*l)**(-k/2) *
                              exp(-x**2/2 - l**2/2)*besseli(k/2 - 1, x*l))
 
 
 def test_chi_squared():
-    k = Symbol("k", integer=True)
+    k = Symbol('k', integer=True)
 
     X = ChiSquared('x', k)
     assert density(X)(x) == 2**(-k/2)*x**(k/2 - 1)*exp(-x/2)/gamma(k/2)
 
 
 def test_dagum():
-    p = Symbol("p", positive=True)
-    b = Symbol("b", positive=True)
-    a = Symbol("a", positive=True)
+    p = Symbol('p', positive=True)
+    b = Symbol('b', positive=True)
+    a = Symbol('a', positive=True)
 
     X = Dagum('x', p, a, b)
     assert density(X)(x) == a*p*(x/b)**(a*p)*((x/b)**a + 1)**(-p - 1)/x
 
 
 def test_erlang():
-    k = Symbol("k", integer=True, positive=True)
-    l = Symbol("l", positive=True)
+    k = Symbol('k', integer=True, positive=True)
+    l = Symbol('l', positive=True)
 
-    X = Erlang("x", k, l)
+    X = Erlang('x', k, l)
     assert density(X)(x) == x**(k - 1)*l**k*exp(-x*l)/gamma(k)
 
 
@@ -266,38 +266,44 @@ def test_exponential():
 
     assert where(X <= 1).set == Interval(0, 1)
 
+    # issue sympy/sympy#10003
+    X = Exponential('x', 3)
+    G = Gamma('g', 1, 2)
+    assert P(X < -1) == 0
+    assert P(G < -1) == 0
+
 
 def test_f_distribution():
-    d1 = Symbol("d1", positive=True)
-    d2 = Symbol("d2", positive=True)
+    d1 = Symbol('d1', positive=True)
+    d2 = Symbol('d2', positive=True)
 
-    X = FDistribution("x", d1, d2)
+    X = FDistribution('x', d1, d2)
     assert density(X)(x) == (d2**(d2/2)*sqrt((d1*x)**d1*(d1*x + d2)**(-d1 - d2))
                              / (x*beta(d1/2, d2/2)))
 
 
 def test_fisher_z():
-    d1 = Symbol("d1", positive=True)
-    d2 = Symbol("d2", positive=True)
+    d1 = Symbol('d1', positive=True)
+    d2 = Symbol('d2', positive=True)
 
-    X = FisherZ("x", d1, d2)
+    X = FisherZ('x', d1, d2)
     assert density(X)(x) == (2*d1**(d1/2)*d2**(d2/2) *
                              (d1*exp(2*x) + d2)**(-d1/2 - d2/2) *
                              exp(d1*x)/beta(d1/2, d2/2))
 
 
 def test_frechet():
-    a = Symbol("a", positive=True)
-    s = Symbol("s", positive=True)
-    m = Symbol("m", extended_real=True)
+    a = Symbol('a', positive=True)
+    s = Symbol('s', positive=True)
+    m = Symbol('m', extended_real=True)
 
-    X = Frechet("x", a, s=s, m=m)
+    X = Frechet('x', a, s=s, m=m)
     assert density(X)(x) == a*((x - m)/s)**(-a - 1)*exp(-((x - m)/s)**(-a))/s
 
 
 def test_gamma():
-    k = Symbol("k", positive=True)
-    theta = Symbol("theta", positive=True)
+    k = Symbol('k', positive=True)
+    theta = Symbol('theta', positive=True)
 
     X = Gamma('x', k, theta)
     assert density(X)(x) == x**(k - 1)*theta**(-k)*exp(-x/theta)/gamma(k)
@@ -318,32 +324,32 @@ def test_gamma():
 
 
 def test_gamma_inverse():
-    a = Symbol("a", positive=True)
-    b = Symbol("b", positive=True)
+    a = Symbol('a', positive=True)
+    b = Symbol('b', positive=True)
 
-    X = GammaInverse("x", a, b)
+    X = GammaInverse('x', a, b)
     assert density(X)(x) == x**(-a - 1)*b**a*exp(-b/x)/gamma(a)
 
 
 def test_kumaraswamy():
-    a = Symbol("a", positive=True)
-    b = Symbol("b", positive=True)
+    a = Symbol('a', positive=True)
+    b = Symbol('b', positive=True)
 
-    X = Kumaraswamy("x", a, b)
+    X = Kumaraswamy('x', a, b)
     assert density(X)(x) == x**(a - 1)*a*b*(-x**a + 1)**(b - 1)
 
 
 def test_laplace():
-    mu = Symbol("mu")
-    b = Symbol("b", positive=True)
+    mu = Symbol('mu')
+    b = Symbol('b', positive=True)
 
     X = Laplace('x', mu, b)
     assert density(X)(x) == exp(-abs(x - mu)/b)/(2*b)
 
 
 def test_logistic():
-    mu = Symbol("mu", extended_real=True)
-    s = Symbol("s", positive=True)
+    mu = Symbol('mu', extended_real=True)
+    s = Symbol('s', positive=True)
 
     X = Logistic('x', mu, s)
     assert density(X)(x) == exp((-x + mu)/s)/(s*(exp((-x + mu)/s) + 1)**2)
@@ -365,8 +371,8 @@ def test_lognormal():
     # The diofant integrator can't do this too well
     # assert E(X) ==
 
-    mu = Symbol("mu", extended_real=True)
-    sigma = Symbol("sigma", positive=True)
+    mu = Symbol('mu', extended_real=True)
+    sigma = Symbol('sigma', positive=True)
 
     X = LogNormal('x', mu, sigma)
     assert density(X)(x) == (sqrt(2)*exp(-(-mu + log(x))**2
@@ -377,7 +383,7 @@ def test_lognormal():
 
 
 def test_maxwell():
-    a = Symbol("a", positive=True)
+    a = Symbol('a', positive=True)
 
     X = Maxwell('x', a)
 
@@ -388,8 +394,8 @@ def test_maxwell():
 
 
 def test_nakagami():
-    mu = Symbol("mu", positive=True)
-    omega = Symbol("omega", positive=True)
+    mu = Symbol('mu', positive=True)
+    omega = Symbol('omega', positive=True)
 
     X = Nakagami('x', mu, omega)
     assert density(X)(x) == (2*x**(2*mu - 1)*mu**mu*omega**(-mu)
@@ -425,17 +431,17 @@ def test_pareto_numeric():
 
 
 def test_raised_cosine():
-    mu = Symbol("mu", extended_real=True)
-    s = Symbol("s", positive=True)
+    mu = Symbol('mu', extended_real=True)
+    s = Symbol('s', positive=True)
 
-    X = RaisedCosine("x", mu, s)
+    X = RaisedCosine('x', mu, s)
     assert density(X)(x) == (Piecewise(((cos(pi*(x - mu)/s) + 1)/(2*s),
                                         And(x <= mu + s, mu - s <= x)), (0, True)))
     assert X.pspace.domain.set == Interval(mu - s, mu + s)
 
 
 def test_rayleigh():
-    sigma = Symbol("sigma", positive=True)
+    sigma = Symbol('sigma', positive=True)
 
     X = Rayleigh('x', sigma)
     assert density(X)(x) == x*exp(-x**2/(2*sigma**2))/sigma**2
@@ -444,16 +450,16 @@ def test_rayleigh():
 
 
 def test_studentt():
-    nu = Symbol("nu", positive=True)
+    nu = Symbol('nu', positive=True)
 
     X = StudentT('x', nu)
     assert density(X)(x) == (1 + x**2/nu)**(-nu/2 - 1/2)/(sqrt(nu)*beta(1/2, nu/2))
 
 
 def test_triangular():
-    a = Symbol("a")
-    b = Symbol("b")
-    c = Symbol("c")
+    a = Symbol('a')
+    b = Symbol('b')
+    c = Symbol('c')
 
     X = Triangular('x', a, b, c)
     assert density(X)(x) == Piecewise(
@@ -464,10 +470,10 @@ def test_triangular():
 
 
 def test_quadratic_u():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
 
-    X = QuadraticU("x", a, b)
+    X = QuadraticU('x', a, b)
     assert density(X)(x) == (Piecewise((12*(x - a/2 - b/2)**2/(-a + b)**3,
                                         And(x <= b, a <= x)), (0, True)))
     assert X.pspace.domain.set == Interval(a, b)
@@ -503,21 +509,21 @@ def test_uniform_P():
 
 
 def test_uniformsum():
-    n = Symbol("n", integer=True)
+    n = Symbol('n', integer=True)
 
     X = UniformSum('x', n)
     assert X.pspace.domain.set == Interval(0, n)
 
     # see test_uniformsum_d()
     d = density(X)(z)
-    assert str(d) == ("Sum((-1)**_k*(z - _k)**(n - 1)*binomial(n, _k), "
-                      "(_k, 0, floor(z)))/factorial(n - 1)")
+    assert str(d) == ('Sum((-1)**_k*(z - _k)**(n - 1)*binomial(n, _k), '
+                      '(_k, 0, floor(z)))/factorial(n - 1)')
 
 
 @pytest.mark.xfail
 def test_uniformsum_d():
-    n = Symbol("n", integer=True)
-    k = Symbol("k")
+    n = Symbol('n', integer=True)
+    k = Symbol('k')
 
     X = UniformSum('x', n)
     d = density(X)(x)
@@ -526,10 +532,10 @@ def test_uniformsum_d():
 
 
 def test_von_mises():
-    mu = Symbol("mu")
-    k = Symbol("k", positive=True)
+    mu = Symbol('mu')
+    k = Symbol('k', positive=True)
 
-    X = VonMises("x", mu, k)
+    X = VonMises('x', mu, k)
     assert density(X)(x) == exp(k*cos(x - mu))/(2*pi*besseli(0, k))
 
 
@@ -555,7 +561,7 @@ def test_weibull_numeric():
 
 
 def test_wignersemicircle():
-    R = Symbol("R", positive=True)
+    R = Symbol('R', positive=True)
 
     X = WignerSemicircle('x', R)
     assert density(X)(x) == 2*sqrt(-x**2 + R**2)/(pi*R**2)
@@ -667,10 +673,3 @@ def test_difficult_univariate():
     assert density(x**3)
     assert density(exp(x**2))
     assert density(log(x))
-
-
-def test_sympyissue_10003():
-    X = Exponential('x', 3)
-    G = Gamma('g', 1, 2)
-    assert P(X < -1) == 0
-    assert P(G < -1) == 0

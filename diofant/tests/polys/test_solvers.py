@@ -8,7 +8,7 @@ __all__ = ()
 
 
 def test_solve_lin_sys_2x2_one():
-    domain,  x1, x2 = ring("x1,x2", QQ)
+    domain,  x1, x2 = ring('x1 x2', QQ)
     eqs = [x1 + x2 - 5,
            2*x1 - x2]
     sol = {x1: QQ(5, 3), x2: QQ(10, 3)}
@@ -21,13 +21,13 @@ def test_solve_lin_sys_2x2_2():
     coeff_ring, A0, A1 = ring('A:2', domain)
     R, x = ring('x', coeff_ring)
     expr = (A1 - sqrt(2))*R.one
-    sol = solve_lin_sys(expr.coeffs(), coeff_ring)
+    sol = solve_lin_sys(expr.values(), coeff_ring)
     assert all(isinstance(s, coeff_ring.dtype) for s in sol.values())
     assert sol == {A1: coeff_ring.convert(sqrt(2))}
 
 
 def test_solve_lin_sys_2x4_none():
-    domain,  x1, x2 = ring("x1,x2", QQ)
+    domain,  x1, x2 = ring('x1 x2', QQ)
     eqs = [x1 - 1,
            x1 - x2,
            x1 - 2*x2,
@@ -36,7 +36,7 @@ def test_solve_lin_sys_2x4_none():
 
 
 def test_solve_lin_sys_3x4_one():
-    domain,  x1, x2, x3 = ring("x1,x2,x3", QQ)
+    domain,  x1, x2, x3 = ring('x1 x2 x3', QQ)
     eqs = [x1 + 2*x2 + 3*x3,
            2*x1 - x2 + x3,
            3*x1 + x2 + x3,
@@ -46,7 +46,7 @@ def test_solve_lin_sys_3x4_one():
 
 
 def test_solve_lin_sys_3x3_inf():
-    domain,  x1, x2, x3 = ring("x1,x2,x3", QQ)
+    domain,  x1, x2, x3 = ring('x1 x2 x3', QQ)
     eqs = [x1 - x2 + 2*x3 - 1,
            2*x1 + x2 + x3 - 8,
            x1 + x2 - 5]
@@ -55,7 +55,7 @@ def test_solve_lin_sys_3x3_inf():
 
 
 def test_solve_lin_sys_3x4_none():
-    domain,  x1, x2, x3, x4 = ring("x1,x2,x3,x4", QQ)
+    domain,  x1, x2, x3, x4 = ring('x1 x2 x3 x4', QQ)
     eqs = [2*x1 + x2 + 7*x3 - 7*x4 - 2,
            -3*x1 + 4*x2 - 5*x3 - 6*x4 - 3,
            x1 + x2 + 4*x3 - 5*x4 - 2]
@@ -63,7 +63,7 @@ def test_solve_lin_sys_3x4_none():
 
 
 def test_solve_lin_sys_4x7_inf():
-    domain,  x1, x2, x3, x4, x5, x6, x7 = ring("x1,x2,x3,x4,x5,x6,x7", QQ)
+    domain,  x1, x2, x3, x4, x5, x6, x7 = ring('x1 x2 x3 x4 x5 x6 x7', QQ)
     eqs = [x1 + 4*x2 - x4 + 7*x6 - 9*x7 - 3,
            2*x1 + 8*x2 - x3 + 3*x4 + 9*x5 - 13*x6 + 7*x7 - 9,
            2*x3 - 3*x4 - 4*x5 + 12*x6 - 8*x7 - 1,
@@ -75,7 +75,7 @@ def test_solve_lin_sys_4x7_inf():
 
 
 def test_solve_lin_sys_5x5_inf():
-    domain,  x1, x2, x3, x4, x5 = ring("x1,x2,x3,x4,x5", QQ)
+    domain,  x1, x2, x3, x4, x5 = ring('x1 x2 x3 x4 x5', QQ)
     eqs = [x1 - x2 - 2*x3 + x4 + 11*x5 - 13,
            x1 - x2 + x3 + x4 + 5*x5 - 16,
            2*x1 - 2*x2 + x4 + 10*x5 - 21,
@@ -88,8 +88,8 @@ def test_solve_lin_sys_5x5_inf():
 
 
 def test_solve_lin_sys_6x6_1():
-    ground,  d, r, e, g, i, j, l, o, m, p, q = field("d,r,e,g,i,j,l,o,m,p,q", ZZ)
-    domain,  c, f, h, k, n, b = ring("c,f,h,k,n,b", ground)
+    ground,  d, r, e, g, i, j, l, o, m, p, q = field('d r e g i j l o m p q', ZZ)
+    domain,  c, f, h, k, n, b = ring('c f h k n b', ground)
 
     eqs = [b + q/d - c/d, c*(1/d + 1/e + 1/g) - f/g - q/d, f*(1/g + 1/i + 1/j) - c/g - h/i, h*(1/i + 1/l + 1/m) - f/i - k/m, k*(1/m + 1/o + 1/p) - h/m - n/p, n/p - k/p]
     sol = {
@@ -105,8 +105,8 @@ def test_solve_lin_sys_6x6_1():
 
 
 def test_solve_lin_sys_6x6_2():
-    ground,  d, r, e, g, i, j, l, o, m, p, q = field("d,r,e,g,i,j,l,o,m,p,q", ZZ)
-    domain,  c, f, h, k, n, b = ring("c,f,h,k,n,b", ground)
+    ground,  d, r, e, g, i, j, l, o, m, p, q = field('d r e g i j l o m p q', ZZ)
+    domain,  c, f, h, k, n, b = ring('c f h k n b', ground)
 
     eqs = [b + r/d - c/d, c*(1/d + 1/e + 1/g) - f/g - r/d, f*(1/g + 1/i + 1/j) - c/g - h/i, h*(1/i + 1/l + 1/m) - f/i - k/m, k*(1/m + 1/o + 1/p) - h/m - n/p, n*(1/p + 1/q) - k/p]
     sol = {

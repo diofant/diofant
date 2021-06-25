@@ -1,14 +1,14 @@
+import functools
+import math
 from collections import defaultdict
-from functools import reduce
-
-from strategies.core import identity
-from strategies.tree import greedy
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, Rational, Wild, cacheit, count_ops, expand,
-                    expand_mul, factor_terms, igcd, symbols, sympify)
+                    expand_mul, factor_terms, symbols)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
+from ..core.strategies import greedy, identity
+from ..core.sympify import sympify
 from ..domains import ZZ
 from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
 from ..functions.elementary.hyperbolic import HyperbolicFunction
@@ -16,10 +16,9 @@ from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr
 from ..polys.polyerrors import PolificationFailed
 from ..polys.polytools import groebner
-from ..utilities.misc import debug
 
 
-def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
+def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
                       polynomial=False):
     """
     Simplify trigonometric expressions using a groebner basis algorithm.
@@ -248,8 +247,6 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         """
         # First parse the hints
         n, funcs, iterables, extragens = parse_hints(hints)
-        debug('n=%s' % n, 'funcs:', funcs, 'iterables:',
-              iterables, 'extragens:', extragens)
 
         # We just add the extragens to gens and analyse them as before
         gens = list(gens)
@@ -293,7 +290,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
             # from this list.
             fns = [x[1] for x in val]
             val = [x[0] for x in val]
-            gcd = reduce(igcd, val)
+            gcd = functools.reduce(math.gcd, val)
             terms = [(fn, v/gcd) for (fn, v) in zip(fns, val)]
             fs = set(funcs + fns)
             for c, s, t in ([cos, sin, tan], [cosh, sinh, tanh]):
@@ -330,7 +327,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
                 # Tanh expressions are recovered from sihn and cosh.
                 iterables.extend([(sinh, args), (cosh, args)])
             else:
-                dummys = symbols('d:%i' % len(args), cls=Dummy)
+                dummys = symbols(f'd:{len(args):d}', cls=Dummy)
                 expr = fn( Add(*dummys)).expand(trig=True).subs(list(zip(dummys, args)))
                 res.append(fn(Add(*args)) - expr)
 
@@ -350,17 +347,12 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         (pnum, pdenom), opt = parallel_poly_from_expr([num, denom])
     except PolificationFailed:
         return expr
-    debug('initial gens:', opt.gens)
     ideal, freegens, gens = analyse_gens(opt.gens, hints)
-    debug('ideal:', ideal)
-    debug('new gens:', gens, " -- len", len(gens))
-    debug('free gens:', freegens, " -- len", len(gens))
     # NOTE we force the domain to be ZZ to stop polys from injecting generators
     #      (which is usually a sign of a bug in the way we build the ideal)
     if not gens:
         return expr
     G = groebner(ideal, order=order, gens=gens, domain=ZZ)
-    debug('groebner basis:', list(G), " -- len", len(G))
 
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:
@@ -463,8 +455,8 @@ def trigsimp(expr, **opts):
     diofant.simplify.fu.fu
 
     """
-    from .fu import fu
     from ..matrices import MatrixExpr
+    from .fu import fu
 
     expr = sympify(expr)
 
@@ -520,7 +512,7 @@ def exptrigsimp(expr, simplify=True):
     E**(-z)
 
     """
-    from .fu import hyper_as_trig, TR2i
+    from .fu import TR2i, hyper_as_trig
     from .simplify import bottom_up
 
     def exp_trig(e):
@@ -636,7 +628,7 @@ def trigsimp_old(expr, **opts):
     >>> e = (-sin(x) + 1)/cos(x) + cos(x)/(-sin(x) + 1)
     >>> trigsimp(e, old=True)
     (-sin(x) + 1)/cos(x) - cos(x)/(sin(x) - 1)
-    >>> trigsimp(e, method="groebner", old=True)
+    >>> trigsimp(e, method='groebner', old=True)
     2/cos(x)
 
     >>> trigsimp(1/cot(x)**2, compare=True, old=True)
@@ -1034,6 +1026,7 @@ def __trigsimp(expr, deep=False):
                 was = expr
                 if m[a_t] == 0 or \
                         -m[a_t] in m[c].args or m[a_t] + m[c] == 0:
+                    m  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
                 if d in m and m[a_t]*m[d] + m[c] == 0:
                     break
@@ -1108,9 +1101,9 @@ def futrig(e, **kwargs):
 
 def _futrig(e, **kwargs):
     """Helper for futrig."""
-    from .fu import (TR1, TR2, TR3, TR2i, TR10, L, TR10i, TR8, TR6, TR15,
-                     TR16, TR111, TR5, TRmorrie, TR11, TR14, TR22, TR12)
-    from ..core.compatibility import _nodes
+    from ..utilities.iterables import _nodes
+    from .fu import (TR1, TR2, TR3, TR5, TR6, TR8, TR10, TR11, TR12, TR14,
+                     TR15, TR16, TR22, TR111, L, TR2i, TR10i, TRmorrie)
 
     if not e.has(TrigonometricFunction):
         return e

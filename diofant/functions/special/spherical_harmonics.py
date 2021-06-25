@@ -1,5 +1,6 @@
-from ...core import Dummy, Function, I, pi, sympify
+from ...core import Dummy, Function, I, pi
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs
 from ..elementary.exponential import exp
@@ -8,7 +9,7 @@ from ..elementary.trigonometric import cos, cot, sin
 from .polynomials import assoc_legendre
 
 
-_x = Dummy("dummy_for_spherical_harmonics")
+_x = Dummy('dummy_for_spherical_harmonics')
 
 
 class Ynm(Function):
@@ -29,24 +30,24 @@ class Ynm(Function):
     Examples
     ========
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
 
     >>> Ynm(n, m, theta, phi)
     Ynm(n, m, theta, phi)
 
     Several symmetries are known, for the order
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
 
     >>> Ynm(n, -m, theta, phi)
     (-1)**m*E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
 
     as well as for the angles
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
 
     >>> Ynm(n, m, -theta, phi)
     Ynm(n, m, theta, phi)
@@ -87,8 +88,8 @@ class Ynm(Function):
     We can differentiate the functions with respect
     to both angles
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
 
     >>> diff(Ynm(n, m, theta, phi), theta)
     m*cot(theta)*Ynm(n, m, theta, phi) + E**(-I*phi)*sqrt((-m + n)*(m + n + 1))*Ynm(n, m + 1, theta, phi)
@@ -98,8 +99,8 @@ class Ynm(Function):
 
     Further we can compute the complex conjugation
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
     >>> m = Symbol('m')
 
     >>> conjugate(Ynm(n, m, theta, phi))
@@ -108,8 +109,8 @@ class Ynm(Function):
     To get back the well known expressions in spherical
     coordinates we use full expansion
 
-    >>> theta = Symbol("theta")
-    >>> phi = Symbol("phi")
+    >>> theta = Symbol('theta')
+    >>> phi = Symbol('phi')
 
     >>> expand_func(Ynm(n, m, theta, phi))
     E**(I*m*phi)*sqrt((2*n + 1)*factorial(-m + n)/factorial(m + n))*assoc_legendre(n, m, cos(theta))/(2*sqrt(pi))
@@ -124,7 +125,7 @@ class Ynm(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Spherical_harmonics
-    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * https://mathworld.wolfram.com/SphericalHarmonic.html
     * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
     * https://dlmf.nist.gov/14.30
 
@@ -173,6 +174,7 @@ class Ynm(Function):
     def _eval_rewrite_as_cos(self, n, m, theta, phi):
         # This method can be expensive due to extensive use of simplification!
         from ...simplify import simplify, trigsimp
+
         # TODO: Make sure n \in N
         # TODO: Assert |m| <= n ortherwise we should return 0
         term = simplify(self.expand(func=True))
@@ -211,7 +213,7 @@ def Ynm_c(n, m, theta, phi):
     ==========
 
     * https://en.wikipedia.org/wiki/Spherical_harmonics
-    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * https://mathworld.wolfram.com/SphericalHarmonic.html
     * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
 
     """
@@ -253,7 +255,7 @@ class Znm(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Spherical_harmonics
-    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * https://mathworld.wolfram.com/SphericalHarmonic.html
     * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
 
     """

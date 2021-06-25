@@ -10,7 +10,7 @@ objects instead.  When things stabilize this could be a useful
 refactoring.
 """
 
-from functools import reduce
+import functools
 
 from ..core import Function
 from .indexed import Idx, Indexed
@@ -18,8 +18,6 @@ from .indexed import Idx, Indexed
 
 class IndexConformanceException(Exception):
     """Raised if indexes are not consistent."""
-
-    pass
 
 
 def _remove_repeated(inds):
@@ -58,7 +56,7 @@ def _get_indices_Mul(expr, return_dummies=False):
     inds, syms = list(zip(*inds))
 
     inds = list(map(list, inds))
-    inds = list(reduce(lambda x, y: x + y, inds))
+    inds = list(functools.reduce(lambda x, y: x + y, inds))
     inds, dummies = _remove_repeated(inds)
 
     symmetry = {}
@@ -144,7 +142,7 @@ def _get_indices_Add(expr):
         return set(), {}
 
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
-        raise IndexConformanceException("Indices are not consistent: %s" % expr)
+        raise IndexConformanceException(f'Indices are not consistent: {expr}')
 
     # FIXME: search for symmetries
     symmetries = {}
@@ -236,8 +234,8 @@ def get_indices(expr):
             return ind0, sym
 
         else:
-            raise NotImplementedError("No specialized handling of "
-                                      "type %s" % type(expr))
+            raise NotImplementedError('No specialized handling of '
+                                      f'type {type(expr)}')
 
 
 def get_contraction_structure(expr):
@@ -400,5 +398,5 @@ def get_contraction_structure(expr):
         return d
 
     else:
-        raise NotImplementedError("No specialized handling of "
-                                  "type %s" % type(expr))
+        raise NotImplementedError('No specialized handling of '
+                                  f'type {type(expr)}')

@@ -5,8 +5,9 @@ Contains
 Curve
 """
 
-from ..core import Tuple, sympify
+from ..core import Tuple
 from ..core.compatibility import is_sequence
+from ..core.sympify import sympify
 from .entity import GeometryEntity, GeometrySet
 from .point import Point
 from .util import _symbol
@@ -24,13 +25,6 @@ class Curve(GeometrySet):
     function : list of functions
     limits : 3-tuple
         Function parameter and lower and upper bounds.
-
-    Attributes
-    ==========
-
-    functions
-    parameter
-    limits
 
     Raises
     ======
@@ -59,20 +53,20 @@ class Curve(GeometrySet):
     >>> C
     Curve((t, t**2), (t, 0, 1))
     >>> C.subs({t: 4})
-    Point2D(4, 16)
+    Point(4, 16)
     >>> C.arbitrary_point(a)
-    Point2D(a, a**2)
+    Point(a, a**2)
 
     """
 
     def __new__(cls, function, limits):
         fun = sympify(function)
         if not is_sequence(fun) or len(fun) != 2:
-            raise ValueError("Function argument should be (x(t), y(t)) "
-                             "but got %s" % str(function))
+            raise ValueError('Function argument should be (x(t), y(t)) '
+                             f'but got {function!s}')
         if not is_sequence(limits) or len(limits) != 3:
-            raise ValueError("Limit argument should be (t, tmin, tmax) "
-                             "but got %s" % str(limits))
+            raise ValueError('Limit argument should be (t, tmin, tmax) '
+                             f'but got {limits!s}')
 
         return GeometryEntity.__new__(cls, Tuple(*fun), Tuple(*limits))
 
@@ -260,13 +254,13 @@ class Curve(GeometrySet):
         >>> from diofant.abc import s
         >>> C = Curve([2*s, s**2], (s, 0, 2))
         >>> C.arbitrary_point()
-        Point2D(2*t, t**2)
+        Point(2*t, t**2)
         >>> C.arbitrary_point(C.parameter)
-        Point2D(2*s, s**2)
+        Point(2*s, s**2)
         >>> C.arbitrary_point(None)
-        Point2D(2*s, s**2)
+        Point(2*s, s**2)
         >>> C.arbitrary_point(a)
-        Point2D(2*a, a**2)
+        Point(2*a, a**2)
 
         """
         if parameter is None:
@@ -276,8 +270,8 @@ class Curve(GeometrySet):
         t = self.parameter
         if (tnew.name != t.name and
                 tnew.name in (f.name for f in self.free_symbols)):
-            raise ValueError('Symbol %s already appears in object '
-                             'and cannot be used as a parameter.' % tnew.name)
+            raise ValueError(f'Symbol {tnew.name} already appears in object '
+                             'and cannot be used as a parameter.')
         return Point(*[w.subs({t: tnew}) for w in self.functions])
 
     def plot_interval(self, parameter='t'):

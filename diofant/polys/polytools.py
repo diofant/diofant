@@ -1,23 +1,25 @@
 """User-friendly public interface to polynomial functions."""
 
 import functools
+import math
 import operator
 
 import mpmath
 
-from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
-                    Tuple, oo, preorder_traversal, sympify)
-from ..core.compatibility import default_sort_key, iterable
+from ..core import (Add, Basic, E, Expr, Integer, Mul, Tuple, oo,
+                    preorder_traversal)
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..core.sympify import sympify
 from ..domains import FF, QQ, ZZ
+from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
-from ..utilities import group, sift
-from . import polyoptions as options
+from ..utilities import default_sort_key, group, sift
 from .constructor import construct_domain
-from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
+from .groebnertools import matrix_fglm
 from .monomials import Monomial
 from .orderings import monomial_key
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
@@ -25,21 +27,21 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
-from .polyutils import (_dict_from_expr, _dict_reorder,
-                        _parallel_dict_from_expr, _sort_gens)
+from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
+from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
 
-__all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'prem',
+__all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
+           'degree', 'LC', 'LM', 'LT',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
-           'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
-           'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
+           'gcd', 'lcm', 'terms_gcd', 'trunc',
+           'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
-           'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
-           'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
+           'factor_list', 'factor', 'count_roots',
+           'real_roots', 'nroots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
 
@@ -53,10 +55,7 @@ class Poly(Expr):
 
     def __new__(cls, rep, *gens, **args):
         """Create a new polynomial instance out of something useful."""
-        opt = options.build_options(gens, args)
-
-        if 'order' in opt:
-            raise NotImplementedError("'order' keyword is not implemented yet")
+        opt = build_options(gens, args)
 
         if iterable(rep, exclude=str):
             if isinstance(rep, dict):
@@ -76,9 +75,9 @@ class Poly(Expr):
         """Construct :class:`Poly` instance from raw representation."""
         if not isinstance(rep, PolyElement):
             raise PolynomialError(
-                "invalid polynomial representation: %s" % rep)
+                f'invalid polynomial representation: {rep}')
         elif rep.ring.ngens != len(gens):
-            raise PolynomialError("invalid arguments: %s, %s" % (rep, gens))
+            raise PolynomialError(f'invalid arguments: {rep}, {gens}')
 
         obj = Expr.__new__(cls)
 
@@ -90,25 +89,25 @@ class Poly(Expr):
     @classmethod
     def from_dict(cls, rep, *gens, **args):
         """Construct a polynomial from a :class:`dict`."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_dict(rep, opt)
 
     @classmethod
     def from_list(cls, rep, *gens, **args):
         """Construct a polynomial from a :class:`list`."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_list(rep, opt)
 
     @classmethod
     def from_poly(cls, rep, *gens, **args):
         """Construct a polynomial from a polynomial."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_poly(rep, opt)
 
     @classmethod
     def from_expr(cls, rep, *gens, **args):
         """Construct a polynomial from an expression."""
-        opt = options.build_options(gens, args)
+        opt = build_options(gens, args)
         return cls._from_expr(rep, opt)
 
     @classmethod
@@ -128,7 +127,7 @@ class Poly(Expr):
             for monom, coeff in rep.items():
                 rep[monom] = domain.convert(coeff)
 
-        ring = domain.poly_ring(*gens)
+        ring = domain.poly_ring(*gens, order=opt.order)
 
         return cls.new(ring.from_dict(rep), *gens)
 
@@ -179,7 +178,7 @@ class Poly(Expr):
     @classmethod
     def _from_expr(cls, rep, opt):
         """Construct a polynomial from an expression."""
-        rep, opt = _dict_from_expr(rep, opt)
+        (rep,), opt = _parallel_dict_from_expr([rep], opt)
         return cls._from_dict(rep, opt)
 
     def _hashable_content(self):
@@ -197,11 +196,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1).free_symbols
+        >>> (x**2 + 1).as_poly().free_symbols
         {x}
-        >>> Poly(x**2 + y).free_symbols
+        >>> (x**2 + y).as_poly().free_symbols
         {x, y}
-        >>> Poly(x**2 + y, x).free_symbols
+        >>> (x**2 + y).as_poly(x).free_symbols
         {x, y}
 
         """
@@ -220,20 +219,20 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1).free_symbols_in_domain
+        >>> (x**2 + 1).as_poly().free_symbols_in_domain
         set()
-        >>> Poly(x**2 + y).free_symbols_in_domain
+        >>> (x**2 + y).as_poly().free_symbols_in_domain
         set()
-        >>> Poly(x**2 + y, x).free_symbols_in_domain
+        >>> (x**2 + y).as_poly(x).free_symbols_in_domain
         {y}
 
         """
         domain, symbols = self.domain, set()
 
-        if domain.is_Composite:
+        if isinstance(domain, CompositeDomain):
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
-        elif domain.is_SymbolicDomain:
+        elif domain.is_ExpressionDomain:
             for coeff in self.coeffs():
                 symbols |= coeff.free_symbols
 
@@ -247,7 +246,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).args
+        >>> (x**2 + 1).as_poly().args
         (x**2 + 1, x)
 
         """
@@ -265,7 +264,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).gen
+        >>> (x**2 + 1).as_poly().gen
         x
 
         """
@@ -276,21 +275,6 @@ class Poly(Expr):
         """Get the ground domain of ``self``."""
         return self.rep.ring.domain
 
-    @property
-    def zero(self):
-        """Return zero polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.zero, *self.gens)
-
-    @property
-    def one(self):
-        """Return one polynomial with ``self``'s properties."""
-        return self.new(self.rep.ring.one, *self.gens)
-
-    @property
-    def unit(self):
-        """Return unit polynomial with ``self``'s properties."""
-        return self.new(self.rep.unit(self.rep.lev, self.domain), *self.gens)
-
     def unify(self, other):
         """
         Make ``self`` and ``other`` belong to the same domain.
@@ -298,7 +282,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f, g = Poly(x/2 + 1), Poly(2*x + 1)
+        >>> f, g = (x/2 + 1).as_poly(), (2*x + 1).as_poly()
 
         >>> f
         Poly(1/2*x + 1, x, domain='QQ')
@@ -324,7 +308,7 @@ class Poly(Expr):
                 return (self.domain, self.per, self.rep,
                         self.rep.ring(self.domain.convert(other)))
             except CoercionFailed:
-                raise UnificationFailed("can't unify %s with %s" % (self, other))
+                raise UnificationFailed(f"can't unify {self} with {other}")
 
         newring = self.rep.ring.unify(other.rep.ring)
         gens = newring.symbols
@@ -351,10 +335,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> a = Poly(x**2 + 1)
-        >>> R = ZZ.poly_ring(x)
+        >>> a = (x**2 + 1).as_poly()
+        >>> R = ZZ.inject(x)
 
-        >>> a.per(R.from_dense([ZZ(1), ZZ(1)]), gens=[y])
+        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), gens=[y])
         Poly(y + 1, y, domain='ZZ')
 
         """
@@ -371,7 +355,7 @@ class Poly(Expr):
 
     def set_domain(self, domain):
         """Set the ground domain of ``self``."""
-        opt = options.build_options(self.gens, {'domain': domain})
+        opt = build_options(self.gens, {'domain': domain})
         newrep = self.rep.set_domain(opt.domain)
         return self.per(newrep)
 
@@ -382,11 +366,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(5*x**2 + 2*x - 1, x).set_modulus(2)
+        >>> (5*x**2 + 2*x - 1).as_poly().set_modulus(2)
         Poly(x**2 + 1, x, modulus=2)
 
         """
-        modulus = options.Modulus.preprocess(modulus)
+        modulus = Modulus.preprocess(modulus)
         return self.set_domain(FF(modulus))
 
     def get_modulus(self):
@@ -396,16 +380,16 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, modulus=2).get_modulus()
+        >>> (x**2 + 1).as_poly(modulus=2).get_modulus()
         2
 
         """
         domain = self.domain
 
         if domain.is_FiniteField:
-            return Integer(domain.characteristic)
+            return Integer(domain.order)
         else:
-            raise PolynomialError("not a polynomial over a Galois field")
+            raise PolynomialError('not a polynomial over a Galois field')
 
     def _eval_subs(self, old, new):
         """Internal implementation of :func:`~diofant.core.basic.Basic.subs`."""
@@ -427,7 +411,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(a + x, a, b, c, d, x).exclude()
+        >>> (a + x).as_poly(a, b, c, d, x).exclude()
         Poly(a + x, a, x, domain='ZZ')
 
         """
@@ -449,7 +433,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).replace(x, y)
+        >>> (x**2 + 1).as_poly().replace(x, y)
         Poly(y**2 + 1, y, domain='ZZ')
 
         """
@@ -458,7 +442,7 @@ class Poly(Expr):
                 x, y = self.gen, x
             else:
                 raise PolynomialError(
-                    "syntax supported only in univariate case")
+                    'syntax supported only in univariate case')
 
         if x == y:
             return self
@@ -466,13 +450,13 @@ class Poly(Expr):
         if x in self.gens and y not in self.gens:
             dom = self.domain
 
-            if not dom.is_Composite or y not in dom.symbols:
+            if not isinstance(dom, CompositeDomain) or y not in dom.symbols:
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
                 rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
                 return self.per(rep, gens=gens)
 
-        raise PolynomialError("can't replace %s with %s in %s" % (x, y, self))
+        raise PolynomialError(f"can't replace {x} with {y} in {self}")
 
     def reorder(self, *gens, **args):
         """
@@ -481,54 +465,23 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x*y**2, x, y).reorder(y, x)
+        >>> (x**2 + x*y**2).as_poly().reorder(y, x)
         Poly(y**2*x + x**2, y, x, domain='ZZ')
 
         """
-        opt = options.Options((), args)
+        opt = Options((), args)
 
         if not gens:
             gens = _sort_gens(self.gens, opt=opt)
         elif set(self.gens) != set(gens):
             raise PolynomialError(
-                "generators list can differ only up to order of elements")
+                'generators list can differ only up to order of elements')
 
-        rep = dict(zip(*_dict_reorder(dict(self.rep), self.gens, gens)))
-
-        newring = self.domain.poly_ring(*gens)
-        rep = newring.from_dict(rep)
+        rep = self.rep
+        new_ring = rep.ring.clone(symbols=gens)
+        rep = rep.set_ring(new_ring)
 
         return self.per(rep, gens=gens)
-
-    def ltrim(self, gen):
-        """
-        Remove dummy generators from the "left" of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(y**2 + y*z**2, x, y, z).ltrim(y)
-        Poly(y**2 + y*z**2, y, z, domain='ZZ')
-
-        """
-        rep = self.as_dict(native=True)
-        j = self._gen_to_level(gen)
-        terms = {}
-
-        for monom, coeff in rep.items():
-            monom = monom[j:]
-
-            if monom not in terms:
-                terms[monom] = coeff
-            else:
-                raise PolynomialError("can't left trim %s" % self)
-
-        gens = self.gens[j:]
-
-        newring = self.domain.poly_ring(*gens)
-        rep = newring.from_dict(terms)
-
-        return self.new(rep, *gens)
 
     def has_only_gens(self, *gens):
         """
@@ -537,9 +490,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x*y + 1, x, y, z).has_only_gens(x, y)
+        >>> (x*y + 1).as_poly(x, y, z).has_only_gens(x, y)
         True
-        >>> Poly(x*y + z, x, y, z).has_only_gens(x, y)
+        >>> (x*y + z).as_poly(x, y, z).has_only_gens(x, y)
         False
 
         """
@@ -550,7 +503,7 @@ class Poly(Expr):
                 index = self.gens.index(gen)
             except ValueError:
                 raise GeneratorsError(
-                    "%s doesn't have %s as generator" % (self, gen))
+                    f"{self} doesn't have {gen} as generator")
             else:
                 indices.add(index)
 
@@ -568,7 +521,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, field=True).to_ring()
+        >>> (x**2 + 1).as_poly(field=True).to_ring()
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
@@ -581,7 +534,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1).to_field()
+        >>> (x**2 + 1).as_poly().to_field()
         Poly(x**2 + 1, x, domain='QQ')
 
         """
@@ -594,7 +547,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1.0).to_exact()
+        >>> (x**2 + 1.0).as_poly().to_exact()
         Poly(x**2 + 1, x, domain='QQ')
 
         """
@@ -607,7 +560,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, domain=QQ.poly_ring(y))
+        >>> f = (x**2 + 1).as_poly(domain=QQ.inject(y))
         >>> f
         Poly(x**2 + 1, x, domain='QQ[y]')
 
@@ -619,9 +572,9 @@ class Poly(Expr):
         """
         dom, rep = construct_domain(self.as_dict(),
                                     field=field,
-                                    composite=self.domain.is_Composite or None,
-                                    extension=False if self.domain.is_SymbolicDomain else True)
-        return self.from_dict(rep, self.gens, domain=dom)
+                                    composite=isinstance(self.domain, CompositeDomain) or None,
+                                    extension=False if self.domain.is_ExpressionDomain else True)
+        return self.from_dict(rep, *self.gens, domain=dom)
 
     def slice(self, x, m, n=None):
         """Take a continuous subsequence of terms of ``self``."""
@@ -642,7 +595,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x + 3, x).coeffs()
+        >>> (x**3 + 2*x + 3).as_poly().coeffs()
         [1, 2, 3]
 
         See Also
@@ -652,7 +605,7 @@ class Poly(Expr):
         coeff_monomial
 
         """
-        return [self.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
+        return [coeff for _, coeff in self.terms(order)]
 
     def monoms(self, order=None):
         """
@@ -661,11 +614,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).monoms()
+        >>> (x**2 + 2*x*y**2 + x*y + 3*y).as_poly().monoms()
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
         """
-        return self.rep.monoms(order=order)
+        return [monom for monom, _ in self.terms(order)]
 
     def terms(self, order=None):
         """
@@ -674,11 +627,20 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).terms()
+        >>> (x**2 + 2*x*y**2 + x*y + 3*y).as_poly().terms()
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
 
         """
-        return [(m, self.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
+        rep = self.rep
+        if order is None:
+            order = rep.ring.order
+        else:
+            order = Order.preprocess(order)
+
+        return [(m, self.domain.to_expr(c))
+                for m, c in sorted(rep.items(),
+                                   key=lambda monom: order(monom[0]),
+                                   reverse=True)]
 
     def all_coeffs(self):
         """
@@ -687,8 +649,8 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
-        [1, 0, 2, -1]
+        >>> (x**3 + 2*x - 1).as_poly().all_coeffs()
+        [-1, 2, 0, 1]
 
         """
         return [self.domain.to_expr(c) for c in self.rep.all_coeffs()]
@@ -704,7 +666,7 @@ class Poly(Expr):
         ...     k = k[0]
         ...     return coeff//10**(2-k)
 
-        >>> Poly(x**2 + 20*x + 400).termwise(func)
+        >>> (x**2 + 20*x + 400).as_poly().termwise(func)
         Poly(x**2 + 2*x + 4, x, domain='ZZ')
 
         """
@@ -722,8 +684,7 @@ class Poly(Expr):
                 if monom not in terms:
                     terms[monom] = coeff
                 else:
-                    raise PolynomialError("%s monomial was generated"
-                                          " twice" % monom)
+                    raise PolynomialError(f'{monom} monomial was generated twice')
 
         return self.from_dict(terms, *(gens or self.gens), **args)
 
@@ -734,7 +695,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x - 1).length()
+        >>> (x**2 + 2*x - 1).as_poly().length()
         3
 
         """
@@ -747,7 +708,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x*y**2 - y, x, y).as_dict()
+        >>> (x**2 + 2*x*y**2 - y).as_poly().as_dict()
         {(0, 1): -1, (1, 2): 2, (2, 0): 1}
 
         """
@@ -763,7 +724,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 2*x*y**2 - y, x, y)
+        >>> f = (x**2 + 2*x*y**2 - y).as_poly()
 
         >>> f.as_expr()
         x**2 + 2*x*y**2 - y
@@ -784,25 +745,12 @@ class Poly(Expr):
                     index = gens.index(gen)
                 except ValueError:
                     raise GeneratorsError(
-                        "%s doesn't have %s as generator" % (self, gen))
+                        f"{self} doesn't have {gen} as generator")
                 else:
                     gens[index] = value
 
-        return self.rep.as_expr(*gens)
-
-    def deflate(self):
-        """
-        Reduce degree of ``self`` by mapping ``x_i**m`` to ``y_i``.
-
-        Examples
-        ========
-
-        >>> Poly(x**6*y**2 + x**3 + 1, x, y).deflate()
-        ((3, 2), Poly(x**2*y + x + 1, x, y, domain='ZZ'))
-
-        """
-        J, result = self.rep.deflate()
-        return J, self.per(result[0])
+        rep = self.rep
+        return rep.ring.to_expr(rep).subs(zip(self.gens, gens))
 
     def inject(self, front=False):
         """
@@ -811,7 +759,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x)
+        >>> f = (x**2*y + x*y**3 + x*y + 1).as_poly(x)
 
         >>> f.inject()
         Poly(x**2*y + x*y**3 + x*y + 1, x, y, domain='ZZ')
@@ -819,20 +767,8 @@ class Poly(Expr):
         Poly(y**3*x + y*x**2 + y*x + 1, y, x, domain='ZZ')
 
         """
-        dom = self.domain
-
-        if dom.is_Numerical and not dom.is_Algebraic:
-            return self
-
-        if front:
-            gens = dom.symbols + self.gens
-        else:
-            gens = self.gens + dom.symbols
-
-        newring = dom.domain.poly_ring(*gens)
-        result = newring.from_expr(self.rep.as_expr())
-
-        return self.new(result, *gens)
+        result = self.rep.inject(front=front)
+        return self.new(result, *result.ring.symbols)
 
     def eject(self, *gens):
         """
@@ -841,7 +777,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)
+        >>> f = (x**2*y + x*y**3 + x*y + 1).as_poly()
 
         >>> f.eject(x)
         Poly(x*y**3 + (x**2 + x)*y + 1, y, domain='ZZ[x]')
@@ -852,10 +788,10 @@ class Poly(Expr):
         dom = self.domain
 
         if not dom.is_Numerical:
-            raise DomainError("can't eject generators over %s" % dom)
+            raise DomainError(f"can't eject generators over {dom}")
 
         result = self.rep.copy()
-        result = result.drop_to_ground(*gens)
+        result = result.eject(*gens)
 
         return self.new(result, *result.ring.symbols)
 
@@ -866,7 +802,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**6*y**2 + x**3*y, x, y).terms_gcd()
+        >>> (x**6*y**2 + x**3*y).as_poly().terms_gcd()
         ((3, 1), Poly(x**3*y + 1, x, y, domain='ZZ'))
 
         """
@@ -880,10 +816,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x + 4).quo_ground(2)
+        >>> (2*x + 4).as_poly().quo_ground(2)
         Poly(x + 2, x, domain='ZZ')
 
-        >>> Poly(2*x + 3).quo_ground(2)
+        >>> (2*x + 3).as_poly().quo_ground(2)
         Poly(x + 1, x, domain='ZZ')
 
         """
@@ -897,10 +833,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x + 4).exquo_ground(2)
+        >>> (2*x + 4).as_poly().exquo_ground(2)
         Poly(x + 2, x, domain='ZZ')
 
-        >>> Poly(2*x + 3).exquo_ground(2)
+        >>> (2*x + 3).as_poly().exquo_ground(2)
         Traceback (most recent call last):
         ...
         ExactQuotientFailed: 2 does not divide 3 in ZZ
@@ -909,22 +845,6 @@ class Poly(Expr):
         result = self.rep.exquo_ground(coeff)
         return self.per(result)
 
-    def prem(self, other):
-        """
-        Polynomial pseudo-remainder of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).prem(Poly(2*x - 4, x))
-        Poly(20, x, domain='ZZ')
-
-        """
-        _, per, F, G = self._unify(other)
-
-        result = F.prem(G)
-        return per(result)
-
     def div(self, other, auto=True):
         """
         Polynomial division with remainder of ``self`` by ``other``.
@@ -932,10 +852,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x))
+        >>> (x**2 + 1).as_poly().div((2*x - 4).as_poly())
         (Poly(1/2*x + 1, x, domain='QQ'), Poly(5, x, domain='QQ'))
 
-        >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x), auto=False)
+        >>> (x**2 + 1).as_poly().div((2*x - 4).as_poly(), auto=False)
         (Poly(0, x, domain='ZZ'), Poly(x**2 + 1, x, domain='ZZ'))
 
         """
@@ -965,10 +885,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x))
+        >>> (x**2 + 1).as_poly().rem((2*x - 4).as_poly())
         Poly(5, x, domain='ZZ')
 
-        >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x), auto=False)
+        >>> (x**2 + 1).as_poly().rem((2*x - 4).as_poly(), auto=False)
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
@@ -996,10 +916,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).quo(Poly(2*x - 4, x))
+        >>> (x**2 + 1).as_poly().quo((2*x - 4).as_poly())
         Poly(1/2*x + 1, x, domain='QQ')
 
-        >>> Poly(x**2 - 1, x).quo(Poly(x - 1, x))
+        >>> (x**2 - 1).as_poly().quo((x - 1).as_poly())
         Poly(x + 1, x, domain='ZZ')
 
         """
@@ -1027,10 +947,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).exquo(Poly(x - 1, x))
+        >>> (x**2 - 1).as_poly().exquo((x - 1).as_poly())
         Poly(x + 1, x, domain='ZZ')
 
-        >>> Poly(x**2 + 1, x).exquo(Poly(2*x - 4, x))
+        >>> (x**2 + 1).as_poly().exquo((2*x - 4).as_poly())
         Traceback (most recent call last):
         ...
         ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
@@ -1058,57 +978,31 @@ class Poly(Expr):
 
     def _gen_to_level(self, gen):
         """Returns level associated with the given generator."""
-        if isinstance(gen, int):
-            length = len(self.gens)
-
-            if -length <= gen < length:
-                if gen < 0:
-                    return length + gen
-                else:
-                    return gen
-            else:
-                raise PolynomialError("-%s <= gen < %s expected, got %s" %
-                                      (length, length, gen))
-        else:
-            try:
-                return self.gens.index(sympify(gen))
-            except ValueError:
-                raise PolynomialError(
-                    "a valid generator expected, got %s" % gen)
+        try:
+            return self.rep.ring.index(gen)
+        except ValueError:
+            raise PolynomialError(f'a valid generator expected, got {gen}')
 
     def degree(self, gen=0):
         """
         Returns degree of ``self`` in ``x_j``.
 
-        The degree of 0 is negative infinity.
+        The degree of 0 is negative floating-point infinity.
 
         Examples
         ========
 
-        >>> Poly(x**2 + y*x + 1, x, y).degree()
+        >>> (x**2 + y*x + 1).as_poly().degree()
         2
-        >>> Poly(x**2 + y*x + y, x, y).degree(y)
+        >>> (x**2 + y*x + y).as_poly().degree(y)
         1
-        >>> Poly(0, x).degree()
-        -oo
+        >>> Integer(0).as_poly(x).degree()
+        -inf
 
         """
         j = self._gen_to_level(gen)
 
         return self.rep.degree(j)
-
-    def degree_list(self):
-        """
-        Returns a list of degrees of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + y*x + 1, x, y).degree_list()
-        (2, 1)
-
-        """
-        return self.rep.degree_list()
 
     def total_degree(self):
         """
@@ -1117,9 +1011,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + y*x + 1, x, y).total_degree()
+        >>> (x**2 + y*x + 1).as_poly().total_degree()
         2
-        >>> Poly(x + y**5, x, y).total_degree()
+        >>> (x + y**5).as_poly().total_degree()
         5
 
         """
@@ -1132,7 +1026,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**3 + 2*x**2 + 3*x, x).LC()
+        >>> (4*x**3 + 2*x**2 + 3*x).as_poly().LC()
         4
 
         """
@@ -1149,11 +1043,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).TC()
+        >>> (x**3 + 2*x**2 + 3*x).as_poly().TC()
         0
 
         """
-        result = self.rep.ring.dmp_ground_TC(self.rep)
+        result = self.rep[1]
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1163,7 +1057,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).EC()
+        >>> (x**3 + 2*x**2 + 3*x).as_poly().EC()
         3
 
         """
@@ -1177,7 +1071,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> p = Poly(24*x*y*exp(8) + 23*x, x, y)
+        >>> p = (24*x*y*exp(8) + 23*x).as_poly(greedy=False)
 
         >>> p.coeff_monomial(x)
         23
@@ -1204,7 +1098,7 @@ class Poly(Expr):
         if len(N) != len(self.gens):
             raise ValueError('exponent of each generator must be specified')
 
-        result = self.rep.coeff(N)
+        result = self.rep[N]
         return self.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):
@@ -1215,9 +1109,9 @@ class Poly(Expr):
         # at this time the ``right`` keyword would be ignored because Poly
         # doesn't work with non-commutatives.
         raise NotImplementedError(
-            "Either convert to Expr with `as_expr` method "
+            'Either convert to Expr with `as_expr` method '
             "to use Expr's coeff method or else use the "
-            "`coeff_monomial` method of Polys.")
+            '`coeff_monomial` method of Polys.')
 
     def LM(self, order=None):
         """
@@ -1229,7 +1123,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
+        >>> (4*x**2 + 2*x*y**2 + x*y + 3*y).as_poly().LM()
         x**2*y**0
 
         """
@@ -1243,7 +1137,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
+        >>> (4*x**2 + 2*x*y**2 + x*y + 3*y).as_poly().EM()
         x**0*y**1
 
         """
@@ -1260,7 +1154,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
+        >>> (4*x**2 + 2*x*y**2 + x*y + 3*y).as_poly().LT()
         (x**2*y**0, 4)
 
         """
@@ -1274,40 +1168,12 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
+        >>> (4*x**2 + 2*x*y**2 + x*y + 3*y).as_poly().ET()
         (x**0*y**1, 3)
 
         """
         EM = self.EM(order)
         return EM, self.coeff_monomial(tuple(EM))
-
-    def max_norm(self):
-        """
-        Returns maximum norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).max_norm()
-        3
-
-        """
-        result = self.rep.max_norm()
-        return self.domain.to_expr(result)
-
-    def l1_norm(self):
-        """
-        Returns l1 norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
-        6
-
-        """
-        result = self.rep.l1_norm()
-        return self.domain.to_expr(result)
 
     def clear_denoms(self, convert=False):
         """
@@ -1316,7 +1182,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x/2 + Rational(1, 3))
+        >>> f = (x/2 + Rational(1, 3)).as_poly()
 
         >>> f.clear_denoms()
         (6, Poly(3*x + 2, x, domain='QQ'))
@@ -1324,22 +1190,17 @@ class Poly(Expr):
         (6, Poly(3*x + 2, x, domain='ZZ'))
 
         """
-        f = self
+        dom = self.domain
+        if convert and dom.has_assoc_Ring:
+            dom = self.domain.ring
 
-        if not f.domain.is_Field:
-            return Integer(1), f
+        coeff, result = self.rep.clear_denoms(convert=convert)
+        f = self.per(result)
 
-        dom = f.domain
-        if dom.has_assoc_Ring:
-            dom = f.domain.ring
+        if convert:
+            f = f.set_domain(dom)
 
-        coeff, result = f.rep.clear_denoms()
-        coeff, f = dom.to_expr(coeff), f.per(result)
-
-        if not convert or not dom.has_assoc_Ring:
-            return coeff, f
-        else:
-            return coeff, f.to_ring()
+        return dom.to_expr(coeff), f
 
     def rat_clear_denoms(self, other):
         """
@@ -1348,8 +1209,8 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2/y + 1, x)
-        >>> g = Poly(x**3 + y, x)
+        >>> f = (x**2/y + 1).as_poly(x)
+        >>> g = (x**3 + y).as_poly(x)
 
         >>> p, q = f.rat_clear_denoms(g)
 
@@ -1384,10 +1245,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 1, x).integrate()
+        >>> (x**2 + 2*x + 1).as_poly().integrate()
         Poly(1/3*x**3 + x**2 + x, x, domain='QQ')
 
-        >>> Poly(x*y**2 + x, x, y).integrate((0, 1), (1, 0))
+        >>> (x*y**2 + x).as_poly().integrate((0, 1), (1, 0))
         Poly(1/2*x**2*y**2 + 1/2*x**2, x, y, domain='QQ')
 
         """
@@ -1411,39 +1272,11 @@ class Poly(Expr):
 
         return f.per(rep)
 
-    def diff(self, *specs, **kwargs):
-        """
-        Computes partial derivative of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 2*x + 1, x).diff()
-        Poly(2*x + 2, x, domain='ZZ')
-
-        >>> Poly(x*y**2 + x, x, y).diff((0, 0), (1, 1))
-        Poly(2*x*y, x, y, domain='ZZ')
-
-        """
-        if not kwargs.get('evaluate', True):
-            return Derivative(self, *specs, **kwargs)
-
-        if not specs:
-            return self.per(self.rep.diff())
-
+    def _eval_derivative(self, v):
         rep = self.rep
-
-        for spec in specs:
-            if type(spec) is tuple:
-                gen, m = spec
-            else:
-                gen, m = spec, 1
-
-            rep = rep.diff(self._gen_to_level(gen), int(m))
-
+        v = self._gen_to_level(v)
+        rep = rep.diff(v)
         return self.per(rep)
-
-    _eval_derivative = diff
 
     def eval(self, x, a=None, auto=True):
         """
@@ -1452,13 +1285,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 3, x).eval(2)
+        >>> (x**2 + 2*x + 3).as_poly().eval(2)
         11
 
-        >>> Poly(2*x*y + 3*x + y + 2, x, y).eval(x, 2)
+        >>> (2*x*y + 3*x + y + 2).as_poly().eval(x, 2)
         Poly(5*y + 8, y, domain='ZZ')
 
-        >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
+        >>> f = (2*x*y + 3*x + y + 2*z).as_poly()
 
         >>> f.eval({x: 2})
         Poly(5*y + 2*z + 6, y, z, domain='ZZ')
@@ -1487,7 +1320,7 @@ class Poly(Expr):
                 values = x
 
                 if len(values) > len(f.gens):
-                    raise ValueError("too many values provided")
+                    raise ValueError('too many values provided')
 
                 for gen, value in zip(f.gens, values):
                     f = f.eval(gen, value)
@@ -1502,7 +1335,7 @@ class Poly(Expr):
             result = f.rep.eval(j, a)
         except CoercionFailed:
             if not auto:
-                raise DomainError("can't evaluate at %s in %s" % (a, f.domain))
+                raise DomainError(f"can't evaluate at {a} in {f.domain}")
             else:
                 a_domain, [a] = construct_domain([a])
                 new_domain = f.domain.unify(a_domain, f.gens)
@@ -1521,7 +1354,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
+        >>> f = (2*x*y + 3*x + y + 2*z).as_poly()
 
         >>> f(2)
         Poly(5*y + 2*z + 6, y, z, domain='ZZ')
@@ -1542,10 +1375,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
+        >>> f = (x**4 - 2*x**3 - 6*x**2 + 12*x + 15).as_poly()
+        >>> g = (x**3 + x**2 - 4*x - 4).as_poly()
 
-        >>> Poly(f).half_gcdex(Poly(g))
+        >>> f.half_gcdex(g)
         (Poly(-1/5*x + 3/5, x, domain='QQ'), Poly(x + 1, x, domain='QQ'))
 
         """
@@ -1566,10 +1399,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
+        >>> f = (x**4 - 2*x**3 - 6*x**2 + 12*x + 15).as_poly()
+        >>> g = (x**3 + x**2 - 4*x - 4).as_poly()
 
-        >>> Poly(f).gcdex(Poly(g))
+        >>> f.gcdex(g)
         (Poly(-1/5*x + 3/5, x, domain='QQ'),
          Poly(1/5*x**2 - 6/5*x + 2, x, domain='QQ'),
          Poly(x + 1, x, domain='QQ'))
@@ -1590,10 +1423,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).invert(Poly(2*x - 1, x))
+        >>> (x**2 - 1).as_poly().invert((2*x - 1).as_poly())
         Poly(-4/3, x, domain='QQ')
 
-        >>> Poly(x**2 - 1, x).invert(Poly(x - 1, x))
+        >>> (x**2 - 1).as_poly().invert((x - 1).as_poly())
         Traceback (most recent call last):
         ...
         NotInvertible: zero divisor
@@ -1604,7 +1437,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        result = F.ring.dup_invert(F, G)
+        result = F.ring.invert(F, G)
         return per(result)
 
     def subresultants(self, other):
@@ -1614,7 +1447,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x).subresultants(Poly(x**2 - 1, x))
+        >>> (x**2 + 1).as_poly().subresultants((x**2 - 1).as_poly())
         [Poly(x**2 + 1, x, domain='ZZ'),
          Poly(x**2 - 1, x, domain='ZZ'),
          Poly(-2, x, domain='ZZ')]
@@ -1636,11 +1469,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, x)
+        >>> f = (x**2 + 1).as_poly()
 
-        >>> f.resultant(Poly(x**2 - 1, x))
+        >>> f.resultant((x**2 - 1).as_poly())
         4
-        >>> f.resultant(Poly(x**2 - 1, x), includePRS=True)
+        >>> f.resultant((x**2 - 1).as_poly(), includePRS=True)
         (4, [Poly(x**2 + 1, x, domain='ZZ'), Poly(x**2 - 1, x, domain='ZZ'),
              Poly(-2, x, domain='ZZ')])
 
@@ -1661,7 +1494,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 2*x + 3, x).discriminant()
+        >>> (x**2 + 2*x + 3).as_poly().discriminant()
         -8
 
         """
@@ -1674,45 +1507,14 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> sorted(Poly((x - 3)*(x + 3)).dispersionset())
-        [0, 6]
-
-        See Also
-        ========
-
-        dispersion
-        diofant.polys.dispersion.dispersionset
+        >>> ((x - 3)*(x + 3)).as_poly().dispersionset()
+        {0, 6}
 
         """
-        from .dispersion import dispersionset
-        return dispersionset(self, other)
-
-    def dispersion(self, other=None):
-        r"""Compute the *dispersion* of polynomials.
-
-        Examples
-        ========
-
-        >>> Poly((x - 3)*(x + 3)).dispersion()
-        6
-
-        See Also
-        ========
-
-        dispersionset
-        diofant.polys.dispersion.dispersion
-
-        References
-        ==========
-
-        * :cite:`Man1994disp`
-        * :cite:`Koepf98`
-        * :cite:`Abramov71rat`
-        * :cite:`Man1993indefsum`
-
-        """
-        from .dispersion import dispersion
-        return dispersion(self, other)
+        f = self.rep
+        ring = f.ring
+        g = other.rep if other is not None else other
+        return {ZZ.to_expr(i) for i in ring.dispersionset(f, g)}
 
     def cofactors(self, other):
         """
@@ -1725,7 +1527,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).cofactors(Poly(x**2 - 3*x + 2, x))
+        >>> (x**2 - 1).as_poly().cofactors((x**2 - 3*x + 2).as_poly())
         (Poly(x - 1, x, domain='ZZ'),
          Poly(x + 1, x, domain='ZZ'),
          Poly(x - 2, x, domain='ZZ'))
@@ -1743,7 +1545,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).gcd(Poly(x**2 - 3*x + 2, x))
+        >>> (x**2 - 1).as_poly().gcd((x**2 - 3*x + 2).as_poly())
         Poly(x - 1, x, domain='ZZ')
 
         """
@@ -1759,7 +1561,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 1, x).lcm(Poly(x**2 - 3*x + 2, x))
+        >>> (x**2 - 1).as_poly().lcm((x**2 - 3*x + 2).as_poly())
         Poly(x**3 - 2*x**2 - x + 2, x, domain='ZZ')
 
         """
@@ -1775,7 +1577,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**3 + 3*x**2 + 5*x + 7, x).trunc(3)
+        >>> (2*x**3 + 3*x**2 + 5*x + 7).as_poly().trunc(3)
         Poly(-x**3 - x + 1, x, domain='ZZ')
 
         """
@@ -1791,10 +1593,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(3*x**2 + 6*x + 9).monic()
+        >>> (3*x**2 + 6*x + 9).as_poly().monic()
         Poly(x**2 + 2*x + 3, x, domain='QQ')
 
-        >>> Poly(3*x**2 + 4*x + 2).monic()
+        >>> (3*x**2 + 4*x + 2).as_poly().monic()
         Poly(x**2 + 4/3*x + 2/3, x, domain='QQ')
 
         """
@@ -1813,7 +1615,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(6*x**2 + 8*x + 12, x).content()
+        >>> (6*x**2 + 8*x + 12).as_poly().content()
         2
 
         """
@@ -1827,7 +1629,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**2 + 8*x + 12, x).primitive()
+        >>> (2*x**2 + 8*x + 12).as_poly().primitive()
         (2, Poly(x**2 + 4*x + 6, x, domain='ZZ'))
 
         """
@@ -1841,7 +1643,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x, x).compose(Poly(x - 1, x))
+        >>> (x**2 + x).as_poly().compose((x - 1).as_poly())
         Poly(x**2 - x, x, domain='ZZ')
 
         """
@@ -1857,7 +1659,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**4 + 2*x**3 - x - 1).decompose()
+        >>> (x**4 + 2*x**3 - x - 1).as_poly().decompose()
         [Poly(x**2 - x - 1, x, domain='ZZ'), Poly(x**2 + x, x, domain='ZZ')]
 
         """
@@ -1871,34 +1673,12 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 2*x + 1, x).shift(2)
+        >>> (x**2 - 2*x + 1).as_poly().shift(2)
         Poly(x**2 + 2*x + 1, x, domain='ZZ')
 
         """
         result = self.rep.shift(a)
         return self.per(result)
-
-    def sturm(self, auto=True):
-        """
-        Computes the Sturm sequence of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 - 2*x**2 + x - 3, x).sturm()
-        [Poly(x**3 - 2*x**2 + x - 3, x, domain='QQ'),
-         Poly(3*x**2 - 4*x + 1, x, domain='QQ'),
-         Poly(2/9*x + 25/9, x, domain='QQ'),
-         Poly(-2079/4, x, domain='QQ')]
-
-        """
-        f = self
-
-        if auto and f.domain.is_Ring:
-            f = f.to_field()
-
-        result = f.rep.sturm()
-        return list(map(f.per, result))
 
     def sqf_norm(self):
         """
@@ -1911,7 +1691,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> s, f, r = Poly(x**2 + 1, x, extension=[sqrt(3)]).sqf_norm()
+        >>> s, f, r = (x**2 + 1).as_poly(extension=[sqrt(3)]).sqf_norm()
 
         >>> s
         1
@@ -1931,7 +1711,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**3 - 3*x - 2, x).sqf_part()
+        >>> (x**3 - 3*x - 2).as_poly().sqf_part()
         Poly(x**2 - x - 2, x, domain='ZZ')
 
         """
@@ -1945,9 +1725,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
+        >>> f = (2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16).as_poly()
 
-        >>> Poly(f).sqf_list()
+        >>> f.sqf_list()
         (2, [(Poly(x + 1, x, domain='ZZ'), 2),
              (Poly(x + 2, x, domain='ZZ'), 3)])
 
@@ -1963,9 +1743,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
+        >>> f = (2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y).as_poly()
 
-        >>> Poly(f).factor_list()
+        >>> f.factor_list()
         (2, [(Poly(x + y, x, y, domain='ZZ'), 1),
              (Poly(x**2 + 1, x, y, domain='ZZ'), 2)])
 
@@ -1978,122 +1758,6 @@ class Poly(Expr):
         return (self.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def intervals(self, all=False, eps=None, inf=None, sup=None, sqf=False):
-        """
-        Compute isolating intervals for roots of ``self``.
-
-        For real roots the Vincent-Akritas-Strzebonski (VAS) continued fractions method is used.
-
-        References
-        ==========
-
-        * :cite:`Alkiviadis2005comp`
-        * :cite:`Alkiviadis2008cf`
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).intervals()
-        [((-2, -1), 1), ((1, 2), 1)]
-        >>> Poly(x**2 - 3, x).intervals(eps=1e-2)
-        [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-        """
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if inf is not None:
-            inf = QQ.convert(inf)
-        if sup is not None:
-            sup = QQ.convert(sup)
-
-        R = self.rep.ring
-
-        if self.is_univariate:
-            if not all:
-                if not sqf:
-                    result = R.dup_isolate_real_roots(self.rep, eps=eps,
-                                                      inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_real_roots_sqf(self.rep,
-                                                          eps=eps, inf=inf,
-                                                          sup=sup)
-            else:
-                if not sqf:
-                    result = R.dup_isolate_all_roots(self.rep, eps=eps,
-                                                     inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_all_roots_sqf(self.rep,
-                                                         eps=eps, inf=inf, sup=sup)
-        else:
-            raise MultivariatePolynomialError("can't isolate roots of a multivariate polynomial")
-
-        if sqf:
-            def _real(interval):
-                s, t = interval
-                return QQ.to_expr(s), QQ.to_expr(t)
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                (u, v), (s, t) = rectangle
-                return (QQ.to_expr(u) + I*QQ.to_expr(v),
-                        QQ.to_expr(s) + I*QQ.to_expr(t))
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
-        else:
-            def _real(interval):
-                (s, t), k = interval
-                return (QQ.to_expr(s), QQ.to_expr(t)), k
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                ((u, v), (s, t)), k = rectangle
-                return ((QQ.to_expr(u) + I*QQ.to_expr(v),
-                         QQ.to_expr(s) + I*QQ.to_expr(t)), k)
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
-
-    def refine_root(self, s, t, eps=None, steps=None, check_sqf=False):
-        """
-        Refine an isolating interval of a root to the given precision.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
-        (19/11, 26/15)
-
-        """
-        if check_sqf and not self.is_squarefree:
-            raise PolynomialError("only square-free polynomials supported")
-
-        s, t = QQ.convert(s), QQ.convert(t)
-
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if steps is not None:
-            steps = int(steps)
-        elif eps is None:
-            steps = 1
-
-        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps)
-        return QQ.to_expr(S), QQ.to_expr(T)
-
     def count_roots(self, inf=None, sup=None):
         """
         Return the number of roots of ``self`` in ``[inf, sup]`` interval.
@@ -2101,9 +1765,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**4 - 4, x).count_roots(-3, 3)
+        >>> (x**4 - 4).as_poly().count_roots(-3, 3)
         2
-        >>> Poly(x**4 - 4, x).count_roots(0, 1 + 3*I)
+        >>> (x**4 - 4).as_poly().count_roots(0, 1 + 3*I)
         1
 
         """
@@ -2136,7 +1800,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            count = self.rep.ring.dup_count_real_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_real_roots(self.rep, inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)
@@ -2144,7 +1808,7 @@ class Poly(Expr):
             if sup_real and sup is not None:
                 sup = (sup, QQ.zero)
 
-            count = self.rep.ring.dup_count_complex_roots(self.rep, inf=inf, sup=sup)
+            count = self.rep.ring._count_complex_roots(self.rep, inf=inf, sup=sup)
 
         return Integer(count)
 
@@ -2155,7 +1819,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(2*x**3 - 7*x**2 + 4*x + 4)
+        >>> f = (2*x**3 - 7*x**2 + 4*x + 4).as_poly()
 
         >>> f.root(0)
         -1/2
@@ -2168,7 +1832,7 @@ class Poly(Expr):
         ...
         IndexError: root index out of [-3, 2] range, got 3
 
-        >>> Poly(x**5 + x + 1).root(0)
+        >>> (x**5 + x + 1).as_poly().root(0)
         RootOf(x**3 - x**2 + 1, 0)
 
         """
@@ -2182,9 +1846,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).real_roots()
+        >>> (2*x**3 - 7*x**2 + 4*x + 4).as_poly().real_roots()
         [-1/2, 2, 2]
-        >>> Poly(x**3 + x + 1).real_roots()
+        >>> (x**3 + x + 1).as_poly().real_roots()
         [RootOf(x**3 + x + 1, 0)]
 
         """
@@ -2203,9 +1867,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).all_roots()
+        >>> (2*x**3 - 7*x**2 + 4*x + 4).as_poly().all_roots()
         [-1/2, 2, 2]
-        >>> Poly(x**3 + x + 1).all_roots()
+        >>> (x**3 + x + 1).as_poly().all_roots()
         [RootOf(x**3 + x + 1, 0), RootOf(x**3 + x + 1, 1),
          RootOf(x**3 + x + 1, 2)]
 
@@ -2234,15 +1898,15 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 3).nroots(n=15)
+        >>> (x**2 - 3).as_poly().nroots(n=15)
         [-1.73205080756888, 1.73205080756888]
-        >>> Poly(x**2 - 3).nroots(n=30)
+        >>> (x**2 - 3).as_poly().nroots(n=30)
         [-1.73205080756887729352744634151, 1.73205080756887729352744634151]
 
         """
         if self.is_multivariate:
             raise MultivariatePolynomialError(
-                "can't compute numerical roots of %s" % self)
+                f"can't compute numerical roots of {self}")
 
         if self.degree() <= 0:
             return []
@@ -2254,8 +1918,7 @@ class Poly(Expr):
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
         elif self.domain is QQ:
             denoms = [coeff.denominator for coeff in self.all_coeffs()]
-            from ..core import ilcm
-            fac = ilcm(*denoms)
+            fac = math.lcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
             coeffs = [coeff.evalf(n, strict=False).as_real_imag()
@@ -2263,8 +1926,7 @@ class Poly(Expr):
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
-                raise DomainError("Numerical domain expected, got %s" %
-                                  self.domain)
+                raise DomainError(f'Numerical domain expected, got {self.domain}')
 
         dps = mpmath.mp.dps
         mpmath.mp.dps = n
@@ -2272,7 +1934,7 @@ class Poly(Expr):
         try:
             # We need to add extra precision to guard against losing accuracy.
             # 10 times the degree of the polynomial seems to work well.
-            roots = mpmath.polyroots(coeffs, maxsteps=maxsteps,
+            roots = mpmath.polyroots(list(reversed(coeffs)), maxsteps=maxsteps,
                                      cleanup=cleanup, error=False,
                                      extraprec=self.degree()*10)
 
@@ -2282,72 +1944,11 @@ class Poly(Expr):
                              sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
         except mpmath.libmp.NoConvergence:
             raise mpmath.libmp.NoConvergence(
-                'convergence to root failed; try n < %s or maxsteps > %s' % (
-                    n, maxsteps))
+                f'convergence to root failed; try n < {n} or maxsteps > {maxsteps}')
         finally:
             mpmath.mp.dps = dps
 
         return roots
-
-    def ground_roots(self):
-        """
-        Compute roots of ``self`` by factorization in the ground domain.
-
-        Examples
-        ========
-
-        >>> Poly(x**6 - 4*x**4 + 4*x**3 - x**2).ground_roots()
-        {0: 2, 1: 2}
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError(
-                "can't compute ground roots of %s" % self)
-
-        roots = {}
-
-        for factor, k in self.factor_list()[1]:
-            if factor.is_linear:
-                a, b = factor.all_coeffs()
-                roots[-b/a] = k
-
-        return roots
-
-    def nth_power_roots_poly(self, n):
-        """
-        Construct a polynomial with n-th powers of roots of ``self``.
-
-        Examples
-        ========
-
-        >>> f = Poly(x**4 - x**2 + 1)
-
-        >>> f.nth_power_roots_poly(2)
-        Poly(x**4 - 2*x**3 + 3*x**2 - 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(3)
-        Poly(x**4 + 2*x**2 + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(4)
-        Poly(x**4 + 2*x**3 + 3*x**2 + 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(12)
-        Poly(x**4 - 4*x**3 + 6*x**2 - 4*x + 1, x, domain='ZZ')
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError("must be a univariate polynomial")
-
-        N = sympify(n)
-
-        if N.is_Integer and N >= 1:
-            n = int(N)
-        else:
-            raise ValueError("'n' must an integer and n >= 1, got %s" % n)
-
-        x = self.gen
-        t = Dummy('t')
-
-        r = self.resultant(self.__class__.from_expr(x**n - t, x, t))
-
-        return r.replace(t, x)
 
     def cancel(self, other, include=False):
         """
@@ -2356,10 +1957,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x))
+        >>> (2*x**2 - 2).as_poly().cancel((x**2 - 2*x + 1).as_poly())
         (1, Poly(2*x + 2, x, domain='ZZ'), Poly(x - 1, x, domain='ZZ'))
 
-        >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x), include=True)
+        >>> (2*x**2 - 2).as_poly().cancel((x**2 - 2*x + 1).as_poly(), include=True)
         (Poly(2*x + 2, x, domain='ZZ'), Poly(x - 1, x, domain='ZZ'))
 
         """
@@ -2388,13 +1989,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(0, x).is_zero
+        >>> Integer(0).as_poly(x).is_zero
         True
-        >>> Poly(1, x).is_zero
+        >>> Integer(1).as_poly(x).is_zero
         False
 
         """
-        return self.rep.is_zero
+        return not self.rep
 
     @property
     def is_one(self):
@@ -2404,13 +2005,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(0, x).is_one
+        >>> Integer(0).as_poly(x).is_one
         False
-        >>> Poly(1, x).is_one
+        >>> Integer(1).as_poly(x).is_one
         True
 
         """
-        return self.rep.is_one
+        return self.rep == 1
 
     @property
     def is_squarefree(self):
@@ -2420,45 +2021,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 - 2*x + 1, x).is_squarefree
+        >>> (x**2 - 2*x + 1).as_poly().is_squarefree
         False
-        >>> Poly(x**2 - 1, x).is_squarefree
+        >>> (x**2 - 1).as_poly().is_squarefree
         True
 
         """
         return self.rep.is_squarefree
-
-    @property
-    def is_monic(self):
-        """
-        Returns ``True`` if the leading coefficient of ``self`` is one.
-
-        Examples
-        ========
-
-        >>> Poly(x + 2, x).is_monic
-        True
-        >>> Poly(2*x + 2, x).is_monic
-        False
-
-        """
-        return self.rep.is_monic
-
-    @property
-    def is_primitive(self):
-        """
-        Returns ``True`` if GCD of the coefficients of ``self`` is one.
-
-        Examples
-        ========
-
-        >>> Poly(2*x**2 + 6*x + 12, x).is_primitive
-        False
-        >>> Poly(x**2 + 3*x + 6, x).is_primitive
-        True
-
-        """
-        return self.rep.is_primitive
 
     @property
     def is_ground(self):
@@ -2468,11 +2037,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x, x).is_ground
+        >>> x.as_poly().is_ground
         False
-        >>> Poly(2, x).is_ground
+        >>> Integer(2).as_poly(x).is_ground
         True
-        >>> Poly(y, x).is_ground
+        >>> y.as_poly(x).is_ground
         True
 
         """
@@ -2486,9 +2055,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x + y + 2, x, y).is_linear
+        >>> (x + y + 2).as_poly().is_linear
         True
-        >>> Poly(x*y + 2, x, y).is_linear
+        >>> (x*y + 2).as_poly().is_linear
         False
 
         """
@@ -2502,9 +2071,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x*y + 2, x, y).is_quadratic
+        >>> (x*y + 2).as_poly().is_quadratic
         True
-        >>> Poly(x*y**2 + 2, x, y).is_quadratic
+        >>> (x*y**2 + 2).as_poly().is_quadratic
         False
 
         """
@@ -2518,9 +2087,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(3*x**2, x).is_term
+        >>> (3*x**2).as_poly().is_term
         True
-        >>> Poly(3*x**2 + 1, x).is_term
+        >>> (3*x**2 + 1).as_poly().is_term
         False
 
         """
@@ -2537,9 +2106,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x*y, x, y).is_homogeneous
+        >>> (x**2 + x*y).as_poly().is_homogeneous
         True
-        >>> Poly(x**3 + x*y, x, y).is_homogeneous
+        >>> (x**3 + x*y).as_poly().is_homogeneous
         False
 
         """
@@ -2553,9 +2122,9 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x, modulus=2).is_irreducible
+        >>> (x**2 + x + 1).as_poly(modulus=2).is_irreducible
         True
-        >>> Poly(x**2 + 1, x, modulus=2).is_irreducible
+        >>> (x**2 + 1).as_poly(modulus=2).is_irreducible
         False
 
         """
@@ -2569,13 +2138,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x).is_univariate
+        >>> (x**2 + x + 1).as_poly().is_univariate
         True
-        >>> Poly(x*y**2 + x*y + 1, x, y).is_univariate
+        >>> (x*y**2 + x*y + 1).as_poly().is_univariate
         False
-        >>> Poly(x*y**2 + x*y + 1, x).is_univariate
+        >>> (x*y**2 + x*y + 1).as_poly(x).is_univariate
         True
-        >>> Poly(x**2 + x + 1, x, y).is_univariate
+        >>> (x**2 + x + 1).as_poly(x, y).is_univariate
         False
 
         """
@@ -2589,13 +2158,13 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + x + 1, x).is_multivariate
+        >>> (x**2 + x + 1).as_poly().is_multivariate
         False
-        >>> Poly(x*y**2 + x*y + 1, x, y).is_multivariate
+        >>> (x*y**2 + x*y + 1).as_poly().is_multivariate
         True
-        >>> Poly(x*y**2 + x*y + 1, x).is_multivariate
+        >>> (x*y**2 + x*y + 1).as_poly(x).is_multivariate
         False
-        >>> Poly(x**2 + x + 1, x, y).is_multivariate
+        >>> (x**2 + x + 1).as_poly(x, y).is_multivariate
         True
 
         """
@@ -2609,12 +2178,12 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
-        >>> Poly(f).is_cyclotomic
+        >>> f = (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).as_poly()
+        >>> f.is_cyclotomic
         False
 
-        >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
-        >>> Poly(g).is_cyclotomic
+        >>> g = (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).as_poly()
+        >>> g.is_cyclotomic
         True
 
         """
@@ -2627,7 +2196,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> abs(Poly(x**2 - 1, x))
+        >>> abs((x**2 - 1).as_poly())
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
@@ -2641,7 +2210,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> -Poly(x**2 - 1, x)
+        >>> -(x**2 - 1).as_poly()
         Poly(-x**2 + 1, x, domain='ZZ')
 
         """
@@ -2711,14 +2280,17 @@ class Poly(Expr):
 
         return other*self
 
-    @_sympifyit('n', NotImplemented)
-    def __pow__(self, n):
+    def __pow__(self, n, mod=None):
+        if mod:
+            mod = sympify(mod, strict=True)
+        n = sympify(n)
         if n.is_Integer and n >= 0:
             n = int(n)
-            result = self.rep**n
+            result = pow(self.rep, n, mod.rep if mod else mod)
             return self.per(result)
         else:
-            return self.as_expr()**n
+            r = self.as_expr()**n
+            return r % mod if mod else r
 
     @_sympifyit('other', NotImplemented)
     def __divmod__(self, other):
@@ -2769,7 +2341,7 @@ class Poly(Expr):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -2825,7 +2397,7 @@ class PurePoly(Poly):
 
         if not g.is_Poly:
             try:
-                g = f.__class__(g, f.gens, domain=f.domain)
+                g = f.__class__(g, *f.gens, domain=f.domain)
             except (PolynomialError, DomainError, CoercionFailed):
                 return False
 
@@ -2851,10 +2423,10 @@ class PurePoly(Poly):
                 return (self.domain, self.per, self.rep,
                         self.rep.ring(self.domain.convert(other)))
             except CoercionFailed:
-                raise UnificationFailed("can't unify %s with %s" % (self, other))
+                raise UnificationFailed(f"can't unify {self} with {other}")
 
         if len(self.gens) != len(other.gens):
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
+            raise UnificationFailed(f"can't unify {self} with {other}")
 
         newring = self.rep.ring.unify(other.rep.ring)
         gens = newring.symbols
@@ -2875,84 +2447,17 @@ class PurePoly(Poly):
         return dom, per, F, G
 
 
-def poly_from_expr(expr, *gens, **args):
-    """Construct a polynomial from an expression."""
-    opt = options.build_options(gens, args)
-    return _poly_from_expr(expr, opt)
-
-
-def _poly_from_expr(expr, opt):
-    """Construct a polynomial from an expression."""
-    orig, expr = expr, sympify(expr)
-
-    if not isinstance(expr, Basic):
-        raise PolificationFailed(opt, orig, expr)
-    elif expr.is_Poly:
-        poly = expr.__class__._from_poly(expr, opt)
-
-        opt.gens = poly.gens
-        opt.domain = poly.domain
-
-        if opt.polys is None:
-            opt.polys = True
-
-        return poly, opt
-    elif opt.expand:
-        expr = expr.expand()
-
-    try:
-        rep, opt = _dict_from_expr(expr, opt)
-    except GeneratorsNeeded:
-        raise PolificationFailed(opt, orig, expr)
-
-    monoms, coeffs = list(zip(*list(rep.items())))
-    domain = opt.domain
-
-    if domain is None:
-        opt.domain, coeffs = construct_domain(coeffs, opt=opt)
-    else:
-        coeffs = list(map(domain.convert, coeffs))
-
-    rep = dict(zip(monoms, coeffs))
-    poly = Poly._from_dict(rep, opt)
-
-    if opt.polys is None:
-        opt.polys = False
-
-    return poly, opt
-
-
 def parallel_poly_from_expr(exprs, *gens, **args):
-    """Construct polynomials from expressions."""
-    opt = options.build_options(gens, args)
-    return _parallel_poly_from_expr(exprs, opt)
-
-
-def _parallel_poly_from_expr(exprs, opt):
     """Construct polynomials from expressions."""
     from ..functions import Piecewise
 
-    if len(exprs) == 2:
-        f, g = exprs
-
-        if isinstance(f, Poly) and isinstance(g, Poly):
-            f = f.__class__._from_poly(f, opt)
-            g = g.__class__._from_poly(g, opt)
-
-            f, g = f.unify(g)
-
-            opt.gens = f.gens
-            opt.domain = f.domain
-
-            if opt.polys is None:
-                opt.polys = True
-
-            return [f, g], opt
+    opt = build_options(gens, args)
 
     origs, exprs = list(exprs), []
-    _exprs, _polys = [], []
+    _exprs, _polys, _failed = [], [], []
 
-    failed = False
+    if not origs and not opt.gens:
+        raise PolificationFailed(opt, origs, exprs, True)
 
     for i, expr in enumerate(origs):
         expr = sympify(expr)
@@ -2960,68 +2465,61 @@ def _parallel_poly_from_expr(exprs, opt):
         if isinstance(expr, Basic):
             if expr.is_Poly:
                 _polys.append(i)
-            else:
-                _exprs.append(i)
 
+                expr = expr.__class__._from_poly(expr, opt)
+            else:
                 if opt.expand:
                     expr = expr.expand()
+
+                try:
+                    expr = Poly._from_expr(expr, opt)
+                    _exprs.append(i)
+                except GeneratorsNeeded:
+                    _failed.append(i)
         else:
-            failed = True
+            raise PolificationFailed(opt, origs, exprs, True)
 
         exprs.append(expr)
-
-    if failed:
-        raise PolificationFailed(opt, origs, exprs, True)
-
-    if _polys:
-        # XXX: this is a temporary solution
-        for i in _polys:
-            exprs[i] = exprs[i].as_expr()
-
-    try:
-        reps, opt = _parallel_dict_from_expr(exprs, opt)
-    except GeneratorsNeeded:
-        raise PolificationFailed(opt, origs, exprs, True)
-
-    for k in opt.gens:
-        if isinstance(k, Piecewise):
-            raise PolynomialError("Piecewise generators do not make sense")
-
-    coeffs_list, lengths = [], []
-
-    all_monoms = []
-    all_coeffs = []
-
-    for rep in reps:
-        monoms, coeffs = list(zip(*list(rep.items())))
-
-        coeffs_list.extend(coeffs)
-        all_monoms.append(monoms)
-
-        lengths.append(len(coeffs))
-
-    domain = opt.domain
-
-    if domain is None:
-        opt.domain, coeffs_list = construct_domain(coeffs_list, opt=opt)
-    else:
-        coeffs_list = list(map(domain.convert, coeffs_list))
-
-    for k in lengths:
-        all_coeffs.append(coeffs_list[:k])
-        coeffs_list = coeffs_list[k:]
-
-    polys = []
-
-    for monoms, coeffs in zip(all_monoms, all_coeffs):
-        rep = dict(zip(monoms, coeffs))
-        poly = Poly._from_dict(rep, opt)
-        polys.append(poly)
 
     if opt.polys is None:
         opt.polys = bool(_polys)
 
-    return polys, opt
+    _exprs += _polys
+
+    for i, j in zip(_exprs, _exprs[1:]):
+        exprs[i], exprs[j] = exprs[i].unify(exprs[j])
+
+    if _exprs:
+        i = _exprs[-1]
+        opt.gens = exprs[i].gens
+
+    for i in _failed:
+        try:
+            exprs[i] = Poly._from_expr(exprs[i], opt)
+        except GeneratorsNeeded:
+            raise PolificationFailed(opt, origs, exprs, True)
+
+    if opt.domain is None:
+        opt.domain = ZZ
+
+    _exprs += _failed
+
+    if _exprs:
+        for i, j in zip(_exprs, _exprs[1:]):
+            exprs[i], exprs[j] = exprs[i].unify(exprs[j])
+
+        i = _exprs[-1]
+        opt.domain = exprs[i].domain
+        cls = exprs[i].func
+
+        for i, expr in enumerate(exprs):
+            exprs[i] = cls._from_poly(expr, opt)
+
+    for k in opt.gens:
+        if isinstance(k, Piecewise) and len(exprs) > 1:
+            raise PolynomialError('Piecewise generators do not make sense')
+
+    return exprs, opt
 
 
 def degree(f, *gens, **args):
@@ -3038,40 +2536,17 @@ def degree(f, *gens, **args):
     >>> degree(x**2 + y*x + 1, gen=y)
     1
     >>> degree(0, x)
-    -oo
+    -inf
 
     """
-    options.allowed_flags(args, ['gen', 'polys'])
+    allowed_flags(args, ['gen', 'polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('degree', 1, exc)
 
     return sympify(F.degree(opt.gen))
-
-
-def degree_list(f, *gens, **args):
-    """
-    Return a list of degrees of ``f`` in all variables.
-
-    Examples
-    ========
-
-    >>> degree_list(x**2 + y*x + 1)
-    (2, 1)
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('degree_list', 1, exc)
-
-    degrees = F.degree_list()
-
-    return tuple(map(Integer, degrees))
 
 
 def LC(f, *gens, **args):
@@ -3085,10 +2560,10 @@ def LC(f, *gens, **args):
     4
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('LC', 1, exc)
 
@@ -3106,10 +2581,10 @@ def LM(f, *gens, **args):
     x**2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('LM', 1, exc)
 
@@ -3128,41 +2603,15 @@ def LT(f, *gens, **args):
     4*x**2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('LT', 1, exc)
 
     monom, coeff = F.LT(order=opt.order)
     return coeff*monom.as_expr()
-
-
-def prem(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-remainder of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> prem(x**2 + 1, 2*x - 4)
-    20
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('prem', 2, exc)
-
-    r = F.prem(G)
-
-    if not opt.polys:
-        return r.as_expr()
-    else:
-        return r
 
 
 def div(f, g, *gens, **args):
@@ -3178,7 +2627,7 @@ def div(f, g, *gens, **args):
     (x/2 + 1, 5)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3206,7 +2655,7 @@ def rem(f, g, *gens, **args):
     5
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3234,7 +2683,7 @@ def quo(f, g, *gens, **args):
     x + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3265,7 +2714,7 @@ def exquo(f, g, *gens, **args):
     ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3293,7 +2742,7 @@ def half_gcdex(f, g, *gens, **args):
     (-x/5 + 3/5, x + 1)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3324,7 +2773,7 @@ def gcdex(f, g, *gens, **args):
     (-x/5 + 3/5, x**2/5 - 6*x/5 + 2, x + 1)
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3371,7 +2820,7 @@ def invert(f, g, *gens, **args):
     diofant.core.numbers.mod_inverse
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3399,7 +2848,7 @@ def subresultants(f, g, *gens, **args):
     [x**2 + 1, x**2 - 1, -2]
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3426,7 +2875,7 @@ def resultant(f, g, *gens, **args):
 
     """
     includePRS = args.pop('includePRS', False)
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3459,10 +2908,10 @@ def discriminant(f, *gens, **args):
     -8
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('discriminant', 1, exc)
 
@@ -3489,7 +2938,7 @@ def cofactors(f, g, *gens, **args):
     (x - 1, x + 1, x - 2)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3507,73 +2956,6 @@ def cofactors(f, g, *gens, **args):
         return h, cff, cfg
 
 
-def gcd_list(seq, *gens, **args):
-    """
-    Compute GCD of a list of polynomials.
-
-    Examples
-    ========
-
-    >>> gcd_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
-    x - 1
-
-    """
-    seq = sympify(seq)
-
-    def try_non_polynomial_gcd(seq):
-        if not gens and not args:
-            domain, numbers = construct_domain(seq)
-
-            if not numbers:
-                return domain.zero
-            elif domain.is_Numerical:
-                result, numbers = numbers[0], numbers[1:]
-
-                for number in numbers:
-                    result = domain.gcd(result, number)
-
-                    if result == domain.one:
-                        break
-
-                return domain.to_expr(result)
-
-    result = try_non_polynomial_gcd(seq)
-
-    if result is not None:
-        return result
-
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        polys, opt = parallel_poly_from_expr(seq, *gens, **args)
-    except PolificationFailed as exc:
-        result = try_non_polynomial_gcd(exc.exprs)
-
-        if result is not None:
-            return result
-        else:
-            raise ComputationFailed('gcd_list', len(seq), exc)
-
-    if not polys:
-        if not opt.polys:
-            return Integer(0)
-        else:
-            return Poly(0, opt=opt)
-
-    result, polys = polys[0], polys[1:]
-
-    for poly in polys:
-        result = result.gcd(poly)
-
-        if result.is_one:
-            break
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
-
-
 def gcd(f, g, *gens, **args):
     """
     Compute GCD of ``f`` and ``g``.
@@ -3585,7 +2967,7 @@ def gcd(f, g, *gens, **args):
     x - 1
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3594,67 +2976,6 @@ def gcd(f, g, *gens, **args):
         return domain.to_expr(domain.gcd(a, b))
 
     result = F.gcd(G)
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
-
-
-def lcm_list(seq, *gens, **args):
-    """
-    Compute LCM of a list of polynomials.
-
-    Examples
-    ========
-
-    >>> lcm_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
-    x**5 - x**4 - 2*x**3 - x**2 + x + 2
-
-    """
-    seq = sympify(seq)
-
-    def try_non_polynomial_lcm(seq):
-        if not gens and not args:
-            domain, numbers = construct_domain(seq)
-
-            if not numbers:
-                return domain.one
-            elif domain.is_Numerical:
-                result, numbers = numbers[0], numbers[1:]
-
-                for number in numbers:
-                    result = domain.lcm(result, number)
-
-                return domain.to_expr(result)
-
-    result = try_non_polynomial_lcm(seq)
-
-    if result is not None:
-        return result
-
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        polys, opt = parallel_poly_from_expr(seq, *gens, **args)
-    except PolificationFailed as exc:
-        result = try_non_polynomial_lcm(exc.exprs)
-
-        if result is not None:
-            return result
-        else:
-            raise ComputationFailed('lcm_list', len(seq), exc)
-
-    if not polys:
-        if not opt.polys:
-            return Integer(1)
-        else:
-            return Poly(1, opt=opt)
-
-    result, polys = polys[0], polys[1:]
-
-    for poly in polys:
-        result = result.lcm(poly)
 
     if not opt.polys:
         return result.as_expr()
@@ -3673,7 +2994,7 @@ def lcm(f, g, *gens, **args):
     x**3 - 2*x**2 - x + 2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3704,7 +3025,7 @@ def terms_gcd(f, *gens, **args):
     Examples
     ========
 
-    >>> terms_gcd(x**6*y**2 + x**3*y, x, y)
+    >>> terms_gcd(x**6*y**2 + x**3*y)
     x**3*y*(x**3*y + 1)
 
     The default action of polys routines is to expand the expression
@@ -3768,9 +3089,9 @@ def terms_gcd(f, *gens, **args):
         return f
 
     clear = args.pop('clear', True)
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
-    F, opt = poly_from_expr(f, *gens, **args)
+    (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
 
     J, f = F.terms_gcd()
 
@@ -3807,10 +3128,10 @@ def trunc(f, p, *gens, **args):
     -x**3 - x + 1
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('trunc', 1, exc)
 
@@ -3833,10 +3154,10 @@ def monic(f, *gens, **args):
     x**2 + 4*x/3 + 2/3
 
     """
-    options.allowed_flags(args, ['auto', 'polys'])
+    allowed_flags(args, ['auto', 'polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('monic', 1, exc)
 
@@ -3859,10 +3180,10 @@ def content(f, *gens, **args):
     2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('content', 1, exc)
 
@@ -3897,10 +3218,10 @@ def primitive(f, *gens, **args):
     (2, x*(x + 1) + 1)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('primitive', 1, exc)
 
@@ -3922,7 +3243,7 @@ def compose(f, g, *gens, **args):
     x**2 - x
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
@@ -3948,40 +3269,14 @@ def decompose(f, *gens, **args):
     [x**2 - x - 1, x**2 + x]
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('decompose', 1, exc)
 
     result = F.decompose()
-
-    if not opt.polys:
-        return [r.as_expr() for r in result]
-    else:
-        return result
-
-
-def sturm(f, *gens, **args):
-    """
-    Compute Sturm sequence of ``f``.
-
-    Examples
-    ========
-
-    >>> sturm(x**3 - 2*x**2 + x - 3)
-    [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2*x/9 + 25/9, -2079/4]
-
-    """
-    options.allowed_flags(args, ['auto', 'polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('sturm', 1, exc)
-
-    result = F.sturm(auto=opt.auto)
 
     if not opt.polys:
         return [r.as_expr() for r in result]
@@ -4004,10 +3299,10 @@ def sqf_norm(f, *gens, **args):
     (1, x**2 - 2*sqrt(3)*x + 4, x**4 - 4*x**2 + 16)
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('sqf_norm', 1, exc)
 
@@ -4030,10 +3325,10 @@ def sqf_part(f, *gens, **args):
     x**2 - x - 2
 
     """
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     try:
-        F, opt = poly_from_expr(f, *gens, **args)
+        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('sqf_part', 1, exc)
 
@@ -4050,12 +3345,12 @@ def _sorted_factors(factors, method):
     if method == 'sqf':
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.to_dense()
+            rep = poly.rep
             return exp, len(rep), len(poly.gens), default_sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.to_dense()
+            rep = poly.rep
             return len(rep), len(poly.gens), exp, default_sort_key(rep)
 
     return sorted(factors, key=key)
@@ -4085,9 +3380,19 @@ def _symbolic_factor_list(expr, opt, method):
             base, exp = arg, Integer(1)
 
         try:
-            poly, _ = _poly_from_expr(base, opt)
-        except PolificationFailed as exc:
-            factors.append((exc.expr, exp))
+            if base.is_Poly:
+                cls = base.func
+            else:
+                cls = Poly
+                if opt.expand:
+                    base = base.expand()
+
+            if opt.polys is None:
+                opt.polys = base.is_Poly
+
+            poly = cls._from_expr(base.as_expr(), opt)
+        except GeneratorsNeeded:
+            factors.append((base, exp))
         else:
             func = getattr(poly, method + '_list')
 
@@ -4140,8 +3445,8 @@ def _symbolic_factor(expr, opt, method):
 
 def _generic_factor_list(expr, gens, args, method):
     """Helper function for :func:`sqf_list` and :func:`factor_list`."""
-    options.allowed_flags(args, ['frac', 'polys'])
-    opt = options.build_options(gens, args)
+    allowed_flags(args, ['frac', 'polys'])
+    opt = build_options(gens, args)
 
     expr = sympify(expr)
 
@@ -4152,7 +3457,7 @@ def _generic_factor_list(expr, gens, args, method):
         cq, fq = _symbolic_factor_list(denom, opt, method)
 
         if fq and not opt.frac:
-            raise PolynomialError("a polynomial expected, got %s" % expr)
+            raise PolynomialError(f'a polynomial expected, got {expr}')
 
         _opt = opt.clone({'expand': True})
         if not _opt.get('gens'):
@@ -4162,7 +3467,7 @@ def _generic_factor_list(expr, gens, args, method):
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):
                 if not f.is_Poly:
-                    f, _ = _poly_from_expr(f, _opt)
+                    f = Poly._from_expr(f, _opt)
                     factors[i] = (f, k)
 
         fp = _sorted_factors(fp, method)
@@ -4179,13 +3484,13 @@ def _generic_factor_list(expr, gens, args, method):
         else:
             return coeff, fp, fq
     else:
-        raise PolynomialError("a polynomial expected, got %s" % expr)
+        raise PolynomialError(f'a polynomial expected, got {expr}')
 
 
 def _generic_factor(expr, gens, args, method):
     """Helper function for :func:`sqf` and :func:`factor`."""
-    options.allowed_flags(args, [])
-    opt = options.build_options(gens, args)
+    allowed_flags(args, [])
+    opt = build_options(gens, args)
     return _symbolic_factor(sympify(expr), opt, method)
 
 
@@ -4213,14 +3518,14 @@ def to_rational_coeffs(f):
     Examples
     ========
 
-    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain=EX)
+    >>> p = (((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))})).as_poly(x, domain=EX)
     >>> lc, r, _, g = to_rational_coeffs(p)
     >>> lc, r
     (7 + 5*sqrt(2), -2*sqrt(2) + 2)
     >>> g
     Poly(x**3 + x**2 - 1/4*x - 1/4, x, domain='QQ')
     >>> r1 = simplify(1/r)
-    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain=EX) == p
+    >>> (lc*r**3*(g.as_expr()).subs({x: x*r1})).as_poly(x, domain=EX) == p
     True
 
     """
@@ -4242,13 +3547,13 @@ def to_rational_coeffs(f):
         n = f.degree()
         lc = f.LC()
         f1 = f1 or f1.monic()
-        coeffs = f1.all_coeffs()[1:]
+        coeffs = f1.all_coeffs()[:-1]
         coeffs = [simplify(coeffx) for coeffx in coeffs]
-        if coeffs[-2]:
-            rescale1_x = simplify(coeffs[-2]/coeffs[-1])
+        if coeffs[1]:
+            rescale1_x = simplify(coeffs[1]/coeffs[0])
             coeffs1 = []
             for i in range(len(coeffs)):
-                coeffx = simplify(coeffs[i]*rescale1_x**(i + 1))
+                coeffx = simplify(coeffs[n - i - 1]*rescale1_x**(i + 1))
                 if not coeffx.is_rational:
                     break
                 coeffs1.append(coeffx)
@@ -4277,8 +3582,8 @@ def to_rational_coeffs(f):
             return
         n = f.degree()
         f1 = f1 or f1.monic()
-        coeffs = f1.all_coeffs()[1:]
-        c = simplify(coeffs[0])
+        coeffs = f1.all_coeffs()[:-1]
+        c = simplify(coeffs[-1])
         if c and not c.is_rational:
             func = Add
             if c.is_Add:
@@ -4310,7 +3615,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.domain.is_SymbolicDomain and _has_square_roots(f):
+    if f.domain.is_ExpressionDomain and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:
@@ -4416,6 +3721,7 @@ def factor(f, *gens, **args):
 
     See Also
     ========
+
     diofant.ntheory.factor_.factorint
 
     """
@@ -4439,47 +3745,6 @@ def factor(f, *gens, **args):
             raise PolynomialError(msg)
 
 
-def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=False):
-    """
-    Compute isolating intervals for roots of ``f``.
-
-    Examples
-    ========
-
-    >>> intervals(x**2 - 3)
-    [((-2, -1), 1), ((1, 2), 1)]
-    >>> intervals(x**2 - 3, eps=1e-2)
-    [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-    """
-    try:
-        F = Poly(F)
-    except GeneratorsNeeded:
-        return []
-
-    return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
-
-
-def refine_root(f, s, t, eps=None, steps=None, check_sqf=False):
-    """
-    Refine an isolating interval of a root to the given precision.
-
-    Examples
-    ========
-
-    >>> refine_root(x**2 - 3, 1, 2, eps=1e-2)
-    (19/11, 26/15)
-
-    """
-    try:
-        F = Poly(f)
-    except GeneratorsNeeded:
-        raise PolynomialError(
-            "can't refine a root of %s, not a polynomial" % f)
-
-    return F.refine_root(s, t, eps=eps, steps=steps, check_sqf=check_sqf)
-
-
 def count_roots(f, inf=None, sup=None):
     """
     Return the number of roots of ``f`` in ``[inf, sup]`` interval.
@@ -4499,7 +3764,7 @@ def count_roots(f, inf=None, sup=None):
     try:
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
-        raise PolynomialError("can't count roots of %s, not a polynomial" % f)
+        raise PolynomialError(f"can't count roots of {f}, not a polynomial")
 
     return F.count_roots(inf=inf, sup=sup)
 
@@ -4518,8 +3783,8 @@ def real_roots(f, multiple=True):
     try:
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
-        raise PolynomialError("can't compute real roots of %s, "
-                              "not a polynomial" % f)
+        raise PolynomialError(f"can't compute real roots of {f}, "
+                              'not a polynomial')
 
     return F.real_roots(multiple=multiple)
 
@@ -4541,65 +3806,9 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
         raise PolynomialError(
-            "can't compute numerical roots of %s, not a polynomial" % f)
+            f"can't compute numerical roots of {f}, not a polynomial")
 
     return F.nroots(n=n, maxsteps=maxsteps, cleanup=cleanup)
-
-
-def ground_roots(f, *gens, **args):
-    """
-    Compute roots of ``f`` by factorization in the ground domain.
-
-    Examples
-    ========
-
-    >>> ground_roots(x**6 - 4*x**4 + 4*x**3 - x**2)
-    {0: 2, 1: 2}
-
-    """
-    options.allowed_flags(args, [])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('ground_roots', 1, exc)
-
-    return F.ground_roots()
-
-
-def nth_power_roots_poly(f, n, *gens, **args):
-    """
-    Construct a polynomial with n-th powers of roots of ``f``.
-
-    Examples
-    ========
-
-    >>> f = x**4 - x**2 + 1
-    >>> g = factor(nth_power_roots_poly(f, 2))
-
-    >>> g
-    (x**2 - x + 1)**2
-
-    >>> R_f = [(r**2).expand() for r in roots(f)]
-    >>> R_g = roots(g)
-
-    >>> set(R_f) == set(R_g)
-    True
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('nth_power_roots_poly', 1, exc)
-
-    result = F.nth_power_roots_poly(n)
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
 
 
 def cancel(f, *gens, **args):
@@ -4619,7 +3828,7 @@ def cancel(f, *gens, **args):
     """
     from ..core.exprtools import factor_terms
     from ..functions import Piecewise
-    options.allowed_flags(args, ['polys'])
+    allowed_flags(args, ['polys'])
 
     f = sympify(f)
 
@@ -4688,7 +3897,7 @@ def reduced(f, G, *gens, **args):
     ([2*x, 1], x**2 + y**2 + y)
 
     """
-    options.allowed_flags(args, ['polys', 'auto'])
+    allowed_flags(args, ['polys', 'auto'])
 
     try:
         polys, opt = parallel_poly_from_expr([f] + list(G), *gens, **args)
@@ -4786,7 +3995,7 @@ class GroebnerBasis(Basic):
 
     def __new__(cls, F, *gens, **args):
         """Compute a reduced Gröbner basis for a system of polynomials."""
-        options.allowed_flags(args, ['polys', 'method'])
+        allowed_flags(args, ['polys', 'method'])
 
         try:
             polys, opt = parallel_poly_from_expr(F, *gens, **args)
@@ -4796,13 +4005,12 @@ class GroebnerBasis(Basic):
         ring = opt.domain.poly_ring(*opt.gens, order=opt.order)
 
         if not ring.domain.is_Exact:
-            raise ValueError('Domain must be exact, got %s' % ring.domain)
+            raise ValueError(f'Domain must be exact, got {ring.domain}')
 
-        polys = [ring.from_dict(dict(_.rep))
-                 for _ in polys if not _.is_zero]
+        polys = [ring.from_dict(dict(_.rep)) for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
-        G = [Poly._from_dict(g, opt) for g in G]
+        G = [Poly._from_dict(dict(g), opt) for g in G]
 
         return cls._new(G, opt)
 
@@ -4817,7 +4025,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return Tuple(*self.exprs), Tuple(*self.gens)
+        return (Tuple(*self.exprs),) + self.gens
 
     @property
     def exprs(self):
@@ -4923,9 +4131,9 @@ class GroebnerBasis(Basic):
         ========
 
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
-        >>> G = groebner(F, x, y, order='grlex')
+        >>> G = groebner(F, order='grlex')
 
-        >>> G.set_order('lex') == groebner(F, x, y, order='lex')
+        >>> G.set_order('lex') == groebner(F, order='lex')
         True
 
         """
@@ -4937,7 +4145,7 @@ class GroebnerBasis(Basic):
 
         if self.dimension != 0:
             raise NotImplementedError("can't convert Gröbner bases of "
-                                      "ideals with positive dimension")
+                                      'ideals with positive dimension')
 
         polys = self.polys
         domain = self.domain
@@ -5051,7 +4259,7 @@ def poly(expr, *gens, **args):
     Poly(x**5 + 2*x**4 - x**3 - 2*x**2 + x, x, domain='ZZ')
 
     """
-    options.allowed_flags(args, [])
+    allowed_flags(args, [])
 
     def _poly(expr, opt):
         terms, poly_terms = [], []
@@ -5110,9 +4318,19 @@ def poly(expr, *gens, **args):
     if expr.is_Poly:
         return Poly(expr, *gens, **args)
 
+    opt = build_options(gens, args)
+    no_gens = not opt.gens
+
+    if no_gens:
+        gens = _find_gens([expr], opt)
+        opt = opt.clone({'gens': gens})
+
     if 'expand' not in args:
-        args['expand'] = False
+        opt = opt.clone({'expand': False})
 
-    opt = options.build_options(gens, args)
+    res = _poly(expr, opt)
 
-    return _poly(expr, opt)
+    if no_gens:
+        res = res.exclude()
+
+    return res

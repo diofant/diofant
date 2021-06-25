@@ -113,6 +113,10 @@ def test_piecewise():
     assert peval2._eval_interval(x, -1, 1) == peval_interval
     assert peval2._eval_interval(x, None, 0) == peval2.subs({x: 0})
     assert peval2._eval_interval(x, -1, None) == -peval2.subs({x: -1})
+    peval3 = Piecewise((abs(x + 1), x > -2), (0, True))
+    assert peval3._eval_interval(x, -1, 1) == 2
+    peval4 = Piecewise((x, abs(x) <= 1), (0, True))
+    assert peval4._eval_interval(x, -1, 1) == 2
 
     # Test integration
     p_int = Piecewise((-x, x < -1), (x**3/3.0, x < 0), (-x + x*log(x), x >= 0))
@@ -214,8 +218,8 @@ def test_piecewise_integrate():
 
 
 def test_piecewise_integrate_inequality_conditions():
-    x, y = symbols("x y", real=True)
-    c1, c2 = symbols("c1 c2", positive=True, real=True)
+    x, y = symbols('x y', real=True)
+    c1, c2 = symbols('c1 c2', positive=True, real=True)
     g = Piecewise((0, c1*x > 1), (1, c1*x > 0), (0, True))
     assert integrate(g, (x, -oo, 0)) == 0
     assert integrate(g, (x, -5, 0)) == 0
@@ -464,7 +468,7 @@ def test_piecewise_complex():
 
 
 def test_conjugate_transpose():
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Piecewise((A*B**2, x > 0), (A**2*B, True))
     assert p.adjoint() == \
         Piecewise((adjoint(A*B**2), x > 0), (adjoint(A**2*B), True))
@@ -485,11 +489,11 @@ def test_piecewise_evaluate():
 
 def test_as_expr_set_pairs():
     assert Piecewise((x, x > 0), (-x, x <= 0)).as_expr_set_pairs() == \
-        [(x, Interval(0, oo, True, True)), (-x, Interval(-oo, 0, True))]
+        [(x, Interval(0, oo, True)), (-x, Interval(-oo, 0))]
 
     assert Piecewise(((x - 2)**2, x >= 0), (0, True)).as_expr_set_pairs() == \
-        [((x - 2)**2, Interval(0, oo, False, True)),
-         (0, Interval(-oo, 0, True, True))]
+        [((x - 2)**2, Interval(0, oo)),
+         (0, Interval(-oo, 0, False, True))]
 
 
 def test_S_repr_is_identity():

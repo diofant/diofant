@@ -25,7 +25,7 @@ class Polyhedron(Basic):
     References
     ==========
 
-    http://mathworld.wolfram.com/PolyhedralGroup.html
+    * https://mathworld.wolfram.com/PolyhedralGroup.html
 
     """
 
@@ -381,7 +381,7 @@ class Polyhedron(Basic):
         obj._corners = tuple(corners)  # in order given
         obj._faces = FiniteSet(*faces)
         if pgroup and pgroup[0].size != len(corners):
-            raise ValueError("Permutation size unequal to number of corners.")
+            raise ValueError('Permutation size unequal to number of corners.')
         # use the identity permutation if none are given
         obj._pgroup = PermutationGroup((
             pgroup or [Permutation(range(len(corners)))] ))

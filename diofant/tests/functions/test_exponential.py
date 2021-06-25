@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (E, Float, I, LambertW, O, Product, Rational, Sum, Symbol,
-                     arg, conjugate, cos, cosh, exp, exp_polar, expand_log,
-                     log, nan, oo, pi, re, sign, simplify, sin, sinh, sqrt,
-                     symbols, tanh, zoo)
+from diofant import (Abs, E, Float, I, LambertW, O, Product, Rational, Sum,
+                     Symbol, arg, conjugate, cos, cosh, exp, exp_polar,
+                     expand_log, log, nan, oo, pi, re, sign, simplify, sin,
+                     sinh, sqrt, symbols, tanh, zoo)
 from diofant.abc import m, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -50,12 +50,12 @@ def test_exp_values():
 
 
 def test_exp_log():
-    x = Symbol("x", extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert log(exp(x)) == x
     assert exp(log(x)) == x
     assert log(x).inverse() == exp
 
-    y = Symbol("y", polar=True)
+    y = Symbol('y', polar=True)
     assert log(exp_polar(z)) == z
     assert exp(log(y)) == y
 
@@ -317,11 +317,11 @@ def test_log_expand_complex():
 
 def test_log_apply_evalf():
     value = (log(3)/log(2) - 1).evalf()
-    assert value.epsilon_eq(Float("0.58496250072115618145373"))
+    assert value.epsilon_eq(Float('0.58496250072115618145373'))
 
 
 def test_log_expand():
-    w = Symbol("w", positive=True)
+    w = Symbol('w', positive=True)
     e = log(w**(log(5)/log(3)))
     assert e.expand() == log(5)/log(3) * log(w)
     x, y, z = symbols('x,y,z', positive=True)
@@ -343,9 +343,21 @@ def test_log_expand():
     # logs together than it is to take them apart.
     assert log(2*3**2).expand() != 2*log(3) + log(2)
 
+    # issue sympy/sympy#8866
+    assert simplify(log(x, 10, evaluate=False)) == simplify(log(x, 10))
+    assert expand_log(log(x, 10, evaluate=False)) == expand_log(log(x, 10))
+
+    y = Symbol('y', positive=True)
+    l1 = log(exp(y), exp(10))
+    b1 = log(exp(y), exp(5))
+    l2 = log(exp(y), exp(10), evaluate=False)
+    b2 = log(exp(y), exp(5), evaluate=False)
+    assert simplify(log(l1, b1)) == simplify(log(l2, b2))
+    assert expand_log(log(l1, b1)) == expand_log(log(l2, b2))
+
 
 def test_log_simplify():
-    x = Symbol("x", positive=True)
+    x = Symbol('x', positive=True)
     assert log(x**2).expand() == 2*log(x)
     assert expand_log(log(x**(2 + log(2)))) == (2 + log(2))*log(x)
 
@@ -372,8 +384,8 @@ def test_lambertw():
     pytest.raises(ArgumentIndexError, lambda: LambertW(x, k).fdiff(3))
 
     assert LambertW(sqrt(2)).evalf(30).epsilon_eq(
-        Float("0.701338383413663009202120278965", 30), 1e-29)
-    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float("-0.834310366631110"))
+        Float('0.701338383413663009202120278965', 30), 1e-29)
+    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float('-0.834310366631110'))
 
     assert LambertW(-1).is_extended_real is False  # issue sympy/sympy#5215
     assert LambertW(2, evaluate=False).is_extended_real
@@ -477,14 +489,5 @@ def test_log_product():
     assert simplify(expr) == expr
 
 
-def test_sympyissue_8866():
-    assert simplify(log(x, 10, evaluate=False)) == simplify(log(x, 10))
-    assert expand_log(log(x, 10, evaluate=False)) == expand_log(log(x, 10))
-
-    y = Symbol('y', positive=True)
-    l1 = log(exp(y), exp(10))
-    b1 = log(exp(y), exp(5))
-    l2 = log(exp(y), exp(10), evaluate=False)
-    b2 = log(exp(y), exp(5), evaluate=False)
-    assert simplify(log(l1, b1)) == simplify(log(l2, b2))
-    assert expand_log(log(l1, b1)) == expand_log(log(l2, b2))
+def test_sympyissue_21437():
+    pytest.raises(TypeError, lambda: log(Abs))

@@ -8,7 +8,7 @@ def test_init_printing(capsys):
     init_printing()
     sys.displayhook(sqrt(5))
     assert capsys.readouterr().out == 'sqrt(5)\n'
-    sys.displayhook("xyz")
+    sys.displayhook('xyz')
     assert capsys.readouterr().out == "'xyz'\n"
     sys.displayhook(None)
     assert capsys.readouterr().out == ''

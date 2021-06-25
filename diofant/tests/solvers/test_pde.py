@@ -24,7 +24,7 @@ def test_pde_separate():
 
 
 def test_pde_separate_add():
-    x, y, z, t = symbols("x,y,z,t")
+    x, y, z, t = symbols('x,y,z,t')
     F, T, X, Y, Z, u = map(Function, 'FTXYZu')
 
     eq = Eq(diff(u(x, t), x), diff(u(x, t), t)*exp(u(x, t)))
@@ -37,8 +37,8 @@ def test_pde_separate_add():
 
 
 def test_pde_separate_mul():
-    x, y, z, t = symbols("x,y,z,t")
-    c = Symbol("C", extended_real=True)
+    x, y, z, t = symbols('x,y,z,t')
+    c = Symbol('C', extended_real=True)
     Phi = Function('Phi')
     F, R, T, X, Y, Z, u = map(Function, 'FRTXYZu')
     r, theta, z = symbols('r,theta,z')
@@ -64,8 +64,8 @@ def test_pde_separate_mul():
     assert res == [diff(X(x), x, x)/X(x), diff(T(t), t, t)/(c**2*T(t))]
 
     # Laplace equation in cylindrical coords
-    eq = Eq(1/r * diff(Phi(r, theta, z), r) + diff(Phi(r, theta, z), r, 2) +
-            1/r**2 * diff(Phi(r, theta, z), theta, 2) + diff(Phi(r, theta, z), z, 2), 0)
+    eq = Eq(1/r * diff(Phi(r, theta, z), r) + diff(Phi(r, theta, z), (r, 2)) +
+            1/r**2 * diff(Phi(r, theta, z), (theta, 2)) + diff(Phi(r, theta, z), (z, 2)), 0)
     # Separate z
     res = pde_separate_mul(eq, Phi(r, theta, z), [Z(z), u(theta, r)])
     assert res == [diff(Z(z), z, z)/Z(z),
@@ -84,13 +84,13 @@ def test_pde_separate_mul():
                    -diff(T(theta), theta, theta)/T(theta)]
 
     # Laplace eq in spherical coordinates
-    r, phi, theta, C1 = symbols("r,phi,theta,C1")
+    r, phi, theta, C1 = symbols('r,phi,theta,C1')
     Xi = Function('Xi')
     R, Phi, Theta, u = map(Function, ['R', 'Phi', 'Theta', 'u'])
-    eq = Eq(diff(Xi(r, phi, theta), r, 2) + 2/r * diff(Xi(r, phi, theta), r) +
-            1/(r**2 * sin(phi)**2) * diff(Xi(r, phi, theta), theta, 2) +
+    eq = Eq(diff(Xi(r, phi, theta), (r, 2)) + 2/r * diff(Xi(r, phi, theta), r) +
+            1/(r**2 * sin(phi)**2) * diff(Xi(r, phi, theta), (theta, 2)) +
             cos(phi)/(r**2 * sin(phi)) * diff(Xi(r, phi, theta), phi) +
-            1/r**2 * diff(Xi(r, phi, theta), phi, 2), 0)
+            1/r**2 * diff(Xi(r, phi, theta), (phi, 2)), 0)
     res_theta = pde_separate(eq, Xi(r, phi, theta), [Theta(theta), u(r, phi)])
     eq_left = Eq(res_theta[1], -C1)
     res_theta = pde_separate(eq_left, u(r, phi), [Phi(phi), R(r)])
@@ -254,7 +254,7 @@ def test_pdsolve_variable_coeff():
     f, F = map(Function, ['f', 'F'])
     u = f(x, y)
     eq = x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
-    sol = pdsolve(eq, hint="1st_linear_variable_coeff")
+    sol = pdsolve(eq, hint='1st_linear_variable_coeff')
     assert sol == Eq(u, F(x*y)*exp(y**2/2) + 1)
     assert checkpdesol(eq, sol)[0]
 
@@ -291,10 +291,10 @@ def test_pdsolve_variable_coeff():
 
 
 def test_sympyissue_11726():
-    f, X, T = symbols("f X T", cls=Function)
+    f, X, T = symbols('f X T', cls=Function)
 
     u = f(x, t)
-    eq = u.diff(x, 2) - u.diff(t, 2)
+    eq = u.diff((x, 2)) - u.diff((t, 2))
     res = pde_separate(eq, u, [T(x), X(t)])
 
     assert res == [diff(T(x), x, x)/T(x), diff(X(t), t, t)/X(t)]

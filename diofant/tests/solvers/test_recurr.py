@@ -274,3 +274,14 @@ def test_sympyissue_18751():
                       C1*(cos(theta) + I*abs(sin(theta)))**n))}]
 
     assert rsolve(eq) == res
+
+
+def test_sympyissue_19630():
+    eq = f(n + 3) - 3*f(n + 1) + 2*f(n)
+    res = [{f: Lambda(n, (-2)**n*C1 + C0 + C2*n)}]
+
+    assert rsolve(eq) == res
+
+    res0 = [{f: Lambda(n, (-2)**n + 2*n)}]
+
+    assert rsolve(eq, init={f(1): 0, f(2): 8, f(3): -2}) == res0

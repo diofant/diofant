@@ -4,11 +4,10 @@ import collections
 
 from ..domains import EX
 from ..matrices import Matrix
-from ..polys import groebner, poly, sring
-from ..polys.polyerrors import ComputationFailed, PolificationFailed
-from ..polys.polytools import parallel_poly_from_expr
+from ..polys import (ComputationFailed, PolificationFailed, groebner,
+                     parallel_poly_from_expr)
 from ..polys.solvers import solve_lin_sys
-from ..simplify import simplify
+from ..simplify.simplify import simplify
 from ..utilities import default_sort_key, numbered_symbols
 from .utils import checksol
 
@@ -67,15 +66,17 @@ def solve_linear_system(system, *symbols, **flags):
 
     """
     eqs = system*Matrix(symbols + (-1,))
-    domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
+    polys, opt = parallel_poly_from_expr(eqs, *symbols, field=True)
+    domain = polys[0].rep.ring
+    polys = [_.rep for _ in polys]
 
-    res = solve_lin_sys(eqs, domain)
+    res = solve_lin_sys(polys, domain)
     if res is None:
         return
 
     for k in list(res):
         s = domain.symbols[domain.index(k)]
-        res[s] = res[k].as_expr()
+        res[s] = domain.to_expr(res[k])
         del res[k]
         if flags.get('simplify', True):
             res[s] = simplify(res[s])
@@ -114,7 +115,7 @@ def solve_poly_system(eqs, *gens, **args):
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""
-        basis = groebner(system, gens, polys=True, extension=False)
+        basis = groebner(system, *gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []
 
@@ -134,7 +135,7 @@ def solve_poly_system(eqs, *gens, **args):
             # Now we should examine cases when leading coefficient of
             # some polynomial in the system is zero.
             for p in basis.polys:
-                lc = poly(p, *new_gens).LC(order=basis.order)
+                lc = p.as_poly(*new_gens).LC(order=basis.order)
                 for special in _solve_reduced_system(system + [lc], gens):
                     # This heuristics wipe out some redundant special
                     # solutions, which already there in solutions after
@@ -149,7 +150,7 @@ def solve_poly_system(eqs, *gens, **args):
             f = basis[-1]
             gen = gens[-1]
 
-            zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
+            zeros = {k.doit() for k in f.exclude().all_roots()}
 
             if len(basis) == 1:
                 return [{gen: zero} for zero in zeros]

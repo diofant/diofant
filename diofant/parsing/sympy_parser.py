@@ -73,8 +73,6 @@ class AppliedFunction:
 class ParenthesisGroup(list):
     """List of tokens representing an expression in parentheses."""
 
-    pass
-
 
 def _flatten(result):
     result2 = []
@@ -125,7 +123,7 @@ def _group_parentheses(recursor):
             else:
                 result.append(token)
         if stacklevel:
-            raise TokenError("Mismatched parentheses")
+            raise TokenError('Mismatched parentheses')
         return result
     return _inner
 
@@ -180,7 +178,7 @@ def _implicit_multiplication(tokens, local_dict, global_dict):
         elif (isinstance(tok, AppliedFunction) and
               nextTok[0] == OP and nextTok[1] == '('):
             # Applied function followed by an open parenthesis
-            if tok.function[1] == "Function":
+            if tok.function[1] == 'Function':
                 result[-1].function = (result[-1].function[0], 'Symbol')
             result.append((OP, '*'))
         elif (tok[0] == OP and tok[1] == ')' and
@@ -321,7 +319,7 @@ def function_exponentiation(tokens, local_dict, global_dict):
                 continue
         result.append(tok)
     result.append(tokens[-1])
-    if exponent:  # pragma: no cover
+    if exponent:
         raise NotImplementedError
     return result
 
@@ -365,16 +363,16 @@ def split_symbols_custom(predicate):
                     del result[-2:]  # Get rid of the call to Symbol
                     for char in symbol[:-1]:
                         if char in local_dict or char in global_dict:
-                            result.extend([(NAME, "%s" % char)])
+                            result.extend([(NAME, f'{char}')])
                         else:
                             result.extend([(NAME, 'Symbol'), (OP, '('),
-                                           (NAME, "'%s'" % char), (OP, ')')])
+                                           (NAME, f"'{char}'"), (OP, ')')])
                     char = symbol[-1]
                     if char in local_dict or char in global_dict:
-                        result.extend([(NAME, "%s" % char)])
+                        result.extend([(NAME, f'{char}')])
                     else:
                         result.extend([(NAME, tok_type), (OP, '('),
-                                       (NAME, "'%s'" % char), (OP, ')')])
+                                       (NAME, f"'{char}'"), (OP, ')')])
 
                     # Set split_previous=True so will skip
                     # the closing parenthesis of the original Symbol
@@ -460,7 +458,7 @@ def implicit_multiplication_application(result, local_dict, global_dict):
     Examples
     ========
 
-    >>> parse_expr("10sin**2 x**2 + 3xyz + tan theta",
+    >>> parse_expr('10sin**2 x**2 + 3xyz + tan theta',
     ...            transformations=(standard_transformations +
     ...                             (implicit_multiplication_application,)))
     3*x*y*z + 10*sin(x**2)**2 + tan(theta)
@@ -505,9 +503,9 @@ def auto_symbol(tokens, local_dict, global_dict):
                 continue
             elif name in global_dict:
                 obj = global_dict[name]
-                if isinstance(obj, (Basic, type)) or callable(obj):
-                    result.append((NAME, name))
-                    continue
+                assert isinstance(obj, (Basic, type)) or callable(obj)
+                result.append((NAME, name))
+                continue
 
             result.extend([
                 (NAME, 'Symbol' if nextTokVal != '(' else 'Function'),
@@ -551,7 +549,7 @@ def lambda_notation(tokens, local_dict, global_dict):
                     tokVal = ','
                     flag = True
                 if not flag and tokNum == OP and tokVal in ['*', '**']:
-                    raise NotImplementedError("Starred arguments in lambda not supported")
+                    raise NotImplementedError('Starred arguments in lambda not supported')
                 if flag:
                     result.insert(-1, (tokNum, tokVal))
                 else:
@@ -699,18 +697,18 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     Examples
     ========
 
-    >>> parse_expr("1/2")
+    >>> parse_expr('1/2')
     1/2
     >>> type(_)
     <class 'diofant.core.numbers.Half'>
     >>> transformations = (standard_transformations +
     ...                    (implicit_multiplication_application,))
-    >>> parse_expr("2x", transformations=transformations)
+    >>> parse_expr('2x', transformations=transformations)
     2*x
 
     When evaluate=False, some automatic simplifications will not occur:
 
-    >>> parse_expr("2**3"), parse_expr("2**3", evaluate=False)
+    >>> parse_expr('2**3'), parse_expr('2**3', evaluate=False)
     (8, 2**3)
 
     In addition the order of the arguments will not be made canonical.
@@ -796,7 +794,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 right = ast.Call(
                     func=ast.Name(id='Pow', ctx=ast.Load()),
                     args=[right, ast.UnaryOp(op=ast.USub(), operand=ast.Num(1))],
-                    keywords=[ast.keyword(arg='evaluate', value=ast.Name(id='False', ctx=ast.Load()))],
+                    keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
                     starargs=None,
                     kwargs=None
                 )
@@ -804,7 +802,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
             new_node = ast.Call(
                 func=ast.Name(id=sympy_class, ctx=ast.Load()),
                 args=[self.visit(node.left), right],
-                keywords=[ast.keyword(arg='evaluate', value=ast.Name(id='False', ctx=ast.Load()))],
+                keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
                 starargs=None,
                 kwargs=None
             )

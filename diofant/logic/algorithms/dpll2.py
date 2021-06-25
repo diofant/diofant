@@ -15,7 +15,7 @@ References
 from collections import defaultdict
 from heapq import heappop, heappush
 
-from ...core.compatibility import default_sort_key, ordered
+from ...utilities import default_sort_key, ordered
 from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
 
 
@@ -498,7 +498,6 @@ class SATSolver:
 
     def _vsids_lit_assigned(self, lit):
         """Handle the assignment of a literal for the VSIDS heuristic."""
-        pass
 
     def _vsids_lit_unset(self, lit):
         """Handle the unsetting of a literal for the VSIDS heuristic.

@@ -1,8 +1,9 @@
 """Riemann zeta and related function."""
 
 from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
-                     oo, pi, sympify, zoo)
+                     oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
 
@@ -114,17 +115,16 @@ class lerchphi(Function):
     """
 
     def _eval_expand_func(self, **hints):
-        from ...polys import Poly
         from .. import floor, unpolarify
         z, s, a = self.args
         if z == 1:
             return zeta(s, a)
         if s.is_Integer and s <= 0:
             t = Dummy('t')
-            p = Poly((t + a)**(-s), t)
+            p = ((t + a)**(-s)).as_poly(t)
             start = 1/(1 - t)
             res = Integer(0)
-            for c in reversed(p.all_coeffs()):
+            for c in p.all_coeffs():
                 res += c*start
                 start = t*start.diff(t)
             return res.subs({t: z})
@@ -265,7 +265,7 @@ class polylog(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Polylogarithm
-    * http://mathworld.wolfram.com/Polylogarithm.html
+    * https://mathworld.wolfram.com/Polylogarithm.html
 
     """
 
@@ -514,7 +514,7 @@ class dirichlet_eta(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Dirichlet_eta_function
-    * http://mathworld.wolfram.com/DirichletEtaFunction.html
+    * https://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples
     ========

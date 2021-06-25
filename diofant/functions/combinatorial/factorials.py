@@ -1,9 +1,9 @@
-from functools import reduce
-from math import sqrt as _sqrt
+import functools
+import math
 
-from ...core import Dummy, E, Function, Integer, cacheit, oo, sympify, zoo
+from ...core import Dummy, E, Function, Integer, cacheit, oo, zoo
 from ...core.function import ArgumentIndexError
-from ...ntheory import sieve
+from ...core.sympify import sympify
 
 
 class CombinatorialFunction(Function):
@@ -78,92 +78,25 @@ class factorial(CombinatorialFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    _small_swing = [
-        1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395,
-        12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075,
-        35102025, 5014575, 145422675, 9694845, 300540195, 300540195
-    ]
-
-    @classmethod
-    def _swing(cls, n):
-        if n < 33:
-            return cls._small_swing[n]
-        else:
-            N, primes = int(_sqrt(n)), []
-
-            for prime in sieve.primerange(3, N + 1):
-                p, q = 1, n
-
-                while True:
-                    q //= prime
-
-                    if q > 0:
-                        if q & 1 == 1:
-                            p *= prime
-                    else:
-                        break
-
-                if p > 1:
-                    primes.append(p)
-
-            for prime in sieve.primerange(N + 1, n//3 + 1):
-                if (n // prime) & 1 == 1:
-                    primes.append(prime)
-
-            L_product = R_product = 1
-
-            for prime in sieve.primerange(n//2 + 1, n + 1):
-                L_product *= prime
-
-            for prime in primes:
-                R_product *= prime
-
-            return L_product*R_product
-
-    @classmethod
-    def _recursive(cls, n):
-        if n < 2:
-            return 1
-        else:
-            return (cls._recursive(n//2)**2)*cls._swing(n)
-
     @classmethod
     def eval(cls, n):
         n = sympify(n)
 
         if n.is_Number:
-            if n == 0:
-                return Integer(1)
-            elif n is oo:
+            if n is oo:
                 return oo
             elif n.is_Integer:
                 if n.is_negative:
                     return zoo
                 else:
-                    n, result = n.numerator, 1
-
-                    if n < 20:
-                        for i in range(2, n + 1):
-                            result *= i
-                    else:
-                        N, bits = n, 0
-
-                        while N != 0:
-                            if N & 1 == 1:
-                                bits += 1
-
-                            N = N >> 1
-
-                        result = cls._recursive(n)*2**(n - bits)
-
-                    return Integer(result)
+                    return Integer(math.factorial(n))
 
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
         return gamma(n + 1)
 
     def _eval_rewrite_as_tractable(self, n):
-        from .. import loggamma, exp
+        from .. import exp, loggamma
         return exp(loggamma(n + 1))
 
     def _eval_rewrite_as_Product(self, n):
@@ -176,11 +109,7 @@ class factorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
-
-    def _eval_is_positive(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
+    _eval_is_positive = _eval_is_integer
 
     def _eval_is_composite(self):
         n = self.args[0]
@@ -219,7 +148,7 @@ class subfactorial(CombinatorialFunction):
     ==========
 
     * https://en.wikipedia.org/wiki/Subfactorial
-    * http://mathworld.wolfram.com/Subfactorial.html
+    * https://mathworld.wolfram.com/Subfactorial.html
 
     Examples
     ========
@@ -259,15 +188,11 @@ class subfactorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
+    _eval_is_nonnegative = _eval_is_integer
 
     def _eval_rewrite_as_uppergamma(self, n):
         from .. import uppergamma
         return uppergamma(n + 1, -1)/E
-
-    def _eval_is_nonnegative(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
 
     def _eval_is_odd(self):
         n = self.args[0]
@@ -325,7 +250,7 @@ class factorial2(CombinatorialFunction):
                 if n.is_odd:
                     return n * (-1)**((1 - n) / 2) / factorial2(-n)
                 elif n.is_even:
-                    raise ValueError("argument must be nonnegative or odd")
+                    raise ValueError('argument must be nonnegative or odd')
             else:
                 if n.is_even:
                     k = n / 2
@@ -377,7 +302,7 @@ class RisingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/RisingFactorial.html page.
+    or visit https://mathworld.wolfram.com/RisingFactorial.html page.
 
     Examples
     ========
@@ -420,12 +345,12 @@ class RisingFactorial(CombinatorialFunction):
                         else:
                             return oo
                     else:
-                        return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
+                        return functools.reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
                     if x in (oo, -oo):
                         return oo
                     else:
-                        return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
+                        return 1/functools.reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -452,7 +377,7 @@ class FallingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/FallingFactorial.html page.
+    or visit https://mathworld.wolfram.com/FallingFactorial.html page.
 
     >>> ff(x, 0)
     1
@@ -490,12 +415,12 @@ class FallingFactorial(CombinatorialFunction):
                         else:
                             return oo
                     else:
-                        return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
+                        return functools.reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
                     if x in (oo, -oo):
                         return oo
                     else:
-                        return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
+                        return 1/functools.reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -571,11 +496,6 @@ class binomial(CombinatorialFunction):
     >>> [binomial(N, i) for i in range(1 - N)]
     [1, -4, 10, -20, 35]
 
-    >>> binomial(Rational(5, 4), 3)
-    -5/128
-    >>> binomial(Rational(-5, 4), 3)
-    -195/128
-
     >>> binomial(n, 3)
     binomial(n, 3)
 
@@ -603,45 +523,6 @@ class binomial(CombinatorialFunction):
             raise ArgumentIndexError(self, argindex)
 
     @classmethod
-    def _eval(cls, n, k):
-        assert n.is_Number and k.is_Integer and k != 1 and n != k
-        if n.is_Integer and n >= 0:
-            n, k = int(n), int(k)
-
-            if k > n // 2:
-                k = n - k
-
-            M, result = int(_sqrt(n)), 1
-
-            for prime in sieve.primerange(2, n + 1):
-                if prime > n - k:
-                    result *= prime
-                elif prime > n // 2:
-                    continue
-                elif prime > M:
-                    if n % prime < k % prime:
-                        result *= prime
-                else:
-                    N, K = n, k
-                    exp = a = 0
-
-                    while N > 0:
-                        a = int((N % prime) < (K % prime + a))
-                        N, K = N // prime, K // prime
-                        exp = a + exp
-
-                    if exp > 0:
-                        result *= prime**exp
-            return Integer(result)
-        else:
-            d = result = n - k + 1
-            for i in range(2, k + 1):
-                d += 1
-                result *= d
-                result /= i
-            return result
-
-    @classmethod
     def eval(cls, n, k):
         n, k = map(sympify, (n, k))
         d = n - k
@@ -654,8 +535,11 @@ class binomial(CombinatorialFunction):
                 return Integer(0)
             elif n.is_integer and n.is_nonnegative and d.is_negative:
                 return Integer(0)
-        if k.is_Integer and k > 0 and n.is_Number:
-            return cls._eval(n, k)
+        if n.is_Integer and k.is_Integer and k > 0:
+            if n >= 0:
+                return Integer(math.comb(n, k))
+            else:
+                return Integer((-1)**k*math.comb(abs(n) + k - 1, k))
 
     def _eval_expand_func(self, **hints):
         """Function to expand binomial(n,k) when n is positive integer."""

@@ -3,8 +3,9 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
-                     cacheit, expand_mul, oo, pi, sympify, zoo)
+                     cacheit, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import polar_lift
 from ..elementary.exponential import exp, log
@@ -85,7 +86,7 @@ class erf(Function):
 
     * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/Erf.html
+    * https://mathworld.wolfram.com/Erf.html
     * http://functions.wolfram.com/GammaBetaErf/Erf
 
     """
@@ -273,7 +274,7 @@ class erfc(Function):
 
     * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/Erfc.html
+    * https://mathworld.wolfram.com/Erfc.html
     * http://functions.wolfram.com/GammaBetaErf/Erfc
 
     """
@@ -339,7 +340,7 @@ class erfc(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return 1 - erf(z)
@@ -458,7 +459,7 @@ class erfi(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Error_function
-    * http://mathworld.wolfram.com/Erfi.html
+    * https://mathworld.wolfram.com/Erfi.html
     * http://functions.wolfram.com/GammaBetaErf/Erfi
 
     """
@@ -517,7 +518,7 @@ class erfi(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return -I*erf(I*z)
@@ -1048,6 +1049,7 @@ class Ei(Function):
 
     def _eval_rewrite_as_uppergamma(self, z):
         from .gamma_functions import uppergamma
+
         # XXX this does not currently work usefully because uppergamma
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
@@ -1179,7 +1181,7 @@ class expint(Function):
 
     @classmethod
     def eval(cls, nu, z):
-        from .. import unpolarify, uppergamma, exp, gamma, factorial
+        from .. import exp, factorial, gamma, unpolarify, uppergamma
         nu2 = unpolarify(nu)
         if nu != nu2:
             return expint(nu2, z)
@@ -1213,7 +1215,7 @@ class expint(Function):
         return z**(nu - 1)*uppergamma(1 - nu, z)
 
     def _eval_rewrite_as_Ei(self, nu, z):
-        from .. import exp_polar, unpolarify, exp, factorial
+        from .. import exp, exp_polar, factorial, unpolarify
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
         elif nu.is_Integer and nu > 1:
@@ -1344,9 +1346,9 @@ class li(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Logarithmic_integral
-    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
-    * http://mathworld.wolfram.com/SoldnersConstant.html
+    * https://mathworld.wolfram.com/SoldnersConstant.html
 
     """
 
@@ -1457,7 +1459,7 @@ class Li(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Logarithmic_integral
-    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
 
     """
@@ -1483,7 +1485,7 @@ class Li(Function):
         return li(z) - li(2)
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(li).rewrite("tractable", deep=True)
+        return self.rewrite(li).rewrite('tractable', deep=True)
 
 ###############################################################################
 # ################## TRIGONOMETRIC INTEGRALS ################################ #
@@ -1795,6 +1797,7 @@ class Shi(TrigonometricIntegral):
 
     def _eval_rewrite_as_expint(self, z):
         from .. import exp_polar
+
         # XXX should we polarify z?
         return (E1(z) - E1(exp_polar(I*pi)*z))/2 - I*pi/2
 
@@ -1889,11 +1892,11 @@ class Chi(TrigonometricIntegral):
 
     def _latex(self, printer, exp=None):
         if exp:
-            return r'\operatorname{Chi}^{%s}{\left (%s \right )}' \
-                % (printer._print(exp), printer._print(self.args[0]))
+            return (r'\operatorname{Chi}^{%s}{\left (%s \right )}'  # noqa: SFS101
+                    % (printer._print(exp), printer._print(self.args[0])))
         else:
-            return r'\operatorname{Chi}{\left (%s \right )}' \
-                % printer._print(self.args[0])
+            return (r'\operatorname{Chi}{\left (%s \right )}'  # noqa: SFS101
+                    % printer._print(self.args[0]))
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -2051,7 +2054,7 @@ class fresnels(FresnelIntegral):
 
     * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * https://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelS
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley
@@ -2179,7 +2182,7 @@ class fresnelc(FresnelIntegral):
 
     * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * https://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelC
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley

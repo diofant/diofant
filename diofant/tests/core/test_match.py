@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Add, Derivative, FiniteSet, Float, Function, I, Integer,
                      Mul, Rational, Symbol, Wild, WildFunction, cos, diff, exp,
-                     log, meijerg, oo, pi, sin, sqrt, symbols)
+                     log, meijerg, oo, pi, root, sin, sqrt, symbols)
 from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
@@ -69,9 +69,9 @@ def test_power():
 
 
 def test_match_exclude():
-    p = Wild("p")
-    q = Wild("q")
-    r = Wild("r")
+    p = Wild('p')
+    q = Wild('q')
+    r = Wild('r')
 
     e = Integer(6)
     assert e.match(2*p) == {p: 3}
@@ -201,6 +201,16 @@ def test_functions():
     F = WildFunction('F', nargs=(1, 2))
     assert F.nargs == FiniteSet(1, 2)
 
+    # issue sympy/sympy#2711
+    f = meijerg(((), ()), ((0,), ()), x)
+    a = Wild('a')
+    b = Wild('b')
+
+    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
+                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
+    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+
 
 @pytest.mark.xfail
 def test_functions_X1():
@@ -239,9 +249,9 @@ def test_derivative1():
 
 
 def test_derivative_bug1():
-    f = Function("f")
-    a = Wild("a", exclude=[f, x])
-    b = Wild("b", exclude=[f])
+    f = Function('f')
+    a = Wild('a', exclude=[f, x])
+    b = Wild('b', exclude=[f])
     pattern = a * Derivative(f(x), x, x) + b
     expr = Derivative(f(x), x) + x**2
     d1 = {b: x**2}
@@ -250,9 +260,9 @@ def test_derivative_bug1():
 
 
 def test_derivative2():
-    f = Function("f")
-    a = Wild("a", exclude=[f, x])
-    b = Wild("b", exclude=[f])
+    f = Function('f')
+    a = Wild('a', exclude=[f, x])
+    b = Wild('b', exclude=[f])
     e = Derivative(f(x), x)
     assert e.match(Derivative(f(x), x)) == {}
     assert e.match(Derivative(f(x), x, x)) is None
@@ -355,9 +365,9 @@ def test_floats():
 
 
 def test_Derivative_bug1():
-    f = Function("f")
-    a = Wild("a", exclude=[f(x)])
-    b = Wild("b", exclude=[f(x)])
+    f = Function('f')
+    a = Wild('a', exclude=[f(x)])
+    b = Wild('b', exclude=[f(x)])
     eq = f(x).diff(x)
     assert eq.match(a*Derivative(f(x), x) + b) == {a: 1, b: 0}
 
@@ -549,13 +559,13 @@ def test_sympyissue_4319():
     def ok(pat):
         assert set(p.match(pat).values()) == ans
 
-    ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
-    ok(Wild("w", exclude=[x])*x + Wild("rest"))
-    ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
-    ok(Wild("w", exclude=[x])*x + Wild("rest"))
-    ok(Wild("e", exclude=[x])*x + Wild("rest"))
-    ok(Wild("ress", exclude=[x])*x + Wild("rest"))
-    ok(Wild("resu", exclude=[x])*x + Wild("rest"))
+    ok(Wild('coeff', exclude=[x])*x + Wild('rest'))
+    ok(Wild('w', exclude=[x])*x + Wild('rest'))
+    ok(Wild('coeff', exclude=[x])*x + Wild('rest'))
+    ok(Wild('w', exclude=[x])*x + Wild('rest'))
+    ok(Wild('e', exclude=[x])*x + Wild('rest'))
+    ok(Wild('ress', exclude=[x])*x + Wild('rest'))
+    ok(Wild('resu', exclude=[x])*x + Wild('rest'))
 
 
 def test_sympyissue_3778():
@@ -577,17 +587,6 @@ def test_sympyissue_3539():
     assert (6/x**2).match(a/x) == {a: 6/x}
 
 
-def test_sympyissue_2711():
-    f = meijerg(((), ()), ((0,), ()), x)
-    a = Wild('a')
-    b = Wild('b')
-
-    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
-                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
-    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
-    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
-
-
 def test_diofantissue_423():
     a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
                                              cls=Wild, exclude=[x])
@@ -598,11 +597,11 @@ def test_diofantissue_423():
 
 
 def test_sympyissue_8694():
-    theta1, theta2, rho = symbols("theta1, theta2, rho")
+    theta1, theta2, rho = symbols('theta1, theta2, rho')
     S1, C1 = sin(theta1), cos(theta1)
-    X1 = Wild("X1", exclude=[rho, theta1, theta2])
-    Y1 = Wild("Y1", exclude=[rho, theta1, theta2])
-    Z1 = Wild("Z1", exclude=[rho, theta1, theta2])
+    X1 = Wild('X1', exclude=[rho, theta1, theta2])
+    Y1 = Wild('Y1', exclude=[rho, theta1, theta2])
+    Z1 = Wild('Z1', exclude=[rho, theta1, theta2])
     eq = -Y + (-X + Z)*cos(theta1) + (X + Y)*sin(theta1)
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z - X, Y1: X + Y, Z1: -Y}
     eq = -Y + Z*cos(theta1) + (X + Y)*sin(theta1)
@@ -629,3 +628,11 @@ def test_sympyissue_16774():
     t = (a*a1 + b1)/(a*c1 + d1) + (a*a2 + b2)/(a*c2 + d2)
     assert e.match(t) == {a1: -2, a2: 4, b1: -9, b2: 3, c1: 1,
                           c2: 5, d1: 4, d2: 12}
+
+
+def test_sympyissue_21466():
+    a, b, k, m, n = symbols('a b k m n', cls=Wild)
+    pattern = x**n * (a + b * x**k)**m
+    expr = root(x, 3)*root(3 - x**2, 3)
+    assert expr.match(pattern) == {k: 2, b: -1, a: 3, m: Rational(1, 3),
+                                   n: Rational(1, 3)}

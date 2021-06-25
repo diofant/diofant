@@ -7,9 +7,11 @@ __all__ = ()
 
 
 def test_singularities():
+    assert singularities(1, x) == set()
     assert singularities(x**2, x) == set()
     assert singularities(x/(x**2 + 3*x + 2), x) == {-2, -1}
     assert singularities(1/(1 + x), x) == {-1}
+    assert singularities(1/(1 + x)**2, x) == {-1}
     assert singularities(sign(x), x) == {0}
 
 

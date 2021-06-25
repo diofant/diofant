@@ -6,6 +6,7 @@ See also http://math.unm.edu/~wester/cas_review.html for detailed output of
 each tested system.
 """
 import itertools
+import math
 
 import pytest
 
@@ -13,8 +14,8 @@ from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
                      E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
                      GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
                      LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
-                     N, O, Or, Piecewise, Poly, Product, Rational, Subs, Sum,
-                     Symbol, ZeroMatrix, acos, acot, apart, asin, asinh,
+                     N, O, Or, Piecewise, Product, Rational, Subs, Sum, Symbol,
+                     ZeroMatrix, acos, acot, apart, asin, asinh,
                      assoc_legendre, atan, bernoulli, besselj, binomial,
                      block_collapse, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
@@ -26,15 +27,14 @@ from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
                      exp, expand, expand_func, eye, factor, factorial,
                      factorial2, factorint, fibonacci, floor,
                      fourier_transform, gamma, gcd, groebner, hessian, hyper,
-                     hyperexpand, igcd, im, integrate,
-                     inverse_laplace_transform, laplace_transform,
-                     legendre_poly, limit, log, logcombine, maximize,
-                     mellin_transform, minimize, nan, npartitions, oo, pi,
-                     polygamma, polylog, powdenest, powsimp, primerange,
-                     primitive, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, root, rsolve,
-                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
-                     sqrtdenest, summation, symbols, tan, tanh, totient,
+                     hyperexpand, im, integrate, inverse_laplace_transform,
+                     laplace_transform, legendre_poly, limit, log, logcombine,
+                     maximize, mellin_transform, minimize, nan, npartitions,
+                     oo, pi, polygamma, polylog, powdenest, powsimp,
+                     primerange, primitive, primitive_root, product, radsimp,
+                     re, reduce_inequalities, residue, resultant, rf, root,
+                     rsolve, sec, series, sign, simplify, sin, sinh, solve,
+                     sqrt, sqrtdenest, summation, symbols, tan, tanh, totient,
                      trigsimp, trunc, wronskian, zeta, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.functions.combinatorial.numbers import stirling
@@ -100,7 +100,7 @@ def test_C8():
 
 
 def test_C9():
-    assert igcd(1776, 1554, 5698) == 74
+    assert math.gcd(1776, 1554, 5698) == 74
 
 
 def test_C10():
@@ -397,7 +397,7 @@ def test_H18():
 
 def test_H19():
     # The idea is to let a**2 == 2, then solve 1/(a-1). Answer is a+1")
-    assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
+    assert (a - 1).as_poly().invert((a**2 - 2).as_poly()) == a + 1
 
 
 def test_H20():
@@ -695,8 +695,8 @@ def test_M2():
 
 def test_M5():
     assert (solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) ==
-            [{x: r} for r in Poly(x**6 - 9*x**4 - 4*x**3 + 27*x**2 -
-                                  36*x - 23).all_roots()])
+            [{x: r} for r in (x**6 - 9*x**4 - 4*x**3 + 27*x**2 -
+                              36*x - 23).as_poly().all_roots()])
 
 
 def test_M6():
@@ -859,7 +859,7 @@ def test_M38():
     [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
-     k44, k45, k46, k47, k48, k49] = variables = symbols("k1:50")
+     k44, k45, k46, k47, k48, k49] = variables = symbols('k1:50')
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -915,8 +915,8 @@ def test_M38():
 
 @pytest.mark.slow
 def test_M39():
-    r0, r1, r2, r3, r4 = Poly(6*z**5 - 6*z**4 - 9*z**3 -
-                              7*z**2 - 3*z - 1).all_roots()
+    r0, r1, r2, r3, r4 = (6*z**5 - 6*z**4 - 9*z**3 -
+                          7*z**2 - 3*z - 1).as_poly().all_roots()
     sol = [{x: -1, y: 1, z: 1}, {x: 1, y: 1, z: 1}]
     for r in [r1, r2, r3, r4, r0]:
         sol.extend([{x: -sqrt(3)*sqrt(r*(-12*r**3 + 12*r**2 + 30*r - 7))/3,
@@ -996,10 +996,9 @@ def test_N16():
     reduce_inequalities((r**2)*((cos(t) - 4)**2)*sin(t)**2 < 9, r)
 
 
-@pytest.mark.xfail
 def test_N17():
-    x, y = symbols('x y', real=True)
-    reduce_inequalities((x + y > 0, x - y < 0))
+    assert reduce_inequalities([x + y > 0,
+                                x - y < 0]) == ((y > 0) & (x < y) & (x > -y))
 
 
 # O. Vector Analysis
@@ -1081,8 +1080,8 @@ def test_P5_workaround():
 def test_P6():
     M = Matrix([[cos(x), sin(x)],
                 [-sin(x), cos(x)]])
-    assert M.diff(x, 2) == Matrix([[-cos(x), -sin(x)],
-                                   [sin(x), -cos(x)]])
+    assert M.diff((x, 2)) == Matrix([[-cos(x), -sin(x)],
+                                     [sin(x), -cos(x)]])
 
 
 def test_P7():
@@ -1430,7 +1429,7 @@ def test_P44():
 
 def test_P45():
     def __my_wronskian(Y, v):
-        M = Matrix([Matrix(Y).T.diff(x, n) for n in range(len(Y))])
+        M = Matrix([Matrix(Y).T.diff((x, n)) for n in range(len(Y))])
         return M.det()
     assert __my_wronskian([cos(x), sin(x)], x).simplify() == 1
 
@@ -1598,7 +1597,7 @@ def test_S5():
             factorial(n - Rational(1, 2))/(sqrt(pi)*factorial(n)))
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S6():
     n, k = symbols('n k', integer=True, positive=True)
     assert simplify(product(x**2 - 2*x*cos(k*pi/n) + 1, (k, 1, n - 1))
@@ -1619,14 +1618,14 @@ def test_S8():
     assert simplify(T) == 2/pi
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S9():
     k = symbols('k', integer=True, positive=True)
     T = product(1 + (-1)**(k + 1)/(2*k - 1), (k, 1, oo))
     assert simplify(T) == sqrt(2)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7137")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7137')
 def test_S10():
     k = symbols('k', integer=True, positive=True)
     T = product((k*(k + 1) + 1 + I)/(k*(k + 1) + 1 - I), (k, 0, oo))
@@ -2066,14 +2065,14 @@ def test_X14():
     series(1/2**(2*n)*binomial(2*n, n), n, x0=oo, n=1)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7164')
 def test_X15():
     x, t = symbols('x t', real=True)
     e1 = integrate(exp(-t)/t, (t, x, oo))
     series(e1, x, x0=oo, n=5)
 
 
-@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
+@pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_X16():
     series(cos(x + y), x + y, x0=0, n=4)
 
@@ -2170,7 +2169,7 @@ def test_Z4():
 
 
 def test_Z5():
-    eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
+    eq = Derivative(f(x), (x, 2)) + 4*f(x) - sin(2*x)
     sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs({x: 0}): 0})
     assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 

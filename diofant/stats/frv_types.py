@@ -64,7 +64,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
     def p(self):
         return Rational(1, len(self.args))
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {k: self.p for k in self.set}
@@ -114,7 +114,7 @@ class DieDistribution(SingleFiniteDistribution):
         else:
             return super().__new__(cls, sides)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         as_int(self.sides)
@@ -134,7 +134,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                         "not %s" % (type(x)))
+                         f'not {type(x)}')
 
 
 def Die(name, sides=6):
@@ -160,7 +160,7 @@ def Die(name, sides=6):
 class BernoulliDistribution(SingleFiniteDistribution):
     _argnames = ('p', 'succ', 'fail')
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {self.succ: self.p, self.fail: 1 - self.p}
@@ -220,9 +220,9 @@ class BinomialDistribution(SingleFiniteDistribution):
         p_sym = sympify(p)
 
         if fuzzy_not(fuzzy_and((n_sym.is_integer, n_sym.is_nonnegative))):
-            raise ValueError("'n' must be positive integer. n = %s." % str(n))
+            raise ValueError(f"'n' must be positive integer. n = {n!s}.")
         elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
-            raise ValueError("'p' must be: 0 <= p <= 1 . p = %s" % str(p))
+            raise ValueError(f"'p' must be: 0 <= p <= 1 . p = {p!s}")
         else:
             return super().__new__(cls, *args)
 
@@ -230,7 +230,7 @@ class BinomialDistribution(SingleFiniteDistribution):
     def n(self):
         return self.args[self._argnames.index('n')]
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         n, p, succ, fail = self.n, self.p, self.succ, self.fail
@@ -261,7 +261,7 @@ def Binomial(name, n, p, succ=1, fail=0):
 class HypergeometricDistribution(SingleFiniteDistribution):
     _argnames = ('N', 'm', 'n')
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         N, m, n = self.N, self.m, self.n
@@ -297,7 +297,7 @@ def Hypergeometric(name, N, m, n):
 
 
 class RademacherDistribution(SingleFiniteDistribution):
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {-1: Rational(1, 2), 1: Rational(1, 2)}

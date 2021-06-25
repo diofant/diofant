@@ -1,7 +1,6 @@
-from strategies import condition, do_one, exhaust
-
-from ...core import Mul, sympify
-from ...core.strategies import flatten, unpack
+from ...core import Mul
+from ...core.strategies import condition, do_one, exhaust, flatten, unpack
+from ...core.sympify import sympify
 from ..matrices import ShapeError
 from .matexpr import MatrixExpr
 
@@ -24,7 +23,7 @@ def hadamard_product(*matrices):
 
     """
     if not matrices:
-        raise TypeError("Empty Hadamard product is undefined")
+        raise TypeError('Empty Hadamard product is undefined')
     validate(*matrices)
     if len(matrices) == 1:
         return matrices[0]
@@ -73,11 +72,11 @@ class HadamardProduct(MatrixExpr):
 
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):
-        raise TypeError("Mix of Matrix and Scalar symbols")
+        raise TypeError('Mix of Matrix and Scalar symbols')
     A = args[0]
     for B in args[1:]:
         if A.shape != B.shape:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError(f'Matrices {A} and {B} are not aligned')
 
 
 rules = (unpack, flatten)

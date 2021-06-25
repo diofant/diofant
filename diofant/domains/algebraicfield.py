@@ -1,10 +1,11 @@
 """Implementation of :class:`AlgebraicField` class."""
 
+from __future__ import annotations
+
 import functools
 
-from ..core import I, Integer, cacheit, sympify
-from ..core.sympify import CantSympify
-from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
+from ..core import I, cacheit
+from ..core.sympify import CantSympify, sympify
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .field import Field
@@ -13,25 +14,16 @@ from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
 
 
-__all__ = 'AlgebraicField',
-
-
-_algebraic_numbers_cache = {}
-
-
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
-    is_AlgebraicField = is_Algebraic = True
+    is_AlgebraicField = True
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
-            raise DomainError("ground domain must be a rational "
-                              "or an algebraic field")
+            raise DomainError('ground domain must be a rational '
+                              'or an algebraic field')
 
         ext = [sympify(_).as_expr() for _ in ext]
         ext = [_ for _ in ext if _ not in dom]
@@ -67,8 +59,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         obj.ngens = 1
         obj.symbols = obj.gens = obj.ext.as_expr(),
 
-        rep_ring = dom.poly_ring(obj.ext)
-        obj.mod = mod = rep_ring.from_dense(minpoly.rep.to_dense())
+        rep_ring = dom.inject(obj.ext)
+        obj.mod = mod = rep_ring.from_dict(minpoly.rep)
 
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
@@ -80,10 +72,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 dtype_cls = AlgebraicElement
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,),
-                             {"mod": mod, "domain": rep_ring, "_parent": obj})
+                             {'mod': mod, 'domain': rep_ring, '_parent': obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        obj.unit = obj.dtype([dom(1), dom(0)])
+        obj.unit = obj.dtype([dom(0), dom(1)])
 
         obj.zero = obj.dtype([dom(0)])
         obj.one = obj.dtype([dom(1)])
@@ -99,54 +91,46 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return sum(((self.domain.to_expr(c)*self.ext**n).expand()
-                    for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
+    def to_expr(self, element):
+        rep = element.rep
+        return rep.ring.to_expr(rep)
 
-    def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, expr):
+        from ..polys import primitive_element
+
+        if expr in self.domain:
+            return self([expr])
+
         try:
-            K0 = self.domain.algebraic_field(a)
+            _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
         except NotAlgebraic:
-            raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        if a in self.domain:
-            return self([a])
-        else:
-            from ..polys import field_isomorphism
+            raise CoercionFailed(f'{expr} is not an algebraic number')
 
-            coeffs = field_isomorphism(K0, self)
-            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
-
-            return self.dtype(coeffs)/factor
+        K0 = self.domain.algebraic_field(c*expr)
+        return self.convert(K0(rep), K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
 
-    def _from_PythonRationalField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_RealField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
+    def _from_ComplexField(self, a, K0):
+        if self.ext == I:
+            return self.from_expr(K0.to_expr(a))
 
     def _from_AlgebraicField(self, a, K0):
         if K0 == self.domain:
             return self([a])
         elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep.coeff(1) if a else self.zero
+            return a.rep[1] if a else self.zero
 
         from ..polys import field_isomorphism
 
@@ -154,28 +138,21 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         if coeffs is not None:
             if K0.domain == self.domain:
-                return self(dmp_compose(a.rep.to_dense(), coeffs, 0, self.domain))
+                return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
-            raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
+            raise CoercionFailed(f'{K0} is not in a subfield of {self}')
 
     def _from_ExpressionDomain(self, a, K0):
-        expr = K0.to_expr(a)
-        return self.from_expr(expr)
+        return self.from_expr(K0.to_expr(a))
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise NotImplementedError(f'ring of integers of {self} is not implemented yet')
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return self.domain.is_positive(a.LC())
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return self.domain.is_negative(a.LC())
+    def is_normal(self, a):
+        return self.domain.is_normal(a.rep.LC)
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -184,6 +161,9 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         for r in minpoly.all_roots(radicals=False):  # pragma: no branch
             if not minimal_polynomial(ext - r)(0):
                 return r.as_content_primitive()
+
+
+_algebraic_numbers_cache: dict[tuple, AlgebraicField] = {}
 
 
 class ComplexAlgebraicField(AlgebraicField):
@@ -197,13 +177,8 @@ class RealAlgebraicField(ComplexAlgebraicField):
 
     is_RealAlgebraicField = True
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a > 0
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0
+    def is_normal(self, a):
+        return a >= 0
 
 
 class AlgebraicElement(QuotientRingElement, CantSympify):
@@ -219,17 +194,13 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
                 rep = [dom.domain.convert(rep)]
             else:
                 rep = [dom.domain.convert(_) for _ in rep]
-            rep = dom.from_dense(rep)
+            rep = dom.from_list(rep)
 
         self.rep = rep % self.mod
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
         return dict(self.rep)
-
-    def LC(self):
-        """Returns the leading coefficient of ``self``."""
-        return self.rep.LC
 
     @property
     def is_ground(self):
@@ -252,7 +223,7 @@ class ComplexAlgebraicElement(AlgebraicElement):
     @property
     def real(self):
         """Returns real part of ``self``."""
-        return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
+        return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):
@@ -273,43 +244,36 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
     @cacheit
     def __lt__(self, other):
-        from ..polys.rootisolation import dup_count_real_roots
-
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
 
-        dom = self.parent.domain
         coeff, root = self.parent._ext_root
 
-        rep = dmp_compose((self - other).rep.to_dense(),
-                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
+        ring = self.rep.ring
+        rep = (self - other).rep.compose(0, self.parent.unit.rep*coeff)
 
-        while dup_count_real_roots(rep, dom, root.interval.a, root.interval.b):
+        while ring._count_real_roots(rep, root.interval.a, root.interval.b):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
+        return rep(root.interval.center) < 0
 
     @cacheit
     def __int__(self):
-        from ..polys.rootisolation import dup_count_real_roots
-
-        dom = self.parent.domain
         coeff, root = self.parent._ext_root
 
-        rep = dmp_compose(self.rep.to_dense(),
-                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
-        df = dmp_diff_in(rep, 1, 0, 0, dom)
+        ring = self.rep.ring
+        rep = self.rep.compose(0, self.parent.unit.rep*coeff)
+        df = rep.diff()
 
-        while (dup_count_real_roots(df, dom, root.interval.a, root.interval.b) or
-               int(dmp_eval_in(rep, root.interval.b, 0, 0, dom)) !=
-               int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))):
+        while (ring._count_real_roots(df, root.interval.a, root.interval.b) or
+               int(rep(root.interval.b)) != int(rep(root.interval.a))):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))
+        return int(rep(root.interval.a))
 
     @property
     def real(self):

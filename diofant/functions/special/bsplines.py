@@ -1,4 +1,5 @@
-from ...core import Integer, sympify
+from ...core import Integer
+from ...core.sympify import sympify
 from ...sets import Interval
 from .. import Piecewise, piecewise_fold
 
@@ -114,7 +115,7 @@ def bspline_basis(d, knots, n, x, close=True):
 
         result = _add_splines(A, b1, B, b2)
     else:
-        raise ValueError('degree must be non-negative: %r' % n)
+        raise ValueError(f'degree must be non-negative: {n!r}')
     return result
 
 

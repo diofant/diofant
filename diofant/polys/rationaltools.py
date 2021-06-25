@@ -1,9 +1,7 @@
 """Tools for manipulation of rational expressions."""
 
-from ..core import Add, gcd_terms, sympify
-
-
-__all__ = 'together',
+from ..core import Add, gcd_terms
+from ..core.sympify import sympify
 
 
 def together(expr, deep=False):

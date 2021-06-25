@@ -3,8 +3,9 @@
 import warnings
 
 from ..core import (expand_mul, expand_multinomial, nan, oo,
-                    preorder_traversal, sympify, zoo)
-from ..simplify import posify, simplify
+                    preorder_traversal, zoo)
+from ..core.sympify import sympify
+from ..simplify.simplify import posify, simplify
 
 
 __all__ = 'checksol',
@@ -58,7 +59,7 @@ def checksol(f, sol, **flags):
     minimal = flags.get('minimal', False)
 
     if not isinstance(sol, dict):
-        raise ValueError("Expecting dictionary but got %s" % sol)
+        raise ValueError(f'Expecting dictionary but got {sol}')
 
     if sol and not f.has(*list(sol)):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
@@ -123,6 +124,7 @@ def checksol(f, sol, **flags):
             if flags.get('force', True):
                 # don't do a zero check with the positive assumptions in place
                 val = val.subs(reps)
+            val  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         if val == was:
@@ -136,4 +138,4 @@ def checksol(f, sol, **flags):
         was = val
 
     if flags.get('warn', False):
-        warnings.warn("\n\tWarning: could not verify solution %s." % sol)
+        warnings.warn(f'\n\tWarning: could not verify solution {sol}.')

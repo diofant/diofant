@@ -1,16 +1,18 @@
 """This module is intended for solving recurrences (difference equations)."""
 
 import collections
+import functools
 
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
-                    Rational, Symbol, Wild, oo, sympify)
-from ..core.compatibility import default_sort_key, iterable
+                    Rational, Symbol, Wild, oo)
+from ..core.compatibility import iterable
+from ..core.sympify import sympify
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
-from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
+from ..polys import Poly, gcd, lcm, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
-from ..utilities import numbered_symbols
+from ..utilities import default_sort_key, numbered_symbols
 from .ode import constantsimp
 from .solvers import solve
 
@@ -78,7 +80,7 @@ def rsolve_poly(coeffs, f, n):
 
     coeffs = [Poly(coeff, n) for coeff in coeffs]
 
-    g = gcd_list(coeffs + [f], n, polys=True)
+    g = functools.reduce(lambda x, y: gcd(x, y, n, polys=True), coeffs + [f])
     if not g.is_ground:
         coeffs = [quo(c, g, n, polys=False) for c in coeffs]
         f = quo(f, g, n, polys=False)
@@ -627,8 +629,8 @@ def rsolve(f, *y, init={}, simplify=True):
     f = [_.expand() for _ in f]
 
     if len(f) > 1 or len(y) > 1:
-        raise NotImplementedError("Support for systems of recurrence "
-                                  "equations is not implemented yet.")
+        raise NotImplementedError('Support for systems of recurrence '
+                                  'equations is not implemented yet.')
     else:
         f = f[0]
 
@@ -648,22 +650,22 @@ def rsolve(f, *y, init={}, simplify=True):
             if r:
                 c = c.simplify()
                 if not c.is_rational_function(n):
-                    raise ValueError("Rational function of '%s' expected, got '%s'" % (n, c))
+                    raise ValueError(f"Rational function of '{n}' expected, got '{c}'")
                 h_part[int(r[k])] = c
             else:
-                raise ValueError("'%s(%s + Integer)' expected, got '%s'" % (y.func, n, h))
+                raise ValueError(f"'{y.func}({n} + Integer)' expected, got '{h}'")
         else:
             i_term = h * c
             if i_term.find(y.func(Wild('k'))):
-                raise NotImplementedError("Linear recurrence for '%s' "
-                                          "expected, got '%s'" % (y.func, f))
+                raise NotImplementedError(f"Linear recurrence for '{y.func}' "
+                                          f"expected, got '{f}'")
             i_part -= i_term
 
     if not i_part.is_zero:
         if not all(p.is_hypergeometric(n) for p in i_part.as_coeff_add(n)[1]):
-            raise NotImplementedError("Inhomogeneous part should be a sum of "
-                                      "hypergeometric terms in '%s', got "
-                                      "'%s'" % (n, i_part))
+            raise NotImplementedError('Inhomogeneous part should be a sum of '
+                                      f"hypergeometric terms in '{n}', got "
+                                      f"'{i_part}'")
 
     k_min, k_max = min(h_part), max(h_part)
 
@@ -673,7 +675,8 @@ def rsolve(f, *y, init={}, simplify=True):
 
     i_numer, i_denom = i_part.as_numer_denom()
 
-    common = lcm_list([x.as_numer_denom()[1] for x in h_part.values()] + [i_denom])
+    common = functools.reduce(lcm, [x.as_numer_denom()[1]
+                                    for x in h_part.values()] + [i_denom])
 
     if common != 1:
         for k, coeff in h_part.items():
@@ -698,8 +701,7 @@ def rsolve(f, *y, init={}, simplify=True):
             if k.is_Function and k.func == y.func:
                 i = int(k.args[0])
             else:
-                raise ValueError("'%s(Integer)' expected, "
-                                 "got '%s'" % (y.func, k))
+                raise ValueError(f"'{y.func}(Integer)' expected, got '{k}'")
             eq = solution.limit(n, i) - v
             equations.append(eq)
 

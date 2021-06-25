@@ -8,8 +8,9 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, Integer, factor_terms, oo, pi, sympify
+from ..core import Dummy, Eq, Integer, factor_terms, oo, pi
 from ..core.compatibility import is_sequence
+from ..core.sympify import sympify
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
 from ..logic import And, false, true
@@ -27,21 +28,10 @@ from .util import _symbol
 class Undecidable(ValueError):
     """Raised when can't decide on relation."""
 
-    pass
-
 
 class LinearEntity(GeometrySet):
     """A base class for all linear entities (line, ray and segment)
     in a 2-dimensional Euclidean space.
-
-    Attributes
-    ==========
-
-    p1
-    p2
-    coefficients
-    slope
-    points
 
     Notes
     =====
@@ -62,16 +52,9 @@ class LinearEntity(GeometrySet):
             # sometimes we return a single point if we are not given two unique
             # points. This is done in the specific subclass
             raise ValueError(
-                "%s.__new__ requires two unique Points." % cls.__name__)
-        if len(p1) != len(p2):
-            raise ValueError(
-                "%s.__new__ requires two Points of equal dimension." % cls.__name__)
+                f'{cls.__name__}.__new__ requires two unique Points.')
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
-
-    @property
-    def ambient_dimension(self):
-        return len(self.p1)
 
     @property
     def p1(self):
@@ -88,7 +71,7 @@ class LinearEntity(GeometrySet):
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l = Line(p1, p2)
         >>> l.p1
-        Point2D(0, 0)
+        Point(0, 0)
 
         """
         return self.args[0]
@@ -108,7 +91,7 @@ class LinearEntity(GeometrySet):
         >>> p1, p2 = Point(0, 0), Point(5, 3)
         >>> l = Line(p1, p2)
         >>> l.p2
-        Point2D(5, 3)
+        Point(5, 3)
 
         """
         return self.args[1]
@@ -198,19 +181,14 @@ class LinearEntity(GeometrySet):
         if len(lines) <= 1:
             return False
 
-        try:
-            # Get the intersection (if parallel)
-            p = lines[0].intersection(lines[1])
-            if len(p) == 0:
-                return False
+        # Get the intersection (if parallel)
+        p = lines[0].intersection(lines[1])
 
-            # Make sure the intersection is on every linear entity
-            for line in lines[2:]:
-                if p[0] not in line:
-                    return False
-            return True
-        except AttributeError:
-            return False
+        # Make sure the intersection is on every linear entity
+        for line in lines[2:]:
+            if p[0] not in line:
+                return False
+        return True
 
     def is_parallel(self, other):
         """Are two linear entities parallel?
@@ -247,12 +225,9 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        try:
-            a1, b1, c1 = self.coefficients
-            a2, b2, c2 = other.coefficients
-            return bool(simplify(a1*b2 - b1*a2) == 0)
-        except AttributeError:
-            return False
+        a1, b1, c1 = self.coefficients
+        a2, b2, c2 = other.coefficients
+        return bool(simplify(a1*b2 - b1*a2) == 0)
 
     def is_perpendicular(self, other):
         """Are two linear entities perpendicular?
@@ -288,12 +263,9 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        try:
-            a1, b1, c1 = self.coefficients
-            a2, b2, c2 = other.coefficients
-            return bool(simplify(a1*a2 + b1*b2) == 0)
-        except AttributeError:
-            return False
+        a1, b1, c1 = self.coefficients
+        a2, b2, c2 = other.coefficients
+        return bool(simplify(a1*a2 + b1*b2) == 0)
 
     def angle_between(self, other):
         """The angle formed between the two linear entities.
@@ -454,7 +426,7 @@ class LinearEntity(GeometrySet):
         >>> p3 in s1
         True
         >>> l1.perpendicular_segment(Point(4, 0))
-        Segment(Point2D(2, 2), Point2D(4, 0))
+        Segment(Point(2, 2), Point(4, 0))
 
         """
         p = Point(p)
@@ -545,7 +517,7 @@ class LinearEntity(GeometrySet):
         >>> p1, p2 = Point(0, 0), Point(5, 11)
         >>> l1 = Line(p1, p2)
         >>> l1.points
-        (Point2D(0, 0), Point2D(5, 11))
+        (Point(0, 0), Point(5, 11))
 
         """
         return self.p1, self.p2
@@ -592,12 +564,12 @@ class LinearEntity(GeometrySet):
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(Rational(1, 2), 0)
         >>> l1 = Line(p1, p2)
         >>> l1.projection(p3)
-        Point2D(1/4, 1/4)
+        Point(1/4, 1/4)
 
         >>> p4, p5 = Point(10, 0), Point(12, 1)
         >>> s1 = Segment(p4, p5)
         >>> l1.projection(s1)
-        Segment(Point2D(5, 5), Point2D(13/2, 13/2))
+        Segment(Point(5, 5), Point(13/2, 13/2))
 
         """
         tline = Line(self.p1, self.p2)
@@ -625,7 +597,7 @@ class LinearEntity(GeometrySet):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                "Do not know how to project %s onto %s" % (n2, n1))
+                f'Do not know how to project {n2} onto {n1}')
 
         return self.intersection(projected)[0]
 
@@ -653,12 +625,12 @@ class LinearEntity(GeometrySet):
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(7, 7)
         >>> l1 = Line(p1, p2)
         >>> l1.intersection(p3)
-        [Point2D(7, 7)]
+        [Point(7, 7)]
 
         >>> p4, p5 = Point(5, 0), Point(0, 3)
         >>> l2 = Line(p4, p5)
         >>> l1.intersection(l2)
-        [Point2D(15/8, 15/8)]
+        [Point(15/8, 15/8)]
 
         >>> p6, p7 = Point(0, 5), Point(2, 6)
         >>> s1 = Segment(p6, p7)
@@ -706,6 +678,8 @@ class LinearEntity(GeometrySet):
                         elif o.p2 in self:
                             return [Segment(o.p2, self.source)]
                         return []
+                    else:
+                        raise NotImplementedError
                 elif isinstance(self, Segment):
                     if isinstance(o, Ray):
                         return o.intersection(self)
@@ -738,9 +712,10 @@ class LinearEntity(GeometrySet):
                         # Both points of self in o so the whole segment
                         # is in o
                         return [self]
-
-                # Unknown linear entity
-                return []
+                    else:
+                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
 
             # Not parallel, so find the point of intersection
             px = simplify((b1*c2 - c1*b2) / t)
@@ -824,13 +799,13 @@ class LinearEntity(GeometrySet):
         >>> p1, p2 = Point(1, 0), Point(5, 3)
         >>> l1 = Line(p1, p2)
         >>> l1.arbitrary_point()
-        Point2D(4*t + 1, 3*t)
+        Point(4*t + 1, 3*t)
 
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError('Symbol %s already appears in object '
-                             'and cannot be used as a parameter.' % t.name)
+            raise ValueError(f'Symbol {t.name} already appears in object '
+                             'and cannot be used as a parameter.')
         # multiply on the right so the variable gets
         # combined witht he coordinates of the point
         return self.p1 + (self.p2 - self.p1)*t
@@ -856,7 +831,7 @@ class LinearEntity(GeometrySet):
         >>> p3 = l1.random_point()
         >>> # random point - don't know its coords in advance
         >>> p3
-        Point2D(...)
+        Point(...)
         >>> # point should belong to the line
         >>> p3 in l1
         True
@@ -914,7 +889,7 @@ class LinearEntity(GeometrySet):
             elif b != 0:
                 return a/b, 1, c/b
             else:
-                return c
+                raise NotImplementedError
         return _norm(*self.coefficients) == _norm(*other.coefficients)
 
     def __contains__(self, other):
@@ -928,7 +903,7 @@ class LinearEntity(GeometrySet):
             return result
         else:
             raise Undecidable(
-                "can't decide whether '%s' contains '%s'" % (self, other))
+                f"can't decide whether '{self}' contains '{other}'")
 
     def contains(self, other):
         """Subclasses should implement this method and should return
@@ -969,9 +944,9 @@ class Line(LinearEntity):
 
     >>> L = Line(Point(2, 3), Point(3, 5))
     >>> L
-    Line(Point2D(2, 3), Point2D(3, 5))
+    Line(Point(2, 3), Point(3, 5))
     >>> L.points
-    (Point2D(2, 3), Point2D(3, 5))
+    (Point(2, 3), Point(3, 5))
     >>> L.equation()
     -2*x + y + 1
     >>> L.coefficients
@@ -980,7 +955,7 @@ class Line(LinearEntity):
     Instantiate with keyword ``slope``:
 
     >>> Line(Point(0, 0), slope=0)
-    Line(Point2D(0, 0), Point2D(1, 0))
+    Line(Point(0, 0), Point(1, 0))
 
     Instantiate with another linear object
 
@@ -996,11 +971,7 @@ class Line(LinearEntity):
         else:
             p1 = Point(p1)
         if pt is not None and slope is None:
-            try:
-                p2 = Point(pt)
-            except NotImplementedError:
-                raise ValueError('The 2nd argument was not a valid Point. '
-                                 'If it was a slope, enter it with keyword "slope".')
+            p2 = Point(pt)
         elif slope is not None and pt is None:
             slope = sympify(slope)
             if slope.is_finite is False:
@@ -1146,8 +1117,7 @@ class Line(LinearEntity):
 
         """
         if not isinstance(o, Point):
-            if is_sequence(o):
-                o = Point(o)
+            o = Point(o)
         a, b, c = self.coefficients
         if 0 in (a, b):
             return self.perpendicular_segment(o).length
@@ -1177,13 +1147,6 @@ class Ray(LinearEntity):
         If given as an angle it is interpreted in radians with the positive
         direction being ccw.
 
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-
     See Also
     ========
 
@@ -1201,11 +1164,11 @@ class Ray(LinearEntity):
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r
-    Ray(Point2D(2, 3), Point2D(3, 5))
+    Ray(Point(2, 3), Point(3, 5))
     >>> r.points
-    (Point2D(2, 3), Point2D(3, 5))
+    (Point(2, 3), Point(3, 5))
     >>> r.source
-    Point2D(2, 3)
+    Point(2, 3)
     >>> r.xdirection
     oo
     >>> r.ydirection
@@ -1239,12 +1202,14 @@ class Ray(LinearEntity):
                     if c.denominator == 2:
                         if c.numerator == 1:
                             p2 = p1 + Point(0, 1)
-                        elif c.numerator == 3:
+                        else:
+                            assert c.numerator == 3
                             p2 = p1 + Point(0, -1)
                     elif c.denominator == 1:
                         if c.numerator == 0:
                             p2 = p1 + Point(1, 0)
-                        elif c.numerator == 1:
+                        else:
+                            assert c.numerator == 1
                             p2 = p1 + Point(-1, 0)
                 if p2 is None:
                     c *= pi
@@ -1276,7 +1241,7 @@ class Ray(LinearEntity):
         >>> p1, p2 = Point(0, 0), Point(4, 1)
         >>> r1 = Ray(p1, p2)
         >>> r1.source
-        Point2D(0, 0)
+        Point(0, 0)
 
         """
         return self.p1
@@ -1296,7 +1261,7 @@ class Ray(LinearEntity):
         >>> p1, p2 = Point(0, 0), Point(4, 1)
         >>> r1 = Ray(p1, p2)
         >>> r1.direction
-        Point2D(4, 1)
+        Point(4, 1)
 
         """
         return self.p2 - self.p1
@@ -1385,8 +1350,7 @@ class Ray(LinearEntity):
 
         """
         if not isinstance(o, Point):
-            if is_sequence(o):
-                o = Point(o)
+            o = Point(o)
         s = self.perpendicular_segment(o)
         if isinstance(s, Point):
             if self.contains(s):
@@ -1426,12 +1390,6 @@ class Ray(LinearEntity):
         """
         t = _symbol(parameter)
         return [t, 0, 10]
-
-    def equals(self, other):
-        """Returns True if self and other are the same mathematical entities."""
-        if not isinstance(other, Ray):
-            return False
-        return self.source == other.source and other.p2 in self
 
     def contains(self, o):
         """
@@ -1483,7 +1441,7 @@ class Ray(LinearEntity):
                 if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
-                    'Cannot determine if %s is in %s' % (o, self))
+                    f'Cannot determine if {o} is in {self}')
             else:
                 # Points are not collinear, so the rays are not parallel
                 # and hence it is impossible for self to contain o
@@ -1502,12 +1460,6 @@ class Segment(LinearEntity):
     p1 : diofant.geometry.point.Point
     p2 : diofant.geometry.point.Point
 
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : diofant.geometry.point.Point
-
     See Also
     ========
 
@@ -1523,18 +1475,18 @@ class Segment(LinearEntity):
     ========
 
     >>> Segment((1, 0), (1, 1))  # tuples are interpreted as pts
-    Segment(Point2D(1, 0), Point2D(1, 1))
+    Segment(Point(1, 0), Point(1, 1))
     >>> s = Segment(Point(4, 3), Point(1, 1))
     >>> s
-    Segment(Point2D(1, 1), Point2D(4, 3))
+    Segment(Point(1, 1), Point(4, 3))
     >>> s.points
-    (Point2D(1, 1), Point2D(4, 3))
+    (Point(1, 1), Point(4, 3))
     >>> s.slope
     2/3
     >>> s.length
     sqrt(13)
     >>> s.midpoint
-    Point2D(5/2, 2)
+    Point(5/2, 2)
 
     """
 
@@ -1609,10 +1561,10 @@ class Segment(LinearEntity):
         >>> p1, p2, p3 = Point(0, 0), Point(6, 6), Point(5, 1)
         >>> s1 = Segment(p1, p2)
         >>> s1.perpendicular_bisector()
-        Line(Point2D(3, 3), Point2D(9, -3))
+        Line(Point(3, 3), Point(9, -3))
 
         >>> s1.perpendicular_bisector(p3)
-        Segment(Point2D(3, 3), Point2D(5, 1))
+        Segment(Point(3, 3), Point(5, 1))
 
         """
         l = LinearEntity.perpendicular_line(self, self.midpoint)
@@ -1656,7 +1608,7 @@ class Segment(LinearEntity):
         >>> p1, p2 = Point(0, 0), Point(4, 3)
         >>> s1 = Segment(p1, p2)
         >>> s1.midpoint
-        Point2D(2, 3/2)
+        Point(2, 3/2)
 
         """
         return Point.midpoint(self.p1, self.p2)
@@ -1696,7 +1648,8 @@ class Segment(LinearEntity):
                 distance = Point.distance(
                     self.p1 + Point(t*seg_vector.x, t*seg_vector.y), o)
             return distance
-        raise NotImplementedError()
+        else:
+            raise NotImplementedError
 
     def contains(self, other):
         """

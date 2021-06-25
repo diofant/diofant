@@ -1,8 +1,9 @@
 from mpmath import mp, workprec
 
 from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
-                     Rational, oo, pi, sympify, zoo)
+                     Rational, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
 from ..elementary.exponential import exp, log
@@ -79,7 +80,7 @@ class gamma(Function):
 
     * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
-    * http://mathworld.wolfram.com/GammaFunction.html
+    * https://mathworld.wolfram.com/GammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/Gamma/
 
     """
@@ -178,9 +179,9 @@ class gamma(Function):
     def _latex(self, printer, exp=None):
         aa = printer._print(self.args[0])
         if exp:
-            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)
+            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)  # noqa: SFS101
         else:
-            return r'\Gamma{\left(%s \right)}' % aa
+            return r'\Gamma{\left(%s \right)}' % aa  # noqa: SFS101
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -242,8 +243,8 @@ class lowergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from .hyper import meijerg
         from .. import unpolarify
+        from .hyper import meijerg
         if argindex == 2:
             a, z = self.args
             return exp(-unpolarify(z))*z**(a - 1)
@@ -386,8 +387,8 @@ class uppergamma(Function):
     """
 
     def fdiff(self, argindex=2):
-        from .hyper import meijerg
         from .. import unpolarify
+        from .hyper import meijerg
         if argindex == 2:
             a, z = self.args
             return -exp(-unpolarify(z))*z**(a - 1)
@@ -406,8 +407,8 @@ class uppergamma(Function):
 
     @classmethod
     def eval(cls, a, z):
-        from .error_functions import expint
         from .. import unpolarify
+        from .error_functions import expint
         if z.is_Number:
             if z is oo:
                 return Integer(0)
@@ -501,22 +502,22 @@ class polygamma(Function):
 
     >>> diff(polygamma(0, x), x)
     polygamma(1, x)
-    >>> diff(polygamma(0, x), x, 2)
+    >>> diff(polygamma(0, x), (x, 2))
     polygamma(2, x)
-    >>> diff(polygamma(0, x), x, 3)
+    >>> diff(polygamma(0, x), (x, 3))
     polygamma(3, x)
     >>> diff(polygamma(1, x), x)
     polygamma(2, x)
-    >>> diff(polygamma(1, x), x, 2)
+    >>> diff(polygamma(1, x), (x, 2))
     polygamma(3, x)
     >>> diff(polygamma(2, x), x)
     polygamma(3, x)
-    >>> diff(polygamma(2, x), x, 2)
+    >>> diff(polygamma(2, x), (x, 2))
     polygamma(4, x)
 
     >>> diff(polygamma(n, x), x)
     polygamma(n + 1, x)
-    >>> diff(polygamma(n, x), x, 2)
+    >>> diff(polygamma(n, x), (x, 2))
     polygamma(n + 2, x)
 
     We can rewrite polygamma functions in terms of harmonic numbers:
@@ -525,7 +526,7 @@ class polygamma(Function):
     harmonic(x - 1) - EulerGamma
     >>> polygamma(2, x).rewrite(harmonic)
     2*harmonic(x - 1, 3) - 2*zeta(3)
-    >>> ni = Symbol("n", integer=True)
+    >>> ni = Symbol('n', integer=True)
     >>> polygamma(ni, x).rewrite(harmonic)
     (-1)**(n + 1)*(-harmonic(x - 1, n + 1) + zeta(n + 1))*factorial(n)
 
@@ -544,7 +545,7 @@ class polygamma(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Polygamma_function
-    * http://mathworld.wolfram.com/PolygammaFunction.html
+    * https://mathworld.wolfram.com/PolygammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
@@ -736,7 +737,7 @@ class loggamma(Function):
 
     and for symbolic values:
 
-    >>> n = Symbol("n", integer=True, positive=True)
+    >>> n = Symbol('n', integer=True, positive=True)
     >>> loggamma(n)
     log(gamma(n))
     >>> loggamma(-n)
@@ -809,7 +810,7 @@ class loggamma(Function):
 
     * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
-    * http://mathworld.wolfram.com/LogGammaFunction.html
+    * https://mathworld.wolfram.com/LogGammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/LogGamma/
 
     """
@@ -845,7 +846,7 @@ class loggamma(Function):
             n = p // q
             p = p - n*q
             assert p.is_positive and q.is_positive and p < q
-            k = Dummy("k")
+            k = Dummy('k')
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
             elif n.is_negative:
@@ -920,7 +921,7 @@ def digamma(x):
     ==========
 
     * https://en.wikipedia.org/wiki/Digamma_function
-    * http://mathworld.wolfram.com/DigammaFunction.html
+    * https://mathworld.wolfram.com/DigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
     """
@@ -951,7 +952,7 @@ def trigamma(x):
     ==========
 
     * https://en.wikipedia.org/wiki/Trigamma_function
-    * http://mathworld.wolfram.com/TrigammaFunction.html
+    * https://mathworld.wolfram.com/TrigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
     """

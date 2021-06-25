@@ -5,7 +5,7 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using Diofant with NumPy
 
-import sys
+import distutils
 
 import mpmath
 import pytest
@@ -41,11 +41,11 @@ def test_systematic_basic():
         numpy_array / diofant_object
         diofant_object ** numpy_array
         numpy_array ** diofant_object
-    x = Symbol("x")
-    y = Symbol("y")
+    x = Symbol('x')
+    y = Symbol('y')
     diofant_objs = [
         Rational(2, 3),
-        Float("1.3"),
+        Float('1.3'),
         x,
         y,
         pow(x, y)*y,
@@ -72,7 +72,7 @@ def test_basics():
     assert numpy.array(1) == numpy.array(one)
     assert numpy.array([one]) == numpy.array([one])
     assert numpy.array([x]) == numpy.array([x])
-    assert numpy.array(x) == numpy.array(Symbol("x"))
+    assert numpy.array(x) == numpy.array(Symbol('x'))
     assert numpy.array(one + x) == numpy.array(1 + x)
 
     X = numpy.array([one, zero, zero])
@@ -85,11 +85,11 @@ def test_arrays():
     zero = Integer(0)
     X = numpy.array([one, zero, zero])
     Y = one*X
-    X = numpy.array([Symbol("a") + Rational(1, 2)])
+    X = numpy.array([Symbol('a') + Rational(1, 2)])
     Y = X + X
-    assert Y == numpy.array([1 + 2*Symbol("a")])
+    assert Y == numpy.array([1 + 2*Symbol('a')])
     Y = Y + 1
-    assert Y == numpy.array([2 + 2*Symbol("a")])
+    assert Y == numpy.array([2 + 2*Symbol('a')])
     Y = X - X
     assert Y == numpy.array([0])
 
@@ -113,11 +113,11 @@ def test_conversion2():
     zero = Integer(0)
     X = list2numpy([one, zero, zero])
     Y = one*X
-    X = list2numpy([Symbol("a") + Rational(1, 2)])
+    X = list2numpy([Symbol('a') + Rational(1, 2)])
     Y = X + X
-    assert Y == numpy.array([1 + 2*Symbol("a")])
+    assert Y == numpy.array([1 + 2*Symbol('a')])
     Y = Y + 1
-    assert Y == numpy.array([2 + 2*Symbol("a")])
+    assert Y == numpy.array([2 + 2*Symbol('a')])
     Y = X - X
     assert Y == numpy.array([0])
 
@@ -202,28 +202,28 @@ def test_sympyissue_3728():
     assert (Rational(1, 2)*numpy.array([2*x, 0]) == numpy.array([x, 0])).all()
     assert (Rational(1, 2) + numpy.array(
         [2*x, 0]) == numpy.array([2*x + Rational(1, 2), Rational(1, 2)])).all()
-    assert (Float("0.5")*numpy.array([2*x, 0]) == numpy.array([Float("1.0")*x, 0])).all()
-    assert (Float("0.5") + numpy.array(
-        [2*x, 0]) == numpy.array([2*x + Float("0.5"), Float("0.5")])).all()
+    assert (Float('0.5')*numpy.array([2*x, 0]) == numpy.array([Float('1.0')*x, 0])).all()
+    assert (Float('0.5') + numpy.array(
+        [2*x, 0]) == numpy.array([2*x + Float('0.5'), Float('0.5')])).all()
 
 
 @conserve_mpmath_dps
-@pytest.mark.skipif(sys.version_info >= (3, 8), reason="Broken on 3.8")
 def test_lambdify():
     mpmath.mp.dps = 16
-    sin02 = mpmath.mpf("0.198669330795061215459412627")
-    f = lambdify(x, sin(x), "numpy")
+    sin02 = mpmath.mpf('0.198669330795061215459412627')
+    f = lambdify(x, sin(x), 'numpy')
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
-    try:
-        f(x)  # if this succeeds, it can't be a numpy function
-        assert False
-    except AttributeError:
-        pass
+    if distutils.version.LooseVersion(numpy.__version__) >= distutils.version.LooseVersion('1.17'):
+        with pytest.raises(TypeError):
+            f(x)
+    else:
+        with pytest.raises(AttributeError):
+            f(x)
 
 
 def test_lambdify_numpy_matrix():
-    f = lambdify(x, Matrix([[x, 2*x], [1, 2]]), [{'ImmutableMatrix': numpy.array}, "numpy"])
+    f = lambdify(x, Matrix([[x, 2*x], [1, 2]]), [{'ImmutableMatrix': numpy.array}, 'numpy'])
     assert (f(1) == numpy.array([[1, 2], [1, 2]])).all()
 
 
@@ -231,7 +231,7 @@ def test_lambdify_matrix_multi_input():
     M = Matrix([[x**2, x*y, x*z],
                 [y*x, y**2, y*z],
                 [z*x, z*y, z**2]])
-    f = lambdify((x, y, z), M, [{'ImmutableMatrix': numpy.array}, "numpy"])
+    f = lambdify((x, y, z), M, [{'ImmutableMatrix': numpy.array}, 'numpy'])
 
     xh, yh, zh = 1.0, 2.0, 3.0
     expected = numpy.array([[xh**2, xh*yh, xh*zh],
@@ -241,7 +241,6 @@ def test_lambdify_matrix_multi_input():
     assert numpy.allclose(actual, expected)
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 8), reason="Broken on 3.8")
 def test_lambdify_transl():
     for sym, mat in NUMPY_TRANSLATIONS.items():
         assert sym in dir(diofant)
@@ -251,8 +250,8 @@ def test_lambdify_transl():
 def test_symarray():
     """Test creation of numpy arrays of diofant symbols."""
     syms = symbols('_0,_1,_2')
-    s1 = symarray("", 3)
-    s2 = symarray("", 3)
+    s1 = symarray('', 3)
+    s2 = symarray('', 3)
     numpy.testing.assert_array_equal(s1, numpy.array(syms, dtype=object))
     assert s1[0] == s2[0]
 

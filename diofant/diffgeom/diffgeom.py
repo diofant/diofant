@@ -1,4 +1,7 @@
-from functools import reduce
+from __future__ import annotations
+
+import functools
+import typing
 from itertools import permutations
 
 from ..combinatorics import Permutation
@@ -50,7 +53,7 @@ class Patch(Basic):
 
     On a manifold one can have many patches that do not always include the
     whole manifold. On these patches coordinate charts can be defined that
-    permit the parametrization of any point on the patch in terms of a tuple
+    permit the parameterization of any point on the patch in terms of a tuple
     of real numbers (the coordinates).
 
     This object serves as a container/parent for all coordinate system charts
@@ -184,7 +187,7 @@ class CoordSystem(Basic):
         # names is not in args because it is related only to printing, not to
         # identifying the CoordSystem instance.
         if not names:
-            names = ['%s_%d' % (name, i) for i in range(patch.dim)]
+            names = [f'{name}_{i:d}' for i in range(patch.dim)]
         if isinstance(names, Tuple):
             obj = Basic.__new__(cls, name, patch, names)
         else:
@@ -511,7 +514,7 @@ class BaseScalarField(Expr):
         return simplify(coords[self._index]).doit()
 
     # XXX Workaround for limitations on the content of args
-    free_symbols = set()
+    free_symbols: set[typing.Any] = set()
 
     def doit(self, **hints):
         return self
@@ -600,7 +603,7 @@ class BaseVectorField(Expr):
         # First step: e_x(x+r**2) -> e_x(x) + 2*r*e_x(r)
         d_var = self._coord_sys._dummy
         # TODO: you need a real dummy function for the next line
-        d_funcs = [Function('_#_%s' % i)(d_var) for i,
+        d_funcs = [Function(f'_#_{i}')(d_var) for i,
                    b in enumerate(base_scalars)]
         d_result = scalar_field.subs(list(zip(base_scalars, d_funcs)))
         d_result = d_result.diff(d_var)
@@ -1043,7 +1046,7 @@ class BaseCovarDerivativeOp(Expr):
         # First step: replace all vectors with something susceptible to
         # derivation and do the derivation
         # TODO: you need a real dummy function for the next line
-        d_funcs = [Function('_#_%s' % i)(wrt_scalar) for i,
+        d_funcs = [Function(f'_#_{i}')(wrt_scalar) for i,
                    b in enumerate(vectors)]
         d_result = field.subs(list(zip(vectors, d_funcs)))
         d_result = wrt_vector(d_result)
@@ -1155,7 +1158,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
+    >>> from diofant.diffgeom.rn import R2_p, R2_r
 
     Specify a starting point and a vector field:
 
@@ -1208,7 +1211,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     def iter_vfield(scalar_field, i):
         """Return ``vector_field`` called `i` times on ``scalar_field``."""
-        return reduce(lambda s, v: v.rcall(s), [vector_field, ]*i, scalar_field)
+        return functools.reduce(lambda s, v: v.rcall(s), [vector_field, ]*i, scalar_field)
 
     def taylor_terms_per_coord(coord_function):
         """Return the series for one of the coordinates."""
@@ -1293,7 +1296,7 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
     if contravariant_order(vector_field) != 1 or covariant_order(vector_field):
         raise ValueError('The supplied field was not a vector field.')
     coord_sys = coord_sys if coord_sys else start_point._coord_sys
-    gammas = [Function('f_%d' % i)(param) for i in range(
+    gammas = [Function(f'f_{i:d}')(param) for i in range(
         start_point._coord_sys.dim)]
     arbitrary_p = Point(coord_sys, gammas)
     coord_functions = coord_sys.coord_functions()

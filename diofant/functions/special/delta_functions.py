@@ -1,5 +1,6 @@
-from ...core import Eq, Function, Integer, Rational, diff, sympify
+from ...core import Eq, Function, Integer, Rational, diff
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...polys.polyerrors import PolynomialError
 from ..elementary.complexes import im, sign
 from ..elementary.piecewise import Piecewise
@@ -38,7 +39,7 @@ class DiracDelta(Function):
     References
     ==========
 
-    * http://mathworld.wolfram.com/DeltaFunction.html
+    * https://mathworld.wolfram.com/DeltaFunction.html
 
     """
 
@@ -58,8 +59,8 @@ class DiracDelta(Function):
     def eval(cls, arg, k=0):
         k = sympify(k)
         if not k.is_Integer or k.is_negative:
-            raise ValueError("Error: the second argument of DiracDelta must be \
-            a non-negative integer, %s given instead." % (k,))
+            raise ValueError('Error: the second argument of DiracDelta must be '
+                             f'a non-negative integer, {k} given instead.')
         arg = sympify(arg)
         if arg.is_nonzero:
             return Integer(0)
@@ -202,7 +203,7 @@ class Heaviside(Function):
     def eval(cls, arg):
         arg = sympify(arg)
         if im(arg).is_nonzero:
-            raise ValueError("Function defined only for Real Values. Complex part: %s  found in %s ." % (repr(im(arg)), repr(arg)) )
+            raise ValueError(f'Function defined only for Real Values. Complex part: {im(arg)!r}  found in {arg!r} .' )
         elif arg.is_negative:
             return Integer(0)
         elif arg.is_zero:

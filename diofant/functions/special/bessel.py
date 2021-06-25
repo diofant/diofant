@@ -2,8 +2,9 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
-                     cacheit, nan, oo, pi, sympify, zoo)
+                     cacheit, nan, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs, im, re
@@ -69,7 +70,7 @@ class BesselBase(Function):
 
     def _eval_expand_func(self, **hints):
         nu, z, f = self.order, self.argument, self.__class__
-        if nu.is_extended_real:
+        if nu.is_real:
             if (nu - 1).is_positive:
                 return (-self._a*self._b*f(nu - 2, z)._eval_expand_func() +
                         2*self._a*(nu - 1)*f(nu - 1, z)._eval_expand_func()/z)
@@ -414,7 +415,7 @@ class besselk(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if im(z) in (oo, -oo):
+        if z in (oo, -oo, I*oo, -I*oo):
             return Integer(0)
 
         if nu.is_integer:
@@ -658,7 +659,7 @@ class yn(SphericalBesselBase):
                (fn(-n - 1, z) * sin(z) + (-1)**(-n) * fn(n, z) * cos(z))
 
 
-def jn_zeros(n, k, method="diofant", dps=15):
+def jn_zeros(n, k, method='diofant', dps=15):
     """
     Zeros of the spherical Bessel function of the first kind.
 
@@ -687,25 +688,25 @@ def jn_zeros(n, k, method="diofant", dps=15):
     """
     from math import pi
 
-    if method == "diofant":
+    if method == 'diofant':
         prec = dps_to_prec(dps)
         return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
                                               int(l)), prec)
                 for l in range(1, k + 1)]
-    elif method == "scipy":
+    elif method == 'scipy':
         from scipy.optimize import newton
         from scipy.special import spherical_jn
 
         def f(x):
             return spherical_jn(n, x)
     else:
-        raise NotImplementedError("Unknown method.")
+        raise NotImplementedError('Unknown method.')
 
     def solver(f, x):
-        if method == "scipy":
+        if method == 'scipy':
             root = newton(f, x)
         else:
-            raise NotImplementedError("Unknown method.")
+            raise NotImplementedError('Unknown method.')
         return root
 
     # we need to approximate the position of the first root:
@@ -795,7 +796,7 @@ class airyai(AiryBase):
 
     >>> diff(airyai(z), z)
     airyaiprime(z)
-    >>> diff(airyai(z), z, 2)
+    >>> diff(airyai(z), (z, 2))
     z*airyai(z)
 
     Series expansion is also supported:
@@ -827,7 +828,7 @@ class airyai(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -886,10 +887,10 @@ class airyai(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -949,7 +950,7 @@ class airybi(AiryBase):
 
     >>> diff(airybi(z), z)
     airybiprime(z)
-    >>> diff(airybi(z), z, 2)
+    >>> diff(airybi(z), (z, 2))
     z*airybi(z)
 
     Series expansion is also supported:
@@ -981,7 +982,7 @@ class airybi(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1044,10 +1045,10 @@ class airybi(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1068,8 +1069,8 @@ class _airyais(Function):
         return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:
@@ -1097,8 +1098,8 @@ class _airybis(Function):
         return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...simplify import combsimp
         from ...series import Order
+        from ...simplify import combsimp
         point = args0[0]
 
         if point is oo:
@@ -1154,7 +1155,7 @@ class airyaiprime(AiryBase):
 
     >>> diff(airyaiprime(z), z)
     z*airyai(z)
-    >>> diff(airyaiprime(z), z, 2)
+    >>> diff(airyaiprime(z), (z, 2))
     z*airyaiprime(z) + airyai(z)
 
     Series expansion is also supported:
@@ -1186,7 +1187,7 @@ class airyaiprime(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1241,10 +1242,10 @@ class airyaiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1297,7 +1298,7 @@ class airybiprime(AiryBase):
 
     >>> diff(airybiprime(z), z)
     z*airybi(z)
-    >>> diff(airybiprime(z), z, 2)
+    >>> diff(airybiprime(z), (z, 2))
     z*airybiprime(z) + airybi(z)
 
     Series expansion is also supported:
@@ -1329,7 +1330,7 @@ class airybiprime(AiryBase):
     * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
-    * http://mathworld.wolfram.com/AiryFunctions.html
+    * https://mathworld.wolfram.com/AiryFunctions.html
 
     """
 
@@ -1386,10 +1387,10 @@ class airybiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]

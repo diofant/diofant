@@ -10,8 +10,9 @@ diofant.plotting.plot
 
 """
 
-from ..core import Dummy, Eq, Symbol, Tuple, sympify
+from ..core import Dummy, Eq, Symbol, Tuple
 from ..core.relational import Equality, GreaterThan, LessThan, Relational
+from ..core.sympify import sympify
 from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens
@@ -61,8 +62,8 @@ class ImplicitSeries(BaseSeries):
             expr = self.expr.lhs - self.expr.rhs
             equal = True
         elif self.expr.has(Equality):  # pragma: no cover
-            raise NotImplementedError("The expression is not supported for "
-                                      "plotting in uniform meshed plot.")
+            raise NotImplementedError('The expression is not supported for '
+                                      'plotting in uniform meshed plot.')
         else:
             expr = self.expr
         np = import_module('numpy')
@@ -70,7 +71,7 @@ class ImplicitSeries(BaseSeries):
         yarray = np.linspace(self.start_y, self.end_y, self.nb_of_points)
         x_grid, y_grid = np.meshgrid(xarray, yarray)
 
-        func = lambdify((self.var_x, self.var_y), expr, "numpy")
+        func = lambdify((self.var_x, self.var_y), expr, 'numpy')
         z_grid = func(x_grid, y_grid)
         z_grid[np.ma.where(z_grid < 0)] = -1
         z_grid[np.ma.where(z_grid > 0)] = 1
@@ -212,8 +213,8 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     range_symbols = Tuple(*flatten(xyvar)).free_symbols
     undeclared = free_symbols - range_symbols
     if len(free_symbols & range_symbols) > 2:  # pragma: no cover
-        raise NotImplementedError("Implicit plotting is not implemented for "
-                                  "more than 2 variables")
+        raise NotImplementedError('Implicit plotting is not implemented for '
+                                  'more than 2 variables')
 
     # Create default ranges if the range is not provided.
     default_range = Tuple(-5, 5)
@@ -223,7 +224,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
             return Tuple(s) + default_range
         if len(s) == 3:
             return Tuple(*s)
-        raise ValueError('symbol or `(symbol, min, max)` expected but got %s' % str(s))
+        raise ValueError(f'symbol or `(symbol, min, max)` expected but got {s!s}')
 
     if len(xyvar) == 0:
         xyvar = list(_sort_gens(free_symbols))
@@ -231,7 +232,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     x = var_start_end_x[0]
     if len(xyvar) != 2:
         if x in undeclared or not undeclared:
-            xyvar.append(Dummy('f(%s)' % x.name))
+            xyvar.append(Dummy(f'f({x.name})'))
         else:
             xyvar.append(undeclared.pop())
     var_start_end_y = _range_tuple(xyvar[1])
@@ -239,7 +240,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     use_interval = kwargs.pop('adaptive', False)
     nb_of_points = kwargs.pop('points', 300)
     depth = kwargs.pop('depth', 0)
-    line_color = kwargs.pop('line_color', "blue")
+    line_color = kwargs.pop('line_color', 'blue')
     # Check whether the depth is greater than 4 or less than 0.
     if depth > 4:
         depth = 4

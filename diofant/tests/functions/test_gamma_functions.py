@@ -237,10 +237,11 @@ def test_polygamma():
     assert polygamma(2, x).rewrite(zeta) == -2*zeta(3, x)
 
     assert polygamma(3, 7*x).diff(x) == 7*polygamma(4, 7*x)
+    pytest.raises(ArgumentIndexError, lambda: polygamma(3, 7*x).fdiff(3))
 
     assert polygamma(0, x).rewrite(harmonic) == harmonic(x - 1) - EulerGamma
     assert polygamma(2, x).rewrite(harmonic) == 2*harmonic(x - 1, 3) - 2*zeta(3)
-    ni = Symbol("n", integer=True)
+    ni = Symbol('n', integer=True)
     assert polygamma(ni, x).rewrite(harmonic) == (-1)**(ni + 1)*(-harmonic(x - 1, ni + 1)
                                                                  + zeta(ni + 1))*factorial(ni)
     assert polygamma(x, y).rewrite(harmonic) == polygamma(x, y)
@@ -324,7 +325,7 @@ def test_loggamma():
     assert loggamma(3) == log(2)
     assert loggamma(4) == log(6)
 
-    n = Symbol("n", integer=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
     assert loggamma(n) == log(gamma(n))
     assert loggamma(-n) == oo
     assert loggamma(n/2) == log(2**(-n + 1)*sqrt(pi)*gamma(n)/gamma(n/2 + Rational(1, 2)))

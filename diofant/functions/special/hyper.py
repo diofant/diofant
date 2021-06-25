@@ -1,11 +1,12 @@
 """Hypergeometric and Meijer G-functions."""
 
-from functools import reduce
+import functools
+import math
 
 import mpmath
 
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, Tuple, ilcm, oo, pi, zoo)
+                     Ne, Rational, Tuple, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
                 sin, sinh, sqrt)
@@ -198,8 +199,8 @@ class hyper(TupleParametersBase):
         return fac*hyper(nap, nbq, self.argument)
 
     def _eval_expand_func(self, **hints):
-        from .gamma_functions import gamma
         from ...simplify import hyperexpand
+        from .gamma_functions import gamma
         if len(self.ap) == 2 and len(self.bq) == 1 and self.argument == 1:
             a, b = self.ap
             c = self.bq[0]
@@ -207,9 +208,9 @@ class hyper(TupleParametersBase):
         return hyperexpand(self)
 
     def _eval_rewrite_as_Sum(self, ap, bq, z):
-        from .. import factorial, RisingFactorial, Piecewise
         from ...concrete import Sum
-        n = Dummy("n", integer=True)
+        from .. import Piecewise, RisingFactorial, factorial
+        n = Dummy('n', integer=True)
         rfap = Tuple(*[RisingFactorial(a, n) for a in ap])
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
         coeff = Mul(*rfap) / Mul(*rfbq)
@@ -440,22 +441,22 @@ class meijerg(TupleParametersBase):
             args = [(args[0], args[1]), (args[2], args[3]), args[4]]
         if len(args) != 3:
             raise TypeError("args must be either as, as', bs, bs', z or "
-                            "as, bs, z")
+                            'as, bs, z')
 
         def tr(p):
             if len(p) != 2:
-                raise TypeError("wrong argument")
+                raise TypeError('wrong argument')
             return TupleArg(_prep_tuple(p[0]), _prep_tuple(p[1]))
 
         arg0, arg1 = tr(args[0]), tr(args[1])
         if Tuple(arg0, arg1).has(oo, zoo,
                                  -oo):
-            raise ValueError("G-function parameters must be finite")
+            raise ValueError('G-function parameters must be finite')
 
         if any((a - b).is_integer and (a - b).is_positive
                for a in arg0[0] for b in arg1[0]):
-            raise ValueError("no parameter a1, ..., an may differ from "
-                             "any b1, ..., bm by a positive integer")
+            raise ValueError('no parameter a1, ..., an may differ from '
+                             'any b1, ..., bm by a positive integer')
 
         # TODO should we check convergence conditions?
         return Function.__new__(cls, arg0, arg1, args[2])
@@ -585,14 +586,14 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return reduce(ilcm, (x.denominator for x in l), 1)
+            return functools.reduce(math.lcm, (x.denominator for x in l), 1)
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)
         if p == q:
             if beta == oo or alpha == oo:
                 return oo
-            return 2*pi*ilcm(alpha, beta)
+            return 2*pi*math.lcm(alpha, beta)
         elif p < q:
             return 2*pi*beta
         else:
@@ -610,7 +611,7 @@ class meijerg(TupleParametersBase):
         # less than (say) n*pi, we put r=1/n, compute z' = root(z, n)
         # (carefully so as not to loose the branch information), and evaluate
         # G(z'**(1/r)) = G(z'**n) = G(z).
-        from .. import exp_polar, ceiling
+        from .. import ceiling, exp_polar
         z = self.argument
         znum = self.argument.evalf(prec, strict=False)
         if znum.has(exp_polar):

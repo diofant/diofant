@@ -259,7 +259,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         n = int(n)
         f = self.function
         if len(self.limits) != 1:
-            raise ValueError("More than 1 limit")
+            raise ValueError('More than 1 limit')
         i, a, b = self.limits[0]
         if (a - b).is_positive:
             if a - b == 1:
@@ -309,7 +309,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 break
             if k <= n:
                 s += term
-                g = g.diff(i, 2, simplify=False)
+                g = g.diff((i, 2), simplify=False)
         return s + iterm, abs(term)
 
     def reverse_order(self, *indices):
@@ -409,9 +409,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         We use Sister Celine's algorithm, see :cite:`Petkovsek1997AeqB`, Ch. 4.
 
         """
-        from ..core import expand_func, Mul
+        from ..core import Mul, expand_func
         from ..functions import gamma
-        from ..polys import together, factor
+        from ..polys import factor, together
         from ..simplify import collect
 
         if len(self.variables) > 1:
@@ -539,7 +539,7 @@ def telescopic(L, R, limits):
     if L.is_Add or R.is_Add:
         return
 
-    k = Wild("k")
+    k = Wild('k')
     sol = (-R).match(L.subs({i: i + k}))
     if sol:
         s = sol[k]
@@ -553,8 +553,8 @@ def telescopic(L, R, limits):
 
 
 def eval_sum(f, limits):
-    from .delta import deltasummation, _has_simple_delta
     from ..functions import KroneckerDelta
+    from .delta import _has_simple_delta, deltasummation
 
     (i, a, b) = limits
     if f == 0:
@@ -594,7 +594,7 @@ def eval_sum_direct(expr, limits):
 
 
 def eval_sum_symbolic(f, limits):
-    from ..functions import harmonic, bernoulli
+    from ..functions import bernoulli, harmonic
 
     f_orig = f
     (i, a, b) = limits
@@ -654,13 +654,13 @@ def eval_sum_symbolic(f, limits):
                 else:
                     return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
 
-    if not (a.has(oo, -oo) or
-            b.has(oo, -oo)):
+    if not (a.has(oo, -oo) or b.has(oo, -oo)):
         # Geometric terms
         c1 = Wild('c1', exclude=[i])
         c2 = Wild('c2', exclude=[i])
         c3 = Wild('c3', exclude=[i])
 
+        f = f.powsimp().cancel()
         e = f.match(c1**(c2*i + c3))
 
         if e is not None:
@@ -682,8 +682,8 @@ def eval_sum_symbolic(f, limits):
 def _eval_sum_hyper(f, i, a):
     """Returns (res, cond). Sums from a to oo."""
     from ..functions import hyper
-    from ..simplify import hyperexpand, hypersimp, fraction, simplify
-    from ..polys import Poly, factor
+    from ..polys import factor
+    from ..simplify import fraction, hyperexpand, hypersimp, simplify
 
     if a != 0:
         return _eval_sum_hyper(f.subs({i: i + a}), i, 0)
@@ -709,10 +709,10 @@ def _eval_sum_hyper(f, i, a):
             if fac.is_Pow:
                 mul = fac.exp
                 fac = fac.base
-            p = Poly(fac, i)
+            p = fac.as_poly(i)
             if p.degree() != 1:
                 return
-            m, n = p.all_coeffs()
+            n, m = p.all_coeffs()
             ab[k] *= m**mul
             params[k] += [n/m]*mul
 

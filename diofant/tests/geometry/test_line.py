@@ -2,10 +2,9 @@ import itertools
 
 import pytest
 
-from diofant import (Float, I, Rational, Symbol, acos, cos, oo, pi, simplify,
-                     sin, sqrt, symbols, tan)
-from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
-                              Point, Point3D, Ray, Ray3D, Segment, Segment3D,
+from diofant import (Float, I, Rational, Symbol, cos, oo, pi, simplify, sin,
+                     sqrt, symbols, tan)
+from diofant.geometry import (Circle, GeometryError, Line, Point, Ray, Segment,
                               Triangle, intersection)
 from diofant.geometry.line import Undecidable
 from diofant.geometry.polygon import _asa as asa
@@ -32,7 +31,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -88,6 +87,15 @@ def test_line_geom():
     assert l2.arbitrary_point() in l2
     for ind in range(5):
         assert l3.random_point() in l3
+    pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
+
+    assert Line(Point(0, 0), Point(1, 0)).is_similar(Line(Point(1, 0),
+                                                          Point(2, 0))) is True
+
+    assert l1.equal(l1) is True
+    assert l1.equal(l2) is True
+    assert l1.equal(l3) is False
+    assert l1.equal(object()) is False
 
     # Orthogonality
     p1_1 = Point(-x1, x1)
@@ -98,6 +106,8 @@ def test_line_geom():
     assert Line.is_perpendicular(l1, l2) is False
     p = l1.random_point()
     assert l1.perpendicular_segment(p) == p
+
+    assert l4.perpendicular_line(p2) == Line(Point(1, 1), Point(1, 0))
 
     # Parallelity
     l2_1 = Line(p3, p5)
@@ -135,6 +145,8 @@ def test_line_geom():
 
     # Testing Rays and Segments (very similar to Lines)
     pytest.raises(ValueError, lambda: Ray((1, 1), I))
+    pytest.raises(ValueError, lambda: Ray(p1, p1))
+    pytest.raises(ValueError, lambda: Ray(p1))
     assert Ray((1, 1), angle=pi/4) == Ray((1, 1), (2, 2))
     assert Ray((1, 1), angle=pi/2) == Ray((1, 1), (1, 2))
     assert Ray((1, 1), angle=-pi/2) == Ray((1, 1), (1, 0))
@@ -245,6 +257,7 @@ def test_line_geom():
     assert r.distance(Point(-1, 1)) == sqrt(2)
     assert Ray((1, 1), (2, 2)).distance(Point(1.5, 3)) == 3*sqrt(2)/4
     assert r.distance((1, 1)) == 0
+    assert r.distance((-1, Rational(1, 2))) == sqrt(5)/2
 
     # Line contains
     p1, p2 = Point(0, 1), Point(3, 4)
@@ -252,6 +265,8 @@ def test_line_geom():
     assert l.contains(p1) is True
     assert l.contains((0, 1)) is True
     assert l.contains((0, 0)) is False
+    assert l.contains(Circle(p1, 1)) is False
+    assert l.contains(Ray(p1, p1 + p2)) is False
 
     # Ray contains
     p1, p2 = Point(0, 0), Point(4, 4)
@@ -259,6 +274,7 @@ def test_line_geom():
     assert r.contains(p1) is True
     assert r.contains((1, 1)) is True
     assert r.contains((1, 3)) is False
+    assert r.contains(object()) is False
     s = Segment((1, 1), (2, 2))
     assert r.contains(s) is True
     s = Segment((1, 2), (2, 5))
@@ -267,6 +283,11 @@ def test_line_geom():
     assert r.contains(r1) is True
     r1 = Ray((2, 2), (3, 5))
     assert r.contains(r1) is False
+    r1 = Ray(p1, angle=-pi)
+    assert r1.contains(Point(1, 0)) is False
+    r1 = Ray(p1, angle=-pi/2)
+    assert r1.contains(Point(0, 1)) is False
+    pytest.raises(Undecidable, lambda: r1.contains(Point(0, x)))
 
     # Special cases of projection and intersection
     r1 = Ray(Point(1, 1), Point(2, 2))
@@ -351,291 +372,6 @@ def test_line_geom():
     assert s1.perpendicular_bisector(p3) == Segment(Point(3, 3), Point(5, 1))
 
 
-def test_line3d():
-    p1 = Point3D(0, 0, 0)
-    p2 = Point3D(1, 1, 1)
-    p3 = Point3D(x1, x1, x1)
-    p4 = Point3D(y1, y1, y1)
-    p5 = Point3D(x1, 1 + x1, 1)
-    p6 = Point3D(1, 0, 1)
-
-    l1 = Line3D(p1, p2)
-    l2 = Line3D(p3, p4)
-    l3 = Line3D(p3, p5)
-    pytest.raises(ValueError, lambda: Line3D(Point3D(0, 0, 0), Point3D(0, 0, 0)))
-
-    assert Line3D((1, 1, 1), direction_ratio=[2, 3, 4]) == \
-        Line3D(Point3D(1, 1, 1), Point3D(3, 4, 5))
-    assert Line3D((1, 1, 1), direction_ratio=[1, 5, 7 ]) == \
-        Line3D(Point3D(1, 1, 1), Point3D(2, 6, 8))
-    assert Line3D((1, 1, 1), direction_ratio=[1, 2, 3]) == \
-        Line3D(Point3D(1, 1, 1), Point3D(2, 3, 4))
-    pytest.raises(TypeError, lambda: Line3D((1, 1), 1))
-    assert Line3D(p1, p2) != Line3D(p2, p1)
-    assert l1 != l3
-    assert l1.is_parallel(l1)  # same as in 2D
-    assert l1 != l2
-    assert l1.direction_ratio == [1, 1, 1]
-    assert l1.length == oo
-    assert l1.equation() == (x, y, z, k)
-    assert l2.equation() == \
-        ((x - x1)/(-x1 + y1), (-x1 + y)/(-x1 + y1), (-x1 + z)/(-x1 + y1), k)
-    assert p1 in l1
-    assert p1 not in l3
-
-    # Orthogonality
-    p1_1 = Point3D(x1, x1, x1)
-    l1_1 = Line3D(p1, p1_1)
-    assert Line3D.is_perpendicular(l1, l2) is False
-    p = l1.arbitrary_point()
-    pytest.raises(NotImplementedError, lambda: l1.perpendicular_segment(p))
-
-    # Parallelity
-    assert l1.parallel_line(p1_1) == Line3D(Point3D(x1, x1, x1),
-                                            Point3D(x1 + 1, x1 + 1, x1 + 1))
-    assert l1.parallel_line(p1_1.args) == \
-        Line3D(Point3D(x1, x1, x1), Point3D(x1 + 1, x1 + 1, x1 + 1))
-
-    # Intersection
-    assert intersection(l1, p1) == [p1]
-    assert intersection(l1, p5) == []
-    assert intersection(l1, l1.parallel_line(p1)) == [
-        Line3D(Point3D(0, 0, 0), Point3D(1, 1, 1))]
-    # issue sympy/sympy#8517
-    line3 = Line3D(Point3D(4, 0, 1), Point3D(0, 4, 1))
-    line4 = Line3D(Point3D(0, 0, 1), Point3D(4, 4, 1))
-    assert line3.intersection(line4) == [Point3D(2, 2, 1)]
-    assert line3.is_parallel(line4) is False
-    assert Line3D((0, 1, 2), (0, 2, 3)).intersection(
-        Line3D((0, 1, 2), (0, 1, 1))) == []
-    ray0 = Ray3D((0, 0), (3, 0))
-    ray1 = Ray3D((1, 0), (3, 0))
-    assert ray0.intersection(ray1) == [ray1]
-    assert ray1.intersection(ray0) == [ray1]
-    assert Segment3D((0, 0), (3, 0)).intersection(
-        Segment3D((1, 0), (2, 0))) == [Segment3D((1, 0), (2, 0))]
-    assert Segment3D((1, 0), (2, 0)).intersection(
-        Segment3D((0, 0), (3, 0))) == [Segment3D((1, 0), (2, 0))]
-    assert Segment3D((0, 0), (3, 0)).intersection(
-        Segment3D((3, 0), (4, 0))) == [Point3D((3, 0))]
-    assert Segment3D((0, 0), (3, 0)).intersection(
-        Segment3D((2, 0), (5, 0))) == [Segment3D((3, 0), (2, 0))]
-    assert Segment3D((0, 0), (3, 0)).intersection(
-        Segment3D((-2, 0), (1, 0))) == [Segment3D((0, 0), (1, 0))]
-    assert Segment3D((0, 0), (3, 0)).intersection(
-        Segment3D((-2, 0), (0, 0))) == [Point3D(0, 0, 0)]
-    # issue sympy/sympy#7757
-    p = Ray3D(Point3D(1, 0, 0), Point3D(-1, 0, 0))
-    q = Ray3D(Point3D(0, 1, 0), Point3D(0, -1, 0))
-    assert intersection(p, q) == [Point3D(0, 0, 0)]
-
-    # Concurrency
-    assert Line3D.are_concurrent(l1) is False
-    assert Line3D.are_concurrent(l1, l2)
-    assert Line3D.are_concurrent(l1, l1_1, l3) is False
-    parallel_1 = Line3D(Point3D(0, 0, 0), Point3D(1, 0, 0))
-    parallel_2 = Line3D(Point3D(0, 1, 0), Point3D(1, 1, 0))
-    assert Line3D.are_concurrent(parallel_1, parallel_2) is False
-
-    # Finding angles
-    l1_1 = Line3D(p1, Point3D(5, 0, 0))
-    assert Line3D.angle_between(l1, l1_1), acos(sqrt(3)/3)
-
-    # Testing Rays and Segments (very similar to Lines)
-    assert Ray3D((1, 1, 1), direction_ratio=[4, 4, 4]) == \
-        Ray3D(Point3D(1, 1, 1), Point3D(5, 5, 5))
-    assert Ray3D((1, 1, 1), direction_ratio=[1, 2, 3]) == \
-        Ray3D(Point3D(1, 1, 1), Point3D(2, 3, 4))
-    assert Ray3D((1, 1, 1), direction_ratio=[1, 1, 1]) == \
-        Ray3D(Point3D(1, 1, 1), Point3D(2, 2, 2))
-
-    r1 = Ray3D(p1, Point3D(-1, 5, 0))
-    r2 = Ray3D(p1, Point3D(-1, 1, 1))
-    r3 = Ray3D(p1, p2)
-    r5 = Ray3D(Point3D(0, 1, 1), Point3D(1, 2, 0))
-    assert l1.projection(r1) == [
-        Ray3D(Point3D(0, 0, 0), Point3D(4/3, 4/3, 4/3))]
-    assert l1.projection(r2) == [
-        Ray3D(Point3D(0, 0, 0), Point3D(1/3, 1/3, 1/3))]
-    assert r3 != r1
-    t = Symbol('t', extended_real=True)
-    assert Ray3D((1, 1, 1), direction_ratio=[1, 2, 3]).arbitrary_point() == \
-        Point3D(t + 1, 2*t + 1, 3*t + 1)
-    r6 = Ray3D(Point3D(0, 0, 0), Point3D(0, 4, 0))
-    r7 = Ray3D(Point3D(0, 1, 1), Point3D(0, -1, 1))
-    assert r6.intersection(r7) == []
-
-    s1 = Segment3D(p1, p2)
-    s2 = Segment3D(p3, p4)
-    assert s1.midpoint == \
-        Point3D(Rational(1, 2), Rational(1, 2), Rational(1, 2))
-    assert s2.length == sqrt(3)*sqrt((x1 - y1)**2)
-    assert Segment3D((1, 1, 1), (2, 3, 4)).arbitrary_point() == \
-        Point3D(t + 1, 2*t + 1, 3*t + 1)
-
-    # Segment contains
-    s = Segment3D((0, 1, 0), (0, 1, 0))
-    assert Point3D(0, 1, 0) in s
-    s = Segment3D((1, 0, 0), (1, 0, 0))
-    assert Point3D(1, 0, 0) in s
-
-    # Testing distance from a Segment to an object
-    s1 = Segment3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
-    s2 = Segment3D(Point3D(1/2, 1/2, 1/2), Point3D(1, 0, 1))
-    pt1 = Point3D(0, 0, 0)
-    pt2 = Point3D(Rational(3, 2), Rational(3, 2), Rational(3, 2))
-    assert s1.distance(pt1) == 0
-    assert s2.distance(pt1) == sqrt(3)/2
-    assert s2.distance(pt2) == 2
-    assert s1.distance((0, 0, 0)) == 0
-    assert s2.distance((0, 0, 0)) == sqrt(3)/2
-    # Line to point
-    p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
-    s = Line3D(p1, p2)
-    assert s.distance(Point3D(-1, 1, 1)) == 2*sqrt(6)/3
-    assert s.distance(Point3D(1, -1, 1)) == 2*sqrt(6)/3
-    assert s.distance(Point3D(2, 2, 2)) == 0
-    assert s.distance((2, 2, 2)) == 0
-    assert s.distance((1, -1, 1)) == 2*sqrt(6)/3
-    assert Line3D((0, 0, 0), (0, 1, 0)).distance(p1) == 0
-    assert Line3D((0, 0, 0), (0, 1, 0)).distance(p2) == sqrt(2)
-    assert Line3D((0, 0, 0), (1, 0, 0)).distance(p1) == 0
-    assert Line3D((0, 0, 0), (1, 0, 0)).distance(p2) == sqrt(2)
-    # Ray to point
-    r = Ray3D(p1, p2)
-    assert r.distance(Point3D(-1, -1, -1)) == sqrt(3)
-    assert r.distance(Point3D(1, 1, 1)) == 0
-    assert r.distance((-1, -1, -1)) == sqrt(3)
-    assert r.distance((1, 1, 1)) == 0
-    assert Ray3D((1, 1, 1), (2, 2, 2)).distance(Point3D(1.5, 3, 1)) == \
-        sqrt(17)/2
-
-    # Special cases of projection and intersection
-    r1 = Ray3D(Point3D(1, 1, 1), Point3D(2, 2, 2))
-    r2 = Ray3D(Point3D(2, 2, 2), Point3D(0, 0, 0))
-    r3 = Ray3D(Point3D(1, 1, 1), Point3D(-1, -1, -1))
-    assert intersection(r1, r2) == \
-        [Segment3D(Point3D(1, 1, 1), Point3D(2, 2, 2))]
-    assert intersection(r1, r3) == [Point3D(1, 1, 1)]
-
-    r5 = Ray3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
-    r6 = Ray3D(Point3D(0, 0, 0), Point3D(2, 2, 2))
-    assert r5 in r6
-    assert r6 in r5
-
-    s1 = Segment3D(Point3D(0, 0, 0), Point3D(2, 2, 2))
-    s2 = Segment3D(Point3D(-1, 5, 2), Point3D(-5, -10, 0))
-    assert intersection(r1, s1) == [
-        Segment3D(Point3D(1, 1, 1), Point3D(2, 2, 2))]
-
-    l1 = Line3D(Point3D(0, 0, 0), Point3D(3, 4, 0))
-    r1 = Ray3D(Point3D(0, 0, 0), Point3D(3, 4, 0))
-    s1 = Segment3D(Point3D(0, 0, 0), Point3D(3, 4, 0))
-    assert intersection(l1, r1) == [r1]
-    assert intersection(l1, s1) == [s1]
-    assert intersection(r1, l1) == [r1]
-    assert intersection(s1, r1) == [s1]
-
-    # check that temporary symbol is Dummy
-    assert Line3D((0, 0), (t, t)).perpendicular_line((0, 1)) == \
-        Line3D(Point3D(0, 1, 0), Point3D(1/2, 1/2, 0))
-    assert Line3D((0, 0), (t, t)).perpendicular_segment((0, 1)) == \
-        Segment3D(Point3D(0, 1, 0), Point3D(1/2, 1/2, 0))
-    assert Line3D((0, 0), (t, t)).intersection(Line3D((0, 1), (t, t))) == \
-        [Point3D(t, t, 0)]
-    assert Line3D((0, 0, 0), (x, y, z)).contains((2*x, 2*y, 2*z))
-
-    # Test is_perpendicular
-    perp_1 = Line3D(p1, Point3D(0, 1, 0))
-    assert Line3D.is_perpendicular(parallel_1, perp_1) is True
-    assert Line3D.is_perpendicular(parallel_1, parallel_2) is False
-
-    # Test projection
-    assert parallel_1.projection(Point3D(5, 5, 0)) == Point3D(5, 0, 0)
-    assert parallel_1.projection(parallel_2) == [parallel_1]
-    pytest.raises(GeometryError, lambda: parallel_1.projection(Plane(p1, p2, p6)))
-
-    # Test __new__
-    assert Line3D(perp_1) == perp_1
-    pytest.raises(ValueError, lambda: Line3D(p1))
-
-    # Test contains
-    pt2d = Point(1.0, 1.0)
-    assert perp_1.contains(pt2d) is False
-
-    # Test equals
-    assert perp_1.equals(pt2d) is False
-    col1 = Line3D(Point3D(0, 0, 0), Point3D(1, 0, 0))
-    col2 = Line3D(Point3D(-5, 0, 0), Point3D(-1, 0, 0))
-    assert col1.equals(col2) is True
-    assert col1.equals(perp_1) is False
-
-    # Begin ray
-    # Test __new__
-    assert Ray3D(col1) == Ray3D(p1, Point3D(1, 0, 0))
-    pytest.raises(ValueError, lambda: Ray3D(pt2d))
-
-    # Test zdirection
-    negz = Ray3D(p1, Point3D(0, 0, -1))
-    assert negz.zdirection == -oo
-
-    # Test contains
-    assert negz.contains(Segment3D(p1, Point3D(0, 0, -10))) is True
-    assert negz.contains(Segment3D(Point3D(1, 1, 1), Point3D(2, 2, 2))) is False
-    posy = Ray3D(p1, Point3D(0, 1, 0))
-    posz = Ray3D(p1, Point3D(0, 0, 1))
-    assert posy.contains(p1) is True
-    assert posz.contains(p1) is True
-    assert posz.contains(pt2d) is False
-    ray1 = Ray3D(Point3D(1, 1, 1), Point3D(1, 0, 0))
-    pytest.raises(TypeError, lambda: ray1.contains([]))
-
-    # Test equals
-    assert negz.equals(pt2d) is False
-    assert negz.equals(negz) is True
-
-    assert ray1.is_similar(Line3D(Point3D(1, 1, 1), Point3D(1, 0, 0))) is True
-    assert ray1.is_similar(perp_1) is False
-    pytest.raises(NotImplementedError, lambda: ray1.is_similar(ray1))
-
-    # Begin Segment
-    seg1 = Segment3D(p1, Point3D(1, 0, 0))
-    pytest.raises(TypeError, lambda: seg1.contains([]))
-    seg2 = Segment3D(Point3D(2, 2, 2), Point3D(3, 2, 2))
-    assert seg1.contains(seg2) is False
-
-    p1, p2 = Point3D(0, 0, 0), Point3D(3, 5, 2)
-    p3, p4 = Point3D(-2, -2, -2), Point3D(0, 2, 1)
-    l1, l2, l3 = Line3D(p1, p2), Line3D(p1, p3), Line3D(p1, p4)
-    assert Line3D.are_concurrent(l1, l2, l3) is True
-    l4 = Line3D(p2, p3)
-    assert Line3D.are_concurrent(l2, l3, l4) is False
-
-    p1, p2, p3 = Point3D(0, 0, 1), Point3D(1, 1, 2), Point3D(2, 0, 1)
-    l1 = Line3D(p1, p2)
-    assert l1.projection(p3) == Point3D(Rational(2, 3), Rational(2, 3),
-                                        Rational(5, 3))
-
-    p6, p7 = Point3D(0, 5, 2), Point3D(2, 6, 3)
-    s1 = Segment3D(p6, p7)
-    assert l1.intersection(s1) == []
-
-    p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
-    l1 = Line3D(p1, p2)
-    assert l1.plot_interval() == [t, -5, 5]
-
-    r = Ray3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
-    assert r.plot_interval() == [t, 0, 10]
-
-    p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 0)
-    s1 = Segment3D(p1, p2)
-    assert s1.plot_interval() == [t, 0, 1]
-
-    p1, p2 = Point3D(0, 0, 3), Point3D(1, 1, 4)
-    s = Segment3D(p1, p2)
-    assert s.distance(Point3D(10, 15, 12)) == sqrt(341)
-
-
 def test_line_intersection():
     assert asa(120, 8, 52) == \
         Triangle(
@@ -651,6 +387,8 @@ def test_line_intersection():
         [Point(1, 1)]
     assert Ray((0, 0), (1, 1)).intersection(Segment((1, 0), (1, 2))) == \
         [Point(1, 1)]
+    assert (Ray((0, 0), angle=-pi).intersection(Segment((-1, 0), (2, 0))) ==
+            [Segment((-1, 0), (0, 0))])
     assert Ray((0, 0), (10, 10)).contains(Segment((1, 1), (2, 2))) is True
     assert Segment((1, 1), (2, 2)) in Line((0, 0), (10, 10))
     x = 8*tan(13*pi/45)/(tan(13*pi/45) + sqrt(3))
@@ -658,8 +396,7 @@ def test_line_intersection():
         (-3 + tan(13*pi/45)**2)
     assert Line(Point(0, 0), Point(1, -sqrt(3))).contains(Point(x, y)) is True
 
-
-def test_sympyissue_2941():
+    # issue sympy/sympy#2941
     def _check():
         for f, g in itertools.product(*[(Line, Ray, Segment)]*2):
             l1 = f(a, b)

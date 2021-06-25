@@ -8,6 +8,8 @@ this stuff for general purpose.
 
 """
 
+from __future__ import annotations
+
 
 def _fuzzy_group(args, quick_exit=False):
     """
@@ -152,8 +154,7 @@ def fuzzy_or(args):
 class Logic:
     """Logical expression."""
 
-    # {} 'op' -> LogicClass
-    op_2class = {}
+    op_2class: dict[str, type[Logic]] = {}
 
     def __new__(cls, *args):
         obj = object.__new__(cls)
@@ -194,10 +195,10 @@ class Logic:
             if term in '&|':
                 if schedop is not None:
                     raise ValueError(
-                        'double op forbidden: "%s %s"' % (term, schedop))
+                        f'double op forbidden: "{term} {schedop}"')
                 if lexpr is None:
                     raise ValueError(
-                        '%s cannot be in the beginning of expression' % term)
+                        f'{term} cannot be in the beginning of expression')
                 schedop = term
                 continue
             if '&' in term or '|' in term:
@@ -216,15 +217,15 @@ class Logic:
             # this should be atom
             if lexpr is not None:
                 raise ValueError(
-                    'missing op between "%s" and "%s"' % (lexpr, term))
+                    f'missing op between "{lexpr}" and "{term}"')
 
             lexpr = term
 
         # let's check that we ended up in correct state
         if schedop is not None:
-            raise ValueError('premature end-of-expression in "%s"' % text)
+            raise ValueError(f'premature end-of-expression in "{text}"')
         if lexpr is None:
-            raise ValueError('"%s" is empty' % text)
+            raise ValueError(f'"{text}" is empty')
 
         # everything looks good now
         return lexpr
@@ -332,7 +333,7 @@ class Not(Logic):
             return arg
 
         else:
-            raise ValueError('Not: unknown argument %r' % (arg,))
+            raise ValueError(f'Not: unknown argument {arg!r}')
 
     @property
     def arg(self):

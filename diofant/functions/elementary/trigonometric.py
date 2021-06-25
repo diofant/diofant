@@ -1,8 +1,11 @@
+import typing
+
 from ...core import (Add, Function, Integer, Rational, Symbol, cacheit,
-                     expand_mul, sympify)
+                     expand_mul)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
 from ...core.numbers import I, igcdex, nan, oo, pi, zoo
+from ...core.sympify import sympify
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -189,7 +192,7 @@ class sin(TrigonometricFunction):
     * https://en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Sin
-    * http://mathworld.wolfram.com/TrigonometryAngles.html
+    * https://mathworld.wolfram.com/TrigonometryAngles.html
 
     """
 
@@ -335,7 +338,7 @@ class sin(TrigonometricFunction):
             if n.is_Integer:  # n will be positive because of .eval
                 # canonicalization
 
-                # See http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+                # See https://mathworld.wolfram.com/Multiple-AngleFormulas.html
                 if n.is_odd:
                     return (-1)**((n - 1)/2)*chebyshevt(n, sin(x))
                 else:
@@ -634,7 +637,7 @@ class cos(TrigonometricFunction):
         if pi_coeff is None:
             return
 
-        assert not pi_coeff.is_integer, "should have been simplified already"
+        assert not pi_coeff.is_integer, 'should have been simplified already'
 
         if not pi_coeff.is_Rational:
             return
@@ -952,7 +955,7 @@ class tan(TrigonometricFunction):
 
             p = [0, 0]
             for i in range(n + 1):
-                p[1 - i % 2] += symmetric_poly(i, Y)*(-1)**((i % 4)//2)
+                p[1 - i % 2] += symmetric_poly(i, *Y)*(-1)**((i % 4)//2)
             return (p[0]/p[1]).subs(list(zip(Y, TX)))
 
         else:
@@ -1038,8 +1041,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     # _is_even and _is_odd are used for correct evaluation of csc(-x), sec(-x)
     # TODO refactor into TrigonometricFunction common parts of
     # trigonometric functions eval() like even/odd, func(x+2*k*pi), etc.
-    _is_even = None  # optional, to be defined in subclass
-    _is_odd = None   # optional, to be defined in subclass
+    _is_even: typing.Optional[bool] = None  # optional, to be defined in subclass
+    _is_odd: typing.Optional[bool] = None  # optional, to be defined in subclass
 
     @classmethod
     def eval(cls, arg):
@@ -1099,22 +1102,22 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
             return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_Pow(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_Pow", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_Pow', arg)
 
     def _eval_rewrite_as_sin(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sin", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sin', arg)
 
     def _eval_rewrite_as_cos(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_cos", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_cos', arg)
 
     def _eval_rewrite_as_tan(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tan", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tan', arg)
 
     def _eval_rewrite_as_sqrt(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sqrt", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sqrt', arg)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -1124,7 +1127,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
                                                                   **hints)
 
     def _eval_expand_trig(self, **hints):
-        return self._calculate_reciprocal("_eval_expand_trig", **hints)
+        return self._calculate_reciprocal('_eval_expand_trig', **hints)
 
     def _eval_is_extended_real(self):
         return (1/self._reciprocal_of(self.args[0])).is_extended_real
@@ -1388,7 +1391,7 @@ class cot(ReciprocalTrigonometricFunction):
 
             p = [0, 0]
             for i in range(n, -1, -1):
-                p[(n - i) % 2] += symmetric_poly(i, Y)*(-1)**(((n - i) % 4)//2)
+                p[(n - i) % 2] += symmetric_poly(i, *Y)*(-1)**(((n - i) % 4)//2)
             return (p[0]/p[1]).subs(list(zip(Y, CX)))
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
@@ -1422,8 +1425,6 @@ class cot(ReciprocalTrigonometricFunction):
 
 class InverseTrigonometricFunction(Function):
     """Base class for inverse trigonometric functions."""
-
-    pass
 
 
 class asin(InverseTrigonometricFunction):

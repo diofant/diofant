@@ -19,8 +19,8 @@ from diofant.utilities.randtest import (random_complex_number,
 
 __all__ = ()
 
-w = Symbol("w", extended_real=True)
-n = Symbol("n", integer=True)
+w = Symbol('w', extended_real=True)
+n = Symbol('n', integer=True)
 
 
 def test_erf():
@@ -106,7 +106,7 @@ def test__erfs():
 
     assert expand(erf(z).rewrite('tractable').diff(z).rewrite('intractable')) \
         == erf(z).diff(z)
-    assert _erfs(z).rewrite("intractable") == (-erf(z) + 1)*exp(z**2)
+    assert _erfs(z).rewrite('intractable') == (-erf(z) + 1)*exp(z**2)
 
 
 def test_erfc():
@@ -386,6 +386,10 @@ def test_ei():
 
     pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
 
+    assert (Ei(exp_polar(I*pi)).evalf() ==
+            Float('-0.21938393439552029', dps=15) +
+            I*Float('3.1415926535897931', dps=15))
+
 
 def test_expint():
     assert mytn(expint(x, y), expint(x, y).rewrite(uppergamma),
@@ -485,10 +489,10 @@ def tn_arg(func):
 
 
 def test_li():
-    z = Symbol("z")
-    zr = Symbol("z", extended_real=True)
-    zp = Symbol("z", positive=True)
-    zn = Symbol("z", negative=True)
+    z = Symbol('z')
+    zr = Symbol('z', extended_real=True)
+    zp = Symbol('z', positive=True)
+    zn = Symbol('z', negative=True)
 
     assert li(0) == 0
     assert li(1) == -oo

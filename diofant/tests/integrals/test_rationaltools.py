@@ -1,5 +1,5 @@
-from diofant import (Float, I, Integer, Lambda, Poly, Rational, RootSum, atan,
-                     integrate, log, simplify, sqrt, symbols)
+from diofant import (EX, Float, I, Integer, Lambda, Poly, Rational, RootSum,
+                     atan, integrate, log, simplify, sqrt, symbols)
 from diofant.abc import a, b, t, u, x
 from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
@@ -89,8 +89,8 @@ def test_ratint():
 
     # issue sympy/sympy#4991
     assert ratint(1/(x*(a + b*x)**3), x) == \
-        (3*a + 2*b*x)/(2*a**4 + 4*a**3*b*x + 2*a**2*b**2*x**2) + (
-            log(x) - log(a/b + x))/a**3
+        ((3*a + 2*b*x)/(2*a**4 + 4*a**3*b*x + 2*a**2*b**2*x**2) +
+         (log(2*b*x) - log(2*a + 2*b*x))/a**3)
 
     assert ratint(x/(1 - x**2), x) == -log(x**2 - 1)/2
     assert ratint(-x/(1 - x**2), x) == log(x**2 - 1)/2
@@ -153,7 +153,7 @@ def test_sympyissue_10488():
 
 
 def test_log_to_atan():
-    f, g = (Poly(x + Rational(1, 2), x, domain='QQ'), Poly(sqrt(3)/2, x, domain='EX'))
+    f, g = (Poly(x + Rational(1, 2)), Poly(sqrt(3)/2, x, domain=EX))
     fg_ans = 2*atan(2*sqrt(3)*x/3 + sqrt(3)/3)
     assert log_to_atan(f, g) == fg_ans
     assert log_to_atan(g, f) == -fg_ans

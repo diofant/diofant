@@ -4,12 +4,12 @@ import mpmath
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, expand_func, expand_log,
-                    expand_mul, expand_power_exp, factor_terms, oo, pi,
-                    sympify)
-from ..core.compatibility import as_int, iterable, ordered
+                    expand_mul, expand_power_exp, factor_terms, oo, pi)
+from ..core.compatibility import as_int, iterable
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
+from ..core.sympify import sympify
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
                          exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
                          unpolarify)
@@ -17,7 +17,7 @@ from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
-from ..utilities import has_variety
+from ..utilities import has_variety, ordered
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre
 from .powsimp import powsimp
@@ -152,7 +152,7 @@ def _separatevars(expr, force):
 def _separatevars_dict(expr, symbols):
     if symbols:
         if not all((t.is_Atom for t in symbols)):
-            raise ValueError("symbols must be Atoms.")
+            raise ValueError('symbols must be Atoms.')
         symbols = list(symbols)
     elif symbols is None:
         return {'coeff': expr}
@@ -372,6 +372,7 @@ def hypersimp(f, k):
     g = g.rewrite(gamma)
     g = expand_func(g)
     g = powsimp(g, deep=True, combine='exp')
+    g = g.cancel()
     g = combsimp(g)
 
     if g.is_rational_function(k):
@@ -587,9 +588,9 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     original_expr = expr = signsimp(expr)
 
-    from .hyperexpand import hyperexpand
+    from ..concrete import Product, Sum
     from ..functions.special.bessel import BesselBase
-    from ..concrete import Sum, Product
+    from .hyperexpand import hyperexpand
 
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
         return expr
@@ -791,7 +792,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
         constant = sympify(constant)
         v = constant.evalf(prec)
         if not v.is_Float:
-            raise ValueError("constants must be real-valued")
+            raise ValueError('constants must be real-valued')
         constants_dict[str(constant)] = v._to_mpmath(bprec)
 
     exprval = expr.evalf(prec, chop=True, strict=False)

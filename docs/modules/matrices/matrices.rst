@@ -9,7 +9,8 @@ Creating Matrices
 The linear algebra module is designed to be as simple as possible. First, we
 import and declare our first ``Matrix`` object:
 
-    >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
+    >>> init_printing(pretty_print=True, use_unicode=False,
+    ...               wrap_line=False, no_global=True)
     >>> M = Matrix([[1, 0, 0], [0, 0, 0]])
     >>> M
     [1  0  0]
@@ -373,19 +374,19 @@ decomposition as well:
     [0  1  0]
     [       ]
     [0  0  1]
-    >>> M2.inv(method="LU")
+    >>> M2.inv(method='LU')
     [1  0  0]
     [       ]
     [0  1  0]
     [       ]
     [0  0  1]
-    >>> M.inv(method="LU")
+    >>> M.inv(method='LU')
     [-3/14  1/14  1/2 ]
     [                 ]
     [-1/28  5/28  -1/4]
     [                 ]
     [ 3/7   -1/7   0  ]
-    >>> M * M.inv(method="LU")
+    >>> M * M.inv(method='LU')
     [1  0  0]
     [       ]
     [0  1  0]

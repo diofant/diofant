@@ -33,8 +33,8 @@ more information on each (run help(pde)):
 
 """
 
+import functools
 import operator
-from functools import reduce
 from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
@@ -42,18 +42,19 @@ from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
 from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
-from ..polys import lcm_list
-from ..simplify import collect, simplify
+from ..polys import lcm
+from ..simplify.radsimp import collect
+from ..simplify.simplify import simplify
 from ..utilities import filldedent, has_dups
 from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
 
 
 allhints = (
-    "1st_linear_constant_coeff_homogeneous",
-    "1st_linear_constant_coeff",
-    "1st_linear_constant_coeff_Integral",
-    "1st_linear_variable_coeff"
+    '1st_linear_constant_coeff_homogeneous',
+    '1st_linear_constant_coeff',
+    '1st_linear_constant_coeff_Integral',
+    '1st_linear_variable_coeff'
 )
 
 
@@ -126,7 +127,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     **Tips**
         - You can declare the derivative of an unknown function this way:
 
-            >>> f = Function("f")(x, y)  # f is a function of x and y
+            >>> f = Function('f')(x, y)  # f is a function of x and y
             >>> # fx will be the partial derivative of f with respect to x
             >>> fx = Derivative(f, x)
             >>> # fy will be the partial derivative of f with respect to y
@@ -192,11 +193,11 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     calling _desolve multiple times.
 
     """
-    if hint.endswith("_Integral"):
+    if hint.endswith('_Integral'):
         solvefunc = globals()[
-            "pde_" + hint[:-len("_Integral")]]
+            'pde_' + hint[:-len('_Integral')]]
     else:
-        solvefunc = globals()["pde_" + hint]
+        solvefunc = globals()['pde_' + hint]
     return _handle_Integral(solvefunc(eq, func, order,
                                       match, solvefun), func, order, hint)
 
@@ -208,10 +209,10 @@ def _handle_Integral(expr, func, order, hint):
     Simplifies the integral mainly using doit()
 
     """
-    if hint.endswith("_Integral"):
+    if hint.endswith('_Integral'):
         return expr
 
-    elif hint == "1st_linear_constant_coeff":
+    elif hint == '1st_linear_constant_coeff':
         return simplify(expr.doit())
 
     else:
@@ -255,10 +256,10 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     """
     prep = kwargs.pop('prep', True)
 
-    if func and len(func.args) != 2:  # pragma: no cover
-        raise NotImplementedError("Right now only partial "
-                                  "differential equations of two "
-                                  "variables are supported")
+    if func and len(func.args) != 2:
+        raise NotImplementedError('Right now only partial '
+                                  'differential equations of two '
+                                  'variables are supported')
 
     if prep or func is None:
         prep, func_ = _preprocess(eq, func)
@@ -286,7 +287,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
 
     if not order:
         if dict:
-            matching_hints["default"] = None
+            matching_hints['default'] = None
             return matching_hints
         else:
             return ()
@@ -329,15 +330,15 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
                 # Linear first-order homogeneous partial-differential
                 # equation with constant coefficients
                 r.update({'b': b, 'c': c, 'd': d})
-                matching_hints["1st_linear_constant_coeff_homogeneous"] = r
+                matching_hints['1st_linear_constant_coeff_homogeneous'] = r
             else:
                 if r[b]**2 + r[c]**2 != 0:
                     # Linear first-order general partial-differential
                     # equation with constant coefficients
                     r.update({'b': b, 'c': c, 'd': d, 'e': e})
-                    matching_hints["1st_linear_constant_coeff"] = r
+                    matching_hints['1st_linear_constant_coeff'] = r
                     matching_hints[
-                        "1st_linear_constant_coeff_Integral"] = r
+                        '1st_linear_constant_coeff_Integral'] = r
 
         else:
             b = Wild('b', exclude=[f(x, y), fx, fy])
@@ -346,7 +347,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
             r = reduced_eq.match(b*fx + c*fy + d*f(x, y) + e)
             if r:
                 r.update({'b': b, 'c': c, 'd': d, 'e': e})
-                matching_hints["1st_linear_variable_coeff"] = r
+                matching_hints['1st_linear_variable_coeff'] = r
 
     # Order keys based on allhints.
     retlist = []
@@ -357,11 +358,11 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     if dict:
         # Dictionaries are ordered arbitrarily, so make note of which
         # hint would come first for pdsolve().  Use an ordered dict in Py 3.
-        matching_hints["default"] = None
-        matching_hints["ordered_hints"] = tuple(retlist)
+        matching_hints['default'] = None
+        matching_hints['ordered_hints'] = tuple(retlist)
         for i in allhints:
             if i in matching_hints:
-                matching_hints["default"] = i
+                matching_hints['default'] = i
                 break
         return matching_hints
     else:
@@ -430,8 +431,8 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
         s = simplify(pde.subs({func: sol.rhs}).doit())
         return s == 0, s
 
-    raise NotImplementedError(filldedent("""
-        Unable to test if %s is a solution to %s.""" % (sol, pde)))
+    raise NotImplementedError(filldedent(f"""
+        Unable to test if {sol} is a solution to {pde}."""))
 
 
 def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
@@ -518,7 +519,8 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
                   d               d
         a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
                   dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'), use_unicode=False)
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'),
+        ...        use_unicode=False)
                   /         /          b*x + c*y
                   |         |              /
                   |         |             |
@@ -570,7 +572,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     # TODO : For now homogeneous first order linear PDE's having
     # two variables are implemented. Once there is support for
     # solving systems of ODE's, this can be extended to n variables.
-    xi, eta = symbols("xi eta")
+    xi, eta = symbols('xi eta')
     f = func.func
     x = func.args[0]
     y = func.args[1]
@@ -613,7 +615,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 
     The general form of this PDE is::
 
-        >>> a, b, c, G, f= [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
+        >>> a, b, c, G, f = [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
         >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
@@ -627,7 +629,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     ========
 
     >>> f = Function('f')
-    >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
+    >>> eq = x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)
     Eq(f(x, y), E**(y**2/2)*F(x*y) + 1)
 
@@ -641,7 +643,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     from ..integrals import integrate
     from .ode import dsolve
 
-    xi, eta = symbols("xi eta")
+    xi, eta = symbols('xi eta')
     f = func.func
     x = func.args[0]
     y = func.args[1]
@@ -657,16 +659,16 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
                 try:
                     tsol = integrate(e/c, y)
                 except NotImplementedError:  # pragma: no cover
-                    raise NotImplementedError("Unable to find a solution"
-                                              " due to inability of integrate")
+                    raise NotImplementedError('Unable to find a solution'
+                                              ' due to inability of integrate')
                 else:
                     return Eq(f(x, y), solvefun(x) + tsol)
             else:
                 try:
                     tsol = integrate(e/b, x)
                 except NotImplementedError:  # pragma: no cover
-                    raise NotImplementedError("Unable to find a solution"
-                                              " due to inability of integrate")
+                    raise NotImplementedError('Unable to find a solution'
+                                              ' due to inability of integrate')
                 else:
                     return Eq(f(x, y), solvefun(y) + tsol)
 
@@ -705,8 +707,8 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         return Eq(f(x, y), rhs)
 
     else:
-        raise NotImplementedError("Cannot solve the partial differential "
-                                  "equation due to inability of constantsimp")
+        raise NotImplementedError('Cannot solve the partial differential '
+                                  'equation due to inability of constantsimp')
 
 
 def _simplify_variable_coeff(sol, syms, func, funcarg):
@@ -714,7 +716,7 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
     Helper function to replace constants by functions in 1st_linear_variable_coeff
 
     """
-    eta = Symbol("eta")
+    eta = Symbol('eta')
     if len(syms) == 1:
         sym = syms.pop()
         final = sol.subs({sym: func(funcarg)})
@@ -749,7 +751,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='add')
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
 
-    >>> eq = Eq(Derivative(u(x, t), x, 2), Derivative(u(x, t), t, 2))
+    >>> eq = Eq(Derivative(u(x, t), (x, 2)), Derivative(u(x, t), (t, 2)))
     >>> pde_separate(eq, u(x, t), [X(x), T(t)], strategy='mul')
     [Derivative(X(x), x, x)/X(x), Derivative(T(t), t, t)/T(t)]
 
@@ -766,7 +768,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     elif strategy == 'mul':
         do_add = False
     else:
-        raise ValueError('Unknown strategy: %s' % strategy)
+        raise ValueError(f'Unknown strategy: {strategy}')
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:
@@ -782,19 +784,19 @@ def pde_separate(eq, fun, sep, strategy='mul'):
             subs_args.append(s.args[j])
 
     if do_add:
-        functions = reduce(operator.add, sep)
+        functions = functools.reduce(operator.add, sep)
     else:
-        functions = reduce(operator.mul, sep)
+        functions = functools.reduce(operator.mul, sep)
 
     # Check whether variables match
     if len(subs_args) != len(orig_args):
-        raise ValueError("Variable counts do not match")
+        raise ValueError('Variable counts do not match')
     # Check for duplicate arguments like  [X(x), u(x, y)]
     if has_dups(subs_args):
-        raise ValueError("Duplicate substitution arguments detected")
+        raise ValueError('Duplicate substitution arguments detected')
     # Check whether the variables match
     if set(orig_args) != set(subs_args):
-        raise ValueError("Arguments do not match")
+        raise ValueError('Arguments do not match')
 
     # Substitute original function with separated...
     result = eq.lhs.subs({fun: functions}).doit()
@@ -849,7 +851,7 @@ def pde_separate_mul(eq, fun, sep):
 
     >>> u, X, Y = map(Function, 'uXY')
 
-    >>> eq = Eq(Derivative(u(x, y), x, 2), Derivative(u(x, y), y, 2))
+    >>> eq = Eq(Derivative(u(x, y), (x, 2)), Derivative(u(x, y), (y, 2)))
     >>> pde_separate_mul(eq, u(x, y), [X(x), Y(y)])
     [Derivative(X(x), x, x)/X(x), Derivative(Y(y), y, y)/Y(y)]
 
@@ -878,7 +880,7 @@ def _separate(eq, dep, others):
         if sep.has(*others):
             return
         div.add(ext)
-    div = lcm_list(div)
+    div = functools.reduce(lcm, div)
     eq = Add(*[simplify(t/div) for t in eq.args])
 
     # SECOND PASS - separate the derivatives
@@ -898,7 +900,7 @@ def _separate(eq, dep, others):
         div.add(sep)
         rhs -= term.expand()
     # Do the division
-    fulldiv = reduce(operator.add, div)
+    fulldiv = functools.reduce(operator.add, div)
     lhs = simplify(lhs/fulldiv).expand()
     rhs = simplify(rhs/fulldiv).expand()
     # ...and check whether we were successful :)

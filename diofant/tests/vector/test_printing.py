@@ -160,4 +160,4 @@ def test_custom_names():
     assert A.i._pretty_form == 'A_x'
     assert A.x._pretty_form == 'A_i'
     assert A.i._latex_form == r'\mathbf{\hat{x}_{A}}'
-    assert A.x._latex_form == r"\mathbf{{i}_{A}}"
+    assert A.x._latex_form == r'\mathbf{{i}_{A}}'

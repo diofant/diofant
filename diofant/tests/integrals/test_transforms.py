@@ -5,12 +5,12 @@ from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
                      Integral, InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseSineTransform,
                      LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
-                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
-                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
-                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     Or, Piecewise, Rational, Si, SineTransform, Symbol, atan,
+                     atan2, besseli, besselj, besselk, bessely, combsimp, cos,
+                     cosh, cosine_transform, cot, erf, exp, exp_polar, expand,
                      expand_complex, expand_mul, expand_trig, expint, eye,
-                     factor, factor_terms, factorial, fourier_transform,
-                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     factor_terms, factorial, fourier_transform, fresnelc,
+                     fresnels, gamma, hankel_transform, hyperexpand,
                      inverse_cosine_transform, inverse_fourier_transform,
                      inverse_hankel_transform, inverse_laplace_transform,
                      inverse_mellin_transform, inverse_sine_transform,
@@ -50,9 +50,9 @@ def test_as_integral():
     assert laplace_transform(f(x), x, s).rewrite('Integral') == \
         Integral(f(x)*exp(-s*x), (x, 0, oo))
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
-        == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
+        == 'Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
+        'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
@@ -290,6 +290,22 @@ def test_inverse_mellin_transform():
                          s, x, (Max(-re(c), 0), Min(1 - re(c), 1)))) \
         == (x**c - d**c)/(x - d)
 
+    # issue sympy/sympy#8882
+
+    # This is the original test.
+    # r = Symbol('r')
+    # psi = 1/r*sin(r)*exp(-(a0*r))
+    # h = -1/2*diff(psi, r, r) - 1/r*psi
+    # f = 4*pi*psi*h*r**2
+    # assert integrate(f, (r, -oo, 3), meijerg=True).has(Integral) == True
+
+    # To save time, only the critical part is included.
+    F = -a**(-s + 1)*(4 + 1/a**2)**(-s/2)*sqrt(1/a**2)*exp(-s*I*pi) * \
+        sin(s*atan(sqrt(1/a**2)/2))*gamma(s)
+    pytest.raises(IntegralTransformError, lambda:
+                  inverse_mellin_transform(F, s, x, (-1, oo),
+                                           **{'as_meijerg': True, 'needeval': True}))
+
 
 @pytest.mark.slow
 def test_inverse_mellin_transform2():
@@ -418,7 +434,7 @@ def test_inverse_mellin_transform2():
 def test_laplace_transform():
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert laplace_transform(f(t), t, w) == LaplaceTransform(f(t), t, w)
@@ -491,7 +507,6 @@ def test_sympyissue_8368_7173():
     assert LT(cosh(x), x, s) == (s/(s**2 - 1), 1, True)
     assert LT(sinh(x + 3), x, s) == (
         (s*sinh(3) + cosh(3))/(s**2 - 1), 1, True)
-    assert LT(sinh(x)*cosh(x), x, s) == (1/(s**2 - 4), 2, Ne(s/2, 1))
 
     # trig (make sure they are not being rewritten in terms of exp)
     assert LT(cos(x + 3), x, s) == ((s*cos(3) - sin(3))/(s**2 + 1), 0, True)
@@ -553,7 +568,7 @@ def test_fourier_transform():
     def sinc(x):
         return sin(pi*x)/(pi*x)
     k = symbols('k', extended_real=True)
-    f = Function("f")
+    f = Function('f')
 
     # TODO for this to work with real a, need to expand abs(a*x) to abs(a)*abs(x)
     a = symbols('a', positive=True)
@@ -572,8 +587,7 @@ def test_fourier_transform():
     assert simp(FT(Heaviside(1 - abs(a*x))*(1 - abs(a*x)), x, k)) == sinc(k/a)**2/a
     # TODO IFT
 
-    assert factor(FT(exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)
+    assert FT(exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)
     # NOTE: the ift comes out in pieces
     assert IFT(1/(a + 2*pi*I*x), x, posk,
                noconds=False) == (exp(-a*posk), True)
@@ -583,8 +597,7 @@ def test_fourier_transform():
                noconds=False) == (0, True)
     # TODO IFT without factoring comes out as meijer g
 
-    assert factor(FT(x*exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)**2
+    assert FT(x*exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)**2
     assert FT(exp(-a*x)*sin(b*x)*Heaviside(x), x, k) == \
         b/(b**2 + (a + 2*I*pi*k)**2)
 
@@ -599,7 +612,7 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert sine_transform(f(t), t, w) == SineTransform(f(t), t, w)
@@ -632,7 +645,7 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert cosine_transform(f(t), t, w) == CosineTransform(f(t), t, w)
@@ -669,10 +682,10 @@ def test_cosine_transform():
 
 
 def test_hankel_transform():
-    r = Symbol("r")
-    k = Symbol("k")
-    nu = Symbol("nu")
-    m = Symbol("m")
+    r = Symbol('r')
+    k = Symbol('k')
+    nu = Symbol('nu')
+    m = Symbol('m')
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r
@@ -699,29 +712,18 @@ def test_sympyissue_7181():
     assert mellin_transform(1/(1 - x), x, s) is not None
 
 
-def test_sympyissue_8882():
-    # This is the original test.
-    # r = Symbol('r')
-    # psi = 1/r*sin(r)*exp(-(a0*r))
-    # h = -1/2*diff(psi, r, r) - 1/r*psi
-    # f = 4*pi*psi*h*r**2
-    # assert integrate(f, (r, -oo, 3), meijerg=True).has(Integral) == True
-
-    # To save time, only the critical part is included.
-    F = -a**(-s + 1)*(4 + 1/a**2)**(-s/2)*sqrt(1/a**2)*exp(-s*I*pi) * \
-        sin(s*atan(sqrt(1/a**2)/2))*gamma(s)
-    pytest.raises(IntegralTransformError, lambda:
-                  inverse_mellin_transform(F, s, x, (-1, oo),
-                                           **{'as_meijerg': True, 'needeval': True}))
-
-
-def test_sympyissue_7173():
-    assert laplace_transform(sinh(a*x)*cosh(a*x), x, s) == \
+def test_laplace_transform_2():
+    LT = laplace_transform
+    # issue sympy/sympy#7173
+    assert LT(sinh(a*x)*cosh(a*x), x, s) == \
         (a/(s**2 - 4*a**2), 0,
          And(Or(abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
                 pi/2, abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
                 pi/2), Or(abs(periodic_argument(a, oo)) < pi/2,
                           abs(periodic_argument(a, oo)) <= pi/2)))
+
+    # issues sympy/sympy#8368 and sympy/sympy#7173
+    assert LT(sinh(x)*cosh(x), x, s) == (1/(s**2 - 4), 2, Ne(s/2, 1))
 
 
 def test_sympyissue_8514():
@@ -740,3 +742,10 @@ def test_sympyissue_8514():
 def test__simplifyconds():
     assert _simplifyconds(1 < abs(x), x, 1) is True
     assert _simplifyconds(abs(x**2) < 1, x, 0) == (abs(x**2) < 1)
+
+
+def test_sympyissue_21202():
+    res = (Piecewise((s/(s**2 - 4), (4*abs(s**-2) < 1) | (abs(s**2)/4 < 1)),
+                     (pi*meijerg(((Rational(1, 2),), (0, 0)), ((0, Rational(1, 2)),
+                                 (0,)), s**2/4)/2, True)), 2, Ne(s**2/4, 1))
+    assert laplace_transform(cosh(2*x), x, s) == res

@@ -39,6 +39,7 @@ def test_re():
     assert re(E) == E
     assert re(-E) == -E
 
+    x = Symbol('x')
     assert re(x) == re(x)
     assert re(x*I) == -im(x)
     assert re(r*I) == 0
@@ -46,6 +47,7 @@ def test_re():
     assert re(i*I) == I * i
     assert re(i) == 0
 
+    y = Symbol('y')
     assert re(x + y) == re(x + y)
     assert re(x + r) == re(x) + r
 
@@ -85,6 +87,14 @@ def test_re():
 
     assert re(zoo) == nan
 
+    # issue sympy/sympy#4757
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', imaginary=True)
+    f = Function('f')
+    assert re(f(x)).diff(x) == re(f(x).diff(x))
+    assert re(f(y)).diff(y) == -I*im(f(y).diff(y))
+    assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
+
 
 def test_im():
     a, b = symbols('a,b', extended_real=True)
@@ -105,6 +115,7 @@ def test_im():
     assert im(E*I) == E
     assert im(-E*I) == -E
 
+    x = Symbol('x')
     assert im(x) == im(x)
     assert im(x*I) == re(x)
     assert im(r*I) == r
@@ -112,6 +123,7 @@ def test_im():
     assert im(i*I) == 0
     assert im(i) == -I * i
 
+    y = Symbol('x')
     assert im(x + y) == im(x + y)
     assert im(x + r) == im(x)
     assert im(x + r*I) == im(x) + r
@@ -151,6 +163,14 @@ def test_im():
     assert re(t).is_algebraic is False
 
     assert re(zoo) == nan
+
+    # issue sympy/sympy#4757
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', imaginary=True)
+    f = Function('f')
+    assert im(f(x)).diff(x) == im(f(x).diff(x))
+    assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
+    assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
 
 
 def test_sign():
@@ -390,6 +410,13 @@ def test_Abs():
 
     assert abs(sign(z)) == Abs(sign(z), evaluate=False)
 
+    # issue sympy/sympy#4757
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', imaginary=True)
+    f = Function('f')
+    assert abs(f(x)).diff(x).subs({f(x): 1 + I*x}).doit() == x/sqrt(1 + x**2)
+    assert abs(f(y)).diff(y).subs({f(y): 1 + y}).doit() == -y/sqrt(1 - y**2)
+
 
 def test_Abs_rewrite():
     x = Symbol('x', extended_real=True)
@@ -552,6 +579,8 @@ def test_conjugate():
     assert conjugate(a*b) == -a*b
     assert conjugate(I*a*b) == I*a*b
 
+    x = Symbol('x')
+    y = Symbol('y')
     assert conjugate(conjugate(x)) == x
     assert conjugate(x + y) == conjugate(x) + conjugate(y)
     assert conjugate(x - y) == conjugate(x) - conjugate(y)
@@ -566,6 +595,13 @@ def test_conjugate():
     assert re(t).is_algebraic is False
 
     assert conjugate(z).diff(z) == Derivative(conjugate(z), z)
+
+    # issue sympy/sympy#4754
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', imaginary=True)
+    f = Function('f')
+    assert (f(x).conjugate()).diff(x) == (f(x).diff(x)).conjugate()
+    assert (f(y).conjugate()).diff(y) == -(f(y).diff(y)).conjugate()
 
 
 def test_conjugate_transpose():
@@ -634,8 +670,8 @@ def test_polarify():
     newex, subs = polarify(f(x) + z)
     assert newex.subs(subs) == f(x) + z
 
-    mu = Symbol("mu")
-    sigma = Symbol("sigma", positive=True)
+    mu = Symbol('mu')
+    sigma = Symbol('sigma', positive=True)
 
     # Make sure polarify(lift=True) doesn't try to lift the integration
     # variable
@@ -697,27 +733,11 @@ def test_sympyissue_3206():
     assert abs(abs(x)) == abs(x)
 
 
-def test_sympyissue_4754_derivative_conjugate():
-    x = Symbol('x', extended_real=True)
-    y = Symbol('y', imaginary=True)
-    f = Function('f')
-    assert (f(x).conjugate()).diff(x) == (f(x).diff(x)).conjugate()
-    assert (f(y).conjugate()).diff(y) == -(f(y).diff(y)).conjugate()
-
-
 def test_derivatives_sympyissue_4757():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')
-    assert re(f(x)).diff(x) == re(f(x).diff(x))
-    assert im(f(x)).diff(x) == im(f(x).diff(x))
-    assert re(f(y)).diff(y) == -I*im(f(y).diff(y))
-    assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
-    assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
-    assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
-    assert abs(f(x)).diff(x).subs({f(x): 1 + I*x}).doit() == x/sqrt(1 + x**2)
     assert arg(f(x)).diff(x).subs({f(x): 1 + I*x**2}).doit() == 2*x/(1 + x**4)
-    assert abs(f(y)).diff(y).subs({f(y): 1 + y}).doit() == -y/sqrt(1 - y**2)
     assert arg(f(y)).diff(y).subs({f(y): I + y**2}).doit() == 2*y/(1 + y**4)
 
 
@@ -750,6 +770,9 @@ def test_periodic_argument():
 
     assert periodic_argument(x, pi).is_real is True
     assert periodic_argument(x, oo, evaluate=False).is_real is None
+
+    a = Symbol('a', polar=True)
+    assert periodic_argument(a, oo) == periodic_argument(a, oo, evaluate=False)
 
 
 @pytest.mark.xfail
@@ -785,6 +808,9 @@ def test_principal_branch():
 
     assert (principal_branch((4 + I)**2, 2*pi).evalf() ==
             principal_branch((4 + I)**2, 2*pi))
+
+    assert principal_branch(exp_polar(-I*pi)*polar_lift(-1 - I),
+                            2*pi) == sqrt(2)*exp_polar(I*pi/4)
 
 
 @pytest.mark.xfail

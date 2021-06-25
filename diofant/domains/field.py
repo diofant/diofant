@@ -1,20 +1,16 @@
 """Implementation of :class:`Field` class."""
 
-from .ring import Ring
+from .ring import CommutativeRing
 
 
-__all__ = 'Field',
-
-
-class Field(Ring):
+class Field(CommutativeRing):
     """Represents a field domain."""
 
     is_Field = True
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise AttributeError(f'there is no ring associated with {self}')
 
     @property
     def field(self):
@@ -53,7 +49,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return self.one
 
         p = ring.gcd(a.numerator, b.numerator)
@@ -62,20 +58,4 @@ class Field(Ring):
         return self.convert(p, ring)/q
 
     def lcm(self, a, b):
-        """
-        Returns LCM of ``a`` and ``b``.
-
-        >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
-        4/3
-        >>> lcm(Rational(2, 3), Rational(4, 9))
-        4/3
-        """
-        try:
-            ring = self.ring
-        except AttributeError:
-            return a*b
-
-        p = ring.lcm(a.numerator, b.numerator)
-        q = ring.gcd(a.denominator, b.denominator)
-
-        return self.convert(p, ring)/q
+        return (a*b)/self.gcd(a, b)

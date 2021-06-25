@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+import typing
+
 from ..core import Add, Expr, Integer, Mul, count_ops, diff
 from ..core.assumptions import StdFactKB
 from ..core.decorators import _sympifyit, call_highest_priority
@@ -47,9 +51,7 @@ class BasisDependent(Expr):
         for k, v in self.components.items():
             vec += v.evalf(dps, **options) * k
         return vec
-    evalf.__doc__ += Expr.evalf.__doc__
-
-    n = evalf
+    evalf.__doc__ += Expr.evalf.__doc__  # type: ignore[operator]
 
     def simplify(self, ratio=1.7, measure=count_ops):
         """
@@ -124,7 +126,7 @@ class BasisDependent(Expr):
         """
         for x in args:
             if isinstance(x, BasisDependent):
-                raise TypeError("Invalid arg for differentiation")
+                raise TypeError('Invalid arg for differentiation')
         diff_components = [diff(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*diff_components)
@@ -155,7 +157,7 @@ class BasisDependentAdd(BasisDependent, Add):
                     arg = cls._add_func(*(arg.args))
                 else:
                     raise TypeError(str(arg) +
-                                    " cannot be interpreted correctly")
+                                    ' cannot be interpreted correctly')
             # If argument is zero, ignore
             if arg == cls.zero:
                 continue
@@ -214,7 +216,7 @@ class BasisDependentMul(BasisDependent, Mul):
                 measure_number *= arg
         # Make sure incompatible types weren't multiplied
         if count > 1:
-            raise ValueError("Invalid multiplication")
+            raise ValueError('Invalid multiplication')
         elif count == 0:
             return Mul(*args, **options)
         # Handle zero vector case
@@ -253,7 +255,7 @@ class BasisDependentMul(BasisDependent, Mul):
 class BasisDependentZero(BasisDependent):
     """Class to denote a zero basis dependent instance."""
 
-    components = {}
+    components: dict[typing.Any, Expr] = {}
 
     def __new__(cls):
         obj = super().__new__(cls)

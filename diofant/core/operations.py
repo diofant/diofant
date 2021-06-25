@@ -1,6 +1,6 @@
+from ..utilities import ordered
 from .basic import _aresame
 from .cache import cacheit
-from .compatibility import ordered
 from .evaluate import global_evaluate
 from .expr import Expr
 from .sympify import sympify
@@ -123,9 +123,9 @@ class AssocOp(Expr):
 
         For instance:
 
-        >>> a = Wild("a")
-        >>> b = Wild("b")
-        >>> c = Wild("c")
+        >>> a = Wild('a')
+        >>> b = Wild('b')
+        >>> c = Wild('c')
         >>> (a + sin(b)*c)._matches_commutative(x + sin(y)*z)
         {a_: x, b_: y, c_: z}
 
@@ -291,9 +291,9 @@ class AssocOp(Expr):
 
         """
         from .add import Add
+        from .function import AppliedUndef
         from .mul import Mul
         from .symbol import Symbol
-        from .function import AppliedUndef
 
         if isinstance(self, (Mul, Add)):
             x, tail = self.as_independent(Symbol, AppliedUndef)
@@ -352,8 +352,6 @@ class AssocOp(Expr):
 class ShortCircuit(Exception):
     """Helper exception to detect absorbing element among arguments."""
 
-    pass
-
 
 class LatticeOp(AssocOp):
     """
@@ -404,7 +402,7 @@ class LatticeOp(AssocOp):
         else:
             _args = frozenset(args)
 
-        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj = super(AssocOp, cls).__new__(cls, _args)  # pylint: disable=bad-super-call
         obj._argset = _args
         return obj
 
@@ -441,7 +439,7 @@ class LatticeOp(AssocOp):
         else:
             return frozenset([expr])
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))

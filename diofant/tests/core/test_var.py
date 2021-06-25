@@ -11,13 +11,13 @@ __all__ = ()
 
 
 def _make_z1():
-    var("z1")
+    var('z1')
 
 # make z2 with call-depth = 2
 
 
 def __make_z2():
-    var("z2")
+    var('z2')
 
 
 def _make_z2():
@@ -25,15 +25,15 @@ def _make_z2():
 
 
 def test_var():
-    var("a")
-    assert a == Symbol("a")
+    var('a')
+    assert a == Symbol('a')
 
-    var("b bb cc zz _x")
-    assert b == Symbol("b")
-    assert bb == Symbol("bb")
-    assert cc == Symbol("cc")
-    assert zz == Symbol("zz")
-    assert _x == Symbol("_x")
+    var('b bb cc zz _x')
+    assert b == Symbol('b')
+    assert bb == Symbol('bb')
+    assert cc == Symbol('cc')
+    assert zz == Symbol('zz')
+    assert _x == Symbol('_x')
 
     v = var(['d', 'e', 'fg'])
     assert d == Symbol('d')
@@ -44,13 +44,13 @@ def test_var():
     assert v == [d, e, fg]
 
     # see if var() really injects into global namespace
-    pytest.raises(NameError, lambda: z1)
+    pytest.raises(NameError, lambda: z1)  # type: ignore[name-defined]
     _make_z1()
-    assert z1 == Symbol("z1")
+    assert z1 == Symbol('z1')
 
-    pytest.raises(NameError, lambda: z2)
+    pytest.raises(NameError, lambda: z2)  # type: ignore[name-defined]
     _make_z2()
-    assert z2 == Symbol("z2")
+    assert z2 == Symbol('z2')
 
 
 def test_var_return():

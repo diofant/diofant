@@ -1,7 +1,7 @@
 from ..core import Integer, Mul, nan
 from ..functions import exp, log
 from ..polys import quo, roots
-from ..simplify import powsimp
+from ..simplify.powsimp import powsimp
 from .expr_with_intlimits import ExprWithIntLimits
 
 
@@ -169,7 +169,7 @@ class Product(ExprWithIntLimits):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    * https://en.wikipedia.org/wiki/Multiplication#Capital_pi_notation
     * https://en.wikipedia.org/wiki/Empty_product
 
     """
@@ -219,9 +219,9 @@ class Product(ExprWithIntLimits):
         return self.func(self.function.conjugate(), *self.limits)
 
     def _eval_product(self, term, limits):
-        from .delta import deltaproduct, _has_simple_delta
-        from .summations import summation
         from ..functions import KroneckerDelta, RisingFactorial
+        from .delta import _has_simple_delta, deltaproduct
+        from .summations import summation
 
         (k, a, n) = limits
 

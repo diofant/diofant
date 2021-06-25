@@ -1,9 +1,7 @@
-from strategies import condition, do_one, exhaust
-from strategies.core import typed
-from strategies.traverse import bottom_up
-
-from ...core import Add, Expr, Integer, sympify
-from ...core.strategies import unpack
+from ...core import Add, Expr, Integer
+from ...core.strategies import (bottom_up, condition, do_one, exhaust, typed,
+                                unpack)
+from ...core.sympify import sympify
 from ...logic import false
 from ...utilities import sift
 from .determinant import Determinant
@@ -97,6 +95,7 @@ class BlockMatrix(MatrixExpr):
 
     def _eval_transpose(self):
         from .. import Matrix
+
         # Flip all the individual matrices
         matrices = [transpose(matrix) for matrix in self.blocks]
         # Make a copy
@@ -110,7 +109,7 @@ class BlockMatrix(MatrixExpr):
             return Add(*[Trace(self.blocks[i, i])
                          for i in range(self.blockshape[0])])
         raise NotImplementedError("Can't perform trace of irregular "
-                                  "blockshape")  # pragma: no cover
+                                  'blockshape')  # pragma: no cover
 
     def _eval_determinant(self):
         return Determinant(self)

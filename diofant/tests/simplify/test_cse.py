@@ -20,13 +20,13 @@ x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = symbols('x:13')
 def test_numbered_symbols():
     ns = cse_main.numbered_symbols(prefix='y')
     assert list(itertools.islice(
-        ns, 0, 10)) == [Symbol('y%s' % i) for i in range(10)]
+        ns, 0, 10)) == [Symbol(f'y{i}') for i in range(10)]
     ns = cse_main.numbered_symbols(prefix='y')
     assert list(itertools.islice(
-        ns, 10, 20)) == [Symbol('y%s' % i) for i in range(10, 20)]
+        ns, 10, 20)) == [Symbol(f'y{i}') for i in range(10, 20)]
     ns = cse_main.numbered_symbols()
     assert list(itertools.islice(
-        ns, 0, 10)) == [Symbol('x%s' % i) for i in range(10)]
+        ns, 0, 10)) == [Symbol(f'x{i}') for i in range(10)]
 
 # Dummy "optimization" functions for testing.
 
@@ -185,7 +185,8 @@ def test_powers():
     assert cse(x*y**2 + x*y) == ([(x0, x*y)], [x0*y + x0])
 
 
-def test_sympyissue_4498():
+def test_basic_optimization():
+    # issue sympy/sympy#4498
     assert cse(w/(x - y) + z/(y - x), optimizations='basic') == \
         ([], [(w - z)/(x - y)])
 
@@ -205,8 +206,8 @@ def test_sympyissue_6263():
 
 
 def test_dont_cse_tuples():
-    f = Function("f")
-    g = Function("g")
+    f = Function('f')
+    g = Function('g')
 
     name_val, (expr,) = cse(Subs(f(x, y), (x, 0), (y, 1)) +
                             Subs(g(x, y), (x, 0), (y, 1)))
@@ -329,7 +330,7 @@ def test_name_conflict_cust_symbols():
     z1 = x0 + y
     z2 = x2 + x3
     l = [cos(z1) + z1, cos(z2) + z2, x0 + x2]
-    substs, reduced = cse(l, symbols("x:10"))
+    substs, reduced = cse(l, symbols('x:10'))
     assert [e.subs(reversed(substs)) for e in reduced] == l
 
 
@@ -375,7 +376,8 @@ def test_sympyissue_7840():
     assert len(substitutions) < 1
 
 
-def test_sympyissue_8891():
+def test_matrices():
+    # issue sympy/sympy#8891
     for cls in (MutableDenseMatrix, MutableSparseMatrix,
                 ImmutableDenseMatrix, ImmutableSparseMatrix):
         m = cls(2, 2, [x + y, 0, 0, 0])
@@ -388,8 +390,8 @@ def test_sympyissue_8891():
 def test_cse_ignore():
     exprs = [exp(y)*(3*y + 3*sqrt(x+1)), exp(y)*(5*y + 5*sqrt(x+1))]
     subst1, red1 = cse(exprs)
-    assert any(y in sub.free_symbols for _, sub in subst1), "cse failed to identify any term with y"
+    assert any(y in sub.free_symbols for _, sub in subst1), 'cse failed to identify any term with y'
 
     subst2, red2 = cse(exprs, ignore=(y,))  # y is not allowed in substitutions
-    assert not any(y in sub.free_symbols for _, sub in subst2), "Sub-expressions containing y must be ignored"
-    assert any(sub - sqrt(x + 1) == 0 for _, sub in subst2), "cse failed to identify sqrt(x + 1) as sub-expression"
+    assert not any(y in sub.free_symbols for _, sub in subst2), 'Sub-expressions containing y must be ignored'
+    assert any(sub - sqrt(x + 1) == 0 for _, sub in subst2), 'cse failed to identify sqrt(x + 1) as sub-expression'

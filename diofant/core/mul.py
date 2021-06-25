@@ -1,10 +1,8 @@
-import operator
 from collections import defaultdict
-from functools import reduce
 
+from ..utilities import default_sort_key
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import default_sort_key
 from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S
@@ -993,6 +991,7 @@ class Mul(AssocOp):
 
     def _eval_is_extended_real(self):
         real = True
+        finite = True
         zero = one_neither = False
 
         for t in self.args:
@@ -1001,12 +1000,20 @@ class Mul(AssocOp):
             elif t.is_imaginary or t.is_extended_real:
                 if t.is_imaginary:
                     real = not real
+                elif not t.is_real:
+                    if zero is not False:
+                        return
+                    finite = False
+
                 z = t.is_zero
                 if not z and zero is False:
                     zero = z
                 elif z:
                     if all(a.is_finite for a in self.args):
                         return True
+                    return
+
+                if not finite and t.is_real and z is not False:
                     return
             elif t.is_complex and t.is_real is False:
                 if one_neither:
@@ -1092,17 +1099,17 @@ class Mul(AssocOp):
         is_integer = self.is_integer
 
         if is_integer:
-            r, acc = True, 1
-            for t in self.args:
+            r = True
+            for i, t in enumerate(self.args):
                 if not t.is_integer:
                     return
-                elif t.is_even or (acc + t).is_odd:
+                elif t.is_even or any((a + t).is_odd
+                                      for a in self.args[i + 1:]):
                     r = False
                 elif r is False:
                     pass
                 elif r and t.is_odd is None:
                     r = None
-                acc = t
             return r
         else:
             return is_integer
@@ -1434,31 +1441,6 @@ class Mul(AssocOp):
     @property
     def _sorted_args(self):
         return tuple(self.as_ordered_factors())
-
-
-def prod(a, start=1):
-    """Return product of elements of a. Start with int 1 so if only
-       ints are included then an int result is returned.
-
-    Examples
-    ========
-
-    >>> prod(range(3))
-    0
-    >>> type(_) is int
-    True
-    >>> prod([Integer(2), 3])
-    6
-    >>> _.is_Integer
-    True
-
-    You can start the product at something other than 1:
-
-    >>> prod([1, 2], 3)
-    6
-
-    """
-    return reduce(operator.mul, a, start)
 
 
 def _keep_coeff(coeff, factors, clear=True, sign=False):

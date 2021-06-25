@@ -1,4 +1,4 @@
-"""Implementation of :class:`Ring` class."""
+"""Implementation of :class:`CommutativeRing` class."""
 
 import abc
 
@@ -6,10 +6,7 @@ from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
 
-__all__ = 'Ring',
-
-
-class Ring(Domain):
+class CommutativeRing(Domain):
     """Represents a ring domain."""
 
     is_Ring = True
@@ -40,12 +37,12 @@ class Ring(Domain):
 
     def invert(self, a, b):
         """Returns inversion of ``a mod b``."""
-        s, t, h = self.gcdex(a, b)
+        s, h = self.half_gcdex(a, b)
 
-        if h == self.one:
+        if h == 1:
             return s % b
         else:
-            raise NotInvertible("zero divisor")
+            raise NotInvertible('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
@@ -54,13 +51,22 @@ class Ring(Domain):
 
     def cofactors(self, a, b):
         """Returns GCD and cofactors of ``a`` and ``b``."""
-        gcd = self.gcd(a, b)
-        cfa = self.quo(a, gcd)
-        cfb = self.quo(b, gcd)
+        gcd, cfa, cfb = self.gcd(a, b), self.zero, self.zero
+        if gcd:
+            cfa = self.quo(a, gcd)
+            cfb = self.quo(b, gcd)
         return gcd, cfa, cfb
+
+    def lcm(self, a, b):
+        """Returns LCM of ``a`` and ``b``."""
+        return abs(a*b)//self.gcd(a, b)
 
     @property
     @abc.abstractmethod
     def characteristic(self):
         """Return the characteristic of this ring."""
         raise NotImplementedError
+
+    def is_normal(self, a):
+        """Returns True if ``a`` is unit normal."""
+        return a >= 0

@@ -22,11 +22,11 @@ class Mod(Function):
 
     @classmethod
     def eval(cls, p, q):
+        from ..polys.polytools import gcd
         from .add import Add
+        from .exprtools import gcd_terms
         from .mul import Mul
         from .numbers import Integer
-        from .exprtools import gcd_terms
-        from ..polys.polytools import gcd
 
         def doit(p, q):
             """Try to return p % q if both are numbers or +/-p is known

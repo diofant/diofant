@@ -55,7 +55,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
+    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2),
+    ...                               Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
       [1/2, 1/2, 0, 0],
@@ -81,7 +82,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
+    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1),
+    ...                               Integer(2), -Integer(2)], 0)[1]
     >>> res
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -100,7 +102,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
+    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0),
+    ...                               Integer(1), Integer(2)], 0)[1]
     >>> foo
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -160,9 +163,9 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     """
     # The notation below closely corresponds to the one used in the paper.
     if order < 0:
-        raise ValueError("Negative derivative order illegal.")
+        raise ValueError('Negative derivative order illegal.')
     if int(order) != order:
-        raise ValueError("Non-integer order illegal")
+        raise ValueError('Non-integer order illegal')
     M = order
     N = len(x_list) - 1
     delta = [[[0 for nu in range(N+1)] for n in range(N+1)] for
@@ -217,7 +220,8 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> cube = lambda arg: (1.0*arg)**3
+    >>> def cube(arg):
+    ...     return (1.0*arg)**3
     >>> xlist = range(-3, 4)
     >>> apply_finite_diff(2, xlist, list(map(cube, xlist)), 2) - 12
     -3.55271367880050e-15
@@ -261,7 +265,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
 
     N = len(x_list) - 1
     if len(x_list) != len(y_list):
-        raise ValueError("x_list and y_list not equal in length.")
+        raise ValueError('x_list and y_list not equal in length.')
 
     delta = finite_diff_weights(order, x_list, x0)
 
@@ -326,7 +330,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     >>> e, sq2 = exp(1), sqrt(2)
     >>> xl = [x-h, x+h, x+e*h]
-    >>> as_finite_diff(f(x).diff(x, 1), xl, x+h*sq2)
+    >>> as_finite_diff(f(x).diff((x, 1)), xl, x+h*sq2)
     2*h*f(E*h + x)*((h + sqrt(2)*h)/(2*h) -
     (-sqrt(2)*h + h)/(2*h))/((-h + E*h)*(h + E*h)) +
     f(-h + x)*(-(-sqrt(2)*h + h)/(2*h) - (-sqrt(2)*h + E*h)/(2*h))/(h +
@@ -371,6 +375,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
                       in range(-order, order + 1, 2)]
 
     if len(points) < order+1:
-        raise ValueError("Too few points for order %d" % order)
+        raise ValueError(f'Too few points for order {order:d}')
     return apply_finite_diff(order, points, [
         derivative.expr.subs({wrt: x}) for x in points], x0)

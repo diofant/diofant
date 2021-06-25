@@ -26,9 +26,9 @@ Compatibility breaks
 * Removed ``DMF`` class, see :pull:`620`.
 * Removed ``K[x, y, ...]`` sugar, use :meth:`~diofant.domains.domain.Domain.poly_ring` to create polynomial rings, see :pull:`622`.
 * Removed ``FracField`` class, see :pull:`622`.
-* ``get_field()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.field.Field.field`, see :pull:`622`.
+* ``get_field()`` method for domains, derived from :class:`~diofant.domains.ring.CommutativeRing`, now is a property, e.g. :attr:`~diofant.domains.field.Field.field`, see :pull:`622`.
 * Removed ``PolyRing`` class, see :pull:`621`.
-* ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.ring.Ring.ring`, see :pull:`621`.
+* ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.CommutativeRing`, now is a property, e.g. :attr:`~diofant.domains.ring.CommutativeRing.ring`, see :pull:`621`.
 * Removed ``compose`` option for :func:`~diofant.polys.numberfields.minimal_polynomial`, use ``method`` instead, see :pull:`624`.
 * :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, see :pull:`627`.
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
@@ -37,7 +37,7 @@ Compatibility breaks
 * Removed ``RealNumber`` alias, see :pull:`635`.
 * Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
 * Removed ``of_type()``, ``abs()``, ``is_one()``, ``unify_with_symbols()`` and ``map()`` methods and ``has_CharacteristicZero`` attribute of :class:`~diofant.domains.domain.Domain`, see :pull:`636`, :pull:`704` and :pull:`637`.
-* Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.Ring`, see :pull:`637`.
+* Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`637`.
 * ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.

@@ -1,5 +1,5 @@
+import operator
 import random
-from operator import ge, gt, le, lt
 
 import pytest
 
@@ -276,6 +276,12 @@ def test_new_relational():
     assert all(Relational(x, 0, op).rel_op == '>=' for op in ('ge', '>='))
     assert all(Relational(x, 0, op).rel_op == '<=' for op in ('le', '<='))
 
+    # issue sympy/sympy#10633
+    assert Eq(True, False) is false
+    assert Eq(False, True) is false
+    assert Eq(True, True) is true
+    assert Eq(False, False) is true
+
 
 def test_relational_bool_output():
     # https://github.com/sympy/sympy/issues/5931
@@ -305,16 +311,14 @@ def test_relational_logic_symbols():
 
 
 def test_univariate_relational_as_set():
-    assert (x > 0).as_set() == Interval(0, oo, True, True)
-    assert (x >= 0).as_set() == Interval(0, oo, False, True)
-    assert (x < 0).as_set() == Interval(-oo, 0, True, True)
-    assert (x <= 0).as_set() == Interval(-oo, 0, True)
+    assert (x > 0).as_set() == Interval(0, oo, True)
+    assert (x >= 0).as_set() == Interval(0, oo)
+    assert (x < 0).as_set() == Interval(-oo, 0, False, True)
+    assert (x <= 0).as_set() == Interval(-oo, 0)
     assert Eq(x, 0).as_set() == FiniteSet(0)
-    assert Ne(x, 0).as_set() == Interval(-oo, 0, True, True) + \
-        Interval(0, oo, True, True)
+    assert Ne(x, 0).as_set() == Interval(-oo, 0, False, True) + Interval(0, oo, True)
 
-    assert (x**2 >= 4).as_set() == (Interval(-oo, -2, True) +
-                                    Interval(2, oo, False, True))
+    assert (x**2 >= 4).as_set() == Interval(-oo, -2) + Interval(2, oo)
 
 
 @pytest.mark.xfail
@@ -517,10 +521,10 @@ def test_inequalities_symbol_name_same_complex():
 def test_inequalities_cant_sympify_other():
     # see issue sympy/sympy#7833
 
-    bar = "foo"
+    bar = 'foo'
 
     for a in (x, Integer(0), Rational(1, 3), pi, I, zoo, oo, -oo, nan):
-        for op in (lt, gt, le, ge):
+        for op in (operator.lt, operator.gt, operator.le, operator.ge):
             pytest.raises(TypeError, lambda: op(a, bar))
 
 
@@ -536,7 +540,9 @@ def test_ineq_avoid_wild_symbol_flip():
     assert e == Ge(x, p, evaluate=False)
 
 
-def test_sympyissue_8245():
+def test_evalf():
+    # issue sympy/sympy#8245
+
     a = Rational(6506833320952669167898688709329, 5070602400912917605986812821504)
     q = a.evalf(10)
     assert (a == q) is True
@@ -564,7 +570,8 @@ def test_sympyissue_8245():
     assert (r <= a) is true
 
 
-def test_sympyissue_8449():
+def test_infinity():
+    # issue sympy/sympy#8449
     p = Symbol('p', nonnegative=True)
     assert Lt(-oo, p)
     assert Ge(-oo, p) is false
@@ -660,10 +667,3 @@ def test_sympyissue_8444():
     i = Symbol('i', integer=True)
     assert (i > floor(i)) is false
     assert (i < ceiling(i)) is false
-
-
-def test_sympyissue_10633():
-    assert Eq(True, False) is false
-    assert Eq(False, True) is false
-    assert Eq(True, True) is true
-    assert Eq(False, False) is true

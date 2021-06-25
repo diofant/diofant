@@ -18,7 +18,7 @@ __all__ = ()
 
 
 def test_sympyissue_3538():
-    v = sympify("exp(x)")
+    v = sympify('exp(x)')
     assert v == exp(x)
     assert isinstance(v, Pow)
     assert str(type(v)) == str(type(exp(x)))
@@ -28,10 +28,10 @@ def test_sympify1():
     assert sympify(None) is None
     with pytest.raises(SympifyError) as ex:
         sympify(None, strict=True)
-    assert str(ex).find("SympifyError") >= 0
-    assert sympify("x") == Symbol("x")
-    assert sympify("   x") == Symbol("x")
-    assert sympify("   x   ") == Symbol("x")
+    assert str(ex).find('SympifyError') >= 0
+    assert sympify('x') == Symbol('x')
+    assert sympify('   x') == Symbol('x')
+    assert sympify('   x   ') == Symbol('x')
     # issue sympy/sympy#4877
     n1 = Rational(1, 2)
     assert sympify('--.5') == n1
@@ -85,15 +85,15 @@ def test_sympify_mpmath():
 
     mpmath.mp.dps = 12
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-12")) is true
+        mpmath.pi).epsilon_eq(Float('3.14159265359'), Float('1e-12')) is true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159265359"), Float("1e-13")) is false
+        mpmath.pi).epsilon_eq(Float('3.14159265359'), Float('1e-13')) is false
 
     mpmath.mp.dps = 6
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-5")) is true
+        mpmath.pi).epsilon_eq(Float('3.14159'), Float('1e-5')) is true
     assert sympify(
-        mpmath.pi).epsilon_eq(Float("3.14159"), Float("1e-6")) is false
+        mpmath.pi).epsilon_eq(Float('3.14159'), Float('1e-6')) is false
 
     assert sympify(mpmath.mpc(1.0 + 2.0j)) == Float(1.0) + Float(2.0)*I
 
@@ -101,7 +101,7 @@ def test_sympify_mpmath():
 def test_sympify2():
     class A:
         def _diofant_(self):
-            return Symbol("x")**3
+            return Symbol('x')**3
 
     a = A()
 
@@ -111,10 +111,10 @@ def test_sympify2():
 
 
 def test_sympify3():
-    assert sympify("x**3") == x**3
-    assert sympify("x^3") == x**3
-    assert sympify("x^3", convert_xor=False) == Xor(x, 3)
-    assert sympify("1/2") == Rational(1, 2)
+    assert sympify('x**3') == x**3
+    assert sympify('x^3') == x**3
+    assert sympify('x^3', convert_xor=False) == Xor(x, 3)
+    assert sympify('1/2') == Rational(1, 2)
 
     pytest.raises(SympifyError, lambda: sympify('x**3', strict=True))
     pytest.raises(SympifyError, lambda: sympify('1/2', strict=True))
@@ -128,8 +128,8 @@ def test_sympify_keywords():
 
 
 def test_sympify_float():
-    assert sympify("1e-64") != 0
-    assert sympify("1e-20000") != 0
+    assert sympify('1e-64') != 0
+    assert sympify('1e-20000') != 0
 
 
 def test_sympify_bool():
@@ -149,7 +149,7 @@ def test_sympyify_iterables():
 def test_sympify4():
     class A:
         def _diofant_(self):
-            return Symbol("x")
+            return Symbol('x')
 
     a = A()
 
@@ -167,7 +167,7 @@ def test_sympify5():
         sympify(A())
     assert re.match(r"^Sympify of expression '<diofant\.tests\.core\.test_sympify"
                     r"\.test_sympify5\.<locals>\.A object at 0x[0-9a-f]+>' failed,"
-                    " because of exception being raised:\nTypeError: $", str(err.value))
+                    ' because of exception being raised:\nTypeError: $', str(err.value))
 
 
 def test_sympify_text():
@@ -187,15 +187,15 @@ def test_sympify_function():
 
 
 def test_sympify_poly():
-    p = Poly(x**2 + x + 1, x)
+    p = (x**2 + x + 1).as_poly()
 
     assert sympify(p, strict=True) is p
     assert sympify(p) is p
 
 
 def test_sympyissue_3595():
-    assert sympify("a_") == Symbol("a_")
-    assert sympify("_a") == Symbol("_a")
+    assert sympify('a_') == Symbol('a_')
+    assert sympify('_a') == Symbol('_a')
 
 
 def test_lambda():
@@ -207,15 +207,15 @@ def test_lambda():
 
 
 def test_lambda_raises():
-    pytest.raises(NotImplementedError, lambda: sympify("lambda *args: args"))  # args argument error
-    pytest.raises(NotImplementedError, lambda: sympify("lambda **kwargs: kwargs"))  # kwargs argument error
-    pytest.raises(SympifyError, lambda: sympify("lambda x = 1: x"))    # Keyword argument error
+    pytest.raises(NotImplementedError, lambda: sympify('lambda *args: args'))  # args argument error
+    pytest.raises(NotImplementedError, lambda: sympify('lambda **kwargs: kwargs'))  # kwargs argument error
+    pytest.raises(SympifyError, lambda: sympify('lambda x = 1: x'))    # Keyword argument error
     with pytest.raises(SympifyError):
         sympify('lambda: 1', strict=True)
 
 
 def test_sympify_raises():
-    pytest.raises(SympifyError, lambda: sympify("fx)"))
+    pytest.raises(SympifyError, lambda: sympify('fx)'))
 
 
 def test_sympify_strict():
@@ -226,7 +226,7 @@ def test_sympify_strict():
     assert sympify(x, strict=True) is x
     assert sympify(f, strict=True) is f
     assert sympify(1, strict=True) == Integer(1)
-    assert sympify(0.5, strict=True) == Float("0.5")
+    assert sympify(0.5, strict=True) == Float('0.5')
     assert sympify(1 + 1j, strict=True) == 1.0 + I*1.0
 
     class A:
@@ -406,7 +406,7 @@ def test_sympyissue_4798_None():
 
 
 def test_sympyissue_3218():
-    assert sympify("x+\ny") == x + y
+    assert sympify('x+\ny') == x + y
 
 
 def test_sympyissue_4988_builtins():
@@ -435,11 +435,11 @@ def test_sympyissue_6540_6552():
 
 
 def test_sympyissue_6046():
-    assert str(sympify("Q & C", locals=_clash1)) == 'C & Q'
+    assert str(sympify('Q & C', locals=_clash1)) == 'C & Q'
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
-    exec("from diofant.abc import S, O", locals)
+    exec('from diofant.abc import S, O', locals)
     assert str(sympify('O&S', locals)) == 'O & S'
 
 

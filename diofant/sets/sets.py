@@ -1,17 +1,19 @@
 """Generic set theory interfaces."""
 
 import itertools
+import typing
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
-from ..core.compatibility import iterable, ordered
+from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
+from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
+from ..core.sympify import sympify
 from ..logic import And, Not, Or, false, true
-from ..utilities import subsets
+from ..utilities import ordered, subsets
 from .contains import Contains
 
 
@@ -36,11 +38,11 @@ class Set(Basic):
     is_Interval = False
     is_ProductSet = False
     is_Union = False
-    is_Intersection = None
-    is_EmptySet = None
-    is_UniversalSet = None
-    is_Complement = None
-    is_SymmetricDifference = None
+    is_Intersection: typing.Optional[bool] = None
+    is_EmptySet: typing.Optional[bool] = None
+    is_UniversalSet: typing.Optional[bool] = None
+    is_Complement: typing.Optional[bool] = None
+    is_SymmetricDifference: typing.Optional[bool] = None
 
     @staticmethod
     def _infimum_key(expr):
@@ -239,7 +241,7 @@ class Set(Basic):
 
     @property
     def _inf(self):
-        raise NotImplementedError("(%s)._inf" % self)
+        raise NotImplementedError(f'({self})._inf')
 
     @property
     def sup(self):
@@ -259,7 +261,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)
+        raise NotImplementedError(f'({self})._sup')
 
     @_sympifyit('other', false)
     def contains(self, other):
@@ -283,7 +285,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
+        raise NotImplementedError(f'({self})._contains({other})')
 
     def is_subset(self, other):
         """
@@ -301,7 +303,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return self.intersection(other) == self
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def issubset(self, other):
         """Alias for :meth:`is_subset()`."""
@@ -323,7 +325,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return self != other and self.is_subset(other)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def is_superset(self, other):
         """
@@ -341,7 +343,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return other.is_subset(self)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def issuperset(self, other):
         """Alias for :meth:`is_superset()`."""
@@ -363,10 +365,10 @@ class Set(Basic):
         if isinstance(other, Set):
             return self != other and self.is_superset(other)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def _eval_powerset(self):
-        raise NotImplementedError('Power set not defined for: %s' % self.func)
+        raise NotImplementedError(f'Power set not defined for: {self.func}')
 
     def powerset(self):
         """
@@ -516,7 +518,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)
+        raise NotImplementedError(f'({self})._measure')
 
     def __add__(self, other):
         return self.union(other)
@@ -535,7 +537,7 @@ class Set(Basic):
 
     def __pow__(self, exp):
         if not sympify(exp).is_Integer or exp < 0:
-            raise ValueError("%s: Exponent must be a positive Integer" % exp)
+            raise ValueError(f'{exp}: Exponent must be a positive Integer')
         return ProductSet([self]*exp)
 
     def __sub__(self, other):
@@ -544,7 +546,7 @@ class Set(Basic):
     def __contains__(self, other):
         symb = self.contains(other)
         if symb not in (true, false):
-            raise TypeError('contains did not evaluate to a bool: %r' % symb)
+            raise TypeError(f'contains did not evaluate to a bool: {symb!r}')
         return bool(symb)
 
 
@@ -600,7 +602,7 @@ class ProductSet(Set):
                     return [arg]
             elif iterable(arg):
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         sets = flatten(list(sets))
 
         if EmptySet() in sets or len(sets) == 0:
@@ -687,7 +689,7 @@ class ProductSet(Set):
         if self.is_iterable:
             return cantor_product(*self.sets)
         else:
-            raise TypeError("Not all constituent sets are iterable")
+            raise TypeError('Not all constituent sets are iterable')
 
     @property
     def _measure(self):
@@ -755,11 +757,11 @@ class Interval(Set, EvalfMixin):
         if not all(isinstance(a, (type(true), type(false)))
                    for a in [left_open, right_open]):
             raise NotImplementedError(
-                "left_open and right_open can have only true/false values, "
-                "got %s and %s" % (left_open, right_open))
+                'left_open and right_open can have only true/false values, '
+                f'got {left_open} and {right_open}')
 
         if not all(i.is_extended_real is not False for i in (start, end)):
-            raise ValueError("Non-real intervals are not supported")
+            raise ValueError('Non-real intervals are not supported')
 
         if (end - start).is_negative:
             return S.EmptySet
@@ -867,8 +869,16 @@ class Interval(Set, EvalfMixin):
         if not other.is_Interval:
             return
 
-        # handle (-oo, oo)
-        if Eq(self, S.Reals) == true:
+        # handle unbounded self
+        if Eq(self, S.Reals) == true and all((abs(_) < oo) is true or
+                                             abs(_) == oo
+                                             for _ in other.boundary):
+            if other.is_left_unbounded and not other.left_open:
+                other = Interval(other.start, other.end, True, other.right_open)
+            if other.is_right_unbounded and not other.right_open:
+                other = Interval(other.start, other.end, other.left_open, True)
+            return other
+        elif Eq(self, S.ExtendedReals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -910,12 +920,11 @@ class Interval(Set, EvalfMixin):
         return Interval(start, end, left_open, right_open)
 
     def _complement(self, other):
-        if other is S.Reals:
+        if other in (S.Reals, S.ExtendedReals):
             a = Interval(-oo, self.start,
-                         True, not self.left_open)
-            b = Interval(self.end, oo, not self.right_open, True)
+                         other.left_open, not self.left_open)
+            b = Interval(self.end, oo, not self.right_open, other.right_open)
             return Union(a, b)
-
         return Set._complement(self, other)
 
     def _union(self, other):
@@ -928,7 +937,8 @@ class Interval(Set, EvalfMixin):
         if other.is_UniversalSet:
             return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
-            from ..functions import Min, Max
+            from ..functions import Max, Min
+
             # Non-overlapping intervals
             end = Min(self.end, other.end)
             start = Max(self.start, other.start)
@@ -971,19 +981,26 @@ class Interval(Set, EvalfMixin):
         else:
             expr = other >= self.start
 
+            if other == self.start:
+                return true
+
         if self.right_open:
             expr = And(expr, other < self.end)
         else:
             expr = And(expr, other <= self.end)
 
+            if other == self.end:
+                return true
+
         return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
-        from ..functions import Min, Max
-        from ..solvers import solve
-        from ..core import diff, Lambda
-        from ..series import limit
         from ..calculus.singularities import singularities
+        from ..core import Lambda, diff
+        from ..functions import Max, Min
+        from ..series import limit
+        from ..solvers import solve
+
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)
         # TODO: handle multivariate functions
 
@@ -1021,11 +1038,11 @@ class Interval(Set, EvalfMixin):
             return
 
         if self.left_open:
-            _start = limit(expr, var, self.start, dir="+")
+            _start = limit(expr, var, self.start, dir='+')
         elif self.start not in sing:
             _start = f(self.start)
         if self.right_open:
-            _end = limit(expr, var, self.end, dir="-")
+            _end = limit(expr, var, self.end, dir='-')
         elif self.end not in sing:
             _end = f(self.end)
 
@@ -1098,11 +1115,11 @@ class Interval(Set, EvalfMixin):
         if self.right_open:
             right = x < self.end
         else:
-            right = x <= self.end
+            right = true if self.is_right_unbounded else x <= self.end
         if self.left_open:
             left = self.start < x
         else:
-            left = self.start <= x
+            left = true if self.is_left_unbounded else self.start <= x
         return And(left, right)
 
     def _eval_Eq(self, other):
@@ -1163,7 +1180,7 @@ class Union(Set, EvalfMixin):
                     return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
 
         # Union of no sets is EmptySet
@@ -1326,7 +1343,7 @@ class Union(Set, EvalfMixin):
         if all(set.is_iterable for set in self.args):
             return roundrobin(*(iter(arg) for arg in self.args))
         else:
-            raise TypeError("Not all constituent sets are iterable")
+            raise TypeError('Not all constituent sets are iterable')
 
 
 class Intersection(Set):
@@ -1372,7 +1389,7 @@ class Intersection(Set):
                     return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
 
         if len(args) == 0:
@@ -1403,7 +1420,7 @@ class Intersection(Set):
                 other = Intersection(other_sets, evaluate=False)
                 return (x for x in s if x in other)
 
-        raise ValueError("None of the constituent sets are iterable")
+        raise ValueError('None of the constituent sets are iterable')
 
     @staticmethod
     def reduce(args):
@@ -1501,7 +1518,7 @@ class Complement(Set, EvalfMixin):
     References
     ==========
 
-    * http://mathworld.wolfram.com/ComplementSet.html
+    * https://mathworld.wolfram.com/ComplementSet.html
 
     """
 
@@ -1820,22 +1837,22 @@ class FiniteSet(Set, EvalfMixin):
 
     def __ge__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return other.is_subset(self)
 
     def __gt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_proper_superset(other)
 
     def __le__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_subset(other)
 
     def __lt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_proper_subset(other)
 
 

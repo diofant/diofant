@@ -173,6 +173,10 @@ def test_expand():
         assert besselx(i, x).is_extended_real is None
         assert besselx(x, z).is_extended_real is None
 
+        # issue sympy/sympy#21486
+        assert expand_func(besselx(oo, x)) == besselx(oo, x, evaluate=False)
+        assert expand_func(besselx(-oo, x)) == besselx(-oo, x, evaluate=False)
+
     for besselx in [besselj, besseli]:
         assert besselx(i, r).is_extended_real
     for besselx in [bessely, besselk]:
@@ -256,6 +260,9 @@ def test_bessel_eval():
     for f in [bessely, besselk]:
         assert f(1 + I, 0) == zoo
         assert f(I, 0) == nan
+
+    for x in (oo, -oo, I*oo, -I*oo):
+        assert besselk(m, x) == 0
 
     for f in [besselj, bessely]:
         assert f(m, +oo) == 0

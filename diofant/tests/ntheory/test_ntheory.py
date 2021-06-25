@@ -12,6 +12,7 @@ from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
                      binomial_coefficients_list)
 from diofant import factorial as fac
 from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
+from diofant.abc import x
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
 from diofant.domains import QQ, ZZ
@@ -24,7 +25,7 @@ from diofant.ntheory import (discrete_log, divisor_count, divisor_sigma,
                              pollard_rho, prevprime, prime, primefactors,
                              primepi, primerange, primitive_root, primorial,
                              quadratic_residues, randprime, sqrt_mod,
-                             sqrt_mod_iter, totient, trailing)
+                             sqrt_mod_iter, square_factor, totient, trailing)
 from diofant.ntheory.continued_fraction import \
     continued_fraction_convergents as cf_c
 from diofant.ntheory.continued_fraction import \
@@ -155,10 +156,10 @@ def test_isprime():
     assert not isprime(9188353522314541)
 
     assert _mr_safe_helper(
-        "if n < 170584961: return mr(n, [350, 3958281543])") == \
+        'if n < 170584961: return mr(n, [350, 3958281543])') == \
         ' # [350, 3958281543] stot = 1 clear [2, 3, 5, 7, 29, 67, 679067]'
     assert _mr_safe_helper(
-        "if n < 3474749660383: return mr(n, [2, 3, 5, 7, 11, 13])") == \
+        'if n < 3474749660383: return mr(n, [2, 3, 5, 7, 11, 13])') == \
         ' # [2, 3, 5, 7, 11, 13] stot = 7 clear == bases'
 
 
@@ -294,7 +295,7 @@ def multiproduct(seq=(), start=1):
 
 
 @hypothesis.given(x=hypothesis.strategies.integers(min_value=0,
-                                                   max_value=1e+10))
+                                                   max_value=10000000000))
 def test_factorint_invariant(x):
     assert Mul(*[v**p for v, p in factorint(x).items()]) == x
 
@@ -462,12 +463,12 @@ def test_totient():
     assert totient(5009) == 5008
     assert totient(2**100) == 2**99
 
-    m = Symbol("m", integer=True)
+    m = Symbol('m', integer=True)
     assert totient(m)
     assert totient(m).subs({m: 3**10}) == 3**10 - 3**9
     assert summation(totient(m), (m, 1, 11)) == 42
 
-    n = Symbol("n", integer=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
     assert totient(n).is_integer
     assert totient(m).is_integer is None
 
@@ -483,8 +484,8 @@ def test_divisor_sigma():
     assert divisor_sigma(23450, 2) == 730747500
     assert divisor_sigma(23450, 3) == 14666785333344
 
-    m = Symbol("m", integer=True)
-    k = Symbol("k", integer=True)
+    m = Symbol('m', integer=True)
+    k = Symbol('k', integer=True)
     assert divisor_sigma(m)
     assert divisor_sigma(m, k)
     assert divisor_sigma(m).subs({m: 3**10}) == 88573
@@ -1011,9 +1012,9 @@ def test_continued_fraction():
 
 
 def test_egyptian_fraction():
-    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), "spam"))
+    pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), 'spam'))
 
-    def test_equality(r, alg="Greedy"):
+    def test_equality(r, alg='Greedy'):
         return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])
 
     r = random_complex_number(a=0, c=1, b=0, d=0, rational=True)
@@ -1021,19 +1022,19 @@ def test_egyptian_fraction():
 
     assert egyptian_fraction(1) == [1]
     assert egyptian_fraction(Rational(4, 17)) == [5, 29, 1233, 3039345]
-    assert egyptian_fraction(Rational(7, 13), "Greedy") == [2, 26]
-    assert egyptian_fraction(Rational(23, 101), "Greedy") == \
+    assert egyptian_fraction(Rational(7, 13), 'Greedy') == [2, 26]
+    assert egyptian_fraction(Rational(23, 101), 'Greedy') == \
         [5, 37, 1438, 2985448, 40108045937720]
-    assert egyptian_fraction(Rational(18, 23), "Takenouchi") == \
+    assert egyptian_fraction(Rational(18, 23), 'Takenouchi') == \
         [2, 6, 12, 35, 276, 2415]
-    assert egyptian_fraction(Rational(5, 6), "Graham Jewett") == \
+    assert egyptian_fraction(Rational(5, 6), 'Graham Jewett') == \
         [6, 7, 8, 9, 10, 42, 43, 44, 45, 56, 57, 58, 72, 73, 90, 1806, 1807,
          1808, 1892, 1893, 1980, 3192, 3193, 3306, 5256, 3263442, 3263443,
          3267056, 3581556, 10192056, 10650056950806]
-    assert egyptian_fraction(Rational(5, 6), "Golomb") == [2, 6, 12, 20, 30]
-    assert egyptian_fraction(Rational(5, 121), "Golomb") == [25, 1225, 3577, 7081, 11737]
+    assert egyptian_fraction(Rational(5, 6), 'Golomb') == [2, 6, 12, 20, 30]
+    assert egyptian_fraction(Rational(5, 121), 'Golomb') == [25, 1225, 3577, 7081, 11737]
     pytest.raises(ValueError, lambda: egyptian_fraction(Rational(-4, 9)))
-    assert egyptian_fraction(Rational(8, 3), "Golomb") == [1, 2, 3, 4, 5, 6, 7,
+    assert egyptian_fraction(Rational(8, 3), 'Golomb') == [1, 2, 3, 4, 5, 6, 7,
                                                            14, 574, 2788, 6460,
                                                            11590, 33062, 113820]
     assert egyptian_fraction(Rational(355, 113)) == [1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -1068,3 +1069,26 @@ def test_is_square():
     # issue sympy/sympy#17044
     assert is_square(216000) is False
     assert is_square(216000/15) is True
+
+
+def test_square_factor():
+    assert square_factor(1) == square_factor(-1) == 1
+    assert square_factor(0) == 1
+    assert square_factor(5) == square_factor(-5) == 1
+    assert square_factor(4) == square_factor(-4) == 2
+    assert square_factor(12) == square_factor(-12) == 2
+    assert square_factor(6) == 1
+    assert square_factor(18) == 3
+    assert square_factor(52) == 2
+    assert square_factor(49) == 7
+    assert square_factor(392) == 14
+    assert square_factor(factorint(-12)) == 2
+
+
+def test_sympyissue_21341():
+    r0 = (x**5 - x + 1).as_poly().real_roots()[0]
+
+    assert list(itertools.islice(cf_i(r0), 10)) == [-2, 1, 4, 1, 42, 1, 3,
+                                                    24, 2, 2]
+    assert list(itertools.islice(cf_i(-r0), 10)) == [1, 5, 1, 42, 1, 3,
+                                                     24, 2, 2, 1]

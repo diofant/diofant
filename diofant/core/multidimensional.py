@@ -4,7 +4,7 @@ Provides functionality for multidimensional usage of scalar-functions.
 Read the vectorize docstring for more details.
 """
 
-from functools import wraps
+import functools
 
 from .numbers import Integer
 
@@ -46,7 +46,7 @@ def iter_copy(structure):
     """
     l = []
     for i in structure:
-        if hasattr(i, "__iter__"):
+        if hasattr(i, '__iter__'):
             l.append(iter_copy(i))
         else:
             l.append(i)
@@ -58,7 +58,7 @@ def structure_copy(structure):
     Returns a copy of the given structure (numpy-array, list, iterable, ..).
 
     """
-    if hasattr(structure, "copy"):
+    if hasattr(structure, 'copy'):
         return structure.copy()
     return iter_copy(structure)
 
@@ -97,7 +97,7 @@ class vectorize:
         """
         for a in mdargs:
             if not isinstance(a, (int, Integer, str)):
-                raise TypeError("a is of invalid type")
+                raise TypeError('a is of invalid type')
         self.mdargs = mdargs
 
     def __call__(self, f):
@@ -106,7 +106,7 @@ class vectorize:
         multidimensional arguments.
 
         """
-        @wraps(f)
+        @functools.wraps(f)
         def wrapper(*args, **kwargs):
             # Get arguments that should be treated multidimensional
             if self.mdargs:
@@ -131,7 +131,7 @@ class vectorize:
                 else:
                     raise NotImplementedError
 
-                if hasattr(entry, "__iter__"):
+                if hasattr(entry, '__iter__'):
                     # Create now a copy of the given array and manipulate then
                     # the entries directly.
                     if is_arg:

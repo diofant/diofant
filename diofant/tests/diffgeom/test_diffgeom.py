@@ -237,7 +237,7 @@ def test_schwarzschild():
                     ricci[1, 1])*r/2).subs({r: R}).doit()
     assert eq1 == f(R).diff(R) + g(R).diff(R)
     eq2 = simplify(ricci[1, 1].replace(g, lambda x: -f(x)).replace(r, R).doit())
-    assert eq2 == -2*f(R).diff(R)**2 - f(R).diff(R, 2) - 2*f(R).diff(R)/R
+    assert eq2 == -2*f(R).diff(R)**2 - f(R).diff((R, 2)) - 2*f(R).diff(R)/R
 
 
 def test_sympyissue_11799():
@@ -245,7 +245,7 @@ def test_sympyissue_11799():
     M = Manifold('M', n)
     P = Patch('P', M)
 
-    coord = CoordSystem('coord', P, ['x%s' % i for i in range(n)])
+    coord = CoordSystem('coord', P, [f'x{i}' for i in range(n)])
     x = coord.coord_functions()
     dx = coord.base_oneforms()
 

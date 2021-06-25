@@ -13,7 +13,7 @@ Development
     programming language and the Git Version Control System.
 
 This project adheres to `No Code of Conduct`_.  Contributions will
-be judged by their technical merit.  Nothing else matters.
+be judged by their technical merit.
 
 .. _reporting-issues:
 
@@ -26,11 +26,16 @@ When opening a new issue, please take the following steps:
 
 2. If possible, try updating to master and reproducing your issue.
 
-3. Try to include a minimal reproducible code example that demonstrates the
-   problem.  Avoid screenshots, if possible.
+3. Try to include a minimal reproducible code example that
+   demonstrates the problem.
 
-4. Include any relevant details of your local setup (i.e. Python
+4. Include any relevant details of your local setup (Python
    version, installed libraries).
+
+.. note::
+
+    Please avoid changing your messages on the GitHub, unless you want fix a
+    typo and so on.  Just expand your comment or add a new one.
 
 Contributing Code
 =================
@@ -49,9 +54,15 @@ All work should be submitted via `Pull Requests (PR)`_.
    verbose description of your changes.  Please `mention closed
    issues`_ with commit message.
 
-4. Please conform to `PEP 8`_ and `PEP 257`_, enable `flake8 git hook
-   <http://flake8.pycqa.org/en/stable/user/using-hooks.html>`_ to
-   prevent badly formatted commits.
+4. Please conform to `PEP 8`_ and `PEP 257`_; run::
+
+       flake8
+
+   to check formatting and::
+
+       flake8-rst
+
+   if your change affects doctests.
 
 5. PR should include tests:
 
@@ -61,7 +72,8 @@ All work should be submitted via `Pull Requests (PR)`_.
       or adding comment with issue number).
    2. All new functionality should be tested, every new line
       should be covered by tests.  Please use in tests only
-      public interfaces.
+      public interfaces.  Regression tests are not accounted in
+      the coverage statistics.
    3. Optionally, provide doctests to illustrate usage.  But keep in
       mind, doctests are not tests.  Think of them as examples that
       happen to be tested.
@@ -69,19 +81,23 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
-       python setup.py test
+       pytest
 
    To check also doctests, run::
 
-       python setup.py test --addopts --doctest-modules
+       pytest --doctest-modules
 
 7. Please also check for potential flaws in your Python code with::
 
        pylint diofant
 
+   and do type checking::
+
+       mypy diofant
+
 8. If your change affects documentation, please build it by::
 
-       python setup.py build_sphinx -W
+       sphinx-build -W -b html docs build/sphinx/html
 
    and check that it looks as expected.
 
@@ -131,8 +147,6 @@ and publish this release tag::
     git tag -s vX.Y.Z
     git push origin vX.Y.Z
 
-.. XXX adopt http://www.contribution-guide.org
-
 .. _SymPy : https://www.sympy.org/
 .. _Semantic Versioning: https://semver.org/
 .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
@@ -142,4 +156,4 @@ and publish this release tag::
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _flake8: http://flake8.rtfd.io/
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
-.. _mention closed issues: https://help.github.com/en/articles/closing-issues-using-keywords
+.. _mention closed issues: https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue

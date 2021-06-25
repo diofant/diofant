@@ -129,7 +129,7 @@ def test_center():
                 G = AbelianGroup(i, j, k)
                 assert G.center().is_subgroup(G)
     # the center of a nonabelian simple group is trivial
-    for i in(1, 5, 9):
+    for i in (1, 5, 9):
         A = AlternatingGroup(i)
         assert (A.center()).order() == 1
     # brute-force verifications

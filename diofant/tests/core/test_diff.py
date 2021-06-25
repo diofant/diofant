@@ -12,15 +12,15 @@ def test_diff():
     assert Rational(1, 3).diff(x) is Integer(0)
     assert I.diff(x) is Integer(0)
     assert pi.diff(x) is Integer(0)
-    assert x.diff(x, 0) == x
-    assert (x**2).diff(x, 2, x) == 0
-    assert (x**2).diff(x, y, 0) == 2*x
+    assert x.diff((x, 0)) == x
+    assert (x**2).diff((x, 2), x) == 0
+    assert (x**2).diff(x, (y, 0)) == 2*x
     assert (x**2).diff(x, y) == 0
-    pytest.raises(ValueError, lambda: x.diff(1, x))
+    pytest.raises(ValueError, lambda: x.diff((1, x)))
 
-    a = Symbol("a")
-    b = Symbol("b")
-    c = Symbol("c")
+    a = Symbol('a')
+    b = Symbol('b')
+    c = Symbol('c')
     p = Integer(5)
     e = a*b + b**p
     assert e.diff(a) == b
@@ -31,15 +31,15 @@ def test_diff():
     assert e.diff(b) == a
     assert e.diff(b).diff(a) == 1
     e = c**p
-    assert e.diff(c, 6) == 0
-    assert e.diff(c, 5) == 120
+    assert e.diff((c, 6)) == 0
+    assert e.diff((c, 5)) == 120
     e = c**2
     assert e.diff(c) == 2*c
     e = a*b*c
     assert e.diff(c) == a*b
 
     f = Function('f')
-    assert f(x).diff(x, 2).diff(f(x).diff(x, 1)) == 0
+    assert f(x).diff((x, 2)).diff(f(x).diff((x, 1))) == 0
 
 
 def test_diff2():
@@ -94,13 +94,13 @@ def test_diff_no_eval_derivative():
 
 def test_speed():
     # this should return in 0.0s. If it takes forever, it's wrong.
-    x = Symbol("x")
-    assert x.diff(x, 10**8) == 0
+    x = Symbol('x')
+    assert x.diff((x, 10**8)) == 0
 
 
 def test_deriv_noncommutative():
-    A = Symbol("A", commutative=False)
-    f = Function("f")
-    x = Symbol("x")
+    A = Symbol('A', commutative=False)
+    f = Function('f')
+    x = Symbol('x')
     assert A*f(x)*A == f(x)*A**2
     assert A*f(x).diff(x)*A == f(x).diff(x) * A**2

@@ -3,9 +3,6 @@
 from .domain import Domain
 
 
-__all__ = 'CharacteristicZero',
-
-
 class CharacteristicZero(Domain):
     """Domain that has infinite number of elements."""
 
