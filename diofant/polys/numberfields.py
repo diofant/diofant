@@ -740,10 +740,16 @@ def field_isomorphism_pslq(a, b):
                 R = QQ.inject(d1)
                 R2 = R.inject(d2)
 
-                basis_re = [R2.to_expr(R._real_imag(R.gens[0]**i, d2)[0]).subs({d1: reB, d2: imB})
-                            for i in range(m)] + [reA]
-                basis_im = [R2.to_expr(R._real_imag(R.gens[0]**i, d2)[1]).subs({d1: reB, d2: imB})
-                            for i in range(1, m)] + [imA]
+                basis_re = ([+R2.to_expr(R._real_imag(R.gens[0]**i, d2)[0]).subs({d1: reB, d2: imB})
+                             for i in range(m)] +
+                            [-R2.to_expr(R._real_imag(R.gens[0]**i, d2)[1]).subs({d1: reB, d2: imB})
+                             for i in range(m)] + [reA])
+                basis_im = ([+R2.to_expr(R._real_imag(R.gens[0]**i, d2)[1]).subs({d1: reB, d2: imB})
+                             for i in range(m)] +
+                            [+R2.to_expr(R._real_imag(R.gens[0]**i, d2)[0]).subs({d1: reB, d2: imB})
+                             for i in range(m)] + [imA])
+                print('b_re: ', basis_re)
+                print('b_im: ', basis_im)
                 coeffs_re = mpmath.pslq(basis_re, maxcoeff=10**10, maxsteps=10**3)
                 coeffs_im = mpmath.pslq(basis_im, maxcoeff=10**10, maxsteps=10**3)
                 print('re: ', coeffs_re)
@@ -752,16 +758,22 @@ def field_isomorphism_pslq(a, b):
             if any(_ is None or not _[-1] for _ in [coeffs_re, coeffs_im]):
                 break
 
-            coeffs_re = [QQ(-c, coeffs_re[-1]) for c in reversed(coeffs_re[:-1])]
-            coeffs_im = [QQ(-c, coeffs_im[-1]) for c in reversed(coeffs_im[:-1])]
+            coeffs_re = [QQ(-c, coeffs_re[-1]) for c in coeffs_re[:-1]]
+            coeffs_im = [QQ(-c, coeffs_im[-1]) for c in coeffs_im[:-1]]
 
-            if coeffs_re[:-1] != coeffs_im:
+            if coeffs_re != coeffs_im:
+                print(111)
                 break
 
-            h = Poly(coeffs_re, f.gen, domain='QQ')
+            coeffs_re, coeffs_im = coeffs_re[:m], coeffs_re[m:]
+
+            h = Poly([r + I*i for r, i in zip(coeffs_re, coeffs_im)],
+                     f.gen, domain=QQ.algebraic_field(I))
 
             if f.compose(h).rem(g).is_zero:
-                return h.rep.all_coeffs()
+                r = h.rep.all_coeffs()
+                print(r)
+                return r
         return
 
     a, b = a.ext, b.ext
