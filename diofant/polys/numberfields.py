@@ -732,13 +732,13 @@ def field_isomorphism_pslq(a, b):
     for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
             A, B = lambdify((), [a, b], 'mpmath')()
-            basis = [A] + [B**i for i in reversed(range(m))]
+            basis = [B**i for i in range(m)] + [A]
             coeffs = mpmath.pslq(basis, maxcoeff=10**10, maxsteps=10**3)
 
         if coeffs:
-            assert coeffs[0]  # basis[1:] elements are linearly independent
+            assert coeffs[-1]  # basis[:-1] elements are linearly independent
 
-            h = -Poly(coeffs[1:], x, field=True).quo_ground(coeffs[0])
+            h = -Poly(coeffs[:-1], x, field=True).quo_ground(coeffs[-1])
 
             if f.compose(h).rem(g).is_zero:
                 return h.rep.all_coeffs()
