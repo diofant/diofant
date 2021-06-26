@@ -1,6 +1,7 @@
 from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
-                     oo, pi, sympify, zoo)
+                     oo, pi, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
+from ...core.sympify import sympify
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
 

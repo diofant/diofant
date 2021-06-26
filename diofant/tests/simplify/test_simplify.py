@@ -6,7 +6,7 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      besseli, besselj, besselsimp, binomial, cancel, cbrt,
                      combsimp, cos, cosh, cosine_transform, count_ops, diff,
                      erf, exp, exp_polar, expand, expand_multinomial, factor,
-                     factorial, gamma, hyper, hypersimp, integrate, log,
+                     factorial, gamma, hyper, hypersimp, integrate, ln, log,
                      logcombine, nsimplify, oo, pi, posify, rad, root,
                      separatevars, sign, signsimp, simplify, sin, sinh, solve,
                      sqrt, sqrtdenest, sstr, symbols, tan, true, zoo)
@@ -291,6 +291,8 @@ def test_hypersimp():
 
     term = binomial(n, k)*(-1)**k/factorial(k)
     assert hypersimp(term, k) == (k - n)/(k + 1)**2
+
+    assert hypersimp(2**(I*k) * 2**k, k) == 2**(1 + I)
 
 
 def test_nsimplify():
@@ -665,7 +667,7 @@ def test_sympyissue_12792():
 
 def test_sympyissue_12506():
     expr = 1.0 * cos(x) + 2.0 * cos(asin(0.5 * sin(x)))
-    expr = expr.diff(x, 2)
+    expr = expr.diff((x, 2))
     expr_simp = expr.simplify()
     assert expr_simp.equals(expr)
 
@@ -698,3 +700,11 @@ def test_sympyissue_13115():
 def test_simplify_algebraic_numbers():
     e = (3 + 4*I)**Rational(3, 2)
     assert simplify(e) == 2 + 11*I  # issue sympy/sympy#4401
+
+
+@pytest.mark.timeout(20)
+def test_sympyissue_21641():
+    assert (simplify(65712362363534280139543*ln(Rational(49, 50)) /
+                     2441406250000000000) ==
+            -65712362363534280139543*log(50)/2441406250000000000 +
+            65712362363534280139543*log(49)/2441406250000000000)

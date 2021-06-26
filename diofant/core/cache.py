@@ -1,13 +1,16 @@
 """Caching facility for Diofant."""
 
+from __future__ import annotations
+
 import functools
 import os
+import typing
 
 from .evaluate import global_evaluate
 
 
 # global cache registry: [] of (item, {})
-CACHE = []
+CACHE: list[typing.Any] = []
 
 
 def print_cache():

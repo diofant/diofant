@@ -866,15 +866,14 @@ class Permutation(Basic):
         if has_dups(temp):
             if is_cycle:
                 raise ValueError('there were repeated elements; to resolve '
-                                 'cycles use Cycle%s.' % ''.join([str(tuple(c)) for c in args]))
+                                 f"cycles use Cycle{''.join([str(tuple(c)) for c in args])}.")
             else:
                 raise ValueError('there were repeated elements.')
         temp = set(temp)
 
         if not is_cycle and \
                 any(i not in temp for i in range(len(temp))):
-            raise ValueError('Integers 0 through %s must be present.' %
-                             max(temp))
+            raise ValueError(f'Integers 0 through {max(temp)} must be present.')
 
         if is_cycle:
             # it's not necessarily canonical so we won't store

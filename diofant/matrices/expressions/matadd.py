@@ -1,11 +1,11 @@
 import functools
 import operator
 
-from strategies import condition, do_one, exhaust
-
-from ...core import Add, Expr, sympify
+from ...core import Add, Expr
 from ...core.logic import _fuzzy_group
-from ...core.strategies import flatten, glom, rm_id, sort, unpack
+from ...core.strategies import (condition, do_one, exhaust, flatten, glom,
+                                rm_id, sort, unpack)
+from ...core.sympify import sympify
 from ...functions import adjoint
 from ...utilities import default_sort_key, sift
 from ..matrices import MatrixBase, ShapeError

@@ -37,6 +37,7 @@ def test_maximize():
 
 
 def test_minimize_linear():
+    # see also sympy/sympy#20391
     assert minimize([-2*x - 3*y - 2*z, 2*x + y + z <= 4,
                      x + 2*y + z <= 7, z <= 5, x >= 0,
                      y >= 0, z >= 0], x, y, z) == (-11, {x: 0, y: 3, z: 1})

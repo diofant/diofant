@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Add, Derivative, FiniteSet, Float, Function, I, Integer,
                      Mul, Rational, Symbol, Wild, WildFunction, cos, diff, exp,
-                     log, meijerg, oo, pi, sin, sqrt, symbols)
+                     log, meijerg, oo, pi, root, sin, sqrt, symbols)
 from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
@@ -200,6 +200,16 @@ def test_functions():
 
     F = WildFunction('F', nargs=(1, 2))
     assert F.nargs == FiniteSet(1, 2)
+
+    # issue sympy/sympy#2711
+    f = meijerg(((), ()), ((0,), ()), x)
+    a = Wild('a')
+    b = Wild('b')
+
+    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
+                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
+    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
+    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
 
 
 @pytest.mark.xfail
@@ -577,17 +587,6 @@ def test_sympyissue_3539():
     assert (6/x**2).match(a/x) == {a: 6/x}
 
 
-def test_sympyissue_2711():
-    f = meijerg(((), ()), ((0,), ()), x)
-    a = Wild('a')
-    b = Wild('b')
-
-    assert f.find(a) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1,
-                         (): 3, (0,): 1, ((), ()): 1, ((0,), ()): 1}
-    assert f.find(a + b) == {0: 1, x: 1, meijerg(((), ()), ((0,), ()), x): 1}
-    assert f.find(a**2) == {x: 1, meijerg(((), ()), ((0,), ()), x): 1}
-
-
 def test_diofantissue_423():
     a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
                                              cls=Wild, exclude=[x])
@@ -629,3 +628,11 @@ def test_sympyissue_16774():
     t = (a*a1 + b1)/(a*c1 + d1) + (a*a2 + b2)/(a*c2 + d2)
     assert e.match(t) == {a1: -2, a2: 4, b1: -9, b2: 3, c1: 1,
                           c2: 5, d1: 4, d2: 12}
+
+
+def test_sympyissue_21466():
+    a, b, k, m, n = symbols('a b k m n', cls=Wild)
+    pattern = x**n * (a + b * x**k)**m
+    expr = root(x, 3)*root(3 - x**2, 3)
+    assert expr.match(pattern) == {k: 2, b: -1, a: 3, m: Rational(1, 3),
+                                   n: Rational(1, 3)}

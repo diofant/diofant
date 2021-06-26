@@ -1,5 +1,9 @@
 """Singleton mechanism"""
 
+from __future__ import annotations
+
+import typing
+
 from .assumptions import ManagedProperties
 
 
@@ -82,7 +86,7 @@ class SingletonRegistry:
 
 
 #: Alias for instance of :class:`SingletonRegistry`.
-S = SingletonRegistry()
+S: SingletonRegistry = SingletonRegistry()
 
 
 class Singleton(type):
@@ -118,7 +122,7 @@ class Singleton(type):
 
     """
 
-    _instances = {}
+    _instances: dict[type[typing.Any], typing.Any] = {}
     'Maps singleton classes to their instances.'
 
     def __new__(cls, *args, **kwargs):

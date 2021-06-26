@@ -7,7 +7,7 @@ from itertools import combinations, product
 
 from ..core import Atom, cacheit
 from ..core.expr import Expr
-from ..core.function import Application, Derivative
+from ..core.function import Application
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
 from ..core.singleton import S
@@ -86,6 +86,9 @@ class BooleanAtom(Atom, Boolean):
     @property
     def canonical(self):
         return self
+
+    def __int__(self):
+        return int(bool(self))
 
 
 class BooleanTrue(BooleanAtom, metaclass=Singleton):
@@ -238,7 +241,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
 
 true = BooleanTrue()
-false = BooleanFalse()
+false: BooleanFalse = BooleanFalse()
 # We want S.true and S.false to work, rather than S.BooleanTrue and
 # S.BooleanFalse, but making the class and instance names the same causes some
 # major issues (like the inability to import the class directly from this
@@ -411,7 +414,7 @@ class Or(LatticeOp, BooleanFunction):
         ========
 
         >>> Or(x > 2, x < -2).as_set()
-        (-oo, -2) U (2, oo)
+        [-oo, -2) U (2, oo]
 
         """
         from ..sets import Union
@@ -628,7 +631,7 @@ class Xor(BooleanFunction):
             obj._argset = frozenset(argset)
             return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
@@ -834,7 +837,7 @@ class Equivalent(BooleanFunction):
         obj._argset = _args
         return obj
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
@@ -895,12 +898,6 @@ class ITE(BooleanFunction):
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
-
-    # the diff method below is copied from Expr class
-    def diff(self, *symbols, **assumptions):
-        new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault('evaluate', True)
-        return Derivative(self, *new_symbols, **assumptions)
 
 
 # end class definitions. Some useful methods

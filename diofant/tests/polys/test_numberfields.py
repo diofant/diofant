@@ -89,11 +89,11 @@ def test_minimal_polynomial():
 
     # issue diofant/diofant#431
     K = QQ.algebraic_field(sqrt(2))
-    theta = K.to_expr(K([Rational(1, 2), 17]))
+    theta = K.to_expr(K([17, Rational(1, 2)]))
     assert minimal_polynomial(theta)(x) == 2*x**2 - 68*x + 577
 
     K = QQ.algebraic_field(RootOf(x**7 + x - 1, 3))
-    theta = K.to_expr(K([1, 2, 0, 0, 1]))
+    theta = K.to_expr(K([1, 0, 0, 2, 1]))
     ans = minimal_polynomial(theta)(x)
     assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
                    115*x**2 + 82*x - 147)
@@ -112,7 +112,7 @@ def test_minimal_polynomial():
     K1 = QQ.algebraic_field(RootOf(x**3 + 4*x - 15, 1))
     K2 = QQ.algebraic_field(RootOf(x**3 - x + 1, 0))
     theta = sqrt(1 + 1/(K1.to_expr(K1([1, 0, 1])) +
-                        1/(sqrt(3) + K2.to_expr(K2([1, 2, -1])))))
+                        1/(sqrt(3) + K2.to_expr(K2([-1, 2, 1])))))
     ans = (2262264837876687263*x**36 - 38939909597855051866*x**34 +
            315720420314462950715*x**32 - 1601958657418182606114*x**30 +
            5699493671077371036494*x**28 - 15096777696140985506150*x**26 +
@@ -134,7 +134,7 @@ def test_minimal_polynomial():
     assert minimal_polynomial(a**Rational(3, 2))(x) == 729*x**4 - 506898*x**2 + 84604519
 
     K = QQ.algebraic_field(RootOf(x**3 + x - 1, 0))
-    a = K.to_expr(K([1, 0]))
+    a = K.to_expr(K([0, 1]))
     assert minimal_polynomial(1/a**2)(x) == x**3 - x**2 - 2*x - 1
 
     # issue sympy/sympy#5994
@@ -342,35 +342,35 @@ def test_minpoly_sympyissue_7574():
 
 
 def test_primitive_element():
-    assert primitive_element([sqrt(2)]) == (PurePoly(x**2 - 2), [1], [[1, 0]])
+    assert primitive_element([sqrt(2)]) == (PurePoly(x**2 - 2), [1], [[0, 1]])
 
     assert (primitive_element([sqrt(2), sqrt(3)]) ==
-            (PurePoly(x**4 - 10*x**2 + 1), [1, 1], [[QQ(+1, 2), 0, -QQ(9, 2), 0],
-                                                    [QQ(-1, 2), 0, QQ(11, 2), 0]]))
+            (PurePoly(x**4 - 10*x**2 + 1), [1, 1], [[0, -QQ(9, 2), 0, QQ(+1, 2)],
+                                                    [0, QQ(11, 2), 0, QQ(-1, 2)]]))
     A = QQ.algebraic_field(sqrt(2))
     assert (primitive_element([sqrt(2), sqrt(3)], domain=A) ==
             (PurePoly(x**2 - 2*sqrt(2)*x - 1, x, domain=A), [1, 1],
-             [[A.unit], [1, -A.unit]]))
+             [[A.unit], [-A.unit, 1]]))
     assert (primitive_element([sqrt(2), sqrt(2 + sqrt(2))], domain=A) ==
             (PurePoly(x**2 - 2*sqrt(2)*x - sqrt(2), x, domain=A), [1, 1],
-             [[A.unit], [1, -A.unit]]))
+             [[A.unit], [-A.unit, 1]]))
 
     A = QQ.algebraic_field(sqrt(2) + sqrt(3))
     assert (primitive_element([sqrt(2), sqrt(3)], domain=A) ==
             (PurePoly(x - sqrt(2) - sqrt(3), x, domain=A), [1, 1],
-             [[A([QQ(1, 2), 0, -QQ(9, 2), 0])], [A([-QQ(1, 2), 0, QQ(11, 2), 0])]]))
+             [[A([0, -QQ(9, 2), 0, QQ(1, 2)])], [A([0, QQ(11, 2), 0, -QQ(1, 2)])]]))
 
     pytest.raises(ValueError, lambda: primitive_element([]))
 
     # issue sympy/sympy#13849
     assert (primitive_element([sqrt(2), sqrt(2) + sqrt(5)]) ==
-            (PurePoly(x**4 - 76*x**2 + 4), [1, 2], [[QQ(1, 12), 0, QQ(-37, 6), 0],
-                                                    [QQ(-1, 24), 0, QQ(43, 12), 0]]))
+            (PurePoly(x**4 - 76*x**2 + 4), [1, 2], [[0, QQ(-37, 6), 0, QQ(1, 12)],
+                                                    [0, QQ(43, 12), 0, QQ(-1, 24)]]))
 
     # issue sympy/sympy#14117
     assert (primitive_element([I*sqrt(2*sqrt(2) + 3), I*sqrt(-2*sqrt(2) + 3), I]) ==
-            (PurePoly(x**4 + 54*x**2 + 81), [1, 2, 4], [[QQ(1, 3), 0], [QQ(1, 27), 0, 2, 0],
-                                                        [QQ(-1, 54), 0, QQ(-5, 6), 0]]))
+            (PurePoly(x**4 + 54*x**2 + 81), [1, 2, 4], [[0, QQ(1, 3)], [0, 2, 0, QQ(1, 27)],
+                                                        [0, QQ(-5, 6), 0, QQ(-1, 54)]]))
 
 
 def test_field_isomorphism():
@@ -380,57 +380,57 @@ def test_field_isomorphism():
     d = QQ.algebraic_field(sqrt(2) + sqrt(3))
     e = QQ.algebraic_field(sqrt(2) + sqrt(3) + sqrt(7))
 
-    assert field_isomorphism(a, a) == [1, 0]
+    assert field_isomorphism(a, a) == [0, 1]
     assert field_isomorphism(a, b) is None
     assert field_isomorphism(a, c) is None
-    assert field_isomorphism(a, d) == [QQ(1, 2), 0, -QQ(9, 2), 0]
-    assert field_isomorphism(a, e) == [QQ(1, 80), 0, -QQ(1, 2), 0, QQ(59, 20), 0]
+    assert field_isomorphism(a, d) == [0, -QQ(9, 2), 0, QQ(1, 2)]
+    assert field_isomorphism(a, e) == [0, QQ(59, 20), 0, -QQ(1, 2), 0, QQ(1, 80)]
 
     assert field_isomorphism(b, a) is None
-    assert field_isomorphism(b, b) == [1, 0]
+    assert field_isomorphism(b, b) == [0, 1]
     assert field_isomorphism(b, c) is None
-    assert field_isomorphism(b, d) == [-QQ(1, 2), 0, QQ(11, 2), 0]
-    assert field_isomorphism(b, e) == [-QQ(3, 640), 0, QQ(67, 320), 0, -QQ(297, 160), 0, QQ(313, 80), 0]
+    assert field_isomorphism(b, d) == [0, QQ(11, 2), 0, -QQ(1, 2)]
+    assert field_isomorphism(b, e) == [0, QQ(313, 80), 0, QQ(-297, 160), 0, QQ(67, 320), 0, QQ(-3, 640)]
 
     assert field_isomorphism(c, a) is None
     assert field_isomorphism(c, b) is None
-    assert field_isomorphism(c, c) == [1, 0]
+    assert field_isomorphism(c, c) == [0, 1]
     assert field_isomorphism(c, d) is None
-    assert field_isomorphism(c, e) == [QQ(3, 640), 0, -QQ(71, 320), 0, QQ(377, 160), 0, -QQ(469, 80), 0]
+    assert field_isomorphism(c, e) == [0, QQ(-469, 80), 0, QQ(377, 160), 0, QQ(-71, 320), 0, QQ(3, 640)]
 
     assert field_isomorphism(d, a) is None
     assert field_isomorphism(d, b) is None
     assert field_isomorphism(d, c) is None
-    assert field_isomorphism(d, d) == [1, 0]
-    assert field_isomorphism(d, e) == [-QQ(3, 640), 0, QQ(71, 320), 0, -QQ(377, 160), 0, QQ(549, 80), 0]
+    assert field_isomorphism(d, d) == [0, 1]
+    assert field_isomorphism(d, e) == [0, QQ(549, 80), 0, QQ(-377, 160), 0, QQ(71, 320), 0, QQ(-3, 640)]
 
     assert field_isomorphism(e, a) is None
     assert field_isomorphism(e, b) is None
     assert field_isomorphism(e, c) is None
     assert field_isomorphism(e, d) is None
-    assert field_isomorphism(e, e) == [1, 0]
+    assert field_isomorphism(e, e) == [0, 1]
 
     f = QQ.algebraic_field(3*sqrt(2) + 8*sqrt(7) - 5)
 
-    assert field_isomorphism(f, e) == [QQ(3, 80), 0, -QQ(139, 80), 0, QQ(347, 20), 0, -QQ(761, 20), -5]
+    assert field_isomorphism(f, e) == [-5, QQ(-761, 20), 0, QQ(347, 20), 0, QQ(-139, 80), 0, QQ(3, 80)]
 
-    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [QQ(+1, 2), 0]
-    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [QQ(-1, 2), 0]
+    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [0, QQ(+1, 2)]
+    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [0, QQ(-1, 2)]
 
-    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [QQ(-1, 2), 0]
-    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [QQ(+1, 2), 0]
+    assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [0, QQ(-1, 2)]
+    assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(-I*sqrt(3)/2)) == [0, QQ(+1, 2)]
 
-    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [QQ(+14, 5), 0]
-    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [QQ(-14, 5), 0]
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [0, QQ(+14, 5)]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(5*I*sqrt(3)/3)) == [0, QQ(-14, 5)]
 
-    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [QQ(-14, 5), 0]
-    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [QQ(+14, 5), 0]
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [0, QQ(-14, 5)]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [0, QQ(+14, 5)]
 
-    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [QQ(+14, 5), 1323]
-    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [QQ(-14, 5), 1323]
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [1323, QQ(+14, 5)]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(5*I*sqrt(3)/3)) == [1323, QQ(-14, 5)]
 
-    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [QQ(-14, 5), 1323]
-    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [QQ(+14, 5), 1323]
+    assert field_isomorphism(QQ.algebraic_field(+2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [1323, QQ(-14, 5)]
+    assert field_isomorphism(QQ.algebraic_field(-2*I*sqrt(3)/7 + 27), QQ.algebraic_field(-5*I*sqrt(3)/3)) == [1323, QQ(+14, 5)]
 
     p = QQ.algebraic_field(+sqrt(2) + sqrt(3))
     q = QQ.algebraic_field(-sqrt(2) + sqrt(3))
@@ -438,8 +438,8 @@ def test_field_isomorphism():
     s = QQ.algebraic_field(-sqrt(2) - sqrt(3))
     c = QQ.algebraic_field(cbrt(2))
 
-    pos_coeffs = [+QQ(1, 2), 0, -QQ(9, 2), 0]
-    neg_coeffs = [-QQ(1, 2), 0, +QQ(9, 2), 0]
+    pos_coeffs = [0, -QQ(9, 2), 0, +QQ(1, 2)]
+    neg_coeffs = [0, +QQ(9, 2), 0, -QQ(1, 2)]
 
     a = QQ.algebraic_field(sqrt(2))
 
@@ -467,8 +467,8 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
-    pos_coeffs = [+QQ(1, 2), 0, -QQ(11, 2), 0]
-    neg_coeffs = [-QQ(1, 2), 0, +QQ(11, 2), 0]
+    pos_coeffs = [0, -QQ(11, 2), 0, +QQ(1, 2)]
+    neg_coeffs = [0, +QQ(11, 2), 0, -QQ(1, 2)]
 
     a = QQ.algebraic_field(sqrt(3))
 
@@ -494,8 +494,8 @@ def test_field_isomorphism():
     assert field_isomorphism(a, r, fast=False) == neg_coeffs
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
-    pos_coeffs = [+QQ(3, 2), 0, -QQ(33, 2), -8]
-    neg_coeffs = [-QQ(3, 2), 0, +QQ(33, 2), -8]
+    pos_coeffs = [-8, -QQ(33, 2), 0, +QQ(3, 2)]
+    neg_coeffs = [-8, +QQ(33, 2), 0, -QQ(3, 2)]
 
     a = QQ.algebraic_field(3*sqrt(3) - 8)
 
@@ -511,10 +511,10 @@ def test_field_isomorphism():
 
     a = QQ.algebraic_field(3*sqrt(2) + 2*sqrt(3) + 1)
 
-    pos_1_coeffs = [+QQ(1, 2), 0, -QQ(5, 2), 1]
-    neg_1_coeffs = [-QQ(1, 2), 0, +QQ(5, 2), 1]
-    pos_5_coeffs = [+QQ(5, 2), 0, -QQ(49, 2), 1]
-    neg_5_coeffs = [-QQ(5, 2), 0, +QQ(49, 2), 1]
+    pos_1_coeffs = [1, -QQ(5, 2), 0, +QQ(1, 2)]
+    neg_1_coeffs = [1, +QQ(5, 2), 0, -QQ(1, 2)]
+    pos_5_coeffs = [1, -QQ(49, 2), 0, +QQ(5, 2)]
+    neg_5_coeffs = [1, +QQ(49, 2), 0, -QQ(5, 2)]
 
     assert field_isomorphism(a, p, fast=True) == pos_1_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_5_coeffs
@@ -541,12 +541,12 @@ def test_field_isomorphism():
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
-    assert A.convert(sqrt(2)) == A([1, 0])
+    assert A.convert(sqrt(2)) == A([0, 1])
     B = QQ.algebraic_field(sqrt(2), sqrt(3))
-    assert B.convert(sqrt(2) + sqrt(3)) == B([1, 0])
+    assert B.convert(sqrt(2) + sqrt(3)) == B([0, 1])
 
     K = QQ.algebraic_field(sqrt(2) + sqrt(3))
-    a = K([Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
+    a = K([Integer(0), -Rational(9, 2), Integer(0), Rational(1, 2)])
 
     assert B.from_expr(sqrt(2)) == a
 
@@ -555,8 +555,8 @@ def test_to_number_field():
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
     A = QQ.algebraic_field(r0)
-    a = A([Rational(-96, 755), Rational(-54, 755), Rational(128, 151), Rational(936, 755),
-           Rational(-1003, 755), Rational(2184, 755)])
+    a = A([Rational(2184, 755), Rational(-1003, 755), Rational(936, 755),
+           Rational(128, 151), Rational(-54, 755), Rational(-96, 755)])
     assert A.from_expr(r1) == a
 
 
@@ -655,8 +655,8 @@ def test_sympyissue_18874():
     e = [sqrt(2) + sqrt(5), sqrt(2)]
 
     assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
-                                    [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
-                                             [QQ(-1, 78), 0, QQ(59, 78), 0]])
+                                    [1, 2], [[0, QQ(-20, 39), 0, QQ(1, 39)],
+                                             [0, QQ(59, 78), 0, QQ(-1, 78)]])
 
 
 def test_sympyissue_19760():

@@ -1,9 +1,13 @@
 import ast
 import builtins
+import io
+import tokenize
+import unicodedata
+import uuid
 
 
 class IntegerDivisionWrapper(ast.NodeTransformer):
-    """Wrap all int divisions in a call to Rational."""
+    """Wrap all int divisions in a call to :class:`~fractions.Fraction`."""
 
     def visit_BinOp(self, node):
         def is_integer(x):
@@ -22,24 +26,22 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
         if (isinstance(node.op, ast.Div) and
                 all(is_integer(_) for _ in [node.left, node.right])):
-            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
                             args=[node.left, node.right], keywords=[],
                             starargs=None, kwargs=None)
         return self.generic_visit(node)
 
 
 class AutomaticSymbols(ast.NodeTransformer):
-    """Add missing Symbol definitions automatically."""
+    """Add missing :class:`~diofant.core.symbol.Symbol` definitions automatically."""
 
-    def __init__(self):
+    def __init__(self, ns={}):
         super().__init__()
         self.names = []
+        self.ns = ns
 
     def visit_Module(self, node):
-        import IPython
-
-        app = IPython.get_ipython()
-        ignored_names = list(app.user_ns) + dir(builtins)
+        ignored_names = list(self.ns) + dir(builtins)
 
         for s in node.body:
             self.visit(s)
@@ -55,7 +57,7 @@ class AutomaticSymbols(ast.NodeTransformer):
                                                starargs=None, kwargs=None))
             node.body.insert(0, assign)
 
-        newnode = ast.Module(body=node.body)
+        newnode = ast.Module(body=node.body, type_ignores=[])
         ast.copy_location(newnode, node)
         ast.fix_missing_locations(newnode)
         return newnode
@@ -67,11 +69,11 @@ class AutomaticSymbols(ast.NodeTransformer):
 
 
 class FloatRationalizer(ast.NodeTransformer):
-    """Wraps all floats in a call to Rational."""
+    """Wraps all floats in a call to :class:`~fractions.Fraction`."""
 
-    def visit_Num(self, node):
+    def visit_Constant(self, node):
         if isinstance(node.n, float):
-            return ast.Call(func=ast.Name(id='Rational', ctx=ast.Load()),
+            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
                             args=[ast.Str(s=repr(node.n))], keywords=[],
                             starargs=None, kwargs=None)
         return node
@@ -80,3 +82,23 @@ class FloatRationalizer(ast.NodeTransformer):
         if isinstance(node.func, ast.Name) and node.func.id == 'Float':
             return node
         return self.generic_visit(node)
+
+
+_NAMES_MAP = {}
+
+
+def unicode_identifiers(lines):
+    """Transform original code to allow any unicode identifiers."""
+    new_lines = []
+    for line in lines:
+        result = []
+        g = tokenize.tokenize(io.BytesIO(line.encode()).readline)
+        for toknum, tokval, _, _, _ in g:
+            if toknum == tokenize.NAME:
+                if unicodedata.normalize('NFKC', tokval) != tokval:
+                    if tokval not in _NAMES_MAP:
+                        _NAMES_MAP[tokval] = f'_{uuid.uuid4().hex!s}'
+                    tokval = _NAMES_MAP[tokval]
+            result.append((toknum, tokval))
+        new_lines.append(tokenize.untokenize(result).decode())
+    return new_lines

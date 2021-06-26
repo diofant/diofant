@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ..core import AtomicExpr, Integer, Pow
 from ..matrices import ImmutableMatrix
 from .basisdependent import (BasisDependent, BasisDependentAdd,
@@ -17,6 +19,14 @@ class Dyadic(BasisDependent):
     """
 
     _op_priority = 13.0
+
+    zero: DyadicZero
+
+    _expr_type: type[Dyadic]
+    _mul_func: type[DyadicMul]
+    _add_func: type[DyadicAdd]
+    _zero_func: type[DyadicZero]
+    _base_func: type[BaseDyadic]
 
     @property
     def components(self):
@@ -165,6 +175,13 @@ class Dyadic(BasisDependent):
         return ImmutableMatrix([i.dot(self).dot(j) for i in system for j in
                                 second_system]).reshape(3, 3)
 
+    def _div_helper(self, other):
+        """Helper for division involving dyadics."""
+        if isinstance(other, Dyadic):
+            raise TypeError('Cannot divide two dyadics')
+        else:
+            return DyadicMul(self, Pow(other, -1))
+
 
 class BaseDyadic(Dyadic, AtomicExpr):
     """Class to denote a base dyadic tensor component."""
@@ -253,18 +270,9 @@ class DyadicZero(BasisDependentZero, Dyadic):
         return obj
 
 
-def _dyad_div(one, other):
-    """Helper for division involving dyadics."""
-    if isinstance(other, Dyadic):
-        raise TypeError('Cannot divide two dyadics')
-    else:
-        return DyadicMul(one, Pow(other, -1))
-
-
 Dyadic._expr_type = Dyadic
 Dyadic._mul_func = DyadicMul
 Dyadic._add_func = DyadicAdd
 Dyadic._zero_func = DyadicZero
 Dyadic._base_func = BaseDyadic
-Dyadic._div_helper = _dyad_div
 Dyadic.zero = DyadicZero()

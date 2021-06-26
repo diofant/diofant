@@ -115,14 +115,6 @@ NumberSymbol
 .. autoclass:: NumberSymbol
    :members:
 
-igcd
-^^^^
-.. autofunction:: igcd
-
-ilcm
-^^^^
-.. autofunction:: ilcm
-
 mod_inverse
 ^^^^^^^^^^^
 .. autofunction:: mod_inverse
@@ -236,10 +228,6 @@ Mul
 ^^^
 .. autoclass:: Mul
    :members:
-
-prod
-^^^^
-.. autofunction:: prod
 
 add
 ---

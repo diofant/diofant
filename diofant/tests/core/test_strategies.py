@@ -1,7 +1,7 @@
 from diofant import Add, Basic, Integer
 from diofant.abc import x
-from diofant.core.strategies import (arguments, flatten, glom, operator, rm_id,
-                                     sort, term, unpack)
+from diofant.core.strategies import (arguments, flatten, glom, null_safe,
+                                     operator, rm_id, sort, term, unpack)
 
 
 __all__ = ()
@@ -55,3 +55,14 @@ def test_term():
     assert operator(Integer(2)) == Integer(2)
     assert term(Add, (2, x)) == 2 + x
     assert term(Integer(2), ()) == Integer(2)
+
+
+def test_null_safe():
+    def rl(expr):
+        if expr == 1:
+            return 2
+    safe_rl = null_safe(rl)
+    assert rl(1) == safe_rl(1)
+
+    assert rl(3) is None
+    assert safe_rl(3) == 3

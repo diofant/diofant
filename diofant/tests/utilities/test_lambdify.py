@@ -112,8 +112,6 @@ def test_diofant_lambda():
     assert f(x) == sin(x)
     prec = 1e-15
     assert -prec < f(Rational(1, 5)).evalf() - Float(str(sin02)) < prec
-    # arctan is in numpy module and should not be available
-    pytest.raises(NameError, lambda: lambdify(x, arctan(x), 'diofant'))  # noqa: F821
 
 
 @conserve_mpmath_dps

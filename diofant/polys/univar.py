@@ -1,7 +1,7 @@
 import random
 
+from ..config import query
 from ..domains import ZZ
-from .polyconfig import query
 from .polyerrors import CoercionFailed, DomainError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
@@ -19,7 +19,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
         return super().__call__(element)
 
     def from_list(self, element):
-        return self.from_dict({(i,): c for i, c in enumerate(reversed(element))})
+        return self.from_dict({(i,): c for i, c in enumerate(element)})
 
     def _random(self, n, a, b, percent=None):
         domain = self.domain
@@ -41,7 +41,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
             random.shuffle(f)
             f.insert(0, lt)
 
-        return self.from_list(f)
+        return self.from_list(list(reversed(f)))
 
     def _gf_random(self, n, irreducible=False):
         domain = self.domain
@@ -49,8 +49,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
         assert domain.is_FiniteField
 
         while True:
-            f = [domain.one] + [domain(random.randint(0, domain.order - 1))
-                                for i in range(n)]
+            f = [domain(random.randint(0, domain.order - 1))
+                 for i in range(n)] + [domain.one]
             f = self.from_list(f)
             if not irreducible or f.is_irreducible:
                 return f
@@ -147,8 +147,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
                 # Note that the roles of `s` and `t` below are switched
                 # w.r.t. the original paper. This is for consistency
                 # with the description in the book of W. Koepf.
-                anm1 = s.coeff((m - 1,))
-                bnm1 = t.coeff((n - 1,))
+                anm1 = s[(m - 1,)]
+                bnm1 = t[(n - 1,)]
                 alpha = fdomain(anm1 - bnm1)/fdomain(n*bn)
                 if alpha not in ZZ:
                     continue
@@ -157,7 +157,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
                 if alpha < 0 or alpha in J:
                     continue
-                if n > 1 and not (s - t.shift(alpha)).is_zero:
+                if n > 1 and s - t.shift(alpha):
                     continue
                 J.add(alpha)
 
@@ -168,10 +168,10 @@ class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
 
     def all_coeffs(self):
-        if self.is_zero:
-            return [self.parent.domain.zero]
+        if self:
+            return [self[(i,)] for i in range(self.degree() + 1)]
         else:
-            return [self.coeff((i,)) for i in range(self.degree(), -1, -1)]
+            return [self.parent.domain.zero]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
@@ -186,7 +186,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', QQ)
+        >>> _, x = ring('x', QQ)
 
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
         >>> g = x**3 + x**2 - 4*x - 4
@@ -305,7 +305,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**4 - 2*x**3 + x**2).decompose()
         [x**2, x**2 - x]
@@ -326,6 +326,7 @@ class UnivarPolyElement(PolyElement):
                 f, h = result
                 F = [h] + F
             else:
+                result  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
         return [f] + F
@@ -344,7 +345,7 @@ class UnivarPolyElement(PolyElement):
         Examples
         ========
 
-        >>> R, x = ring('x', QQ)
+        >>> _, x = ring('x', QQ)
 
         >>> (x**3 - 2*x**2 + x - 3).sturm()
         [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]

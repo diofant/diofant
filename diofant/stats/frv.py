@@ -165,7 +165,7 @@ class SingleFiniteDistribution(Expr, NamedArgsMixin):
         args = list(map(sympify, args))
         return Expr.__new__(cls, *args)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def dict(self):
         return {k: self.pdf(k) for k in self.set}
@@ -315,7 +315,7 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
     def domain(self):
         return SingleFiniteDomain(self.symbol, self.distribution.set)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def _density(self):
         return {frozenset(((self.symbol, val),)): prob
@@ -329,7 +329,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
     def domain(self):
         return ProductFiniteDomain(*[space.domain for space in self.spaces])
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def _density(self):
         proditer = product(*[iter(space._density.items())
@@ -342,7 +342,7 @@ class ProductFinitePSpace(ProductPSpace, FinitePSpace):
             d[elem] = d.get(elem, 0) + prob
         return Dict(d)
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def density(self):
         return self._density

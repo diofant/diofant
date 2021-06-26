@@ -7,7 +7,7 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
                      nextprime, pi, ring, sin, sqrt)
-from diofant.polys.polyconfig import using
+from diofant.config import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
 
@@ -401,44 +401,46 @@ def test_dmp_zz_factor():
                                       2*z*t, 1)])
 
 
-def test_dmp_ext_factor():
-    R, x = ring('x', QQ.algebraic_field(I))
+@pytest.mark.parametrize('method', ('modular', 'trager'))
+def test_dmp_ext_factor(method):
+    with using(aa_factor_method=method):
+        R, x = ring('x', QQ.algebraic_field(I))
 
-    assert R(0).factor_list() == (0, [])
-    assert (x + 1).factor_list() == (1, [(x + 1, 1)])
-    assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
-    assert (7*x**4 + 1).factor_list() == (7, [(x**4 + QQ(1, 7), 1)])
-    assert (x**4 + 1).factor_list() == (1, [(x**2 - I, 1), (x**2 + I, 1)])
-    assert (4*x**2 + 9).factor_list() == (4, [(x - 3*I/2, 1), (x + 3*I/2, 1)])
-    assert (4*x**4 + 8*x**3 + 77*x**2 + 18*x +
-            153).factor_list() == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
-                                       (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
-    assert (x**2 + 1).factor_list() == (1, [(x - I, 1), (x + I, 1)])
+        assert R(0).factor_list() == (0, [])
+        assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+        assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
+        assert (7*x**4 + 1).factor_list() == (7, [(x**4 + QQ(1, 7), 1)])
+        assert (x**4 + 1).factor_list() == (1, [(x**2 - I, 1), (x**2 + I, 1)])
+        assert (4*x**2 + 9).factor_list() == (4, [(x - 3*I/2, 1), (x + 3*I/2, 1)])
+        assert (4*x**4 + 8*x**3 + 77*x**2 + 18*x +
+                153).factor_list() == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
+                                           (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
+        assert (x**2 + 1).factor_list() == (1, [(x - I, 1), (x + I, 1)])
 
-    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
+        R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
-    assert (x**4 + 1).factor_list() == (1, [(x**2 - sqrt(2)*x + 1, 1),
-                                            (x**2 + sqrt(2)*x + 1, 1)])
+        assert (x**4 + 1).factor_list() == (1, [(x**2 - sqrt(2)*x + 1, 1),
+                                                (x**2 + sqrt(2)*x + 1, 1)])
 
-    f = x**2 + 2*sqrt(2)*x + 2
+        f = x**2 + 2*sqrt(2)*x + 2
 
-    assert f.factor_list() == (1, [(x + sqrt(2), 2)])
-    assert (f**3).factor_list() == (1, [(x + sqrt(2), 6)])
+        assert f.factor_list() == (1, [(x + sqrt(2), 2)])
+        assert (f**3).factor_list() == (1, [(x + sqrt(2), 6)])
 
-    f *= 2
+        f *= 2
 
-    assert f.factor_list() == (2, [(x + sqrt(2), 2)])
-    assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
+        assert f.factor_list() == (2, [(x + sqrt(2), 2)])
+        assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
 
-    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+        R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
-    assert R(0).factor_list() == (0, [])
-    assert (x + 1).factor_list() == (1, [(x + 1, 1)])
-    assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
-    assert (x**2 - 2*y**2).factor_list() == (1, [(x - sqrt(2)*y, 1),
-                                                 (x + sqrt(2)*y, 1)])
-    assert (2*x**2 - 4*y**2).factor_list() == (2, [(x - sqrt(2)*y, 1),
-                                                   (x + sqrt(2)*y, 1)])
+        assert R(0).factor_list() == (0, [])
+        assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+        assert (2*x + 2).factor_list() == (2, [(x + 1, 1)])
+        assert (x**2 - 2*y**2).factor_list() == (1, [(x - sqrt(2)*y, 1),
+                                                     (x + sqrt(2)*y, 1)])
+        assert (2*x**2 - 4*y**2).factor_list() == (2, [(x - sqrt(2)*y, 1),
+                                                       (x + sqrt(2)*y, 1)])
 
 
 def test_sympyissue_5786():
@@ -543,10 +545,9 @@ def test_factor_list():
 
     f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
 
-    assert f.factor_list() == r
-
-    with using(aa_factor_method='trager'):
-        assert f.factor_list() == r
+    for method in ('trager', 'modular'):
+        with using(aa_factor_method=method):
+            assert f.factor_list() == r
 
     R, x, y = ring('x y', RR)
 
@@ -790,7 +791,7 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
-    F8 = FF(2, [1, 0, 1, 1])
+    F8 = FF(2, [1, 1, 0, 1])
     R, x = ring('x', F8)
 
     f = x**10 + x**9 + F8(2)*x**8 + F8(2)*x**7 + F8(5)*x**6 + F8(3)*x**5
@@ -801,7 +802,7 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
-    F9 = FF(3, [1, 2, 2])
+    F9 = FF(3, [2, 2, 1])
     R, x = ring('x', F9)
 
     f = x**5 + F9(2)*x**4 + F9(6)*x**3 + F9(8)*x**2 + F9(5)*x + F9(4)
@@ -863,7 +864,7 @@ def test_PolyElement_is_irreducible():
             assert g.is_irreducible is True
             assert h.is_irreducible is False
 
-    F9 = FF(3, [1, 2, 2])
+    F9 = FF(3, [2, 2, 1])
     R, x = ring('x', F9)
 
     f = x**3 + F9(8)*x**2 + F9(8)*x + F9(4)
@@ -872,7 +873,7 @@ def test_PolyElement_is_irreducible():
         with using(gf_irred_method=method):
             assert f.is_irreducible is False
 
-    F27 = FF(3, [1, 2, 0, 1])
+    F27 = FF(3, [1, 0, 2, 1])
     R, x = ring('x', F27)
 
     f = x**3 + F27(8)*x**2 + F27(19)*x + F27(24)

@@ -124,9 +124,9 @@ def test_Derivative():
     assert mathematica_code(Derivative(f(x), x, x)) == 'Hold[D[f[x], x, x]]'
     assert mathematica_code(Derivative(sin(x), x)) == 'Hold[D[Sin[x], x]]'
     assert mathematica_code(Derivative(x, x)) == 'Hold[D[x, x]]'
-    assert mathematica_code(Derivative(sin(x)*y**4, x, 2)) == 'Hold[D[y^4*Sin[x], x, x]]'
+    assert mathematica_code(Derivative(sin(x)*y**4, (x, 2))) == 'Hold[D[y^4*Sin[x], x, x]]'
     assert mathematica_code(Derivative(sin(x)*y**4, x, y, x)) == 'Hold[D[y^4*Sin[x], x, y, x]]'
-    assert mathematica_code(Derivative(sin(x)*y**4, x, y, 3, x)) == 'Hold[D[y^4*Sin[x], x, y, y, y, x]]'
+    assert mathematica_code(Derivative(sin(x)*y**4, x, (y, 3), x)) == 'Hold[D[y^4*Sin[x], x, y, y, y, x]]'
 
 
 def test_Pow():
@@ -227,7 +227,7 @@ def test_RootSum():
 def test_AlgebraicElement():
     r = RootOf(x**7 + 3*x - 1, 3)
     K = QQ.algebraic_field(r)
-    a = K([1, 2, 3, 0, 1])
+    a = K([1, 0, 3, 2, 1])
     assert mathematica_code(a) == ('AlgebraicNumber[Root[#^7 + 3*# - 1 &, 4],'
                                    ' {1, 0, 3, 2, 1}]')
 

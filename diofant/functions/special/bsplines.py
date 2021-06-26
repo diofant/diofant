@@ -1,4 +1,5 @@
-from ...core import Integer, sympify
+from ...core import Integer
+from ...core.sympify import sympify
 from ...sets import Interval
 from .. import Piecewise, piecewise_fold
 

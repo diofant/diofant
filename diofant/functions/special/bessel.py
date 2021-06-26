@@ -2,8 +2,9 @@ from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
-                     cacheit, nan, oo, pi, sympify, zoo)
+                     cacheit, nan, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from ...core.sympify import sympify
 from ...polys.orthopolys import spherical_bessel_fn as fn
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs, im, re
@@ -69,7 +70,7 @@ class BesselBase(Function):
 
     def _eval_expand_func(self, **hints):
         nu, z, f = self.order, self.argument, self.__class__
-        if nu.is_extended_real:
+        if nu.is_real:
             if (nu - 1).is_positive:
                 return (-self._a*self._b*f(nu - 2, z)._eval_expand_func() +
                         2*self._a*(nu - 1)*f(nu - 1, z)._eval_expand_func()/z)
@@ -795,7 +796,7 @@ class airyai(AiryBase):
 
     >>> diff(airyai(z), z)
     airyaiprime(z)
-    >>> diff(airyai(z), z, 2)
+    >>> diff(airyai(z), (z, 2))
     z*airyai(z)
 
     Series expansion is also supported:
@@ -949,7 +950,7 @@ class airybi(AiryBase):
 
     >>> diff(airybi(z), z)
     airybiprime(z)
-    >>> diff(airybi(z), z, 2)
+    >>> diff(airybi(z), (z, 2))
     z*airybi(z)
 
     Series expansion is also supported:
@@ -1154,7 +1155,7 @@ class airyaiprime(AiryBase):
 
     >>> diff(airyaiprime(z), z)
     z*airyai(z)
-    >>> diff(airyaiprime(z), z, 2)
+    >>> diff(airyaiprime(z), (z, 2))
     z*airyaiprime(z) + airyai(z)
 
     Series expansion is also supported:
@@ -1297,7 +1298,7 @@ class airybiprime(AiryBase):
 
     >>> diff(airybiprime(z), z)
     z*airybi(z)
-    >>> diff(airybiprime(z), z, 2)
+    >>> diff(airybiprime(z), (z, 2))
     z*airybiprime(z) + airybi(z)
 
     Series expansion is also supported:

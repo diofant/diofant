@@ -1,6 +1,6 @@
 """Implementation of :class:`ExpressionDomain` class."""
 
-from ..core import SympifyError, sympify
+from ..core.sympify import SympifyError, sympify
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .simpledomain import SimpleDomain
@@ -12,8 +12,6 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     is_ExpressionDomain = True
 
     class Expression:
-        """An arbitrary expression."""
-
         def __init__(self, ex):
             if not isinstance(ex, self.__class__):
                 self.ex = sympify(ex)

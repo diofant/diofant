@@ -44,7 +44,7 @@ Compatibility breaks
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 * Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
-* ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
+* ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.CommutativeRing.is_normal`, see :pull:`977`.
 * Removed ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
 * Removed ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 * ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
@@ -62,7 +62,7 @@ Minor changes
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
 * Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
-* The :class:`~diofant.domains.ring.Ring` and all derived classes got :attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
+* The :class:`~diofant.domains.ring.CommutativeRing` and all derived classes got :attr:`~diofant.domains.ring.CommutativeRing.characteristic` property, see :pull:`968`.
 * Correct wrong implementations of factorization algorithms over finite fields, see :pull:`968` and :pull:`964`.  Thanks to Kalevi Suominen for help with review.
 
 Developer changes

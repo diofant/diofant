@@ -1,11 +1,12 @@
 from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
                      Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
-                     sympify, zoo)
+                     zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
+from ...core.sympify import sympify
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt
-from .piecewise import Piecewise
+from .piecewise import ExprCondPair, Piecewise
 from .trigonometric import atan2
 
 
@@ -1042,6 +1043,9 @@ def _unpolarify(eq, exponents_only, pause=False):
         return base**expo
     elif eq.is_Pow and eq.base is E:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
+    elif isinstance(eq, ExprCondPair):
+        return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),
+                       _unpolarify(eq.cond, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)

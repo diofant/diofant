@@ -1,10 +1,8 @@
 """Tests that the IPython printing module is properly loaded."""
 
-import sys
-
 import pytest
 
-from diofant.core import Float, Rational, Symbol
+from diofant import Float, Fraction, Symbol
 
 
 __all__ = ()
@@ -12,7 +10,6 @@ __all__ = ()
 ipython = pytest.importorskip('IPython', minversion='2.3.0')
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 8), reason='Broken on 3.8')
 def test_ipython_printing(monkeypatch):
     app = ipython.terminal.ipapp.TerminalIPythonApp()
     app.display_banner = False
@@ -25,7 +22,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('import warnings')
     app.run_cell('import IPython')
     app.run_cell('import diofant')
-    app.run_cell('from diofant import Float, Rational, Symbol, QQ, '
+    app.run_cell('from diofant import Float, Fraction, Symbol, QQ, '
                  'factorial, sqrt, init_printing, pretty, '
                  'Matrix, sstrrepr')
 
@@ -39,19 +36,19 @@ def test_ipython_printing(monkeypatch):
     assert isinstance(app.user_ns['a'], int)
 
     app.run_cell('a = 1/2')
-    assert isinstance(app.user_ns['a'], Rational)
+    assert isinstance(app.user_ns['a'], Fraction)
     app.run_cell('a = 1')
     assert isinstance(app.user_ns['a'], int)
     app.run_cell('a = int(1)')
     assert isinstance(app.user_ns['a'], int)
     app.run_cell('a = (1/\n2)')
-    assert app.user_ns['a'] == Rational(1, 2)
+    assert app.user_ns['a'] == Fraction(1, 2)
 
     # Test AutomaticSymbols
 
     app.run_cell('from diofant.interactive.session import AutomaticSymbols')
     app.run_cell('ip.ast_transformers.clear()')
-    app.run_cell('ip.ast_transformers.append(AutomaticSymbols())')
+    app.run_cell('ip.ast_transformers.append(AutomaticSymbols(ip.user_ns))')
 
     symbol = 'verylongsymbolname'
     assert symbol not in app.user_ns
@@ -76,7 +73,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('ip.ast_transformers.clear()')
     app.run_cell('ip.ast_transformers.append(FloatRationalizer())')
     app.run_cell('a = 0.3')
-    assert isinstance(app.user_ns['a'], Rational)
+    assert isinstance(app.user_ns['a'], Fraction)
     app.run_cell('a = float(0.3)')
     assert isinstance(app.user_ns['a'], float)
     app.run_cell('a = Float(1.23)')

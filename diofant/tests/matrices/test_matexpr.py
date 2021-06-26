@@ -32,6 +32,10 @@ def test_matexpr():
     assert (A*B).shape == (n, l)
     assert A.equals(ZeroMatrix(3, 3)) is None
 
+    # issue diofant/diofant#469
+    expr = Eq(C, D)
+    assert simplify(expr) == expr
+
 
 def test_subs():
     A = MatrixSymbol('A', n, m)
@@ -247,13 +251,6 @@ def test_Zero_power():
     assert z2**3 == MatPow(z2, 3).doit()
     assert z2**0 == Identity(3)
     pytest.raises(ValueError, lambda: MatPow(z2, -1).doit())
-
-
-def test_diofantissue_469():
-    A = MatrixSymbol('A', n, n)
-    B = MatrixSymbol('B', n, n)
-    expr = Eq(A, B)
-    assert simplify(expr) == expr
 
 
 def test_sympyissue_11600():

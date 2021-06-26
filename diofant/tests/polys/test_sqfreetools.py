@@ -171,6 +171,42 @@ def test_dmp_sqf():
     assert (x**2 - 2).sqf_norm() == (1, x**2 - 2*sqrt(3)*x + 1,
                                      (x**4 - 10*x**2 + 1).set_domain(QQ))
 
+    R, x, y = ring('x y', FF(2))
+
+    f = y**2 + 1
+
+    assert f.is_squarefree is False
+    assert f.sqf_part() == y + 1
+    assert f.sqf_list() == (1, [(y + 1, 2)])
+
+    f = x**3 + x*y**2
+
+    assert f.is_squarefree is False
+    assert f.sqf_part() == x*(x + y)
+    assert f.sqf_list() == (1, [(x, 1), (x + y, 2)])
+
+    f1 = 1 + x**6*y**14 + x**2*y**4 + x**7
+    f2 = 1 + x**3*y**4 + x + y
+
+    assert f1.is_squarefree
+    assert f2.is_squarefree
+    assert (f1**2*f2**2).sqf_list() == (1, [(f1*f2, 2)])
+
+    R, x, y = ring('x y', FF(5))
+
+    f = x**5*y**5 + 1
+
+    assert f.is_squarefree is False
+    assert f.sqf_list() == (1, [(x*y + 1, 5)])
+
+    F8 = FF(8)
+    R, x, y = ring('x y', F8)
+
+    f = x**8*y**8 + 1
+
+    assert f.is_squarefree is False
+    assert f.sqf_list() == (1, [(x*y + 1, 8)])
+
     R, x, y = ring('x y', ZZ)
 
     assert R(0).sqf_part() == 0
@@ -211,11 +247,6 @@ def test_dmp_sqf():
 
     pytest.raises(DomainError, lambda: (x**2 + y**2).sqf_norm())
 
-    R, x, y = ring('x y', FF(2))
-
-    pytest.raises(NotImplementedError, lambda: (y**2 + 1).sqf_list())
-    pytest.raises(NotImplementedError, lambda: (x**3 + 2*x**2*y + x*y**2).sqf_part())
-
     R, x, y = ring('x y', QQ.algebraic_field(I))
 
     assert (x**2 + 2*I*x - 1).sqf_list() == (1, [(x + I, 2)])
@@ -223,6 +254,41 @@ def test_dmp_sqf():
     assert (x*y + y**2).sqf_norm() == (1, x*y - I*x + y**2 - 3*I*y - 2,
                                        (x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y +
                                         y**4 + 5*y**2 + 4).set_domain(QQ))
+
+    R, x, y, z = ring('x y z', FF(2))
+
+    f1 = x**14*z**7 + x**7*y**14 + y**7 + 1
+    f2 = y**7*z**14 + z**7 + 1
+    f3 = x**2*y**2*z
+
+    f = f1**2*f2**2*f3**2
+
+    assert f1.is_squarefree
+    assert f2.is_squarefree
+    assert f3.is_squarefree is False
+    assert f.sqf_list() == (1, [(f1*f2*z, 2), (x*y, 4)])
+
+    R, x, y, z = ring('x y z', FF(3))
+
+    f = (y**2 + 1)*(x + y - 1)*(x - y + 1)**2*(x + y + z)**3
+
+    assert f.sqf_list() == (1, [((y**2 + 1)*(x + y - 1), 1),
+                                (x - y + 1, 2), (x + y + z, 3)])
+
+    F16 = FF(16)
+    R, x, y, z = ring('x y z', F16)
+
+    f1 = F16(9)*(x**3*y**2*z + y**2*z) + F16(10)*x*y*z**3
+    f2 = F16(8)*x*y*z**13 + F16(9)*(x**10*y**2*z + x**2*y**2*z)
+
+    assert f1.is_squarefree
+    assert (f1**2).sqf_list() == (F16(3), [(f1/F16(9), 2)])
+    assert f2.is_squarefree
+    assert (f2**2).sqf_list() == (F16(3), [(f2/F16(9), 2)])
+
+    h = f1*f2//(y*z)**2/F16(3)
+
+    assert (f1**2*f2**2).sqf_list() == (F16(5), [(h, 2), (y*z, 4)])
 
     R, x, y, z = ring('x y z', ZZ)
 

@@ -1,11 +1,12 @@
 import collections
 import functools
+import math
 
 from ..utilities import default_sort_key
 from .cache import cacheit
 from .compatibility import is_sequence
 from .logic import _fuzzy_group
-from .numbers import Integer, igcd, ilcm, nan, oo, zoo
+from .numbers import Integer, nan, oo, zoo
 from .operations import AssocOp
 
 
@@ -657,7 +658,7 @@ class Add(AssocOp):
             # if it simplifies to an x-free expression, return that;
             # tests don't fail if we don't but it seems nicer to do this
             if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and not plain.is_zero:
+                if rv_simplify.is_zero and plain:
                     return (expr - plain)._eval_as_leading_term(x)
                 return rv_simplify
             return rv
@@ -723,11 +724,11 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = functools.reduce(igcd, [t[0] for t in terms], 0)
-            dlcm = functools.reduce(ilcm, [t[1] for t in terms], 1)
+            ngcd = functools.reduce(math.gcd, [t[0] for t in terms], 0)
+            dlcm = functools.reduce(math.lcm, [t[1] for t in terms], 1)
         else:
-            ngcd = functools.reduce(igcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = functools.reduce(ilcm, [t[1] for t in terms if t[1]], 1)
+            ngcd = functools.reduce(math.gcd, [t[0] for t in terms if t[1]], 0)
+            dlcm = functools.reduce(math.lcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
             return Integer(1), self
@@ -774,7 +775,7 @@ class Add(AssocOp):
 
         """
         from ..functions import root
-        from .mul import Mul, _keep_coeff, prod
+        from .mul import Mul, _keep_coeff
 
         con, prim = self.func(*[_keep_coeff(*a.as_content_primitive(
             radical=radical)) for a in self.args]).primitive()
@@ -807,11 +808,11 @@ class Add(AssocOp):
                         if q not in common_q:
                             r.pop(q)
                     for q in r:
-                        r[q] = prod(r[q])
+                        r[q] = math.prod(r[q])
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = functools.reduce(igcd, [r[q] for r in rads], 0)
+                    g = functools.reduce(math.gcd, [r[q] for r in rads], 0)
                     if g != 1:
                         G.append(root(g, q))
                 if G:

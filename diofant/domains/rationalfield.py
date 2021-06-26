@@ -59,7 +59,6 @@ class PythonRationalField(RationalField):
 
     @property
     def ring(self):
-        """Returns ring associated with ``self``."""
         from .integerring import PythonIntegerRing
         return PythonIntegerRing()
 
@@ -73,7 +72,6 @@ class GMPYRationalField(RationalField):
 
     @property
     def ring(self):
-        """Returns ring associated with ``self``."""
         from .integerring import GMPYIntegerRing
         return GMPYIntegerRing()
 

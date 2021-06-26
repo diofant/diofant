@@ -25,10 +25,10 @@ from the names used in Bronstein's book.
 """
 
 import functools
+import math
 
 from ..abc import z
-from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, ilcm, oo,
-                    sympify)
+from ..core import Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, oo, sympify
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
@@ -91,8 +91,8 @@ def integer_powers(exprs):
 
     newterms = {}
     for term in terms:
-        common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in
-                                               terms[term]])
+        common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
+                                                   terms[term]])
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
@@ -194,8 +194,7 @@ class DifferentialExtension:
         from .prde import is_deriv_k
 
         if handle_first not in ['log', 'exp']:
-            raise ValueError("handle_first must be 'log' or 'exp', not %s." %
-                             str(handle_first))
+            raise ValueError(f"handle_first must be 'log' or 'exp', not {handle_first!s}.")
 
         # f will be the original function, self.f might change if we reset
         # (e.g., we pull out a constant from an exponential)
@@ -238,7 +237,7 @@ class DifferentialExtension:
                 # We couldn't find a new extension on the last pass, so I guess
                 # we can't do it.
                 raise NotImplementedError("Couldn't find an elementary "
-                                          'transcendental extension for %s.  Try using a ' % str(f) +
+                                          f'transcendental extension for {f!s}.  Try using a '
                                           'manual extension with the extension flag.')
 
             # Pre-preparsing.
@@ -297,7 +296,7 @@ class DifferentialExtension:
                 if i in sympows:
                     if i.exp.is_Rational:
                         raise NotImplementedError('Algebraic extensions are '
-                                                  'not supported (%s).' % str(i))
+                                                  f'not supported ({i!s}).')
                     # We can add a**b only if log(a) in the extension, because
                     # a**b == exp(b*log(a)).
                     basea, based = frac_in(i.base, self.t)
@@ -754,7 +753,7 @@ def as_poly_1t(p, t, z):
         raise NotImplementedError(e)
     # Compute the negative degree parts.
     od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
-    one_t_part = Poly(list(reversed(one_t_part.rep.all_coeffs())) + [0]*od,
+    one_t_part = Poly([0]*od + list(reversed(one_t_part.rep.all_coeffs())),
                       *one_t_part.gens, domain=one_t_part.domain)
     if 0 < r < oo:
         one_t_part *= Poly(t**r, t)

@@ -439,10 +439,11 @@ def test_Mul_is_even_odd():
     assert (x*y*(y + m)).is_odd is None
 
 
-@pytest.mark.xfail
 def test_even_odd_in_ternary_integer_product():
     # Tests that oddness inference is independent of term ordering.
     # We try to force a different order by modifying symbol names.
+
+    # issues sympy/sympy#9127 and diofant/diofant#1003
 
     x = Symbol('x', integer=True)
     y = Symbol('y', integer=True)
@@ -1009,6 +1010,13 @@ def test_Pow_is_real():
 
     assert sqrt(-I).is_extended_real is False  # issue sympy/sympy#7843
 
+    # issue sympy/sympy#6631
+    assert ((-1)**I).is_extended_real is True
+    assert ((-1)**(I*2)).is_extended_real is True
+    assert ((-1)**(I/2)).is_extended_real is True
+    assert ((-1)**(I*pi)).is_extended_real is True
+    assert (I**(I + 2)).is_extended_real is True
+
 
 def test_real_Pow():
     k = Symbol('k', integer=True, nonzero=True)
@@ -1125,6 +1133,18 @@ def test_Pow_is_negative_positive():
 
     s = Symbol('s', nonpositive=True)
     assert (s**n).is_negative is False
+    assert (s**m).is_positive is None
+    n = Symbol('n', even=True, nonnegative=True)
+    m = Symbol('m', odd=True, nonnegative=True)
+    assert ((-p)**n).is_positive is True
+    assert ((-p)**m).is_positive is False
+    assert (s**m).is_positive is False
+    assert ((-p)**(n + 1)).is_negative is True
+    s = Symbol('s', nonpositive=True, finite=True)
+    assert ((s - 1)**n).is_positive is True
+    assert ((s - 1)**m).is_positive is False
+    assert (s**m).is_positive is False
+    assert ((s - 1)**m).is_negative is True
 
     i = Symbol('i', imaginary=True)
     assert (i**4).is_positive is None  # issue diofant/diofant#956
@@ -1454,6 +1474,14 @@ def test_Pow_as_content_primitive():
         (1, (Mul(2, (x + 1), evaluate=False))**y)
     assert ((2*x + 2)**3).as_content_primitive() == (8, (x + 1)**3)
     assert (2**(Float(0.1) + x)).as_content_primitive() == (1, 2**(Float(0.1) + x))
+
+
+def test_Pow_as_numer_denom():
+    # issue sympy/sympy#10095
+    assert ((1/(2*E))**oo).as_numer_denom() == (1, (2*E)**oo)
+    assert ((2*E)**oo).as_numer_denom() == ((2*E)**oo, 1)
+    e = Pow(1, oo, evaluate=False)
+    assert e.as_numer_denom() == (e, 1)
 
 
 def test_sympyissue_5460():
@@ -1909,3 +1937,9 @@ def test_diofantissue_849():
     assert (a - b).is_extended_real is None
 
     assert (a*b).is_extended_real is None
+
+
+def test_diofantissue_1004():
+    assert Pow(Dummy(negative=True), -3,
+               evaluate=False).is_negative is not True
+    assert Pow(-oo, -3, evaluate=False).is_negative is not True

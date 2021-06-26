@@ -1,5 +1,6 @@
 from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
-                    nan, oo, sympify)
+                    nan, oo)
+from ..core.sympify import sympify
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order
@@ -172,7 +173,10 @@ class Limit(Expr):
             if any(isinstance(a, Limit) for a in [ll, rl]):
                 return self
             else:
-                return e.func(ll, rl)
+                try:
+                    return e.func(ll, rl)
+                except TypeError:
+                    return self
 
         if e.has(Order):
             e = e.expand()

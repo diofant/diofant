@@ -10,8 +10,9 @@ diofant.plotting.plot
 
 """
 
-from ..core import Dummy, Eq, Symbol, Tuple, sympify
+from ..core import Dummy, Eq, Symbol, Tuple
 from ..core.relational import Equality, GreaterThan, LessThan, Relational
+from ..core.sympify import sympify
 from ..external import import_module
 from ..logic.boolalg import BooleanFunction
 from ..polys.polyutils import _sort_gens

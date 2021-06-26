@@ -42,8 +42,8 @@ def test_expand_non_commutative():
     a = Symbol('a')
     b = Symbol('b')
     i = Symbol('i', integer=True)
-    n = Symbol('n', negative=True)
-    m = Symbol('m', negative=True)
+    n = Symbol('n', negative=True, finite=True)
+    m = Symbol('m', negative=True, finite=True)
     p = Symbol('p', polar=True)
     np = Symbol('p', polar=False)
 
@@ -208,8 +208,8 @@ def test_expand_arit():
     assert ((2*y*p*x)**z).expand(force=True) == 2**z*p**z*x**z*y**z
     assert ((2*y*p*-pi)**z).expand() == 2**z*pi**z*p**z*(-y)**z
     assert ((2*y*p*-pi*x)**z).expand() == 2**z*pi**z*p**z*(-x*y)**z
-    n = Symbol('n', negative=True)
-    m = Symbol('m', negative=True)
+    n = Symbol('n', negative=True, finite=True)
+    m = Symbol('m', negative=True, finite=True)
     assert ((-2*x*y*n)**z).expand() == 2**z*(-n)**z*(x*y)**z
     assert ((-2*x*y*n*m)**z).expand() == 2**z*(-m)**z*(-n)**z*(-x*y)**z
     # issue sympy/sympy#5482
@@ -246,6 +246,12 @@ def test_power_expand():
     B = Symbol('B', commutative=False)
     assert (2**(A + B)).expand() == 2**(A + B)
     assert (A**(a + b)).expand() != A**(a + b)
+
+
+def test_expand_multinomial():
+    assert expand_multinomial((x + 1 + O(z))**2) == 1 + 2*x + x**2 + O(z)
+    assert expand_multinomial((x + 1 +
+                               O(z))**3) == 1 + 3*x + 3*x**2 + x**3 + O(z)
 
 
 def test_sympyissues_5919_6830():
@@ -291,11 +297,6 @@ def test_sympyissues_5919_6830():
         for b in [3, Rational(1, 3)]:
             for n in range(2, 6):
                 assert ok(a, b, n)
-
-    assert expand_multinomial((x + 1 + O(z))**2) == \
-        1 + 2*x + x**2 + O(z)
-    assert expand_multinomial((x + 1 + O(z))**3) == \
-        1 + 3*x + 3*x**2 + x**3 + O(z)
 
     e = (sin(x) + y)**3
     assert (expand_multinomial(e.subs({y: O(x**4)})) ==

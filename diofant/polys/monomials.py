@@ -38,7 +38,7 @@ class Monomial(tuple, DefaultPrinting):
             poly = Poly(monom, gens=gens)
             rep = poly.rep
             gens = poly.gens
-            if not rep.is_zero and rep.is_monomial:
+            if rep and rep.is_monomial:
                 monom = list(rep)[0]
             else:
                 raise ValueError(f'Expected a monomial got {monom}')
@@ -90,14 +90,12 @@ class Monomial(tuple, DefaultPrinting):
         else:
             raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
 
-    def __pow__(self, other):
+    def __pow__(self, n):
         """Return pow(self, other)."""
-        n = int(other)
-
-        if n >= 0:
+        if isinstance(n, int) and n >= 0:
             return self.__class__((a * n for a in self), self.gens)
         else:
-            raise ValueError(f'A non-negative integer expected, got {other}')
+            raise ValueError(f'A non-negative integer expected, got {n}')
 
     def gcd(self, other):
         """Greatest common divisor of monomials."""

@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pytest
@@ -5,7 +6,6 @@ import pytest
 import diofant
 
 
-collect_ignore = ['setup.py']
 try:
     import matplotlib
     matplotlib.rc('figure', max_open_warning=0)
@@ -58,3 +58,8 @@ def add_np(doctest_namespace):
         doctest_namespace[str(sym)] = sym
     for name in dir(diofant):
         doctest_namespace[name] = getattr(diofant, name)
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_load_initial_conftests(args, early_config, parser):
+    os.environ['COVERAGE_PROCESS_START'] = os.environ['PWD'] + '/setup.cfg'

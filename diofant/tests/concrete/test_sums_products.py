@@ -3,9 +3,9 @@ import pytest
 from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, cos, exp, factorial, gamma, harmonic, log,
-                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
-                     summation, symbols, sympify, zeta)
+                     binomial, ceiling, cos, exp, factorial, floor, gamma,
+                     harmonic, log, lowergamma, nan, oo, pi, product, simplify,
+                     sin, sqrt, summation, symbols, sympify, zeta)
 from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
@@ -233,6 +233,9 @@ def test_geometric_sums():
     assert summation(2**(-4*n + 3), (n, 1, oo)) == Rational(8, 15)
     assert summation(2**(n + 1), (n, 1, b)).expand() == 4*(2**b - 1)
 
+    # issue sympy/sympy#7097
+    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
+
     # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
         Piecewise((1/(-x + 1), abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
@@ -338,6 +341,9 @@ def test_evalf_fast_series():
 
     pytest.raises(ValueError, lambda: Sum(factorial(n), (n, 0, oo)).evalf())
 
+    # issue sympy/sympy#6274
+    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
+
 
 def test_evalf_fast_series_sympyissue_4021():
     # Catalan's constant
@@ -407,7 +413,8 @@ def test_evalf_symbolic():
     assert expr.evalf(strict=False) == expr
 
 
-def test_evalf_sympyissue_6372():
+def test_evalf_other():
+    # issue sympy/sympy#6372
     assert Sum(0, (k, 1, oo)).evalf() == 0
 
 
@@ -615,6 +622,9 @@ def test_hypersum():
     m = Symbol('n', integer=True, positive=True)
     assert summation(binomial(m, k), (k, 0, m)) == 2**m
 
+    # issue sympy/sympy#8822
+    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
+
 
 def test_sympyissue_4170():
     assert summation(1/factorial(k), (k, 0, oo)) == E
@@ -697,7 +707,6 @@ def test_sympyissue_6274():
     assert Sum(x, (x, 1, 0)).doit() == 0
     assert NS(Sum(x, (x, 1, 0))) == '0'
     assert Sum(n, (n, 10, 5)).doit() == -30
-    assert NS(Sum(n, (n, 10, 5))) == '-30.0000000000000'
 
 
 def test_simplify():
@@ -828,10 +837,6 @@ def test_findrecur():
             (-n + y + 1)*F(n - 1, k)/(-n + x + y + 2) + F(n - 2, k - 1))
 
 
-def test_sympyissue_7097():
-    assert sum(x**n/n for n in range(1, 401)) == summation(x**n/n, (n, 1, 400))
-
-
 def test_factor_expand_subs():
     # test factoring
     assert Sum(4 * x, (x, 1, y)).factor() == 4 * Sum(x, (x, 1, y))
@@ -884,10 +889,6 @@ def test_sympyissue_4668():
     assert summation(1/n, (n, 2, oo)) == oo
 
 
-def test_sympyissue_8822():
-    assert summation(1/((k+3.5)*(k+8)), (k, 1, n)) is not nan
-
-
 def test_sympyissue_8016():
     n, m = symbols('n, m', integer=True, positive=True)
     k = symbols('k', integer=True)
@@ -910,3 +911,26 @@ def test_sympyissue_10156():
 def test_sympyissue_15943():
     s = Sum(binomial(n, k)*factorial(n - k), (k, 0, n))
     assert s.doit().simplify() == E*(gamma(n + 1) - lowergamma(n + 1, 1))
+
+
+def test_sympyissue_21557():
+    f1 = 2**(-k)*exp(I*k)
+    assert summation(f1, (k, 1, oo)).simplify() == E**I/(2 - E**I)
+    f2 = 2**(k*(I - 1))
+    assert summation(f2, (k, 1, oo)).simplify() == 2**I/(2 - 2**I)
+    assert (summation(f2, (k, 1, x)).simplify() ==
+            2**(-x + I)*(-2**x + 2**(I*x))/(-2 + 2**I))
+
+
+def test_sympyissue_21651():
+    a = Sum(floor(2*2**-n), (n, 1, 2))
+    b = floor(2*2**-1) + floor(2*2**-2)
+    assert a.doit() == b.doit()
+    c = Sum(ceiling(2*2**-n), (n, 1, 2))
+    d = ceiling(2*2**-1) + ceiling(2*2**-2)
+    assert c.doit() == d.doit()
+
+
+@pytest.mark.timeout(10)
+def test_sympyissue_20461():
+    assert Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) is not False

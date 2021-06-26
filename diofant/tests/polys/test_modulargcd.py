@@ -60,7 +60,7 @@ def test_modgcd_func_field():
     minpoly = (z**2*t**2 + z**2*t - 1).drop(0)
     f, g = x + 1, x - 1
 
-    assert _func_field_modgcd_m(f, g, minpoly) == R.one
+    assert _func_field_modgcd_m(f, g, minpoly) == 1
 
     # First example from Monagan2004algebraic.
     m = z**2 - t

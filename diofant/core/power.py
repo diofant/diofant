@@ -20,26 +20,6 @@ from .symbol import Dummy, symbols
 from .sympify import sympify
 
 
-def isqrt(n):
-    """Return the largest integer less than or equal to sqrt(n)."""
-    n = int(n)
-
-    if n < 0:
-        raise ValueError('n argument must be nonnegative')
-    if n == 0:
-        return 0
-
-    c = (n.bit_length() - 1) // 2
-    a = 1
-    d = 0
-    for s in reversed(range(c.bit_length())):
-        e = d
-        d = c >> s
-        a = (a << d - e - 1) + (n >> 2*c - e - d + 1) // a
-
-    return a - (a*a > n)
-
-
 def integer_nthroot(y, n):
     """
     Return a tuple containing x = floor(y**(1/n))
@@ -340,60 +320,67 @@ class Pow(Expr):
 
     def _eval_is_positive(self):
         b, e = self.base, self.exp
+
         if b.is_nonnegative and b == e:
             return True
         elif b.is_positive and (e.is_real or e.is_positive):
             return True
-        elif b.is_negative and e.is_integer:
+        elif b.is_negative and e.is_integer and (b.is_finite or e.is_nonnegative):
             return e.is_even
-        elif b.is_nonpositive and e.is_odd:
+        elif b.is_nonpositive and e.is_odd and (b.is_finite or e.is_nonnegative):
             return False
         elif b in {I, -I} and e.is_imaginary:
             return True
 
     def _eval_is_nonnegative(self):
         b, e = self.base, self.exp
+
         if b.is_imaginary and e.is_nonnegative:
             m = e % 4
             if m.is_integer:
                 return m.is_zero
 
     def _eval_is_negative(self):
-        if self.base.is_negative:
-            if self.exp.is_odd:
+        b, e = self.base, self.exp
+
+        if b.is_negative:
+            if e.is_odd and (b.is_finite or e.is_positive):
                 return True
-            if self.exp.is_even:
+            if e.is_even:
                 return False
-        elif self.base.is_positive:
-            if self.exp.is_extended_real:
+        elif b.is_positive:
+            if e.is_extended_real:
                 return False
-        elif self.base.is_nonnegative:
-            if self.exp.is_nonnegative:
+        elif b.is_nonnegative:
+            if e.is_nonnegative:
                 return False
-        elif self.base.is_nonpositive:
-            if self.exp.is_even:
+        elif b.is_nonpositive:
+            if e.is_even:
                 return False
-        elif self.base.is_extended_real:
-            if self.exp.is_even:
+        elif b.is_extended_real:
+            if e.is_even:
                 return False
 
     def _eval_is_zero(self):
-        if self.base.is_zero:
-            if self.exp.is_positive:
+        b, e = self.base, self.exp
+
+        if b.is_zero:
+            if e.is_positive:
                 return True
-            elif self.exp.is_nonpositive:
+            elif e.is_nonpositive:
                 return False
-        elif self.base.is_nonzero:
-            if self.exp.is_finite:
+        elif b.is_nonzero:
+            if e.is_finite:
                 return False
-            elif self.exp.is_infinite:
-                if (1 - abs(self.base)).is_positive:
-                    return self.exp.is_positive
-                elif (1 - abs(self.base)).is_negative:
-                    return self.exp.is_negative
+            elif e.is_infinite:
+                if (1 - abs(b)).is_positive:
+                    return e.is_positive
+                elif (1 - abs(b)).is_negative:
+                    return e.is_negative
 
     def _eval_is_integer(self):
         b, e = self.base, self.exp
+
         if b.is_rational:
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
@@ -414,115 +401,126 @@ class Pow(Expr):
         from ..functions import arg, log
         from .mul import Mul
 
-        if self.base is E:
-            if self.exp.is_extended_real:
-                return True
-            elif self.exp.is_imaginary:
-                return (2*I*self.exp/pi).is_even
+        b, e = self.base, self.exp
 
-        if self.base.is_extended_real is None:
-            if self.base.func == Pow and self.base.base is E and self.base.exp.is_imaginary:
-                return self.exp.is_imaginary
-        if self.exp.is_extended_real is None:
+        if b is E:
+            if e.is_extended_real:
+                return True
+            elif e.is_imaginary:
+                return (2*I*e/pi).is_even
+
+        if b.is_extended_real is None:
+            if b.func == self.func and b.base is E and b.exp.is_imaginary:
+                return e.is_imaginary
+        if e.is_extended_real is None:
             return
 
-        if self.base.is_extended_real and self.exp.is_extended_real:
-            if self.base.is_positive:
+        if b.is_extended_real and e.is_extended_real:
+            if b.is_positive:
                 return True
-            elif self.base.is_nonnegative:
-                if self.exp.is_nonnegative:
+            elif b.is_nonnegative:
+                if e.is_nonnegative:
                     return True
             else:
-                if self.exp.is_integer:
-                    if self.base.is_nonzero or self.exp.is_nonnegative:
+                if e.is_integer:
+                    if b.is_nonzero or e.is_nonnegative:
                         return True
-                elif self.base.is_negative:
-                    if self.exp.is_rational and self.exp.is_noninteger:
+                elif b.is_negative:
+                    if e.is_rational and e.is_noninteger:
                         return False
 
-        if self.base.is_nonzero and self.exp.is_negative:
-            return Pow(self.base, -self.exp).is_extended_real
+        if b.is_nonzero and e.is_negative:
+            return (b**-e).is_extended_real
 
-        if self.base.is_imaginary:
-            if self.exp.is_integer:
-                if self.exp.is_even:
-                    if self.base.is_nonzero or self.exp.is_nonnegative:
+        if b.is_imaginary:
+            if e.is_integer:
+                if e.is_even:
+                    if b.is_nonzero or e.is_nonnegative:
                         return True
-                elif self.exp.is_odd:
+                elif e.is_odd:
                     return False
-            elif self.exp.is_imaginary and log(self.base).is_imaginary:
+            elif e.is_imaginary and log(b).is_imaginary:
                 return True
-            elif self.exp.is_Add:
-                c, a = self.exp.as_coeff_Add()
+            elif e.is_Add:
+                c, a = e.as_coeff_Add()
                 if c and c.is_Integer:
-                    return Mul(self.base**c, self.base**a,
-                               evaluate=False).is_extended_real
-            elif (self.base in (-I, I) and
-                  (self.exp/2).is_noninteger):
+                    return Mul(b**c, b**a, evaluate=False).is_extended_real
+            elif b in (-I, I) and (e/2).is_noninteger:
                 return False
             return
 
-        if self.base.is_extended_real and self.exp.is_imaginary:
-            if self.base is S.NegativeOne:
+        if b.is_extended_real and e.is_imaginary:
+            if b is S.NegativeOne:
                 return True
-            c = self.exp.coeff(I)
+            c = e.coeff(I)
             if c in (1, -1):
-                if self.base == 2:
+                if b == 2:
                     return False
 
-        if self.base.is_extended_real is False:  # we already know it's not imag
-            i = arg(self.base)*self.exp/pi
+        if b.is_extended_real is False:  # we already know it's not imag
+            i = arg(b)*e/pi
             return i.is_integer
 
     def _eval_is_complex(self):
         from ..functions import log
-        if self.base.is_complex:
-            exp = log(self.base)*self.exp
+
+        b, e = self.base, self.exp
+
+        if b.is_complex:
+            exp = log(b)*e
             return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
         from ..functions import arg, log
 
-        if self.base.is_imaginary:
-            if self.exp.is_integer:
-                return self.exp.is_odd
+        b, e = self.base, self.exp
 
-        if self.exp.is_imaginary and self.exp.is_nonzero:
-            if log(self.base).is_imaginary:
+        if b.is_imaginary:
+            if e.is_integer:
+                return e.is_odd
+
+        if e.is_imaginary and e.is_nonzero:
+            if log(b).is_imaginary:
                 return False
 
-        if self.base.is_real and self.exp.is_real:
-            if self.base.is_positive:
+        if b.is_real and e.is_real:
+            if b.is_positive:
                 return False
             else:
-                if self.exp.is_integer:
+                if e.is_integer:
                     return False
                 else:
-                    if (2*self.exp).is_integer:
-                        return self.base.is_negative
+                    if (2*e).is_integer:
+                        return b.is_negative
 
-        if self.base.is_real is False:  # we already know it's not imag
-            return (2*arg(self.base)*self.exp/pi).is_odd
+        if b.is_real is False:  # we already know it's not imag
+            return (2*arg(b)*e/pi).is_odd
 
     def _eval_is_odd(self):
-        if self.exp.is_integer:
-            if self.exp.is_positive:
-                return self.base.is_odd
-            elif self.exp.is_nonnegative and self.base.is_odd:
+        b, e = self.base, self.exp
+
+        if e.is_integer:
+            if e.is_positive:
+                return b.is_odd
+            elif e.is_nonnegative and b.is_odd:
                 return True
-            elif self.base is S.NegativeOne:
+            elif b is S.NegativeOne:
                 return True
 
     def _eval_is_finite(self):
-        if self.exp.is_negative:
-            if self.base.is_zero:
+        b, e = self.base, self.exp
+
+        if e.is_negative:
+            if b.is_zero:
                 return False
-        if self.base.is_finite and self.exp.is_finite:
-            if self.exp.is_nonnegative or self.base.is_nonzero:
+        if b.is_finite and e.is_finite:
+            if e.is_nonnegative or b.is_nonzero:
                 return True
 
     def _eval_is_polar(self):
-        if self.base.is_polar and self.exp.is_commutative:
+        b, e = self.base, self.exp
+
+        if b.is_polar and e.is_commutative:
             return True
 
     def _eval_subs(self, old, new):
@@ -904,7 +902,6 @@ class Pow(Expr):
 
         """
         from ..functions import arg, cos, sin
-        from ..polys import Poly
 
         if self.exp.is_Integer:
             exp = self.exp
@@ -918,8 +915,7 @@ class Pow(Expr):
                     expr = expand_multinomial(self.base**exp)
                     return expr.as_real_imag()
 
-                expr = Poly(
-                    (a + b)**exp)  # a = re, b = im; expr = (a + b*I)**exp
+                expr = ((a + b)**exp).as_poly()  # a = re, b = im; expr = (a + b*I)**exp
             else:
                 mag = re**2 + im**2
                 re, im = re/mag, -im/mag
@@ -928,7 +924,7 @@ class Pow(Expr):
                     expr = expand_multinomial((re + im*I)**-exp)
                     return expr.as_real_imag()
 
-                expr = Poly((a + b)**-exp)
+                expr = ((a + b)**-exp).as_poly()
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]
@@ -1006,7 +1002,8 @@ class Pow(Expr):
         p = self.func(*self.as_base_exp())  # in case it's unevaluated
         if not p.is_Pow:
             return p.is_rational
-        b, e = p.as_base_exp()
+        b, e = p.base, p.exp
+
         if e.is_Rational and b.is_Rational:
             # we didn't check that e is not an Integer
             # because Rational**Integer autosimplifies
@@ -1025,25 +1022,28 @@ class Pow(Expr):
                 return False
 
     def _eval_is_algebraic(self):
-        if self.base.is_zero or (self.base - 1).is_zero:
+        b, e = self.base, self.exp
+
+        if b.is_zero or (b - 1).is_zero:
             return True
-        elif self.base is E:
-            s = self.func(*self.args)
+        elif b is E:
+            s = self.doit()
             if s.func == self.func:
-                if self.exp.is_nonzero:
-                    if self.exp.is_algebraic:
+                if e.is_nonzero:
+                    if e.is_algebraic:
                         return False
-                    elif (self.exp/pi).is_rational:
+                    elif (e/pi).is_rational:
                         return False
+                    elif (e/(I*pi)).is_rational:
+                        return True
             else:
                 return s.is_algebraic
-        elif self.exp.is_rational and self.exp.is_nonzero:
-            if self.base.is_nonzero or self.exp.is_nonnegative:
-                return self.base.is_algebraic
-        elif self.base.is_algebraic and self.exp.is_algebraic:
-            if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
-                    or self.base.is_irrational):
-                return self.exp.is_rational
+        elif e.is_rational and e.is_nonzero:
+            if b.is_nonzero or e.is_nonnegative:
+                return b.is_algebraic
+        elif b.is_algebraic and e.is_algebraic:
+            if (b.is_nonzero and (b - 1).is_nonzero) or b.is_irrational:
+                return e.is_rational
 
     def _eval_is_rational_function(self, syms):
         if self.exp.has(*syms):

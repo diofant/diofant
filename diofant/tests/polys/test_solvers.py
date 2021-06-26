@@ -21,7 +21,7 @@ def test_solve_lin_sys_2x2_2():
     coeff_ring, A0, A1 = ring('A:2', domain)
     R, x = ring('x', coeff_ring)
     expr = (A1 - sqrt(2))*R.one
-    sol = solve_lin_sys(expr.coeffs(), coeff_ring)
+    sol = solve_lin_sys(expr.values(), coeff_ring)
     assert all(isinstance(s, coeff_ring.dtype) for s in sol.values())
     assert sol == {A1: coeff_ring.convert(sqrt(2))}
 

@@ -5,14 +5,14 @@ import abc
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
-                          gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_lcm,
-                          gmpy_sqrt, python_factorial, python_gcd,
-                          python_gcdex, python_lcm, python_sqrt)
-from .ring import Ring
+                          gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_sqrt,
+                          python_factorial, python_gcd, python_gcdex,
+                          python_sqrt)
+from .ring import CommutativeRing
 from .simpledomain import SimpleDomain
 
 
-class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
+class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     """General class for integer rings."""
 
     rep = 'ZZ'
@@ -35,17 +35,17 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         if expr.is_Integer:
             return self.dtype(expr.numerator)
         elif expr.is_Float and int(expr) == expr:
-            return self.dtype(int(expr))
+            return self.dtype(expr)
         else:
             raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
     _from_GMPYIntegerRing = _from_PythonIntegerRing
-
-    def _from_PythonFiniteField(self, a, K0):
-        return self.dtype(int(a))
-    _from_GMPYFiniteField = _from_PythonFiniteField
+    _from_PythonFiniteField = _from_PythonIntegerRing
+    _from_GMPYFiniteField = _from_PythonIntegerRing
+    _from_GMPYIntegerModRing = _from_PythonIntegerRing
+    _from_PythonIntegerModRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
@@ -67,6 +67,11 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         """Returns a finite field."""
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def finite_ring(self, n):
+        """Returns a finite ring."""
+        raise NotImplementedError
+
 
 class PythonIntegerRing(IntegerRing):
     """Integer ring based on Python's integers."""
@@ -83,10 +88,6 @@ class PythonIntegerRing(IntegerRing):
         """Compute GCD of ``a`` and ``b``."""
         return python_gcd(a, b)
 
-    def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``."""
-        return python_lcm(a, b)
-
     def sqrt(self, a):
         """Compute square root of ``a``."""
         return python_sqrt(a)
@@ -96,9 +97,12 @@ class PythonIntegerRing(IntegerRing):
         return python_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field."""
         from .finitefield import PythonFiniteField
         return PythonFiniteField(p)
+
+    def finite_ring(self, n):
+        from .finitefield import PythonIntegerModRing
+        return PythonIntegerModRing(n)
 
 
 class GMPYIntegerRing(IntegerRing):
@@ -117,10 +121,6 @@ class GMPYIntegerRing(IntegerRing):
         """Compute GCD of ``a`` and ``b``."""
         return gmpy_gcd(a, b)
 
-    def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``."""
-        return gmpy_lcm(a, b)
-
     def sqrt(self, a):
         """Compute square root of ``a``."""
         return gmpy_sqrt(a)
@@ -130,9 +130,12 @@ class GMPYIntegerRing(IntegerRing):
         return gmpy_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field."""
         from .finitefield import GMPYFiniteField
         return GMPYFiniteField(p)
+
+    def finite_ring(self, n):
+        from .finitefield import GMPYIntegerModRing
+        return GMPYIntegerModRing(n)
 
 
 ZZ_python = PythonIntegerRing()

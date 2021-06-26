@@ -1,11 +1,14 @@
 import collections
 import functools
+import math
+import typing
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
-                    Symbol, count_ops, ilcm, oo, symbols, sympify)
+                    Symbol, count_ops, oo, symbols)
 from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
+from ..core.sympify import sympify
 from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing.defaults import DefaultPrinting
@@ -41,11 +44,11 @@ class MatrixBase(DefaultPrinting):
     __array_priority__ = 11
 
     is_Matrix = True
-    is_Identity = None
+    is_Identity: typing.Optional[bool] = None
     _class_priority = 3
     _sympify = staticmethod(sympify)
 
-    __hash__ = None  # Mutable
+    __hash__ = None  # type: ignore[assignment]
 
     @classmethod
     def _handle_creation_inputs(cls, *args, **kwargs):
@@ -444,9 +447,6 @@ class MatrixBase(DefaultPrinting):
 
     def __sub__(self, a):
         return self + (-a)
-
-    def __rsub__(self, a):
-        return (-self) + a
 
     def __mul__(self, other):
         """Return self*other where other is either a scalar or a matrix
@@ -2878,7 +2878,7 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-        return PurePoly(list(map(simplify, self.berkowitz()[-1])), x)
+        return PurePoly(list(map(simplify, reversed(self.berkowitz()[-1]))), x)
 
     charpoly = berkowitz_charpoly
 
@@ -2969,7 +2969,7 @@ class MatrixBase(DefaultPrinting):
                     c, p = signsimp(b).as_content_primitive()
                     if c != 1:
                         b = c*p
-                        l = ilcm(l, c.denominator)
+                        l = math.lcm(l, c.denominator)
                     basis[0][i] = b
                 if l != 1:
                     basis[0] *= l
@@ -3899,7 +3899,7 @@ class MatrixBase(DefaultPrinting):
         newmat[:, j:] = self[:, i:]
         return type(self)(newmat)
 
-    def replace(self, F, G):
+    def replace(self, F, G, exact=False):
         """Replaces Function F in Matrix entries with Function G.
 
         Examples

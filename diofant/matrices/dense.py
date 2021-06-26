@@ -1,9 +1,10 @@
 import itertools
 import random
 
-from ..core import Basic, Expr, Integer, Symbol, count_ops, sympify
+from ..core import Basic, Expr, Integer, Symbol, count_ops
 from ..core.compatibility import as_int, is_sequence
 from ..core.decorators import call_highest_priority
+from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
 from ..logic import true
 from ..simplify import simplify as _simplify
@@ -1472,7 +1473,7 @@ def wronskian(functions, var, method='bareiss'):
     n = len(functions)
     if n == 0:
         return 1
-    W = Matrix(n, n, lambda i, j: functions[i].diff(var, j))
+    W = Matrix(n, n, lambda i, j: functions[i].diff((var, j)))
     return W.det(method)
 
 

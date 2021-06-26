@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import CC, FF, QQ, RR, ZZ, I, NotInvertible, field, ring, sqrt
-from diofant.polys.polyconfig import using
+from diofant.config import using
 from diofant.polys.specialpolys import f_polys
 
 
@@ -66,6 +66,13 @@ def test_dup_invert():
 
 
 def test_dmp_prem():
+    R, x = ring('x', FF(7))
+
+    f = x**2 + x + 3
+    g = 2*x + 2
+
+    assert f.prem(g) == 5  # issue sympy/sympy#20397
+
     R, x = ring('x', ZZ)
 
     f = 3*x**3 + x**2 + x + 5
@@ -532,7 +539,7 @@ def test_dmp_gcd():
 
     f, g = x**2 - 1, x**3 - 3*x + 2
 
-    assert f.cofactors(g) == (1, f, g)
+    assert f.cofactors(g) == (x - 1, x + 1, x**2 + x - 2)
 
     R, x, y = ring('x y', ZZ)
 
@@ -1008,3 +1015,15 @@ def test_sympyissue_10996():
 
     assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
     assert H*cff == f and H*cfg == g
+
+
+def test_sympyissue_21460():
+    R = ZZ.inject('x')
+
+    r = R.gcd(R(4), R(6))
+    assert type(r) is R.dtype and r == 2
+
+    R = QQ.inject('x')
+
+    r = R.gcd(R(4), R(6))
+    assert type(r) is R.dtype and r == 1

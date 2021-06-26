@@ -1,9 +1,6 @@
 """Diofant is a Python library for symbolic mathematics."""
 
-import os
-DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'
-del os
-
+from fractions import Fraction
 import pkg_resources
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
@@ -18,9 +15,9 @@ from .core import (Add, Atom, AtomicExpr, Basic, Catalan, Derivative, Dict,
                    cacheit, comp, count_ops, diff, evaluate, expand,
                    expand_complex, expand_func, expand_log, expand_mul,
                    expand_multinomial, expand_power_base, expand_power_exp,
-                   expand_trig, factor_nc, factor_terms, gcd_terms, igcd, ilcm,
+                   expand_trig, factor_nc, factor_terms, gcd_terms,
                    integer_digits, integer_nthroot, mod_inverse, nan, nfloat,
-                   oo, pi, preorder_traversal, prod, symbols, sympify, var,
+                   oo, pi, preorder_traversal, symbols, sympify, var,
                    vectorize, zoo)
 from .logic import (ITE, And, Equivalent, Implies, Nand, Nor, Not, Or, POSform,
                     SOPform, Xor, bool_map, false, satisfiable, simplify_logic,
@@ -45,9 +42,9 @@ from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailed,
                     gcdex, grevlex, grlex, groebner, half_gcdex,
                     hermite_poly, horner, igrevlex, igrlex, ilex, interpolate,
                     interpolating_poly, invert, itermonomials, jacobi_poly,
-                    laguerre_poly, lcm, lcm_list, legendre_poly, lex,
+                    laguerre_poly, lcm, legendre_poly, lex,
                     minimal_polynomial, monic, nroots, parallel_poly_from_expr,
-                    poly, prem, primitive, primitive_element, quo, random_poly,
+                    poly, primitive, primitive_element, quo, random_poly,
                     real_roots, reduced, rem, resultant, ring, roots,
                     spherical_bessel_fn, sqf, sqf_list, sqf_norm, sqf_part,
                     subresultants, swinnerton_dyer_poly, symmetric_poly,
@@ -57,7 +54,7 @@ from .domains import (CC, EX, FF, GF, GROUND_TYPES, QQ, RR, ZZ, AlgebraicField,
                       ExpressionDomain, FF_gmpy, FF_python, FiniteField,
                       IntegerRing, PythonRational, QQ_gmpy, QQ_python,
                       RationalField, RealAlgebraicField, RealField, ZZ_gmpy,
-                      ZZ_python)
+                      ZZ_python, IntegerModRing)
 from .series import Limit, O, Order, limit, residue, series
 from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         FallingFactorial, Heaviside, Id, KroneckerDelta,
@@ -109,7 +106,7 @@ from .simplify import (FU, EPath, besselsimp, bottom_up, collect,
 from .sets import (Complement, Contains, EmptySet, FiniteSet, ImageSet,
                    Integers, Intersection, Interval, Naturals, Naturals0,
                    ProductSet, Range, Rationals, Reals, Set,
-                   SymmetricDifference, Union, imageset)
+                   SymmetricDifference, Union, imageset, ExtendedReals)
 from .solvers import dsolve, reduce_inequalities, rsolve, solve
 from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                        DiagonalMatrix, DiagonalOf, FunctionMatrix, GramSchmidt,
@@ -125,9 +122,9 @@ from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                        matrix_multiply_elementwise, ones, randMatrix,
                        rot_axis1, rot_axis2, rot_axis3, symarray, trace,
                        vandermonde, wronskian, zeros)
-from .geometry import (Circle, Curve, Ellipse, GeometryError, Line, Line3D,
-                       Plane, Point, Point2D, Point3D, Polygon, Ray, Ray3D,
-                       RegularPolygon, Segment, Segment3D, Triangle,
+from .geometry import (Circle, Curve, Ellipse, GeometryError, Line,
+                       Point, Polygon, Ray,
+                       RegularPolygon, Segment, Triangle,
                        are_similar, centroid, convex_hull, deg, idiff,
                        intersection, rad)
 from .utilities import (cantor_product, capture, default_sort_key, filldedent,
@@ -183,9 +180,9 @@ __all__ = (
     'cacheit', 'comp', 'count_ops', 'diff', 'evaluate', 'expand',
     'expand_complex', 'expand_func', 'expand_log', 'expand_mul',
     'expand_multinomial', 'expand_power_base', 'expand_power_exp',
-    'expand_trig', 'factor_nc', 'factor_terms', 'gcd_terms', 'igcd', 'ilcm',
+    'expand_trig', 'factor_nc', 'factor_terms', 'gcd_terms',
     'integer_digits', 'integer_nthroot', 'mod_inverse', 'nan', 'nfloat',
-    'oo', 'pi', 'preorder_traversal', 'prod', 'symbols', 'sympify', 'var',
+    'oo', 'pi', 'preorder_traversal', 'symbols', 'sympify', 'var',
     'vectorize', 'zoo', 'ITE', 'And', 'Equivalent', 'Implies', 'Nand', 'Nor',
     'Not', 'Or', 'POSform', 'SOPform', 'Xor', 'bool_map', 'false',
     'satisfiable', 'simplify_logic', 'to_cnf', 'to_dnf', 'to_nnf', 'true',
@@ -207,9 +204,9 @@ __all__ = (
     'field_isomorphism', 'gcd', 'gcdex', 'grevlex', 'grlex',
     'groebner', 'half_gcdex', 'hermite_poly', 'horner', 'igrevlex', 'igrlex',
     'ilex', 'interpolate', 'interpolating_poly', 'invert', 'itermonomials',
-    'jacobi_poly', 'laguerre_poly', 'lcm', 'lcm_list', 'legendre_poly', 'lex',
+    'jacobi_poly', 'laguerre_poly', 'lcm', 'legendre_poly', 'lex',
     'minimal_polynomial', 'monic', 'nroots', 'parallel_poly_from_expr',
-    'poly', 'prem', 'primitive', 'primitive_element', 'quo', 'random_poly',
+    'poly', 'primitive', 'primitive_element', 'quo', 'random_poly',
     'real_roots', 'reduced', 'rem', 'resultant', 'ring', 'roots',
     'spherical_bessel_fn', 'sqf', 'sqf_list', 'sqf_norm', 'sqf_part',
     'subresultants', 'swinnerton_dyer_poly', 'symmetric_poly',
@@ -275,8 +272,8 @@ __all__ = (
     'jordan_cell', 'list2numpy', 'matrix2numpy', 'matrix_multiply_elementwise',
     'ones', 'randMatrix', 'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray',
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Circle', 'Curve', 'Ellipse',
-    'GeometryError', 'Line', 'Line3D', 'Plane', 'Point', 'Point2D', 'Point3D',
-    'Polygon', 'Ray', 'Ray3D', 'RegularPolygon', 'Segment', 'Segment3D',
+    'GeometryError', 'Line', 'Point', 'Fraction',
+    'Polygon', 'Ray', 'RegularPolygon', 'Segment',
     'Triangle', 'are_similar', 'centroid', 'convex_hull', 'deg', 'idiff',
     'intersection', 'rad', 'cantor_product', 'capture', 'default_sort_key',
     'filldedent', 'flatten', 'group', 'has_dups', 'has_variety', 'lambdify',
@@ -307,4 +304,4 @@ __all__ = (
     'plot_backends', 'plot_implicit', 'plot_parametric', 'StrPrinter', 'ccode',
     'dotprint', 'fcode', 'latex', 'mathematica_code', 'mathml', 'octave_code',
     'pprint', 'pprint_use_unicode', 'pretty', 'pretty_print', 'python', 'srepr',
-    'sstr', 'sstrrepr', 'init_printing')
+    'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals', 'IntegerModRing')

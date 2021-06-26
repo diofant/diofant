@@ -1,9 +1,9 @@
 """Gröbner bases algorithms."""
 
+from ..config import query
 from ..core import Dummy
 from .monomials import Monomial
 from .orderings import lex
-from .polyconfig import query
 
 
 def groebner(seq, ring, method=None):
@@ -12,7 +12,7 @@ def groebner(seq, ring, method=None):
 
     Wrapper around the (default) improved Buchberger and the other algorithms
     for computing Gröbner bases. The choice of algorithm can be changed via
-    ``method`` argument or :func:`~diofant.polys.polyconfig.setup`,
+    ``method`` argument or :func:`~diofant.config.setup`,
     where ``method`` can be either ``buchberger`` or ``f5b``.
 
     """
@@ -254,13 +254,15 @@ def spoly(p1, p2):
     This is the S-poly, provided p1 and p2 are monic
 
     """
+    ring = p1.ring
+    domain_one = ring.domain.one
     LM1 = p1.LM
     LM2 = p2.LM
     LCM12 = LM1.lcm(LM2)
-    m1 = LCM12/LM1
-    m2 = LCM12/LM2
-    s1 = p1.mul_monom(m1)
-    s2 = p2.mul_monom(m2)
+    m1 = ring.from_terms([(LCM12/LM1, domain_one)])
+    m2 = ring.from_terms([(LCM12/LM2, domain_one)])
+    s1 = p1*m1
+    s2 = p2*m2
     s = s1 - s2
     return s
 
@@ -362,7 +364,8 @@ def lbp_mul_term(f, cx):
     defined as (m * s, m * p, k).
 
     """
-    return lbp(sig_mult(Sign(f), cx[0]), Polyn(f).mul_term(cx), Num(f))
+    return lbp(sig_mult(Sign(f), cx[0]),
+               Polyn(f)*Polyn(f).ring.from_terms([cx]), Num(f))
 
 
 def lbp_cmp(f, g):
@@ -482,7 +485,7 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> R, x, y, z = ring('x y z', QQ, lex)
+    >>> _, x, y, z = ring('x y z', QQ, lex)
 
     >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
     >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)
@@ -689,12 +692,11 @@ def is_groebner(G):
 def is_minimal(G, ring):
     """Checks if G is a minimal Gröbner basis."""
     order = ring.order
-    domain = ring.domain
 
     G.sort(key=lambda g: order(g.LM))
 
     for i, g in enumerate(G):
-        if g.LC != domain.one:
+        if g.LC != 1:
             return False
 
         for h in G[:i] + G[i + 1:]:
@@ -796,7 +798,7 @@ def matrix_fglm(F, ring, O_to):
         v = _matrix_mul(M[t[0]], V[t[1]])
         _lambda = _matrix_mul(P, v)
 
-        if all(_lambda[i] == domain.zero for i in range(s, len(old_basis))):
+        if all(_lambda[i] == 0 for i in range(s, len(old_basis))):
             # there is a linear combination of v by V
             lt = ring.term_new(_incr_k(S[t[1]], t[0]), domain.one)
             rest = ring.from_dict({S[i]: _lambda[i] for i in range(s)})
@@ -864,7 +866,8 @@ def _representing_matrices(basis, G, ring):
     u = ring.ngens-1
 
     def var(i):
-        return ring._monomial_basis(i)
+        m, = ring.gens[i]
+        return m
 
     def representing_matrix(m):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]

@@ -11,19 +11,19 @@ def _jacobi(n, a, b, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, ((a + b + K(2))*x + (a - b))/K(2)]
+    j0 = ring.one
+    if n < 1:
+        return j0
+    j1 = ((a + b + K(2))*x + (a - b))/K(2)
 
     for i in range(2, n + 1):
         den = K(i)*(a + b + i)*(a + b + K(2)*i - K(2))
         f0 = (a + b + K(2)*i - K.one) * (a*a - b*b) / (K(2)*den)
         f1 = (a + b + K(2)*i - K.one) * (a + b + K(2)*i - K(2)) * (a + b + K(2)*i) / (K(2)*den)
         f2 = (a + i - K.one)*(b + i - K.one)*(a + b + K(2)*i) / den
-        p0 = seq[-1].mul_ground(f0)
-        p1 = (seq[-1]*x).mul_ground(f1)
-        p2 = seq[-2].mul_ground(f2)
-        seq.append(p0 + p1 - p2)
+        j0, j1 = j1, j1*f0 + j1*x*f1 - j0*f2
 
-    return seq[n]
+    return j1
 
 
 def jacobi_poly(n, a, b, x=None, **args):
@@ -50,16 +50,17 @@ def _gegenbauer(n, a, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, K(2)*a*x]
+    g0 = ring.one
+    if n < 1:
+        return g0
+    g1 = K(2)*a*x
 
     for i in range(2, n + 1):
         f1 = K(2) * (i + a - K.one) / i
         f2 = (i + K(2)*a - K(2)) / i
-        p1 = (seq[-1]*x).mul_ground(f1)
-        p2 = seq[-2].mul_ground(f2)
-        seq.append(p1 - p2)
+        g0, g1 = g1, g1*x*f1 - g0*f2
 
-    return seq[n]
+    return g1
 
 
 def gegenbauer_poly(n, a, x=None, **args):
@@ -87,13 +88,16 @@ def _chebyshevt(n, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, x]
+    c0 = ring.one
+    if n < 1:
+        return c0
+    c1 = x
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(2))
-        seq.append(a - seq[-2])
+        a = c1*x*K(2)
+        c0, c1 = c1, a - c0
 
-    return seq[n]
+    return c1
 
 
 def chebyshevt_poly(n, x=None, **args):
@@ -123,7 +127,7 @@ def _chebyshevu(n, K):
     seq = [ring.one, K(2)*x]
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(2))
+        a = seq[-1]*x*K(2)
         seq.append(a - seq[-2])
 
     return seq[n]
@@ -153,17 +157,18 @@ def _hermite(n, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, K(2)*x]
+    h0 = ring.one
+    if n < 1:
+        return h0
+    h1 = K(2)*x
 
     for i in range(2, n + 1):
-        a = seq[-1]*x
-        b = seq[-2].mul_ground(K(i - 1))
+        a = h1*x
+        b = h0*K(i - 1)
 
-        c = (a - b).mul_ground(K(2))
+        h0, h1 = h1, (a - b)*K(2)
 
-        seq.append(c)
-
-    return seq[n]
+    return h1
 
 
 def hermite_poly(n, x=None, **args):
@@ -189,15 +194,15 @@ def _legendre(n, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, x]
+    l0 = ring.one
+    if n < 1:
+        return l0
+    l1 = x
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(2*i - 1, i))
-        b = seq[-2].mul_ground(K(i - 1, i))
+        l0, l1 = l1, l1*x*K(2*i - 1, i) - l0*K(i - 1, i)
 
-        seq.append(a - b)
-
-    return seq[n]
+    return l1
 
 
 def legendre_poly(n, x=None, **args):
@@ -223,15 +228,12 @@ def _laguerre(n, alpha, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.zero, ring.one]
+    l0, l1 = ring.zero, ring.one
 
     for i in range(1, n + 1):
-        a = seq[-1]*(-K.one/i*x + alpha/i + K(2*i - 1)/i)
-        b = seq[-2].mul_ground(alpha/i + K(i - 1)/i)
+        l0, l1 = l1, l1*(-K.one/i*x + alpha/i + K(2*i - 1)/i) - l0*(alpha/i + K(i - 1)/i)
 
-        seq.append(a - b)
-
-    return seq[-1]
+    return l1
 
 
 def laguerre_poly(n, x=None, alpha=None, **args):
@@ -263,13 +265,15 @@ def _spherical_bessel_fn(n, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [ring.one, x]
+    s0 = ring.one
+    if n < 1:
+        return s0*x
+    s1 = x
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(2*i - 1))
-        seq.append(a - seq[-2])
+        s0, s1 = s1, s1*x*K(2*i - 1) - s0
 
-    return seq[n]*x
+    return s1*x
 
 
 def _spherical_bessel_fn_minus(n, K):
@@ -277,13 +281,12 @@ def _spherical_bessel_fn_minus(n, K):
     ring = K.poly_ring('_0')
     x = ring._0
 
-    seq = [x, ring.zero]
+    s0, s1 = x, ring.zero
 
     for i in range(2, n + 1):
-        a = (seq[-1]*x).mul_ground(K(3 - 2*i))
-        seq.append(a - seq[-2])
+        s0, s1 = s1, s1*x*K(3 - 2*i) - s0
 
-    return seq[n]
+    return s1
 
 
 def spherical_bessel_fn(n, x=None, **args):

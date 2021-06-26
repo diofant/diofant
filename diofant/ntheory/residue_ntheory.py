@@ -5,7 +5,6 @@ import random
 from ..core import Function, Integer
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex, mod_inverse
-from ..core.power import isqrt
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
 from .modular import crt, crt1, crt2
@@ -1002,7 +1001,7 @@ def _discrete_log_shanks_steps(n, a, b, order=None):
     b %= n
     if order is None:
         order = n_order(b, n)
-    m = isqrt(order) + 1
+    m = math.isqrt(order) + 1
     T = {}
     x = 1
     for i in range(m):

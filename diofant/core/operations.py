@@ -439,7 +439,7 @@ class LatticeOp(AssocOp):
         else:
             return frozenset([expr])
 
-    @property
+    @property  # type: ignore[misc]
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))

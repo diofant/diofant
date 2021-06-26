@@ -1,8 +1,11 @@
+import typing
+
 from ...core import (Add, Function, Integer, Rational, Symbol, cacheit,
-                     expand_mul, sympify)
+                     expand_mul)
 from ...core.function import ArgumentIndexError
 from ...core.logic import fuzzy_and, fuzzy_not
 from ...core.numbers import I, igcdex, nan, oo, pi, zoo
+from ...core.sympify import sympify
 from ...utilities import numbered_symbols
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -1038,8 +1041,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     # _is_even and _is_odd are used for correct evaluation of csc(-x), sec(-x)
     # TODO refactor into TrigonometricFunction common parts of
     # trigonometric functions eval() like even/odd, func(x+2*k*pi), etc.
-    _is_even = None  # optional, to be defined in subclass
-    _is_odd = None   # optional, to be defined in subclass
+    _is_even: typing.Optional[bool] = None  # optional, to be defined in subclass
+    _is_odd: typing.Optional[bool] = None  # optional, to be defined in subclass
 
     @classmethod
     def eval(cls, arg):

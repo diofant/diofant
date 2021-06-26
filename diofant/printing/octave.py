@@ -9,7 +9,10 @@ in `diofant.utilities.codegen`.  The `codegen` module can be used to generate
 complete source code files.
 """
 
-from re import search
+from __future__ import annotations
+
+import re
+import typing
 
 from ..core import I, Integer, Mul, Pow, Rational, oo, pi
 from ..core.mul import _keep_coeff
@@ -58,7 +61,7 @@ class OctaveCodePrinter(CodePrinter):
         'not': '~',
     }
 
-    _default_settings = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None,
         'full_prec': 'auto',
         'precision': 16,
@@ -282,7 +285,7 @@ class OctaveCodePrinter(CodePrinter):
         return '[%s]' % A.table(self, rowstart='', rowend='',
                                 rowsep=';\n', colsep=' ')
 
-    def _print_SparseMatrix(self, A):
+    def _print_SparseMatrixBase(self, A):
         from ..matrices import Matrix
         L = A.col_list()
         # make row vectors of the indices and entries
@@ -291,19 +294,6 @@ class OctaveCodePrinter(CodePrinter):
         AIJ = Matrix([[k[2] for k in L]])
         return 'sparse(%s, %s, %s, %s, %s)' % (self._print(I), self._print(J),
                                                self._print(AIJ), A.rows, A.cols)
-
-    # FIXME: Str/CodePrinter could define each of these to call the _print
-    # method from higher up the class hierarchy (see _print_NumberSymbol).
-    # Then subclasses like us would not need to repeat all this.
-    _print_Matrix = \
-        _print_DenseMatrix = \
-        _print_MutableDenseMatrix = \
-        _print_ImmutableMatrix = \
-        _print_ImmutableDenseMatrix = \
-        _print_MatrixBase
-    _print_MutableSparseMatrix = \
-        _print_ImmutableSparseMatrix = \
-        _print_SparseMatrix
 
     def _print_MatrixElement(self, expr):
         return self._print(expr.parent) + '(%s, %s)' % (expr.i + 1, expr.j + 1)
@@ -437,9 +427,9 @@ class OctaveCodePrinter(CodePrinter):
         # pre-strip left-space from the code
         code = [ line.lstrip(' \t') for line in code ]
 
-        increase = [int(any(search(re, line) for re in inc_regex))
+        increase = [int(any(re.search(_, line) for _ in inc_regex))
                     for line in code]
-        decrease = [int(any(search(re, line) for re in dec_regex))
+        decrease = [int(any(re.search(_, line) for _ in dec_regex))
                     for line in code]
 
         pretty = []

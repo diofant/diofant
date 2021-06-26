@@ -119,6 +119,8 @@ def test_infinity():
     assert oo.is_prime is False
     assert oo.is_composite is False
     assert oo.is_number is True
+    assert oo.is_zero is False
+    assert oo.is_nonzero is True  # issue sympy/sympy#21107
 
 
 def test_neg_infinity():
@@ -341,6 +343,12 @@ def test_symbol_zero():
     assert x.is_zero is True
     assert x.is_nonzero is False
     assert x.is_finite is True
+
+    # issue sympy/sympy#9165
+    f = Symbol('f', finite=False)
+    assert 0/x == nan
+    assert 0*(1/x) == nan
+    assert 0*f == nan
 
 
 def test_symbol_positive():
@@ -738,6 +746,9 @@ def test_Pow_is_algebraic():
     assert p.is_algebraic is None
     assert p.is_finite is None  # issue sympy/sympy#17453
 
+    # issue sympy/sympy#20617
+    assert exp(I*2*pi/3).is_algebraic is True
+
 
 def test_Mul_is_infinite():
     x = Symbol('x')
@@ -833,14 +844,6 @@ def test_inconsistent():
                                                           commutative=False))
 
 
-def test_sympyissue_6631():
-    assert ((-1)**I).is_extended_real is True
-    assert ((-1)**(I*2)).is_extended_real is True
-    assert ((-1)**(I/2)).is_extended_real is True
-    assert ((-1)**(I*pi)).is_extended_real is True
-    assert (I**(I + 2)).is_extended_real is True
-
-
 def test_sympyissue_2730():
     assert (1/(1 + I)).is_extended_real is False
 
@@ -893,14 +896,6 @@ def test_sympyissue_8075():
 def test_sympyissue_8642():
     x = Symbol('x', extended_real=True, integer=False)
     assert (x*2).is_integer is None
-
-
-def test_sympyissue_9165():
-    z = Symbol('z', zero=True)
-    f = Symbol('f', finite=False)
-    assert 0/z == nan
-    assert 0*(1/z) == nan
-    assert 0*f == nan
 
 
 def test_sympyissue_10024():

@@ -1,6 +1,11 @@
-from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
+from __future__ import annotations
+
+import typing
+
+from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
+from ..core.sympify import sympify
 from ..utilities import default_sort_key
 from .precedence import precedence
 from .str import StrPrinter
@@ -81,10 +86,12 @@ class CodePrinter(StrPrinter):
         'not': '!',
     }
 
-    _default_settings = {'order': None,
-                         'full_prec': 'auto',
-                         'error_on_reserved': False,
-                         'reserved_word_suffix': '_'}
+    _default_settings: dict[str, typing.Any] = {
+        'order': None,
+        'full_prec': 'auto',
+        'error_on_reserved': False,
+        'reserved_word_suffix': '_'
+    }
 
     def __init__(self, settings=None):
 
@@ -488,9 +495,6 @@ class CodePrinter(StrPrinter):
     _print_Interval = _print_not_supported
     _print_Limit = _print_not_supported
     _print_list = _print_not_supported
-    _print_Matrix = _print_not_supported
-    _print_ImmutableMatrix = _print_not_supported
-    _print_MutableDenseMatrix = _print_not_supported
     _print_MatrixBase = _print_not_supported
     _print_NaN = _print_not_supported
     _print_NegativeInfinity = _print_not_supported
@@ -499,7 +503,6 @@ class CodePrinter(StrPrinter):
     _print_RootOf = _print_not_supported
     _print_RootsOf = _print_not_supported
     _print_RootSum = _print_not_supported
-    _print_SparseMatrix = _print_not_supported
     _print_tuple = _print_not_supported
     _print_Wild = _print_not_supported
     _print_WildFunction = _print_not_supported

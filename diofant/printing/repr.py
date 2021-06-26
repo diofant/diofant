@@ -6,6 +6,10 @@ builtin repr, except for optional arguments) that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
+from __future__ import annotations
+
+import typing
+
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps, repr_dps
 
@@ -20,7 +24,7 @@ class ReprPrinter(Printer):
 
     printmethod = '_diofantrepr'
 
-    _default_settings = {
+    _default_settings: dict[str, typing.Any] = {
         'order': None
     }
 
@@ -96,16 +100,6 @@ class ReprPrinter(Printer):
                 l[-1].append(expr[i, j])
         return f'{expr.__class__.__name__}({self._print(l)})'
 
-    _print_SparseMatrix = \
-        _print_MutableSparseMatrix = \
-        _print_ImmutableSparseMatrix = \
-        _print_Matrix = \
-        _print_DenseMatrix = \
-        _print_MutableDenseMatrix = \
-        _print_ImmutableMatrix = \
-        _print_ImmutableDenseMatrix = \
-        _print_MatrixBase
-
     def _print_BooleanTrue(self, expr):
         return 'true'
 
@@ -130,7 +124,7 @@ class ReprPrinter(Printer):
         r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
         return f"{expr.__class__.__name__}('{r}', dps={dps:d})"
 
-    def _print_Symbol(self, expr):
+    def _print_BaseSymbol(self, expr):
         d = expr._assumptions.generator
         if d == {}:
             return f'{expr.__class__.__name__}({self._print(expr.name)})'
@@ -138,8 +132,6 @@ class ReprPrinter(Printer):
             attr = [f'{k}={v}' for k, v in d.items()]
             return '%s(%s, %s)' % (expr.__class__.__name__,
                                    self._print(expr.name), ', '.join(attr))
-    _print_Dummy = _print_Symbol
-    _print_Wild = _print_Symbol
 
     def _print_str(self, expr):
         return repr(expr)
@@ -155,7 +147,9 @@ class ReprPrinter(Printer):
 
     def _print_PolynomialRing(self, ring):
         return '%s(%s, %s, %s)' % (ring.__class__.__name__,
-                                   self._print(ring.domain), self._print(ring.symbols), self._print(ring.order))
+                                   self._print(ring.domain),
+                                   self._print(ring.symbols),
+                                   self._print(ring.order))
 
     def _print_GMPYIntegerRing(self, expr):
         return f'{expr.__class__.__name__}()'
@@ -171,14 +165,14 @@ class ReprPrinter(Printer):
                                    self._print(field.domain), self._print(field.symbols), self._print(field.order))
 
     def _print_PolyElement(self, poly):
-        terms = list(poly.terms())
+        terms = list(poly.items())
         terms.sort(key=poly.ring.order, reverse=True)
         return f'{poly.__class__.__name__}({self._print(poly.ring)}, {self._print(terms)})'
 
     def _print_FracElement(self, frac):
-        numer_terms = list(frac.numerator.terms())
+        numer_terms = list(frac.numerator.items())
         numer_terms.sort(key=frac.field.order, reverse=True)
-        denom_terms = list(frac.denominator.terms())
+        denom_terms = list(frac.denominator.items())
         denom_terms.sort(key=frac.field.order, reverse=True)
         numer = self._print(numer_terms)
         denom = self._print(denom_terms)

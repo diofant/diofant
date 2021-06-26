@@ -16,8 +16,9 @@ each function for more information.
 """
 
 import functools
+import math
 
-from ..core import Add, Dummy, Integer, Mul, Pow, ilcm
+from ..core import Add, Dummy, Integer, Mul, Pow
 from ..matrices import Matrix, eye, zeros
 from ..polys import Poly, cancel, lcm, sqf_list
 from ..solvers import solve
@@ -111,7 +112,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
         return a, B, G, Poly(1, DE.t)
     else:
         raise ValueError("case must be one of {'exp', 'tan', 'primitive', "
-                         "'base'}, not %s." % case)
+                         f"'base'}}, not {case}.")
 
     nb = order_at(ba, p, DE.t) - order_at(bd, p, DE.t)
     nc = min(order_at(Ga, p, DE.t) - order_at(Gd, p, DE.t) for Ga, Gd in G)
@@ -734,7 +735,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
         else:
-            n = functools.reduce(ilcm, [i.as_numer_denom()[1] for i in u])
+            n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for i in u])
             u *= Integer(n)
             terms = [DE.T[i] for i in DE.E_K] + DE.L_args
             ans = list(zip(terms, u))
@@ -837,7 +838,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
-        n = functools.reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
+        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
         return Integer(n), u
 
@@ -851,10 +852,10 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     else:
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
-                         "'base', 'auto'}, not %s" % case)
+                         f"'base', 'auto'}}, not {case}")
 
-    common_denom = functools.reduce(ilcm, [i.as_numer_denom()[1] for i in [j for _, j in
-                                                                           residueterms]] + [n], Integer(1))
+    common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1]
+                                               for i in [j for _, j in residueterms]] + [n], Integer(1))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

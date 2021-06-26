@@ -26,11 +26,14 @@ warnings.simplefilter('error', UserWarning)
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram']
 
 napoleon_google_docstring = False
 napoleon_use_param = False
 napoleon_use_rtype = False
+
+# List our *.bib files.
+bibtex_bibfiles = ['sources.bib']
 
 # Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
@@ -44,7 +47,7 @@ master_doc = 'index'
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2018 SymPy Development Team, 2013-2020 Sergey B Kirpichev'
+copyright = '2006-2018 SymPy Development Team, 2013-2021 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -64,7 +67,7 @@ latex_use_xindy = False
 # This value determines how to group the document tree into LaTeX source
 # files.  It must be a list of tuples (startdocname, targetname, title,
 # author, documentclass, toctree_only),
-latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
+latex_documents = [('index', 'Diofant-' + version + '.tex', 'Diofant Documentation',
                     'Diofant Development Team', 'manual', True)]
 
 # A dictionary that contains LaTeX snippets that override predefined.
@@ -91,7 +94,7 @@ graphviz_output_format = 'svg'
 # Contains mapping the locations and names of other projects that
 # should be linked to in this documentation.
 intersphinx_mapping = {
-    'python3': ('https://docs.python.org/3/', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
@@ -132,12 +135,6 @@ html_css_files = [
     'custom.css',
 ]
 
-# A list of paths that contain extra files not directly related to the
-# documentation, such as robots.txt or .htaccess.  Relative paths are taken
-# as relative to the configuration directory.  They are copied to the
-# output directory. They will overwrite any existing file of the same name.
-html_extra_path = ['robots.txt']
-
 # Should we show "Created using Sphinx" in the HTML footer?
 html_show_sphinx = False
 
@@ -155,7 +152,7 @@ html_theme_options = {
 
 # The inline configuration options for mathjax.  The value is used as
 # a parameter of MathJax.Hub.Config().
-mathjax_config = {
+mathjax3_config = {
     'CommonHTML': {'linebreaks': {'automatic': True}},
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},

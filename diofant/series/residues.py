@@ -1,4 +1,5 @@
-from ..core import Integer, Mul, sympify
+from ..core import Integer, Mul
+from ..core.sympify import sympify
 
 
 def residue(expr, x, x0):

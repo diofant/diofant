@@ -55,7 +55,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2), Rational(3, 2), Rational(5, 2)], 0)
+    >>> res = finite_diff_weights(1, [-Rational(1, 2), Rational(1, 2),
+    ...                               Rational(3, 2), Rational(5, 2)], 0)
     >>> res
     [[[1, 0, 0, 0],
       [1/2, 1/2, 0, 0],
@@ -81,7 +82,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Since res[1][2] has an order of accuracy of
     len(x_list[:3]) - order = 3 - 1 = 2, the same is true for res[1][1]!
 
-    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1), Integer(2), -Integer(2)], 0)[1]
+    >>> res = finite_diff_weights(1, [Integer(0), Integer(1), -Integer(1),
+    ...                               Integer(2), -Integer(2)], 0)[1]
     >>> res
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -100,7 +102,8 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     Let us compare this to a differently defined x_list. Pay attention to
     foo[i][k] corresponding to the gridpoint defined by x_list[k].
 
-    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0), Integer(1), Integer(2)], 0)[1]
+    >>> foo = finite_diff_weights(1, [-Integer(2), -Integer(1), Integer(0),
+    ...                               Integer(1), Integer(2)], 0)[1]
     >>> foo
     [[0, 0, 0, 0, 0],
      [-1, 1, 0, 0, 0],
@@ -327,7 +330,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     >>> e, sq2 = exp(1), sqrt(2)
     >>> xl = [x-h, x+h, x+e*h]
-    >>> as_finite_diff(f(x).diff(x, 1), xl, x+h*sq2)
+    >>> as_finite_diff(f(x).diff((x, 1)), xl, x+h*sq2)
     2*h*f(E*h + x)*((h + sqrt(2)*h)/(2*h) -
     (-sqrt(2)*h + h)/(2*h))/((-h + E*h)*(h + E*h)) +
     f(-h + x)*(-(-sqrt(2)*h + h)/(2*h) - (-sqrt(2)*h + E*h)/(2*h))/(h +

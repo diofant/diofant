@@ -4,7 +4,6 @@ from ..core import Add, Dummy, Rational, symbols
 from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
                      reduced)
 from ..polys.monomials import Monomial
-from ..utilities.misc import debug
 
 
 def ratsimp(expr):
@@ -59,7 +58,6 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
     quick = args.pop('quick', True)
     polynomial = args.pop('polynomial', False)
-    debug('ratsimpmodprime', expr)
 
     # usual preparation of polynomials:
 
@@ -133,10 +131,9 @@ def ratsimpmodprime(expr, G, *gens, **args):
 
             M1 = staircase(N)
             M2 = staircase(D)
-            debug(f'{N} / {D}: {M1}, {M2}')
 
-            Cs = symbols('c:%d' % len(M1), cls=Dummy)
-            Ds = symbols('d:%d' % len(M2), cls=Dummy)
+            Cs = symbols(f'c:{len(M1):d}', cls=Dummy)
+            Ds = symbols(f'd:{len(M2):d}', cls=Dummy)
             ng = Cs + Ds
 
             c_hat = Poly(
@@ -172,6 +169,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
                 if N + D != maxdeg:
                     allsol = [allsol[-1]]
 
+                N  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
             steps += 1
@@ -195,7 +193,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
     c, d, allsol = _ratsimpmodprime(
         Poly(num, *opt.gens, domain=opt.domain), Poly(denom, *opt.gens, domain=opt.domain), [])
     if not quick and allsol:
-        debug('Looking for best minimal solution. Got: %s' % len(allsol))
+        # Looking for best minimal solution.
         newsol = []
         for c_hat, d_hat, S, ng in allsol:
             Sm = zeros(len(S), len(ng) + 1)

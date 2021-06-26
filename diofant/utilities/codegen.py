@@ -900,7 +900,7 @@ class CCodeGen(CodeGen):
 
     def dump_c(self, routines, f, prefix, header=True, empty=True):
         self.dump_code(routines, f, prefix, header, empty)
-    dump_c.extension = code_extension
+    dump_c.extension = code_extension  # type: ignore[attr-defined]
     dump_c.__doc__ = CodeGen.dump_code.__doc__
 
     def dump_h(self, routines, f, prefix, header=True, empty=True):
@@ -951,7 +951,7 @@ class CCodeGen(CodeGen):
         print('#endif', file=f)
         if empty:
             print(file=f)
-    dump_h.extension = interface_extension
+    dump_h.extension = interface_extension  # type: ignore[attr-defined]
 
     # This list of dump functions is used by CodeGen.write to know which dump
     # functions it has to call.
@@ -1126,7 +1126,7 @@ class FCodeGen(CodeGen):
                 raise CodeGenError('Fortran ignores case. Got symbols: %s' %
                                    (', '.join([str(var) for var in r.variables])))
         self.dump_code(routines, f, prefix, header, empty)
-    dump_f95.extension = code_extension
+    dump_f95.extension = code_extension  # type: ignore[attr-defined]
     dump_f95.__doc__ = CodeGen.dump_code.__doc__
 
     def dump_h(self, routines, f, prefix, header=True, empty=True):
@@ -1165,7 +1165,7 @@ class FCodeGen(CodeGen):
             f.write(prototype)
         if empty:
             print(file=f)
-    dump_h.extension = interface_extension
+    dump_h.extension = interface_extension  # type: ignore[attr-defined]
 
     # This list of dump functions is used by CodeGen.write to know which dump
     # functions it has to call.
@@ -1399,7 +1399,7 @@ class OctaveCodeGen(CodeGen):
         if code_lines:
             f.write(code_lines)
 
-    dump_m.extension = code_extension
+    dump_m.extension = code_extension  # type: ignore[attr-defined]
     dump_m.__doc__ = CodeGen.dump_code.__doc__
 
     # This list of dump functions is used by CodeGen.write to know which dump

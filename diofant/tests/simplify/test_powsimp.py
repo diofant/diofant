@@ -243,7 +243,8 @@ def test_powsimp_polar():
         sin(exp_polar(x + y))
 
 
-def test_sympyissue_5728():
+def test_powsimp_other():
+    # see also issue sympy/sympy#5728
     b = x*sqrt(y)
     a = sqrt(b)
     c = sqrt(sqrt(x)*y)
@@ -273,7 +274,7 @@ def test_sympyissue_5728():
 
 
 def test_sympyissue_from_PR1599():
-    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
+    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True, finite=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
             -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))

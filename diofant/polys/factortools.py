@@ -4,10 +4,10 @@ import functools
 import math
 import operator
 
+from ..config import query
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
@@ -25,9 +25,10 @@ class _Factor:
             while f:
                 q, r = divmod(f, factor)
 
-                if r.is_zero:
+                if not r:
                     f, k = q, k + 1
                 else:
+                    r  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
 
             result.append((factor, k))
@@ -80,12 +81,12 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (2*x**4 - 2).factor_list()
         (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
-        >>> R, x, y = ring('x y', ZZ)
+        >>> _, x, y = ring('x y', ZZ)
 
         >>> (2*x**2 - 2*y**2).factor_list()
         (2, [(x - y, 1), (x + y, 1)])
@@ -124,7 +125,7 @@ class _Factor:
             factors = self._trial_division(f, H)
             return cont, factors
 
-        if f.is_zero:
+        if not f:
             return domain.zero, []
 
         cont, g = f.primitive()
@@ -171,7 +172,7 @@ class _Factor:
         if n == 1:
             return [f]
 
-        fc = f.coeff(1)
+        fc = f[1]
         A = f.max_norm()
         b = f.LC
         B = int(self._zz_mignotte_bound(f))
@@ -220,7 +221,7 @@ class _Factor:
                 if b == 1:
                     q = 1
                     for i in S:
-                        q = q*g[i].coeff(1)
+                        q = q*g[i][1]
                     q = q % pl
                     qs = symmetric_residue(q, pl)
                     if qs and fc % qs != 0:
@@ -231,7 +232,7 @@ class _Factor:
                         G *= g[i]
                     G = G.trunc_ground(pl)
                     _, G = G.primitive()
-                    q = G.coeff(1)
+                    q = G[1]
                     if q and fc % q != 0:
                         continue
 
@@ -432,7 +433,12 @@ class _Factor:
                 for h in self._gf_factor_sqf(g):
                     factors.append((h, n))
         elif domain.is_AlgebraicField:
-            coeff, factors = self._aa_factor_trager(f)
+            from .factorization_alg_field import efactor
+
+            _factor_aa_methods = {'trager': self._aa_factor_trager,
+                                  'modular': efactor}
+            method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
+            coeff, factors = method(f)
         else:
             if not domain.is_Exact:
                 domain_inexact, domain = domain, domain.get_exact()
@@ -486,7 +492,7 @@ class _Factor:
         assert self.is_univariate
 
         lc = f.LC
-        tc = f.coeff(1)
+        tc = f[1]
 
         f -= f.leading_term()
         e_fc = f.content()
@@ -495,7 +501,7 @@ class _Factor:
             e_ff = factorint(int(e_fc))
 
             for p in e_ff:
-                if (lc % p) and (tc % p**2):
+                if lc % p and tc % p**2:
                     return True
 
     def _gf_irreducible_p_ben_or(self, f):
@@ -568,14 +574,15 @@ class _Factor:
         return h == x
 
     def _cyclotomic_decompose(self, n):
-        H = [self.gens[0] - 1]
+        x = self.gens[0]
+        H = [x - 1]
 
         for p, k in factorint(n).items():
-            Q = [h.inflate((p,)) // h for h in H]
+            Q = [h.compose(x, x**p) // h for h in H]
             H.extend(Q)
 
             for i in range(1, k):
-                Q = [q.inflate((p,)) for q in Q]
+                Q = [q.compose(x, x**p) for q in Q]
                 H.extend(Q)
 
         return H
@@ -598,9 +605,7 @@ class _Factor:
         * :cite:`MathWorld-Cyclotomic-Poly`
 
         """
-        domain = self.domain
-
-        lc_f, tc_f = f.LC, f.coeff(1)
+        lc_f, tc_f = f.LC, f[1]
 
         if f.is_ground:
             return
@@ -614,7 +619,7 @@ class _Factor:
         n = f.degree()
         F = self._cyclotomic_decompose(n)
 
-        if tc_f != domain.one:
+        if tc_f != 1:
             return F
         else:
             H = []
@@ -632,7 +637,7 @@ class _Factor:
         Examples
         ========
 
-        >>> R, x = ring('x', ZZ)
+        >>> _, x = ring('x', ZZ)
 
         >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
         False
@@ -655,7 +660,7 @@ class _Factor:
         x = self.gens[0]
 
         lc = f.LC
-        tc = f.coeff(1)
+        tc = f[1]
 
         if lc != 1 or (tc != -1 and tc != 1):
             return False
@@ -663,22 +668,22 @@ class _Factor:
         if not irreducible:
             coeff, factors = f.factor_list()
 
-            if coeff != domain.one or factors != [(f, 1)]:
+            if coeff != 1 or factors != [(f, 1)]:
                 return False
 
         n = f.degree()
         g, h = self.zero, self.zero
 
         for j, i in enumerate(range(n, -1, -2)):
-            g += f.coeff((i,))*x**j
+            g += f[(i,)]*x**j
 
         for j, i in enumerate(range(n - 1, -1, -2)):
-            h += f.coeff((i,))*x**j
+            h += f[(i,)]*x**j
 
         g = g**2
         h = h**2
 
-        F = g - h.mul_monom((1,))
+        F = g - h*self.from_terms([((1,), domain.one)])
 
         if F.LC < 0:
             F = -F
@@ -708,14 +713,15 @@ class _Factor:
         h = x - 1
 
         for p, k in factorint(n).items():
-            h = h.inflate((p,)) // h
-            h = h.inflate((p**(k - 1),))
+            h = h.compose(x, x**p) // h
+            h = h.compose(x, x**(p**(k - 1)))
 
         return h
 
     def _univar_zz_diophantine(self, F, m, p):
         """Wang/EEZ: Solve univariate Diophantine equations."""
         domain = self.domain
+        m = self.from_terms([((m,), domain.one)])
 
         if len(F) == 2:
             p_domain = domain.finite_field(p)
@@ -724,8 +730,8 @@ class _Factor:
 
             s, t, _ = p_ring.gcdex(g, f)
 
-            s = s.mul_monom((m,))
-            t = t.mul_monom((m,))
+            s *= m
+            t *= m
 
             q, s = divmod(s, f)
             s = s.set_domain(domain)
@@ -751,7 +757,7 @@ class _Factor:
             p_domain = domain.finite_field(p)
 
             for s, f in zip(S, F):
-                s = s.mul_monom((m,))
+                s *= m
                 s, f = map(operator.methodcaller('set_domain', p_domain),
                            (s, f))
                 s = (s % f).set_domain(domain)
@@ -772,10 +778,10 @@ class _Factor:
                 if not coeff:
                     continue
 
-                T = self._univar_zz_diophantine(F, n - i, p)
+                T = self._univar_zz_diophantine(F, i, p)
 
                 for j, (s, t) in enumerate(zip(S, T)):
-                    t = t.mul_ground(coeff)
+                    t *= coeff
                     S[j] = (s + t).trunc_ground(p)
         else:
             n = len(A)
@@ -803,13 +809,13 @@ class _Factor:
 
             for k in range(d):
                 k = domain(k)
-                if c.is_zero:
+                if not c:
                     break
 
                 M *= m
-                C = c.diff(x=n, m=k + 1).eval(x=n, a=a)
+                C = c.diff(x=n, m=int(k + 1)).eval(x=n, a=a)
 
-                if not C.is_zero:
+                if C:
                     C = C.quo_ground(domain.factorial(k + 1))
                     T = C.ring._zz_diophantine(G, C, A, d, p)
 
@@ -1043,10 +1049,12 @@ class _Factor:
                 cc = lc//d
             else:
                 g = domain.gcd(lc, d)
-                d, cc = d//g, lc//g
-                h, cs = h.mul_ground(d), cs//d
+                d //= g
+                cc = lc//g
+                h *= d
+                cs //= d
 
-            c = c.mul_ground(cc)
+            c *= cc
 
             CC.append(c)
             HH.append(h)
@@ -1057,10 +1065,10 @@ class _Factor:
         CCC, HHH = [], []
 
         for c, h in zip(CC, HH):
-            CCC.append(c.mul_ground(cs))
-            HHH.append(h.mul_ground(cs))
+            CCC.append(c*cs)
+            HHH.append(h*cs)
 
-        f = f.mul_ground(cs**(len(H) - 1))
+        f *= cs**(len(H) - 1)
 
         return f, HHH, CCC
 
@@ -1101,13 +1109,13 @@ class _Factor:
 
             for k in range(dj):
                 k = domain(k)
-                if c.is_zero:
+                if not c:
                     break
 
                 M *= m
-                C = c.diff(x=w, m=k + 1).eval(x=w, a=a)
+                C = c.diff(x=w, m=int(k + 1)).eval(x=w, a=a)
 
-                if not C.is_zero:
+                if C:
                     C = C.quo_ground(domain.factorial(k + 1))
                     T = C.ring._zz_diophantine(G, C, I, d, p)
 
@@ -1162,9 +1170,9 @@ class _Factor:
         for i in range(1, (n - 1)*q + 1):
             c, r[1:], r[0] = r[-1], r[:-1], domain.zero
             for j in range(n):
-                r[j] -= c*f[-j - 1]
+                r[j] -= c*f[j]
 
-            if not (i % q):
+            if not i % q:
                 Q[i//q] = r.copy()
 
         return Q
@@ -1199,7 +1207,7 @@ class _Factor:
         V = Q.T.nullspace()
 
         for i, v in enumerate(V):
-            V[i] = self.from_list(list(reversed(v)))
+            V[i] = self.from_list(v)
 
         factors = [f]
 
@@ -1389,7 +1397,7 @@ class _Factor:
         domain = self.domain
 
         n, q = f.degree(), domain.order
-        k = math.ceil(math.sqrt(n//2))
+        k = math.isqrt(n//2 - 1) + 1 if n > 1 else 0
         x = self.gens[0]
 
         h = pow(x, q, f)

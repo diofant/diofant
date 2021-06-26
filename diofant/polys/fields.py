@@ -1,11 +1,12 @@
 """Sparse rational function fields."""
 
+from __future__ import annotations
+
 import functools
 import operator
-import typing
 
-from ..core import Expr, Symbol, sympify
-from ..core.sympify import CantSympify
+from ..core import Expr, Symbol
+from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
@@ -109,7 +110,7 @@ class FractionField(Field, CompositeDomain):
             else:
                 raise NotImplementedError
 
-    def field_new(self, element):
+    def __call__(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
@@ -131,15 +132,13 @@ class FractionField(Field, CompositeDomain):
         else:
             return self.ground_new(element)
 
-    __call__ = field_new
-
-    def _rebuild_expr(self, expr, mapping):
+    def from_expr(self, expr):
+        expr = sympify(expr)
         domain = self.domain
+        mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            generator = mapping.get(expr)
-
-            if generator is not None:
+            if (generator := mapping.get(expr)) is not None:
                 return generator
             elif expr.is_Add:
                 return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
@@ -151,21 +150,17 @@ class FractionField(Field, CompositeDomain):
                     return _rebuild(expr.base**a)**int(c)
 
             if not domain.is_Field and hasattr(domain, 'field'):
-                return domain.field.convert(expr)
+                frac = domain.field.convert(expr)
             else:
-                return domain.convert(expr)
+                frac = domain.convert(expr)
 
-        return _rebuild(sympify(expr))
-
-    def from_expr(self, expr):
-        mapping = dict(zip(self.symbols, self.gens))
+            return self(frac)
 
         try:
-            frac = self._rebuild_expr(expr, mapping)
+            return _rebuild(expr)
         except CoercionFailed:
-            raise ValueError(f'expected an expression convertible to a rational function in {self}, got {expr}')
-        else:
-            return self.field_new(frac)
+            raise ValueError('expected an expression convertible to a '
+                             f'rational function in {self}, got {expr}')
 
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
@@ -176,22 +171,15 @@ class FractionField(Field, CompositeDomain):
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
-
-    def _from_PythonRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self(self.domain.convert(a, K0))
-
-    def _from_RealField(self, a, K0):
-        return self(self.domain.convert(a, K0))
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
+    _from_ComplexField = _from_PythonIntegerRing
 
     def _from_PolynomialRing(self, a, K0):
         try:
-            return self.field_new(a)
+            return self(a)
         except (CoercionFailed, GeneratorsError):
             return
 
@@ -209,10 +197,9 @@ class FractionField(Field, CompositeDomain):
         return self.domain.is_normal(a.numerator.LC)
 
 
-_field_cache: typing.Dict[tuple, FractionField] = {}
+_field_cache: dict[tuple, FractionField] = {}
 
 
-@functools.total_ordering
 class FracElement(DomainElement, CantSympify):
     """Element of multivariate distributed rational function field.
 
@@ -242,7 +229,7 @@ class FracElement(DomainElement, CantSympify):
         return self.raw_new(*numer.cancel(denom))
 
     def to_poly(self):
-        if self.denominator != self.field.ring.one:
+        if self.denominator != 1:
             raise ValueError('self.denominator should be 1')
         return self.numerator
 
@@ -282,19 +269,10 @@ class FracElement(DomainElement, CantSympify):
         if isinstance(other, self.field.dtype):
             return self.numerator == other.numerator and self.denominator == other.denominator
         else:
-            return self.numerator == other and self.denominator == self.field.ring.one
+            return self.numerator == other and self.denominator == 1
 
     def __bool__(self):
         return bool(self.numerator)
-
-    def sort_key(self):
-        return self.denominator.sort_key(), self.numerator.sort_key()
-
-    def __lt__(self, other):
-        if isinstance(other, self.field.dtype):
-            return self.sort_key() < other.sort_key()
-        else:
-            return NotImplemented
 
     def __pos__(self):
         return self.raw_new(self.numerator, self.denominator)
@@ -545,4 +523,20 @@ class FracElement(DomainElement, CantSympify):
         return field((field.ring(numer), field.ring(denom)))
 
     def compose(self, x, a=None):
-        raise NotImplementedError
+        """Computes the functional composition."""
+        field = self.field
+
+        if isinstance(x, list) and a is None:
+            x = [(X.to_poly(), a) for X, a in x]
+            numer = (self.numerator.compose([(X, a.numerator) for X, a in x]) *
+                     self.denominator.compose([(X, a.denominator) for X, a in x]))
+            denom = (self.numerator.compose([(X, a.denominator) for X, a in x]) *
+                     self.denominator.compose([(X, a.numerator) for X, a in x]))
+        else:
+            x = x.to_poly()
+            numer = (self.numerator.compose(x, a.numerator) *
+                     self.denominator.compose(x, a.denominator))
+            denom = (self.numerator.compose(x, a.denominator) *
+                     self.denominator.compose(x, a.numerator))
+
+        return field((field.ring(numer), field.ring(denom)))
