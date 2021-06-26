@@ -1675,31 +1675,6 @@ def test_pow_rewrite():
     assert (2**x).rewrite(tanh) == 2**x
 
 
-@pytest.mark.xfail
-@pytest.mark.timeout(20)
-def test_sympyissue_13645():
-    # NB: this does work if r and M are real
-    r, r_m = symbols('r r_m', positive=True)
-    th = symbols('th', extended_real=True)
-    a, M = symbols('a M', extended_real=True)
-    kappa, gamma = symbols('kappa gamma', extended_real=True)
-
-    l = sqrt(M/r_m**3)*(r_m**4 + r_m**2*a**2 - 2*M*r_m*a**2 -
-                        a*sqrt(M*r_m)*(r_m**2-a**2))
-    l /= r_m**2 - 3*M*r_m + 2*a*sqrt(M*r_m)
-
-    Delta = r**2 - 2*M*r + a**2
-    Sigma = r**2 + a**2*cos(th)**2
-    A = (r**2 + a**2)**2 - Delta*a**2*sin(th)**2
-
-    tmp3 = sqrt(1 + l**2*Sigma**2*Delta/(sin(th))**2)
-    ln_h = log((1 + tmp3) / (Sigma*Delta/A)) - tmp3
-    hm1 = exp(ln_h) - 1
-
-    # not hangs
-    (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))
-
-
 def test_sympyissue_21334():
     e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
 
