@@ -33,7 +33,7 @@ jobs:
         sudo apt install libatlas-base-dev liblapack-dev gfortran
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools
+        pip install -U pip setuptools wheel
         pip install git+https://github.com/aleaxit/gmpy.git@00ba694
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
