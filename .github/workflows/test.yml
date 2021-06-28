@@ -37,7 +37,10 @@ jobs:
         # XXX
         pip install git+https://github.com/aleaxit/gmpy.git
         # XXX
-        pip install git+https://github.com/skirpichev/cython.git@fix-3.10
+        if [[ ${{matrix.python-version}} != "3.9" ]]
+        then
+          pip install git+https://github.com/skirpichev/cython.git@fix-3.10
+        fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
         pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
