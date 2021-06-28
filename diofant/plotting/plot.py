@@ -942,6 +942,10 @@ class MatplotlibBackend(BaseBackend):
         if parent.ylabel:
             self.ax.set_ylabel(parent.ylabel, position=(0, 1))
 
+        if not isinstance(self.ax, Axes3D):
+            self.ax.autoscale_view(scalex=self.ax.get_autoscalex_on(),
+                                   scaley=self.ax.get_autoscaley_on())
+
     def show(self):
         self.process_series()
         # TODO after fixing https://github.com/ipython/ipython/issues/1255
