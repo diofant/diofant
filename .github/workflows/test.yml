@@ -40,7 +40,7 @@ jobs:
         if [[ ${{matrix.python-version}} != "3.9" ]]
         then
           pip install git+https://github.com/skirpichev/cython.git@fix-3.10
-          pip install git+https://github.com/scipy/scipy.git@v1.7.0
+          pip install git+https://github.com/scipy/scipy.git
         fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
