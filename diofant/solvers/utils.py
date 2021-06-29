@@ -121,9 +121,6 @@ def checksol(f, sol, **flags):
                     break
             if saw_pow_func is False:
                 return False
-            if flags.get('force', True):
-                # don't do a zero check with the positive assumptions in place
-                val = val.subs(reps)
             break
 
         if val == was:
