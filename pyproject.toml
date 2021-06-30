@@ -1,3 +1,9 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+[tool.mypy]
+follow_imports = 'silent'
+[[tool.mypy.overrides]]
+module = ['IPython.*', 'gmpy2', 'matplotlib', 'mpmath.*', 'pexpect',
+          'scipy.*', 'traitlets.*']
+ignore_missing_imports = true
