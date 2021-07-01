@@ -37,6 +37,7 @@ jobs:
         # XXX
         if [[ ${{matrix.python-version}} != "3.9" ]]
         then
+          pip install git+https://github.com/pytest-dev/pytest.git@9ad726a
           pip install git+https://github.com/aleaxit/gmpy.git
           pip install git+https://github.com/scipy/scipy.git
         fi
