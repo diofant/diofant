@@ -1,6 +1,18 @@
 [build-system]
 requires = ['setuptools>=42', 'wheel']
 build-backend = 'setuptools.build_meta'
+[tool.coverage.run]
+branch = true
+omit = ['conftest.py',
+        'diofant/tests/*',
+        'diofant/tests/*/*']
+parallel = true
+[tool.coverage.html]
+directory = 'build/coverage/html'
+[tool.coverage.report]
+exclude_lines = ['pragma: no cover',
+                 'raise NotImplementedError',
+                 'return NotImplemented']
 [tool.mypy]
 follow_imports = 'silent'
 [[tool.mypy.overrides]]
