@@ -1,6 +1,18 @@
 [build-system]
 requires = ['setuptools>=42', 'wheel']
 build-backend = 'setuptools.build_meta'
+[tool.pytest.ini_options]
+doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
+                       'IGNORE_EXCEPTION_DETAIL']
+addopts = """\
+          --durations=20 -r X --doctest-glob='*.rst' \
+          --cov-config=pyproject.toml -n auto \
+          """
+norecursedirs = ['build', '.eggs', '.git']
+timeout = 1000
+xfail_strict = true
+filterwarnings = ['ignore::UserWarning',
+                  'error::DeprecationWarning']
 [tool.coverage.run]
 branch = true
 omit = ['conftest.py',
