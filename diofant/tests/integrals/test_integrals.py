@@ -1403,3 +1403,8 @@ def test_sympyissue_21166():
 
 def test_sympyissue_21549():
     assert integrate(x*sqrt(abs(x)), (x, -1, 0)) == Rational(-2, 5)
+
+
+def test_sympyissue_21711():
+    assert integrate(sqrt(1 - (x - 1)*(x - 1)), (x, 0, 1)) == pi/4
+    assert integrate(sqrt(1 - x**2), (x, 0, 1)) == pi/4
