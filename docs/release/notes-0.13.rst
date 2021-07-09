@@ -104,3 +104,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`13029`: with gens, time taken for sqf increases orders of magnitude faster than factor as input size increases
 * :sympyissue:`21711`: odd result for integrate(sqrt(1 - (x-1)*(x-1)), (x, 0, 1))
 * :sympyissue:`21721`: Bug in integration solver
+* :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
