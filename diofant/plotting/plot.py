@@ -812,8 +812,6 @@ class MatplotlibBackend(BaseBackend):
             self.ax.spines['right'].set_color('none')
             self.ax.spines['bottom'].set_position('zero')
             self.ax.spines['top'].set_color('none')
-            self.ax.spines['left'].set_smart_bounds(True)
-            self.ax.spines['bottom'].set_smart_bounds(False)
             self.ax.xaxis.set_ticks_position('bottom')
             self.ax.yaxis.set_ticks_position('left')
         elif all(are_3D):
@@ -848,9 +846,6 @@ class MatplotlibBackend(BaseBackend):
                                                   rstride=1, cstride=1,
                                                   linewidth=0.1)
             elif s.is_implicit:
-                # Smart bounds have to be set to False for implicit plots.
-                self.ax.spines['left'].set_smart_bounds(False)
-                self.ax.spines['bottom'].set_smart_bounds(False)
                 points = s.get_raster()
                 if len(points) == 2:
                     # interval math plotting
@@ -946,6 +941,10 @@ class MatplotlibBackend(BaseBackend):
             self.ax.set_xlabel(parent.xlabel, position=(1, 0))
         if parent.ylabel:
             self.ax.set_ylabel(parent.ylabel, position=(0, 1))
+
+        if not isinstance(self.ax, Axes3D):
+            self.ax.autoscale_view(scalex=self.ax.get_autoscalex_on(),
+                                   scaley=self.ax.get_autoscaley_on())
 
     def show(self):
         self.process_series()

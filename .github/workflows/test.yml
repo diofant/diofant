@@ -27,7 +27,6 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
-        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
         sudo apt install libatlas-base-dev liblapack-dev gfortran
@@ -37,9 +36,12 @@ jobs:
         # XXX
         if [[ ${{matrix.python-version}} != "3.9" ]]
         then
-          pip install git+https://github.com/pytest-dev/pytest.git@9ad726a
+          sudo apt install libmpc-dev
           pip install git+https://github.com/aleaxit/gmpy.git
+          pip install git+https://github.com/pytest-dev/pytest.git@9ad726a
           pip install git+https://github.com/scipy/scipy.git
+        else
+          pip install https://github.com/aleaxit/gmpy/releases/download/gmpy2-2.1.0b6/gmpy2-2.1.0b6-cp39-cp39-manylinux2010_x86_64.whl
         fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
         # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438

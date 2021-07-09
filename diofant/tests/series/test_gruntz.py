@@ -319,6 +319,7 @@ def test_limit():
     assert limitinf(exp(x)/x, x) == oo
     assert limitinf(1/x - exp(-x), x) == 0
     assert limitinf(x + 1/x, x) == oo
+    assert limitinf(exp(1/log(1 - 1/x)), x) == 0
 
     assert limitinf((1/x)**(1/x), x) == 1  # Gruntz: p15, 2.11
     assert limitinf((exp(1/x) - 1)*x, x) == 1

@@ -1,3 +1,33 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ['setuptools>=42', 'wheel']
+build-backend = 'setuptools.build_meta'
+[tool.pytest.ini_options]
+doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
+                       'IGNORE_EXCEPTION_DETAIL']
+addopts = """\
+          --durations=20 -r X --doctest-glob='*.rst' \
+          --cov-config=pyproject.toml -n auto \
+          """
+norecursedirs = ['build', '.eggs', '.git']
+timeout = 1000
+xfail_strict = true
+filterwarnings = ['ignore::UserWarning',
+                  'error::DeprecationWarning']
+[tool.coverage.run]
+branch = true
+omit = ['conftest.py',
+        'diofant/tests/*',
+        'diofant/tests/*/*']
+parallel = true
+[tool.coverage.html]
+directory = 'build/coverage/html'
+[tool.coverage.report]
+exclude_lines = ['pragma: no cover',
+                 'raise NotImplementedError',
+                 'return NotImplemented']
+[tool.mypy]
+follow_imports = 'silent'
+[[tool.mypy.overrides]]
+module = ['IPython.*', 'gmpy2', 'matplotlib', 'mpmath.*', 'pexpect',
+          'scipy.*', 'traitlets.*']
+ignore_missing_imports = true
