@@ -12,6 +12,7 @@ import atexit
 import code
 import os
 import readline
+import rlcompleter
 
 from diofant.interactive.session import (AutomaticSymbols,
                                          IntegerDivisionWrapper)
@@ -83,6 +84,7 @@ def main():
             def __init__(self, ast_transformers=[], **kwargs):
                 super().__init__(**kwargs)
 
+                readline.set_completer(rlcompleter.Completer(ns).complete)
                 readline.parse_and_bind('tab: complete')
 
                 history = os.path.expanduser('~/.python_history')

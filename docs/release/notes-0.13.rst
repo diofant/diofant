@@ -8,10 +8,11 @@ New features
 ============
 
 * Support square-free factorization of multivariate polynomials over finite fields (with adaptation of Musser's algorithm), see :pull:`1132`.
-* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.
 
 Major changes
 =============
+
+* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.
 
 Compatibility breaks
 ====================
@@ -101,3 +102,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`21651`: doit() method *sometimes* ignores floor and ceiling within Sum
 * :sympyissue:`20461`: Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) incorrectly gives False
 * :sympyissue:`13029`: with gens, time taken for sqf increases orders of magnitude faster than factor as input size increases
+* :sympyissue:`21711`: odd result for integrate(sqrt(1 - (x-1)*(x-1)), (x, 0, 1))
+* :sympyissue:`21721`: Bug in integration solver
+* :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
