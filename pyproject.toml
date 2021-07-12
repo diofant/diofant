@@ -1,6 +1,14 @@
 [build-system]
 requires = ['setuptools>=42', 'wheel']
 build-backend = 'setuptools.build_meta'
+[tool.isort]
+lines_after_imports = 2
+skip = ['diofant/core/mul.py',
+        'diofant/core/expr.py',
+        'diofant/__init__.py',
+        'diofant/core/__init__.py',
+        'diofant/polys/__init__.py']
+atomic = true
 [tool.pylint.MASTER]
 jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
