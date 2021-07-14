@@ -1063,6 +1063,7 @@ def test_factorrat():
 
 
 def test_is_square():
+    assert is_square(-2) is False
     assert [i for i in range(25) if is_square(i)] == [0, 1, 4, 9, 16]
     assert is_square(4, prep=False) is True
     assert is_square(193) is False
