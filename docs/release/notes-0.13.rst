@@ -105,3 +105,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21711`: odd result for integrate(sqrt(1 - (x-1)*(x-1)), (x, 0, 1))
 * :sympyissue:`21721`: Bug in integration solver
 * :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
+* :sympyissue:`21741`: integrate() does not work with multivariable function that is solved by simple substitution. DomainError: there is no ring associated with CC
