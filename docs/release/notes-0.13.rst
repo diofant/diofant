@@ -106,3 +106,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21721`: Bug in integration solver
 * :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
 * :sympyissue:`21741`: integrate() does not work with multivariable function that is solved by simple substitution. DomainError: there is no ring associated with CC
+* :sympyissue:`21756`: Incorrect limit with ratio of complex exponentials
