@@ -709,9 +709,14 @@ def primitive_element(extension, **args):
     _, g = PurePoly(g).clear_denoms(convert=True)
 
     if g.LC() != 1:
-        H = [[c/g.LC()**n for n, c in enumerate(h)] for h in H]
-        coeffs = [c*g.LC() for c in coeffs]
-        g = (g.compose((g.gen/g.LC()).as_poly())*g.LC()**g.degree()//g.LC()).retract()
+        for d in divisors(g.LC())[1:]:  # pragma: no branch
+            new_g = g.compose((g.gen/d).as_poly())*d**g.degree()//d
+            _, new_g = new_g.monic().clear_denoms(convert=True)
+            if new_g.LC() == 1:
+                g = new_g
+                H = [[c/d**n for n, c in enumerate(h)] for h in H]
+                coeffs = [c*d for c in coeffs]
+                break
 
     return g, list(coeffs), H
 
