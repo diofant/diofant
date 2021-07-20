@@ -3162,3 +3162,10 @@ def test_sympyissue_20444():
 
 def test_sympyissue_13029():
     assert sqf_part(a*(x - 1)**2*(y - 3)**3, x, y) == x*y - 3*x - y + 3
+
+
+@pytest.mark.timeout(5)
+def test_sympyissue_21760():
+    q, r = (x**2016 - x**2015 + x**1008 + x**1003 +
+            1).as_poly().div((x - 1).as_poly())
+    assert r == Integer(3).as_poly(x)
