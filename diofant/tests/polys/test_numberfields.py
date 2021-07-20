@@ -6,7 +6,7 @@ from diofant import (QQ, Add, CoercionFailed, GoldenRatio, I, Integer,
                      NotAlgebraic, PurePoly, Rational, RootOf, cbrt, conjugate,
                      cos, degree, exp, exp_polar, expand, expand_multinomial,
                      field_isomorphism, im, minimal_polynomial, nsimplify, oo,
-                     pi, primitive_element, re, root, sin, solve, sqrt)
+                     pi, primitive_element, re, root, sin, solve, sqrt, tan)
 from diofant.abc import x, y, z
 
 
@@ -326,6 +326,23 @@ def test_minpoly_compose():
     ex = sqrt(2) - RootOf(x**2 - 2, 0, radicals=False)
     for meth in ('compose', 'groebner'):
         assert minimal_polynomial(ex, method=meth)(x) == x**2 - 8
+
+    mp = minimal_polynomial(tan(pi/7))(x)
+    assert mp == x**6 - 21*x**4 + 35*x**2 - 7
+
+    ex = tan(pi/5, evaluate=False)
+    mp = minimal_polynomial(ex)(x)
+    assert mp == x**4 - 10*x**2 + 5
+
+    ex = tan(pi/6, evaluate=False)
+    mp = minimal_polynomial(ex)(x)
+    assert mp == 3*x**2 - 1
+
+    ex = tan(pi/10, evaluate=False)
+    mp = minimal_polynomial(ex)(x)
+    assert mp == 5*x**4 - 10*x**2 + 1
+
+    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(tan(pi*sqrt(2))))
 
 
 def test_minpoly_sympyissue_7113():

@@ -20,8 +20,8 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
                      pi, poly, primitive, quo, re, real_roots, reduced, rem,
                      resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
-                     subresultants, symbols, sympify, tanh, terms_gcd, true,
-                     trunc)
+                     subresultants, symbols, sympify, tan, tanh, terms_gcd,
+                     true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -3169,3 +3169,10 @@ def test_sympyissue_21760():
     q, r = (x**2016 - x**2015 + x**1008 + x**1003 +
             1).as_poly().div((x - 1).as_poly())
     assert r == Integer(3).as_poly(x)
+
+
+def test_sympyissue_21761():
+    t = tan(pi/7)
+    assert factor(-exp(x)*t + 1,
+                  extension=True) == Mul(-1, exp(x) - 5*t - t**5/7 + 3*t**3,
+                                         t, evaluate=False)

@@ -12,7 +12,8 @@ from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..core.sympify import sympify
 from ..domains import QQ, AlgebraicField
-from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
+from ..functions import (Abs, conjugate, cos, exp_polar, im, re, root, sin,
+                         sqrt, tan)
 from ..ntheory import divisors, factorint
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -394,6 +395,25 @@ def _minpoly_cos(ex, x):
     raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
 
 
+def _minpoly_tan(ex, x):
+    """Returns the minimal polynomial of ``tan(ex)``."""
+    c, a = ex.args[0].as_coeff_Mul()
+    if a is pi and c.is_Rational:
+        c *= 2
+        n = c.denominator
+        a = n if c.numerator % 2 == 0 else 1
+        terms = []
+        for k in range((c.numerator + 1) % 2, n + 1, 2):
+            terms.append(a*x**k)
+            a = -(a*(n - k - 1)*(n - k)) // ((k + 1)*(k + 2))
+
+        r = Add(*terms)
+        _, factors = factor_list(r)
+        return _choose_factor(factors, x, ex)
+
+    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+
+
 def _minpoly_exp(ex, x):
     """Returns the minimal polynomial of ``exp(ex)``."""
     c, a = ex.exp.as_coeff_Mul()
@@ -499,6 +519,8 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_sin(ex, x)
     elif isinstance(ex, cos):
         res = _minpoly_cos(ex, x)
+    elif isinstance(ex, tan):
+        res = _minpoly_tan(ex, x)
     elif isinstance(ex, RootOf) and ex.poly.domain.is_Numerical:
         res = _minpoly_rootof(ex, x)
     elif isinstance(ex, conjugate):
