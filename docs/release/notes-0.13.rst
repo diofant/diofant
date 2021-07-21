@@ -33,6 +33,7 @@ Minor changes
 
 * Protect hashed :class:`~diofant.polys.rings.PolyElement`'s from modifications, see :pull:`1033`.
 * Add gaussian rationals as an exact domain, associated with :class:`~diofant.domains.ComplexField`, see :pull:`1138`.
+* Support :class:`~diofant.functions.elementary.trigonometric.tan` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`1159`.
 
 Developer changes
 =================
@@ -107,3 +108,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
 * :sympyissue:`21741`: integrate() does not work with multivariable function that is solved by simple substitution. DomainError: there is no ring associated with CC
 * :sympyissue:`21756`: Incorrect limit with ratio of complex exponentials
+* :sympyissue:`21760`: Poly div is slow
+* :sympyissue:`21761`: sympy.polys.polyerrors.NotAlgebraic Exception
+* :sympyissue:`21430`: minpoly raises 'NotAlgebraic' for tan(13*pi/45)
+* :sympyissue:`21766`: solve breaks on certain repeated inputs
