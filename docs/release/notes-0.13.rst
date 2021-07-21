@@ -111,3 +111,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21760`: Poly div is slow
 * :sympyissue:`21761`: sympy.polys.polyerrors.NotAlgebraic Exception
 * :sympyissue:`21430`: minpoly raises 'NotAlgebraic' for tan(13*pi/45)
+* :sympyissue:`21766`: solve breaks on certain repeated inputs

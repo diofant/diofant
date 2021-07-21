@@ -1681,3 +1681,7 @@ def test_sympyissue_20610():
 
 def test_sympyissue_21167():
     assert solve(cbrt(x - 1) + cbrt(x) + cbrt(x + 1)) == []
+
+
+def test_sympyissue_21766():
+    assert solve([z + y/x, - (z + y/x)]) == [{x: -y/z}, {y: 0, z: 0}]
