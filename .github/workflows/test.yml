@@ -62,9 +62,12 @@ jobs:
         pip uninstall -y IPython
         pytest diofant/tests/test_cli.py
         coverage html
+        coverage xml
     - name: Upload coverage data
       if: matrix.coverage
-      run: codecov --required --tries 10
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.xml
     - name: Get version
       id: release
       run: |
