@@ -713,3 +713,7 @@ def test_undef_fcn_float_sympyissue_6938():
     assert isinstance(f(0.3), Function)
     assert isinstance(f(pi).evalf(), Function)
     assert isinstance(f(x).evalf(subs={x: 1.2}), Function)
+
+
+def test_sympyissue_21773():
+    assert Subs(0, (y, 1)) * Subs(0, (z, 1)) == Subs(0, (x, 1))**2
