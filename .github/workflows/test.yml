@@ -54,12 +54,10 @@ jobs:
         PYTEST_ADDOPTS: --color yes --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
       run: |
         pytest
-        pip uninstall -y gmpy2
+        pip uninstall -y gmpy2 numpy IPython
         DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
         pytest diofant/tests/polys
-        pip uninstall -y numpy
         pytest diofant/tests/external diofant/tests/utilities
-        pip uninstall -y IPython
         pytest diofant/tests/test_cli.py
         coverage html
         coverage xml
