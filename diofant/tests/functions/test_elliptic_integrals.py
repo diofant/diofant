@@ -162,10 +162,15 @@ def test_elliptic_pi():
     assert elliptic_pi(n, m).diff(n) == (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
                                          (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
     assert elliptic_pi(n, m).diff(m) == (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
-    rx, ry = randcplx(), randcplx()
-    assert td(elliptic_pi(n, rx, ry), n)
-    assert td(elliptic_pi(rx, z, ry), z)
-    assert td(elliptic_pi(rx, ry, m), m)
+
+    # workaround fredrik-johansson/mpmath#571, suggested by Kalevi Suominen
+    # in https://github.com/sympy/sympy/issues/20933#issuecomment-779077562
+    bounds = {'a': -0.9, 'b': -0.9, 'c': 0.9, 'd': 0.9}
+    rx, ry = randcplx(**bounds), randcplx(**bounds)
+    assert td(elliptic_pi(n, rx, ry), n, **bounds)
+    assert td(elliptic_pi(rx, z, ry), z, **bounds)
+    assert td(elliptic_pi(rx, ry, m), m, **bounds)
+
     pytest.raises(ArgumentIndexError, lambda: elliptic_pi(n, z, m).fdiff(4))
     pytest.raises(ArgumentIndexError, lambda: elliptic_pi(n, m).fdiff(3))
 
