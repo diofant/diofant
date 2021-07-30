@@ -35,7 +35,7 @@ jobs:
       run: touch ~/.python_history
     - name: Linting with flake8, flake8-rst and pylint
       run: |
-        python -We:invalid -m compileall -f diofant -q
+        python -We:invalid -We::SyntaxWarning -m compileall -f diofant -q
         flake8-rst
         flake8
         pylint diofant
