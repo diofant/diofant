@@ -24,12 +24,12 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
+        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
         pip install -U pip setuptools
-        pip install https://github.com/aleaxit/gmpy/releases/download/gmpy2-2.1.0b6/gmpy2-2.1.0b6-cp39-cp39-manylinux2010_x86_64.whl
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
