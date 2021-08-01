@@ -420,7 +420,7 @@ def test_piecewise_lambdify():
 
 def test_piecewise_series():
     p1 = Piecewise((sin(x), x < 0), (cos(x), x > 0))
-    assert p1.nseries(x, n=2) == 1 + O(x**2)
+    assert p1.series(x, n=2) == 1 + O(x**2)
 
     # issue sympy/sympy#4315:
     p2 = Piecewise((0, x < -1), (x**2, x <= 1), (log(x), True))

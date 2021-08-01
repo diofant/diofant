@@ -226,9 +226,9 @@ def test_sign():
     assert sign(x).doit() == sign(x)
     assert conjugate(sign(x)) == sign(x)
 
-    assert sign(sin(x)).nseries(x) == 1
+    assert sign(sin(x)).series(x) == 1
     y = Symbol('y')
-    assert sign(x*y).nseries(x).removeO() == sign(y)
+    assert sign(x*y).series(x).removeO() == sign(y)
 
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
