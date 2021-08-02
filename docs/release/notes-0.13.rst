@@ -114,3 +114,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21766`: solve breaks on certain repeated inputs
 * :sympyissue:`21773`: TypeError multiplying Subs expressions
 * :sympyissue:`21785`: Limit gives TypeError from as_leading_term
+* :sympyissue:`21812`: LambertW displaying in jupyter lab
