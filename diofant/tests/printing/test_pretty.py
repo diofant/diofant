@@ -5368,3 +5368,8 @@ x₁₇___\n\
 x_17___\n\
   \\/ 7 \
 """
+
+
+def test_sympyissue_21814():
+    assert upretty(Mul(x + y, Rational(1, 2),
+                       evaluate=False)) == 'x + y\n─────\n  2  '
