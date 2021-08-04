@@ -708,13 +708,12 @@ def test_Domain__algebraic_field():
 
     alg3 = QQ.algebraic_field(RootOf(4*x**7 + x - 1, 0))
     assert alg3.is_RealAlgebraicField
-    assert int(alg3.unit) == 2
-    assert 2.772 > alg3.unit > 2.771
-    assert int(alg3([2, -1, 11, 17, 3])) == 622
+    assert int(alg3.unit) == 1
+    assert 1.386 > alg3.unit > 1.385
+    assert int(alg3([2, -2, 44, 136, 48])) == 622
     assert int(alg3([QQ(2331359268715, 10459004949272),
-                     QQ(-16742151878022, 12894796053515),
-                     QQ(125326976730518, 44208605852241),
-                     QQ(-11, 4), 1])) == 18
+                     QQ(-33484303756044, 12894796053515),
+                     QQ(501307906922072, 44208605852241), -22, 16])) == 18
 
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
@@ -1189,3 +1188,12 @@ def test_diofantissue_1075():
     expr = 64*sqrt(3) + 64*I
 
     assert A.to_expr(A.from_expr(expr)) == expr
+
+
+def test_diofantissue_1008():
+    a = RootOf(4*x**2 + 2*x + 1, 0)
+    A = QQ.algebraic_field(a)
+    e = A.from_expr(a)
+
+    assert A.unit.denominator == 1
+    assert e.denominator == 2

@@ -1,14 +1,14 @@
 import pytest
 
 from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
-                     Expr, Function, I, Integral, Interval, Lambda, LambertW,
-                     Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly, Rational,
-                     Si, Sum, Symbol, Tuple, acos, acosh, arg, asin, asinh,
-                     atan, cbrt, cos, cosh, diff, erf, erfi, exp, expand_func,
-                     expand_mul, factor, floor, fresnels, gamma, im, integrate,
-                     log, lowergamma, meijerg, nan, oo, pi, polar_lift,
-                     polygamma, re, sign, simplify, sin, sinh, sqrt, sstr,
-                     symbols, sympify, tan, tanh, trigsimp)
+                     Expr, Float, Function, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     expand_func, expand_mul, factor, floor, fresnels, gamma,
+                     im, integrate, log, lowergamma, meijerg, nan, oo, pi,
+                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     sqrt, sstr, symbols, sympify, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -1418,3 +1418,12 @@ def test_sympyissue_21721():
     b = Symbol('b', real=True)
 
     assert e.subs({a: b}).doit() == 1
+
+
+def test_sympyissue_21741():
+    e = exp(-2*I*pi*(z*x + t*y)/(500*10**-9))
+    assert (integrate(e, z) ==
+            Piecewise((z, Eq(pi*x, 0)),
+                      (Float('2.5000000000000004e-7', dps=15) *
+                       exp(-Float('3999999.9999999995', dps=15) *
+                           I*pi*(t*y + x*z))*I/(pi*x), True)))

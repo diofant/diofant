@@ -863,3 +863,12 @@ def test_sympyissue_21550():
 def test_sympyissue_21606():
     assert limit(cos(x)/sign(x), x, pi, '+') == -1
     assert limit(cos(x)/sign(x), x, pi, '-') == -1
+
+
+def test_sympyissue_21756():
+    e = (1 - exp(-2*I*pi*z))/(1 - exp(-2*I*pi*z/5))
+    assert limit(e, z, 0) == 5
+
+
+def test_sympyissue_21785():
+    assert sqrt((-a**2 + x**2)/(1 - x**2)).limit(a, 1, '-') == I

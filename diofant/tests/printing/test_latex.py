@@ -10,7 +10,7 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
                      IndexedBase, Integer, Integral, Intersection, Interval,
                      Inverse, InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseMellinTransform,
-                     InverseSineTransform, KroneckerDelta, Lambda,
+                     InverseSineTransform, KroneckerDelta, Lambda, LambertW,
                      LaplaceTransform, LeviCivita, Limit, Matrix, MatrixSymbol,
                      Max, MellinTransform, Min, Mod, Mul, Not, Or, Order,
                      Piecewise, Poly, Pow, Product, Range, Rational,
@@ -1493,3 +1493,7 @@ def test_sympyissue_20487():
     R, x, y = ring('x y', QQ)
 
     pytest.raises(ValueError, lambda: latex(x**QQ(3, 2)))
+
+
+def test_sympyissue_21812():
+    assert latex(LambertW(2)**2) == r'\operatorname{LambertW}^{2}{\left (2 \right )}'
