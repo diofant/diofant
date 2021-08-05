@@ -40,7 +40,7 @@ jobs:
           pip install git+https://github.com/aleaxit/gmpy.git
           pip install git+https://github.com/pytest-dev/pytest.git@9ad726a
           pip install git+https://github.com/scipy/scipy.git
-          pip install git+https://github.com/nedbat/coveragepy@809cccb6
+          pip install git+https://github.com/nedbat/coveragepy@57a691f
           pip install git+https://github.com/sphinx-doc/sphinx.git
         else
           pip install https://github.com/aleaxit/gmpy/releases/download/gmpy2-2.1.0b6/gmpy2-2.1.0b6-cp39-cp39-manylinux2010_x86_64.whl
