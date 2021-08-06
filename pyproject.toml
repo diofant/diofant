@@ -1,6 +1,7 @@
 [build-system]
-requires = ['setuptools>=42', 'wheel']
+requires = ['setuptools>=42', 'wheel', 'setuptools_scm[toml]>=6.0']
 build-backend = 'setuptools.build_meta'
+[tool.setuptools_scm]
 [tool.isort]
 lines_after_imports = 2
 skip = ['diofant/core/mul.py',
