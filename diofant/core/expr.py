@@ -537,6 +537,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from ..series import Order
+
         other = sympify(other)
         if self == other:
             return True
@@ -554,7 +556,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if not diff:
             return True
 
-        if not diff.has(Add, Mod):
+        if not diff.has(Add, Mod) or diff.has(Order):
             # if there is no expanding to be done after simplifying
             # then this can't be a zero
             return False
