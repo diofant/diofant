@@ -261,12 +261,12 @@ def test_sympyissue_21245():
     e = 1/(1 - x - x**2)
     assert (e.series(x, 1/fi, 2) ==
             -sqrt(5)/(Mul(5, x - 1/(Rational(1, 2) + sqrt(5)/2),
-                      evaluate=False)) + sqrt(5)/(5 + 5*sqrt(5)) +
-            1/(5 + 5*sqrt(5)) +
-            (x - 1/(Rational(1, 2) + sqrt(5)/2))*(-6*sqrt(5)/(50*sqrt(5) + 150) -
-                                                  10/(50*sqrt(5) + 150)) +
-            O((x - sqrt(5)/2 + Rational(1, 2))**2,
-              (x, -Rational(1, 2) + sqrt(5)/2)))
+                          evaluate=False)) + 1/(sqrt(5) + 5) +
+            sqrt(5)/(Mul(5, sqrt(5) + 5, evaluate=False)) +
+            (x - 1/(Rational(1, 2) + sqrt(5)/2)) *
+            (-6*sqrt(5)/(Mul(5, 10*sqrt(5) + 30, evaluate=False)) -
+             2/(10*sqrt(5) + 30)) + O((x - sqrt(5)/2 + Rational(1, 2))**2,
+                                      (x, -Rational(1, 2) + sqrt(5)/2)))
 
 
 def test_diofantissue_1139():
