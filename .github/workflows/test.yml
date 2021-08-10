@@ -24,20 +24,18 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
+        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: |
         pip install -U pip setuptools
-        pip install https://github.com/aleaxit/gmpy/releases/download/gmpy2-2.1.0b6/gmpy2-2.1.0b6-cp39-cp39-manylinux2010_x86_64.whl
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
-        pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
     - name: Install ~/.python_history
       run: touch ~/.python_history
     - name: Linting with flake8, flake8-rst and pylint
       run: |
-        python -We:invalid -m compileall -f diofant -q
+        python -We:invalid -We::SyntaxWarning -m compileall -f diofant -q
         flake8-rst
         flake8
         pylint diofant
@@ -54,17 +52,18 @@ jobs:
         PYTEST_ADDOPTS: --color yes --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
       run: |
         pytest
-        pip uninstall -y gmpy2
+        pip uninstall -y gmpy2 numpy IPython
         DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
         pytest diofant/tests/polys
-        pip uninstall -y numpy
         pytest diofant/tests/external diofant/tests/utilities
-        pip uninstall -y IPython
         pytest diofant/tests/test_cli.py
         coverage html
+        coverage xml
     - name: Upload coverage data
       if: matrix.coverage
-      run: codecov --required --tries 10
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.xml
     - name: Get version
       id: release
       run: |

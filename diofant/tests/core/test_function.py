@@ -406,7 +406,7 @@ def test_function__eval_nseries():
         sqrt(2)*I*x**(3/2)/12 + O(x**2)  # XXX: wrong, branch cuts
     assert loggamma(1/x)._eval_nseries(x, 0, None) == \
         log(x)/2 - log(x)/x - 1/x + O(1, x)
-    assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
+    assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:
     assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \

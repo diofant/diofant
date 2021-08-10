@@ -518,6 +518,13 @@ class Float(Number):
     is_Float = True
 
     def __new__(cls, num, dps=None):
+        if num is oo or num == mlib.finf:
+            num = '+inf'
+        elif num == -oo or num == mlib.fninf:
+            num = '-inf'
+        elif num == nan or num == mlib.fnan:
+            num = 'nan'
+
         if dps is None:
             if isinstance(num, Float):
                 return num
