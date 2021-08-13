@@ -1685,3 +1685,7 @@ def test_sympyissue_21167():
 
 def test_sympyissue_21766():
     assert solve([z + y/x, - (z + y/x)]) == [{x: -y/z}, {y: 0, z: 0}]
+
+
+def test_sympyissue_21852():
+    assert solve(2*x + sqrt(2*x**2) - 21) == [{x: 21 - 21*sqrt(2)/2}]
