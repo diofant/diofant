@@ -118,3 +118,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21814`: Printing of unevaluated Mul needs brackets
 * :sympyissue:`21176`: Incorrect residue of x**2*cot(pi*x)/(x**4 + 1)
 * :sympyissue:`21852`: simple quadratic not solving
+* :sympyissue:`21859`: AttributeError: 'mpz' object has no attribute 'denominator' with sp.series()
