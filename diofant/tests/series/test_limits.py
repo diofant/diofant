@@ -509,7 +509,7 @@ def test_sympyissue_11526():
     df = diff(1/(a*log((x - b)/(x - c))), x)
     res = -1/(-a*c + a*b)
     assert limit(df, x, oo) == res
-    assert limit(simplify(df), x, oo) == res
+    assert (limit(simplify(df), x, oo) - res).simplify() == 0
 
     e = log((1/x - b)/(1/x - c))
     assert e.as_leading_term(x) == x*(c - b)

@@ -116,3 +116,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21785`: Limit gives TypeError from as_leading_term
 * :sympyissue:`21812`: LambertW displaying in jupyter lab
 * :sympyissue:`21814`: Printing of unevaluated Mul needs brackets
+* :sympyissue:`21176`: Incorrect residue of x**2*cot(pi*x)/(x**4 + 1)

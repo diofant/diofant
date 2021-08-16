@@ -1382,7 +1382,9 @@ class Mul(AssocOp):
     def _eval_nseries(self, x, n, logx):
         from ..simplify import powsimp
         terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
-        return powsimp(self.func(*terms).expand(), combine='exp', deep=True)
+        return powsimp(self.func(*terms).expand(power_base=False, power_exp=False,
+                                                mul=False).expand(deep=False),
+                       combine='exp', deep=True)
 
     def _eval_as_leading_term(self, x):
         return self.func(*[t.as_leading_term(x) for t in self.args])
