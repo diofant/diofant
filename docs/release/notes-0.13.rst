@@ -120,3 +120,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21852`: simple quadratic not solving
 * :sympyissue:`21859`: AttributeError: 'mpz' object has no attribute 'denominator' with sp.series()
 * :sympyissue:`21882`: Incorrect solutions given by solve
+* :sympyissue:`21890`: RecursionError and TypeError in nonlinsolve

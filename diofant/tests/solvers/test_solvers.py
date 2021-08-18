@@ -1699,3 +1699,13 @@ def test_sympyissue_21882():
             {a: 0, b: 0, c: 0, d: -f, g: 0, k: Rational(5, 6)},
             {a: -2*c, b: c, d: 0, f: 0, g: 0, k: Rational(13, 18)}]
     assert solve(eqs) == sols
+
+
+def test_sympyissue_21890():
+    assert solve([4*x**3*y**4 - 2*y,
+                  4*x**4*y**3 - 2*x]) == [{x: root(4, 3)/(2*y)},
+                                          {x: (-root(4, 3)/4 -
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: (-root(4, 3)/4 +
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: 0, y: 0}]
