@@ -597,6 +597,9 @@ def test_Sum_interface():
     # issue sympy/sympy#21888
     pytest.raises(ValueError, lambda: Sum(-1, (x, I, 5)))
 
+    # issue sympy/sympy#19745
+    pytest.raises(ValueError, lambda: Sum(x, (x, 1, Rational(3, 2))))
+
 
 def test_eval_derivative():
     assert Sum(x, (x, 1, 2)).diff(x) == 0

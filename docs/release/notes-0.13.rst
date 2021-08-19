@@ -123,3 +123,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`21890`: RecursionError and TypeError in nonlinsolve
 * :sympyissue:`21888`: TypeError raised for evalf containing summations
 * :sympyissue:`5822`: What should summation() do with non-integer limits?
+* :sympyissue:`19745`: Weird value of a sum
+* :sympyissue:`9358`: summation: Wrong out for non-integral range
