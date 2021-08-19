@@ -134,14 +134,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
     """
 
-    def __new__(cls, function, *symbols, **assumptions):
-        obj = AddWithLimits.__new__(cls, function, *symbols, **assumptions)
-        if not hasattr(obj, 'limits'):
-            return obj
-        if any(len(l) != 3 or None in l for l in obj.limits):
+    def __init__(self, function, *symbols, **assumptions):
+        super().__init__(function, *symbols, **assumptions)
+        if any(len(l) != 3 or None in l for l in self.limits):
             raise ValueError('Sum requires values for lower and upper bounds.')
-
-        return obj
 
     def _eval_is_zero(self):
         if self.function.is_zero:

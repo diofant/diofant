@@ -121,3 +121,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`21859`: AttributeError: 'mpz' object has no attribute 'denominator' with sp.series()
 * :sympyissue:`21882`: Incorrect solutions given by solve
 * :sympyissue:`21890`: RecursionError and TypeError in nonlinsolve
+* :sympyissue:`21888`: TypeError raised for evalf containing summations
+* :sympyissue:`5822`: What should summation() do with non-integer limits?
