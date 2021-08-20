@@ -397,7 +397,7 @@ class Range(Set):
 
         if not step.is_finite:
             raise ValueError('Infinite step is not allowed')
-        if start == stop:
+        elif start == stop:
             return S.EmptySet
 
         n = ceiling((stop - start)/step)
@@ -412,11 +412,8 @@ class Range(Set):
             start, stop = sorted((start, stop - step))
 
         step = abs(step)
-        if (start, stop) == (-oo, oo):
-            raise ValueError('Both the start and end value of '
-                             'Range cannot be unbounded')
-        else:
-            return Basic.__new__(cls, start, stop + step, step)
+
+        return Basic.__new__(cls, start, stop + step, step)
 
     start = property(lambda self: self.args[0])
     stop = property(lambda self: self.args[1])

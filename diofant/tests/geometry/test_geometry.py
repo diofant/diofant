@@ -28,7 +28,6 @@ y3 = Symbol('y3', extended_real=True)
 z1 = Symbol('z1', extended_real=True)
 z2 = Symbol('z2', extended_real=True)
 z3 = Symbol('z3', extended_real=True)
-half = Rational(1, 2)
 
 
 def feq(a, b):
@@ -87,7 +86,7 @@ def test_ellipse_geom():
     p4 = Point(0, 1)
 
     e1 = Ellipse(p1, 1, 1)
-    e2 = Ellipse(p2, half, 1)
+    e2 = Ellipse(p2, 0.5, 1)
     e3 = Ellipse(p1, y1, y1)
     c1 = Circle(p1, 1)
     c2 = Circle(p2, 1)
@@ -101,7 +100,7 @@ def test_ellipse_geom():
     assert e1.ambient_dimension == 2
 
     # Test creation with three points
-    cen, rad = Point(3*half, 2), 5*half
+    cen, rad = Point(1.5, 2), Rational(5, 2)
     assert Circle(Point(0, 0), Point(3, 0), Point(0, 4)) == Circle(cen, rad)
     pytest.raises(
         GeometryError, lambda: Circle(Point(0, 0), Point(1, 1), Point(2, 2)))
@@ -164,15 +163,15 @@ def test_ellipse_geom():
     # Tangents
     v = sqrt(2) / 2
     p1_1 = Point(v, v)
-    p1_2 = p2 + Point(half, 0)
+    p1_2 = p2 + Point(0.5, 0)
     p1_3 = p2 + Point(0, 1)
     assert e1.tangent_lines(p4) == c1.tangent_lines(p4)
     assert e2.tangent_lines(p1_2) == [Line(Point(3/2, 1), Point(3/2, 1/2))]
     assert e2.tangent_lines(p1_3) == [Line(Point(1, 2), Point(5/4, 2))]
     assert c1.tangent_lines(p1_1) != [Line(p1_1, Point(0, sqrt(2)))]
     assert c1.tangent_lines(p1) == []
-    assert e2.is_tangent(Line(p1_2, p2 + Point(half, 1)))
-    assert e2.is_tangent(Line(p1_3, p2 + Point(half, 1)))
+    assert e2.is_tangent(Line(p1_2, p2 + Point(0.5, 1)))
+    assert e2.is_tangent(Line(p1_3, p2 + Point(0.5, 1)))
     assert c1.is_tangent(Line(p1_1, Point(0, sqrt(2))))
     assert e1.is_tangent(Line(Point(0, 0), Point(1, 1))) is False
     assert c1.is_tangent(e1) is False
@@ -638,11 +637,11 @@ def test_polygon():
     p4 = Polygon(
         Point(1, 1), Point(Rational(6, 5), 1),
         Point(1, Rational(6, 5)))
-    pt1 = Point(half, half)
+    pt1 = Point(0.5, 0.5)
     pt2 = Point(1, 1)
 
     # Polygon to Point
-    assert p1.distance(pt1) == half
+    assert p1.distance(pt1) == Rational(1, 2)
     assert p1.distance(pt2) == 0
     assert p2.distance(pt1) == Rational(3, 4)
     assert p3.distance(pt2) == sqrt(2)/2
@@ -657,7 +656,7 @@ def test_polygon():
     # now test the actual output
     warnings.filterwarnings('ignore',
                             message='Polygons may intersect producing erroneous output')
-    assert p1.distance(p2) == half/2
+    assert p1.distance(p2) == Rational(1, 4)
 
     assert p1.distance(p3) == sqrt(2)/2
     assert p3.distance(p4) == 2*sqrt(2)/5

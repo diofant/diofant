@@ -186,7 +186,7 @@ def test_simple_products():
 
     assert product(cos(k), (k, 0, 5)) == cos(1)*cos(2)*cos(3)*cos(4)*cos(5)
     assert product(cos(k), (k, 3, 5)) == cos(3)*cos(4)*cos(5)
-    assert product(cos(k), (k, 1, Rational(5, 2))) != cos(1)*cos(2)
+    pytest.raises(ValueError, lambda: product(cos(k), (k, 1, Rational(5, 2))))
 
     assert isinstance(product(k**k, (k, 1, n)), Product)
 

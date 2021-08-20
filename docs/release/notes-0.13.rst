@@ -117,3 +117,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`21812`: LambertW displaying in jupyter lab
 * :sympyissue:`21814`: Printing of unevaluated Mul needs brackets
 * :sympyissue:`21176`: Incorrect residue of x**2*cot(pi*x)/(x**4 + 1)
+* :sympyissue:`21852`: simple quadratic not solving
+* :sympyissue:`21859`: AttributeError: 'mpz' object has no attribute 'denominator' with sp.series()
+* :sympyissue:`21882`: Incorrect solutions given by solve
+* :sympyissue:`21890`: RecursionError and TypeError in nonlinsolve
+* :sympyissue:`21888`: TypeError raised for evalf containing summations
+* :sympyissue:`5822`: What should summation() do with non-integer limits?
+* :sympyissue:`19745`: Weird value of a sum
+* :sympyissue:`9358`: summation: Wrong out for non-integral range

@@ -1377,14 +1377,11 @@ class PrettyPrinter(Printer):
         return self._print_seq(sorted(l, key=default_sort_key), '{', '}')
 
     def _print_Range(self, s):
+        dots = '\N{HORIZONTAL ELLIPSIS}' if self._use_unicode else '...'
 
-        if self._use_unicode:
-            dots = '\N{HORIZONTAL ELLIPSIS}'
-        else:
-            dots = '...'
-
-        if s.start == -oo:
-            it = iter(s)
+        if (s.start, s.stop) == (-oo, oo):
+            printset = s.start, dots, -s.step, 0, s.step, dots, s.stop
+        elif s.start is -oo:
             printset = s.start, dots, s._last_element - s.step, s._last_element
         elif s.stop is oo or len(s) > 4:
             it = iter(s)

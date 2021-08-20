@@ -1685,3 +1685,27 @@ def test_sympyissue_21167():
 
 def test_sympyissue_21766():
     assert solve([z + y/x, - (z + y/x)]) == [{x: -y/z}, {y: 0, z: 0}]
+
+
+def test_sympyissue_21852():
+    assert solve(2*x + sqrt(2*x**2) - 21) == [{x: 21 - 21*sqrt(2)/2}]
+
+
+def test_sympyissue_21882():
+    eqs = [-a*k + 4*a/3 + b + 2*c/9 + 5*d/6 + 5*f/6, d/2 - f*k + 4*f/3,
+           -d*k + d + f/6, 13*a/18 + 13*b/18 + 13*c/18, a + b/2 - c*k + 20*c/9,
+           a/6 - b*k + b + c/18, a + 5*b/3 + c/3, 4*a/3 + 2*b/3 + 2*c, -g]
+    sols = [{a: 0, b: 0, c: 0, d: 0, f: 0, g: 0},
+            {a: 0, b: 0, c: 0, d: -f, g: 0, k: Rational(5, 6)},
+            {a: -2*c, b: c, d: 0, f: 0, g: 0, k: Rational(13, 18)}]
+    assert solve(eqs) == sols
+
+
+def test_sympyissue_21890():
+    assert solve([4*x**3*y**4 - 2*y,
+                  4*x**4*y**3 - 2*x]) == [{x: root(4, 3)/(2*y)},
+                                          {x: (-root(4, 3)/4 -
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: (-root(4, 3)/4 +
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: 0, y: 0}]

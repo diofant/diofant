@@ -3423,6 +3423,11 @@ frozenset({x , x*y})\
     assert pretty(Range(-2, -oo, -1)) == ascii_str
     assert upretty(Range(-2, -oo, -1)) == ucode_str
 
+    ascii_str = '{-oo, ..., -2, 0, 2, ..., oo}'
+    ucode_str = '{-∞, …, -2, 0, 2, …, ∞}'
+    assert pretty(Range(-oo, oo, 2)) == ascii_str
+    assert upretty(Range(-oo, oo, 2)) == ucode_str
+
 
 def test_pretty_Union():
     a, b = Interval(2, 3), Interval(4, 7)

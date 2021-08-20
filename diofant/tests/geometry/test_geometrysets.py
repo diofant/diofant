@@ -1,4 +1,4 @@
-from diofant import EmptySet, FiniteSet, Intersection, Rational, Symbol, Union
+from diofant import EmptySet, FiniteSet, Intersection, Symbol, Union
 from diofant.geometry import Circle, Line, Point, Polygon, Segment
 
 
@@ -18,12 +18,11 @@ y3 = Symbol('y3', real=True)
 z1 = Symbol('z1', real=True)
 z2 = Symbol('z2', real=True)
 z3 = Symbol('z3', real=True)
-half = Rational(1, 2)
 
 p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
 p5, p6, p7 = map(Point, [(3, 2), (1, -1), (0, 2)])
 l1 = Line(Point(0, 0), Point(1, 1))
-l2 = Line(Point(half, half), Point(5, 5))
+l2 = Line(Point(0.5, 0.5), Point(5, 5))
 l3 = Line(p2, p3)
 l4 = Line(p3, p4)
 poly1 = Polygon(p1, p2, p3, p4)

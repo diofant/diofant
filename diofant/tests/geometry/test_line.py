@@ -26,7 +26,6 @@ y3 = Symbol('y3', extended_real=True)
 z1 = Symbol('z1', extended_real=True)
 z2 = Symbol('z2', extended_real=True)
 z3 = Symbol('z3', extended_real=True)
-half = Rational(1, 2)
 
 
 def feq(a, b):
@@ -228,13 +227,13 @@ def test_line_geom():
 
     # Testing distance from a Segment to an object
     s1 = Segment(Point(0, 0), Point(1, 1))
-    s2 = Segment(Point(half, half), Point(1, 0))
+    s2 = Segment(Point(0.5, 0.5), Point(1, 0))
     pt1 = Point(0, 0)
     pt2 = Point(Rational(3, 2), Rational(3, 2))
     assert s1.distance(pt1) == 0
     assert s1.distance((0, 0)) == 0
-    assert s2.distance(pt1) == 2**half/2
-    assert s2.distance(pt2) == 2**half
+    assert s2.distance(pt1) == sqrt(2)/2
+    assert s2.distance(pt2) == sqrt(2)
     # Line to point
     p1, p2 = Point(0, 0), Point(1, 1)
     s = Line(p1, p2)

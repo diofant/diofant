@@ -288,10 +288,10 @@ def test_hypergeometric_sums():
 
 def test_other_sums():
     f = m**2 + m*exp(m)
-    g = 3*exp(Rational(3, 2))/2 + exp(Rational(1, 2))/2 - exp(-Rational(1, 2))/2 - 3*exp(-Rational(3, 2))/2 + 5
+    g = E + 14 + 2*E**2 + 3*E**3
 
-    assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).expand() == g
-    assert summation(f, (m, -Rational(3, 2), Rational(3, 2))).evalf().epsilon_eq(g.evalf(), 1e-10)
+    assert summation(f, (m, 0, 3)) == g
+    assert summation(f, (m, 0, 3)).evalf().epsilon_eq(g.evalf(), 1e-10)
 
     assert summation(n**x, (n, 1, oo)) == Sum(n**x, (n, 1, oo))
 
@@ -593,6 +593,12 @@ def test_Sum_interface():
     pytest.raises(ValueError, lambda: Sum(1))
     pytest.raises(ValueError, lambda: summation(1))
     pytest.raises(ValueError, lambda: Sum(x, (x, 1, 2, 3)))
+
+    # issue sympy/sympy#21888
+    pytest.raises(ValueError, lambda: Sum(-1, (x, I, 5)))
+
+    # issue sympy/sympy#19745
+    pytest.raises(ValueError, lambda: Sum(x, (x, 1, Rational(3, 2))))
 
 
 def test_eval_derivative():
