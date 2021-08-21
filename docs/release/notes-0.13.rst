@@ -125,3 +125,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5822`: What should summation() do with non-integer limits?
 * :sympyissue:`19745`: Weird value of a sum
 * :sympyissue:`9358`: summation: Wrong out for non-integral range
+* :sympyissue:`21905`: raise NotImplementedError("Equation not in exact domain. Try converting to rational") Error
