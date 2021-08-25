@@ -11,7 +11,7 @@ __all__ = ()
 def test_simple1():
     # Gruntz' theses pp. 91 to 96
     # 6.6
-    e = sin(1/x + exp(-x)) - sin(1/x)
+    e = sin(1/x + exp(-x)) - sin(1/x)  # issue sympy/sympy#21938
     assert e.series(x, oo) == (1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))*exp(-x)
     # 6.11
     e = exp(exp(x)/(1 - 1/x))
