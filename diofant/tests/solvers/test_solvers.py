@@ -7,21 +7,18 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, oo, ordered, pi, posify, re, real_root,
                      reduce_inequalities, root, sec, sech, simplify, sin, sinh,
-                     solve, sqrt, sstr, symbols, sympify, tan, tanh)
+                     solve, sqrt, sstr, symbols, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import (_invert, minsolve_linear_system,
                                      solve_linear)
 from diofant.solvers.utils import checksol
+from diofant.tests.core.test_evalf import NS
 from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_swap_back():

@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Dummy, I, Integer, Integral, Rational, cbrt, cos, cosh,
-                     root, sqrt, sqrtdenest, sstr, symbols, sympify)
+                     root, sqrt, sqrtdenest, symbols)
 from diofant.abc import a, b, c, d, t, x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets
 from diofant.simplify.sqrtdenest import unrad
@@ -11,10 +11,6 @@ __all__ = ()
 
 r2, r3, r5, r6, r7, r10, r15, r29 = [sqrt(x) for x in [2, 3, 5, 6, 7, 10,
                                                        15, 29]]
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_sqrtdenest():
