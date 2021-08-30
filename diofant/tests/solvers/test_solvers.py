@@ -1718,3 +1718,26 @@ def test_sympyissue_21905():
               y: Float('-1.812300621671487', dps=15) - Float('3.1389967553236771', dps=15)*I},
              {x: Float('-5.4369018650144607', dps=15) + Float('9.4169902659710321', dps=15)*I,
               y: Float('-1.812300621671487', dps=15) + Float('3.1389967553236771', dps=15)*I}])
+
+
+def test_sympyissue_21984():
+    ka = 10**5
+    C0 = 10**-10
+    kw = 10**-14  # that is constant
+    H, OH, HA, A = symbols('H OH HA A')
+
+    eqs = [(H*A/HA) - ka, H*OH - kw, A + OH - H, HA + A - C0]
+
+    res = [{H: Float('-100000.0000000001', dps=15),
+            OH: Float('-9.9999999999999901e-20', dps=15),
+            HA: Float('100000.0000000002', dps=15),
+            A: Float('-100000.0000000001', dps=15)},
+           {H: Float('1.0005409447144861e-7', dps=15),
+            OH: Float('9.9954094471448725e-8', dps=15),
+            HA: Float('1.0005409447134852e-22', dps=15),
+            A: Float('9.9999999999899941e-11', dps=15)},
+           {H: Float('-9.7518697933531939e-8', dps=15),
+            OH: Float('-9.7618697933532039e-8', dps=15),
+            HA: Float('-9.7518697933631848e-23', dps=15),
+            A: Float('1.0000000000009752e-10', dps=15)}]
+    assert solve(eqs, [H, OH, HA, A]) == res
