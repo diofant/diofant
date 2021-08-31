@@ -1,22 +1,14 @@
-"""Tests for Gosper's algorithm for hypergeometric summation."""
+"""Tests for Gosper's algorithm for hypergeometric summation.
 
-from diofant import (Poly, Rational, Symbol, binomial, factorial, gamma, pi,
-                     simplify, sqrt)
-from diofant.abc import a, b, j, k, m, n, r, x
-from diofant.concrete.gosper import gosper_normal, gosper_sum, gosper_term
+Some tests were taken from :cite:`Petkovsek1997AeqB`.
+"""
+
+from diofant import Rational, binomial, factorial, pi, sin, sqrt
+from diofant.abc import a, b, k, m, n, r, x
+from diofant.concrete.gosper import gosper_sum
 
 
 __all__ = ()
-
-
-def test_gosper_normal():
-    assert gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n) == \
-        (Poly(Rational(1, 4), n), Poly(n + Rational(3, 2)), Poly(n + Rational(1, 4)))
-
-
-def test_gosper_term():
-    assert gosper_term((4*k + 1)*factorial(
-        k)/factorial(2*k + 1), k) == (-k - Rational(1, 2))/(k + Rational(1, 4))
 
 
 def test_gosper_sum():
@@ -33,27 +25,20 @@ def test_gosper_sum():
     assert gosper_sum(factorial(k)/k**2, (k, 0, n)) is None
     assert gosper_sum((k - 3)*factorial(k), (k, 0, n)) is None
 
-    assert gosper_sum(k*factorial(k), k) == factorial(k)
-    assert gosper_sum(
-        k*factorial(k), (k, 0, n)) == n*factorial(n) + factorial(n) - 1
+    f = k*factorial(k)
+    assert gosper_sum(f, k) == factorial(k)
+    assert gosper_sum(f, (k, 0, n)) == n*factorial(n) + factorial(n) - 1
 
-    assert gosper_sum((-1)**k*binomial(n, k), (k, 0, n)) == 0
-    assert gosper_sum((
-        -1)**k*binomial(n, k), (k, 0, m)) == -(-1)**m*(m - n)*binomial(n, m)/n
+    f = (-1)**k*binomial(n, k)
+    assert gosper_sum(f, (k, 0, n)) == 0
+    assert gosper_sum(f, (k, 0, m)) == -(-1)**m*(m - n)*binomial(n, m)/n
 
     f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
     assert gosper_sum(f, (k, 0, n)) == (2*factorial(2*n + 1) -
                                         factorial(n))/factorial(2*n + 1)
-    assert gosper_sum(f, (k, 3, n)) == (-60*factorial(n) +
-                                        factorial(2*n + 1))/(60*factorial(2*n + 1))
-
-    # issue sympy/sympy#6033:
-    assert gosper_sum(
-        n*(n + a + b)*a**n*b**n/(factorial(n + a)*factorial(n + b)),
-        (n, 0, m)).rewrite(factorial).powsimp() == \
-        -a*b*(a**m*b**m*factorial(a) *
-              factorial(b) - factorial(a + m)*factorial(b + m))/(factorial(a) *
-                                                                 factorial(b)*factorial(a + m)*factorial(b + m))
+    assert gosper_sum(f,
+                      (k, 3, n)) == (-60*factorial(n) +
+                                     factorial(2*n + 1))/(60*factorial(2*n + 1))
 
 
 def test_gosper_sum_indefinite():
@@ -61,19 +46,25 @@ def test_gosper_sum_indefinite():
     assert gosper_sum(k**2, k) == k*(k - 1)*(2*k - 1)/6
 
     assert gosper_sum(1/(k*(k + 1)), k) == -1/k
-    assert gosper_sum(-(27*k**4 + 158*k**3 + 430*k**2 + 678*k + 445)*gamma(2*k + 4)/(3*(3*k + 7)*gamma(3*k + 6)), k) == \
-        (3*k + 5)*(k**2 + 2*k + 5)*gamma(2*k + 4)/gamma(3*k + 6)
+    assert gosper_sum(-(27*k**4 + 158*k**3 + 430*k**2 +
+                        678*k + 445)*factorial(2*k + 3) /
+                      (3*(3*k + 7)*factorial(3*k + 5)),
+                      k) == (3*k + 5)*(k**2 + 2*k +
+                                       5)*factorial(2*k + 3)/factorial(3*k + 5)
 
 
 def test_gosper_sum_parametric():
-    assert gosper_sum(binomial(Rational(1, 2), m - j + 1)*binomial(Rational(1, 2), m + j), (j, 1, n)) == \
-        n*(1 + m - n)*(-1 + 2*m + 2*n)*binomial(Rational(1, 2), 1 + m - n) * \
-        binomial(Rational(1, 2), m + n)/(m*(1 + 2*m))
+    assert gosper_sum(binomial(Rational(1, 2),
+                               m - k + 1)*binomial(Rational(1, 2), m + k),
+                      (k, 1, n)) == (n*(1 + m - n)*(-1 + 2*m + 2*n) *
+                                     binomial(Rational(1, 2), 1 + m - n) *
+                                     binomial(Rational(1, 2),
+                                              m + n)/(m*(1 + 2*m)))
 
 
 def test_gosper_sum_algebraic():
-    assert gosper_sum(
-        n**2 + sqrt(2), (n, 0, m)) == (m + 1)*(2*m**2 + m + 6*sqrt(2))/6
+    assert gosper_sum(n**2 + sqrt(2),
+                      (n, 0, m)).equals((m + 1)*(2*m**2 + m + 6*sqrt(2))/6)
 
 
 def test_gosper_sum_iterated():
@@ -88,11 +79,9 @@ def test_gosper_sum_iterated():
     assert gosper_sum(f3, (n, 0, n)) == f4
     assert gosper_sum(f4, (n, 0, n)) == f5
 
-# the AeqB tests test expressions given in
-# www.math.upenn.edu/~wilf/AeqB.pdf
-
 
 def test_gosper_sum_AeqB_part1():
+    # Ex. 5.7.1
     f1a = n**4
     f1b = n**3*2**n
     f1c = 1/(n**2 + sqrt(5)*n - 1)
@@ -112,61 +101,43 @@ def test_gosper_sum_AeqB_part1():
         3*m + 2)/(40*27**m*factorial(m)*factorial(m + 1)*factorial(m + 2))
     g1f = (2*m + 1)**2*binomial(2*m, m)**2/(4**(2*m)*(m + 1))
     g1g = -binomial(2*m, m)**2/4**(2*m)
-    g1h = 4*pi - (2*m + 1)**2*(3*m + 4)*factorial(m - Rational(1, 2))**2/factorial(m + 1)**2
+    g1h = (4*pi -
+           (2*m + 1)**2*(3*m + 4)*factorial(m - Rational(1, 2))**2 /
+           factorial(m + 1)**2)
 
-    g = gosper_sum(f1a, (n, 0, m))
-    assert g is not None and simplify(g - g1a) == 0
-    g = gosper_sum(f1b, (n, 0, m))
-    assert g is not None and simplify(g - g1b) == 0
-    g = gosper_sum(f1c, (n, 0, m))
-    assert g is not None and simplify(g - g1c) == 0
-    g = gosper_sum(f1d, (n, 0, m))
-    assert g is not None and simplify(g - g1d) == 0
-    g = gosper_sum(f1e, (n, 0, m))
-    assert g is not None and simplify(g - g1e) == 0
-    g = gosper_sum(f1f, (n, 0, m))
-    assert g is not None and simplify(g - g1f) == 0
-    g = gosper_sum(f1g, (n, 0, m))
-    assert g is not None and simplify(g - g1g) == 0
-    g = gosper_sum(f1h, (n, 0, m))
-    # need to call rewrite(gamma) here because we have terms involving
-    # factorial(1/2)
-    assert g is not None and simplify(g - g1h).rewrite(gamma) == 0
+    assert gosper_sum(f1a, (n, 0, m)).equals(g1a)
+    assert gosper_sum(f1b, (n, 0, m)).equals(g1b)
+    assert gosper_sum(f1c, (n, 0, m)).equals(g1c)
+    assert gosper_sum(f1d, (n, 0, m)).equals(g1d)
+    assert gosper_sum(f1e, (n, 0, m)).equals(g1e)
+    assert gosper_sum(f1f, (n, 0, m)).equals(g1f)
+    assert gosper_sum(f1g, (n, 0, m)).equals(g1g)
+    assert gosper_sum(f1h, (n, 0, m)).equals(g1h)
 
 
 def test_gosper_sum_AeqB_part2():
+    # Ex. 5.7.2
     f2a = n**2*a**n
     f2b = (n - r/2)*binomial(r, n)
     f2c = factorial(n - 1)**2/(factorial(n - x)*factorial(n + x))
-
-    g2a = -a*(a + 1)/(a - 1)**3 + a**(
-        m + 1)*(a**2*m**2 - 2*a*m**2 + m**2 - 2*a*m + 2*m + a + 1)/(a - 1)**3
-    g2b = (m - r)*binomial(r, m)/2
-    ff = factorial(1 - x)*factorial(1 + x)
-    g2c = 1/ff*(
-        1 - 1/x**2) + factorial(m)**2/(x**2*factorial(m - x)*factorial(m + x))
-
-    g = gosper_sum(f2a, (n, 0, m))
-    assert g is not None and simplify(g - g2a) == 0
-    g = gosper_sum(f2b, (n, 0, m))
-    assert g is not None and simplify(g - g2b) == 0
-    g = gosper_sum(f2c, (n, 1, m))
-    assert g is not None and simplify(g - g2c) == 0
-
-
-def test_gosper_nan():
-    a = Symbol('a', positive=True)
-    b = Symbol('b', positive=True)
-    n = Symbol('n', integer=True)
-    m = Symbol('m', integer=True)
     f2d = n*(n + a + b)*a**n*b**n/(factorial(n + a)*factorial(n + b))
-    g2d = 1/(factorial(a - 1)*factorial(
-        b - 1)) - a**(m + 1)*b**(m + 1)/(factorial(a + m)*factorial(b + m))
-    g = gosper_sum(f2d, (n, 0, m))
-    assert simplify(g - g2d) == 0
+
+    g2a = -a*(a + 1)/(a - 1)**3 + a**(m + 1)*(a**2*m**2 - 2*a*m**2 + m**2 -
+                                              2*a*m + 2*m + a + 1)/(a - 1)**3
+    g2b = (m - r)*binomial(r, m)/2
+    g2c = (factorial(m)**2/(x**2*factorial(-x + m)*factorial(x + m)) -
+           sin(pi*x)/(pi*x**3))
+    g2d = (1/(factorial(a - 1)*factorial(b - 1)) -
+           a**(m + 1)*b**(m + 1)/(factorial(a + m)*factorial(b + m)))
+
+    assert gosper_sum(f2a, (n, 0, m)).equals(g2a)
+    assert gosper_sum(f2b, (n, 0, m)).equals(g2b)
+    assert gosper_sum(f2c, (n, 1, m)).equals(g2c)
+    assert gosper_sum(f2d, (n, 0, m)).equals(g2d)
 
 
 def test_gosper_sum_AeqB_part3():
+    # Ex. 5.7.3
     f3a = 1/n**4
     f3b = (6*n + 3)/(4*n**4 + 8*n**3 + 8*n**2 + 4*n + 3)
     f3c = 2**n*(n**2 - 2*n - 1)/(n**2*(n + 1)**2)
@@ -176,30 +147,22 @@ def test_gosper_sum_AeqB_part3():
     f3g = (n**4 - 14*n**2 - 24*n - 9)*2**n/(n**2*(n + 1)**2*(n + 2)**2 *
                                             (n + 3)**2)
 
-    # g3a -> no closed form
     g3b = m*(m + 2)/(2*m**2 + 4*m + 3)
     g3c = 2**m/m**2 - 2
     g3d = Rational(2, 3) + 4**(m + 1)*(m - 1)/(m + 2)/3
-    # g3e -> no closed form
-    g3f = -(-Rational(1, 16) + 1/((m - 2)**2*(m + 1)**2))  # the AeqB key is wrong
+    g3f = Rational(1, 16) - 1/((m - 2)**2*(m + 1)**2)  # sign corrected
     g3g = -Rational(2, 9) + 2**(m + 1)/((m + 1)**2*(m + 3)**2)
 
-    g = gosper_sum(f3a, (n, 1, m))
-    assert g is None
-    g = gosper_sum(f3b, (n, 1, m))
-    assert g is not None and simplify(g - g3b) == 0
-    g = gosper_sum(f3c, (n, 1, m - 1))
-    assert g is not None and simplify(g - g3c) == 0
-    g = gosper_sum(f3d, (n, 1, m))
-    assert g is not None and simplify(g - g3d) == 0
-    g = gosper_sum(f3e, (n, 0, m - 1))
-    assert g is None
-    g = gosper_sum(f3f, (n, 4, m))
-    assert g is not None and simplify(g - g3f) == 0
-    g = gosper_sum(f3g, (n, 1, m))
-    assert g is not None and simplify(g - g3g) == 0
+    assert gosper_sum(f3a, (n, 1, m)) is None
+    assert gosper_sum(f3b, (n, 1, m)).equals(g3b)
+    assert gosper_sum(f3c, (n, 1, m - 1)).equals(g3c)
+    assert gosper_sum(f3d, (n, 1, m)).equals(g3d)
+    assert gosper_sum(f3e, (n, 0, m - 1)) is None
+    assert gosper_sum(f3f, (n, 4, m)).equals(g3f)
+    assert gosper_sum(f3g, (n, 1, m)).equals(g3g)
 
 
 def test_sympyissue_12018():
-    f = binomial(n + 1, k)/2**(n + 1) - binomial(n, k)/2**n  # Ex. 5.7.11a
-    assert gosper_sum(f, (k, 0, n)).simplify() == -2**(-n - 1)
+    # Ex. 5.7.11a
+    f = binomial(n + 1, k)/2**(n + 1) - binomial(n, k)/2**n
+    assert gosper_sum(f, (k, 0, n)).equals(-2**(-n - 1))

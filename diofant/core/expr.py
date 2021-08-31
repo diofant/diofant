@@ -2615,7 +2615,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
-        >>> e.aseries(x)
+        >>> e.series(x, oo)
         E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
         >>> e.aseries(x, n=3, hir=True)
         -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), (x, oo))
@@ -2623,7 +2623,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> e = exp(exp(x)/(1 - 1/x))
         >>> e.aseries(x, bound=3)
         E**(E**x)*E**(E**x/x**2)*E**(E**x/x)*E**(-E**x + E**x/(1 - 1/x) - E**x/x - E**x/x**2)
-        >>> e.aseries(x)
+        >>> e.series(x, oo)
         E**(E**x/(1 - 1/x))
 
         Notes

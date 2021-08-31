@@ -7,21 +7,18 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, oo, ordered, pi, posify, re, real_root,
                      reduce_inequalities, root, sec, sech, simplify, sin, sinh,
-                     solve, sqrt, sstr, symbols, sympify, tan, tanh)
+                     solve, sqrt, sstr, symbols, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import (_invert, minsolve_linear_system,
                                      solve_linear)
 from diofant.solvers.utils import checksol
+from diofant.tests.core.test_evalf import NS
 from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_swap_back():
@@ -1709,3 +1706,38 @@ def test_sympyissue_21890():
                                           {x: (-root(4, 3)/4 +
                                                root(4, 3)*sqrt(3)*I/4)/y},
                                           {x: 0, y: 0}]
+
+
+def test_sympyissue_21905():
+    f = 0.07*x*y + 10.0/y + 30.0/x
+    eqs = [f.diff(x), f.diff(y)]
+    assert (solve(eqs) ==
+            [{x: Float('10.873803730028921', dps=15),
+              y: Float('3.624601243342974', dps=15)},
+             {x: Float('-5.4369018650144607', dps=15) - Float('9.4169902659710321', dps=15)*I,
+              y: Float('-1.812300621671487', dps=15) - Float('3.1389967553236771', dps=15)*I},
+             {x: Float('-5.4369018650144607', dps=15) + Float('9.4169902659710321', dps=15)*I,
+              y: Float('-1.812300621671487', dps=15) + Float('3.1389967553236771', dps=15)*I}])
+
+
+def test_sympyissue_21984():
+    ka = 10**5
+    C0 = 10**-10
+    kw = 10**-14  # that is constant
+    H, OH, HA, A = symbols('H OH HA A')
+
+    eqs = [(H*A/HA) - ka, H*OH - kw, A + OH - H, HA + A - C0]
+
+    res = [{H: Float('-100000.0000000001', dps=15),
+            OH: Float('-9.9999999999999901e-20', dps=15),
+            HA: Float('100000.0000000002', dps=15),
+            A: Float('-100000.0000000001', dps=15)},
+           {H: Float('1.0005409447144861e-7', dps=15),
+            OH: Float('9.9954094471448725e-8', dps=15),
+            HA: Float('1.0005409447134852e-22', dps=15),
+            A: Float('9.9999999999899941e-11', dps=15)},
+           {H: Float('-9.7518697933531939e-8', dps=15),
+            OH: Float('-9.7618697933532039e-8', dps=15),
+            HA: Float('-9.7518697933631848e-23', dps=15),
+            A: Float('1.0000000000009752e-10', dps=15)}]
+    assert solve(eqs, [H, OH, HA, A]) == res
