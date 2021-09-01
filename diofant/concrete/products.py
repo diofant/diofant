@@ -164,7 +164,7 @@ class Product(ExprWithIntLimits):
 
     diofant.concrete.summations.Sum
     diofant.concrete.summations.summation
-    diofant.concrete.products.product
+    product
 
     References
     ==========
