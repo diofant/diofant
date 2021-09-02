@@ -338,3 +338,8 @@ def test_solve_surd_system():
     res = [{x: 17*y**2/288 - sqrt(y**4 - 1440)/288},
            {x: 17*y**2/288 + sqrt(y**4 - 1440)/288}]
     assert solve_surd_system(eqs, x) == res
+
+
+def test_sympyissue_21999():
+    assert solve_poly_system([x - 1], x, y) == [{x: 1}]
+    assert solve_poly_system([y - 1], x, y) == [{y: 1}]

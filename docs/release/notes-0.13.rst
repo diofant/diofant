@@ -128,3 +128,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21905`: raise NotImplementedError("Equation not in exact domain. Try converting to rational") Error
 * :sympyissue:`21938`: Series raises an error at infinity for an example which can be solved by aseries
 * :sympyissue:`21984`: ValueError: list.remove(x): x not in list occurs in nonlinsolve
+* :sympyissue:`21999`: detection of infinite solution request
