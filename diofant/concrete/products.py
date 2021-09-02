@@ -9,154 +9,38 @@ class Product(ExprWithIntLimits):
     r"""Represents unevaluated products.
 
     ``Product`` represents a finite or infinite product, with the first
-    argument being the general form of terms in the series, and the second
-    argument being ``(dummy_variable, start, end)``, with ``dummy_variable``
-    taking all integer values from ``start`` through ``end``. In accordance
-    with long-standing mathematical convention, the end term is included in
-    the product.
+    argument being the general form of terms in the series (which
+    usually depend on the bound variable ``symbol``), and the second
+    argument being ``(symbol, start, end)``, with ``symbol`` taking
+    all integer values from ``start`` through ``end`` (inclusive).
 
-    For finite products (and products with symbolic limits assumed to be finite)
-    we follow the analogue of the summation convention described by
-    Karr :cite:`Karr1981summation`, especially definition 3 of section 1.4. The product:
+    Notes
+    =====
 
-    .. math::
-
-        \prod_{m \leq i < n} f(i)
-
-    has *the obvious meaning* for `m < n`, namely:
+    We follow the the analogue of the summation convention described by
+    Karr :cite:`Karr1981summation`, adopted by the
+    :class:`~diofant.concrete.summations.Sum`:
 
     .. math::
 
-        \prod_{m \leq i < n} f(i) = f(m) f(m+1) \cdot \ldots \cdot f(n-2) f(n-1)
-
-    with the upper limit value `f(n)` excluded. The product over an empty set is
-    one if and only if `m = n`:
-
-    .. math::
-
-        \prod_{m \leq i < n} f(i) = 1  \quad \mathrm{for} \quad  m = n
-
-    Finally, for all other products over empty sets we assume the following
-    definition:
-
-    .. math::
-
-        \prod_{m \leq i < n} f(i) = \frac{1}{\prod_{n \leq i < m} f(i)}  \quad \mathrm{for} \quad  m > n
-
-    It is important to note that above we define all products with the upper
-    limit being exclusive. This is in contrast to the usual mathematical notation,
-    but does not affect the product convention. Indeed we have:
-
-    .. math::
-
-        \prod_{m \leq i < n} f(i) = \prod_{i = m}^{n - 1} f(i)
-
-    where the difference in notation is intentional to emphasize the meaning,
-    with limits typeset on the top being inclusive.
+        \prod\limits_{i=m}^n f_i = \frac{1}{\prod\limits_{i=n+1}^{m-1}f_i}
 
     Examples
     ========
 
-    >>> from diofant.abc import i
-
-    >>> Product(k, (k, 1, m))
-    Product(k, (k, 1, m))
-    >>> Product(k, (k, 1, m)).doit()
-    factorial(m)
-    >>> Product(k**2, (k, 1, m))
-    Product(k**2, (k, 1, m))
     >>> Product(k**2, (k, 1, m)).doit()
     factorial(m)**2
 
-    Wallis' product for pi:
-
-    >>> W = Product(2*i/(2*i-1) * 2*i/(2*i+1), (i, 1, oo))
-    >>> W
-    Product(4*i**2/((2*i - 1)*(2*i + 1)), (i, 1, oo))
-
-    Direct computation currently fails:
-
-    >>> W.doit()
-    Product(4*i**2/((2*i - 1)*(2*i + 1)), (i, 1, oo))
-
-    But we can approach the infinite product by a limit of finite products:
-
-    >>> W2 = Product(2*i/(2*i-1)*2*i/(2*i+1), (i, 1, n))
-    >>> W2
-    Product(4*i**2/((2*i - 1)*(2*i + 1)), (i, 1, n))
-    >>> W2e = W2.doit()
-    >>> W2e
-    2**(-2*n)*4**n*factorial(n)**2/(RisingFactorial(1/2, n)*RisingFactorial(3/2, n))
-    >>> limit(W2e, n, oo)
-    pi/2
-
-    By the same formula we can compute sin(pi/2):
-
-    >>> P = pi * x * Product(1 - x**2/k**2, (k, 1, n))
-    >>> P = P.subs({x: pi/2})
-    >>> P
-    pi**2*Product(1 - pi**2/(4*k**2), (k, 1, n))/2
-    >>> Pe = P.doit()
-    >>> Pe
-    pi**2*RisingFactorial(1 + pi/2, n)*RisingFactorial(-pi/2 + 1, n)/(2*factorial(n)**2)
-    >>> Pe = Pe.rewrite(gamma)
-    >>> Pe
-    pi**2*gamma(n + 1 + pi/2)*gamma(n - pi/2 + 1)/(2*gamma(1 + pi/2)*gamma(-pi/2 + 1)*gamma(n + 1)**2)
-    >>> Pe = simplify(Pe)
-    >>> Pe
-    sin(pi**2/2)*gamma(n + 1 + pi/2)*gamma(n - pi/2 + 1)/gamma(n + 1)**2
-    >>> limit(Pe, n, oo)
-    sin(pi**2/2)
-
     Products with the lower limit being larger than the upper one:
 
-    >>> Product(1/i, (i, 6, 1)).doit()
+    >>> Product(1/k, (k, 6, 1)).doit()
     120
-    >>> Product(i, (i, 2, 5)).doit()
+    >>> Product(k, (k, 2, 5)).doit()
     120
 
     The empty product:
 
-    >>> Product(i, (i, n, n-1)).doit()
-    1
-
-    An example showing that the symbolic result of a product is still
-    valid for seemingly nonsensical values of the limits. Then the Karr
-    convention allows us to give a perfectly valid interpretation to
-    those products by interchanging the limits according to the above rules:
-
-    >>> P = Product(2, (i, 10, n)).doit()
-    >>> P
-    2**(n - 9)
-    >>> P.subs({n: 5})
-    1/16
-    >>> Product(2, (i, 10, 5)).doit()
-    1/16
-    >>> 1/Product(2, (i, 6, 9)).doit()
-    1/16
-
-    An explicit example of the Karr summation convention applied to products:
-
-    >>> P1 = Product(x, (i, a, b)).doit()
-    >>> P1
-    x**(-a + b + 1)
-    >>> P2 = Product(x, (i, b+1, a-1)).doit()
-    >>> P2
-    x**(a - b - 1)
-    >>> simplify(P1 * P2)
-    1
-
-    And another one:
-
-    >>> P1 = Product(i, (i, b, a)).doit()
-    >>> P1
-    RisingFactorial(b, a - b + 1)
-    >>> P2 = Product(i, (i, a+1, b-1)).doit()
-    >>> P2
-    RisingFactorial(a + 1, -a + b - 1)
-    >>> P1 * P2
-    RisingFactorial(b, a - b + 1)*RisingFactorial(a + 1, -a + b - 1)
-    >>> simplify(P1 * P2)
+    >>> Product(k, (k, n, n-1)).doit()
     1
 
     See Also
