@@ -12,11 +12,7 @@ class ExprCondPair(Tuple):
     """Represents an expression, condition pair."""
 
     def __new__(cls, expr, cond):
-        if cond == true:
-            return Tuple.__new__(cls, expr, true)
-        elif cond == false:
-            return Tuple.__new__(cls, expr, false)
-        return Tuple.__new__(cls, expr, cond)
+        return super().__new__(cls, expr, cond)
 
     @property
     def expr(self):
@@ -31,10 +27,6 @@ class ExprCondPair(Tuple):
     @property
     def is_commutative(self):
         return self.expr.is_commutative
-
-    def __iter__(self):
-        yield self.expr
-        yield self.cond
 
 
 class Piecewise(Function):
