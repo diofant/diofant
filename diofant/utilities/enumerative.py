@@ -1006,7 +1006,7 @@ class MultisetPartitionTraverser():
 
         self._initialize_enumeration(multiplicities)
         pkey = part_key(self.top_part())
-        self.dp_stack.append([(pkey, 0), ])
+        self.dp_stack.append([(pkey, 0)])
         while True:
             while self.spread_part_multiplicity():
                 pkey = part_key(self.top_part())
@@ -1022,7 +1022,7 @@ class MultisetPartitionTraverser():
                     self.lpart -= 1
                     break
                 else:
-                    self.dp_stack.append([(pkey, self.pcount), ])
+                    self.dp_stack.append([(pkey, self.pcount)])
 
             # M4  count a leaf partition
             self.pcount += 1

@@ -1395,7 +1395,7 @@ class Subs(Expr):
             raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
-            repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
+            repeated = [v for v in set(variables) if variables.count(v) > 1]
             raise ValueError('cannot substitute expressions %s more than '
                              'once.' % repeated)
 

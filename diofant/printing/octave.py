@@ -319,7 +319,7 @@ class OctaveCodePrinter(CodePrinter):
                 strslice(expr.colslice, expr.parent.shape[1]) + ')')
 
     def _print_Indexed(self, expr):
-        inds = [ self._print(i) for i in expr.indices ]
+        inds = [self._print(i) for i in expr.indices]
         return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
 
     def _print_Idx(self, expr):
@@ -425,7 +425,7 @@ class OctaveCodePrinter(CodePrinter):
         dec_regex = ('^end$', '^elseif ', '^else$')
 
         # pre-strip left-space from the code
-        code = [ line.lstrip(' \t') for line in code ]
+        code = [line.lstrip(' \t') for line in code]
 
         increase = [int(any(re.search(_, line) for _ in inc_regex))
                     for line in code]

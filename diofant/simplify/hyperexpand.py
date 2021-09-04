@@ -212,13 +212,13 @@ def add_formulae(formulae):
     #    / (2*root(polar_lift(-1)*z,4)))
     # Manually tuned rule
     addb([1], [Rational(3, 4), Rational(5, 4)],
-         Matrix([ sqrt(pi)*(I*sinh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
-                            + cosh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  * exp(-I*pi/4)/(2*root(z, 4)),
-                  sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
-                                       + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  * exp(-I*pi/4)/2,
-                  1 ]),
+         Matrix([sqrt(pi)*(I*sinh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
+                           + cosh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
+                 * exp(-I*pi/4)/(2*root(z, 4)),
+                 sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
+                                      + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
+                 * exp(-I*pi/4)/2,
+                 1]),
          Matrix([[1, 0, 0]]),
          Matrix([[-Rational(1, 4), 1,      Rational(1, 4)],
                  [ z,      Rational(1, 4), 0     ],
@@ -314,14 +314,14 @@ def add_formulae(formulae):
     # Manually tuned rule
     addb([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)],
          Matrix(
-             [ fresnels(
+             [fresnels(
                  exp(
                      pi*I/4)*root(
                          z, 4)*2/sqrt(
                              pi) ) / (
                                  pi * (exp(pi*I/4)*root(z, 4)*2/sqrt(pi))**3 ),
-               sinh(2*sqrt(z))/sqrt(z),
-               cosh(2*sqrt(z)) ]),
+              sinh(2*sqrt(z))/sqrt(z),
+              cosh(2*sqrt(z))]),
          Matrix([[6, 0, 0]]),
          Matrix([[-Rational(3, 4),  Rational(1, 16), 0],
                  [ 0,      -Rational(1, 2),  1],
@@ -333,12 +333,12 @@ def add_formulae(formulae):
     # Manually tuned rule
     addb([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)],
          Matrix(
-             [ sqrt(
+             [sqrt(
                  pi)*exp(
                      -I*pi/4)*fresnelc(
                          2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4)),
-               cosh(2*sqrt(z)),
-               sinh(2*sqrt(z))*sqrt(z) ]),
+              cosh(2*sqrt(z)),
+              sinh(2*sqrt(z))*sqrt(z) ]),
          Matrix([[1, 0, 0]]),
          Matrix([[-Rational(1, 4),  Rational(1, 4), 0     ],
                  [ 0,       0,      1     ],
