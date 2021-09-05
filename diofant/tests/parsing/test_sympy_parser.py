@@ -128,3 +128,10 @@ def test_functional_exponent():
 def test_match_parentheses_implicit_multiplication():
     transformations = standard_transformations + (implicit_multiplication,)
     pytest.raises(TokenError, lambda: parse_expr('(1,2),(3,4]', transformations=transformations))
+
+
+def test_sympyissue_22020():
+    x = parse_expr('log((2*V/3-V)/C)/-(R+r)*C')
+    y = parse_expr('log((2*V/3-V)/C)/-(R+r)*2')
+
+    assert x.equals(y) is False
