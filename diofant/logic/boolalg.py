@@ -162,7 +162,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     See Also
     ========
 
-    diofant.logic.boolalg.BooleanFalse
+    BooleanFalse
 
     """
 
@@ -215,7 +215,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     See Also
     ========
 
-    diofant.logic.boolalg.BooleanTrue
+    BooleanTrue
 
     """
 

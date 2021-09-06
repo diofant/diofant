@@ -13,31 +13,6 @@ f = Function('f')
 
 
 def test_karr_convention():
-    # Test the Karr product convention that we want to hold.
-    # See his paper "Summation in Finite Terms" for a detailed
-    # reasoning why we really want exactly this definition.
-    # The convention is described for sums on page 309 and
-    # essentially in section 1.4, definition 3. For products
-    # we can find in analogy:
-    #
-    # \prod_{m <= i < n} f(i) 'has the obvious meaning'      for m < n
-    # \prod_{m <= i < n} f(i) = 0                            for m = n
-    # \prod_{m <= i < n} f(i) = 1 / \prod_{n <= i < m} f(i)  for m > n
-    #
-    # It is important to note that he defines all products with
-    # the upper limit being *exclusive*.
-    # In contrast, diofant and the usual mathematical notation has:
-    #
-    # prod_{i = a}^b f(i) = f(a) * f(a+1) * ... * f(b-1) * f(b)
-    #
-    # with the upper limit *inclusive*. So translating between
-    # the two we find that:
-    #
-    # \prod_{m <= i < n} f(i) = \prod_{i = m}^{n-1} f(i)
-    #
-    # where we intentionally used two different ways to typeset the
-    # products and its limits.
-
     i = Symbol('i', integer=True)
     k = Symbol('k', integer=True)
     j = Symbol('j', integer=True)
