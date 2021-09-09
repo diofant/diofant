@@ -130,3 +130,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`21984`: ValueError: list.remove(x): x not in list occurs in nonlinsolve
 * :sympyissue:`21999`: detection of infinite solution request
 * :sympyissue:`22020`: Comparing two operations that contain log sometimes leads to TypeError exception
+* :sympyissue:`22051`: Nonlinsolve incorrect result
