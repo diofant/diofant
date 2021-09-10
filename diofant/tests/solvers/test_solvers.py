@@ -1750,3 +1750,9 @@ def test_sympyissue_22051():
     assert solve(eqs) == []
     eqs2 = [y*(exp(x) + 1), x + exp(x)]
     assert solve(eqs2) == [{x: -LambertW(1), y: 0}]
+
+
+def test_sympyissue_22058():
+    assert solve(-sqrt(t)*x**2 + 2*x + sqrt(t),
+                 x) == [{x: -sqrt(1 + 1/t) + 1/sqrt(t)},
+                        {x: sqrt(1 + 1/t) + 1/sqrt(t)}]
