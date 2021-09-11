@@ -132,3 +132,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22020`: Comparing two operations that contain log sometimes leads to TypeError exception
 * :sympyissue:`22051`: Nonlinsolve incorrect result
 * :sympyissue:`22058`: Regression in solveset for quadratic with symbolic coefficients
+* :sympyissue:`22073`: Interval with oo

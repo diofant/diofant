@@ -1044,3 +1044,10 @@ def test_sympyissue_8257():
 def test_sympyissue_10931():
     assert S.Integers - S.Integers == S.EmptySet
     assert S.Integers - S.Reals == S.EmptySet
+
+
+def test_sympyissue_22073():
+    assert -oo in Interval(-oo, 5)
+    assert -oo not in Interval.Lopen(-oo, 5)
+    assert -3 not in Interval.Lopen(-3, 5)
+    assert -3 in Interval(-3, 5)
