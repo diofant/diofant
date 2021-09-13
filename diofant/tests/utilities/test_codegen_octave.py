@@ -233,7 +233,7 @@ def test_m_piecewise_():
 
 
 def test_m_multifcns_per_file():
-    name_expr = [ ('foo', [2*x, 3*y]), ('bar', [y**2, 4*y]) ]
+    name_expr = [('foo', [2*x, 3*y]), ('bar', [y**2, 4*y])]
     result = codegen(name_expr, 'Octave', header=False, empty=False)
     assert result[0][0] == 'foo.m'
     source = result[0][1]
@@ -269,7 +269,7 @@ def test_m_multifcns_per_file():
 
 
 def test_m_multifcns_per_file_w_header():
-    name_expr = [ ('foo', [2*x, 3*y]), ('bar', [y**2, 4*y]) ]
+    name_expr = [('foo', [2*x, 3*y]), ('bar', [y**2, 4*y])]
     result = codegen(name_expr, 'Octave', header=True, empty=False)
     assert result[0][0] == 'foo.m'
     source = result[0][1]
@@ -293,7 +293,7 @@ def test_m_multifcns_per_file_w_header():
 
 
 def test_m_filename_match_first_fcn():
-    name_expr = [ ('foo', [2*x, 3*y]), ('bar', [y**2, 4*y]) ]
+    name_expr = [('foo', [2*x, 3*y]), ('bar', [y**2, 4*y])]
     pytest.raises(ValueError,
                   lambda: codegen(name_expr,
                                   'Octave', prefix='bar', header=False, empty=False))

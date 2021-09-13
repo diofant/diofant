@@ -243,11 +243,11 @@ class CCodePrinter(CodePrinter):
         inc_token = ('{', '(', '{\n', '(\n')
         dec_token = ('}', ')')
 
-        code = [ line.lstrip(' \t') for line in code ]
+        code = [line.lstrip(' \t') for line in code]
 
-        increase = [ int(any(map(line.endswith, inc_token))) for line in code ]
-        decrease = [ int(any(map(line.startswith, dec_token)))
-                     for line in code ]
+        increase = [int(any(map(line.endswith, inc_token))) for line in code]
+        decrease = [int(any(map(line.startswith, dec_token)))
+                    for line in code]
 
         pretty = []
         level = 0

@@ -809,7 +809,7 @@ class CCodeGen(CodeGen):
                 type_args.append((arg.get_datatype('C'), f'*{name}'))
             else:
                 type_args.append((arg.get_datatype('C'), name))
-        arguments = ', '.join([ '%s %s' % t for t in type_args])
+        arguments = ', '.join(['%s %s' % t for t in type_args])
         return f'{ctype} {routine.name}({arguments})'
 
     def _preprocessor_statements(self, prefix):
@@ -1078,7 +1078,7 @@ class FCodeGen(CodeGen):
         See: https://en.wikipedia.org/wiki/Function_prototype
 
         """
-        prototype = [ 'interface\n' ]
+        prototype = ['interface\n']
         prototype.extend(self._get_routine_opening(routine))
         prototype.extend(self._declare_arguments(routine))
         prototype.extend(self._get_routine_ending(routine))
@@ -1319,7 +1319,7 @@ class OctaveCodeGen(CodeGen):
                 args.append('%s' % self._get_symbol(arg.name))
         args = ', '.join(args)
         code_list.append(f'{routine.name}({args})\n')
-        code_list = [ ''.join(code_list) ]
+        code_list = [''.join(code_list)]
 
         return code_list
 

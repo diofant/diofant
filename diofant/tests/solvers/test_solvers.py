@@ -1741,3 +1741,18 @@ def test_sympyissue_21984():
             HA: Float('-9.7518697933631848e-23', dps=15),
             A: Float('1.0000000000009752e-10', dps=15)}]
     assert solve(eqs, [H, OH, HA, A]) == res
+
+
+def test_sympyissue_22051():
+    lamda, mu = symbols('lamda mu')
+    eqs = [(x*y*(lamda + 30000*mu) + 6*log(2*y))/x,
+           lamda*x + 30000*mu*x + 6*log(x)/y, x*y - 10, 30000*x*y - 1550]
+    assert solve(eqs) == []
+    eqs2 = [y*(exp(x) + 1), x + exp(x)]
+    assert solve(eqs2) == [{x: -LambertW(1), y: 0}]
+
+
+def test_sympyissue_22058():
+    assert solve(-sqrt(t)*x**2 + 2*x + sqrt(t),
+                 x) == [{x: -sqrt(1 + 1/t) + 1/sqrt(t)},
+                        {x: sqrt(1 + 1/t) + 1/sqrt(t)}]

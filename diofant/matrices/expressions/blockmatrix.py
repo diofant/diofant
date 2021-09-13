@@ -354,7 +354,7 @@ def blockinverse_2x2(expr):
     [[A, B],
      [C, D]] = expr.arg.blocks.tolist()
 
-    return BlockMatrix([[ (A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
+    return BlockMatrix([[+(A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
                         [-(D - C*A.inverse()*B).inverse()*C*A.inverse(),     (D - C*A.inverse()*B).inverse()]])
 
 

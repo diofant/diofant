@@ -444,7 +444,7 @@ class LatexPrinter(Printer):
                     tuple(self._print(s) for s in (l[1], l[0], l[2]))
 
             tex = r'\sum_{\substack{%s}} ' % \
-                str.join('\\\\', [ _format_ineq(l) for l in expr.limits ])
+                str.join('\\\\', [_format_ineq(l) for l in expr.limits])
 
         if isinstance(expr.function, Add):
             tex += r'\left(%s\right)' % self._print(expr.function)
@@ -463,7 +463,7 @@ class LatexPrinter(Printer):
                     tuple(self._print(s) for s in (l[1], l[0], l[2]))
 
             tex = r'\prod_{\substack{%s}} ' % \
-                str.join('\\\\', [ _format_ineq(l) for l in expr.limits ])
+                str.join('\\\\', [_format_ineq(l) for l in expr.limits])
 
         if isinstance(expr.function, Add):
             tex += r'\left(%s\right)' % self._print(expr.function)
@@ -633,7 +633,7 @@ class LatexPrinter(Printer):
         """
         func = expr.func.__name__
 
-        args = [ str(self._print(arg)) for arg in expr.args ]
+        args = [str(self._print(arg)) for arg in expr.args]
         # How inverse trig functions should be displayed, formats are:
         # abbreviated: asin, full: arcsin, power: sin^-1
         inv_trig_style = self._settings['inv_trig_style']
@@ -1250,7 +1250,7 @@ class LatexPrinter(Printer):
         lines = []
 
         for line in range(expr.rows):  # horrible, should be 'rows'
-            lines.append(' & '.join([ self._print(i) for i in expr[line, :] ]))
+            lines.append(' & '.join([self._print(i) for i in expr[line, :]]))
 
         mat_str = self._settings['mat_str']
         if mat_str is None:
@@ -1414,14 +1414,14 @@ class LatexPrinter(Printer):
 
     def _print_tuple(self, expr):
         return r'\left ( %s\right )' % \
-            r', \quad '.join([ self._print(i) for i in expr ])
+            r', \quad '.join([self._print(i) for i in expr])
 
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
 
     def _print_list(self, expr):
         return r'\left [ %s\right ]' % \
-            r', \quad '.join([ self._print(i) for i in expr ])
+            r', \quad '.join([self._print(i) for i in expr])
 
     def _print_dict(self, d):
         keys = sorted(d, key=default_sort_key)

@@ -1604,11 +1604,11 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_GroebnerBasis(self, basis):
-        exprs = [ self._print_Add(arg, order=basis.order)
-                  for arg in basis.exprs ]
+        exprs = [self._print_Add(arg, order=basis.order)
+                 for arg in basis.exprs]
         exprs = prettyForm(*self.join(', ', exprs).parens(left='[', right=']'))
 
-        gens = [ self._print(gen) for gen in basis.gens ]
+        gens = [self._print(gen) for gen in basis.gens]
 
         domain = prettyForm(
             *prettyForm('domain=').right(self._print(basis.domain)))
@@ -1634,7 +1634,7 @@ class PrettyPrinter(Printer):
         pform.baseline = pform.height() - 1
         pform = prettyForm(*pform.right(self._print_seq([
             self._print_seq((self._print(v[0]), xsym('=='), self._print(v[1])),
-                            delimiter='') for v in zip(e.variables, e.point) ])))
+                            delimiter='') for v in zip(e.variables, e.point)])))
 
         pform.baseline = b
         return pform

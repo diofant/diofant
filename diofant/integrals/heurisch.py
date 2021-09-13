@@ -317,8 +317,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     for mapping in mappings:
         mapping = list(mapping)
         mapping = mapping + unnecessary_permutations
-        diffs = [ _substitute(cancel(g.diff(x))) for g in terms ]
-        denoms = [ g.as_numer_denom()[1] for g in diffs ]
+        diffs = [_substitute(cancel(g.diff(x))) for g in terms]
+        denoms = [g.as_numer_denom()[1] for g in diffs]
         if all(h.is_polynomial(*V) for h in denoms) and _substitute(f).is_rational_function(*V):
             denom = functools.reduce(lambda p, q: lcm(p, q, *V), denoms)
             break
@@ -331,10 +331,10 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 return indep*result
         return
 
-    numers = [ cancel(denom*g) for g in diffs ]
+    numers = [cancel(denom*g) for g in diffs]
 
     def _derivation(h):
-        return Add(*[ d * h.diff(v) for d, v in zip(numers, V) ])
+        return Add(*[d * h.diff(v) for d, v in zip(numers, V)])
 
     def _deflation(p):
         for y in V:
@@ -392,14 +392,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     polys = set(list(v_split) + [u_split[0]] + list(special))
 
-    s = u_split[0] * Mul(*[ k for k, v in special.items() if v ])
-    polified = [ p.as_poly(*V) for p in [s, P, Q] ]
+    s = u_split[0] * Mul(*[k for k, v in special.items() if v])
+    polified = [p.as_poly(*V) for p in [s, P, Q]]
 
     if None in polified:
         return
 
     # --- definitions for _integrate ---
-    a, b, c = [ p.total_degree() for p in polified ]
+    a, b, c = [p.total_degree() for p in polified]
 
     poly_denom = (s * v_split[0] * _deflation(v_split[1])).as_expr()
 
@@ -425,8 +425,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     monoms = itermonomials(V, degree)
     poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
-    poly_part = Add(*[ poly_coeffs[i]*monomial
-                       for i, monomial in enumerate(ordered(monoms)) ])
+    poly_part = Add(*[poly_coeffs[i]*monomial
+                      for i, monomial in enumerate(ordered(monoms))])
 
     reducibles = set()
 

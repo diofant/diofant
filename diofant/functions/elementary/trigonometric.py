@@ -616,7 +616,7 @@ class cos(TrigonometricFunction):
                 return igcdex(x[0], x[-1])
             g = migcdex(x[1:])
             u, v, h = igcdex(x[0], g[-1])
-            return tuple([u] + [v*i for i in g[0:-1] ] + [h])
+            return tuple([u] + [v*i for i in g[0:-1]] + [h])
 
         def ipartfrac(r, factors=None):
             from ...ntheory import factorint
@@ -628,7 +628,7 @@ class cos(TrigonometricFunction):
             else:
                 a = [n//x for x in factors]
             if len(a) == 1:
-                return [ r ]
+                return [r]
             h = migcdex(a)
             ans = [r.numerator*Rational(i*j, r.denominator) for i, j in zip(h[:-1], a)]
             assert r == sum(ans)
@@ -951,7 +951,7 @@ class tan(TrigonometricFunction):
                 TX.append(tx)
 
             Yg = numbered_symbols('Y')
-            Y = [ next(Yg) for i in range(n) ]
+            Y = [next(Yg) for i in range(n)]
 
             p = [0, 0]
             for i in range(n + 1):
@@ -1387,7 +1387,7 @@ class cot(ReciprocalTrigonometricFunction):
                 CX.append(cx)
 
             Yg = numbered_symbols('Y')
-            Y = [ next(Yg) for i in range(n) ]
+            Y = [next(Yg) for i in range(n)]
 
             p = [0, 0]
             for i in range(n, -1, -1):

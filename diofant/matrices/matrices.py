@@ -3555,9 +3555,9 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> m = Matrix([[ 6,  5, -2, -3],
+        >>> m = Matrix([[+6,  5, -2, -3],
         ...             [-3, -1,  3,  3],
-        ...             [ 2,  1, -2, -3],
+        ...             [+2,  1, -2, -3],
         ...             [-1,  1,  5,  5]])
         >>> J, P = m.jordan_form()
         >>> J
@@ -3600,9 +3600,9 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> m = Matrix([[ 6,  5, -2, -3],
+        >>> m = Matrix([[+6,  5, -2, -3],
         ...             [-3, -1,  3,  3],
-        ...             [ 2,  1, -2, -3],
+        ...             [+2,  1, -2, -3],
         ...             [-1,  1,  5,  5]])
 
         >>> Jcells, P = m.jordan_cells()
