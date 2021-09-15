@@ -133,3 +133,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22051`: Nonlinsolve incorrect result
 * :sympyissue:`22058`: Regression in solveset for quadratic with symbolic coefficients
 * :sympyissue:`22073`: Interval with oo
+* :sympyissue:`22093`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck
