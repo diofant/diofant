@@ -11,10 +11,11 @@ import pytest
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
                      airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
-                     erf, exp, factorial, fibonacci, gamma, li, log, loggamma,
-                     oo, pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
-from diofant.series.gruntz import (compare, limitinf, mrv, mrv_leadterm,
-                                   rewrite, signinf)
+                     erf, exp, factorial, fibonacci, gamma, li, limit, log,
+                     loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan, tanh,
+                     zeta)
+from diofant.abc import a, c, n, y
+from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, signinf
 
 
 __all__ = ()
@@ -25,133 +26,109 @@ m = Symbol('m', real=True, positive=True)
 
 @pytest.mark.slow
 def test_gruntz_evaluation():
-    # Gruntz' thesis pp. 122 to 123
-    # 8.1
-    assert limitinf(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x) == -1
-    # 8.2
-    assert limitinf(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
-                            - exp(1/x - exp(-exp(x)))), x) == 1
-    # 8.3
-    assert limitinf(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x) == oo
-    # 8.4
-    assert limitinf(exp(exp(exp(x)/(1 - 1/x)))
-                    - exp(exp(exp(x)/(1 - 1/x - log(x)**(-log(x))))), x) == -oo
-    # 8.5
-    assert limitinf(exp(exp(exp(x + exp(-x)))) / exp(exp(exp(x))), x) == oo
-    # 8.6
-    assert limitinf(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(x))))),
-                    x) == oo
-    # 8.7
-    assert limitinf(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(exp(x)))))),
-                    x) == 1
-    # 8.8
-    assert limitinf(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x) == 1
-    # 8.9
-    assert limitinf(log(x)**2 * exp(sqrt(log(x))*(log(log(x)))**2
-                                    * exp(sqrt(log(log(x)))
-                                          * (log(log(log(x))))**3)) / sqrt(x),
-                    x) == 0
-    # 8.10
-    assert limitinf((x*log(x)*(log(x*exp(x) - x**2))**2)
-                    / (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))),
-                    x) == Rational(1, 3)
-    # 8.11
-    assert limitinf((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1)))) -
-                     exp(x))/x, x) == -exp(2)
-    # 8.12
-    assert limitinf((3**x + 5**x)**(1/x), x) == 5
-    # 8.13
-    assert limitinf(x/log(x**(log(x**(log(2)/log(x))))), x) == oo
-    # 8.14
-    assert limitinf(exp(exp(2*log(x**5 + x)*log(log(x))))
-                    / exp(exp(10*log(x)*log(log(x)))), x) == oo
-    # 8.15
-    assert limitinf(exp(exp(Rational(5, 2)*x**(-Rational(5, 7)) +
-                            Rational(21, 8)*x**Rational(6, 11) + 2*x**(-8) +
-                            Rational(54, 17)*x**Rational(49, 45)))**8
-                    / log(log(-log(Rational(4, 3) *
-                              x**(-Rational(5, 14)))))**Rational(7, 6), x) == oo
-    # 8.16
-    assert limitinf((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) -
-                     exp(x)) / exp(x)**4, x) == 1
-    # 8.17
-    assert limitinf(exp(x*exp(-x)/(exp(-x) +
-                                   exp(-2*x**2/(x + 1))))/exp(x), x) == 1
-    # 8.18
-    assert limitinf((exp(exp(-x/(1 + exp(-x)))) *
-                     exp(-x/(1 + exp(-x/(1 + exp(-x)))))
-                     * exp(exp(-x + exp(-x/(1 + exp(-x)))))) /
-                    (exp(-x/(1 + exp(-x))))**2 - exp(x) + x, x) == 2
-    # 8.19
-    assert limitinf(log(x)*(log(log(x) + log(log(x))) - log(log(x)))
-                    / (log(log(x) + log(log(log(x))))), x) == 1
-    # 8.20
-    assert limitinf(exp((log(log(x + exp(log(x)*log(log(x))))))
-                        / (log(log(log(exp(x) + x + log(x)))))), x) == E
+    # Gruntz' thesis, problems 8.1-20, pp. 122 to 123
+    assert limit(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x, oo) == -1
+    assert limit(exp(x)*(exp(1/x + exp(-x) + exp(-x**2))
+                         - exp(1/x - exp(-exp(x)))), x, oo) == 1
+    assert limit(exp(exp(x - exp(-x))/(1 - 1/x)) - exp(exp(x)), x, oo) == oo
+    assert limit(exp(exp(exp(x)/(1 - 1/x)))
+                 - exp(exp(exp(x)/(1 - 1/x - log(x)**(-log(x))))), x, oo) == -oo
+    assert limit(exp(exp(exp(x + exp(-x)))) / exp(exp(exp(x))), x, oo) == oo
+    assert limit(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(x))))),
+                 x, oo) == oo
+    assert limit(exp(exp(exp(x))) / exp(exp(exp(x - exp(-exp(exp(x)))))),
+                 x, oo) == 1
+    assert limit(exp(exp(x)) / exp(exp(x - exp(-exp(exp(x))))), x, oo) == 1
+    assert limit(log(x)**2*exp(sqrt(log(x))*(log(log(x)))**2 *
+                 exp(sqrt(log(log(x)))*(log(log(log(x))))**3))/sqrt(x),
+                 x, oo) == 0
+    assert limit((x*log(x)*(log(x*exp(x) - x**2))**2) /
+                 (log(log(x**2 + 2*exp(exp(3*x**3*log(x)))))),
+                 x, oo) == Rational(1, 3)
+    assert limit((exp(x*exp(-x)/(exp(-x) + exp(-2*x**2/(x + 1)))) -
+                 exp(x))/x, x, oo) == -exp(2)
+    assert limit((3**x + 5**x)**(1/x), x, oo) == 5
+    assert limit(x/log(x**(log(x**(log(2)/log(x))))), x, oo) == oo
+    assert limit(exp(exp(2*log(x**5 + x)*log(log(x)))) /
+                 exp(exp(10*log(x)*log(log(x)))), x, oo) == oo
+    assert limit(exp(exp(Rational(5, 2)*x**(-Rational(5, 7)) +
+                         Rational(21, 8)*x**Rational(6, 11) + 2*x**(-8) +
+                         Rational(54, 17)*x**Rational(49, 45)))**8 /
+                 log(log(-log(Rational(4, 3) *
+                     x**(-Rational(5, 14)))))**Rational(7, 6), x, oo) == oo
+    assert limit((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) -
+                  exp(x))/exp(x)**4, x, oo) == 1
+    assert limit(exp(x*exp(-x)/(exp(-x) +
+                                exp(-2*x**2/(x + 1))))/exp(x), x, oo) == 1
+    assert limit((exp(exp(-x/(1 + exp(-x)))) *
+                  exp(-x/(1 + exp(-x/(1 + exp(-x))))) *
+                  exp(exp(-x + exp(-x/(1 + exp(-x)))))) /
+                 (exp(-x/(1 + exp(-x))))**2 - exp(x) + x, x, oo) == 2
+    assert limit(log(x)*(log(log(x) + log(log(x))) - log(log(x))) /
+                 (log(log(x) + log(log(log(x))))), x, oo) == 1
+    assert limit(exp((log(log(x + exp(log(x)*log(log(x)))))) /
+                     log(log(log(exp(x) + x + log(x))))), x, oo) == E
     # Another
-    assert limitinf(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
+    assert limit(exp(exp(exp(x + exp(-x))))/exp(exp(x)), x, oo) == oo
 
 
 def test_gruntz_eval_special():
     # Gruntz, p. 126
-    assert limitinf(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1
-    assert limitinf((erf(x - exp(-exp(x))) - erf(x)) * exp(exp(x)) * exp(x**2),
-                    x) == -2/sqrt(pi)
-    assert limitinf(exp(exp(x)) *
-                    (exp(sin(1/x + exp(-exp(x)))) - exp(sin(1/x))), x) == 1
-    assert limitinf(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x) == oo
-    assert limitinf(exp(exp(digamma(digamma(x))))/x, x) == exp(-Rational(1, 2))
-    assert limitinf(exp(exp(digamma(log(x))))/x, x) == exp(-Rational(1, 2))
-    assert limitinf(digamma(digamma(digamma(x))), x) == oo
-    assert limitinf(loggamma(loggamma(x)), x) == oo
-    assert limitinf(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x))
-                    * x*log(x), x) == -Rational(1, 2)
-    assert limitinf(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)),
-                    x) == Rational(1, 2)
-    assert limitinf((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x) == 1
+    assert limit(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))),
+                 x, oo) == 1
+    assert limit((erf(x - exp(-exp(x))) - erf(x))*exp(exp(x))*exp(x**2),
+                 x, oo) == -2/sqrt(pi)
+    assert limit(exp(exp(x))*(exp(sin(1/x + exp(-exp(x)))) -
+                              exp(sin(1/x))), x, oo) == 1
+    assert limit(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x, oo) == oo
+    assert limit(exp(exp(digamma(digamma(x))))/x, x, oo) == exp(-Rational(1, 2))
+    assert limit(exp(exp(digamma(log(x))))/x, x, oo) == exp(-Rational(1, 2))
+    assert limit(digamma(digamma(digamma(x))), x, oo) == oo
+    assert limit(loggamma(loggamma(x)), x, oo) == oo
+    assert limit(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x)) *
+                 x*log(x), x, oo) == -Rational(1, 2)
+    assert limit(x*(gamma(x - 1/gamma(x)) - gamma(x) + log(x)),
+                 x, oo) == Rational(1, 2)
+    assert limit((gamma(x + 1/gamma(x)) - gamma(x))/log(x), x, oo) == 1
 
 
 @pytest.mark.slow
 def test_gruntz_eval_special_slow():
-    assert limitinf(gamma(x + 1)/sqrt(2*pi)
-                    - exp(-x)*(x**(x + Rational(1, 2)) +
-                    x**(x - Rational(1, 2))/12), x) == oo
-    assert limitinf(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x) == 0
-    assert limitinf(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x) == oo
-    assert limitinf((Ei(x - exp(-exp(x))) - Ei(x)) *
-                    exp(-x)*exp(exp(x))*x, x) == -1
-    assert limitinf(exp((log(2) + 1)*x) * (zeta(x + exp(-x)) - zeta(x)),
-                    x) == -log(2)
+    assert limit(gamma(x + 1)/sqrt(2*pi) - exp(-x)*(x**(x + Rational(1, 2)) +
+                 x**(x - Rational(1, 2))/12), x, oo) == oo
+    assert limit(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x, oo) == 0
+    assert limit(exp(gamma(x - exp(-x))*exp(1/x)) - exp(gamma(x)), x, oo) == oo
+    assert limit((Ei(x - exp(-exp(x))) - Ei(x)) *
+                 exp(-x)*exp(exp(x))*x, x, oo) == -1
+    assert limit(exp((log(2) + 1)*x)*(zeta(x + exp(-x)) - zeta(x)),
+                 x, oo) == -log(2)
 
     # TODO 8.36 - 8.37 (bessel, max-min)
 
 
 def test_gruntz_other():
-    assert limitinf(sqrt(log(x + 1)) - sqrt(log(x)), x) == 0  # p12, 2.5
-    y = Symbol('y')
-    assert limitinf(((1 + 1/x)**y - 1)*x, x) == y  # p12, 2.6
-    n = Symbol('n', integer=True)
-    assert limitinf(x**n/exp(x), x) == 0  # p14, 2.9
-    assert limitinf((1 + 1/x)*x - 1/log(1 + 1/x),
-                    x) == Rational(1, 2)  # p15, 2.10
-    m = Symbol('m', integer=True)
-    assert limitinf((root(1 + 1/x, n) - 1)/(root(1 + 1/x, m) - 1),
-                    x) == m/n  # p13, 2.7
+    assert limit(sqrt(log(x + 1)) - sqrt(log(x)), x, oo) == 0  # p12, 2.5
+    assert limit(((1 + 1/x)**y - 1)*x, x, oo) == y  # p12, 2.6
+    assert limit(x**n/exp(x), x, oo) == 0  # p14, 2.9
+    assert limit((1 + 1/x)*x - 1/log(1 + 1/x),
+                 x, oo) == Rational(1, 2)  # p15, 2.10
+    assert limit((root(1 + 1/x, n) - 1)/(root(1 + 1/x, m) - 1),
+                 x, oo) == m/n  # p13, 2.7
 
 
 def test_gruntz_hyperbolic():
-    assert limitinf(cosh(x), x) == oo
-    assert limitinf(cosh(-x), x) == oo
-    assert limitinf(sinh(x), x) == oo
-    assert limitinf(sinh(-x), x) == -oo
-    assert limitinf(2*cosh(x)*exp(x), x) == oo
-    assert limitinf(2*cosh(-x)*exp(-x), x) == 1
-    assert limitinf(2*sinh(x)*exp(x), x) == oo
-    assert limitinf(2*sinh(-x)*exp(-x), x) == -1
-    assert limitinf(tanh(x), x) == 1
-    assert limitinf(tanh(-x), x) == -1
-    assert limitinf(coth(x), x) == 1
-    assert limitinf(coth(-x), x) == -1
+    assert limit(cosh(x), x, oo) == oo
+    assert limit(cosh(-x), x, oo) == oo
+    assert limit(sinh(x), x, oo) == oo
+    assert limit(sinh(-x), x, oo) == -oo
+    assert limit(2*cosh(x)*exp(x), x, oo) == oo
+    assert limit(2*cosh(-x)*exp(-x), x, oo) == 1
+    assert limit(2*sinh(x)*exp(x), x, oo) == oo
+    assert limit(2*sinh(-x)*exp(-x), x, oo) == -1
+    assert limit(tanh(x), x, oo) == 1
+    assert limit(tanh(-x), x, oo) == -1
+    assert limit(coth(x), x, oo) == 1
+    assert limit(coth(-x), x, oo) == -1
 
 
 def test_compare():
@@ -239,26 +216,24 @@ def test_mrv():
 
     assert mrv(exp(x + exp(-x**2)), x) == {exp(-x**2)}
 
-    assert mrv(
-        exp(-x + 1/x**2) - exp(x + 1/x), x) == {exp(x + 1/x), exp(1/x**2 - x)}
+    assert mrv(exp(-x + 1/x**2) - exp(x + 1/x), x) == {exp(x + 1/x),
+                                                       exp(1/x**2 - x)}
 
     assert mrv(exp(x**2) + x*exp(x) + exp(x*log(log(x)))/x, x) == {exp(x**2)}
-    assert mrv(
-        exp(x)*(exp(1/x + exp(-x)) - exp(1/x)), x) == {exp(x), exp(-x)}
-    assert mrv(log(
-        x**2 + 2*exp(exp(3*x**3*log(x)))), x) == {exp(exp(3*x**3*log(x)))}
+    assert mrv(exp(x)*(exp(1/x + exp(-x)) - exp(1/x)), x) == {exp(x), exp(-x)}
+    assert mrv(log(x**2 + 2*exp(exp(3*x**3*log(x)))),
+               x) == {exp(exp(3*x**3*log(x)))}
     assert mrv(log(x - log(x))/log(x), x) == {x}
-    assert mrv(
-        (exp(1/x - exp(-x)) - exp(1/x))*exp(x), x) == {exp(x), exp(-x)}
-    assert mrv(
-        1/exp(-x + exp(-x)) - exp(x), x) == {exp(x), exp(-x), exp(x - exp(-x))}
+    assert mrv((exp(1/x - exp(-x)) - exp(1/x))*exp(x), x) == {exp(x), exp(-x)}
+    assert mrv(1/exp(-x + exp(-x)) - exp(x), x) == {exp(x), exp(-x),
+                                                    exp(x - exp(-x))}
     assert mrv(log(log(x*exp(x*exp(x)) + 1)), x) == {exp(x*exp(x))}
     assert mrv(exp(exp(log(log(x) + 1/x))), x) == {x}
 
-    assert mrv((log(log(x) + log(log(x))) - log(log(x)))
-               / log(log(x) + log(log(log(x))))*log(x), x) == {x}
-    assert mrv(log(log(x*exp(x*exp(x)) + 1)) - exp(exp(log(log(x) + 1/x))), x) == \
-        {exp(x*exp(x))}
+    assert mrv((log(log(x) + log(log(x))) -
+                log(log(x)))/log(log(x) + log(log(log(x))))*log(x), x) == {x}
+    assert mrv(log(log(x*exp(x*exp(x)) + 1)) - exp(exp(log(log(x) + 1/x))),
+               x) == {exp(x*exp(x))}
 
     # Gruntz: p47, 3.21
     h = exp(-x/(1 + exp(-x)))
@@ -298,8 +273,8 @@ def test_mrv_leadterm():
         (exp(1/x - exp(-x)) - exp(1/x))*exp(x), x) == (-exp(1/x), 0)
 
     # Gruntz: p51, 3.25
-    assert mrv_leadterm((log(exp(x) + x) - x)/log(exp(x) + log(x))*exp(x), x) == \
-        (1, 0)
+    assert mrv_leadterm((log(exp(x) + x) - x)/log(exp(x) + log(x))*exp(x),
+                        x) == (1, 0)
 
     # Gruntz: p56, 3.27
     assert mrv(exp(-x + exp(-x)*exp(-x*log(x))), x) == {exp(-x*log(x))}
@@ -307,189 +282,184 @@ def test_mrv_leadterm():
 
 
 def test_limit():
-    assert limitinf(x, x) == oo
-    assert limitinf(-x, x) == -oo
-    assert limitinf(-x, x) == -oo
-    assert limitinf((-x)**2, x) == oo
-    assert limitinf(-x**2, x) == -oo
-    assert limitinf((1/x)*log(1/x), x) == 0  # Gruntz: p15, 2.11
-    assert limitinf(1/x, x) == 0
-    assert limitinf(exp(x), x) == oo
-    assert limitinf(-exp(x), x) == -oo
-    assert limitinf(exp(x)/x, x) == oo
-    assert limitinf(1/x - exp(-x), x) == 0
-    assert limitinf(x + 1/x, x) == oo
-    assert limitinf(exp(1/log(1 - 1/x)), x) == 0
+    assert limit(x, x, oo) == oo
+    assert limit(-x, x, oo) == -oo
+    assert limit(-x, x, oo) == -oo
+    assert limit((-x)**2, x, oo) == oo
+    assert limit(-x**2, x, oo) == -oo
+    assert limit((1/x)*log(1/x), x, oo) == 0  # Gruntz: p15, 2.11
+    assert limit(1/x, x, oo) == 0
+    assert limit(exp(x), x, oo) == oo
+    assert limit(-exp(x), x, oo) == -oo
+    assert limit(exp(x)/x, x, oo) == oo
+    assert limit(1/x - exp(-x), x, oo) == 0
+    assert limit(x + 1/x, x, oo) == oo
+    assert limit(exp(1/log(1 - 1/x)), x, oo) == 0
 
-    assert limitinf((1/x)**(1/x), x) == 1  # Gruntz: p15, 2.11
-    assert limitinf((exp(1/x) - 1)*x, x) == 1
-    assert limitinf(1 + 1/x, x) == 1
-    assert limitinf(-exp(1/x), x) == -1
-    assert limitinf(x + exp(-x), x) == oo
-    assert limitinf(x + exp(-x**2), x) == oo
-    assert limitinf(x + exp(-exp(x)), x) == oo
-    assert limitinf(13 + 1/x - exp(-x), x) == 13
+    assert limit((1/x)**(1/x), x, oo) == 1  # Gruntz: p15, 2.11
+    assert limit((exp(1/x) - 1)*x, x, oo) == 1
+    assert limit(1 + 1/x, x, oo) == 1
+    assert limit(-exp(1/x), x, oo) == -1
+    assert limit(x + exp(-x), x, oo) == oo
+    assert limit(x + exp(-x**2), x, oo) == oo
+    assert limit(x + exp(-exp(x)), x, oo) == oo
+    assert limit(13 + 1/x - exp(-x), x, oo) == 13
 
-    a = Symbol('a')
-    assert limitinf(x - log(1 + exp(x)), x) == 0
-    assert limitinf(x - log(a + exp(x)), x) == 0
-    assert limitinf(exp(x)/(1 + exp(x)), x) == 1
-    assert limitinf(exp(x)/(a + exp(x)), x) == 1
+    assert limit(x - log(1 + exp(x)), x, oo) == 0
+    assert limit(x - log(a + exp(x)), x, oo) == 0
+    assert limit(exp(x)/(1 + exp(x)), x, oo) == 1
+    assert limit(exp(x)/(a + exp(x)), x, oo) == 1
 
-    assert limitinf((3**x + 5**x)**(1/x), x) == 5  # issue sympy/sympy#3463
+    assert limit((3**x + 5**x)**(1/x), x, oo) == 5  # issue sympy/sympy#3463
 
-    assert limitinf(Ei(x + exp(-x))*exp(-x)*x, x) == 1
+    assert limit(Ei(x + exp(-x))*exp(-x)*x, x, oo) == 1
 
-    assert limitinf(1/li(x), x) == 0
-    assert limitinf(1/Li(x), x) == 0
+    assert limit(1/li(x), x, oo) == 0
+    assert limit(1/Li(x), x, oo) == 0
 
     # issue diofant/diofant#56
-    assert limitinf((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x) == oo
+    assert limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) == oo
 
     # issue sympy/sympy#9471
-    assert limitinf((((27**(log(x, 3))))/x**3), x) == 1
-    assert limitinf((((27**(log(x, 3) + 1)))/x**3), x) == 27
+    assert limit(27**log(x, 3)/x**3, x, oo) == 1
+    assert limit(27**(log(x, 3) + 1)/x**3, x, oo) == 27
 
     # issue sympy/sympy#9449
-    y = Symbol('y')
-    assert limitinf(x*(abs(1/x + y) - abs(y - 1/x))/2, x) == sign(y)
+    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)
 
     # issue sympy/sympy#8481
-    assert limitinf(m**x * exp(-m) / factorial(x), x) == 0
+    assert limit(m**x * exp(-m) / factorial(x), x, oo) == 0
 
     # issue sympy/sympy#4187
-    assert limitinf(exp(1/x)*log(1/x) - Ei(1/x), x) == -EulerGamma
-    assert limitinf(exp(x)*log(x) - Ei(x), x) == oo
+    assert limit(exp(1/x)*log(1/x) - Ei(1/x), x, oo) == -EulerGamma
+    assert limit(exp(x)*log(x) - Ei(x), x, oo) == oo
 
     # issue sympy/sympy#10382
-    assert limitinf(fibonacci(x + 1)/fibonacci(x), x) == GoldenRatio
+    assert limit(fibonacci(x + 1)/fibonacci(x), x, oo) == GoldenRatio
 
-    assert limitinf(zeta(x), x) == 1
-    assert limitinf(zeta(m)*zeta(x), x) == zeta(m)
+    assert limit(zeta(x), x, oo) == 1
+    assert limit(zeta(m)*zeta(x), x, oo) == zeta(m)
 
 
 def test_I():
-    y = Symbol('y')
-    assert limitinf(I*x, x) == I*oo
-    assert limitinf(y*I*x, x) == sign(y)*I*oo
-    assert limitinf(y*3*I*x, x) == sign(y)*I*oo
-    assert limitinf(y*3*sin(I)*x, x).simplify() == sign(y)*I*oo
+    assert limit(I*x, x, oo) == I*oo
+    assert limit(y*I*x, x, oo) == sign(y)*I*oo
+    assert limit(y*3*I*x, x, oo) == sign(y)*I*oo
+    assert limit(y*3*sin(I)*x, x, oo).simplify() == sign(y)*I*oo
 
 
 def test_sympyissue_4814():
-    assert limitinf((x + 1)**(1/log(x + 1)), x) == E
+    assert limit((x + 1)**(1/log(x + 1)), x, oo) == E
 
 
 def test_intractable():
-    assert limitinf(1/gamma(x), x) == 0
-    assert limitinf(1/loggamma(x), x) == 0
-    assert limitinf(gamma(x)/loggamma(x), x) == oo
-    assert limitinf(exp(gamma(x))/gamma(x), x) == oo
-    assert limitinf(gamma(3 + 1/x), x) == 2
-    assert limitinf(gamma(Rational(1, 7) + 1/x), x) == gamma(Rational(1, 7))
-    assert limitinf(log(x**x)/log(gamma(x)), x) == 1
-    assert limitinf(log(gamma(gamma(x)))/exp(x), x) == oo
-    assert limitinf(acosh(1 + 1/x)*sqrt(x), x) == sqrt(2)
+    assert limit(1/gamma(x), x, oo) == 0
+    assert limit(1/loggamma(x), x, oo) == 0
+    assert limit(gamma(x)/loggamma(x), x, oo) == oo
+    assert limit(exp(gamma(x))/gamma(x), x, oo) == oo
+    assert limit(gamma(3 + 1/x), x, oo) == 2
+    assert limit(gamma(Rational(1, 7) + 1/x), x, oo) == gamma(Rational(1, 7))
+    assert limit(log(x**x)/log(gamma(x)), x, oo) == 1
+    assert limit(log(gamma(gamma(x)))/exp(x), x, oo) == oo
+    assert limit(acosh(1 + 1/x)*sqrt(x), x, oo) == sqrt(2)
 
     # issue sympy/sympy#10804
-    assert limitinf(2*airyai(x)*root(x, 4) *
-                    exp(2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
-    assert limitinf(airybi(x)*root(x, 4) *
-                    exp(-2*x**Rational(3, 2)/3), x) == 1/sqrt(pi)
-    assert limitinf(airyai(1/x), x) == (3**Rational(5, 6) *
-                                        gamma(Rational(1, 3))/(6*pi))
-    assert limitinf(airybi(1/x), x) == cbrt(3)*gamma(Rational(1, 3))/(2*pi)
-    assert limitinf(airyai(2 + 1/x), x) == airyai(2)
-    assert limitinf(airybi(2 + 1/x), x) == airybi(2)
+    assert limit(2*airyai(x)*root(x, 4) *
+                 exp(2*x**Rational(3, 2)/3), x, oo) == 1/sqrt(pi)
+    assert limit(airybi(x)*root(x, 4) *
+                 exp(-2*x**Rational(3, 2)/3), x, oo) == 1/sqrt(pi)
+    assert limit(airyai(1/x), x, oo) == (3**Rational(5, 6) *
+                                         gamma(Rational(1, 3))/(6*pi))
+    assert limit(airybi(1/x), x, oo) == cbrt(3)*gamma(Rational(1, 3))/(2*pi)
+    assert limit(airyai(2 + 1/x), x, oo) == airyai(2)
+    assert limit(airybi(2 + 1/x), x, oo) == airybi(2)
 
     # issue sympy/sympy#10976
-    assert limitinf(erf(m/x)/erf(1/x), x) == m
+    assert limit(erf(m/x)/erf(1/x), x, oo) == m
 
 
 def test_branch_cuts():
-    assert limitinf(sqrt(-1 + I/x), x) == +I
-    assert limitinf(sqrt(-1 - I/x), x) == -I
-    assert limitinf(log(-1 + I/x), x) == +I*pi
-    assert limitinf(log(-1 - I/x), x) == -I*pi
+    assert limit(sqrt(-1 + I/x), x, oo) == +I
+    assert limit(sqrt(-1 - I/x), x, oo) == -I
+    assert limit(log(-1 + I/x), x, oo) == +I*pi
+    assert limit(log(-1 - I/x), x, oo) == -I*pi
 
 
 def test_aseries_trig():
-    assert limitinf(1/log(atan(x)), x) == -1/(-log(pi) + log(2))
-    assert limitinf(1/acot(-x), x) == -oo
+    assert limit(1/log(atan(x)), x, oo) == -1/(-log(pi) + log(2))
+    assert limit(1/acot(-x), x, oo) == -oo
 
 
 def test_exp_log_series():
-    assert limitinf(x/log(log(x*exp(x))), x) == oo
+    assert limit(x/log(log(x*exp(x))), x, oo) == oo
 
 
 def test_sympyissue_3644():
-    assert limitinf(((x**7 + x + 1)/(2**x + x**2))**(-1/x), x) == 2
+    assert limit(((x**7 + x + 1)/(2**x + x**2))**(-1/x), x, oo) == 2
 
 
 def test_sympyissue_6843():
     n = Symbol('n', integer=True, positive=True)
     r = (n + 1)*(1 + 1/x)**(n + 1)/((1 + 1/x)**(n + 1) - 1) - (1 + 1/x)*x
-    assert limitinf(r, x).simplify() == n/2
+    assert limit(r, x, oo) == n/2
 
 
 def test_sympyissue_4190():
-    assert limitinf(x - gamma(1/x), x) == EulerGamma
+    assert limit(x - gamma(1/x), x, oo) == EulerGamma
 
 
 def test_sympyissue_5172():
     n = Symbol('n', real=True, positive=True)
     r = Symbol('r', positive=True)
-    c = Symbol('c')
     p = Symbol('p', positive=True)
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs({c: c + 1})
-    assert limitinf(expr.subs({c: m}), n) == 1
-    assert limitinf(expr.subs({c: p}), n).simplify() == \
-        (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
+    assert limit(expr.subs({c: m}), n, oo) == 1
+    assert limit(expr.subs({c: p}), n, oo) == (2**(p + 1) + r -
+                                               1)/(r + 1)**(p + 1)
 
 
 def test_sympyissue_4109():
-    assert limitinf(1/gamma(1/x), x) == 0
-    assert limitinf(gamma(1/x)/x, x) == 1
+    assert limit(1/gamma(1/x), x, oo) == 0
+    assert limit(gamma(1/x)/x, x, oo) == 1
 
 
 def test_sympyissue_6682():
-    assert limitinf(exp(2*Ei(-1/x))*x**2, x) == exp(2*EulerGamma)
+    assert limit(exp(2*Ei(-1/x))*x**2, x, oo) == exp(2*EulerGamma)
 
 
 def test_sympyissue_7096():
-    assert limitinf((-1/x)**-pi, x) == oo*sign((-1)**(-pi))
+    assert limit((-1/x)**-pi, x, oo) == oo*sign((-1)**(-pi))
 
 
 def test_sympyissue_8462():
-    assert limitinf(binomial(x, x/2), x) == oo
+    assert limit(binomial(x, x/2), x, oo) == oo
     # issue sympy/sympy#10801
-    assert limitinf(16**x/(x*binomial(2*x, x)**2), x) == pi
+    assert limit(16**x/(x*binomial(2*x, x)**2), x, oo) == pi
 
 
 def test_diofantissue_74():
-    assert limitinf(sign(log(1 + 1/x)), x) == +1
-    assert limitinf(sign(log(1 - 1/x)), x) == -1
-    assert limitinf(sign(sin(+1/x)), x) == +1
-    assert limitinf(sign(sin(-1/x)), x) == -1
-    assert limitinf(sign(tan(+1/x)), x) == +1
-    assert limitinf(sign(tan(-1/x)), x) == -1
-    assert limitinf(sign(cos(pi/2 + 1/x)), x) == -1
-    assert limitinf(sign(cos(pi/2 - 1/x)), x) == +1
+    assert limit(sign(log(1 + 1/x)), x, oo) == +1
+    assert limit(sign(log(1 - 1/x)), x, oo) == -1
+    assert limit(sign(sin(+1/x)), x, oo) == +1
+    assert limit(sign(sin(-1/x)), x, oo) == -1
+    assert limit(sign(tan(+1/x)), x, oo) == +1
+    assert limit(sign(tan(-1/x)), x, oo) == -1
+    assert limit(sign(cos(pi/2 + 1/x)), x, oo) == -1
+    assert limit(sign(cos(pi/2 - 1/x)), x, oo) == +1
 
 
 def test_diofantissue_75():
-    assert limitinf(abs(log(x)), x) == oo
-    assert limitinf(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x) == -oo
-    assert limitinf(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x) == +oo
+    assert limit(abs(log(x)), x, oo) == oo
+    assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
+    assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
 
-    assert limitinf(abs(log(2 + 1/x)) - log(2 + 1/x), x) == 0
-    assert limitinf(abs(log(2 - 1/x)) - log(2 - 1/x), x) == 0
+    assert limit(abs(log(2 + 1/x)) - log(2 + 1/x), x, oo) == 0
+    assert limit(abs(log(2 - 1/x)) - log(2 - 1/x), x, oo) == 0
 
 
 def test_sympyissue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
-    pytest.raises(NotImplementedError, lambda: limitinf(e, x))
-    assert isinstance(e.limit(x, oo), Limit)
+    assert isinstance(limit(e, x, oo), Limit)
