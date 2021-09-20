@@ -5,7 +5,7 @@ from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
                      simplify, sin, sinh, sqrt, sstr, symbols, tan, variations)
-from diofant.abc import A
+from diofant.abc import A, a, b, c, d, l
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  _undetermined_coefficients_match, checkinfsol,
@@ -19,7 +19,7 @@ from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
 
 __all__ = ()
 
-C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
+C0, C1, C2, C3, C4, C5 = symbols('C0:6')
 x, y, z, t = symbols('x y z t', real=True)
 f, g, h = symbols('f g h', cls=Function)
 
@@ -36,7 +36,6 @@ f, g, h = symbols('f g h', cls=Function)
 def test_linear_2eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
     k, l, m, n = symbols('k, l, m, n', integer=True)
-    t, a = symbols('t, a')
     x0, y0 = symbols('x0, y0', cls=Function)
     eq1 = [Eq(diff(x(t), t), 9*y(t)), Eq(diff(y(t), t), 12*x(t))]
     sol1 = [Eq(x(t), sqrt(3)*exp(6*sqrt(3)*t)*C2/2 - sqrt(3)*exp(-6*sqrt(3)*t)*C1/2),
@@ -158,8 +157,7 @@ def test_sysode_linear_2eq_order1_type1_D_lt_0_b_eq_0():
 
 def test_linear_2eq_order2():
     x, y, z = symbols('x, y, z', cls=Function)
-    k, l, m, n = symbols('k, l, m, n', integer=True)
-    t, l = symbols('t, l')
+    k, m, n = symbols('k, m, n', integer=True)
     x0, y0 = symbols('x0, y0', cls=Function)
 
     eq1 = (Eq(diff(x(t), t, t), 5*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
@@ -336,7 +334,6 @@ def test_linear_2eq_order2():
 
 def test_linear_3eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
-    t = Symbol('t')
     eq1 = [Eq(diff(x(t), t), 21*x(t)), Eq(diff(y(t), t), 17*x(t) + 3*y(t)),
            Eq(diff(z(t), t), 5*x(t)+7*y(t)+9*z(t))]
     sol1 = [Eq(x(t), 216*exp(21*t)*C3/209),
@@ -407,7 +404,6 @@ def test_linear_3eq_order1_diagonal():
 
 def test_nonlinear_2eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
-    t = Symbol('t')
     eq1 = (Eq(diff(x(t), t), x(t)*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol1 = [
         Eq(x(t), C1*exp((-1/(4*C2 + 4*t))**(-Rational(1, 4)))),
@@ -466,7 +462,6 @@ def test_nonlinear_2eq_order1():
 
 def test_checksysodesol():
     x, y, z = symbols('x, y, z', cls=Function)
-    t = Symbol('t')
     eq = (Eq(diff(x(t), t), 9*y(t)), Eq(diff(y(t), t), 12*x(t)))
     sol = [Eq(x(t), 9*C1*exp(-6*sqrt(3)*t) + 9*C2*exp(6*sqrt(3)*t)),
            Eq(y(t), -6*sqrt(3)*C1*exp(-6*sqrt(3)*t) + 6*sqrt(3)*C2*exp(6*sqrt(3)*t))]
@@ -608,7 +603,6 @@ def test_checksysodesol():
 
 def test_nonlinear_3eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
-    t = Symbol('t')
     eq1 = (4*diff(x(t), t) + 2*y(t)*z(t), 3*diff(y(t), t) - z(t)*x(t), 5*diff(z(t), t) - x(t)*y(t))
     sol1 = '[Eq(x(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), (_y, x(t))), C3 + Integral(-sqrt(15)/15, t))), Eq(y(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, y(t))), C3 + Integral(sqrt(5)/10, t))), Eq(z(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*sqrt(4*C1 - C2 + 5*_y**2)), (_y, z(t))), C3 + Integral(sqrt(3)/6, t)))]'
     assert sstr(dsolve(eq1)) == sol1
@@ -911,12 +905,11 @@ def test_classify_ode_init():
 def test_classify_sysode():
     # Here x is assumed to be x(t) and y as y(t) for simplicity.
     # Similarly diff(x,t) and diff(y,y) is assumed to be x1 and y1 respectively.
-    k, l, m, n = symbols('k, l, m, n', integer=True)
+    k, m, n = symbols('k, m, n', integer=True)
     k1, k2, k3, l1, l2, l3, m1, m2, m3 = symbols('k1, k2, k3, l1, l2, l3, m1, m2, m3', integer=True)
     P, Q, R, p, q, r = symbols('P, Q, R, p, q, r', cls=Function)
     P1, P2, P3, Q1, Q2, R1, R2 = symbols('P1, P2, P3, Q1, Q2, R1, R2', cls=Function)
     x, y, z = symbols('x, y, z', cls=Function)
-    t = symbols('t')
     x1 = diff(x(t), t)
     y1 = diff(y(t), t)
     z1 = diff(z(t), t)
@@ -1123,9 +1116,6 @@ def test_solve_init():
 
 
 def test_ode_order():
-    f = Function('f')
-    g = Function('g')
-    x = Symbol('x')
     assert ode_order(3*x*exp(f(x)), f(x)) == 0
     assert ode_order(x*diff(f(x), x) + 3*x*f(x) - sin(x)/x, f(x)) == 1
     assert ode_order(x**2*f(x).diff(x, x) + x*diff(f(x), x) - f(x), f(x)) == 2
@@ -1284,7 +1274,6 @@ def test_separable1():
 
 
 def test_separable2():
-    a = Symbol('a')
     eq6 = f(x)*x**2*f(x).diff(x) - f(x)**3 - 2*x**2*f(x).diff(x)
     eq7 = f(x)**2 - 1 - (2*f(x) + x*f(x))*f(x).diff(x)
     eq8 = x*log(x)*f(x).diff(x) + sqrt(1 + f(x)**2)
@@ -1398,7 +1387,6 @@ def test_homogeneous_order():
     assert homogeneous_order(log(1/y) + log(x), x, y) == 0
     assert homogeneous_order(log(x/y), x, y) == 0
     assert homogeneous_order(2*log(1/y) + 2*log(x), x, y) == 0
-    a = Symbol('a')
     assert homogeneous_order(a*log(1/y) + a*log(x), x, y) == 0
     assert homogeneous_order(f(x).diff(x), x, y) is None
     assert homogeneous_order(-f(x).diff(x) + x, x, y) is None
@@ -2211,7 +2199,6 @@ def test_sympyissue_5112_5430():
 
 
 def test_nth_order_linear_euler_eq_homogeneous():
-    x, t, a, b, c = symbols('x t a b c')
     y = Function('y')
     our_hint = 'nth_linear_euler_eq_homogeneous'
 
@@ -2278,8 +2265,6 @@ def test_nth_order_linear_euler_eq_homogeneous():
 
 
 def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
-    x, t = symbols('x t')
-    a, b, c, d = symbols('a b c d', integer=True)
     our_hint = 'nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'
 
     eq = x**4*diff(f(x), (x, 4)) - 13*x**2*diff(f(x), (x, 2)) + 36*f(x) + x
@@ -2325,8 +2310,6 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
 
 
 def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
-    x, t = symbols('x, t')
-    a, b, c, d = symbols('a, b, c, d', integer=True)
     our_hint = 'nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'
 
     eq = Eq(x**2*diff(f(x), (x, 2)) - 8*x*diff(f(x), x) + 12*f(x), x**2)
@@ -2369,7 +2352,6 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
 
 
 def test_sympyissue_5095():
-    f = Function('f')
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'separable'))
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x)**2, f(x), 'fdsjf'))
 
@@ -2430,8 +2412,8 @@ def test_exact_enhancement():
 
 
 def test_separable_reduced():
-    f = Function('f')
     x = Symbol('x')  # BUG: if x is real, a more complex solution is returned!
+
     df = f(x).diff(x)
     eq = (x / f(x))*df + tan(x**2*f(x) / (x**2*f(x) - 1))
     assert classify_ode(eq) == ('separable_reduced', 'lie_group',
@@ -2462,7 +2444,6 @@ def test_separable_reduced():
 
 
 def test_homogeneous_function():
-    f = Function('f')
     eq1 = tan(x + f(x))
     eq2 = sin((3*x)/(4*f(x)))
     eq3 = cos(3*x/4*f(x))
@@ -2505,7 +2486,6 @@ def test_linear_coeff_match():
 
 
 def test_linear_coefficients():
-    f = Function('f')
     sol = Eq(f(x), (C1 - 3*x**2 - 18*x)/Mul(2, x**2 + 6*x + 9, evaluate=False))
     eq = f(x).diff(x) + (3 + 2*f(x))/(x + 3)
     assert dsolve(eq, hint='linear_coefficients') == sol
@@ -2518,7 +2498,6 @@ def test_constantsimp_take_problem():
 
 
 def test_sympyissue_6879():
-    f = Function('f')
     eq = Eq(Derivative(f(x), (x, 2)) - 2*Derivative(f(x), x) + f(x), sin(x))
     sol = (C1 + C2*x)*exp(x) + cos(x)/2
     assert dsolve(eq).rhs == sol
@@ -2526,7 +2505,6 @@ def test_sympyissue_6879():
 
 
 def test_sympyissue_6989():
-    f = Function('f')
     k = Symbol('k')
     assert dsolve(f(x).diff(x) - x*exp(-k*x), f(x)) == \
         Eq(f(x), C1 + Piecewise(
@@ -2543,8 +2521,7 @@ def test_sympyissue_6989():
 
 
 def test_heuristic1():
-    y, a, b, c, a4, a3, a2, a1, a0 = symbols('y a b c a4 a3 a2 a1 a0')
-    f = Function('f')
+    y, a4, a3, a2, a1, a0 = symbols('y a4 a3 a2 a1 a0')
     xi = Function('xi')
     eta = Function('eta')
     df = f(x).diff(x)
@@ -2608,7 +2585,6 @@ def test_heuristic2():
 def test_heuristic3():
     xi = Function('xi')
     eta = Function('eta')
-    a, b = symbols('a b')
     df = f(x).diff(x)
 
     eq = x**2*df + x*f(x) + f(x)**2 + x**2
@@ -2622,8 +2598,6 @@ def test_heuristic3():
 
 
 def test_heuristic_4():
-    y, a = symbols('y a')
-
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     i = infinitesimals(eq, hint='chi')
     assert checkinfsol(eq, i)[0]
@@ -2643,7 +2617,6 @@ def test_heuristic_abaco2_similar():
     xi = Function('xi')
     eta = Function('eta')
     F = Function('F')
-    a, b = symbols('a b')
     eq = f(x).diff(x) - F(a*x + b*f(x))
     i = infinitesimals(eq, hint='abaco2_similar')
     assert i == [{eta(x, f(x)): -a/b, xi(x, f(x)): 1}]
@@ -2659,7 +2632,6 @@ def test_heuristic_abaco2_unique_unknown():
     xi = Function('xi')
     eta = Function('eta')
     F = Function('F')
-    a, b = symbols('a b')
     x = Symbol('x', positive=True)
 
     eq = f(x).diff(x) - x**(a - 1)*(f(x)**(1 - b))*F(x**a/a + f(x)**b/b)
@@ -2678,7 +2650,7 @@ def test_heuristic_abaco2_unique_unknown():
 
 
 def test_heuristic_linear():
-    a, b, m, n = symbols('a b m n')
+    m, n = symbols('m n')
 
     eq = x**(n*(m + 1) - m)*(f(x).diff(x)) - a*f(x)**n - b*x**(n*(m + 1))
     i = infinitesimals(eq, hint='linear')
@@ -2687,14 +2659,13 @@ def test_heuristic_linear():
 
 @pytest.mark.xfail
 def test_kamke():
-    a, b, alpha, c = symbols('a b alpha c')
+    alpha = Symbol('alpha')
     eq = x**2*(a*f(x)**2+(f(x).diff(x))) + b*x**alpha + c
     i = infinitesimals(eq, hint='sum_function')
     assert checkinfsol(eq, i)[0]
 
 
 def test_series():
-    C1 = Symbol('C1')
     eq = f(x).diff(x) - f(x)
     assert dsolve(eq, hint='1st_power_series') == Eq(f(x),
                                                      C1 + C1*x + C1*x**2/2 + C1*x**3/6 + C1*x**4/24 +
@@ -2708,8 +2679,6 @@ def test_series():
 
 
 def test_lie_group():
-    C1 = Symbol('C1')
-    x = Symbol('x')  # assuming x is real generates an error!
     a, b, c = symbols('a b c')
     eq = f(x).diff(x)**2
     sol = dsolve(eq, f(x), hint='lie_group')
@@ -2751,7 +2720,6 @@ def test_lie_group():
 
 
 def test_user_infinitesimals():
-    x = Symbol('x')  # assuming x is real generates an error
     eq = x*(f(x).diff(x)) + 1 - f(x)**2
     sol = dsolve(eq, hint='lie_group', xi=sqrt(f(x) - 1)/sqrt(f(x) + 1),
                  eta=0)
@@ -2767,7 +2735,6 @@ def test_sympyissue_7081():
 
 
 def test_2nd_power_series_ordinary():
-    C1, C2 = symbols('C1 C2')
     eq = f(x).diff((x, 2)) - x*f(x)
     assert classify_ode(eq) == ('2nd_power_series_ordinary',)
     assert dsolve(eq) == Eq(f(x),
@@ -2804,7 +2771,6 @@ def test_2nd_power_series_ordinary():
 
 
 def test_2nd_power_series_regular():
-    C1, C2 = symbols('C1 C2')
     eq = x**2*(f(x).diff((x, 2))) - 3*x*(f(x).diff(x)) + (4*x + 4)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*x**2*(-16*x**3/9 +
                                            4*x**2 - 4*x + 1) + O(x**6))
@@ -2852,7 +2818,6 @@ def test_dsolve_linsystem_symbol():
 
 def test_C1_function_9239():
     c1, c2 = symbols('C1, C2', cls=Function)
-    t = Symbol('t')
     eq = (Eq(diff(c1(t), t), 9*c2(t)), Eq(diff(c2(t), t), 12*c1(t)))
     sol = [Eq(c1(t), sqrt(3)*exp(6*sqrt(3)*t)*C4/2 - sqrt(3)*exp(-6*sqrt(3)*t)*C3/2),
            Eq(c2(t), exp(6*sqrt(3)*t)*C4 + exp(-6*sqrt(3)*t)*C3)]
@@ -2877,7 +2842,7 @@ def test_sympyissue_7138():
 
 
 def test_sympyissue_10379():
-    t, y = symbols('t,y')
+    y = Symbol('y')
     sol = dsolve(f(t).diff(t) - (1 - 51.05*y*f(t)))
     ans = Eq(f(t), (0.019588638589618 + 0.019588638589618*E**(-1.0*y*(-1.0*C1 + 51.05*t)))/y)
     assert str(sol) == str(ans)
@@ -2904,7 +2869,6 @@ def test_sympyissue_15311():
 
 
 def test_sympyissue_15474():
-    a, b = symbols('a b')
     eqs = [Eq(f(t).diff(t), a*f(t)), Eq(g(t).diff(t), b*g(t))]
     ans = [Eq(f(t), C1*exp(a*t)), Eq(g(t), C2*exp(b*t))]
     assert dsolve(eqs) == ans
@@ -2987,7 +2951,6 @@ def test_sympyissue_16635():
 
 
 def test_sympyissue_14312():
-    a, b = symbols('a b')
     eqs1 = (Eq(f(t).diff(t), b*g(t)), Eq(g(t).diff(t), -(b + a)*g(t)),
             Eq(h(t).diff(t), a*g(t)))
     sol1 = dsolve(eqs1)
