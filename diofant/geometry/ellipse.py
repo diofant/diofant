@@ -536,7 +536,7 @@ class Ellipse(GeometrySet):
             x, y = [_uniquely_named_symbol(name, self, line) for name in 'xy']
             expr = self.equation(x, y)
             p = Point(x, y).reflect(line)
-            result = expr.subs(zip((x, y), p.args), simultaneous=True)
+            result = expr.subs(zip((x, y), p.args))
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
