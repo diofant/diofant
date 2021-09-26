@@ -237,8 +237,8 @@ from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
-from ..functions import (atan2, conjugate, cos, exp, factorial, im, log, re,
-                         sin, sqrt, tan)
+from ..functions import (conjugate, cos, exp, factorial, im, log, re, sin,
+                         sqrt, tan)
 from ..integrals import Integral, integrate
 from ..logic.boolalg import BooleanAtom
 from ..matrices import BlockDiagMatrix, Matrix, wronskian
@@ -613,7 +613,7 @@ def dsolve(eq, func=None, hint='default', simplify=True,
                                   ode_sol_simplicity(x, func, trysolving=not simplify))
             if given_hint == 'best':
                 return retdict['best']
-            for i in orderedhints:
+            for i in orderedhints:  # pragma: no branch
                 if retdict['best'] == retdict.get(i, None):
                     retdict['best_hint'] = i
                     break
@@ -672,8 +672,7 @@ def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
             rv1 = []
             for s in rv:
                 solved_constants = solve_init([s], [r['func']], cons(s), init)
-                if solved_constants:
-                    rv1.append(s.subs(solved_constants))
+                rv1.append(s.subs(solved_constants))
             rv = rv1
         else:
             raise NotImplementedError
@@ -1282,66 +1281,61 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints['2nd_power_series_regular'] = coeff_dict
 
-    if order > 0:
-        # nth order linear ODE
-        # a_n(x)y^(n) + ... + a_1(x)y' + a_0(x)y = F(x) = b
+    # nth order linear ODE
+    # a_n(x)y^(n) + ... + a_1(x)y' + a_0(x)y = F(x) = b
 
-        r = _nth_linear_match(reduced_eq, func, order)
+    r = _nth_linear_match(reduced_eq, func, order)
 
-        # Constant coefficient case (a_i is constant for all i)
-        if r and not any(r[i].has(x) for i in r if i >= 0):
-            # Inhomogeneous case: F(x) is not identically 0
-            if r[-1]:
-                undetcoeff = _undetermined_coefficients_match(r[-1], x)
-                s = 'nth_linear_constant_coeff_variation_of_parameters'
-                matching_hints[s] = r
-                matching_hints[s + '_Integral'] = r
-                if undetcoeff['test']:
-                    r['trialset'] = undetcoeff['trialset']
-                    matching_hints['nth_linear_constant_coeff_undetermined_coefficients'] = r
-            # Homogeneous case: F(x) is identically 0
-            else:
-                matching_hints['nth_linear_constant_coeff_homogeneous'] = r
+    # Constant coefficient case (a_i is constant for all i)
+    if r and not any(r[i].has(x) for i in r if i >= 0):
+        # Inhomogeneous case: F(x) is not identically 0
+        if r[-1]:
+            undetcoeff = _undetermined_coefficients_match(r[-1], x)
+            s = 'nth_linear_constant_coeff_variation_of_parameters'
+            matching_hints[s] = r
+            matching_hints[s + '_Integral'] = r
+            if undetcoeff['test']:
+                r['trialset'] = undetcoeff['trialset']
+                matching_hints['nth_linear_constant_coeff_undetermined_coefficients'] = r
+        # Homogeneous case: F(x) is identically 0
+        else:
+            matching_hints['nth_linear_constant_coeff_homogeneous'] = r
 
-        # nth order Euler equation a_n*x**n*y^(n) + ... + a_1*x*y' + a_0*y = F(x)
-        # In case of Homogeneous euler equation F(x) = 0
-        def _test_term(coeff, order):
-            r"""
-            Linear Euler ODEs have the form  K*x**order*diff(y(x),x,order) = F(x),
-            where K is independent of x and y(x), order>= 0.
-            So we need to check that for each term, coeff == K*x**order from
-            some K.  We have a few cases, since coeff may have several
-            different types.
+    # nth order Euler equation a_n*x**n*y^(n) + ... + a_1*x*y' + a_0*y = F(x)
+    # In case of Homogeneous euler equation F(x) = 0
+    def _test_term(coeff, order):
+        r"""
+        Linear Euler ODEs have the form  K*x**order*diff(y(x),x,order) = F(x),
+        where K is independent of x and y(x), order>= 0.
+        So we need to check that for each term, coeff == K*x**order from
+        some K.  We have a few cases, since coeff may have several
+        different types.
 
-            """
-            if order < 0:
-                raise ValueError('order should be greater than 0')
-            if coeff == 0:
-                return True
-            if order == 0:
-                if x in coeff.free_symbols:
-                    return False
-                return True
-            if coeff.is_Mul:
-                if coeff.has(f(x)):
-                    return False
-                return x**order in coeff.args
-            elif coeff.is_Pow:
-                return coeff.as_base_exp() == (x, order)
-            elif order == 1:
-                return x == coeff
-            return False
-        if r and not any(not _test_term(r[i], i) for i in r if i >= 0):
-            if not r[-1]:
-                matching_hints['nth_linear_euler_eq_homogeneous'] = r
-            else:
-                matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'] = r
-                matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral'] = r
-                e, re = posify(r[-1].subs({x: exp(x)}))
-                undetcoeff = _undetermined_coefficients_match(e.subs(re), x)
-                if undetcoeff['test']:
-                    r['trialset'] = undetcoeff['trialset']
-                    matching_hints['nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'] = r
+        """
+        if coeff == 0:
+            return True
+        if order == 0:
+            if x in coeff.free_symbols:
+                return False
+            return True
+        if coeff.is_Mul:
+            return x**order in coeff.args
+        elif coeff.is_Pow:
+            return coeff.as_base_exp() == (x, order)
+        elif order == 1:
+            return x == coeff
+        return False
+    if r and not any(not _test_term(r[i], i) for i in r if i >= 0):
+        if not r[-1]:
+            matching_hints['nth_linear_euler_eq_homogeneous'] = r
+        else:
+            matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'] = r
+            matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral'] = r
+            e, re = posify(r[-1].subs({x: exp(x)}))
+            undetcoeff = _undetermined_coefficients_match(e.subs(re), x)
+            if undetcoeff['test']:
+                r['trialset'] = undetcoeff['trialset']
+                matching_hints['nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'] = r
 
     # Order keys based on allhints.
     retlist = [i for i in allhints if i in matching_hints]
@@ -1806,6 +1800,8 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
         return 'type3'
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
+    if not (r1 and r2):
+        return
     num, den = ((r1[f].subs({x(t): u, y(t): v})) /
                 (r2[g].subs({x(t): u, y(t): v}))).as_numer_denom()
     R1 = num.match(f1*g1)
@@ -2022,10 +2018,6 @@ def odesimp(eq, func, order, constants, hint):
     # When RootOf is implemented in solve(), we will want to return a RootOf
     # everytime instead of an Equality.
 
-    # Get the f(x) on the left if possible.
-    if eq.rhs == func and not eq.lhs.has(func):
-        eq = [Eq(eq.rhs, eq.lhs)]
-
     # make sure we are working with lists of solutions in simplified form.
     if eq.lhs == func and not eq.rhs.has(func):
         # The solution is already solved
@@ -2241,8 +2233,6 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             # - Check the result for zero equivalence
             if sol.lhs == func and not sol.rhs.has(func):
                 diffsols = {0: sol.rhs}
-            elif sol.rhs == func and not sol.lhs.has(func):
-                diffsols = {0: sol.lhs}
             else:
                 diffsols = {}
             sol = sol.lhs - sol.rhs
@@ -3833,7 +3823,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
             if isinstance(root, RootOf):
                 gsol += (x**root) * constants.pop()
                 if multiplicity != 1:
-                    raise ValueError('Value should be 1')
+                    raise NotImplementedError
                 collectterms = [(0, root, 0)] + collectterms
             elif root.is_extended_real:
                 gsol += ln(x)**i*(x**root) * constants.pop()
@@ -4432,7 +4422,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
             if isinstance(root, RootOf):
                 gensols.append(exp(root*x))
                 if multiplicity != 1:
-                    raise ValueError('Value should be 1')
+                    raise NotImplementedError
                 # This ordering is important
                 collectterms = [(0, root, 0)] + collectterms
             else:
@@ -4442,25 +4432,19 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                     continue
                 reroot = re(root)
                 imroot = im(root)
-                if imroot.has(atan2) and reroot.has(atan2):
-                    # Remove this condition when re and im stop returning
-                    # circular atan2 usages.
-                    gensols.append(x**i*exp(root*x))
-                    collectterms = [(i, root, 0)] + collectterms
-                else:
-                    if root in conjugate_roots:
-                        collectterms = [(i, reroot, imroot)] + collectterms
-                        continue
-                    if imroot == 0:
-                        gensols.append(x**i*exp(reroot*x))
-                        collectterms = [(i, reroot, 0)] + collectterms
-                        continue
-                    conjugate_roots.append(conjugate(root))
-                    gensols.append(x**i * exp(reroot*x) * sin(abs(imroot)*x))
-                    gensols.append(x**i * exp(reroot*x) * cos(imroot*x))
-
-                    # This ordering is important
+                if root in conjugate_roots:
                     collectterms = [(i, reroot, imroot)] + collectterms
+                    continue
+                if imroot == 0:
+                    gensols.append(x**i*exp(reroot*x))
+                    collectterms = [(i, reroot, 0)] + collectterms
+                    continue
+                conjugate_roots.append(conjugate(root))
+                gensols.append(x**i * exp(reroot*x) * sin(abs(imroot)*x))
+                gensols.append(x**i * exp(reroot*x) * cos(imroot*x))
+
+                # This ordering is important
+                collectterms = [(i, reroot, imroot)] + collectterms
     if returns == 'list':
         return gensols
     elif returns in ('sol' 'both'):
@@ -6077,12 +6061,8 @@ def sysode_linear_2eq_order1(match_):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t)):
                 forcing[i] += j
-    if not (forcing[0].has(t) or forcing[1].has(t)):
-        r['k1'] = forcing[0]
-        r['k2'] = forcing[1]
-    else:
-        raise NotImplementedError('Only homogeneous problems are supported' +
-                                  ' (and constant inhomogeneity)')
+    if any(forcing):
+        raise NotImplementedError
 
     if match_['type_of_equation'] == 'type3':
         sol = _linear_2eq_order1_type3(x, y, t, r, eq)
@@ -6229,6 +6209,8 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
         hint1 = classify_ode(equ)[1]
         sol2 = dsolve(equ, hint=hint1+'_Integral').rhs
         sol1 = s*sol2 + C1*exp(-s*Integral(r['d'] - r['b']/s, t))
+    else:
+        raise NotImplementedError
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -6272,7 +6254,7 @@ def _linear_2eq_order1_type7(x, y, t, r, eq):
     e2 = r['a']*r['c']*r['d'] - r['b']*r['c']**2 + diff(r['c'], t)*r['d'] - r['c']*diff(r['d'], t)
     m1 = r['a']*r['b'] + r['b']*r['d'] + diff(r['b'], t)
     m2 = r['a']*r['c'] + r['c']*r['d'] + diff(r['c'], t)
-    if e1 == 0:
+    if e1.equals(0):
         sol1 = dsolve(r['b']*diff(x(t), t, t) - m1*diff(x(t), t)).rhs
         sol2 = dsolve(diff(y(t), t) - r['c']*sol1 - r['d']*y(t)).rhs
     elif e2 == 0:
@@ -6454,6 +6436,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
         else:
             gsol1 = C1*r['b']*t**3 + C2*r['b']*t**2 + C3*t + C4
             gsol2 = k*gsol1 + 6*C1*t + 2*C2
+    else:
+        raise NotImplementedError
     return [Eq(x(t), gsol1), Eq(y(t), gsol2)]
 
 
@@ -6509,6 +6493,8 @@ def _linear_2eq_order2_type2(x, y, t, r, eq):
             psol1 = r['d1']*(r['e2']-r['e1']*k)*t**4/24 + r['e1']*t**2/2
             psol2 = k*psol1 + (r['e2']-r['e1']*k)*t**2/2
             psol = [psol1, psol2]
+    else:
+        raise NotImplementedError
     return psol
 
 
@@ -6528,13 +6514,13 @@ def _linear_2eq_order2_type3(x, y, t, r, eq):
 
     """
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    if r['b1']**2 - 4*r['c1'] > 0:
-        r['a'] = r['b1']
-        r['b'] = -r['c1']
-        alpha = r['a']/2 + sqrt(r['a']**2 + 4*r['b'])/2
-        beta = r['a']/2 - sqrt(r['a']**2 + 4*r['b'])/2
-        sol1 = C1*cos(alpha*t) + C2*sin(alpha*t) + C3*cos(beta*t) + C4*sin(beta*t)
-        sol2 = -C1*sin(alpha*t) + C2*cos(alpha*t) - C3*sin(beta*t) + C4*cos(beta*t)
+    assert r['b1']**2 - 4*r['c1'] > 0
+    r['a'] = r['b1']
+    r['b'] = -r['c1']
+    alpha = r['a']/2 + sqrt(r['a']**2 + 4*r['b'])/2
+    beta = r['a']/2 - sqrt(r['a']**2 + 4*r['b'])/2
+    sol1 = C1*cos(alpha*t) + C2*sin(alpha*t) + C3*cos(beta*t) + C4*sin(beta*t)
+    sol2 = -C1*sin(alpha*t) + C2*cos(alpha*t) - C3*sin(beta*t) + C4*cos(beta*t)
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
