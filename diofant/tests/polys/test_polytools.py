@@ -14,8 +14,8 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      PolificationFailed, Poly, PolynomialError, PurePoly,
                      Rational, RealField, RootOf, Sum, Symbol, Tuple,
                      UnificationFailed, cancel, cofactors, compose, content,
-                     count_roots, decompose, degree, diff, discriminant, div,
-                     exp, expand, exquo, factor, factor_list, false, gcd,
+                     cos, count_roots, decompose, degree, diff, discriminant,
+                     div, exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
                      lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
                      pi, poly, primitive, quo, re, real_roots, reduced, rem,
@@ -3176,3 +3176,23 @@ def test_sympyissue_21761():
     assert factor(-exp(x)*t + 1,
                   extension=True) == Mul(-1, exp(x) - 5*t - t**5/7 + 3*t**3,
                                          t, evaluate=False)
+
+
+def test_sympyissue_22093():
+    expr = ((2*y**3*sin(x/y)**2 + x)**2*(y*(-6*y**2*sin(x/y)**2 +
+                                            4*y*x*sin(x/y)*cos(x/y)) /
+                                         (2*y**3*sin(x/y)**2 + x)**2 +
+                                         1/(2*y**3*sin(x/y)**2 + x)) /
+            (4*y*(2*y**2*(3*y*sin(x/y) - 2*x*cos(x/y))**2*sin(x/y)**2 /
+             (2*y**3*sin(x/y)**2 + x) - 3*y*sin(x/y)**2 +
+             4*x*sin(x/y)*cos(x/y) - (3*y*sin(x/y) - 2*x*cos(x/y))*sin(x/y) +
+             x**2*sin(x/y)**2/y - x**2*cos(x/y)**2/y)))
+    res = -(4*x**2*y**2*sin(x/y)*cos(x/y) + x**2 +
+            8*x*y**5*sin(x/y)**3*cos(x/y) - 2*x*y**3*sin(x/y)**2 -
+            8*y**6*sin(x/y)**4)/(-4*x**3*sin(x/y)**2 + 4*x**3*cos(x/y)**2 -
+                                 8*x**2*y**3*sin(x/y)**4 -
+                                 24*x**2*y**3*sin(x/y)**2*cos(x/y)**2 -
+                                 24*x**2*y*sin(x/y)*cos(x/y) +
+                                 48*x*y**4*sin(x/y)**3*cos(x/y) +
+                                 24*x*y**2*sin(x/y)**2 - 24*y**5*sin(x/y)**4)
+    assert cancel(expr).equals(res)
