@@ -2885,3 +2885,8 @@ def test_sympyissue_9204():
             Eq(h(t), C1 + e3*q*t/m)]
 
     assert dsolve(F) == sol2
+
+
+def test_sympyissue_22155():
+    assert (dsolve(f(x).diff(x) - exp(f(x) - x)) ==
+            Eq(f(x), x + log(-1/(exp(x)*C1 - 1))))

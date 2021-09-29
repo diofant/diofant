@@ -135,3 +135,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22058`: Regression in solveset for quadratic with symbolic coefficients
 * :sympyissue:`22073`: Interval with oo
 * :sympyissue:`22093`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck
+* :sympyissue:`22155`: Problem with solving simple separable ODE
