@@ -286,6 +286,7 @@ parallel = true
 directory = 'build/coverage/html'
 [tool.coverage.report]
 exclude_lines = ['pragma: no cover',
+                 'except NotImplementedError:',
                  'raise NotImplementedError',
                  'return NotImplemented']
 show_missing = true

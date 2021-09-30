@@ -606,7 +606,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 try:
                     return not minimal_polynomial(self)(0)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     return
 
     def _eval_is_positive(self):

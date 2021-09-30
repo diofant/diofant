@@ -757,7 +757,7 @@ def solve_init(sols, funcs, constants, init):
 
     try:
         solved_constants = solve(subs_sols, constants)
-    except NotImplementedError:  # pragma: no cover
+    except NotImplementedError:
         solved_constants = []
 
     # XXX: We can't differentiate between the solution not existing because of
@@ -5003,7 +5003,7 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             else:
                 try:
                     sol = solve(eq, df)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Infinitesimals for the '
                                               'first order ODE could not be found')
                 else:
@@ -5090,7 +5090,7 @@ def ode_lie_group(eq, func, order, match):
     else:
         try:
             sol = solve(eq, df)
-        except NotImplementedError:  # pragma: no cover
+        except NotImplementedError:
             raise NotImplementedError('Unable to solve the differential equation ' +
                                       str(eq) + ' by the lie group method')
         else:
@@ -5327,7 +5327,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                 else:
                     try:
                         sol = solve(eq, df)
-                    except NotImplementedError:  # pragma: no cover
+                    except NotImplementedError:
                         raise NotImplementedError('Infinitesimals for the '
                                                   'first order ODE could not be found')
                     else:
