@@ -474,6 +474,9 @@ def test_nonlinear_2eq_order1():
     sol4 = {Eq(x(t), -2*exp(C1)/(C2*exp(C1) + t - sin(2*t)/2)), Eq(y(t), -2/(C1 + t - sin(2*t)/2))}
     assert dsolve(eq4) == sol4
 
+    eq4_1 = (Eq(diff(x(t), t), exp(x(t)*y(t))*sin(t)**2), Eq(diff(y(t), t), y(t)**2*sin(t)**2))
+    pytest.raises(NotImplementedError, lambda: dsolve(eq4_1))
+
     eq5 = (Eq(x(t), t*diff(x(t), t)+diff(x(t), t)*diff(y(t), t)), Eq(y(t), t*diff(y(t), t)+diff(y(t), t)**2))
     sol5 = {Eq(x(t), C1*C2 + C1*t), Eq(y(t), C2**2 + C2*t)}
     assert dsolve(eq5, [x(t), y(t)]) == sol5
@@ -697,6 +700,14 @@ def test_nonlinear_3eq_order1():
            3*g(t).diff(t) - h(t)*f(t)*sin(t), 5*h(t).diff(t) - f(t)*g(t)*sin(t)]
     sol2 = '[Eq(f(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, f(t))), C3 + Integral(-sqrt(5)*sin(t)/10, t))), Eq(g(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), (_y, g(t))), C3 + Integral(sqrt(15)*sin(t)/15, t))), Eq(h(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*sqrt(4*C1 - C2 + 5*_y**2)), (_y, h(t))), C3 + Integral(-sqrt(3)*sin(t)/6, t)))]'
     assert sstr(dsolve(eq2)) == sol2
+
+    eq2_1 = [4*f(t).diff(t) + 2*g(t)*h(t)**2*sin(t),
+             3*g(t).diff(t) - h(t)*f(t)*sin(t), 5*h(t).diff(t) - f(t)*g(t)*sin(t)]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq2_1))
+
+    eq2_2 = [4*f(t).diff(t) + 2*f(t)*h(t)**2*sin(t),
+             3*g(t).diff(t) - h(t)*f(t)*sin(t), 5*h(t).diff(t) - f(t)*g(t)*sin(t)]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq2_2))
 
 
 def test_checkodesol():
@@ -2515,6 +2526,7 @@ def test_heuristic2():
     eq = f(x).diff(x) - f(x)/x*(x*log(x**2/f(x)) + 2)
     i = infinitesimals(eq, hint='abaco1_product')
     assert i == [{eta(x, f(x)): f(x)*exp(-x), xi(x, f(x)): 0}]
+    assert infinitesimals(eq, hint='default') == i
     assert checkinfsol(eq, i) == [(True, 0)]
 
 
@@ -2701,6 +2713,7 @@ def test_2nd_power_series_regular():
     eq = x**2*f(x).diff((x, 2)) - 3*x*f(x).diff(x) + (4*x + 4)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*x**2*(-16*x**3/9 +
                                            4*x**2 - 4*x + 1) + O(x**6))
+    assert dsolve(eq, n=2) == Eq(f(x), O(1))
 
     eq = 4*x**2*f(x).diff((x, 2)) - 8*x**2*f(x).diff(x) + (4*x**2 + 1)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*sqrt(x)*(x**4/24 + x**3/6 + x**2/2 +
@@ -2722,6 +2735,20 @@ def test_2nd_power_series_regular():
     assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
     eq = x**3*f(x).diff((x, 2)) - 3*x*2*f(x).diff(x) + 4*f(x)
     assert '2nd_power_series_regular' not in classify_ode(eq, init={f(0): 1})
+
+    eq = x**2*f(x).diff((x, 2)) + x*f(x).diff(x) + (x - Rational(1, 2))*f(x)
+    sol = Eq(f(x), C2*x**(sqrt(2)/2)*(-2*x/(1 + sqrt(2) +
+                                            sqrt(2)*(sqrt(2)/2 + 1)) + 1) +
+             C1*x**(-sqrt(2)/2)*(-2*x**2/((-1 + sqrt(2)*(-sqrt(2)/2 + 1) +
+                                           sqrt(2))*(-sqrt(2)/2 +
+                                                     (-sqrt(2)/2 + 1) *
+                                                     (-sqrt(2)/2 + 2) + 3/2)) +
+                                 2*x/(-1 + sqrt(2)*(-sqrt(2)/2 + 1) +
+                                      sqrt(2)) + 1) + O(x**3))
+    assert dsolve(eq, n=3) == sol
+
+    eq = x**2*f(x).diff((x, 2)) + x*f(x).diff(x) + (x + Rational(1, 2))*f(x)
+    pytest.raises(TypeError, lambda: dsolve(eq))  # XXX
 
 
 def test_sympyissue_7093():
@@ -2830,6 +2857,7 @@ def test_ode_sol_simplicity():
     eq1 = Eq(f(x)/tan(f(x)/(2*x)), C1)
     eq2 = Eq(f(x)/tan(f(x)/(2*x) + f(x)), C2)
     assert [ode_sol_simplicity(eq, f(x)) for eq in [eq1, eq2]] == [28, 35]
+    assert ode_sol_simplicity(eq1, f(x), trysolving=False) == 28
 
     assert ode_sol_simplicity(Eq(f(x), C1*Integral(2*x, x)), f(x)) == oo
     assert ode_sol_simplicity([Eq(f(x), C1*Integral(2*x, x))], f(x)) == oo

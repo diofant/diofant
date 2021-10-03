@@ -364,8 +364,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
 
     atom_set = set().union(*[i.free_symbols for i in eq])
     functions_set = set().union(*[i.atoms(Function) for i in eq])
-    if functions_set:
-        atom_set |= {Symbol(str(f.func)) for f in functions_set}
+    atom_set |= {Symbol(str(f.func)) for f in functions_set}
     ncs = numbered_symbols(start=start, prefix=prefix, exclude=atom_set)
     Cs = [next(ncs) for i in range(num)]
     return Cs[0] if num == 1 else tuple(Cs)
@@ -765,7 +764,7 @@ def solve_init(sols, funcs, constants, init):
     if not solved_constants:
         raise NotImplementedError("Couldn't solve for initial conditions")
 
-    if len(solved_constants) > 1:  # pragma: no cover
+    if len(solved_constants) > 1:
         raise NotImplementedError('Initial conditions produced too many solutions for constants')
 
     return solved_constants[0]
@@ -1164,20 +1163,14 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 dummy_eq = simplify(dummy_eq.subs(reps))
                 # get the re-cast values for e and d
                 r2 = collect(expand(dummy_eq), [df, f(x)], exact=True).match(e*df + d)
-                if r2:
-                    orderd = homogeneous_order(r2[d], x, f(x))
-                    if orderd is not None:
-                        ordere = homogeneous_order(r2[e], x, f(x))
-                        if orderd == ordere:
-                            # Match arguments are passed in such a way that it
-                            # is coherent with the already existing homogeneous
-                            # functions.
-                            r2[d] = r2[d].subs({f(x): y})
-                            r2[e] = r2[e].subs({f(x): y})
-                            r2.update({'xarg': xarg, 'yarg': yarg,
-                                       'd': d, 'e': e, 'y': y})
-                            matching_hints['linear_coefficients'] = r2
-                            matching_hints['linear_coefficients_Integral'] = r2
+                # Match arguments are passed in such a way that it
+                # is coherent with the already existing homogeneous
+                # functions.
+                r2[d] = r2[d].subs({f(x): y})
+                r2[e] = r2[e].subs({f(x): y})
+                r2.update({'xarg': xarg, 'yarg': yarg, 'd': d, 'e': e, 'y': y})
+                matching_hints['linear_coefficients'] = r2
+                matching_hints['linear_coefficients_Integral'] = r2
 
             # Equation of the form y' + (y/x)*H(x^n*y) = 0
             # that can be reduced to separable form
@@ -1984,7 +1977,6 @@ def odesimp(eq, func, order, constants, hint):
     """
     x = func.args[0]
     f = func.func
-    C1 = get_numbered_constants(eq, num=1)
 
     # First, integrate if the hint allows it.
     eq = _handle_Integral(eq, func, order, hint)
@@ -2070,10 +2062,7 @@ def odesimp(eq, func, order, constants, hint):
         # special simplification of the lhs.
         if hint.startswith('1st_homogeneous_coeff'):
             for j, eqi in enumerate(eq):
-                newi = logcombine(eqi, force=True)
-                if isinstance(newi.lhs, log) and newi.rhs == 0:
-                    newi = Eq(newi.lhs.args[0]/C1, C1)
-                eq[j] = newi
+                eq[j] = logcombine(eqi, force=True)
 
     # We cleaned up the constants before solving to help the solve engine with
     # a simpler expression, but the solved expression could have introduced
@@ -2486,8 +2475,6 @@ def __remove_linear_redundancies(expr, Cs):
         elif lhs.func in (Mul, Symbol) and rhs.func in (Mul, Symbol):
             dlhs = sift([lhs] if isinstance(lhs, AtomicExpr) else lhs.args, f)
             if True in dlhs:
-                if False not in dlhs:
-                    dlhs[False] = [1]
                 lhs = Mul(*dlhs[False])
                 rhs = rhs/Mul(*dlhs[True])
         return Eq(lhs, rhs)
@@ -3577,15 +3564,11 @@ def ode_2nd_power_series_regular(eq, func, order, match):
             if isinstance(term, Order):
                 indicial.append(Integer(0))
             else:
-                for arg in term.args:
-                    if not arg.has(x):
-                        indicial.append(arg)
-                        break
+                indicial.append(term.args[0])
 
     p0, q0 = indicial
     sollist = solve(m*(m - 1) + m*p0 + q0, m)
-    if sollist and isinstance(sollist, list) and \
-       all(sol[m].is_extended_real for sol in sollist):
+    if sollist and all(sol[m].is_extended_real for sol in sollist):
         serdict1 = {}
         serdict2 = {}
         if len(sollist) == 1:
@@ -3596,10 +3579,8 @@ def ode_2nd_power_series_regular(eq, func, order, match):
             serdict1 = _frobenius(terms-m1-1, m1, p0, q0, p, q, x0, x, C0)
 
         else:
-            m1 = sollist[0][m]
-            m2 = sollist[1][m]
-            if m1 < m2:
-                m1, m2 = m2, m1
+            m2 = sollist[0][m]
+            m1 = sollist[1][m]
             # Irrespective of whether m1 - m2 is an integer or not, one
             # Frobenius series solution exists.
             serdict1 = _frobenius(terms-m1-1, m1, p0, q0, p, q, x0, x, C0)
@@ -3610,21 +3591,22 @@ def ode_2nd_power_series_regular(eq, func, order, match):
                 # Check if second frobenius series solution exists.
                 serdict2 = _frobenius(terms-m2-1, m2, p0, q0, p, q, x0, x, C1, check=m1)
 
-        if serdict1:
-            finalseries1 = C0
-            for key in serdict1:
+        finalseries1 = C0
+        for key in serdict1:
+            power = int(key.name[1:])
+            finalseries1 += serdict1[key]*(x - x0)**power
+        finalseries1 = (x - x0)**m1*finalseries1
+        finalseries2 = Integer(0)
+        if serdict2:
+            for key in serdict2:
                 power = int(key.name[1:])
-                finalseries1 += serdict1[key]*(x - x0)**power
-            finalseries1 = (x - x0)**m1*finalseries1
-            finalseries2 = Integer(0)
-            if serdict2:
-                for key in serdict2:
-                    power = int(key.name[1:])
-                    finalseries2 += serdict2[key]*(x - x0)**power
-                finalseries2 += C1
-                finalseries2 = (x - x0)**m2*finalseries2
-            return Eq(f(x), collect(finalseries1 + finalseries2,
-                                    [C0, C1]) + Order(x**terms))
+                finalseries2 += serdict2[key]*(x - x0)**power
+            finalseries2 += C1
+            finalseries2 = (x - x0)**m2*finalseries2
+        return Eq(f(x), collect(finalseries1 + finalseries2,
+                                [C0, C1]) + Order(x**terms))
+    else:
+        return NotImplementedError
 
 
 def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
@@ -3666,7 +3648,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
         # then set constant as zero and proceed.
         if m2 is not None and i == m2 - m:
             if num:
-                return False
+                raise NotImplementedError
             else:
                 frobdict[numsyms[i]] = Integer(0)
         else:
@@ -5098,7 +5080,6 @@ def ode_lie_group(eq, func, order, match):
     # a] solve raises a NotImplementedError.
     # b] any heuristic raises a ValueError
     # another heuristic can be used.
-    tempsol = []  # Used by solve below
     for heuristic in heuristics:
         try:
             if not inf:
@@ -5145,7 +5126,7 @@ def ode_lie_group(eq, func, order, match):
                             try:
                                 sdeq = solve(deq, y)
                             except NotImplementedError:
-                                tempsol.append(deq)
+                                continue
                             else:
                                 if len(sdeq) == 1:
                                     return Eq(f(x), sdeq[0][y])
@@ -5157,16 +5138,9 @@ def ode_lie_group(eq, func, order, match):
 
                     else:
                         raise NotImplementedError
-
-    # If nothing works, return solution as it is, without solving for y
-    if tempsol:
-        if len(tempsol) == 1:
-            return Eq(tempsol.pop().subs({y: f(x)}), 0)
-        else:
-            return [Eq(sol.subs({y: f(x)}), 0) for sol in tempsol]
-
-    raise NotImplementedError('The given ODE ' + str(eq) + ' cannot be solved by'
-                              + ' the lie group method')
+    else:
+        raise NotImplementedError(f'The given ODE {eq!s}'
+                                  ' cannot be solved by the lie group method')
 
 
 def _lie_group_remove(coords):
@@ -5360,7 +5334,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                                      ' given heuristic')
 
 
-def lie_heuristic_abaco1_simple(match, comp=False):
+def lie_heuristic_abaco1_simple(match, comp):
     r"""
     The first heuristic uses the following four sets of
     assumptions on `\xi` and `\eta`
@@ -5463,7 +5437,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         return xieta
 
 
-def lie_heuristic_abaco1_product(match, comp=False):
+def lie_heuristic_abaco1_product(match, comp):
     r"""
     The second heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5495,25 +5469,11 @@ def lie_heuristic_abaco1_product(match, comp=False):
     """
     xieta = []
     y = match['y']
-    h = match['h']
     hinv = match['hinv']
     func = match['func']
     x = func.args[0]
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
-
-    inf = separatevars(((log(h).diff(y)).diff(x))/h**2, dict=True, symbols=[x, y])
-    if inf and inf['coeff']:
-        fx = inf[x]
-        gy = simplify(fx*((1/(fx*h)).diff(x)))
-        gysyms = gy.free_symbols
-        if x not in gysyms:
-            gy = exp(integrate(gy, y))
-            inf = {eta: Integer(0), xi: (fx*gy).subs({y: func})}
-            if not comp:
-                return [inf]
-            if comp and inf not in xieta:
-                xieta.append(inf)
 
     u1 = Dummy('u1')
     inf = separatevars(((log(hinv).diff(y)).diff(x))/hinv**2, dict=True, symbols=[x, y])
@@ -5528,14 +5488,14 @@ def lie_heuristic_abaco1_product(match, comp=False):
             inf = {eta: etaval.subs({y: func}), xi: Integer(0)}
             if not comp:
                 return [inf]
-            if comp and inf not in xieta:
+            elif inf not in xieta:
                 xieta.append(inf)
 
     if xieta:
         return xieta
 
 
-def lie_heuristic_bivariate(match, comp=False):
+def lie_heuristic_bivariate(match, comp):
     r"""
     The third heuristic assumes the infinitesimals `\xi` and `\eta`
     to be bi-variate polynomials in `x` and `y`. The assumption made here
@@ -5607,7 +5567,7 @@ def lie_heuristic_bivariate(match, comp=False):
                     return [inf]
 
 
-def lie_heuristic_chi(match, comp=False):
+def lie_heuristic_chi(match, comp):
     r"""
     The aim of the fourth heuristic is to find the function `\chi(x, y)`
     that satisifies the PDE `\frac{d\chi}{dx} + h\frac{d\chi}{dx}
@@ -5678,7 +5638,7 @@ def lie_heuristic_chi(match, comp=False):
                         return [inf]
 
 
-def lie_heuristic_function_sum(match, comp=False):
+def lie_heuristic_function_sum(match, comp):
     r"""
     This heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5762,7 +5722,7 @@ def lie_heuristic_function_sum(match, comp=False):
             return xieta
 
 
-def lie_heuristic_abaco2_similar(match, comp=False):
+def lie_heuristic_abaco2_similar(match, comp):
     r"""
     This heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5869,7 +5829,7 @@ def lie_heuristic_abaco2_similar(match, comp=False):
                     return [{eta: tau.subs({x: func}), xi: gx.subs({x: func})}]
 
 
-def lie_heuristic_abaco2_unique_unknown(match, comp=False):
+def lie_heuristic_abaco2_unique_unknown(match, comp):
     r"""
     This heuristic assumes the presence of unknown functions or known functions
     with non-integer powers.
@@ -5946,7 +5906,7 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
                 return [{xi: xitry.subs({y: func}), eta: Integer(1)}]
 
 
-def lie_heuristic_linear(match, comp=False):
+def lie_heuristic_linear(match, comp):
     r"""
     This heuristic assumes
 
