@@ -136,3 +136,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22073`: Interval with oo
 * :sympyissue:`22093`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck
 * :sympyissue:`22155`: Problem with solving simple separable ODE
+* :sympyissue:`22220`: Bug in the evaluation of a log limit
