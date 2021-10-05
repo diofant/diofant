@@ -3,8 +3,9 @@ import pytest
 from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
-                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
-                     simplify, sin, sinh, sqrt, sstr, symbols, tan, variations)
+                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
+                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan,
+                     variations)
 from diofant.abc import A, a, b, c, d, k, l, m, n
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -13,6 +14,7 @@ from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  classify_sysode, constant_renumber,
                                  constantsimp, get_numbered_constants,
                                  homogeneous_order, infinitesimals,
+                                 ode_nth_linear_constant_coeff_homogeneous,
                                  ode_nth_linear_euler_eq_homogeneous,
                                  ode_sol_simplicity, odesimp, solve_init)
 
@@ -97,6 +99,16 @@ def test_linear_2eq_order1():
     sol11 = [Eq(x(t), exp(-Integral(-a*g(t) - f(t), t))*(C1 - Integral(-exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2*g(t), t))),
              Eq(y(t), exp(-Integral(-a*g(t) - f(t), t))*a*(C1 - Integral(-exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2*g(t), t)) + exp(-a*Integral(g(t) - (a*g(t) - a*h(t))/a, t))*C1)]
     assert dsolve(eq11) == sol11
+
+    eq11_1 = [Eq(diff(x(t), t), a*(f(t) + a*h(t))*x(t) + a*(g(t) - h(t))*y(t)), Eq(diff(y(t), t), f(t)*x(t) + g(t)*y(t))]
+    sol11_1 = [Eq(x(t), exp(-Integral(-a*g(t) - f(t), t))*a*(C1 - Integral(exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2, t)) + exp(-a*Integral(g(t) - (a*g(t) - a*h(t))/a, t))*C1), Eq(y(t), exp(-Integral(-a*g(t) - f(t), t))*(C1 - Integral(exp(-a*Integral(h(t), t))*exp(Integral(-a*g(t) - f(t), t))*C2, t)))]
+    assert dsolve(eq11_1) == sol11_1
+
+    eq12 = [f(t).diff(t) - f(t) - g(t), g(t).diff(t) - t*f(t) + g(t)]
+    sol12 = [Eq(f(t), C1 + C2*t),
+             Eq(g(t), exp(-t)*(exp(t)*(C1*t - C1 + C2*t**2 -
+                                       2*C2*t + 2*C2) + C3))]
+    assert dsolve(eq12) == sol12
 
 
 def test_linear_2eq_order1_nonhomog_linear():
@@ -674,7 +686,6 @@ def test_checkodesol():
     assert checkodesol(f(x).diff(x),
                        Eq(f(x, y), x)) == (False,
                                            -f(x).diff(x) + f(x, y).diff(x) - 1)
-    assert checkodesol(f(x).diff(x), Eq(f(x), x)) is not True
     assert checkodesol(f(x).diff(x), Eq(f(x), x)) == (False, 1)
 
     sol1 = Eq(f(x)**5 + 11*f(x) - 2*f(x) + x, 0)
@@ -862,6 +873,9 @@ def test_classify_ode():
     pytest.raises(ValueError, lambda: dsolve(f(x).diff(x), f(y)))
     assert (classify_ode(f(x).diff(x), f(y), dict=True) ==
             {'default': None, 'order': 0})
+
+    assert classify_ode(f(x).diff((x, 2))*x**3 - 3*x**4*f(x).diff(x) +
+                        f(x)) == ()
 
 
 def test_classify_ode_init():
@@ -1100,6 +1114,9 @@ def test_classify_sysode():
     eq18_1 = (f(t).diff(t) - t*f(t) + t, g(t).diff(t) + g(t))
     assert classify_sysode(eq18_1)['type_of_equation'] is None
 
+    eq19 = (f(x).diff(x)**2 - 2*f(x) + g(x)**2, g(x).diff(x) + x)
+    assert classify_sysode(eq19)['is_linear'] is False
+
 
 def test_solve_init():
     # Basic tests that things work from dsolve.
@@ -1129,11 +1146,20 @@ def test_solve_init():
     assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
                       {f(0): 1, f(pi/2): 1}) == {C1: 1, C2: 1}
 
-    assert solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2],
+    eqs = [Eq(f(x), C1*sin(x) + C2*cos(x))]
+    assert solve_init(eqs, [f(x)], [C1, C2],
+                      {f(0): 1, f(x).diff(x).subs({x: 0}): 1}) == {C1: 1, C2: 1}
+    assert solve_init(eqs, [f(x)], [C1, C2],
+                      {f(x).diff(x).subs({x: y}): 0,
+                       f(x).diff(x).subs({x: 0}): 1}) == {C1: 1, C2: 1/tan(y)}
+    eqs.append(Eq(g(x), C1*x))
+    assert solve_init(eqs, [f(x)], [C1, C2],
                       {f(0): 1, f(x).diff(x).subs({x: 0}): 1}) == {C1: 1, C2: 1}
 
     # XXX: Ought to be ValueError
-    pytest.raises(NotImplementedError, lambda: solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))], [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
+    pytest.raises(NotImplementedError,
+                  lambda: solve_init([Eq(f(x), C1*sin(x) + C2*cos(x))],
+                                     [f(x)], [C1, C2], {f(0): 1, f(pi): 1}))
 
     EI, q, L = symbols('EI q L')
 
@@ -1590,7 +1616,6 @@ def test_1st_homogeneous_coeff_corner_case():
     assert sid not in c2 and sdi not in c2
 
 
-@pytest.mark.slow
 def test_nth_linear_constant_coeff_homogeneous():
     # From Exercise 20, in Ordinary Differential Equations,
     #                      Tenenbaum and Pollard, pg. 220
@@ -1672,6 +1697,11 @@ def test_nth_linear_constant_coeff_homogeneous():
     for eq, sol in zip(eqs, sols):
         assert dsolve(eq) == sol
         assert checkodesol(eq, sol) == (True, 0)
+
+    eq = f(x).diff((x, 2)) - I*f(x)
+    sol = Eq(f(x), exp(x*sqrt(I))*C2 + exp(-x*sqrt(I))*C1)
+    assert dsolve(eq) == sol
+    assert checkodesol(eq, sol) == (True, 0)
 
 
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
@@ -2391,6 +2421,8 @@ def test_heuristic1():
     eq4 = f(x).diff(x) - 1/sqrt(a4*x**4 + a3*x**3 + a2*x**2 + a1*x + a0)
     eq5 = x**2*f(x).diff(x) - f(x) + x**2*exp(x - 1/x)
 
+    pytest.raises(ValueError, lambda: infinitesimals(eq, f(x, y)))
+
     i = infinitesimals(eq, hint='abaco1_simple')
     assert i == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0},
                  {eta(x, f(x)): f(x), xi(x, f(x)): 0},
@@ -2416,6 +2448,8 @@ def test_heuristic1():
     sol = [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): Integer(0)}]
     assert infinitesimals(eq) == infinitesimals(Eq(eq, 0)) == sol
     assert checkinfsol(eq, sol) == checkinfsol(Eq(eq, 0), sol) == [(True, 0)]
+
+    pytest.raises(ValueError, lambda: checkinfsol(eq, sol, f(x, y)))
 
 
 def test_sympyissue_6247():
@@ -2505,6 +2539,10 @@ def test_kamke():
 
 
 def test_series():
+    assert dsolve(f(x).diff(x), hint='1st_power_series') == Eq(f(x), C1)
+    assert dsolve(f(x).diff(x) - x, hint='1st_power_series',
+                  n=1) == Eq(f(x), C1 + O(x))
+
     eq = f(x).diff(x) - f(x)
     assert (dsolve(eq, hint='1st_power_series') ==
             Eq(f(x), C1 + C1*x + C1*x**2/2 + C1*x**3/6 + C1*x**4/24 +
@@ -2515,6 +2553,9 @@ def test_series():
     eq = f(x).diff(x) - sin(x*f(x))
     sol = Eq(f(x), (x - 2)**2*(1 + sin(4))*cos(4) + (x - 2)*sin(4) + 2 + O(x**3))
     assert dsolve(eq, hint='1st_power_series', init={f(2): 2}, n=3) == sol
+
+    assert dsolve(f(x).diff(x) - root(f(x), 3),
+                  hint='1st_power_series', init={f(0): 0}) == Eq(f(x), oo)
 
 
 def test_lie_group():
@@ -2740,6 +2781,9 @@ def test_ode_sol_simplicity():
     eq2 = Eq(f(x)/tan(f(x)/(2*x) + f(x)), C2)
     assert [ode_sol_simplicity(eq, f(x)) for eq in [eq1, eq2]] == [28, 35]
 
+    assert ode_sol_simplicity(Eq(f(x), C1*Integral(2*x, x)), f(x)) == oo
+    assert ode_sol_simplicity([Eq(f(x), C1*Integral(2*x, x))], f(x)) == oo
+
 
 def test_get_numbered_constants():
     pytest.raises(ValueError, lambda: get_numbered_constants('spam'))
@@ -2763,6 +2807,10 @@ def test_dsolve_interface():
                                  f(x), 2, match={-1: Integer(0), 0: Integer(0),
                                                  1: -3*x, 2: 2*x**2},
                                  returns='spam'))
+    solver = ode_nth_linear_constant_coeff_homogeneous
+    pytest.raises(ValueError, lambda: solver(f(x).diff((x, 2)) + f(x),
+                                             f(x), 2, match={0: 1, 2: 1},
+                                             returns='spam'))
 
     # issue diofant/diofant#293
     eqs = [-f(x) + f(x).diff(x) + g(x).diff(x),
@@ -2837,3 +2885,8 @@ def test_sympyissue_9204():
             Eq(h(t), C1 + e3*q*t/m)]
 
     assert dsolve(F) == sol2
+
+
+def test_sympyissue_22155():
+    assert (dsolve(f(x).diff(x) - exp(f(x) - x)) ==
+            Eq(f(x), x + log(-1/(exp(x)*C1 - 1))))

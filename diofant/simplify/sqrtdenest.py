@@ -820,7 +820,7 @@ def unrad(eq, *syms, **flags):
                 eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
-            except NotImplementedError:  # pragma: no cover
+            except NotImplementedError:
                 pass
 
         if len(rterms) == 2:

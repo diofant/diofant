@@ -872,3 +872,15 @@ def test_sympyissue_21756():
 
 def test_sympyissue_21785():
     assert sqrt((-a**2 + x**2)/(1 - x**2)).limit(a, 1, '-') == I
+
+
+def test_sympyissue_22220():
+    e1 = sqrt(30)*atan(sqrt(30)*tan(x/2)/6)/30
+    e2 = sqrt(30)*I*(-log(sqrt(2)*tan(x/2) - 2*sqrt(15)*I/5) +
+                     +log(sqrt(2)*tan(x/2) + 2*sqrt(15)*I/5))/60
+
+    assert limit(e1, x, -pi) == -sqrt(30)*pi/60
+    assert limit(e2, x, -pi) == -sqrt(30)*pi/30
+
+    assert limit(e1, x, -pi, '-') == sqrt(30)*pi/60
+    assert limit(e2, x, -pi, '-') == 0

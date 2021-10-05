@@ -658,7 +658,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             if c:
                 try:
                     tsol = integrate(e/c, y)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of integrate')
                 else:
@@ -666,7 +666,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             else:
                 try:
                     tsol = integrate(e/b, x)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of integrate')
                 else:
