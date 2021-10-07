@@ -2566,6 +2566,17 @@ def test_heuristic_abaco2_similar():
     assert i == [{eta(x, f(x)): f(x)**2, xi(x, f(x)): f(x)**2}]
     assert checkinfsol(eq, i) == [(True, 0)]
 
+    eq = f(x).diff(x) + exp(f(x)) + x
+    i = infinitesimals(eq, hint='abaco2_similar')
+    assert i == [{eta(x, f(x)): exp(x**2/2)*x, xi(x, f(x)): -exp(x**2/2)}]
+    assert checkinfsol(eq, i) == [(True, 0)]
+
+    eq = f(x).diff(x) + 1/(f(x) + exp(x))
+    i = infinitesimals(eq, hint='abaco2_similar')
+    assert i == [{eta(x, f(x)): -exp(f(x)**2/2),
+                  xi(x, f(x)): exp(f(x)**2/2)*f(x)}]
+    assert checkinfsol(eq, i) == [(True, 0)]
+
 
 def test_heuristic_abaco2_unique_unknown():
     x = Symbol('x', positive=True)

@@ -5082,8 +5082,9 @@ def ode_lie_group(eq, func, order, match):
     # another heuristic can be used.
     for heuristic in heuristics:
         try:
-            if not inf:
-                inf = infinitesimals(eq, hint=heuristic, func=func, order=1, match=match)
+            if heuristic != 'user_defined':
+                inf = infinitesimals(eq, hint=heuristic, func=func,
+                                     order=1, match=match)
         except ValueError:
             continue
         else:
@@ -5778,7 +5779,7 @@ def lie_heuristic_abaco2_similar(match, comp):
         C = Wild('C', exclude=[x, y])
         match = h.match(A + B*exp(y/C))
         try:
-            tau = exp(-integrate(match[A]/match[C]), x)/match[B]
+            tau = exp(-integrate(match[A]/match[C], x))/match[B]
         except NotImplementedError:
             pass
         else:
@@ -5805,9 +5806,9 @@ def lie_heuristic_abaco2_similar(match, comp):
         A = Wild('A', exclude=[y])
         B = Wild('B', exclude=[y])
         C = Wild('C', exclude=[x, y])
-        match = h.match(A + B*exp(y/C))
+        match = hinv.match(A + B*exp(y/C))
         try:
-            tau = exp(-integrate(match[A]/match[C]), x)/match[B]
+            tau = exp(-integrate(match[A]/match[C], x))/match[B]
         except NotImplementedError:
             pass
         else:
