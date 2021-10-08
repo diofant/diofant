@@ -5081,64 +5081,63 @@ def ode_lie_group(eq, func, order, match):
     # b] any heuristic raises a ValueError
     # another heuristic can be used.
     for heuristic in heuristics:
-        try:
-            if heuristic != 'user_defined':
+        if heuristic != 'user_defined':
+            try:
                 inf = infinitesimals(eq, hint=heuristic, func=func,
                                      order=1, match=match)
-        except ValueError:
-            continue
-        else:
-            for infsim in inf:
-                xiinf = (infsim[xi(x, func)]).subs({func: y})
-                etainf = (infsim[eta(x, func)]).subs({func: y})
-                # This condition creates recursion while using pdsolve.
-                # Since the first step while solving a PDE of form
-                # a*(f(x, y).diff(x)) + b*(f(x, y).diff(y)) + c = 0
-                # is to solve the ODE dy/dx = b/a
-                if simplify(etainf/xiinf) == h:
-                    continue
-                rpde = f(x, y).diff(x)*xiinf + f(x, y).diff(y)*etainf
-                r = pdsolve(rpde, func=f(x, y)).rhs
-                s = pdsolve(rpde - 1, func=f(x, y)).rhs
-                newcoord = [_lie_group_remove(coord) for coord in [r, s]]
-                r = Dummy('r')
-                s = Dummy('s')
-                C1 = Symbol('C1')
-                rcoord = newcoord[0]
-                scoord = newcoord[-1]
-                try:
-                    sol = solve([r - rcoord, s - scoord], x, y)
-                except NotImplementedError:
-                    continue
-                else:
-                    sol = sol[0]
-                    xsub = sol[x]
-                    ysub = sol[y]
-                    num = simplify(scoord.diff(x) + scoord.diff(y)*h)
-                    denom = simplify(rcoord.diff(x) + rcoord.diff(y)*h)
-                    if num and denom:
-                        diffeq = simplify((num/denom).subs({x: xsub, y: ysub}))
-                        sep = separatevars(diffeq, symbols=[r, s], dict=True)
-                        if sep:
-                            # Trying to separate, r and s coordinates
-                            deq = integrate((1/sep[s]), s) + C1 - integrate(sep['coeff']*sep[r], r)
-                            # Substituting and reverting back to original coordinates
-                            deq = deq.subs({r: rcoord, s: scoord})
-                            try:
-                                sdeq = solve(deq, y)
-                            except NotImplementedError:
-                                continue
+            except ValueError:
+                continue
+        for infsim in inf:
+            xiinf = (infsim[xi(x, func)]).subs({func: y})
+            etainf = (infsim[eta(x, func)]).subs({func: y})
+            # This condition creates recursion while using pdsolve.
+            # Since the first step while solving a PDE of form
+            # a*(f(x, y).diff(x)) + b*(f(x, y).diff(y)) + c = 0
+            # is to solve the ODE dy/dx = b/a
+            if simplify(etainf/xiinf) == h:
+                continue
+            rpde = f(x, y).diff(x)*xiinf + f(x, y).diff(y)*etainf
+            r = pdsolve(rpde, func=f(x, y)).rhs
+            s = pdsolve(rpde - 1, func=f(x, y)).rhs
+            newcoord = [_lie_group_remove(coord) for coord in [r, s]]
+            r = Dummy('r')
+            s = Dummy('s')
+            C1 = Symbol('C1')
+            rcoord = newcoord[0]
+            scoord = newcoord[-1]
+            try:
+                sol = solve([r - rcoord, s - scoord], x, y)
+            except NotImplementedError:
+                continue
+            else:
+                sol = sol[0]
+                xsub = sol[x]
+                ysub = sol[y]
+                num = simplify(scoord.diff(x) + scoord.diff(y)*h)
+                denom = simplify(rcoord.diff(x) + rcoord.diff(y)*h)
+                if num and denom:
+                    diffeq = simplify((num/denom).subs({x: xsub, y: ysub}))
+                    sep = separatevars(diffeq, symbols=[r, s], dict=True)
+                    if sep:
+                        # Trying to separate, r and s coordinates
+                        deq = integrate((1/sep[s]), s) + C1 - integrate(sep['coeff']*sep[r], r)
+                        # Substituting and reverting back to original coordinates
+                        deq = deq.subs({r: rcoord, s: scoord})
+                        try:
+                            sdeq = solve(deq, y)
+                        except NotImplementedError:
+                            continue
+                        else:
+                            if len(sdeq) == 1:
+                                return Eq(f(x), sdeq[0][y])
                             else:
-                                if len(sdeq) == 1:
-                                    return Eq(f(x), sdeq[0][y])
-                                else:
-                                    return [Eq(f(x), sol[y]) for sol in sdeq]
+                                return [Eq(f(x), sol[y]) for sol in sdeq]
 
-                    elif denom:  # (ds/dr) is zero which means s is constant
-                        return Eq(f(x), solve(scoord - C1, y)[0][y])
+                elif denom:  # (ds/dr) is zero which means s is constant
+                    return Eq(f(x), solve(scoord - C1, y)[0][y])
 
-                    else:
-                        raise NotImplementedError
+                else:
+                    raise NotImplementedError
     else:
         raise NotImplementedError(f'The given ODE {eq!s}'
                                   ' cannot be solved by the lie group method')
@@ -5537,7 +5536,7 @@ def lie_heuristic_bivariate(match, comp):
         xieq = Symbol('xi0')
         etaeq = Symbol('eta0')
 
-        for i in range(deg + 1):
+        for i in range(deg + 1):  # pragma: no branch
             if i:
                 xieq += Add(*[
                     Symbol('xi_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
@@ -5550,22 +5549,19 @@ def lie_heuristic_bivariate(match, comp):
 
             # If the individual terms are monomials, the coefficients
             # are grouped
-            if pden.is_polynomial(x, y) and pden.is_Add:
-                polyy = Poly(pden, x, y).as_dict()
-            if polyy:
-                symset = xieq.free_symbols.union(etaeq.free_symbols) - {x, y}
-                soldict = solve(polyy.values(), *symset)
-                if isinstance(soldict, list):
-                    soldict = soldict[0]
-                if any(x for x in soldict.values()):
-                    xired = xieq.subs(soldict)
-                    etared = etaeq.subs(soldict)
-                    # Scaling is done by substituting one for the parameters
-                    # This can be any number except zero.
-                    dict_ = {sym: 1 for sym in symset}
-                    inf = {eta: etared.subs(dict_).subs({y: func}),
-                           xi: xired.subs(dict_).subs({y: func})}
-                    return [inf]
+            polyy = Poly(pden, x, y).as_dict()
+            symset = xieq.free_symbols.union(etaeq.free_symbols) - {x, y}
+            soldict = solve(polyy.values(), *symset)
+            soldict = soldict[0]
+            if any(x for x in soldict.values()):
+                xired = xieq.subs(soldict)
+                etared = etaeq.subs(soldict)
+                # Scaling is done by substituting one for the parameters
+                # This can be any number except zero.
+                dict_ = {sym: 1 for sym in symset}
+                inf = {eta: etared.subs(dict_).subs({y: func}),
+                       xi: xired.subs(dict_).subs({y: func})}
+                return [inf]
 
 
 def lie_heuristic_chi(match, comp):
@@ -5610,33 +5606,30 @@ def lie_heuristic_chi(match, comp):
         chiy = chi.diff(y)
         cpde = chix + h*chiy - hy*chi
         chieq = Symbol('chi')
-        for i in range(1, deg + 1):
+        for i in range(1, deg + 1):  # pragma: no cover
             chieq += Add(*[
                 Symbol('chi_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
                 for power in range(i + 1)])
             cnum, cden = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
             cnum = expand(cnum)
-            if cnum.is_polynomial(x, y) and cnum.is_Add:
-                cpoly = Poly(cnum, x, y).as_dict()
-                if cpoly:
-                    solsyms = chieq.free_symbols - {x, y}
-                    soldict = solve(cpoly.values(), *solsyms)
-                    if isinstance(soldict, list):
-                        soldict = soldict[0]
-                    if any(x for x in soldict.values()):
-                        chieq = chieq.subs(soldict)
-                        dict_ = {sym: 1 for sym in solsyms}
-                        chieq = chieq.subs(dict_)
-                        # After finding chi, the main aim is to find out
-                        # eta, xi by the equation eta = xi*h + chi
-                        # One method to set xi, would be rearranging it to
-                        # (eta/h) - xi = (chi/h). This would mean dividing
-                        # chi by h would give -xi as the quotient and eta
-                        # as the remainder. Thanks to Sean Vig for suggesting
-                        # this method.
-                        xic, etac = div(chieq, h)
-                        inf = {eta: etac.subs({y: func}), xi: -xic.subs({y: func})}
-                        return [inf]
+            cpoly = Poly(cnum, x, y).as_dict()
+            solsyms = chieq.free_symbols - {x, y}
+            soldict = solve(cpoly.values(), *solsyms)
+            soldict = soldict[0]
+            if any(x for x in soldict.values()):
+                chieq = chieq.subs(soldict)
+                dict_ = {sym: 1 for sym in solsyms}
+                chieq = chieq.subs(dict_)
+                # After finding chi, the main aim is to find out
+                # eta, xi by the equation eta = xi*h + chi
+                # One method to set xi, would be rearranging it to
+                # (eta/h) - xi = (chi/h). This would mean dividing
+                # chi by h would give -xi as the quotient and eta
+                # as the remainder. Thanks to Sean Vig for suggesting
+                # this method.
+                xic, etac = div(chieq, h)
+                inf = {eta: etac.subs({y: func}), xi: -xic.subs({y: func})}
+                return [inf]
 
 
 def lie_heuristic_function_sum(match, comp):
@@ -5940,7 +5933,7 @@ def lie_heuristic_linear(match, comp):
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
 
-    coeffdict = {}
+    coeffdict = defaultdict(int)
     symbols = numbered_symbols('c', cls=Dummy)
     symlist = [next(symbols) for _ in islice(symbols, 6)]
     C0, C1, C2, C3, C4, C5 = symlist
@@ -5953,21 +5946,14 @@ def lie_heuristic_linear(match, comp):
             if term.is_Mul:
                 rem = Mul(*[m for m in term.args if not m.has(x, y)])
                 xypart = term/rem
-                if xypart not in coeffdict:
-                    coeffdict[xypart] = rem
-                else:
-                    coeffdict[xypart] += rem
+                coeffdict[xypart] += rem
             else:
-                if term not in coeffdict:
-                    coeffdict[term] = Integer(1)
-                else:
-                    coeffdict[term] += Integer(1)
+                coeffdict[term] += 1
 
     sollist = coeffdict.values()
     soldict = solve(sollist, symlist)
     if soldict:
-        if isinstance(soldict, list):
-            soldict = soldict[0]
+        soldict = soldict[0]
         subval = soldict.values()
         if any(t for t in subval):
             onedict = dict(zip(symlist, [1]*6))
