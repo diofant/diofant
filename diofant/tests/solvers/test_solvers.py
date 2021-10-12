@@ -1756,3 +1756,15 @@ def test_sympyissue_22058():
     assert solve(-sqrt(t)*x**2 + 2*x + sqrt(t),
                  x) == [{x: -sqrt(1 + 1/t) + 1/sqrt(t)},
                         {x: sqrt(1 + 1/t) + 1/sqrt(t)}]
+
+
+def test_sympyissue_22248():
+    g = 9.81
+    y0 = 100
+    v0 = 55
+    m = 80
+    c = 15
+    y = y0 + (m/c)*(v0 + ((m*g)/c))*(1 - exp(- (c/m)*x)) - ((m*g)/c)*x
+
+    assert solve(y) == [{x: Float('-1.4164130909148258', dps=15)},
+                        {x: Float('11.61083847106101', dps=15)}]

@@ -314,7 +314,6 @@ lie_heuristics = (
     'abaco1_product',
     'abaco2_similar',
     'abaco2_unique_unknown',
-    'abaco2_unique_general',
     'linear',
     'function_sum',
     'bivariate',
@@ -1502,11 +1501,10 @@ def classify_sysode(eq, funcs=None, **kwargs):
                     if order_eq == 1:
                         type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
         else:
-            if matching_hints['no_of_equation'] == 2:
-                if order_eq == 1:
+            if order_eq == 1:
+                if matching_hints['no_of_equation'] == 2:
                     type_of_equation = check_nonlinear_2eq_order1(eq, funcs, func_coef)
-            elif matching_hints['no_of_equation'] == 3:
-                if order_eq == 1:
+                elif matching_hints['no_of_equation'] == 3:
                     type_of_equation = check_nonlinear_3eq_order1(eq, funcs, func_coef)
 
     matching_hints['type_of_equation'] = type_of_equation
@@ -1674,6 +1672,9 @@ def check_linear_2eq_order2(eq, func, func_coef):
         elif -r['b1']/r['d1'] == -r['c1']/r['e1'] == -r['b2']/r['d2'] == -r['c2']/r['e2'] == t:
             return 'type11'
 
+        else:
+            raise NotImplementedError
+
 
 def check_linear_3eq_order1(eq, func, func_coef):
     x = func[0].func
@@ -1699,30 +1700,15 @@ def check_linear_3eq_order1(eq, func, func_coef):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):
                 forcing[i] += j
-    if forcing[0].has(t) or forcing[1].has(t) or forcing[2].has(t):
-        # We can handle homogeneous case and simple constant forcings.
-        # Issue sympy/sympy#9244: nonhomogeneous linear systems are not supported
-        return
+    if any(forcing):
+        raise NotImplementedError
 
-    if all(not r[k].has(t) for k in 'a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3'.split()):
-        if r['c1'] == r['d1'] == r['d2'] == 0:
-            return 'type1'
-        elif r['c1'] == -r['b2'] and r['d1'] == -r['b3'] and r['d2'] == -r['c3'] \
-                and r['b1'] == r['c2'] == r['d3'] == 0:
-            return 'type2'
-        elif r['b1'] == r['c2'] == r['d3'] == 0 and r['c1']/r['a1'] == -r['d1']/r['a1'] \
-                and r['d2']/r['a2'] == -r['b2']/r['a2'] and r['b3']/r['a3'] == -r['c3']/r['a3']:
-            return 'type3'
-    else:
-        for k1 in 'c1 d1 b2 d2 b3 c3'.split():
-            if r[k1] == 0:
-                continue
-            else:
-                if all(not cancel(r[k1]/r[k]).has(t) for k in 'd1 b2 d2 b3 c3'.split() if r[k] != 0) \
-                        and all(not cancel(r[k1]/(r['b1'] - r[k])).has(t) for k in 'b1 c2 d3'.split() if r['b1'] != r[k]):
-                    return 'type4'
-                else:
-                    break
+    for k1 in 'c1 d1 b2 d2 b3 c3'.split():
+        if (all(not cancel(r[k1]/r[k]).has(t)
+                for k in 'd1 b2 d2 b3 c3'.split() if r[k] != 0) and
+            all(not cancel(r[k1]/(r['b1'] - r[k])).has(t)
+                for k in 'b1 c2 d3'.split() if r['b1'] != r[k])):
+            return 'type4'
 
 
 def check_linear_neq_order1(eq, func, func_coef):
@@ -4445,9 +4431,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
                 # This ordering is important
                 collectterms = [(i, reroot, imroot)] + collectterms
-    if returns == 'list':
-        return gensols
-    elif returns in ('sol' 'both'):
+    if returns in ('sol' 'both'):
         gsol = Add(*[i*j for (i, j) in zip(constants, gensols)])
         if returns == 'sol':
             return Eq(f(x), gsol)
@@ -6056,13 +6040,6 @@ def sysode_linear_2eq_order1(match_):
     r['c'] = -fc[1, x(t), 0]/fc[1, y(t), 1]
     r['b'] = -fc[0, y(t), 0]/fc[0, x(t), 1]
     r['d'] = -fc[1, y(t), 0]/fc[1, y(t), 1]
-    forcing = [Integer(0), Integer(0)]
-    for i in range(2):
-        for j in Add.make_args(eq[i]):
-            if not j.has(x(t), y(t)):
-                forcing[i] += j
-    if any(forcing):
-        raise NotImplementedError
 
     if match_['type_of_equation'] == 'type3':
         sol = _linear_2eq_order1_type3(x, y, t, r, eq)
@@ -6189,6 +6166,8 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
         for j in Mul.make_args(collect_const(i)):
             if not j.has(t):
                 q = j
+            else:
+                raise NotImplementedError
             if q != 0 and n == 0:
                 if cancel((r['c']/j - r['a'])/(r['b'] - r['d']/j)) == j:
                     p = 1

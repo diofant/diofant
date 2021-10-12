@@ -19,18 +19,9 @@ __all__ = ()
 
 
 def test_basic1():
-    assert limit(x, x, oo) == oo
     assert limit(x, x, -oo) == -oo
-    assert limit(-x, x, oo) == -oo
     assert limit(x**2, x, -oo) == oo
-    assert limit(-x**2, x, oo) == -oo
-    assert limit(x*log(x), x, 0, dir='+') == 0
-    assert limit(1/x, x, oo) == 0  # issue sympy/sympy#11667
-    assert limit(exp(x), x, oo) == oo
-    assert limit(-exp(x), x, oo) == -oo
-    assert limit(exp(x)/x, x, oo) == oo
-    assert limit(1/x - exp(-x), x, oo) == 0
-    assert limit(x + 1/x, x, oo) == oo
+    assert limit(x*log(x), x, 0) == 0
     assert limit(x - x**2, x, oo) == -oo
     assert limit((1 + x)**(1 + sqrt(2)), x, 0) == 1
     assert limit((1 + x)**oo, x, 0) == oo
@@ -40,21 +31,20 @@ def test_basic1():
     assert limit(cos(x + y)/x, x, 0) == sign(cos(y))*oo
     limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
-    assert limit(gamma(1/x + 3), x, oo) == 2
     assert limit(nan, x, -oo) == nan
     assert limit(O(2)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
-    assert limit(1/(x - 1), x, 1, dir='+') == oo
+    assert limit(1/(x - 1), x, 1) == oo
     assert limit(1/(x - 1), x, 1, dir='-') == -oo
-    assert limit(1/(5 - x)**3, x, 5, dir='+') == -oo
+    assert limit(1/(5 - x)**3, x, 5) == -oo
     assert limit(1/(5 - x)**3, x, 5, dir='-') == oo
-    assert limit(1/sin(x), x, pi, dir='+') == -oo
+    assert limit(1/sin(x), x, pi) == -oo
     assert limit(1/sin(x), x, pi, dir='-') == oo
-    assert limit(1/cos(x), x, pi/2, dir='+') == -oo
+    assert limit(1/cos(x), x, pi/2) == -oo
     assert limit(1/cos(x), x, pi/2, dir='-') == oo
-    assert limit(1/tan(x**3), x, cbrt(2*pi), dir='+') == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi)) == oo
     assert limit(1/tan(x**3), x, cbrt(2*pi), dir='-') == -oo
-    assert limit(1/cot(x)**3, x, 3*pi/2, dir='+') == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2) == -oo
     assert limit(1/cot(x)**3, x, 3*pi/2, dir='-') == oo
 
     # approaching 0
@@ -82,18 +72,12 @@ def test_basic1():
 
 
 def test_basic2():
-    assert limit(x**x, x, 0, dir='+') == 1
+    assert limit(x**x, x, 0) == 1
     assert limit((exp(x) - 1)/x, x, 0) == 1
-    assert limit(1 + 1/x, x, oo) == 1
-    assert limit(-exp(1/x), x, oo) == -1
-    assert limit(x + exp(-x), x, oo) == oo
-    assert limit(x + exp(-x**2), x, oo) == oo
-    assert limit(x + exp(-exp(x)), x, oo) == oo
-    assert limit(13 + 1/x - exp(-x), x, oo) == 13
 
 
 def test_basic3():
-    assert limit(1/x, x, 0, dir='+') == oo
+    assert limit(1/x, x, 0) == oo
     assert limit(1/x, x, 0, dir='-') == -oo
 
 

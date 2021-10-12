@@ -193,6 +193,15 @@ def test_linear_2eq_order2():
     sol1_3 = [Eq(x(t), -4*exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 + 4*exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4), Eq(y(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2)]
     assert dsolve(eq1_3) == sol1_3
 
+    eq1_4 = [Eq(diff(x(t), t, t), 5*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + t*y(t) + t)]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq1_4))
+
+    eq1_5 = [Eq(diff(x(t), t, t), 5*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + 2**t*y(t) + exp(t))]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq1_5))
+
+    eq1_6 = [Eq(diff(x(t), t, t), 5*t*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + 2*y(t) + exp(t))]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq1_6))
+
     eq2 = (Eq(diff(x(t), t, t), 8*x(t)+3*y(t)+31), Eq(diff(y(t), t, t), 9*x(t)+7*y(t)+12))
     sol2 = [Eq(x(t), 3*C1*exp(t*RootOf(l**4 - 15*l**2 + 29, 0)) + 3*C2*exp(t*RootOf(l**4 - 15*l**2 + 29, 1)) +
                3*C3*exp(t*RootOf(l**4 - 15*l**2 + 29, 2)) + 3*C4*exp(t*RootOf(l**4 - 15*l**2 + 29, 3)) - 181/29),
@@ -378,6 +387,16 @@ def test_linear_3eq_order1():
             Eq(z(t), E**Integral(t**2 + sin(t), t)*(exp(sqrt(3)*I*Integral(-t**3 - log(t), t))*C3 + exp(-2*Integral(-t**3 - log(t), t))*C1 + exp(-sqrt(3)*I*Integral(-t**3 - log(t), t))*C2))]
     assert dsolve(eq4) == sol4
 
+    eq4_1 = [Eq(diff(x(t), t), (4*f + g)*x(t) - f*y(t) - 2*f*z(t) + t),
+             Eq(diff(y(t), t), 2*f*x(t) + (f + g)*y(t) - 2*f*z(t)),
+             Eq(diff(z(t), t), 5*f*x(t) + f*y(t) + (-3*f + g)*z(t))]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq4_1))
+
+    eq4_2 = [Eq(diff(x(t), t), (4*f + g)*x(t) - f*y(t) - 2*f*z(t)/t),
+             Eq(diff(y(t), t), 2*f*x(t) + (f + g)*y(t) - 2*f*z(t)),
+             Eq(diff(z(t), t), 5*f*x(t) + f*y(t) + (-3*f + g)*z(t))]
+    pytest.raises(NotImplementedError, lambda: dsolve(eq4_2))
+
     eq5 = [Eq(diff(x(t), t), 4*x(t) - z(t)),
            Eq(diff(y(t), t), 2*x(t) + 2*y(t) - z(t)),
            Eq(diff(z(t), t), 3*x(t) + y(t))]
@@ -458,6 +477,10 @@ def test_nonlinear_2eq_order1():
     eq5 = (Eq(x(t), t*diff(x(t), t)+diff(x(t), t)*diff(y(t), t)), Eq(y(t), t*diff(y(t), t)+diff(y(t), t)**2))
     sol5 = {Eq(x(t), C1*C2 + C1*t), Eq(y(t), C2**2 + C2*t)}
     assert dsolve(eq5, [x(t), y(t)]) == sol5
+
+    eq5_1 = [t*diff(x(t), t) - x(t) + diff(y(t), t)**2, t*diff(y(t), t) - y(t) + diff(x(t), t)**3]
+    sol5_1 = {Eq(x(t), C1*t + C2**2), Eq(y(t), C1**3 + C2*t)}
+    assert dsolve(eq5_1, [x(t), y(t)]) == sol5_1
 
     eq6 = (Eq(diff(x(t), t), x(t)**2*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol6 = [
@@ -1116,6 +1139,25 @@ def test_classify_sysode():
 
     eq19 = (f(x).diff(x)**2 - 2*f(x) + g(x)**2, g(x).diff(x) + x)
     assert classify_sysode(eq19)['is_linear'] is False
+
+    eq20 = [f(t).diff((t, 3)) - t*f(t) + g(t), g(t).diff((t, 3)) + f(t)]
+    assert classify_sysode(eq20)['is_linear'] is True
+
+    eq21 = [f(t).diff((t, 3)) - t*f(t) + g(t), g(t).diff((t, 3)) + f(t) + h(t),
+            h(t).diff((t, 3)) - f(t)]
+    assert classify_sysode(eq21)['is_linear'] is True
+
+    eq22 = [f(t).diff((t, 3)) - t*f(t) + g(t), g(t).diff((t, 3)) + f(t) + h(t),
+            h(t).diff((t, 3)) - f(t), Function('i')(t).diff((t, 3)) + g(t)]
+    assert classify_sysode(eq22)['is_linear'] is True
+
+    eq23 = [f(t).diff((t, 2)) - f(t)**2 + g(t)**3,
+            g(t).diff((t, 2)) + f(t) - g(t)**2]
+    assert classify_sysode(eq23)['is_linear'] is False
+
+    eq24 = [f(t).diff(t) - t*f(t) + g(t), g(t).diff(t) + f(t)**2 + h(t),
+            h(t).diff(t) - f(t), Function('i')(t).diff(t) + g(t)]
+    assert classify_sysode(eq24)['is_linear'] is False
 
 
 def test_solve_init():
@@ -1833,7 +1875,6 @@ def test_undetermined_coefficients_match():
     assert _undetermined_coefficients_match(2**(x**2), x) == {'test': False}
 
 
-@pytest.mark.slow
 def test_nth_linear_constant_coeff_undetermined_coefficients():
     eqs = [(3*f(x).diff((x, 3)) + 5*f(x).diff((x, 2)) + f(x).diff(x) -
             f(x) - x - x*exp(-x)),
@@ -2422,6 +2463,10 @@ def test_heuristic1():
     eq5 = x**2*f(x).diff(x) - f(x) + x**2*exp(x - 1/x)
 
     pytest.raises(ValueError, lambda: infinitesimals(eq, f(x, y)))
+    pytest.raises(ValueError, lambda: infinitesimals(eq, hint='spam'))
+    pytest.raises(NotImplementedError,
+                  lambda: infinitesimals(f(x).diff(x) + sqrt(x)*f(x)**2 + x,
+                                         hint='default'))
 
     i = infinitesimals(eq, hint='abaco1_simple')
     assert i == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0},
@@ -2431,6 +2476,9 @@ def test_heuristic1():
     assert i1 == [{eta(x, f(x)): exp(-a*x), xi(x, f(x)): 0}]
     i2 = infinitesimals(eq2, hint='abaco1_simple')
     assert i2 == [{eta(x, f(x)): exp(-x**2), xi(x, f(x)): 0}]
+    i2 = infinitesimals(eq2, hint='all')
+    assert i2 == [{eta(x, f(x)): exp(-x**2), xi(x, f(x)): 0}]
+    pytest.raises(ValueError, lambda: infinitesimals(eq2, hint='linear'))
     i3 = infinitesimals(eq3, hint='abaco1_simple')
     assert i3 == [{eta(x, f(x)): 0, xi(x, f(x)): 2*x + 1},
                   {eta(x, f(x)): 0, xi(x, f(x)): 1/(exp(f(x)) - 2)}]
@@ -2556,6 +2604,8 @@ def test_series():
 
     assert dsolve(f(x).diff(x) - root(f(x), 3),
                   hint='1st_power_series', init={f(0): 0}) == Eq(f(x), oo)
+    assert dsolve(f(x).diff(x) - f(x), hint='1st_power_series',
+                  init={f(0): oo}) == Eq(f(x), oo)
 
 
 def test_lie_group():

@@ -288,7 +288,7 @@ def test_limit():
     assert limit((-x)**2, x, oo) == oo
     assert limit(-x**2, x, oo) == -oo
     assert limit((1/x)*log(1/x), x, oo) == 0  # Gruntz: p15, 2.11
-    assert limit(1/x, x, oo) == 0
+    assert limit(1/x, x, oo) == 0  # issue sympy/sympy#11667
     assert limit(exp(x), x, oo) == oo
     assert limit(-exp(x), x, oo) == -oo
     assert limit(exp(x)/x, x, oo) == oo
