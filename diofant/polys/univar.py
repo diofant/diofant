@@ -326,7 +326,6 @@ class UnivarPolyElement(PolyElement):
                 f, h = result
                 F = [h] + F
             else:
-                result  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
         return [f] + F

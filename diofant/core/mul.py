@@ -254,7 +254,6 @@ class Mul(AssocOp):
                     if coeff is nan:
                         # we know for sure the result will be nan
                         return [nan], [], None
-                o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             elif o is zoo:
@@ -296,7 +295,6 @@ class Mul(AssocOp):
                                 b = -b
                             if b is not S.One:
                                 pnum_rat[b].append(e)
-                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
                             num_exp.append((b, e))

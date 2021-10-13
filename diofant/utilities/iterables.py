@@ -1188,7 +1188,6 @@ def partitions(n, m=None, k=None, size=False):
             if need > room:
                 if not keys:
                     return
-                q  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             ms[i] = q
@@ -1196,7 +1195,6 @@ def partitions(n, m=None, k=None, size=False):
             if r:
                 ms[r] = 1
                 keys.append(r)
-            r  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
         room -= need
         if size:
