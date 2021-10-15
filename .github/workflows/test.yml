@@ -33,10 +33,11 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U pip setuptools wheel
-        # XXX: workaround for CPython >= 3.10
+        # XXX: workarounds for CPython >= 3.10
         if [[ ${{matrix.python-version}} != "3.9" ]]
         then
           pip install git+https://github.com/scipy/scipy.git
+          pip install matplotlib==3.5.0rc1
         fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
