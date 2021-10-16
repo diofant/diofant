@@ -2979,3 +2979,13 @@ def test_sympyissue_9204():
 def test_sympyissue_22155():
     assert (dsolve(f(x).diff(x) - exp(f(x) - x)) ==
             Eq(f(x), x + log(-1/(exp(x)*C1 - 1))))
+
+
+def test_sympyissue_22294():
+    eq = Eq(f(x).diff(x) - f(x), x*f(x)**2)
+    assert 'Bernoulli' in classify_ode(eq)
+    assert dsolve(eq) == Eq(f(x), exp(x)/(exp(x)*(-x + 1) + C1))
+
+    eq = Eq(f(x).diff(x) - f(x), -x*f(x)**2)
+    assert 'Bernoulli' in classify_ode(eq)
+    assert dsolve(eq) == Eq(f(x), exp(x)/(exp(x)*(x - 1) + C1))
