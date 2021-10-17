@@ -138,3 +138,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22155`: Problem with solving simple separable ODE
 * :sympyissue:`22220`: Bug in the evaluation of a log limit
 * :sympyissue:`22248`: solve running forever
+* :sympyissue:`22294`: Bernoulli differential equation
