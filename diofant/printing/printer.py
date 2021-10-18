@@ -140,8 +140,7 @@ class Printer:
     printmethod: typing.Optional[str] = None
 
     def __init__(self, settings=None):
-        import distutils
-        import distutils.version
+        from packaging.version import parse
 
         from ..external import import_module
 
@@ -168,7 +167,7 @@ class Printer:
         numpy = import_module('numpy')
         if numpy is not None:  # pragma: no cover
             kwargs = {'formatter': {'object': str}}
-            if numpy.__version__ >= distutils.version.LooseVersion('1.14.0'):
+            if parse(numpy.__version__) >= parse('1.14.0'):
                 kwargs['legacy'] = '1.13'
             numpy.set_printoptions(**kwargs)
 

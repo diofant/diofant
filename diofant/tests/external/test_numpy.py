@@ -5,10 +5,9 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using Diofant with NumPy
 
-import distutils
-
 import mpmath
 import pytest
+from packaging.version import parse
 
 import diofant
 from diofant import (Float, Integer, Matrix, MatrixSymbol, Rational, Symbol,
@@ -214,7 +213,7 @@ def test_lambdify():
     f = lambdify(x, sin(x), 'numpy')
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
-    if distutils.version.LooseVersion(numpy.__version__) >= distutils.version.LooseVersion('1.17'):
+    if parse(numpy.__version__) >= parse('1.17'):
         with pytest.raises(TypeError):
             f(x)
     else:
