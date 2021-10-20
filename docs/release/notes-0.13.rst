@@ -140,3 +140,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22248`: solve running forever
 * :sympyissue:`22294`: Bernoulli differential equation
 * :sympyissue:`22322`: 'abs' is not parsed correctly
+* :sympyissue:`22334`: Wrong answer returned while calculating limit for different arrangements of the same expression
