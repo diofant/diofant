@@ -140,8 +140,6 @@ class Printer:
     printmethod: typing.Optional[str] = None
 
     def __init__(self, settings=None):
-        from packaging.version import parse
-
         from ..external import import_module
 
         self._str = str
@@ -167,8 +165,7 @@ class Printer:
         numpy = import_module('numpy')
         if numpy is not None:  # pragma: no cover
             kwargs = {'formatter': {'object': str}}
-            if parse(numpy.__version__) >= parse('1.14.0'):
-                kwargs['legacy'] = '1.13'
+            kwargs['legacy'] = '1.13'
             numpy.set_printoptions(**kwargs)
 
     @classmethod
