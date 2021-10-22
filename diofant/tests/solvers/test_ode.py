@@ -2493,6 +2493,7 @@ def test_heuristic1():
     i3 = infinitesimals(eq3, hint='abaco1_simple')
     assert i3 == [{eta(x, f(x)): 0, xi(x, f(x)): 2*x + 1},
                   {eta(x, f(x)): 0, xi(x, f(x)): 1/(exp(f(x)) - 2)}]
+    assert infinitesimals(eq3, hint='default') == [i3[0]]
     i4 = infinitesimals(eq4, hint='abaco1_simple')
     assert i4 == [{eta(x, f(x)): 1, xi(x, f(x)): 0},
                   {eta(x, f(x)): 0,
@@ -2552,6 +2553,7 @@ def test_heuristic_function_sum():
           (1 - 3*f(x))*x/f(x)**2)
     i = infinitesimals(eq, hint='function_sum')
     assert i == [{eta(x, f(x)): f(x)**-2 + x**-2, xi(x, f(x)): 0}]
+    assert i == infinitesimals(eq, hint='default')
     assert checkinfsol(eq, i) == [(True, 0)]
 
 
@@ -2600,6 +2602,9 @@ def test_heuristic_linear():
     eq = x**(n*(m + 1) - m)*f(x).diff(x) - a*f(x)**n - b*x**(n*(m + 1))
     i = infinitesimals(eq, hint='linear')
     assert checkinfsol(eq, i) == [(True, 0)]
+
+    pytest.raises(ValueError, lambda: infinitesimals(f(x).diff(x) + f(x)**2 +
+                                                     f(x) - x, hint='linear'))
 
 
 @pytest.mark.xfail
@@ -2670,6 +2675,10 @@ def test_lie_group():
     sol = dsolve(eq, f(x), hint='lie_group')
     assert sol == [Eq(f(x), C1 - x), Eq(f(x), C1 + x)]
     assert checkodesol(eq, sol) == [(True, 0), (True, 0)]
+
+    eq = f(x).diff(x) - (x + f(x))/f(x)
+    pytest.raises(NotImplementedError,
+                  lambda: dsolve(eq, f(x), hint='lie_group'))
 
 
 def test_user_infinitesimals():

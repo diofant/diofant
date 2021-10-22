@@ -868,3 +868,8 @@ def test_sympyissue_22220():
 
     assert limit(e1, x, -pi, '-') == sqrt(30)*pi/60
     assert limit(e2, x, -pi, '-') == 0
+
+
+def test_sympyissue_22334():
+    k = Symbol('k', positive=True)
+    assert limit((n + 1)**k/((n + 1)**(k + 1) - n**(k + 1)), n, oo) == 1/(k + 1)

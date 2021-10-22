@@ -7,7 +7,8 @@ from keyword import iskeyword
 from tokenize import (ENDMARKER, NAME, NEWLINE, NUMBER, OP, STRING, TokenError,
                       tokenize, untokenize)
 
-from ..core import Basic, Symbol
+from ..core import Basic, Pow, Symbol
+from ..functions import Abs, Max, Min
 
 
 def _token_splittable(token):
@@ -739,6 +740,11 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
         global_dict = {}
         exec('from diofant import *', global_dict)
 
+    global_dict['abs'] = Abs
+    global_dict['max'] = Max
+    global_dict['min'] = Min
+    global_dict['pow'] = Pow
+
     code = stringify_expr(s, local_dict, global_dict, transformations)
 
     if not evaluate:
@@ -773,6 +779,8 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
         ast.BitAnd: 'And',
         ast.BitXor: 'Not',
     }
+
+    func_map = {'abs': 'Abs'}
 
     def flatten(self, args, func):
         result = []
@@ -813,4 +821,14 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
 
             return new_node
         else:  # pragma: no cover
+            return node
+
+    def visit_Call(self, node):
+        if node.func.id in self.func_map:
+            return ast.Call(func=ast.Name(id=self.func_map[node.func.id],
+                                          ctx=ast.Load()),
+                            args=node.args,
+                            keywords=[ast.keyword(arg='evaluate',
+                                                  value=ast.Constant(value=False))])
+        else:
             return node
