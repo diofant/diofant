@@ -3,7 +3,6 @@
 # NOTE: keep tests sorted by (module, class name) key.
 
 import inspect
-import io
 import os
 import re
 import warnings
@@ -178,7 +177,7 @@ def test_all_classes_are_tested():
             if not file.endswith('.py'):
                 continue
 
-            with io.open(os.path.join(root, file), 'r', encoding='utf-8') as f:
+            with open(os.path.join(root, file), encoding='utf-8') as f:
                 text = f.read()
 
             submodule = module + '.' + file[:-3]
