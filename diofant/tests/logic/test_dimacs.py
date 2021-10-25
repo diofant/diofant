@@ -17,7 +17,7 @@ __all__ = ()
 def load_file(location):
     """Loads a boolean expression from a file."""
     location = os.path.dirname(__file__) + '/' + location
-    with open(location) as f:
+    with open(location, encoding='utf-8') as f:
         s = f.read()
 
     return load(s)

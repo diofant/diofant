@@ -162,7 +162,6 @@ def test_efactor_random():
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(isinstance(ZZ(42), int), reason='not with gmpy')
 def test_efactor_wang():
     a = (-1 + sqrt(5))/4 - I*sqrt((sqrt(5) + 5)/8)
     A = QQ.algebraic_field(a)

@@ -167,7 +167,7 @@ def %(name)s():
         return
 
     def _generate_code(self, routine, helpers):
-        with open(f'{self.module_name}.py', 'w') as f:
+        with open(f'{self.module_name}.py', 'w', encoding='utf-8') as f:
             printed = ', '.join(
                 [str(res.expr) for res in routine.result_variables])
             # convert OutputArguments to return value like f2py
@@ -239,7 +239,7 @@ class CythonCodeWrapper(CodeWrapper):
         codefilename = f'{self.filename}.{self.generator.code_extension}'
 
         # pyx
-        with open(pyxfilename, 'w') as f:
+        with open(pyxfilename, 'w', encoding='utf-8') as f:
             self.dump_pyx([routine], f, self.filename)
 
         # setup.py
@@ -250,7 +250,7 @@ class CythonCodeWrapper(CodeWrapper):
         else:
             np_import = ''
             np_includes = ''
-        with open('setup.py', 'w') as f:
+        with open('setup.py', 'w', encoding='utf-8') as f:
             f.write(self.setup_template.format(ext_args=', '.join(ext_args),
                                                np_import=np_import,
                                                np_includes=np_includes))
@@ -651,11 +651,11 @@ class UfuncifyCodeWrapper(CodeWrapper):
 
         # C
         codefilename = self.module_name + '.c'
-        with open(codefilename, 'w') as f:
+        with open(codefilename, 'w', encoding='utf-8') as f:
             self.dump_c([routine], f, self.filename)
 
         # setup.py
-        with open('setup.py', 'w') as f:
+        with open('setup.py', 'w', encoding='utf-8') as f:
             self.dump_setup(f)
 
     @classmethod

@@ -120,7 +120,7 @@ combinations_lang_compiler = [
 
 def try_run(commands):
     """Run a series of commands and only return True if all ran fine."""
-    null = open(os.devnull, 'w')
+    null = open(os.devnull, 'w', encoding='utf-8')
     for command in commands:
         retcode = subprocess.call(command, stdout=null, shell=True,
                                   stderr=subprocess.STDOUT)
@@ -185,7 +185,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
         raise NotImplementedError(
             f'FIXME: filename extension unknown for language: {language}')
 
-    with open(f_name, 'w') as f:
+    with open(f_name, 'w', encoding='utf-8') as f:
         f.write(
             main_template[language] % {'statements': ''.join(test_strings)})
 

@@ -263,7 +263,12 @@ disable = ['blacklisted-name',
            'trailing-newlines',
            'trailing-whitespace',
            'raise-missing-from',
-           'super-with-arguments']
+           'super-with-arguments',
+           'arguments-renamed',
+           'consider-using-f-string',
+           'consider-using-from-import',
+           'consider-using-dict-items',
+           'consider-using-with']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

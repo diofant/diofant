@@ -663,7 +663,7 @@ class CodeGen:
         if to_files:
             for dump_fn in self.dump_fns:
                 filename = f'{prefix}.{dump_fn.extension}'
-                with open(filename, 'w') as f:
+                with open(filename, 'w', encoding='utf-8') as f:
                     dump_fn(self, routines, f, prefix, header, empty)
         else:
             result = []

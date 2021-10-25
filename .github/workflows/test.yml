@@ -8,8 +8,11 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.9]
-        coverage: [false, true]
+        python-version: [3.9, 3.10-dev]
+        coverage: [false]
+        include:
+          - python-version: 3.10-dev
+            coverage: true
     runs-on: ubuntu-latest
     env:
       TERM: xterm
@@ -24,12 +27,18 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
-        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
+        sudo apt install libatlas-base-dev liblapack-dev gfortran
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools
+        pip install -U pip setuptools wheel
+        # XXX: workarounds for CPython >= 3.10
+        if [[ ${{matrix.python-version}} != "3.9" ]]
+        then
+          pip install git+https://github.com/scipy/scipy.git
+          pip install matplotlib==3.5.0rc1
+        fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history

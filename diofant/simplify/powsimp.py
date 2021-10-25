@@ -322,7 +322,6 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 if (last  # no more radicals in base
                         or len(common_b) == 1  # nothing left to join with
                         or all(k[1] == 1 for k in common_b)):  # no rad's in common_b
-                    common_b  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
                 # see what we can exponentiate base by to remove any radicals
                 # so we know what to search for

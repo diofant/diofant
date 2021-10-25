@@ -1177,7 +1177,6 @@ def test__isolate_complex_roots_sqf():
 
 @pytest.mark.timeout(300)
 @pytest.mark.slow
-@pytest.mark.skipif(isinstance(ZZ(42), int), reason='gmpy2 is not used')
 def test__isolate_complex_roots_sqf_2():
     R, x = ring('x', ZZ)
 

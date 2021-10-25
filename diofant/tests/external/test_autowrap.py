@@ -115,7 +115,7 @@ def runtest_autowrap_helpers(language, backend):
 
     for file in os.listdir(tmp):
         if file.startswith('wrapped_code_') and file.endswith('.c'):
-            fil = open(tmp + '/' + file)
+            fil = open(tmp + '/' + file, encoding='utf-8')
             assert fil.read() == ('/******************************************************************************\n'
                                   ' *' + ('Code generated with diofant ' + diofant.__version__).center(76) + '*\n'
                                   ' *                                                                            *\n'
