@@ -526,7 +526,7 @@ class _Factor:
 
         H = h = pow(x, q, f)
 
-        for i in range(n//2):
+        for _ in range(n//2):
             g = h - x
 
             if self.gcd(f, g) == 1:
@@ -580,7 +580,7 @@ class _Factor:
             Q = [h.compose(x, x**p) // h for h in H]
             H.extend(Q)
 
-            for i in range(1, k):
+            for _ in range(1, k):
                 Q = [q.compose(x, x**p) for q in Q]
                 H.extend(Q)
 
@@ -661,7 +661,7 @@ class _Factor:
         lc = f.LC
         tc = f[1]
 
-        if lc != 1 or (tc != -1 and tc != 1):
+        if lc != 1 or tc not in (1, -1):
             return False
 
         if not irreducible:
@@ -1026,7 +1026,7 @@ class _Factor:
             for i in reversed(range(len(E))):
                 k, e, t = 0, E[i], T[i][0]
 
-                while not (d % e):
+                while not d % e:
                     d, k = d//e, k + 1
 
                 if k != 0:
@@ -1216,7 +1216,7 @@ class _Factor:
                     h = v - domain(s)
                     g = self.gcd(f, h)
 
-                    if g != 1 and g != f:
+                    if g not in (1, f):
                         factors.remove(f)
 
                         f //= g
@@ -1322,7 +1322,7 @@ class _Factor:
             if p == 2:
                 h = r
 
-                for i in range(1, n):
+                for _ in range(1, n):
                     h += pow(r, q, f)
             else:
                 h = pow(r, (q**n - 1)//2, f)
@@ -1330,7 +1330,7 @@ class _Factor:
 
             g = self.gcd(f, h)
 
-            if g != 1 and g != f:
+            if g not in (1, f):
                 factors = (self._gf_edf_zassenhaus(g, n) +
                            self._gf_edf_zassenhaus(f // g, n))
 

@@ -352,8 +352,7 @@ class Prover:
                     raise TautologyDetected(a, b, 'a -> a|c|...')
             self.process_rule(And(*[Not(barg) for barg in b.args]), Not(a))
 
-            for bidx in range(len(b.args)):
-                barg = b.args[bidx]
+            for bidx, barg in enumerate(b.args):
                 brest = b.args[:bidx] + b.args[bidx + 1:]
                 self.process_rule(And(a, Not(barg)), Or(*brest))
 

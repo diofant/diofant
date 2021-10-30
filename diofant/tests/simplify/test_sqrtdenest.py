@@ -23,8 +23,8 @@ def test_sqrtdenest():
          3*r2*root(5 + 2*r7, 4)/(2*sqrt(6 + 3*r7)) +
          r2*sqrt(6 + 3*r7)/(2*root(5 + 2*r7, 4)),
          sqrt(3 + 2*r3): 3**Rational(3, 4)*(r6/2 + 3*r2/2)/3}
-    for i in d:
-        assert sqrtdenest(i) == d[i]
+    for k, v in d.items():
+        assert sqrtdenest(k) == v
 
 
 def test_sqrtdenest2():

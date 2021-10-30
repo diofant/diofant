@@ -358,7 +358,7 @@ def test_fcode_Piecewise():
     )
     a = cos(x)/x
     b = sin(x)/x
-    for i in range(10):
+    for _ in range(10):
         a = diff(a, x)
         b = diff(b, x)
     expected = (
@@ -543,10 +543,10 @@ def test_loops():
     )
 
     code = fcode(A[i, j]*x[j], assign_to=y[i], source_format='free')
-    assert (code == expected % {'rhs': 'y(i) + A(i, j)*x(j)'} or
-            code == expected % {'rhs': 'y(i) + x(j)*A(i, j)'} or
-            code == expected % {'rhs': 'x(j)*A(i, j) + y(i)'} or
-            code == expected % {'rhs': 'A(i, j)*x(j) + y(i)'})
+    assert code in (expected % {'rhs': 'y(i) + A(i, j)*x(j)'},
+                    expected % {'rhs': 'y(i) + x(j)*A(i, j)'},
+                    expected % {'rhs': 'x(j)*A(i, j) + y(i)'},
+                    expected % {'rhs': 'A(i, j)*x(j) + y(i)'})
 
 
 def test_dummy_loops():

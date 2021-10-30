@@ -112,13 +112,13 @@ def test_Function():
     assert MyFunc(x).nargs == FiniteSet(1)
     pytest.raises(TypeError, lambda: MyFunc(x, y).nargs)
 
-    class MyFunc(Function):
+    class MyFunc2(Function):
         @classmethod
         def eval(cls, *x):  # star args
             return
 
-    assert MyFunc.nargs == S.Naturals0
-    assert MyFunc(x).nargs == S.Naturals0
+    assert MyFunc2.nargs == S.Naturals0
+    assert MyFunc2(x).nargs == S.Naturals0
 
 
 def test_nargs():
@@ -449,7 +449,7 @@ def test_fdiff_argument_index_error():
     class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
-        def fdiff(self, idx):
+        def fdiff(self, argindex):
             raise ArgumentIndexError
     mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)

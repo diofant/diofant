@@ -834,8 +834,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         get = p.get
         keys = list(self)
         zero = ring.domain.zero
-        for i in range(len(keys)):
-            k1 = keys[i]
+        for i, k1 in enumerate(keys):
             pk = self[k1]
             for j in range(i):
                 k2 = keys[j]

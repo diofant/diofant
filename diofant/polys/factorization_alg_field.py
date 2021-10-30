@@ -784,7 +784,7 @@ def _sqf_p(f, minpoly, p):
 
     """
     ring = f.ring
-    lcinv, _, gcd = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
+    lcinv, *_ = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
 
     f = _trunc(f * lcinv.set_ring(ring), minpoly, p)
 

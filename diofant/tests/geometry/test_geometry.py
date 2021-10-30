@@ -370,7 +370,7 @@ def test_ellipse_geom():
 def test_ellipse_random_point():
     e3 = Ellipse(Point(0, 0), y1, y1)
     rx, ry = Symbol('rx'), Symbol('ry')
-    for ind in range(5):
+    for _ in range(5):
         r = e3.random_point()
         # substitution should give zero*y1**2
         assert e3.equation(rx, ry).subs(zip((rx, ry), r.args)).equals(0)
@@ -505,7 +505,7 @@ def test_polygon():
         if isinstance(var, Point):
             assert var == Point(0, 0)
         else:
-            assert var == 5 or var == 10 or var == pi / 3
+            assert var in (5, 10, pi/3)
     assert p1 != Point(0, 0)
     assert p1 != p5
 

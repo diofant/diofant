@@ -386,7 +386,7 @@ def test_ccode_loops_addfactor():
 
 
 def test_ccode_loops_multiple_terms():
-    n, m, o, p = symbols('n m o p', integer=True)
+    n, m, o = symbols('n m o', integer=True)
     a = IndexedBase('a')
     b = IndexedBase('b')
     c = IndexedBase('c')
@@ -425,12 +425,9 @@ def test_ccode_loops_multiple_terms():
     )
     c = ccode(
         b[j]*a[i, j] + b[k]*a[i, k] + b[j]*b[k]*c[i, j, k], assign_to=y[i])
-    assert (c == s0 + s1 + s2 + s3[:-1] or
-            c == s0 + s1 + s3 + s2[:-1] or
-            c == s0 + s2 + s1 + s3[:-1] or
-            c == s0 + s2 + s3 + s1[:-1] or
-            c == s0 + s3 + s1 + s2[:-1] or
-            c == s0 + s3 + s2 + s1[:-1])
+    assert c in (s0 + s1 + s2 + s3[:-1], s0 + s1 + s3 + s2[:-1],
+                 s0 + s2 + s1 + s3[:-1], s0 + s2 + s3 + s1[:-1],
+                 s0 + s3 + s1 + s2[:-1], s0 + s3 + s2 + s1[:-1])
 
 
 def test_dereference_printing():

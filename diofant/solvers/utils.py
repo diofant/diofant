@@ -97,7 +97,7 @@ def checksol(f, sol, **flags):
             # with a simplified solution
             val = simplify(f.subs(sol))
             if flags.get('force', True):
-                val, reps = posify(val)
+                val, _ = posify(val)
                 # expansion may work now, so try again and check
                 exval = expand_mul(expand_multinomial(val))
                 if exval.is_number or not exval.free_symbols:

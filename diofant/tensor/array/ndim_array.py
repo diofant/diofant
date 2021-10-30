@@ -82,7 +82,7 @@ class NDimArray(DefaultPrinting):
 
     def _get_tuple_index(self, integer_index):
         index = []
-        for i, sh in enumerate(reversed(self.shape)):
+        for sh in reversed(self.shape):
             index.append(integer_index % sh)
             integer_index //= sh
         index.reverse()
@@ -154,7 +154,7 @@ class NDimArray(DefaultPrinting):
             raise TypeError('Shape should contain integers only.')
 
         if isinstance(iterable, collections.abc.Mapping):
-            for k, v in list(iterable.items()):
+            for k in list(iterable):
                 if not isinstance(k, collections.abc.Sequence):
                     continue
                 new_key = 0

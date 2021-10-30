@@ -167,8 +167,8 @@ def test_sympyissue_5236():
 
 
 def test_real_imag():
-    x, y, z = symbols('x, y, z')
-    X, Y, Z = symbols('X, Y, Z', commutative=False)
+    x, y, z = symbols('x y z')
+    X, Z = symbols('X Z', commutative=False)
     a = Symbol('a', extended_real=True)
     assert (2*a*x).as_real_imag() == (2*a*re(x), 2*a*im(x))
 

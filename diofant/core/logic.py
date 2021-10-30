@@ -290,15 +290,14 @@ class And(AndOr_Base):
     def expand(self):
 
         # first locate Or
-        for i in range(len(self.args)):
-            arg = self.args[i]
+        for i, arg in enumerate(self.args):
             if isinstance(arg, Or):
                 arest = self.args[:i] + self.args[i + 1:]
 
                 orterms = [And( *(arest + (a,)) ) for a in arg.args]
-                for j in range(len(orterms)):
-                    if isinstance(orterms[j], Logic):
-                        orterms[j] = orterms[j].expand()
+                for j, orterm in enumerate(orterms):
+                    if isinstance(orterm, Logic):
+                        orterms[j] = orterm.expand()
 
                 return Or(*orterms)
 

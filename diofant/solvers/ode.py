@@ -562,9 +562,9 @@ def dsolve(eq, func=None, hint='default', simplify=True,
         t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
 
         # keep highest order term coefficient positive
-        for i in range(len(eq)):
-            if eq[i].coeff(diff(func[i], (t, ode_order(eq[i], func[i])))).is_negative:
-                eq[i] = -eq[i]
+        for i, e in enumerate(eq):
+            if e.coeff(diff(func[i], (t, ode_order(e, func[i])))).is_negative:
+                eq[i] = -e
         match['eq'] = eq
         if len(set(order.values())) != 1:
             raise ValueError('It solves only those systems of equations whose orders are equal')
@@ -1191,7 +1191,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 if (u/h == 1) or ((u/h).simplify().match(x**p)):
                     t = Dummy('t')
                     r2 = {'t': t}
-                    xpart, ypart = u.as_independent(f(x))
+                    xpart, _ = u.as_independent(f(x))
                     test = factor.subs({u: t, 1/u: 1/t})
                     free = test.free_symbols
                     if len(free) == 1 and free.pop() == t:
@@ -1430,8 +1430,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
         max_order = order[func]
         for eq_ in eq:
             order_ = ode_order(eq_, func)
-            if max_order < order_:
-                max_order = order_
+            max_order = max(max_order, order_)
         order[func] = max_order
     matching_hints['func'] = funcs
     for func in funcs:
@@ -1464,7 +1463,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
                 else:
                     for func_ in funcs:
                         dep = func_coef[j, func, k].as_independent(func_)[1]
-                        if dep != 1 and dep != 0:
+                        if dep not in (1, 0):
                             is_linear_ = False
         return is_linear_
 
@@ -1885,9 +1884,9 @@ def checksysodesol(eqs, sols, func=None):
     def _sympify(eq):
         return list(map(sympify, eq if iterable(eq) else [eq]))
     eqs = _sympify(eqs)
-    for i in range(len(eqs)):
-        if isinstance(eqs[i], Equality):
-            eqs[i] = eqs[i].lhs - eqs[i].rhs
+    for i, e in enumerate(eqs):
+        if isinstance(e, Equality):
+            eqs[i] = e.lhs - e.rhs
     if func is None:
         funcs = []
         for eq in eqs:
@@ -2046,7 +2045,7 @@ def odesimp(eq, func, order, constants, hint):
             eq = [eq]
         else:
             def _expand(expr):
-                numer, denom = expr.as_numer_denom()
+                _, denom = expr.as_numer_denom()
 
                 if denom.is_Add:
                     return expr
@@ -2440,10 +2439,10 @@ def __remove_linear_redundancies(expr, Cs):
                 if y not in d:
                     d[y] = []
                 d[y].append(x)
-            for y in d:
-                if len(d[y]) > 1:
-                    d[y].sort(key=str)
-                    for x in d[y][1:]:
+            for y in d.values():
+                if len(y) > 1:
+                    y.sort(key=str)
+                    for x in y[1:]:
                         expr = expr.subs({x: 0})
         return expr
 
@@ -3443,11 +3442,11 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     req = Add(*seriesdict)
     if any(suminit):
         maxval = max(suminit)
-        for term in seriesdict:
-            val = seriesdict[term]
+        for k, v in seriesdict.items():
+            val = v
             if val != maxval:
                 for i in range(val, maxval):
-                    teq += term.subs({n: val})
+                    teq += k.subs({n: val})
 
     finaldict = {}
     if teq:
@@ -3484,11 +3483,10 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
 
     # Post processing
     series = C0 + C1*(x - x0)
-    for term in finaldict:
-        if finaldict[term]:
+    for term, v in finaldict.items():
+        if v:
             fact = term.args[0]
-            series += (finaldict[term].subs({recurr(0): C0, recurr(1): C1})*(
-                x - x0)**fact)
+            series += (v.subs({recurr(0): C0, recurr(1): C1})*(x - x0)**fact)
     series = collect(expand_mul(series), [C0, C1]) + Order(x**terms)
     return Eq(f(x), series)
 
@@ -3591,15 +3589,15 @@ def ode_2nd_power_series_regular(eq, func, order, match):
                 serdict2 = _frobenius(terms-m2-1, m2, p0, q0, p, q, x0, x, C1, check=m1)
 
         finalseries1 = C0
-        for key in serdict1:
-            power = int(key.name[1:])
-            finalseries1 += serdict1[key]*(x - x0)**power
+        for k, v in serdict1.items():
+            power = int(k.name[1:])
+            finalseries1 += v*(x - x0)**power
         finalseries1 = (x - x0)**m1*finalseries1
         finalseries2 = Integer(0)
         if serdict2:
-            for key in serdict2:
-                power = int(key.name[1:])
-                finalseries2 += serdict2[key]*(x - x0)**power
+            for k, v in serdict2.items():
+                power = int(k.name[1:])
+                finalseries2 += v*(x - x0)**power
             finalseries2 += C1
             finalseries2 = (x - x0)**m2*finalseries2
         return Eq(f(x), collect(finalseries1 + finalseries2,
@@ -5525,7 +5523,7 @@ def lie_heuristic_bivariate(match, comp):
         # calculated by this technique.
         etax, etay, etad, xix, xiy, xid = symbols('etax etay etad xix xiy xid')
         ipde = etax + (etay - xix)*h - xiy*h**2 - xid*hx - etad*hy
-        num, denom = cancel(ipde).as_numer_denom()
+        num, _ = cancel(ipde).as_numer_denom()
         deg = Poly(num, x, y).total_degree()
         deta = Function('deta')(x, y)
         dxi = Function('dxi')(x, y)
@@ -5542,7 +5540,7 @@ def lie_heuristic_bivariate(match, comp):
                 etaeq += Add(*[
                     Symbol('eta_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
                     for power in range(i + 1)])
-            pden, denom = (ipde.subs({dxi: xieq, deta: etaeq}).doit()).as_numer_denom()
+            pden, _ = (ipde.subs({dxi: xieq, deta: etaeq}).doit()).as_numer_denom()
             pden = expand(pden)
 
             # If the individual terms are monomials, the coefficients
@@ -5596,7 +5594,7 @@ def lie_heuristic_chi(match, comp):
     if h.is_rational_function():
         schi, schix, schiy = symbols('schi, schix, schiy')
         cpde = schix + h*schiy - hy*schi
-        num, denom = cancel(cpde).as_numer_denom()
+        num, _ = cancel(cpde).as_numer_denom()
         deg = Poly(num, x, y).total_degree()
 
         chi = Function('chi')(x, y)
@@ -5608,7 +5606,7 @@ def lie_heuristic_chi(match, comp):
             chieq += Add(*[
                 Symbol('chi_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
                 for power in range(i + 1)])
-            cnum, cden = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
+            cnum, _ = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
             cnum = expand(cnum)
             cpoly = Poly(cnum, x, y).as_dict()
             solsyms = chieq.free_symbols - {x, y}
@@ -5936,7 +5934,7 @@ def lie_heuristic_linear(match, comp):
     symlist = [next(symbols) for _ in islice(symbols, 6)]
     C0, C1, C2, C3, C4, C5 = symlist
     pde = C3 + (C4 - C0)*h - (C0*x + C1*y + C2)*hx - (C3*x + C4*y + C5)*hy - C1*h**2
-    pde, denom = pde.as_numer_denom()
+    pde, _ = pde.as_numer_denom()
     pde = powsimp(expand(pde))
     if pde.is_Add:
         terms = pde.args
@@ -5970,7 +5968,6 @@ def sysode_linear_2eq_order1(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
@@ -6016,7 +6013,7 @@ def _linear_2eq_order1_type3(x, y, t, r, eq):
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     F = Integral(r['a'], t)
     G = Integral(r['b'], t)
     sol1 = exp(F)*(C1*exp(G) + C2*exp(-G))
@@ -6041,7 +6038,7 @@ def _linear_2eq_order1_type4(x, y, t, r, eq):
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     assert r['b'] == -r['c']
     F = exp(Integral(r['a'], t))
     G = Integral(r['b'], t)
@@ -6066,7 +6063,6 @@ def _linear_2eq_order1_type5(x, y, t, r, eq):
     .. math:: u'(T) = v , v'(T) = au + bv
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     u, v = symbols('u, v', cls=Function)
     T = Symbol('T')
     if not cancel(r['c']/r['b']).has(t):
@@ -6102,7 +6098,7 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
     `x`, we can obtain `y` by substituting the value of `x` in second equation.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1 = get_numbered_constants(eq, num=1)
     p = 0
     q = 0
     p1 = cancel(r['c']/cancel(r['c']/r['d']).as_numer_denom()[0])
@@ -6173,7 +6169,7 @@ def _linear_2eq_order1_type7(x, y, t, r, eq):
     .. math:: F(t) = e^{\int f(t) \,dt} , P(t) = e^{\int p(t) \,dt}
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     e1 = r['a']*r['b']*r['c'] - r['b']**2*r['c'] + r['a']*diff(r['b'], t) - diff(r['a'], t)*r['b']
     e2 = r['a']*r['c']*r['d'] - r['b']*r['c']**2 + diff(r['c'], t)*r['d'] - r['c']*diff(r['d'], t)
     m1 = r['a']*r['b'] + r['b']*r['d'] + diff(r['b'], t)
@@ -6205,7 +6201,6 @@ def sysode_linear_2eq_order2(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
@@ -6524,7 +6519,6 @@ def _linear_2eq_order2_type6(x, y, t, r, eq):
     of `z_1` and `z_2` by solving the differential equation and substituting the result.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     k = Symbol('k')
     z = Function('z')
     num, den = cancel((r['c1']*x(t) + r['d1']*y(t)) /
@@ -6733,7 +6727,7 @@ def _linear_2eq_order2_type11(x, y, t, r, eq):
     where `C_3` and `C_4` are arbitrary constants.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    *_, C3, C4 = get_numbered_constants(eq, num=4)
     u, v = symbols('u, v', cls=Function)
     f = -r['c1']
     g = -r['d1']
@@ -6752,7 +6746,6 @@ def sysode_linear_3eq_order1(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(3):
@@ -7016,7 +7009,7 @@ def _nonlinear_2eq_order1_type3(x, y, t, eq):
     .. math:: \int \frac{1}{F(x,y(x,C_1))} \,dx = t + C_1
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    _, C2, *_ = get_numbered_constants(eq, num=4)
     v = Function('v')
     u = Symbol('u')
     f = Wild('f')
@@ -7054,7 +7047,7 @@ def _nonlinear_2eq_order1_type4(x, y, t, eq):
     arrives at a firs-order equation for determining `y` (resp., `x` ).
 
     """
-    C1, C2 = get_numbered_constants(eq, num=2)
+    C1 = get_numbered_constants(eq, num=1)
     u, v = symbols('u, v')
     U, V = symbols('U, V', cls=Function)
     f = Wild('f')

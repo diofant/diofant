@@ -151,9 +151,9 @@ class MatrixExpr(Expr):
         from .transpose import Transpose
         return Transpose(self)
 
-    def _eval_power(self, exp):
+    def _eval_power(self, other):
         from .matpow import MatPow
-        return MatPow(self, exp)
+        return MatPow(self, other)
 
     def _eval_simplify(self, ratio, measure):
         if self.is_Atom:

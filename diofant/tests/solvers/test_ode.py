@@ -36,8 +36,7 @@ f, g, h, eta, xi = symbols('f g h eta xi', cls=Function)
 
 
 def test_linear_2eq_order1():
-    x, y, z = symbols('x, y, z', cls=Function)
-    k, l, m, n = symbols('k, l, m, n', integer=True)
+    x, y = symbols('x y', cls=Function)
     x0, y0 = symbols('x0, y0', cls=Function)
     eq1 = [Eq(diff(x(t), t), 9*y(t)), Eq(diff(y(t), t), 12*x(t))]
     sol1 = [Eq(x(t), sqrt(3)*exp(6*sqrt(3)*t)*C2/2 - sqrt(3)*exp(-6*sqrt(3)*t)*C1/2),
@@ -168,8 +167,7 @@ def test_sysode_linear_2eq_order1_type1_D_lt_0_b_eq_0():
 
 
 def test_linear_2eq_order2():
-    x, y, z = symbols('x, y, z', cls=Function)
-    k, m, n = symbols('k, m, n', integer=True)
+    x, y = symbols('x y', cls=Function)
     x0, y0 = symbols('x0, y0', cls=Function)
 
     eq1 = (Eq(diff(x(t), t, t), 5*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
@@ -434,7 +432,7 @@ def test_linear_3eq_order1_diagonal():
 
 
 def test_nonlinear_2eq_order1():
-    x, y, z = symbols('x, y, z', cls=Function)
+    x, y = symbols('x y', cls=Function)
     eq1 = (Eq(diff(x(t), t), x(t)*y(t)**3), Eq(diff(y(t), t), y(t)**5))
     sol1 = [
         Eq(x(t), C1*exp((-1/(4*C2 + 4*t))**(-Rational(1, 4)))),
@@ -1011,10 +1009,9 @@ def test_classify_ode_init():
 def test_classify_sysode():
     # Here x is assumed to be x(t) and y as y(t) for simplicity.
     # Similarly diff(x,t) and diff(y,y) is assumed to be x1 and y1 respectively.
-    k, m, n = symbols('k, m, n', integer=True)
-    k1, k2, k3, l1, l2, l3, m1, m2, m3 = symbols('k1, k2, k3, l1, l2, l3, m1, m2, m3', integer=True)
-    P, Q, R, p, q, r = symbols('P, Q, R, p, q, r', cls=Function)
-    P1, P2, P3, Q1, Q2, R1, R2 = symbols('P1, P2, P3, Q1, Q2, R1, R2', cls=Function)
+    k = Symbol('k', integer=True)
+    P, R, r = symbols('P R r', cls=Function)
+    P1, Q1 = symbols('P1 Q1', cls=Function)
 
     eq1 = (Eq(diff(f(t), t), 5*t*f(t) + 2*g(t)), Eq(diff(g(t), t), 2*f(t) + 5*t*g(t)))
     sol1 = {'no_of_equation': 2, 'func_coeff': {(0, f(t), 0): -5*t, (1, f(t), 1): 0, (0, f(t), 1): 1,

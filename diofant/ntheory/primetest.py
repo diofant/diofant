@@ -66,9 +66,9 @@ def is_square(n, prep=True):
         if n in [0, 1]:
             return True
     m = n & 127
-    if not ((m*0x8bc40d7d) & (m*0xa1e2f5d1) & 0x14020a):
+    if not (m*0x8bc40d7d) & (m*0xa1e2f5d1) & 0x14020a:
         m = n % 63
-        if not ((m*0x3d491df7) & (m*0xc824a9f9) & 0x10f14008):
+        if not (m*0x3d491df7) & (m*0xc824a9f9) & 0x10f14008:
             from . import perfect_power
             test = perfect_power(n)
             if test:
@@ -84,10 +84,10 @@ def _test(n, base, s, t):
     """
     # do the Fermat test
     b = pow(base, t, n)
-    if b == 1 or b == n - 1:
+    if b in (1, n - 1):
         return True
     else:
-        for j in range(1, s):
+        for _ in range(1, s):
             b = pow(b, 2, n)
             if b == n - 1:
                 return True

@@ -268,22 +268,22 @@ class OctaveCodePrinter(CodePrinter):
     # Could generate quadrature code for definite Integrals?
     # _print_Integral = _print_not_supported
 
-    def _print_MatrixBase(self, A):
+    def _print_MatrixBase(self, expr):
         # Handle zero dimensions:
-        if (A.rows, A.cols) == (0, 0):
+        if (expr.rows, expr.cols) == (0, 0):
             return '[]'
-        elif A.rows == 0 or A.cols == 0:
-            return f'zeros({A.rows}, {A.cols})'
-        elif (A.rows, A.cols) == (1, 1):
+        elif expr.rows == 0 or expr.cols == 0:
+            return f'zeros({expr.rows}, {expr.cols})'
+        elif (expr.rows, expr.cols) == (1, 1):
             # Octave does not distinguish between scalars and 1x1 matrices
-            return self._print(A[0, 0])
-        elif A.rows == 1:
-            return '[%s]' % A.table(self, rowstart='', rowend='', colsep=' ')
-        elif A.cols == 1:
+            return self._print(expr[0, 0])
+        elif expr.rows == 1:
+            return '[%s]' % expr.table(self, rowstart='', rowend='', colsep=' ')
+        elif expr.cols == 1:
             # note .table would unnecessarily equispace the rows
-            return '[%s]' % '; '.join([self._print(a) for a in A])
-        return '[%s]' % A.table(self, rowstart='', rowend='',
-                                rowsep=';\n', colsep=' ')
+            return '[%s]' % '; '.join([self._print(a) for a in expr])
+        return '[%s]' % expr.table(self, rowstart='', rowend='',
+                                   rowsep=';\n', colsep=' ')
 
     def _print_SparseMatrixBase(self, A):
         from ..matrices import Matrix

@@ -56,10 +56,10 @@ def test_printmethod():
             return 'foo(%s)' % printer._print(self.args[0])
     assert latex(R(x)) == 'foo(x)'
 
-    class R(Abs):
+    class R2(Abs):
         def _latex(self, printer):
             return 'foo'
-    assert latex(R(x)) == 'foo'
+    assert latex(R2(x)) == 'foo'
 
 
 def test_latex_basic():
@@ -200,7 +200,7 @@ def test_latex_Float():
 
 
 def test_latex_symbols():
-    Gamma, lmbda, rho = symbols('Gamma, lambda, rho')
+    Gamma, lmbda = symbols('Gamma, lambda')
     tau, Tau, TAU, taU = symbols('tau, Tau, TAU, taU')
     assert latex(tau) == r'\tau'
     assert latex(Tau) == 'T'
@@ -840,7 +840,7 @@ def test_latex_Matrix():
         r'\left[\begin{array}{ccccccccccc}' \
         r'0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\end{array}\right]'
 
-    n, m, l = symbols('n,m,l')
+    n, m = symbols('n,m')
     X = MatrixSymbol('X', n, n)
     Y = MatrixSymbol('Y', m, m)
     Z = MatrixSymbol('Z', n, m)
@@ -985,7 +985,7 @@ def test_latex_Lambda():
 
 def test_latex_PolyElement():
     Ruv,  u, v = ring('u v', ZZ)
-    Rxyz,  x, y, z = ring('x y z', Ruv)
+    _,  x, y, _ = ring('x y z', Ruv)
 
     assert latex(x - x) == r'0'
     assert latex(x - 1) == r'x - 1'
@@ -1002,7 +1002,7 @@ def test_latex_PolyElement():
 
 def test_latex_FracElement():
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, z, t = field('x y z t', Fuv)
 
     assert latex(x - x) == r'0'
     assert latex(x - 1) == r'x - 1'
@@ -1484,13 +1484,13 @@ def test_sympyissue_20491():
 
 
 def test_sympyissue_20490():
-    R, x, y = ring('x y', QQ)
+    R, *_ = ring('x y', QQ)
 
     assert latex(R(-2)) == '-2'
 
 
 def test_sympyissue_20487():
-    R, x, y = ring('x y', QQ)
+    _, x, _ = ring('x y', QQ)
 
     pytest.raises(ValueError, lambda: latex(x**QQ(3, 2)))
 

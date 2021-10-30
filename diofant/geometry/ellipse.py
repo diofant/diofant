@@ -638,7 +638,6 @@ class Ellipse(GeometrySet):
                        simplify(p.y + rise))
             return [Line(p, p2)]
         else:
-            f1, f2 = self.foci
             # p is outside the ellipse or we can't tell. In case of the
             # latter, the solutions returned will only be valid if
             # the point is not inside the ellipse; if it is, nan will result.

@@ -3901,7 +3901,7 @@ def test_pretty_no_wrap_line():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: pretty(Integer(4), method='garbage'))
+    pytest.raises(TypeError, lambda: pretty(Integer(4), method='garbage'))  # pylint: disable=unexpected-keyword-arg
 
 
 def test_pretty_sum():

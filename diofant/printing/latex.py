@@ -483,7 +483,7 @@ class LatexPrinter(Printer):
         else:
             items = [(0, expr)]
 
-        for system, vect in items:
+        for _, vect in items:
             inneritems = list(vect.components.items())
             inneritems.sort(key=lambda x: x[0].__str__())
             for k, v in inneritems:
@@ -761,7 +761,7 @@ class LatexPrinter(Printer):
             return self._print_Equivalent(e.args[0], r'\not\equiv')
         if isinstance(e.args[0], Implies):
             return self._print_Implies(e.args[0], r'\not\Rightarrow')
-        if (e.args[0].is_Boolean):
+        if e.args[0].is_Boolean:
             return r'\neg (%s)' % self._print(e.args[0])
         else:
             return r'\neg %s' % self._print(e.args[0])

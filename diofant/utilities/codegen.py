@@ -851,7 +851,7 @@ class CCodeGen(CodeGen):
             t = result.get_datatype('c')
             prefix = f'const {t} '
 
-            constants, not_c, c_expr = self._printer_method_with_settings(
+            *_, c_expr = self._printer_method_with_settings(
                 'doprint', {'human': False, 'dereference': dereference},
                 result.expr, assign_to=assign_to)
 
@@ -880,8 +880,8 @@ class CCodeGen(CodeGen):
             else:
                 assign_to = result.result_var
 
-            constants, not_c, c_expr = ccode(result.expr, human=False,
-                                             assign_to=assign_to, dereference=dereference)
+            constants, _, c_expr = ccode(result.expr, human=False,
+                                         assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
                 code_lines.append(f'double const {name} = {value};\n')
@@ -1299,7 +1299,7 @@ class OctaveCodeGen(CodeGen):
 
         # Outputs
         outs = []
-        for i, result in enumerate(routine.results):
+        for result in routine.results:
             # Note: name not result_var; want `y` not `y(i)` for Indexed
             s = self._get_symbol(result.name)
             outs.append(s)
@@ -1311,7 +1311,7 @@ class OctaveCodeGen(CodeGen):
 
         # Inputs
         args = []
-        for i, arg in enumerate(routine.arguments):
+        for arg in routine.arguments:
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError('Octave: invalid argument of type %s' %
                                    str(type(arg)))
@@ -1341,7 +1341,7 @@ class OctaveCodeGen(CodeGen):
     def _call_printer(self, routine):
         declarations = []
         code_lines = []
-        for i, result in enumerate(routine.results):
+        for result in routine.results:
             assign_to = result.result_var
 
             constants, not_supported, oct_expr = octave_code(result.expr,

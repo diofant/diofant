@@ -273,7 +273,7 @@ def test_sympyissue_5183():
                oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)),
                0, 0, 0, 0, 0, 0, 0, 0)
     assert len(tests) == len(results)
-    for i, (args, res) in enumerate(zip(tests, results)):
+    for args, res in zip(tests, results):
         y, s, e, d = args
         eq = y**(s*e)
         assert limit(eq, x, 0, dir=d) == res
@@ -302,7 +302,7 @@ def test_sympyissue_4546():
     results = (0, 0, -oo, oo, 0, 0, -oo, oo, 0, 0,
                oo, -oo, 0, 0, oo, -oo, 0, 0, oo, -oo)
     assert len(tests) == len(results)
-    for i, (args, res) in enumerate(zip(tests, results)):
+    for args, res in zip(tests, results):
         f, l, d = args
         eq = f(x)
         assert limit(eq, x, l, dir=d) == res
@@ -542,9 +542,8 @@ def test_sympyissue_12555():
 
 
 def test_sympyissue_12769():
-    r, z, x = symbols('r,z,x', real=True)
-    a, b, s0, K, F0, s, T = symbols('a,b,s0,K,F0,s,T',
-                                    positive=True, real=True)
+    r = Symbol('r', real=True)
+    a, b, s0, K, F0 = symbols('a b s0 K F0', positive=True, real=True)
     fx = (F0**b*K**b*r*s0 -
           sqrt((F0**2*K**(2*b)*a**2*(b - 1) +
                 F0**(2*b)*K**2*a**2*(b - 1) +

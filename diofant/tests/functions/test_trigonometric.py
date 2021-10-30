@@ -1252,7 +1252,7 @@ def test_tancot_rewrite_sqrt():
                         t1 = tan(x).rewrite(sqrt)
                         assert not t1.has(cot, tan), f'fails for {i:d}*pi/{n:d}'
                         assert 1e-3 > abs( tan(x.evalf(7)) - t1.evalf(4) ), f'fails for {i:d}*pi/{n:d}'
-                    if i != 0 and i != n:
+                    if i not in (0, n):
                         c1 = cot(x).rewrite(sqrt)
                         assert not c1.has(cot, tan), f'fails for {i:d}*pi/{n:d}'
                         assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), f'fails for {i:d}*pi/{n:d}'

@@ -1,5 +1,7 @@
 """Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x]..."""
 
+import abc
+
 import pytest
 
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
@@ -22,7 +24,7 @@ def unify(K0, K1):
 
 
 def test_Domain_interface():
-    pytest.raises(TypeError, lambda: DomainElement().parent)
+    assert issubclass(DomainElement, abc.ABC)
 
     assert RR(1).parent is RR
     assert CC(1).parent is CC
@@ -753,13 +755,13 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(f, R) == 3*X**2 + 5*Y**2
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
-    RALG,  u, v = ring('u v', ALG)
+    _,  u, v = ring('u v', ALG)
     pytest.raises(CoercionFailed,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
 def test_FractionField_convert():
-    F,  X, Y = field('x y', QQ)
+    F,  *_ = field('x y', QQ)
     assert F.convert(QQ_python(1, 3)) == F.one/3
     assert F.convert(RR(1)) == F.one
 

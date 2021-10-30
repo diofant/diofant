@@ -534,7 +534,7 @@ def test_polymorphism():
 
 
 def test_sympyissue_from_PR1599():
-    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
+    n1 = Symbol('n1', negative=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
 
 

@@ -573,7 +573,7 @@ class Point(GeometryEntity):
 
         """
         try:
-            col, row = matrix.shape
+            col, _ = matrix.shape
             valid_matrix = matrix.is_square and col == 3
         except AttributeError:
             # We hit this block if matrix argument is not actually a Matrix.

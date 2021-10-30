@@ -331,7 +331,7 @@ def bivariate_type(f, x, y, **kwargs):
     new = []
     d = p.degree(x)
     if p.degree(y) == d:
-        for itry in range(2):
+        for _ in range(2):
             a = root(p.coeff_monomial(x**d*y**d), d)
             b = root(p.coeff_monomial(y**d), d)
             new = ok(f, x, (u - b*y)/a/y)

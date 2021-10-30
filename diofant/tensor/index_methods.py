@@ -38,7 +38,7 @@ def _remove_repeated(inds):
         else:
             sum_index[i] = 0
     inds = [x for x in inds if not sum_index[x]]
-    return set(inds), tuple(i for i in sum_index if sum_index[i])
+    return set(inds), tuple(k for k, v in sum_index.items() if v)
 
 
 def _get_indices_Mul(expr, return_dummies=False):
@@ -53,7 +53,7 @@ def _get_indices_Mul(expr, return_dummies=False):
     ({i, j}, {}, (k,))
     """
     inds = list(map(get_indices, expr.args))
-    inds, syms = list(zip(*inds))
+    inds, _ = list(zip(*inds))
 
     inds = list(map(list, inds))
     inds = list(functools.reduce(lambda x, y: x + y, inds))
@@ -102,8 +102,8 @@ def _get_indices_Pow(expr):
     ({i}, {})
     """
     base, exp = expr.as_base_exp()
-    binds, bsyms = get_indices(base)
-    einds, esyms = get_indices(exp)
+    binds, _ = get_indices(base)
+    einds, _ = get_indices(exp)
 
     inds = binds | einds
 
@@ -134,7 +134,7 @@ def _get_indices_Add(expr):
     ({i}, {})
     """
     inds = list(map(get_indices, expr.args))
-    inds, syms = list(zip(*inds))
+    inds, _ = list(zip(*inds))
 
     # allow broadcast of scalars
     non_scalars = [x for x in inds if x != set()]
@@ -205,7 +205,7 @@ def get_indices(expr):
     # break recursion
     if isinstance(expr, Indexed):
         c = expr.indices
-        inds, dummies = _remove_repeated(c)
+        inds, _ = _remove_repeated(c)
         return inds, {}
     elif expr is None:
         return set(), {}
@@ -336,12 +336,12 @@ def get_contraction_structure(expr):
     # We call ourself recursively to inspect sub expressions.
 
     if isinstance(expr, Indexed):
-        junk, key = _remove_repeated(expr.indices)
+        _, key = _remove_repeated(expr.indices)
         return {key or None: {expr}}
     elif expr.is_Atom:
         return {None: {expr}}
     elif expr.is_Mul:
-        junk, junk, key = _get_indices_Mul(expr, return_dummies=True)
+        *_, key = _get_indices_Mul(expr, return_dummies=True)
         result = {key or None: {expr}}
         # recurse on every factor
         nested = []
@@ -376,11 +376,11 @@ def get_contraction_structure(expr):
         for term in expr.args:
             # recurse on every term
             d = get_contraction_structure(term)
-            for key in d:
-                if key in result:
-                    result[key] |= d[key]
+            for k, v in d.items():
+                if k in result:
+                    result[k] |= v
                 else:
-                    result[key] = d[key]
+                    result[k] = v
         return result
 
     elif isinstance(expr, Function):

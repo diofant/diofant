@@ -270,5 +270,5 @@ def test_satisfiable_all_models():
     sym = numbered_symbols()
     X = [next(sym) for i in range(100)]
     result = satisfiable(Or(*X), all_models=True)
-    for i in range(10):
+    for _ in range(10):
         assert next(result)

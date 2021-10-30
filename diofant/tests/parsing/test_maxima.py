@@ -1,5 +1,5 @@
 from diofant import E, Rational, Symbol, cos, factorial, log, oo, sin
-from diofant.abc import x
+from diofant.abc import c, g, x
 from diofant.parsing.maxima import parse_maxima
 
 

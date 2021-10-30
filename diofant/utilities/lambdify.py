@@ -10,8 +10,11 @@ import textwrap
 import typing
 
 from ..core.compatibility import is_sequence, iterable
-from ..external import import_module  # noqa: F401
+from ..external import import_module
 from .decorator import doctest_depends_on
+
+
+import_module  # make pylint & flake8 happy
 
 
 # These are the namespaces the lambda functions will use.

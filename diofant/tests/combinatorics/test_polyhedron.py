@@ -66,13 +66,13 @@ def test_polyhedron():
             # make sure it restores original
             P = h.copy()
             hit = P.corners
-            for i in range(rpt):
+            for _ in range(rpt):
                 P.rotate(p)
                 if P.corners == hit:
                     break
             else:
                 print('error in permutation', p.array_form)
-            for i in range(rpt):
+            for _ in range(rpt):
                 P.rotate(p)
                 got.add(tuple(P.corners))
                 c = P.corners

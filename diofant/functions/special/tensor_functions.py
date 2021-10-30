@@ -166,10 +166,10 @@ class KroneckerDelta(Function):
         if i is not min(i, j, key=default_sort_key):
             return cls(j, i)
 
-    def _eval_power(self, expt):
-        if expt.is_positive:
+    def _eval_power(self, other):
+        if other.is_positive:
             return self
-        if expt.is_negative and -expt != 1:
+        if other.is_negative and -other != 1:
             return 1/self
 
     @property

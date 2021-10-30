@@ -76,10 +76,10 @@ def integer_powers(exprs):
 
     terms = {}
     for term in exprs:
-        for j in terms:
-            a = cancel(term/j)
+        for k, v in terms.items():
+            a = cancel(term/k)
             if a.is_Rational:
-                terms[j].append((term, a))
+                v.append((term, a))
                 break
         else:
             terms[term] = [(term, Integer(1))]
@@ -90,11 +90,11 @@ def integer_powers(exprs):
     # multiple of the base term, and the content of the integers is 1.
 
     newterms = {}
-    for term in terms:
+    for k, v in terms.items():
         common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
-                                                   terms[term]])
-        newterm = term/common_denom
-        newmults = [(i, j*common_denom) for i, j in terms[term]]
+                                                   v])
+        newterm = k/common_denom
+        newmults = [(i, j*common_denom) for i, j in v]
         newterms[newterm] = newmults
 
     return sorted(newterms.items(), key=lambda item: item[0].sort_key())
@@ -318,7 +318,7 @@ class DifferentialExtension:
                                       lambda i: (i.exp.is_rational_function(*self.T) and
                                                  i.exp.has(*self.T)))
                         continue
-                    ans, u, const = A
+                    _, u, const = A
                     newterm = exp(i.exp*(log(const) + u))
                     # Under the current implementation, exp kills terms
                     # only if they are of the form a*log(x), where a is a
@@ -537,7 +537,7 @@ class DifferentialExtension:
             arga, argd = frac_in(arg, self.t)
             A = is_deriv_k(arga, argd, self)
             if A is not None:
-                ans, u, const = A
+                _, u, const = A
                 newterm = log(const) + u
                 self.newf = self.newf.xreplace({log(arg): newterm})
                 continue
@@ -1040,8 +1040,8 @@ def laurent_series(a, d, F, n, DE):
     E = d.quo(F**n)
     ha, hd = (a, E*Poly(z**n, DE.t))
     dF = derivation(F, DE)
-    B, G = gcdex_diophantine(E, F, Poly(1, DE.t))
-    C, G = gcdex_diophantine(dF, F, Poly(1, DE.t))
+    B, _ = gcdex_diophantine(E, F, Poly(1, DE.t))
+    C, _ = gcdex_diophantine(dF, F, Poly(1, DE.t))
 
     # initialization
     F_store = F
@@ -1067,7 +1067,7 @@ def laurent_series(a, d, F, n, DE):
         Dhd = Poly(j + 1, DE.t)*hd**2
         ha, hd = Dha, Dhd
 
-        Ff, Fr = F.div(gcd(F, Q))
+        Ff, _ = F.div(gcd(F, Q))
         F_stara, F_stard = frac_in(Ff, DE.t)
         if F_stara.degree(DE.t) - F_stard.degree(DE.t) > 0:
             QBC = Poly(Q, DE.t)*B**(1 + j)*C**(n + j)
@@ -1094,12 +1094,12 @@ def recognize_derivative(a, d, DE, z=None):
     """
     flag = True
     a, d = a.cancel(d, include=True)
-    q, r = a.div(d)
-    Np, Sp = splitfactor_sqf(d, DE, coefficientD=True, z=z)
+    _, r = a.div(d)
+    _, Sp = splitfactor_sqf(d, DE, coefficientD=True, z=z)
 
     j = 1
-    for (s, i) in Sp:
-        delta_a, delta_d, H = laurent_series(r, d, s, j, DE)
+    for (s, _) in Sp:
+        *_, H = laurent_series(r, d, s, j, DE)
         g = gcd(d, H[-1]).as_poly()
         if g is not d:
             flag = False
@@ -1120,16 +1120,16 @@ def recognize_log_derivative(a, d, DE, z=None):
     """
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)
-    p, a = a.div(d)
+    _, a = a.div(d)
 
     pz = Poly(z, DE.t)
     Dd = derivation(d, DE)
     q = a - pz*Dd
     r = d.resultant(q)
     r = Poly(r, z)
-    Np, Sp = splitfactor_sqf(r, DE, coefficientD=True, z=z)
+    _, Sp = splitfactor_sqf(r, DE, coefficientD=True, z=z)
 
-    for s, i in Sp:
+    for s, _ in Sp:
         # TODO also consider the complex roots
         # in case we have complex roots it should turn the flag false
         a = real_roots(s.as_poly(z))
@@ -1172,7 +1172,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
     if a.is_zero:
         return [], True
-    p, a = a.div(d)
+    _, a = a.div(d)
 
     pz = Poly(z, DE.t)
 

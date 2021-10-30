@@ -158,7 +158,7 @@ class floor(RoundFunction):
             return false
         return Gt(self, other, evaluate=False)
 
-    def _eval_as_leading_term(self, arg):
+    def _eval_as_leading_term(self, x):
         return self
 
 

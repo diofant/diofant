@@ -291,7 +291,7 @@ def test_cse_Indexed():
 
     expr1 = (y[i+1]-y[i])/(x[i+1]-x[i])
     expr2 = 1/(x[i+1]-x[i])
-    replacements, reduced_exprs = cse([expr1, expr2])
+    replacements, _ = cse([expr1, expr2])
     assert len(replacements) > 0
 
 
@@ -302,7 +302,7 @@ def test_cse_MatrixSymbol():
 
     expr1 = (A.T*A).inverse() * A * y
     expr2 = (A.T*A) * A * y
-    replacements, reduced_exprs = cse([expr1, expr2])
+    replacements, _ = cse([expr1, expr2])
     assert len(replacements) > 0
 
 
@@ -389,9 +389,9 @@ def test_matrices():
 
 def test_cse_ignore():
     exprs = [exp(y)*(3*y + 3*sqrt(x+1)), exp(y)*(5*y + 5*sqrt(x+1))]
-    subst1, red1 = cse(exprs)
+    subst1, _ = cse(exprs)
     assert any(y in sub.free_symbols for _, sub in subst1), 'cse failed to identify any term with y'
 
-    subst2, red2 = cse(exprs, ignore=(y,))  # y is not allowed in substitutions
+    subst2, _ = cse(exprs, ignore=(y,))  # y is not allowed in substitutions
     assert not any(y in sub.free_symbols for _, sub in subst2), 'Sub-expressions containing y must be ignored'
     assert any(sub - sqrt(x + 1) == 0 for _, sub in subst2), 'cse failed to identify sqrt(x + 1) as sub-expression'

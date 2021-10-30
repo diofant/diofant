@@ -165,7 +165,7 @@ class stringPict:
          3
 
         """
-        s, baseline = stringPict.stack(self, *args)
+        s, _ = stringPict.stack(self, *args)
         return s, self.baseline
 
     def above(self, *args):

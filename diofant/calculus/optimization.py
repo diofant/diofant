@@ -191,9 +191,9 @@ def simplex(c, m, b):
 
     def pivot_row(lhs, rhs):
         ratio, idx = oo, 0
-        for i in range(len(lhs)):
-            if lhs[i] > 0:
-                r = rhs[i]/lhs[i]
+        for i, l in enumerate(lhs):
+            if l > 0:
+                r = rhs[i]/l
                 if r < ratio:
                     ratio, idx = r, i
         return idx

@@ -633,7 +633,7 @@ class G_Function(Expr):
          {0: [2]}, {y: [y]})
 
         """
-        dicts = pan, pap, pbm, pbq = [defaultdict(list) for i in range(4)]
+        dicts = [defaultdict(list) for i in range(4)]
         for dic, lis in zip(dicts, (self.an, self.ap, self.bm, self.bq)):
             for x in lis:
                 dic[_mod1(x)].append(x)
@@ -746,8 +746,6 @@ class Formula:
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
-        a_inv, b_inv = [{a: len(vals) for a, vals in bucket.items()}
-                        for bucket in [abuckets, bbuckets]]
         critical_values = [[0] for _ in self.symbols]
         result = []
         _n = Dummy()
@@ -1395,8 +1393,8 @@ def _reduce_order(ap, bq, gen, key):
     operators = []
     for a in ap:
         op = None
-        for i in range(len(bq)):
-            op = gen(a, bq[i])
+        for i, bqa in enumerate(bq):
+            op = gen(a, bqa)
             if op is not None:
                 bq.pop(i)
                 break
@@ -1550,8 +1548,8 @@ def devise_plan(target, origin, z):
 
     def do_shifts(fro, to, inc, dec):
         ops = []
-        for i in range(len(fro)):
-            if to[i] - fro[i] > 0:
+        for i, froa in enumerate(fro):
+            if to[i] - froa > 0:
                 sh = inc
                 ch = 1
             else:
@@ -1594,7 +1592,7 @@ def devise_plan(target, origin, z):
 
         def others(dic, key):
             l = []
-            for k, value in dic.items():
+            for k in dic:
                 if k != key:
                     l += list(dic[k])
             return l
@@ -1888,7 +1886,7 @@ def build_hypergeometric_formula(func):
         # integers.
         basis = []
         bq = list(func.bq[:])
-        for i in range(len(bq)):
+        for i, _ in enumerate(bq):
             basis += [hyper([], bq, z)]
             bq[i] += 1
         basis += [hyper([], bq, z)]

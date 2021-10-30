@@ -68,7 +68,7 @@ class ExprWithLimits(Expr):
             return nan
 
         if symbols:
-            limits, orientation = _process_limits(*symbols)
+            limits, _ = _process_limits(*symbols)
         else:
             # symbol not provided -- we can still try to compute a general form
             free = function.free_symbols

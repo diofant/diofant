@@ -67,8 +67,8 @@ class DenseMatrix(MatrixBase):
                 return self._mat[i*self.cols + j]
             except (TypeError, IndexError):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
-                    if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
-                       ((i < 0) == true) or ((i >= self.shape[0]) == true):
+                    if true in (j < 0, j >= self.shape[1], i < 0,
+                                i >= self.shape[0]):
                         raise ValueError('index out of boundary')
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
@@ -842,9 +842,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.simplify.simplify.simplify
 
         """
-        for i in range(len(self._mat)):
-            self._mat[i] = _simplify(self._mat[i], ratio=ratio,
-                                     measure=measure)
+        for i, mi in enumerate(self._mat):
+            self._mat[i] = _simplify(mi, ratio=ratio, measure=measure)
 
     def fill(self, value):
         """Fill the matrix with the scalar value.
@@ -1281,8 +1280,7 @@ def diag(*values, **kwargs):
     rows = 0
     cols = 0
     values = list(values)
-    for i in range(len(values)):
-        m = values[i]
+    for i, m in enumerate(values):
         if isinstance(m, MatrixBase):
             rows += m.rows
             cols += m.cols
@@ -1438,8 +1436,8 @@ def GramSchmidt(vlist, orthonormal=False):
                 'GramSchmidt: vector set not linearly independent')
         out.append(tmp)
     if orthonormal:
-        for i in range(len(out)):
-            out[i] = out[i].normalized()
+        for i, oi in enumerate(out):
+            out[i] = oi.normalized()
     return out
 
 
@@ -1468,8 +1466,8 @@ def wronskian(functions, var, method='bareiss'):
     """
     from . import Matrix
 
-    for index in range(len(functions)):
-        functions[index] = sympify(functions[index])
+    for index, f in enumerate(functions):
+        functions[index] = sympify(f)
     n = len(functions)
     if n == 0:
         return 1

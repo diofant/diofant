@@ -465,8 +465,8 @@ class Subset(Basic):
         if len(super_set) != len(bitlist):
             raise ValueError('The sizes of the lists are not equal')
         ret_set = []
-        for i in range(len(bitlist)):
-            if bitlist[i] == '1':
+        for i, bi in enumerate(bitlist):
+            if bi == '1':
                 ret_set.append(super_set[i])
         return Subset(ret_set, super_set)
 

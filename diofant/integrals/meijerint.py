@@ -61,7 +61,7 @@ def _create_lookup_table(table):
     """Add formulae for the function -> meijerg lookup table."""
     def wild(n):
         return Wild(n, exclude=[z])
-    p, q, a, b, c = list(map(wild, 'pqabc'))
+    p, q, a, b = list(map(wild, 'pqab'))
     n = Wild('n', properties=[lambda x: x.is_Integer and x > 0])
     t = p*z**q
 
@@ -129,14 +129,14 @@ def _create_lookup_table(table):
     tmpadd(Rational(1, 2), -1)
 
     # 13
-    def tmpadd(r, sgn):
+    def tmpadd2(r, sgn):
         add((sqrt(a + p*z**q) + sgn*sqrt(p)*z**(q/2))**b/(a + p*z**q)**r,
             [1 - r + sgn*b/2], [1 - r - sgn*b/2], [0, Rational(1, 2)], [],
             p*z**q/a, a**(b/2 - r)*A1(r, sgn, b))
-    tmpadd(0, 1)
-    tmpadd(0, -1)
-    tmpadd(Rational(1, 2), 1)
-    tmpadd(Rational(1, 2), -1)
+    tmpadd2(0, 1)
+    tmpadd2(0, -1)
+    tmpadd2(Rational(1, 2), 1)
+    tmpadd2(Rational(1, 2), -1)
     # (those after look obscure)
 
     # Section 8.4.3
@@ -1811,7 +1811,7 @@ def _meijerint_definite_2(f, x):
     if f == 0:
         return Integer(0), True
 
-    for g, explanation in _guess_expansion(f, x):
+    for g, _ in _guess_expansion(f, x):
         res = _meijerint_definite_3(g, x)
         if res:
             return res

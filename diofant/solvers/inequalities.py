@@ -372,7 +372,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
                 if expr.is_Relational:
                     expr, rel = expr.lhs - expr.rhs, expr.rel_op
                 else:
-                    expr, rel = expr, '=='
+                    rel = '=='
 
             if expr == true:
                 numer, denom, rel = Integer(0), Integer(1), '=='

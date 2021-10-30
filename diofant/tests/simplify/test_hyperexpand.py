@@ -481,7 +481,7 @@ def test_meijerg():
     #       hit an inexplicable test failure here, please let me know the seed.
     a1, a2 = (randcplx(n) - 5*I - n*I for n in range(2))
     b1, b2 = (randcplx(n) + 5*I + n*I for n in range(2))
-    b3, b4, b5, a3, a4, a5 = (randcplx() for n in range(6))
+    b3, b4, _, a3, a4, _ = (randcplx() for n in range(6))
     g = meijerg([a1], [a3, a4], [b1], [b3, b4], z)
 
     assert ReduceOrder.meijer_minus(3, 4) is None
@@ -515,7 +515,7 @@ def test_meijerg():
 
 def test_meijerg_shift_operators():
     # carefully set up the parameters. XXX this still fails sometimes
-    a1, a2, a3, a4, a5, b1, b2, b3, b4, b5 = (randcplx(n) for n in range(10))
+    a1, _, a3, a4, _, b1, _, b3, b4, _ = (randcplx(n) for n in range(10))
     g = meijerg([a1], [a3, a4], [b1], [b3, b4], z)
 
     assert tn(MeijerShiftA(b1).apply(g, op),
@@ -665,7 +665,7 @@ def test_partial_simp():
 
 def test_partial_simp2():
     # Now test that formulae are partially simplified.
-    c, d, e = (randcplx() for _ in range(3))
+    _, d, e = (randcplx() for _ in range(3))
     assert hyperexpand(hyper([3, a], [1, b], z)) == \
         (-a*b/2 + a*z/2 + 2*a)*hyper([a + 1], [b], z) \
         + (a*b/2 - 2*a + 1)*hyper([a], [b], z)

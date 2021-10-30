@@ -39,7 +39,7 @@ def gosper_normal(f, g, n):
      Poly(n + 1/4, n, domain='QQ'))
 
     """
-    (C, p, q), opt = parallel_poly_from_expr((1, f, g), n, field=True)
+    (C, p, q), _ = parallel_poly_from_expr((1, f, g), n, field=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()

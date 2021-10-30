@@ -112,7 +112,7 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     if no_global:
         _stringify_func = stringify_func
 
-        def stringify_func(expr):
+        def stringify_func(expr):  # pylint: disable=function-redefined
             return _stringify_func(expr, **settings)
     else:
         Printer.set_global_settings(**settings)

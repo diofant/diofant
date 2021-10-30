@@ -225,7 +225,7 @@ def test_schwarzschild():
     m = Manifold('Schwarzschild', 4)
     p = Patch('origin', m)
     cs = CoordSystem('spherical', p, ['t', 'r', 'theta', 'phi'])
-    t, r, theta, phi = cs.coord_functions()
+    _, r, theta, _ = cs.coord_functions()
     dt, dr, dtheta, dphi = cs.base_oneforms()
     f, g = symbols('f g', cls=Function)
     metric = (exp(2*f(r))*TP(dt, dt) - exp(2*g(r))*TP(dr, dr) -

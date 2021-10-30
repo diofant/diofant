@@ -152,7 +152,7 @@ def rsolve_poly(coeffs, f, n):
         if solutions:
             solutions = solutions[0]
 
-        C = [c for c in C if (c not in solutions)]
+        C = [c for c in C if c not in solutions]
         result = y.subs(solutions)
     else:
         A = r
@@ -256,13 +256,13 @@ def rsolve_poly(coeffs, f, n):
 
         C = [Symbol('C' + str(i)) for i in range(A)]
 
-        def g(i):
+        def g2(i):
             return Add(*[c * _delta(q, i) for c, q in zip(C, Q)])
 
         if homogeneous:
-            E = [g(i) for i in range(N + 1, U)]
+            E = [g2(i) for i in range(N + 1, U)]
         else:
-            E = [g(i) + _delta(h, i) for i in range(N + 1, U)]
+            E = [g2(i) + _delta(h, i) for i in range(N + 1, U)]
 
         if E != []:
             solutions = solve(E, *C)

@@ -46,7 +46,7 @@ class CommutativeRing(Domain):
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
-        s, t, h = self.gcdex(a, b)
+        s, _, h = self.gcdex(a, b)
         return s, h
 
     def cofactors(self, a, b):

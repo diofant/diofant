@@ -168,7 +168,7 @@ def test_all_classes_are_tested():
 
     modules = {}
 
-    for root, dirs, files in os.walk(diofant_path):
+    for root, _, files in os.walk(diofant_path):
         module = root.replace(prefix, '').replace(os.sep, '.')
 
         for file in files:
@@ -1882,7 +1882,7 @@ def test_diofant__tensor__tensor__TensExpr():
 
 def test_diofant__tensor__tensor__TensAdd():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
+    a = tensor_indices('a', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
     S1 = TensorType([Lorentz], sym)
     p, q = S1('p,q')
@@ -1893,7 +1893,7 @@ def test_diofant__tensor__tensor__TensAdd():
 
 def test_diofant__tensor__tensor__Tensor():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
+    a = tensor_indices('a', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
     S1 = TensorType([Lorentz], sym)
     p = S1('p')

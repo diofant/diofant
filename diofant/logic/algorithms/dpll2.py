@@ -135,17 +135,17 @@ class SATSolver:
         for cls in clauses:
             self.clauses.append(list(cls))
 
-        for i in range(len(self.clauses)):
+        for i, ci in enumerate(self.clauses):
 
             # Handle the unit clauses
-            if 1 == len(self.clauses[i]):
-                self._unit_prop_queue.append(self.clauses[i][0])
+            if 1 == len(ci):
+                self._unit_prop_queue.append(ci[0])
                 continue
 
-            self.sentinels[self.clauses[i][0]].add(i)
-            self.sentinels[self.clauses[i][-1]].add(i)
+            self.sentinels[ci[0]].add(i)
+            self.sentinels[ci[-1]].add(i)
 
-            for lit in self.clauses[i]:
+            for lit in ci:
                 self.occurrence_count[lit] += 1
 
     def _find_model(self):

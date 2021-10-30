@@ -84,7 +84,7 @@ def test_line_geom():
     assert Line(p1, p2).scale(2, 1) == Line(p1, p9)
 
     assert l2.arbitrary_point() in l2
-    for ind in range(5):
+    for _ in range(5):
         assert l3.random_point() in l3
     pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
 

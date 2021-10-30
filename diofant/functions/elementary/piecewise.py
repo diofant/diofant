@@ -159,8 +159,8 @@ class Piecewise(Function):
     def _eval_conjugate(self):
         return self.func(*[(e.conjugate(), c) for e, c in self.args])
 
-    def _eval_derivative(self, x):
-        return self.func(*[(diff(e, x), c) for e, c in self.args])
+    def _eval_derivative(self, s):
+        return self.func(*[(diff(e, s), c) for e, c in self.args])
 
     def _eval_evalf(self, prec):
         return self.func(*[(e.evalf(prec), c) for e, c in self.args])
@@ -169,7 +169,7 @@ class Piecewise(Function):
         from ...integrals import integrate
         return self.func(*[(integrate(e, x), c) for e, c in self.args])
 
-    def _eval_interval(self, sym, a, b):
+    def _eval_interval(self, x, a, b):
         """Evaluates the function along the sym in a given interval ab."""
         # FIXME: Currently complex intervals are not supported.  A possible
         # replacement algorithm, discussed in issue sympy/sympy#5227, can be found in the
@@ -178,16 +178,16 @@ class Piecewise(Function):
         #     http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4127&rep=rep1&type=pdf
         from .complexes import Abs
 
-        if sym.is_real is None:
+        if x.is_real is None:
             d = Dummy('d', real=True)
-            return self.subs({sym: d})._eval_interval(d, a, b)
+            return self.subs({x: d})._eval_interval(d, a, b)
 
         if self.has(Abs):
-            return piecewise_fold(self.rewrite(Abs, Piecewise))._eval_interval(sym, a, b)
+            return piecewise_fold(self.rewrite(Abs, Piecewise))._eval_interval(x, a, b)
 
         if a is None or b is None:
             # In this case, it is just simple substitution
-            return piecewise_fold(super()._eval_interval(sym, a, b))
+            return piecewise_fold(super()._eval_interval(x, a, b))
 
         mul = 1
         if a == b:
@@ -198,52 +198,52 @@ class Piecewise(Function):
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
-                    sym, -oo, oo, c)
+                    x, -oo, oo, c)
                 values = []
                 for lower, upper, expr in intervals:
                     if (a < lower) == true:
                         mid = lower
                         rep = b
-                        val = e._eval_interval(sym, mid, b)
-                        val += self._eval_interval(sym, a, mid)
+                        val = e._eval_interval(x, mid, b)
+                        val += self._eval_interval(x, a, mid)
                     elif (a > upper) == true:
                         mid = upper
                         rep = b
-                        val = e._eval_interval(sym, mid, b)
-                        val += self._eval_interval(sym, a, mid)
+                        val = e._eval_interval(x, mid, b)
+                        val += self._eval_interval(x, a, mid)
                     elif (a >= lower) == true and (a <= upper) == true:
                         rep = b
-                        val = e._eval_interval(sym, a, b)
+                        val = e._eval_interval(x, a, b)
                     elif (b < lower) == true:
                         mid = lower
                         rep = a
-                        val = e._eval_interval(sym, a, mid)
-                        val += self._eval_interval(sym, mid, b)
+                        val = e._eval_interval(x, a, mid)
+                        val += self._eval_interval(x, mid, b)
                     elif (b > upper) == true:
                         mid = upper
                         rep = a
-                        val = e._eval_interval(sym, a, mid)
-                        val += self._eval_interval(sym, mid, b)
+                        val = e._eval_interval(x, a, mid)
+                        val += self._eval_interval(x, mid, b)
                     elif ((b >= lower) == true) and ((b <= upper) == true):
                         rep = a
-                        val = e._eval_interval(sym, a, b)
+                        val = e._eval_interval(x, a, b)
                     else:
                         raise NotImplementedError(
                             """The evaluation of a Piecewise interval when both the lower
                             and the upper limit are symbolic is not yet implemented.""")
                     values.append(val)
                 if len(set(values)) == 1:
-                    c = c.subs({sym: rep})
+                    c = c.subs({x: rep})
                     e = values[0]
                     newargs.append((e, c))
                 else:
-                    for i in range(len(values)):
-                        newargs.append((values[i], (c == true and i == len(values) - 1) or
+                    for i, vi in enumerate(values):
+                        newargs.append((vi, (c == true and i == len(values) - 1) or
                                         And(rep >= intervals[i][0], rep <= intervals[i][1])))
             return self.func(*newargs)
 
         # Determine what intervals the expr,cond pairs affect.
-        int_expr = self._sort_expr_cond(sym, a, b)
+        int_expr = self._sort_expr_cond(x, a, b)
 
         # Finally run through the intervals and sum the evaluation.
         ret_fun = 0
@@ -253,9 +253,9 @@ class Piecewise(Function):
                 # already have determined that its conditions are independent
                 # of the integration variable, thus we just use substitution.
                 ret_fun += piecewise_fold(
-                    super(Piecewise, expr)._eval_interval(sym, Max(a, int_a), Min(b, int_b)))
+                    super(Piecewise, expr)._eval_interval(x, Max(a, int_a), Min(b, int_b)))
             else:
-                ret_fun += expr._eval_interval(sym, Max(a, int_a), Min(b, int_b))
+                ret_fun += expr._eval_interval(x, Max(a, int_a), Min(b, int_b))
         return mul * ret_fun
 
     def _sort_expr_cond(self, sym, a, b, targetcond=None):
@@ -330,32 +330,32 @@ class Piecewise(Function):
             # part 1b: Reduce (-)infinity to what was passed in.
             lower, upper = Max(a, lower), Min(b, upper)
 
-            for n in range(len(int_expr)):
+            for n, ni in enumerate(int_expr):
                 # Part 2: remove any interval overlap.  For any conflicts, the
                 # iterval already there wins, and the incoming interval updates
                 # its bounds accordingly.
-                if self.__eval_cond(lower < int_expr[n][1]) and \
-                        self.__eval_cond(lower >= int_expr[n][0]):
-                    lower = int_expr[n][1]
-                elif len(int_expr[n][1].free_symbols) and \
-                        self.__eval_cond(lower >= int_expr[n][0]):
-                    if self.__eval_cond(lower == int_expr[n][0]):
-                        lower = int_expr[n][1]
+                if self.__eval_cond(lower < ni[1]) and \
+                        self.__eval_cond(lower >= ni[0]):
+                    lower = ni[1]
+                elif len(ni[1].free_symbols) and \
+                        self.__eval_cond(lower >= ni[0]):
+                    if self.__eval_cond(lower == ni[0]):
+                        lower = ni[1]
                     else:
-                        int_expr[n][1] = Min(lower, int_expr[n][1])
-                elif len(int_expr[n][0].free_symbols) and \
-                        self.__eval_cond(upper == int_expr[n][1]):
-                    upper = Min(upper, int_expr[n][0])
-                elif len(int_expr[n][1].free_symbols) and \
-                        (lower >= int_expr[n][0]) != true and \
-                        (int_expr[n][1] == Min(lower, upper)) is not True:
-                    upper = Min(upper, int_expr[n][0])
-                elif self.__eval_cond(upper > int_expr[n][0]) and \
-                        self.__eval_cond(upper <= int_expr[n][1]):
-                    upper = int_expr[n][0]
-                elif len(int_expr[n][0].free_symbols) and \
-                        self.__eval_cond(upper < int_expr[n][1]):
-                    int_expr[n][0] = Max(upper, int_expr[n][0])
+                        int_expr[n][1] = Min(lower, ni[1])
+                elif len(ni[0].free_symbols) and \
+                        self.__eval_cond(upper == ni[1]):
+                    upper = Min(upper, ni[0])
+                elif len(ni[1].free_symbols) and \
+                        (lower >= ni[0]) != true and \
+                        (ni[1] == Min(lower, upper)) is not True:
+                    upper = Min(upper, ni[0])
+                elif self.__eval_cond(upper > ni[0]) and \
+                        self.__eval_cond(upper <= ni[1]):
+                    upper = ni[0]
+                elif len(ni[0].free_symbols) and \
+                        self.__eval_cond(upper < ni[1]):
+                    int_expr[n][0] = Max(upper, ni[0])
 
             if self.__eval_cond(lower >= upper) is not True:  # Is it still an interval?
                 int_expr.append([lower, upper, expr])
@@ -373,16 +373,16 @@ class Piecewise(Function):
         int_expr.sort(key=lambda x: x[0].sort_key(
         ) if x[0].is_number else oo.sort_key())
 
-        for n in range(len(int_expr)):
-            if len(int_expr[n][0].free_symbols) or len(int_expr[n][1].free_symbols):
-                if isinstance(int_expr[n][1], Min) or int_expr[n][1] == b:
-                    newval = Min(*int_expr[n][:-1])
-                    if n > 0 and int_expr[n][0] == int_expr[n - 1][1]:
+        for n, ni in enumerate(int_expr):
+            if len(ni[0].free_symbols) or len(ni[1].free_symbols):
+                if isinstance(ni[1], Min) or ni[1] == b:
+                    newval = Min(*ni[:-1])
+                    if n > 0 and ni[0] == int_expr[n - 1][1]:
                         int_expr[n - 1][1] = newval
                     int_expr[n][0] = newval
                 else:
-                    newval = Max(*int_expr[n][:-1])
-                    if n < len(int_expr) - 1 and int_expr[n][1] == int_expr[n + 1][0]:
+                    newval = Max(*ni[:-1])
+                    if n < len(int_expr) - 1 and ni[1] == int_expr[n + 1][0]:
                         int_expr[n + 1][0] = newval
                     int_expr[n][1] = newval
 
@@ -417,8 +417,8 @@ class Piecewise(Function):
                  ec.cond.limit(x, 0)) for ec in self.args]
         return self.func(*args)
 
-    def _eval_power(self, s):
-        return self.func(*[(e**s, c) for e, c in self.args])
+    def _eval_power(self, other):
+        return self.func(*[(e**other, c) for e, c in self.args])
 
     def _eval_subs(self, old, new):
         """Piecewise conditions may contain bool which are not of Basic type."""

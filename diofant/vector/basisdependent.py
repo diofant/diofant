@@ -149,7 +149,7 @@ class BasisDependentAdd(BasisDependent, Add):
         components = {}
 
         # Check each arg and simultaneously learn the components
-        for i, arg in enumerate(args):
+        for arg in args:
             if not isinstance(arg, cls._expr_type):
                 if isinstance(arg, Mul):
                     arg = cls._mul_func(*(arg.args))
@@ -175,7 +175,7 @@ class BasisDependentAdd(BasisDependent, Add):
             return cls.zero
 
         # Build object
-        newargs = [x*components[x] for x in components]
+        newargs = [k*v for k, v in components.items()]
         obj = super().__new__(cls, *newargs, **options)
         if isinstance(obj, Mul):
             return cls._mul_func(*obj.args)

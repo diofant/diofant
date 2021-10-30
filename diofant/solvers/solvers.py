@@ -472,7 +472,7 @@ def _solve(f, symbol, **flags):
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
-                    for other_n, (other_expr, other_cond) in enumerate(f.args):  # pragma: no branch
+                    for other_n, (_, other_cond) in enumerate(f.args):  # pragma: no branch
                         if other_n == n:
                             break
                         try:
@@ -1274,8 +1274,8 @@ def _invert(eq, *symbols, **kwargs):
             ai, ad = a.as_independent(*symbols)
             bi, bd = b.as_independent(*symbols)
             if any(i.is_Pow for i in (ad, bd)):
-                a_base, a_exp = ad.as_base_exp()
-                b_base, b_exp = bd.as_base_exp()
+                a_base, _ = ad.as_base_exp()
+                b_base, _ = bd.as_base_exp()
                 if a_base == b_base:
                     # a = -b
                     lhs = powsimp(powdenest(ad/bd))

@@ -183,8 +183,7 @@ def buchberger(f, ring):
         f = f1[:]
         f1 = []
 
-        for i in range(len(f)):
-            p = f[i]
+        for i, p in enumerate(f):
             r = p.div(f[:i])[1]
 
             if r:
@@ -557,8 +556,7 @@ def f5b(F, ring):
         F = B
         B = []
 
-        for i in range(len(F)):
-            p = F[i]
+        for i, p in enumerate(F):
             r = p.div(F[:i])[1]
 
             if r:
@@ -679,9 +677,9 @@ def red_groebner(G, ring):
 
 def is_groebner(G):
     """Check if G is a Gröbner basis."""
-    for i in range(len(G)):
+    for i, Gi in enumerate(G):
         for j in range(i + 1, len(G)):
-            s = spoly(G[i], G[j])
+            s = spoly(Gi, G[j])
             s = s.div(G)[1]
             if s:
                 return False

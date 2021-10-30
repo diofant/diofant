@@ -212,7 +212,7 @@ class _GCD:
 
         cofactors = domain.cofactors if self.is_univariate else self.drop(0).cofactors
 
-        for i in range(query('HEU_GCD_MAX')):
+        for _ in range(query('HEU_GCD_MAX')):
             ff = f.eval(x0, x)
             gg = g.eval(x0, x)
 

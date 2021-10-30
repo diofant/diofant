@@ -34,10 +34,10 @@ def test_implicit_multiplication():
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (split_symbols,
                                           implicit_multiplication)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     application = ['sin x', 'cos 2*x', 'sin cos x']
     for case in application:
@@ -58,10 +58,10 @@ def test_implicit_application():
     }
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (implicit_application,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     multiplication = ['x y', 'x sin x', '2x']
     for case in multiplication:
@@ -79,10 +79,10 @@ def test_function_exponentiation():
     }
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (function_exponentiation,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     other_implicit = ['x y', 'x sin x', '2x', 'sin x',
                       'cos 2*x', 'sin cos x']
@@ -176,7 +176,7 @@ def test_all_implicit_steps():
     }
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (implicit_multiplication_application,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal

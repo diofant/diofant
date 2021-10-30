@@ -264,7 +264,7 @@ def multiset_partitions_taocp(multiplicities):
         # M5 (Decrease v)
         while True:
             j = b-1
-            while (pstack[j].v == 0):
+            while pstack[j].v == 0:
                 j = j - 1
             if j == a and pstack[j].v == 1:
                 # M6 (Backtrack)

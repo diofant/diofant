@@ -438,7 +438,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
         raise ValueError('pollard_rho should receive n > 4')
     prng = random.Random(seed + retries)
     V = s
-    for i in range(retries + 1):
+    for _ in range(retries + 1):
         U = V
         if not F:
             def F(x):
@@ -594,7 +594,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     # computing a**lcm(1,2,3,..B) % n for B > 2
     # it looks weird, but it's right: primes run [2, B]
     # and the answer's not right until the loop is done.
-    for i in range(retries + 1):
+    for _ in range(retries + 1):
         aM = a
         for p in sieve.primerange(2, B + 1):
             e = int(math.log(B, p))
@@ -1039,7 +1039,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         a = sqrt_n + 1
         a2 = a**2
         b2 = a2 - n
-        for i in range(3):
+        for _ in range(3):
             b, fermat = integer_nthroot(b2, 2)
             if fermat:
                 break
@@ -1249,7 +1249,7 @@ def _divisors(n):
             yield 1
         else:
             pows = [1]
-            for j in range(factordict[ps[n]]):
+            for _ in range(factordict[ps[n]]):
                 pows.append(pows[-1] * ps[n])
             for q in rec_gen(n + 1):
                 for p in pows:

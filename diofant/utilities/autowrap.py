@@ -166,22 +166,22 @@ def %(name)s():
     def _prepare_files(self, routine):
         return
 
-    def _generate_code(self, routine, helpers):
+    def _generate_code(self, main_routine, routines):
         with open(f'{self.module_name}.py', 'w', encoding='utf-8') as f:
             printed = ', '.join(
-                [str(res.expr) for res in routine.result_variables])
+                [str(res.expr) for res in main_routine.result_variables])
             # convert OutputArguments to return value like f2py
             args = filter(lambda x: not isinstance(
-                x, OutputArgument), routine.arguments)
+                x, OutputArgument), main_routine.arguments)
             retvals = []
-            for val in routine.result_variables:
+            for val in main_routine.result_variables:
                 if isinstance(val, Result):
                     retvals.append('nameless')
                 else:
                     retvals.append(val.result_var)
 
             print(DummyWrapper.template % {
-                'name': routine.name,
+                'name': main_routine.name,
                 'expr': printed,
                 'args': ', '.join([str(a.name) for a in args]),
                 'retvals': ', '.join([str(val) for val in retvals])
@@ -694,7 +694,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
             name = routine.name
 
             # Partition the C function arguments into categories
-            py_in, py_out = self._partition_args(routine.arguments)
+            py_in, _ = self._partition_args(routine.arguments)
             n_in = len(py_in)
             n_out = 1
 

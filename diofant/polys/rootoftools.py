@@ -190,14 +190,14 @@ class RootOf(Expr):
         if all(_.is_algebraic for _ in self.poly.coeffs()):
             return True
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         p = self.poly
-        if p.degree() == expt and p.length() == 2 and p.TC():
+        if p.degree() == other and p.length() == 2 and p.TC():
             return -p.TC()/p.LC()
         elif ((p.domain.is_IntegerRing or p.domain.is_AlgebraicField) and
-              isinstance(expt, Integer) and (expt < 0 or expt >= p.degree())):
-            b = (p.gen**abs(expt)).as_poly(p.gen, domain=p.domain)
-            if expt < 0:
+              isinstance(other, Integer) and (other < 0 or other >= p.degree())):
+            b = (p.gen**abs(other)).as_poly(p.gen, domain=p.domain)
+            if other < 0:
                 b = b.invert(p)
             x = self.doit()
             return sum(c*x**n for (n,), c in b.rem(p).terms())
@@ -363,7 +363,7 @@ class RootOf(Expr):
     @classmethod
     def _complexes_index(cls, complexes, index):
         """Map initial complex root index to an index in a factor where the root belongs."""
-        index, i = index, 0
+        i = 0
 
         for j, (_, factor, k) in enumerate(complexes):  # pragma: no branch
             if index < i + k:
@@ -596,7 +596,7 @@ class RootOf(Expr):
                     # case and the interval will then be tightened -- and
                     # eventually the root will be found.
                     if self.is_extended_real:
-                        if (a <= root <= b):
+                        if a <= root <= b:
                             break
                     elif (ax <= root.real <= bx and ay <= root.imag <= by
                           and (interval.ay > 0 or interval.by < 0)):

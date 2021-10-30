@@ -265,9 +265,9 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
                     b_ = Max(soln.gts, b_)
                 else:
                     a_ = Min(soln.lts, a_)
-            if a_ != oo and a_ != b:
+            if a_ not in (oo, b):
                 a = Max(a_, a)
-            elif b_ != -oo and b_ != a:
+            elif b_ not in (-oo, a):
                 b = Min(b_, b)
             else:
                 aux = And(aux, Or(*aux_))
@@ -661,7 +661,7 @@ def _rewrite_gamma(f, s, a, b):
                                           (denom_gammas, bq, ap, False)]:
         while gammas:
             a, c = gammas.pop()
-            if a != -1 and a != +1:
+            if a not in (-1, 1):
                 # We use the gamma function multiplication theorem.
                 p = abs(sympify(a))
                 newa = a/p
@@ -713,7 +713,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     for g in [factor(F), expand_mul(F), expand(F)]:
         if g.is_Add:
             # do all terms separately
-            ress = [_inverse_mellin_transform(G, s, x, strip, as_meijerg,
+            ress = [_inverse_mellin_transform(G, s, x, strip, as_meijerg,  # pylint: disable=unexpected-keyword-arg
                                               noconds=False)
                     for G in g.args]
             conds = [p[1] for p in ress]
@@ -793,7 +793,7 @@ class InverseMellinTransform(IntegralTransform):
             b = None
         return a, b
 
-    def _compute_transform(self, F, s, x, **hints):
+    def _compute_transform(self, f, x, s, **hints):
         from ..utilities import postorder_traversal
         global _allowed
         if _allowed is None:
@@ -801,16 +801,16 @@ class InverseMellinTransform(IntegralTransform):
                                      gamma, rf, sin, sinh, tan, tanh)
             _allowed = {exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
                         factorial, rf}
-        for f in postorder_traversal(F):
-            if f.is_Function and f.has(s) and f.func not in _allowed:
-                raise IntegralTransformError('Inverse Mellin', F,
+        for _f in postorder_traversal(f):
+            if _f.is_Function and _f.has(x) and _f.func not in _allowed:
+                raise IntegralTransformError('Inverse Mellin', f,
                                              f'Component {f} not recognised.')
         strip = self.fundamental_strip
-        return _inverse_mellin_transform(F, s, x, strip, **hints)
+        return _inverse_mellin_transform(f, x, s, strip, **hints)
 
-    def _as_integral(self, F, s, x):
+    def _as_integral(self, f, x, s):
         c = self.__class__._c
-        return Integral(F*x**(-s), (s, c - I*oo, c + I*oo))
+        return Integral(f*s**(-x), (x, c - I*oo, c + I*oo))
 
 
 def inverse_mellin_transform(F, s, x, strip, **hints):
@@ -1061,12 +1061,12 @@ class LaplaceTransform(IntegralTransform):
 
     _name = 'Laplace'
 
-    def _compute_transform(self, f, t, s, **hints):
-        return _laplace_transform(f, t, s, **hints)
+    def _compute_transform(self, f, x, s, **hints):
+        return _laplace_transform(f, x, s, **hints)
 
-    def _as_integral(self, f, t, s):
+    def _as_integral(self, f, x, s):
         from ..functions import exp
-        return Integral(f*exp(-s*t), (t, 0, oo))
+        return Integral(f*exp(-s*x), (x, 0, oo))
 
     def _collapse_extra(self, extra):
         from ..functions import Max
@@ -1221,13 +1221,13 @@ class InverseLaplaceTransform(IntegralTransform):
             plane = None
         return plane
 
-    def _compute_transform(self, F, s, t, **hints):
-        return _inverse_laplace_transform(F, s, t, self.fundamental_plane, **hints)
+    def _compute_transform(self, f, x, s, **hints):
+        return _inverse_laplace_transform(f, x, s, self.fundamental_plane, **hints)
 
-    def _as_integral(self, F, s, t):
+    def _as_integral(self, f, x, s):
         from ..functions import exp
         c = self.__class__._c
-        return Integral(exp(s*t)*F, (s, c - I*oo, c + I*oo))
+        return Integral(exp(x*s)*f, (x, c - I*oo, c + I*oo))
 
 
 def inverse_laplace_transform(F, s, t, plane=None, **hints):
@@ -1313,16 +1313,16 @@ class FourierTypeTransform(IntegralTransform):
         raise NotImplementedError(
             f'Class {self.__class__} must implement b(self) but does not')
 
-    def _compute_transform(self, f, x, k, **hints):
-        return _fourier_transform(f, x, k,
+    def _compute_transform(self, f, x, s, **hints):
+        return _fourier_transform(f, x, s,
                                   self.a(), self.b(),
                                   self.__class__._name, **hints)
 
-    def _as_integral(self, f, x, k):
+    def _as_integral(self, f, x, s):
         from ..functions import exp
         a = self.a()
         b = self.b()
-        return Integral(a*f*exp(b*I*x*k), (x, -oo, oo))
+        return Integral(a*f*exp(b*I*x*s), (x, -oo, oo))
 
 
 class FourierTransform(FourierTypeTransform):
@@ -1477,17 +1477,17 @@ class SineCosineTypeTransform(IntegralTransform):
         raise NotImplementedError(
             f'Class {self.__class__} must implement b(self) but does not')
 
-    def _compute_transform(self, f, x, k, **hints):
-        return _sine_cosine_transform(f, x, k,
+    def _compute_transform(self, f, x, s, **hints):
+        return _sine_cosine_transform(f, x, s,
                                       self.a(), self.b(),
                                       self.__class__._kern,
                                       self.__class__._name, **hints)
 
-    def _as_integral(self, f, x, k):
+    def _as_integral(self, f, x, s):
         a = self.a()
         b = self.b()
         K = self.__class__._kern
-        return Integral(a*f*K(b*x*k), (x, 0, oo))
+        return Integral(a*f*K(b*x*s), (x, 0, oo))
 
 
 class SineTransform(SineCosineTypeTransform):

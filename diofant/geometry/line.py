@@ -225,8 +225,8 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        a1, b1, c1 = self.coefficients
-        a2, b2, c2 = other.coefficients
+        a1, b1, _ = self.coefficients
+        a2, b2, _ = other.coefficients
         return bool(simplify(a1*b2 - b1*a2) == 0)
 
     def is_perpendicular(self, other):
@@ -263,8 +263,8 @@ class LinearEntity(GeometrySet):
         False
 
         """
-        a1, b1, c1 = self.coefficients
-        a2, b2, c2 = other.coefficients
+        a1, b1, _ = self.coefficients
+        a2, b2, _ = other.coefficients
         return bool(simplify(a1*a2 + b1*b2) == 0)
 
     def angle_between(self, other):
@@ -1058,7 +1058,7 @@ class Line(LinearEntity):
         a, b, c = self.coefficients
         return a*x + b*y + c
 
-    def contains(self, o):
+    def contains(self, other):
         """
         Return True if o is on this Line, or False otherwise.
 
@@ -1075,25 +1075,25 @@ class Line(LinearEntity):
         False
 
         """
-        if is_sequence(o):
-            o = Point(o)
-        if isinstance(o, Point):
-            o = o.func(*[simplify(i) for i in o.args])
+        if is_sequence(other):
+            other = Point(other)
+        if isinstance(other, Point):
+            other = other.func(*[simplify(i) for i in other.args])
             x, y = Dummy(), Dummy()
             eq = self.equation(x, y)
             if not eq.has(y):
-                return (solve(eq, x)[0][x] - o.x).equals(0)
+                return (solve(eq, x)[0][x] - other.x).equals(0)
             if not eq.has(x):
-                return (solve(eq, y)[0][y] - o.y).equals(0)
-            return (solve(eq.subs({x: o.x}), y)[0][y] - o.y).equals(0)
-        elif not isinstance(o, LinearEntity):
+                return (solve(eq, y)[0][y] - other.y).equals(0)
+            return (solve(eq.subs({x: other.x}), y)[0][y] - other.y).equals(0)
+        elif not isinstance(other, LinearEntity):
             return False
-        elif isinstance(o, Line):
-            return self.equal(o)
-        elif not self.is_similar(o):
+        elif isinstance(other, Line):
+            return self.equal(other)
+        elif not self.is_similar(other):
             return False
         else:
-            return o.p1 in self and o.p2 in self
+            return other.p1 in self and other.p2 in self
 
     def distance(self, o):
         """
@@ -1391,7 +1391,7 @@ class Ray(LinearEntity):
         t = _symbol(parameter)
         return [t, 0, 10]
 
-    def contains(self, o):
+    def contains(self, other):
         """
         Is other GeometryEntity contained in this Ray?
 
@@ -1420,28 +1420,28 @@ class Ray(LinearEntity):
         False
 
         """
-        if isinstance(o, Ray):
-            return (Point.is_collinear(self.p1, self.p2, o.p1, o.p2) and
-                    self.xdirection == o.xdirection and
-                    self.ydirection == o.ydirection)
-        elif isinstance(o, Segment):
-            return o.p1 in self and o.p2 in self
-        elif is_sequence(o):
-            o = Point(o)
-        if isinstance(o, Point):
-            if Point.is_collinear(self.p1, self.p2, o):
+        if isinstance(other, Ray):
+            return (Point.is_collinear(self.p1, self.p2, other.p1, other.p2) and
+                    self.xdirection == other.xdirection and
+                    self.ydirection == other.ydirection)
+        elif isinstance(other, Segment):
+            return other.p1 in self and other.p2 in self
+        elif is_sequence(other):
+            other = Point(other)
+        if isinstance(other, Point):
+            if Point.is_collinear(self.p1, self.p2, other):
                 if self.xdirection is oo:
-                    rv = o.x >= self.source.x
+                    rv = other.x >= self.source.x
                 elif self.xdirection == -oo:
-                    rv = o.x <= self.source.x
+                    rv = other.x <= self.source.x
                 elif self.ydirection is oo:
-                    rv = o.y >= self.source.y
+                    rv = other.y >= self.source.y
                 else:
-                    rv = o.y <= self.source.y
+                    rv = other.y <= self.source.y
                 if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
-                    f'Cannot determine if {o} is in {self}')
+                    f'Cannot determine if {other} is in {self}')
             else:
                 # Points are not collinear, so the rays are not parallel
                 # and hence it is impossible for self to contain o
