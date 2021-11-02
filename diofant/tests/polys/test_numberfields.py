@@ -676,18 +676,17 @@ def test_sympyissue_18874():
                                              [0, QQ(59, 78), 0, QQ(-1, 78)]])
 
 
-def test_sympyissue_19760():
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
+def test_sympyissue_19760(method):
     e = 1/(sqrt(1 + sqrt(2)) - sqrt(2)*sqrt(1 + sqrt(2))) + 1
-
-    for meth in ('compose', 'groebner'):
-        minimal_polynomial(e, method=meth)(x) == x**4 - 4*x**3 + 4*x**2 - 2
+    assert minimal_polynomial(e, method=method)(x) == x**4 - 4*x**3 + 4*x**2 - 2
 
 
 @pytest.mark.timeout(60)
-def test_sympyissue_22400():
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
+def test_sympyissue_22400(method):
     e = root(2, 3) + root(3, 3) + (-1 + I*sqrt(3))/2*root(5, 3)
     r = (x**27 - 90*x**24 + 1089*x**21 - 62130*x**18 + 105507*x**15 -
          16537410*x**12 - 30081453*x**9 - 1886601330*x**6 +
          73062900*x**3 - 6859000)
-    for meth in ('compose', 'groebner'):
-        assert minimal_polynomial(e, method=meth)(x) == r
+    assert minimal_polynomial(e, method=method)(x) == r
