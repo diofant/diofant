@@ -76,10 +76,10 @@ def integer_powers(exprs):
 
     terms = {}
     for term in exprs:
-        for k, v in terms.items():
-            a = cancel(term/k)
+        for j in terms:  # pylint: disable=consider-using-dict-items
+            a = cancel(term/j)
             if a.is_Rational:
-                v.append((term, a))
+                terms[j].append((term, a))
                 break
         else:
             terms[term] = [(term, Integer(1))]
@@ -90,11 +90,11 @@ def integer_powers(exprs):
     # multiple of the base term, and the content of the integers is 1.
 
     newterms = {}
-    for k, v in terms.items():
+    for term, val in terms.items():
         common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
-                                                   v])
-        newterm = k/common_denom
-        newmults = [(i, j*common_denom) for i, j in v]
+                                                   val])
+        newterm = term/common_denom
+        newmults = [(i, j*common_denom) for i, j in val]
         newterms[newterm] = newmults
 
     return sorted(newterms.items(), key=lambda item: item[0].sort_key())

@@ -3442,8 +3442,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     req = Add(*seriesdict)
     if any(suminit):
         maxval = max(suminit)
-        for k, v in seriesdict.items():
-            val = v
+        for k, val in seriesdict.items():
             if val != maxval:
                 for i in range(val, maxval):
                     teq += k.subs({n: val})
