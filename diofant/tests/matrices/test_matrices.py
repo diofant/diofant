@@ -2027,10 +2027,10 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        for _ in L:  # XXX
+        for v in L:
             try:
-                assert simplify((alpha*v).norm(order) -
-                                (abs(alpha) * v.norm(order))) == 0
+                assert (simplify((alpha*v).norm(order)) -
+                        simplify(abs(alpha) * v.norm(order))) == 0
             except NotImplementedError:
                 pass  # Some Norms fail on symbolics due to Max issue
 
