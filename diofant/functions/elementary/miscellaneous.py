@@ -426,6 +426,14 @@ class MinMaxBase(LatticeOp):
         from .. import Heaviside, Piecewise
         return self.rewrite(Heaviside).rewrite(Piecewise)
 
+    def _eval_simplify(self, ratio, measure):
+        args = [arg.simplify(ratio=ratio, measure=measure) for arg in self.args]
+        arg_sets = [set(Mul.make_args(arg)) for arg in args]
+        common = arg_sets[0].intersection(*arg_sets[1:])
+        new_args = [Mul(*[t for t in Mul.make_args(arg) if t not in common])
+                    for arg in args]
+        return Mul(*common)*self.func(*new_args)
+
 
 class Max(MinMaxBase, Application):
     """Return, if possible, the maximum value of the list.
