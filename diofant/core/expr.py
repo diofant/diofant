@@ -80,7 +80,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if expr.is_Pow:
             expr, exp = expr.base, expr.exp
         else:
-            expr, exp = expr, Integer(1)
+            exp = Integer(1)
 
         if expr.is_Dummy:
             args = expr.sort_key(),
@@ -2916,7 +2916,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             use_hint = hints[hint]
             if use_hint:
                 hint = '_eval_expand_' + hint
-                expr, hit = Expr._expand_hint(expr, hint, deep=deep, **hints)
+                expr, _ = Expr._expand_hint(expr, hint, deep=deep, **hints)
 
         while True:
             was = expr

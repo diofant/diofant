@@ -114,7 +114,7 @@ def primitive_root(p):
             return
 
         # case p = 2*p1**k, p1 prime
-        for p1, e1 in f.items():  # pragma: no branch
+        for p1 in f:  # pragma: no branch
             if p1 != 2:
                 break
         i = 1
@@ -689,7 +689,7 @@ def _nthroot_mod1(s, q, p, all_roots):
     h = pow(g, (p - 1) // q, p)
     assert pow(h, q, p) == 1
     hx = r
-    for i in range(q - 1):
+    for _ in range(q - 1):
         hx = (hx*h) % p
         res.append(hx)
     if all_roots:

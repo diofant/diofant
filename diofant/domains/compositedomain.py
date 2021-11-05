@@ -11,7 +11,7 @@ class CompositeDomain(Domain):
 
     def inject(self, *symbols, front=False):
         """Inject generators into this domain."""
-        if not (set(self.symbols) & set(symbols)):
+        if not set(self.symbols) & set(symbols):
             if front:
                 symbols += self.symbols
             else:

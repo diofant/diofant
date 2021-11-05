@@ -598,7 +598,7 @@ def test_diofantissue_730():
 @pytest.mark.slow
 def test_diofantissue_723():
     p = x**5 + sqrt(3)*x - 2
-    for i in range(20):
+    for _ in range(20):
         for j in (1, 2):
             RootOf(p, j)
 

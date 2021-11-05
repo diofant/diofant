@@ -424,10 +424,10 @@ def test_loops_c():
         '}\n'
     )
 
-    assert (code == expected % {'rhs': 'A[%s]*x[j]' % (i*n + j)} or
-            code == expected % {'rhs': 'A[%s]*x[j]' % (j + i*n)} or
-            code == expected % {'rhs': 'x[j]*A[%s]' % (i*n + j)} or
-            code == expected % {'rhs': 'x[j]*A[%s]' % (j + i*n)})
+    assert code in (expected % {'rhs': 'A[%s]*x[j]' % (i * n + j)},
+                    expected % {'rhs': 'A[%s]*x[j]' % (j + i * n)},
+                    expected % {'rhs': 'x[j]*A[%s]' % (i * n + j)},
+                    expected % {'rhs': 'x[j]*A[%s]' % (j + i * n)})
     assert f2 == 'file.h'
     assert interface == (
         '#ifndef PROJECT__FILE__H\n'
@@ -486,10 +486,10 @@ def test_partial_loops_c():
         '}\n'
     ) % {'upperi': m - 4, 'rhs': '%(rhs)s'}
 
-    assert (code == expected % {'rhs': 'A[%s]*x[j]' % (i*p + j)} or
-            code == expected % {'rhs': 'A[%s]*x[j]' % (j + i*p)} or
-            code == expected % {'rhs': 'x[j]*A[%s]' % (i*p + j)} or
-            code == expected % {'rhs': 'x[j]*A[%s]' % (j + i*p)})
+    assert code in (expected % {'rhs': 'A[%s]*x[j]' % (i * p + j)},
+                    expected % {'rhs': 'A[%s]*x[j]' % (j + i * p)},
+                    expected % {'rhs': 'x[j]*A[%s]' % (i * p + j)},
+                    expected % {'rhs': 'x[j]*A[%s]' % (j + i * p)})
     assert f2 == 'file.h'
     assert interface == (
         '#ifndef PROJECT__FILE__H\n'
@@ -1074,8 +1074,8 @@ def test_loops():
         'end subroutine\n'
     )
 
-    assert code == expected % {'rhs': 'A(i, j)*x(j)'} or\
-        code == expected % {'rhs': 'x(j)*A(i, j)'}
+    assert code in (expected % {'rhs': 'A(i, j)*x(j)'},
+                    expected % {'rhs': 'x(j)*A(i, j)'})
     assert f2 == 'file.h'
     assert interface == (
         'interface\n'
@@ -1142,8 +1142,8 @@ def test_loops_InOut():
         'end subroutine\n'
     )
 
-    assert (code == expected % {'rhs': 'A(i, j)*x(j)'} or
-            code == expected % {'rhs': 'x(j)*A(i, j)'})
+    assert code in (expected % {'rhs': 'A(i, j)*x(j)'},
+                    expected % {'rhs': 'x(j)*A(i, j)'})
     assert f2 == 'file.h'
     assert interface == (
         'interface\n'
@@ -1169,7 +1169,7 @@ def test_partial_loops_f():
     i = Idx('i', (o, m - 5))  # Note: bounds are inclusive
     j = Idx('j', n)          # dimension n corresponds to bounds (0, n - 1)
 
-    (f1, code), (f2, interface) = codegen(
+    (_, code), _ = codegen(
         ('matrix_vector', Eq(y[i], A[i, j]*x[j])), 'F95', 'file', header=False, empty=False)
 
     expected = (
@@ -1200,8 +1200,8 @@ def test_partial_loops_f():
         'iup-ilow': str(m - 4 - o)
     }
 
-    assert code == expected % {'rhs': 'A(i, j)*x(j)'} or\
-        code == expected % {'rhs': 'x(j)*A(i, j)'}
+    assert code in (expected % {'rhs': 'A(i, j)*x(j)'},
+                    expected % {'rhs': 'x(j)*A(i, j)'})
 
 
 def test_output_arg_f():
@@ -1222,7 +1222,7 @@ def test_output_arg_f():
 
 def test_inline_function():
     n, m = symbols('n m', integer=True)
-    A, x, y = map(IndexedBase, 'Axy')
+    x, y = map(IndexedBase, 'xy')
     i = Idx('i', m)
     p = FCodeGen()
     func = implemented_function('func', Lambda(n, n*(n + 1)))
@@ -1241,8 +1241,7 @@ def test_inline_function():
         'end subroutine\n'
     )
     args = ('x(i)', '(x(i) + 1)')
-    assert code == expected % args or\
-        code == expected % args[::-1]
+    assert code in (expected % args, expected % args[::-1])
 
 
 def test_f_code_call_signature_wrap():

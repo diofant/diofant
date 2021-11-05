@@ -259,11 +259,11 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
                     # a constant is a match for everything
                     continue
 
-                for j in range(len(terms)):
-                    if terms[j] is None:
+                for j, tj in enumerate(terms):
+                    if tj is None:
                         continue
 
-                    term, t_rat, t_sym, t_ord = terms[j]
+                    term, t_rat, t_sym, t_ord = tj
 
                     # keeping track of whether one of the terms had
                     # a derivative or not as this will require rebuilding
@@ -297,7 +297,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
                         # found common term so remove it from the expression
                         # and try to match next element in the pattern
-                        elems.append(terms[j])
+                        elems.append(tj)
                         terms[j] = None
 
                         break
@@ -345,7 +345,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
             result = parse_expression(terms, symbol)
 
             if result is not None:
-                terms, elems, common_expo, has_deriv = result
+                terms, elems, _, has_deriv = result
 
                 # when there was derivative in current pattern we
                 # will need to rebuild its expression from scratch
@@ -470,7 +470,7 @@ def collect_sqrt(expr, evaluate=True):
         # make the evaluated args canonical
         args = list(ordered(Add.make_args(d)))
         for i, m in enumerate(args):
-            c, nc = m.args_cnc()
+            c, _ = m.args_cnc()
             for ci in c:
                 # XXX should this be restricted to ci.is_number as above?
                 if ci.is_Pow and ci.exp.is_Rational and ci.exp.denominator == 2 or \

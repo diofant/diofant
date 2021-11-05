@@ -476,8 +476,8 @@ def test_m_loops():
         '  end\n'
         'end\n'
     )
-    assert (source == expected % {'rhs': f'A({i}, {j}).*x(j)'} or
-            source == expected % {'rhs': f'x(j).*A({i}, {j})'})
+    assert source in (expected % {'rhs': f'A({i}, {j}).*x(j)'},
+                      expected % {'rhs': f'x(j).*A({i}, {j})'})
 
     result, = codegen(('mat_vec_mult', Eq(y[i], A[i, j]*x[j])), 'Octave',
                       header=False, empty=False, argument_sequence=[x, A, m, n])
@@ -494,8 +494,8 @@ def test_m_loops():
         '  end\n'
         'end\n'
     )
-    assert (source == expected % {'rhs': f'A({i}, {j}).*x(j)'} or
-            source == expected % {'rhs': f'x(j).*A({i}, {j})'})
+    assert source in (expected % {'rhs': f'A({i}, {j}).*x(j)'},
+                      expected % {'rhs': f'x(j).*A({i}, {j})'})
 
 
 def test_m_tensor_loops_multiple_contractions():

@@ -118,10 +118,10 @@ def _separate_sq(p):
         # there are no surds
         return p
     surds = [z for y, z in a]
-    for i in range(len(surds)):  # pragma: no branch
-        if surds[i] != 1:
+    for i, si in enumerate(surds):  # pragma: no branch
+        if si != 1:
             break
-    g, b1, b2 = _split_gcd(*surds[i:])
+    _, b1, _ = _split_gcd(*surds[i:])
     a1 = []
     a2 = []
     for y, z in a:
@@ -419,7 +419,7 @@ def _minpoly_exp(ex, x):
     c, a = ex.exp.as_coeff_Mul()
     q = sympify(c.denominator)
     if a == I*pi:
-        if c.numerator == 1 or c.numerator == -1:
+        if c.numerator in (1, -1):
             if q == 3:
                 return x**2 - x + 1
             if q == 4:

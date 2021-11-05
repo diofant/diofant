@@ -606,7 +606,7 @@ def TR8(rv, first=True):
 
         args = args[None]
         n = min(len(c), len(s))
-        for i in range(n):
+        for _ in range(n):
             a1 = s.pop()
             a2 = c.pop()
             args.append((sin(a1 + a2) + sin(a1 - a2))/2)
@@ -672,8 +672,7 @@ def TR9(rv):
             args = list(ordered(rv.args))
             if len(args) != 2:
                 hit = False
-                for i in range(len(args)):
-                    ai = args[i]
+                for i, ai in enumerate(args):
                     if ai is None:
                         continue
                     for j in range(i + 1, len(args)):
@@ -803,8 +802,7 @@ def TR10i(rv):
             args = list(ordered(rv.args))
             if len(args) != 2:
                 hit = False
-                for i in range(len(args)):
-                    ai = args[i]
+                for i, ai in enumerate(args):
                     if ai is None:
                         continue
                     for j in range(i + 1, len(args)):
@@ -1071,7 +1069,7 @@ def TR12i(rv):
         if not dok:
             return rv
 
-        def ok(ni):
+        def ok2(ni):
             if ni.is_Add and len(ni.args) == 2:
                 a, b = ni.args
                 if isinstance(a, tan) and isinstance(b, tan):
@@ -1079,9 +1077,9 @@ def TR12i(rv):
         n_args = list(Mul.make_args(factor_terms(n)))
         hit = False
         for i, ni in enumerate(n_args):
-            m = ok(ni)
+            m = ok2(ni)
             if not m:
-                m = ok(-ni)
+                m = ok2(-ni)
                 if m:
                     n_args[i] = Integer(-1)
                 else:
@@ -1093,7 +1091,7 @@ def TR12i(rv):
                         continue
                     elif ni.is_Pow and (
                             ni.exp.is_integer or ni.base.is_positive):
-                        m = ok(ni.base)
+                        m = ok2(ni.base)
                         if m:
                             n_args[i] = Integer(1)
                         else:
@@ -1260,13 +1258,13 @@ def TRmorrie(rv):
                     # see how many times this can be taken
                     take = None
                     ccs = []
-                    for i in range(k):
+                    for _ in range(k):
                         cc /= 2
                         key = cos(a*cc, evaluate=False)
                         ccs.append(cc)
                         take = min(coss[key], take or coss[key])
                     # update exponent counts
-                    for i in range(k):
+                    for _ in range(k):
                         cc = ccs.pop()
                         key = cos(a*cc, evaluate=False)
                         coss[key] -= take
@@ -1674,7 +1672,7 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
     rv = TR1(rv)
     if rv.has(tan, cot):
         rv1 = fRL1(rv)
-        if (measure(rv1) < measure(rv)):
+        if measure(rv1) < measure(rv):
             rv = rv1
         if rv.has(tan, cot):
             rv = TR2(rv)
@@ -1895,7 +1893,7 @@ def trig_split(a, b, two=False):
     else:
         if not coa and not cob:
             if (ca and cb and sa and sb):
-                if not (isinstance(ca, sa.func) is isinstance(cb, sb.func)):
+                if not isinstance(ca, sa.func) is isinstance(cb, sb.func):
                     return
                 args = {j.args for j in (ca, sa)}
                 if not all(i.args in args for i in (cb, sb)):

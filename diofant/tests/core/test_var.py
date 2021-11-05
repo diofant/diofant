@@ -2,8 +2,11 @@
 
 import pytest
 
-from diofant import Function, FunctionClass, Symbol, var
+from diofant import Function, FunctionClass, Symbol, symbols, var
+from diofant.abc import a, b, d, e, x, y
 
+
+bb, cc, zz, _x, fg = symbols('bb cc zz _x fg')
 
 __all__ = ()
 
@@ -88,6 +91,6 @@ def test_var_cls():
 
 
 def test_var_nested():
-    ((a, b, c, d), (x, y, z)) = var(('a:d', 'x:z'))
+    ((a, *_), (x, *_)) = var(('a:d', 'x:z'))
     assert isinstance(a, Symbol)
     assert isinstance(x, Symbol)

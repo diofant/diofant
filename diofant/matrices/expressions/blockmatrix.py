@@ -325,7 +325,7 @@ def bc_matmul(expr):
     factor, matrices = expr.as_coeff_matrices()
 
     i = 0
-    while (i+1 < len(matrices)):
+    while i + 1 < len(matrices):
         A, B = matrices[i:i+2]
         if isinstance(A, BlockMatrix) and isinstance(B, BlockMatrix):
             matrices[i] = A._blockmul(B)

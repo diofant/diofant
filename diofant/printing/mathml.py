@@ -104,7 +104,7 @@ class MathMLPrinter(Printer):
 
         x = self.dom.createElement('apply')
         x.appendChild(self.dom.createElement('times'))
-        if(coeff != 1):
+        if coeff != 1:
             x.appendChild(self._print(coeff))
         for term in terms:
             x.appendChild(self._print(term))
@@ -123,12 +123,12 @@ class MathMLPrinter(Printer):
                 x.appendChild(self._print(-arg))
                 # invert expression since this is now minused
                 lastProcessed = x
-                if(arg == args[-1]):
+                if arg == args[-1]:
                     plusNodes.append(lastProcessed)
             else:
                 plusNodes.append(lastProcessed)
                 lastProcessed = self._print(arg)
-                if(arg == args[-1]):
+                if arg == args[-1]:
                     plusNodes.append(self._print(arg))
         if len(plusNodes) == 1:
             return lastProcessed

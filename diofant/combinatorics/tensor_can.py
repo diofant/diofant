@@ -573,7 +573,7 @@ def canonical_free(base, gens, g, num_free):
         if x not in base:
             base.append(x)
     h = g
-    for i, transv in enumerate(transversals):
+    for transv in transversals:
         h_i = [size]*num_free
         # find the element s in transversals[i] such that
         # _af_rmul(h, s) has its free elements with the lowest position in h
@@ -753,8 +753,8 @@ def canonicalize(g, dummies, msym, *v):
     size = g.size
     num_tensors = 0
     v1 = []
-    for i in range(len(v)):
-        base_i, gens_i, n_i, sym_i = v[i]
+    for vi in v:
+        base_i, gens_i, n_i, sym_i = vi
         # check that the BSGS is minimal;
         # this property is used in double_coset_can_rep;
         # if it is not minimal use canonicalize_naive
@@ -796,12 +796,12 @@ def canonicalize(g, dummies, msym, *v):
     # Determine free_i, the list of slots of tensors which are fixed
     # since they are occupied by free indices, which are fixed.
     start = 0
-    for i in range(len(v)):
+    for i, vi in enumerate(v):
         free_i = []
-        base_i, gens_i, n_i, sym_i = v[i]
+        base_i, gens_i, n_i, sym_i = vi
         len_tens = gens_i[0].size - 2
         # for each component tensor get a list od fixed islots
-        for j in range(n_i):
+        for _ in range(n_i):
             # get the elements corresponding to the component tensor
             h = g1[start:(start + len_tens)]
             fr = []
@@ -950,7 +950,7 @@ def get_transversals(base, gens):
     if not base:
         return []
     stabs = _distribute_gens_by_base(base, gens)
-    orbits, transversals = _orbits_transversals_from_bsgs(base, stabs)
+    _, transversals = _orbits_transversals_from_bsgs(base, stabs)
     transversals = [{x: h._array_form for x, h in y.items()} for y in
                     transversals]
     return transversals
@@ -1150,7 +1150,7 @@ def gens_products(*v):
     """
     res_size, res_base, res_gens = tensor_gens(*v[0])
     for i in range(1, len(v)):
-        size, base, gens = tensor_gens(*v[i])
+        _, base, gens = tensor_gens(*v[i])
         res_base, res_gens = bsgs_direct_product(res_base, res_gens, base,
                                                  gens, 1)
     res_size = res_gens[0].size

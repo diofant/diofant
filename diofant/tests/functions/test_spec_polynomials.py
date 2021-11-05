@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Dummy, Rational, RisingFactorial, Symbol,
+from diofant import (Derivative, Dummy, Rational, RisingFactorial, Sum, Symbol,
                      assoc_laguerre, assoc_legendre, binomial, chebyshevt,
                      chebyshevt_root, chebyshevu, chebyshevu_root, conjugate,
                      cos, diff, exp, factorial, gamma, gegenbauer, hermite,

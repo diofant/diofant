@@ -256,10 +256,10 @@ class Order(Expr):
     def free_symbols(self):
         return self.expr.free_symbols | set(self.variables)
 
-    def _eval_power(self, e):
-        if e.is_Number and e.is_nonnegative:
-            return self.func(self.expr ** e, *self.args[1:])
-        if e == O(1):
+    def _eval_power(self, other):
+        if other.is_Number and other.is_nonnegative:
+            return self.func(self.expr**other, *self.args[1:])
+        if other == O(1):
             return self
 
     def as_expr_variables(self, order_symbols):
@@ -269,7 +269,7 @@ class Order(Expr):
             if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          f'or oo not supported, got {point} as a point.')
+                                          f'or oo not supported, got {self.point} as a point.')
             if order_symbols and order_symbols[0][1] != self.point[0]:
                 raise NotImplementedError(
                     'Multiplying Order at different points is not supported.')
@@ -309,7 +309,7 @@ class Order(Expr):
             if (not all(p == expr.point[0] for p in expr.point) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          f'or oo not supported, got {point} as a point.')
+                                          f'or oo not supported, got {self.point} as a point.')
             else:
                 # self and/or expr is O(1):
                 if any(not p for p in [expr.point, self.point]):

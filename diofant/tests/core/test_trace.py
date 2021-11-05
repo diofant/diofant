@@ -8,7 +8,7 @@ __all__ = ()
 
 
 def test_trace_new():
-    a, b, c, d, Y = symbols('a b c d Y')
+    a, b, c, d = symbols('a b c d')
     A, B, C, D = symbols('A B C D', commutative=False)
 
     assert Tr(a + b) == a + b
@@ -78,13 +78,6 @@ def test_trace_new():
 
     # non-Expr objects
     assert isinstance(Tr(None), Tr)
-
-
-def test_trace_doit():
-    a, b, c, d = symbols('a b c d')
-    A, B, C, D = symbols('A B C D', commutative=False)
-
-    # TODO: needed while testing reduced density operations, etc.
 
 
 def test_permute():

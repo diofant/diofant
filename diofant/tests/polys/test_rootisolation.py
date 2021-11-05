@@ -1271,7 +1271,7 @@ def test__isolate_all_roots():
 
 
 def test_RealInterval():
-    R, x = ring('x', ZZ)
+    _, x = ring('x', ZZ)
 
     f = (x - 1)**2
 
@@ -1288,7 +1288,7 @@ def test_ComplexInterval():
     assert r1.is_disjoint(r2) is True
     assert r1.is_disjoint(r2, check_re_refinement=True) is False
 
-    for i in range(4):
+    for _ in range(4):
         r1, r2 = r1.refine(), r2.refine()
 
     assert r1.is_disjoint(r2, check_re_refinement=True) is True

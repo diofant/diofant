@@ -120,12 +120,12 @@ combinations_lang_compiler = [
 
 def try_run(commands):
     """Run a series of commands and only return True if all ran fine."""
-    null = open(os.devnull, 'w', encoding='utf-8')
-    for command in commands:
-        retcode = subprocess.call(command, stdout=null, shell=True,
-                                  stderr=subprocess.STDOUT)
-        if retcode != 0:
-            return False
+    with open(os.devnull, 'w', encoding='utf-8') as null:
+        for command in commands:
+            retcode = subprocess.call(command, stdout=null, shell=True,
+                                      stderr=subprocess.STDOUT)
+            if retcode != 0:
+                return False
     return True
 
 

@@ -606,7 +606,7 @@ class ProductSet(Set):
 
         return And(*(Eq(x, y) for x, y in zip(self.args, other.args)))
 
-    def _contains(self, element):
+    def _contains(self, other):
         """
         'in' operator for ProductSets
 
@@ -623,11 +623,11 @@ class ProductSet(Set):
 
         """
         try:
-            if len(element) != len(self.args):
+            if len(other) != len(self.args):
                 return false
         except TypeError:  # maybe element isn't an iterable
             return false
-        return And(*[s.contains(i) for s, i in zip(self.sets, element)])
+        return And(*[s.contains(i) for s, i in zip(self.sets, other)])
 
     def _intersection(self, other):
         """
@@ -1203,7 +1203,7 @@ class Union(Set, EvalfMixin):
         # Here we depend on rules built into the constituent sets
         args = set(args)
         new_args = True
-        while(new_args):
+        while new_args:
             for s in args:
                 new_args = False
                 for t in args - {s}:
@@ -1224,9 +1224,9 @@ class Union(Set, EvalfMixin):
         else:
             return Union(args, evaluate=False)
 
-    def _complement(self, universe):
+    def _complement(self, other):
         # DeMorgan's Law
-        return Intersection(s.complement(universe) for s in self.args)
+        return Intersection(s.complement(other) for s in self.args)
 
     @property
     def inf(self):
@@ -1458,7 +1458,7 @@ class Intersection(Set):
         # Here we depend on rules built into the constituent sets
         args = set(args)
         new_args = True
-        while(new_args):
+        while new_args:
             for s in args:
                 new_args = False
                 for t in args - {s}:

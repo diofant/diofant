@@ -219,7 +219,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 term = f.subs({i: a})
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if not (test == false):
+                    if not test == false:
                         # a symbolic Relational class, can't go further
                         return term, Integer(0)
                 s += term
@@ -705,7 +705,7 @@ def eval_sum_hyper(f, i_a_b):
         # Now b == oo, a != -oo
         res = _eval_sum_hyper(f, i, a)
         if res is not None:
-            r, c = res
+            _, c = res
             if c == false:
                 f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:

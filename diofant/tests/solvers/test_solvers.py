@@ -1205,7 +1205,7 @@ def test_sympyissue_6989():
 
 
 def test_lambert_multivariate():
-    for i in range(7):
+    for _ in range(7):
         assert _filtered_gens((x + 1/x + exp(x) + y).as_poly(), x) == {x, exp(x)}
         assert _filtered_gens((x + 1/x + exp(x)).as_poly(), x) == {exp(x), x}
         assert _filtered_gens((x + log(x) + 1/x + exp(x)).as_poly(),

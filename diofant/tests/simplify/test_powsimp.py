@@ -221,7 +221,7 @@ def test_sympyissue_6367():
 
 
 def test_powsimp_polar():
-    p, q, r = symbols('p q r', polar=True)
+    p, q = symbols('p q', polar=True)
 
     assert (polar_lift(-1))**(2*x) == exp_polar(2*pi*I*x)
     assert powsimp(p**x * q**x) == (p*q)**x

@@ -180,7 +180,7 @@ def signinf(e, x):
         if s == 1:
             return 1
 
-    c0, e0 = mrv_leadterm(e, x)
+    c0, _ = mrv_leadterm(e, x)
     return signinf(c0, x)
 
 

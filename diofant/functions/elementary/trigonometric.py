@@ -1364,8 +1364,8 @@ class cot(ReciprocalTrigonometricFunction):
         neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
         return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
 
-    def _eval_rewrite_as_sin(self, x):
-        return 2*sin(2*x)/sin(x)**2
+    def _eval_rewrite_as_sin(self, arg):
+        return 2*sin(2*arg)/sin(arg)**2
 
     def as_real_imag(self, deep=True, **hints):
         re, im = self._as_real_imag(deep=deep, **hints)

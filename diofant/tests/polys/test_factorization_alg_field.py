@@ -16,7 +16,7 @@ def test__distinct_prime_divisors():
 
 
 def test__sqf_p():
-    R, x, z = ring('x z', ZZ)
+    *_, z = ring('x z', ZZ)
 
     assert _sqf_p(z**2, (z**2 - 2).drop(0), 2) is True
 
@@ -148,7 +148,7 @@ def test_efactor_1():
 
 def test_efactor_random():
     A3 = QQ.algebraic_field(sqrt(3))
-    R, x, y, z, t = ring('x y z t', A3)
+    _, x, y, z, t = ring('x y z t', A3)
 
     f1 = x*y - sqrt(3)
     f2 = z*t + 1
@@ -166,7 +166,7 @@ def test_efactor_wang():
     a = (-1 + sqrt(5))/4 - I*sqrt((sqrt(5) + 5)/8)
     A = QQ.algebraic_field(a)
     a = A.unit
-    R, x, y, z = ring('x y z', A)
+    _, x, y, z = ring('x y z', A)
 
     f1 = x**2 - 2*a**2*x + a**3*z**2 - (a**3 + a**2 + a + 1)*y + 12*a
     f2 = x**2 - 2*a**3*x + a**2*z**2 + a*y - 12*(a**3 + a**2 + a + 1)
@@ -180,7 +180,7 @@ def test_efactor_wang():
 @pytest.mark.timeout(60)
 def test_sympyissue_19196():
     A = QQ.algebraic_field(sqrt(2), root(3, 3))
-    R, x, y, z = ring('x y z', A)
+    _, x, y, z = ring('x y z', A)
 
     f1, f2 = x - z/root(3, 3), x**2 + 2*y + sqrt(2)
     f = f1*f2

@@ -121,8 +121,8 @@ class MatrixBase(DefaultPrinting):
                 elif len(arr.shape) == 1:
                     rows, cols = arr.shape[0], 1
                     flat_list = [Integer(0)]*rows
-                    for i in range(len(arr)):
-                        flat_list[i] = cls._sympify(arr[i])
+                    for i, a in enumerate(arr):
+                        flat_list[i] = cls._sympify(a)
                     return rows, cols, flat_list
                 else:
                     raise NotImplementedError(
@@ -1625,7 +1625,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not is_sequence(b):
             raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}.')
-        if not (self.rows * self.cols == b.rows * b.cols == 3):
+        if not self.rows * self.cols == b.rows * b.cols == 3:
             raise ShapeError('Dimensions incorrect for cross product.')
         else:
             return self._new(self.rows, self.cols, (
@@ -1875,8 +1875,8 @@ class MatrixBase(DefaultPrinting):
 
         """
         copy = self.copy()
-        for i in range(len(perm)):
-            copy.row_swap(perm[i][0], perm[i][1])
+        for p in perm:
+            copy.row_swap(p[0], p[1])
         return copy
 
     def exp(self):
@@ -1905,7 +1905,7 @@ class MatrixBase(DefaultPrinting):
                     nex = nex+n**i/factorial(i)
                 # combine the two parts
                 res = exp(b[0, 0])*nex
-            return(res)
+            return res
 
         blocks = list(map(_jblock_exponential, cells))
         from . import diag

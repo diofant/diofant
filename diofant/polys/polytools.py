@@ -3183,7 +3183,7 @@ def content(f, *gens, **args):
     allowed_flags(args, ['polys'])
 
     try:
-        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
+        (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('content', 1, exc)
 

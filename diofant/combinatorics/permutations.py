@@ -338,7 +338,7 @@ class Cycle(dict):
 
         """
         rv = Cycle(*other)
-        for k, v in zip(list(self.keys()), [rv[self[k]] for k in self.keys()]):
+        for k, v in zip(list(self.keys()), [rv[v] for v in self.values()]):
             rv[k] = v
         return rv
 
@@ -370,7 +370,7 @@ class Cycle(dict):
         if not self and size is None:
             raise ValueError('must give size for empty Cycle')
         if size is not None:
-            big = max([i for i in self.keys() if self[i] != i] + [0])
+            big = max([k for k, v in self.items() if v != k] + [0])
             size = max(size, big + 1)
         else:
             size = self.size
@@ -1940,9 +1940,9 @@ class Permutation(Basic):
         """
         max = 0
         a = self.array_form
-        for i in range(len(a)):
-            if a[i] != i and a[i] > max:
-                max = a[i]
+        for i, ai in enumerate(a):
+            if ai != i and ai > max:
+                max = ai
         return max
 
     def min(self):
@@ -1964,9 +1964,9 @@ class Permutation(Basic):
         """
         a = self.array_form
         min = len(a)
-        for i in range(len(a)):
-            if a[i] != i and a[i] < min:
-                min = a[i]
+        for i, ai in enumerate(a):
+            if ai != i and ai < min:
+                min = ai
         return min
 
     def inversions(self):
@@ -2645,7 +2645,7 @@ class Permutation(Basic):
         Q = deque(list(range(n)))
         perm = []
         while len(Q) > max(s, 1):
-            for dp in range(m):
+            for _ in range(m):
                 Q.append(Q.popleft())
             perm.append(Q.popleft())
         perm.extend(list(Q))

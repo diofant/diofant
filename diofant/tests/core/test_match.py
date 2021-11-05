@@ -10,7 +10,7 @@ __all__ = ()
 
 
 def test_symbol():
-    a, b, c, p, q = map(Wild, 'abcpq')
+    a, c = map(Wild, 'ac')
 
     e = x
     assert e.match(x) == {}
@@ -23,7 +23,7 @@ def test_symbol():
 
 
 def test_add():
-    p, q, r = map(Wild, 'pqr')
+    p = Wild('p')
 
     e = a + b
     assert e.match(p + b) == {p: a}

@@ -16,6 +16,7 @@ from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr
 from ..polys.polyerrors import PolificationFailed
 from ..polys.polytools import groebner
+from .cse_main import cse
 
 
 def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
@@ -344,7 +345,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
 
     num, denom = cancel(expr).as_numer_denom()
     try:
-        (pnum, pdenom), opt = parallel_poly_from_expr([num, denom])
+        (_, pdenom), opt = parallel_poly_from_expr([num, denom])
     except PolificationFailed:
         return expr
     ideal, freegens, gens = analyse_gens(opt.gens, hints)
@@ -642,6 +643,8 @@ def trigsimp_old(expr, **opts):
     futrig
 
     """
+    from .simplify import separatevars
+
     old = expr
     first = opts.pop('first', True)
     if first:
@@ -655,7 +658,7 @@ def trigsimp_old(expr, **opts):
                 d = separatevars(d, dict=True) or d
             if isinstance(d, dict):
                 expr = 1
-                for k, v in d.items():
+                for v in d.values():
                     # remove hollow factoring
                     was = v
                     v = expand_mul(v)
@@ -1048,7 +1051,7 @@ def __trigsimp(expr, deep=False):
             new = sorted([new, factor(new)], key=count_ops)[0]
         # if all exp that were introduced disappeared then accept it
         ne = {a for a in new.atoms(Pow) if a.base is E}
-        if not (ne - e):
+        if not ne - e:
             expr = new
     except TypeError:
         pass

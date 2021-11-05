@@ -115,32 +115,32 @@ def runtest_autowrap_helpers(language, backend):
 
     for file in os.listdir(tmp):
         if file.startswith('wrapped_code_') and file.endswith('.c'):
-            fil = open(tmp + '/' + file, encoding='utf-8')
-            assert fil.read() == ('/******************************************************************************\n'
-                                  ' *' + ('Code generated with diofant ' + diofant.__version__).center(76) + '*\n'
-                                  ' *                                                                            *\n'
-                                  ' *         See https://diofant.readthedocs.io/ for more information.          *\n'
-                                  ' *                                                                            *\n'
-                                  " *                      This file is part of 'autowrap'                       *\n"
-                                  ' ******************************************************************************/\n'
-                                  '#include ' + '"' + file[:-1] + 'h"' + '\n'
-                                  '#include <math.h>\n'
-                                  '\n'
-                                  'double helper(double a, double b, double c) {\n'
-                                  '\n'
-                                  '   double helper_result;\n'
-                                  '   helper_result = a - b + c;\n'
-                                  '   return helper_result;\n'
-                                  '\n'
-                                  '}\n'
-                                  '\n'
-                                  'double autofunc(double a, double b, double c) {\n'
-                                  '\n'
-                                  '   double autofunc_result;\n'
-                                  '   autofunc_result = pow(helper(a, b, c), 13);\n'
-                                  '   return autofunc_result;\n'
-                                  '\n'
-                                  '}\n')
+            with open(tmp + '/' + file, encoding='utf-8') as f:
+                assert f.read() == ('/******************************************************************************\n'
+                                    ' *' + ('Code generated with diofant ' + diofant.__version__).center(76) + '*\n'
+                                    ' *                                                                            *\n'
+                                    ' *         See https://diofant.readthedocs.io/ for more information.          *\n'
+                                    ' *                                                                            *\n'
+                                    " *                      This file is part of 'autowrap'                       *\n"
+                                    ' ******************************************************************************/\n'
+                                    '#include ' + '"' + file[:-1] + 'h"' + '\n'
+                                    '#include <math.h>\n'
+                                    '\n'
+                                    'double helper(double a, double b, double c) {\n'
+                                    '\n'
+                                    '   double helper_result;\n'
+                                    '   helper_result = a - b + c;\n'
+                                    '   return helper_result;\n'
+                                    '\n'
+                                    '}\n'
+                                    '\n'
+                                    'double autofunc(double a, double b, double c) {\n'
+                                    '\n'
+                                    '   double autofunc_result;\n'
+                                    '   autofunc_result = pow(helper(a, b, c), 13);\n'
+                                    '   return autofunc_result;\n'
+                                    '\n'
+                                    '}\n')
 
 #
 # tests of language-backend combinations

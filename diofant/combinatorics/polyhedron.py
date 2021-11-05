@@ -484,8 +484,8 @@ class Polyhedron(Basic):
         if self._edges is None:
             output = set()
             for face in self.faces:
-                for i in range(len(face)):
-                    edge = tuple(sorted([face[i], face[i - 1]]))
+                for i, fi in enumerate(face):
+                    edge = tuple(sorted([fi, face[i - 1]]))
                     output.add(edge)
             self._edges = FiniteSet(*output)
         return self._edges
@@ -658,7 +658,7 @@ def _pgroup_calcs():
                         range(len(ordered_faces))))
         flat_faces = flatten(ordered_faces)
         new_pgroup = []
-        for i, p in enumerate(pgroup):
+        for p in pgroup:
             h = polyh.copy()
             h.rotate(p)
             c = h.corners

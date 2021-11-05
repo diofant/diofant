@@ -929,23 +929,23 @@ def test_Poly_termwise():
 
     assert f.termwise(func) == g
 
-    def func(monom, coeff):
+    def func2(monom, coeff):
         k, = monom
         return (k,), coeff//10**(2 - k)
 
-    assert f.termwise(func) == g
+    assert f.termwise(func2) == g
 
-    def func(monom, coeff):
+    def func3(monom, coeff):
         k, = monom
         return (k,), coeff // 2
 
-    assert f.termwise(func) == (10*x + 200).as_poly()
+    assert f.termwise(func3) == (10*x + 200).as_poly()
 
-    def func(monom, coeff):
+    def func4(monom, coeff):
         k, = monom
         return k % 2, coeff
 
-    pytest.raises(PolynomialError, lambda: f.termwise(func))
+    pytest.raises(PolynomialError, lambda: f.termwise(func4))
 
 
 def test_Poly_length():
@@ -3166,7 +3166,7 @@ def test_sympyissue_13029():
 
 @pytest.mark.timeout(5)
 def test_sympyissue_21760():
-    q, r = (x**2016 - x**2015 + x**1008 + x**1003 +
+    _, r = (x**2016 - x**2015 + x**1008 + x**1003 +
             1).as_poly().div((x - 1).as_poly())
     assert r == Integer(3).as_poly(x)
 

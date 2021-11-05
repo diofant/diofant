@@ -1531,8 +1531,8 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
     """
     if expr_len > 1 and isinstance(args[0], Expr):
         # Multiple expressions same range.
-        for i in range(len(args)):
-            if isinstance(args[i], Tuple):
+        for i, a in enumerate(args):
+            if isinstance(a, Tuple):
                 break
         else:
             i = len(args) + 1
@@ -1556,11 +1556,11 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         # Cannot handle expressions with number of expression = 3. It is
         # not possible to differentiate between expressions and ranges.
         # Series of plots with same range
-        for i in range(len(args)):
-            if isinstance(args[i], Tuple) and len(args[i]) != expr_len:
+        for i, a in enumerate(args):
+            if isinstance(a, Tuple) and len(a) != expr_len:
                 break
-            if not isinstance(args[i], Tuple):
-                args[i] = Tuple(args[i])
+            if not isinstance(a, Tuple):
+                args[i] = Tuple(a)
         else:
             i = len(args) + 1
 

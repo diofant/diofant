@@ -55,6 +55,8 @@ def test_as_integral():
         'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
+    assert sine_transform(f(x), x, s).rewrite('Integral') == \
+        Integral(sqrt(2)/sqrt(pi)*f(x)*sin(x*s), (x, 0, oo))
 
 
 def test_mellin_transform():
@@ -514,7 +516,7 @@ def test_sympyissue_8368_7173():
 
 def test_inverse_laplace_transform():
     ILT = inverse_laplace_transform
-    a, b, c, = symbols('a b c', positive=True, finite=True)
+    a, b = symbols('a b', positive=True, finite=True)
 
     def simp_hyp(expr):
         return factor_terms(expand_mul(expr)).rewrite(sin)

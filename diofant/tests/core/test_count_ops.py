@@ -31,8 +31,8 @@ def test_count_ops_non_visual():
 
 
 def test_count_ops_visual():
-    ADD, MUL, POW, SIN, COS, EXP, AND, D, G = symbols(
-        'Add Mul Pow sin cos exp And Derivative Integral'.upper())
+    ADD, MUL, POW, SIN, COS, AND, D, G = symbols(
+        'Add Mul Pow sin cos And Derivative Integral'.upper())
     DIV, SUB, NEG = symbols('DIV SUB NEG')
     NOT, OR, AND, XOR, IMPLIES, EQUIVALENT, _ITE, BASIC, TUPLE = symbols(
         'Not Or And Xor Implies Equivalent ITE Basic Tuple'.upper())

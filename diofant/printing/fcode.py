@@ -376,7 +376,7 @@ class FCodePrinter(CodePrinter):
         tabwidth = 3
         new_code = []
         for i, line in enumerate(code):
-            if line == '' or line == '\n':
+            if line in ('', '\n'):
                 new_code.append(line)
                 continue
             level -= decrease[i]

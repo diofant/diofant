@@ -93,7 +93,7 @@ def _chebyshevt(n, K):
         return c0
     c1 = x
 
-    for i in range(2, n + 1):
+    for _ in range(2, n + 1):
         a = c1*x*K(2)
         c0, c1 = c1, a - c0
 
@@ -126,7 +126,7 @@ def _chebyshevu(n, K):
 
     seq = [ring.one, K(2)*x]
 
-    for i in range(2, n + 1):
+    for _ in range(2, n + 1):
         a = seq[-1]*x*K(2)
         seq.append(a - seq[-2])
 

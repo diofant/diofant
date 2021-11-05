@@ -46,7 +46,7 @@ def test_diff2():
     n3 = Integer(3)
     n2 = Integer(2)
     n6 = Integer(6)
-    x, c = map(Symbol, 'xc')
+    x = Symbol('x')
 
     e = n3*(-n2 + x**n2)*cos(x) + x*(-n6 + x**n2)*sin(x)
     assert e == 3*(-2 + x**2)*cos(x) + x*(-6 + x**2)*sin(x)

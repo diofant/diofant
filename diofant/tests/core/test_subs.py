@@ -94,7 +94,7 @@ def test_subbug2():
 
 
 def test_dict_set():
-    a, b, c = map(Wild, 'abc')
+    a, b = map(Wild, 'ab')
 
     f = 3*cos(4*x)
     r = f.match(a*cos(b*x))
@@ -343,8 +343,8 @@ def test_subs_wild():
 
 
 def test_subs_mixed():
-    a, b, c, d, K = symbols('a b c d K', commutative=True)
-    w, x, y, z, L = symbols('w x y z L', commutative=False)
+    a, b, c, K = symbols('a b c K', commutative=True)
+    x, y, z, L = symbols('x y z L', commutative=False)
     R, S, T, U = symbols('R S T U', cls=Wild)
 
     assert (a*x*y).subs({x*y: L}) == a*L
@@ -357,8 +357,8 @@ def test_subs_mixed():
 
 
 def test_division():
-    a, b, c = symbols('a b c', commutative=True)
-    x, y, z = symbols('x y z', commutative=True)
+    a, c = symbols('a c', commutative=True)
+    x, z = symbols('x z', commutative=True)
 
     assert (1/a).subs({a: c}) == 1/c
     assert (1/a**2).subs({a: c}) == 1/c**2
@@ -441,7 +441,7 @@ def test_derivative_subs2():
     assert Derivative(f, x, y).subs({Derivative(f, y): g}) == Derivative(g, x)
     assert (Derivative(f, x, y, z).subs({Derivative(f, x, z): g}) == Derivative(g, y))
     assert (Derivative(f, x, y, z).subs({Derivative(f, z, y): g}) == Derivative(g, x))
-    assert (Derivative(f, x, y, z).subs({Derivative(f, z, y, x): g}) == g)
+    assert Derivative(f, x, y, z).subs({Derivative(f, z, y, x): g}) == g
     assert (Derivative(sin(x), (x, 2)).subs({Derivative(sin(x), f_func(x)): g_func}) ==
             Derivative(sin(x), (x, 2)))
 
@@ -573,7 +573,7 @@ def test_sympyissue_6419_6421():
 def test_sympyissue_6559():
     assert (-12*x + y).subs({-x: 1}) == 12 + y
     # though this involves cse it generated a failure in Mul._eval_subs
-    x0, x1 = symbols('x0 x1')
+    x0 = Symbol('x0')
     e = -log(-12*sqrt(2) + 17)/24 - log(-2*sqrt(2) + 3)/12 + sqrt(2)/3
     # XXX modify cse so x1 is eliminated and x0 = -sqrt(2)?
     assert cse(e) == (

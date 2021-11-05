@@ -32,11 +32,11 @@ jobs:
         sudo apt install libatlas-base-dev liblapack-dev gfortran
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools wheel
+        pip install -U pip 'setuptools==58.4.0' wheel
         # XXX: workarounds for CPython >= 3.10
         if [[ ${{matrix.python-version}} != "3.9" ]]
         then
-          pip install git+https://github.com/scipy/scipy.git
+          pip install git+https://github.com/scipy/scipy.git@2acb5c2
           pip install matplotlib==3.5.0rc1
         fi
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]

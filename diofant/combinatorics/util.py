@@ -99,7 +99,7 @@ def _check_cycles_alt_sym(perm):
             current_len = 1
             used.add(i)
             j = i
-            while(af[j] != i):
+            while af[j] != i:
                 current_len += 1
                 j = af[j]
                 used.add(j)

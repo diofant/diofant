@@ -94,7 +94,7 @@ def test_symbolic():
     X = Normal('x', mu1, s1)
     Y = Normal('y', mu2, s2)
     Z = Exponential('z', rate)
-    a, b, c = symbols('a b c', real=True)
+    a, b = symbols('a b', real=True)
 
     assert E(X) == mu1
     assert E(X + Y) == mu1 + mu2
@@ -581,7 +581,7 @@ def test_prefab_sampling():
     variables = [N, L, E, P, W, U, B, G]
     niter = 10
     for var in variables:
-        for i in range(niter):
+        for _ in range(niter):
             assert sample(var) in var.pspace.domain.set
 
 

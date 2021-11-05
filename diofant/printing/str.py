@@ -288,7 +288,7 @@ class StrPrinter(Printer):
         return '-oo'
 
     def _print_Order(self, expr):
-        if all(p == 0 for p in expr.point) or not len(expr.variables):
+        if all(p == 0 for p in expr.point) or not expr.variables:
             if len(expr.variables) <= 1:
                 return 'O(%s)' % self._print(expr.expr)
             else:
@@ -671,8 +671,8 @@ def sstr(expr, **settings):
 class StrReprPrinter(StrPrinter):
     """(internal) -- see sstrrepr"""
 
-    def _print_str(self, s):
-        return repr(s)
+    def _print_str(self, expr):
+        return repr(expr)
 
 
 def sstrrepr(expr, **settings):

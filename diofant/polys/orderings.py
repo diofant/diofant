@@ -30,7 +30,7 @@ class MonomialOrder:
         return hash(self.__class__)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
 
 class LexOrder(MonomialOrder):

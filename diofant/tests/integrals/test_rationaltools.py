@@ -146,7 +146,7 @@ def test_sympyissue_5981():
 
 
 def test_sympyissue_10488():
-    a, b, c, x = symbols('a b c x', real=True, positive=True)
+    a, b, x = symbols('a b x', real=True, positive=True)
     assert integrate(x/(a*x + b), x) == x/a - b*log(a*x + b)/a**2
 
 

@@ -715,7 +715,7 @@ def test_complex():
 
 
 def test_complex_2899():
-    a, b = symbols('a,b', extended_real=True)
+    a = Symbol('a', extended_real=True)
     for deep in [True, False]:
         for func in [sinh, cosh, tanh, coth]:
             assert func(a).expand(complex=True, deep=deep) == func(a)

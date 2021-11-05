@@ -475,7 +475,7 @@ class TIDS(CantSympify):
         # then the dummy indices, ordered by types and contravariant before
         # covariant
         # g[position in tensor] = position in ordered indices
-        for i, (indx, ipos, cpos) in enumerate(self._get_sorted_free_indices_for_canon()):
+        for i, (_, ipos, cpos) in enumerate(self._get_sorted_free_indices_for_canon()):
             pos = vpos[cpos] + ipos
             g[pos] = i
         pos = len(self.free)
@@ -512,7 +512,7 @@ class TIDS(CantSympify):
                 numtyp.append([prev, 1])
         v = []
         for h, n in numtyp:
-            if h._comm == 0 or h._comm == 1:
+            if h._comm in (0, 1):
                 comm = h._comm
             else:
                 comm = TensorManager.get_comm(h._comm, h._comm)
@@ -624,7 +624,7 @@ class TIDS(CantSympify):
             if gposx in elim:
                 continue
             free1 = [x for x in free if x[-1] == gposx]
-            dum1 = [x for x in dum if x[-2] == gposx or x[-1] == gposx]
+            dum1 = [x for x in dum if gposx in (x[-2], x[-1])]
             if not dum1:
                 continue
             elim.add(gposx)
@@ -693,7 +693,7 @@ class TIDS(CantSympify):
                         else:
                             p1 = dp0
                             c1 = dc0
-                        ind, p, c = free1[0]
+                        ind, _, c = free1[0]
                         free.append((ind, p1, c1))
                 else:
                     dp0, dp1, dc0, dc1 = dum1[0]
@@ -717,7 +717,7 @@ class TIDS(CantSympify):
                         else:
                             p1 = dp0
                             c1 = dc0
-                        ind, p, c = free1[0]
+                        ind, _, c = free1[0]
                         free.append((ind, p1, c1))
             dum = [x for x in dum if x not in dum1]
             free = [x for x in free if x not in free1]
@@ -817,7 +817,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             if any(i is None for i in data_list):
                 raise ValueError('Mixing tensors with associated components '
                                  'data with tensors without components data')
-            data_result, tensmul_result = self.data_product_tensors(data_list, tensmul_list)
+            data_result, _ = self.data_product_tensors(data_list, tensmul_list)
             return data_result
 
         if isinstance(key, TensAdd):
@@ -933,7 +933,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             permute_axes = list(map(gener, range(rank)))
             # the order of a permutation is the number of times to get the
             # identity by applying that permutation.
-            for i in range(gener.order()-1):
+            for _ in range(gener.order()-1):
                 data_swapped = numpy.transpose(data_swapped, permute_axes)
                 # if any value in the difference array is non-zero, raise an error:
                 if (last_data - sign_change*data_swapped).any():
@@ -2277,7 +2277,7 @@ class TensorHead(Basic):
         C(auto_left, -auto_right)
 
         """
-        indices, matrix_behavior_kinds = self._check_auto_matrix_indices_in_call(*indices)
+        indices, _ = self._check_auto_matrix_indices_in_call(*indices)
         tensor = Tensor._new_with_dummy_replacement(self, indices, **kw_args)
         return tensor
 

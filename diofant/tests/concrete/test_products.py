@@ -322,7 +322,7 @@ def test_reorder():
 
 
 def test_reverse_order():
-    x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
+    x, y, a, b = symbols('x, y, a, b', integer=True)
 
     assert Product(x, (x, 0, 3)).reverse_order(0) == Product(1/x, (x, 4, -1))
     assert Product(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(0, 1) == \
@@ -348,7 +348,7 @@ def test_reverse_order():
 
 
 def test_reorder_limit():
-    x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
+    x, y, a, b, d = symbols('x, y, a, b, d', integer=True)
     pytest.raises(ReorderError,
                   lambda: Product(x**2, (x, a, b), (y, x, d)).reorder_limit(1, 0))
 

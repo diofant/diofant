@@ -10,7 +10,7 @@ from diofant.core.coreerrors import NonCommutativeExpression
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
                                     factor_nc, factor_terms, gcd_terms)
 from diofant.core.function import _mexpand
-from diofant.core.mul import _keep_coeff as _keep_coeff
+from diofant.core.mul import _keep_coeff
 from diofant.simplify.cse_opts import sub_pre
 
 

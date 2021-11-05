@@ -296,7 +296,7 @@ def test_Rational_cmp():
     assert n1 < n2
     assert n3 > n1
     assert not n3 < n1
-    assert not (Integer(-1) > 0)
+    assert not Integer(-1) > 0
     assert Integer(-1) < 0
 
     pytest.raises(TypeError, lambda: n1 < nan)
@@ -666,11 +666,11 @@ def test_Div_By_Zero():
 
 def test_Infinity_inequations():
     assert oo > pi
-    assert not (oo < pi)
+    assert not oo < pi
     assert exp(-3) < oo
 
     assert Float('+inf') > pi
-    assert not (Float('+inf') < pi)
+    assert not Float('+inf') < pi
     assert exp(-3) < Float('+inf')
 
     pytest.raises(TypeError, lambda: oo < I)
@@ -978,7 +978,7 @@ def test_accept_int():
 
 def test_dont_accept_str():
     assert Float('0.2') != '0.2'
-    assert not (Float('0.2') == '0.2')
+    assert not Float('0.2') == '0.2'
 
 
 def test_int():
@@ -1008,7 +1008,7 @@ def test_bug_sqrt():
 def test_pi_Pi():
     """Test that pi (instance) is imported, but Pi (class) is not"""
     with pytest.raises(ImportError):
-        from diofant import Pi  # noqa: F401
+        from diofant import Pi  # noqa: F401 pylint: disable=unused-import
 
 
 def test_no_len():

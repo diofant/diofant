@@ -66,14 +66,14 @@ def test_dup_invert():
 
 
 def test_dmp_prem():
-    R, x = ring('x', FF(7))
+    _, x = ring('x', FF(7))
 
     f = x**2 + x + 3
     g = 2*x + 2
 
     assert f.prem(g) == 5  # issue sympy/sympy#20397
 
-    R, x = ring('x', ZZ)
+    _, x = ring('x', ZZ)
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
@@ -90,7 +90,7 @@ def test_dmp_prem():
 
     assert f.prem(g) == r
 
-    R, x = ring('x', QQ)
+    _, x = ring('x', QQ)
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
@@ -100,7 +100,7 @@ def test_dmp_prem():
     assert g.prem(f) == g
     assert f.prem(g) == r
 
-    R, x, y = ring('x y', ZZ)
+    _, x, y = ring('x y', ZZ)
 
     f = x**2 - y**2
     g = x - y
@@ -213,7 +213,7 @@ def test_PolyElement_subresultants():
             assert f.resultant(g) == -g.resultant(f) == -7
 
     Rt, t = ring('t', ZZ)
-    Rx, x = ring('x', Rt)
+    _, x = ring('x', Rt)
 
     f = x**6 - 5*x**4 + 5*x**2 + 4
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
@@ -786,10 +786,10 @@ def test_dmp_gcd():
                 f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
                            12*x*y**7 + x**4 - 1)
 
-                for i in range(10):
+                for _ in range(10):
                     assert (f*h).cofactors(g*h) == (h, f, g)
 
-    R, x, y, z, u, v = ring('x y z u v', ZZ)
+    R, x, y, z, u, _ = ring('x y z u v', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
@@ -803,7 +803,7 @@ def test_dmp_gcd():
 
             assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b = ring('x y z u v a b', ZZ)
+    R, x, y, z, u, _, a, b = ring('x y z u v a b', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
@@ -812,7 +812,7 @@ def test_dmp_gcd():
 
             assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b, c, d = ring('x y z u v a b c d', ZZ)
+    R, x, y, z, u, _, a, b, *_ = ring('x y z u v a b c d', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
@@ -822,7 +822,7 @@ def test_dmp_gcd():
             assert H == h and H*cff == f and H*cfg == g
 
     F, x = field('x', QQ)
-    R, t = ring('t', F)
+    R, _ = ring('t', F)
 
     assert R(x).gcd(R(0)) == 1
 
@@ -950,7 +950,7 @@ def test_PolyElement_cancel():
     assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
 
     Fx, x = field('x', ZZ)
-    Rt, t = ring('t', Fx)
+    _, t = ring('t', Fx)
 
     f = (-x**2 - 4)/4*t
     g = t**2 + (x**2 + 2)/2
@@ -1003,7 +1003,7 @@ def test_PolyElement_cancel():
 
 
 def test_sympyissue_10996():
-    R, x, y, z = ring('x y z', ZZ)
+    _, x, y, z = ring('x y z', ZZ)
 
     f = 12*x**6*y**7*z**3 - 3*x**4*y**9*z**3 + 12*x**3*y**5*z**4
     g = (-48*x**7*y**8*z**3 + 12*x**5*y**10*z**3 - 48*x**5*y**7*z**2 +

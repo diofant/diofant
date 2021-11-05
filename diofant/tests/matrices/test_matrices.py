@@ -786,7 +786,7 @@ def test_nullspace():
 
     M = Matrix([[5, 7, 2,  1],
                 [1, 6, 2, -1]])
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 0, -R(2)/23, R(13)/23],
                           [0, 1,  R(8)/23, R(-6)/23]])
 
@@ -801,7 +801,7 @@ def test_nullspace():
                 [-2, -6, 0, -2, -8, 3, 1],
                 [ 3,  9, 0,  0,  6, 6, 2],
                 [-1, -3, 0,  1,  0, 9, 3]])
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 3, 0, 0, 2, 0, 0],
                           [0, 0, 0, 1, 2, 0, 0],
                           [0, 0, 0, 0, 0, 1, R(1)/3],
@@ -1090,8 +1090,8 @@ def test_sympyissue_3950():
     m = Matrix([1, 2, 3])
     a = Matrix([1, 2, 3])
     b = Matrix([2, 2, 3])
-    assert not (m in [])
-    assert not (m in [1])
+    assert m not in []
+    assert m not in [1]
     assert m != 1
     assert m == a
     assert m != b
@@ -1412,7 +1412,7 @@ def test_creation_args():
     (see issue sympy/sympy#4614).
     """
     pytest.raises(ValueError, lambda: zeros(3, -1))
-    pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))
+    pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))  # pylint: disable=too-many-function-args
     assert zeros(int(3)) == zeros(3)
     assert zeros(Integer(3)) == zeros(3)
     assert zeros(3.) == zeros(3)
@@ -1541,7 +1541,7 @@ def test_jordan_form():
     # diagonalizable
     m = Matrix(3, 3, [7, -12, 6, 10, -19, 10, 12, -24, 13])
     Jmust = Matrix(3, 3, [-1, 0, 0, 0, 1, 0, 0, 0, 1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
     assert Jmust == m.jordan_form(calc_transformation=False)
     assert Jmust == m.diagonalize()[1]
@@ -1558,9 +1558,9 @@ def test_jordan_form():
     # The blocks are ordered according to the value of their eigenvalues,
     # in order to make the matrix compatible with .diagonalize()
     Jmust = Matrix(3, 3, [2, 1, 0, 0, 2, 0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
-    Jcells, P = m.jordan_cells()
+    Jcells, _ = m.jordan_cells()
     # same here see 1456ff
     assert Jcells[1] == Matrix(1, 1, [2])
     assert Jcells[0] == Matrix(2, 2, [2, 1, 0, 2])
@@ -1571,13 +1571,13 @@ def test_jordan_form():
     # Jmust = Matrix(3, 3, [-1, 0, 0, 0, -1, 1, 0, 0, -1])
     # same here see 1456ff
     Jmust = Matrix(3, 3, [-1, 1, 0, 0, -1, 0, 0, 0, -1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     # complexity: two of eigenvalues are zero
     m = Matrix(3, 3, [4, -5, 2, 5, -7, 3, 6, -9, 4])
     Jmust = Matrix(3, 3, [0, 1, 0, 0, 0, 0, 0, 0, 1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 5, -2, -3, -3, -1, 3, 3, 2, 1, -2, -3, -1, 1, 5, 5])
@@ -1585,7 +1585,7 @@ def test_jordan_form():
                           0, 2, 0, 0,
                           0, 0, 2, 1,
                           0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 2, -8, -6, -3, 2, 9, 6, 2, -2, -8, -6, -1, 0, 3, 4])
@@ -1595,13 +1595,13 @@ def test_jordan_form():
                           0, 2, 1, 0,
                           0, 0, 2, 0,
                           0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [5, 4, 2, 1, 0, 1, -1, -1, -1, -1, 3, 0, 1, 1, -1, 2])
     assert not m.is_diagonalizable()
     Jmust = Matrix(4, 4, [1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 1, 0, 0, 0, 4])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     # the following tests are new and include (some) test the cases where the old
@@ -1613,14 +1613,14 @@ def test_jordan_form():
                       0, 2, 1, 0,
                       0, 0, 2, 0,
                       0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert m == J
 
     m = Matrix(4, 4, [2, 1, 0, 0,
                       0, 2, 0, 0,
                       0, 0, 2, 1,
                       0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert m == J
 
 
@@ -1640,7 +1640,7 @@ def test_jordan_form_complex_sympyissue_9274():
                      [0, 0, p, 1],
                      [0, 0, 0, p]])
     J, P = A.jordan_form()
-    assert J == Jmust1 or J == Jmust2
+    assert J in (Jmust1, Jmust2)
     assert simplify(P*J*P.inv()) == A
 
 
@@ -2027,7 +2027,7 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        for vec in L:
+        for _ in L:  # XXX
             try:
                 assert simplify((alpha*v).norm(order) -
                                 (abs(alpha) * v.norm(order))) == 0

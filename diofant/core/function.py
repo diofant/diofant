@@ -589,11 +589,11 @@ class Function(Application, Expr):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:
-            for i in range(len(self.args)):
+            for i, arg in enumerate(self.args):
                 if i == argindex - 1:
                     continue
                 # See issue sympy/sympy#8510
-                if self.args[argindex - 1] in self.args[i].free_symbols:
+                if self.args[argindex - 1] in arg.free_symbols:
                     break
             else:
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
@@ -1172,8 +1172,6 @@ class Derivative(Expr):
         into the normal evalf. For now, we need a special method.
 
         """
-        import mpmath
-
         from .expr import Expr
         if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
@@ -1389,7 +1387,7 @@ class Subs(Expr):
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Symbol
         args = sympify(args)
-        if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
+        if all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
             raise ValueError('Subs support two or more arguments')

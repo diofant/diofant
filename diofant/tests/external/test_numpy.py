@@ -251,7 +251,7 @@ def test_symarray():
 
     a = symarray('a', 3)
     b = symarray('b', 3)
-    assert not(a[0] == b[0])
+    assert not a[0] == b[0]
 
     asyms = symbols('a_0,a_1,a_2')
     numpy.testing.assert_array_equal(a, numpy.array(asyms, dtype=object))

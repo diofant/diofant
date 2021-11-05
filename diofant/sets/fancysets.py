@@ -309,7 +309,7 @@ class ImageSet(Set):
         return self.base_set.is_iterable
 
     def _intersection(self, other):
-        from ..core import Dummy
+        from ..core import Dummy, expand_complex
         from ..solvers.diophantine import diophantine
         from .sets import imageset
         if self.base_set is S.Integers:
@@ -336,9 +336,6 @@ class ImageSet(Set):
                 return imageset(Lambda(t, f.subs({a: solns[0][0]})), S.Integers)
 
         if other == S.Reals:
-            from ..core import expand_complex
-            from ..solvers.diophantine import diophantine
-
             if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
                 return  # pragma: no cover
 

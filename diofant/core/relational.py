@@ -133,7 +133,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
         """
         if isinstance(other, Relational):
-            if self == other or self.reversed == other:
+            if other in (self, self.reversed):
                 return True
             a, b = self, other
             if a.func in (Eq, Ne) or b.func in (Eq, Ne):
@@ -353,7 +353,7 @@ class Unequality(Relational):
 
         if evaluate:
             is_equal = Equality(lhs, rhs)
-            if is_equal == true or is_equal == false:
+            if is_equal in (true, false):
                 return ~is_equal
 
         return Relational.__new__(cls, lhs, rhs, **options)

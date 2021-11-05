@@ -344,9 +344,9 @@ def test_piecewise_fold():
 def test_piecewise_fold_piecewise_in_cond():
     p1 = Piecewise((cos(x), x < 0), (0, True))
     p2 = Piecewise((0, Eq(p1, 0)), (p1 / abs(p1), True))
-    assert(p2.subs({x: -pi/2}) == 0.0)
-    assert(p2.subs({x: 1}) == 0.0)
-    assert(p2.subs({x: -pi/4}) == 1.0)
+    assert p2.subs({x: -pi/2}) == 0.0
+    assert p2.subs({x: 1}) == 0.0
+    assert p2.subs({x: -pi/4}) == 1.0
     p4 = Piecewise((0, Eq(p1, 0)), (1, True))
     assert(piecewise_fold(p4) == Piecewise(
         (0, Or(And(Eq(cos(x), 0), x < 0), Not(x < 0))), (1, True)))

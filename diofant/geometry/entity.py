@@ -286,7 +286,7 @@ class GeometrySet(GeometryEntity, Set):
         """diofant.sets uses the _contains method, so include it for compatibility."""
         return self.__contains__(other)
 
-    def _union(self, o):
+    def _union(self, other):
         """Returns the union of self and o
         for use with diofant.sets.Set, if possible.
 
@@ -295,15 +295,15 @@ class GeometrySet(GeometryEntity, Set):
 
         # if its a FiniteSet, merge any points
         # we contain and return a union with the rest
-        if o.is_FiniteSet:
-            other_points = [p for p in o if not self._contains(p)]
-            if len(other_points) == len(o):
+        if other.is_FiniteSet:
+            other_points = [p for p in other if not self._contains(p)]
+            if len(other_points) == len(other):
                 return
             return Union(self, FiniteSet(*other_points))
-        if self._contains(o):
+        if self._contains(other):
             return self
 
-    def _intersection(self, o):
+    def _intersection(self, other):
         """Returns a diofant.sets.Set of intersection objects,
         if possible.
 
@@ -311,7 +311,7 @@ class GeometrySet(GeometryEntity, Set):
         from ..sets import FiniteSet, Union
         from .point import Point
 
-        inter = self.intersection(o)
+        inter = self.intersection(other)
 
         # put the points in a FiniteSet
         points = FiniteSet(*[p for p in inter if isinstance(p, Point)])

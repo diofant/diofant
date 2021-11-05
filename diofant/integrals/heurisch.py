@@ -518,7 +518,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
-    if not (F.free_symbols - set(V)):
+    if not F.free_symbols - set(V):
         solution = _integrate('Q')
 
         if solution is None:

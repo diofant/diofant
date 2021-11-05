@@ -36,9 +36,9 @@ def test_equality():
             assert (b_i != b_j) == (i != j)
 
     assert Basic() != []
-    assert not(Basic() == [])
+    assert not Basic() == []
     assert Basic() != 0
-    assert not(Basic() == 0)
+    assert not Basic() == 0
 
 
 def test_matches_basic():

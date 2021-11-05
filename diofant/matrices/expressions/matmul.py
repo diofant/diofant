@@ -34,7 +34,7 @@ class MatMul(MatrixExpr):
 
         args = list(map(sympify, args))
         obj = Expr.__new__(cls, *args)
-        factor, matrices = obj.as_coeff_matrices()
+        _, matrices = obj.as_coeff_matrices()
         if check:
             validate(*matrices)
         return obj

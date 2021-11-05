@@ -395,7 +395,7 @@ def test_sparse_matrix():
 
     M = SparseMatrix([[5, 7, 2, 1],
                       [1, 6, 2, -1]])
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 0, -R(2)/23, R(13)/23],
                           [0, 1,  R(8)/23, R(-6)/23]])
 
@@ -404,7 +404,7 @@ def test_sparse_matrix():
                       [ 3,  9, 0,  0,  6, 6, 2],
                       [-1, -3, 0,  1,  0, 9, 3]])
 
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 3, 0, 0, 2, 0, 0],
                           [0, 0, 0, 1, 2, 0, 0],
                           [0, 0, 0, 0, 0, 1, R(1)/3],
@@ -489,7 +489,7 @@ def test_add():
         SparseMatrix(((1, 1), (1, 1)))
     a = SparseMatrix(100, 100, lambda i, j: int(j != 0 and i % j == 0))
     b = SparseMatrix(100, 100, lambda i, j: int(i != 0 and j % i == 0))
-    assert (len(a._smat) + len(b._smat) - len((a + b)._smat) > 0)
+    assert len(a._smat) + len(b._smat) - len((a + b)._smat) > 0
 
 
 def test_errors():

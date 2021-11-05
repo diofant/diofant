@@ -11,7 +11,7 @@ __all__ = ()
 
 
 def test_Idx_construction():
-    i, a, b = symbols('i a b', integer=True)
+    i, a = symbols('i a', integer=True)
     assert Idx(i) != Idx(i, 1)
     assert Idx(i, a) == Idx(i, (0, a - 1))
     assert Idx(i, oo) == Idx(i, (0, oo))
@@ -28,7 +28,7 @@ def test_Idx_construction():
 
 
 def test_Idx_properties():
-    i, a, b = symbols('i a b', integer=True)
+    i = Symbol('i', integer=True)
     assert Idx(i).is_integer
 
 
@@ -51,7 +51,7 @@ def test_Idx_bounds():
 
 
 def test_Idx_fixed_bounds():
-    i, a, b = symbols('i a b', integer=True)
+    a, b = symbols('a b', integer=True)
     assert Idx(2).lower is None
     assert Idx(2).upper is None
     assert Idx(2, a).lower == 0
@@ -100,7 +100,7 @@ def test_IndexedBase_sugar():
 
 
 def test_IndexedBase_subs():
-    i, j, k = symbols('i j k', integer=True)
+    i = Symbol('i', integer=True)
     A = IndexedBase(a)
     B = IndexedBase(b)
     C = IndexedBase(c)

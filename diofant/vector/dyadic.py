@@ -195,7 +195,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
             raise TypeError('BaseDyadic cannot be composed of non-base ' +
                             'vectors')
         # Handle special case of zero vector
-        elif vector1 == Vector.zero or vector2 == Vector.zero:
+        elif Vector.zero in (vector1, vector2):
             return Dyadic.zero
         # Initialize instance
         obj = super().__new__(cls, vector1, vector2)
