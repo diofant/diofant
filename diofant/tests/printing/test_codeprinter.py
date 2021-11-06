@@ -1,3 +1,5 @@
+"""Tests for generic code printing."""
+
 import pytest
 
 from diofant import Dummy, Idx, IndexedBase, Matrix, MatrixSymbol, symbols
@@ -54,7 +56,6 @@ def test_Assignment():
 
 
 def test_print_Symbol():
-
     x, y = symbols('x, if')
 
     p = setup_test_printer()

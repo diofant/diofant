@@ -1,3 +1,5 @@
+"""ASCII-ART 2D printing tests."""
+
 import sys
 import warnings
 from io import StringIO

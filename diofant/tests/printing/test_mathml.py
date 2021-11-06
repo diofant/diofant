@@ -1,3 +1,5 @@
+"""MathML printing tests."""
+
 import pytest
 
 from diofant import (Basic, E, Eq, EulerGamma, Float, Ge, GoldenRatio, I,
