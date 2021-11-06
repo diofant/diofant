@@ -476,34 +476,33 @@ def test_sech_series():
 
 
 def test_asinh():
-    assert asinh(x) == asinh(x)
+    assert asinh(+x) == +asinh(x)
     assert asinh(-x) == -asinh(x)
     assert asinh(-2) == -asinh(2)
     assert asinh(nan) == nan
-    assert asinh( 0) == 0
+    assert asinh(0) == 0
     assert asinh(+1) == log(sqrt(2) + 1)
-
     assert asinh(-1) == log(sqrt(2) - 1)
-    assert asinh(I) == pi*I/2
+    assert asinh(+I) == +pi*I/2
     assert asinh(-I) == -pi*I/2
-    assert asinh(I/2) == pi*I/6
+    assert asinh(+I/2) == +pi*I/6
     assert asinh(-I/2) == -pi*I/6
 
-    assert asinh(oo) == oo
+    assert asinh(+oo) == +oo
     assert asinh(-oo) == -oo
 
-    assert asinh(I*oo) == oo
+    assert asinh(+I*oo) == +oo
     assert asinh(-I*oo) == -oo
 
     assert asinh(zoo) == zoo
 
-    assert asinh(I*(sqrt(3) - 1)/2**Rational(3, 2)) == pi*I/12
+    assert asinh(+I*(sqrt(3) - 1)/2**Rational(3, 2)) == +pi*I/12
     assert asinh(-I*(sqrt(3) - 1)/2**Rational(3, 2)) == -pi*I/12
 
-    assert asinh(I*(sqrt(5) - 1)/4) == pi*I/10
+    assert asinh(+I*(sqrt(5) - 1)/4) == +pi*I/10
     assert asinh(-I*(sqrt(5) - 1)/4) == -pi*I/10
 
-    assert asinh(I*(sqrt(5) + 1)/4) == 3*pi*I/10
+    assert asinh(+I*(sqrt(5) + 1)/4) == +3*pi*I/10
     assert asinh(-I*(sqrt(5) + 1)/4) == -3*pi*I/10
 
     pytest.raises(ArgumentIndexError, lambda: asinh(x).fdiff(2))

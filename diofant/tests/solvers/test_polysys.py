@@ -230,7 +230,7 @@ def test_solve_biquadratic():
     def query(expr):
         return expr.is_Pow and expr.exp is Rational(1, 2)
 
-    f_1 = (x - 1 )**2 + (y - 2)**2 - r**2
+    f_1 = (x - 1)**2 + (y - 2)**2 - r**2
     f_2 = (x - x1)**2 + (y - 1)**2 - r**2
 
     result = [tuple(r.values()) for r in solve_poly_system([f_1, f_2], x, y)]

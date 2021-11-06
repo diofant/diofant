@@ -277,7 +277,7 @@ def test_polygamma_expand_func():
     assert polygamma(0, -1 + x).expand(func=True) == \
         polygamma(0, x) - 1/(x - 1)
     assert polygamma(0, 1 + x).expand(func=True) == \
-        1/x + polygamma(0, x )
+        1/x + polygamma(0, x)
     assert polygamma(0, 2 + x).expand(func=True) == \
         1/x + 1/(1 + x) + polygamma(0, x)
     assert polygamma(0, 3 + x).expand(func=True) == \

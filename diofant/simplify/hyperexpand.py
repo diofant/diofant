@@ -123,27 +123,27 @@ def add_formulae(formulae):
     add((), (), exp(z))
 
     # 1F0
-    add((a, ), (), HyperRep_power1(-a, z))
+    add((a,), (), HyperRep_power1(-a, z))
 
     # 2F1
-    addb((a, a - Rational(1, 2)), (2*a, ),
+    addb((a, a - Rational(1, 2)), (2*a,),
          Matrix([HyperRep_power2(a, z),
                  HyperRep_power2(a + Rational(1, 2), z)/2]),
          Matrix([[1, 0]]),
          Matrix([[(a - Rational(1, 2))*z/(1 - z), (Rational(1, 2) - a)*z/(1 - z)],
                  [a/(1 - z), a*(z - 2)/(1 - z)]]))
-    addb((1, 1), (2, ),
+    addb((1, 1), (2,),
          Matrix([HyperRep_log1(z), 1]), Matrix([[-1/z, 0]]),
          Matrix([[0, z/(z - 1)], [0, 0]]))
-    addb((Rational(1, 2), 1), (Rational(3, 2), ),
+    addb((Rational(1, 2), 1), (Rational(3, 2),),
          Matrix([HyperRep_atanh(z), 1]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), 1/(1 - z)/2], [0, 0]]))
-    addb((Rational(1, 2), Rational(1, 2)), (Rational(3, 2), ),
+    addb((Rational(1, 2), Rational(1, 2)), (Rational(3, 2),),
          Matrix([HyperRep_asin1(z), HyperRep_power1(-Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), Rational(1, 2)], [0, z/(1 - z)/2]]))
-    addb((a, Rational(1, 2) + a), (Rational(1, 2), ),
+    addb((a, Rational(1, 2) + a), (Rational(1, 2),),
          Matrix([HyperRep_sqrts1(-a, z), -HyperRep_sqrts2(-a - Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[0, -a],
@@ -220,9 +220,9 @@ def add_formulae(formulae):
                  * exp(-I*pi/4)/2,
                  1]),
          Matrix([[1, 0, 0]]),
-         Matrix([[-Rational(1, 4), 1,      Rational(1, 4)],
-                 [ z,      Rational(1, 4), 0     ],
-                 [ 0,      0,      0     ]]))
+         Matrix([[-Rational(1, 4), 1, Rational(1, 4)],
+                 [z, Rational(1, 4), 0],
+                 [0, 0, 0]]))
 
     # 2F2
     addb([Rational(1, 2), a], [Rational(3, 2), a + 1],
@@ -242,7 +242,7 @@ def add_formulae(formulae):
          Matrix([[0, 1, -1, 0], [0, z, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]))
 
     # 0F1
-    add((), (Rational(1, 2), ), cosh(2*sqrt(z)))
+    add((), (Rational(1, 2),), cosh(2*sqrt(z)))
     addb([], [b],
          Matrix([gamma(b)*z**((1 - b)/2)*besseli(b - 1, 2*sqrt(z)),
                  gamma(b)*z**(1 - b/2)*besseli(b, 2*sqrt(z))]),
@@ -310,7 +310,7 @@ def add_formulae(formulae):
 
     # FresnelS
     # Basic rule
-    # add([Rational(3, 4)], [Rational(3, 2),Rational(7, 4)], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
+    # add([Rational(3, 4)], [Rational(3, 2),Rational(7, 4)], 6*fresnels(exp(pi*I/4)*root(z,4)*2/sqrt(pi)) / (pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3))
     # Manually tuned rule
     addb([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)],
          Matrix(
@@ -318,18 +318,18 @@ def add_formulae(formulae):
                  exp(
                      pi*I/4)*root(
                          z, 4)*2/sqrt(
-                             pi) ) / (
-                                 pi * (exp(pi*I/4)*root(z, 4)*2/sqrt(pi))**3 ),
+                             pi)) / (
+                                 pi * (exp(pi*I/4)*root(z, 4)*2/sqrt(pi))**3),
               sinh(2*sqrt(z))/sqrt(z),
               cosh(2*sqrt(z))]),
          Matrix([[6, 0, 0]]),
-         Matrix([[-Rational(3, 4),  Rational(1, 16), 0],
-                 [ 0,      -Rational(1, 2),  1],
-                 [ 0,       z,       0]]))
+         Matrix([[-Rational(3, 4), Rational(1, 16), 0],
+                 [0, -Rational(1, 2), 1],
+                 [0, z, 0]]))
 
     # FresnelC
     # Basic rule
-    # add([Rational(1, 4)], [Rational(1, 2),Rational(5, 4)], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
+    # add([Rational(1, 4)], [Rational(1, 2),Rational(5, 4)], fresnelc(exp(pi*I/4)*root(z,4)*2/sqrt(pi)) / (exp(pi*I/4)*root(z,4)*2/sqrt(pi)))
     # Manually tuned rule
     addb([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)],
          Matrix(
@@ -338,11 +338,11 @@ def add_formulae(formulae):
                      -I*pi/4)*fresnelc(
                          2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4)),
               cosh(2*sqrt(z)),
-              sinh(2*sqrt(z))*sqrt(z) ]),
+              sinh(2*sqrt(z))*sqrt(z)]),
          Matrix([[1, 0, 0]]),
-         Matrix([[-Rational(1, 4),  Rational(1, 4), 0     ],
-                 [ 0,       0,      1     ],
-                 [ 0,       z,      Rational(1, 2)]]))
+         Matrix([[-Rational(1, 4), Rational(1, 4), 0],
+                 [0, 0, 1],
+                 [0, z, Rational(1, 2)]]))
 
     # 2F3
     # XXX with this five-parameter formula is pretty slow with the current
@@ -1776,7 +1776,7 @@ def try_lerchphi(func):
             p = Poly(numer, t)
             if not p.is_term:
                 raise TypeError('p should be a term')
-            ((b, ), a) = p.LT()
+            ((b,), a) = p.LT()
             monomials += [(a/denom, b)]
             continue
         if numer.has(t):

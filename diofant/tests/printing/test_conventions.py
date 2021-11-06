@@ -1,3 +1,5 @@
+"""Tests for common practical conventions of all printers."""
+
 from diofant import (Derivative, Function, Integral, bell, besselj, cos, exp,
                      legendre, oo, symbols)
 from diofant.printing.conventions import requires_partial, split_super_sub

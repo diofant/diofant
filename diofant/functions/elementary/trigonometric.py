@@ -492,7 +492,7 @@ class cos(TrigonometricFunction):
                 # cos(k pi/n) for n = 8,10,12,15,20,24,30,40,60,120
                 # Some other exact values like cos(k pi/240) can be
                 # calculated using a partial-fraction decomposition
-                # by calling cos( X ).rewrite(sqrt)
+                # by calling cos(X).rewrite(sqrt)
                 cst_table_some = {3: Rational(1, 2),
                                   5: (sqrt(5) + 1)/4}
 
@@ -538,7 +538,7 @@ class cos(TrigonometricFunction):
                     assert nval is not None
                     x = (2*pi_coeff + 1)/2
                     sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
-                    return sign_cos*sqrt( (1 + nval)/2 )
+                    return sign_cos*sqrt((1 + nval)/2)
             return
 
         if arg.is_Add:
@@ -676,7 +676,7 @@ class cos(TrigonometricFunction):
             nval = nval.rewrite(sqrt)
             x = (2*pi_coeff + 1)/2
             sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
-            return sign_cos*sqrt( (1 + nval)/2 )
+            return sign_cos*sqrt((1 + nval)/2)
 
         FC = fermatCoords(pi_coeff.denominator)
         if FC:

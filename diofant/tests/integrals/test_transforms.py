@@ -166,7 +166,7 @@ def test_mellin_transform_bessel():
     assert MT(besselj(a, sqrt(x))*besselj(b, sqrt(x)), x, s) == \
         (4**s*gamma(1 - 2*s)*gamma((a + b)/2 + s)
          / (gamma(1 - s + (b - a)/2)*gamma(1 - s + (a - b)/2)
-            * gamma( 1 - s + (a + b)/2)),
+            * gamma(1 - s + (a + b)/2)),
             (-(re(a) + re(b))/2, Rational(1, 2)), True)
     assert MT(besselj(a, sqrt(x))**2 + besselj(-a, sqrt(x))**2, x, s)[1:] == \
         ((Max(re(a), -re(a)), Rational(1, 2)), True)
@@ -556,7 +556,7 @@ def test_inverse_laplace_transform():
 
     assert ILT(1/(s**2*(s**2 + 1)), s, t) == (t - sin(t))*Heaviside(t)
 
-    assert ILT( (s * eye(2) - Matrix([[1, 0], [0, 2]])).inv(), s, t) ==\
+    assert ILT((s * eye(2) - Matrix([[1, 0], [0, 2]])).inv(), s, t) ==\
         Matrix([[exp(t)*Heaviside(t), 0], [0, exp(2*t)*Heaviside(t)]])
 
 

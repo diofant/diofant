@@ -288,7 +288,7 @@ def test_match_deriv_bug1():
     e = e.subs({n(x): -l(x)}).doit()
     t = x*exp(-l(x))
     t2 = t.diff(x, x)/t
-    assert e.match( (p*t2).expand() ) == {p: -Rational(1, 2)}
+    assert e.match((p*t2).expand()) == {p: -Rational(1, 2)}
 
 
 def test_match_bug2():
@@ -377,8 +377,8 @@ def test_match_wild_wild():
     q = Wild('q')
     r = Wild('r')
 
-    assert p.match(q + r) in [ {q: p, r: 0}, {q: 0, r: p} ]
-    assert p.match(q*r) in [ {q: p, r: 1}, {q: 1, r: p} ]
+    assert p.match(q + r) in [{q: p, r: 0}, {q: 0, r: p}]
+    assert p.match(q * r) in [{q: p, r: 1}, {q: 1, r: p}]
 
     p = Wild('p')
     q = Wild('q', exclude=[p])

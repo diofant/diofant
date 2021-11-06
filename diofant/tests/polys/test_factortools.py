@@ -1,4 +1,4 @@
-"""Tools for polynomial factorization routines in characteristic zero."""
+"""Tests for polynomial factorization routines."""
 
 import functools
 import operator

@@ -191,7 +191,7 @@ def test_line_geom():
     s1 = Segment(p1, p2)
     s2 = Segment(p1, p1_1)
     assert s1.midpoint == Point(Rational(1, 2), Rational(1, 2))
-    assert s2.length == sqrt( 2*(x1**2) )
+    assert s2.length == sqrt(2*(x1**2))
     assert Segment((1, 1), (2, 3)).arbitrary_point() == Point(1 + t, 1 + 2*t)
     assert s1.perpendicular_bisector() == \
         Line(Point(1/2, 1/2), Point(3/2, -1/2))

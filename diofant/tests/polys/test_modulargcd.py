@@ -1,3 +1,5 @@
+"""Tests for modular GCD algorithms."""
+
 from diofant import QQ, ZZ, ring, sqrt
 from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
                                       _func_field_modgcd_m, _to_ANP_poly,

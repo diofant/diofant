@@ -340,7 +340,7 @@ def test_Mul_doesnt_expand_exp():
     assert sqrt(2)*sqrt(2) == 2
     assert 2**x*2**(2*x) == 2**(3*x)
     assert sqrt(2)*root(2, 4)*5**Rational(3, 4) == 10**Rational(3, 4)
-    assert (x**(-log(5)/log(3))*x)/(x*x**( - log(5)/log(3))) == sympify(1)
+    assert (x**(-log(5)/log(3))*x)/(x*x**(-log(5)/log(3))) == sympify(1)
 
 
 def test_Add_Mul_is_integer():

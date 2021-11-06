@@ -1,3 +1,5 @@
+"""Python printing tests."""
+
 import pytest
 
 from diofant import (Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,

@@ -65,8 +65,8 @@ def test_piecewise():
     assert Piecewise((1, Eq(x, y*(y + 1))),
                      (0, True)).subs({x: y**2 + y}).simplify() == 1
 
-    p5 = Piecewise( (0, Eq(cos(x) + y, 0)), (1, True))
-    assert p5.subs({y: 0}) == Piecewise( (0, Eq(cos(x), 0)), (1, True))
+    p5 = Piecewise((0, Eq(cos(x) + y, 0)), (1, True))
+    assert p5.subs({y: 0}) == Piecewise((0, Eq(cos(x), 0)), (1, True))
 
     # Test evalf
     assert p.evalf() == p
@@ -76,7 +76,7 @@ def test_piecewise():
 
     # Test doit
     f_int = Piecewise((Integral(x, (x, 0, 1)), x < 1))
-    assert f_int.doit() == Piecewise( (1.0/2.0, x < 1) )
+    assert f_int.doit() == Piecewise((1.0/2.0, x < 1))
 
     # Test differentiation
     f = x
@@ -100,7 +100,7 @@ def test_piecewise():
     # Test _eval_interval
     f1 = x*y + 2
     f2 = x*y**2 + 3
-    peval = Piecewise( (f1, x < 0), (f2, x > 0))
+    peval = Piecewise((f1, x < 0), (f2, x > 0))
     peval_interval = (f1.subs({x: 0}) - f1.subs({x: -1}) +
                       f2.subs({x: 1}) - f2.subs({x: 0}))
     assert peval._eval_interval(x, 0, 0) == 0
@@ -408,8 +408,7 @@ def test_piecewise_lambdify():
         (x**2, x < 0),
         (x, Interval(0, 1, False, True).contains(x)),
         (2 - x, x >= 1),
-        (0, True)
-    )
+        (0, True))
 
     f = lambdify(x, p)
     assert f(-2.0) == 4.0
@@ -508,5 +507,5 @@ def test_sympyissue_10258():
 
 
 def test_sympyissue_6807():
-    p = Piecewise( (0, x < -1), (y, x <= 1), (t, True))
+    p = Piecewise((0, x < -1), (y, x <= 1), (t, True))
     assert p.atoms(Symbol) == {x, y, t}

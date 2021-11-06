@@ -132,7 +132,7 @@ class Tr(Expr):
             if len(nc_part) == 0:
                 return Mul(*c_part)
             else:
-                obj = Expr.__new__(cls, Mul(*nc_part), indices )
+                obj = Expr.__new__(cls, Mul(*nc_part), indices)
                 # this check is needed to prevent cached instances
                 # being returned even if len(c_part)==0
                 return Mul(*c_part)*obj if len(c_part) > 0 else obj
@@ -188,4 +188,4 @@ class Tr(Expr):
         else:
             args = [self.args[0]]
 
-        return tuple(args) + (self.args[1], )
+        return tuple(args) + (self.args[1],)

@@ -165,7 +165,7 @@ class Logic:
         return self.args
 
     def __hash__(self):
-        return hash( (type(self).__name__,) + tuple(self.args) )
+        return hash((type(self).__name__,) + tuple(self.args))
 
     def __eq__(self, other):
         if not isinstance(other, type(self)):
@@ -284,7 +284,7 @@ class And(AndOr_Base):
 
     def _eval_propagate_not(self):
         # ~(a&b&c ...) == ~a | ~b | ~c ...
-        return Or( *[Not(a) for a in self.args] )
+        return Or(*[Not(a) for a in self.args])
 
     # (a|b|...) & c == (a&c) | (b&c) | ...
     def expand(self):
@@ -294,7 +294,7 @@ class And(AndOr_Base):
             if isinstance(arg, Or):
                 arest = self.args[:i] + self.args[i + 1:]
 
-                orterms = [And( *(arest + (a,)) ) for a in arg.args]
+                orterms = [And(*(arest + (a,))) for a in arg.args]
                 for j, orterm in enumerate(orterms):
                     if isinstance(orterm, Logic):
                         orterms[j] = orterm.expand()
@@ -311,7 +311,7 @@ class Or(AndOr_Base):
 
     def _eval_propagate_not(self):
         # ~(a|b|c ...) == ~a & ~b & ~c ...
-        return And( *[Not(a) for a in self.args] )
+        return And(*[Not(a) for a in self.args])
 
 
 class Not(Logic):

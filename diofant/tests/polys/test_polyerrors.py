@@ -1,3 +1,5 @@
+"""Tests for exceptions, defined in :mod:`~diofant.polys` module."""
+
 from diofant import (EX, RR, ZZ, ComputationFailed, ExactQuotientFailed,
                      OperationNotSupported, PolificationFailed,
                      PolynomialDivisionFailed)

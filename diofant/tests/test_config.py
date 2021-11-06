@@ -1,3 +1,5 @@
+"""Tests for configuration helpers."""
+
 from diofant.config import configure, query
 
 

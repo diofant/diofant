@@ -101,9 +101,9 @@ def test_karr_proposition_2a():
     # m < n
     test_the_product(u,   u+v)
     # m = n
-    test_the_product(u,   u  )
+    test_the_product(u,   u)
     # m > n
-    test_the_product(u+v, u  )
+    test_the_product(u+v, u)
 
 
 def test_karr_proposition_2b():
@@ -134,21 +134,21 @@ def test_karr_proposition_2b():
     # l < m < n
     test_the_product(u,     u+v,   u+v+w)
     # l < m = n
-    test_the_product(u,     u+v,   u+v  )
+    test_the_product(u,     u+v,   u+v)
     # l < m > n
-    test_the_product(u,     u+v+w, v    )
+    test_the_product(u,     u+v+w, v)
     # l = m < n
-    test_the_product(u,     u,     u+v  )
+    test_the_product(u,     u,     u+v)
     # l = m = n
-    test_the_product(u,     u,     u    )
+    test_the_product(u,     u,     u)
     # l = m > n
-    test_the_product(u+v,   u+v,   u    )
+    test_the_product(u+v,   u+v,   u)
     # l > m < n
-    test_the_product(u+v,   u,     u+w  )
+    test_the_product(u+v,   u,     u+w)
     # l > m = n
-    test_the_product(u+v,   u,     u    )
+    test_the_product(u+v,   u,     u)
     # l > m > n
-    test_the_product(u+v+w, u+v,   u    )
+    test_the_product(u+v+w, u+v,   u)
 
 
 def test_simple_products():

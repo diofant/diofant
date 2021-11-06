@@ -94,7 +94,7 @@ def test_erf_series():
 
 
 def test_erf_evalf():
-    assert abs( erf(Float(2.0)) - 0.995322265 ) < 1E-8  # XXX
+    assert abs(erf(Float(2.0)) - 0.995322265) < 1E-8  # XXX
 
 
 def test__erfs():
@@ -170,7 +170,7 @@ def test_erfc_series():
 
 
 def test_erfc_evalf():
-    assert abs( erfc(Float(2.0)) - 0.00467773 ) < 1E-8  # XXX
+    assert abs(erfc(Float(2.0)) - 0.00467773) < 1E-8  # XXX
 
 
 def test_erfi():
@@ -181,7 +181,7 @@ def test_erfi():
 
     assert erfi(0) == 0
 
-    assert erfi(I*oo) == I
+    assert erfi(+I*oo) == I
     assert erfi(-I*oo) == -I
 
     assert erfi(-x) == -erfi(x)
@@ -232,7 +232,7 @@ def test_erfi_series():
 
 
 def test_erfi_evalf():
-    assert abs( erfi(Float(2.0)) - 18.5648024145756 ) < 1E-13  # XXX
+    assert abs(erfi(Float(2.0)) - 18.5648024145756) < 1E-13  # XXX
 
 
 def test_erf2():
@@ -240,15 +240,17 @@ def test_erf2():
     assert erf2(x, x) == 0
     assert erf2(nan, 0) == nan
 
-    assert erf2(-oo,  y) == erf(y) + 1
-    assert erf2( oo,  y) == erf(y) - 1
-    assert erf2(  x, oo) == 1 - erf(x)
-    assert erf2(  x, -oo) == -1 - erf(x)
+    assert erf2(-oo, y) == erf(y) + 1
+    assert erf2(+oo, y) == erf(y) - 1
+
+    assert erf2(x, +oo) == +1 - erf(x)
+    assert erf2(x, -oo) == -1 - erf(x)
+
     assert erf2(x, erf2inv(x, y)) == y
 
     assert erf2(-x, -y) == -erf2(x, y)
-    assert erf2(-x,  y) == erf(y) + erf(x)
-    assert erf2( x, -y) == -erf(y) - erf(x)
+    assert erf2(-x, +y) == +erf(y) + erf(x)
+    assert erf2(+x, -y) == -erf(y) - erf(x)
     assert erf2(x, y).rewrite('fresnels') == erf(y).rewrite(fresnels)-erf(x).rewrite(fresnels)
     assert erf2(x, y).rewrite('fresnelc') == erf(y).rewrite(fresnelc)-erf(x).rewrite(fresnelc)
     assert erf2(x, y).rewrite('hyper') == erf(y).rewrite(hyper)-erf(x).rewrite(hyper)
@@ -280,7 +282,7 @@ def test_erfinv():
     assert erfinv(+1) == +oo
     assert erfinv(nan) == nan
 
-    assert erfinv(erf(w)) == w
+    assert erfinv(erf(+w)) == w
     assert erfinv(erf(-w)) == -w
 
     assert erfinv(x).diff() == sqrt(pi)*exp(erfinv(x)**2)/2
@@ -291,7 +293,7 @@ def test_erfinv():
 
 
 def test_erfinv_evalf():
-    assert abs( erfinv(Float(0.2)) - 0.179143454621292 ) < 1E-13
+    assert abs(erfinv(Float(0.2)) - 0.179143454621292) < 1E-13
 
 
 def test_erfcinv():
