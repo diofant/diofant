@@ -103,9 +103,9 @@ def test_karr_proposition_2a():
     # m < n
     test_the_sum(u,   u+v)
     # m = n
-    test_the_sum(u,   u  )
+    test_the_sum(u,   u)
     # m > n
-    test_the_sum(u+v, u  )
+    test_the_sum(u+v, u)
 
 
 def test_karr_proposition_2b():
@@ -132,21 +132,21 @@ def test_karr_proposition_2b():
     # l < m < n
     test_the_sum(u,     u+v,   u+v+w)
     # l < m = n
-    test_the_sum(u,     u+v,   u+v  )
+    test_the_sum(u,     u+v,   u+v)
     # l < m > n
-    test_the_sum(u,     u+v+w, v    )
+    test_the_sum(u,     u+v+w, v)
     # l = m < n
-    test_the_sum(u,     u,     u+v  )
+    test_the_sum(u,     u,     u+v)
     # l = m = n
-    test_the_sum(u,     u,     u    )
+    test_the_sum(u,     u,     u)
     # l = m > n
-    test_the_sum(u+v,   u+v,   u    )
+    test_the_sum(u+v,   u+v,   u)
     # l > m < n
-    test_the_sum(u+v,   u,     u+w  )
+    test_the_sum(u+v,   u,     u+w)
     # l > m = n
-    test_the_sum(u+v,   u,     u    )
+    test_the_sum(u+v,   u,     u)
     # l > m > n
-    test_the_sum(u+v+w, u+v,   u    )
+    test_the_sum(u+v+w, u+v,   u)
 
 
 def test_arithmetic_sums():
@@ -717,17 +717,17 @@ def test_simplify():
 def test_change_index():
     assert Sum(x, (x, a, b)).change_index(x, x + 1, y) == \
         Sum(y - 1, (y, a + 1, b + 1))
-    assert Sum(x**2, (x, a, b)).change_index( x, x - 1) == \
+    assert Sum(x**2, (x, a, b)).change_index(x, x - 1) == \
         Sum((x+1)**2, (x, a - 1, b - 1))
-    assert Sum(x**2, (x, a, b)).change_index( x, -x, y) == \
+    assert Sum(x**2, (x, a, b)).change_index(x, -x, y) == \
         Sum((-y)**2, (y, -b, -a))
-    assert Sum(x, (x, a, b)).change_index( x, -x - 1) == \
+    assert Sum(x, (x, a, b)).change_index(x, -x - 1) == \
         Sum(-x - 1, (x, -b - 1, -a - 1))
-    assert Sum(x*y, (x, a, b), (y, c, d)).change_index( x, x - 1, z) == \
+    assert Sum(x*y, (x, a, b), (y, c, d)).change_index(x, x - 1, z) == \
         Sum((z + 1)*y, (z, a - 1, b - 1), (y, c, d))
-    assert Sum(x, (x, a, b)).change_index( x, x + v) == \
+    assert Sum(x, (x, a, b)).change_index(x, x + v) == \
         Sum(-v + x, (x, a + v, b + v))
-    assert Sum(x, (x, a, b)).change_index( x, -x - v) == \
+    assert Sum(x, (x, a, b)).change_index(x, -x - v) == \
         Sum(-v - x, (x, -b - v, -a - v))
 
     s = Sum(x, (x, a, b))

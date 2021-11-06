@@ -385,7 +385,7 @@ def reblock_2x2(B):
         return B
 
     BM = BlockMatrix  # for brevity's sake
-    return BM([[   B.blocks[0,  0],  BM(B.blocks[0,  1:])],
+    return BM([[    B.blocks[0,  0], BM(B.blocks[0,  1:])],
                [BM(B.blocks[1:, 0]), BM(B.blocks[1:, 1:])]])
 
 

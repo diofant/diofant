@@ -18,7 +18,7 @@ def test_trace_new():
     assert Tr(C*D*A*B).args[0].args == (C, D, A, B)
 
     # check for mul and adds
-    assert Tr((a*b) + ( c*d)) == (a*b) + (c*d)
+    assert Tr((a*b) + (c*d)) == (a*b) + (c*d)
     # Tr(scalar*A) = scalar*Tr(A)
     assert Tr(a*A) == a*Tr(A)
     assert Tr(a*A*B*b) == a*b*Tr(A*B)

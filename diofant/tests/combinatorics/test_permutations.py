@@ -247,7 +247,7 @@ def test_ranking():
     q = Permutation([[1, 2, 3, 5, 6], [0, 4]])
     a = [Permutation.unrank_trotterjohnson(4, i).array_form for i in range(5)]
     assert a == [[0, 1, 2, 3], [0, 1, 3, 2], [0, 3, 1, 2], [3, 0, 1,
-                                                            2], [3, 0, 2, 1] ]
+                                                            2], [3, 0, 2, 1]]
     assert [Permutation(pa).rank_trotterjohnson() for pa in a] == list(range(5))
     assert Permutation([0, 1, 2, 3]).next_trotterjohnson() == \
         Permutation([0, 1, 3, 2])

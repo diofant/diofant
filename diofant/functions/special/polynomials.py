@@ -337,7 +337,7 @@ class gegenbauer(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == 0:
                 return (2**n * sqrt(pi) * gamma(a + n/2) /
-                        (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)) )
+                        (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)))
             if x == 1:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
             elif x == oo:

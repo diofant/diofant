@@ -132,7 +132,7 @@ def test_constant_multiple():
 
 
 def test_constant_repeated():
-    assert C1 + C1*x == constant_renumber( C1 + C1*x, 'C', 1, 3)
+    assert C1 + C1*x == constant_renumber(C1 + C1*x, 'C', 1, 3)
 
 
 def test_ode_solutions():

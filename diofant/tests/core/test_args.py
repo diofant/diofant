@@ -1774,7 +1774,7 @@ def test_diofant__matrices__expressions__determinant__Determinant():
 
 def test_diofant__matrices__expressions__funcmatrix__FunctionMatrix():
     i, j = symbols('i,j')
-    assert _test_args(FunctionMatrix(3, 3, Lambda((i, j), i - j) ))
+    assert _test_args(FunctionMatrix(3, 3, Lambda((i, j), i - j)))
 
 
 def test_diofant__matrices__expressions__fourier__DFT():

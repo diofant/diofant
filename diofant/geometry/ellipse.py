@@ -995,8 +995,8 @@ class Ellipse(GeometrySet):
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a
-            result.append( lp[0] + (lp[1] - lp[0]) * t_a )
-            result.append( lp[0] + (lp[1] - lp[0]) * t_b )
+            result.append(lp[0] + (lp[1] - lp[0]) * t_a)
+            result.append(lp[0] + (lp[1] - lp[0]) * t_b)
 
         return [r for r in result if r in o]
 

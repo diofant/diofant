@@ -697,7 +697,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ri = self._mat[i0: i0 + self.cols]
         rk = self._mat[k0: k0 + self.cols]
 
-        self._mat[i0: i0 + self.cols] = [ f(x, y) for x, y in zip(ri, rk) ]
+        self._mat[i0: i0 + self.cols] = [f(x, y) for x, y in zip(ri, rk)]
 
     def row_op(self, i, f):
         """In-place operation on row ``i`` using two-arg functor whose args are

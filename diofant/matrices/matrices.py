@@ -1077,7 +1077,7 @@ class MatrixBase(DefaultPrinting):
             types = Atom,
         result = set()
         for i in self:
-            result.update( i.atoms(*types) )
+            result.update(i.atoms(*types))
         return result
 
     @property

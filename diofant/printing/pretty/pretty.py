@@ -217,7 +217,7 @@ class PrettyPrinter(Printer):
 
     def _print_conjugate(self, e):
         pform = self._print(e.args[0])
-        return prettyForm( *pform.above( hobj('_', pform.width())) )
+        return prettyForm(*pform.above(hobj('_', pform.width())))
 
     def _print_Abs(self, e):
         pform = self._print(e.args[0])
@@ -553,8 +553,8 @@ class PrettyPrinter(Printer):
                 # XXX this should be generalized, and go to stringPict.reshape ?
                 assert s.width() <= maxw[j]
 
-                # hcenter it, +0.5 to the right                        2
-                # ( it's better to align formula starts for say 0 and r )
+                # hcenter it, +0.5 to the right                       2
+                # (it's better to align formula starts for say 0 and r)
                 # XXX this is not good in all cases -- maybe introduce vbaseline?
                 wdelta = maxw[j] - s.width()
                 wleft = wdelta // 2
@@ -1180,7 +1180,7 @@ class PrettyPrinter(Printer):
                 p = pform
             p = stringPict.next(pform_neg, p)
             # Lower the binding to NEG, even if it was higher. Otherwise, it
-            # will print as a + ( - (b)), instead of a - (b).
+            # will print as a + (-(b)), instead of a - (b).
             return prettyForm(binding=prettyForm.NEG, *p)
 
         for i, term in enumerate(terms):
@@ -1279,7 +1279,7 @@ class PrettyPrinter(Printer):
             return prettyForm.__mul__(*a)
         else:
             if len(a) == 0:
-                a.append( self._print(Integer(1)) )
+                a.append(self._print(Integer(1)))
             return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
     # A helper function for _print_Pow to print x**(1/n)
@@ -1306,8 +1306,7 @@ class PrettyPrinter(Printer):
         linelength = bpretty.height() - 1
         diagonal = stringPict('\n'.join(
             ' '*(linelength - i - 1) + _zZ + ' '*i
-            for i in range(linelength)
-        ))
+            for i in range(linelength)))
         # Put baseline just below lowest line: next to exp
         diagonal.baseline = linelength - 1
         # Make the root symbol
@@ -1371,7 +1370,7 @@ class PrettyPrinter(Printer):
 
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
-        return self._print_seq(items, '{', '}', ', ' )
+        return self._print_seq(items, '{', '}', ', ')
 
     def _print_set(self, l):
         return self._print_seq(sorted(l, key=default_sort_key), '{', '}')
@@ -1389,7 +1388,7 @@ class PrettyPrinter(Printer):
         else:
             printset = tuple(s)
 
-        return self._print_seq(printset, '{', '}', ', ' )
+        return self._print_seq(printset, '{', '}', ', ')
 
     def _print_Interval(self, i):
         if i.left_open:

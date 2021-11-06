@@ -248,8 +248,8 @@ class MatrixExpr(Expr):
 
         """
         from ..immutable import ImmutableMatrix
-        return ImmutableMatrix([[    self[i, j]
-                                     for j in range(self.cols)]
+        return ImmutableMatrix([[self[i, j]
+                                 for j in range(self.cols)]
                                 for i in range(self.rows)])
 
     def as_mutable(self):
@@ -377,7 +377,7 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
         return MatrixSymbol(self.name, *shape)
 
     def __call__(self, *args):
-        raise TypeError( f'{self.__class__} object is not callable' )
+        raise TypeError(f'{self.__class__} object is not callable')
 
     def _entry(self, i, j):
         return MatrixElement(self, i, j)

@@ -148,11 +148,10 @@ def test_ineq_unequal():
         x - pi > y + z, y - pi > x + z, z - pi > x + y,
         x - pi <= y + z, y - pi <= x + z, z - pi <= x + y,
         x - pi < y + z, y - pi < x + z, z - pi < x + y,
-        True, False
-    )
+        True, False)
 
     left_e = e[:-1]
-    for i, e1 in enumerate( left_e ):
+    for i, e1 in enumerate(left_e):
         for e2 in e[i + 1:]:
             assert e1 != e2
 
@@ -165,8 +164,8 @@ def test_Wild_properties():
     k = Symbol('k', integer=True)
     n = Symbol('n', integer=True, positive=True)
 
-    given_patterns = [ x, y, p, k, -k, n, -n, sympify(-3), sympify(3),
-                       pi, Rational(3, 2), I ]
+    given_patterns = [x, y, p, k, -k, n, -n, sympify(-3), sympify(3),
+                      pi, Rational(3, 2), I]
 
     def integerp(k):
         return k.is_integer
@@ -187,12 +186,12 @@ def test_Wild_properties():
     K = Wild('K', properties=[integerp])
     N = Wild('N', properties=[positivep, integerp])
 
-    given_wildcards = [ S, R, Y, P, K, N ]
+    given_wildcards = [S, R, Y, P, K, N]
 
     goodmatch = {
         S: (x, y, p, k, n),
         R: (p, k, -k, n, -n, -3, 3, pi, Rational(3, 2)),
-        Y: (y, -3, 3, pi, Rational(3, 2), I ),
+        Y: (y, -3, 3, pi, Rational(3, 2), I),
         P: (p, n, 3, pi, Rational(3, 2)),
         K: (k, -k, n, -n, -3, 3),
         N: (n, 3)}

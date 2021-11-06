@@ -28,7 +28,7 @@ def test_R2():
 
     # r**2 = x**2 + y**2
     assert (R2.r**2 - R2.x**2 - R2.y**2).rcall(point_r) == 0
-    assert trigsimp( (R2.r**2 - R2.x**2 - R2.y**2).rcall(point_p) ) == 0
+    assert trigsimp((R2.r**2 - R2.x**2 - R2.y**2).rcall(point_p)) == 0
     assert trigsimp(R2.e_r(R2.x**2 + R2.y**2).rcall(point_p).doit()) == 2*r0
 
     # polar->rect->polar == Id

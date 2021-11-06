@@ -108,7 +108,7 @@ f(x**x**x**x**x**x)
 sin(x)**2
 conjugate(a+b*I)
 conjugate(exp(a+b*I))
-conjugate( f(1 + conjugate(f(x))) ) #
+conjugate(f(1 + conjugate(f(x)))) #
 f(x/(y+1), y)  # denom of first arg
 floor(1 / (y - floor(x)))
 ceiling(1 / (y - ceiling(x)))
@@ -209,112 +209,112 @@ def upretty(expr, order=None):
 
 
 def test_pretty_ascii_str():
-    assert pretty( 'xxx' ) == 'xxx'
-    assert pretty( "xxx'xxx" ) == "xxx'xxx"
-    assert pretty( 'xxx"xxx' ) == 'xxx"xxx'
-    assert pretty( 'xxx\nxxx' ) == 'xxx\nxxx'
+    assert pretty('xxx') == 'xxx'
+    assert pretty("xxx'xxx") == "xxx'xxx"
+    assert pretty('xxx"xxx') == 'xxx"xxx'
+    assert pretty('xxx\nxxx') == 'xxx\nxxx'
 
 
 def test_pretty_unicode_str():
-    assert pretty( 'xxx' ) == 'xxx'
-    assert pretty( 'xxx' ) == 'xxx'
-    assert pretty( "xxx'xxx" ) == "xxx'xxx"
-    assert pretty( 'xxx"xxx' ) == 'xxx"xxx'
-    assert pretty( 'xxx\nxxx' ) == 'xxx\nxxx'
+    assert pretty('xxx') == 'xxx'
+    assert pretty('xxx') == 'xxx'
+    assert pretty("xxx'xxx") == "xxx'xxx"
+    assert pretty('xxx"xxx') == 'xxx"xxx'
+    assert pretty('xxx\nxxx') == 'xxx\nxxx'
 
 
 def test_upretty_greek():
-    assert upretty( oo ) == '∞'
-    assert upretty( Symbol('alpha^+_1') ) == 'α⁺₁'
-    assert upretty( Symbol('beta') ) == 'β'
+    assert upretty(oo) == '∞'
+    assert upretty(Symbol('alpha^+_1')) == 'α⁺₁'
+    assert upretty(Symbol('beta')) == 'β'
     assert upretty(Symbol('lambda')) == 'λ'
 
 
 def test_upretty_multiindex():
-    assert upretty( Symbol('beta12') ) == 'β₁₂'
-    assert upretty( Symbol('Y00') ) == 'Y₀₀'
-    assert upretty( Symbol('Y_00') ) == 'Y₀₀'
-    assert upretty( Symbol('F^+-') ) == 'F⁺⁻'
+    assert upretty(Symbol('beta12')) == 'β₁₂'
+    assert upretty(Symbol('Y00')) == 'Y₀₀'
+    assert upretty(Symbol('Y_00')) == 'Y₀₀'
+    assert upretty(Symbol('F^+-')) == 'F⁺⁻'
 
 
 def test_upretty_sub_super():
-    assert upretty( Symbol('beta_1_2') ) == 'β₁ ₂'
-    assert upretty( Symbol('beta^1^2') ) == 'β¹ ²'
-    assert upretty( Symbol('beta_1^2') ) == 'β²₁'
-    assert upretty( Symbol('beta_10_20') ) == 'β₁₀ ₂₀'
-    assert upretty( Symbol('beta_ax_gamma^i') ) == 'βⁱₐₓ ᵧ'
-    assert upretty( Symbol('F^1^2_3_4') ) == 'F¹ ²₃ ₄'
-    assert upretty( Symbol('F_1_2^3^4') ) == 'F³ ⁴₁ ₂'
-    assert upretty( Symbol('F_1_2_3_4') ) == 'F₁ ₂ ₃ ₄'
-    assert upretty( Symbol('F^1^2^3^4') ) == 'F¹ ² ³ ⁴'
+    assert upretty(Symbol('beta_1_2')) == 'β₁ ₂'
+    assert upretty(Symbol('beta^1^2')) == 'β¹ ²'
+    assert upretty(Symbol('beta_1^2')) == 'β²₁'
+    assert upretty(Symbol('beta_10_20')) == 'β₁₀ ₂₀'
+    assert upretty(Symbol('beta_ax_gamma^i')) == 'βⁱₐₓ ᵧ'
+    assert upretty(Symbol('F^1^2_3_4')) == 'F¹ ²₃ ₄'
+    assert upretty(Symbol('F_1_2^3^4')) == 'F³ ⁴₁ ₂'
+    assert upretty(Symbol('F_1_2_3_4')) == 'F₁ ₂ ₃ ₄'
+    assert upretty(Symbol('F^1^2^3^4')) == 'F¹ ² ³ ⁴'
 
 
 def test_upretty_subs_missing_in_24():
-    assert upretty( Symbol('F_beta') ) == 'Fᵦ'
-    assert upretty( Symbol('F_gamma') ) == 'Fᵧ'
-    assert upretty( Symbol('F_rho') ) == 'Fᵨ'
-    assert upretty( Symbol('F_phi') ) == 'Fᵩ'
-    assert upretty( Symbol('F_chi') ) == 'Fᵪ'
+    assert upretty(Symbol('F_beta')) == 'Fᵦ'
+    assert upretty(Symbol('F_gamma')) == 'Fᵧ'
+    assert upretty(Symbol('F_rho')) == 'Fᵨ'
+    assert upretty(Symbol('F_phi')) == 'Fᵩ'
+    assert upretty(Symbol('F_chi')) == 'Fᵪ'
 
-    assert upretty( Symbol('F_a') ) == 'Fₐ'
-    assert upretty( Symbol('F_e') ) == 'Fₑ'
-    assert upretty( Symbol('F_i') ) == 'Fᵢ'
-    assert upretty( Symbol('F_o') ) == 'Fₒ'
-    assert upretty( Symbol('F_u') ) == 'Fᵤ'
-    assert upretty( Symbol('F_r') ) == 'Fᵣ'
-    assert upretty( Symbol('F_v') ) == 'Fᵥ'
-    assert upretty( Symbol('F_x') ) == 'Fₓ'
+    assert upretty(Symbol('F_a')) == 'Fₐ'
+    assert upretty(Symbol('F_e')) == 'Fₑ'
+    assert upretty(Symbol('F_i')) == 'Fᵢ'
+    assert upretty(Symbol('F_o')) == 'Fₒ'
+    assert upretty(Symbol('F_u')) == 'Fᵤ'
+    assert upretty(Symbol('F_r')) == 'Fᵣ'
+    assert upretty(Symbol('F_v')) == 'Fᵥ'
+    assert upretty(Symbol('F_x')) == 'Fₓ'
 
 
 def test_missing_in_2X_sympyissue_9047():
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
-        assert upretty( Symbol('F_h') ) == 'Fₕ'
-        assert upretty( Symbol('F_k') ) == 'Fₖ'
-        assert upretty( Symbol('F_l') ) == 'Fₗ'
-        assert upretty( Symbol('F_m') ) == 'Fₘ'
-        assert upretty( Symbol('F_n') ) == 'Fₙ'
-        assert upretty( Symbol('F_p') ) == 'Fₚ'
-        assert upretty( Symbol('F_s') ) == 'Fₛ'
-        assert upretty( Symbol('F_t') ) == 'Fₜ'
+        assert upretty(Symbol('F_h')) == 'Fₕ'
+        assert upretty(Symbol('F_k')) == 'Fₖ'
+        assert upretty(Symbol('F_l')) == 'Fₗ'
+        assert upretty(Symbol('F_m')) == 'Fₘ'
+        assert upretty(Symbol('F_n')) == 'Fₙ'
+        assert upretty(Symbol('F_p')) == 'Fₚ'
+        assert upretty(Symbol('F_s')) == 'Fₛ'
+        assert upretty(Symbol('F_t')) == 'Fₜ'
 
 
 def test_upretty_modifiers():
     # Accents
-    assert upretty( Symbol('Fmathring') ) == 'F̊'
-    assert upretty( Symbol('Fddddot') ) == 'F̈̈'
-    assert upretty( Symbol('Fdddot') ) == 'F̈̇'
-    assert upretty( Symbol('Fddot') ) == 'F̈'
-    assert upretty( Symbol('Fdot') ) == 'Ḟ'
-    assert upretty( Symbol('Fcheck') ) == 'F̌'
-    assert upretty( Symbol('Fbreve') ) == 'F̆'
-    assert upretty( Symbol('Facute') ) == 'F́'
-    assert upretty( Symbol('Fgrave') ) == 'F̀'
-    assert upretty( Symbol('Ftilde') ) == 'F̃'
-    assert upretty( Symbol('Fhat') ) == 'F̂'
-    assert upretty( Symbol('Fbar') ) == 'F̅'
-    assert upretty( Symbol('Fvec') ) == 'F⃗'
-    assert upretty( Symbol('Fprime') ) == 'F′'
-    assert upretty( Symbol('Fprm') ) == 'F′'
+    assert upretty(Symbol('Fmathring')) == 'F̊'
+    assert upretty(Symbol('Fddddot')) == 'F̈̈'
+    assert upretty(Symbol('Fdddot')) == 'F̈̇'
+    assert upretty(Symbol('Fddot')) == 'F̈'
+    assert upretty(Symbol('Fdot')) == 'Ḟ'
+    assert upretty(Symbol('Fcheck')) == 'F̌'
+    assert upretty(Symbol('Fbreve')) == 'F̆'
+    assert upretty(Symbol('Facute')) == 'F́'
+    assert upretty(Symbol('Fgrave')) == 'F̀'
+    assert upretty(Symbol('Ftilde')) == 'F̃'
+    assert upretty(Symbol('Fhat')) == 'F̂'
+    assert upretty(Symbol('Fbar')) == 'F̅'
+    assert upretty(Symbol('Fvec')) == 'F⃗'
+    assert upretty(Symbol('Fprime')) == 'F′'
+    assert upretty(Symbol('Fprm')) == 'F′'
     # No faces are actually implemented, but test to make sure the modifiers are stripped
-    assert upretty( Symbol('Fbold') ) == 'Fbold'
-    assert upretty( Symbol('Fbm') ) == 'Fbm'
-    assert upretty( Symbol('Fcal') ) == 'Fcal'
-    assert upretty( Symbol('Fscr') ) == 'Fscr'
-    assert upretty( Symbol('Ffrak') ) == 'Ffrak'
+    assert upretty(Symbol('Fbold')) == 'Fbold'
+    assert upretty(Symbol('Fbm')) == 'Fbm'
+    assert upretty(Symbol('Fcal')) == 'Fcal'
+    assert upretty(Symbol('Fscr')) == 'Fscr'
+    assert upretty(Symbol('Ffrak')) == 'Ffrak'
     # Brackets
-    assert upretty( Symbol('Fnorm') ) == '‖F‖'
-    assert upretty( Symbol('Favg') ) == '⟨F⟩'
-    assert upretty( Symbol('Fabs') ) == '|F|'
-    assert upretty( Symbol('Fmag') ) == '|F|'
+    assert upretty(Symbol('Fnorm')) == '‖F‖'
+    assert upretty(Symbol('Favg')) == '⟨F⟩'
+    assert upretty(Symbol('Fabs')) == '|F|'
+    assert upretty(Symbol('Fmag')) == '|F|'
     # Combinations
-    assert upretty( Symbol('xvecdot') ) == 'x⃗̇'
-    assert upretty( Symbol('xDotVec') ) == 'ẋ⃗'
-    assert upretty( Symbol('xHATNorm') ) == '‖x̂‖'
-    assert upretty( Symbol('xMathring_yCheckPRM__zbreveAbs') ) == 'x̊_y̌′__|z̆|'
-    assert upretty( Symbol('alphadothat_nVECDOT__tTildePrime') ) == 'α̇̂_n⃗̇__t̃′'
-    assert upretty( Symbol('x_dot') ) == 'x_dot'
-    assert upretty( Symbol('x__dot') ) == 'x__dot'
+    assert upretty(Symbol('xvecdot')) == 'x⃗̇'
+    assert upretty(Symbol('xDotVec')) == 'ẋ⃗'
+    assert upretty(Symbol('xHATNorm')) == '‖x̂‖'
+    assert upretty(Symbol('xMathring_yCheckPRM__zbreveAbs')) == 'x̊_y̌′__|z̆|'
+    assert upretty(Symbol('alphadothat_nVECDOT__tTildePrime')) == 'α̇̂_n⃗̇__t̃′'
+    assert upretty(Symbol('x_dot')) == 'x_dot'
+    assert upretty(Symbol('x__dot')) == 'x__dot'
 
 
 def test_symbology():
@@ -1619,7 +1619,7 @@ E       \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = conjugate( f(1 + conjugate(f(x))) )
+    expr = conjugate(f(1 + conjugate(f(x))))
     ascii_str_1 = \
         """\
 ___________\n\
@@ -3888,15 +3888,15 @@ def test_pretty_class():
     class D:
         pass
 
-    assert pretty( C ) == str( C )
-    assert pretty( D ) == str( D )
+    assert pretty(C) == str(C)
+    assert pretty(D) == str(D)
 
 
 def test_pretty_no_wrap_line():
     huge_expr = 0
     for i in range(20):
         huge_expr += i*sin(i + x)
-    assert xpretty(huge_expr            ).find('\n') != -1
+    assert xpretty(huge_expr).find('\n') != -1
     assert xpretty(huge_expr, wrap_line=False).find('\n') == -1
 
 

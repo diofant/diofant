@@ -522,7 +522,7 @@ class Max(MinMaxBase, Application):
     zero = oo
     identity = -oo
 
-    def fdiff( self, argindex ):
+    def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
         if 0 < argindex and argindex <= n:
@@ -573,15 +573,15 @@ class Min(MinMaxBase, Application):
     zero = -oo
     identity = oo
 
-    def fdiff( self, argindex ):
+    def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
         if 0 < argindex and argindex <= n:
             argindex -= 1
             if n == 2:
-                return Heaviside( self.args[1-argindex] - self.args[argindex] )
+                return Heaviside(self.args[1-argindex] - self.args[argindex])
             newargs = tuple(self.args[i] for i in range(n) if i != argindex)
-            return Heaviside( Min(*newargs) - self.args[argindex] )
+            return Heaviside(Min(*newargs) - self.args[argindex])
         else:
             raise ArgumentIndexError(self, argindex)
 

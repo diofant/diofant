@@ -168,7 +168,7 @@ def test_Lambda():
     assert Lambda(p, t*(x + y + z))(*p) == t * (x + y + z)
 
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
-    assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
+    assert Lambda(x, 2*x) not in [Lambda(x, x)]
     pytest.raises(TypeError, lambda: Lambda(1, x))
     assert Lambda(x, 1)(1) is Integer(1)
 

@@ -548,7 +548,7 @@ def test_general_pythagorean():
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
     assert check_solutions(a**2 + 4*b**2 + 4*c**2 - d**2)
     assert check_solutions(9*a**2 + 4*b**2 + 4*c**2 - d**2)
-    assert check_solutions(9*a**2 + 4*b**2 - 25*d**2 + 4*c**2 )
+    assert check_solutions(9*a**2 + 4*b**2 - 25*d**2 + 4*c**2)
     assert check_solutions(9*a**2 - 16*d**2 + 4*b**2 + 4*c**2)
     assert check_solutions(-e**2 + 9*a**2 + 4*b**2 + 4*c**2 + 25*d**2)
     assert check_solutions(16*a**2 - b**2 + 9*c**2 + d**2 + 25*e**2)

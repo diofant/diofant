@@ -22,8 +22,7 @@ def test_sparse_matrix():
 
     a = SparseMatrix((
         (1, 0),
-        (0, 1)
-    ))
+        (0, 1)))
     assert SparseMatrix(a) == a
 
     a = MutableSparseMatrix([])
@@ -36,8 +35,7 @@ def test_sparse_matrix():
     # test element assignment
     a = SparseMatrix((
         (1, 0),
-        (0, 1)
-    ))
+        (0, 1)))
 
     a[3] = 4
     assert a[1, 1] == 4
@@ -46,31 +44,26 @@ def test_sparse_matrix():
     a[0, 0] = 2
     assert a == SparseMatrix((
         (2, 0),
-        (0, 1)
-    ))
+        (0, 1)))
     a[1, 0] = 5
     assert a == SparseMatrix((
         (2, 0),
-        (5, 1)
-    ))
+        (5, 1)))
     a[1, 1] = 0
     assert a == SparseMatrix((
         (2, 0),
-        (5, 0)
-    ))
+        (5, 0)))
     assert a._smat == {(0, 0): 2, (1, 0): 5}
 
     # test_multiplication
     a = SparseMatrix((
         (1, 2),
         (3, 1),
-        (0, 6),
-    ))
+        (0, 6)))
 
     b = SparseMatrix((
         (1, 2),
-        (3, 0),
-    ))
+        (3, 0)))
 
     c = a*b
     assert c[0, 0] == 7
@@ -162,37 +155,37 @@ def test_sparse_matrix():
     assert SparseMatrix([[1]]).det() == 1
     assert SparseMatrix(((-3, 2), (8, -5))).det() == -1
     assert SparseMatrix(((x, 1), (y, 2*y))).det() == 2*x*y - y
-    assert SparseMatrix(( (1, 1, 1),
-                          (1, 2, 3),
-                          (1, 3, 6) )).det() == 1
-    assert SparseMatrix(( ( 3, -2,  0, 5),
-                          (-2,  1, -2, 2),
-                          ( 0, -2,  5, 0),
-                          ( 5,  0,  3, 4) )).det() == -289
-    assert SparseMatrix(( ( 1,  2,  3,  4),
-                          ( 5,  6,  7,  8),
-                          ( 9, 10, 11, 12),
-                          (13, 14, 15, 16) )).det() == 0
-    assert SparseMatrix(( (3, 2, 0, 0, 0),
-                          (0, 3, 2, 0, 0),
-                          (0, 0, 3, 2, 0),
-                          (0, 0, 0, 3, 2),
-                          (2, 0, 0, 0, 3) )).det() == 275
-    assert SparseMatrix(( (1, 0,  1,  2, 12),
-                          (2, 0,  1,  1,  4),
-                          (2, 1,  1, -1,  3),
-                          (3, 2, -1,  1,  8),
-                          (1, 1,  1,  0,  6) )).det() == -55
-    assert SparseMatrix(( (-5,  2,  3,  4,  5),
-                          ( 1, -4,  3,  4,  5),
-                          ( 1,  2, -3,  4,  5),
-                          ( 1,  2,  3, -2,  5),
-                          ( 1,  2,  3,  4, -1) )).det() == 11664
-    assert SparseMatrix(( ( 2,  7, -1, 3, 2),
-                          ( 0,  0,  1, 0, 1),
-                          (-2,  0,  7, 0, 2),
-                          (-3, -2,  4, 5, 3),
-                          ( 1,  0,  0, 0, 1) )).det() == 123
+    assert SparseMatrix(((1, 1, 1),
+                         (1, 2, 3),
+                         (1, 3, 6))).det() == 1
+    assert SparseMatrix((( 3, -2,  0, 5),
+                         (-2,  1, -2, 2),
+                         ( 0, -2,  5, 0),
+                         ( 5,  0,  3, 4))).det() == -289
+    assert SparseMatrix((( 1,  2,  3,  4),
+                         ( 5,  6,  7,  8),
+                         ( 9, 10, 11, 12),
+                         (13, 14, 15, 16))).det() == 0
+    assert SparseMatrix(((3, 2, 0, 0, 0),
+                         (0, 3, 2, 0, 0),
+                         (0, 0, 3, 2, 0),
+                         (0, 0, 0, 3, 2),
+                         (2, 0, 0, 0, 3))).det() == 275
+    assert SparseMatrix(((1, 0,  1,  2, 12),
+                         (2, 0,  1,  1,  4),
+                         (2, 1,  1, -1,  3),
+                         (3, 2, -1,  1,  8),
+                         (1, 1,  1,  0,  6))).det() == -55
+    assert SparseMatrix(((-5,  2,  3,  4,  5),
+                         ( 1, -4,  3,  4,  5),
+                         ( 1,  2, -3,  4,  5),
+                         ( 1,  2,  3, -2,  5),
+                         ( 1,  2,  3,  4, -1))).det() == 11664
+    assert SparseMatrix((( 2,  7, -1, 3, 2),
+                         ( 0,  0,  1, 0, 1),
+                         (-2,  0,  7, 0, 2),
+                         (-3, -2,  4, 5, 3),
+                         ( 1,  0,  0, 0, 1))).det() == 123
 
     # test_slicing
     m0 = sparse_eye(4)
@@ -250,7 +243,7 @@ def test_sparse_matrix():
     # test_applyfunc
     m0 = sparse_eye(3)
     assert m0.applyfunc(lambda x: 2*x) == sparse_eye(3)*2
-    assert m0.applyfunc(lambda x: 0 ) == sparse_zeros(3)
+    assert m0.applyfunc(lambda x: 0) == sparse_zeros(3)
 
     # test_LUdecomp
     testmat = SparseMatrix([[ 0, 2, 5, 3],
@@ -325,15 +318,13 @@ def test_sparse_matrix():
     a = SparseMatrix(((1, 2 + I), (3, 4)))
     assert a.C == SparseMatrix([
         [1, 2 - I],
-        [3,     4]
-    ])
+        [3,     4]])
 
     # mul
     assert a*Matrix(2, 2, [1, 0, 0, 1]) == a
     assert a + Matrix(2, 2, [1, 1, 1, 1]) == SparseMatrix([
         [2, 3 + I],
-        [4,     5]
-    ])
+        [4,     5]])
     assert a*0 == Matrix([[0, 0], [0, 0]])
 
     # col join
@@ -341,8 +332,7 @@ def test_sparse_matrix():
         [1, 2 + I],
         [3,     4],
         [1,     0],
-        [0,     1]
-    ])
+        [0,     1]])
     A = SparseMatrix(ones(3))
     B = eye(3)
     assert A.col_join(B) == Matrix([[1, 1, 1], [1, 1, 1], [1, 1, 1],

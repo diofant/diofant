@@ -329,7 +329,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
                 iterables.extend([(sinh, args), (cosh, args)])
             else:
                 dummys = symbols(f'd:{len(args):d}', cls=Dummy)
-                expr = fn( Add(*dummys)).expand(trig=True).subs(list(zip(dummys, args)))
+                expr = fn(Add(*dummys)).expand(trig=True).subs(list(zip(dummys, args)))
                 res.append(fn(Add(*args)) - expr)
 
         if myI in gens:

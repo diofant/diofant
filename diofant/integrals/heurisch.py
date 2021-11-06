@@ -72,7 +72,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
+        lsyms.append(Dummy(f'{name}{len(lsyms):d}'))
 
     return lsyms[:n]
 
@@ -242,7 +242,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                         M = g.args[0].match(a*x**b)
 
                         if M is not None:
-                            terms.add( x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
+                            terms.add(x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])))
 
                 elif g.is_Pow:
                     if g.base is E:
@@ -300,11 +300,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     V = _symbols('x', len(terms))
 
     # sort mapping expressions from largest to smallest (last is always x).
-    mapping = list(reversed(list(zip(*ordered(                           #
-        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1]))  #
-    rev_mapping = {v: k for k, v in mapping}                             #
-    if mappings is None:                                                 #
-        # optimizing the number of permutations of mapping               #
+    mapping = list(reversed(list(zip(*ordered(
+        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1]))
+    rev_mapping = {v: k for k, v in mapping}
+    if mappings is None:
+        # optimizing the number of permutations of mapping
         assert mapping[-1][0] == x  # if not, find it and correct this comment
         unnecessary_permutations = [mapping.pop(-1)]
         mappings = permutations(mapping)
