@@ -35,7 +35,7 @@ class ContinuousDomain(RandomDomain):
 
     is_Continuous = True
 
-    def as_boolean(self):  # pragma: no cover
+    def as_boolean(self):
         raise NotImplementedError('Not Implemented for generic Domains')
 
 
@@ -93,7 +93,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
             if cond.is_Boolean:
                 if isinstance(cond, And):
                     conditions.extend(cond.args)
-                elif isinstance(cond, Or):  # pragma: no cover
+                elif isinstance(cond, Or):
                     raise NotImplementedError('Or not implemented here')
             elif cond.is_Relational:
                 if cond.is_Equality:

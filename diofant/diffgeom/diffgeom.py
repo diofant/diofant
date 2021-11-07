@@ -1089,7 +1089,7 @@ class CovarDerivativeOp(Expr):
     def __init__(self, wrt, christoffel):
         super().__init__()
         if len({v._coord_sys
-                for v in wrt.atoms(BaseVectorField)}) > 1:  # pragma: no cover
+                for v in wrt.atoms(BaseVectorField)}) > 1:
             raise NotImplementedError
         if contravariant_order(wrt) != 1 or covariant_order(wrt):
             raise ValueError('Covariant derivatives are defined only with '

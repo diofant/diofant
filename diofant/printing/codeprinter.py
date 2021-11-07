@@ -201,7 +201,7 @@ class CodePrinter(StrPrinter):
 
                 for term in dv:
                     if term in dummies and not ([list(f) for f in dummies[term]]
-                                                == [[None] for f in dummies[term]]):  # pragma: no cover
+                                                == [[None] for f in dummies[term]]):
                         # If one factor in the term has it's own internal
                         # contractions, those must be computed first.
                         # (temporary variables?)
@@ -276,22 +276,22 @@ class CodePrinter(StrPrinter):
 
         """
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _get_statement(self, codestring):
         """Formats a codestring with the proper line ending."""
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _get_comment(self, text):
         """Formats a text string as a comment."""
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _declare_number_const(self, name, value):
         """Declare a numeric constant at the top of a function."""
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _format_code(self, lines):
         """Take in a list of lines of code, and format them accordingly.
@@ -300,7 +300,7 @@ class CodePrinter(StrPrinter):
 
         """
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
@@ -308,7 +308,7 @@ class CodePrinter(StrPrinter):
 
         """
         raise NotImplementedError('This function must be implemented by '
-                                  'subclass of CodePrinter.')  # pragma: no cover
+                                  'subclass of CodePrinter.')
 
     def _print_Assignment(self, expr):
         from ..functions import Piecewise

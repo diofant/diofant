@@ -114,7 +114,7 @@ class ConditionalDomain(RandomDomain):
         return self.args[1]
 
     @property
-    def set(self):  # pragma: no cover
+    def set(self):
         raise NotImplementedError('Set of Conditional Domain not Implemented')
 
 
@@ -317,7 +317,7 @@ class ProductPSpace(PSpace):
         return ProductDomain(*[space.domain for space in self.spaces])
 
     @property
-    def density(self):  # pragma: no cover
+    def density(self):
         raise NotImplementedError('Density not available for ProductSpaces')
 
     def sample(self):

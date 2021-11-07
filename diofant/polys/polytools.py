@@ -2351,7 +2351,7 @@ class Poly(Expr):
         if f.domain != g.domain:
             try:
                 dom = f.domain.unify(g.domain, f.gens)
-            except UnificationFailed:  # pragma: no cover
+            except UnificationFailed:
                 return NotImplemented
 
             f = f.set_domain(dom)
@@ -2407,7 +2407,7 @@ class PurePoly(Poly):
         if f.domain != g.domain:
             try:
                 dom = f.domain.unify(g.domain, f.gens)
-            except UnificationFailed:  # pragma: no cover
+            except UnificationFailed:
                 return NotImplemented
 
             f = f.set_domain(dom)
