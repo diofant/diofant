@@ -20,6 +20,7 @@ Compatibility breaks
 * Removed ``n()`` method from :class:`~diofant.core.evalf.EvalfMixin`, see :pull:`1114`.
 * Former submodule ``diofant.polys.polyconfig`` now is :mod:`diofant.config`, see :pull:`1115`.
 * Drop support for ``DIOFANT_DEBUG`` environment variable, see :pull:`1115`.
+* Drop support for CPython 3.7 and 3.8, see :pull:`1118` and :commit:`5cae972`.
 * Renamed ``Ring`` as :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`1123`.
 * Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
