@@ -8,10 +8,10 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.9, 3.10-dev]
+        python-version: ['3.10']
         coverage: [false]
         include:
-          - python-version: 3.10-dev
+          - python-version: '3.10'
             coverage: true
     runs-on: ubuntu-latest
     env:
@@ -34,10 +34,7 @@ jobs:
       run: |
         pip install -U pip setuptools wheel
         # XXX: workarounds for CPython >= 3.10
-        if [[ ${{matrix.python-version}} != "3.9" ]]
-        then
-          pip install matplotlib==3.5.0rc1
-        fi
+        pip install matplotlib==3.5.0rc1
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
