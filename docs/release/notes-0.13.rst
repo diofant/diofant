@@ -12,7 +12,7 @@ New features
 Major changes
 =============
 
-* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.
+* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.  Thanks to André Roberge.
 
 Compatibility breaks
 ====================
