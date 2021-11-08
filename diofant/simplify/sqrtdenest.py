@@ -120,7 +120,7 @@ def sqrtdenest(expr, max_iter=3):
 
     """
     expr = expand_mul(sympify(expr))
-    for i in range(max_iter):
+    for _ in range(max_iter):
         z = _sqrtdenest0(expr)
         if expr == z:
             return expr
@@ -580,7 +580,7 @@ def _denester(nested, av0, h, max_depth_level):
                     return None, None
 
                 sqvad = _sqrtdenest1(sqrt(vad), denester=False)
-                if not (sqrt_depth(sqvad) <= sqrt_depth(R) + 1):
+                if not sqrt_depth(sqvad) <= sqrt_depth(R) + 1:
                     av0[1] = None
                     return None, None
                 sqvad1 = radsimp(1/sqvad)
@@ -708,7 +708,7 @@ def unrad(eq, *syms, **flags):
         for pow in Mul.make_args(d):
             if not (pow.is_Symbol or pow.is_Pow):
                 continue
-            b, e = pow.as_base_exp()
+            b, _ = pow.as_base_exp()
             if not b.has(*syms):
                 continue
             if not take_int_pow and _Q(pow) == 1:
@@ -787,7 +787,7 @@ def unrad(eq, *syms, **flags):
             key = ()
         rterms.setdefault(key, []).append(t)
     others = Add(*rterms.pop(()))
-    rterms = [Add(*rterms[k]) for k in rterms]
+    rterms = [Add(*v) for v in rterms.values()]
 
     # the output will depend on the order terms are processed, so
     # make it canonical quickly
@@ -820,7 +820,7 @@ def unrad(eq, *syms, **flags):
                 eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
-            except NotImplementedError:  # pragma: no cover
+            except NotImplementedError:
                 pass
 
         if len(rterms) == 2:

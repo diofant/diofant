@@ -315,14 +315,14 @@ def test_dmp_sqf():
     assert (x**2 + y**2).is_squarefree
     assert ((x + y)**2).is_squarefree is False
 
-    R, x, y, z, t = ring('x y z t', ZZ)
+    R, x, y, z, _ = ring('x y z t', ZZ)
 
     assert f_6.is_squarefree is True
     assert f_6.sqf_part() == f_6
 
 
 def test_diofantissue_714():
-    R, x, y, z = ring('x y z', ZZ)
+    _, x, y, z = ring('x y z', ZZ)
 
     f = (x - y)*(z - 1)**2
 

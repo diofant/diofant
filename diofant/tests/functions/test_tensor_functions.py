@@ -64,7 +64,7 @@ def test_kronecker_delta_secondquant():
     D = KroneckerDelta
     i, j, v, w = symbols('i j v w', below_fermi=True, cls=Dummy)
     a, b, t, u = symbols('a b t u', above_fermi=True, cls=Dummy)
-    p, q, r, s = symbols('p q r s', cls=Dummy)
+    p, q, *_ = symbols('p q r s', cls=Dummy)
 
     assert D(i, a) == 0
     assert D(i, t) == 0

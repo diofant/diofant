@@ -1,3 +1,5 @@
+"""Tests for common practical conventions of all printers."""
+
 from diofant import (Derivative, Function, Integral, bell, besselj, cos, exp,
                      legendre, oo, symbols)
 from diofant.printing.conventions import requires_partial, split_super_sub
@@ -34,7 +36,7 @@ def test_super_sub():
 
 
 def test_requires_partial():
-    x, y, z, t, nu = symbols('x y z t nu')
+    x, y, t, nu = symbols('x y t nu')
     n = symbols('n', integer=True)
 
     f = x * y

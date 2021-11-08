@@ -13,31 +13,6 @@ f = Function('f')
 
 
 def test_karr_convention():
-    # Test the Karr product convention that we want to hold.
-    # See his paper "Summation in Finite Terms" for a detailed
-    # reasoning why we really want exactly this definition.
-    # The convention is described for sums on page 309 and
-    # essentially in section 1.4, definition 3. For products
-    # we can find in analogy:
-    #
-    # \prod_{m <= i < n} f(i) 'has the obvious meaning'      for m < n
-    # \prod_{m <= i < n} f(i) = 0                            for m = n
-    # \prod_{m <= i < n} f(i) = 1 / \prod_{n <= i < m} f(i)  for m > n
-    #
-    # It is important to note that he defines all products with
-    # the upper limit being *exclusive*.
-    # In contrast, diofant and the usual mathematical notation has:
-    #
-    # prod_{i = a}^b f(i) = f(a) * f(a+1) * ... * f(b-1) * f(b)
-    #
-    # with the upper limit *inclusive*. So translating between
-    # the two we find that:
-    #
-    # \prod_{m <= i < n} f(i) = \prod_{i = m}^{n-1} f(i)
-    #
-    # where we intentionally used two different ways to typeset the
-    # products and its limits.
-
     i = Symbol('i', integer=True)
     k = Symbol('k', integer=True)
     j = Symbol('j', integer=True)
@@ -126,9 +101,9 @@ def test_karr_proposition_2a():
     # m < n
     test_the_product(u,   u+v)
     # m = n
-    test_the_product(u,   u  )
+    test_the_product(u,   u)
     # m > n
-    test_the_product(u+v, u  )
+    test_the_product(u+v, u)
 
 
 def test_karr_proposition_2b():
@@ -159,21 +134,21 @@ def test_karr_proposition_2b():
     # l < m < n
     test_the_product(u,     u+v,   u+v+w)
     # l < m = n
-    test_the_product(u,     u+v,   u+v  )
+    test_the_product(u,     u+v,   u+v)
     # l < m > n
-    test_the_product(u,     u+v+w, v    )
+    test_the_product(u,     u+v+w, v)
     # l = m < n
-    test_the_product(u,     u,     u+v  )
+    test_the_product(u,     u,     u+v)
     # l = m = n
-    test_the_product(u,     u,     u    )
+    test_the_product(u,     u,     u)
     # l = m > n
-    test_the_product(u+v,   u+v,   u    )
+    test_the_product(u+v,   u+v,   u)
     # l > m < n
-    test_the_product(u+v,   u,     u+w  )
+    test_the_product(u+v,   u,     u+w)
     # l > m = n
-    test_the_product(u+v,   u,     u    )
+    test_the_product(u+v,   u,     u)
     # l > m > n
-    test_the_product(u+v+w, u+v,   u    )
+    test_the_product(u+v+w, u+v,   u)
 
 
 def test_simple_products():
@@ -186,7 +161,7 @@ def test_simple_products():
 
     assert product(cos(k), (k, 0, 5)) == cos(1)*cos(2)*cos(3)*cos(4)*cos(5)
     assert product(cos(k), (k, 3, 5)) == cos(3)*cos(4)*cos(5)
-    assert product(cos(k), (k, 1, Rational(5, 2))) != cos(1)*cos(2)
+    pytest.raises(ValueError, lambda: product(cos(k), (k, 1, Rational(5, 2))))
 
     assert isinstance(product(k**k, (k, 1, n)), Product)
 
@@ -347,7 +322,7 @@ def test_reorder():
 
 
 def test_reverse_order():
-    x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
+    x, y, a, b = symbols('x, y, a, b', integer=True)
 
     assert Product(x, (x, 0, 3)).reverse_order(0) == Product(1/x, (x, 4, -1))
     assert Product(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(0, 1) == \
@@ -373,7 +348,7 @@ def test_reverse_order():
 
 
 def test_reorder_limit():
-    x, y, a, b, c, d = symbols('x, y, a, b, c, d', integer=True)
+    x, y, a, b, d = symbols('x, y, a, b, d', integer=True)
     pytest.raises(ReorderError,
                   lambda: Product(x**2, (x, a, b), (y, x, d)).reorder_limit(1, 0))
 

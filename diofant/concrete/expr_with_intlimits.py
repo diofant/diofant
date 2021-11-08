@@ -1,3 +1,4 @@
+from ..core import oo
 from .expr_with_limits import ExprWithLimits
 
 
@@ -10,6 +11,11 @@ class ReorderError(NotImplementedError):
 
 class ExprWithIntLimits(ExprWithLimits):
     """Represents an expression with integer limits."""
+
+    def __init__(self, function, *symbols, **assumptions):
+        if not all(all(abs(_) == oo or (_.is_integer is not False)
+                       for _ in l[1:]) for l in self.limits):
+            raise ValueError('Limits must be integers or ±oo.')
 
     def change_index(self, var, trafo, newvar=None):
         r"""

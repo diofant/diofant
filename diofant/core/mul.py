@@ -254,7 +254,6 @@ class Mul(AssocOp):
                     if coeff is nan:
                         # we know for sure the result will be nan
                         return [nan], [], None
-                o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             elif o is zoo:
@@ -296,7 +295,6 @@ class Mul(AssocOp):
                                 b = -b
                             if b is not S.One:
                                 pnum_rat[b].append(e)
-                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         elif b.is_positive or e.is_integer:
                             num_exp.append((b, e))
@@ -571,18 +569,18 @@ class Mul(AssocOp):
 
         return c_part, nc_part, order_symbols
 
-    def _eval_power(self, e):
+    def _eval_power(self, other):
 
         # don't break up NC terms: (A*B)**3 != A**3*B**3, it is A*B*A*B*A*B
         cargs, nc = self.args_cnc(split_1=False)
 
-        if e.is_Integer:
-            return Mul(*[Pow(b, e, evaluate=False) for b in cargs]) * \
-                Pow(Mul._from_args(nc), e, evaluate=False)
+        if other.is_Integer:
+            return Mul(*[Pow(b, other, evaluate=False) for b in cargs]) * \
+                Pow(Mul._from_args(nc), other, evaluate=False)
 
-        p = Pow(self, e, evaluate=False)
+        p = Pow(self, other, evaluate=False)
 
-        if e.is_Rational or e.is_Float:
+        if other.is_Rational or other.is_Float:
             return p._eval_expand_power_base()
 
         return p
@@ -795,8 +793,8 @@ class Mul(AssocOp):
     def _eval_derivative(self, s):
         args = list(self.args)
         terms = []
-        for i in range(len(args)):
-            d = args[i].diff(s)
+        for i, a in enumerate(args):
+            d = a.diff(s)
             if d:
                 terms.append(self.func(*(args[:i] + [d] + args[i + 1:])))
         return Add(*terms)
@@ -1266,8 +1264,8 @@ class Mul(AssocOp):
 
         if not old_nc:
             ncdid = None
-            for i in range(len(nc)):
-                nc[i] = rejoin(*nc[i])
+            for i, a in enumerate(nc):
+                nc[i] = rejoin(*a)
         else:
             ncdid = 0  # number of nc replacements we did
             take = len(old_nc)  # how much to look at each time
@@ -1382,7 +1380,9 @@ class Mul(AssocOp):
     def _eval_nseries(self, x, n, logx):
         from ..simplify import powsimp
         terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
-        return powsimp(self.func(*terms).expand(), combine='exp', deep=True)
+        return powsimp(self.func(*terms).expand(power_base=False, power_exp=False,
+                                                mul=False).expand(deep=False),
+                       combine='exp', deep=True)
 
     def _eval_as_leading_term(self, x):
         return self.func(*[t.as_leading_term(x) for t in self.args])
@@ -1414,7 +1414,7 @@ class Mul(AssocOp):
         """
         coef = S.One
         args = []
-        for i, a in enumerate(self.args):
+        for a in self.args:
             c, p = a.as_content_primitive(radical=radical)
             coef *= c
             if p is not S.One:
@@ -1482,7 +1482,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
         if not clear and coeff.is_Rational and coeff.denominator != 1:
             q = Integer(coeff.denominator)
             for i in factors.args:
-                c, t = i.as_coeff_Mul()
+                c, _ = i.as_coeff_Mul()
                 r = c/q
                 if r == int(r):
                     return coeff*factors

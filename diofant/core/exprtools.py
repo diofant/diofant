@@ -904,7 +904,7 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
             # watch out for exp(-(x+2)) which gcd_terms will change to exp(-x-2)
             special = {}
             for i, a in enumerate(list_args):
-                b, e = a.as_base_exp()
+                _, e = a.as_base_exp()
                 if e.is_Mul and e != Mul(*e.args):
                     list_args[i] = Dummy()
                     special[list_args[i]] = a
@@ -1003,7 +1003,7 @@ def _mask_nc(eq, name=None):
     nc_obj = set()
     nc_syms = set()
     pot = preorder_traversal(expr, keys=default_sort_key)
-    for i, a in enumerate(pot):
+    for a in pot:
         if any(a == r[0] for r in rep):
             pot.skip()
         elif not a.is_commutative:

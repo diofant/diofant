@@ -1,5 +1,5 @@
 from diofant import E, Rational, Symbol, cos, factorial, log, oo, sin
-from diofant.abc import x
+from diofant.abc import c, g, x
 from diofant.parsing.maxima import parse_maxima
 
 
@@ -40,5 +40,5 @@ def test_maxima_functions():
                         name_dict={'k': Symbol('k', integer=True),
                                    'n': n}) == factorial(n)
     assert parse_maxima('ratsimp((x^2-1)/(x+1))') == x - 1
-    assert abs( parse_maxima(
+    assert abs(parse_maxima(
         'float(sec(%pi/3) + csc(%pi/3))') - 3.154700538379252) < 10**-5

@@ -11,137 +11,79 @@ from .gosper import gosper_sum
 class Sum(AddWithLimits, ExprWithIntLimits):
     r"""Represents unevaluated summation.
 
-    ``Sum`` represents a finite or infinite series, with the first argument
-    being the general form of terms in the series, and the second argument
-    being ``(dummy_variable, start, end)``, with ``dummy_variable`` taking
-    all integer values from ``start`` through ``end``. In accordance with
-    long-standing mathematical convention, the end term is included in the
-    summation.
+    ``Sum`` represents a finite or infinite series, with the first
+    argument being the general form of terms in the series (which
+    usually depend on the bound variable ``symbol``), and the second
+    argument being ``(symbol, start, end)``, with ``symbol`` taking
+    all integer values from ``start`` through ``end`` (inclusive).
 
-    For finite sums (and sums with symbolic limits assumed to be finite) we
-    follow the summation convention described by Karr :cite:`Karr1981summation`, especially
-    definition 3 of section 1.4. The sum:
+    For ``start < end`` we adopt definition::
 
-    .. math::
+        Sum(f(i), (i, start, end)) = -Sum(f(i), (i, end+1, start-1))
 
-        \sum_{m \leq i < n} f(i)
+    Notes
+    =====
 
-    has *the obvious meaning* for `m < n`, namely:
+    The summation convention for ``start < end`` described by Karr
+    in :cite:`Karr1981summation`, especially definition 3 of section 1.4.
+    The only difference with the reference is that Karr defines all
+    sums with the upper limit being exclusive.  This is in contrast to
+    the usual mathematical notation, which we adopt, but does not
+    affect the summation convention.  Indeed we have:
 
-    .. math::
+    .. math:: \sum_{m \leq i < n} f_i = \sum_{i = m}^{n - 1} f_i
 
-        \sum_{m \leq i < n} f(i) = f(m) + f(m+1) + \ldots + f(n-2) + f(n-1)
-
-    with the upper limit value `f(n)` excluded. The sum over an empty set is
-    zero if and only if `m = n`:
-
-    .. math::
-
-        \sum_{m \leq i < n} f(i) = 0  \quad \mathrm{for} \quad  m = n
-
-    Finally, for all other sums over empty sets we assume the following
-    definition:
+    This convention allows us to preserve the splitting identity
 
     .. math::
 
-        \sum_{m \leq i < n} f(i) = - \sum_{n \leq i < m} f(i)  \quad \mathrm{for} \quad  m > n
+       \sum\limits_{i=m}^n f_i = \sum\limits_{i=m}^l f_i +
+                                 \sum\limits_{i=l+1}^n f_i
 
-    It is important to note that Karr defines all sums with the upper
-    limit being exclusive. This is in contrast to the usual mathematical notation,
-    but does not affect the summation convention. Indeed we have:
+    regardless of the ordering of `m`, `l` and `n`.
 
-    .. math::
+    Note that it also follows:
 
-        \sum_{m \leq i < n} f(i) = \sum_{i = m}^{n - 1} f(i)
-
-    where the difference in notation is intentional to emphasize the meaning,
-    with limits typeset on the top being inclusive.
+    .. math:: \sum\limits_{i=m}^{m-1} f_i = 0
 
     Examples
     ========
 
-    >>> from diofant.abc import i
-
-    >>> Sum(k, (k, 1, m))
-    Sum(k, (k, 1, m))
-    >>> Sum(k, (k, 1, m)).doit()
-    m**2/2 + m/2
-    >>> Sum(k**2, (k, 1, m))
-    Sum(k**2, (k, 1, m))
     >>> Sum(k**2, (k, 1, m)).doit()
     m**3/3 + m**2/2 + m/6
-    >>> Sum(x**k, (k, 0, oo))
-    Sum(x**k, (k, 0, oo))
-    >>> Sum(x**k, (k, 0, oo)).doit()
-    Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**k, (k, 0, oo)), true))
     >>> Sum(x**k/factorial(k), (k, 0, oo)).doit()
     E**x
-
-    Here are examples to do summation with symbolic indices.  You
-    can use either Function of IndexedBase classes:
-
-    >>> f = Function('f')
-
-    >>> Sum(f(n), (n, 0, 3)).doit()
-    f(0) + f(1) + f(2) + f(3)
-    >>> Sum(f(n), (n, 0, oo)).doit()
-    Sum(f(n), (n, 0, oo))
-    >>> f = IndexedBase('f')
-    >>> Sum(f[n]**2, (n, 0, 3)).doit()
-    f[0]**2 + f[1]**2 + f[2]**2 + f[3]**2
 
     An example showing that the symbolic result of a summation is still
     valid for seemingly nonsensical values of the limits. Then the Karr
     convention allows us to give a perfectly valid interpretation to
-    those sums by interchanging the limits according to the above rules:
+    those sums by interchanging the limits according to the adopted rule:
 
-    >>> s = Sum(i, (i, 1, n)).doit()
-    >>> s
+    >>> Sum(k, (k, 1, n)).doit()
     n**2/2 + n/2
-    >>> s.subs({n: -4})
+    >>> _.subs({n: -4})
     6
-    >>> Sum(i, (i, 1, -4)).doit()
+    >>> Sum(-n, (n, -3, 0)).doit()
     6
-    >>> Sum(-i, (i, -3, 0)).doit()
-    6
-
-    An explicit example of the Karr summation convention:
-
-    >>> s1 = Sum(i**2, (i, m, m+n-1)).doit()
-    >>> s1
-    m**2*n + m*n**2 - m*n + n**3/3 - n**2/2 + n/6
-    >>> s2 = Sum(i**2, (i, m+n, m-1)).doit()
-    >>> s2
-    -m**2*n - m*n**2 + m*n - n**3/3 + n**2/2 - n/6
-    >>> s1 + s2
-    0
-    >>> s3 = Sum(i, (i, m, m-1)).doit()
-    >>> s3
-    0
 
     See Also
     ========
 
-    diofant.concrete.summations.summation
+    summation
     diofant.concrete.products.Product
     diofant.concrete.products.product
 
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
-    * https://en.wikipedia.org/wiki/Empty_sum
+    * https://en.wikipedia.org/wiki/Summation
 
     """
 
-    def __new__(cls, function, *symbols, **assumptions):
-        obj = AddWithLimits.__new__(cls, function, *symbols, **assumptions)
-        if not hasattr(obj, 'limits'):
-            return obj
-        if any(len(l) != 3 or None in l for l in obj.limits):
+    def __init__(self, function, *symbols, **assumptions):
+        super().__init__(function, *symbols, **assumptions)
+        if any(len(l) != 3 or None in l for l in self.limits):
             raise ValueError('Sum requires values for lower and upper bounds.')
-
-        return obj
 
     def _eval_is_zero(self):
         if self.function.is_zero:
@@ -277,7 +219,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 term = f.subs({i: a})
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if not (test == false):
+                    if not test == false:
                         # a symbolic Relational class, can't go further
                         return term, Integer(0)
                 s += term
@@ -763,7 +705,7 @@ def eval_sum_hyper(f, i_a_b):
         # Now b == oo, a != -oo
         res = _eval_sum_hyper(f, i, a)
         if res is not None:
-            r, c = res
+            _, c = res
             if c == false:
                 f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:

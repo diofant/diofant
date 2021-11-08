@@ -1,3 +1,5 @@
+"""Tests for modular GCD algorithms."""
+
 from diofant import QQ, ZZ, ring, sqrt
 from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
                                       _func_field_modgcd_m, _to_ANP_poly,
@@ -19,7 +21,7 @@ def test_chinese_remainder():
     assert hpq.trunc_ground(p) == hp
     assert hpq.trunc_ground(q) == hq
 
-    T, z = ring('z', R)
+    _, z = ring('z', R)
     p, q = 3, 7
 
     hp = (x*y + 1)*z**2 + x
@@ -55,7 +57,7 @@ def test_to_ZZ_ANP_poly():
 
 def test_modgcd_func_field():
     D, t = ring('t', ZZ)
-    R, x, z = ring('x z', D)
+    _, x, z = ring('x z', D)
 
     minpoly = (z**2*t**2 + z**2*t - 1).drop(0)
     f, g = x + 1, x - 1

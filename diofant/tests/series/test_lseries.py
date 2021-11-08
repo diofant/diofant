@@ -1,4 +1,5 @@
-from diofant import Derivative, E, Integer, O, cos, exp, sin, tanh
+from diofant import (Derivative, E, I, Integer, O, cos, exp, gamma, log, pi,
+                     sin, tanh)
 from diofant.abc import x, y
 
 
@@ -66,3 +67,11 @@ def test_tanh():
     assert next(s) == -(x - 1)**2*tanh(1) + (x - 1)**2*tanh(1)**3
     assert next(s) == -(x - 1)**3*tanh(1)**4 - (x - 1)**3/3 + \
         4*(x - 1)**3*tanh(1)**2/3
+
+
+def test_sympyissue_21859():
+    e = -exp(-x*log(y)/2)*exp(-5*I*pi*x/6)*gamma(5*x/6 + 1)/(gamma(x/3 + 1)*gamma(x/2 + 1))
+    s = e.series(x, n=None)
+
+    assert next(s) == -1
+    assert next(s) == x*log(y)/2 + 5*I*pi*x/6

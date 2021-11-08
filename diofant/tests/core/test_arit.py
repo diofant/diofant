@@ -202,7 +202,7 @@ def test_pow_E():
     # value that this identity holds
     while 1:
         b = x._random()
-        r, i = b.as_real_imag()
+        _, i = b.as_real_imag()
         if i:
             break
     assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).evalf(strict=False)), E)
@@ -340,7 +340,7 @@ def test_Mul_doesnt_expand_exp():
     assert sqrt(2)*sqrt(2) == 2
     assert 2**x*2**(2*x) == 2**(3*x)
     assert sqrt(2)*root(2, 4)*5**Rational(3, 4) == 10**Rational(3, 4)
-    assert (x**(-log(5)/log(3))*x)/(x*x**( - log(5)/log(3))) == sympify(1)
+    assert (x**(-log(5)/log(3))*x)/(x*x**(-log(5)/log(3))) == sympify(1)
 
 
 def test_Add_Mul_is_integer():
@@ -1668,8 +1668,8 @@ def test_sympyissue_6040():
     a, b = Pow(1, 2, evaluate=False), 1
     assert a != b
     assert b != a
-    assert not (a == b)
-    assert not (b == a)
+    assert not a == b
+    assert not b == a
 
 
 def test_sympyissue_6077():
@@ -1856,7 +1856,7 @@ def test_mul_zero_detection():
         test(z, b, e)
 
     # real is True
-    def test(z, b, e):
+    def test2(z, b, e):
         if z.is_zero and not b.is_finite:
             assert e.is_extended_real is None
         elif not z.is_finite:
@@ -1868,11 +1868,11 @@ def test_mul_zero_detection():
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(z, b, evaluate=False)
-        test(z, b, e)
+        test2(z, b, e)
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(b, z, evaluate=False)
-        test(z, b, e)
+        test2(z, b, e)
 
 
 def test_sympyissue_8247_8354():

@@ -230,7 +230,7 @@ def test_solve_biquadratic():
     def query(expr):
         return expr.is_Pow and expr.exp is Rational(1, 2)
 
-    f_1 = (x - 1 )**2 + (y - 2)**2 - r**2
+    f_1 = (x - 1)**2 + (y - 2)**2 - r**2
     f_2 = (x - x1)**2 + (y - 1)**2 - r**2
 
     result = [tuple(r.values()) for r in solve_poly_system([f_1, f_2], x, y)]
@@ -338,3 +338,8 @@ def test_solve_surd_system():
     res = [{x: 17*y**2/288 - sqrt(y**4 - 1440)/288},
            {x: 17*y**2/288 + sqrt(y**4 - 1440)/288}]
     assert solve_surd_system(eqs, x) == res
+
+
+def test_sympyissue_21999():
+    assert solve_poly_system([x - 1], x, y) == [{x: 1}]
+    assert solve_poly_system([y - 1], x, y) == [{y: 1}]

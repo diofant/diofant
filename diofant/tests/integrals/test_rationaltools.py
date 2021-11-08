@@ -6,8 +6,6 @@ from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
 __all__ = ()
 
-half = Rational(1, 2)
-
 
 def test_ratint():
     assert ratint(Integer(0), x) == 0
@@ -80,12 +78,12 @@ def test_ratint():
                                                            / 3 + 2*x*sqrt(3)/3)/3
 
     assert ratint(1/(x**2 + x + 1), x, extended_real=False) == \
-        -I*3**half*log(half + x - half*I*3**half)/3 + \
-        I*3**half*log(half + x + half*I*3**half)/3
+        -I*sqrt(3)*log(Rational(1, 2) + x - I*sqrt(3)/2)/3 + \
+        I*sqrt(3)*log(Rational(1, 2) + x + I*sqrt(3)/2)/3
 
     assert ratint(1/(x**3 + 1), x, extended_real=False) == log(1 + x)/3 + \
-        (-Rational(1, 6) + I*3**half/6)*log(-half + x + I*3**half/2) + \
-        (-Rational(1, 6) - I*3**half/6)*log(-half + x - I*3**half/2)
+        (-Rational(1, 6) + I*sqrt(3)/6)*log(-Rational(1, 2) + x + I*sqrt(3)/2) + \
+        (-Rational(1, 6) - I*sqrt(3)/6)*log(-Rational(1, 2) + x - I*sqrt(3)/2)
 
     # issue sympy/sympy#4991
     assert ratint(1/(x*(a + b*x)**3), x) == \
@@ -148,7 +146,7 @@ def test_sympyissue_5981():
 
 
 def test_sympyissue_10488():
-    a, b, c, x = symbols('a b c x', real=True, positive=True)
+    a, b, x = symbols('a b x', real=True, positive=True)
     assert integrate(x/(a*x + b), x) == x/a - b*log(a*x + b)/a**2
 
 

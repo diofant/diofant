@@ -59,10 +59,8 @@ class MatrixSlice(MatrixExpr):
     def __new__(cls, parent, rowslice, colslice):
         rowslice = normalize(rowslice, parent.shape[0])
         colslice = normalize(colslice, parent.shape[1])
-        if ((0 > rowslice[0]) == true or
-                (parent.shape[0] < rowslice[1]) == true or
-                (0 > colslice[0]) == true or
-                (parent.shape[1] < colslice[1]) == true):
+        if true in (0 > rowslice[0], parent.shape[0] < rowslice[1],
+                    0 > colslice[0], parent.shape[1] < colslice[1]):
             raise IndexError()
         if isinstance(parent, MatrixSlice):
             return mat_slice_of_slice(parent, rowslice, colslice)

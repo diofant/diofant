@@ -1,4 +1,4 @@
-"""Tools for polynomial factorization routines in characteristic zero."""
+"""Tests for polynomial factorization routines."""
 
 import functools
 import operator
@@ -23,7 +23,7 @@ def test__trial_division():
     assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
                              8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
-    R, x, y = ring('x y', ZZ)
+    R, x, _ = ring('x y', ZZ)
 
     assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
                              8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
@@ -34,7 +34,7 @@ def test__zz_mignotte_bound():
 
     assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
-    R, x, y = ring('x y', ZZ)
+    R, x, _ = ring('x y', ZZ)
 
     assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
@@ -161,7 +161,7 @@ def test_dup_zz_factor():
 
     f = x**4 + x + 1
 
-    for i in range(20):
+    for _ in range(20):
         assert f.factor_list() == (1, [(f, 1)])
 
     f = x**5 - x**3 - x**2 + 1
@@ -444,7 +444,7 @@ def test_dmp_ext_factor(method):
 
 
 def test_sympyissue_5786():
-    R, x, y, z, t = ring('x y z t', QQ.algebraic_field(I))
+    _, x, y, z, t = ring('x y z t', QQ.algebraic_field(I))
 
     f, g = z - I*t, x - I*y
 
@@ -904,7 +904,7 @@ def test_PolyElement_is_irreducible():
     assert ((x - 2*y)*(x + y)).is_irreducible is False
     assert (x**2 + y**2).is_irreducible is True
 
-    R, x, y, z = ring('x y z', QQ)
+    R, x, y, _ = ring('x y z', QQ)
 
     assert (x**2 + x + 1).is_irreducible
     assert (x**2 + 2*x + 1).is_irreducible is False
@@ -912,7 +912,7 @@ def test_PolyElement_is_irreducible():
 
 @pytest.mark.timeout(50)
 def test_sympyissue_16620():
-    R, x = ring('x', FF(2))
+    _, x = ring('x', FF(2))
 
     f = x**17 + 1
     g = (1, [(x + 1, 1),

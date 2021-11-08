@@ -303,8 +303,8 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                     # find the number of extractions possible
                     # e.g. [(1, 2), (2, 2)] -> min(2/1, 2/2) -> 1
                     min1 = ee[0][1]/ee[0][0]
-                    for i in range(len(ee)):
-                        rat = ee[i][1]/ee[i][0]
+                    for eei in ee:
+                        rat = eei[1]/eei[0]
                         if rat < 1:
                             break
                         min1 = min(min1, rat)
@@ -312,8 +312,8 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                         # update base factor counts
                         # e.g. if ee = [(2, 5), (3, 6)] then min1 = 2
                         # and the new base counts will be 5-2*2 and 6-2*3
-                        for i in range(len(bb)):
-                            common_b[bb[i]] -= min1*ee[i][0]
+                        for i, bbi in enumerate(bb):
+                            common_b[bbi] -= min1*ee[i][0]
                             update(bb[i])
                         # update the count of the base
                         # e.g. x**2*y*sqrt(x*sqrt(y)) the count of x*sqrt(y)
@@ -322,7 +322,6 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 if (last  # no more radicals in base
                         or len(common_b) == 1  # nothing left to join with
                         or all(k[1] == 1 for k in common_b)):  # no rad's in common_b
-                    common_b  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
                 # see what we can exponentiate base by to remove any radicals
                 # so we know what to search for
@@ -379,8 +378,8 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
         # Pull out numerical coefficients from exponent if assumptions allow
         # e.g., 2**(2*x) => 4**x
-        for i in range(len(c_powers)):
-            b, e = c_powers[i]
+        for i, cpi in enumerate(c_powers):
+            b, e = cpi
             if not (all(x.is_nonnegative for x in b.as_numer_denom()) or e.is_integer or force or b.is_polar):
                 continue
             exp_c, exp_t = e.as_coeff_Mul(rational=True)

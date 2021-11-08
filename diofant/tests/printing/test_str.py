@@ -34,10 +34,10 @@ def test_printmethod():
             return f'foo({printer._print(self.args[0])})'
     assert sstr(R(x)) == 'foo(x)'
 
-    class R(Abs):
+    class R2(Abs):
         def _diofantstr(self, printer):
             return 'foo'
-    assert sstr(R(x)) == 'foo'
+    assert sstr(R2(x)) == 'foo'
 
 
 def test_Abs():
@@ -384,7 +384,7 @@ def test_FractionField():
 
 def test_PolyElement():
     Ruv,  u, v = ring('u v', ZZ)
-    Rxyz,  x, y, z = ring('x y z', Ruv)
+    _,  x, y, _ = ring('x y z', Ruv)
 
     assert str(x - x) == '0'
     assert str(x - 1) == 'x - 1'
@@ -399,7 +399,7 @@ def test_PolyElement():
     assert str(-(v**2 + v + 1)*x - 3*u*v + 1) == '-(v**2 + v + 1)*x - 3*u*v + 1'
 
     K, t = field('t', ZZ)
-    R, x = ring('x', K)
+    _, x = ring('x', K)
 
     assert str(x/t) == '1/t*x'
 
@@ -408,7 +408,7 @@ def test_PolyElement():
 
 def test_FracElement():
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, z, t = field('x y z t', Fuv)
 
     assert str(x - x) == '0'
     assert str(x - 1) == 'x - 1'

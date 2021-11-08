@@ -237,11 +237,7 @@ class Set(Basic):
         0
 
         """
-        return self._inf
-
-    @property
-    def _inf(self):
-        raise NotImplementedError(f'({self})._inf')
+        raise NotImplementedError(f'({self}).inf')
 
     @property
     def sup(self):
@@ -257,11 +253,7 @@ class Set(Basic):
         3
 
         """
-        return self._sup
-
-    @property
-    def _sup(self):
-        raise NotImplementedError(f'({self})._sup')
+        raise NotImplementedError(f'({self}).sup')
 
     @_sympifyit('other', false)
     def contains(self, other):
@@ -407,7 +399,7 @@ class Set(Basic):
         2
 
         """
-        return self._measure
+        raise NotImplementedError(f'({self}).measure')
 
     @property
     def boundary(self):
@@ -437,7 +429,7 @@ class Set(Basic):
         {0, 1}
 
         """
-        return self._boundary
+        raise NotImplementedError(f'({self}).boundary')
 
     @property
     def is_open(self):
@@ -508,17 +500,9 @@ class Set(Basic):
         """
         return self - self.boundary
 
-    @property
-    def _boundary(self):
-        raise NotImplementedError()
-
     def _eval_imageset(self, f):
         from .fancysets import ImageSet
         return ImageSet(f, self)
-
-    @property
-    def _measure(self):
-        raise NotImplementedError(f'({self})._measure')
 
     def __add__(self, other):
         return self.union(other)
@@ -622,7 +606,7 @@ class ProductSet(Set):
 
         return And(*(Eq(x, y) for x, y in zip(self.args, other.args)))
 
-    def _contains(self, element):
+    def _contains(self, other):
         """
         'in' operator for ProductSets
 
@@ -639,11 +623,11 @@ class ProductSet(Set):
 
         """
         try:
-            if len(element) != len(self.args):
+            if len(other) != len(self.args):
                 return false
         except TypeError:  # maybe element isn't an iterable
             return false
-        return And(*[s.contains(i) for s, i in zip(self.sets, element)])
+        return And(*[s.contains(i) for s, i in zip(self.sets, other)])
 
     def _intersection(self, other):
         """
@@ -675,7 +659,7 @@ class ProductSet(Set):
         return self.args
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return Union(ProductSet(b + b.boundary if i != j else b.boundary
                                 for j, b in enumerate(self.sets))
                      for i, a in enumerate(self.sets))
@@ -692,7 +676,7 @@ class ProductSet(Set):
             raise TypeError('Not all constituent sets are iterable')
 
     @property
-    def _measure(self):
+    def measure(self):
         measure = 1
         for set in self.sets:
             measure *= set.measure
@@ -791,7 +775,7 @@ class Interval(Set, EvalfMixin):
         """
         return self.args[0]
 
-    _inf = left = start
+    inf = left = start
 
     @classmethod
     def open(cls, a, b):
@@ -824,7 +808,7 @@ class Interval(Set, EvalfMixin):
         """
         return self.args[1]
 
-    _sup = right = end
+    sup = right = end
 
     @property
     def left_open(self):
@@ -966,7 +950,7 @@ class Interval(Set, EvalfMixin):
             return {new_self, other}
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return FiniteSet(self.start, self.end)
 
     def _contains(self, other):
@@ -1078,7 +1062,7 @@ class Interval(Set, EvalfMixin):
                 imageset(f, Interval(sing[-1], self.end, True, self.right_open))
 
     @property
-    def _measure(self):
+    def measure(self):
         return self.end - self.start
 
     def to_mpi(self, prec=53):
@@ -1219,7 +1203,7 @@ class Union(Set, EvalfMixin):
         # Here we depend on rules built into the constituent sets
         args = set(args)
         new_args = True
-        while(new_args):
+        while new_args:
             for s in args:
                 new_args = False
                 for t in args - {s}:
@@ -1240,19 +1224,19 @@ class Union(Set, EvalfMixin):
         else:
             return Union(args, evaluate=False)
 
-    def _complement(self, universe):
+    def _complement(self, other):
         # DeMorgan's Law
-        return Intersection(s.complement(universe) for s in self.args)
+        return Intersection(s.complement(other) for s in self.args)
 
     @property
-    def _inf(self):
+    def inf(self):
         # We use Min so that sup is meaningful in combination with symbolic
         # interval end points.
         from ..functions import Min
         return Min(*[set.inf for set in self.args])
 
     @property
-    def _sup(self):
+    def sup(self):
         # We use Max so that sup is meaningful in combination with symbolic
         # end points.
         from ..functions import Max
@@ -1263,7 +1247,7 @@ class Union(Set, EvalfMixin):
         return Or(*or_args)
 
     @property
-    def _measure(self):
+    def measure(self):
         # Measure of a union is the sum of the measures of the sets minus
         # the sum of their pairwise intersections plus the sum of their
         # triple-wise intersections minus ... etc...
@@ -1307,7 +1291,7 @@ class Union(Set, EvalfMixin):
         return measure
 
     @property
-    def _boundary(self):
+    def boundary(self):
         def boundary_of_set(i):
             """The boundary of set i minus interior of all other sets."""
             b = self.args[i].boundary
@@ -1474,7 +1458,7 @@ class Intersection(Set):
         # Here we depend on rules built into the constituent sets
         args = set(args)
         new_args = True
-        while(new_args):
+        while new_args:
             for s in args:
                 new_args = False
                 for t in args - {s}:
@@ -1576,7 +1560,7 @@ class EmptySet(Set, metaclass=Singleton):
     is_FiniteSet = True
 
     @property
-    def _measure(self):
+    def measure(self):
         return 0
 
     def _contains(self, other):
@@ -1601,7 +1585,7 @@ class EmptySet(Set, metaclass=Singleton):
         return FiniteSet(self)
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
     def _complement(self, other):
@@ -1650,7 +1634,7 @@ class UniversalSet(Set, metaclass=Singleton):
         return other
 
     @property
-    def _measure(self):
+    def measure(self):
         return oo
 
     def _contains(self, other):
@@ -1660,7 +1644,7 @@ class UniversalSet(Set, metaclass=Singleton):
         return true
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return EmptySet()
 
 
@@ -1798,16 +1782,16 @@ class FiniteSet(Set, EvalfMixin):
         return FiniteSet(*map(f, self))
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
     @property
-    def _inf(self):
+    def inf(self):
         from ..functions import Min
         return Min(*self)
 
     @property
-    def _sup(self):
+    def sup(self):
         from ..functions import Max
         return Max(*self)
 

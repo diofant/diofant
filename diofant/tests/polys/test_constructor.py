@@ -123,7 +123,7 @@ def test_sympyissue_5428_14337():
 
 
 def test_sympyissue_20617():
-    dom = QQ.algebraic_field(2*sqrt(3)).algebraic_field(I)
+    dom = QQ.algebraic_field(sqrt(3)).algebraic_field(I)
 
     w = exp(I*2*pi/3)
     l1 = [w**2, w, 1]

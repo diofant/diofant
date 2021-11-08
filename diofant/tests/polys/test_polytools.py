@@ -14,14 +14,14 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      PolificationFailed, Poly, PolynomialError, PurePoly,
                      Rational, RealField, RootOf, Sum, Symbol, Tuple,
                      UnificationFailed, cancel, cofactors, compose, content,
-                     count_roots, decompose, degree, diff, discriminant, div,
-                     exp, expand, exquo, factor, factor_list, false, gcd,
+                     cos, count_roots, decompose, degree, diff, discriminant,
+                     div, exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
                      lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
                      pi, poly, primitive, quo, re, real_roots, reduced, rem,
                      resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
-                     subresultants, symbols, sympify, tanh, terms_gcd, true,
-                     trunc)
+                     subresultants, symbols, sympify, tan, tanh, terms_gcd,
+                     true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -929,23 +929,23 @@ def test_Poly_termwise():
 
     assert f.termwise(func) == g
 
-    def func(monom, coeff):
+    def func2(monom, coeff):
         k, = monom
         return (k,), coeff//10**(2 - k)
 
-    assert f.termwise(func) == g
+    assert f.termwise(func2) == g
 
-    def func(monom, coeff):
+    def func3(monom, coeff):
         k, = monom
         return (k,), coeff // 2
 
-    assert f.termwise(func) == (10*x + 200).as_poly()
+    assert f.termwise(func3) == (10*x + 200).as_poly()
 
-    def func(monom, coeff):
+    def func4(monom, coeff):
         k, = monom
         return k % 2, coeff
 
-    pytest.raises(PolynomialError, lambda: f.termwise(func))
+    pytest.raises(PolynomialError, lambda: f.termwise(func4))
 
 
 def test_Poly_length():
@@ -3162,6 +3162,40 @@ def test_sympyissue_20444():
 
 def test_sympyissue_13029():
     assert sqf_part(a*(x - 1)**2*(y - 3)**3, x, y) == x*y - 3*x - y + 3
+
+
+@pytest.mark.timeout(5)
+def test_sympyissue_21760():
+    _, r = (x**2016 - x**2015 + x**1008 + x**1003 +
+            1).as_poly().div((x - 1).as_poly())
+    assert r == Integer(3).as_poly(x)
+
+
+def test_sympyissue_21761():
+    t = tan(pi/7)
+    assert factor(-exp(x)*t + 1,
+                  extension=True) == Mul(-1, exp(x) - 5*t - t**5/7 + 3*t**3,
+                                         t, evaluate=False)
+
+
+def test_sympyissue_22093():
+    expr = ((2*y**3*sin(x/y)**2 + x)**2*(y*(-6*y**2*sin(x/y)**2 +
+                                            4*y*x*sin(x/y)*cos(x/y)) /
+                                         (2*y**3*sin(x/y)**2 + x)**2 +
+                                         1/(2*y**3*sin(x/y)**2 + x)) /
+            (4*y*(2*y**2*(3*y*sin(x/y) - 2*x*cos(x/y))**2*sin(x/y)**2 /
+             (2*y**3*sin(x/y)**2 + x) - 3*y*sin(x/y)**2 +
+             4*x*sin(x/y)*cos(x/y) - (3*y*sin(x/y) - 2*x*cos(x/y))*sin(x/y) +
+             x**2*sin(x/y)**2/y - x**2*cos(x/y)**2/y)))
+    res = -(4*x**2*y**2*sin(x/y)*cos(x/y) + x**2 +
+            8*x*y**5*sin(x/y)**3*cos(x/y) - 2*x*y**3*sin(x/y)**2 -
+            8*y**6*sin(x/y)**4)/(-4*x**3*sin(x/y)**2 + 4*x**3*cos(x/y)**2 -
+                                 8*x**2*y**3*sin(x/y)**4 -
+                                 24*x**2*y**3*sin(x/y)**2*cos(x/y)**2 -
+                                 24*x**2*y*sin(x/y)*cos(x/y) +
+                                 48*x*y**4*sin(x/y)**3*cos(x/y) +
+                                 24*x*y**2*sin(x/y)**2 - 24*y**5*sin(x/y)**4)
+    assert cancel(expr).equals(res)
 
 
 def test_sympyissue_18391():

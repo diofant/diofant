@@ -101,11 +101,11 @@ def _verify_bsgs(group, base, gens):
     from .perm_groups import PermutationGroup
     strong_gens_distr = _distribute_gens_by_base(base, gens)
     current_stabilizer = group
-    for i in range(len(base)):
+    for i, bi in enumerate(base):
         candidate = PermutationGroup(strong_gens_distr[i])
         if current_stabilizer.order() != candidate.order():
             return False
-        current_stabilizer = current_stabilizer.stabilizer(base[i])
+        current_stabilizer = current_stabilizer.stabilizer(bi)
     if current_stabilizer.order() != 1:
         return False
     return True
@@ -216,10 +216,10 @@ def canonicalize_naive(g, dummies, sym, *v):
     from .permutations import Permutation, _af_rmul
     from .tensor_can import dummy_sgs, gens_products
     v1 = []
-    for i in range(len(v)):
-        base_i, gens_i, n_i, sym_i = v[i]
+    for vi in v:
+        base_i, gens_i, n_i, sym_i = vi
         v1.append((base_i, gens_i, [[]]*n_i, sym_i))
-    size, sbase, sgens = gens_products(*v1)
+    size, _, sgens = gens_products(*v1)
     dgens = dummy_sgs(dummies, sym, size-2)
     if isinstance(sym, int):
         num_types = 1
@@ -317,8 +317,7 @@ def graph_certificate(gr):
     for neigh in vertices:
         vlen[len(neigh)] += 1
     v = []
-    for i in range(len(vlen)):
-        n = vlen[i]
+    for i, n in enumerate(vlen):
         if n:
             base, gens = get_symmetric_group_sgs(i)
             v.append((base, gens, n, 0))

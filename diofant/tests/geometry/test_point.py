@@ -20,7 +20,6 @@ y3 = Symbol('y3', real=True)
 z1 = Symbol('z1', real=True)
 z2 = Symbol('z2', real=True)
 z3 = Symbol('z3', real=True)
-half = Rational(1, 2)
 
 
 def feq(a, b):
@@ -54,8 +53,8 @@ def test_point():
     pytest.raises(ValueError, lambda: Point(3 + I, I))
 
     assert Point(34.05, sqrt(3)) == Point(Rational(681, 20), sqrt(3))
-    assert Point.midpoint(p3, p4) == Point(half, half)
-    assert Point.midpoint(p1, p4) == Point(half + half*x1, half + half*x2)
+    assert Point.midpoint(p3, p4) == Point(0.5, 0.5)
+    assert Point.midpoint(p1, p4) == Point(0.5 + x1/2, 0.5 + x2/2)
     assert Point.midpoint(p2, p2) == p2
     assert p2.midpoint(p2) == p2
 

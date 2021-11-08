@@ -6,10 +6,9 @@ for mathematical functions.
 import math
 import numbers
 
-import mpmath.libmp as libmp
 from mpmath import inf as mpmath_inf
-from mpmath import (make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc, quadts,
-                    workprec)
+from mpmath import (libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
+                    quadts, workprec)
 from mpmath.libmp import bitcount as mpmath_bitcount
 from mpmath.libmp import (fhalf, fnan, fnone, fone, from_int, from_man_exp,
                           from_rational, fzero, mpf_abs, mpf_add, mpf_atan,
@@ -534,7 +533,7 @@ def evalf_pow(v, prec, options):
         # Exponentiation by p magnifies relative error by |p|, so the
         # base must be evaluated with increased precision if p is large
         prec += int(math.log(abs(p), 2))
-        re, im, re_acc, im_acc = evalf(base, prec + 5, options)
+        re, im, *_ = evalf(base, prec + 5, options)
         # Real to integer power
         if re and not im:
             return mpf_pow_int(re, p, target_prec), None, target_prec, None
@@ -642,7 +641,7 @@ def evalf_trig(v, prec, options):
     # 20 extra bits is possibly overkill. It does make the need
     # to restart very unlikely
     xprec = prec + 20
-    re, im, re_acc, im_acc = evalf(arg, xprec, options)
+    re, im, *_ = evalf(arg, xprec, options)
     if im:
         if 'subs' in options:
             v = v.subs(options['subs'])
@@ -665,7 +664,7 @@ def evalf_trig(v, prec, options):
     # Very large
     if xsize >= 10:
         xprec = prec + xsize
-        re, im, re_acc, im_acc = evalf(arg, xprec, options)
+        re, im, *_ = evalf(arg, xprec, options)
     # Need to repeat in case the argument is very close to a
     # multiple of pi (or pi/2), hitting close to a root
     while 1:
@@ -677,7 +676,7 @@ def evalf_trig(v, prec, options):
             if xprec > options['maxprec']:
                 return y, None, accuracy, None
             xprec += gap
-            re, im, re_acc, im_acc = evalf(arg, xprec, options)
+            re, im, *_ = evalf(arg, xprec, options)
             continue
         else:
             return y, None, prec, None
@@ -693,7 +692,7 @@ def evalf_log(expr, prec, options):
 
     arg = expr.args[0]
     workprec = prec + 10
-    xre, xim, xacc, _ = evalf(arg, workprec, options)
+    xre, xim, *_ = evalf(arg, workprec, options)
 
     if xim:
         # XXX: use get_abs etc instead
@@ -724,7 +723,7 @@ def evalf_log(expr, prec, options):
 
 def evalf_atan(v, prec, options):
     arg = v.args[0]
-    xre, xim, reacc, imacc = evalf(arg, prec + 5, options)
+    xre, xim, *_ = evalf(arg, prec + 5, options)
     if xre is xim is None:
         return (None,)*4
     if xim:
@@ -824,7 +823,7 @@ def do_integral(expr, prec, options):
         max_imag_term = [MINUS_INF]
 
         def f(t):
-            re, im, re_acc, im_acc = evalf(func, mp.prec, {'subs': {x: t}, 'maxprec': DEFAULT_MAXPREC})
+            re, im, *_ = evalf(func, mp.prec, {'subs': {x: t}, 'maxprec': DEFAULT_MAXPREC})
 
             have_part[0] = re or have_part[0]
             have_part[1] = im or have_part[1]

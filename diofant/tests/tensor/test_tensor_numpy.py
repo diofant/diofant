@@ -70,8 +70,8 @@ def _get_valued_base_test_variables():
 
 
 def test_valued_tensor_iter():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, _, _, BA, _, _, E, px, py, pz, _, _, _, _, _, _, _,
+     _, _, _, _, _, ba_matrix, _, _, i1, i2, *_) = _get_valued_base_test_variables()
 
     # iteration on VTensorHead
     assert list(A) == [E, px, py, pz]
@@ -91,8 +91,8 @@ def test_valued_tensor_iter():
 
 
 def test_valued_tensor_covariant_contravariant_elements():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, _, AB, _, _, _, _, _, _, _, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, *_) = _get_valued_base_test_variables()
 
     assert A(-i0)[0] == A(i0)[0]
     assert A(-i0)[1] == -A(i0)[1]
@@ -104,8 +104,8 @@ def test_valued_tensor_covariant_contravariant_elements():
 
 
 def test_valued_tensor_get_matrix():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, _, AB, _, _, _, E, px, py, pz, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, *_) = _get_valued_base_test_variables()
 
     matab = AB(i0, i1).get_matrix()
     assert matab == Matrix([
@@ -124,8 +124,8 @@ def test_valued_tensor_get_matrix():
 
 
 def test_valued_tensor_contraction():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, B, AB, _, C, _, E, px, py, pz, _, mu0, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, *_) = _get_valued_base_test_variables()
 
     assert (A(i0) * A(-i0)).data == E ** 2 - px ** 2 - py ** 2 - pz ** 2
     assert (A(i0) * A(-i0)).data == A ** 2
@@ -148,16 +148,16 @@ def test_valued_tensor_contraction():
 
 
 def test_valued_tensor_self_contraction():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (_, _, AB, BA, _, _, _, _, _, _, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, *_) = _get_valued_base_test_variables()
 
     assert AB(i0, -i0).data == 4
     assert BA(i0, -i0).data == 2
 
 
 def test_valued_tensor_pow():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (_, _, _, _, C, _, E, px, py, pz, _, mu0, _, _, _, _, _,
+     *_) = _get_valued_base_test_variables()
 
     assert C**2 == -E**2 + px**2 + py**2 + pz**2
     assert C**1 == sqrt(-E**2 + px**2 + py**2 + pz**2)
@@ -166,8 +166,8 @@ def test_valued_tensor_pow():
 
 
 def test_valued_tensor_expressions():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, B, AB, BA, _, _, E, px, py, pz, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
 
     x1, x2, x3 = symbols('x1:4')
 
@@ -206,8 +206,8 @@ def test_valued_tensor_expressions():
 
 
 def test_valued_tensor_add_scalar():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, _, _, _, C, _, E, px, py, pz, _, mu0, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, *_) = _get_valued_base_test_variables()
 
     # one scalar summand after the contracted tensor
     expr1 = A(i0)*A(-i0) - (E**2 - px**2 - py**2 - pz**2)
@@ -227,12 +227,9 @@ def test_valued_tensor_add_scalar():
 
 
 def test_noncommuting_components():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
-
     euclid = TensorIndexType('Euclidean')
     euclid.data = [1, 1]
-    i1, i2, i3 = tensor_indices('i1:4', euclid)
+    i1, i2, _ = tensor_indices('i1:4', euclid)
 
     a, b, c, d = symbols('a b c d', commutative=False)
     V1 = tensorhead('V1', [euclid] * 2, [[1]]*2)
@@ -250,16 +247,16 @@ def test_noncommuting_components():
 
 
 def test_valued_non_diagonal_metric():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, n0, _,
+     _, NA, _, _, _, _, ndm_matrix, *_) = _get_valued_base_test_variables()
 
     mmatrix = Matrix(ndm_matrix)
     assert (NA(n0)*NA(-n0)).data == (NA(n0).get_matrix().T * mmatrix * NA(n0).get_matrix())[0, 0]
 
 
 def test_valued_assign_numpy_ndarray():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, _, AB, _, _, _, E, px, py, pz, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, *_) = _get_valued_base_test_variables()
 
     # this is needed to make sure that a numpy.ndarray can be assigned to a
     # tensor.
@@ -294,8 +291,8 @@ def test_valued_assign_numpy_ndarray():
 
 
 def test_valued_metric_inverse():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (_, _, _, _, _, Lorentz, _, _, _, _, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, *_) = _get_valued_base_test_variables()
 
     # let's assign some fancy matrix, just to verify it:
     # (this has no physical sense, it's just testing diofant);
@@ -336,8 +333,8 @@ def test_valued_metric_inverse():
 
 
 def test_valued_canon_bp_swapaxes():
-    (A, B, AB, BA, C, Lorentz, E, px, py, pz, LorentzD, mu0, mu1, mu2, ndm, n0, n1,
-     n2, NA, NB, NC, minkowski, ba_matrix, ndm_matrix, i0, i1, i2, i3, i4) = _get_valued_base_test_variables()
+    (A, B, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _,
+     _, _, _, _, _, _, _, i0, i1, i2, *_) = _get_valued_base_test_variables()
 
     e1 = A(i1)*A(i0)
     e1.data[0, 1] = 44
@@ -371,7 +368,7 @@ def test_contract_automatrix_and_data():
         [[5, 6],
          [7, 8]]
     ]
-    m0, m1, m2 = tensor_indices('m0:3', L)
+    m0, *_ = tensor_indices('m0:3', L)
     s0, s1, s2 = tensor_indices('s0:3', S)
 
     assert (G(-m0).data == numpy.array([
@@ -398,7 +395,6 @@ def test_contract_automatrix_and_data():
 
 def test_valued_components_with_wrong_symmetry():
     IT = TensorIndexType('IT', dim=3)
-    i0, i1, i2, i3 = tensor_indices('i0:4', IT)
     IT.data = [1, 1, 1]
     A_nosym = tensorhead('A', [IT]*2, [[1]]*2)
     A_sym = tensorhead('A', [IT]*2, [[1]*2])
@@ -514,7 +510,7 @@ def test_sympyissue_11020_TensAdd_data():
     Lorentz.data = [-1, 1]
 
     a, b, c, d = tensor_indices('a, b, c, d', Lorentz)
-    i0, i1 = tensor_indices('i_0:2', Lorentz)
+    i0, _ = tensor_indices('i_0:2', Lorentz)
 
     Vec = TensorType([Lorentz], tensorsymmetry([1]))
     S2 = TensorType([Lorentz] * 2, tensorsymmetry([1] * 2))

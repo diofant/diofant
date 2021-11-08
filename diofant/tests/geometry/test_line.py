@@ -26,7 +26,6 @@ y3 = Symbol('y3', extended_real=True)
 z1 = Symbol('z1', extended_real=True)
 z2 = Symbol('z2', extended_real=True)
 z3 = Symbol('z3', extended_real=True)
-half = Rational(1, 2)
 
 
 def feq(a, b):
@@ -85,7 +84,7 @@ def test_line_geom():
     assert Line(p1, p2).scale(2, 1) == Line(p1, p9)
 
     assert l2.arbitrary_point() in l2
-    for ind in range(5):
+    for _ in range(5):
         assert l3.random_point() in l3
     pytest.raises(ValueError, lambda: l3.arbitrary_point('x1'))
 
@@ -192,7 +191,7 @@ def test_line_geom():
     s1 = Segment(p1, p2)
     s2 = Segment(p1, p1_1)
     assert s1.midpoint == Point(Rational(1, 2), Rational(1, 2))
-    assert s2.length == sqrt( 2*(x1**2) )
+    assert s2.length == sqrt(2*(x1**2))
     assert Segment((1, 1), (2, 3)).arbitrary_point() == Point(1 + t, 1 + 2*t)
     assert s1.perpendicular_bisector() == \
         Line(Point(1/2, 1/2), Point(3/2, -1/2))
@@ -228,13 +227,13 @@ def test_line_geom():
 
     # Testing distance from a Segment to an object
     s1 = Segment(Point(0, 0), Point(1, 1))
-    s2 = Segment(Point(half, half), Point(1, 0))
+    s2 = Segment(Point(0.5, 0.5), Point(1, 0))
     pt1 = Point(0, 0)
     pt2 = Point(Rational(3, 2), Rational(3, 2))
     assert s1.distance(pt1) == 0
     assert s1.distance((0, 0)) == 0
-    assert s2.distance(pt1) == 2**half/2
-    assert s2.distance(pt2) == 2**half
+    assert s2.distance(pt1) == sqrt(2)/2
+    assert s2.distance(pt2) == sqrt(2)
     # Line to point
     p1, p2 = Point(0, 0), Point(1, 1)
     s = Line(p1, p2)

@@ -307,7 +307,7 @@ def test_lookup_table():
     table = defaultdict(list)
     _create_lookup_table(table)
     for _, l in sorted(table.items(), key=default_sort_key):
-        for formula, terms, cond, hint in sorted(l, key=default_sort_key):
+        for formula, terms, *_ in sorted(l, key=default_sort_key):
             subs = {}
             for a in list(formula.free_symbols) + [z_dummy]:
                 if hasattr(a, 'properties') and a.properties:

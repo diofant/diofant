@@ -181,7 +181,7 @@ def mod_inverse(a, m):
     try:
         a, m = as_int(a), as_int(m)
         if m > 1:
-            x, y, g = igcdex(a, m)
+            x, _, g = igcdex(a, m)
             if g == 1:
                 c = x % m
             if a < 0:
@@ -518,6 +518,13 @@ class Float(Number):
     is_Float = True
 
     def __new__(cls, num, dps=None):
+        if num is oo or num == mlib.finf:
+            num = '+inf'
+        elif num in (-oo, mlib.fninf):
+            num = '-inf'
+        elif num in (nan, mlib.fnan):
+            num = 'nan'
+
         if dps is None:
             if isinstance(num, Float):
                 return num
@@ -659,7 +666,7 @@ class Float(Number):
         else:
             return NotImplemented
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         """
         Expt is symbolic object but not equal to 0, 1.
 
@@ -669,27 +676,27 @@ class Float(Number):
         """
         from .power import Pow
         if self == 0:
-            if expt.is_positive:
+            if other.is_positive:
                 return S.Zero
-            if expt.is_negative:
+            if other.is_negative:
                 return Float('inf')
-        if isinstance(expt, Number):
-            if isinstance(expt, Integer):
+        if isinstance(other, Number):
+            if isinstance(other, Integer):
                 prec = self._prec
                 return Float._new(
-                    mlib.mpf_pow_int(self._mpf_, expt.numerator, prec, rnd), prec)
-            elif isinstance(expt, Rational) and \
-                    expt.numerator == 1 and expt.denominator % 2 and self.is_negative:
-                return Pow(S.NegativeOne, expt, evaluate=False)*(
-                    -self)._eval_power(expt)
-            expt, prec = expt._as_mpf_op(self._prec)
+                    mlib.mpf_pow_int(self._mpf_, other.numerator, prec, rnd), prec)
+            elif isinstance(other, Rational) and \
+                    other.numerator == 1 and other.denominator % 2 and self.is_negative:
+                return Pow(S.NegativeOne, other, evaluate=False)*(
+                    -self)._eval_power(other)
+            other, prec = other._as_mpf_op(self._prec)
             mpfself = self._mpf_
             try:
-                y = mlib.mpf_pow(mpfself, expt, prec, rnd)
+                y = mlib.mpf_pow(mpfself, other, prec, rnd)
                 return Float._new(y, prec)
             except mlib.ComplexResult:
                 re, im = mlib.mpc_pow(
-                    (mpfself, mlib.fzero), (expt, mlib.fzero), prec, rnd)
+                    (mpfself, mlib.fzero), (other, mlib.fzero), prec, rnd)
                 return Float._new(re, prec) + \
                     Float._new(im, prec)*I
 
@@ -981,20 +988,20 @@ class Rational(Number):
             return Rational.__mod__(other, self)
         return Number.__rmod__(self, other)
 
-    def _eval_power(self, expt):
-        if isinstance(expt, Number):
-            if expt.is_negative:
+    def _eval_power(self, other):
+        if isinstance(other, Number):
+            if other.is_negative:
                 # (3/4)**-2 -> (4/3)**2
-                ne = -expt
+                ne = -other
                 if (ne is S.One):
                     return Rational(self.denominator, self.numerator)
                 if self.is_negative:
-                    return -((S.NegativeOne)**((expt.numerator % expt.denominator) /
-                                               Integer(expt.denominator)) *
+                    return -((S.NegativeOne)**((other.numerator % other.denominator) /
+                                               Integer(other.denominator)) *
                              Rational(self.denominator, -self.numerator)**ne)
                 else:
                     return Rational(self.denominator, self.numerator)**ne
-            if expt is oo:  # -oo already caught by test for negative
+            if other is oo:  # -oo already caught by test for negative
                 if self.numerator > self.denominator:
                     # (3/2)**oo -> oo
                     return oo
@@ -1002,19 +1009,19 @@ class Rational(Number):
                     # (-3/2)**oo -> oo + I*oo
                     return oo + oo*I
                 return S.Zero
-            if isinstance(expt, Float):
-                return self._eval_evalf(expt._prec)**expt
-            elif isinstance(expt, Integer):
+            if isinstance(other, Float):
+                return self._eval_evalf(other._prec)**other
+            elif isinstance(other, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
-                return Rational(self.numerator**expt.numerator, self.denominator**expt.numerator)
+                return Rational(self.numerator**other.numerator, self.denominator**other.numerator)
             else:  # Rational
                 if self.numerator != 1:
                     # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
-                    return Integer(self.numerator)**expt*Integer(self.denominator)**(-expt)
+                    return Integer(self.numerator)**other*Integer(self.denominator)**(-other)
                 # as the above caught negative self.numerator, now self is positive
                 return Integer(self.denominator)**Rational(
-                    expt.numerator*(expt.denominator - 1), expt.denominator) / \
-                    Integer(self.denominator)**Integer(expt.numerator)
+                    other.numerator*(other.denominator - 1), other.denominator) / \
+                    Integer(self.denominator)**Integer(other.numerator)
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.numerator, self.denominator, prec, rnd)
@@ -1250,9 +1257,9 @@ class Integer(Rational):
     def _eval_is_odd(self):
         return bool(self.numerator % 2)
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         """
-        Tries to do some simplifications on self**expt
+        Tries to do some simplifications on self**other
 
         Returns None if no further simplifications can be done
 
@@ -1271,36 +1278,36 @@ class Integer(Rational):
         from ..ntheory import perfect_power
         from .power import Pow, integer_nthroot
 
-        if expt is oo:
+        if other is oo:
             if self.numerator > S.One:
                 return oo
             # cases -1, 0, 1 are done in their respective classes
             return oo + I*oo
-        if expt == -oo:
+        if other == -oo:
             return Rational(1, self)**oo
-        if isinstance(expt, Float):
+        if isinstance(other, Float):
             # Rational knows how to exponentiate by a Float
-            return super()._eval_power(expt)
-        if not isinstance(expt, Rational):
+            return super()._eval_power(other)
+        if not isinstance(other, Rational):
             return
-        if expt is S.Half and self.is_negative:
+        if other is S.Half and self.is_negative:
             # we extract I for this special case since everyone is doing so
-            return I*Pow(-self, expt)
-        if expt.is_negative:
+            return I*Pow(-self, other)
+        if other.is_negative:
             # invert base and change sign on exponent
-            ne = -expt
+            ne = -other
             if self.is_negative:
-                return -((S.NegativeOne)**((expt.numerator % expt.denominator) /
-                                           Integer(expt.denominator))*Rational(1, -self)**ne)
+                return -((S.NegativeOne)**((other.numerator % other.denominator) /
+                                           Integer(other.denominator))*Rational(1, -self)**ne)
             else:
                 return Rational(1, self.numerator)**ne
         # see if base is a perfect root, sqrt(4) --> 2
-        x, xexact = integer_nthroot(abs(self.numerator), expt.denominator)
+        x, xexact = integer_nthroot(abs(self.numerator), other.denominator)
         if xexact:
             # if it's a perfect root we've finished
-            result = Integer(x**abs(expt.numerator))
+            result = Integer(x**abs(other.numerator))
             if self.is_negative:
-                result *= S.NegativeOne**expt
+                result *= S.NegativeOne**other
             return result
 
         # The following is an algorithm where we collect perfect roots
@@ -1310,30 +1317,30 @@ class Integer(Rational):
         b_pos = int(abs(self.numerator))
         p = perfect_power(b_pos)
         if p is not False:
-            dict = {p[0]: p[1]}
+            pp_dict = {p[0]: p[1]}
         else:
-            dict = Integer(self).factors(limit=2**15)
+            pp_dict = Integer(self).factors(limit=2**15)
 
         # now process the dict of factors
         if self.is_negative:
-            dict[-1] = 1
+            pp_dict[-1] = 1
         out_int = 1  # integer part
         out_rad = 1  # extracted radicals
         sqr_int = 1
         sqr_gcd = 0
         sqr_dict = {}
-        for prime, exponent in dict.items():
-            exponent *= expt.numerator
-            # remove multiples of expt.denominator: (2**12)**(1/10) -> 2*(2**2)**(1/10)
-            div_e, div_m = divmod(exponent, expt.denominator)
+        for prime, exponent in pp_dict.items():
+            exponent *= other.numerator
+            # remove multiples of other.denominator: (2**12)**(1/10) -> 2*(2**2)**(1/10)
+            div_e, div_m = divmod(exponent, other.denominator)
             if div_e > 0:
                 out_int *= prime**div_e
             if div_m > 0:
                 # see if the reduced exponent shares a gcd with e.denominator
                 # (2**2)**(1/10) -> 2**(1/5)
-                g = math.gcd(div_m, expt.denominator)
+                g = math.gcd(div_m, other.denominator)
                 if g != 1:
-                    out_rad *= Pow(prime, Rational(div_m//g, expt.denominator//g))
+                    out_rad *= Pow(prime, Rational(div_m//g, other.denominator//g))
                 else:
                     sqr_dict[prime] = div_m
         # identify gcd of remaining powers
@@ -1349,7 +1356,7 @@ class Integer(Rational):
         if sqr_int == self and out_int == 1 and out_rad == 1:
             result = None
         else:
-            result = out_int*out_rad*Pow(sqr_int, Rational(sqr_gcd, expt.denominator))
+            result = out_int*out_rad*Pow(sqr_int, Rational(sqr_gcd, other.denominator))
         return result
 
     def _eval_is_prime(self):
@@ -1422,17 +1429,17 @@ class Zero(IntegerConstant, metaclass=SingletonWithManagedProperties):
     is_number = True
     is_imaginary = True
 
-    def _eval_power(self, expt):
-        if expt.is_positive:
+    def _eval_power(self, other):
+        if other.is_positive:
             return self
-        if expt.is_negative:
+        if other.is_negative:
             return zoo
-        if expt.is_extended_real is False:
+        if other.is_extended_real is False:
             return nan
         # infinities are already handled with pos and neg
         # tests above; now throw away leading numbers on Mul
         # exponent
-        coeff, terms = expt.as_coeff_Mul()
+        coeff, terms = other.as_coeff_Mul()
         if coeff.is_negative:
             return zoo**terms
         if coeff is not S.One:  # there is a Number to discard
@@ -1491,25 +1498,25 @@ class NegativeOne(IntegerConstant, metaclass=SingletonWithManagedProperties):
     _numerator = _int_dtype(-1)
     _denominator = _int_dtype(1)
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         from .add import Add
-        if isinstance(expt, Number):
-            if isinstance(expt, Float):
-                return Float(-1.0)**expt
-            elif expt in (oo, -oo):
+        if isinstance(other, Number):
+            if isinstance(other, Float):
+                return Float(-1.0)**other
+            elif other in (oo, -oo):
                 return nan
-            elif expt is S.Half:
+            elif other is S.Half:
                 return I
             else:
-                assert isinstance(expt, Rational)
-                if expt.denominator == 2:
-                    return I**Integer(expt.numerator)
-                i, r = divmod(expt.numerator, expt.denominator)
+                assert isinstance(other, Rational)
+                if other.denominator == 2:
+                    return I**Integer(other.numerator)
+                i, r = divmod(other.numerator, other.denominator)
                 if i:
-                    return self**i*self**Rational(r, expt.denominator)
-        if isinstance(expt, Add):
+                    return self**i*self**Rational(r, other.denominator)
+        if isinstance(other, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
-            e2 = 2*expt
+            e2 = 2*other
             if e2.is_even and e2.could_extract_minus_sign():
                 e2 *= self
             assert e2.is_Add
@@ -1661,9 +1668,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     def __neg__(self):
         return S.NegativeInfinity
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         """
-        ``expt`` is symbolic object but not equal to 0 or 1.
+        ``other`` is symbolic object but not equal to 0 or 1.
 
         ================ ======= ==============================
         Expression       Result  Notes
@@ -1681,17 +1688,17 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         """
         from ..functions import re
 
-        if expt.is_positive:
+        if other.is_positive:
             return oo
-        if expt.is_negative:
+        if other.is_negative:
             return S.Zero
-        if expt.is_real is False and expt.is_number:
-            expt_real = re(expt)
-            if expt_real.is_positive:
+        if other.is_real is False and other.is_number:
+            other_real = re(other)
+            if other_real.is_positive:
                 return zoo
-            elif expt_real.is_negative:
+            elif other_real.is_negative:
                 return S.Zero
-            elif expt_real.is_zero:
+            elif other_real.is_zero:
                 return nan
 
     def _as_mpf_val(self, prec):
@@ -1837,9 +1844,9 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     def __neg__(self):
         return oo
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         """
-        ``expt`` is symbolic object but not equal to 0 or 1.
+        ``other`` is symbolic object but not equal to 0 or 1.
 
         ================ ======= ==============================
         Expression       Result  Notes
@@ -1859,11 +1866,11 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         NaN
 
         """
-        if expt.is_number:
-            if expt in (oo, -oo, nan):
+        if other.is_number:
+            if other in (oo, -oo, nan):
                 return nan
 
-            return S.NegativeOne**expt*oo**expt
+            return S.NegativeOne**other*oo**other
 
     def _as_mpf_val(self, prec):
         return mlib.fninf
@@ -2046,10 +2053,10 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def __neg__(self):
         return self
 
-    def _eval_power(self, expt):
-        if expt.is_positive:
+    def _eval_power(self, other):
+        if other.is_positive:
             return zoo
-        elif expt.is_negative:
+        elif other.is_negative:
             return S.Zero
 
 
@@ -2164,22 +2171,22 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
         if issubclass(number_cls, Integer):
             return Integer(2), Integer(3)
 
-    def _eval_power(self, arg):
+    def _eval_power(self, other):
         from ..functions.elementary.exponential import log
         from . import Add, Mul, Pow
-        if arg.is_Number:
-            if arg is oo:
+        if other.is_Number:
+            if other is oo:
                 return oo
-            elif arg == -oo:
+            elif other == -oo:
                 return S.Zero
-        elif isinstance(arg, log):
-            return arg.args[0]
-        elif arg.is_Mul:
+        elif isinstance(other, log):
+            return other.args[0]
+        elif other.is_Mul:
             Ioo = I*oo
-            if arg in [Ioo, -Ioo]:
+            if other in [Ioo, -Ioo]:
                 return nan
 
-            coeff = arg.coeff(pi*I)
+            coeff = other.coeff(pi*I)
             if coeff:
                 if (2*coeff).is_integer:
                     if coeff.is_even:
@@ -2196,7 +2203,7 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
 
             # look for a single log factor
 
-            coeff, terms = arg.as_coeff_Mul()
+            coeff, terms = other.as_coeff_Mul()
 
             # but it can't be multiplied by oo
             if coeff in (oo, -oo):
@@ -2215,10 +2222,10 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
                     return
 
             return log_term**Mul(*coeffs) if log_term else None
-        elif arg.is_Add:
+        elif other.is_Add:
             out = []
             add = []
-            for a in arg.args:
+            for a in other.args:
                 if a is S.One:
                     add.append(a)
                     continue
@@ -2229,8 +2236,8 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
                     out.append(newa)
             if out:
                 return Mul(*out)*Pow(self, Add(*add), evaluate=False)
-        elif arg.is_Matrix:
-            return arg.exp()
+        elif other.is_Matrix:
+            return other.exp()
 
     def _eval_rewrite_as_sin(self):
         from ..functions import sin
@@ -2466,7 +2473,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def _eval_conjugate(self):
         return -I
 
-    def _eval_power(self, expt):
+    def _eval_power(self, other):
         """Helper for Pow constructor.
 
         b is I = sqrt(-1)
@@ -2479,17 +2486,17 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-        if isinstance(expt, Number):
-            if isinstance(expt, Integer):
-                expt = expt.numerator % 4
-                if expt == 0:
+        if isinstance(other, Number):
+            if isinstance(other, Integer):
+                other = other.numerator % 4
+                if other == 0:
                     return S.One
-                if expt == 1:
+                if other == 1:
                     return I
-                if expt == 2:
+                if other == 2:
                     return -S.One
                 return -I
-            return S.NegativeOne**(expt*S.Half)
+            return S.NegativeOne**(other*S.Half)
 
     def as_base_exp(self):
         return S.NegativeOne, S.Half

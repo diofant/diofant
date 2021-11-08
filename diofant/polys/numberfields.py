@@ -12,7 +12,8 @@ from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..core.sympify import sympify
 from ..domains import QQ, AlgebraicField
-from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
+from ..functions import (Abs, conjugate, cos, exp_polar, im, re, root, sin,
+                         sqrt, tan)
 from ..ntheory import divisors, factorint
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -117,10 +118,10 @@ def _separate_sq(p):
         # there are no surds
         return p
     surds = [z for y, z in a]
-    for i in range(len(surds)):  # pragma: no branch
-        if surds[i] != 1:
+    for i, si in enumerate(surds):  # pragma: no branch
+        if si != 1:
             break
-    g, b1, b2 = _split_gcd(*surds[i:])
+    _, b1, _ = _split_gcd(*surds[i:])
     a1 = []
     a2 = []
     for y, z in a:
@@ -394,12 +395,31 @@ def _minpoly_cos(ex, x):
     raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
 
 
+def _minpoly_tan(ex, x):
+    """Returns the minimal polynomial of ``tan(ex)``."""
+    c, a = ex.args[0].as_coeff_Mul()
+    if a is pi and c.is_Rational:
+        c *= 2
+        n = c.denominator
+        a = n if c.numerator % 2 == 0 else 1
+        terms = []
+        for k in range((c.numerator + 1) % 2, n + 1, 2):
+            terms.append(a*x**k)
+            a = -(a*(n - k - 1)*(n - k)) // ((k + 1)*(k + 2))
+
+        r = Add(*terms)
+        _, factors = factor_list(r)
+        return _choose_factor(factors, x, ex)
+
+    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+
+
 def _minpoly_exp(ex, x):
     """Returns the minimal polynomial of ``exp(ex)``."""
     c, a = ex.exp.as_coeff_Mul()
     q = sympify(c.denominator)
     if a == I*pi:
-        if c.numerator == 1 or c.numerator == -1:
+        if c.numerator in (1, -1):
             if q == 3:
                 return x**2 - x + 1
             if q == 4:
@@ -499,6 +519,8 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_sin(ex, x)
     elif isinstance(ex, cos):
         res = _minpoly_cos(ex, x)
+    elif isinstance(ex, tan):
+        res = _minpoly_tan(ex, x)
     elif isinstance(ex, RootOf) and ex.poly.domain.is_Numerical:
         res = _minpoly_rootof(ex, x)
     elif isinstance(ex, conjugate):
@@ -709,9 +731,14 @@ def primitive_element(extension, **args):
     _, g = PurePoly(g).clear_denoms(convert=True)
 
     if g.LC() != 1:
-        H = [[c/g.LC()**n for n, c in enumerate(h)] for h in H]
-        coeffs = [c*g.LC() for c in coeffs]
-        g = (g.compose((g.gen/g.LC()).as_poly())*g.LC()**g.degree()//g.LC()).retract()
+        for d in divisors(g.LC())[1:]:  # pragma: no branch
+            new_g = g.compose((g.gen/d).as_poly())*d**g.degree()//d
+            _, new_g = new_g.monic().clear_denoms(convert=True)
+            if new_g.LC() == 1:
+                g = new_g
+                H = [[c/d**n for n, c in enumerate(h)] for h in H]
+                coeffs = [c*d for c in coeffs]
+                break
 
     return g, list(coeffs), H
 

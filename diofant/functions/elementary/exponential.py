@@ -249,7 +249,7 @@ class log(Function):
         from ...concrete import Product, Sum
         from .complexes import unpolarify
         force = hints.get('force', False)
-        if (len(self.args) == 2):
+        if len(self.args) == 2:
             return expand_log(self.func(*self.args), deep=deep, force=force)
         arg = self.args[0]
         if arg.is_Integer:
@@ -292,7 +292,7 @@ class log(Function):
 
     def _eval_simplify(self, ratio, measure):
         from ...simplify import simplify
-        if (len(self.args) == 2):
+        if len(self.args) == 2:
             return simplify(self.func(*self.args), ratio=ratio, measure=measure)
         expr = self.func(simplify(self.args[0], ratio=ratio, measure=measure))
         expr = expand_log(expr, deep=True)

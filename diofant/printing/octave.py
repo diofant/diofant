@@ -268,22 +268,22 @@ class OctaveCodePrinter(CodePrinter):
     # Could generate quadrature code for definite Integrals?
     # _print_Integral = _print_not_supported
 
-    def _print_MatrixBase(self, A):
+    def _print_MatrixBase(self, expr):
         # Handle zero dimensions:
-        if (A.rows, A.cols) == (0, 0):
+        if (expr.rows, expr.cols) == (0, 0):
             return '[]'
-        elif A.rows == 0 or A.cols == 0:
-            return f'zeros({A.rows}, {A.cols})'
-        elif (A.rows, A.cols) == (1, 1):
+        elif expr.rows == 0 or expr.cols == 0:
+            return f'zeros({expr.rows}, {expr.cols})'
+        elif (expr.rows, expr.cols) == (1, 1):
             # Octave does not distinguish between scalars and 1x1 matrices
-            return self._print(A[0, 0])
-        elif A.rows == 1:
-            return '[%s]' % A.table(self, rowstart='', rowend='', colsep=' ')
-        elif A.cols == 1:
+            return self._print(expr[0, 0])
+        elif expr.rows == 1:
+            return '[%s]' % expr.table(self, rowstart='', rowend='', colsep=' ')
+        elif expr.cols == 1:
             # note .table would unnecessarily equispace the rows
-            return '[%s]' % '; '.join([self._print(a) for a in A])
-        return '[%s]' % A.table(self, rowstart='', rowend='',
-                                rowsep=';\n', colsep=' ')
+            return '[%s]' % '; '.join([self._print(a) for a in expr])
+        return '[%s]' % expr.table(self, rowstart='', rowend='',
+                                   rowsep=';\n', colsep=' ')
 
     def _print_SparseMatrixBase(self, A):
         from ..matrices import Matrix
@@ -319,7 +319,7 @@ class OctaveCodePrinter(CodePrinter):
                 strslice(expr.colslice, expr.parent.shape[1]) + ')')
 
     def _print_Indexed(self, expr):
-        inds = [ self._print(i) for i in expr.indices ]
+        inds = [self._print(i) for i in expr.indices]
         return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
 
     def _print_Idx(self, expr):
@@ -425,7 +425,7 @@ class OctaveCodePrinter(CodePrinter):
         dec_regex = ('^end$', '^elseif ', '^else$')
 
         # pre-strip left-space from the code
-        code = [ line.lstrip(' \t') for line in code ]
+        code = [line.lstrip(' \t') for line in code]
 
         increase = [int(any(re.search(_, line) for _ in inc_regex))
                     for line in code]

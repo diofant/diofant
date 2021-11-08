@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Dummy, Rational, RisingFactorial, Symbol,
+from diofant import (Derivative, Dummy, Rational, RisingFactorial, Sum, Symbol,
                      assoc_laguerre, assoc_legendre, binomial, chebyshevt,
                      chebyshevt_root, chebyshevu, chebyshevu_root, conjugate,
                      cos, diff, exp, factorial, gamma, gegenbauer, hermite,
@@ -163,7 +163,7 @@ def test_assoc_legendre():
     assert Plm(2, 1, x) == -3*x*Q
     assert Plm(2, 2, x) == 3*Q**2
     assert Plm(3, 0, x) == (5*x**3 - 3*x)/2
-    assert Plm(3, 1, x).expand() == (( 3*(1 - 5*x**2)/2 ).expand() * Q).expand()
+    assert Plm(3, 1, x).expand() == ((3*(1 - 5*x**2)/2).expand()*Q).expand()
     assert Plm(3, 2, x) == 15*x * Q**2
     assert Plm(3, 3, x) == -15 * Q**3
 

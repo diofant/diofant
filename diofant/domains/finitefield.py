@@ -248,7 +248,7 @@ class GaloisFieldElement(ModularInteger):
 
         t = x**n
 
-        for m in range(n, p**n - 1):
+        for _ in range(n, p**n - 1):
             r = t % f
             if r == 1:
                 return False

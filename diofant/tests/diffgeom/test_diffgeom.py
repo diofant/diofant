@@ -28,7 +28,7 @@ def test_R2():
 
     # r**2 = x**2 + y**2
     assert (R2.r**2 - R2.x**2 - R2.y**2).rcall(point_r) == 0
-    assert trigsimp( (R2.r**2 - R2.x**2 - R2.y**2).rcall(point_p) ) == 0
+    assert trigsimp((R2.r**2 - R2.x**2 - R2.y**2).rcall(point_p)) == 0
     assert trigsimp(R2.e_r(R2.x**2 + R2.y**2).rcall(point_p).doit()) == 2*r0
 
     # polar->rect->polar == Id
@@ -225,7 +225,7 @@ def test_schwarzschild():
     m = Manifold('Schwarzschild', 4)
     p = Patch('origin', m)
     cs = CoordSystem('spherical', p, ['t', 'r', 'theta', 'phi'])
-    t, r, theta, phi = cs.coord_functions()
+    _, r, theta, _ = cs.coord_functions()
     dt, dr, dtheta, dphi = cs.base_oneforms()
     f, g = symbols('f g', cls=Function)
     metric = (exp(2*f(r))*TP(dt, dt) - exp(2*g(r))*TP(dr, dr) -

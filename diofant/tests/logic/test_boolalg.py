@@ -60,7 +60,7 @@ def test_Or():
     assert Or(A) == A
     assert Or(True) is true
     assert Or(False) is false
-    assert Or(True, True ) is true
+    assert Or(True, True) is true
     assert Or(True, False) is true
     assert Or(False, False) is false
     assert Or(True, A) is true
@@ -86,7 +86,7 @@ def test_Xor():
     assert Xor(True, False, False, A, B) == ~Xor(A, B)
     assert Xor(True) is true
     assert Xor(False) is false
-    assert Xor(True, True ) is false
+    assert Xor(True, True) is false
     assert Xor(True, False) is true
     assert Xor(False, False) is false
     assert Xor(True, A) == ~A
@@ -122,7 +122,7 @@ def test_Nand():
     assert Nand(A) == ~A
     assert Nand(True) is false
     assert Nand(False) is true
-    assert Nand(True, True ) is false
+    assert Nand(True, True) is false
     assert Nand(True, False) is true
     assert Nand(False, False) is true
     assert Nand(True, A) == ~A
@@ -138,7 +138,7 @@ def test_Nor():
     assert Nor(A) == ~A
     assert Nor(True) is false
     assert Nor(False) is true
-    assert Nor(True, True ) is false
+    assert Nor(True, True) is false
     assert Nor(True, False) is false
     assert Nor(False, False) is true
     assert Nor(True, A) is false
@@ -187,7 +187,7 @@ def test_Equivalent():
 
 
 def test_equals():
-    assert Not(Or(A, B)).equals( And(Not(A), Not(B)) ) is True
+    assert Not(Or(A, B)).equals(And(Not(A), Not(B))) is True
     assert Equivalent(A, B).equals((A >> B) & (B >> A)) is True
     assert ((A | ~B) & (~A | B)).equals((~A & ~B) | (A & B)) is True
     assert (A >> B).equals(~A >> ~B) is False
@@ -539,9 +539,9 @@ def test_true_false():
     assert not false
     assert true == True  # noqa: E712
     assert false == False  # noqa: E712
-    assert not (true == False)  # noqa: E712
-    assert not (false == True)  # noqa: E712
-    assert not (true == false)
+    assert not true == False  # noqa: E712
+    assert not false == True  # noqa: E712
+    assert not true == false
 
     assert hash(true) == hash(True)
     assert hash(false) == hash(False)

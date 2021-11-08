@@ -557,7 +557,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
-    Q_L1, Q_L2, Q_L3, Q_L4 = Q
+    _, Q_L2, _, Q_L4 = Q
 
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
@@ -665,7 +665,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
-    Q_L1, Q_L2, Q_L3, Q_L4 = Q
+    Q_L1, _, Q_L3, _ = Q
 
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
@@ -1168,7 +1168,7 @@ class _FindRoot:
             f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
         if eps is not None and steps is not None:
-            for i in range(steps):
+            for _ in range(steps):
                 if abs(a/c - b/d) >= eps:
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
                 else:
@@ -1179,7 +1179,7 @@ class _FindRoot:
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
             if steps is not None:
-                for i in range(steps):
+                for _ in range(steps):
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
         if disjoint is not None:
@@ -1751,7 +1751,7 @@ class _FindRoot:
         n = f.degree()
         h, Q = f.LC*self.one, [self.one]
 
-        for i in range(n):
+        for _ in range(n):
             Q.append(Q[-1]*q)
 
         for c, q in zip(reversed(f.all_coeffs()[:-1]), Q[1:]):

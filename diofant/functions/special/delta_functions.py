@@ -95,7 +95,7 @@ class DiracDelta(Function):
         """
         from ...polys import roots
 
-        if not self.args[0].has(x) or (len(self.args) > 1 and self.args[1] != 0 ):
+        if not self.args[0].has(x) or (len(self.args) > 1 and self.args[1] != 0):
             return self
         try:
             argroots = roots(self.args[0], x)
@@ -203,7 +203,7 @@ class Heaviside(Function):
     def eval(cls, arg):
         arg = sympify(arg)
         if im(arg).is_nonzero:
-            raise ValueError(f'Function defined only for Real Values. Complex part: {im(arg)!r}  found in {arg!r} .' )
+            raise ValueError(f'Function defined only for Real Values. Complex part: {im(arg)!r}  found in {arg!r} .')
         elif arg.is_negative:
             return Integer(0)
         elif arg.is_zero:

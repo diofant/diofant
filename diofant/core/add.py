@@ -83,7 +83,6 @@ class Add(AssocOp):
                     if coeff is nan:
                         # we know for sure the result will be nan
                         return [nan], [], None
-                o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             elif o is zoo:

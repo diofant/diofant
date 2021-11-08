@@ -1385,7 +1385,7 @@ def func_field_modgcd(f, g):
         h = _func_field_modgcd_m(f_, g_, minpoly)
         h = _to_ANP_poly(h, ring)
 
-        contx0h_, h = _primitive_in_x0(h)
+        _, h = _primitive_in_x0(h)
         h *= contx0h.set_ring(ring)
         f *= contx0f.set_ring(ring)
         g *= contx0g.set_ring(ring)

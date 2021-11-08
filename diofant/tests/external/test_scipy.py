@@ -17,7 +17,7 @@ scipy = pytest.importorskip('scipy')
 
 def eq(a, b, tol=1e-6):
     for x, y in zip(a, b):
-        if not (abs(x - y) < tol):
+        if not abs(x - y) < tol:
             return False
     return True
 

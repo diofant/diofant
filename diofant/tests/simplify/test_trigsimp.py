@@ -3,7 +3,7 @@ import pytest
 from diofant import (E, I, Matrix, Piecewise, Rational, Subs, Symbol, cos,
                      cosh, cot, coth, count_ops, csc, diff, exp, expand,
                      exptrigsimp, integrate, log, nan, pi, simplify, sin, sinh,
-                     sqrt, symbols, tan, tanh, trigsimp)
+                     sqrt, tan, tanh, trigsimp)
 from diofant.abc import a, b, x, y, z
 from diofant.simplify.trigsimp import trigsimp_groebner
 from diofant.utilities.randtest import verify_numerically as tn
@@ -199,7 +199,7 @@ def test_trigsimp_sympyissue_7761():
 
 
 def test_trigsimp_noncommutative():
-    A, B = symbols('A,B', commutative=False)
+    A = Symbol('A', commutative=False)
 
     assert trigsimp(A - A*sin(x)**2) == A*cos(x)**2
     assert trigsimp(A - A*cos(x)**2) == A*sin(x)**2

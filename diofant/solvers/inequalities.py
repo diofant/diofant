@@ -372,7 +372,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
                 if expr.is_Relational:
                     expr, rel = expr.lhs - expr.rhs, expr.rel_op
                 else:
-                    expr, rel = expr, '=='
+                    rel = '=='
 
             if expr == true:
                 numer, denom, rel = Integer(0), Integer(1), '=='
@@ -470,7 +470,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
             _exprs = _bottom_up_scan(expr.args[0])
 
             for expr, conds in _exprs:
-                exprs.append(( expr, conds + [Ge(expr, 0)]))
+                exprs.append((+expr, conds + [Ge(expr, 0)]))
                 exprs.append((-expr, conds + [Lt(expr, 0)]))
         elif isinstance(expr, Piecewise):
             for a in expr.args:
@@ -494,7 +494,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     for expr, conds in exprs:
         if rel not in mapping:
-            expr = Relational( expr, 0, rel)
+            expr = Relational(+expr, 0, rel)
         else:
             expr = Relational(-expr, 0, mapping[rel])
 

@@ -2232,7 +2232,7 @@ class fresnelc(FresnelIntegral):
                              for k in range(1, n)]
 
             p = [-sqrt(2/pi)*t for t in p] + [Order(1/z**n, x)]
-            q = [ sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
+            q = [+sqrt(2/pi)*t for t in q] + [Order(1/z**n, x)]
 
             return Rational(1, 2) + (cos(z**2)*Add(*p) + sin(z**2)*Add(*q)).subs({x: sqrt(2/pi)*x})
 
@@ -2309,7 +2309,7 @@ class _eis(Function):
             return super()._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]
-        l = [ factorial(k) * (1/z)**(k + 1) for k in range(n) ]
+        l = [factorial(k) * (1/z)**(k + 1) for k in range(n)]
         o = Order(1/z**(n + 1), x)
         # It is very inefficient to first add the order and then do the nseries
         return (Add(*l))._eval_nseries(x, n, logx) + o

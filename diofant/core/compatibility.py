@@ -150,7 +150,7 @@ def as_int(n):
 
 GROUND_TYPES: str = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 
-gmpy: typing.Any = import_module('gmpy2', min_module_version='2.1.0',
+gmpy: typing.Any = import_module('gmpy2', min_module_version='2.1.0b5',
                                  module_version_attr='version',
                                  module_version_attr_call_args=())
 if gmpy:

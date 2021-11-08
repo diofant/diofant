@@ -2,16 +2,17 @@
 Diofant 0.13
 ============
 
-Not Released Yet
+7 Nov 2021
 
 New features
 ============
 
 * Support square-free factorization of multivariate polynomials over finite fields (with adaptation of Musser's algorithm), see :pull:`1132`.
-* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.
 
 Major changes
 =============
+
+* Support calling from the command-line as ``python -m diofant``, see :pull:`853`.  Thanks to André Roberge.
 
 Compatibility breaks
 ====================
@@ -19,6 +20,7 @@ Compatibility breaks
 * Removed ``n()`` method from :class:`~diofant.core.evalf.EvalfMixin`, see :pull:`1114`.
 * Former submodule ``diofant.polys.polyconfig`` now is :mod:`diofant.config`, see :pull:`1115`.
 * Drop support for ``DIOFANT_DEBUG`` environment variable, see :pull:`1115`.
+* Drop support for CPython 3.7 and 3.8, see :pull:`1118` and :commit:`5cae972`.
 * Renamed ``Ring`` as :class:`~diofant.domains.ring.CommutativeRing`, see :pull:`1123`.
 * Removed support for Python 3.7 and 3.8, see :pull:`1118` and :pull:`1124`.
 * ``FiniteRing`` renamed to :class:`~diofant.domains.IntegerModRing`, see :pull:`1124`.
@@ -32,6 +34,9 @@ Minor changes
 
 * Protect hashed :class:`~diofant.polys.rings.PolyElement`'s from modifications, see :pull:`1033`.
 * Add gaussian rationals as an exact domain, associated with :class:`~diofant.domains.ComplexField`, see :pull:`1138`.
+* Support :class:`~diofant.functions.elementary.trigonometric.tan` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`1159`.
+* 100% test coverage for :mod:`~diofant.plotting` module, see :pull:`1175`.
+* Support CPython 3.10, see :pull:`1162`.
 
 Developer changes
 =================
@@ -101,3 +106,42 @@ These Sympy issues also were addressed:
 * :sympyissue:`21651`: doit() method *sometimes* ignores floor and ceiling within Sum
 * :sympyissue:`20461`: Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) incorrectly gives False
 * :sympyissue:`13029`: with gens, time taken for sqf increases orders of magnitude faster than factor as input size increases
+* :sympyissue:`21711`: odd result for integrate(sqrt(1 - (x-1)*(x-1)), (x, 0, 1))
+* :sympyissue:`21721`: Bug in integration solver
+* :sympyissue:`21716`: isympy -c python tab triggered auto completion not working
+* :sympyissue:`21741`: integrate() does not work with multivariable function that is solved by simple substitution. DomainError: there is no ring associated with CC
+* :sympyissue:`21756`: Incorrect limit with ratio of complex exponentials
+* :sympyissue:`21760`: Poly div is slow
+* :sympyissue:`21761`: sympy.polys.polyerrors.NotAlgebraic Exception
+* :sympyissue:`21430`: minpoly raises 'NotAlgebraic' for tan(13*pi/45)
+* :sympyissue:`21766`: solve breaks on certain repeated inputs
+* :sympyissue:`21773`: TypeError multiplying Subs expressions
+* :sympyissue:`21785`: Limit gives TypeError from as_leading_term
+* :sympyissue:`21812`: LambertW displaying in jupyter lab
+* :sympyissue:`21814`: Printing of unevaluated Mul needs brackets
+* :sympyissue:`21176`: Incorrect residue of x**2*cot(pi*x)/(x**4 + 1)
+* :sympyissue:`21852`: simple quadratic not solving
+* :sympyissue:`21859`: AttributeError: 'mpz' object has no attribute 'denominator' with sp.series()
+* :sympyissue:`21882`: Incorrect solutions given by solve
+* :sympyissue:`21890`: RecursionError and TypeError in nonlinsolve
+* :sympyissue:`21888`: TypeError raised for evalf containing summations
+* :sympyissue:`5822`: What should summation() do with non-integer limits?
+* :sympyissue:`19745`: Weird value of a sum
+* :sympyissue:`9358`: summation: Wrong out for non-integral range
+* :sympyissue:`21905`: raise NotImplementedError("Equation not in exact domain. Try converting to rational") Error
+* :sympyissue:`21938`: Series raises an error at infinity for an example which can be solved by aseries
+* :sympyissue:`21984`: ValueError: list.remove(x): x not in list occurs in nonlinsolve
+* :sympyissue:`21999`: detection of infinite solution request
+* :sympyissue:`22020`: Comparing two operations that contain log sometimes leads to TypeError exception
+* :sympyissue:`22051`: Nonlinsolve incorrect result
+* :sympyissue:`22058`: Regression in solveset for quadratic with symbolic coefficients
+* :sympyissue:`22073`: Interval with oo
+* :sympyissue:`22093`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck
+* :sympyissue:`22155`: Problem with solving simple separable ODE
+* :sympyissue:`22220`: Bug in the evaluation of a log limit
+* :sympyissue:`22248`: solve running forever
+* :sympyissue:`22294`: Bernoulli differential equation
+* :sympyissue:`22322`: 'abs' is not parsed correctly
+* :sympyissue:`22334`: Wrong answer returned while calculating limit for different arrangements of the same expression
+* :sympyissue:`22400`: Minpoly doesn't terminate
+* :sympyissue:`22435`: sympy integration error

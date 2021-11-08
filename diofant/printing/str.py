@@ -288,7 +288,7 @@ class StrPrinter(Printer):
         return '-oo'
 
     def _print_Order(self, expr):
-        if all(p == 0 for p in expr.point) or not len(expr.variables):
+        if all(p == 0 for p in expr.point) or not expr.variables:
             if len(expr.variables) <= 1:
                 return 'O(%s)' % self._print(expr.expr)
             else:
@@ -548,11 +548,11 @@ class StrPrinter(Printer):
     def _print_GroebnerBasis(self, basis):
         cls = basis.__class__.__name__
 
-        exprs = [ self._print_Add(arg, order=basis.order)
-                  for arg in basis.exprs ]
+        exprs = [self._print_Add(arg, order=basis.order)
+                 for arg in basis.exprs]
         exprs = '[%s]' % ', '.join(exprs)
 
-        gens = [ self._print(gen) for gen in basis.gens ]
+        gens = [self._print(gen) for gen in basis.gens]
         domain = "domain='%s'" % self._print(basis.domain)
         order = "order='%s'" % self._print(basis.order)
 
@@ -671,8 +671,8 @@ def sstr(expr, **settings):
 class StrReprPrinter(StrPrinter):
     """(internal) -- see sstrrepr"""
 
-    def _print_str(self, s):
-        return repr(s)
+    def _print_str(self, expr):
+        return repr(expr)
 
 
 def sstrrepr(expr, **settings):

@@ -50,7 +50,7 @@ def express(expr, system, system2=None, variables=False):
     (cos(q))*(B.i|N.i) + (-sin(q))*(B.j|N.i)
 
     """
-    if expr == 0 or expr == Vector.zero:
+    if expr in (0, Vector.zero):
         return expr
 
     if not isinstance(system, CoordSysCartesian):

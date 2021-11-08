@@ -134,8 +134,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
         # Iterate over all pairs of factors
         J = set()
-        for s, unused in fp[1]:
-            for t, unused in fq[1]:
+        for s, _ in fp[1]:
+            for t, _ in fq[1]:
                 m = s.degree()
                 n = t.degree()
                 if n != m:
@@ -326,7 +326,6 @@ class UnivarPolyElement(PolyElement):
                 f, h = result
                 F = [h] + F
             else:
-                result  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
         return [f] + F

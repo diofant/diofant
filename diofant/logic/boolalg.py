@@ -162,7 +162,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     See Also
     ========
 
-    diofant.logic.boolalg.BooleanFalse
+    BooleanFalse
 
     """
 
@@ -215,7 +215,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     See Also
     ========
 
-    diofant.logic.boolalg.BooleanTrue
+    BooleanTrue
 
     """
 
@@ -1335,7 +1335,7 @@ def _compare_term(minterm, term):
 
     """
     for i, x in enumerate(term):
-        if x != 3 and x != minterm[i]:
+        if x not in (3, minterm[i]):
             return False
     return True
 

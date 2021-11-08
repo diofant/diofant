@@ -51,13 +51,11 @@ def test_sum():
 def test_addition():
     a = Matrix((
         (1, 2),
-        (3, 1),
-    ))
+        (3, 1)))
 
     b = Matrix((
         (1, 2),
-        (3, 0),
-    ))
+        (3, 0)))
 
     assert a + b == a.add(b) == Matrix([[2, 4], [6, 1]])
 
@@ -114,13 +112,11 @@ def test_multiplication():
     a = Matrix((
         (1, 2),
         (3, 1),
-        (0, 6),
-    ))
+        (0, 6)))
 
     b = Matrix((
         (1, 2),
-        (3, 0),
-    ))
+        (3, 0)))
 
     c = a*b
     assert c == a.multiply(b)
@@ -221,10 +217,8 @@ def test_creation():
     c = Matrix((
         Matrix((
             (1, 2, 3),
-            (4, 5, 6)
-        )),
-        (7, 8, 9)
-    ))
+            (4, 5, 6))),
+        (7, 8, 9)))
     assert c.cols == 3
     assert c.rows == 3
     assert c[:] == [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -259,80 +253,80 @@ def test_determinant():
             M.det_LU_decomposition() ==
             1)
 
-    M = Matrix(( (-3,  2),
-                 ( 8, -5) ))
+    M = Matrix(((-3,  2),
+                ( 8, -5)))
 
     assert M.det(method='bareiss') == -1
     assert M.det(method='berkowitz') == -1
 
-    M = Matrix(( (x,   1),
-                 (y, 2*y) ))
+    M = Matrix(((x,   1),
+                (y, 2*y)))
 
     assert M.det(method='bareiss') == 2*x*y - y
     assert M.det(method='berkowitz') == 2*x*y - y
 
-    M = Matrix(( (1, 1, 1),
-                 (1, 2, 3),
-                 (1, 3, 6) ))
+    M = Matrix(((1, 1, 1),
+                (1, 2, 3),
+                (1, 3, 6)))
 
     assert M.det(method='bareiss') == 1
     assert M.det(method='berkowitz') == 1
 
-    M = Matrix(( ( 3, -2,  0, 5),
-                 (-2,  1, -2, 2),
-                 ( 0, -2,  5, 0),
-                 ( 5,  0,  3, 4) ))
+    M = Matrix((( 3, -2,  0, 5),
+                (-2,  1, -2, 2),
+                ( 0, -2,  5, 0),
+                ( 5,  0,  3, 4)))
 
     assert M.det(method='bareiss') == -289
     assert M.det(method='berkowitz') == -289
 
-    M = Matrix(( ( 1,  2,  3,  4),
-                 ( 5,  6,  7,  8),
-                 ( 9, 10, 11, 12),
-                 (13, 14, 15, 16) ))
+    M = Matrix((( 1,  2,  3,  4),
+                ( 5,  6,  7,  8),
+                ( 9, 10, 11, 12),
+                (13, 14, 15, 16)))
 
     assert M.det(method='bareiss') == 0
     assert M.det(method='berkowitz') == 0
 
-    M = Matrix(( (3, 2, 0, 0, 0),
-                 (0, 3, 2, 0, 0),
-                 (0, 0, 3, 2, 0),
-                 (0, 0, 0, 3, 2),
-                 (2, 0, 0, 0, 3) ))
+    M = Matrix(((3, 2, 0, 0, 0),
+                (0, 3, 2, 0, 0),
+                (0, 0, 3, 2, 0),
+                (0, 0, 0, 3, 2),
+                (2, 0, 0, 0, 3)))
 
     assert M.det(method='bareiss') == 275
     assert M.det(method='berkowitz') == 275
 
-    M = Matrix(( (1, 0,  1,  2, 12),
-                 (2, 0,  1,  1,  4),
-                 (2, 1,  1, -1,  3),
-                 (3, 2, -1,  1,  8),
-                 (1, 1,  1,  0,  6) ))
+    M = Matrix(((1, 0,  1,  2, 12),
+                (2, 0,  1,  1,  4),
+                (2, 1,  1, -1,  3),
+                (3, 2, -1,  1,  8),
+                (1, 1,  1,  0,  6)))
 
     assert M.det(method='bareiss') == -55
     assert M.det(method='berkowitz') == -55
 
-    M = Matrix(( (-5,  2,  3,  4,  5),
-                 ( 1, -4,  3,  4,  5),
-                 ( 1,  2, -3,  4,  5),
-                 ( 1,  2,  3, -2,  5),
-                 ( 1,  2,  3,  4, -1) ))
+    M = Matrix(((-5,  2,  3,  4,  5),
+                ( 1, -4,  3,  4,  5),
+                ( 1,  2, -3,  4,  5),
+                ( 1,  2,  3, -2,  5),
+                ( 1,  2,  3,  4, -1)))
 
     assert M.det(method='bareiss') == 11664
     assert M.det(method='berkowitz') == 11664
 
-    M = Matrix(( ( 2,  7, -1, 3, 2),
-                 ( 0,  0,  1, 0, 1),
-                 (-2,  0,  7, 0, 2),
-                 (-3, -2,  4, 5, 3),
-                 ( 1,  0,  0, 0, 1) ))
+    M = Matrix((( 2,  7, -1, 3, 2),
+                ( 0,  0,  1, 0, 1),
+                (-2,  0,  7, 0, 2),
+                (-3, -2,  4, 5, 3),
+                ( 1,  0,  0, 0, 1)))
 
     assert M.det(method='bareiss') == 123
     assert M.det(method='berkowitz') == 123
 
-    M = Matrix(( (x, y, z),
-                 (1, 0, 0),
-                 (y, z, x) ))
+    M = Matrix(((x, y, z),
+                (1, 0, 0),
+                (y, z, x)))
 
     assert M.det(method='bareiss') == z**2 - x*y
     assert M.det(method='berkowitz') == z**2 - x*y
@@ -363,64 +357,64 @@ def test_det_LU_decomposition():
     for M in [Matrix(), Matrix([[1]])]:
         assert M.det(method='det_LU') == 1
 
-    M = Matrix(( (-3,  2),
-                 ( 8, -5) ))
+    M = Matrix(((-3,  2),
+                ( 8, -5)))
 
     assert M.det(method='det_LU') == -1
 
-    M = Matrix(( (x,   1),
-                 (y, 2*y) ))
+    M = Matrix(((x,   1),
+                (y, 2*y)))
 
     assert M.det(method='det_LU') == 2*x*y - y
 
-    M = Matrix(( (1, 1, 1),
-                 (1, 2, 3),
-                 (1, 3, 6) ))
+    M = Matrix(((1, 1, 1),
+                (1, 2, 3),
+                (1, 3, 6)))
 
     assert M.det(method='det_LU') == 1
 
-    M = Matrix(( ( 3, -2,  0, 5),
-                 (-2,  1, -2, 2),
-                 ( 0, -2,  5, 0),
-                 ( 5,  0,  3, 4) ))
+    M = Matrix((( 3, -2,  0, 5),
+                (-2,  1, -2, 2),
+                ( 0, -2,  5, 0),
+                ( 5,  0,  3, 4)))
 
     assert M.det(method='det_LU') == -289
 
-    M = Matrix(( (3, 2, 0, 0, 0),
-                 (0, 3, 2, 0, 0),
-                 (0, 0, 3, 2, 0),
-                 (0, 0, 0, 3, 2),
-                 (2, 0, 0, 0, 3) ))
+    M = Matrix(((3, 2, 0, 0, 0),
+                (0, 3, 2, 0, 0),
+                (0, 0, 3, 2, 0),
+                (0, 0, 0, 3, 2),
+                (2, 0, 0, 0, 3)))
 
     assert M.det(method='det_LU') == 275
 
-    M = Matrix(( (1, 0,  1,  2, 12),
-                 (2, 0,  1,  1,  4),
-                 (2, 1,  1, -1,  3),
-                 (3, 2, -1,  1,  8),
-                 (1, 1,  1,  0,  6) ))
+    M = Matrix(((1, 0,  1,  2, 12),
+                (2, 0,  1,  1,  4),
+                (2, 1,  1, -1,  3),
+                (3, 2, -1,  1,  8),
+                (1, 1,  1,  0,  6)))
 
     assert M.det(method='det_LU') == -55
 
-    M = Matrix(( (-5,  2,  3,  4,  5),
-                 ( 1, -4,  3,  4,  5),
-                 ( 1,  2, -3,  4,  5),
-                 ( 1,  2,  3, -2,  5),
-                 ( 1,  2,  3,  4, -1) ))
+    M = Matrix(((-5,  2,  3,  4,  5),
+                ( 1, -4,  3,  4,  5),
+                ( 1,  2, -3,  4,  5),
+                ( 1,  2,  3, -2,  5),
+                ( 1,  2,  3,  4, -1)))
 
     assert M.det(method='det_LU') == 11664
 
-    M = Matrix(( ( 2,  7, -1, 3, 2),
-                 ( 0,  0,  1, 0, 1),
-                 (-2,  0,  7, 0, 2),
-                 (-3, -2,  4, 5, 3),
-                 ( 1,  0,  0, 0, 1) ))
+    M = Matrix((( 2,  7, -1, 3, 2),
+                ( 0,  0,  1, 0, 1),
+                (-2,  0,  7, 0, 2),
+                (-3, -2,  4, 5, 3),
+                ( 1,  0,  0, 0, 1)))
 
     assert M.det(method='det_LU') == 123
 
-    M = Matrix(( (x, y, z),
-                 (1, 0, 0),
-                 (y, z, x) ))
+    M = Matrix(((x, y, z),
+                (1, 0, 0),
+                (y, z, x)))
 
     assert M.det(method='det_LU') == z**2 - x*y
 
@@ -524,8 +518,7 @@ def test_expand():
     assert Matrix([[0, 1, 2], [0, 0, -1], [0, 0, 0]]).exp() == Matrix([
         [1, 1, Rational(3, 2)],
         [0, 1, -1],
-        [0, 0, 1]]
-    )
+        [0, 0, 1]])
 
 
 def test_random():
@@ -566,14 +559,12 @@ def test_LUdecomp():
 
     mL = Matrix((
         (1, 0, 0),
-        (2, 3, 0),
-    ))
+        (2, 3, 0)))
     assert mL.is_lower is True
     assert mL.is_upper is False
     mU = Matrix((
         (1, 2, 3),
-        (0, 4, 5),
-    ))
+        (0, 4, 5)))
     assert mU.is_lower is False
     assert mU.is_upper is True
 
@@ -786,7 +777,7 @@ def test_nullspace():
 
     M = Matrix([[5, 7, 2,  1],
                 [1, 6, 2, -1]])
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 0, -R(2)/23, R(13)/23],
                           [0, 1,  R(8)/23, R(-6)/23]])
 
@@ -801,7 +792,7 @@ def test_nullspace():
                 [-2, -6, 0, -2, -8, 3, 1],
                 [ 3,  9, 0,  0,  6, 6, 2],
                 [-1, -3, 0,  1,  0, 9, 3]])
-    out, tmp = M.rref()
+    out, _ = M.rref()
     assert out == Matrix([[1, 3, 0, 0, 2, 0, 0],
                           [0, 0, 0, 1, 2, 0, 0],
                           [0, 0, 0, 0, 0, 1, R(1)/3],
@@ -901,13 +892,13 @@ def test_eigen():
 
     eps = Symbol('eps', extended_real=True)
 
-    M = Matrix([[abs(eps), I*eps    ],
-                [-I*eps,   abs(eps) ]])
+    M = Matrix([[abs(eps), I*eps   ],
+                [-I*eps,   abs(eps)]])
 
     assert M.eigenvects() == (
         [
-            ( 0, 1, [Matrix([[-I*eps/abs(eps)], [1]])]),
-            ( 2*abs(eps), 1, [ Matrix([[I*eps/abs(eps)], [1]]) ] ),
+            (0, 1, [Matrix([[-I*eps/abs(eps)], [1]])]),
+            (2*abs(eps), 1, [Matrix([[I*eps/abs(eps)], [1]])]),
         ])
 
     M = Matrix(3, 3, [1, 2, 0, 0, 3, 0, 2, -4, 2])
@@ -966,11 +957,11 @@ def test_simplify():
     raw = m.rref(simplify=lambda x: x)[0]
     assert raw != m.rref(simplify=True)[0]
 
-    M = Matrix([[            1/x + 1/y,                 (x + x*y) / x  ],
-                [ (f(x) + y*f(x))/f(x), 2 * (1/n - cos(n * pi)/n) / pi ]])
+    M = Matrix([[           1/x + 1/y,                 (x + x*y) / x ],
+                [(f(x) + y*f(x))/f(x), 2 * (1/n - cos(n * pi)/n) / pi]])
     M.simplify()
-    assert M == Matrix([[ (x + y)/(x * y),                        1 + y ],
-                        [           1 + y, 2*((1 - 1*cos(pi*n))/(pi*n)) ]])
+    assert M == Matrix([[(x + y)/(x * y),                        1 + y],
+                        [          1 + y, 2*((1 - 1*cos(pi*n))/(pi*n))]])
     eq = (1 + x)**2
     M = Matrix([[eq]])
     M.simplify()
@@ -982,16 +973,16 @@ def test_simplify():
 def test_transpose():
     M = Matrix([[1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
                 [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]])
-    assert M.T == Matrix( [ [1, 1],
-                            [2, 2],
-                            [3, 3],
-                            [4, 4],
-                            [5, 5],
-                            [6, 6],
-                            [7, 7],
-                            [8, 8],
-                            [9, 9],
-                            [0, 0] ])
+    assert M.T == Matrix([[1, 1],
+                          [2, 2],
+                          [3, 3],
+                          [4, 4],
+                          [5, 5],
+                          [6, 6],
+                          [7, 7],
+                          [8, 8],
+                          [9, 9],
+                          [0, 0]])
     assert M.T.T == M
     assert M.T == M.transpose()
 
@@ -1090,8 +1081,8 @@ def test_sympyissue_3950():
     m = Matrix([1, 2, 3])
     a = Matrix([1, 2, 3])
     b = Matrix([2, 2, 3])
-    assert not (m in [])
-    assert not (m in [1])
+    assert m not in []
+    assert m not in [1]
     assert m != 1
     assert m == a
     assert m != b
@@ -1183,7 +1174,7 @@ def test_zeros_ones_fill():
     n, m = 3, 5
 
     a = zeros(n, m)
-    a.fill( 5 )
+    a.fill(5)
 
     b = 5 * ones(n, m)
 
@@ -1216,7 +1207,7 @@ def test_sympyissue_3749():
         [exp(x), 1/x - exp(-x), x + 1/x]]).limit(x, oo) == \
         Matrix([[oo, -oo, oo], [oo, 0, oo]])
     assert Matrix([
-        [(exp(x) - 1)/x, 2*x + y*x, x**x ],
+        [(exp(x) - 1)/x, 2*x + y*x, x**x],
         [1/x, abs(x), abs(sin(x + 1))]]).limit(x, 0) == \
         Matrix([[1, 0, 1], [oo, 0, sin(1)]])
     assert a.integrate(x) == Matrix([
@@ -1278,7 +1269,7 @@ def test_nonvectorJacobian():
     X = X[0, :]
     Y = Matrix([[x, y], [x, z]])
     pytest.raises(TypeError, lambda: X.jacobian(Y))
-    pytest.raises(TypeError, lambda: X.jacobian(Matrix([ [x, y], [x, z] ])))
+    pytest.raises(TypeError, lambda: X.jacobian(Matrix([[x, y], [x, z]])))
 
 
 def test_vec():
@@ -1312,8 +1303,8 @@ def test_vech_errors():
     pytest.raises(ShapeError, lambda: m.vech())
     m = Matrix([[1, 3], [2, 4]])
     pytest.raises(ValueError, lambda: m.vech())
-    pytest.raises(ShapeError, lambda: Matrix([ [1, 3] ]).vech())
-    pytest.raises(ValueError, lambda: Matrix([ [1, 3], [2, 4] ]).vech())
+    pytest.raises(ShapeError, lambda: Matrix([[1, 3]]).vech())
+    pytest.raises(ValueError, lambda: Matrix([[1, 3], [2, 4]]).vech())
 
 
 def test_diag():
@@ -1412,7 +1403,7 @@ def test_creation_args():
     (see issue sympy/sympy#4614).
     """
     pytest.raises(ValueError, lambda: zeros(3, -1))
-    pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))
+    pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))  # pylint: disable=too-many-function-args
     assert zeros(int(3)) == zeros(3)
     assert zeros(Integer(3)) == zeros(3)
     assert zeros(3.) == zeros(3)
@@ -1541,7 +1532,7 @@ def test_jordan_form():
     # diagonalizable
     m = Matrix(3, 3, [7, -12, 6, 10, -19, 10, 12, -24, 13])
     Jmust = Matrix(3, 3, [-1, 0, 0, 0, 1, 0, 0, 0, 1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
     assert Jmust == m.jordan_form(calc_transformation=False)
     assert Jmust == m.diagonalize()[1]
@@ -1558,9 +1549,9 @@ def test_jordan_form():
     # The blocks are ordered according to the value of their eigenvalues,
     # in order to make the matrix compatible with .diagonalize()
     Jmust = Matrix(3, 3, [2, 1, 0, 0, 2, 0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
-    Jcells, P = m.jordan_cells()
+    Jcells, _ = m.jordan_cells()
     # same here see 1456ff
     assert Jcells[1] == Matrix(1, 1, [2])
     assert Jcells[0] == Matrix(2, 2, [2, 1, 0, 2])
@@ -1571,13 +1562,13 @@ def test_jordan_form():
     # Jmust = Matrix(3, 3, [-1, 0, 0, 0, -1, 1, 0, 0, -1])
     # same here see 1456ff
     Jmust = Matrix(3, 3, [-1, 1, 0, 0, -1, 0, 0, 0, -1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     # complexity: two of eigenvalues are zero
     m = Matrix(3, 3, [4, -5, 2, 5, -7, 3, 6, -9, 4])
     Jmust = Matrix(3, 3, [0, 1, 0, 0, 0, 0, 0, 0, 1])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 5, -2, -3, -3, -1, 3, 3, 2, 1, -2, -3, -1, 1, 5, 5])
@@ -1585,7 +1576,7 @@ def test_jordan_form():
                           0, 2, 0, 0,
                           0, 0, 2, 1,
                           0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 2, -8, -6, -3, 2, 9, 6, 2, -2, -8, -6, -1, 0, 3, 4])
@@ -1595,13 +1586,13 @@ def test_jordan_form():
                           0, 2, 1, 0,
                           0, 0, 2, 0,
                           0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [5, 4, 2, 1, 0, 1, -1, -1, -1, -1, 3, 0, 1, 1, -1, 2])
     assert not m.is_diagonalizable()
     Jmust = Matrix(4, 4, [1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 1, 0, 0, 0, 4])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert Jmust == J
 
     # the following tests are new and include (some) test the cases where the old
@@ -1613,14 +1604,14 @@ def test_jordan_form():
                       0, 2, 1, 0,
                       0, 0, 2, 0,
                       0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert m == J
 
     m = Matrix(4, 4, [2, 1, 0, 0,
                       0, 2, 0, 0,
                       0, 0, 2, 1,
                       0, 0, 0, 2])
-    J, P = m.jordan_form()
+    J, _ = m.jordan_form()
     assert m == J
 
 
@@ -1640,7 +1631,7 @@ def test_jordan_form_complex_sympyissue_9274():
                      [0, 0, p, 1],
                      [0, 0, 0, p]])
     J, P = A.jordan_form()
-    assert J == Jmust1 or J == Jmust2
+    assert J in (Jmust1, Jmust2)
     assert simplify(P*J*P.inv()) == A
 
 
@@ -1844,7 +1835,7 @@ def test_LDLdecomposition():
     L, D = A.LDLdecomposition()
     assert L * D * L.T == A
     assert L.is_lower
-    assert L == Matrix([[1, 0, 0], [ Rational(3, 5), 1, 0], [Rational(-1, 5), Rational(1, 3), 1]])
+    assert L == Matrix([[1, 0, 0], [Rational(3, 5), 1, 0], [Rational(-1, 5), Rational(1, 3), 1]])
     assert D.is_diagonal()
     assert D == Matrix([[25, 0, 0], [0, 9, 0], [0, 0, 9]])
 
@@ -2027,10 +2018,10 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        for vec in L:
+        for v in L:
             try:
-                assert simplify((alpha*v).norm(order) -
-                                (abs(alpha) * v.norm(order))) == 0
+                assert (simplify((alpha*v).norm(order)) -
+                        simplify(abs(alpha) * v.norm(order))) == 0
             except NotImplementedError:
                 pass  # Some Norms fail on symbolics due to Max issue
 
@@ -2081,7 +2072,7 @@ def test_condition_number():
     M = Matrix([[cos(x), sin(x)], [-sin(x), cos(x)]])
     Mc = M.condition_number()
     assert all(Float(1.).epsilon_eq(Mc.subs({x: val}).evalf()) for val in
-               [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4 ])
+               [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4])
 
     assert Matrix([]).condition_number() == 0  # issue sympy/sympy#10782
 
@@ -2328,14 +2319,12 @@ def test_dual():
         (   0,  E_x,  E_y,  E_z),
         (-E_x,    0,  B_z, -B_y),
         (-E_y, -B_z,    0,  B_x),
-        (-E_z,  B_y, -B_x,    0)
-    ))
+        (-E_z,  B_y, -B_x,    0)))
     Fd = Matrix((
         (  0, -B_x, -B_y, -B_z),
         (B_x,    0,  E_z, -E_y),
         (B_y, -E_z,    0,  E_x),
-        (B_z,  E_y, -E_x,    0)
-    ))
+        (B_z,  E_y, -E_x,    0)))
     assert F.dual().equals(Fd)
     assert eye(3).dual().equals(zeros(3))
     assert F.dual().dual().equals(-F)

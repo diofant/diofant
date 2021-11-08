@@ -536,7 +536,7 @@ class Ellipse(GeometrySet):
             x, y = [_uniquely_named_symbol(name, self, line) for name in 'xy']
             expr = self.equation(x, y)
             p = Point(x, y).reflect(line)
-            result = expr.subs(zip((x, y), p.args), simultaneous=True)
+            result = expr.subs(zip((x, y), p.args))
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
@@ -638,7 +638,6 @@ class Ellipse(GeometrySet):
                        simplify(p.y + rise))
             return [Line(p, p2)]
         else:
-            f1, f2 = self.foci
             # p is outside the ellipse or we can't tell. In case of the
             # latter, the solutions returned will only be valid if
             # the point is not inside the ellipse; if it is, nan will result.
@@ -996,8 +995,8 @@ class Ellipse(GeometrySet):
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a
-            result.append( lp[0] + (lp[1] - lp[0]) * t_a )
-            result.append( lp[0] + (lp[1] - lp[0]) * t_b )
+            result.append(lp[0] + (lp[1] - lp[0]) * t_a)
+            result.append(lp[0] + (lp[1] - lp[0]) * t_b)
 
         return [r for r in result if r in o]
 

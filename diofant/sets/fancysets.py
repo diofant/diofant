@@ -40,13 +40,13 @@ class Naturals(Set, metaclass=Singleton):
     """
 
     is_iterable = True
-    _inf = Integer(1)
-    _sup = oo
+    inf = Integer(1)
+    sup = oo
 
     def _intersection(self, other):
         if other.is_Interval:
             return Intersection(
-                S.Integers, other, Interval(self._inf, oo, False, True))
+                S.Integers, other, Interval(self.inf, oo, False, True))
 
     def _contains(self, other):
         if not isinstance(other, Expr):
@@ -57,13 +57,13 @@ class Naturals(Set, metaclass=Singleton):
             return false
 
     def __iter__(self):
-        i = self._inf
+        i = self.inf
         while True:
             yield i
             i = i + 1
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
 
@@ -81,7 +81,7 @@ class Naturals0(Naturals):
 
     """
 
-    _inf = Integer(0)
+    inf = Integer(0)
 
     def _contains(self, other):
         if not isinstance(other, Expr):
@@ -151,15 +151,15 @@ class Integers(Set, metaclass=Singleton):
             i = i + 1
 
     @property
-    def _inf(self):
+    def inf(self):
         return -oo
 
     @property
-    def _sup(self):
+    def sup(self):
         return oo
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
     def _eval_imageset(self, f):
@@ -193,15 +193,15 @@ class Rationals(Set, metaclass=Singleton):
             return false
 
     @property
-    def _inf(self):
+    def inf(self):
         return -oo
 
     @property
-    def _sup(self):
+    def sup(self):
         return oo
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
     def __iter__(self):
@@ -309,7 +309,7 @@ class ImageSet(Set):
         return self.base_set.is_iterable
 
     def _intersection(self, other):
-        from ..core import Dummy
+        from ..core import Dummy, expand_complex
         from ..solvers.diophantine import diophantine
         from .sets import imageset
         if self.base_set is S.Integers:
@@ -336,9 +336,6 @@ class ImageSet(Set):
                 return imageset(Lambda(t, f.subs({a: solns[0][0]})), S.Integers)
 
         if other == S.Reals:
-            from ..core import expand_complex
-            from ..solvers.diophantine import diophantine
-
             if len(self.lamda.variables) > 1 or self.base_set is not S.Integers:
                 return  # pragma: no cover
 
@@ -397,7 +394,7 @@ class Range(Set):
 
         if not step.is_finite:
             raise ValueError('Infinite step is not allowed')
-        if start == stop:
+        elif start == stop:
             return S.EmptySet
 
         n = ceiling((stop - start)/step)
@@ -412,11 +409,8 @@ class Range(Set):
             start, stop = sorted((start, stop - step))
 
         step = abs(step)
-        if (start, stop) == (-oo, oo):
-            raise ValueError('Both the start and end value of '
-                             'Range cannot be unbounded')
-        else:
-            return Basic.__new__(cls, start, stop + step, step)
+
+        return Basic.__new__(cls, start, stop + step, step)
 
     start = property(lambda self: self.args[0])
     stop = property(lambda self: self.args[1])
@@ -491,15 +485,15 @@ class Range(Set):
             return self._ith_element(len(self) - 1)
 
     @property
-    def _inf(self):
+    def inf(self):
         return self.start
 
     @property
-    def _sup(self):
+    def sup(self):
         return self.stop - self.step
 
     @property
-    def _boundary(self):
+    def boundary(self):
         return self
 
 

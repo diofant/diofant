@@ -1,3 +1,5 @@
+"""Pytest configuration and fixtures for the Diofant test suite."""
+
 import os
 import sys
 

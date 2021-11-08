@@ -325,7 +325,7 @@ def bc_matmul(expr):
     factor, matrices = expr.as_coeff_matrices()
 
     i = 0
-    while (i+1 < len(matrices)):
+    while i + 1 < len(matrices):
         A, B = matrices[i:i+2]
         if isinstance(A, BlockMatrix) and isinstance(B, BlockMatrix):
             matrices[i] = A._blockmul(B)
@@ -354,7 +354,7 @@ def blockinverse_2x2(expr):
     [[A, B],
      [C, D]] = expr.arg.blocks.tolist()
 
-    return BlockMatrix([[ (A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
+    return BlockMatrix([[+(A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
                         [-(D - C*A.inverse()*B).inverse()*C*A.inverse(),     (D - C*A.inverse()*B).inverse()]])
 
 
@@ -385,7 +385,7 @@ def reblock_2x2(B):
         return B
 
     BM = BlockMatrix  # for brevity's sake
-    return BM([[   B.blocks[0,  0],  BM(B.blocks[0,  1:])],
+    return BM([[    B.blocks[0,  0], BM(B.blocks[0,  1:])],
                [BM(B.blocks[1:, 0]), BM(B.blocks[1:, 1:])]])
 
 

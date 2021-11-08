@@ -210,9 +210,9 @@ class Polygon(GeometrySet):
         """
         area = 0
         args = self.args
-        for i in range(len(args)):
+        for i, a in enumerate(args):
             x1, y1 = args[i - 1].args
-            x2, y2 = args[i].args
+            x2, y2 = a.args
             area += x1*y2 - x2*y1
         return simplify(area) / 2
 
@@ -259,8 +259,8 @@ class Polygon(GeometrySet):
         cw = self._isright(args[-1], args[0], args[1])
 
         ret = {}
-        for i in range(len(args)):
-            a, b, c = args[i - 2], args[i - 1], args[i]
+        for i, arg in enumerate(args):
+            a, b, c = args[i - 2], args[i - 1], arg
             ang = Line.angle_between(Line(b, a), Line(b, c))
             if cw ^ self._isright(a, b, c):
                 ret[b] = 2*pi - ang
@@ -293,8 +293,8 @@ class Polygon(GeometrySet):
         """
         p = 0
         args = self.vertices
-        for i in range(len(args)):
-            p += args[i - 1].distance(args[i])
+        for i, arg in enumerate(args):
+            p += args[i - 1].distance(arg)
         return simplify(p)
 
     @property
@@ -358,9 +358,9 @@ class Polygon(GeometrySet):
         A = 1/(6*self.area)
         cx, cy = 0, 0
         args = self.args
-        for i in range(len(args)):
+        for i, arg in enumerate(args):
             x1, y1 = args[i - 1].args
-            x2, y2 = args[i].args
+            x2, y2 = arg.args
             v = x1*y2 - x2*y1
             cx += v*(x1 + x2)
             cy += v*(y1 + y2)
@@ -722,12 +722,10 @@ class Polygon(GeometrySet):
         e1_max_radius = e2_max_radius = Integer(0)
         for vertex in e1.vertices:
             r = Point.distance(e1_center, vertex)
-            if e1_max_radius < r:
-                e1_max_radius = r
+            e1_max_radius = max(e1_max_radius, r)
         for vertex in e2.vertices:
             r = Point.distance(e2_center, vertex)
-            if e2_max_radius < r:
-                e2_max_radius = r
+            e2_max_radius = max(e2_max_radius, r)
         center_dist = Point.distance(e1_center, e2_center)
         if center_dist <= e1_max_radius + e2_max_radius:
             warnings.warn('Polygons may intersect producing erroneous output')
@@ -1033,7 +1031,7 @@ class RegularPolygon(Polygon):
         True
 
         """
-        c, r, n, rot = self.args
+        _, r, n, _ = self.args
         return sign(r)*n*self.length**2/(4*tan(pi/n))
 
     @property
@@ -1854,7 +1852,7 @@ class Triangle(Polygon):
         Point(1/2, 1/2)
 
         """
-        a, b, c = [x.perpendicular_bisector() for x in self.sides]
+        a, b, _ = [x.perpendicular_bisector() for x in self.sides]
         return a.intersection(b)[0]
 
     @property

@@ -77,7 +77,7 @@ def apart(f, x=None, full=False, **options):
     _options = options.copy()
     options = set_defaults(options, extension=True)
     try:
-        (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
+        (P, Q), _ = parallel_poly_from_expr((P, Q), x, **options)
     except PolynomialError as msg:
         if f.is_commutative:
             raise PolynomialError(msg)
@@ -311,7 +311,7 @@ def apart_list(f, x=None, dummies=None, **options):
         P, Q = f.as_numer_denom()
 
     options = set_defaults(options, extension=True)
-    (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
+    (P, Q), _ = parallel_poly_from_expr((P, Q), x, **options)
 
     if P.is_multivariate:
         raise NotImplementedError('multivariate partial fraction decomposition')

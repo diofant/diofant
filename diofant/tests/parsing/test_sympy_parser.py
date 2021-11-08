@@ -1,15 +1,12 @@
 import pytest
 
-from diofant.core import (Float, Function, I, Integer, Mul, Pow, Rational,
-                          Symbol)
-from diofant.functions import exp, sin
-from diofant.logic import And
+from diofant import (Abs, And, Float, Function, I, Integer, Limit, Mul, Pow,
+                     Rational, Symbol, exp, sin)
 from diofant.parsing.sympy_parser import (TokenError, convert_xor,
                                           function_exponentiation,
                                           implicit_multiplication, parse_expr,
                                           rationalize, split_symbols,
                                           standard_transformations)
-from diofant.series import Limit
 
 
 __all__ = ()
@@ -128,3 +125,22 @@ def test_functional_exponent():
 def test_match_parentheses_implicit_multiplication():
     transformations = standard_transformations + (implicit_multiplication,)
     pytest.raises(TokenError, lambda: parse_expr('(1,2),(3,4]', transformations=transformations))
+
+
+def test_sympyissue_22020():
+    x = parse_expr('log((2*V/3-V)/C)/-(R+r)*C')
+    y = parse_expr('log((2*V/3-V)/C)/-(R+r)*2')
+
+    assert x.equals(y) is False
+
+
+def test_builtins():
+    cases = [('abs(x)', 'Abs(x)'),
+             ('max(x, y)', 'Max(x, y)'),
+             ('min(x, y)', 'Min(x, y)'),
+             ('pow(x, y)', 'Pow(x, y)')]
+    for built_in_func_call, sympy_func_call in cases:
+        assert parse_expr(built_in_func_call) == parse_expr(sympy_func_call)
+    assert parse_expr('pow(38, -1)') == Rational(1, 38)
+    # issue sympy/sympy#22322
+    assert parse_expr('abs(-42)', evaluate=False) == Abs(-42, evaluate=False)

@@ -217,7 +217,7 @@ class PrettyPrinter(Printer):
 
     def _print_conjugate(self, e):
         pform = self._print(e.args[0])
-        return prettyForm( *pform.above( hobj('_', pform.width())) )
+        return prettyForm(*pform.above(hobj('_', pform.width())))
 
     def _print_Abs(self, e):
         pform = self._print(e.args[0])
@@ -376,7 +376,7 @@ class PrettyPrinter(Printer):
             width = (func_height + 2) * 5 // 3 - 2
             sign_lines = []
             sign_lines.append(corner_chr + (horizontal_chr*width) + corner_chr)
-            for i in range(func_height + 1):
+            for _ in range(func_height + 1):
                 sign_lines.append(vertical_chr + (' '*width) + vertical_chr)
 
             pretty_sign = stringPict('')
@@ -553,8 +553,8 @@ class PrettyPrinter(Printer):
                 # XXX this should be generalized, and go to stringPict.reshape ?
                 assert s.width() <= maxw[j]
 
-                # hcenter it, +0.5 to the right                        2
-                # ( it's better to align formula starts for say 0 and r )
+                # hcenter it, +0.5 to the right                       2
+                # (it's better to align formula starts for say 0 and r)
                 # XXX this is not good in all cases -- maybe introduce vbaseline?
                 wdelta = maxw[j] - s.width()
                 wleft = wdelta // 2
@@ -681,7 +681,7 @@ class PrettyPrinter(Printer):
             items = expr.separate().items()
         else:
             items = [(0, expr)]
-        for system, vect in items:
+        for _, vect in items:
             inneritems = list(vect.components.items())
             inneritems.sort(key=lambda x: x[0].__str__())
             for k, v in inneritems:
@@ -905,8 +905,8 @@ class PrettyPrinter(Printer):
         P.baseline = P.height()//2
 
         vp = {}
-        for idx in v:
-            vp[idx] = self._hprint_vec(v[idx])
+        for idx, val in v.items():
+            vp[idx] = self._hprint_vec(val)
 
         for i in range(2):
             maxw = max(vp[(0, i)].width(), vp[(1, i)].width())
@@ -1180,7 +1180,7 @@ class PrettyPrinter(Printer):
                 p = pform
             p = stringPict.next(pform_neg, p)
             # Lower the binding to NEG, even if it was higher. Otherwise, it
-            # will print as a + ( - (b)), instead of a - (b).
+            # will print as a + (-(b)), instead of a - (b).
             return prettyForm(binding=prettyForm.NEG, *p)
 
         for i, term in enumerate(terms):
@@ -1258,28 +1258,28 @@ class PrettyPrinter(Printer):
 
         # Convert to pretty forms. Add parens to Add instances if there
         # is more than one term in the numer/denom
-        for i in range(len(a)):
-            if (a[i].is_Add and len(a) > 1) or (i != len(a) - 1 and
-                                                isinstance(a[i], (Integral, Piecewise, Product, Sum))):
-                a[i] = prettyForm(*self._print(a[i]).parens())
+        for i, ai in enumerate(a):
+            if (ai.is_Add and len(a) > 1) or (i != len(a) - 1 and
+                                              isinstance(ai, (Integral, Piecewise, Product, Sum))):
+                a[i] = prettyForm(*self._print(ai).parens())
             elif a[i].is_Relational:
-                a[i] = prettyForm(*self._print(a[i]).parens())
+                a[i] = prettyForm(*self._print(ai).parens())
             else:
-                a[i] = self._print(a[i])
+                a[i] = self._print(ai)
 
-        for i in range(len(b)):
-            if (b[i].is_Add and len(b) > 1) or (i != len(b) - 1 and
-                                                isinstance(b[i], (Integral, Piecewise, Product, Sum))):
-                b[i] = prettyForm(*self._print(b[i]).parens())
+        for i, bi in enumerate(b):
+            if (bi.is_Add and len(b) > 1) or (i != len(b) - 1 and
+                                              isinstance(bi, (Integral, Piecewise, Product, Sum))):
+                b[i] = prettyForm(*self._print(bi).parens())
             else:
-                b[i] = self._print(b[i])
+                b[i] = self._print(bi)
 
         # Construct a pretty form
         if len(b) == 0:
             return prettyForm.__mul__(*a)
         else:
             if len(a) == 0:
-                a.append( self._print(Integer(1)) )
+                a.append(self._print(Integer(1)))
             return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
     # A helper function for _print_Pow to print x**(1/n)
@@ -1306,8 +1306,7 @@ class PrettyPrinter(Printer):
         linelength = bpretty.height() - 1
         diagonal = stringPict('\n'.join(
             ' '*(linelength - i - 1) + _zZ + ' '*i
-            for i in range(linelength)
-        ))
+            for i in range(linelength)))
         # Put baseline just below lowest line: next to exp
         diagonal.baseline = linelength - 1
         # Make the root symbol
@@ -1371,20 +1370,17 @@ class PrettyPrinter(Printer):
 
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
-        return self._print_seq(items, '{', '}', ', ' )
+        return self._print_seq(items, '{', '}', ', ')
 
     def _print_set(self, l):
         return self._print_seq(sorted(l, key=default_sort_key), '{', '}')
 
     def _print_Range(self, s):
+        dots = '\N{HORIZONTAL ELLIPSIS}' if self._use_unicode else '...'
 
-        if self._use_unicode:
-            dots = '\N{HORIZONTAL ELLIPSIS}'
-        else:
-            dots = '...'
-
-        if s.start == -oo:
-            it = iter(s)
+        if (s.start, s.stop) == (-oo, oo):
+            printset = s.start, dots, -s.step, 0, s.step, dots, s.stop
+        elif s.start is -oo:
             printset = s.start, dots, s._last_element - s.step, s._last_element
         elif s.stop is oo or len(s) > 4:
             it = iter(s)
@@ -1392,7 +1388,7 @@ class PrettyPrinter(Printer):
         else:
             printset = tuple(s)
 
-        return self._print_seq(printset, '{', '}', ', ' )
+        return self._print_seq(printset, '{', '}', ', ')
 
     def _print_Interval(self, i):
         if i.left_open:
@@ -1607,11 +1603,11 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_GroebnerBasis(self, basis):
-        exprs = [ self._print_Add(arg, order=basis.order)
-                  for arg in basis.exprs ]
+        exprs = [self._print_Add(arg, order=basis.order)
+                 for arg in basis.exprs]
         exprs = prettyForm(*self.join(', ', exprs).parens(left='[', right=']'))
 
-        gens = [ self._print(gen) for gen in basis.gens ]
+        gens = [self._print(gen) for gen in basis.gens]
 
         domain = prettyForm(
             *prettyForm('domain=').right(self._print(basis.domain)))
@@ -1637,7 +1633,7 @@ class PrettyPrinter(Printer):
         pform.baseline = pform.height() - 1
         pform = prettyForm(*pform.right(self._print_seq([
             self._print_seq((self._print(v[0]), xsym('=='), self._print(v[1])),
-                            delimiter='') for v in zip(e.variables, e.point) ])))
+                            delimiter='') for v in zip(e.variables, e.point)])))
 
         pform.baseline = b
         return pform

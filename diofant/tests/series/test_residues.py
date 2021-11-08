@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Function, I, Rational, Symbol, cot, exp, factorial, log,
-                     pi, residue, root, sin, sqrt, tanh)
+from diofant import (Function, I, Mul, Rational, Symbol, cot, exp, factorial,
+                     log, pi, residue, root, sin, sqrt, tan, tanh)
 from diofant.abc import a, s, x, z
 
 
@@ -85,3 +85,11 @@ def test_sympyissue_21177():
 
     assert residue(e1, x, pt) == ans
     assert residue(e2, x, pt) == ans
+
+
+def test_sympyissue_21176():
+    e = x**2*cot(pi*x)/(x**4 + 1)
+    pt = -sqrt(2)/2 - sqrt(2)*I/2
+    assert residue(e, x, pt) == sqrt(2)*I/Mul(2, -2 + 2*I, tan(sqrt(2)*pi/2 +
+                                                               sqrt(2)*I*pi/2),
+                                              evaluate=False)

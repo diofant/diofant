@@ -164,13 +164,13 @@ class MCodePrinter(CodePrinter):
         else:
             raise NotImplementedError
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
-        return (f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]')
+        return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 
     def _print_Sum(self, expr):
         return 'Hold[Sum[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
 
-    def _print_MatrixBase(self, A):
-        return self.doprint(A.tolist())
+    def _print_MatrixBase(self, expr):
+        return self.doprint(expr.tolist())
 
     _print_Matrix = \
         _print_SparseMatrix = \
@@ -195,8 +195,8 @@ class MCodePrinter(CodePrinter):
                                                                 Symbol('#')})),
                                    self.doprint(expr.index + 1))
 
-    def _print_Lambda(self, expr):
-        return f'Function[{self.doprint(expr.variables)}, {self.doprint(expr.expr)}]'
+    def _print_Lambda(self, obj):
+        return f'Function[{self.doprint(obj.variables)}, {self.doprint(obj.expr)}]'
 
     def _print_RootSum(self, expr):
         from ..core import Lambda

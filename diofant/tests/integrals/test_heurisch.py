@@ -222,7 +222,7 @@ def test_pmint_rat():
 
     def drop_const(expr, x):
         if expr.is_Add:
-            return Add(*[ arg for arg in expr.args if arg.has(x) ])
+            return Add(*[arg for arg in expr.args if arg.has(x)])
         else:
             return expr
 

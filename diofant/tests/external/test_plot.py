@@ -81,7 +81,6 @@ def test_matplotlib_intro():
         p.title = 'Big title'
         p.xlabel = 'the x axis'
         p[1].label = 'straight line'
-        p.legend = True
         p.aspect_ratio = (1, 1)
         p.xlim = (-15, 20)
         p.save(tmp_file(f'{name}_basic_options_and_colors'))
@@ -108,16 +107,27 @@ def test_matplotlib_intro():
 
         pytest.raises(ValueError, lambda: plot(x, y))
 
+        plot(sin(x), axis_center='center', show=False).save(tmp_file())
+        plot(sin(x), axis_center=(0.4, 0.5)).save(tmp_file())
+        plot(sin(x), axis_center=False).save(tmp_file())
+        plot(sin(x), axis=False).save(tmp_file())
+        plot(sin(x), margin=1).save(tmp_file())
+
         # parametric 2d plots.
 
         # Single plot with default range.
         plot_parametric(sin(x), cos(x)).save(tmp_file())
+        plot_parametric(sin(x), cos(x), depth=7).save(tmp_file())
+        plot_parametric(sin(x), cos(x), show=False).save(tmp_file())
 
         # Single plot with range.
         p = plot_parametric(sin(x), cos(x), (x, -5, 5))
         assert str(p) == """Plot object containing:
 [0]: parametric cartesian line: (sin(x), cos(x)) for x over (-5.0, 5.0)"""
         p.save(tmp_file(f'{name}_parametric_range'))
+
+        p[0].line_color = lambda a: a
+        p.save(tmp_file(f'{name}_parametric_color'))
         del p
 
         # Multiple plots with same range.
@@ -146,6 +156,7 @@ def test_matplotlib_intro():
 [0]: 3D parametric cartesian line: (sin(x), cos(x), x) for x over (-10.0, 10.0)"""
         p.save(tmp_file(f'{name}_3d_line'))
         del p
+        plot3d_parametric_line(sin(x), cos(x), x, show=False).save(tmp_file())
 
         p = plot3d_parametric_line(
             (sin(x), cos(x), x, (x, -5, 5)), (cos(x), sin(x), x, (x, -3, 3)))
@@ -154,6 +165,9 @@ def test_matplotlib_intro():
 
         p = plot3d_parametric_line(sin(x), cos(x), x, nb_of_points=30)
         p.save(tmp_file(f'{name}_3d_line_points'))
+
+        p.extend(plot_parametric(cos(x), sin(x)))
+        pytest.raises(ValueError, lambda: p.show())
         del p
 
         # 3d surface single plot.
@@ -163,6 +177,8 @@ def test_matplotlib_intro():
                           for _ in [(x, y), (y, x)])
         p.save(tmp_file(f'{name}_surface'))
         del p
+
+        plot3d(x*y, show=False).save(tmp_file())
 
         # Multiple 3D plots with same range.
         p = plot3d(-x * y, x * y, (x, -5, 5))
@@ -182,6 +198,9 @@ def test_matplotlib_intro():
                           for _ in [(x, y), (y, x)])
         p.save(tmp_file(f'{name}_parametric_surface'))
         del p
+
+        plot3d_parametric_surface(sin(x + y), cos(x - y), x - y,
+                                  show=False).save(tmp_file())
 
         # Multiple Parametric 3D plots.
         p = plot3d_parametric_surface(

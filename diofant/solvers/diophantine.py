@@ -157,7 +157,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
     try:
         # if we know that factoring should not be attempted, skip
         # the factoring step
-        v, c, t = classify_diop(eq)
+        *_, t = classify_diop(eq)
         if t == 'general_sum_of_squares':
             # trying to factor such expressions will sometimes hang
             terms = [(eq, 1)]
@@ -608,10 +608,10 @@ def _diop_linear(var, coeff, param):
     """
 
     solutions = []
-    for i in range(len(B)):
+    for i, Bi in enumerate(B):
         tot_x, tot_y = [], []
 
-        for j, arg in enumerate(Add.make_args(c)):
+        for arg in Add.make_args(c):
             if arg.is_Integer:
                 # example: 5 -> k = 5
                 k, p = arg, Integer(1)
@@ -622,7 +622,7 @@ def _diop_linear(var, coeff, param):
                 k, p = arg.as_coeff_Mul()
                 pnew = params[params.index(p) + 1]
 
-            sol = sol_x, sol_y = base_solution_linear(k, A[i], B[i], pnew)
+            sol = sol_x, sol_y = base_solution_linear(k, A[i], Bi, pnew)
 
             if p == 1:
                 if None in sol:
@@ -909,7 +909,7 @@ def _diop_quadratic(var, coeff, t):
 
                 for X, Y in solns_pell:
 
-                    for i in range(k):
+                    for _ in range(k):
                         if all(_is_int(_) for _ in P*Matrix([X, Y]) + Q):
                             _a = (X + sqrt(D)*Y)*(T_k + sqrt(D)*U_k)**t
                             _b = (X - sqrt(D)*Y)*(T_k - sqrt(D)*U_k)**t
@@ -1290,8 +1290,7 @@ def PQa(P_0, Q_0, D):
     P_i = P_0
     Q_i = Q_0
 
-    while(1):
-
+    while 1:
         a_i = floor((P_i + sqrt(D))/Q_i)
         A_i = a_i*A_i_1 + A_i_2
         B_i = a_i*B_i_1 + B_i_2
@@ -1668,13 +1667,13 @@ def check_param(x, y, a, t):
         return None, None
 
     m, n = symbols('m, n', integer=True)
-    c, p = (m*x + n*y).as_content_primitive()
+    c, _ = (m*x + n*y).as_content_primitive()
     if a % c.denominator:
         return None, None
 
     # clear_coefficients(mx + b, R)[1] -> (R - b)/m
     eq = clear_coefficients(x, m)[1] - clear_coefficients(y, n)[1]
-    junk, eq = eq.as_content_primitive()
+    _, eq = eq.as_content_primitive()
 
     return diop_solve(eq, t)
 

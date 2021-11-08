@@ -29,15 +29,14 @@ def test_implicit_multiplication():
         'E pi': 'E*pi',
         'pi (x + 2)': 'pi*(x+2)',
         '(x + 2) pi': '(x+2)*pi',
-        'pi sin(x)': 'pi*sin(x)',
-    }
+        'pi sin(x)': 'pi*sin(x)'}
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (split_symbols,
                                           implicit_multiplication)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     application = ['sin x', 'cos 2*x', 'sin cos x']
     for case in application:
@@ -54,14 +53,13 @@ def test_implicit_application():
         'tan y**3': 'tan(y**3)',
         'cos 2*x': 'cos(2*x)',
         '(cot)': 'cot',
-        'sin cos tan x': 'sin(cos(tan(x)))'
-    }
+        'sin cos tan x': 'sin(cos(tan(x)))'}
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (implicit_application,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     multiplication = ['x y', 'x sin x', '2x']
     for case in multiplication:
@@ -75,14 +73,13 @@ def test_function_exponentiation():
     cases = {
         'sin**2(x)': 'sin(x)**2',
         'exp^y(z)': 'exp(z)^y',
-        'sin**2(E^(x))': 'sin(E^(x))**2'
-    }
+        'sin**2(E^(x))': 'sin(E^(x))**2'}
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (function_exponentiation,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
 
     other_implicit = ['x y', 'x sin x', '2x', 'sin x',
                       'cos 2*x', 'sin cos x']
@@ -90,7 +87,7 @@ def test_function_exponentiation():
         pytest.raises(SyntaxError,
                       lambda: parse_expr(case, transformations=transformations2))
 
-    assert parse_expr('x**2', local_dict={ 'x': diofant.Symbol('x') },
+    assert parse_expr('x**2', local_dict={'x': diofant.Symbol('x')},
                       transformations=transformations2) == parse_expr('x**2')
 
 
@@ -109,12 +106,11 @@ def test_symbol_splitting():
 
     # Make sure symbol splitting resolves names
     transformations += (implicit_multiplication,)
-    local_dict = { 'e': diofant.E }
+    local_dict = {'e': diofant.E}
     cases = {
         'xe': 'E*x',
         'Iy': 'I*y',
-        'ee': 'E*E',
-    }
+        'ee': 'E*E'}
     for case, expected in cases.items():
         assert(parse_expr(case, local_dict=local_dict,
                           transformations=transformations) ==
@@ -172,11 +168,10 @@ def test_all_implicit_steps():
         'sin^2(3*E^(x))': 'sin(3*E**(x))**2',
         'sin**2(E^(3x))': 'sin(E**(3*x))**2',
         'sin^2 (3x*E^(x))': 'sin(3*x*E^x)**2',
-        'pi sin x': 'pi*sin(x)',
-    }
+        'pi sin x': 'pi*sin(x)'}
     transformations = standard_transformations + (convert_xor,)
     transformations2 = transformations + (implicit_multiplication_application,)
-    for case in cases:
-        implicit = parse_expr(case, transformations=transformations2)
-        normal = parse_expr(cases[case], transformations=transformations)
-        assert(implicit == normal)
+    for k, v in cases.items():
+        implicit = parse_expr(k, transformations=transformations2)
+        normal = parse_expr(v, transformations=transformations)
+        assert implicit == normal
