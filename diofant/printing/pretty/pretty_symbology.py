@@ -216,13 +216,13 @@ def CLO(symb):
 _xobj_unicode = {
 
     # vertical symbols
-    #       (( ext, top, bot, mid ), c1)
-    '(':    (( EXT('('), HUP('('), HLO('(') ), '('),
-    ')':    (( EXT(')'), HUP(')'), HLO(')') ), ')'),
-    '[':    (( EXT('['), CUP('['), CLO('[') ), '['),
-    ']':    (( EXT(']'), CUP(']'), CLO(']') ), ']'),
-    '{':    (( EXT('{}'), HUP('{'), HLO('{'), MID('{') ), '{'),
-    '}':    (( EXT('{}'), HUP('}'), HLO('}'), MID('}') ), '}'),
+    #       ((ext, top, bot, mid), c1)
+    '(':    ((EXT('('), HUP('('), HLO('(')), '('),
+    ')':    ((EXT(')'), HUP(')'), HLO(')')), ')'),
+    '[':    ((EXT('['), CUP('['), CLO('[')), '['),
+    ']':    ((EXT(']'), CUP(']'), CLO(']')), ']'),
+    '{':    ((EXT('{}'), HUP('{'), HLO('{'), MID('{')), '{'),
+    '}':    ((EXT('{}'), HUP('}'), HLO('}'), MID('}')), '}'),
     '|':    '\N{BOX DRAWINGS LIGHT VERTICAL}',
 
     '<':    (('\N{BOX DRAWINGS LIGHT VERTICAL}',
@@ -233,13 +233,13 @@ _xobj_unicode = {
               '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}',
               '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}'), '>'),
 
-    'lfloor': (( EXT('['), EXT('['), CLO('[') ), '\N{LEFT FLOOR}'),
-    'rfloor': (( EXT(']'), EXT(']'), CLO(']') ), '\N{RIGHT FLOOR}'),
-    'lceil':  (( EXT('['), CUP('['), EXT('[') ), '\N{LEFT CEILING}'),
-    'rceil':  (( EXT(']'), CUP(']'), EXT(']') ), '\N{RIGHT CEILING}'),
+    'lfloor': ((EXT('['), EXT('['), CLO('[')), '\N{LEFT FLOOR}'),
+    'rfloor': ((EXT(']'), EXT(']'), CLO(']')), '\N{RIGHT FLOOR}'),
+    'lceil':  ((EXT('['), CUP('['), EXT('[')), '\N{LEFT CEILING}'),
+    'rceil':  ((EXT(']'), CUP(']'), EXT(']')), '\N{RIGHT CEILING}'),
 
-    'int':  (( EXT('int'), '\N{TOP HALF INTEGRAL}', '\N{BOTTOM HALF INTEGRAL}' ), '\N{INTEGRAL}'),
-    'sum':  (( '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}', '_', '\N{OVERLINE}', '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}'), '\N{N-ARY SUMMATION}'),
+    'int':  ((EXT('int'), '\N{TOP HALF INTEGRAL}', '\N{BOTTOM HALF INTEGRAL}'), '\N{INTEGRAL}'),
+    'sum':  (('\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}', '_', '\N{OVERLINE}', '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT}'), '\N{N-ARY SUMMATION}'),
 
     # horizontal objects
     # '-':   '-',
@@ -257,25 +257,25 @@ _xobj_unicode = {
 
 _xobj_ascii = {
     # vertical symbols
-    #       (( ext, top, bot, mid ), c1)
-    '(':    (( '|', '/', '\\' ), '('),
-    ')':    (( '|', '\\', '/' ), ')'),
+    #       ((ext, top, bot, mid), c1)
+    '(':    (('|', '/', '\\'), '('),
+    ')':    (('|', '\\', '/'), ')'),
 
     # XXX this looks ugly
-    #   '[':    (( '|', '-', '-' ), '['),
-    #   ']':    (( '|', '-', '-' ), ']'),
+    #   '[': (('|', '-', '-'), '['),
+    #   ']': (('|', '-', '-'), ']'),
     # XXX not so ugly :(
-    '[':    (( '[', '[', '[' ), '['),
-    ']':    (( ']', ']', ']' ), ']'),
+    '[':    (('[', '[', '['), '['),
+    ']':    ((']', ']', ']'), ']'),
 
-    '{':    (( '|', '/', '\\', '<' ), '{'),
-    '}':    (( '|', '\\', '/', '>' ), '}'),
+    '{':    (('|', '/', '\\', '<'), '{'),
+    '}':    (('|', '\\', '/', '>'), '}'),
     '|':    '|',
 
-    '<':    (( '|', '/', '\\' ), '<'),
-    '>':    (( '|', '\\', '/' ), '>'),
+    '<':    (('|', '/', '\\'), '<'),
+    '>':    (('|', '\\', '/'), '>'),
 
-    'int':  ( ' | ', '  /', '/  ' ),
+    'int':  (' | ', '  /', '/  '),
 
     # horizontal objects
     '-':    '-',
@@ -362,7 +362,7 @@ def vobj(symb, height):
 
     xobj
     """
-    return '\n'.join( xobj(symb, height) )
+    return '\n'.join(xobj(symb, height))
 
 
 def hobj(symb, width):
@@ -373,7 +373,7 @@ def hobj(symb, width):
 
     xobj
     """
-    return ''.join( xobj(symb, width) )
+    return ''.join(xobj(symb, width))
 
 
 # RADICAL

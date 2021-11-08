@@ -264,7 +264,7 @@ class FCodePrinter(CodePrinter):
         return f'{printed}d0'
 
     def _print_Indexed(self, expr):
-        inds = [ self._print(i) for i in expr.indices ]
+        inds = [self._print(i) for i in expr.indices]
         return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
 
     def _print_Idx(self, expr):
@@ -359,24 +359,24 @@ class FCodePrinter(CodePrinter):
             return ''.join(code_lines)
 
         free = self._settings['source_format'] == 'free'
-        code = [ line.lstrip(' \t') for line in code ]
+        code = [line.lstrip(' \t') for line in code]
 
         inc_keyword = ('do ', 'if(', 'if ', 'do\n', 'else')
         dec_keyword = ('end do', 'enddo', 'end if', 'endif', 'else')
 
-        increase = [ int(any(map(line.startswith, inc_keyword)))
-                     for line in code ]
-        decrease = [ int(any(map(line.startswith, dec_keyword)))
-                     for line in code ]
-        continuation = [ int(any(map(line.endswith, ['&', '&\n'])))
-                         for line in code ]
+        increase = [int(any(map(line.startswith, inc_keyword)))
+                    for line in code]
+        decrease = [int(any(map(line.startswith, dec_keyword)))
+                    for line in code]
+        continuation = [int(any(map(line.endswith, ['&', '&\n'])))
+                        for line in code]
 
         level = 0
         cont_padding = 0
         tabwidth = 3
         new_code = []
         for i, line in enumerate(code):
-            if line == '' or line == '\n':
+            if line in ('', '\n'):
                 new_code.append(line)
                 continue
             level -= decrease[i]

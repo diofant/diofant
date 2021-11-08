@@ -72,7 +72,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
+        lsyms.append(Dummy(f'{name}{len(lsyms):d}'))
 
     return lsyms[:n]
 
@@ -242,7 +242,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                         M = g.args[0].match(a*x**b)
 
                         if M is not None:
-                            terms.add( x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])) )
+                            terms.add(x*(li(M[a]*x**M[b]) - (M[a]*x**M[b])**(-1/M[b])*Ei((M[b]+1)*log(M[a]*x**M[b])/M[b])))
 
                 elif g.is_Pow:
                     if g.base is E:
@@ -300,11 +300,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     V = _symbols('x', len(terms))
 
     # sort mapping expressions from largest to smallest (last is always x).
-    mapping = list(reversed(list(zip(*ordered(                           #
-        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1]))  #
-    rev_mapping = {v: k for k, v in mapping}                             #
-    if mappings is None:                                                 #
-        # optimizing the number of permutations of mapping               #
+    mapping = list(reversed(list(zip(*ordered(
+        [(a[0].as_independent(x)[1], a) for a in zip(terms, V)])))[1]))
+    rev_mapping = {v: k for k, v in mapping}
+    if mappings is None:
+        # optimizing the number of permutations of mapping
         assert mapping[-1][0] == x  # if not, find it and correct this comment
         unnecessary_permutations = [mapping.pop(-1)]
         mappings = permutations(mapping)
@@ -317,8 +317,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     for mapping in mappings:
         mapping = list(mapping)
         mapping = mapping + unnecessary_permutations
-        diffs = [ _substitute(cancel(g.diff(x))) for g in terms ]
-        denoms = [ g.as_numer_denom()[1] for g in diffs ]
+        diffs = [_substitute(cancel(g.diff(x))) for g in terms]
+        denoms = [g.as_numer_denom()[1] for g in diffs]
         if all(h.is_polynomial(*V) for h in denoms) and _substitute(f).is_rational_function(*V):
             denom = functools.reduce(lambda p, q: lcm(p, q, *V), denoms)
             break
@@ -331,10 +331,10 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 return indep*result
         return
 
-    numers = [ cancel(denom*g) for g in diffs ]
+    numers = [cancel(denom*g) for g in diffs]
 
     def _derivation(h):
-        return Add(*[ d * h.diff(v) for d, v in zip(numers, V) ])
+        return Add(*[d * h.diff(v) for d, v in zip(numers, V)])
 
     def _deflation(p):
         for y in V:
@@ -392,14 +392,14 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     polys = set(list(v_split) + [u_split[0]] + list(special))
 
-    s = u_split[0] * Mul(*[ k for k, v in special.items() if v ])
-    polified = [ p.as_poly(*V) for p in [s, P, Q] ]
+    s = u_split[0] * Mul(*[k for k, v in special.items() if v])
+    polified = [p.as_poly(*V) for p in [s, P, Q]]
 
     if None in polified:
         return
 
     # --- definitions for _integrate ---
-    a, b, c = [ p.total_degree() for p in polified ]
+    a, b, c = [p.total_degree() for p in polified]
 
     poly_denom = (s * v_split[0] * _deflation(v_split[1])).as_expr()
 
@@ -425,8 +425,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     monoms = itermonomials(V, degree)
     poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
-    poly_part = Add(*[ poly_coeffs[i]*monomial
-                       for i, monomial in enumerate(ordered(monoms)) ])
+    poly_part = Add(*[poly_coeffs[i]*monomial
+                      for i, monomial in enumerate(ordered(monoms))])
 
     reducibles = set()
 
@@ -518,7 +518,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             return candidate.subs(solution).subs(
                 list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
-    if not (F.free_symbols - set(V)):
+    if not F.free_symbols - set(V):
         solution = _integrate('Q')
 
         if solution is None:
@@ -528,7 +528,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     if solution is not None:
         antideriv = solution.subs(rev_mapping)
-        antideriv = cancel(antideriv).expand(force=True)
+        antideriv = cancel(antideriv).expand()
 
         if antideriv.is_Add:
             antideriv = antideriv.as_independent(x)[1]

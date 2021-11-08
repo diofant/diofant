@@ -193,13 +193,13 @@ class CodePrinter(StrPrinter):
             lines.extend(closeloop)
 
         # then terms with summations
-        for d in dummies:
+        for d, dv in dummies.items():
             if isinstance(d, tuple):
                 indices = self._sort_optimized(d, expr)
                 openloop_d, closeloop_d = self._get_loop_opening_ending(
                     indices)
 
-                for term in dummies[d]:
+                for term in dv:
                     if term in dummies and not ([list(f) for f in dummies[term]]
                                                 == [[None] for f in dummies[term]]):  # pragma: no cover
                         # If one factor in the term has it's own internal
@@ -235,8 +235,8 @@ class CodePrinter(StrPrinter):
 
     def _get_expression_indices(self, expr, assign_to):
         from ..tensor import get_indices
-        rinds, junk = get_indices(expr)
-        linds, junk = get_indices(assign_to)
+        rinds, _ = get_indices(expr)
+        linds, _ = get_indices(assign_to)
 
         # support broadcast of scalar
         if linds and not rinds:

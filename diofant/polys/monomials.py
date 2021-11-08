@@ -38,7 +38,7 @@ class Monomial(tuple, DefaultPrinting):
             poly = Poly(monom, gens=gens)
             rep = poly.rep
             gens = poly.gens
-            if not rep.is_zero and rep.is_monomial:
+            if rep and rep.is_monomial:
                 monom = list(rep)[0]
             else:
                 raise ValueError(f'Expected a monomial got {monom}')

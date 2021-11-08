@@ -94,7 +94,7 @@ def test_erf_series():
 
 
 def test_erf_evalf():
-    assert abs( erf(Float(2.0)) - 0.995322265 ) < 1E-8  # XXX
+    assert abs(erf(Float(2.0)) - 0.995322265) < 1E-8  # XXX
 
 
 def test__erfs():
@@ -170,7 +170,7 @@ def test_erfc_series():
 
 
 def test_erfc_evalf():
-    assert abs( erfc(Float(2.0)) - 0.00467773 ) < 1E-8  # XXX
+    assert abs(erfc(Float(2.0)) - 0.00467773) < 1E-8  # XXX
 
 
 def test_erfi():
@@ -181,7 +181,7 @@ def test_erfi():
 
     assert erfi(0) == 0
 
-    assert erfi(I*oo) == I
+    assert erfi(+I*oo) == I
     assert erfi(-I*oo) == -I
 
     assert erfi(-x) == -erfi(x)
@@ -232,7 +232,7 @@ def test_erfi_series():
 
 
 def test_erfi_evalf():
-    assert abs( erfi(Float(2.0)) - 18.5648024145756 ) < 1E-13  # XXX
+    assert abs(erfi(Float(2.0)) - 18.5648024145756) < 1E-13  # XXX
 
 
 def test_erf2():
@@ -240,15 +240,17 @@ def test_erf2():
     assert erf2(x, x) == 0
     assert erf2(nan, 0) == nan
 
-    assert erf2(-oo,  y) == erf(y) + 1
-    assert erf2( oo,  y) == erf(y) - 1
-    assert erf2(  x, oo) == 1 - erf(x)
-    assert erf2(  x, -oo) == -1 - erf(x)
+    assert erf2(-oo, y) == erf(y) + 1
+    assert erf2(+oo, y) == erf(y) - 1
+
+    assert erf2(x, +oo) == +1 - erf(x)
+    assert erf2(x, -oo) == -1 - erf(x)
+
     assert erf2(x, erf2inv(x, y)) == y
 
     assert erf2(-x, -y) == -erf2(x, y)
-    assert erf2(-x,  y) == erf(y) + erf(x)
-    assert erf2( x, -y) == -erf(y) - erf(x)
+    assert erf2(-x, +y) == +erf(y) + erf(x)
+    assert erf2(+x, -y) == -erf(y) - erf(x)
     assert erf2(x, y).rewrite('fresnels') == erf(y).rewrite(fresnels)-erf(x).rewrite(fresnels)
     assert erf2(x, y).rewrite('fresnelc') == erf(y).rewrite(fresnelc)-erf(x).rewrite(fresnelc)
     assert erf2(x, y).rewrite('hyper') == erf(y).rewrite(hyper)-erf(x).rewrite(hyper)
@@ -280,7 +282,7 @@ def test_erfinv():
     assert erfinv(+1) == +oo
     assert erfinv(nan) == nan
 
-    assert erfinv(erf(w)) == w
+    assert erfinv(erf(+w)) == w
     assert erfinv(erf(-w)) == -w
 
     assert erfinv(x).diff() == sqrt(pi)*exp(erfinv(x)**2)/2
@@ -291,7 +293,7 @@ def test_erfinv():
 
 
 def test_erfinv_evalf():
-    assert abs( erfinv(Float(0.2)) - 0.179143454621292 ) < 1E-13
+    assert abs(erfinv(Float(0.2)) - 0.179143454621292) < 1E-13
 
 
 def test_erfcinv():
@@ -433,7 +435,7 @@ def test_expint():
     assert mytn(expint(3, x), expint(3, x).rewrite(Ei).rewrite(expint),
                 x**2*E1(x)/2 + (1 - x)*exp(-x)/2, x)
 
-    assert expint(Rational(3, 2), z).nseries(z, n=10) == \
+    assert expint(Rational(3, 2), z).series(z, n=6) == \
         2 + 2*z - z**2/3 + z**3/15 - z**4/84 + z**5/540 - \
         2*sqrt(pi)*sqrt(z) + O(z**6)
 
@@ -574,11 +576,11 @@ def test_si():
     assert tn_arg(Si)
     assert tn_arg(Shi)
 
-    assert Si(x).nseries(x, n=8) == \
+    assert Si(x).series(x, n=9) == \
         x - x**3/18 + x**5/600 - x**7/35280 + O(x**9)
-    assert Shi(x).nseries(x, n=8) == \
+    assert Shi(x).series(x, n=9) == \
         x + x**3/18 + x**5/600 + x**7/35280 + O(x**9)
-    assert Si(sin(x)).nseries(x, n=5) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
+    assert Si(sin(x)).series(x, n=7) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
     assert Si(x).series(x, 1, n=3) == \
         Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, (x, 1))
 
@@ -620,9 +622,9 @@ def test_ci():
     assert tn_arg(Ci)
     assert tn_arg(Chi)
 
-    assert Ci(x).nseries(x, n=4) == \
+    assert Ci(x).series(x) == \
         EulerGamma + log(x) - x**2/4 + x**4/96 + O(x**6)
-    assert Chi(x).nseries(x, n=4) == \
+    assert Chi(x).series(x) == \
         EulerGamma + log(x) + x**2/4 + x**4/96 + O(x**6)
     assert limit(log(x) - Ci(2*x), x, 0) == -log(2) - EulerGamma
 

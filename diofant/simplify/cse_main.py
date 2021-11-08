@@ -49,8 +49,8 @@ def reps_toposort(r):
     """
     r = sympify(r)
     E = []
-    for c1, (k1, v1) in enumerate(r):
-        for c2, (k2, v2) in enumerate(r):
+    for c1, (k1, _) in enumerate(r):
+        for c2, (_, v2) in enumerate(r):
             if k1 in v2.free_symbols:
                 E.append((c1, c2))
     return [r[i] for i in topological_sort((range(len(r)), E))]
@@ -101,7 +101,7 @@ def preprocess_for_cse(expr, optimizations):
         The transformed expression.
 
     """
-    for pre, post in optimizations:
+    for pre, _ in optimizations:
         if pre is not None:
             expr = pre(expr)
     return expr
@@ -126,7 +126,7 @@ def postprocess_for_cse(expr, optimizations):
         The transformed expression.
 
     """
-    for pre, post in reversed(optimizations):
+    for _, post in reversed(optimizations):
         if post is not None:
             expr = post(expr)
     return expr
@@ -211,7 +211,7 @@ def opt_cse(exprs, order='canonical'):
             funcs = sorted(funcs, key=lambda x: len(x.args))
 
         func_args = [set(e.args) for e in funcs]
-        for i in range(len(func_args)):
+        for i, _ in enumerate(func_args):
             for j in range(i + 1, len(func_args)):
                 com_args = func_args[i].intersection(func_args[j])
                 if len(com_args) > 1:

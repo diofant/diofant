@@ -123,27 +123,27 @@ def add_formulae(formulae):
     add((), (), exp(z))
 
     # 1F0
-    add((a, ), (), HyperRep_power1(-a, z))
+    add((a,), (), HyperRep_power1(-a, z))
 
     # 2F1
-    addb((a, a - Rational(1, 2)), (2*a, ),
+    addb((a, a - Rational(1, 2)), (2*a,),
          Matrix([HyperRep_power2(a, z),
                  HyperRep_power2(a + Rational(1, 2), z)/2]),
          Matrix([[1, 0]]),
          Matrix([[(a - Rational(1, 2))*z/(1 - z), (Rational(1, 2) - a)*z/(1 - z)],
                  [a/(1 - z), a*(z - 2)/(1 - z)]]))
-    addb((1, 1), (2, ),
+    addb((1, 1), (2,),
          Matrix([HyperRep_log1(z), 1]), Matrix([[-1/z, 0]]),
          Matrix([[0, z/(z - 1)], [0, 0]]))
-    addb((Rational(1, 2), 1), (Rational(3, 2), ),
+    addb((Rational(1, 2), 1), (Rational(3, 2),),
          Matrix([HyperRep_atanh(z), 1]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), 1/(1 - z)/2], [0, 0]]))
-    addb((Rational(1, 2), Rational(1, 2)), (Rational(3, 2), ),
+    addb((Rational(1, 2), Rational(1, 2)), (Rational(3, 2),),
          Matrix([HyperRep_asin1(z), HyperRep_power1(-Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), Rational(1, 2)], [0, z/(1 - z)/2]]))
-    addb((a, Rational(1, 2) + a), (Rational(1, 2), ),
+    addb((a, Rational(1, 2) + a), (Rational(1, 2),),
          Matrix([HyperRep_sqrts1(-a, z), -HyperRep_sqrts2(-a - Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[0, -a],
@@ -212,17 +212,17 @@ def add_formulae(formulae):
     #    / (2*root(polar_lift(-1)*z,4)))
     # Manually tuned rule
     addb([1], [Rational(3, 4), Rational(5, 4)],
-         Matrix([ sqrt(pi)*(I*sinh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
-                            + cosh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  * exp(-I*pi/4)/(2*root(z, 4)),
-                  sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
-                                       + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
-                  * exp(-I*pi/4)/2,
-                  1 ]),
+         Matrix([sqrt(pi)*(I*sinh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
+                           + cosh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
+                 * exp(-I*pi/4)/(2*root(z, 4)),
+                 sqrt(pi)*root(z, 4)*(sinh(2*sqrt(z))*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))
+                                      + I*cosh(2*sqrt(z))*fresnels(2*root(z, 4)*exp(I*pi/4)/sqrt(pi)))
+                 * exp(-I*pi/4)/2,
+                 1]),
          Matrix([[1, 0, 0]]),
-         Matrix([[-Rational(1, 4), 1,      Rational(1, 4)],
-                 [ z,      Rational(1, 4), 0     ],
-                 [ 0,      0,      0     ]]))
+         Matrix([[-Rational(1, 4), 1, Rational(1, 4)],
+                 [z, Rational(1, 4), 0],
+                 [0, 0, 0]]))
 
     # 2F2
     addb([Rational(1, 2), a], [Rational(3, 2), a + 1],
@@ -242,7 +242,7 @@ def add_formulae(formulae):
          Matrix([[0, 1, -1, 0], [0, z, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]))
 
     # 0F1
-    add((), (Rational(1, 2), ), cosh(2*sqrt(z)))
+    add((), (Rational(1, 2),), cosh(2*sqrt(z)))
     addb([], [b],
          Matrix([gamma(b)*z**((1 - b)/2)*besseli(b - 1, 2*sqrt(z)),
                  gamma(b)*z**(1 - b/2)*besseli(b, 2*sqrt(z))]),
@@ -310,39 +310,39 @@ def add_formulae(formulae):
 
     # FresnelS
     # Basic rule
-    # add([Rational(3, 4)], [Rational(3, 2),Rational(7, 4)], 6*fresnels( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3 ) )
+    # add([Rational(3, 4)], [Rational(3, 2),Rational(7, 4)], 6*fresnels(exp(pi*I/4)*root(z,4)*2/sqrt(pi)) / (pi * (exp(pi*I/4)*root(z,4)*2/sqrt(pi))**3))
     # Manually tuned rule
     addb([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)],
          Matrix(
-             [ fresnels(
+             [fresnels(
                  exp(
                      pi*I/4)*root(
                          z, 4)*2/sqrt(
-                             pi) ) / (
-                                 pi * (exp(pi*I/4)*root(z, 4)*2/sqrt(pi))**3 ),
-               sinh(2*sqrt(z))/sqrt(z),
-               cosh(2*sqrt(z)) ]),
+                             pi)) / (
+                                 pi * (exp(pi*I/4)*root(z, 4)*2/sqrt(pi))**3),
+              sinh(2*sqrt(z))/sqrt(z),
+              cosh(2*sqrt(z))]),
          Matrix([[6, 0, 0]]),
-         Matrix([[-Rational(3, 4),  Rational(1, 16), 0],
-                 [ 0,      -Rational(1, 2),  1],
-                 [ 0,       z,       0]]))
+         Matrix([[-Rational(3, 4), Rational(1, 16), 0],
+                 [0, -Rational(1, 2), 1],
+                 [0, z, 0]]))
 
     # FresnelC
     # Basic rule
-    # add([Rational(1, 4)], [Rational(1, 2),Rational(5, 4)], fresnelc( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) / ( exp(pi*I/4)*root(z,4)*2/sqrt(pi) ) )
+    # add([Rational(1, 4)], [Rational(1, 2),Rational(5, 4)], fresnelc(exp(pi*I/4)*root(z,4)*2/sqrt(pi)) / (exp(pi*I/4)*root(z,4)*2/sqrt(pi)))
     # Manually tuned rule
     addb([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)],
          Matrix(
-             [ sqrt(
+             [sqrt(
                  pi)*exp(
                      -I*pi/4)*fresnelc(
                          2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4)),
-               cosh(2*sqrt(z)),
-               sinh(2*sqrt(z))*sqrt(z) ]),
+              cosh(2*sqrt(z)),
+              sinh(2*sqrt(z))*sqrt(z)]),
          Matrix([[1, 0, 0]]),
-         Matrix([[-Rational(1, 4),  Rational(1, 4), 0     ],
-                 [ 0,       0,      1     ],
-                 [ 0,       z,      Rational(1, 2)]]))
+         Matrix([[-Rational(1, 4), Rational(1, 4), 0],
+                 [0, 0, 1],
+                 [0, z, Rational(1, 2)]]))
 
     # 2F3
     # XXX with this five-parameter formula is pretty slow with the current
@@ -633,7 +633,7 @@ class G_Function(Expr):
          {0: [2]}, {y: [y]})
 
         """
-        dicts = pan, pap, pbm, pbq = [defaultdict(list) for i in range(4)]
+        dicts = [defaultdict(list) for i in range(4)]
         for dic, lis in zip(dicts, (self.an, self.ap, self.bm, self.bq)):
             for x in lis:
                 dic[_mod1(x)].append(x)
@@ -746,8 +746,6 @@ class Formula:
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
-        a_inv, b_inv = [{a: len(vals) for a, vals in bucket.items()}
-                        for bucket in [abuckets, bbuckets]]
         critical_values = [[0] for _ in self.symbols]
         result = []
         _n = Dummy()
@@ -1395,8 +1393,8 @@ def _reduce_order(ap, bq, gen, key):
     operators = []
     for a in ap:
         op = None
-        for i in range(len(bq)):
-            op = gen(a, bq[i])
+        for i, bqa in enumerate(bq):
+            op = gen(a, bqa)
             if op is not None:
                 bq.pop(i)
                 break
@@ -1550,8 +1548,8 @@ def devise_plan(target, origin, z):
 
     def do_shifts(fro, to, inc, dec):
         ops = []
-        for i in range(len(fro)):
-            if to[i] - fro[i] > 0:
+        for i, froa in enumerate(fro):
+            if to[i] - froa > 0:
                 sh = inc
                 ch = 1
             else:
@@ -1594,7 +1592,7 @@ def devise_plan(target, origin, z):
 
         def others(dic, key):
             l = []
-            for k, value in dic.items():
+            for k in dic:
                 if k != key:
                     l += list(dic[k])
             return l
@@ -1778,7 +1776,7 @@ def try_lerchphi(func):
             p = Poly(numer, t)
             if not p.is_term:
                 raise TypeError('p should be a term')
-            ((b, ), a) = p.LT()
+            ((b,), a) = p.LT()
             monomials += [(a/denom, b)]
             continue
         if numer.has(t):
@@ -1888,7 +1886,7 @@ def build_hypergeometric_formula(func):
         # integers.
         basis = []
         bq = list(func.bq[:])
-        for i in range(len(bq)):
+        for i, _ in enumerate(bq):
             basis += [hyper([], bq, z)]
             bq[i] += 1
         basis += [hyper([], bq, z)]

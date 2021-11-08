@@ -1,7 +1,7 @@
 Plotting
 ========
 
-.. module:: diofant.plotting.plot
+.. module:: diofant.plotting
 
 Introduction
 ------------
@@ -24,6 +24,8 @@ argument.
 
 Plot Class
 ----------
+
+.. currentmodule:: diofant.plotting.plot
 
 .. autoclass:: Plot
    :members:

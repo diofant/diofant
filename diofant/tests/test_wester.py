@@ -16,7 +16,7 @@ from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
                      LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
                      N, O, Or, Piecewise, Product, Rational, Subs, Sum, Symbol,
                      ZeroMatrix, acos, acot, apart, asin, asinh,
-                     assoc_legendre, atan, bernoulli, besselj, binomial,
+                     assoc_legendre, atan, atanh, bernoulli, besselj, binomial,
                      block_collapse, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
@@ -860,6 +860,7 @@ def test_M38():
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
      k44, k45, k46, k47, k48, k49] = variables = symbols('k1:50')
+    del k43
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -2017,7 +2018,8 @@ def test_X6():
     # Taylor series of nonscalar objects (noncommutative multiplication)
     # expected result => (B A - A B) t^2/2 + O(t^3)   [Stanly Steinberg]
     a, b = symbols('a b', commutative=False, scalar=False)
-    assert (series(exp((a + b)*x) - exp(a*x) * exp(b*x), x, x0=0, n=3) ==
+    assert (series(exp((a + b)*x) - exp(a*x) * exp(b*x), x,
+                   x0=0, n=3).expand().collect(x) ==
             x**2*(-a*b/2 + b*a/2) + O(x**3))
 
 

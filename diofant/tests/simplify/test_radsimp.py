@@ -161,14 +161,14 @@ def test_radsimp_sympyissue_6313():
 
 def test_collect_1():
     """Collect with respect to a Symbol"""
-    assert collect( x + y*x, x ) == x * (1 + y)
-    assert collect( x + x**2, x ) == x + x**2
-    assert collect( x**2 + y*x**2, x ) == (x**2)*(1 + y)
-    assert collect( x**2 + y*x, x ) == x*y + x**2
-    assert collect( 2*x**2 + y*x**2 + 3*x*y, [x] ) == x**2*(2 + y) + 3*x*y
-    assert collect( 2*x**2 + y*x**2 + 3*x*y, [y] ) == 2*x**2 + y*(x**2 + 3*x)
+    assert collect(x + y*x, x) == x * (1 + y)
+    assert collect(x + x**2, x) == x + x**2
+    assert collect(x**2 + y*x**2, x) == (x**2)*(1 + y)
+    assert collect(x**2 + y*x, x) == x*y + x**2
+    assert collect(2*x**2 + y*x**2 + 3*x*y, [x]) == x**2*(2 + y) + 3*x*y
+    assert collect(2*x**2 + y*x**2 + 3*x*y, [y]) == 2*x**2 + y*(x**2 + 3*x)
 
-    assert collect( ((1 + y + x)**4).expand(), x) == ((1 + y)**4).expand() + \
+    assert collect(((1 + y + x)**4).expand(), x) == ((1 + y)**4).expand() + \
         x*(4*(1 + y)**3).expand() + x**2*(6*(1 + y)**2).expand() + \
         x**3*(4*(1 + y)).expand() + x**4
     # symbols can be given as any iterable
@@ -188,9 +188,9 @@ def test_collect_3():
 
     assert collect(-x/8 + x*y, -x) == x*(y - Rational(1, 8))
 
-    assert collect( 1 + x*(y**2), x*y ) == 1 + x*(y**2)
-    assert collect( x*y + a*x*y, x*y) == x*y*(1 + a)
-    assert collect( 1 + x*y + a*x*y, x*y) == 1 + x*y*(1 + a)
+    assert collect(1 + x*(y**2), x*y) == 1 + x*(y**2)
+    assert collect(x*y + a*x*y, x*y) == x*y*(1 + a)
+    assert collect(1 + x*y + a*x*y, x*y) == 1 + x*y*(1 + a)
     assert collect(a*x*f(x) + b*(x*f(x)), x*f(x)) == x*(a + b)*f(x)
 
     assert collect(a*x*log(x) + b*(x*log(x)), x*log(x)) == x*(a + b)*log(x)
@@ -212,7 +212,7 @@ def test_collect_5():
     """Collect with respect to a tuple."""
     assert collect(x**2*y**4 + z*(x*y**2)**2 + z + a*z, [x*y**2, z]) in [
         z*(1 + a + x**2*y**4) + x**2*y**4,
-        z*(1 + a) + x**2*y**4*(1 + z) ]
+        z*(1 + a) + x**2*y**4*(1 + z)]
     assert collect((1 + (x + y) + (x + y)**2).expand(),
                    [x, y]) == 1 + y + x*(1 + 2*y) + x**2 + y**2
 

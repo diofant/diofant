@@ -27,7 +27,7 @@ def test_FractionField___init__():
 
 
 def test_FractionField___hash__():
-    F, x, y, z = field('x y z', QQ)
+    F, *_ = field('x y z', QQ)
     assert hash(F)
 
 
@@ -54,16 +54,16 @@ def test_FractionField_methods():
     assert F.domain_new(2) == ZZ(2)
 
     x = symbols('x')
-    assert F.field_new(x**2 + x) == F.x**2 + F.x
+    assert F(x**2 + x) == F.x**2 + F.x
 
 
 def test_FracElement___hash__():
-    F, x, y, z = field('x y z', QQ)
+    _, x, y, z = field('x y z', QQ)
     assert hash(x*y/z)
 
 
 def test_FracElement_copy():
-    F, x, y, z = field('x y z', ZZ)
+    _, x, y, z = field('x y z', ZZ)
 
     f = x*y/3*z
     g = f.copy()
@@ -137,12 +137,12 @@ def test_FracElement_from_expr():
 
 
 def test_FracElement_to_poly():
-    F, x, y = field('x y', ZZ)
+    _, x, y = field('x y', ZZ)
     pytest.raises(ValueError, lambda: (x/y).to_poly())
 
 
 def test_FracElement__pos_neg__():
-    F,  x, y = field('x y', QQ)
+    _,  x, y = field('x y', QQ)
 
     f = (7*x - 9)/y
     g = (-7*x + 9)/y
@@ -169,14 +169,14 @@ def test_FracElement___add__():
     assert x + QQ(3, 7) == QQ(3, 7) + x == (7*x + 3)/7
 
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, *_ = field('x y z t', Fuv)
 
     f = (u*v + x)/(y + u*v)
     assert dict(f.numerator) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
     assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
 
     Ruv,  u, v = ring('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Ruv)
+    _,  x, y, *_ = field('x y z t', Ruv)
 
     f = (u*v + x)/(y + u*v)
     assert dict(f.numerator) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
@@ -196,21 +196,21 @@ def test_FracElement___sub__():
     assert x - QQ(3, 7) == -(QQ(3, 7) - x) == (7*x - 3)/7
 
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, *_ = field('x y z t', Fuv)
 
     f = (u*v - x)/(y - u*v)
     assert dict(f.numerator) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
     assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
 
     Ruv,  u, v = ring('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Ruv)
+    _,  x, y, *_ = field('x y z t', Ruv)
 
     f = (u*v - x)/(y - u*v)
     assert dict(f.numerator) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
     assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
 
-    Fuv,  u, v = field('u v', ZZ)
-    Rxyz,  x, y, z = ring('x y z', Fuv)
+    Fuv,  u, _ = field('u v', ZZ)
+    _,  x, *_ = ring('x y z', Fuv)
 
     f = u - x
     assert dict(f) == {(0, 0, 0): u, (1, 0, 0): -Fuv.one}
@@ -229,14 +229,14 @@ def test_FracElement___mul__():
     assert x*QQ(3, 7) == QQ(3, 7)*x == 3*x/7
 
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, z, t = field('x y z t', Fuv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
     assert dict(f.numerator) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
     assert dict(f.denominator) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
 
     Ruv,  u, v = ring('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Ruv)
+    _,  x, y, z, t = field('x y z t', Ruv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
     assert dict(f.numerator) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
@@ -260,7 +260,7 @@ def test_FracElement___truediv__():
     pytest.raises(ZeroDivisionError, lambda: x/(x - x))
 
     Fuv,  u, v = field('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Fuv)
+    _,  x, y, *_ = field('x y z t', Fuv)
 
     f = (u*v)/(x*y)
     assert dict(f.numerator) == {(0, 0, 0, 0): u*v}
@@ -271,7 +271,7 @@ def test_FracElement___truediv__():
     assert dict(g.denominator) == {(0, 0, 0, 0): u*v}
 
     Ruv,  u, v = ring('u v', ZZ)
-    Fxyzt,  x, y, z, t = field('x y z t', Ruv)
+    _,  x, y, *_ = field('x y z t', Ruv)
 
     f = (u*v)/(x*y)
     assert dict(f.numerator) == {(0, 0, 0, 0): u*v}
@@ -281,14 +281,14 @@ def test_FracElement___truediv__():
     assert dict(g.numerator) == {(1, 1, 0, 0): 1}
     assert dict(g.denominator) == {(0, 0, 0, 0): u*v}
 
-    Fuv,  u, v = field('u v', ZZ)
-    Rxyz,  x, y, z = ring('x y z', Fuv)
+    Fuv,  u, _ = field('u v', ZZ)
+    _,  x, *_ = ring('x y z', Fuv)
 
     pytest.raises(TypeError, lambda: u/x)
 
 
 def test_FracElement___pow__():
-    F,  x, y = field('x y', QQ)
+    _,  x, y = field('x y', QQ)
 
     f, g = 1/x, 1/y
 
@@ -302,17 +302,17 @@ def test_FracElement___pow__():
 
 
 def test_FracElement_diff():
-    F,  x, y, z = field('x y z', ZZ)
+    _,  x, y, z = field('x y z', ZZ)
 
     assert ((x**2 + y)/(z + 1)).diff(x) == 2*x/(z + 1)
 
-    F,  x, y = field('x y', QQ.algebraic_field(I))
+    _,  x, y = field('x y', QQ.algebraic_field(I))
 
     assert ((x - y)/x).diff(x) == y/x**2
 
 
 def test_FracElement___call__():
-    F,  x, y, z = field('x y z', ZZ)
+    _,  x, y, z = field('x y z', ZZ)
     f = (x**2 + 3*y)/z
 
     pytest.raises(ValueError, lambda: f(1, 1, 1, 1))
@@ -326,7 +326,7 @@ def test_FracElement___call__():
 
 
 def test_FracElement_eval():
-    F,  x, y, z = field('x y z', ZZ)
+    _,  x, y, z = field('x y z', ZZ)
     Fyz = field('y z', ZZ)[0]
     f = (x**2 + 3*y)/z
 
@@ -335,7 +335,7 @@ def test_FracElement_eval():
 
 
 def test_FracElement_compose():
-    F, x, y, z = field('x y z', QQ)
+    _, x, y, z = field('x y z', QQ)
 
     f = x**3
 

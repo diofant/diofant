@@ -1,4 +1,5 @@
 import builtins
+import fractions
 import os
 import sys
 
@@ -35,7 +36,8 @@ def _init_ipython_printing(ip, stringify_func):
     def _print_latex_text(o):
         return latex(o, mode='equation*')
 
-    printable_types = [float, tuple, list, set, frozenset, dict, int]
+    printable_types = [float, tuple, list, set, frozenset, dict,
+                       int, fractions.Fraction]
 
     plaintext_formatter = ip.display_formatter.formatters['text/plain']
     latex_formatter = ip.display_formatter.formatters['text/latex']
@@ -110,7 +112,7 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     if no_global:
         _stringify_func = stringify_func
 
-        def stringify_func(expr):
+        def stringify_func(expr):  # pylint: disable=function-redefined
             return _stringify_func(expr, **settings)
     else:
         Printer.set_global_settings(**settings)

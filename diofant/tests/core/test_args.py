@@ -3,7 +3,6 @@
 # NOTE: keep tests sorted by (module, class name) key.
 
 import inspect
-import io
 import os
 import re
 import warnings
@@ -169,7 +168,7 @@ def test_all_classes_are_tested():
 
     modules = {}
 
-    for root, dirs, files in os.walk(diofant_path):
+    for root, _, files in os.walk(diofant_path):
         module = root.replace(prefix, '').replace(os.sep, '.')
 
         for file in files:
@@ -178,7 +177,7 @@ def test_all_classes_are_tested():
             if not file.endswith('.py'):
                 continue
 
-            with io.open(os.path.join(root, file), 'r', encoding='utf-8') as f:
+            with open(os.path.join(root, file), encoding='utf-8') as f:
                 text = f.read()
 
             submodule = module + '.' + file[:-3]
@@ -1775,7 +1774,7 @@ def test_diofant__matrices__expressions__determinant__Determinant():
 
 def test_diofant__matrices__expressions__funcmatrix__FunctionMatrix():
     i, j = symbols('i,j')
-    assert _test_args(FunctionMatrix(3, 3, Lambda((i, j), i - j) ))
+    assert _test_args(FunctionMatrix(3, 3, Lambda((i, j), i - j)))
 
 
 def test_diofant__matrices__expressions__fourier__DFT():
@@ -1883,7 +1882,7 @@ def test_diofant__tensor__tensor__TensExpr():
 
 def test_diofant__tensor__tensor__TensAdd():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
+    a = tensor_indices('a', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
     S1 = TensorType([Lorentz], sym)
     p, q = S1('p,q')
@@ -1894,7 +1893,7 @@ def test_diofant__tensor__tensor__TensAdd():
 
 def test_diofant__tensor__tensor__Tensor():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
+    a = tensor_indices('a', Lorentz)
     sym = TensorSymmetry(get_symmetric_group_sgs(1))
     S1 = TensorType([Lorentz], sym)
     p = S1('p')

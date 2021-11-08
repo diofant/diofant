@@ -158,8 +158,8 @@ def test_ndim_array_converting():
     matrix = dense_array.tomatrix()
     assert isinstance(matrix, Matrix)
 
-    for i in range(len(dense_array)):
-        assert dense_array[i] == matrix[i]
+    for i, ai in enumerate(dense_array):
+        assert ai == matrix[i]
     assert matrix.shape == dense_array.shape
 
     assert MutableDenseNDimArray(matrix) == dense_array
@@ -177,8 +177,8 @@ def test_ndim_array_converting():
     pytest.raises(ValueError,
                   lambda: MutableSparseNDimArray([1]*6, (2, 2, 2)).tomatrix())
 
-    for i in range(len(sparse_array)):
-        assert sparse_array[i] == matrix[i]
+    for i, ai in enumerate(sparse_array):
+        assert ai == matrix[i]
     assert matrix.shape == sparse_array.shape
 
     assert MutableSparseNDimArray(matrix) == sparse_array

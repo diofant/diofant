@@ -255,7 +255,6 @@ def multiset_partitions_taocp(multiplicities):
                 f[lpart + 1] = b
                 # Return to M2
             else:
-                k  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break  # Continue to M4
 
         # M4  Visit a partition
@@ -265,7 +264,7 @@ def multiset_partitions_taocp(multiplicities):
         # M5 (Decrease v)
         while True:
             j = b-1
-            while (pstack[j].v == 0):
+            while pstack[j].v == 0:
                 j = j - 1
             if j == a and pstack[j].v == 1:
                 # M6 (Backtrack)
@@ -1006,7 +1005,7 @@ class MultisetPartitionTraverser():
 
         self._initialize_enumeration(multiplicities)
         pkey = part_key(self.top_part())
-        self.dp_stack.append([(pkey, 0), ])
+        self.dp_stack.append([(pkey, 0)])
         while True:
             while self.spread_part_multiplicity():
                 pkey = part_key(self.top_part())
@@ -1022,7 +1021,7 @@ class MultisetPartitionTraverser():
                     self.lpart -= 1
                     break
                 else:
-                    self.dp_stack.append([(pkey, self.pcount), ])
+                    self.dp_stack.append([(pkey, self.pcount)])
 
             # M4  count a leaf partition
             self.pcount += 1

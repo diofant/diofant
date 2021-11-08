@@ -257,7 +257,7 @@ def test_new_relational():
     assert (x < 0) != StrictLessThan(x, 1)
 
     # finally, some fuzz testing
-    for i in range(100):
+    for _ in range(100):
         while 1:
             strtype, length = (chr, 65535) if random.randint(0, 1) else (chr, 255)
             relation_type = strtype(random.randint(0, length))

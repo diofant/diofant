@@ -70,11 +70,11 @@ def test_integer_partition():
         a = IntegerPartition([i])
         ans = {IntegerPartition(p) for p in partitions(i)}
         n = len(ans)
-        for j in range(n):
+        for _ in range(n):
             next.add(a)
             a = a.next_lex()
             IntegerPartition(i, a.partition)  # check it by giving i
-        for j in range(n):
+        for _ in range(n):
             prev.add(a)
             a = a.prev_lex()
             IntegerPartition(i, a.partition)  # check it by giving i

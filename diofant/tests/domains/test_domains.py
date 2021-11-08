@@ -1,5 +1,7 @@
 """Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x]..."""
 
+import abc
+
 import pytest
 
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
@@ -22,7 +24,7 @@ def unify(K0, K1):
 
 
 def test_Domain_interface():
-    pytest.raises(TypeError, lambda: DomainElement().parent)
+    assert issubclass(DomainElement, abc.ABC)
 
     assert RR(1).parent is RR
     assert CC(1).parent is CC
@@ -39,7 +41,6 @@ def test_Domain_interface():
     pytest.raises(ValueError, lambda: RealField(tol=object()))
 
     pytest.raises(AttributeError, lambda: CC.ring)
-    pytest.raises(DomainError, lambda: CC.get_exact())
 
     assert str(EX(1)) == 'EX(1)'
 
@@ -508,6 +509,7 @@ def test_Domain_get_exact():
     assert ZZ.get_exact() == ZZ
     assert QQ.get_exact() == QQ
     assert RR.get_exact() == QQ
+    assert CC.get_exact() == QQ.algebraic_field(I)
     assert ALG.get_exact() == ALG
     assert ZZ.inject(x).get_exact() == ZZ.inject(x)
     assert QQ.inject(x).get_exact() == QQ.inject(x)
@@ -558,6 +560,8 @@ def test_Domain_convert():
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
 
+    pytest.raises(CoercionFailed, lambda: ALG2.convert(CC(1j)))
+
     assert RR.convert(complex(2 + 0j)) == RR(2)
     pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
 
@@ -572,6 +576,7 @@ def test_arithmetics():
     assert ZZ.div(ZZ(2), ZZ(3)) == (0, 2)
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
+    assert QQ.lcm(QQ(2, 3), QQ(4, 9)) == QQ(4, 3)
 
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
@@ -705,13 +710,12 @@ def test_Domain__algebraic_field():
 
     alg3 = QQ.algebraic_field(RootOf(4*x**7 + x - 1, 0))
     assert alg3.is_RealAlgebraicField
-    assert int(alg3.unit) == 2
-    assert 2.772 > alg3.unit > 2.771
-    assert int(alg3([2, -1, 11, 17, 3])) == 622
+    assert int(alg3.unit) == 1
+    assert 1.386 > alg3.unit > 1.385
+    assert int(alg3([2, -2, 44, 136, 48])) == 622
     assert int(alg3([QQ(2331359268715, 10459004949272),
-                     QQ(-16742151878022, 12894796053515),
-                     QQ(125326976730518, 44208605852241),
-                     QQ(-11, 4), 1])) == 18
+                     QQ(-33484303756044, 12894796053515),
+                     QQ(501307906922072, 44208605852241), -22, 16])) == 18
 
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
@@ -751,13 +755,13 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(f, R) == 3*X**2 + 5*Y**2
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
-    RALG,  u, v = ring('u v', ALG)
+    _,  u, v = ring('u v', ALG)
     pytest.raises(CoercionFailed,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
 def test_FractionField_convert():
-    F,  X, Y = field('x y', QQ)
+    F,  *_ = field('x y', QQ)
     assert F.convert(QQ_python(1, 3)) == F.one/3
     assert F.convert(RR(1)) == F.one
 
@@ -1029,13 +1033,15 @@ def test_ModularInteger():
     assert F5.is_normal(a) is True
     assert F5.is_normal(F5.zero) is True
 
-    assert F5 == FF(5, [1, 0])
+    assert F5 == FF(5, [0, 1])
 
     assert F5(2).is_primitive is True
 
     F7 = FF(7)
 
+    assert F7(1).is_primitive is False
     assert F7(2).is_primitive is False
+    assert F7(3).is_primitive is True
 
     F9 = FF(9, [1, 0, 1])
 
@@ -1056,6 +1062,9 @@ def test_ModularInteger():
     assert int(F9.one) == 1
     assert int(F9([1, 1])) == int(F9(4)) == 4
     assert int(F9([0, 2])) == int(F9(6)) == 6
+
+    assert F9([0, 1]).is_primitive is True
+    assert F9([2]).is_primitive is False
 
     F81 = FF(3, [2, 1, 0, 0, 1])
 
@@ -1181,3 +1190,12 @@ def test_diofantissue_1075():
     expr = 64*sqrt(3) + 64*I
 
     assert A.to_expr(A.from_expr(expr)) == expr
+
+
+def test_diofantissue_1008():
+    a = RootOf(4*x**2 + 2*x + 1, 0)
+    A = QQ.algebraic_field(a)
+    e = A.from_expr(a)
+
+    assert A.unit.denominator == 1
+    assert e.denominator == 2

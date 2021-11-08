@@ -589,11 +589,11 @@ class Function(Application, Expr):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:
-            for i in range(len(self.args)):
+            for i, arg in enumerate(self.args):
                 if i == argindex - 1:
                     continue
                 # See issue sympy/sympy#8510
-                if self.args[argindex - 1] in self.args[i].free_symbols:
+                if self.args[argindex - 1] in arg.free_symbols:
                     break
             else:
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
@@ -1172,8 +1172,6 @@ class Derivative(Expr):
         into the normal evalf. For now, we need a special method.
 
         """
-        import mpmath
-
         from .expr import Expr
         if len(self.free_symbols) != 1 or len(self.variables) != 1:
             raise NotImplementedError('partials and higher order derivatives')
@@ -1232,7 +1230,7 @@ class Derivative(Expr):
         return Derivative(*(x._subs(old, new) for x in self.args))
 
     def _eval_lseries(self, x, logx):
-        for term in self.expr.lseries(x, logx=logx):
+        for term in self.expr.series(x, n=None, logx=logx):
             yield self.func(term, *self.variables)
 
     def _eval_nseries(self, x, n, logx):
@@ -1389,13 +1387,13 @@ class Subs(Expr):
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Symbol
         args = sympify(args)
-        if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
+        if all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
             raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
-            repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
+            repeated = [v for v in set(variables) if variables.count(v) > 1]
             raise ValueError('cannot substitute expressions %s more than '
                              'once.' % repeated)
 
@@ -1431,7 +1429,6 @@ class Subs(Expr):
                    for _, r in reps):
                 pre += '_'
                 continue
-            reps  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))
@@ -2184,8 +2181,6 @@ def count_ops(expr, visual=False):
                         ops.append(NEG)
                     if a.denominator != 1:
                         ops.append(DIV)
-                    # XXX "peephole" optimization, http://bugs.python.org/issue2506
-                    a
                     continue
             elif a.is_Mul:
                 if _coeff_isneg(a):
@@ -2222,8 +2217,6 @@ def count_ops(expr, visual=False):
                     ops.append(NEG)
                 elif _coeff_isneg(aargs[0]):  # -x + y = SUB, but already recorded ADD
                     ops.append(SUB - ADD)
-                # XXX "peephole" optimization, http://bugs.python.org/issue2506
-                a
                 continue
             elif isinstance(expr, BooleanFunction):
                 ops = []

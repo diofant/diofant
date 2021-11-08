@@ -170,13 +170,13 @@ class MpmathPrinter(LambdaPrinter):
     def _print_Infinity(self, expr):
         return 'inf'
 
-    def _print_Float(self, e):
+    def _print_Float(self, expr):
         # XXX: This does not handle setting mpmath.mp.dps. It is assumed that
         # the caller of the lambdified function will have set it to sufficient
         # precision to match the Floats in the expression.
 
         # Remove 'mpz' if gmpy is installed.
-        args = str(tuple(map(int, e._mpf_)))
+        args = str(tuple(map(int, expr._mpf_)))
         return f'mpf({args})'
 
     def _print_GoldenRatio(self, expr):

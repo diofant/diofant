@@ -548,7 +548,7 @@ def test_general_pythagorean():
     assert check_solutions(a**2 + b**2 + c**2 - d**2)
     assert check_solutions(a**2 + 4*b**2 + 4*c**2 - d**2)
     assert check_solutions(9*a**2 + 4*b**2 + 4*c**2 - d**2)
-    assert check_solutions(9*a**2 + 4*b**2 - 25*d**2 + 4*c**2 )
+    assert check_solutions(9*a**2 + 4*b**2 - 25*d**2 + 4*c**2)
     assert check_solutions(9*a**2 - 16*d**2 + 4*b**2 + 4*c**2)
     assert check_solutions(-e**2 + 9*a**2 + 4*b**2 + 4*c**2 + 25*d**2)
     assert check_solutions(16*a**2 - b**2 + 9*c**2 + d**2 + 25*e**2)
@@ -871,7 +871,7 @@ def test_sum_of_squares_powers():
     assert list(sum_of_powers(5, 1, 2, True)) == [(0, 5), (1, 4), (2, 3)]
     assert list(sum_of_powers(6, 2, 2)) == []
     assert list(sum_of_powers(3**5, 3, 1)) == []
-    assert list(sum_of_powers(3**6, 3, 1)) == [(9,)] and (9**3 == 3**6)
+    assert list(sum_of_powers(3**6, 3, 1)) == [(9,)]
     assert list(sum_of_powers(2**1000, 5, 2)) == []
 
 

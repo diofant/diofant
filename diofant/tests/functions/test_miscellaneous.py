@@ -168,6 +168,8 @@ def test_Max():
     assert e.evalf == e.n
     assert e.evalf(strict=False).args == (0, x)
 
+    assert Max(2*a*b*sqrt(2), a*b*6).simplify() == 6*a*b
+
 
 def test_sympyissue_8413():
     x = Symbol('x', extended_real=True)

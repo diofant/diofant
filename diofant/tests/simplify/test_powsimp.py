@@ -11,12 +11,12 @@ __all__ = ()
 def test_powsimp():
     x, y, z, n = symbols('x,y,z,n')
     f = Function('f')
-    assert powsimp( 4**x * 2**(-x) * 2**(-x) ) == 1
-    assert powsimp( (-4)**x * (-2)**(-x) * 2**(-x) ) == 1
+    assert powsimp(4**x * 2**(-x) * 2**(-x)) == 1
+    assert powsimp((-4)**x * (-2)**(-x) * 2**(-x)) == 1
 
     assert powsimp(
-        f(4**x * 2**(-x) * 2**(-x)) ) == f(4**x * 2**(-x) * 2**(-x))
-    assert powsimp( f(4**x * 2**(-x) * 2**(-x)), deep=True ) == f(1)
+        f(4**x * 2**(-x) * 2**(-x))) == f(4**x * 2**(-x) * 2**(-x))
+    assert powsimp(f(4**x * 2**(-x) * 2**(-x)), deep=True) == f(1)
     assert exp(x)*exp(y) == exp(x)*exp(y)
     assert powsimp(exp(x)*exp(y)) == exp(x + y)
     assert powsimp(exp(x)*exp(y)*2**x*2**y) == (2*E)**(x + y)
@@ -98,7 +98,7 @@ def test_powsimp():
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
     # issue sympy/sympy#8836
-    assert str( powsimp(exp(I*pi/3)*root(-1, 3)) ) == '(-1)**(2/3)'
+    assert str(powsimp(exp(I*pi/3)*root(-1, 3))) == '(-1)**(2/3)'
 
 
 def test_powsimp_negated_base():
@@ -221,7 +221,7 @@ def test_sympyissue_6367():
 
 
 def test_powsimp_polar():
-    p, q, r = symbols('p q r', polar=True)
+    p, q = symbols('p q', polar=True)
 
     assert (polar_lift(-1))**(2*x) == exp_polar(2*pi*I*x)
     assert powsimp(p**x * q**x) == (p*q)**x
@@ -274,7 +274,7 @@ def test_powsimp_other():
 
 
 def test_sympyissue_from_PR1599():
-    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True)
+    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True, finite=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
             -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))

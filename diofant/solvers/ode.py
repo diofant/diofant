@@ -237,8 +237,8 @@ from ..core.compatibility import is_sequence, iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
-from ..functions import (atan2, conjugate, cos, exp, factorial, im, log, re,
-                         sin, sqrt, tan)
+from ..functions import (conjugate, cos, exp, factorial, im, log, re, sin,
+                         sqrt, tan)
 from ..integrals import Integral, integrate
 from ..logic.boolalg import BooleanAtom
 from ..matrices import BlockDiagMatrix, Matrix, wronskian
@@ -314,7 +314,6 @@ lie_heuristics = (
     'abaco1_product',
     'abaco2_similar',
     'abaco2_unique_unknown',
-    'abaco2_unique_general',
     'linear',
     'function_sum',
     'bivariate',
@@ -365,8 +364,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
 
     atom_set = set().union(*[i.free_symbols for i in eq])
     functions_set = set().union(*[i.atoms(Function) for i in eq])
-    if functions_set:
-        atom_set |= {Symbol(str(f.func)) for f in functions_set}
+    atom_set |= {Symbol(str(f.func)) for f in functions_set}
     ncs = numbered_symbols(start=start, prefix=prefix, exclude=atom_set)
     Cs = [next(ncs) for i in range(num)]
     return Cs[0] if num == 1 else tuple(Cs)
@@ -564,9 +562,9 @@ def dsolve(eq, func=None, hint='default', simplify=True,
         t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
 
         # keep highest order term coefficient positive
-        for i in range(len(eq)):
-            if eq[i].coeff(diff(func[i], (t, ode_order(eq[i], func[i])))).is_negative:
-                eq[i] = -eq[i]
+        for i, e in enumerate(eq):
+            if e.coeff(diff(func[i], (t, ode_order(e, func[i])))).is_negative:
+                eq[i] = -e
         match['eq'] = eq
         if len(set(order.values())) != 1:
             raise ValueError('It solves only those systems of equations whose orders are equal')
@@ -613,7 +611,7 @@ def dsolve(eq, func=None, hint='default', simplify=True,
                                   ode_sol_simplicity(x, func, trysolving=not simplify))
             if given_hint == 'best':
                 return retdict['best']
-            for i in orderedhints:
+            for i in orderedhints:  # pragma: no branch
                 if retdict['best'] == retdict.get(i, None):
                     retdict['best_hint'] = i
                     break
@@ -672,8 +670,7 @@ def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
             rv1 = []
             for s in rv:
                 solved_constants = solve_init([s], [r['func']], cons(s), init)
-                if solved_constants:
-                    rv1.append(s.subs(solved_constants))
+                rv1.append(s.subs(solved_constants))
             rv = rv1
         else:
             raise NotImplementedError
@@ -758,7 +755,7 @@ def solve_init(sols, funcs, constants, init):
 
     try:
         solved_constants = solve(subs_sols, constants)
-    except NotImplementedError:  # pragma: no cover
+    except NotImplementedError:
         solved_constants = []
 
     # XXX: We can't differentiate between the solution not existing because of
@@ -767,7 +764,7 @@ def solve_init(sols, funcs, constants, init):
     if not solved_constants:
         raise NotImplementedError("Couldn't solve for initial conditions")
 
-    if len(solved_constants) > 1:  # pragma: no cover
+    if len(solved_constants) > 1:
         raise NotImplementedError('Initial conditions produced too many solutions for constants')
 
     return solved_constants[0]
@@ -1166,20 +1163,14 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 dummy_eq = simplify(dummy_eq.subs(reps))
                 # get the re-cast values for e and d
                 r2 = collect(expand(dummy_eq), [df, f(x)], exact=True).match(e*df + d)
-                if r2:
-                    orderd = homogeneous_order(r2[d], x, f(x))
-                    if orderd is not None:
-                        ordere = homogeneous_order(r2[e], x, f(x))
-                        if orderd == ordere:
-                            # Match arguments are passed in such a way that it
-                            # is coherent with the already existing homogeneous
-                            # functions.
-                            r2[d] = r2[d].subs({f(x): y})
-                            r2[e] = r2[e].subs({f(x): y})
-                            r2.update({'xarg': xarg, 'yarg': yarg,
-                                       'd': d, 'e': e, 'y': y})
-                            matching_hints['linear_coefficients'] = r2
-                            matching_hints['linear_coefficients_Integral'] = r2
+                # Match arguments are passed in such a way that it
+                # is coherent with the already existing homogeneous
+                # functions.
+                r2[d] = r2[d].subs({f(x): y})
+                r2[e] = r2[e].subs({f(x): y})
+                r2.update({'xarg': xarg, 'yarg': yarg, 'd': d, 'e': e, 'y': y})
+                matching_hints['linear_coefficients'] = r2
+                matching_hints['linear_coefficients_Integral'] = r2
 
             # Equation of the form y' + (y/x)*H(x^n*y) = 0
             # that can be reduced to separable form
@@ -1200,7 +1191,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                 if (u/h == 1) or ((u/h).simplify().match(x**p)):
                     t = Dummy('t')
                     r2 = {'t': t}
-                    xpart, ypart = u.as_independent(f(x))
+                    xpart, _ = u.as_independent(f(x))
                     test = factor.subs({u: t, 1/u: 1/t})
                     free = test.free_symbols
                     if len(free) == 1 and free.pop() == t:
@@ -1282,66 +1273,61 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                             coeff_dict = {'p': p, 'q': q, 'x0': point, 'terms': terms}
                             matching_hints['2nd_power_series_regular'] = coeff_dict
 
-    if order > 0:
-        # nth order linear ODE
-        # a_n(x)y^(n) + ... + a_1(x)y' + a_0(x)y = F(x) = b
+    # nth order linear ODE
+    # a_n(x)y^(n) + ... + a_1(x)y' + a_0(x)y = F(x) = b
 
-        r = _nth_linear_match(reduced_eq, func, order)
+    r = _nth_linear_match(reduced_eq, func, order)
 
-        # Constant coefficient case (a_i is constant for all i)
-        if r and not any(r[i].has(x) for i in r if i >= 0):
-            # Inhomogeneous case: F(x) is not identically 0
-            if r[-1]:
-                undetcoeff = _undetermined_coefficients_match(r[-1], x)
-                s = 'nth_linear_constant_coeff_variation_of_parameters'
-                matching_hints[s] = r
-                matching_hints[s + '_Integral'] = r
-                if undetcoeff['test']:
-                    r['trialset'] = undetcoeff['trialset']
-                    matching_hints['nth_linear_constant_coeff_undetermined_coefficients'] = r
-            # Homogeneous case: F(x) is identically 0
-            else:
-                matching_hints['nth_linear_constant_coeff_homogeneous'] = r
+    # Constant coefficient case (a_i is constant for all i)
+    if r and not any(r[i].has(x) for i in r if i >= 0):
+        # Inhomogeneous case: F(x) is not identically 0
+        if r[-1]:
+            undetcoeff = _undetermined_coefficients_match(r[-1], x)
+            s = 'nth_linear_constant_coeff_variation_of_parameters'
+            matching_hints[s] = r
+            matching_hints[s + '_Integral'] = r
+            if undetcoeff['test']:
+                r['trialset'] = undetcoeff['trialset']
+                matching_hints['nth_linear_constant_coeff_undetermined_coefficients'] = r
+        # Homogeneous case: F(x) is identically 0
+        else:
+            matching_hints['nth_linear_constant_coeff_homogeneous'] = r
 
-        # nth order Euler equation a_n*x**n*y^(n) + ... + a_1*x*y' + a_0*y = F(x)
-        # In case of Homogeneous euler equation F(x) = 0
-        def _test_term(coeff, order):
-            r"""
-            Linear Euler ODEs have the form  K*x**order*diff(y(x),x,order) = F(x),
-            where K is independent of x and y(x), order>= 0.
-            So we need to check that for each term, coeff == K*x**order from
-            some K.  We have a few cases, since coeff may have several
-            different types.
+    # nth order Euler equation a_n*x**n*y^(n) + ... + a_1*x*y' + a_0*y = F(x)
+    # In case of Homogeneous euler equation F(x) = 0
+    def _test_term(coeff, order):
+        r"""
+        Linear Euler ODEs have the form  K*x**order*diff(y(x),x,order) = F(x),
+        where K is independent of x and y(x), order>= 0.
+        So we need to check that for each term, coeff == K*x**order from
+        some K.  We have a few cases, since coeff may have several
+        different types.
 
-            """
-            if order < 0:
-                raise ValueError('order should be greater than 0')
-            if coeff == 0:
-                return True
-            if order == 0:
-                if x in coeff.free_symbols:
-                    return False
-                return True
-            if coeff.is_Mul:
-                if coeff.has(f(x)):
-                    return False
-                return x**order in coeff.args
-            elif coeff.is_Pow:
-                return coeff.as_base_exp() == (x, order)
-            elif order == 1:
-                return x == coeff
-            return False
-        if r and not any(not _test_term(r[i], i) for i in r if i >= 0):
-            if not r[-1]:
-                matching_hints['nth_linear_euler_eq_homogeneous'] = r
-            else:
-                matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'] = r
-                matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral'] = r
-                e, re = posify(r[-1].subs({x: exp(x)}))
-                undetcoeff = _undetermined_coefficients_match(e.subs(re), x)
-                if undetcoeff['test']:
-                    r['trialset'] = undetcoeff['trialset']
-                    matching_hints['nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'] = r
+        """
+        if coeff == 0:
+            return True
+        if order == 0:
+            if x in coeff.free_symbols:
+                return False
+            return True
+        if coeff.is_Mul:
+            return x**order in coeff.args
+        elif coeff.is_Pow:
+            return coeff.as_base_exp() == (x, order)
+        elif order == 1:
+            return x == coeff
+        return False
+    if r and not any(not _test_term(r[i], i) for i in r if i >= 0):
+        if not r[-1]:
+            matching_hints['nth_linear_euler_eq_homogeneous'] = r
+        else:
+            matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters'] = r
+            matching_hints['nth_linear_euler_eq_nonhomogeneous_variation_of_parameters_Integral'] = r
+            e, re = posify(r[-1].subs({x: exp(x)}))
+            undetcoeff = _undetermined_coefficients_match(e.subs(re), x)
+            if undetcoeff['test']:
+                r['trialset'] = undetcoeff['trialset']
+                matching_hints['nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients'] = r
 
     # Order keys based on allhints.
     retlist = [i for i in allhints if i in matching_hints]
@@ -1444,8 +1430,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
         max_order = order[func]
         for eq_ in eq:
             order_ = ode_order(eq_, func)
-            if max_order < order_:
-                max_order = order_
+            max_order = max(max_order, order_)
         order[func] = max_order
     matching_hints['func'] = funcs
     for func in funcs:
@@ -1478,7 +1463,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
                 else:
                     for func_ in funcs:
                         dep = func_coef[j, func, k].as_independent(func_)[1]
-                        if dep != 1 and dep != 0:
+                        if dep not in (1, 0):
                             is_linear_ = False
         return is_linear_
 
@@ -1508,11 +1493,10 @@ def classify_sysode(eq, funcs=None, **kwargs):
                     if order_eq == 1:
                         type_of_equation = check_linear_3eq_order1(eq, funcs, func_coef)
         else:
-            if matching_hints['no_of_equation'] == 2:
-                if order_eq == 1:
+            if order_eq == 1:
+                if matching_hints['no_of_equation'] == 2:
                     type_of_equation = check_nonlinear_2eq_order1(eq, funcs, func_coef)
-            elif matching_hints['no_of_equation'] == 3:
-                if order_eq == 1:
+                elif matching_hints['no_of_equation'] == 3:
                     type_of_equation = check_nonlinear_3eq_order1(eq, funcs, func_coef)
 
     matching_hints['type_of_equation'] = type_of_equation
@@ -1680,6 +1664,9 @@ def check_linear_2eq_order2(eq, func, func_coef):
         elif -r['b1']/r['d1'] == -r['c1']/r['e1'] == -r['b2']/r['d2'] == -r['c2']/r['e2'] == t:
             return 'type11'
 
+        else:
+            raise NotImplementedError
+
 
 def check_linear_3eq_order1(eq, func, func_coef):
     x = func[0].func
@@ -1705,30 +1692,15 @@ def check_linear_3eq_order1(eq, func, func_coef):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):
                 forcing[i] += j
-    if forcing[0].has(t) or forcing[1].has(t) or forcing[2].has(t):
-        # We can handle homogeneous case and simple constant forcings.
-        # Issue sympy/sympy#9244: nonhomogeneous linear systems are not supported
-        return
+    if any(forcing):
+        raise NotImplementedError
 
-    if all(not r[k].has(t) for k in 'a1 a2 a3 b1 b2 b3 c1 c2 c3 d1 d2 d3'.split()):
-        if r['c1'] == r['d1'] == r['d2'] == 0:
-            return 'type1'
-        elif r['c1'] == -r['b2'] and r['d1'] == -r['b3'] and r['d2'] == -r['c3'] \
-                and r['b1'] == r['c2'] == r['d3'] == 0:
-            return 'type2'
-        elif r['b1'] == r['c2'] == r['d3'] == 0 and r['c1']/r['a1'] == -r['d1']/r['a1'] \
-                and r['d2']/r['a2'] == -r['b2']/r['a2'] and r['b3']/r['a3'] == -r['c3']/r['a3']:
-            return 'type3'
-    else:
-        for k1 in 'c1 d1 b2 d2 b3 c3'.split():
-            if r[k1] == 0:
-                continue
-            else:
-                if all(not cancel(r[k1]/r[k]).has(t) for k in 'd1 b2 d2 b3 c3'.split() if r[k] != 0) \
-                        and all(not cancel(r[k1]/(r['b1'] - r[k])).has(t) for k in 'b1 c2 d3'.split() if r['b1'] != r[k]):
-                    return 'type4'
-                else:
-                    break
+    for k1 in 'c1 d1 b2 d2 b3 c3'.split():
+        if (all(not cancel(r[k1]/r[k]).has(t)
+                for k in 'd1 b2 d2 b3 c3'.split() if r[k] != 0) and
+            all(not cancel(r[k1]/(r['b1'] - r[k])).has(t)
+                for k in 'b1 c2 d3'.split() if r['b1'] != r[k])):
+            return 'type4'
 
 
 def check_linear_neq_order1(eq, func, func_coef):
@@ -1806,6 +1778,8 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
         return 'type3'
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
+    if not (r1 and r2):
+        return
     num, den = ((r1[f].subs({x(t): u, y(t): v})) /
                 (r2[g].subs({x(t): u, y(t): v}))).as_numer_denom()
     R1 = num.match(f1*g1)
@@ -1910,9 +1884,9 @@ def checksysodesol(eqs, sols, func=None):
     def _sympify(eq):
         return list(map(sympify, eq if iterable(eq) else [eq]))
     eqs = _sympify(eqs)
-    for i in range(len(eqs)):
-        if isinstance(eqs[i], Equality):
-            eqs[i] = eqs[i].lhs - eqs[i].rhs
+    for i, e in enumerate(eqs):
+        if isinstance(e, Equality):
+            eqs[i] = e.lhs - e.rhs
     if func is None:
         funcs = []
         for eq in eqs:
@@ -2002,7 +1976,6 @@ def odesimp(eq, func, order, constants, hint):
     """
     x = func.args[0]
     f = func.func
-    C1 = get_numbered_constants(eq, num=1)
 
     # First, integrate if the hint allows it.
     eq = _handle_Integral(eq, func, order, hint)
@@ -2021,10 +1994,6 @@ def odesimp(eq, func, order, constants, hint):
     # Lastly, now that we have cleaned up the expression, try solving for func.
     # When RootOf is implemented in solve(), we will want to return a RootOf
     # everytime instead of an Equality.
-
-    # Get the f(x) on the left if possible.
-    if eq.rhs == func and not eq.lhs.has(func):
-        eq = [Eq(eq.rhs, eq.lhs)]
 
     # make sure we are working with lists of solutions in simplified form.
     if eq.lhs == func and not eq.rhs.has(func):
@@ -2076,7 +2045,7 @@ def odesimp(eq, func, order, constants, hint):
             eq = [eq]
         else:
             def _expand(expr):
-                numer, denom = expr.as_numer_denom()
+                _, denom = expr.as_numer_denom()
 
                 if denom.is_Add:
                     return expr
@@ -2092,10 +2061,7 @@ def odesimp(eq, func, order, constants, hint):
         # special simplification of the lhs.
         if hint.startswith('1st_homogeneous_coeff'):
             for j, eqi in enumerate(eq):
-                newi = logcombine(eqi, force=True)
-                if isinstance(newi.lhs, log) and newi.rhs == 0:
-                    newi = Eq(newi.lhs.args[0]/C1, C1)
-                eq[j] = newi
+                eq[j] = logcombine(eqi, force=True)
 
     # We cleaned up the constants before solving to help the solve engine with
     # a simpler expression, but the solved expression could have introduced
@@ -2241,8 +2207,6 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             # - Check the result for zero equivalence
             if sol.lhs == func and not sol.rhs.has(func):
                 diffsols = {0: sol.rhs}
-            elif sol.rhs == func and not sol.lhs.has(func):
-                diffsols = {0: sol.lhs}
             else:
                 diffsols = {}
             sol = sol.lhs - sol.rhs
@@ -2301,7 +2265,6 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
                 s = simplify(num).xreplace(reps).xreplace({_func: func})
                 testnum += 1
         else:
-            testnum  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
     if not s:
@@ -2476,10 +2439,10 @@ def __remove_linear_redundancies(expr, Cs):
                 if y not in d:
                     d[y] = []
                 d[y].append(x)
-            for y in d:
-                if len(d[y]) > 1:
-                    d[y].sort(key=str)
-                    for x in d[y][1:]:
+            for y in d.values():
+                if len(y) > 1:
+                    y.sort(key=str)
+                    for x in y[1:]:
                         expr = expr.subs({x: 0})
         return expr
 
@@ -2510,8 +2473,6 @@ def __remove_linear_redundancies(expr, Cs):
         elif lhs.func in (Mul, Symbol) and rhs.func in (Mul, Symbol):
             dlhs = sift([lhs] if isinstance(lhs, AtomicExpr) else lhs.args, f)
             if True in dlhs:
-                if False not in dlhs:
-                    dlhs[False] = [1]
                 lhs = Mul(*dlhs[False])
                 rhs = rhs/Mul(*dlhs[True])
         return Eq(lhs, rhs)
@@ -3478,15 +3439,13 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     # Stripping of terms so that the sum starts with the same number.
     teq = Integer(0)
     suminit = seriesdict.values()
-    rkeys = seriesdict.keys()
-    req = Add(*rkeys)
+    req = Add(*seriesdict)
     if any(suminit):
         maxval = max(suminit)
-        for term in seriesdict:
-            val = seriesdict[term]
+        for k, val in seriesdict.items():
             if val != maxval:
                 for i in range(val, maxval):
-                    teq += term.subs({n: val})
+                    teq += k.subs({n: val})
 
     finaldict = {}
     if teq:
@@ -3523,11 +3482,10 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
 
     # Post processing
     series = C0 + C1*(x - x0)
-    for term in finaldict:
-        if finaldict[term]:
+    for term, v in finaldict.items():
+        if v:
             fact = term.args[0]
-            series += (finaldict[term].subs({recurr(0): C0, recurr(1): C1})*(
-                x - x0)**fact)
+            series += (v.subs({recurr(0): C0, recurr(1): C1})*(x - x0)**fact)
     series = collect(expand_mul(series), [C0, C1]) + Order(x**terms)
     return Eq(f(x), series)
 
@@ -3602,15 +3560,11 @@ def ode_2nd_power_series_regular(eq, func, order, match):
             if isinstance(term, Order):
                 indicial.append(Integer(0))
             else:
-                for arg in term.args:
-                    if not arg.has(x):
-                        indicial.append(arg)
-                        break
+                indicial.append(term.args[0])
 
     p0, q0 = indicial
     sollist = solve(m*(m - 1) + m*p0 + q0, m)
-    if sollist and isinstance(sollist, list) and \
-       all(sol[m].is_extended_real for sol in sollist):
+    if sollist and all(sol[m].is_extended_real for sol in sollist):
         serdict1 = {}
         serdict2 = {}
         if len(sollist) == 1:
@@ -3621,10 +3575,8 @@ def ode_2nd_power_series_regular(eq, func, order, match):
             serdict1 = _frobenius(terms-m1-1, m1, p0, q0, p, q, x0, x, C0)
 
         else:
-            m1 = sollist[0][m]
-            m2 = sollist[1][m]
-            if m1 < m2:
-                m1, m2 = m2, m1
+            m2 = sollist[0][m]
+            m1 = sollist[1][m]
             # Irrespective of whether m1 - m2 is an integer or not, one
             # Frobenius series solution exists.
             serdict1 = _frobenius(terms-m1-1, m1, p0, q0, p, q, x0, x, C0)
@@ -3635,21 +3587,22 @@ def ode_2nd_power_series_regular(eq, func, order, match):
                 # Check if second frobenius series solution exists.
                 serdict2 = _frobenius(terms-m2-1, m2, p0, q0, p, q, x0, x, C1, check=m1)
 
-        if serdict1:
-            finalseries1 = C0
-            for key in serdict1:
-                power = int(key.name[1:])
-                finalseries1 += serdict1[key]*(x - x0)**power
-            finalseries1 = (x - x0)**m1*finalseries1
-            finalseries2 = Integer(0)
-            if serdict2:
-                for key in serdict2:
-                    power = int(key.name[1:])
-                    finalseries2 += serdict2[key]*(x - x0)**power
-                finalseries2 += C1
-                finalseries2 = (x - x0)**m2*finalseries2
-            return Eq(f(x), collect(finalseries1 + finalseries2,
-                                    [C0, C1]) + Order(x**terms))
+        finalseries1 = C0
+        for k, v in serdict1.items():
+            power = int(k.name[1:])
+            finalseries1 += v*(x - x0)**power
+        finalseries1 = (x - x0)**m1*finalseries1
+        finalseries2 = Integer(0)
+        if serdict2:
+            for k, v in serdict2.items():
+                power = int(k.name[1:])
+                finalseries2 += v*(x - x0)**power
+            finalseries2 += C1
+            finalseries2 = (x - x0)**m2*finalseries2
+        return Eq(f(x), collect(finalseries1 + finalseries2,
+                                [C0, C1]) + Order(x**terms))
+    else:
+        return NotImplementedError
 
 
 def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
@@ -3691,7 +3644,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
         # then set constant as zero and proceed.
         if m2 is not None and i == m2 - m:
             if num:
-                return False
+                raise NotImplementedError
             else:
                 frobdict[numsyms[i]] = Integer(0)
         else:
@@ -3834,7 +3787,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
             if isinstance(root, RootOf):
                 gsol += (x**root) * constants.pop()
                 if multiplicity != 1:
-                    raise ValueError('Value should be 1')
+                    raise NotImplementedError
                 collectterms = [(0, root, 0)] + collectterms
             elif root.is_extended_real:
                 gsol += ln(x)**i*(x**root) * constants.pop()
@@ -4433,7 +4386,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
             if isinstance(root, RootOf):
                 gensols.append(exp(root*x))
                 if multiplicity != 1:
-                    raise ValueError('Value should be 1')
+                    raise NotImplementedError
                 # This ordering is important
                 collectterms = [(0, root, 0)] + collectterms
             else:
@@ -4443,28 +4396,20 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                     continue
                 reroot = re(root)
                 imroot = im(root)
-                if imroot.has(atan2) and reroot.has(atan2):
-                    # Remove this condition when re and im stop returning
-                    # circular atan2 usages.
-                    gensols.append(x**i*exp(root*x))
-                    collectterms = [(i, root, 0)] + collectterms
-                else:
-                    if root in conjugate_roots:
-                        collectterms = [(i, reroot, imroot)] + collectterms
-                        continue
-                    if imroot == 0:
-                        gensols.append(x**i*exp(reroot*x))
-                        collectterms = [(i, reroot, 0)] + collectterms
-                        continue
-                    conjugate_roots.append(conjugate(root))
-                    gensols.append(x**i * exp(reroot*x) * sin(abs(imroot)*x))
-                    gensols.append(x**i * exp(reroot*x) * cos(imroot*x))
-
-                    # This ordering is important
+                if root in conjugate_roots:
                     collectterms = [(i, reroot, imroot)] + collectterms
-    if returns == 'list':
-        return gensols
-    elif returns in ('sol' 'both'):
+                    continue
+                if imroot == 0:
+                    gensols.append(x**i*exp(reroot*x))
+                    collectterms = [(i, reroot, 0)] + collectterms
+                    continue
+                conjugate_roots.append(conjugate(root))
+                gensols.append(x**i * exp(reroot*x) * sin(abs(imroot)*x))
+                gensols.append(x**i * exp(reroot*x) * cos(imroot*x))
+
+                # This ordering is important
+                collectterms = [(i, reroot, imroot)] + collectterms
+    if returns in ('sol' 'both'):
         gsol = Add(*[i*j for (i, j) in zip(constants, gensols)])
         if returns == 'sol':
             return Eq(f(x), gsol)
@@ -4602,7 +4547,6 @@ def _solve_undetermined_coefficients(eq, func, order, match):
                 if check*x**mult in trialset:
                     mult += 1
                 else:
-                    mult  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     break
             trialset.add(check*x**mult)
             notneedset.add(check)
@@ -5020,7 +4964,7 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             else:
                 try:
                     sol = solve(eq, df)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Infinitesimals for the '
                                               'first order ODE could not be found')
                 else:
@@ -5107,7 +5051,7 @@ def ode_lie_group(eq, func, order, match):
     else:
         try:
             sol = solve(eq, df)
-        except NotImplementedError:  # pragma: no cover
+        except NotImplementedError:
             raise NotImplementedError('Unable to solve the differential equation ' +
                                       str(eq) + ' by the lie group method')
         else:
@@ -5131,75 +5075,67 @@ def ode_lie_group(eq, func, order, match):
     # a] solve raises a NotImplementedError.
     # b] any heuristic raises a ValueError
     # another heuristic can be used.
-    tempsol = []  # Used by solve below
     for heuristic in heuristics:
-        try:
-            if not inf:
-                inf = infinitesimals(eq, hint=heuristic, func=func, order=1, match=match)
-        except ValueError:
-            continue
-        else:
-            for infsim in inf:
-                xiinf = (infsim[xi(x, func)]).subs({func: y})
-                etainf = (infsim[eta(x, func)]).subs({func: y})
-                # This condition creates recursion while using pdsolve.
-                # Since the first step while solving a PDE of form
-                # a*(f(x, y).diff(x)) + b*(f(x, y).diff(y)) + c = 0
-                # is to solve the ODE dy/dx = b/a
-                if simplify(etainf/xiinf) == h:
-                    continue
-                rpde = f(x, y).diff(x)*xiinf + f(x, y).diff(y)*etainf
-                r = pdsolve(rpde, func=f(x, y)).rhs
-                s = pdsolve(rpde - 1, func=f(x, y)).rhs
-                newcoord = [_lie_group_remove(coord) for coord in [r, s]]
-                r = Dummy('r')
-                s = Dummy('s')
-                C1 = Symbol('C1')
-                rcoord = newcoord[0]
-                scoord = newcoord[-1]
-                try:
-                    sol = solve([r - rcoord, s - scoord], x, y)
-                except NotImplementedError:
-                    continue
-                else:
-                    sol = sol[0]
-                    xsub = sol[x]
-                    ysub = sol[y]
-                    num = simplify(scoord.diff(x) + scoord.diff(y)*h)
-                    denom = simplify(rcoord.diff(x) + rcoord.diff(y)*h)
-                    if num and denom:
-                        diffeq = simplify((num/denom).subs({x: xsub, y: ysub}))
-                        sep = separatevars(diffeq, symbols=[r, s], dict=True)
-                        if sep:
-                            # Trying to separate, r and s coordinates
-                            deq = integrate((1/sep[s]), s) + C1 - integrate(sep['coeff']*sep[r], r)
-                            # Substituting and reverting back to original coordinates
-                            deq = deq.subs({r: rcoord, s: scoord})
-                            try:
-                                sdeq = solve(deq, y)
-                            except NotImplementedError:
-                                tempsol.append(deq)
+        if heuristic != 'user_defined':
+            try:
+                inf = infinitesimals(eq, hint=heuristic, func=func,
+                                     order=1, match=match)
+            except ValueError:
+                continue
+        for infsim in inf:
+            xiinf = (infsim[xi(x, func)]).subs({func: y})
+            etainf = (infsim[eta(x, func)]).subs({func: y})
+            # This condition creates recursion while using pdsolve.
+            # Since the first step while solving a PDE of form
+            # a*(f(x, y).diff(x)) + b*(f(x, y).diff(y)) + c = 0
+            # is to solve the ODE dy/dx = b/a
+            if simplify(etainf/xiinf) == h:
+                continue
+            rpde = f(x, y).diff(x)*xiinf + f(x, y).diff(y)*etainf
+            r = pdsolve(rpde, func=f(x, y)).rhs
+            s = pdsolve(rpde - 1, func=f(x, y)).rhs
+            newcoord = [_lie_group_remove(coord) for coord in [r, s]]
+            r = Dummy('r')
+            s = Dummy('s')
+            C1 = Symbol('C1')
+            rcoord = newcoord[0]
+            scoord = newcoord[-1]
+            try:
+                sol = solve([r - rcoord, s - scoord], x, y)
+            except NotImplementedError:
+                continue
+            else:
+                sol = sol[0]
+                xsub = sol[x]
+                ysub = sol[y]
+                num = simplify(scoord.diff(x) + scoord.diff(y)*h)
+                denom = simplify(rcoord.diff(x) + rcoord.diff(y)*h)
+                if num and denom:
+                    diffeq = simplify((num/denom).subs({x: xsub, y: ysub}))
+                    sep = separatevars(diffeq, symbols=[r, s], dict=True)
+                    if sep:
+                        # Trying to separate, r and s coordinates
+                        deq = integrate((1/sep[s]), s) + C1 - integrate(sep['coeff']*sep[r], r)
+                        # Substituting and reverting back to original coordinates
+                        deq = deq.subs({r: rcoord, s: scoord})
+                        try:
+                            sdeq = solve(deq, y)
+                        except NotImplementedError:
+                            continue
+                        else:
+                            if len(sdeq) == 1:
+                                return Eq(f(x), sdeq[0][y])
                             else:
-                                if len(sdeq) == 1:
-                                    return Eq(f(x), sdeq[0][y])
-                                else:
-                                    return [Eq(f(x), sol[y]) for sol in sdeq]
+                                return [Eq(f(x), sol[y]) for sol in sdeq]
 
-                    elif denom:  # (ds/dr) is zero which means s is constant
-                        return Eq(f(x), solve(scoord - C1, y)[0][y])
+                elif denom:  # (ds/dr) is zero which means s is constant
+                    return Eq(f(x), solve(scoord - C1, y)[0][y])
 
-                    else:
-                        raise NotImplementedError
-
-    # If nothing works, return solution as it is, without solving for y
-    if tempsol:
-        if len(tempsol) == 1:
-            return Eq(tempsol.pop().subs({y: f(x)}), 0)
-        else:
-            return [Eq(sol.subs({y: f(x)}), 0) for sol in tempsol]
-
-    raise NotImplementedError('The given ODE ' + str(eq) + ' cannot be solved by'
-                              + ' the lie group method')
+                else:
+                    raise NotImplementedError
+    else:
+        raise NotImplementedError(f'The given ODE {eq!s}'
+                                  ' cannot be solved by the lie group method')
 
 
 def _lie_group_remove(coords):
@@ -5344,7 +5280,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                 else:
                     try:
                         sol = solve(eq, df)
-                    except NotImplementedError:  # pragma: no cover
+                    except NotImplementedError:
                         raise NotImplementedError('Infinitesimals for the '
                                                   'first order ODE could not be found')
                     else:
@@ -5393,7 +5329,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                                      ' given heuristic')
 
 
-def lie_heuristic_abaco1_simple(match, comp=False):
+def lie_heuristic_abaco1_simple(match, comp):
     r"""
     The first heuristic uses the following four sets of
     assumptions on `\xi` and `\eta`
@@ -5496,7 +5432,7 @@ def lie_heuristic_abaco1_simple(match, comp=False):
         return xieta
 
 
-def lie_heuristic_abaco1_product(match, comp=False):
+def lie_heuristic_abaco1_product(match, comp):
     r"""
     The second heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5528,25 +5464,11 @@ def lie_heuristic_abaco1_product(match, comp=False):
     """
     xieta = []
     y = match['y']
-    h = match['h']
     hinv = match['hinv']
     func = match['func']
     x = func.args[0]
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
-
-    inf = separatevars(((log(h).diff(y)).diff(x))/h**2, dict=True, symbols=[x, y])
-    if inf and inf['coeff']:
-        fx = inf[x]
-        gy = simplify(fx*((1/(fx*h)).diff(x)))
-        gysyms = gy.free_symbols
-        if x not in gysyms:
-            gy = exp(integrate(gy, y))
-            inf = {eta: Integer(0), xi: (fx*gy).subs({y: func})}
-            if not comp:
-                return [inf]
-            if comp and inf not in xieta:
-                xieta.append(inf)
 
     u1 = Dummy('u1')
     inf = separatevars(((log(hinv).diff(y)).diff(x))/hinv**2, dict=True, symbols=[x, y])
@@ -5561,14 +5483,14 @@ def lie_heuristic_abaco1_product(match, comp=False):
             inf = {eta: etaval.subs({y: func}), xi: Integer(0)}
             if not comp:
                 return [inf]
-            if comp and inf not in xieta:
+            elif inf not in xieta:
                 xieta.append(inf)
 
     if xieta:
         return xieta
 
 
-def lie_heuristic_bivariate(match, comp=False):
+def lie_heuristic_bivariate(match, comp):
     r"""
     The third heuristic assumes the infinitesimals `\xi` and `\eta`
     to be bi-variate polynomials in `x` and `y`. The assumption made here
@@ -5600,7 +5522,7 @@ def lie_heuristic_bivariate(match, comp=False):
         # calculated by this technique.
         etax, etay, etad, xix, xiy, xid = symbols('etax etay etad xix xiy xid')
         ipde = etax + (etay - xix)*h - xiy*h**2 - xid*hx - etad*hy
-        num, denom = cancel(ipde).as_numer_denom()
+        num, _ = cancel(ipde).as_numer_denom()
         deg = Poly(num, x, y).total_degree()
         deta = Function('deta')(x, y)
         dxi = Function('dxi')(x, y)
@@ -5609,7 +5531,7 @@ def lie_heuristic_bivariate(match, comp=False):
         xieq = Symbol('xi0')
         etaeq = Symbol('eta0')
 
-        for i in range(deg + 1):
+        for i in range(deg + 1):  # pragma: no branch
             if i:
                 xieq += Add(*[
                     Symbol('xi_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
@@ -5617,30 +5539,27 @@ def lie_heuristic_bivariate(match, comp=False):
                 etaeq += Add(*[
                     Symbol('eta_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
                     for power in range(i + 1)])
-            pden, denom = (ipde.subs({dxi: xieq, deta: etaeq}).doit()).as_numer_denom()
+            pden, _ = (ipde.subs({dxi: xieq, deta: etaeq}).doit()).as_numer_denom()
             pden = expand(pden)
 
             # If the individual terms are monomials, the coefficients
             # are grouped
-            if pden.is_polynomial(x, y) and pden.is_Add:
-                polyy = Poly(pden, x, y).as_dict()
-            if polyy:
-                symset = xieq.free_symbols.union(etaeq.free_symbols) - {x, y}
-                soldict = solve(polyy.values(), *symset)
-                if isinstance(soldict, list):
-                    soldict = soldict[0]
-                if any(x for x in soldict.values()):
-                    xired = xieq.subs(soldict)
-                    etared = etaeq.subs(soldict)
-                    # Scaling is done by substituting one for the parameters
-                    # This can be any number except zero.
-                    dict_ = {sym: 1 for sym in symset}
-                    inf = {eta: etared.subs(dict_).subs({y: func}),
-                           xi: xired.subs(dict_).subs({y: func})}
-                    return [inf]
+            polyy = Poly(pden, x, y).as_dict()
+            symset = xieq.free_symbols.union(etaeq.free_symbols) - {x, y}
+            soldict = solve(polyy.values(), *symset)
+            soldict = soldict[0]
+            if any(x for x in soldict.values()):
+                xired = xieq.subs(soldict)
+                etared = etaeq.subs(soldict)
+                # Scaling is done by substituting one for the parameters
+                # This can be any number except zero.
+                dict_ = {sym: 1 for sym in symset}
+                inf = {eta: etared.subs(dict_).subs({y: func}),
+                       xi: xired.subs(dict_).subs({y: func})}
+                return [inf]
 
 
-def lie_heuristic_chi(match, comp=False):
+def lie_heuristic_chi(match, comp):
     r"""
     The aim of the fourth heuristic is to find the function `\chi(x, y)`
     that satisifies the PDE `\frac{d\chi}{dx} + h\frac{d\chi}{dx}
@@ -5674,7 +5593,7 @@ def lie_heuristic_chi(match, comp=False):
     if h.is_rational_function():
         schi, schix, schiy = symbols('schi, schix, schiy')
         cpde = schix + h*schiy - hy*schi
-        num, denom = cancel(cpde).as_numer_denom()
+        num, _ = cancel(cpde).as_numer_denom()
         deg = Poly(num, x, y).total_degree()
 
         chi = Function('chi')(x, y)
@@ -5682,36 +5601,33 @@ def lie_heuristic_chi(match, comp=False):
         chiy = chi.diff(y)
         cpde = chix + h*chiy - hy*chi
         chieq = Symbol('chi')
-        for i in range(1, deg + 1):
+        for i in range(1, deg + 1):  # pragma: no cover
             chieq += Add(*[
                 Symbol('chi_' + str(power) + '_' + str(i - power))*x**power*y**(i - power)
                 for power in range(i + 1)])
-            cnum, cden = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
+            cnum, _ = cancel(cpde.subs({chi: chieq}).doit()).as_numer_denom()
             cnum = expand(cnum)
-            if cnum.is_polynomial(x, y) and cnum.is_Add:
-                cpoly = Poly(cnum, x, y).as_dict()
-                if cpoly:
-                    solsyms = chieq.free_symbols - {x, y}
-                    soldict = solve(cpoly.values(), *solsyms)
-                    if isinstance(soldict, list):
-                        soldict = soldict[0]
-                    if any(x for x in soldict.values()):
-                        chieq = chieq.subs(soldict)
-                        dict_ = {sym: 1 for sym in solsyms}
-                        chieq = chieq.subs(dict_)
-                        # After finding chi, the main aim is to find out
-                        # eta, xi by the equation eta = xi*h + chi
-                        # One method to set xi, would be rearranging it to
-                        # (eta/h) - xi = (chi/h). This would mean dividing
-                        # chi by h would give -xi as the quotient and eta
-                        # as the remainder. Thanks to Sean Vig for suggesting
-                        # this method.
-                        xic, etac = div(chieq, h)
-                        inf = {eta: etac.subs({y: func}), xi: -xic.subs({y: func})}
-                        return [inf]
+            cpoly = Poly(cnum, x, y).as_dict()
+            solsyms = chieq.free_symbols - {x, y}
+            soldict = solve(cpoly.values(), *solsyms)
+            soldict = soldict[0]
+            if any(x for x in soldict.values()):
+                chieq = chieq.subs(soldict)
+                dict_ = {sym: 1 for sym in solsyms}
+                chieq = chieq.subs(dict_)
+                # After finding chi, the main aim is to find out
+                # eta, xi by the equation eta = xi*h + chi
+                # One method to set xi, would be rearranging it to
+                # (eta/h) - xi = (chi/h). This would mean dividing
+                # chi by h would give -xi as the quotient and eta
+                # as the remainder. Thanks to Sean Vig for suggesting
+                # this method.
+                xic, etac = div(chieq, h)
+                inf = {eta: etac.subs({y: func}), xi: -xic.subs({y: func})}
+                return [inf]
 
 
-def lie_heuristic_function_sum(match, comp=False):
+def lie_heuristic_function_sum(match, comp):
     r"""
     This heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5795,7 +5711,7 @@ def lie_heuristic_function_sum(match, comp=False):
             return xieta
 
 
-def lie_heuristic_abaco2_similar(match, comp=False):
+def lie_heuristic_abaco2_similar(match, comp):
     r"""
     This heuristic uses the following two assumptions on `\xi` and `\eta`
 
@@ -5851,7 +5767,7 @@ def lie_heuristic_abaco2_similar(match, comp=False):
         C = Wild('C', exclude=[x, y])
         match = h.match(A + B*exp(y/C))
         try:
-            tau = exp(-integrate(match[A]/match[C]), x)/match[B]
+            tau = exp(-integrate(match[A]/match[C], x))/match[B]
         except NotImplementedError:
             pass
         else:
@@ -5878,9 +5794,9 @@ def lie_heuristic_abaco2_similar(match, comp=False):
         A = Wild('A', exclude=[y])
         B = Wild('B', exclude=[y])
         C = Wild('C', exclude=[x, y])
-        match = h.match(A + B*exp(y/C))
+        match = hinv.match(A + B*exp(y/C))
         try:
-            tau = exp(-integrate(match[A]/match[C]), x)/match[B]
+            tau = exp(-integrate(match[A]/match[C], x))/match[B]
         except NotImplementedError:
             pass
         else:
@@ -5902,7 +5818,7 @@ def lie_heuristic_abaco2_similar(match, comp=False):
                     return [{eta: tau.subs({x: func}), xi: gx.subs({x: func})}]
 
 
-def lie_heuristic_abaco2_unique_unknown(match, comp=False):
+def lie_heuristic_abaco2_unique_unknown(match, comp):
     r"""
     This heuristic assumes the presence of unknown functions or known functions
     with non-integer powers.
@@ -5979,7 +5895,7 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
                 return [{xi: xitry.subs({y: func}), eta: Integer(1)}]
 
 
-def lie_heuristic_linear(match, comp=False):
+def lie_heuristic_linear(match, comp):
     r"""
     This heuristic assumes
 
@@ -6012,12 +5928,12 @@ def lie_heuristic_linear(match, comp=False):
     xi = Function('xi')(x, func)
     eta = Function('eta')(x, func)
 
-    coeffdict = {}
+    coeffdict = defaultdict(int)
     symbols = numbered_symbols('c', cls=Dummy)
     symlist = [next(symbols) for _ in islice(symbols, 6)]
     C0, C1, C2, C3, C4, C5 = symlist
     pde = C3 + (C4 - C0)*h - (C0*x + C1*y + C2)*hx - (C3*x + C4*y + C5)*hy - C1*h**2
-    pde, denom = pde.as_numer_denom()
+    pde, _ = pde.as_numer_denom()
     pde = powsimp(expand(pde))
     if pde.is_Add:
         terms = pde.args
@@ -6025,21 +5941,14 @@ def lie_heuristic_linear(match, comp=False):
             if term.is_Mul:
                 rem = Mul(*[m for m in term.args if not m.has(x, y)])
                 xypart = term/rem
-                if xypart not in coeffdict:
-                    coeffdict[xypart] = rem
-                else:
-                    coeffdict[xypart] += rem
+                coeffdict[xypart] += rem
             else:
-                if term not in coeffdict:
-                    coeffdict[term] = Integer(1)
-                else:
-                    coeffdict[term] += Integer(1)
+                coeffdict[term] += 1
 
     sollist = coeffdict.values()
     soldict = solve(sollist, symlist)
     if soldict:
-        if isinstance(soldict, list):
-            soldict = soldict[0]
+        soldict = soldict[0]
         subval = soldict.values()
         if any(t for t in subval):
             onedict = dict(zip(symlist, [1]*6))
@@ -6058,7 +5967,6 @@ def sysode_linear_2eq_order1(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
@@ -6073,17 +5981,6 @@ def sysode_linear_2eq_order1(match_):
     r['c'] = -fc[1, x(t), 0]/fc[1, y(t), 1]
     r['b'] = -fc[0, y(t), 0]/fc[0, x(t), 1]
     r['d'] = -fc[1, y(t), 0]/fc[1, y(t), 1]
-    forcing = [Integer(0), Integer(0)]
-    for i in range(2):
-        for j in Add.make_args(eq[i]):
-            if not j.has(x(t), y(t)):
-                forcing[i] += j
-    if not (forcing[0].has(t) or forcing[1].has(t)):
-        r['k1'] = forcing[0]
-        r['k2'] = forcing[1]
-    else:
-        raise NotImplementedError('Only homogeneous problems are supported' +
-                                  ' (and constant inhomogeneity)')
 
     if match_['type_of_equation'] == 'type3':
         sol = _linear_2eq_order1_type3(x, y, t, r, eq)
@@ -6115,7 +6012,7 @@ def _linear_2eq_order1_type3(x, y, t, r, eq):
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     F = Integral(r['a'], t)
     G = Integral(r['b'], t)
     sol1 = exp(F)*(C1*exp(G) + C2*exp(-G))
@@ -6140,7 +6037,7 @@ def _linear_2eq_order1_type4(x, y, t, r, eq):
     .. math:: F = \int f(t) \,dt , G = \int g(t) \,dt
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     assert r['b'] == -r['c']
     F = exp(Integral(r['a'], t))
     G = Integral(r['b'], t)
@@ -6165,7 +6062,6 @@ def _linear_2eq_order1_type5(x, y, t, r, eq):
     .. math:: u'(T) = v , v'(T) = au + bv
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     u, v = symbols('u, v', cls=Function)
     T = Symbol('T')
     if not cancel(r['c']/r['b']).has(t):
@@ -6201,7 +6097,7 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
     `x`, we can obtain `y` by substituting the value of `x` in second equation.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1 = get_numbered_constants(eq, num=1)
     p = 0
     q = 0
     p1 = cancel(r['c']/cancel(r['c']/r['d']).as_numer_denom()[0])
@@ -6210,6 +6106,8 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
         for j in Mul.make_args(collect_const(i)):
             if not j.has(t):
                 q = j
+            else:
+                raise NotImplementedError
             if q != 0 and n == 0:
                 if cancel((r['c']/j - r['a'])/(r['b'] - r['d']/j)) == j:
                     p = 1
@@ -6230,6 +6128,8 @@ def _linear_2eq_order1_type6(x, y, t, r, eq):
         hint1 = classify_ode(equ)[1]
         sol2 = dsolve(equ, hint=hint1+'_Integral').rhs
         sol1 = s*sol2 + C1*exp(-s*Integral(r['d'] - r['b']/s, t))
+    else:
+        raise NotImplementedError
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -6268,12 +6168,12 @@ def _linear_2eq_order1_type7(x, y, t, r, eq):
     .. math:: F(t) = e^{\int f(t) \,dt} , P(t) = e^{\int p(t) \,dt}
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    C1, C2 = get_numbered_constants(eq, num=2)
     e1 = r['a']*r['b']*r['c'] - r['b']**2*r['c'] + r['a']*diff(r['b'], t) - diff(r['a'], t)*r['b']
     e2 = r['a']*r['c']*r['d'] - r['b']*r['c']**2 + diff(r['c'], t)*r['d'] - r['c']*diff(r['d'], t)
     m1 = r['a']*r['b'] + r['b']*r['d'] + diff(r['b'], t)
     m2 = r['a']*r['c'] + r['c']*r['d'] + diff(r['c'], t)
-    if e1 == 0:
+    if e1.equals(0):
         sol1 = dsolve(r['b']*diff(x(t), t, t) - m1*diff(x(t), t)).rhs
         sol2 = dsolve(diff(y(t), t) - r['c']*sol1 - r['d']*y(t)).rhs
     elif e2 == 0:
@@ -6300,7 +6200,6 @@ def sysode_linear_2eq_order2(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(2):
@@ -6455,6 +6354,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
         else:
             gsol1 = C1*r['b']*t**3 + C2*r['b']*t**2 + C3*t + C4
             gsol2 = k*gsol1 + 6*C1*t + 2*C2
+    else:
+        raise NotImplementedError
     return [Eq(x(t), gsol1), Eq(y(t), gsol2)]
 
 
@@ -6510,6 +6411,8 @@ def _linear_2eq_order2_type2(x, y, t, r, eq):
             psol1 = r['d1']*(r['e2']-r['e1']*k)*t**4/24 + r['e1']*t**2/2
             psol2 = k*psol1 + (r['e2']-r['e1']*k)*t**2/2
             psol = [psol1, psol2]
+    else:
+        raise NotImplementedError
     return psol
 
 
@@ -6529,13 +6432,13 @@ def _linear_2eq_order2_type3(x, y, t, r, eq):
 
     """
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    if r['b1']**2 - 4*r['c1'] > 0:
-        r['a'] = r['b1']
-        r['b'] = -r['c1']
-        alpha = r['a']/2 + sqrt(r['a']**2 + 4*r['b'])/2
-        beta = r['a']/2 - sqrt(r['a']**2 + 4*r['b'])/2
-        sol1 = C1*cos(alpha*t) + C2*sin(alpha*t) + C3*cos(beta*t) + C4*sin(beta*t)
-        sol2 = -C1*sin(alpha*t) + C2*cos(alpha*t) - C3*sin(beta*t) + C4*cos(beta*t)
+    assert r['b1']**2 - 4*r['c1'] > 0
+    r['a'] = r['b1']
+    r['b'] = -r['c1']
+    alpha = r['a']/2 + sqrt(r['a']**2 + 4*r['b'])/2
+    beta = r['a']/2 - sqrt(r['a']**2 + 4*r['b'])/2
+    sol1 = C1*cos(alpha*t) + C2*sin(alpha*t) + C3*cos(beta*t) + C4*sin(beta*t)
+    sol2 = -C1*sin(alpha*t) + C2*cos(alpha*t) - C3*sin(beta*t) + C4*cos(beta*t)
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -6615,7 +6518,6 @@ def _linear_2eq_order2_type6(x, y, t, r, eq):
     of `z_1` and `z_2` by solving the differential equation and substituting the result.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     k = Symbol('k')
     z = Function('z')
     num, den = cancel((r['c1']*x(t) + r['d1']*y(t)) /
@@ -6824,7 +6726,7 @@ def _linear_2eq_order2_type11(x, y, t, r, eq):
     where `C_3` and `C_4` are arbitrary constants.
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    *_, C3, C4 = get_numbered_constants(eq, num=4)
     u, v = symbols('u, v', cls=Function)
     f = -r['c1']
     g = -r['d1']
@@ -6843,7 +6745,6 @@ def sysode_linear_3eq_order1(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     r = {}
     t = list(list(eq[0].atoms(Derivative))[0].atoms(Symbol))[0]
     for i in range(3):
@@ -7107,7 +7008,7 @@ def _nonlinear_2eq_order1_type3(x, y, t, eq):
     .. math:: \int \frac{1}{F(x,y(x,C_1))} \,dx = t + C_1
 
     """
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
+    _, C2, *_ = get_numbered_constants(eq, num=4)
     v = Function('v')
     u = Symbol('u')
     f = Wild('f')
@@ -7145,7 +7046,7 @@ def _nonlinear_2eq_order1_type4(x, y, t, eq):
     arrives at a firs-order equation for determining `y` (resp., `x` ).
 
     """
-    C1, C2 = get_numbered_constants(eq, num=2)
+    C1 = get_numbered_constants(eq, num=1)
     u, v = symbols('u, v')
     U, V = symbols('U, V', cls=Function)
     f = Wild('f')

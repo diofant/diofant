@@ -372,6 +372,7 @@ def hypersimp(f, k):
     g = g.rewrite(gamma)
     g = expand_func(g)
     g = powsimp(g, deep=True, combine='exp')
+    g = g.cancel()
     g = combsimp(g)
 
     if g.is_rational_function(k):
@@ -1103,14 +1104,13 @@ def sum_simplify(s):
             other = 1
             s = 0
             n_sum_terms = 0
-            for j in range(len(term.args)):
-                if isinstance(term.args[j], Sum):
-                    s = term.args[j]
+            for j, s in enumerate(term.args):
+                if isinstance(s, Sum):
                     n_sum_terms = n_sum_terms + 1
-                elif term.args[j].is_number:
-                    constant = constant * term.args[j]
+                elif s.is_number:
+                    constant *= s
                 else:
-                    other = other * term.args[j]
+                    other *= s
             if other == 1 and n_sum_terms == 1:
                 # Insert the constant inside the Sum
                 s_t.append(Sum(constant * s.function, *s.limits))

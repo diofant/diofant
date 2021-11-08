@@ -202,7 +202,7 @@ def test_pow_E():
     # value that this identity holds
     while 1:
         b = x._random()
-        r, i = b.as_real_imag()
+        _, i = b.as_real_imag()
         if i:
             break
     assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).evalf(strict=False)), E)
@@ -340,7 +340,7 @@ def test_Mul_doesnt_expand_exp():
     assert sqrt(2)*sqrt(2) == 2
     assert 2**x*2**(2*x) == 2**(3*x)
     assert sqrt(2)*root(2, 4)*5**Rational(3, 4) == 10**Rational(3, 4)
-    assert (x**(-log(5)/log(3))*x)/(x*x**( - log(5)/log(3))) == sympify(1)
+    assert (x**(-log(5)/log(3))*x)/(x*x**(-log(5)/log(3))) == sympify(1)
 
 
 def test_Add_Mul_is_integer():
@@ -439,10 +439,11 @@ def test_Mul_is_even_odd():
     assert (x*y*(y + m)).is_odd is None
 
 
-@pytest.mark.xfail
 def test_even_odd_in_ternary_integer_product():
     # Tests that oddness inference is independent of term ordering.
     # We try to force a different order by modifying symbol names.
+
+    # issues sympy/sympy#9127 and diofant/diofant#1003
 
     x = Symbol('x', integer=True)
     y = Symbol('y', integer=True)
@@ -1132,7 +1133,18 @@ def test_Pow_is_negative_positive():
 
     s = Symbol('s', nonpositive=True)
     assert (s**n).is_negative is False
+    assert (s**m).is_positive is None
+    n = Symbol('n', even=True, nonnegative=True)
+    m = Symbol('m', odd=True, nonnegative=True)
+    assert ((-p)**n).is_positive is True
+    assert ((-p)**m).is_positive is False
     assert (s**m).is_positive is False
+    assert ((-p)**(n + 1)).is_negative is True
+    s = Symbol('s', nonpositive=True, finite=True)
+    assert ((s - 1)**n).is_positive is True
+    assert ((s - 1)**m).is_positive is False
+    assert (s**m).is_positive is False
+    assert ((s - 1)**m).is_negative is True
 
     i = Symbol('i', imaginary=True)
     assert (i**4).is_positive is None  # issue diofant/diofant#956
@@ -1656,8 +1668,8 @@ def test_sympyissue_6040():
     a, b = Pow(1, 2, evaluate=False), 1
     assert a != b
     assert b != a
-    assert not (a == b)
-    assert not (b == a)
+    assert not a == b
+    assert not b == a
 
 
 def test_sympyissue_6077():
@@ -1844,7 +1856,7 @@ def test_mul_zero_detection():
         test(z, b, e)
 
     # real is True
-    def test(z, b, e):
+    def test2(z, b, e):
         if z.is_zero and not b.is_finite:
             assert e.is_extended_real is None
         elif not z.is_finite:
@@ -1856,11 +1868,11 @@ def test_mul_zero_detection():
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(z, b, evaluate=False)
-        test(z, b, e)
+        test2(z, b, e)
         z = Dummy('z', nonzero=iz, extended_real=True)
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(b, z, evaluate=False)
-        test(z, b, e)
+        test2(z, b, e)
 
 
 def test_sympyissue_8247_8354():
@@ -1925,3 +1937,9 @@ def test_diofantissue_849():
     assert (a - b).is_extended_real is None
 
     assert (a*b).is_extended_real is None
+
+
+def test_diofantissue_1004():
+    assert Pow(Dummy(negative=True), -3,
+               evaluate=False).is_negative is not True
+    assert Pow(-oo, -3, evaluate=False).is_negative is not True

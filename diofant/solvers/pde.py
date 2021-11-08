@@ -643,7 +643,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     from ..integrals import integrate
     from .ode import dsolve
 
-    xi, eta = symbols('xi eta')
+    eta = Symbol('eta')
     f = func.func
     x = func.args[0]
     y = func.args[1]
@@ -658,7 +658,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             if c:
                 try:
                     tsol = integrate(e/c, y)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of integrate')
                 else:
@@ -666,7 +666,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
             else:
                 try:
                     tsol = integrate(e/b, x)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of integrate')
                 else:
@@ -780,8 +780,8 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     orig_args = list(fun.args)
     subs_args = []
     for s in sep:
-        for j in range(len(s.args)):
-            subs_args.append(s.args[j])
+        for sa in s.args:
+            subs_args.append(sa)
 
     if do_add:
         functions = functools.reduce(operator.add, sep)
@@ -892,7 +892,7 @@ def _separate(eq, dep, others):
             lhs += term
             continue
         # ...otherwise, try to separate
-        temp, sep = term.expand().as_independent(dep)
+        _, sep = term.expand().as_independent(dep)
         # Failed?
         if sep.has(*others):
             return

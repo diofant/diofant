@@ -277,7 +277,7 @@ def test_polygamma_expand_func():
     assert polygamma(0, -1 + x).expand(func=True) == \
         polygamma(0, x) - 1/(x - 1)
     assert polygamma(0, 1 + x).expand(func=True) == \
-        1/x + polygamma(0, x )
+        1/x + polygamma(0, x)
     assert polygamma(0, 2 + x).expand(func=True) == \
         1/x + 1/(1 + x) + polygamma(0, x)
     assert polygamma(0, 3 + x).expand(func=True) == \
@@ -366,7 +366,7 @@ def test_loggamma():
     assert expand_func(loggamma(Rational(1, 3))) == loggamma(Rational(1, 3))
 
     assert loggamma(x).diff(x) == polygamma(0, x)
-    s1 = loggamma(1/(x + sin(x)) + cos(x)).nseries(x, n=4)
+    s1 = loggamma(1/(x + sin(x)) + cos(x)).series(x, n=4)
     s2 = (-log(2*x) - 1)/(2*x) - log(x/pi)/2 + (4 - log(2*x))*x/24 + O(x**2) + \
         log(x)*x**2/2
     assert (s1 - s2).expand(force=True).removeO() == 0
@@ -407,11 +407,11 @@ def test_loggamma():
 
 def test_polygamma_expansion():
     # A. & S., pa. 259 and 260
-    assert polygamma(0, 1/x).nseries(x, n=3) == \
+    assert polygamma(0, 1/x).series(x, n=4) == \
         -log(x) - x/2 - x**2/12 + O(x**4)
     assert polygamma(1, 1/x).series(x, n=5) == \
         x + x**2/2 + x**3/6 + O(x**5)
-    assert polygamma(3, 1/x).nseries(x, n=8) == \
+    assert polygamma(3, 1/x).series(x, n=11) == \
         2*x**3 + 3*x**4 + 2*x**5 - x**7 + 4*x**9/3 + O(x**11)
 
 

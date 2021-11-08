@@ -5,9 +5,9 @@ from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
                      Integral, InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseSineTransform,
                      LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
-                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
-                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
-                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     Or, Piecewise, Rational, Si, SineTransform, Symbol, atan,
+                     atan2, besseli, besselj, besselk, bessely, combsimp, cos,
+                     cosh, cosine_transform, cot, erf, exp, exp_polar, expand,
                      expand_complex, expand_mul, expand_trig, expint, eye,
                      factor_terms, factorial, fourier_transform, fresnelc,
                      fresnels, gamma, hankel_transform, hyperexpand,
@@ -55,6 +55,8 @@ def test_as_integral():
         'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
+    assert sine_transform(f(x), x, s).rewrite('Integral') == \
+        Integral(sqrt(2)/sqrt(pi)*f(x)*sin(x*s), (x, 0, oo))
 
 
 def test_mellin_transform():
@@ -164,7 +166,7 @@ def test_mellin_transform_bessel():
     assert MT(besselj(a, sqrt(x))*besselj(b, sqrt(x)), x, s) == \
         (4**s*gamma(1 - 2*s)*gamma((a + b)/2 + s)
          / (gamma(1 - s + (b - a)/2)*gamma(1 - s + (a - b)/2)
-            * gamma( 1 - s + (a + b)/2)),
+            * gamma(1 - s + (a + b)/2)),
             (-(re(a) + re(b))/2, Rational(1, 2)), True)
     assert MT(besselj(a, sqrt(x))**2 + besselj(-a, sqrt(x))**2, x, s)[1:] == \
         ((Max(re(a), -re(a)), Rational(1, 2)), True)
@@ -514,7 +516,7 @@ def test_sympyissue_8368_7173():
 
 def test_inverse_laplace_transform():
     ILT = inverse_laplace_transform
-    a, b, c, = symbols('a b c', positive=True, finite=True)
+    a, b = symbols('a b', positive=True, finite=True)
 
     def simp_hyp(expr):
         return factor_terms(expand_mul(expr)).rewrite(sin)
@@ -554,7 +556,7 @@ def test_inverse_laplace_transform():
 
     assert ILT(1/(s**2*(s**2 + 1)), s, t) == (t - sin(t))*Heaviside(t)
 
-    assert ILT( (s * eye(2) - Matrix([[1, 0], [0, 2]])).inv(), s, t) ==\
+    assert ILT((s * eye(2) - Matrix([[1, 0], [0, 2]])).inv(), s, t) ==\
         Matrix([[exp(t)*Heaviside(t), 0], [0, exp(2*t)*Heaviside(t)]])
 
 
@@ -742,3 +744,10 @@ def test_sympyissue_8514():
 def test__simplifyconds():
     assert _simplifyconds(1 < abs(x), x, 1) is True
     assert _simplifyconds(abs(x**2) < 1, x, 0) == (abs(x**2) < 1)
+
+
+def test_sympyissue_21202():
+    res = (Piecewise((s/(s**2 - 4), (4*abs(s**-2) < 1) | (abs(s**2)/4 < 1)),
+                     (pi*meijerg(((Rational(1, 2),), (0, 0)), ((0, Rational(1, 2)),
+                                 (0,)), s**2/4)/2, True)), 2, Ne(s**2/4, 1))
+    assert laplace_transform(cosh(2*x), x, s) == res

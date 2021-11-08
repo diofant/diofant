@@ -164,7 +164,7 @@ def test_Dict():
     assert Dict(d)
     d = Dict(d)
     assert len(d) == 3
-    assert set(d.keys()) == {x, y, z}
+    assert set(d) == {x, y, z}
     assert set(d.values()) == {0, 0, 0}
 
 

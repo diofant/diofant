@@ -492,7 +492,7 @@ class cos(TrigonometricFunction):
                 # cos(k pi/n) for n = 8,10,12,15,20,24,30,40,60,120
                 # Some other exact values like cos(k pi/240) can be
                 # calculated using a partial-fraction decomposition
-                # by calling cos( X ).rewrite(sqrt)
+                # by calling cos(X).rewrite(sqrt)
                 cst_table_some = {3: Rational(1, 2),
                                   5: (sqrt(5) + 1)/4}
 
@@ -538,7 +538,7 @@ class cos(TrigonometricFunction):
                     assert nval is not None
                     x = (2*pi_coeff + 1)/2
                     sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
-                    return sign_cos*sqrt( (1 + nval)/2 )
+                    return sign_cos*sqrt((1 + nval)/2)
             return
 
         if arg.is_Add:
@@ -616,7 +616,7 @@ class cos(TrigonometricFunction):
                 return igcdex(x[0], x[-1])
             g = migcdex(x[1:])
             u, v, h = igcdex(x[0], g[-1])
-            return tuple([u] + [v*i for i in g[0:-1] ] + [h])
+            return tuple([u] + [v*i for i in g[0:-1]] + [h])
 
         def ipartfrac(r, factors=None):
             from ...ntheory import factorint
@@ -628,7 +628,7 @@ class cos(TrigonometricFunction):
             else:
                 a = [n//x for x in factors]
             if len(a) == 1:
-                return [ r ]
+                return [r]
             h = migcdex(a)
             ans = [r.numerator*Rational(i*j, r.denominator) for i, j in zip(h[:-1], a)]
             assert r == sum(ans)
@@ -676,7 +676,7 @@ class cos(TrigonometricFunction):
             nval = nval.rewrite(sqrt)
             x = (2*pi_coeff + 1)/2
             sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
-            return sign_cos*sqrt( (1 + nval)/2 )
+            return sign_cos*sqrt((1 + nval)/2)
 
         FC = fermatCoords(pi_coeff.denominator)
         if FC:
@@ -951,7 +951,7 @@ class tan(TrigonometricFunction):
                 TX.append(tx)
 
             Yg = numbered_symbols('Y')
-            Y = [ next(Yg) for i in range(n) ]
+            Y = [next(Yg) for i in range(n)]
 
             p = [0, 0]
             for i in range(n + 1):
@@ -1364,8 +1364,8 @@ class cot(ReciprocalTrigonometricFunction):
         neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
         return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
 
-    def _eval_rewrite_as_sin(self, x):
-        return 2*sin(2*x)/sin(x)**2
+    def _eval_rewrite_as_sin(self, arg):
+        return 2*sin(2*arg)/sin(arg)**2
 
     def as_real_imag(self, deep=True, **hints):
         re, im = self._as_real_imag(deep=deep, **hints)
@@ -1387,7 +1387,7 @@ class cot(ReciprocalTrigonometricFunction):
                 CX.append(cx)
 
             Yg = numbered_symbols('Y')
-            Y = [ next(Yg) for i in range(n) ]
+            Y = [next(Yg) for i in range(n)]
 
             p = [0, 0]
             for i in range(n, -1, -1):

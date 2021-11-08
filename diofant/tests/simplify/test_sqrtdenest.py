@@ -1,5 +1,4 @@
-from diofant import (Integral, Rational, cos, root, sqrt, sqrtdenest, sstr,
-                     sympify)
+from diofant import Integral, Rational, cos, root, sqrt, sqrtdenest
 from diofant.abc import x, y
 from diofant.simplify.sqrtdenest import _subsets as subsets
 
@@ -8,10 +7,6 @@ __all__ = ()
 
 r2, r3, r5, r6, r7, r10, r15, r29 = [sqrt(x) for x in [2, 3, 5, 6, 7, 10,
                                                        15, 29]]
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_sqrtdenest():
@@ -24,8 +19,8 @@ def test_sqrtdenest():
          3*r2*root(5 + 2*r7, 4)/(2*sqrt(6 + 3*r7)) +
          r2*sqrt(6 + 3*r7)/(2*root(5 + 2*r7, 4)),
          sqrt(3 + 2*r3): 3**Rational(3, 4)*(r6/2 + 3*r2/2)/3}
-    for i in d:
-        assert sqrtdenest(i) == d[i]
+    for k, v in d.items():
+        assert sqrtdenest(k) == v
 
 
 def test_sqrtdenest2():

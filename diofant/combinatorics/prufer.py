@@ -160,7 +160,7 @@ class Prufer(Basic):
             # edge involving it.
             d[edge[0]] += 1
             d[edge[1]] += 1
-        for i in range(n - 2):
+        for _ in range(n - 2):
             # find the smallest leaf
             for x in range(n):
                 if d[x] == 1:

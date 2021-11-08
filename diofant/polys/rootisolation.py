@@ -432,7 +432,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
             if indices[1] % 2 == 1:
                 f2_sgn = -f2_sgn
 
-        if not (a == b and b == t):
+        if a != b or b != t:
             Q.append(sgn[(f1_sgn, f2_sgn)])
 
     return Q
@@ -557,7 +557,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
-    Q_L1, Q_L2, Q_L3, Q_L4 = Q
+    _, Q_L2, _, Q_L4 = Q
 
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
@@ -665,7 +665,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
-    Q_L1, Q_L2, Q_L3, Q_L4 = Q
+    Q_L1, _, Q_L3, _ = Q
 
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
@@ -1168,7 +1168,7 @@ class _FindRoot:
             f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
         if eps is not None and steps is not None:
-            for i in range(steps):
+            for _ in range(steps):
                 if abs(a/c - b/d) >= eps:
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
                 else:
@@ -1179,7 +1179,7 @@ class _FindRoot:
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
             if steps is not None:
-                for i in range(steps):
+                for _ in range(steps):
                     f, (a, b, c, d) = self._step_refine_real_root(f, (a, b, c, d))
 
         if disjoint is not None:
@@ -1214,7 +1214,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         f = f.clear_denoms()[1]
 
-        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+        if not domain.is_RationalField and not domain.is_RealAlgebraicField:
             raise DomainError(f'real root refinement not supported over {domain}')
 
         if s == t:
@@ -1417,7 +1417,7 @@ class _FindRoot:
 
         f = f.set_domain(domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
@@ -1473,7 +1473,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't isolate real roots in domain {domain}")
 
         f = f.clear_denoms()[1]
@@ -1507,7 +1507,7 @@ class _FindRoot:
         f = f.set_domain(domain)
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f'isolation of real roots not supported over {domain}')
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
@@ -1592,7 +1592,7 @@ class _FindRoot:
         domain = self.domain.field
         new_ring = self.clone(domain=domain)
 
-        if not (domain.is_RationalField or domain.is_RealAlgebraicField):
+        if not domain.is_RationalField and not domain.is_RealAlgebraicField:
             raise DomainError(f'isolation of real roots not supported over {domain}')
 
         if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
@@ -1707,7 +1707,7 @@ class _FindRoot:
 
         f1 = f2 = new_ring.drop(0).zero
 
-        if f.is_zero:
+        if not f:
             return f1, f2
 
         t, h = new_ring.one, new_ring.zero
@@ -1745,13 +1745,13 @@ class _FindRoot:
         x**4 - 2*x**3 + 5*x**2 - 4*x + 4
 
         """
-        if f.is_zero:
+        if not f:
             return self.zero
 
         n = f.degree()
         h, Q = f.LC*self.one, [self.one]
 
-        for i in range(n):
+        for _ in range(n):
             Q.append(Q[-1]*q)
 
         for c, q in zip(reversed(f.all_coeffs()[:-1]), Q[1:]):
@@ -1767,7 +1767,7 @@ class _FindRoot:
         new_ring = self.clone(domain=domain)
         f = f.set_ring(new_ring)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't count complex roots in domain {domain}")
 
         if not all(isinstance(_, tuple) for _ in (inf, sup)):
@@ -1800,7 +1800,7 @@ class _FindRoot:
         new_ring = self.clone(domain=domain)
         f = f.set_ring(new_ring)
 
-        if not (domain.is_ComplexAlgebraicField or domain.is_RationalField):
+        if not domain.is_ComplexAlgebraicField and not domain.is_RationalField:
             raise DomainError(f"Can't isolate complex roots in domain {domain}")
 
         if not all(isinstance(_, tuple) for _ in (inf, sup)):

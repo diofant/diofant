@@ -70,7 +70,7 @@ class BesselBase(Function):
 
     def _eval_expand_func(self, **hints):
         nu, z, f = self.order, self.argument, self.__class__
-        if nu.is_extended_real:
+        if nu.is_real:
             if (nu - 1).is_positive:
                 return (-self._a*self._b*f(nu - 2, z)._eval_expand_func() +
                         2*self._a*(nu - 1)*f(nu - 1, z)._eval_expand_func()/z)
@@ -158,7 +158,7 @@ class besselj(BesselBase):
                 return Integer(1)
             elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
                 return Integer(0)
-            elif re(nu).is_negative and not (nu.is_integer is True):
+            elif re(nu).is_negative and nu.is_integer is not True:
                 return zoo
             elif nu.is_imaginary:
                 return nan
@@ -323,7 +323,7 @@ class besseli(BesselBase):
                 return Integer(1)
             elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
                 return Integer(0)
-            elif re(nu).is_negative and not (nu.is_integer is True):
+            elif re(nu).is_negative and nu.is_integer is not True:
                 return zoo
             elif nu.is_imaginary:
                 return nan
@@ -714,7 +714,7 @@ def jn_zeros(n, k, method='diofant', dps=15):
     # determine the first root exactly:
     root = solver(f, root)
     roots = [root]
-    for i in range(k - 1):
+    for _ in range(k - 1):
         # estimate the position of the next root using the last root + pi:
         root = solver(f, root + pi)
         roots.append(root)

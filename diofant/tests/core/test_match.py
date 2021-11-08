@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Add, Derivative, FiniteSet, Float, Function, I, Integer,
                      Mul, Rational, Symbol, Wild, WildFunction, cos, diff, exp,
-                     log, meijerg, oo, pi, sin, sqrt, symbols)
+                     log, meijerg, oo, pi, root, sin, sqrt, symbols)
 from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
@@ -10,7 +10,7 @@ __all__ = ()
 
 
 def test_symbol():
-    a, b, c, p, q = map(Wild, 'abcpq')
+    a, c = map(Wild, 'ac')
 
     e = x
     assert e.match(x) == {}
@@ -23,7 +23,7 @@ def test_symbol():
 
 
 def test_add():
-    p, q, r = map(Wild, 'pqr')
+    p = Wild('p')
 
     e = a + b
     assert e.match(p + b) == {p: a}
@@ -288,7 +288,7 @@ def test_match_deriv_bug1():
     e = e.subs({n(x): -l(x)}).doit()
     t = x*exp(-l(x))
     t2 = t.diff(x, x)/t
-    assert e.match( (p*t2).expand() ) == {p: -Rational(1, 2)}
+    assert e.match((p*t2).expand()) == {p: -Rational(1, 2)}
 
 
 def test_match_bug2():
@@ -377,8 +377,8 @@ def test_match_wild_wild():
     q = Wild('q')
     r = Wild('r')
 
-    assert p.match(q + r) in [ {q: p, r: 0}, {q: 0, r: p} ]
-    assert p.match(q*r) in [ {q: p, r: 1}, {q: 1, r: p} ]
+    assert p.match(q + r) in [{q: p, r: 0}, {q: 0, r: p}]
+    assert p.match(q * r) in [{q: p, r: 1}, {q: 1, r: p}]
 
     p = Wild('p')
     q = Wild('q', exclude=[p])
@@ -628,3 +628,11 @@ def test_sympyissue_16774():
     t = (a*a1 + b1)/(a*c1 + d1) + (a*a2 + b2)/(a*c2 + d2)
     assert e.match(t) == {a1: -2, a2: 4, b1: -9, b2: 3, c1: 1,
                           c2: 5, d1: 4, d2: 12}
+
+
+def test_sympyissue_21466():
+    a, b, k, m, n = symbols('a b k m n', cls=Wild)
+    pattern = x**n * (a + b * x**k)**m
+    expr = root(x, 3)*root(3 - x**2, 3)
+    assert expr.match(pattern) == {k: 2, b: -1, a: 3, m: Rational(1, 3),
+                                   n: Rational(1, 3)}

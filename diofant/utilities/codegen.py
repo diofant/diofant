@@ -663,7 +663,7 @@ class CodeGen:
         if to_files:
             for dump_fn in self.dump_fns:
                 filename = f'{prefix}.{dump_fn.extension}'
-                with open(filename, 'w') as f:
+                with open(filename, 'w', encoding='utf-8') as f:
                     dump_fn(self, routines, f, prefix, header, empty)
         else:
             result = []
@@ -809,7 +809,7 @@ class CCodeGen(CodeGen):
                 type_args.append((arg.get_datatype('C'), f'*{name}'))
             else:
                 type_args.append((arg.get_datatype('C'), name))
-        arguments = ', '.join([ '%s %s' % t for t in type_args])
+        arguments = ', '.join(['%s %s' % t for t in type_args])
         return f'{ctype} {routine.name}({arguments})'
 
     def _preprocessor_statements(self, prefix):
@@ -851,7 +851,7 @@ class CCodeGen(CodeGen):
             t = result.get_datatype('c')
             prefix = f'const {t} '
 
-            constants, not_c, c_expr = self._printer_method_with_settings(
+            *_, c_expr = self._printer_method_with_settings(
                 'doprint', {'human': False, 'dereference': dereference},
                 result.expr, assign_to=assign_to)
 
@@ -880,8 +880,8 @@ class CCodeGen(CodeGen):
             else:
                 assign_to = result.result_var
 
-            constants, not_c, c_expr = ccode(result.expr, human=False,
-                                             assign_to=assign_to, dereference=dereference)
+            constants, _, c_expr = ccode(result.expr, human=False,
+                                         assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
                 code_lines.append(f'double const {name} = {value};\n')
@@ -1078,7 +1078,7 @@ class FCodeGen(CodeGen):
         See: https://en.wikipedia.org/wiki/Function_prototype
 
         """
-        prototype = [ 'interface\n' ]
+        prototype = ['interface\n']
         prototype.extend(self._get_routine_opening(routine))
         prototype.extend(self._declare_arguments(routine))
         prototype.extend(self._get_routine_ending(routine))
@@ -1299,7 +1299,7 @@ class OctaveCodeGen(CodeGen):
 
         # Outputs
         outs = []
-        for i, result in enumerate(routine.results):
+        for result in routine.results:
             # Note: name not result_var; want `y` not `y(i)` for Indexed
             s = self._get_symbol(result.name)
             outs.append(s)
@@ -1311,7 +1311,7 @@ class OctaveCodeGen(CodeGen):
 
         # Inputs
         args = []
-        for i, arg in enumerate(routine.arguments):
+        for arg in routine.arguments:
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError('Octave: invalid argument of type %s' %
                                    str(type(arg)))
@@ -1319,7 +1319,7 @@ class OctaveCodeGen(CodeGen):
                 args.append('%s' % self._get_symbol(arg.name))
         args = ', '.join(args)
         code_list.append(f'{routine.name}({args})\n')
-        code_list = [ ''.join(code_list) ]
+        code_list = [''.join(code_list)]
 
         return code_list
 
@@ -1341,7 +1341,7 @@ class OctaveCodeGen(CodeGen):
     def _call_printer(self, routine):
         declarations = []
         code_lines = []
-        for i, result in enumerate(routine.results):
+        for result in routine.results:
             assign_to = result.result_var
 
             constants, not_supported, oct_expr = octave_code(result.expr,

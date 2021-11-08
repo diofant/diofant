@@ -123,13 +123,13 @@ def test_sin():
     assert sin(qn).is_rational is False
     assert sin(q).is_rational is None  # issue sympy/sympy#8653
 
-    assert isinstance(sin( re(x) - im(y)), sin) is True
+    assert isinstance(sin(+re(x) - im(y)), sin) is True
     assert isinstance(sin(-re(x) + im(y)), sin) is False
 
     for d in list(range(1, 22)) + [60, 85]:
         for n in range(d*2 + 1):
             x = n*pi/d
-            e = abs( float(sin(x)) - sin(float(x)) )
+            e = abs(float(sin(x)) - sin(float(x)))
             assert e < 1e-12
 
     assert sin(z).taylor_term(3, z, *(z, 0)) == -z**3/6
@@ -327,7 +327,7 @@ def test_cos():
     for d in list(range(1, 22)) + [60, 85]:
         for n in range(2*d + 1):
             x = n*pi/d
-            e = abs( float(cos(x)) - cos(float(x)) )
+            e = abs(float(cos(x)) - cos(float(x)))
             assert e < 1e-12
 
     assert cos(z).taylor_term(2, z, *(1, 0)) == -z**2/2
@@ -1251,11 +1251,11 @@ def test_tancot_rewrite_sqrt():
                     if 2*i != n and 3*i != 2*n:
                         t1 = tan(x).rewrite(sqrt)
                         assert not t1.has(cot, tan), f'fails for {i:d}*pi/{n:d}'
-                        assert 1e-3 > abs( tan(x.evalf(7)) - t1.evalf(4) ), f'fails for {i:d}*pi/{n:d}'
-                    if i != 0 and i != n:
+                        assert 1e-3 > abs(tan(x.evalf(7)) - t1.evalf(4)), f'fails for {i:d}*pi/{n:d}'
+                    if i not in (0, n):
                         c1 = cot(x).rewrite(sqrt)
                         assert not c1.has(cot, tan), f'fails for {i:d}*pi/{n:d}'
-                        assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), f'fails for {i:d}*pi/{n:d}'
+                        assert 1e-3 > abs(cot(x.evalf(7)) - c1.evalf(4)), f'fails for {i:d}*pi/{n:d}'
 
 
 def test_sec():

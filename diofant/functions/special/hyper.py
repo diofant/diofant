@@ -57,7 +57,7 @@ class TupleParametersBase(Function):
         try:
             res = 0
             if self.args[0].has(s) or self.args[1].has(s):
-                for i, p in enumerate(self._diffargs):
+                for i, _ in enumerate(self._diffargs):
                     m = self._diffargs[i].diff(s)
                     if m != 0:
                         res += self.fdiff((1, i))*m
@@ -591,7 +591,7 @@ class meijerg(TupleParametersBase):
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)
         if p == q:
-            if beta == oo or alpha == oo:
+            if oo in (beta, alpha):
                 return oo
             return 2*pi*math.lcm(alpha, beta)
         elif p < q:
@@ -868,20 +868,20 @@ class HyperRep_asin1(HyperRep):
     """Represent hyper([1/2, 1/2], [3/2], z) == asin(sqrt(z))/sqrt(z)."""
 
     @classmethod
-    def _expr_small(cls, z):
-        return asin(sqrt(z))/sqrt(z)
+    def _expr_small(cls, x):
+        return asin(sqrt(x))/sqrt(x)
 
     @classmethod
-    def _expr_small_minus(cls, z):
-        return asinh(sqrt(z))/sqrt(z)
+    def _expr_small_minus(cls, x):
+        return asinh(sqrt(x))/sqrt(x)
 
     @classmethod
-    def _expr_big(cls, z, n):
-        return Integer(-1)**n*((Rational(1, 2) - n)*pi/sqrt(z) + I*acosh(sqrt(z))/sqrt(z))
+    def _expr_big(cls, x, n):
+        return Integer(-1)**n*((Rational(1, 2) - n)*pi/sqrt(x) + I*acosh(sqrt(x))/sqrt(x))
 
     @classmethod
-    def _expr_big_minus(cls, z, n):
-        return Integer(-1)**n*(asinh(sqrt(z))/sqrt(z) + n*pi*I/sqrt(z))
+    def _expr_big_minus(cls, x, n):
+        return Integer(-1)**n*(asinh(sqrt(x))/sqrt(x) + n*pi*I/sqrt(x))
 
 
 class HyperRep_asin2(HyperRep):
@@ -889,24 +889,24 @@ class HyperRep_asin2(HyperRep):
 
     # TODO this can be nicer
     @classmethod
-    def _expr_small(cls, z):
-        return HyperRep_asin1._expr_small(z) \
-            / HyperRep_power1._expr_small(Rational(1, 2), z)
+    def _expr_small(cls, x):
+        return HyperRep_asin1._expr_small(x) \
+            / HyperRep_power1._expr_small(Rational(1, 2), x)
 
     @classmethod
-    def _expr_small_minus(cls, z):
-        return HyperRep_asin1._expr_small_minus(z) \
-            / HyperRep_power1._expr_small_minus(Rational(1, 2), z)
+    def _expr_small_minus(cls, x):
+        return HyperRep_asin1._expr_small_minus(x) \
+            / HyperRep_power1._expr_small_minus(Rational(1, 2), x)
 
     @classmethod
-    def _expr_big(cls, z, n):
-        return HyperRep_asin1._expr_big(z, n) \
-            / HyperRep_power1._expr_big(Rational(1, 2), z, n)
+    def _expr_big(cls, x, n):
+        return HyperRep_asin1._expr_big(x, n) \
+            / HyperRep_power1._expr_big(Rational(1, 2), x, n)
 
     @classmethod
-    def _expr_big_minus(cls, z, n):
-        return HyperRep_asin1._expr_big_minus(z, n) \
-            / HyperRep_power1._expr_big_minus(Rational(1, 2), z, n)
+    def _expr_big_minus(cls, x, n):
+        return HyperRep_asin1._expr_big_minus(x, n) \
+            / HyperRep_power1._expr_big_minus(Rational(1, 2), x, n)
 
 
 class HyperRep_sqrts1(HyperRep):
@@ -975,25 +975,25 @@ class HyperRep_log2(HyperRep):
     """Represent log(1/2 + sqrt(1 - z)/2) == -z/4*hyper([3/2, 1, 1], [2, 2], z)."""
 
     @classmethod
-    def _expr_small(cls, z):
-        return log(Rational(1, 2) + sqrt(1 - z)/2)
+    def _expr_small(cls, x):
+        return log(Rational(1, 2) + sqrt(1 - x)/2)
 
     @classmethod
-    def _expr_small_minus(cls, z):
-        return log(Rational(1, 2) + sqrt(1 + z)/2)
+    def _expr_small_minus(cls, x):
+        return log(Rational(1, 2) + sqrt(1 + x)/2)
 
     @classmethod
-    def _expr_big(cls, z, n):
+    def _expr_big(cls, x, n):
         if n.is_even:
-            return (n - Rational(1, 2))*pi*I + log(sqrt(z)/2) + I*asin(1/sqrt(z))
+            return (n - Rational(1, 2))*pi*I + log(sqrt(x)/2) + I*asin(1/sqrt(x))
         else:
-            return (n - Rational(1, 2))*pi*I + log(sqrt(z)/2) - I*asin(1/sqrt(z))
+            return (n - Rational(1, 2))*pi*I + log(sqrt(x)/2) - I*asin(1/sqrt(x))
 
-    def _expr_big_minus(self, z, n):
+    def _expr_big_minus(self, x, n):
         if n.is_even:
-            return pi*I*n + log(Rational(1, 2) + sqrt(1 + z)/2)
+            return pi*I*n + log(sqrt(1 + x)/2 + Rational(1, 2))
         else:
-            return pi*I*n + log(sqrt(1 + z)/2 - Rational(1, 2))
+            return pi*I*n + log(sqrt(1 + x)/2 - Rational(1, 2))
 
 
 class HyperRep_cosasin(HyperRep):

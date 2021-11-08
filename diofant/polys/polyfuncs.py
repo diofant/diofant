@@ -100,7 +100,6 @@ def symmetrize(F, *gens, **args):
             if _height != -1:
                 monom, coeff = _monom, _coeff
             else:
-                _height  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
             exponents = []
@@ -174,7 +173,7 @@ def horner(f, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
+        (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         return exc.exprs[0]
 
@@ -251,7 +250,7 @@ def viete(f, roots=None, *gens, **args):
     allowed_flags(args, [])
 
     try:
-        (f,), opt = parallel_poly_from_expr((f,), *gens, **args)
+        (f,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
         raise ComputationFailed('viete', 1, exc)
 

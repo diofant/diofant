@@ -52,8 +52,8 @@ def test_cmp_bug1():
     t = T()
     x = Symbol('x')
 
-    assert not (x == t)
-    assert (x != t)
+    assert not x == t
+    assert x != t
 
 
 def test_cmp_bug2():
@@ -62,8 +62,8 @@ def test_cmp_bug2():
 
     t = T()
 
-    assert not (Symbol == t)
-    assert (Symbol != t)
+    assert not Symbol == t
+    assert Symbol != t
 
 
 def test_cmp_sympyissue_4357():

@@ -369,7 +369,7 @@ def test_sig_key():
 
 
 def test_lbp_key():
-    R,  x, y, z, t = ring('x y z t', ZZ, lex)
+    R,  *_ = ring('x y z t', ZZ, lex)
 
     p1 = lbp(sig((0,) * 4, 3), R.zero, 12)
     p2 = lbp(sig((0,) * 4, 4), R.zero, 13)
@@ -380,7 +380,7 @@ def test_lbp_key():
 
 
 def test_lbp_sub():
-    R,  x, y, z, t = ring('x y z t', ZZ, lex)
+    R,  *_ = ring('x y z t', ZZ, lex)
 
     p1 = lbp(sig((0,) * 4, 3), R.zero, 12)
     p2 = lbp(sig((0,) * 4, 4), R.zero, 13)
@@ -390,7 +390,7 @@ def test_lbp_sub():
 
 def test_critical_pair():
     # from cyclic4 with grlex
-    R,  x, y, z, t = ring('x y z t', QQ, grlex)
+    R,  _, y, z, t = ring('x y z t', QQ, grlex)
 
     p1 = (((0, 0, 0, 0), 4), y*z*t**2 + z**2*t**2 - t**4 - 1, 4)
     q1 = (((0, 0, 0, 0), 2), -y**2 - y*t - z*t - t**2, 2)
@@ -410,7 +410,7 @@ def test_critical_pair():
 
 def test_cp_key():
     # from cyclic4 with grlex
-    R,  x, y, z, t = ring('x y z t', QQ, grlex)
+    R,  _, y, z, t = ring('x y z t', QQ, grlex)
 
     p1 = (((0, 0, 0, 0), 4), y*z*t**2 + z**2*t**2 - t**4 - 1, 4)
     q1 = (((0, 0, 0, 0), 2), -y**2 - y*t - z*t - t**2, 2)
@@ -431,7 +431,7 @@ def test_cp_key():
 
 def test_is_rewritable_or_comparable():
     # from katsura4 with grlex
-    R,  x, y, z, t = ring('x y z t', QQ, grlex)
+    R,  _, y, z, t = ring('x y z t', QQ, grlex)
 
     p = lbp(sig((0, 0, 2, 1), 2), R.zero, 2)
     B = [lbp(sig((0, 0, 0, 1), 2), 2*y**2/45 + y*z/5 + 5*y*t/63 + z**2*t + 4*z**2/45 + 76*z*t**2/35 - 32*z*t/105 + 13*t**3/7 - 13*t**2/21, 6)]
@@ -459,7 +459,7 @@ def test_f5_reduce():
     cp = critical_pair(F[0], F[1], R)
     s = s_poly(cp)
 
-    assert f5_reduce(s, F) == (((0, 2, 0), 1), R.zero, 1)
+    assert f5_reduce(s, F) == (((0, 2, 0), 1), 0, 1)
 
     s = lbp(sig(Sign(s)[0], 100), Polyn(s), Num(s))
     assert f5_reduce(s, F) == s
@@ -483,7 +483,7 @@ def test_representing_matrices():
 
 
 def test_groebner_lcm():
-    R,  x, y, z = ring('x y z', ZZ)
+    R,  x, y, _ = ring('x y z', ZZ)
 
     assert groebner_lcm(x**2 - y**2, R.zero) == 0
     assert groebner_lcm(R.zero, x - y) == 0
@@ -491,7 +491,7 @@ def test_groebner_lcm():
     assert groebner_lcm(x**2 - y**2, x - y) == x**2 - y**2
     assert groebner_lcm(2*x**2 - 2*y**2, 2*x - 2*y) == 2*x**2 - 2*y**2
 
-    R,  x, y, z = ring('x y z', QQ)
+    R,  x, y, _ = ring('x y z', QQ)
 
     assert groebner_lcm(x**2 - y**2, x - y) == x**2 - y**2
     assert groebner_lcm(2*x**2 - 2*y**2, 2*x - 2*y) == 2*x**2 - 2*y**2
@@ -512,20 +512,20 @@ def test_groebner_lcm():
 
     assert groebner_lcm(f, g) == h
 
-    Rz,  X, Y, Z = ring('x y z', QQ)
+    _,  X, *_ = ring('x y z', QQ)
     pytest.raises(ValueError, lambda: groebner_lcm(x, X))
 
 
 def test_groebner_gcd():
-    R,  x, y, z = ring('x y z', ZZ)
+    _,  x, y, _ = ring('x y z', ZZ)
 
     assert groebner_gcd(x**2 - y**2, x - y) == x - y
     assert groebner_gcd(2*x**2 - 2*y**2, 2*x - 2*y) == 2*x - 2*y
 
-    R,  x, y, z = ring('x y z', QQ)
+    _,  x, y, _ = ring('x y z', QQ)
 
     assert groebner_gcd(x**2 - y**2, x - y) == x - y
     assert groebner_gcd(2*x**2 - 2*y**2, 2*x - 2*y) == x - y
 
-    Rz,  X, Y, Z = ring('x y z', ZZ)
+    _,  X, *_ = ring('x y z', ZZ)
     pytest.raises(ValueError, lambda: groebner_gcd(x, X))

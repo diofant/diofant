@@ -18,7 +18,6 @@ __all__ = ()
 
 def test_functional_diffgeom_ch2():
     x0, y0, r0, theta0 = symbols('x0, y0, r0, theta0', extended_real=True)
-    x, y = symbols('x, y', extended_real=True)
     f = Function('f')
 
     assert (R2_p.point_to_coords(R2_r.point([x0, y0])) ==
@@ -49,8 +48,7 @@ def test_functional_diffgeom_ch2():
 
 
 def test_functional_diffgeom_ch3():
-    x0, y0 = symbols('x0, y0', extended_real=True)
-    x, y, t = symbols('x, y, t', extended_real=True)
+    x0, y0, t = symbols('x0 y0 t', extended_real=True)
     f = Function('f')
     b1 = Function('b1')
     b2 = Function('b2')
@@ -76,8 +74,7 @@ def test_functional_diffgeom_ch3():
 
 
 def test_functional_diffgeom_ch4():
-    x0, y0, theta0 = symbols('x0, y0, theta0', extended_real=True)
-    x, y, r, theta = symbols('x, y, r, theta', extended_real=True)
+    x0, y0, theta0 = symbols('x0 y0 theta0', extended_real=True)
     r0 = symbols('r0', positive=True)
     f = Function('f')
     b1 = Function('b1')

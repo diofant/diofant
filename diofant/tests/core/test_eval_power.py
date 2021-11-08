@@ -229,6 +229,9 @@ def test_pow_as_base_exp():
     assert p.base, p.exp == p.as_base_exp() == (2, -x)
     # issue sympy/sympy#8344:
     assert Pow(1, 2, evaluate=False).as_base_exp() == (1, 2)
+    # issue sympy/sympy#21396
+    assert I.as_base_exp() == (-1, Rational(1, 2))
+    assert sqrt(I).as_base_exp() == (-1, Rational(1, 4))
 
 
 def test_sympyissue_6100():

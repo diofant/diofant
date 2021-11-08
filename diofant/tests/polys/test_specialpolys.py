@@ -95,7 +95,7 @@ def test_random_poly():
                                                                   -1, 0, 0, -1,
                                                                   0, 0, 1]
 
-    for i in range(10):
+    for _ in range(10):
         poly = random_poly(x, 3, -10, 10, percent=50, polys=True)
         assert poly.all_coeffs()[-1]
         assert len([c for c in poly.all_coeffs() if c == 0]) == 2
@@ -125,7 +125,7 @@ def test_fateman_poly_F_1():
     assert g == (1 + sum(_**2 for _ in R.gens))*(-3*y*x**2 + y**2 - 1)
     assert h == 1
 
-    R, x, y, z, t = ring('x y z t', ZZ)
+    R, x, y, *_ = ring('x y z t', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
 
@@ -134,7 +134,7 @@ def test_fateman_poly_F_1():
 
 
 def test_fateman_poly_F_2():
-    R, x, y = ring('x y', ZZ)
+    R, x, _ = ring('x y', ZZ)
 
     f, g, h = R.fateman_poly_F_2()
     D = (1 + sum(R.gens))**2
@@ -143,7 +143,7 @@ def test_fateman_poly_F_2():
     assert g == D*(2 + sum(R.gens))**2
     assert h == D
 
-    R, x, y, z, t = ring('x y z t', ZZ)
+    R, x, *_ = ring('x y z t', ZZ)
 
     f, g, h = R.fateman_poly_F_2()
     D = (1 + sum(R.gens))**2
@@ -154,7 +154,7 @@ def test_fateman_poly_F_2():
 
 
 def test_fateman_poly_F_3():
-    R, x, y = ring('x y', ZZ)
+    R, x, _ = ring('x y', ZZ)
 
     f, g, h = R.fateman_poly_F_3()
     D = (1 + sum(_**R.ngens for _ in R.gens))**2
@@ -163,7 +163,7 @@ def test_fateman_poly_F_3():
     assert g == D*(+2 + sum(_**R.ngens for _ in R.gens))**2
     assert h == D
 
-    R, x, y, z, t = ring('x y z t', ZZ)
+    R, x, *_ = ring('x y z t', ZZ)
 
     f, g, h = R.fateman_poly_F_3()
     D = (1 + sum(_**R.ngens for _ in R.gens))**2

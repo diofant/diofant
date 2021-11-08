@@ -6,7 +6,7 @@ from ...core.sympify import sympify
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
 from .miscellaneous import sqrt
-from .piecewise import Piecewise
+from .piecewise import ExprCondPair, Piecewise
 from .trigonometric import atan2
 
 
@@ -86,11 +86,11 @@ class re(Function):
         """Returns the real number with a zero imaginary part."""
         return self, Integer(0)
 
-    def _eval_derivative(self, x):
-        if x.is_extended_real or self.args[0].is_extended_real:
-            return re(Derivative(self.args[0], x, evaluate=True))
-        elif x.is_imaginary or self.args[0].is_imaginary:
-            return -I*im(Derivative(self.args[0], x, evaluate=True))
+    def _eval_derivative(self, s):
+        if s.is_extended_real or self.args[0].is_extended_real:
+            return re(Derivative(self.args[0], s, evaluate=True))
+        elif s.is_imaginary or self.args[0].is_imaginary:
+            return -I*im(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_rewrite_as_im(self, arg):
         return self.args[0] - I*im(self.args[0])
@@ -182,11 +182,11 @@ class im(Function):
         """
         return self, Integer(0)
 
-    def _eval_derivative(self, x):
-        if x.is_extended_real or self.args[0].is_extended_real:
-            return im(Derivative(self.args[0], x, evaluate=True))
-        elif x.is_imaginary or self.args[0].is_imaginary:
-            return -I*re(Derivative(self.args[0], x, evaluate=True))
+    def _eval_derivative(self, s):
+        if s.is_extended_real or self.args[0].is_extended_real:
+            return im(Derivative(self.args[0], s, evaluate=True))
+        elif s.is_imaginary or self.args[0].is_imaginary:
+            return -I*re(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_rewrite_as_re(self, arg):
         return -I*(self.args[0] - re(self.args[0]))
@@ -293,14 +293,14 @@ class sign(Function):
     def _eval_conjugate(self):
         return sign(conjugate(self.args[0]))
 
-    def _eval_derivative(self, x):
+    def _eval_derivative(self, s):
         if self.args[0].is_extended_real:
             from ..special.delta_functions import DiracDelta
-            return 2 * Derivative(self.args[0], x, evaluate=True) \
+            return 2 * Derivative(self.args[0], s, evaluate=True) \
                 * DiracDelta(self.args[0])
         elif self.args[0].is_imaginary:
             from ..special.delta_functions import DiracDelta
-            return 2 * Derivative(self.args[0], x, evaluate=True) \
+            return 2 * Derivative(self.args[0], s, evaluate=True) \
                 * DiracDelta(-I * self.args[0])
 
     def _eval_is_nonnegative(self):
@@ -495,12 +495,12 @@ class Abs(Function):
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
 
-    def _eval_power(self, exponent):
-        if self.args[0].is_extended_real and exponent.is_integer:
-            if exponent.is_even:
-                return self.args[0]**exponent
-            elif exponent != -1 and exponent.is_Integer:
-                return self.args[0]**(exponent - 1)*self
+    def _eval_power(self, other):
+        if self.args[0].is_extended_real and other.is_integer:
+            if other.is_even:
+                return self.args[0]**other
+            elif other != -1 and other.is_Integer:
+                return self.args[0]**(other - 1)*self
 
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
@@ -511,13 +511,13 @@ class Abs(Function):
         else:
             return Piecewise((lim, when), (sign(direction)*s, True))
 
-    def _eval_derivative(self, x):
+    def _eval_derivative(self, s):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:
-            return Derivative(self.args[0], x, evaluate=True) \
+            return Derivative(self.args[0], s, evaluate=True) \
                 * sign(conjugate(self.args[0]))
-        return (re(self.args[0]) * Derivative(re(self.args[0]), x,
+        return (re(self.args[0]) * Derivative(re(self.args[0]), s,
                                               evaluate=True) + im(self.args[0]) * Derivative(im(self.args[0]),
-                                                                                             x, evaluate=True)) / Abs(self.args[0])
+                                                                                             s, evaluate=True)) / Abs(self.args[0])
 
     def _eval_rewrite_as_Heaviside(self, arg):
         # Note this only holds for real arg (since Heaviside is not defined
@@ -572,10 +572,10 @@ class arg(Function):
         if arg_ != arg:
             return cls(arg_, evaluate=False)
 
-    def _eval_derivative(self, t):
+    def _eval_derivative(self, s):
         x, y = re(self.args[0]), im(self.args[0])
-        return (x * Derivative(y, t, evaluate=True) - y *
-                Derivative(x, t, evaluate=True)) / (x**2 + y**2)
+        return (x * Derivative(y, s, evaluate=True) - y *
+                Derivative(x, s, evaluate=True)) / (x**2 + y**2)
 
     def _eval_rewrite_as_atan2(self, arg):
         x, y = re(self.args[0]), im(self.args[0])
@@ -627,11 +627,11 @@ class conjugate(Function):
     def _eval_conjugate(self):
         return self.args[0]
 
-    def _eval_derivative(self, x):
-        if x.is_extended_real:
-            return conjugate(Derivative(self.args[0], x, evaluate=True))
-        elif x.is_imaginary:
-            return -conjugate(Derivative(self.args[0], x, evaluate=True))
+    def _eval_derivative(self, s):
+        if s.is_extended_real:
+            return conjugate(Derivative(self.args[0], s, evaluate=True))
+        elif s.is_imaginary:
+            return -conjugate(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_transpose(self):
         return adjoint(self.args[0])
@@ -718,7 +718,7 @@ class polar_lift(Function):
 
     @classmethod
     def eval(cls, arg):
-        from .complexes import arg as argument
+        from .. import arg as argument
         from .exponential import exp_polar
         if arg.is_number and (arg.is_finite or arg.is_extended_real):
             ar = argument(arg)
@@ -1043,6 +1043,9 @@ def _unpolarify(eq, exponents_only, pause=False):
         return base**expo
     elif eq.is_Pow and eq.base is E:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
+    elif isinstance(eq, ExprCondPair):
+        return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),
+                       _unpolarify(eq.cond, exponents_only, exponents_only))
 
     if eq.is_Function and getattr(eq.func, 'unbranched', False):
         return eq.func(*[_unpolarify(x, exponents_only, exponents_only)

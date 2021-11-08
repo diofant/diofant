@@ -112,7 +112,7 @@ def sqrtdenest(expr, max_iter=3):
 
     """
     expr = expand_mul(sympify(expr))
-    for i in range(max_iter):
+    for _ in range(max_iter):
         z = _sqrtdenest0(expr)
         if expr == z:
             return expr
@@ -572,7 +572,7 @@ def _denester(nested, av0, h, max_depth_level):
                     return None, None
 
                 sqvad = _sqrtdenest1(sqrt(vad), denester=False)
-                if not (sqrt_depth(sqvad) <= sqrt_depth(R) + 1):
+                if not sqrt_depth(sqvad) <= sqrt_depth(R) + 1:
                     av0[1] = None
                     return None, None
                 sqvad1 = radsimp(1/sqvad)

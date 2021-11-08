@@ -1,5 +1,6 @@
 """Diofant is a Python library for symbolic mathematics."""
 
+from fractions import Fraction
 import pkg_resources
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
@@ -43,7 +44,7 @@ from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailed,
                     interpolating_poly, invert, itermonomials, jacobi_poly,
                     laguerre_poly, lcm, legendre_poly, lex,
                     minimal_polynomial, monic, nroots, parallel_poly_from_expr,
-                    poly, prem, primitive, primitive_element, quo, random_poly,
+                    poly, primitive, primitive_element, quo, random_poly,
                     real_roots, reduced, rem, resultant, ring, roots,
                     spherical_bessel_fn, sqf, sqf_list, sqf_norm, sqf_part,
                     subresultants, swinnerton_dyer_poly, symmetric_poly,
@@ -205,7 +206,7 @@ __all__ = (
     'ilex', 'interpolate', 'interpolating_poly', 'invert', 'itermonomials',
     'jacobi_poly', 'laguerre_poly', 'lcm', 'legendre_poly', 'lex',
     'minimal_polynomial', 'monic', 'nroots', 'parallel_poly_from_expr',
-    'poly', 'prem', 'primitive', 'primitive_element', 'quo', 'random_poly',
+    'poly', 'primitive', 'primitive_element', 'quo', 'random_poly',
     'real_roots', 'reduced', 'rem', 'resultant', 'ring', 'roots',
     'spherical_bessel_fn', 'sqf', 'sqf_list', 'sqf_norm', 'sqf_part',
     'subresultants', 'swinnerton_dyer_poly', 'symmetric_poly',
@@ -271,7 +272,7 @@ __all__ = (
     'jordan_cell', 'list2numpy', 'matrix2numpy', 'matrix_multiply_elementwise',
     'ones', 'randMatrix', 'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray',
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Circle', 'Curve', 'Ellipse',
-    'GeometryError', 'Line', 'Point',
+    'GeometryError', 'Line', 'Point', 'Fraction',
     'Polygon', 'Ray', 'RegularPolygon', 'Segment',
     'Triangle', 'are_similar', 'centroid', 'convex_hull', 'deg', 'idiff',
     'intersection', 'rad', 'cantor_product', 'capture', 'default_sort_key',

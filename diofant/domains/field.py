@@ -58,20 +58,4 @@ class Field(CommutativeRing):
         return self.convert(p, ring)/q
 
     def lcm(self, a, b):
-        """
-        Returns LCM of ``a`` and ``b``.
-
-        >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
-        4/3
-        >>> lcm(Rational(2, 3), Rational(4, 9))
-        4/3
-        """
-        try:
-            ring = self.ring
-        except (AttributeError, NotImplementedError):
-            return a*b
-
-        p = ring.lcm(a.numerator, b.numerator)
-        q = ring.gcd(a.denominator, b.denominator)
-
-        return self.convert(p, ring)/q
+        return (a*b)/self.gcd(a, b)

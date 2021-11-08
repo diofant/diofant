@@ -1,18 +1,19 @@
 import pytest
 
 from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
-                     Expr, Function, I, Integral, Interval, Lambda, LambertW,
-                     Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly, Rational,
-                     Si, Sum, Symbol, Tuple, acos, acosh, asin, asinh, atan,
-                     cbrt, cos, cosh, diff, erf, erfi, exp, expand_func,
-                     expand_mul, factor, fresnels, gamma, im, integrate, log,
-                     lowergamma, meijerg, nan, oo, pi, polar_lift, polygamma,
-                     re, sign, simplify, sin, sinh, sqrt, sstr, symbols,
-                     sympify, tan, tanh, trigsimp)
+                     Expr, Float, Function, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     expand_func, expand_mul, factor, floor, fresnels, gamma,
+                     im, integrate, log, lowergamma, meijerg, nan, oo, pi,
+                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
 from diofant.integrals.risch import NonElementaryIntegral
+from diofant.tests.core.test_evalf import NS
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -432,10 +433,6 @@ def test_sympyissue_4052():
 
     assert integrate(cos(asin(x)), x) == f
     assert integrate(sin(acos(x)), x) == f
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_evalf_integrals():
@@ -865,7 +862,7 @@ def test_is_real():
 
 def test_series():
     i = Integral(cos(x), (x, x))
-    e = i.lseries(x)
+    e = i.series(x, n=None)
     s1 = i.nseries(x, n=8).removeO().doit()
     s2 = Add(*[next(e) for j in range(4)])
     assert s1 == s2
@@ -1174,7 +1171,7 @@ def test_sympyissue_4950():
 
 
 def test_sympyissue_4968():
-    assert integrate(sin(log(x**2))) == x*sin(2*log(x))/5 - 2*x*cos(2*log(x))/5
+    assert integrate(sin(log(x**2))) == x*sin(log(x**2))/5 - 2*x*cos(log(x**2))/5
 
 
 def test_sympyissue_7098():
@@ -1380,3 +1377,55 @@ def test_sympyissue_21132():
     ans = f.integrate(t)
     assert ans.simplify() in r
     assert ans.subs({k: 0}).subs({a: 0}) == t
+
+
+def test_sympyissue_21342():
+    assert (1/(exp(I*x) - 2)).integrate((x, 0, 2*pi)) == -pi
+
+
+def test_sympyissue_21024():
+    assert ((x + exp(3))/x**2).integrate(x) == log(x) - exp(3)/x
+    assert ((x**2 + exp(5))/x).integrate(x) == x**2/2 + exp(5)*log(x)
+    assert ((x/(2*x + tanh(1))).integrate(x) ==
+            x/2 - (-1 + E)*(1 + E)*log(2*x + tanh(1))/Mul(4, 1 + E**2,
+                                                          evaluate=False))
+    assert ((log(x)*log(4*x) + log(3*x + exp(2))).integrate(x) ==
+            x*log(x)**2 + x*log(3*x + E**2) - x + x*(-2*log(2) + 2) +
+            (-2*x + 2*x*log(2))*log(x) + E**2*log(3*x + E**2)/3)
+
+
+def test_sympyissue_21166():
+    assert integrate(sin(x/sqrt(abs(x))), (x, -1, 1)) == 0
+
+
+def test_sympyissue_21549():
+    assert integrate(x*sqrt(abs(x)), (x, -1, 0)) == Rational(-2, 5)
+
+
+def test_sympyissue_21711():
+    assert integrate(sqrt(1 - (x - 1)*(x - 1)), (x, 0, 1)) == pi/4
+    assert integrate(sqrt(1 - x**2), (x, 0, 1)) == pi/4
+
+
+def test_sympyissue_21721():
+    e = Integral(1/(pi*(1 + (x - a)**2)), (x, -oo, oo))
+
+    assert e.doit() == -floor(arg(-a - I)/(2*pi)) + floor(arg(-a + I)/(2*pi))
+
+    b = Symbol('b', real=True)
+
+    assert e.subs({a: b}).doit() == 1
+
+
+def test_sympyissue_21741():
+    e = exp(-2*I*pi*(z*x + t*y)/(500*10**-9))
+    assert (integrate(e, z) ==
+            Piecewise((z, Eq(pi*x, 0)),
+                      (Float('2.5000000000000004e-7', dps=15) *
+                       exp(-Float('3999999.9999999995', dps=15) *
+                           I*pi*(t*y + x*z))*I/(pi*x), True)))
+
+
+def test_sympyissue_22435():
+    e = (y - 2.4)**2*sqrt(y)*0.1875
+    assert integrate(e, (y, 0, 4)) == Float('1.097142857142857', dps=15)

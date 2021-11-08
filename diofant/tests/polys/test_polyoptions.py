@@ -48,6 +48,7 @@ def test_Options_clone():
         before = ['gens']
         after = ['domain']
 
+    assert issubclass(SpamOpt, BooleanOption)
     Options.__order__ = None
     pytest.raises(RuntimeError, lambda: Options._init_dependencies_order())
     delattr(Options, 'spam')

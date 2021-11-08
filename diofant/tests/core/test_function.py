@@ -112,13 +112,13 @@ def test_Function():
     assert MyFunc(x).nargs == FiniteSet(1)
     pytest.raises(TypeError, lambda: MyFunc(x, y).nargs)
 
-    class MyFunc(Function):
+    class MyFunc2(Function):
         @classmethod
         def eval(cls, *x):  # star args
             return
 
-    assert MyFunc.nargs == S.Naturals0
-    assert MyFunc(x).nargs == S.Naturals0
+    assert MyFunc2.nargs == S.Naturals0
+    assert MyFunc2(x).nargs == S.Naturals0
 
 
 def test_nargs():
@@ -168,7 +168,7 @@ def test_Lambda():
     assert Lambda(p, t*(x + y + z))(*p) == t * (x + y + z)
 
     assert Lambda(x, 2*x) + Lambda(y, 2*y) == 2*Lambda(x, 2*x)
-    assert Lambda(x, 2*x) not in [ Lambda(x, x) ]
+    assert Lambda(x, 2*x) not in [Lambda(x, x)]
     pytest.raises(TypeError, lambda: Lambda(1, x))
     assert Lambda(x, 1)(1) is Integer(1)
 
@@ -406,7 +406,7 @@ def test_function__eval_nseries():
         sqrt(2)*I*x**(3/2)/12 + O(x**2)  # XXX: wrong, branch cuts
     assert loggamma(1/x)._eval_nseries(x, 0, None) == \
         log(x)/2 - log(x)/x - 1/x + O(1, x)
-    assert loggamma(log(1/x)).nseries(x, n=1, logx=y) == loggamma(-y)
+    assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:
     assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \
@@ -449,7 +449,7 @@ def test_fdiff_argument_index_error():
     class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
-        def fdiff(self, idx):
+        def fdiff(self, argindex):
             raise ArgumentIndexError
     mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)
@@ -713,3 +713,7 @@ def test_undef_fcn_float_sympyissue_6938():
     assert isinstance(f(0.3), Function)
     assert isinstance(f(pi).evalf(), Function)
     assert isinstance(f(x).evalf(subs={x: 1.2}), Function)
+
+
+def test_sympyissue_21773():
+    assert Subs(0, (y, 1)) * Subs(0, (z, 1)) == Subs(0, (x, 1))**2

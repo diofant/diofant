@@ -741,6 +741,9 @@ def test_Pow_is_algebraic():
     assert (t**n).is_algebraic is None
     assert (t**n).is_integer is None
 
+    assert exp(t).is_algebraic is None
+    assert exp(n).is_algebraic is None
+
     i = Symbol('i', integer=True)
     p = 1/(i - 1)
     assert p.is_algebraic is None

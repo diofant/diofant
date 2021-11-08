@@ -1087,7 +1087,7 @@ def test_coeff():
     assert x.coeff(0, 0) == 0
     assert x.coeff(x, 0) == 0
 
-    n, m, o, l = symbols('n m o l', commutative=False)
+    n, m, o = symbols('n m o', commutative=False)
     assert n.coeff(n) == 1
     assert y.coeff(n) == 0
     assert (3*n).coeff(n) == 3
@@ -1360,14 +1360,14 @@ def test_as_ordered_terms():
 
     assert (1 + 4*sqrt(3)*pi*x).as_ordered_terms() == [4*pi*x*sqrt(3), 1]
 
-    assert ( 2 + 3*I).as_ordered_terms() == [2, 3*I]
+    assert (+2 + 3*I).as_ordered_terms() == [2, 3*I]
     assert (-2 + 3*I).as_ordered_terms() == [-2, 3*I]
-    assert ( 2 - 3*I).as_ordered_terms() == [2, -3*I]
+    assert (+2 - 3*I).as_ordered_terms() == [2, -3*I]
     assert (-2 - 3*I).as_ordered_terms() == [-2, -3*I]
 
-    assert ( 4 + 3*I).as_ordered_terms() == [4, 3*I]
+    assert (+4 + 3*I).as_ordered_terms() == [4, 3*I]
     assert (-4 + 3*I).as_ordered_terms() == [-4, 3*I]
-    assert ( 4 - 3*I).as_ordered_terms() == [4, -3*I]
+    assert (+4 - 3*I).as_ordered_terms() == [4, -3*I]
     assert (-4 - 3*I).as_ordered_terms() == [-4, -3*I]
 
     assert (x*y).as_ordered_terms(data=True) == ([(x*y, ((1.0, 0.0),
@@ -1499,7 +1499,7 @@ def test_equals():
     # issue sympy/sympy#6829
     # eq = q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3)
     # z = eq.subs(solve(eq, x)[0])
-    q, x0, x1, x2, x3, x4 = symbols('q, x:5')
+    q, x0, x1, x2 = symbols('q, x:3')
     z = q*x2 + q/4 + x2**4 + x2**3 + 2*x2**2 - Rational(1, 3)
     z = z.subs(((x2, (-x1/2 - sqrt(x0 - Rational(13, 6) +
                                    (2*q - Rational(7, 4))/x1)/2 -
@@ -1698,3 +1698,9 @@ def test_sympyissue_13645():
 
     # not hangs
     (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))
+
+
+def test_sympyissue_21334():
+    e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
+
+    assert e.as_leading_term(y) == 0

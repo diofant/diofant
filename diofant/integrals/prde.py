@@ -38,10 +38,10 @@ def prde_normal_denom(fa, fd, G, DE):
     c1, ..., cm in Const(k) and y in k(t) of Dy + f*y == Sum(ci*gi, (i, 1, m)),
     q == y*h in k<t> satisfies a*Dq + b*q == Sum(ci*Gi, (i, 1, m)).
     """
-    dn, ds = splitfactor(fd, DE)
-    Gas, Gds = list(zip(*G))
+    dn, _ = splitfactor(fd, DE)
+    _, Gds = list(zip(*G))
     gd = functools.reduce(lambda i, j: i.lcm(j), Gds, Poly(1, DE.t))
-    en, es = splitfactor(gd, DE)
+    en, _ = splitfactor(gd, DE)
 
     p = dn.gcd(en)
     h = en.gcd(en.diff(DE.t)).quo(p.gcd(p.diff(DE.t)))
@@ -128,7 +128,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
                 if A is not None:
-                    a, m, z = A
+                    a, m, _ = A
                     if a == 1:
                         n = min(n, m)
 
@@ -144,7 +144,7 @@ def prde_special_denom(a, ba, bd, G, DE, case='auto'):
                     A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
                     B = parametric_log_deriv(betaa, betad, etaa, etad, DE)
                     if A is not None and B is not None:
-                        a, s, z = A
+                        a, s, _ = A
                         if a == 1:
                             n = min(n, s/2)
 
@@ -177,7 +177,7 @@ def prde_linear_constraints(a, b, G, DE):
     """
     m = len(G)
 
-    Gns, Gds = list(zip(*G))
+    _, Gds = list(zip(*G))
     d = functools.reduce(lambda i, j: i.lcm(j), Gds)
     d = Poly(d, field=True)
     Q = [(ga*d.quo(gd)).div(d) for ga, gd in G]
@@ -314,7 +314,7 @@ def prde_no_cancel_b_large(b, Q, n, DE):
     else:
         dc = max(qi.degree(DE.t) for qi in Q)
         M = Matrix(dc + 1, m, lambda i, j: Q[j].coeff_monomial((i,)))
-    A, u = constant_system(M, zeros(dc + 1, 1), DE)
+    A, _ = constant_system(M, zeros(dc + 1, 1), DE)
     c = eye(m)
     A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
 
@@ -353,7 +353,7 @@ def prde_no_cancel_b_small(b, Q, n, DE):
         else:
             dc = max(qi.degree(DE.t) for qi in Q)
             M = Matrix(dc + 1, m, lambda i, j: Q[j].coeff_monomial((i,)))
-        A, u = constant_system(M, zeros(dc + 1, 1), DE)
+        A, _ = constant_system(M, zeros(dc + 1, 1), DE)
         c = eye(m)
         A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
         return H, A
@@ -463,8 +463,8 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     # TODO: finish writing this and write tests
     c1 = c1 or Dummy('c1')
 
-    p, a = fa.div(fd)
-    q, b = wa.div(wd)
+    p, _ = fa.div(fd)
+    q, _ = wa.div(wd)
 
     B = max(0, derivation(DE.t, DE).degree(DE.t) - 1)
     C = max(p.degree(DE.t), q.degree(DE.t))
@@ -508,8 +508,8 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
         raise NotImplementedError('parametric_log_deriv_heu() '
                                   'heuristic failed: z in k.')
 
-    u1, r1 = (fa*l.quo(fd)).div(z)  # (l*f).div(z)
-    u2, r2 = (wa*l.quo(wd)).div(z)  # (l*w).div(z)
+    _, r1 = (fa*l.quo(fd)).div(z)  # (l*f).div(z)
+    _, r2 = (wa*l.quo(wd)).div(z)  # (l*w).div(z)
 
     eqs = [r1.coeff_monomial((i,)) - c1*r2.coeff_monomial((i,)) for i in range(z.degree(DE.t))]
     s = solve(eqs, c1)
@@ -789,7 +789,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     # [(a, i), ...], where i*log(a) is a term in the log-part of the integral
     # of f
-    respolys, residues = list(zip(*roots)) or [[], []]
+    _, residues = list(zip(*roots)) or [[], []]
     # Note: this might be empty, but everything below should work find in that
     # case (it should be the same as if it were [[1, 1]])
     residueterms = [(H[j][1].subs({z: i}), i) for j in range(len(H)) for

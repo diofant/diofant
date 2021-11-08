@@ -8,8 +8,11 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.9]
-        coverage: [false, true]
+        python-version: ['3.10']
+        coverage: [false]
+        include:
+          - python-version: '3.10'
+            coverage: true
     runs-on: ubuntu-latest
     env:
       TERM: xterm
@@ -24,18 +27,18 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
-        sudo apt install libmpc-dev
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
+        sudo apt install libatlas-base-dev liblapack-dev gfortran
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools
+        pip install -U pip setuptools wheel
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-        # workaround fredrik-johansson/mpmath#571 and fredrik-johansson/mpmath#438
-        pip install git+https://github.com/fredrik-johansson/mpmath.git@1bb25a4
+    - name: Install ~/.python_history
+      run: touch ~/.python_history
     - name: Linting with flake8, flake8-rst and pylint
       run: |
-        python -We:invalid -m compileall -f diofant -q
+        python -We:invalid -We::SyntaxWarning -m compileall -f diofant -q
         flake8-rst
         flake8
         pylint diofant
@@ -44,23 +47,26 @@ jobs:
     - name: Tests
       if: matrix.coverage == false
       env:
-        PYTEST_ADDOPTS: --doctest-modules
+        PYTEST_ADDOPTS: --doctest-modules --color yes
       run: pytest
     - name: Coverage tests
       if: matrix.coverage
       env:
-        PYTEST_ADDOPTS: --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
+        PYTEST_ADDOPTS: --color yes --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
       run: |
         pytest
-        pip uninstall -y gmpy2
+        pip uninstall -y gmpy2 numpy IPython
         DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
         pytest diofant/tests/polys
-        pip uninstall -y numpy
         pytest diofant/tests/external diofant/tests/utilities
+        pytest diofant/tests/test_cli.py
         coverage html
+        coverage xml
     - name: Upload coverage data
       if: matrix.coverage
-      run: codecov --required --tries 10
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.xml
     - name: Get version
       id: release
       run: |
@@ -69,7 +75,8 @@ jobs:
         echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
     - name: Building docs
       run: |
-        python setup.py build_sphinx -W -b html,latex
+        sphinx-build --color -W --keep-going -b html docs build/sphinx/html
+        sphinx-build --color -W --keep-going -b latex docs build/sphinx/latex
         make -C build/sphinx/latex all-pdf
     - name: Prepare update for docs on Github Pages
       run: |
@@ -77,7 +84,7 @@ jobs:
         unzip -x master.zip
         rsync -a --delete build/sphinx/html/ diofant.github.io-master/en/latest/
     - name: Make packages
-      run: python setup.py sdist bdist_wheel
+      run: python -m build
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       if: matrix.coverage

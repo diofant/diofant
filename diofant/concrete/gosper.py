@@ -1,13 +1,13 @@
 """Gosper's algorithm for hypergeometric summation."""
 
-from ..core import Dummy, Integer, nan, symbols
+from ..core import Dummy, Integer, symbols
 from ..core.compatibility import is_sequence
-from ..polys import factor, parallel_poly_from_expr
+from ..polys import parallel_poly_from_expr
 from ..simplify import hypersimp
 from ..solvers import solve
 
 
-def gosper_normal(f, g, n, polys=True):
+def gosper_normal(f, g, n):
     r"""Compute the Gosper's normal form of ``f`` and ``g``.
 
     Given relatively prime univariate polynomials ``f`` and ``g``,
@@ -39,7 +39,7 @@ def gosper_normal(f, g, n, polys=True):
      Poly(n + 1/4, n, domain='QQ'))
 
     """
-    (C, p, q), opt = parallel_poly_from_expr((1, f, g), n, field=True)
+    (C, p, q), _ = parallel_poly_from_expr((1, f, g), n, field=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()
@@ -119,10 +119,10 @@ def gosper_term(f, n):
     if solution:
         solution = solution[0]
 
-    x = x.as_expr().subs(solution).subs({_: 0 for _ in coeffs})
+    x = x.subs(solution).subs({_: 0 for _ in coeffs})
 
     if x != 0:
-        return B.as_expr()*x/C.as_expr()
+        return B.as_expr()*x.as_expr()/C.as_expr()
 
 
 def gosper_sum(f, k):
@@ -164,9 +164,7 @@ def gosper_sum(f, k):
     if indefinite:
         result = f*g
     else:
-        result = (f*(g + 1)).subs({k: b}) - (f*g).subs({k: a})
+        fg = (f*g).cancel()
+        result = (f + fg).subs({k: b}) - fg.subs({k: a})
 
-        if result is nan:
-            result = (f*(g + 1)).limit(k, b) - (f*g).limit(k, a)
-
-    return factor(result)
+    return result.factor()

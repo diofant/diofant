@@ -165,7 +165,7 @@ class stringPict:
          3
 
         """
-        s, baseline = stringPict.stack(self, *args)
+        s, _ = stringPict.stack(self, *args)
         return s, self.baseline
 
     def above(self, *args):
@@ -243,7 +243,7 @@ class stringPict:
         svals = []
         do_vspacers = (self.height() > 1)
         while i < self.width():
-            svals.extend([ sval[i:i + ncols] for sval in self.picture ])
+            svals.extend([sval[i:i + ncols] for sval in self.picture])
             if do_vspacers:
                 svals.append('')  # a vertical spacer
             i += ncols

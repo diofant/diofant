@@ -75,8 +75,8 @@ class SparseMatrixBase(MatrixBase):
                 return self._smat.get((i, j), Integer(0))
             except (TypeError, IndexError):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
-                    if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
-                       ((i < 0) == true) or ((i >= self.shape[0]) == true):
+                    if true in (j < 0, j >= self.shape[1], i < 0,
+                                i >= self.shape[0]):
                         raise ValueError('index out of boundary')
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
@@ -266,7 +266,7 @@ class SparseMatrixBase(MatrixBase):
             conj._smat[key] = value.conjugate()
         return conj
 
-    def multiply(self, other):
+    def multiply(self, b):
         """Fast multiplication exploiting the sparsity of the matrix.
 
         Examples
@@ -283,7 +283,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         A = self
-        B = other
+        B = b
         # sort B's row_list into list of rows
         Blist = [[] for i in range(B.rows)]
         for i, j, v in B.row_list():
@@ -400,7 +400,7 @@ class SparseMatrixBase(MatrixBase):
             rv._smat[k] = -v
         return rv
 
-    def add(self, other):
+    def add(self, b):
         """Add two sparse matrices with dictionary representation.
 
         Examples
@@ -429,12 +429,12 @@ class SparseMatrixBase(MatrixBase):
         multiply
 
         """
-        if not isinstance(other, SparseMatrixBase):
-            raise ValueError(f'only use add with {self.__class__.__name__}, not {other.__class__.__name__}')
-        if self.shape != other.shape:
+        if not isinstance(b, SparseMatrixBase):
+            raise ValueError(f'only use add with {self.__class__.__name__}, not {b.__class__.__name__}')
+        if self.shape != b.shape:
             raise ShapeError()
         M = self.copy()
-        for i, v in other._smat.items():
+        for i, v in b._smat.items():
             v = M[i] + v
             if v:
                 M._smat[i] = v
@@ -599,7 +599,7 @@ class SparseMatrixBase(MatrixBase):
         if len(self) != rows*cols:
             raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         smat = {}
-        for k, v in self._smat.items():
+        for k, _ in self._smat.items():
             i, j = k
             n = i*self.cols + j
             ii, jj = divmod(n, cols)
@@ -674,7 +674,7 @@ class SparseMatrixBase(MatrixBase):
         Lrow = copy.deepcopy(R)
         for k in range(self.rows):
             for j in R[k]:
-                while j != inf and j != k:
+                while j not in (inf, k):
                     Lrow[k].append(j)
                     j = parent[j]
             Lrow[k] = sorted(set(Lrow[k]))
@@ -684,12 +684,12 @@ class SparseMatrixBase(MatrixBase):
         """Algorithm for numeric Cholesky factorization of a sparse matrix."""
         Crowstruc = self.row_structure_symbolic_cholesky()
         C = self.zeros(self.rows)
-        for i in range(len(Crowstruc)):
-            for j in Crowstruc[i]:
+        for i, Ci in enumerate(Crowstruc):
+            for j in Ci:
                 if i != j:
                     C[i, j] = self[i, j]
                     summ = 0
-                    for p1 in Crowstruc[i]:  # pragma: no branch
+                    for p1 in Ci:  # pragma: no branch
                         if p1 < j:
                             for p2 in Crowstruc[j]:  # pragma: no branch
                                 if p2 < j:
@@ -721,12 +721,12 @@ class SparseMatrixBase(MatrixBase):
         L = self.eye(self.rows)
         D = self.zeros(self.rows, self.cols)
 
-        for i in range(len(Lrowstruc)):
-            for j in Lrowstruc[i]:
+        for i, Li in enumerate(Lrowstruc):
+            for j in Li:
                 if i != j:
                     L[i, j] = self[i, j]
                     summ = 0
-                    for p1 in Lrowstruc[i]:  # pragma: no branch
+                    for p1 in Li:  # pragma: no branch
                         if p1 < j:
                             for p2 in Lrowstruc[j]:  # pragma: no branch
                                 if p2 < j:
@@ -741,7 +741,7 @@ class SparseMatrixBase(MatrixBase):
                 else:
                     D[i, i] = self[i, i]
                     summ = 0
-                    for k in Lrowstruc[i]:  # pragma: no branch
+                    for k in Li:  # pragma: no branch
                         if k < i:
                             summ += L[i, k]**2*D[k, k]
                         else:
@@ -1260,7 +1260,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         for k, v in temp:
             self._smat[k, j] = v
 
-    def row_join(self, other):
+    def row_join(self, rhs):
         """Returns B appended after A (column-wise augmenting)::
 
             [A B]
@@ -1296,9 +1296,9 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
 
         """
-        A, B = self, other
+        A, B = self, rhs
         if not self:
-            return type(self)(other)
+            return type(self)(rhs)
         if not A.rows == B.rows:
             raise ShapeError()
         A = A.copy()
@@ -1317,7 +1317,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         A.cols += B.cols
         return A
 
-    def col_join(self, other):
+    def col_join(self, bott):
         """Returns B augmented beneath A (row-wise joining)::
 
             [A]
@@ -1357,9 +1357,9 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         True
 
         """
-        A, B = self, other
+        A, B = self, bott
         if not self:
-            return type(self)(other)
+            return type(self)(bott)
         if not A.cols == B.cols:
             raise ShapeError()
         A = A.copy()
@@ -1404,10 +1404,10 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
                     for j in range(clo, chi):
                         self._smat.pop((i, j), None)
             else:
-                for i, j, v in self.row_list():
+                for i, j, _ in self.row_list():
                     assert rlo <= i < rhi and clo <= j < chi
                     self._smat.pop((i, j), None)
-            for k, v in value._smat.items():
+            for k, _ in value._smat.items():
                 i, j = k
                 self[i + rlo, j + clo] = value[i, j]
 

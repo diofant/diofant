@@ -107,7 +107,7 @@ def test_canonicalize_no_slot_sym():
     tc = t.canon_bp()
     assert str(tc) == 'A(L_0, L_1)*B(-a, -L_0)*C(-b, -L_1)'
 
-    pytest.raises(TypeError, lambda: TensorType(1, 2, 3))
+    pytest.raises(TypeError, lambda: TensorType(1, 2, 3))  # pylint: disable=too-many-function-args
     pytest.raises(ValueError, lambda: TensorHead((1, 2), NS2))
 
 
@@ -187,7 +187,6 @@ def test_canonicalize1():
     a, a0, a1, a2, a3, b, d0, d1, d2, d3 = \
         tensor_indices('a,a0,a1,a2,a3,b,d0,d1,d2,d3', Lorentz)
     sym1 = tensorsymmetry([1])
-    base3, gens3 = get_symmetric_group_sgs(3)
     sym2 = tensorsymmetry([1]*2)
     sym2a = tensorsymmetry([2])
     sym3 = tensorsymmetry([1]*3)
@@ -325,7 +324,7 @@ def test_canonicalize1():
     # g = [8,11,5, 9,13,7, 1,10, 3,4, 2,12, 0,6, 14,15]
     # T_c = -f^{a b c} * f_a^{d e} * A^mu_b * A_{mu d} * A^nu_c * A_{nu e}
     Flavor = TensorIndexType('Flavor', dummy_fmt='F')
-    a, b, c, d, e, ff = tensor_indices('a,b,c,d,e,f', Flavor)
+    a, b, c, d, e = tensor_indices('a,b,c,d,e', Flavor)
     mu, nu = tensor_indices('mu,nu', Lorentz)
     sym_f = tensorsymmetry([1], [2])
     S_f = TensorType([Flavor]*3, sym_f)
@@ -437,7 +436,7 @@ def test_canonicalize2():
 def test_canonicalize3():
     D = Symbol('D')
     Spinor = TensorIndexType('Spinor', dim=D, metric=True, dummy_fmt='S')
-    a0, a1, a2, a3, a4 = tensor_indices('a0:5', Spinor)
+    a0, a1 = tensor_indices('a0:2', Spinor)
     chi, psi = tensorhead('chi,psi', [Spinor], [[1]], 1)
 
     t = chi(a1)*psi(a0)
@@ -461,7 +460,6 @@ def test_TensorIndexType():
     D = Symbol('D')
     G = Metric('g', False)
     Lorentz = TensorIndexType('Lorentz', metric=G, dim=D, dummy_fmt='L')
-    m0, m1, m2, m3, m4 = tensor_indices('m0:5', Lorentz)
     sym2 = tensorsymmetry([1]*2)
     sym2n = tensorsymmetry(*get_symmetric_group_sgs(2))
     assert sym2 == sym2n
@@ -470,7 +468,7 @@ def test_TensorIndexType():
     assert Lorentz.eps_dim == Lorentz.dim
 
     TSpace = TensorIndexType('TSpace')
-    i0, i1 = tensor_indices('i0 i1', TSpace)
+    i0 = tensor_indices('i0', TSpace)
     g = TSpace.metric
     A = tensorhead('A', [TSpace]*2, [[1]*2])
     assert str(A(i0, -i0).canon_bp()) == 'A(TSpace_0, -TSpace_0)'
@@ -478,7 +476,7 @@ def test_TensorIndexType():
 
 def test_indices():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
+    a, b, c = tensor_indices('a,b,c', Lorentz)
     assert a.tensortype == Lorentz
     assert a != -a
     A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
@@ -544,7 +542,6 @@ def test_TensorHead():
     assert TensAdd() == 0
     # simple example of algebraic expression
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
     # A, B symmetric
     A = tensorhead('A', [Lorentz]*2, [[1]*2])
     assert A.rank == 2
@@ -555,7 +552,7 @@ def test_add1():
     assert TensAdd() == 0
     # simple example of algebraic expression
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b, d0, d1, i, j, k = tensor_indices('a,b,d0,d1,i,j,k', Lorentz)
+    a, b, d0, i, j, k = tensor_indices('a,b,d0,i,j,k', Lorentz)
     # A, B symmetric
     A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
     t1 = A(b, -d0)*B(d0, a)
@@ -629,10 +626,10 @@ def test_add1():
 def test_special_eq_ne():
     # test special equality cases:
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b, d0, d1, i, j, k = tensor_indices('a,b,d0,d1,i,j,k', Lorentz)
+    a, b, i = tensor_indices('a,b,i', Lorentz)
     # A, B symmetric
     A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
-    p, q, r = tensorhead('p,q,r', [Lorentz], [[1]])
+    p, q = tensorhead('p,q', [Lorentz], [[1]])
 
     t = 0*A(a, b)
     assert _is_equal(t, 0)
@@ -712,7 +709,7 @@ def test_mul():
 
 def test_substitute_indices():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    i, j, k, l, m, n, p, q = tensor_indices('i,j,k,l,m,n,p,q', Lorentz)
+    i, j, k, l, m, n, p = tensor_indices('i,j,k,l,m,n,p', Lorentz)
     A, B = tensorhead('A,B', [Lorentz]*2, [[1]*2])
     t = A(i, k)*B(-k, -j)
     t1 = t.substitute_indices((i, j), (j, k))
@@ -763,7 +760,7 @@ def test_riemann_cyclic_replace():
 
 def test_riemann_cyclic():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    i, j, k, l, m, n, p, q = tensor_indices('i,j,k,l,m,n,p,q', Lorentz)
+    i, j, k, l, m, n = tensor_indices('i,j,k,l,m,n', Lorentz)
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(i, j, k, l) + R(i, l, j, k) + R(i, k, l, j) - \
         R(i, j, l, k) - R(i, l, k, j) - R(i, k, j, l)
@@ -784,7 +781,7 @@ def test_riemann_cyclic():
 
 def test_div():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    m0, m1, m2, m3 = tensor_indices('m0:4', Lorentz)
+    m0, m1, _, m3 = tensor_indices('m0:4', Lorentz)
     R = tensorhead('R', [Lorentz]*4, [[2, 2]])
     t = R(m0, m1, -m1, m3)
     t1 = t/4
@@ -845,7 +842,7 @@ def test_contract_metric1():
 def test_contract_metric2():
     D = Symbol('D')
     Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
-    a, b, c, d, e, L_0 = tensor_indices('a,b,c,d,e,L_0', Lorentz)
+    a, b, c, d, L_0 = tensor_indices('a,b,c,d,L_0', Lorentz)
     g = Lorentz.metric
     p, q = tensorhead('p,q', [Lorentz], [[1]])
 
@@ -913,7 +910,7 @@ def test_contract_metric2():
 def test_metric_contract3():
     D = Symbol('D')
     Spinor = TensorIndexType('Spinor', dim=D, metric=True, dummy_fmt='S')
-    a0, a1, a2, a3, a4 = tensor_indices('a0:5', Spinor)
+    a0, a1, a2 = tensor_indices('a0:3', Spinor)
     C = Spinor.metric
     chi, psi = tensorhead('chi,psi', [Spinor], [[1]], 1)
     B = tensorhead('B', [Spinor]*2, [[1], [1]])
@@ -1009,9 +1006,9 @@ def test_metric_contract3():
 
 def test_epsilon():
     Lorentz = TensorIndexType('Lorentz', dim=4, dummy_fmt='L')
-    a, b, c, d, e = tensor_indices('a,b,c,d,e', Lorentz)
+    a, b, c, d = tensor_indices('a,b,c,d', Lorentz)
     epsilon = Lorentz.epsilon
-    p, q, r, s = tensorhead('p,q,r,s', [Lorentz], [[1]])
+    p, q = tensorhead('p,q', [Lorentz], [[1]])
 
     t = epsilon(b, a, c, d)
     t1 = t.canon_bp()
@@ -1118,8 +1115,8 @@ def test_fun():
 def test_TensorManager():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     LorentzH = TensorIndexType('LorentzH', dummy_fmt='LH')
-    i, j = tensor_indices('i,j', Lorentz)
-    ih, jh = tensor_indices('ih,jh', LorentzH)
+    i = tensor_indices('i', Lorentz)
+    ih = tensor_indices('ih', LorentzH)
     p, q = tensorhead('p q', [Lorentz], [[1]])
     ph, qh = tensorhead('ph qh', [LorentzH], [[1]])
 
@@ -1155,7 +1152,7 @@ def test_TensorManager():
 def test_hash():
     D = Symbol('D')
     Lorentz = TensorIndexType('Lorentz', dim=D, dummy_fmt='L')
-    a, b, c, d, e = tensor_indices('a,b,c,d,e', Lorentz)
+    a, b = tensor_indices('a,b', Lorentz)
     g = Lorentz.metric
 
     p, q = tensorhead('p q', [Lorentz], [[1]])
@@ -1214,8 +1211,8 @@ def test_hidden_indices_for_matrix_multiplication():
     L = TensorIndexType('Lorentz')
     S = TensorIndexType('Matind')
 
-    m0, m1, m2, m3, m4, m5 = tensor_indices('m0:6', L)
-    s0, s1, s2 = tensor_indices('s0:3', S)
+    m0, m1, m2, m3, m4 = tensor_indices('m0:5', L)
+    s0, s1 = tensor_indices('s0:2', S)
 
     A = tensorhead('A', [L, S, S], [[1], [1], [1]], matrix_behavior=True)
     B = tensorhead('B', [L, S], [[1], [1]], matrix_behavior=True)
@@ -1288,7 +1285,7 @@ def test_hidden_indices_for_matrix_multiplication():
 
 def test_pprint():
     Lorentz = TensorIndexType('Lorentz')
-    i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
+    i0 = tensor_indices('i0', Lorentz)
     A = tensorhead('A', [Lorentz], [[1]])
 
     assert pretty(A) == 'A(Lorentz)'
@@ -1302,7 +1299,7 @@ def test_from_components_and_indices():
     assert a.dum == []
 
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
+    m0, m1, m3 = tensor_indices('m0 m1 m3', Lorentz)
     T = tensorhead('T', [Lorentz]*4, [[1]*4])
     assert str(TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])) == str(TIDS([T], [(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)]))
     A = tensorhead('A', [Lorentz], [[1]])
@@ -1330,7 +1327,7 @@ def test_get_components_with_free_indices():
 
 def test_Tensor():
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
+    i1, i2, i3, i4 = tensor_indices('i1:5', Lorentz)
     A = tensorhead('A', [Lorentz]*5, [[1]*5])
     t = A(i2, i1, -i2, -i3, i4)
     assert str(t(i1, i2, i3)) == 'A(L_0, i1, -L_0, i2, i3)'

@@ -76,6 +76,7 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
+    _from_GMPYFiniteField = _from_PythonFiniteField
 
     def _from_PythonIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0) % self.characteristic)
@@ -84,13 +85,7 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
     def _from_PythonRationalField(self, a, K0=None):
         if a.denominator == 1:
             return self.convert(a.numerator)
-
-    def _from_GMPYFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.rep, K0.domain))
-
-    def _from_GMPYRationalField(self, a, K0=None):
-        if a.denominator == 1:
-            return self.convert(a.numerator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)
@@ -120,7 +115,7 @@ class FiniteField(Field, IntegerModRing):
             if modulus:
                 deg = len(modulus) - 1
             else:
-                modulus = [1, 0]
+                modulus = [0, 1]
 
         order = mod**deg
 
@@ -246,14 +241,14 @@ class GaloisFieldElement(ModularInteger):
         f = self.rep
         domain = self.domain
         x = domain.gens[0]
+        n = f.degree()
 
-        if not f.is_irreducible:
+        if not (f.is_irreducible and n):
             return False
 
-        n = f.degree()
         t = x**n
 
-        for m in range(n, p**n - 1):
+        for _ in range(n, p**n - 1):
             r = t % f
             if r == 1:
                 return False

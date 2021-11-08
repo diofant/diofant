@@ -22,16 +22,14 @@ if you care at all about performance. A new backend instance is initialized
 every time you call ``show()`` and the old one is left to the garbage collector.
 """
 
-import warnings
 from collections.abc import Callable
 from inspect import getfullargspec
 
-from ..core import Dummy, Expr, Symbol, Tuple
+from ..core import Expr, Symbol, Tuple
 from ..core.sympify import sympify
 from ..external import import_module
 from ..utilities import lambdify
 from ..utilities.decorator import doctest_depends_on
-from ..utilities.iterables import is_sequence
 
 
 # Global variable
@@ -97,7 +95,6 @@ class Plot:
     - title : str
     - xlabel : str
     - ylabel : str
-    - legend : bool
     - xscale : {'linear', 'log'}
     - yscale : {'linear', 'log'}
     - axis : bool
@@ -150,7 +147,6 @@ class Plot:
         self.axis = True
         self.xscale = 'linear'
         self.yscale = 'linear'
-        self.legend = False
         self.autoscale = True
         self.margin = 0
 
@@ -170,9 +166,6 @@ class Plot:
                 setattr(self, key, val)
 
     def show(self):
-        # TODO move this to the backend (also for save)
-        if hasattr(self, '_backend'):
-            self._backend.close()
         self._backend = self.backend(self)
         self._backend.show()
 
@@ -198,11 +191,7 @@ class Plot:
         return self._series[index]
 
     def __setitem__(self, index, *args):
-        if len(args) == 1 and isinstance(args[0], BaseSeries):
-            self._series[index] = args
-
-    def __delitem__(self, index):
-        del self._series[index]
+        pass
 
     @doctest_depends_on(modules=('numpy', 'matplotlib',))
     def append(self, arg):
@@ -252,12 +241,7 @@ class Plot:
         [1]: cartesian line: x for x over (-10.0, 10.0)
 
         """
-        if isinstance(arg, Plot):
-            self._series.extend(arg._series)
-        elif is_sequence(arg):
-            self._series.extend(arg)
-        else:
-            raise TypeError('Expecting Plot or sequence of BaseSeries')
+        self._series.extend(arg._series)
 
 
 ##############################################################################
@@ -367,32 +351,25 @@ class Line2DBaseSeries(BaseSeries):
     def get_segments(self):
         np = import_module('numpy')
         points = self.get_points()
-        if self.steps is True:
-            x = np.array((points[0], points[0])).T.flatten()[1:]
-            y = np.array((points[1], points[1])).T.flatten()[:-1]
-            points = (x, y)
         points = np.ma.array(points).T.reshape(-1, 1, self._dim)
         return np.ma.concatenate([points[:-1], points[1:]], axis=1)
 
     def get_color_array(self):
         np = import_module('numpy')
         c = self.line_color
-        if hasattr(c, '__call__'):
-            f = np.vectorize(c, otypes=[np.float64])
-            arity = len(getfullargspec(c)[0])
-            if arity == 1 and self.is_parametric:
-                x = self.get_parameter_points()
-                return f(centers_of_segments(x))
-            else:
-                variables = list(map(centers_of_segments, self.get_points()))
-                if arity == 1:
-                    return f(variables[0])
-                elif arity == 2:
-                    return f(*variables[:2])
-                else:  # only if the line is 3D (otherwise raises an error)
-                    return f(*variables)
+        f = np.vectorize(c, otypes=[np.float64])
+        arity = len(getfullargspec(c)[0])
+        if arity == 1 and self.is_parametric:
+            x = self.get_parameter_points()
+            return f(centers_of_segments(x))
         else:
-            return c*np.ones(self.nb_of_points)
+            variables = list(map(centers_of_segments, self.get_points()))
+            if arity == 1:
+                return f(variables[0])
+            elif arity == 2:
+                return f(*variables[:2])
+            else:  # only if the line is 3D (otherwise raises an error)
+                return f(*variables)
 
 
 class LineOver1DRangeSeries(Line2DBaseSeries):
@@ -461,13 +438,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 # at both ends. If there is a real value in between, then
                 # sample those points further.
                 elif p[1] is None and q[1] is None:
-                    xarray = np.linspace(p[0], q[0], 10)
-                    yarray = list(map(f, xarray))
-                    if any(y is not None for y in yarray):
-                        for i in range(len(yarray) - 1):
-                            if yarray[i] is not None or yarray[i + 1] is not None:
-                                sample([xarray[i], yarray[i]],
-                                       [xarray[i + 1], yarray[i + 1]], depth + 1)
+                    raise NotImplementedError
 
                 # Sample further if one of the end points in None( i.e. a complex
                 # value) or the three points are not almost collinear.
@@ -485,11 +456,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
 
     def get_points(self):
         np = import_module('numpy')
-        if self.only_integers is True:
-            list_x = np.linspace(int(self.start), int(self.end),
-                                 num=int(self.end) - int(self.start) + 1)
-        else:
-            list_x = np.linspace(self.start, self.end, num=self.nb_of_points)
+        list_x = np.linspace(self.start, self.end, num=self.nb_of_points)
         f = lambdify([self.var], self.expr, 'numpy')
         list_y = f(list_x)
         return list_x, list_y
@@ -582,18 +549,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
             # sample those points further.
             elif ((p[0] is None and q[1] is None) or
                     (p[1] is None and q[1] is None)):
-                param_array = np.linspace(param_p, param_q, 10)
-                x_array = list(map(f_x, param_array))
-                y_array = list(map(f_y, param_array))
-                if any(x is not None and y is not None
-                        for x, y in zip(x_array, y_array)):
-                    for i in range(len(y_array) - 1):
-                        if ((x_array[i] is not None and y_array[i] is not None) or
-                                (x_array[i + 1] is not None and y_array[i + 1] is not None)):
-                            point_a = [x_array[i], y_array[i]]
-                            point_b = [x_array[i + 1], y_array[i + 1]]
-                            sample(param_array[i], param_array[i], point_a,
-                                   point_b, depth + 1)
+                raise NotImplementedError
 
             # Sample further if one of the end points in None( ie a complex
             # value) or the three points are not almost collinear.
@@ -697,7 +653,7 @@ class SurfaceBaseSeries(BaseSeries):
             else:
                 return f(*variables)
         else:
-            return c*np.ones(self.nb_of_points)
+            raise NotImplementedError
 
 
 class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
@@ -812,11 +768,9 @@ class MatplotlibBackend(BaseBackend):
             self.ax.spines['right'].set_color('none')
             self.ax.spines['bottom'].set_position('zero')
             self.ax.spines['top'].set_color('none')
-            self.ax.spines['left'].set_smart_bounds(True)
-            self.ax.spines['bottom'].set_smart_bounds(False)
             self.ax.xaxis.set_ticks_position('bottom')
             self.ax.yaxis.set_ticks_position('left')
-        elif all(are_3D):
+        else:
             self.fig = self.plt.figure()
             self.ax = self.fig.add_subplot(111, projection='3d')
 
@@ -828,8 +782,6 @@ class MatplotlibBackend(BaseBackend):
             if s.is_2Dline:
                 collection = self.LineCollection(s.get_segments())
                 self.ax.add_collection(collection)
-            elif s.is_contour:
-                self.ax.contour(*s.get_meshes())
             elif s.is_3Dline:
                 # TODO too complicated, I blame matplotlib
                 mpl_toolkits = import_module('mpl_toolkits',
@@ -848,30 +800,19 @@ class MatplotlibBackend(BaseBackend):
                                                   rstride=1, cstride=1,
                                                   linewidth=0.1)
             elif s.is_implicit:
-                # Smart bounds have to be set to False for implicit plots.
-                self.ax.spines['left'].set_smart_bounds(False)
-                self.ax.spines['bottom'].set_smart_bounds(False)
                 points = s.get_raster()
-                if len(points) == 2:
-                    # interval math plotting
-                    x, y = _matplotlib_list(points[0])
-                    self.ax.fill(x, y, facecolor=s.line_color, edgecolor='None')
+                # use contourf or contour depending on whether it is
+                # an inequality or equality.
+                # XXX: ``contour`` plots multiple lines. Should be fixed.
+                ListedColormap = self.matplotlib.colors.ListedColormap
+                colormap = ListedColormap(['white', s.line_color])
+                xarray, yarray, zarray, plot_type = points
+                if plot_type == 'contour':
+                    self.ax.contour(xarray, yarray, zarray, cmap=colormap)
                 else:
-                    # use contourf or contour depending on whether it is
-                    # an inequality or equality.
-                    # XXX: ``contour`` plots multiple lines. Should be fixed.
-                    ListedColormap = self.matplotlib.colors.ListedColormap
-                    colormap = ListedColormap(['white', s.line_color])
-                    xarray, yarray, zarray, plot_type = points
-                    if plot_type == 'contour':
-                        self.ax.contour(xarray, yarray, zarray,
-                                        cmap=colormap)
-                    else:
-                        self.ax.contourf(xarray, yarray, zarray, cmap=colormap)
+                    self.ax.contourf(xarray, yarray, zarray, cmap=colormap)
             else:
-                raise ValueError('The matplotlib backend supports only '
-                                 'is_2Dline, is_3Dline, is_3Dsurface and '
-                                 'is_contour objects.')
+                raise NotImplementedError
 
             # Customise the collections with the corresponding per-series
             # options.
@@ -884,14 +825,9 @@ class MatplotlibBackend(BaseBackend):
                 else:
                     collection.set_color(s.line_color)
             if s.is_3Dsurface and s.surface_color:
-                if self.matplotlib.__version__ < '1.2.0':  # TODO in the distant future remove this check
-                    warnings.warn('The version of matplotlib is too old to use surface coloring.')
-                elif isinstance(s.surface_color, (float, int)) or isinstance(s.surface_color, Callable):
-                    color_array = s.get_color_array()
-                    color_array = color_array.reshape(color_array.size)
-                    collection.set_array(color_array)
-                else:
-                    collection.set_color(s.surface_color)
+                color_array = s.get_color_array()
+                color_array = color_array.reshape(color_array.size)
+                collection.set_array(color_array)
 
         # Set global options.
         # TODO The 3D stuff
@@ -913,7 +849,7 @@ class MatplotlibBackend(BaseBackend):
                 self.ax.set_xlim(min(starts), max(ends))
         if parent.ylim:
             self.ax.set_ylim(parent.ylim)
-        if not isinstance(self.ax, Axes3D) or self.matplotlib.__version__ >= '1.2.0':  # XXX in the distant future remove this check
+        if not isinstance(self.ax, Axes3D):
             self.ax.set_autoscale_on(parent.autoscale)
         if parent.axis_center:
             val = parent.axis_center
@@ -934,9 +870,6 @@ class MatplotlibBackend(BaseBackend):
                 self.ax.spines['bottom'].set_position(('data', val[1]))
         if not parent.axis:
             self.ax.set_axis_off()
-        if parent.legend:
-            if self.ax.legend():
-                self.ax.legend_.set_visible(parent.legend)
         if parent.margin:
             self.ax.set_xmargin(parent.margin)
             self.ax.set_ymargin(parent.margin)
@@ -947,13 +880,13 @@ class MatplotlibBackend(BaseBackend):
         if parent.ylabel:
             self.ax.set_ylabel(parent.ylabel, position=(0, 1))
 
+        if not isinstance(self.ax, Axes3D):
+            self.ax.autoscale_view(scalex=self.ax.get_autoscalex_on(),
+                                   scaley=self.ax.get_autoscaley_on())
+
     def show(self):
         self.process_series()
-        # TODO after fixing https://github.com/ipython/ipython/issues/1255
-        # you can uncomment the next line and remove the pyplot.show() call
-        # self.fig.show()
-        if _show:
-            self.plt.show()
+        self.fig.show()
 
     def save(self, path):
         self.process_series()
@@ -981,7 +914,7 @@ def centers_of_faces(array):
     np = import_module('numpy')
     return np.average(np.dstack((array[:-1, :-1],
                                  array[1:, :-1],
-                                 array[:-1, 1: ],
+                                 array[:-1, 1:],
                                  array[:-1, :-1],
                                  )), 2)
 
@@ -996,29 +929,6 @@ def flat(x, y, z, eps=1e-3):
     vector_b_norm = np.linalg.norm(vector_b)
     cos_theta = dot_product / (vector_a_norm * vector_b_norm)
     return abs(cos_theta + 1) < eps
-
-
-def _matplotlib_list(interval_list):
-    """
-    Returns lists for matplotlib ``fill`` command from a list of bounding
-    rectangular intervals.
-
-    """
-    xlist = []
-    ylist = []
-    if len(interval_list):
-        for intervals in interval_list:
-            intervalx = intervals[0]
-            intervaly = intervals[1]
-            xlist.extend([intervalx.start, intervalx.start,
-                          intervalx.end, intervalx.end, None])
-            ylist.extend([intervaly.start, intervaly.end,
-                          intervaly.end, intervaly.start, None])
-    else:
-        # XXX Ugly hack. Matplotlib does not accept empty lists for ``fill``
-        xlist.extend([None, None, None, None])
-        ylist.extend([None, None, None, None])
-    return xlist, ylist
 
 
 ###########################################################################
@@ -1621,12 +1531,8 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
     """
     if expr_len > 1 and isinstance(args[0], Expr):
         # Multiple expressions same range.
-        # The arguments are tuples when the expression length is
-        # greater than 1.
-        if len(args) < expr_len:
-            raise ValueError('len(args) should not be less than expr_len')
-        for i in range(len(args)):
-            if isinstance(args[i], Tuple):
+        for i, a in enumerate(args):
+            if isinstance(a, Tuple):
                 break
         else:
             i = len(args) + 1
@@ -1641,9 +1547,6 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
             ranges = []
             for symbol in free_symbols:
                 ranges.append(Tuple(symbol) + default_range)
-
-            for i in range(len(free_symbols) - nb_of_free_symbols):
-                ranges.append(Tuple(Dummy()) + default_range)
             plots = [exprs + Tuple(*ranges)]
         return plots
 
@@ -1653,11 +1556,11 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         # Cannot handle expressions with number of expression = 3. It is
         # not possible to differentiate between expressions and ranges.
         # Series of plots with same range
-        for i in range(len(args)):
-            if isinstance(args[i], Tuple) and len(args[i]) != expr_len:
+        for i, a in enumerate(args):
+            if isinstance(a, Tuple) and len(a) != expr_len:
                 break
-            if not isinstance(args[i], Tuple):
-                args[i] = Tuple(args[i])
+            if not isinstance(a, Tuple):
+                args[i] = Tuple(a)
         else:
             i = len(args) + 1
 
@@ -1666,9 +1569,6 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         free_symbols = list(set().union(*[e.free_symbols for expr in exprs
                                           for e in expr]))
 
-        if len(free_symbols) > nb_of_free_symbols:
-            raise ValueError('The number of free_symbols in the expression '
-                             f'is greater than {nb_of_free_symbols:d}')
         if len(args) == i + nb_of_free_symbols and isinstance(args[i], Tuple):
             ranges = Tuple(*list(args[i:i + nb_of_free_symbols]))
             plots = [expr + ranges for expr in exprs]
@@ -1679,21 +1579,11 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
             ranges = []
             for symbol in free_symbols:
                 ranges.append(Tuple(symbol) + default_range)
-
-            for i in range(len(free_symbols) - nb_of_free_symbols):
-                ranges.append(Tuple(Dummy()) + default_range)
             ranges = Tuple(*ranges)
             plots = [expr + ranges for expr in exprs]
             return plots
 
     elif isinstance(args[0], Tuple) and len(args[0]) == expr_len + nb_of_free_symbols:
-        # Multiple plots with different ranges.
-        for arg in args:
-            for i in range(expr_len):
-                if not isinstance(arg[i], Expr):
-                    raise ValueError(f'Expected an expression, given {arg[i]!s}')
-            for i in range(nb_of_free_symbols):
-                if not len(arg[i + expr_len]) == 3:
-                    raise ValueError('The ranges should be a tuple of '
-                                     f'length 3, got {arg[i + expr_len]!s}')
         return args
+    else:
+        raise NotImplementedError

@@ -24,8 +24,8 @@ def test_pde_separate():
 
 
 def test_pde_separate_add():
-    x, y, z, t = symbols('x,y,z,t')
-    F, T, X, Y, Z, u = map(Function, 'FTXYZu')
+    x, y, t = symbols('x y t')
+    T, X, Y, u = map(Function, 'TXYu')
 
     eq = Eq(diff(u(x, t), x), diff(u(x, t), t)*exp(u(x, t)))
     res = pde_separate_add(eq, u(x, t), [X(x), T(t)])

@@ -1211,7 +1211,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     def iter_vfield(scalar_field, i):
         """Return ``vector_field`` called `i` times on ``scalar_field``."""
-        return functools.reduce(lambda s, v: v.rcall(s), [vector_field, ]*i, scalar_field)
+        return functools.reduce(lambda s, v: v.rcall(s), [vector_field]*i, scalar_field)
 
     def taylor_terms_per_coord(coord_function):
         """Return the series for one of the coordinates."""

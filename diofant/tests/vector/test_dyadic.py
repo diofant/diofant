@@ -97,7 +97,7 @@ def test_dyadic():
 
 
 def test_dyadic_simplify():
-    x, y, z, k, n, m, w, f, s, A = symbols('x, y, z, k, n, m, w, f, s, A')
+    x, y, k, m, s, A = symbols('x, y, k, m, s, A')
     N = CoordSysCartesian('N')
 
     dy = N.i | N.i

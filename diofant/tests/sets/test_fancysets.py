@@ -161,8 +161,6 @@ def test_Range():
 
     assert Range(1, 1) == S.EmptySet
     pytest.raises(ValueError, lambda: Range(0, oo, oo))
-    pytest.raises(ValueError, lambda: Range(-oo, oo))
-    pytest.raises(ValueError, lambda: Range(-oo, oo, 2))
     pytest.raises(ValueError, lambda: Range(0, pi, 1))
 
     assert 5 in Range(0, oo, 5)
@@ -171,6 +169,8 @@ def test_Range():
     assert Range(0, oo)
     assert Range(-oo, 0)
     assert Range(0, -oo, -1)
+    assert Range(1, oo)
+    assert Range(-oo, oo)
 
     assert Range(0, oo, 2)._last_element is oo
     assert Range(-oo, 1, 1)._last_element is Integer(0)

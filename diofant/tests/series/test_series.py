@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Derivative, E, Function, Integer, Integral, O, Rational,
-                     Subs, Symbol, cos, exp, log, oo, pi, series, sin, sqrt,
-                     symbols)
+from diofant import (Derivative, E, Function, I, Integer, Integral, Mul, O,
+                     Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
+                     sin, sqrt, symbols)
 from diofant.abc import x, y
 
 
@@ -65,7 +65,7 @@ def test_simple():
 
 
 def test_sympyissue_5223():
-    assert next(Integer(0).lseries(x)) == 0
+    assert next(Integer(0).series(x, n=None)) == 0
     assert cos(x).series() == cos(x).series(x)
 
     e = cos(x).series(x, 1, n=None)
@@ -78,7 +78,7 @@ def test_sympyissue_5223():
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
     D = Derivative
-    assert next(D(cos(x), x).lseries()) == D(1, x)
+    assert next(D(cos(x), x).series(n=None)) == D(1, x)
     assert D(exp(x), x).series(n=3) == (D(1, x) + D(x, x) + D(x**2/2, x) +
                                         D(x**3/6, x) + O(x**3))
 
@@ -243,3 +243,40 @@ def test_sympyissue_18008():
     s = e.series(x, x0=oo, n=4)
     ss = es.series(x, x0=oo, n=4)
     assert s == ss
+
+
+def test_sympyissue_20697():
+    p0, p1, p2, p3 = symbols('p:4')
+    b0, b1, b2 = symbols('b:3')
+
+    e = ((p0 + (p1 + (p2 + p3/y)/y)/y) /
+         (1 + ((p3/(b0*y) + (b0*p2 - b1*p3)/b0**2)/y +
+               (b0**2*p1 - b0*b1*p2 - p3*(b0*b2 - b1**2))/b0**3)/y))
+
+    assert e.series(y, n=3) == b2*y**2 + b1*y + b0 + O(y**3)
+
+
+def test_sympyissue_21245():
+    fi = (1 + sqrt(5))/2
+    e = 1/(1 - x - x**2)
+    assert (e.series(x, 1/fi, 2) ==
+            -sqrt(5)/(Mul(5, x - 1/(Rational(1, 2) + sqrt(5)/2),
+                          evaluate=False)) + 1/(sqrt(5) + 5) +
+            sqrt(5)/(Mul(5, sqrt(5) + 5, evaluate=False)) +
+            (x - 1/(Rational(1, 2) + sqrt(5)/2)) *
+            (-6*sqrt(5)/(Mul(5, 10*sqrt(5) + 30, evaluate=False)) -
+             2/(10*sqrt(5) + 30)) + O((x - sqrt(5)/2 + Rational(1, 2))**2,
+                                      (x, -Rational(1, 2) + sqrt(5)/2)))
+
+
+def test_diofantissue_1139():
+    res = (sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
+           24*I/(16*(1 - I)**3 + 16*I*(1 - I)**3) +
+           (x - sqrt(2)/2 + sqrt(2)*I/2)*(9*sqrt(2)*I/(8*(1 - I)**3) -
+                                          8*sqrt(2)*I/(16*(1 - I)**3 +
+                                                       16*I*(1 - I)**3) +
+                                          8*sqrt(2)/(16*(1 - I)**3 +
+                                                     16*I*(1 - I)**3)) +
+           O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
+    x0 = sqrt(2)/2 - sqrt(2)*I/2
+    assert (1/(x**4 + 1)).series(x, x0=x0, n=2) == res

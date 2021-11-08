@@ -7,21 +7,18 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, oo, ordered, pi, posify, re, reduce_inequalities,
                      root, sec, sech, simplify, sin, sinh, solve, sqrt, sstr,
-                     symbols, sympify, tan, tanh)
+                     symbols, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import (_invert, minsolve_linear_system,
                                      solve_linear)
 from diofant.solvers.utils import checksol
+from diofant.tests.core.test_evalf import NS
 from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_swap_back():
@@ -1207,7 +1204,7 @@ def test_sympyissue_6989():
 
 
 def test_lambert_multivariate():
-    for i in range(7):
+    for _ in range(7):
         assert _filtered_gens((x + 1/x + exp(x) + y).as_poly(), x) == {x, exp(x)}
         assert _filtered_gens((x + 1/x + exp(x)).as_poly(), x) == {exp(x), x}
         assert _filtered_gens((x + log(x) + 1/x + exp(x)).as_poly(),
@@ -1676,3 +1673,97 @@ def test_unrad2():
 
 def test_sympyissue_20610():
     assert solve([x + y, sqrt(2)], [x, y]) == []
+
+
+def test_sympyissue_21167():
+    assert solve(cbrt(x - 1) + cbrt(x) + cbrt(x + 1)) == []
+
+
+def test_sympyissue_21766():
+    assert solve([z + y/x, - (z + y/x)]) == [{x: -y/z}, {y: 0, z: 0}]
+
+
+def test_sympyissue_21852():
+    assert solve(2*x + sqrt(2*x**2) - 21) == [{x: 21 - 21*sqrt(2)/2}]
+
+
+def test_sympyissue_21882():
+    eqs = [-a*k + 4*a/3 + b + 2*c/9 + 5*d/6 + 5*f/6, d/2 - f*k + 4*f/3,
+           -d*k + d + f/6, 13*a/18 + 13*b/18 + 13*c/18, a + b/2 - c*k + 20*c/9,
+           a/6 - b*k + b + c/18, a + 5*b/3 + c/3, 4*a/3 + 2*b/3 + 2*c, -g]
+    sols = [{a: 0, b: 0, c: 0, d: 0, f: 0, g: 0},
+            {a: 0, b: 0, c: 0, d: -f, g: 0, k: Rational(5, 6)},
+            {a: -2*c, b: c, d: 0, f: 0, g: 0, k: Rational(13, 18)}]
+    assert solve(eqs) == sols
+
+
+def test_sympyissue_21890():
+    assert solve([4*x**3*y**4 - 2*y,
+                  4*x**4*y**3 - 2*x]) == [{x: root(4, 3)/(2*y)},
+                                          {x: (-root(4, 3)/4 -
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: (-root(4, 3)/4 +
+                                               root(4, 3)*sqrt(3)*I/4)/y},
+                                          {x: 0, y: 0}]
+
+
+def test_sympyissue_21905():
+    f = 0.07*x*y + 10.0/y + 30.0/x
+    eqs = [f.diff(x), f.diff(y)]
+    assert (solve(eqs) ==
+            [{x: Float('10.873803730028921', dps=15),
+              y: Float('3.624601243342974', dps=15)},
+             {x: Float('-5.4369018650144607', dps=15) - Float('9.4169902659710321', dps=15)*I,
+              y: Float('-1.812300621671487', dps=15) - Float('3.1389967553236771', dps=15)*I},
+             {x: Float('-5.4369018650144607', dps=15) + Float('9.4169902659710321', dps=15)*I,
+              y: Float('-1.812300621671487', dps=15) + Float('3.1389967553236771', dps=15)*I}])
+
+
+def test_sympyissue_21984():
+    ka = 10**5
+    C0 = 10**-10
+    kw = 10**-14  # that is constant
+    H, OH, HA, A = symbols('H OH HA A')
+
+    eqs = [(H*A/HA) - ka, H*OH - kw, A + OH - H, HA + A - C0]
+
+    res = [{H: Float('-100000.0000000001', dps=15),
+            OH: Float('-9.9999999999999901e-20', dps=15),
+            HA: Float('100000.0000000002', dps=15),
+            A: Float('-100000.0000000001', dps=15)},
+           {H: Float('1.0005409447144861e-7', dps=15),
+            OH: Float('9.9954094471448725e-8', dps=15),
+            HA: Float('1.0005409447134852e-22', dps=15),
+            A: Float('9.9999999999899941e-11', dps=15)},
+           {H: Float('-9.7518697933531939e-8', dps=15),
+            OH: Float('-9.7618697933532039e-8', dps=15),
+            HA: Float('-9.7518697933631848e-23', dps=15),
+            A: Float('1.0000000000009752e-10', dps=15)}]
+    assert solve(eqs, [H, OH, HA, A]) == res
+
+
+def test_sympyissue_22051():
+    lamda, mu = symbols('lamda mu')
+    eqs = [(x*y*(lamda + 30000*mu) + 6*log(2*y))/x,
+           lamda*x + 30000*mu*x + 6*log(x)/y, x*y - 10, 30000*x*y - 1550]
+    assert solve(eqs) == []
+    eqs2 = [y*(exp(x) + 1), x + exp(x)]
+    assert solve(eqs2) == [{x: -LambertW(1), y: 0}]
+
+
+def test_sympyissue_22058():
+    assert solve(-sqrt(t)*x**2 + 2*x + sqrt(t),
+                 x) == [{x: -sqrt(1 + 1/t) + 1/sqrt(t)},
+                        {x: sqrt(1 + 1/t) + 1/sqrt(t)}]
+
+
+def test_sympyissue_22248():
+    g = 9.81
+    y0 = 100
+    v0 = 55
+    m = 80
+    c = 15
+    y = y0 + (m/c)*(v0 + ((m*g)/c))*(1 - exp(- (c/m)*x)) - ((m*g)/c)*x
+
+    assert solve(y) == [{x: Float('-1.4164130909148258', dps=15)},
+                        {x: Float('11.61083847106101', dps=15)}]

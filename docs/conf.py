@@ -26,7 +26,7 @@ warnings.simplefilter('error', UserWarning)
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram']
 
 napoleon_google_docstring = False
 napoleon_use_param = False
@@ -94,7 +94,7 @@ graphviz_output_format = 'svg'
 # Contains mapping the locations and names of other projects that
 # should be linked to in this documentation.
 intersphinx_mapping = {
-    'python3': ('https://docs.python.org/3/', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
 }
@@ -152,7 +152,7 @@ html_theme_options = {
 
 # The inline configuration options for mathjax.  The value is used as
 # a parameter of MathJax.Hub.Config().
-mathjax_config = {
+mathjax3_config = {
     'CommonHTML': {'linebreaks': {'automatic': True}},
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},

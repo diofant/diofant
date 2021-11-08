@@ -29,9 +29,8 @@ class Tuple(Basic):
     """
 
     def __new__(cls, *args):
-        args = [ sympify(arg) for arg in args ]
-        obj = Basic.__new__(cls, *args)
-        return obj
+        args = (sympify(arg) for arg in args)
+        return super().__new__(cls, *args)
 
     def __getitem__(self, i):
         if isinstance(i, slice):

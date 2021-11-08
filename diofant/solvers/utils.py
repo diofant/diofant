@@ -97,7 +97,7 @@ def checksol(f, sol, **flags):
             # with a simplified solution
             val = simplify(f.subs(sol))
             if flags.get('force', True):
-                val, reps = posify(val)
+                val, _ = posify(val)
                 # expansion may work now, so try again and check
                 exval = expand_mul(expand_multinomial(val))
                 if exval.is_number or not exval.free_symbols:
@@ -121,10 +121,6 @@ def checksol(f, sol, **flags):
                     break
             if saw_pow_func is False:
                 return False
-            if flags.get('force', True):
-                # don't do a zero check with the positive assumptions in place
-                val = val.subs(reps)
-            val  # XXX "peephole" optimization, http://bugs.python.org/issue2506
             break
 
         if val == was:

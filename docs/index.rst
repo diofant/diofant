@@ -8,8 +8,6 @@ Diofant's documentation
 library for symbolic mathematics.  If you are new to Diofant, start
 with the :ref:`Tutorial <tutorial>`.
 
-This is the central page for all of Diofant's documentation.
-
 .. note::
 
    Documentation examples assume (unless otherwise clearly stated)
@@ -26,6 +24,7 @@ This is the central page for all of Diofant's documentation.
 
    install
    tutorial/index
+   cli
    modules/index
    internals/index
    guide

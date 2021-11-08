@@ -166,22 +166,22 @@ def %(name)s():
     def _prepare_files(self, routine):
         return
 
-    def _generate_code(self, routine, helpers):
-        with open(f'{self.module_name}.py', 'w') as f:
+    def _generate_code(self, main_routine, routines):
+        with open(f'{self.module_name}.py', 'w', encoding='utf-8') as f:
             printed = ', '.join(
-                [str(res.expr) for res in routine.result_variables])
+                [str(res.expr) for res in main_routine.result_variables])
             # convert OutputArguments to return value like f2py
             args = filter(lambda x: not isinstance(
-                x, OutputArgument), routine.arguments)
+                x, OutputArgument), main_routine.arguments)
             retvals = []
-            for val in routine.result_variables:
+            for val in main_routine.result_variables:
                 if isinstance(val, Result):
                     retvals.append('nameless')
                 else:
                     retvals.append(val.result_var)
 
             print(DummyWrapper.template % {
-                'name': routine.name,
+                'name': main_routine.name,
                 'expr': printed,
                 'args': ', '.join([str(a.name) for a in args]),
                 'retvals': ', '.join([str(val) for val in retvals])
@@ -239,7 +239,7 @@ class CythonCodeWrapper(CodeWrapper):
         codefilename = f'{self.filename}.{self.generator.code_extension}'
 
         # pyx
-        with open(pyxfilename, 'w') as f:
+        with open(pyxfilename, 'w', encoding='utf-8') as f:
             self.dump_pyx([routine], f, self.filename)
 
         # setup.py
@@ -250,7 +250,7 @@ class CythonCodeWrapper(CodeWrapper):
         else:
             np_import = ''
             np_includes = ''
-        with open('setup.py', 'w') as f:
+        with open('setup.py', 'w', encoding='utf-8') as f:
             f.write(self.setup_template.format(ext_args=', '.join(ext_args),
                                                np_import=np_import,
                                                np_includes=np_includes))
@@ -651,11 +651,11 @@ class UfuncifyCodeWrapper(CodeWrapper):
 
         # C
         codefilename = self.module_name + '.c'
-        with open(codefilename, 'w') as f:
+        with open(codefilename, 'w', encoding='utf-8') as f:
             self.dump_c([routine], f, self.filename)
 
         # setup.py
-        with open('setup.py', 'w') as f:
+        with open('setup.py', 'w', encoding='utf-8') as f:
             self.dump_setup(f)
 
     @classmethod
@@ -694,7 +694,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
             name = routine.name
 
             # Partition the C function arguments into categories
-            py_in, py_out = self._partition_args(routine.arguments)
+            py_in, _ = self._partition_args(routine.arguments)
             n_in = len(py_in)
             n_out = 1
 

@@ -2,7 +2,8 @@
 
 import sys
 import warnings
-from distutils.version import LooseVersion
+
+from packaging.version import parse
 
 
 def import_module(module, min_module_version=None, min_python_version=None,
@@ -108,7 +109,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
         modversion = getattr(mod, module_version_attr)
         if module_version_attr_call_args is not None:
             modversion = modversion(*module_version_attr_call_args)
-        if LooseVersion(modversion) < LooseVersion(min_module_version):
+        if parse(modversion) < parse(min_module_version):
             if warn_old_version:
                 warnings.warn(f'{module} version is too old to use '
                               f'({min_module_version} or newer required)',

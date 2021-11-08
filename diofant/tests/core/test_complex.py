@@ -105,7 +105,7 @@ def test_pythoncomplex():
 def test_rootcomplex():
     R = Rational
     assert ((+1 + I)**R(1, 2)).expand(
-        complex=True) == 2**R(1, 4)*cos(  pi/8) + 2**R(1, 4)*sin(  pi/8)*I
+        complex=True) == 2**R(1, 4)*cos(pi/8) + 2**R(1, 4)*sin(pi/8)*I
     assert ((-1 - I)**R(1, 2)).expand(
         complex=True) == 2**R(1, 4)*cos(3*pi/8) - 2**R(1, 4)*sin(3*pi/8)*I
     assert (sqrt(-10)*I).as_real_imag() == (-sqrt(10), 0)
@@ -167,8 +167,8 @@ def test_sympyissue_5236():
 
 
 def test_real_imag():
-    x, y, z = symbols('x, y, z')
-    X, Y, Z = symbols('X, Y, Z', commutative=False)
+    x, y, z = symbols('x y z')
+    X, Z = symbols('X Z', commutative=False)
     a = Symbol('a', extended_real=True)
     assert (2*a*x).as_real_imag() == (2*a*re(x), 2*a*im(x))
 

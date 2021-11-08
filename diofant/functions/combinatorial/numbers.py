@@ -1187,8 +1187,8 @@ def _AOP_product(n):
     else:
         rv[-1:] = rev
     d = defaultdict(int)
-    for i in range(len(rv)):
-        d[i] = rv[i]
+    for i, ri in enumerate(rv):
+        d[i] = ri
     return d
 
 
@@ -1544,6 +1544,6 @@ def nT(n, k=None):
     # MultisetPartitionTraverser does not have a range-limited count
     # method, so need to enumerate and count
     tot = 0
-    for discard in m.enum_range(n[_M], k-1, k):
+    for _ in m.enum_range(n[_M], k-1, k):
         tot += 1
     return tot

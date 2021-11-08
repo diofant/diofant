@@ -1,5 +1,5 @@
-from ...core import (Add, Dummy, Function, Ge, Gt, I, Integer, Le, Lt,
-                     PrecisionExhausted, Symbol)
+from ...core import (Add, Function, Ge, Gt, I, Integer, Le, Lt,
+                     PrecisionExhausted)
 from ...logic import false, true
 
 
@@ -37,7 +37,7 @@ class RoundFunction(Function):
         for t in terms:
             if t.is_integer or (t.is_imaginary and im(t).is_integer):
                 ipart += t
-            elif t.has(Dummy, Symbol):
+            elif t.free_symbols:
                 spart += t
             else:
                 npart += t
@@ -158,7 +158,7 @@ class floor(RoundFunction):
             return false
         return Gt(self, other, evaluate=False)
 
-    def _eval_as_leading_term(self, arg):
+    def _eval_as_leading_term(self, x):
         return self
 
 

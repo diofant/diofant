@@ -122,6 +122,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     _from_GMPYRationalField = _from_PythonIntegerRing
     _from_RealField = _from_PythonIntegerRing
 
+    def _from_ComplexField(self, a, K0):
+        if self.ext == I:
+            return self.from_expr(K0.to_expr(a))
+
     def _from_AlgebraicField(self, a, K0):
         if K0 == self.domain:
             return self([a])

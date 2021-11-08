@@ -48,12 +48,12 @@ def DirectProduct(*groups):
         array_gens.append(list(range(total_degree)))
     current_gen = 0
     current_deg = 0
-    for i in range(len(gens_count)):
-        for j in range(current_gen, current_gen + gens_count[i]):
+    for i, gi in enumerate(gens_count):
+        for j in range(current_gen, current_gen + gi):
             gen = ((groups[i].generators)[j - current_gen]).array_form
             array_gens[j][current_deg:current_deg + degrees[i]] = \
                 [x + current_deg for x in gen]
-        current_gen += gens_count[i]
+        current_gen += gi
         current_deg += degrees[i]
     perm_gens = list(uniq([_af_new(list(a)) for a in array_gens]))
     return PermutationGroup(perm_gens, dups=False)

@@ -18,8 +18,8 @@ def test_solve_lin_sys_2x2_one():
 
 def test_solve_lin_sys_2x2_2():
     domain = QQ.algebraic_field(sqrt(2))
-    coeff_ring, A0, A1 = ring('A:2', domain)
-    R, x = ring('x', coeff_ring)
+    coeff_ring, _, A1 = ring('A:2', domain)
+    R, _ = ring('x', coeff_ring)
     expr = (A1 - sqrt(2))*R.one
     sol = solve_lin_sys(expr.values(), coeff_ring)
     assert all(isinstance(s, coeff_ring.dtype) for s in sol.values())
@@ -88,7 +88,7 @@ def test_solve_lin_sys_5x5_inf():
 
 
 def test_solve_lin_sys_6x6_1():
-    ground,  d, r, e, g, i, j, l, o, m, p, q = field('d r e g i j l o m p q', ZZ)
+    ground,  d, _, e, g, i, j, l, o, m, p, q = field('d r e g i j l o m p q', ZZ)
     domain,  c, f, h, k, n, b = ring('c f h k n b', ground)
 
     eqs = [b + q/d - c/d, c*(1/d + 1/e + 1/g) - f/g - q/d, f*(1/g + 1/i + 1/j) - c/g - h/i, h*(1/i + 1/l + 1/m) - f/i - k/m, k*(1/m + 1/o + 1/p) - h/m - n/p, n/p - k/p]

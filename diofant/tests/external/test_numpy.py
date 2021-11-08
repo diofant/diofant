@@ -5,8 +5,6 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using Diofant with NumPy
 
-import distutils
-
 import mpmath
 import pytest
 
@@ -214,12 +212,8 @@ def test_lambdify():
     f = lambdify(x, sin(x), 'numpy')
     prec = 1e-15
     assert -prec < f(0.2) - sin02 < prec
-    if distutils.version.LooseVersion(numpy.__version__) >= distutils.version.LooseVersion('1.17'):
-        with pytest.raises(TypeError):
-            f(x)
-    else:
-        with pytest.raises(AttributeError):
-            f(x)
+    with pytest.raises(TypeError):
+        f(x)
 
 
 def test_lambdify_numpy_matrix():
@@ -257,7 +251,7 @@ def test_symarray():
 
     a = symarray('a', 3)
     b = symarray('b', 3)
-    assert not(a[0] == b[0])
+    assert not a[0] == b[0]
 
     asyms = symbols('a_0,a_1,a_2')
     numpy.testing.assert_array_equal(a, numpy.array(asyms, dtype=object))

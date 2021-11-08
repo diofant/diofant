@@ -106,7 +106,7 @@ def weak_normalizer(a, d, DE, z=None):
     Returns (q, f - Dq/q)
     """
     z = z or Dummy('z')
-    dn, ds = splitfactor(d, DE)
+    dn, _ = splitfactor(d, DE)
 
     # Compute d1, where dn == d1*d2**2*...*dn**n is a square-free
     # factorization of d.
@@ -114,8 +114,6 @@ def weak_normalizer(a, d, DE, z=None):
     d_sqf_part = dn.quo(g)
     d1 = d_sqf_part.quo(gcd(d_sqf_part, g))
 
-    a1, b = gcdex_diophantine(d.quo(d1).as_poly(DE.t), d1.as_poly(DE.t),
-                              a.as_poly(DE.t))
     r = (a - Poly(z, DE.t)*derivation(d1, DE)).as_poly(DE.t).resultant(
         d1.as_poly(DE.t))
     r = Poly(r, z)
@@ -151,8 +149,8 @@ def normal_denom(fa, fd, ga, gd, DE):
 
     This constitutes step 1 in the outline given in the rde.py docstring.
     """
-    dn, ds = splitfactor(fd, DE)
-    en, es = splitfactor(gd, DE)
+    dn, _ = splitfactor(fd, DE)
+    en, _ = splitfactor(gd, DE)
 
     p = dn.gcd(en)
     h = en.gcd(en.diff(DE.t)).quo(p.gcd(p.diff(DE.t)))
@@ -225,7 +223,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
                 etaa, etad = frac_in(dcoeff, DE.t)
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
                 if A is not None:
-                    a, m, z = A
+                    a, m, _ = A
                     if a == 1:
                         n = min(n, m)
 
@@ -241,7 +239,7 @@ def special_denom(a, ba, bd, ca, cd, DE, case='auto'):
                 if recognize_log_derivative(2*betaa, betad, DE):
                     A = parametric_log_deriv(alphaa*sqrt(-1)*betad+alphad*betaa, alphad*betad, etaa, etad, DE)
                     if A is not None:
-                        a, m, z = A
+                        a, m, _ = A
                         if a == 1:
                             n = min(n, m)
     N = max(0, -nb, n - nc)
@@ -311,8 +309,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
             if db == da - 1:
                 # if alpha == m*Dt + Dz for z in k and m in ZZ:
                 try:
-                    (za, zd), m = limited_integrate(alphaa, alphad, [(etaa, etad)],
-                                                    DE)
+                    _, m = limited_integrate(alphaa, alphad, [(etaa, etad)], DE)
                 except NonElementaryIntegralException:
                     pass
                 else:
@@ -333,8 +330,8 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                                  b*z.as_poly(t1)).LC()/(z.as_expr()*a.LC())
                         betaa, betad = frac_in(beta, DE.t)
                         try:
-                            (za, zd), m = limited_integrate(betaa, betad,
-                                                            [(etaa, etad)], DE)
+                            _, m = limited_integrate(betaa, betad,
+                                                     [(etaa, etad)], DE)
                         except NonElementaryIntegralException:
                             pass
                         else:
@@ -547,7 +544,7 @@ def cancel_primitive(b, c, n, DE):
         ba, bd = frac_in(b, DE.t)
         A = is_log_deriv_k_t_radical_in_field(ba, bd, DE)
         if A is not None:
-            n, z = A
+            n, _ = A
             if n == 1:  # b == Dz/z
                 raise NotImplementedError('is_deriv_in_field() is required to '
                                           ' solve this problem.')
@@ -597,7 +594,7 @@ def cancel_exp(b, c, n, DE):
         ba, bd = frac_in(b, DE.t)
         A = parametric_log_deriv(ba, bd, etaa, etad, DE)
         if A is not None:
-            a, m, z = A
+            a, m, _ = A
             if a == 1:
                 raise NotImplementedError('is_deriv_in_field() is required to '
                                           'solve this problem.')

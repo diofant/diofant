@@ -134,7 +134,7 @@ class Domain(DefaultPrinting, abc.ABC):
             return self.convert(a.LC, K0.domain)
 
     def _from_FractionField(self, a, K0):
-        if a.numerator.is_ground and a.denominator.is_one:
+        if a.numerator.is_ground and a.denominator == 1:
             return self.convert(a.numerator.LC, K0.domain.ring)
 
     def unify(self, K1, symbols=()):

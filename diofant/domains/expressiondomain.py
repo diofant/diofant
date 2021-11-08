@@ -12,6 +12,8 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     is_ExpressionDomain = True
 
     class Expression:
+        """A class for elements of :class:`ExpressionDomain`."""
+
         def __init__(self, ex):
             if not isinstance(ex, self.__class__):
                 self.ex = sympify(ex)

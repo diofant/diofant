@@ -566,7 +566,7 @@ def random_integer_partition(n, seed=None):
     randint = _randint(seed)
 
     partition = []
-    while (n > 0):
+    while n > 0:
         k = randint(1, n)
         mult = randint(1, n//k)
         partition.append((k, mult))
@@ -635,9 +635,9 @@ def RGS_enum(m):
     >>> assert len(s) == 15
 
     """
-    if (m < 1):
+    if m < 1:
         return 0
-    elif (m == 1):
+    elif m == 1:
         return 1
     else:
         return bell(m)

@@ -184,7 +184,6 @@ def test_canonicalize_no_slot_sym():
 def test_canonicalize_no_dummies():
     base1, gens1 = get_symmetric_group_sgs(1)
     base2, gens2 = get_symmetric_group_sgs(2)
-    base2a, gens2a = get_symmetric_group_sgs(2, 1)
 
     # A commuting
     # A^c A^b A^a; ord = [a,b,c]; g = [2,1,0,3,4]
@@ -266,7 +265,6 @@ def test_canonical_free():
 
 def test_canonicalize1():
     base1, gens1 = get_symmetric_group_sgs(1)
-    base1a, gens1a = get_symmetric_group_sgs(1, 1)
     base2, gens2 = get_symmetric_group_sgs(2)
     base3, gens3 = get_symmetric_group_sgs(3)
     base2a, gens2a = get_symmetric_group_sgs(2, 1)

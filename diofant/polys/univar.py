@@ -134,8 +134,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
         # Iterate over all pairs of factors
         J = set()
-        for s, unused in fp[1]:
-            for t, unused in fq[1]:
+        for s, _ in fp[1]:
+            for t, _ in fq[1]:
                 m = s.degree()
                 n = t.degree()
                 if n != m:
@@ -157,7 +157,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
                 if alpha < 0 or alpha in J:
                     continue
-                if n > 1 and not (s - t.shift(alpha)).is_zero:
+                if n > 1 and s - t.shift(alpha):
                     continue
                 J.add(alpha)
 
@@ -168,10 +168,10 @@ class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
 
     def all_coeffs(self):
-        if self.is_zero:
-            return [self.parent.domain.zero]
-        else:
+        if self:
             return [self[(i,)] for i in range(self.degree() + 1)]
+        else:
+            return [self.parent.domain.zero]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
@@ -326,7 +326,6 @@ class UnivarPolyElement(PolyElement):
                 f, h = result
                 F = [h] + F
             else:
-                result  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 break
 
         return [f] + F

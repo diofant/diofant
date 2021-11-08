@@ -129,9 +129,9 @@ class PermutationGroup(Basic):
             degree = kwargs.pop('degree', None)
             if degree is None:
                 degree = max(a.size for a in args)
-            for i in range(len(args)):
-                if args[i].size != degree:
-                    args[i] = Permutation(args[i], size=degree)
+            for i, ai in enumerate(args):
+                if ai.size != degree:
+                    args[i] = Permutation(ai, size=degree)
         if kwargs.pop('dups', True):
             args = list(uniq([_af_new(list(a)) for a in args]))
         obj = Basic.__new__(cls, *args, **kwargs)
@@ -252,8 +252,8 @@ class PermutationGroup(Basic):
         n2 = other._degree
         start = list(range(n1))
         end = list(range(n1, n1 + n2))
-        for i in range(len(gens2)):
-            gens2[i] = [x + n1 for x in gens2[i]]
+        for i, g2i in enumerate(gens2):
+            gens2[i] = [x + n1 for x in g2i]
         gens2 = [start + gen for gen in gens2]
         gens1 = [gen + end for gen in gens1]
         together = gens1 + gens2
@@ -926,9 +926,9 @@ class PermutationGroup(Basic):
         factors = []
         base = self.base
         h = g
-        for i in range(len(base)):
-            beta = h[base[i]]
-            if beta == base[i]:
+        for i, bi in enumerate(base):
+            beta = h[bi]
+            if beta == bi:
                 factors.append(beta)
                 continue
             if beta not in basic_orbits[i]:
@@ -1607,7 +1607,7 @@ class PermutationGroup(Basic):
         if randomized:
             random_stab_gens = []
             v = self.schreier_vector(0)
-            for i in range(len(self)):
+            for _ in range(len(self)):
                 random_stab_gens.append(self.random_stab(0, v))
             stab = PermutationGroup(random_stab_gens)
         else:
@@ -1992,7 +1992,7 @@ class PermutationGroup(Basic):
             _loop = True
             while _loop:
                 Z._random_pr_init(r=10, n=10)
-                for i in range(k):
+                for _ in range(k):
                     g = self.random_pr()
                     h = Z.random_pr()
                     conj = h ^ g
@@ -2230,7 +2230,7 @@ class PermutationGroup(Basic):
 
         """
         if incremental:
-            base, strong_gens = self.schreier_sims_incremental(base=points)
+            _, strong_gens = self.schreier_sims_incremental(base=points)
             stab_gens = []
             degree = self.degree
             for gen in strong_gens:
@@ -2293,7 +2293,7 @@ class PermutationGroup(Basic):
         # start with the identity permutation
         result = Permutation(list(range(self.degree)))
         m = len(self)
-        for i in range(n):
+        for _ in range(n):
             p = self[randrange(m)]
             result = rmul(result, p)
         return result

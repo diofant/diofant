@@ -80,7 +80,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if expr.is_Pow:
             expr, exp = expr.base, expr.exp
         else:
-            expr, exp = expr, Integer(1)
+            exp = Integer(1)
 
         if expr.is_Dummy:
             args = expr.sort_key(),
@@ -537,6 +537,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from ..series import Order
+
         other = sympify(other)
         if self == other:
             return True
@@ -554,7 +556,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if not diff:
             return True
 
-        if not diff.has(Add, Mod):
+        if not diff.has(Add, Mod) or diff.has(Order):
             # if there is no expanding to be done after simplifying
             # then this can't be a zero
             return False
@@ -604,7 +606,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 try:
                     return not minimal_polynomial(self)(0)
-                except NotImplementedError:  # pragma: no cover
+                except NotImplementedError:
                     return
 
     def _eval_is_positive(self):
@@ -2457,7 +2459,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         do = (si - yielded + o).removeO()
                         o *= x
                         if not do or do.is_Order:
-                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         if do.is_Add:
                             ndid += len(do.args)
@@ -2482,29 +2483,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = sympify(x)
         _x = Dummy('x')
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
-
-    def lseries(self, x=None, x0=0, dir='+', logx=None):
-        """Wrapper for series yielding an iterator of the terms of the series.
-
-        Note: an infinite series will yield an infinite iterator. The following,
-        for exaxmple, will never terminate. It will just keep printing terms
-        of the sin(x) series::
-
-          for term in sin(x).lseries(x):
-              print term
-
-        The advantage of lseries() over nseries() is that many times you are
-        just interested in the next term in the series (i.e. the first term for
-        example), but you don't know how many you should ask for in nseries()
-        using the "n" parameter.
-
-        See Also
-        ========
-
-        nseries
-
-        """
-        return self.series(x, x0, n=None, dir=dir, logx=logx)
 
     def _eval_lseries(self, x, logx=None):
         # default implementation of lseries is using nseries(), and adaptively
@@ -2564,7 +2542,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         series
-        lseries
 
         Examples
         ========
@@ -2637,7 +2614,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
-        >>> e.aseries(x)
+        >>> e.series(x, oo)
         E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
         >>> e.aseries(x, n=3, hir=True)
         -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), (x, oo))
@@ -2645,7 +2622,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> e = exp(exp(x)/(1 - 1/x))
         >>> e.aseries(x, bound=3)
         E**(E**x)*E**(E**x/x**2)*E**(E**x/x)*E**(-E**x + E**x/(1 - 1/x) - E**x/x - E**x/x**2)
-        >>> e.aseries(x)
+        >>> e.series(x, oo)
         E**(E**x/(1 - 1/x))
 
         Notes
@@ -2735,7 +2712,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         d = logx if logx else Dummy('logx')
 
-        for t in self.lseries(x, logx=d):
+        for t in self.series(x, n=None, logx=d):
             t = t.cancel()
 
             is_zero = t.equals(0)
@@ -2939,7 +2916,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             use_hint = hints[hint]
             if use_hint:
                 hint = '_eval_expand_' + hint
-                expr, hit = Expr._expand_hint(expr, hint, deep=deep, **hints)
+                expr, _ = Expr._expand_hint(expr, hint, deep=deep, **hints)
 
         while True:
             was = expr
