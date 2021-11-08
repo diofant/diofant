@@ -33,8 +33,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U pip setuptools wheel
-        # XXX: workarounds for CPython >= 3.10
-        pip install matplotlib==3.5.0rc1
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
