@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed support for CPython 3.9, see :pull:`1192`.
+
 Minor changes
 =============
 
