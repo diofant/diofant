@@ -3,9 +3,10 @@ formats:
     - htmlzip
     - pdf
 build:
-    image: testing
+    os: ubuntu-20.04
+    tools:
+        - 3.10
 python:
-    version: 3.9
     install:
         - method: pip
           path: .
