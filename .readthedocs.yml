@@ -4,6 +4,8 @@ formats:
     - pdf
 build:
     os: ubuntu-20.04
+    apt_packages:
+        - graphviz
     tools:
         python: "3.10"
 python:
