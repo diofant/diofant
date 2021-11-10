@@ -15,7 +15,7 @@ from ..core import (Dummy, Expr, Integer, Lambda, Mul, S, cacheit, oo, symbols,
                     sympify)
 from ..functions import DiracDelta, Piecewise
 from ..integrals import Integral, integrate
-from ..logic import And, Or
+from ..logic import And
 from ..polys.polyerrors import PolynomialError
 from ..sets import Interval
 from ..solvers import solve
@@ -93,7 +93,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
             if cond.is_Boolean:
                 if isinstance(cond, And):
                     conditions.extend(cond.args)
-                elif isinstance(cond, Or):
+                else:
                     raise NotImplementedError('Or not implemented here')
             elif cond.is_Relational:
                 if cond.is_Equality:
