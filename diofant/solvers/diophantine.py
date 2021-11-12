@@ -306,15 +306,7 @@ def diop_solve(eq, param=symbols('t', integer=True)):
                 p = k.exp
         return _diop_general_sum_of_even_powers(var, p, -int(coeff[1]), limit=oo)
 
-    if eq_type is not None and eq_type not in diop_known:
-        raise ValueError(filldedent("""
-    Alhough this type of equation was identified, it is not yet
-    handled. It should, however, be listed in `diop_known` at the
-    top of this file. Developers should see comments at the end of
-    `classify_diop`.
-            """))  # pragma: no cover
-    else:
-        raise NotImplementedError(f'No solver has been written for {eq_type}.')
+    raise NotImplementedError(f'No solver has been written for {eq_type}.')
 
 
 def classify_diop(eq, _dict=True):
