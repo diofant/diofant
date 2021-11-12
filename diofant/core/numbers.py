@@ -280,7 +280,7 @@ class Number(AtomicExpr):
     def __round__(self, *args):
         return round(float(self), *args)
 
-    def _as_mpf_val(self, prec):  # pragma: no cover
+    def _as_mpf_val(self, prec):
         """Evaluation of mpf tuple accurate to at least prec bits."""
         raise NotImplementedError(f'{self.__class__.__name__} needs ._as_mpf_val() method')
 
@@ -2080,7 +2080,7 @@ class NumberSymbol(AtomicExpr):
         value of NumberSymbol.  If not implemented, then return None.
 
         """
-        return  # pragma: no cover
+        raise NotImplementedError
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
