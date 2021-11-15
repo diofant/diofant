@@ -697,11 +697,9 @@ def test_sympyissue_12005():
 def test_sympyissue_13098():
     assert floor(log(Float('9.9999999000000006'), 10)) == 0
     assert floor(log(Float('9.9999999899999992'), 10)) == 0
-    assert floor(log(Float(('15.9999999999999999999999999999999999'
-                            '99999999999999999999001'), dps=56), 2)) == 4
+    assert floor(log(Float(('15.' + '9'*54 + '001'), dps=56), 2)) == 3
     assert floor(log(Float('16.0'), 2)) == 4
-    assert floor(log(Float('99.99999999999999999999999007',
-                           dps=25), 10)) == 2
+    assert floor(log(Float('99.' + '9'*23 + '007', dps=25), 10)) == 1
     assert floor(log(Float('999.99999000000003'), 10)) == 2
     assert floor(log(Float('999.999999'), 10)) == 2
 
