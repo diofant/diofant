@@ -5,10 +5,10 @@ import pytest
 
 from diofant import (Derivative, Dummy, E, Eq, Expr, FiniteSet, Float,
                      Function, I, Integer, Lambda, O, PoleError, Rational,
-                     RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, cos,
-                     diff, exp, expand, expint, floor, im, log, loggamma, nan,
-                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, symbols,
-                     zoo)
+                     RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, ceiling,
+                     cos, diff, exp, expand, expint, floor, im, log, loggamma,
+                     nan, nfloat, oo, pi, polygamma, re, sin, solve, sqrt,
+                     symbols, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -697,13 +697,16 @@ def test_sympyissue_12005():
 def test_sympyissue_13098():
     assert floor(log(Float('9.9999999000000006'), 10)) == 0
     assert floor(log(Float('9.9999999899999992'), 10)) == 0
-    assert floor(log(Float(('15.9999999999999999999999999999999999'
-                            '99999999999999999999001'), dps=56), 2)) == 4
+    assert floor(log(Float(('15.' + '9'*54 + '001'), dps=56), 2)) == 3
     assert floor(log(Float('16.0'), 2)) == 4
-    assert floor(log(Float('99.99999999999999999999999007',
-                           dps=25), 10)) == 2
+    assert floor(log(Float('99.' + '9'*23 + '007', dps=25), 10)) == 1
     assert floor(log(Float('999.99999000000003'), 10)) == 2
     assert floor(log(Float('999.999999'), 10)) == 2
+    x = Float('9.'+'9'*20)
+    assert floor(log(x, 10)) == 0
+    assert ceiling(log(x, 10)) == 1
+    assert floor(log(20 - x, 10)) == 1
+    assert ceiling(log(20 - x, 10)) == 2
 
 
 def test_undef_fcn_float_sympyissue_6938():

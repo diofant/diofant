@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (E, Float, I, Rational, Symbol, ceiling, exp, factorial,
-                     false, floor, log, nan, oo, pi, sin, symbols, true)
+                     false, floor, log, nan, oo, pi, sin, sqrt, symbols, true)
 from diofant.abc import x, y
 
 
@@ -255,3 +255,15 @@ def test_sympyissue_4149():
     assert floor(3 + pi*I + y*I) == 3 + floor(pi + y)*I
     assert floor(3*I + pi*I + y*I) == floor(3 + pi + y)*I
     assert floor(3 + E + pi*I + y*I) == 5 + floor(pi + y)*I
+
+
+def test_diofantissue_1055():
+    e = 1/(sqrt(2) - 1) - sqrt(2)
+    e1 = e - Rational(1, 10**15)
+    e2 = e - 1
+    e3 = e - Rational(1, 10**1000)
+
+    assert floor(e) == 1
+    assert floor(e1) == 0
+    assert floor(e2) == e2
+    assert floor(e3) == floor(e3, evaluate=False)
