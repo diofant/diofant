@@ -909,6 +909,9 @@ def test_classify_ode():
     assert classify_ode(f(x).diff((x, 2))*x**3 - 3*x**4*f(x).diff(x) +
                         f(x)) == ()
 
+    # issue sympy/sympy#22462
+    assert 'Bernoulli' in classify_ode(f(x).diff(x) + 20*f(x)**2 + 500*f(x)/7200)
+
 
 def test_classify_ode_init():
     # Dummy
