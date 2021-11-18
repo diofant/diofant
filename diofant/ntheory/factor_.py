@@ -370,7 +370,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     >>> def F(x):
     ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
-    ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
+    ...     a, b = next(cycle_length(F, s))
+    ...     print(f'loop length = {a:4d}; leader length = {b:3d}')
     ...
     loop length = 2489; leader length =  42
     loop length =   78; leader length = 120
@@ -892,7 +893,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
 
     >>> factors = factorint(12345678910111213141516)
     >>> for base, exp in sorted(factors.items()):
-    ...     print('%s %s' % (base, exp))
+    ...     print(f'{base} {exp}')
     ...
     2 2
     2507191691 1
