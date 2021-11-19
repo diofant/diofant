@@ -5133,9 +5133,8 @@ def ode_lie_group(eq, func, order, match):
 
                 else:
                     raise NotImplementedError
-    else:
-        raise NotImplementedError(f'The given ODE {eq!s}'
-                                  ' cannot be solved by the lie group method')
+    raise NotImplementedError(f'The given ODE {eq!s}'
+                              ' cannot be solved by the lie group method')
 
 
 def _lie_group_remove(coords):

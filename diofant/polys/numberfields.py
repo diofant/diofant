@@ -65,8 +65,8 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
             if prec1 > prec:
                 break
             prec1 *= 2
-    else:
-        raise NotImplementedError(f'multiple candidates for the minimal polynomial of {v}')
+
+    raise NotImplementedError(f'multiple candidates for the minimal polynomial of {v}')
 
 
 def _separate_sq(p):

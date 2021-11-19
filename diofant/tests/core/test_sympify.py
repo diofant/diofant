@@ -439,7 +439,7 @@ def test_sympyissue_6046():
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
-    exec('from diofant.abc import S, O', locals)
+    exec('from diofant.abc import S, O', locals)  # pylint: disable=exec-used
     assert str(sympify('O&S', locals)) == 'O & S'
 
 

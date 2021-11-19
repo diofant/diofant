@@ -90,7 +90,7 @@ def clashing():
 
     """
     ns = {}
-    exec('from diofant import *', ns)
+    exec('from diofant import *', ns)  # pylint: disable=exec-used
     clash1 = {}
     clash2 = {}
     while ns:

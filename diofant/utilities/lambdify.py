@@ -131,13 +131,13 @@ def _import(module):
 
     for import_command in import_commands:
         if import_command.startswith('import_module'):
-            module = eval(import_command)
+            module = eval(import_command)  # pylint: disable=eval-used
 
             if module is not None:
                 namespace.update(module.__dict__)
                 continue
         else:
-            exec(import_command, {}, namespace)
+            exec(import_command, {}, namespace)  # pylint: disable=exec-used
             continue
 
         raise ImportError(
@@ -333,7 +333,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     if flat in lstr:
         namespace.update({flat: flatten})
-    func = eval(lstr, namespace)
+    func = eval(lstr, namespace)  # pylint: disable=eval-used
     # For numpy lambdify, wrap all input arguments in arrays.
     if module_provided and 'numpy' in namespaces:
         def array_wrap(funcarg):

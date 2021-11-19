@@ -1336,18 +1336,17 @@ class Mul(AssocOp):
 
                     failed.append(i)
                 i += 1
-            else:
 
-                if not ncdid:
-                    return rv
+            if not ncdid:
+                return rv
 
-                # although we didn't fail, certain nc terms may have
-                # failed so we rebuild them after attempting a partial
-                # subs on them
+            # although we didn't fail, certain nc terms may have
+            # failed so we rebuild them after attempting a partial
+            # subs on them
 
-                failed.extend(range(i, len(nc)))
-                for i in failed:
-                    nc[i] = rejoin(*nc[i]).subs({old: new})
+            failed.extend(range(i, len(nc)))
+            for i in failed:
+                nc[i] = rejoin(*nc[i]).subs({old: new})
 
         # rebuild the expression
 

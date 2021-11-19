@@ -769,14 +769,13 @@ class Formula:
                                 if n0.free_symbols:
                                     raise ValueError('Value should not be true')
                                 vals.append(n0)
-            else:
-                values = []
-                for a, vals in zip(self.symbols, critical_values):
-                    a0 = repl[a]
-                    min_ = floor(min(vals))
-                    max_ = ceiling(max(vals))
-                    values.append([a0 + n for n in range(min_, max_ + 1)])
-                result.extend(dict(zip(self.symbols, l)) for l in product(*values))
+            values = []
+            for a, vals in zip(self.symbols, critical_values):
+                a0 = repl[a]
+                min_ = floor(min(vals))
+                max_ = ceiling(max(vals))
+                values.append([a0 + n for n in range(min_, max_ + 1)])
+            result.extend(dict(zip(self.symbols, l)) for l in product(*values))
         return result
 
 
