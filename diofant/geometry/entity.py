@@ -208,7 +208,7 @@ class GeometryEntity(Basic):
             return self.encloses_point(o)
         elif isinstance(o, Segment):
             return all(self.encloses_point(x) for x in o.points)
-        elif isinstance(o, Ray) or isinstance(o, Line):
+        elif isinstance(o, (Line, Ray)):
             return False
         elif isinstance(o, Ellipse):
             return (self.encloses_point(o.center) and

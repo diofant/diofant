@@ -73,7 +73,7 @@ def test_trace_new():
 
     # argument test
     # check for value error, when either/both arguments are not provided
-    pytest.raises(ValueError, lambda: Tr())
+    pytest.raises(ValueError, Tr)
     pytest.raises(ValueError, lambda: Tr(A, 1, 2))
 
     # non-Expr objects

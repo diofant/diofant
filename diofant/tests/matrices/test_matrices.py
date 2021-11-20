@@ -1300,11 +1300,11 @@ def test_vech():
 
 def test_vech_errors():
     m = Matrix([[1, 3]])
-    pytest.raises(ShapeError, lambda: m.vech())
+    pytest.raises(ShapeError, m.vech)
     m = Matrix([[1, 3], [2, 4]])
-    pytest.raises(ValueError, lambda: m.vech())
-    pytest.raises(ShapeError, lambda: Matrix([[1, 3]]).vech())
-    pytest.raises(ValueError, lambda: Matrix([[1, 3], [2, 4]]).vech())
+    pytest.raises(ValueError, m.vech)
+    pytest.raises(ShapeError, Matrix([[1, 3]]).vech)
+    pytest.raises(ValueError, Matrix([[1, 3], [2, 4]]).vech)
 
 
 def test_diag():
@@ -1451,7 +1451,7 @@ def test_diagonalization():
     m = Matrix(3, 2, [-3, 1, -3, 20, 3, 10])
     assert not m.is_diagonalizable()
     assert not m.is_symmetric()
-    pytest.raises(NonSquareMatrixError, lambda: m.diagonalize())
+    pytest.raises(NonSquareMatrixError, m.diagonalize)
 
     # diagonalizable
     m = diag(1, 2, 3)
@@ -1503,11 +1503,11 @@ def test_diagonalization():
     # not diagonalizable
     m = Matrix(2, 2, [0, 1, 0, 0])
     assert not m.is_diagonalizable()
-    pytest.raises(MatrixError, lambda: m.diagonalize())
+    pytest.raises(MatrixError, m.diagonalize)
 
     m = Matrix(3, 3, [-3, 1, -3, 20, 3, 10, 2, -2, 4])
     assert not m.is_diagonalizable()
-    pytest.raises(MatrixError, lambda: m.diagonalize())
+    pytest.raises(MatrixError, m.diagonalize)
 
     # symbolic
     m = Matrix(2, 2, [a, c, c, b])
@@ -1527,7 +1527,7 @@ def test_eigen_vects():
 def test_jordan_form():
 
     m = Matrix(3, 2, [-3, 1, -3, 20, 3, 10])
-    pytest.raises(NonSquareMatrixError, lambda: m.jordan_form())
+    pytest.raises(NonSquareMatrixError, m.jordan_form)
 
     # diagonalizable
     m = Matrix(3, 3, [7, -12, 6, 10, -19, 10, 12, -24, 13])

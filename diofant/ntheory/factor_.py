@@ -928,7 +928,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                       list(n.as_powers_dict().items())}
     elif isinstance(n, dict):
         factordict = n
-    if factordict and (isinstance(n, Mul) or isinstance(n, dict)):
+    if factordict and isinstance(n, (Mul, dict)):
         # check it
         for k in list(factordict):
             if isprime(k):
@@ -954,7 +954,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         args.extend([Pow(*i, evaluate=False)
                      for i in sorted(factordict.items())])
         return Mul(*args, evaluate=False)
-    elif isinstance(n, dict) or isinstance(n, Mul):
+    elif isinstance(n, (Mul, dict)):
         return factordict
 
     assert use_trial or use_rho or use_pm1

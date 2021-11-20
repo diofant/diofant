@@ -487,12 +487,12 @@ def trigsimp(expr, **opts):
         return trigsimp_groebner(new, **opts)
 
     trigsimpfunc = {
-        'fu': (lambda x: fu(x, **opts)),
-        'matching': (lambda x: futrig(x)),
-        'groebner': (lambda x: groebnersimp(x, **opts)),
+        'fu': (functools.partial(fu, **opts)),
+        'matching': (futrig),
+        'groebner': (functools.partial(groebnersimp, **opts)),
         'combined': (lambda x: futrig(groebnersimp(x,
                                                    polynomial=True, hints=[2, tan]))),
-        'old': lambda x: trigsimp_old(x, **opts)}[method]
+        'old': functools.partial(trigsimp_old, **opts)}[method]
 
     return trigsimpfunc(expr)
 
@@ -696,8 +696,8 @@ def trigsimp_old(expr, **opts):
         return trigsimp_groebner(ex, **opts)
 
     trigsimpfunc = {
-        'matching': (lambda x, d: _trigsimp(x, d)),
-        'groebner': (lambda x, d: groebnersimp(x, d, **opts)),
+        'matching': (_trigsimp),
+        'groebner': (functools.partial(groebnersimp, **opts)),
         'combined': (lambda x, d: _trigsimp(groebnersimp(x,
                                                          d, polynomial=True, hints=[2, tan]),
                                             d))}[method]
@@ -1089,7 +1089,7 @@ def futrig(e, **kwargs):
         return e
 
     old = e
-    e = bottom_up(e, lambda x: _futrig(x, **kwargs))
+    e = bottom_up(e, functools.partial(_futrig, **kwargs))
 
     if kwargs.pop('hyper', True) and e.has(HyperbolicFunction):
         e, f = hyper_as_trig(e)

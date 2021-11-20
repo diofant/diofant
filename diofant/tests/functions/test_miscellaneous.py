@@ -77,7 +77,7 @@ def test_Min():
     assert isinstance(Min(p, p_), Min)
 
     # lists
-    pytest.raises(ValueError, lambda: Min())
+    pytest.raises(ValueError, Min)
     assert Min(x, y) == Min(y, x)
     assert Min(x, y, z) == Min(z, y, x)
     assert Min(x, Min(y, z)) == Min(z, y, x)
@@ -127,7 +127,7 @@ def test_Max():
 
     # lists
 
-    pytest.raises(ValueError, lambda: Max())
+    pytest.raises(ValueError, Max)
     assert Max(x, y) == Max(y, x)
     assert Max(x, y, z) == Max(z, y, x)
     assert Max(x, Max(y, z)) == Max(z, y, x)

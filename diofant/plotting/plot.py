@@ -819,7 +819,7 @@ class MatplotlibBackend(BaseBackend):
             if hasattr(s, 'label'):
                 collection.set_label(s.label)
             if s.is_line and s.line_color:
-                if isinstance(s.line_color, (float, int)) or isinstance(s.line_color, Callable):
+                if isinstance(s.line_color, (Callable, float, int)):
                     color_array = s.get_color_array()
                     collection.set_array(color_array)
                 else:

@@ -437,7 +437,7 @@ def test_diff_args():
     pytest.raises(ValueError, lambda: x.diff(Integer(4)))
     pytest.raises(ValueError, lambda: x.diff(x, Integer(4)))
     pytest.raises(ValueError, lambda: x.diff(Integer(4), x))
-    pytest.raises(ValueError, lambda: (x*y).diff())
+    pytest.raises(ValueError, (x*y).diff)
 
 
 def test_derivative_numerically():

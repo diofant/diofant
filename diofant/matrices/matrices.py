@@ -505,7 +505,7 @@ class MatrixBase(DefaultPrinting):
 
         if not self.is_square:
             raise NonSquareMatrixError()
-        if isinstance(num, int) or isinstance(num, Integer):
+        if isinstance(num, (Integer, int)):
             n = int(num)
             if n < 0:
                 return self.inv()**-n   # A**-2 = (A**-1)**2

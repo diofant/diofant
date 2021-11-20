@@ -2229,12 +2229,8 @@ def count_ops(expr, visual=False):
                 ops.append(DIV)
                 args.append(a.base)  # won't be -Mul but could be Add
                 continue
-            if (a.is_Mul or
-                a.is_Pow or
-                a.is_Function or
-                isinstance(a, Derivative) or
-                    isinstance(a, Integral)):
-
+            if (a.is_Mul or a.is_Pow or a.is_Function or
+                    isinstance(a, (Derivative, Integral))):
                 o = Symbol(a.func.__name__.upper())
                 # count the args
                 if (a.is_Mul or isinstance(a, LatticeOp)):

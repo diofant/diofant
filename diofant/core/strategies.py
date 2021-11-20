@@ -323,7 +323,9 @@ def sall(rule, fns=basic_fns):
 
 def bottom_up(rule, fns=basic_fns):
     """Apply a rule down a tree running it on the bottom nodes first."""
-    return chain(lambda expr: sall(bottom_up(rule, fns), fns)(expr), rule)
+    def rec(expr):
+        return sall(bottom_up(rule, fns), fns)(expr)
+    return chain(rec, rule)
 
 
 def null_safe(rule):

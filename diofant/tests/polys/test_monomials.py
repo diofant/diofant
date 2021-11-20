@@ -67,7 +67,7 @@ def test_Monomial():
     assert m.as_expr(a, b, c) == a**3*b**4*c
     assert n.as_expr(a, b, c) == a**1*b**2
 
-    pytest.raises(ValueError, lambda: l.as_expr())
+    pytest.raises(ValueError, l.as_expr)
 
     assert tuple(m) == (3, 4, 1)
     assert m.gens == (x, y, z)

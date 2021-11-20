@@ -485,12 +485,6 @@ def test_doit():
     assert (2*Integral(x, x)).doit() == x**2
 
 
-def test_attribute_error():
-    pytest.raises(AttributeError, lambda: x.cos())
-    pytest.raises(AttributeError, lambda: x.sin())
-    pytest.raises(AttributeError, lambda: x.exp())
-
-
 def test_args():
     assert (x*y).args in ((x, y), (y, x))
     assert (x + y).args in ((x, y), (y, x))
@@ -1572,7 +1566,7 @@ def test_round():
     assert a.round(27) == Float('2.999999999999999999999999999')
     assert a.round(30) == Float('2.999999999999999999999999999')
 
-    pytest.raises(TypeError, lambda: x.round())
+    pytest.raises(TypeError, x.round)
 
     # exact magnitude of 10
     assert str(Integer(1).round()) == '1.'
