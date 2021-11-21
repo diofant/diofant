@@ -595,7 +595,10 @@ class Xor(BooleanFunction):
                     arg = true
             if isinstance(arg, Xor):
                 for a in arg.args:
-                    argset.remove(a) if a in argset else argset.add(a)
+                    if a in argset:
+                        argset.remove(a)
+                    else:
+                        argset.add(a)
             elif arg in argset:
                 argset.remove(arg)
             else:
@@ -615,7 +618,10 @@ class Xor(BooleanFunction):
                 continue
             remove.append((r, rj))
         if odd:
-            argset.remove(true) if true in argset else argset.add(true)
+            if true in argset:
+                argset.remove(true)
+            else:
+                argset.add(true)
         for a, b in remove:
             argset.remove(a)
             argset.remove(b)

@@ -312,8 +312,7 @@ class Number(AtomicExpr):
         """Return a sort key."""
         return self.class_key(), (0, ()), (), self
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = AtomicExpr.__hash__
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant.
@@ -780,8 +779,7 @@ class Float(Number):
                            strict=True)
         return Expr.__le__(self, other)
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Number.__hash__
 
     def epsilon_eq(self, other, epsilon='1e-15'):
         """Test approximate equality."""
@@ -1121,8 +1119,7 @@ class Rational(Number):
             expr, other = Integer(self.numerator), self.denominator*other
         return Expr.__le__(expr, other)
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Number.__hash__
 
     def factors(self, limit=None, use_trial=True, use_rho=False,
                 use_pm1=False, verbose=False, visual=False):
@@ -1704,8 +1701,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     def _as_mpf_val(self, prec):
         return mlib.finf
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Number.__hash__
 
     def __eq__(self, other):
         return other is oo
@@ -1875,8 +1871,7 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     def _as_mpf_val(self, prec):
         return mlib.fninf
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Number.__hash__
 
     def __eq__(self, other):
         return other is -oo
@@ -1992,8 +1987,7 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     def _as_mpf_val(self, prec):
         return mlib.fnan
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Number.__hash__
 
     def __eq__(self, other):
         # NaN is structurally equal to another NaN
@@ -2125,8 +2119,7 @@ class NumberSymbol(AtomicExpr):
     def __int__(self):
         raise NotImplementedError
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = AtomicExpr.__hash__
 
 
 class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):

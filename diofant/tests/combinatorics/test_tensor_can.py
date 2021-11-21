@@ -410,15 +410,14 @@ def test_riemann_invariants():
     can = canonicalize(g, list(range(2, 4)), 0, ([2, 0], [Permutation([1, 0, 2, 3, 5, 4]), Permutation([2, 3, 0, 1, 4, 5])], 1, 0))
     assert can == [0, 2, 1, 3, 5, 4]
 
-    """
-    The following tests in test_riemann_invariants and in
-    test_riemann_invariants1 have been checked using xperm.c from XPerm in
-    in [1] and with an older version contained in [2]
-
-    [1] xperm.c part of xPerm written by J. M. Martin-Garcia
-        http://www.xact.es/index.html
-    [2] test_xperm.cc in cadabra by Kasper Peeters, http://cadabra.phi-sci.com/
-    """
+    # The following tests in test_riemann_invariants and in
+    # test_riemann_invariants1 have been checked using xperm.c from XPerm in
+    # in [1] and with an older version contained in [2]
+    #
+    # [1] xperm.c part of xPerm written by J. M. Martin-Garcia
+    #     http://www.xact.es/index.html
+    # [2] test_xperm.cc in cadabra by Kasper Peeters, http://cadabra.phi-sci.com/
+    #
     # R_d11^d1_d0^d5 * R^{d6 d4 d0}_d5 * R_{d7 d2 d8 d9} *
     # R_{d10 d3 d6 d4} * R^{d2 d7 d11}_d1 * R^{d8 d9 d3 d10}
     # ord: contravariant d_k ->2*k, covariant d_k -> 2*k+1

@@ -966,7 +966,7 @@ def test_simplify():
     M = Matrix([[eq]])
     M.simplify()
     assert M == Matrix([[eq]])
-    M.simplify(ratio=oo) == M
+    assert M.as_immutable().simplify(ratio=oo) == M
     assert M == Matrix([[eq.simplify(ratio=oo)]])
 
 

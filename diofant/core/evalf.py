@@ -1,6 +1,24 @@
 """
 Adaptive numerical evaluation of Diofant expressions, using mpmath
 for mathematical functions.
+
+An mpf value tuple is a tuple of integers (sign, man, exp, bc)
+representing a floating-point number: [1, -1][sign]*man*2**exp where
+sign is 0 or 1 and bc should correspond to the number of bits used to
+represent the mantissa (man) in binary notation, e.g.
+
+>>> sign, man, exp, bc = 0, 5, 1, 3
+>>> n = [1, -1][sign]*man*2**exp
+>>> n, bitcount(man)
+(10, 3)
+
+A temporary result is a tuple (re, im, re_acc, im_acc) where
+re and im are nonzero mpf value tuples representing approximate
+numbers, or None to denote exact zeros.
+
+re_acc, im_acc are integers denoting log2(e) where e is the estimated
+relative accuracy of the respective complex part, but may be anything
+if the corresponding complex part is None.
 """
 
 import math
@@ -53,28 +71,6 @@ class PrecisionExhausted(ArithmeticError):
 #              Helper functions for arithmetic and complex parts           #
 #                                                                          #
 ############################################################################
-
-
-"""
-An mpf value tuple is a tuple of integers (sign, man, exp, bc)
-representing a floating-point number: [1, -1][sign]*man*2**exp where
-sign is 0 or 1 and bc should correspond to the number of bits used to
-represent the mantissa (man) in binary notation, e.g.
-
->>> sign, man, exp, bc = 0, 5, 1, 3
->>> n = [1, -1][sign]*man*2**exp
->>> n, bitcount(man)
-(10, 3)
-
-A temporary result is a tuple (re, im, re_acc, im_acc) where
-re and im are nonzero mpf value tuples representing approximate
-numbers, or None to denote exact zeros.
-
-re_acc, im_acc are integers denoting log2(e) where e is the estimated
-relative accuracy of the respective complex part, but may be anything
-if the corresponding complex part is None.
-
-"""
 
 
 def fastlog(x):

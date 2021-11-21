@@ -109,6 +109,7 @@ class DiofantDeprecationWarning(DeprecationWarning):
 
     def __init__(self, value=None, feature=None, last_supported_version=None,
                  useinstead=None, issue=None, deprecated_since_version=None):
+        super().__init__()
         self.fullMessage = ''
 
         if feature:

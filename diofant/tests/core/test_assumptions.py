@@ -596,7 +596,7 @@ def test_sympyissue_3825():
     y = Symbol('y')
     a1 = x + y
     a2 = y + x
-    a2.is_comparable
+    assert a2.is_comparable is False
 
     h1 = hash(a1)
     h2 = hash(a2)
@@ -633,7 +633,7 @@ def test_hash_vs_eq():
     a = 1 + pi    # important: do not fold it into a Number instance
     ha = hash(a)  # it should be Add/Mul/... to trigger the bug
 
-    a.is_positive   # this uses .evalf() and deduces it is positive
+    # this uses .evalf() and deduces it is positive
     assert a.is_positive is True
 
     # be sure that hash stayed the same

@@ -12,7 +12,11 @@ class ExactQuotientFailed(BasePolynomialError):
     """Raised when exact quotient is failed."""
 
     def __init__(self, f, g, dom=None):
-        self.f, self.g, self.domain = f, g, dom
+        super().__init__()
+
+        self.f = f
+        self.g = g
+        self.domain = dom
 
     def __str__(self):
         from ..printing import sstr
@@ -30,6 +34,8 @@ class PolynomialDivisionFailed(BasePolynomialError):
     """Raised when polynomial division is failed."""
 
     def __init__(self, f, g, domain):
+        super().__init__()
+
         self.f = f
         self.g = g
         self.domain = domain
@@ -58,6 +64,8 @@ class OperationNotSupported(BasePolynomialError):
     """Raised when an operation is not supported."""
 
     def __init__(self, poly, func):
+        super().__init__()
+
         self.poly = poly
         self.func = func
 
@@ -137,6 +145,8 @@ class ComputationFailed(BasePolynomialError):
     """Raised when polynomial computation failed."""
 
     def __init__(self, func, nargs, exc):
+        super().__init__()
+
         self.func = func
         self.nargs = nargs
         self.exc = exc
@@ -157,6 +167,8 @@ class PolificationFailed(PolynomialError):
     """Raised if polunomial construction is failed."""
 
     def __init__(self, opt, origs, exprs, seq=False):
+        super().__init__()
+
         if not seq:
             self.orig = origs
             self.expr = exprs

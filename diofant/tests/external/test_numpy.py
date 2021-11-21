@@ -29,6 +29,7 @@ numpy = pytest.importorskip('numpy')
 
 def test_systematic_basic():
     def s(diofant_object, numpy_array):
+        # pylint: disable=pointless-statement
         diofant_object + numpy_array
         numpy_array + diofant_object
         diofant_object - numpy_array

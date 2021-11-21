@@ -132,8 +132,8 @@ class CodePrinter(StrPrinter):
 
         # keep a set of expressions that are not strictly translatable to Code
         # and number constants that must be declared and initialized
-        self._not_supported = set()
-        self._number_symbols = set()
+        self._not_supported = set()  # pylint: disable=attribute-defined-outside-init
+        self._number_symbols = set()  # pylint: disable=attribute-defined-outside-init
 
         lines = self._print(expr).splitlines()
 

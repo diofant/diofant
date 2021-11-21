@@ -331,9 +331,8 @@ class StdFactKB(FactKB):
 
     """
 
-    rules = _assume_rules
-
     def __init__(self, facts=None):
+        super().__init__(_assume_rules)
         # save a copy of the facts dict
         if not facts:
             self._generator = {}
@@ -478,6 +477,7 @@ class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions."""
 
     def __init__(cls, *args, **kws):
+        super().__init__(cls)
         local_defs = {}
         for k in _assume_defined:
             attrname = as_property(k)

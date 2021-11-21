@@ -491,47 +491,45 @@ def _diop_linear(var, coeff, param):
         else:
             return None,
 
-    """
-    base_solution_linear() can solve diophantine equations of the form:
-
-    a*x + b*y == c
-
-    We break down multivariate linear diophantine equations into a
-    series of bivariate linear diophantine equations which can then
-    be solved individually by base_solution_linear().
-
-    Consider the following:
-
-    a_0*x_0 + a_1*x_1 + a_2*x_2 == c
-
-    which can be re-written as:
-
-    a_0*x_0 + g_0*y_0 == c
-
-    where
-
-    g_0 == gcd(a_1, a_2)
-
-    and
-
-    y == (a_1*x_1)/g_0 + (a_2*x_2)/g_0
-
-    This leaves us with two binary linear diophantine equations.
-    For the first equation:
-
-    a == a_0
-    b == g_0
-    c == c
-
-    For the second:
-
-    a == a_1/g_0
-    b == a_2/g_0
-    c == the solution we find for y_0 in the first equation.
-
-    The arrays A and B are the arrays of integers used for
-    'a' and 'b' in each of the n-1 bivariate equations we solve.
-    """
+    # base_solution_linear() can solve diophantine equations of the form:
+    #
+    # a*x + b*y == c
+    #
+    # We break down multivariate linear diophantine equations into a
+    # series of bivariate linear diophantine equations which can then
+    # be solved individually by base_solution_linear().
+    #
+    # Consider the following:
+    #
+    # a_0*x_0 + a_1*x_1 + a_2*x_2 == c
+    #
+    # which can be re-written as:
+    #
+    # a_0*x_0 + g_0*y_0 == c
+    #
+    # where
+    #
+    # g_0 == gcd(a_1, a_2)
+    #
+    # and
+    #
+    # y == (a_1*x_1)/g_0 + (a_2*x_2)/g_0
+    #
+    # This leaves us with two binary linear diophantine equations.
+    # For the first equation:
+    #
+    # a == a_0
+    # b == g_0
+    # c == c
+    #
+    # For the second:
+    #
+    # a == a_1/g_0
+    # b == a_2/g_0
+    # c == the solution we find for y_0 in the first equation.
+    #
+    # The arrays A and B are the arrays of integers used for
+    # 'a' and 'b' in each of the n-1 bivariate equations we solve.
 
     A = [coeff[v] for v in var]
     B = []
@@ -546,58 +544,55 @@ def _diop_linear(var, coeff, param):
             B.insert(0, gcd)
     B.append(A[-1])
 
-    """
-    Consider the trivariate linear equation:
-
-    4*x_0 + 6*x_1 + 3*x_2 == 2
-
-    This can be re-written as:
-
-    4*x_0 + 3*y_0 == 2
-
-    where
-
-    y_0 == 2*x_1 + x_2
-    (Note that gcd(3, 6) == 3)
-
-    The complete integral solution to this equation is:
-
-    x_0 ==  2 + 3*t_0
-    y_0 == -2 - 4*t_0
-
-    where 't_0' is any integer.
-
-    Now that we have a solution for 'x_0', find 'x_1' and 'x_2':
-
-    2*x_1 + x_2 == -2 - 4*t_0
-
-    We can then solve for '-2' and '-4' independently,
-    and combine the results:
-
-    2*x_1a + x_2a == -2
-    x_1a == 0 + t_0
-    x_2a == -2 - 2*t_0
-
-    2*x_1b + x_2b == -4*t_0
-    x_1b == 0*t_0 + t_1
-    x_2b == -4*t_0 - 2*t_1
-
-    ==>
-
-    x_1 == t_0 + t_1
-    x_2 == -2 - 6*t_0 - 2*t_1
-
-    where 't_0' and 't_1' are any integers.
-
-    Note that:
-
-    4*(2 + 3*t_0) + 6*(t_0 + t_1) + 3*(-2 - 6*t_0 - 2*t_1) == 2
-
-    for any integral values of 't_0', 't_1'; as required.
-
-    This method is generalized for many variables, below.
-
-    """
+    # Consider the trivariate linear equation:
+    #
+    # 4*x_0 + 6*x_1 + 3*x_2 == 2
+    #
+    # This can be re-written as:
+    #
+    # 4*x_0 + 3*y_0 == 2
+    #
+    # where
+    #
+    # y_0 == 2*x_1 + x_2
+    # (Note that gcd(3, 6) == 3)
+    #
+    # The complete integral solution to this equation is:
+    #
+    # x_0 ==  2 + 3*t_0
+    # y_0 == -2 - 4*t_0
+    #
+    # where 't_0' is any integer.
+    #
+    # Now that we have a solution for 'x_0', find 'x_1' and 'x_2':
+    #
+    # 2*x_1 + x_2 == -2 - 4*t_0
+    #
+    # We can then solve for '-2' and '-4' independently,
+    # and combine the results:
+    #
+    # 2*x_1a + x_2a == -2
+    # x_1a == 0 + t_0
+    # x_2a == -2 - 2*t_0
+    #
+    # 2*x_1b + x_2b == -4*t_0
+    # x_1b == 0*t_0 + t_1
+    # x_2b == -4*t_0 - 2*t_1
+    #
+    # ==>
+    #
+    # x_1 == t_0 + t_1
+    # x_2 == -2 - 6*t_0 - 2*t_1
+    #
+    # where 't_0' and 't_1' are any integers.
+    #
+    # Note that:
+    #
+    # 4*(2 + 3*t_0) + 6*(t_0 + t_1) + 3*(-2 - 6*t_0 - 2*t_1) == 2
+    #
+    # for any integral values of 't_0', 't_1'; as required.
+    #
+    # This method is generalized for many variables, below.
 
     solutions = []
     for i, Bi in enumerate(B):

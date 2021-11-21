@@ -1787,7 +1787,7 @@ def try_lerchphi(func):
             n = dep.exp
             dep = dep.base
         if dep == t:
-            a == 0
+            a = 0
         elif dep.is_Add:
             a, tmp = dep.as_independent(t)
             b = 1

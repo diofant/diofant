@@ -667,8 +667,7 @@ class UndefinedFunction(FunctionClass):
         return (isinstance(other, self.__class__) and
                 (self.class_key() == other.class_key()))
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = FunctionClass.__hash__
 
 
 class WildFunction(Function, AtomicExpr):
@@ -1338,8 +1337,7 @@ class Lambda(Expr):
         otherexpr = otherexpr.xreplace(dict(zip(other.args[0], self.args[0])))
         return selfexpr == otherexpr
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Expr.__hash__
 
     def _hashable_content(self):
         return self.expr.xreplace(self.canonical_variables),
@@ -1497,8 +1495,7 @@ class Subs(Expr):
             return False
         return self._expr == other._expr
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Expr.__hash__
 
     def _hashable_content(self):
         return self._expr.xreplace(self.canonical_variables),

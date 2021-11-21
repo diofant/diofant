@@ -65,9 +65,9 @@ def test_ZeroMatrix():
 
     assert ZeroMatrix(n, n)**0 == Identity(n)
     with pytest.raises(ShapeError):
-        Z**0
+        Z**0  # pylint: disable=pointless-statement
     with pytest.raises(ShapeError):
-        Z**2
+        Z**2  # pylint: disable=pointless-statement
 
 
 def test_ZeroMatrix_doit():
@@ -112,7 +112,7 @@ def test_addition():
 
     assert A + ZeroMatrix(n, m) - A == ZeroMatrix(n, m)
     with pytest.raises(TypeError):
-        ZeroMatrix(n, m) + Integer(0)
+        ZeroMatrix(n, m) + Integer(0)  # pylint: disable=expression-not-assigned
 
 
 def test_multiplication():
@@ -202,9 +202,10 @@ def test_invariants():
 
 def test_indexing():
     A = MatrixSymbol('A', n, m)
-    A[1, 2]
-    A[l, k]
-    A[l+1, k+1]
+
+    assert isinstance(A[1, 2], MatrixElement)
+    assert isinstance(A[l, k], MatrixElement)
+    assert isinstance(A[l+1, k+1], MatrixElement)
 
     assert A[:] == MatrixSlice(A, (0, n, 1), (0, m, 1))
 

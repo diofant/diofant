@@ -185,8 +185,7 @@ class Poly(Expr):
         """Allow Diofant to hash Poly instances."""
         return self.rep, self.gens
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Expr.__hash__
 
     @property
     def free_symbols(self):
@@ -2370,8 +2369,7 @@ class PurePoly(Poly):
         """Allow Diofant to hash Poly instances."""
         return self.domain, frozenset(self.rep.items())
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Poly.__hash__
 
     @property
     def free_symbols(self):

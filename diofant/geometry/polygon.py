@@ -879,8 +879,7 @@ class Polygon(GeometrySet):
                     return True
         return False
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = GeometrySet.__hash__
 
     def __contains__(self, o):
         """
@@ -1496,8 +1495,7 @@ class RegularPolygon(Polygon):
             return Polygon.__eq__(o, self)
         return self.args == o.args
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Polygon.__hash__
 
 
 class Triangle(Polygon):

@@ -3333,6 +3333,7 @@ class MatrixBase(DefaultPrinting):
         diagonalize
 
         """
+        # pylint: disable=attribute-defined-outside-init
         if not self.is_square:
             return False
         res = False

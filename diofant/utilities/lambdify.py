@@ -14,7 +14,8 @@ from ..external import import_module
 from .decorator import doctest_depends_on
 
 
-import_module  # make pylint & flake8 happy
+# XXX make pylint & flake8 happy
+import_module  # pylint: disable=pointless-statement
 
 
 # These are the namespaces the lambda functions will use.

@@ -155,6 +155,8 @@ class Plot:
         self._series = []
         self._series.extend(args)
 
+        self._backend = None
+
         # The backend type. On every show() a new backend instance is created
         # in self._backend which is tightly coupled to the Plot instance
         # (thanks to the parent attribute of the backend).
@@ -170,13 +172,13 @@ class Plot:
         self._backend.show()
 
     def save(self, path):
-        if hasattr(self, '_backend'):
+        if self._backend:
             self._backend.close()
         self._backend = self.backend(self)
         self._backend.save(path)
 
     def close(self):
-        if hasattr(self, '_backend'):
+        if self._backend:
             self._backend.close()
 
     def __del__(self):
@@ -306,9 +308,6 @@ class BaseSeries:
     # The calculation of aesthetics expects:
     #   - get_parameter_points returning one or two np.arrays (1D or 2D)
     # used for calculation aesthetics
-
-    def __init__(self):
-        super().__init__()
 
     @property
     def is_3D(self):
@@ -582,9 +581,6 @@ class Line3DBaseSeries(Line2DBaseSeries):
     is_2Dline = False
     is_3Dline = True
     _dim = 3
-
-    def __init__(self):
-        super().__init__()
 
 
 class Parametric3DLineSeries(Line3DBaseSeries):

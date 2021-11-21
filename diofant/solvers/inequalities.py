@@ -154,7 +154,10 @@ def solve_linear_inequalities(eqs, *gens, **args):
         non_strict = []
 
         for r, x in zip(diag(*A[:, i])**-1*(b - A*gens_g), c):
-            non_strict.append(r) if x else strict.append(r)
+            if x:
+                non_strict.append(r)
+            else:
+                strict.append(r)
 
         pos = int(A[0, i] > 0)
         other_op = Min if pos else Max

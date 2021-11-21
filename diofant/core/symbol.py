@@ -367,8 +367,8 @@ class Wild(BaseSymbol):
 
     @staticmethod
     @cacheit
-    def __xnew__(cls, name, exclude, properties, **assumptions):
-        obj = BaseSymbol.__xnew__(cls, name, **assumptions)
+    def __xnew__(cls_, name, exclude, properties, **assumptions):
+        obj = BaseSymbol.__xnew__(cls_, name, **assumptions)
         obj.exclude = exclude
         obj.properties = properties
         return obj

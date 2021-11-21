@@ -132,6 +132,7 @@ def dotest(s):
 
 def test_basic():
     def j(a, b):
+        # pylint: disable=pointless-statement
         a
         +a
         -a
@@ -145,6 +146,7 @@ def test_basic():
 
 def test_ibasic():
     def s(a, b):
+        # pylint: disable=pointless-statement
         x = a
         x += b
         x = a
@@ -1416,13 +1418,13 @@ def test_primitive():
 
 
 def test_is_constant():
-    Sum(x, (x, 1, 10)).is_constant() is True
-    Sum(x, (x, 1, n)).is_constant() is False
-    Sum(x, (x, 1, n)).is_constant(y) is True
-    Sum(x, (x, 1, n)).is_constant(n) is False
-    Sum(x, (x, 1, n)).is_constant(x) is True
+    assert Sum(x, (x, 1, 10)).is_constant() is True
+    assert Sum(x, (x, 1, n)).is_constant() is False
+    assert Sum(x, (x, 1, n)).is_constant(y) is True
+    assert Sum(x, (x, 1, n)).is_constant(n) is False
+    assert Sum(x, (x, 1, n)).is_constant(x) is True
     eq = a*cos(x)**2 + a*sin(x)**2 - a
-    eq.is_constant() is True
+    assert eq.is_constant() is True
     assert eq.subs({x: pi, a: 2}) == eq.subs({x: pi, a: 3}) == 0
     assert x.is_constant() is False
     assert x.is_constant(y) is True
@@ -1691,7 +1693,7 @@ def test_sympyissue_13645():
     hm1 = exp(ln_h) - 1
 
     # not hangs
-    (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))
+    assert (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1)) is not None
 
 
 def test_sympyissue_21334():
