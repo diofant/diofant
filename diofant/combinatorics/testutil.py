@@ -47,7 +47,7 @@ def _naive_list_centralizer(self, other, af=False):
     See Also
     ========
 
-    diofant.combinatorics.perm_groups.centralizer
+    diofant.combinatorics.perm_groups.PermutationGroup.centralizer
 
     """
     from .perm_groups import PermutationGroup
