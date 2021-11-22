@@ -42,7 +42,7 @@ def _naive_list_centralizer(self, other, af=False):
 
     >>> D = DihedralGroup(4)
     >>> _naive_list_centralizer(D, D)
-    [Permutation([0, 1, 2, 3]), Permutation([2, 3, 0, 1])]
+    [Permutation(3), Permutation(0, 2)(1, 3)]
 
     See Also
     ========
