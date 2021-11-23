@@ -618,10 +618,8 @@ class Xor(BooleanFunction):
                 continue
             remove.append((r, rj))
         if odd:
-            if true in argset:
-                argset.remove(true)
-            else:
-                argset.add(true)
+            assert true not in argset
+            argset.add(true)
         for a, b in remove:
             argset.remove(a)
             argset.remove(b)
