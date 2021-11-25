@@ -1,4 +1,4 @@
-from diofant import Basic, Expr, Integer, MatrixSymbol, Symbol
+from diofant import Basic, Expr, Integer, MatrixSymbol, Symbol, sin
 from diofant.abc import x
 from diofant.printing.dot import (attrprint, dotedges, dotnode, dotprint,
                                   styleof)
@@ -67,6 +67,14 @@ def test_dotprint():
             'Pow(Symbol(\'x\'), Pow(Symbol(\'x\'), Symbol(\'x\')))_()" '
             '["color"="black", "label"="Pow", "shape"="ellipse"];\n\n'
             '#########\n# Edges #\n#########\n\n\n}')
+    assert (dotprint(sin(x + 1),
+                     atom=lambda x: isinstance(x, Basic) and not x.is_Atom) ==
+            'digraph{\n\n# Graph style\n"bgcolor"="transparent"\n'
+            '"ordering"="out"\n"rankdir"="TD"\n\n#########\n'
+            '# Nodes #\n#########\n\n'
+            '"sin(Add(Symbol(\'x\'), Integer(1)))_()" ["color"="black", '
+            '"label"="sin", "shape"="ellipse"];\n\n#########\n'
+            '# Edges #\n#########\n\n\n}')
 
 
 def test_dotprint_depth():
