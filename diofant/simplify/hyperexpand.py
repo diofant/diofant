@@ -1735,7 +1735,7 @@ def try_lerchphi(func):
         bvalue = bbuckets[key]
         paired[key] = (list(value), list(bvalue))
         bbuckets.pop(key, None)
-    if bbuckets != {}:
+    if bbuckets:
         return
     if not Integer(0) in abuckets:
         return

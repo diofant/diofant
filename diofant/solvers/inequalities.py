@@ -165,7 +165,7 @@ def solve_linear_inequalities(eqs, *gens, **args):
             res.append(Or(And(opn(g, a), ops(a, b)), And(ops(g, b), opn(b, a))))
         else:
             both = non_strict + strict
-            res.append(op_map[(pos, int(strict == []))](g, other_op(*(both))))
+            res.append(op_map[(pos, int(not strict))](g, other_op(*(both))))
     elif any(_ < 0 for _ in b):
         return false
 

@@ -3332,7 +3332,7 @@ class TensMul(TensExpr):
         [A(a, L_0), B(-L_0, c)]
 
         """
-        if self.args == ():
+        if not self.args:
             return [self]
         splitp = []
         res = 1
