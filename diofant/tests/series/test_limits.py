@@ -116,6 +116,16 @@ def test_basic5():
     assert limit(O(x), x, x**2) == Limit(O(x), x, x**2)
 
 
+def test_basic6():
+    # pull sympy/sympy#22491
+    assert limit(1/asin(x), x, 0, dir='+') == oo
+    assert limit(1/asin(x), x, 0, dir='-') == -oo
+    assert limit(1/sinh(x), x, 0, dir='+') == oo
+    assert limit(1/sinh(x), x, 0, dir='-') == -oo
+    assert limit(log(1/x) + 1/sin(x), x, 0) == oo
+    assert limit(log(1/x) + 1/x, x, 0) == oo
+
+
 def test_sympyissue_3885():
     assert limit(x*y + x*z, z, 2) == x*y + 2*x
 

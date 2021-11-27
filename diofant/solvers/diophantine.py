@@ -1110,7 +1110,7 @@ def diop_DN(D, N, t=symbols('t', integer=True)):
                                 if r**2 - D*s**2 == m:
                                     sol.append((f*r, f*s))
 
-                                elif diop_DN(D, -1) != []:
+                                elif diop_DN(D, -1):
                                     a = diop_DN(D, -1)
                                     sol.append((f*(r*a[0][0] + a[0][1]*s*D), f*(r*a[0][1] + s*a[0][0])))
 

@@ -3,8 +3,6 @@
 import itertools
 import typing
 
-from mpmath import mpf, mpi
-
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
@@ -1064,10 +1062,6 @@ class Interval(Set, EvalfMixin):
     @property
     def measure(self):
         return self.end - self.start
-
-    def to_mpi(self, prec=53):
-        return mpi(mpf(self.start._eval_evalf(prec)),
-                   mpf(self.end._eval_evalf(prec)))
 
     def _eval_evalf(self, prec):
         return Interval(self.left._eval_evalf(prec),

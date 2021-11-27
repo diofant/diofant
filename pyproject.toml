@@ -200,7 +200,8 @@ disable = ['blacklisted-name',
            'raise-missing-from',
            'super-with-arguments',
            'consider-using-f-string',
-           'consider-using-with']
+           'consider-using-with',
+           'use-implicit-booleaness-not-comparison']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

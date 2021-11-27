@@ -161,7 +161,7 @@ def rsolve_poly(coeffs, f, n):
         nni_roots = list(roots(polys[r], filter='Z',
                                predicate=lambda r: r >= 0))
 
-        if nni_roots != []:
+        if nni_roots:
             a = max(nni_roots) + 1
         else:
             a = Integer(0)

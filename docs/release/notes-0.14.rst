@@ -14,6 +14,7 @@ Compatibility breaks
 ====================
 
 * Removed support for CPython 3.9, see :pull:`1192`.
+* Removed ``to_mpi()`` method of :class:`~diofant.sets.sets.Interval`, see :pull:`1194`.
 
 Minor changes
 =============

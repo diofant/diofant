@@ -1,7 +1,6 @@
 """Generic set theory tests."""
 
 import pytest
-from mpmath import mpi
 
 from diofant import (And, Complement, Contains, E, EmptySet, Eq, FiniteSet,
                      Float, I, ImageSet, Integer, Intersection, Interval,
@@ -339,12 +338,6 @@ def test_interval_subs():
 
     assert Interval(0, a).subs({a: 2}) == Interval(0, 2)
     assert Interval(a, 0).subs({a: 2}) == S.EmptySet
-
-
-def test_interval_to_mpi():
-    assert Interval(0, 1).to_mpi() == mpi(0, 1)
-    assert Interval(0, 1, True, False).to_mpi() == mpi(0, 1)
-    assert isinstance(Interval(0, 1).to_mpi(), type(mpi(0, 1)))
 
 
 def test_measure():
