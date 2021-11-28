@@ -23,10 +23,9 @@ from .groebnertools import matrix_fglm
 from .monomials import Monomial
 from .orderings import monomial_key
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
-                         ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, MultivariatePolynomialError,
-                         PolificationFailed, PolynomialError,
-                         UnificationFailed)
+                         GeneratorsError, GeneratorsNeeded,
+                         MultivariatePolynomialError, PolificationFailed,
+                         PolynomialError, UnificationFailed)
 from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
 from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
@@ -962,10 +961,7 @@ class Poly(Expr):
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
-        try:
-            q = F.exquo(G)
-        except ExactQuotientFailed as exc:
-            raise exc.new(self.as_expr(), other.as_expr())
+        q = F.exquo(G)
 
         if retract:
             try:

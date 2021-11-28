@@ -4,9 +4,6 @@
 class BasePolynomialError(Exception):
     """Base class for polynomial related exceptions."""
 
-    def new(self, *args):
-        raise NotImplementedError('abstract base class')
-
 
 class ExactQuotientFailed(BasePolynomialError):
     """Raised when exact quotient is failed."""
@@ -25,9 +22,6 @@ class ExactQuotientFailed(BasePolynomialError):
             return f'{sstr(self.g)} does not divide {sstr(self.f)}'
         else:
             return f'{sstr(self.g)} does not divide {sstr(self.f)} in {sstr(self.domain)}'
-
-    def new(self, f, g):
-        return self.__class__(f, g, self.domain)
 
 
 class PolynomialDivisionFailed(BasePolynomialError):
