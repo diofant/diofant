@@ -1485,8 +1485,8 @@ def test_R8():
 
 def test_R9():
     n, k = symbols('n k', integer=True, positive=True)
-    Sm = Sum(binomial(n, k - 1)/k, (k, 1, n + 1))
-    assert Sm.doit().simplify() == (2**(n + 1) - 1)/(n + 1)
+    Sm = summation(binomial(n, k - 1)/k, (k, 1, n + 1))
+    assert Sm.simplify() == (2**(n + 1) - 1)/(n + 1)
 
 
 def test_R10():
@@ -1573,8 +1573,8 @@ def test_R24():
 
 def test_S1():
     k = symbols('k', integer=True, positive=True)
-    Pr = Product(gamma(k/3), (k, 1, 8))
-    assert Pr.doit().simplify() == 640*sqrt(3)*pi**3/6561
+    Pr = product(gamma(k/3), (k, 1, 8))
+    assert Pr.simplify() == 640*sqrt(3)*pi**3/6561
 
 
 def test_S2():
@@ -1584,12 +1584,12 @@ def test_S2():
 
 def test_S3():
     n, k = symbols('n k', integer=True, positive=True)
-    assert Product(x**k, (k, 1, n)).doit().simplify() == x**(n*(n + 1)/2)
+    assert product(x**k, (k, 1, n)).simplify() == x**(n*(n + 1)/2)
 
 
 def test_S4():
     n, k = symbols('n k', integer=True, positive=True)
-    assert Product(1 + 1/k, (k, 1, n - 1)).doit().simplify() == n
+    assert product(1 + 1/k, (k, 1, n - 1)).simplify() == n
 
 
 def test_S5():

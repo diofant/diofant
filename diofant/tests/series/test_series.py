@@ -45,8 +45,8 @@ def test_simple():
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=''))
 
-    D = Derivative
-    assert D(x**2 + x**3*y**2, (x, 2), (y, 1)).series(x).doit().removeO() == 12*x*y
+    assert Derivative(x**2 + x**3*y**2,
+                      (x, 2), (y, 1)).series(x).simplify() == 12*x*y + O(x**6)
 
     assert (1 + x).getn() is None
 
@@ -80,10 +80,11 @@ def test_sympyissue_5223():
     assert exp(x).series(x, 1, dir='-', n=3).removeO() == \
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
-    D = Derivative
-    assert next(D(cos(x), x).series(n=None)) == D(1, x)
-    assert D(exp(x), x).series(n=3) == (D(1, x) + D(x, x) + D(x**2/2, x) +
-                                        D(x**3/6, x) + O(x**3))
+    assert next(Derivative(cos(x), x).series(n=None)) == Derivative(1, x)
+    assert Derivative(exp(x),
+                      x).series(n=3) == (Derivative(1, x) + Derivative(x, x) +
+                                         Derivative(x**2/2, x) +
+                                         Derivative(x**3/6, x) + O(x**3))
 
     assert Integral(x, (x, 1, 3), (y, 1, x)).series(x) == -4 + 4*x
 
@@ -288,4 +289,4 @@ def test_sympyissue_22493():
     res = (f(x, y) - h*(f(x, y).diff(x) + f(x, y).diff(y)) +
            h**2*(f(x, y).diff((x, 2)) + 2*f(x, y).diff(y, x) +
                  f(x, y).diff((y, 2)))/2 + O(h**3))
-    assert f(x - h, y - h).series(h, x0=0, n=3).doit().simplify() == res
+    assert f(x - h, y - h).series(h, x0=0, n=3).simplify() == res

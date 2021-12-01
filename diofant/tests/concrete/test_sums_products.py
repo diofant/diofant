@@ -844,9 +844,8 @@ def test_sympyissue_2787():
     n, k = symbols('n k', positive=True, integer=True)
     p = symbols('p', positive=True)
     binomial_dist = binomial(n, k)*p**k*(1 - p)**(n - k)
-    s = Sum(binomial_dist*k, (k, 0, n))
-    res = s.doit().simplify()
-    assert res == Piecewise(
+    s = summation(binomial_dist*k, (k, 0, n))
+    assert s.simplify() == Piecewise(
         (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/abs(p - 1) <= 1)),
         (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
          True))
@@ -875,8 +874,8 @@ def test_sympyissue_10156():
 
 
 def test_sympyissue_15943():
-    s = Sum(binomial(n, k)*factorial(n - k), (k, 0, n))
-    assert s.doit().simplify() == E*(gamma(n + 1) - lowergamma(n + 1, 1))
+    s = summation(binomial(n, k)*factorial(n - k), (k, 0, n))
+    assert s.simplify() == E*(gamma(n + 1) - lowergamma(n + 1, 1))
 
 
 def test_sympyissue_21557():
