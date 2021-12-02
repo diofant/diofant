@@ -93,7 +93,7 @@ class Mul(AssocOp):
               as ``Mul(Mul(a, b), c)``. This can have undesirable consequences.
 
               -  Sometimes terms are not combined as one would like:
-                 {c.f. https://github.com/sympy/sympy/issues/4596}
+                 {c.f. :sympyissue:`4596`}
 
                 >>> 2*(x + 1)  # this is the 2-arg Mul behavior
                 2*x + 2
@@ -109,7 +109,7 @@ class Mul(AssocOp):
                 Powers with compound bases may not find a single base to
                 combine with unless all arguments are processed at once.
                 Post-processing may be necessary in such cases.
-                {c.f. https://github.com/sympy/sympy/issues/5728}
+                {c.f. :sympyissue:`5728`}
 
                 >>> a = sqrt(x*sqrt(y))
                 >>> a**3
@@ -145,7 +145,7 @@ class Mul(AssocOp):
               create a new Mul, ``M/d[i]`` the args of which will be traversed
               again when it is multiplied by ``n[i]``.
 
-              {c.f. https://github.com/sympy/sympy/issues/5706}
+              {c.f. :sympyissue:`5706`}
 
               This consideration is moot if the cache is turned off.
 
