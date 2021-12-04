@@ -1205,7 +1205,7 @@ class Mul(AssocOp):
             # if coeffs are the same there will be no updating to do
             # below after breakup() step; so skip (and keep co_xmul=None)
             if co_old != co_self:
-                co_xmul = co_self.extract_multiplicatively(co_old)
+                co_xmul = co_self/co_old
         elif co_old.is_Rational:
             return rv
 

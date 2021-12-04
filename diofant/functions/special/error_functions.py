@@ -120,7 +120,7 @@ class erf(Function):
             return 1 - arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(I)
+        t = arg.as_coefficient(I)
         if t in (oo, -oo):
             return arg
 
@@ -306,7 +306,7 @@ class erfc(Function):
             return arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(I)
+        t = arg.as_coefficient(I)
         if t in (oo, -oo):
             return -arg
 
@@ -485,7 +485,7 @@ class erfi(Function):
             return -cls(-z)
 
         # Try to pull out factors of I
-        nz = z.extract_multiplicatively(I)
+        nz = z.as_coefficient(I)
         if nz is not None:
             if nz is oo:
                 return I
@@ -769,7 +769,7 @@ class erfinv(Function):
             return z.args[0]
 
         # Try to pull out factors of -1
-        nz = z.extract_multiplicatively(-1)
+        nz = z.as_coefficient(-1)
         if isinstance(nz, erf) and nz.args[0].is_extended_real:
             return -nz.args[0]
 
@@ -1504,18 +1504,18 @@ class TrigonometricIntegral(Function):
         elif z == -oo:
             return cls._atneginf()
 
-        nz = z.extract_multiplicatively(polar_lift(I))
+        nz = z.as_coefficient(polar_lift(I))
         if nz is None and cls._trigfunc(0) == 0:
-            nz = z.extract_multiplicatively(I)
+            nz = z.as_coefficient(I)
         if nz is not None:
             return cls._Ifactor(nz, 1)
-        nz = z.extract_multiplicatively(polar_lift(-I))
+        nz = z.as_coefficient(polar_lift(-I))
         if nz is not None:
             return cls._Ifactor(nz, -1)
 
-        nz = z.extract_multiplicatively(polar_lift(-1))
+        nz = z.as_coefficient(polar_lift(-1))
         if nz is None and cls._trigfunc(0) == 0:
-            nz = z.extract_multiplicatively(-1)
+            nz = z.as_coefficient(-1)
         if nz is not None:
             return cls._minusfactor(nz)
 
@@ -1923,13 +1923,13 @@ class FresnelIntegral(Function):
         newarg = z
         changed = False
 
-        nz = newarg.extract_multiplicatively(-1)
+        nz = newarg.as_coefficient(-1)
         if nz is not None:
             prefact = -prefact
             newarg = nz
             changed = True
 
-        nz = newarg.extract_multiplicatively(I)
+        nz = newarg.as_coefficient(I)
         if nz is not None:
             prefact = cls._sign*I*prefact
             newarg = nz
@@ -2272,7 +2272,7 @@ class _erfs(Function):
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # Expansion at I*oo
-        t = point.extract_multiplicatively(I)
+        t = point.as_coefficient(I)
         if t is oo:
             z = self.args[0]
             # TODO: is the series really correct?
