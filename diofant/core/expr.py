@@ -1336,8 +1336,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-        r = self.extract_multiplicatively(expr)
-        if r and not r.has(expr):
+        if (r := self.extract_multiplicatively(expr)) and not r.has(expr):
             return r
 
     def as_independent(self, *deps, **hint):
