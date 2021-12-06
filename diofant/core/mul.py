@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from ..utilities import default_sort_key
+from .add import Add
 from .basic import Basic
 from .cache import cacheit
 from .logic import _fuzzy_group, fuzzy_and
@@ -156,6 +157,8 @@ class Mul(AssocOp):
 
         """
         from ..series.order import Order
+        from .numbers import I, Rational, nan, oo, zoo
+        from .power import Pow
 
         rv = None
         if len(seq) == 2:
@@ -570,6 +573,7 @@ class Mul(AssocOp):
         return c_part, nc_part, order_symbols
 
     def _eval_power(self, other):
+        from .power import Pow
 
         # don't break up NC terms: (A*B)**3 != A**3*B**3, it is A*B*A*B*A*B
         cargs, nc = self.args_cnc(split_1=False)
@@ -680,8 +684,8 @@ class Mul(AssocOp):
         diofant.core.expr.Expr.as_real_imag
 
         """
-        from .function import expand_mul
         from ..functions import Abs, im, re
+        from .function import expand_mul
         other = []
         coeffr = []
         coeffi = []
@@ -1029,6 +1033,7 @@ class Mul(AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
+        from .numbers import I
         obj = I*self
         if obj.is_Mul:
             return fuzzy_and([obj._eval_is_extended_real(),
@@ -1113,11 +1118,12 @@ class Mul(AssocOp):
             return is_integer
 
     def _eval_subs(self, old, new):
-        from . import Integer
         from ..functions.elementary.complexes import sign
         from ..ntheory.factor_ import multiplicity
         from ..simplify.powsimp import powdenest
         from ..simplify.radsimp import fraction
+        from .numbers import Integer, oo
+        from .power import Pow
 
         if not old.is_Mul:
             return
@@ -1510,8 +1516,3 @@ def expand_2arg(e):
         return e
 
     return bottom_up(e, do)
-
-
-from .numbers import I, Rational, nan, oo, zoo
-from .power import Pow
-from .add import Add

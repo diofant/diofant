@@ -4,8 +4,7 @@ build-backend = 'setuptools.build_meta'
 [tool.setuptools_scm]
 [tool.isort]
 lines_after_imports = 2
-skip = ['diofant/core/mul.py',
-        'diofant/core/expr.py',
+skip = ['diofant/core/expr.py',
         'diofant/__init__.py',
         'diofant/core/__init__.py',
         'diofant/polys/__init__.py']
