@@ -237,7 +237,7 @@ def simplex(c, m, b):
         if tableau[-1, -1].is_nonzero:
             raise InfeasibleProblem
 
-        del tableau[-1, :]  # pylint: disable=unsupported-delete-operation
+        del tableau[-1, :]
         for i in range(nneg):
             del tableau[:, -2]
 
