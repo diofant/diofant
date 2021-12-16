@@ -790,7 +790,7 @@ def test_PermutationGroup():
     assert G.make_perm([0, 1, 0]) == Permutation(0, 2, 3, 1)
 
     S = SymmetricGroup(5)
-    base, strong_gens = S.schreier_sims_random(consec_succ=5)
+    base, strong_gens = S.schreier_sims_random()
     assert _verify_bsgs(S, base, strong_gens)
 
     D = DihedralGroup(4)
