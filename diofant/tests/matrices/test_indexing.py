@@ -76,7 +76,7 @@ def test_block_index():
 
 
 def test_slicing():
-    A.as_explicit()[0, :]  # does not raise an error
+    assert isinstance(A.as_explicit()[0, :], ImmutableMatrix)
 
 
 def test_errors():

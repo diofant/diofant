@@ -50,7 +50,7 @@ def test_Options_clone():
 
     assert issubclass(SpamOpt, BooleanOption)
     Options.__order__ = None
-    pytest.raises(RuntimeError, lambda: Options._init_dependencies_order())
+    pytest.raises(RuntimeError, Options._init_dependencies_order)
     delattr(Options, 'spam')
     del Options.__options__['spam']
     Options.__order__ = None

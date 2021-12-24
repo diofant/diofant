@@ -169,7 +169,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         return [tuple(k + (self[k],)) for k in
-                sorted(self._smat, key=lambda k: list(k))]
+                sorted(self._smat, key=list)]
 
     RL = property(row_list, None, None, 'Alternate faster representation')
 

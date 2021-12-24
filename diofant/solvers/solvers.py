@@ -317,9 +317,9 @@ def solve(f, *symbols, **flags):
         for p in pot:
             if not isinstance(p, Expr) or isinstance(p, Piecewise):
                 pot.skip()
-            elif (isinstance(p, bool) or not p.args or p in symset or
-                  p.is_Add or p.is_Mul or p.is_Pow or p.is_Function or
-                  isinstance(p, RootOf)) and p.func not in (re, im):
+            elif (isinstance(p, (RootOf, bool)) or not p.args or
+                  p in symset or p.is_Add or p.is_Mul or p.is_Pow or
+                  p.is_Function) and p.func not in (re, im):
                 pass
             elif p not in seen:
                 seen.add(p)

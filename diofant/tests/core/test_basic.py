@@ -111,7 +111,7 @@ def test_xreplace():
     assert Basic(b1, b2).xreplace({b1: b2, b2: b1}) == Basic(b2, b1)
     assert Atom(b1).xreplace({b1: b2}) == Atom(b1)
     assert Atom(b1).xreplace({Atom(b1): b2}) == b2
-    pytest.raises(TypeError, lambda: b1.xreplace())
+    pytest.raises(TypeError, b1.xreplace)
     pytest.raises(TypeError, lambda: b1.xreplace([b1, b2]))
 
 

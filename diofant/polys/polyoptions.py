@@ -62,6 +62,8 @@ class OptionType(type):
     """Base type for all options that does registers options."""
 
     def __init__(cls, *args, **kwargs):
+        super().__init__(cls)
+
         @property
         def getter(a):
             try:

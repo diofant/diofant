@@ -149,8 +149,8 @@ def test_array_permutedims():
     po = Array(sa, [2, 2, 3, 3, 2, 2])
 
     pytest.raises(ValueError, lambda: permutedims(po, (1, 1)))
-    pytest.raises(ValueError, lambda: po.transpose())
-    pytest.raises(ValueError, lambda: po.adjoint())
+    pytest.raises(ValueError, po.transpose)
+    pytest.raises(ValueError, po.adjoint)
 
     assert permutedims(po, reversed(range(po.rank()))) == Array(
         [[[[[[sa[0], sa[72]], [sa[36], sa[108]]], [[sa[12], sa[84]], [sa[48], sa[120]]], [[sa[24],

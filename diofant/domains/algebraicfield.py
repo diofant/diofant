@@ -184,7 +184,7 @@ class RealAlgebraicField(ComplexAlgebraicField):
 class AlgebraicElement(QuotientRingElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field."""
 
-    def __init__(self, rep):
+    def __init__(self, rep):  # pylint: disable=super-init-not-called
         dom = self.domain
 
         if isinstance(rep, dict):

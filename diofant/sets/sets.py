@@ -181,7 +181,7 @@ class Set(Basic):
             return Union(p for p in product_sets if p != other)
 
         elif isinstance(other, Interval):
-            if isinstance(self, Interval) or isinstance(self, FiniteSet):
+            if isinstance(self, (FiniteSet, Interval)):
                 return Intersection(other, self.complement(S.Reals))
 
         elif isinstance(other, Union):

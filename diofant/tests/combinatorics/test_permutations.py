@@ -125,7 +125,7 @@ def test_Permutation():
 
     s = Permutation([0, 4, 1, 3, 2])
     assert s.parity() == 0
-    s.cyclic_form  # needed to create a value for _cyclic_form
+    assert s.cyclic_form == [[1, 4, 2]]  # needed to create a value for _cyclic_form
     assert len(s._cyclic_form) != s.size and s.parity() == 0
     assert not s.is_odd
     assert s.is_even

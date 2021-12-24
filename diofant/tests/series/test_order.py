@@ -265,12 +265,12 @@ def test_getn():
     assert O(x/log(x)).getn() == 1
     assert O(x**2/log(x)**2).getn() == 2
     assert O(x*log(x)).getn() == 1
-    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
-    pytest.raises(NotImplementedError, lambda: O(x**y*log(x)**z, (x, 0)).getn())
-    pytest.raises(NotImplementedError, lambda: O(x**pi*log(x), (x, 0)).getn())
+    pytest.raises(NotImplementedError, (O(x) + O(y)).getn)
+    pytest.raises(NotImplementedError, O(x**y*log(x)**z, (x, 0)).getn)
+    pytest.raises(NotImplementedError, O(x**pi*log(x), (x, 0)).getn)
 
     f = Function('f')
-    pytest.raises(NotImplementedError, lambda: O(f(x)).getn())
+    pytest.raises(NotImplementedError, O(f(x)).getn)
 
 
 def test_diff():
@@ -286,7 +286,7 @@ def test_getO():
     assert O(x).removeO() == 0
     assert (z + O(x) + O(y)).getO() == O(x) + O(y)
     assert (z + O(x) + O(y)).removeO() == z
-    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
+    pytest.raises(NotImplementedError, (O(x) + O(y)).getn)
 
 
 def test_leading_term():

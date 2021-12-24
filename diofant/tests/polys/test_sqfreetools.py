@@ -239,13 +239,13 @@ def test_dmp_sqf():
 
     assert res.sqf_list() == (45796, [(h, 3)])
 
-    pytest.raises(DomainError, lambda: (x**2 - 1).sqf_norm())
+    pytest.raises(DomainError, (x**2 - 1).sqf_norm)
 
     f = -x**5 + x**4 + x - 1
 
     assert f.sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
 
-    pytest.raises(DomainError, lambda: (x**2 + y**2).sqf_norm())
+    pytest.raises(DomainError, (x**2 + y**2).sqf_norm)
 
     R, x, y = ring('x y', QQ.algebraic_field(I))
 

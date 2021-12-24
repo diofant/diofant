@@ -179,7 +179,9 @@ def dotprint(expr, styles=default_styles,
         if maxdepth and depth >= maxdepth:
             return
         edges.extend(dotedges(e, atom=atom, pos=pos, repeat=repeat))
-        [traverse(arg, depth+1, pos + (i,)) for i, arg in enumerate(e.args) if not atom(arg)]
+        for i, arg in enumerate(e.args):
+            if not atom(arg):
+                traverse(arg, depth+1, pos + (i,))
 
     traverse(expr, 0)
 
