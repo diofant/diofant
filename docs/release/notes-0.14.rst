@@ -35,3 +35,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22558`: Error in ODE-Solver-Documentation
 * :sympyissue:`22837`: Solve simplest algebraic equations with dummy parameter
 * :sympyissue:`22836`: Series: Possible improvements for Order of expressions involving factorials
+* :sympyissue:`22788`: RecursionError for unevluated expression in latex
