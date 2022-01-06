@@ -42,3 +42,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22878`: RecursionError in trigsimp
 * :sympyissue:`22982`: limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) returns 0 instead of oo
 * :sympyissue:`22986`: limit(acosh(1 + 1/x)*sqrt(x), x, oo) is evaluated incorrectly.
+* :sympyissue:`14433`: x not in QQ.frac_field(1/x)

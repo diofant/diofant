@@ -140,6 +140,8 @@ class FractionField(Field, CompositeDomain):
         def _rebuild(expr):
             if (generator := mapping.get(expr)) is not None:
                 return generator
+            elif 1/expr in mapping:
+                return 1/mapping[1/expr]
             elif expr.is_Add:
                 return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
             elif expr.is_Mul:

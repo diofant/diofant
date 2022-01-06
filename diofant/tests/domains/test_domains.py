@@ -458,6 +458,10 @@ def test_Domain__contains__():
 
     assert F(1) in ZZ
 
+    # issue sympy/sympy#14433
+    F = QQ.inject(1/x).field
+    assert all(_ in F for _ in [x, 1/x])
+
 
 def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
