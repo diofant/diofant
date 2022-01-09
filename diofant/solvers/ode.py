@@ -4643,20 +4643,14 @@ def _undetermined_coefficients_match(expr, x):
             return all(_test_term(i, x) for i in expr.args)
         elif expr.is_Function:
             if expr.func in (sin, cos, exp):
-                if expr.args[0].match(a*x + b):
-                    return True
-                else:
-                    return False
+                return bool(expr.args[0].match(a*x + b))
             else:
                 return False
         elif expr.is_Pow and expr.base.is_Symbol and expr.exp.is_Integer and \
                 expr.exp >= 0:
             return True
         elif expr.is_Pow and expr.base.is_number:
-            if expr.exp.match(a*x + b):
-                return True
-            else:
-                return False
+            return bool(expr.exp.match(a*x + b))
         elif expr.is_Symbol or expr.is_number:
             return True
         else:

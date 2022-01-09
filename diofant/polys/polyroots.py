@@ -355,10 +355,7 @@ def roots_binomial(f):
     neg = base.is_negative
     even = n % 2 == 0
     if neg:
-        if even and (base + 1).is_positive:
-            big = True
-        else:
-            big = False
+        big = bool(even and (base + 1).is_positive)
 
     # get the indices in the right order so the computed
     # roots will be sorted when the domain is ZZ

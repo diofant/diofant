@@ -98,6 +98,7 @@ def test_Eq():
 
 
 def test_rel_Infinity():
+    # pylint: disable=comparison-with-itself
     # NOTE: All of these are actually handled by diofant.core.Number, and do
     # not create Relational objects.
     assert (oo > oo) is false

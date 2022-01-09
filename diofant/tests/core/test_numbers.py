@@ -696,6 +696,8 @@ def test_Infinity_inequations():
     assert -oo < oo and -oo <= oo
     assert (-oo > oo) is false and (-oo >= oo) is false
 
+    # pylint: disable=comparison-with-itself
+
     assert (oo < oo) is false  # issue sympy/sympy#7775
     assert (oo > oo) is false
     assert (-oo > -oo) is false and (-oo < -oo) is false
@@ -714,7 +716,7 @@ def test_Infinity_inequations():
 
 
 def test_NaN():
-    assert nan == nan
+    assert nan == nan  # pylint: disable=comparison-with-itself
     assert nan != 1
     assert 1*nan == nan
     assert 1 != nan

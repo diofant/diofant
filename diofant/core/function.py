@@ -919,10 +919,7 @@ class Derivative(Expr):
             False
 
         """
-        if self.expr.is_Function:
-            return True
-        else:
-            return False
+        return bool(self.expr.is_Function)
 
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy

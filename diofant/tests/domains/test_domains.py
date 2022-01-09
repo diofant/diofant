@@ -827,8 +827,8 @@ def test_AlgebraicElement():
     a = A([QQ(1), QQ(1)])
     b = B([QQ(1), QQ(1)])
 
-    assert (a == a) is True
-    assert (a != a) is False
+    assert (a == a) is True  # pylint: disable=comparison-with-itself
+    assert (a != a) is False  # pylint: disable=comparison-with-itself
 
     assert (a == b) is False
     assert (a != b) is True

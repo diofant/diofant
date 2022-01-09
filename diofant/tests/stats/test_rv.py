@@ -257,6 +257,7 @@ def test_sample_iter():
 
 
 def test_sympyissue_8129():
+    # pylint: disable=comparison-with-itself
     X = Exponential('X', 4)
     assert P(X >= X) == 1
     assert P(X > X) == 0
