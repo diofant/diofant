@@ -102,7 +102,7 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     if TERM != '' and not TERM.endswith('linux'):
         unicode_term = True
     if settings.get('use_unicode') is None:
-        settings['use_unicode'] = True if unicode_term else False
+        settings['use_unicode'] = bool(unicode_term)
 
     if ip:
         stringify_func = pretty if pretty_print is not False else sstrrepr

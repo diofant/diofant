@@ -325,7 +325,7 @@ class And(LatticeOp, BooleanFunction):
         rel = []
         for x in reversed(list(args)):
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -393,7 +393,7 @@ class Or(LatticeOp, BooleanFunction):
         rel = []
         for x in args:
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -757,7 +757,7 @@ class Implies(BooleanFunction):
             newargs = []
             for x in args:
                 if isinstance(x, Number) or x in (0, 1):
-                    newargs.append(True if x else False)
+                    newargs.append(bool(x))
                 else:
                     newargs.append(x)
             A, B = newargs
@@ -810,7 +810,7 @@ class Equivalent(BooleanFunction):
         for x in args:
             if isinstance(x, Number) or x in [True, False]:  # Includes 0, 1
                 argset.discard(x)
-                argset.add(True if x else False)
+                argset.add(bool(x))
         rel = []
         for r in argset:
             if isinstance(r, Relational):

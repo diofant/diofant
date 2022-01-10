@@ -571,7 +571,7 @@ class Poly(Expr):
         dom, rep = construct_domain(self.as_dict(),
                                     field=field,
                                     composite=isinstance(self.domain, CompositeDomain) or None,
-                                    extension=False if self.domain.is_ExpressionDomain else True)
+                                    extension=not self.domain.is_ExpressionDomain)
         return self.from_dict(rep, *self.gens, domain=dom)
 
     def slice(self, x, m, n=None):

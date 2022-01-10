@@ -115,7 +115,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
         """
         # Check for valid input
-        same = False if q is not None else True
+        same = q is None
         if same:
             q = p
 
