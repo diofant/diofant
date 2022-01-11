@@ -33,3 +33,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22487`: [integrals] Wrong result for Integral((cos(x**2)-cos(x))/x**2, (x, -oo, oo))
 * :sympyissue:`22493`: Series expansion introduces new variables
 * :sympyissue:`22558`: Error in ODE-Solver-Documentation
+* :sympyissue:`22837`: Solve simplest algebraic equations with dummy parameter
