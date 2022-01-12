@@ -914,7 +914,7 @@ def fraction(expr, exact=False):
                 if ex == -1:
                     denom.append(b)
                 else:
-                    denom.append(Pow(b, -ex))
+                    denom.append(Pow(b, -ex, evaluate=term.is_evaluated))
             elif ex.is_positive:
                 numer.append(term)
             elif not exact and ex.is_Mul:

@@ -1783,12 +1783,11 @@ def try_lerchphi(func):
                                       ' with linear denominators')
         indep, [dep] = denom.as_coeff_mul(t)
         n = 1
+        assert dep != t
         if dep.is_Pow:
             n = dep.exp
             dep = dep.base
-        if dep == t:
-            a = 0
-        elif dep.is_Add:
+        if dep.is_Add:
             a, tmp = dep.as_independent(t)
             b = 1
             if tmp != t:

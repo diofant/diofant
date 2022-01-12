@@ -1768,3 +1768,7 @@ def test_sympyissue_22248():
 
     assert solve(y) == [{x: Float('-1.4164130909148258', dps=15)},
                         {x: Float('11.61083847106101', dps=15)}]
+
+
+def test_sympyissue_22837():
+    assert solve(Eq(0, (4 - 4*x + x**2)/(4*a**2)), x) == [{x: 2}]

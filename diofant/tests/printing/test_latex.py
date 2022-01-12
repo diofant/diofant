@@ -6,18 +6,19 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
                      Ci, Complement, Contains, CosineTransform, Dict,
                      DiracDelta, Dummy, Ei, Eq, Equivalent, FallingFactorial,
                      FiniteSet, Float, FourierTransform, Function,
-                     HadamardProduct, Heaviside, Identity, ImageSet, Implies,
-                     IndexedBase, Integer, Integral, Intersection, Interval,
-                     Inverse, InverseCosineTransform, InverseFourierTransform,
-                     InverseLaplaceTransform, InverseMellinTransform,
-                     InverseSineTransform, KroneckerDelta, Lambda, LambertW,
-                     LaplaceTransform, LeviCivita, Limit, Matrix, MatrixSymbol,
-                     Max, MellinTransform, Min, Mod, Mul, Not, Or, Order,
-                     Piecewise, Poly, Pow, Product, Range, Rational,
-                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
-                     SineTransform, Subs, Sum, Symbol, SymmetricDifference,
-                     Transpose, Tuple, Union, Wild, Xor, Ynm, ZeroMatrix, Znm,
-                     acot, airyai, airyaiprime, airybi, airybiprime, arg, asin,
+                     HadamardProduct, Heaviside, I, Identity, ImageSet,
+                     Implies, IndexedBase, Integer, Integral, Intersection,
+                     Interval, Inverse, InverseCosineTransform,
+                     InverseFourierTransform, InverseLaplaceTransform,
+                     InverseMellinTransform, InverseSineTransform,
+                     KroneckerDelta, Lambda, LambertW, LaplaceTransform,
+                     LeviCivita, Limit, Matrix, MatrixSymbol, Max,
+                     MellinTransform, Min, Mod, Mul, Not, Or, Order, Piecewise,
+                     Poly, Pow, Product, Range, Rational, RisingFactorial,
+                     RootOf, RootSum, S, Shi, Si, SineTransform, Subs, Sum,
+                     Symbol, SymmetricDifference, Transpose, Tuple, Union,
+                     Wild, Xor, Ynm, ZeroMatrix, Znm, acot, airyai,
+                     airyaiprime, airybi, airybiprime, arg, asin,
                      assoc_laguerre, assoc_legendre, besseli, besselj, besselk,
                      bessely, binomial, catalan, cbrt, ceiling, chebyshevt,
                      chebyshevu, conjugate, cos, cot, coth, diff,
@@ -1497,3 +1498,9 @@ def test_sympyissue_20487():
 
 def test_sympyissue_21812():
     assert latex(LambertW(2)**2) == r'\operatorname{LambertW}^{2}{\left (2 \right )}'
+
+
+def test_sympyissue_22788():
+    e = Mul(Pow(2, -1, evaluate=False), Add(1, I, evaluate=False),
+            Add(1, Pow(I, -8, evaluate=False), evaluate=False), evaluate=False)
+    assert latex(e) == r'\frac{1}{2} \left(1 + \frac{1}{i^{8}}\right) \left(1 + i\right)'

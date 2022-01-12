@@ -62,7 +62,7 @@ half = Rational(1, 2)
 ℕ = S.Naturals0
 Id = Lambda(x, x)
 
-excluded_attrs = {'_assumptions', '_hash', '__dict__'}
+excluded_attrs = {'_assumptions', '_hash', '__dict__', 'is_evaluated'}
 
 
 def check(a, exclude=[], check_attr=True):

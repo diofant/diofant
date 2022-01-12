@@ -824,6 +824,10 @@ def test_has_polys():
     assert poly.has(x, y, z)
     assert poly.has(x, y, z, t)
 
+    # the following morphs from Add to Mul during processing
+    assert Add(0, (x + y)/z/-2,
+               evaluate=False).as_numer_denom() == (-x - y, 2*z)
+
 
 def test_as_poly_as_expr():
     f = x**2 + 2*x*y
