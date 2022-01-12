@@ -349,7 +349,7 @@ def list_visitor(state, components):
     return partition
 
 
-class MultisetPartitionTraverser():
+class MultisetPartitionTraverser:
     """
     Has methods to ``enumerate`` and ``count`` the partitions of a multiset.
 
@@ -398,6 +398,14 @@ class MultisetPartitionTraverser():
         self.k1 = 0
         self.k2 = 0
         self.p1 = 0
+
+        self.pstack = None
+        self.f = None
+        self.lpart = None
+        self.discarded = None
+        self.pcount = None
+        self.dp_stack = None
+        self.dp_map = None
 
     #
     # Helper methods for enumeration
@@ -1000,7 +1008,7 @@ class MultisetPartitionTraverser():
         # value to the running total, cut off the enumeration, and
         # backtrack
 
-        if not hasattr(self, 'dp_map'):
+        if self.dp_map is None:
             self.dp_map = {}
 
         self._initialize_enumeration(multiplicities)

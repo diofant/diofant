@@ -1089,7 +1089,7 @@ class CovarDerivativeOp(Expr):
     def __init__(self, wrt, christoffel):
         super().__init__()
         if len({v._coord_sys
-                for v in wrt.atoms(BaseVectorField)}) > 1:  # pragma: no cover
+                for v in wrt.atoms(BaseVectorField)}) > 1:
             raise NotImplementedError
         if contravariant_order(wrt) != 1 or covariant_order(wrt):
             raise ValueError('Covariant derivatives are defined only with '
@@ -1499,7 +1499,7 @@ def metric_to_Christoffel_1st(expr):
         raise ValueError(
             'The two-form representing the metric is not symmetric.')
     coord_sys = expr.atoms(CoordSystem).pop()
-    deriv_matrices = [matrix.applyfunc(lambda a: d(a))
+    deriv_matrices = [matrix.applyfunc(d)
                       for d in coord_sys.base_vectors()]
     indices = list(range(coord_sys.dim))
     christoffel = [[[(deriv_matrices[k][i, j] + deriv_matrices[j][i, k] - deriv_matrices[i][j, k])/2

@@ -3,9 +3,12 @@ formats:
     - htmlzip
     - pdf
 build:
-    image: testing
+    os: ubuntu-20.04
+    apt_packages:
+        - graphviz
+    tools:
+        python: "3.10"
 python:
-    version: 3.10
     install:
         - method: pip
           path: .

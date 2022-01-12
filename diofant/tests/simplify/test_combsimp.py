@@ -110,8 +110,8 @@ def test_combsimp_gamma():
     assert combsimp(e**2/gamma(k + 1)) == k/gamma(k)
     a = R(1, 2) + R(1, 3)
     b = a + R(1, 3)
-    assert combsimp(gamma(2*k)/gamma(k)*gamma(k + a)*gamma(k + b))
-    3*2**(2*k + 1)*3**(-3*k - 2)*sqrt(pi)*gamma(3*k + R(3, 2))/2
+    assert combsimp(gamma(2*k)/gamma(k)*gamma(k + a)*gamma(k + b)) == \
+        3*2**(2*k + 1)*3**(-3*k - 2)*sqrt(pi)*gamma(3*k + R(3, 2))/2
 
     A, B = symbols('A B', commutative=False)
     assert combsimp(e*B*A) == combsimp(e)*B*A

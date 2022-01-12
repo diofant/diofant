@@ -3,7 +3,10 @@ import pytest
 from diofant import (Derivative, E, Function, I, Integer, Integral, Mul, O,
                      Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
                      sin, sqrt, symbols)
-from diofant.abc import x, y
+from diofant.abc import h, x, y
+
+
+f = Function('f')
 
 
 __all__ = ()
@@ -102,7 +105,6 @@ def test_sympyissue_5223():
 
 
 def test_sympyissue_3978():
-    f = Function('f')
     assert f(x).series(x, 0, 3, dir='-') == \
         f(0) + x*Subs(Derivative(f(x), x), (x, 0)) + \
         x**2*Subs(Derivative(f(x), x, x), (x, 0))/2 + O(x**3)
@@ -280,3 +282,10 @@ def test_diofantissue_1139():
            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
     x0 = sqrt(2)/2 - sqrt(2)*I/2
     assert (1/(x**4 + 1)).series(x, x0=x0, n=2) == res
+
+
+def test_sympyissue_22493():
+    res = (f(x, y) - h*(f(x, y).diff(x) + f(x, y).diff(y)) +
+           h**2*(f(x, y).diff((x, 2)) + 2*f(x, y).diff(y, x) +
+                 f(x, y).diff((y, 2)))/2 + O(h**3))
+    assert f(x - h, y - h).series(h, x0=0, n=3).doit().simplify() == res

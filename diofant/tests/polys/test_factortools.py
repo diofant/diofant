@@ -517,11 +517,11 @@ def test_factor_list():
 
     R, x = ring('x', EX)
 
-    pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
+    pytest.raises(DomainError, R(EX(sin(1))).factor_list)
 
     R, x, y = ring('x y', FF(2))
 
-    pytest.raises(NotImplementedError, lambda: (x**2 + y**2).factor_list())
+    pytest.raises(NotImplementedError, (x**2 + y**2).factor_list)
 
     R, x, y = ring('x y', ZZ)
 
@@ -741,7 +741,7 @@ def test_gf_factor():
             assert f.factor_list() == g
 
     with using(gf_factor_method='other'):
-        pytest.raises(KeyError, lambda: (x + 1).factor_list())
+        pytest.raises(KeyError, (x + 1).factor_list)
 
     R, x = ring('x', FF(13))
 

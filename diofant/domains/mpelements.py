@@ -12,10 +12,13 @@ from .domainelement import DomainElement
 class RealElement(_mpf, DomainElement):
     """An element of a real domain."""
 
-    def _set_mpf(self, val):
-        self.__mpf__ = val
+    @property
+    def _mpf_(self):
+        return self.__mpf__
 
-    _mpf_ = property(lambda self: self.__mpf__, _set_mpf)
+    @_mpf_.setter
+    def _mpf_(self, val):
+        self.__mpf__ = val
 
     @property
     def parent(self):
@@ -36,10 +39,13 @@ class RealElement(_mpf, DomainElement):
 class ComplexElement(_mpc, DomainElement):
     """An element of a complex domain."""
 
-    def _set_mpc(self, val):
-        self.__mpc__ = val
+    @property
+    def _mpc_(self):
+        return self.__mpc__
 
-    _mpc_ = property(lambda self: self.__mpc__, _set_mpc)
+    @_mpc_.setter
+    def _mpc_(self, val):
+        self.__mpc__ = val
 
     @property
     def parent(self):
@@ -61,6 +67,8 @@ class MPContext(PythonMPContext):
     """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
+        super().__init__()
+
         new = object.__new__
 
         self._prec_rounding = [prec, round_nearest]

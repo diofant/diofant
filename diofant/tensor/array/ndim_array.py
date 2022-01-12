@@ -382,6 +382,3 @@ class ImmutableNDimArray(NDimArray, Expr):
     """An immutable version of the N-dim array."""
 
     _op_priority = 11.0
-
-    def _subs(self, old, new, **hints):
-        return super()._subs(old, new, **hints)

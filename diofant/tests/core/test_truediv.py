@@ -23,6 +23,7 @@ def dotest(s):
 
 def test_basic():
     def s(a, b):
+        # pylint: disable=pointless-statement
         a
         +a
         -a
@@ -36,6 +37,7 @@ def test_basic():
 
 def test_ibasic():
     def s(a, b):
+        # pylint: disable=pointless-statement
         x = a
         x += b
         x = a

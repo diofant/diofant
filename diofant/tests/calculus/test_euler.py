@@ -13,7 +13,7 @@ def test_euler_interface():
     x = Function('x')
     y = Symbol('y')
     t = Symbol('t')
-    pytest.raises(TypeError, lambda: euler())
+    pytest.raises(TypeError, euler)
     pytest.raises(TypeError, lambda: euler(diff(x(t), t)*y(t), [x(t), y]))
     pytest.raises(ValueError, lambda: euler(diff(x(t), t)*x(y), [x(t), x(y)]))
     pytest.raises(TypeError, lambda: euler(diff(x(t), t)**2, x(0)))

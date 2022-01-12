@@ -112,7 +112,7 @@ class MatrixExpr(Expr):
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__pow__')
-    def __rpow__(self, other):  # pragma: no cover
+    def __rpow__(self, other):
         raise NotImplementedError('Matrix Power not defined')
 
     @_sympifyit('other', NotImplemented)
@@ -166,7 +166,7 @@ class MatrixExpr(Expr):
         from .adjoint import Adjoint
         return Adjoint(self)
 
-    def _entry(self, i, j):  # pragma: no cover
+    def _entry(self, i, j):
         raise NotImplementedError('Indexing not implemented '
                                   f'for {self.__class__.__name__}')
 

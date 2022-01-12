@@ -40,8 +40,6 @@ def _get_valued_base_test_variables():
     BA = tensorhead('BA', [Lorentz] * 2, [[1]]*2)
     BA.data = ba_matrix
 
-    BA(i0, i1)*A(-i0)*B(-i1)
-
     # Let's test the diagonal metric, with inverted Minkowski metric:
     LorentzD = TensorIndexType('LorentzD')
     LorentzD.data = [-1, 1, 1, 1]
@@ -376,9 +374,6 @@ def test_contract_automatrix_and_data():
          [3, 8]],
         [[-5, -12],
          [-7, -16]]])).all()
-
-    (G(m0) * G(-m0)).data
-    G(m0, s0, -s1).data
 
     c1 = G(m0, s0, -s1)*G(-m0, s1, -s2)
     c2 = G(m0) * G(-m0)

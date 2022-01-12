@@ -28,7 +28,7 @@ def test_Symbol():
     c, d = symbols('c,d', cls=Dummy)
     assert isinstance(c, Dummy)
     assert isinstance(d, Dummy)
-    pytest.raises(TypeError, lambda: Symbol())
+    pytest.raises(TypeError, Symbol)
     pytest.raises(TypeError, lambda: Symbol(1))
 
 

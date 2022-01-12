@@ -263,6 +263,7 @@ def test_ccode_loops_matrix_vector():
     y = IndexedBase('y')
     i = Idx('i', m)
     j = Idx('j', n)
+    k = Idx('k', m)
 
     s = (
         'for (int i=0; i<m; i++){\n'
@@ -288,6 +289,9 @@ def test_ccode_loops_matrix_vector():
           '   }\n}')
     c = ccode(A[i, i], assign_to=y[i])
     assert c == s2
+
+    pytest.raises(NotImplementedError,
+                  lambda: ccode(A[k, k]*A[i, j]*x[j], assign_to=y[i]))
 
 
 def test_dummy_loops():

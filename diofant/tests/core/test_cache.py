@@ -73,13 +73,13 @@ def test_nocache(clear_imports, monkeypatch):
     assert CACHE == []
 
     # issue sympy/sympy#8840
-    (1 + x)*x  # not raises
+    assert (1 + x)*x is not None  # not raises
 
     # issue sympy/sympy#9413
-    (2*x).is_complex  # not raises
+    assert (2*x).is_complex is None  # not raises
 
     # see commit c459d18
-    sin(x + x)  # not raises
+    assert sin(x + x) is not None  # not raises
 
     # see commit 53dd1eb
     mx = -Symbol('x', negative=False)
@@ -99,7 +99,7 @@ def test_nocache(clear_imports, monkeypatch):
     a = Symbol('a', positive=True)
     f = exp(x*(-a - 1))
     g = sinh(x)
-    f*g  # not raises
+    assert f*g is not None  # not raises
 
 
 def test_sympyissue_8825():

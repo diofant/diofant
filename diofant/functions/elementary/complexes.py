@@ -912,12 +912,12 @@ class principal_branch(Function):
         if arg.has(periodic_argument):
             return
         if arg.is_number and (unbranched_argument(c) != arg or
-                              (arg == 0 and m != () and c != 1)):
+                              (arg == 0 and m and c != 1)):
             if arg == 0:
                 return abs(c)*principal_branch(Mul(*m), period)
             return principal_branch(exp_polar(I*arg)*Mul(*m), period)*abs(c)
         if arg.is_number and ((abs(arg) - period/2).is_negative or arg == period/2) \
-                and m == ():
+                and not m:
             return exp_polar(arg*I)*abs(c)
 
     def _eval_evalf(self, prec):

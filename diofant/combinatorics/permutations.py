@@ -409,6 +409,7 @@ class Cycle(dict):
         Cycle(1, 2, 6)
 
         """
+        super().__init__()
         if not args:
             return
         if len(args) == 1:

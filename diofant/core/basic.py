@@ -8,6 +8,7 @@ from ..utilities import ordered
 from .cache import cacheit
 from .compatibility import iterable
 from .decorators import _sympifyit
+from .evaluate import evaluate
 from .sympify import SympifyError, sympify
 
 
@@ -314,6 +315,13 @@ class Basic:
 
         """
         return self._args
+
+    @property
+    def is_evaluated(self):
+        """Test if an expession is evaluated."""
+        with evaluate(True):
+            expr = self.func(*self.args)
+        return expr == self
 
     @property
     def _sorted_args(self):

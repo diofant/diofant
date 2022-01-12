@@ -132,6 +132,7 @@ def dotest(s):
 
 def test_basic():
     def j(a, b):
+        # pylint: disable=pointless-statement
         a
         +a
         -a
@@ -145,6 +146,7 @@ def test_basic():
 
 def test_ibasic():
     def s(a, b):
+        # pylint: disable=pointless-statement
         x = a
         x += b
         x = a
@@ -485,12 +487,6 @@ def test_doit():
     assert (2*Integral(x, x)).doit() == x**2
 
 
-def test_attribute_error():
-    pytest.raises(AttributeError, lambda: x.cos())
-    pytest.raises(AttributeError, lambda: x.sin())
-    pytest.raises(AttributeError, lambda: x.exp())
-
-
 def test_args():
     assert (x*y).args in ((x, y), (y, x))
     assert (x + y).args in ((x, y), (y, x))
@@ -827,6 +823,10 @@ def test_has_polys():
     assert poly.has(x)
     assert poly.has(x, y, z)
     assert poly.has(x, y, z, t)
+
+    # the following morphs from Add to Mul during processing
+    assert Add(0, (x + y)/z/-2,
+               evaluate=False).as_numer_denom() == (-x - y, 2*z)
 
 
 def test_as_poly_as_expr():
@@ -1422,13 +1422,13 @@ def test_primitive():
 
 
 def test_is_constant():
-    Sum(x, (x, 1, 10)).is_constant() is True
-    Sum(x, (x, 1, n)).is_constant() is False
-    Sum(x, (x, 1, n)).is_constant(y) is True
-    Sum(x, (x, 1, n)).is_constant(n) is False
-    Sum(x, (x, 1, n)).is_constant(x) is True
+    assert Sum(x, (x, 1, 10)).is_constant() is True
+    assert Sum(x, (x, 1, n)).is_constant() is False
+    assert Sum(x, (x, 1, n)).is_constant(y) is True
+    assert Sum(x, (x, 1, n)).is_constant(n) is False
+    assert Sum(x, (x, 1, n)).is_constant(x) is True
     eq = a*cos(x)**2 + a*sin(x)**2 - a
-    eq.is_constant() is True
+    assert eq.is_constant() is True
     assert eq.subs({x: pi, a: 2}) == eq.subs({x: pi, a: 3}) == 0
     assert x.is_constant() is False
     assert x.is_constant(y) is True
@@ -1572,7 +1572,7 @@ def test_round():
     assert a.round(27) == Float('2.999999999999999999999999999')
     assert a.round(30) == Float('2.999999999999999999999999999')
 
-    pytest.raises(TypeError, lambda: x.round())
+    pytest.raises(TypeError, x.round)
 
     # exact magnitude of 10
     assert str(Integer(1).round()) == '1.'
@@ -1697,7 +1697,7 @@ def test_sympyissue_13645():
     hm1 = exp(ln_h) - 1
 
     # not hangs
-    (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))
+    assert (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1)) is not None
 
 
 def test_sympyissue_21334():

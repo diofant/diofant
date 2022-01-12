@@ -492,8 +492,7 @@ class GreaterThan(_Greater):
     >>> print(e1)
     x >= 2
 
-    >>> rels = Ge(x, 2), Gt(x, 2), Le(x, 2), Lt(x, 2)
-    >>> print('%s\n%s\n%s\n%s' % rels)
+    >>> print(f'{Ge(x, 2)}\n{Gt(x, 2)}\n{Le(x, 2)}\n{Lt(x, 2)}')
     x >= 2
     x > 2
     x <= 2
@@ -508,7 +507,7 @@ class GreaterThan(_Greater):
     >>> e2 = x >= 2
     >>> print(e2)
     x >= 2
-    >>> print('e1: %s,    e2: %s' % (e1, e2))
+    >>> print(f'e1: {e1},    e2: {e2}')
     e1: x >= 2,    e2: x >= 2
     >>> e1 == e2
     True
@@ -516,26 +515,22 @@ class GreaterThan(_Greater):
     However, it is also perfectly valid to instantiate a ``*Than`` class less
     succinctly and less conveniently:
 
-    >>> rels = Rel(x, 1, '>='), Relational(x, 1, '>='), GreaterThan(x, 1)
-    >>> print('%s\n%s\n%s' % rels)
+    >>> print(f"{Rel(x, 1, '>=')}\n{Relational(x, 1, '>=')}\n{GreaterThan(x, 1)}")
     x >= 1
     x >= 1
     x >= 1
 
-    >>> rels = Rel(x, 1, '>'), Relational(x, 1, '>'), StrictGreaterThan(x, 1)
-    >>> print('%s\n%s\n%s' % rels)
+    >>> print(f"{Rel(x, 1, '>')}\n{Relational(x, 1, '>')}\n{StrictGreaterThan(x, 1)}")
     x > 1
     x > 1
     x > 1
 
-    >>> rels = Rel(x, 1, '<='), Relational(x, 1, '<='), LessThan(x, 1)
-    >>> print('%s\n%s\n%s' % rels)
+    >>> print(f"{Rel(x, 1, '<=')}\n{Relational(x, 1, '<=')}\n{LessThan(x, 1)}")
     x <= 1
     x <= 1
     x <= 1
 
-    >>> rels = Rel(x, 1, '<'), Relational(x, 1, '<'), StrictLessThan(x, 1)
-    >>> print('%s\n%s\n%s' % rels)
+    >>> print(f"{Rel(x, 1, '<')}\n{Relational(x, 1, '<')}\n{StrictLessThan(x, 1)}")
     x < 1
     x < 1
     x < 1

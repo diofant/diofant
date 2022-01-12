@@ -30,7 +30,6 @@ def _cmp_perm_lists(first, second):
 
 
 def _naive_list_centralizer(self, other, af=False):
-    from .perm_groups import PermutationGroup
     """
     Return a list of elements for the centralizer of a subgroup/set/element.
 
@@ -43,14 +42,15 @@ def _naive_list_centralizer(self, other, af=False):
 
     >>> D = DihedralGroup(4)
     >>> _naive_list_centralizer(D, D)
-    [Permutation([0, 1, 2, 3]), Permutation([2, 3, 0, 1])]
+    [Permutation(3), Permutation(0, 2)(1, 3)]
 
     See Also
     ========
 
-    diofant.combinatorics.perm_groups.centralizer
+    diofant.combinatorics.perm_groups.PermutationGroup.centralizer
 
     """
+    from .perm_groups import PermutationGroup
     from .permutations import _af_commutes_with
     if hasattr(other, 'generators'):
         elements = list(self.generate_dimino(af=True))

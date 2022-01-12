@@ -138,7 +138,7 @@ def test_FracElement_from_expr():
 
 def test_FracElement_to_poly():
     _, x, y = field('x y', ZZ)
-    pytest.raises(ValueError, lambda: (x/y).to_poly())
+    pytest.raises(ValueError, (x/y).to_poly)
 
 
 def test_FracElement__pos_neg__():

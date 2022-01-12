@@ -154,7 +154,10 @@ def solve_linear_inequalities(eqs, *gens, **args):
         non_strict = []
 
         for r, x in zip(diag(*A[:, i])**-1*(b - A*gens_g), c):
-            non_strict.append(r) if x else strict.append(r)
+            if x:
+                non_strict.append(r)
+            else:
+                strict.append(r)
 
         pos = int(A[0, i] > 0)
         other_op = Min if pos else Max
@@ -165,7 +168,7 @@ def solve_linear_inequalities(eqs, *gens, **args):
             res.append(Or(And(opn(g, a), ops(a, b)), And(ops(g, b), opn(b, a))))
         else:
             both = non_strict + strict
-            res.append(op_map[(pos, int(strict == []))](g, other_op(*(both))))
+            res.append(op_map[(pos, int(not strict))](g, other_op(*(both))))
     elif any(_ < 0 for _ in b):
         return false
 
@@ -651,7 +654,7 @@ def _reduce_inequalities(inequalities, symbols):
             components = set(expr.find(lambda u: u.has(gen) and
                                        (u.is_Function or u.is_Pow and
                                         not u.exp.is_Integer)))
-            if components and all(isinstance(i, Abs) or isinstance(i, Piecewise) for i in components):
+            if components and all(isinstance(i, (Abs, Piecewise)) for i in components):
                 pw_part[gen].append((expr, rel))
             else:
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))

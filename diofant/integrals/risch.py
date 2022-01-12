@@ -612,6 +612,7 @@ class DifferentialExtension:
         do worry about it when building the extension.
 
         """
+        # pylint: disable=attribute-defined-outside-init
         if self.level >= -1:
             raise ValueError('The level of the differential extension cannot '
                              'be incremented any further.')
@@ -630,6 +631,7 @@ class DifferentialExtension:
         do worry about it when building the extension.
 
         """
+        # pylint: disable=attribute-defined-outside-init
         if self.level <= -len(self.T):
             raise ValueError('The level of the differential extension cannot '
                              'be decremented any further.')

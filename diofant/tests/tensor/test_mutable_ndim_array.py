@@ -153,7 +153,7 @@ def test_ndim_array_converting():
     dense_array = MutableDenseNDimArray([1, 2, 3, 4], (2, 2))
     alist = dense_array.tolist()
 
-    alist == [[1, 2], [3, 4]]
+    assert alist == [[1, 2], [3, 4]]
 
     matrix = dense_array.tomatrix()
     assert isinstance(matrix, Matrix)
