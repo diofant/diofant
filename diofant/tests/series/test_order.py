@@ -2,7 +2,8 @@ import pytest
 
 from diofant import (Add, Derivative, Function, I, Integer, Integral, O,
                      Rational, Symbol, conjugate, cos, digamma, exp, expand,
-                     ln, log, nan, oo, pi, sin, sqrt, symbols, transpose)
+                     factorial, ln, log, nan, oo, pi, sin, sqrt, symbols,
+                     transpose)
 from diofant.abc import w, x, y, z
 
 
@@ -443,3 +444,9 @@ def test_sympyissue_7599():
 
 def test_sympyissue_15539():
     assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
+
+
+def test_sympyissue_22836():
+    assert O(2**x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))
+    assert O(2**x + factorial(x) + x**x, (x, oo)) == O((1/x)**(-x), (x, oo))
+    assert O(x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))

@@ -34,3 +34,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22493`: Series expansion introduces new variables
 * :sympyissue:`22558`: Error in ODE-Solver-Documentation
 * :sympyissue:`22837`: Solve simplest algebraic equations with dummy parameter
+* :sympyissue:`22836`: Series: Possible improvements for Order of expressions involving factorials
