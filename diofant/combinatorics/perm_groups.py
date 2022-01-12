@@ -221,8 +221,7 @@ class PermutationGroup(Basic):
                 return False
         return True
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Basic.__hash__
 
     def __mul__(self, other):
         """Return the direct product of two permutation groups as a permutation

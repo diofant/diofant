@@ -413,7 +413,7 @@ def test_imps():
     # Here we check if the default returned functions are anonymous - in
     # the sense that we can have more than one function with the same name
     f = implemented_function('f', lambda x: 2*x)
-    g = implemented_function('f', lambda x: math.sqrt(x))
+    g = implemented_function('f', math.sqrt)
     l1 = lambdify(x, f(x))
     l2 = lambdify(x, g(x))
     assert str(f(x)) == str(g(x))

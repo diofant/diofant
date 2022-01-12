@@ -486,6 +486,11 @@ def test_Poly__eq__():
 
     assert (f == g) is True
 
+    assert (x.as_poly() == y.as_poly()) is False
+
+    with pytest.raises(NotImplementedError):
+        assert x.as_poly(modulus=2) == x.as_poly(modulus=3)
+
 
 def test_PurePoly__eq__():
     assert (PurePoly(x, x) == PurePoly(x, x)) is True
@@ -518,6 +523,9 @@ def test_PurePoly__eq__():
     assert (f == 1) is False
 
     assert (f == sin(x)) is False
+
+    with pytest.raises(NotImplementedError):
+        assert PurePoly(x, modulus=2) == PurePoly(x, modulus=3)
 
 
 def test_PurePoly_Poly():

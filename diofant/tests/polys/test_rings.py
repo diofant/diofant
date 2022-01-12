@@ -24,7 +24,7 @@ def test_PolynomialRing___init__():
     assert len(ZZ.inject('x', 'y', 'z').gens) == 3
     assert len(ZZ.inject(x, y, z).gens) == 3
 
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.inject())
+    pytest.raises(GeneratorsNeeded, ZZ.inject)
     pytest.raises(GeneratorsError, lambda: ZZ.inject(0))
 
     assert ZZ.inject(t).poly_ring('x').domain == ZZ.inject(t)
@@ -191,7 +191,7 @@ def test_PolynomialRing_mul():
 def test_PolynomialRing_to_ground():
     R, x = ring('x', ZZ)
 
-    pytest.raises(ValueError, lambda: R.to_ground())
+    pytest.raises(ValueError, R.to_ground)
 
     R2, x, y = ring('x y', ZZ)
 
@@ -1935,11 +1935,11 @@ def test_PolyElement_monic():
 
     assert (2*x + 2).monic() == x + 1
 
-    pytest.raises(ExactQuotientFailed, lambda: (2*x + 1).monic())
+    pytest.raises(ExactQuotientFailed, (2*x + 1).monic)
 
     assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
 
-    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
+    pytest.raises(ExactQuotientFailed, (3*x**2 + 4*x + 5).monic)
 
     R, x = ring('x', QQ)
 
@@ -1955,7 +1955,7 @@ def test_PolyElement_monic():
 
     assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
 
-    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
+    pytest.raises(ExactQuotientFailed, (3*x**2 + 4*x + 5).monic)
 
     f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
 
@@ -2558,7 +2558,7 @@ def test_PolyElement___call__():
     assert f(0) == 1
     assert f(1) == 4
 
-    pytest.raises(ValueError, lambda: f())
+    pytest.raises(ValueError, f)
     pytest.raises(ValueError, lambda: f(0, 1))
 
     pytest.raises(CoercionFailed, lambda: f(QQ(1, 7)))
@@ -2573,7 +2573,7 @@ def test_PolyElement___call__():
     assert f(0) == (y**2 + 1).drop(x)
     assert f(1) == (y**2 + 4).drop(x)
 
-    pytest.raises(ValueError, lambda: f())
+    pytest.raises(ValueError, f)
     pytest.raises(ValueError, lambda: f(0, 1, 2))
 
     pytest.raises(CoercionFailed, lambda: f(1, QQ(1, 7)))

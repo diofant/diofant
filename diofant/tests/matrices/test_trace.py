@@ -25,7 +25,7 @@ def test_Trace():
     assert conjugate(Trace(A)) == trace(Adjoint(A))
     assert transpose(Trace(A)) == Trace(A)
 
-    A / Trace(A)  # Make sure this is possible
+    assert isinstance(A/Trace(A), MatrixExpr)
 
     # Some easy simplifications
     assert trace(Identity(5)) == 5

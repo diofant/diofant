@@ -167,7 +167,7 @@ def test_matplotlib_intro():
         p.save(tmp_file(f'{name}_3d_line_points'))
 
         p.extend(plot_parametric(cos(x), sin(x)))
-        pytest.raises(ValueError, lambda: p.show())
+        pytest.raises(ValueError, p.show)
         del p
 
         # 3d surface single plot.

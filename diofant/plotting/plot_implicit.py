@@ -61,7 +61,7 @@ class ImplicitSeries(BaseSeries):
         if isinstance(self.expr, Equality):
             expr = self.expr.lhs - self.expr.rhs
             equal = True
-        elif self.expr.has(Equality):  # pragma: no cover
+        elif self.expr.has(Equality):
             raise NotImplementedError('The expression is not supported for '
                                       'plotting in uniform meshed plot.')
         else:
@@ -212,7 +212,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     free_symbols = expr.free_symbols
     range_symbols = Tuple(*flatten(xyvar)).free_symbols
     undeclared = free_symbols - range_symbols
-    if len(free_symbols & range_symbols) > 2:  # pragma: no cover
+    if len(free_symbols & range_symbols) > 2:
         raise NotImplementedError('Implicit plotting is not implemented for '
                                   'more than 2 variables')
 

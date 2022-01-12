@@ -1260,7 +1260,7 @@ def test_hidden_indices_for_matrix_multiplication():
     assert D(m0, m1) == D(m0, m1, S.auto_left, -S.auto_right)
 
     pytest.raises(ValueError, lambda: C(True))
-    pytest.raises(ValueError, lambda: C())
+    pytest.raises(ValueError, C)
 
     pytest.raises(ValueError, lambda: E(True, True, True, True))
 

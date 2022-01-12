@@ -1,7 +1,7 @@
 from diofant import (BlockDiagMatrix, BlockMatrix, Expr, Identity,
-                     ImmutableMatrix, Inverse, Matrix, MatrixSymbol, Transpose,
-                     Tuple, block_collapse, blockcut, det, symbols, trace,
-                     transpose)
+                     ImmutableMatrix, Inverse, Matrix, MatrixExpr,
+                     MatrixSymbol, Transpose, Tuple, block_collapse, blockcut,
+                     det, symbols, trace, transpose)
 from diofant.matrices.expressions.blockmatrix import (bc_block_plus_ident,
                                                       bc_dist, bc_matadd,
                                                       bc_matmul, bc_transpose,
@@ -145,7 +145,7 @@ def test_squareBlockMatrix():
 
     assert (block_collapse(X + Identity(m + n)) ==
             BlockMatrix([[A + Identity(n), B], [C, D + Identity(m)]]))
-    X + Identity(m + n)
+    assert isinstance(X + Identity(m + n), MatrixExpr)
 
     assert (X + MatrixSymbol('Q', n + m, n + m)).is_MatAdd
     assert (X * MatrixSymbol('Q', n + m, n + m)).is_MatMul

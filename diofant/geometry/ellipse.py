@@ -758,7 +758,7 @@ class Ellipse(GeometrySet):
         # XXX change True to something like self.angle == 0 if the arbitrarily
         # rotated ellipse is introduced.
         # https://github.com/sympy/sympy/issues/2815)
-        if True:
+        if True:  # pylint: disable=using-constant-test
             rv = []
             if p.x == self.center.x:
                 rv.append(Line(self.center, slope=oo))
@@ -1125,8 +1125,7 @@ class Ellipse(GeometrySet):
                                            self.hradius == o.hradius and
                                            self.vradius == o.vradius)
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = GeometrySet.__hash__
 
     def __contains__(self, o):
         if isinstance(o, Point):

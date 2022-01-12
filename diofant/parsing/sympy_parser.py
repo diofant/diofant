@@ -660,7 +660,7 @@ def eval_expr(code, local_dict, global_dict):
     Generally, ``parse_expr`` should be used.
 
     """
-    expr = eval(
+    expr = eval(  # pylint: disable=eval-used
         code, global_dict, local_dict)  # take local objects in preference
 
     return expr
@@ -738,7 +738,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 
     if global_dict is None:
         global_dict = {}
-        exec('from diofant import *', global_dict)
+        exec('from diofant import *', global_dict)  # pylint: disable=exec-used
 
     global_dict['abs'] = Abs
     global_dict['max'] = Max

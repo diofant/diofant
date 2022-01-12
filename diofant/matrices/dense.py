@@ -855,7 +855,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         diofant.matrices.dense.ones
 
         """
-        self._mat = [value]*len(self)
+        self._mat = [value]*len(self)  # pylint: disable=attribute-defined-outside-init
 
 
 MutableMatrix = MutableDenseMatrix

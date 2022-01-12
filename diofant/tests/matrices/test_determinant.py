@@ -18,7 +18,7 @@ def test_det():
     pytest.raises(ShapeError, lambda: Determinant(C))
     assert det(eye(3)) == 1
     assert det(Matrix(3, 3, [1, 3, 2, 4, 1, 3, 2, 5, 2])) == 17
-    A / det(A)  # Make sure this is possible
+    assert isinstance(A/det(A), MatrixExpr)
 
     pytest.raises(TypeError, lambda: Determinant(1))
 

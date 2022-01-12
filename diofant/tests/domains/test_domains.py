@@ -622,7 +622,7 @@ def test_Ring():
 
 
 def test_PolynomialRing__init():
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.inject())
+    pytest.raises(GeneratorsNeeded, ZZ.inject)
 
 
 def test_FractionField__init():

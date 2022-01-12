@@ -526,7 +526,7 @@ def test_DifferentialExtension_all_attrs():
     assert DE.level == -1
     assert DE.t == t1 == DE.T[DE.level]
     assert DE.d == Poly(1/x, t1) == DE.D[DE.level]
-    pytest.raises(ValueError, lambda: DE.increment_level())
+    pytest.raises(ValueError, DE.increment_level)
     DE.decrement_level()
     assert DE.level == -2
     assert DE.t == t0 == DE.T[DE.level]
@@ -537,7 +537,7 @@ def test_DifferentialExtension_all_attrs():
     assert DE.t == x == DE.T[DE.level] == DE.x
     assert DE.d == Poly(1, x) == DE.D[DE.level]
     assert DE.case == 'base'
-    pytest.raises(ValueError, lambda: DE.decrement_level())
+    pytest.raises(ValueError, DE.decrement_level)
     DE.increment_level()
     DE.increment_level()
     assert DE.level == -1
@@ -562,7 +562,7 @@ def test_DifferentialExtension_extension_flag():
                                           'E_K': [1], 'E_args': [x], 'L_K': [], 'L_args': []})
     assert DE._important_attrs == (None, None, [Poly(1, x), Poly(t, t)], [x, t],
                                    None, None, [1], [x], [], [])
-    pytest.raises(ValueError, lambda: DifferentialExtension())
+    pytest.raises(ValueError, DifferentialExtension)
 
 
 def test_DifferentialExtension_misc():

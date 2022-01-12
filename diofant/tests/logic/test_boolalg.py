@@ -311,10 +311,8 @@ def test_subs():
     assert (A | B).subs({A: True, B: True}) is true
 
 
-"""
-we test for axioms of boolean algebra
-see https://en.wikipedia.org/wiki/Boolean_algebra_(structure)
-"""
+# we test for axioms of boolean algebra
+# see https://en.wikipedia.org/wiki/Boolean_algebra_(structure)
 
 
 def test_commutative():

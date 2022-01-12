@@ -6,7 +6,7 @@ import collections
 
 import pytest
 
-from diofant import (Atom, Basic, Function, I, Integral, Lambda, cos,
+from diofant import (Add, Atom, Basic, Function, I, Integral, Lambda, cos,
                      default_sort_key, exp, gamma, preorder_traversal, sin)
 from diofant.abc import w, x, y, z
 from diofant.core.singleton import S
@@ -111,7 +111,7 @@ def test_xreplace():
     assert Basic(b1, b2).xreplace({b1: b2, b2: b1}) == Basic(b2, b1)
     assert Atom(b1).xreplace({b1: b2}) == Atom(b1)
     assert Atom(b1).xreplace({Atom(b1): b2}) == b2
-    pytest.raises(TypeError, lambda: b1.xreplace())
+    pytest.raises(TypeError, b1.xreplace)
     pytest.raises(TypeError, lambda: b1.xreplace([b1, b2]))
 
 
@@ -211,3 +211,9 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     n = sin(1)**2 + cos(1)**2 - 1
     assert n.is_comparable is not True
     assert n.evalf(2, strict=False).is_comparable is not True
+
+
+def test_is_evaluated():
+    e = Add(x, x, evaluate=False)
+    assert e.is_evaluated is False
+    assert e.doit().is_evaluated is True

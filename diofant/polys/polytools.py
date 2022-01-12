@@ -23,10 +23,9 @@ from .groebnertools import matrix_fglm
 from .monomials import Monomial
 from .orderings import monomial_key
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
-                         ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, MultivariatePolynomialError,
-                         PolificationFailed, PolynomialError,
-                         UnificationFailed)
+                         GeneratorsError, GeneratorsNeeded,
+                         MultivariatePolynomialError, PolificationFailed,
+                         PolynomialError, UnificationFailed)
 from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
 from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
@@ -185,8 +184,7 @@ class Poly(Expr):
         """Allow Diofant to hash Poly instances."""
         return self.rep, self.gens
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Expr.__hash__
 
     @property
     def free_symbols(self):
@@ -963,10 +961,7 @@ class Poly(Expr):
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
-        try:
-            q = F.exquo(G)
-        except ExactQuotientFailed as exc:
-            raise exc.new(self.as_expr(), other.as_expr())
+        q = F.exquo(G)
 
         if retract:
             try:
@@ -2351,7 +2346,7 @@ class Poly(Expr):
         if f.domain != g.domain:
             try:
                 dom = f.domain.unify(g.domain, f.gens)
-            except UnificationFailed:  # pragma: no cover
+            except UnificationFailed:
                 return NotImplemented
 
             f = f.set_domain(dom)
@@ -2370,8 +2365,7 @@ class PurePoly(Poly):
         """Allow Diofant to hash Poly instances."""
         return self.domain, frozenset(self.rep.items())
 
-    def __hash__(self):
-        return super().__hash__()
+    __hash__ = Poly.__hash__
 
     @property
     def free_symbols(self):
@@ -2407,7 +2401,7 @@ class PurePoly(Poly):
         if f.domain != g.domain:
             try:
                 dom = f.domain.unify(g.domain, f.gens)
-            except UnificationFailed:  # pragma: no cover
+            except UnificationFailed:
                 return NotImplemented
 
             f = f.set_domain(dom)

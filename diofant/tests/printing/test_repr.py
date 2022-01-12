@@ -26,7 +26,7 @@ imports = ['from diofant import *',
            'from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing',
            'from diofant.domains.rationalfield import GMPYRationalField, PythonRationalField',
            'from diofant.polys.orderings import GradedLexOrder, LexOrder']
-exec('\n'.join(imports), ENV)
+exec('\n'.join(imports), ENV)  # pylint: disable=exec-used
 
 
 def sT(expr, string):
@@ -35,7 +35,7 @@ def sT(expr, string):
     the condition eval(repr(expr))==expr holds.
     """
     assert repr(expr) == string
-    assert eval(string, ENV) == expr
+    assert eval(string, ENV) == expr  # pylint: disable=eval-used
 
 
 def test_printmethod():
@@ -147,7 +147,7 @@ def test_Symbol_two_assumptions():
     s1 = "Symbol('x', integer=True, negative=False)"
     s2 = "Symbol('x', negative=False, integer=True)"
     assert repr(x) in (s1, s2)
-    assert eval(repr(x), ENV) == x
+    assert eval(repr(x), ENV) == x  # pylint: disable=eval-used
 
 
 def test_Symbol_no_special_commutative_treatment():

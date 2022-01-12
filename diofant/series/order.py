@@ -267,7 +267,7 @@ class Order(Expr):
             order_symbols = self.args[1:]
         else:
             if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
-                    not all(p == self.point[0] for p in self.point)):  # pragma: no cover
+                    not all(p == self.point[0] for p in self.point)):
                 raise NotImplementedError('Order at points other than 0 '
                                           f'or oo not supported, got {self.point} as a point.')
             if order_symbols and order_symbols[0][1] != self.point[0]:
@@ -307,7 +307,7 @@ class Order(Expr):
             return False
         if expr.is_Order:
             if (not all(p == expr.point[0] for p in expr.point) and
-                    not all(p == self.point[0] for p in self.point)):  # pragma: no cover
+                    not all(p == self.point[0] for p in self.point)):
                 raise NotImplementedError('Order at points other than 0 '
                                           f'or oo not supported, got {self.point} as a point.')
             else:

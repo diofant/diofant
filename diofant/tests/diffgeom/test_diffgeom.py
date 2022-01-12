@@ -67,7 +67,7 @@ def test_coords():
     rect = CoordSystem('rect', patch)
     polar = CoordSystem('polar', patch)
     polar.connect_to(rect, [r, theta], [r*cos(theta), r*sin(theta)])
-    polar.coord_tuple_transform_to(rect, [0, 2]) == Matrix([[0], [0]])
+    assert polar.coord_tuple_transform_to(rect, [0, 2]) == Matrix([[0], [0]])
 
 
 def test_commutator():

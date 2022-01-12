@@ -769,14 +769,13 @@ class Formula:
                                 if n0.free_symbols:
                                     raise ValueError('Value should not be true')
                                 vals.append(n0)
-            else:
-                values = []
-                for a, vals in zip(self.symbols, critical_values):
-                    a0 = repl[a]
-                    min_ = floor(min(vals))
-                    max_ = ceiling(max(vals))
-                    values.append([a0 + n for n in range(min_, max_ + 1)])
-                result.extend(dict(zip(self.symbols, l)) for l in product(*values))
+            values = []
+            for a, vals in zip(self.symbols, critical_values):
+                a0 = repl[a]
+                min_ = floor(min(vals))
+                max_ = ceiling(max(vals))
+                values.append([a0 + n for n in range(min_, max_ + 1)])
+            result.extend(dict(zip(self.symbols, l)) for l in product(*values))
         return result
 
 
@@ -1735,7 +1734,7 @@ def try_lerchphi(func):
         bvalue = bbuckets[key]
         paired[key] = (list(value), list(bvalue))
         bbuckets.pop(key, None)
-    if bbuckets != {}:
+    if bbuckets:
         return
     if not Integer(0) in abuckets:
         return
@@ -1784,12 +1783,11 @@ def try_lerchphi(func):
                                       ' with linear denominators')
         indep, [dep] = denom.as_coeff_mul(t)
         n = 1
+        assert dep != t
         if dep.is_Pow:
             n = dep.exp
             dep = dep.base
-        if dep == t:
-            a == 0
-        elif dep.is_Add:
+        if dep.is_Add:
             a, tmp = dep.as_independent(t)
             b = 1
             if tmp != t:

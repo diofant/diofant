@@ -3360,7 +3360,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     equation with polynomial coefficients at an ordinary point. A homogenous
     differential equation is of the form
 
-    .. math :: P(x)\frac{d^2y}{dx^2} + Q(x)\frac{dy}{dx} + R(x) = 0
+    .. math :: P(x)\frac{d^2y}{dx^2} + Q(x)\frac{dy}{dx} + R(x) y = 0
 
     For simplicity it is assumed that `P(x)`, `Q(x)` and `R(x)` are polynomials,
     it is sufficient that `\frac{Q(x)}{P(x)}` and `\frac{R(x)}{P(x)}` exists at
@@ -3496,7 +3496,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     equation with polynomial coefficients at a regular point. A second order
     homogenous differential equation is of the form
 
-    .. math :: P(x)\frac{d^2y}{dx^2} + Q(x)\frac{dy}{dx} + R(x) = 0
+    .. math :: P(x)\frac{d^2y}{dx^2} + Q(x)\frac{dy}{dx} + R(x) y = 0
 
     A point is said to regular singular at `x0` if `x - x0\frac{Q(x)}{P(x)}`
     and `(x - x0)^{2}\frac{R(x)}{P(x)}` are analytic at `x0`. For simplicity
@@ -5133,9 +5133,8 @@ def ode_lie_group(eq, func, order, match):
 
                 else:
                     raise NotImplementedError
-    else:
-        raise NotImplementedError(f'The given ODE {eq!s}'
-                                  ' cannot be solved by the lie group method')
+    raise NotImplementedError(f'The given ODE {eq!s}'
+                              ' cannot be solved by the lie group method')
 
 
 def _lie_group_remove(coords):

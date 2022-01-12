@@ -1,3 +1,5 @@
+from mpmath.libmp.libmpf import prec_to_dps
+
 from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
                      oo, pi, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
@@ -195,12 +197,14 @@ class log(Function):
                         return n + log(arg // den) / log(base)
                     else:
                         return n + log(arg / den) / log(base)
-                else:
-                    return log(arg)/log(base)
             except ValueError:
                 pass
             if base is not E:
-                return cls(arg)/cls(base)
+                if arg.is_Float:
+                    dps = prec_to_dps(arg._prec + 4)
+                    return cls(arg)/cls(base).evalf(dps)
+                else:
+                    return cls(arg)/cls(base)
             else:
                 return cls(arg)
 

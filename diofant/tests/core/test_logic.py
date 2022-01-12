@@ -39,7 +39,7 @@ def test_fuzzy_and():
     assert [fuzzy_and([w]) for w in [U, T, F]] == [U, T, F]
     assert fuzzy_and([T, F, U]) == F
     assert fuzzy_and([]) == T
-    pytest.raises(TypeError, lambda: fuzzy_and())
+    pytest.raises(TypeError, fuzzy_and)
 
 
 def test_fuzzy_or():
@@ -52,7 +52,7 @@ def test_fuzzy_or():
     assert [fuzzy_or([w]) for w in [U, T, F]] == [U, T, F]
     assert fuzzy_or([T, F, U]) == T
     assert fuzzy_or([]) == F
-    pytest.raises(TypeError, lambda: fuzzy_or())
+    pytest.raises(TypeError, fuzzy_or)
 
 
 def test_logic_cmp():

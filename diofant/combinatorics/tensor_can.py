@@ -3,23 +3,21 @@ from .permutations import Permutation, _af_invert, _af_new, _af_rmul
 from .util import _distribute_gens_by_base, _orbits_transversals_from_bsgs
 
 
-"""
-    References for tensor canonicalization:
-
-    [1] R. Portugal "Algorithmic simplification of tensor expressions",
-        J. Phys. A 32 (1999) 7779-7789
-
-    [2] R. Portugal, B.F. Svaiter "Group-theoretic Approach for Symbolic
-        Tensor Manipulation: I. Free Indices"
-        arXiv:math-ph/0107031v1
-
-    [3] L.R.U. Manssur, R. Portugal "Group-theoretic Approach for Symbolic
-        Tensor Manipulation: II. Dummy Indices"
-        arXiv:math-ph/0107032v1
-
-    [4] xperm.c part of XPerm written by J. M. Martin-Garcia
-        http://www.xact.es/index.html
-"""
+#   References for tensor canonicalization:
+#
+#   [1] R. Portugal "Algorithmic simplification of tensor expressions",
+#       J. Phys. A 32 (1999) 7779-7789
+#
+#   [2] R. Portugal, B.F. Svaiter "Group-theoretic Approach for Symbolic
+#       Tensor Manipulation: I. Free Indices"
+#       arXiv:math-ph/0107031v1
+#
+#   [3] L.R.U. Manssur, R. Portugal "Group-theoretic Approach for Symbolic
+#       Tensor Manipulation: II. Dummy Indices"
+#       arXiv:math-ph/0107032v1
+#
+#   [4] xperm.c part of XPerm written by J. M. Martin-Garcia
+#       http://www.xact.es/index.html
 
 
 def dummy_sgs(dummies, sym, n):

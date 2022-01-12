@@ -1743,7 +1743,7 @@ def translate(s):
         return '\\' + s
     else:
         # Process modifiers, if any, and recurse
-        for key in sorted(modifier_dict, key=lambda k: len(k), reverse=True):
+        for key in sorted(modifier_dict, key=len, reverse=True):
             if s.lower().endswith(key) and len(s) > len(key):
                 return modifier_dict[key](translate(s[:-len(key)]))
         return s

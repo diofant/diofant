@@ -97,7 +97,7 @@ def test_units():
 
 
 def test_poly_frac():
-    pytest.raises(GeneratorsNeeded, lambda: QQ.inject())
+    pytest.raises(GeneratorsNeeded, QQ.inject)
     pytest.raises(GeneratorsNeeded, lambda: QQ.inject().field)
 
 

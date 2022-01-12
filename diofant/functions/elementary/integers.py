@@ -1,3 +1,5 @@
+from mpmath.libmp.libmpf import prec_to_dps
+
 from ...core import (Add, Function, Ge, Gt, I, Integer, Le, Lt,
                      PrecisionExhausted)
 from ...logic import false, true
@@ -46,25 +48,33 @@ class RoundFunction(Function):
             return ipart
 
         # Evaluate npart numerically if independent of spart
-        if npart and (
-            not spart or
-            npart.is_extended_real and (spart.is_imaginary or (I*spart).is_extended_real) or
-                npart.is_imaginary and spart.is_extended_real):
+        if npart and (not spart or npart.is_extended_real and
+                      (spart.is_imaginary or (I*spart).is_extended_real) or
+                      npart.is_imaginary and spart.is_extended_real):
+            npart_int = None
             try:
                 from ...core.evalf import DEFAULT_MAXPREC as TARGET
                 prec = 10
-                while True:
-                    r, i = cls(npart, evaluate=False).evalf(prec).as_real_imag()
-                    if 2**prec > max(abs(int(r)), abs(int(i))) + 10:
+                r, i = Integer(0), Integer(0)
+                npart_re, npart_im = npart.as_real_imag()
+                while prec < TARGET:
+                    dps = prec_to_dps(prec)
+                    r, i = npart_re.evalf(dps), npart_im.evalf(dps)
+                    if ((not r or int(2**prec*abs(r)) > 2**prec*abs(int(r))) and
+                            (not i or int(2**prec*abs(i)) > 2**prec*abs(int(i)))):
+                        npart_int = cls(r) + cls(i)*I
                         break
-                    else:
-                        if prec >= TARGET:
-                            raise PrecisionExhausted
-                        prec += 10
-                ipart += Integer(r) + Integer(i)*I
+                    prec += 10
+                else:
+                    raise PrecisionExhausted
+            except PrecisionExhausted:
+                npart_int = cls(r) + cls(i)*I
+                if not npart.equals(npart_int):
+                    npart_int = None
+
+            if npart_int is not None:
+                ipart += npart_int
                 npart = Integer(0)
-            except (PrecisionExhausted, NotImplementedError):
-                pass
 
         spart += npart
         if not spart:

@@ -490,6 +490,7 @@ class FactKB(dict):
             ['\t%s: %s' % i for i in sorted(self.items())])
 
     def __init__(self, rules):
+        super().__init__()
         self.rules = rules
 
     def _tell(self, k, v):

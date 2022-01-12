@@ -39,12 +39,12 @@ def test_piecewise():
 
     p = Piecewise((x, True), evaluate=False)
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((x) if (True) else None)'
 
     p = Piecewise((x, x < 0))
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((x) if (x < 0) else None)'
 
     p = Piecewise(
@@ -53,7 +53,7 @@ def test_piecewise():
         (0, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((1) if (x < 1) else (((2) if (x < 2) else ' \
         '(((0) if (True) else None)))))'
 
@@ -62,7 +62,7 @@ def test_piecewise():
         (2, x < 2),
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((1) if (x < 1) else (((2) if (x < 2) else None)))'
 
     p = Piecewise(
@@ -71,7 +71,7 @@ def test_piecewise():
         (0, True),
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((x) if (x < 1) else (((x**2) if (((x <= 4) and ' \
         '(x > 3))) else (((0) if (True) else None)))))'
 
@@ -82,7 +82,7 @@ def test_piecewise():
         (0, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((x**2) if (x < 0) else (((x) if (((x >= 0) and (x < 1))) ' \
         'else (((-x + 2) if (x >= 1) else (((0) if (True) else None)))))))'
 
@@ -92,7 +92,7 @@ def test_piecewise():
         (2 - x, x >= 1),
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((x**2) if (x < 0) else (((x) if (((x >= 0) and ' \
         '(x < 1))) else (((-x + 2) if (x >= 1) else None)))))'
 
@@ -105,7 +105,7 @@ def test_piecewise():
         (6, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == ('((1) if (x >= 1) else (((2) if (x >= 2) else (((3) if '
                  '(x >= 3) else (((4) if (x >= 4) else (((5) if (x >= 5) else (((6) if '
                  '(True) else None)))))))))))')
@@ -119,7 +119,7 @@ def test_piecewise():
         (6, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((1) if (x <= 1) else (((2) if (x <= 2) else (((3) if ' \
         '(x <= 3) else (((4) if (x <= 4) else (((5) if (x <= 5) else (((6) if ' \
         '(True) else None)))))))))))'
@@ -133,7 +133,7 @@ def test_piecewise():
         (6, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == ('((1) if (x > 1) else (((2) if (x > 2) else (((3) if '
                  '(x > 3) else (((4) if (x > 4) else (((5) if (x > 5) else (((6) if '
                  '(True) else None)))))))))))')
@@ -147,7 +147,7 @@ def test_piecewise():
         (6, True)
     )
     l = lambdarepr(p)
-    eval(h + l)
+    eval(h + l)  # pylint: disable=eval-used
     assert l == '((1) if (x < 1) else (((2) if (x < 2) else (((3) if ' \
         '(x < 3) else (((4) if (x < 4) else (((5) if (x < 5) else (((6) if ' \
         '(True) else None)))))))))))'

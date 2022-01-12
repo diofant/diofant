@@ -1507,7 +1507,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 args, nc = self.args_cnc()
 
-        d = sift(args, lambda x: has(x))
+        d = sift(args, has)
         depend = d[True]
         indep = d[False]
         if func is Add:  # all terms were treated as commutative

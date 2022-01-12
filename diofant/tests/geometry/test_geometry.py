@@ -441,7 +441,7 @@ def test_polygon():
     assert p5.encloses_point(Point(4, 0)) is False
     assert p1.encloses(Circle(Point(2.5, 2.5), 5)) is False
     assert p1.encloses(Ellipse(Point(2.5, 2), 5, 6)) is False
-    p5.plot_interval('x') == [x, 0, 1]
+    assert p5.plot_interval('x') == [x, 0, 1]
     assert p5.distance(
         Polygon(Point(10, 10), Point(14, 14), Point(10, 14))) == 6 * sqrt(2)
     assert p5.distance(

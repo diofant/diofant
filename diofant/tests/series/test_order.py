@@ -2,7 +2,8 @@ import pytest
 
 from diofant import (Add, Derivative, Function, I, Integer, Integral, O,
                      Rational, Symbol, conjugate, cos, digamma, exp, expand,
-                     ln, log, nan, oo, pi, sin, sqrt, symbols, transpose)
+                     factorial, ln, log, nan, oo, pi, sin, sqrt, symbols,
+                     transpose)
 from diofant.abc import w, x, y, z
 
 
@@ -265,12 +266,12 @@ def test_getn():
     assert O(x/log(x)).getn() == 1
     assert O(x**2/log(x)**2).getn() == 2
     assert O(x*log(x)).getn() == 1
-    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
-    pytest.raises(NotImplementedError, lambda: O(x**y*log(x)**z, (x, 0)).getn())
-    pytest.raises(NotImplementedError, lambda: O(x**pi*log(x), (x, 0)).getn())
+    pytest.raises(NotImplementedError, (O(x) + O(y)).getn)
+    pytest.raises(NotImplementedError, O(x**y*log(x)**z, (x, 0)).getn)
+    pytest.raises(NotImplementedError, O(x**pi*log(x), (x, 0)).getn)
 
     f = Function('f')
-    pytest.raises(NotImplementedError, lambda: O(f(x)).getn())
+    pytest.raises(NotImplementedError, O(f(x)).getn)
 
 
 def test_diff():
@@ -286,7 +287,7 @@ def test_getO():
     assert O(x).removeO() == 0
     assert (z + O(x) + O(y)).getO() == O(x) + O(y)
     assert (z + O(x) + O(y)).removeO() == z
-    pytest.raises(NotImplementedError, lambda: (O(x) + O(y)).getn())
+    pytest.raises(NotImplementedError, (O(x) + O(y)).getn)
 
 
 def test_leading_term():
@@ -443,3 +444,9 @@ def test_sympyissue_7599():
 
 def test_sympyissue_15539():
     assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
+
+
+def test_sympyissue_22836():
+    assert O(2**x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))
+    assert O(2**x + factorial(x) + x**x, (x, oo)) == O((1/x)**(-x), (x, oo))
+    assert O(x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))

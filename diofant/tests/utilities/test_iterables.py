@@ -333,7 +333,7 @@ def test_multiset_permutations():
             print(i)
             for p in multiset_permutations([0, 0, 1, 0, 1], i):
                 print(p)
-    assert capture(lambda: test()) == textwrap.dedent("""\
+    assert capture(test) == textwrap.dedent("""\
         1
         [0]
         [1]
@@ -530,7 +530,7 @@ def test_ordered():
     assert list(ordered((x, y))) == [x, y]
 
     seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]],
-                 (lambda x: len(x), lambda x: sum(x))]
+                 (len, sum)]
     assert list(ordered(seq, keys, default=False, warn=False)) == \
         [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
     pytest.raises(ValueError, lambda:
