@@ -234,7 +234,7 @@ def simplex(c, m, b):
         status = solve_simplex(tableau, basis, phase1=True)
         assert status == 0
 
-        if tableau[-1, -1].is_nonzero:
+        if tableau[-1, -1].is_nonzero:  # pylint: disable=unsubscriptable-object
             raise InfeasibleProblem
 
         del tableau[-1, :]  # pylint: disable=unsupported-delete-operation

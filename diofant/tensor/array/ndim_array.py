@@ -251,6 +251,7 @@ class NDimArray(DefaultPrinting):
 
         """
         def f(sh, shape_left, i, j):
+            # pylint: disable=unsubscriptable-object
             if len(shape_left) == 1:
                 return '['+', '.join([str(self[e]) for e in range(i, j)])+']'
 
@@ -276,6 +277,7 @@ class NDimArray(DefaultPrinting):
         """
 
         def f(sh, shape_left, i, j):
+            # pylint: disable=unsubscriptable-object
             if len(shape_left) == 1:
                 return [self[e] for e in range(i, j)]
             result = []

@@ -82,7 +82,8 @@ def test_sympyissue_3449():
 
 
 def test_sympyissue_3866():
-    assert --sqrt(sqrt(5) - 1) == sqrt(sqrt(5) - 1)
+    # pylint: disable=nonexistent-operator
+    assert -(-sqrt(sqrt(5) - 1)) == sqrt(sqrt(5) - 1)
 
 
 def test_negative_one():

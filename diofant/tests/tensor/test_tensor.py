@@ -1249,7 +1249,7 @@ def test_hidden_indices_for_matrix_multiplication():
     assert _is_equal(A(m0)*A(m1) + A(m1)*A(m0), A(m1)*A(m0) + A(m0)*A(m1))
 
     assert _is_equal(A(m0), (2*A(m0))/2)
-    assert _is_equal(A(m0), -(-A(m0)))
+    assert _is_equal(A(m0), -(-A(m0)))  # pylint: disable=nonexistent-operator
     assert _is_equal(2*A(m0) - 3*A(m0), -A(m0))
     assert _is_equal(2*D(m0, m1) - 5*D(m1, m0), -3*D(m0, m1))
 

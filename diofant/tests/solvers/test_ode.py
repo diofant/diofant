@@ -508,7 +508,7 @@ def test_checksysodesol():
 
     pytest.raises(ValueError, lambda: checksysodesol(eq, sol, func=(f(t), g(t, C0))))
     pytest.raises(ValueError, lambda: checksysodesol(eq, [Eq(f(t), g(t)), Eq(g(t), 0)]))
-    pytest.raises(ValueError, lambda: checksysodesol(eq, (sol[0],)))
+    pytest.raises(ValueError, lambda: checksysodesol(eq, (sol[0],)))  # pylint: disable=unsubscriptable-object
 
     assert checksysodesol(eq, [sol[0], Eq(sol[1].lhs, 0)])[0] is False
 

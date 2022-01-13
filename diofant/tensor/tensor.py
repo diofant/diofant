@@ -2784,6 +2784,7 @@ class TensAdd(TensExpr):
         raise ValueError('cannot divide by a tensor')
 
     def __getitem__(self, item):
+        # pylint: disable=unsubscriptable-object
         return self.data[item]
 
     def contract_delta(self, delta):
