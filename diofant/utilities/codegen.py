@@ -768,7 +768,7 @@ class CCodeGen(CodeGen):
 
     def __init__(self, project='project', printer=None,
                  preprocessor_statements=None, cse=False):
-        super(CCodeGen, self).__init__(project=project, cse=cse)
+        super().__init__(project=project, cse=cse)
         self.printer = printer or CCodePrinter()
 
         self.preprocessor_statements = preprocessor_statements
