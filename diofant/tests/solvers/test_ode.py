@@ -2998,3 +2998,26 @@ def test_sympyissue_22294():
     eq = Eq(f(x).diff(x) - f(x), -x*f(x)**2)
     assert 'Bernoulli' in classify_ode(eq)
     assert dsolve(eq) == Eq(f(x), exp(x)/(exp(x)*(x - 1) + C1))
+
+
+def test_sympyissue_22862():
+    eq = Eq(f(x)**2*f(x).diff(x), sqrt(f(x)))
+    res = [Eq(f(x), root(C1 + 5*x/2, 5)**2),
+           Eq(f(x), root(C1 + x, 5)**2*(-root(8, 5)*root(25, 5) +
+              root(8, 5)*root(5**9, 10) +
+              root(2, 10)*root(25, 5)*I*sqrt(-sqrt(5) + 5) +
+              root(2, 10)*root(5**9, 10)*I*sqrt(-sqrt(5) + 5))/8),
+           Eq(f(x), -root(C1 + x, 5)**2*(-root(8, 5)*root(5**9, 10) +
+              root(8, 5)*root(25, 5) +
+              root(2, 10)*root(25, 5)*I*sqrt(-sqrt(5) + 5) +
+              root(2, 10)*root(5**9, 10)*I*sqrt(-sqrt(5) + 5))/8),
+           Eq(f(x), -root(C1 + x, 5)**2*(root(8, 5)*root(25, 5) +
+              root(8, 5)*root(5**9, 10) -
+              root(2, 10)*root(25, 5)*I*sqrt(sqrt(5) + 5) +
+              root(2, 10)*root(5**9, 10)*I*sqrt(sqrt(5) + 5))/8),
+           Eq(f(x), root(C1 + x, 5)**2*(-root(8, 5)*root(5**9, 10) -
+              root(8, 5)*root(25, 5) -
+              root(2, 10)*root(25, 5)*I*sqrt(sqrt(5) + 5) +
+              root(2, 10)*root(5**9, 10)*I*sqrt(sqrt(5) + 5))/8)]
+    assert 'separable' in classify_ode(eq)
+    assert dsolve(eq) == res
