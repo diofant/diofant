@@ -761,9 +761,9 @@ class Implies(BooleanFunction):
                 else:
                     newargs.append(x)
             A, B = newargs
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(f'{len(args)} operand(s) used for an Implies '
-                             f'(pairs are required): {args!s}')
+                             f'(pairs are required): {args!s}') from exc
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -883,8 +883,8 @@ class ITE(BooleanFunction):
     def eval(cls, *args):
         try:
             a, b, c = args
-        except ValueError:
-            raise ValueError('ITE expects exactly 3 arguments')
+        except ValueError as exc:
+            raise ValueError('ITE expects exactly 3 arguments') from exc
         if a == true:
             return b
         elif a == false:

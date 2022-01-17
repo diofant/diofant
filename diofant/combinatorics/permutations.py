@@ -2673,8 +2673,8 @@ class Permutation(Basic):
                 val = N[inversion[k]]
                 perm.append(val)
                 N.remove(val)
-        except IndexError:
-            raise ValueError('The inversion vector is not valid.')
+        except IndexError as exc:
+            raise ValueError('The inversion vector is not valid.') from exc
         perm.extend(N)
         return _af_new(perm)
 

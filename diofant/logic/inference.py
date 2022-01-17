@@ -27,8 +27,8 @@ def literal_symbol(literal):
             return literal_symbol(literal.args[0])
         else:
             raise ValueError
-    except (AttributeError, ValueError):
-        raise ValueError('Argument must be a boolean literal.')
+    except (AttributeError, ValueError) as exc:
+        raise ValueError('Argument must be a boolean literal.') from exc
 
 
 def satisfiable(expr, algorithm='dpll2', all_models=False):

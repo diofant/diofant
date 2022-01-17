@@ -307,9 +307,9 @@ class Variable:
         """
         try:
             return self._datatype[language.upper()]
-        except KeyError:
+        except KeyError as exc:
             raise CodeGenError('Has datatypes for languages: %s' %
-                               ', '.join(self._datatype))
+                               ', '.join(self._datatype)) from exc
 
 
 class Argument(Variable):

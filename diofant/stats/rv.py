@@ -829,8 +829,8 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
         fn(*args)
         if condition is not None:
             given_fn(*args)
-    except (TypeError, ValueError):
-        raise TypeError('Expr/condition too complex for lambdify')
+    except (TypeError, ValueError) as exc:
+        raise TypeError('Expr/condition too complex for lambdify') from exc
 
     def return_generator():
         count = 0
@@ -1018,8 +1018,9 @@ class NamedArgsMixin:
     def __getattr__(self, attr):
         try:
             return self.args[self._argnames.index(attr)]
-        except ValueError:
-            raise AttributeError(f"'{type(self).__name__}' object has not attribute '{attr}'")
+        except ValueError as exc:
+            raise AttributeError(f"'{type(self).__name__}' object "
+                                 f"has not attribute '{attr}'") from exc
 
 
 def _value_check(condition, message):

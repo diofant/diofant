@@ -90,8 +90,8 @@ def _str_to_Decimal_dps(s):
     """Convert a string to pair of a Decimal instance and its precision."""
     try:
         num = decimal.Decimal(s)
-    except decimal.InvalidOperation:
-        raise ValueError(f'string-float not recognized: {s}')
+    except decimal.InvalidOperation as exc:
+        raise ValueError(f'string-float not recognized: {s}') from exc
     else:
         return num, len(num.as_tuple().digits)
 
@@ -186,7 +186,7 @@ def mod_inverse(a, m):
                 c = x % m
             if a < 0:
                 c -= m
-    except ValueError:
+    except ValueError as exc:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
             raise TypeError(filldedent("""
@@ -194,10 +194,11 @@ def mod_inverse(a, m):
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert"""))
+                sympy.polys.polytools.invert""")) from exc
         big = (m > 1)
         if not (big is S.true or big is S.false):
-            raise ValueError(f'm > 1 did not evaluate; try to simplify {m}')
+            raise ValueError('m > 1 did not evaluate; '
+                             f'try to simplify {m}') from exc
         elif big:
             c = 1/a
     if c is None:
@@ -890,8 +891,8 @@ class Rational(Number):
         try:
             f = fractions.Fraction(p)/fractions.Fraction(q)
             p, q = f.numerator, f.denominator
-        except ValueError:
-            raise TypeError(f'invalid input: {p}, {q}')
+        except ValueError as exc:
+            raise TypeError(f'invalid input: {p}, {q}') from exc
         except ZeroDivisionError:
             if p == 0:
                 return nan
@@ -1217,8 +1218,9 @@ class Integer(Rational):
     def __new__(cls, i):
         try:
             i = _int_dtype(i)
-        except TypeError:
-            raise TypeError('Integer can only work with integer expressions.')
+        except TypeError as exc:
+            raise TypeError('Integer can only work with '
+                            'integer expressions.') from exc
 
         if i == 0:
             return S.Zero

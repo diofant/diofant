@@ -305,8 +305,9 @@ class Poly(Expr):
             try:
                 return (self.domain, self.per, self.rep,
                         self.rep.ring(self.domain.convert(other)))
-            except CoercionFailed:
-                raise UnificationFailed(f"can't unify {self} with {other}")
+            except CoercionFailed as exc:
+                raise UnificationFailed(f"can't unify {self} "
+                                        f'with {other}') from exc
 
         newring = self.rep.ring.unify(other.rep.ring)
         gens = newring.symbols
@@ -499,9 +500,9 @@ class Poly(Expr):
         for gen in gens:
             try:
                 index = self.gens.index(gen)
-            except ValueError:
-                raise GeneratorsError(
-                    f"{self} doesn't have {gen} as generator")
+            except ValueError as exc:
+                raise GeneratorsError(f"{self} doesn't have "
+                                      f'{gen} as generator') from exc
             else:
                 indices.add(index)
 
@@ -741,9 +742,9 @@ class Poly(Expr):
             for gen, value in mapping.items():
                 try:
                     index = gens.index(gen)
-                except ValueError:
-                    raise GeneratorsError(
-                        f"{self} doesn't have {gen} as generator")
+                except ValueError as exc:
+                    raise GeneratorsError(f"{self} doesn't have "
+                                          f'{gen} as generator') from exc
                 else:
                     gens[index] = value
 
@@ -975,8 +976,9 @@ class Poly(Expr):
         """Returns level associated with the given generator."""
         try:
             return self.rep.ring.index(gen)
-        except ValueError:
-            raise PolynomialError(f'a valid generator expected, got {gen}')
+        except ValueError as exc:
+            raise PolynomialError('a valid generator expected, '
+                                  f'got {gen}') from exc
 
     def degree(self, gen=0):
         """
@@ -1328,9 +1330,10 @@ class Poly(Expr):
 
         try:
             result = f.rep.eval(j, a)
-        except CoercionFailed:
+        except CoercionFailed as exc:
             if not auto:
-                raise DomainError(f"can't evaluate at {a} in {f.domain}")
+                raise DomainError(f"can't evaluate at {a}"
+                                  f'in {f.domain}') from exc
             else:
                 a_domain, [a] = construct_domain([a])
                 new_domain = f.domain.unify(a_domain, f.gens)
@@ -1920,8 +1923,9 @@ class Poly(Expr):
                       for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
-            except TypeError:
-                raise DomainError(f'Numerical domain expected, got {self.domain}')
+            except TypeError as exc:
+                raise DomainError('Numerical domain expected, '
+                                  f'got {self.domain}') from exc
 
         dps = mpmath.mp.dps
         mpmath.mp.dps = n
@@ -1937,9 +1941,10 @@ class Poly(Expr):
             # so we make sure this convention holds here, too.
             roots = list(map(sympify,
                              sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
-        except mpmath.libmp.NoConvergence:
-            raise mpmath.libmp.NoConvergence(
-                f'convergence to root failed; try n < {n} or maxsteps > {maxsteps}')
+        except mpmath.libmp.NoConvergence as exc:
+            raise mpmath.libmp.NoConvergence('convergence to root failed; try '
+                                             f'n < {n} or maxsteps > '
+                                             f'{maxsteps}') from exc
         finally:
             mpmath.mp.dps = dps
 
@@ -2416,8 +2421,9 @@ class PurePoly(Poly):
             try:
                 return (self.domain, self.per, self.rep,
                         self.rep.ring(self.domain.convert(other)))
-            except CoercionFailed:
-                raise UnificationFailed(f"can't unify {self} with {other}")
+            except CoercionFailed as exc:
+                raise UnificationFailed(f"can't unify {self} "
+                                        f'with {other}') from exc
 
         if len(self.gens) != len(other.gens):
             raise UnificationFailed(f"can't unify {self} with {other}")
@@ -2490,8 +2496,8 @@ def parallel_poly_from_expr(exprs, *gens, **args):
     for i in _failed:
         try:
             exprs[i] = Poly._from_expr(exprs[i], opt)
-        except GeneratorsNeeded:
-            raise PolificationFailed(opt, origs, exprs, True)
+        except GeneratorsNeeded as exc:
+            raise PolificationFailed(opt, origs, exprs, True) from exc
 
     if opt.domain is None:
         opt.domain = ZZ
@@ -2538,7 +2544,7 @@ def degree(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('degree', 1, exc)
+        raise ComputationFailed('degree', 1, exc) from exc
 
     return sympify(F.degree(opt.gen))
 
@@ -2559,7 +2565,7 @@ def LC(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('LC', 1, exc)
+        raise ComputationFailed('LC', 1, exc) from exc
 
     return F.LC(order=opt.order)
 
@@ -2580,7 +2586,7 @@ def LM(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('LM', 1, exc)
+        raise ComputationFailed('LM', 1, exc) from exc
 
     monom = F.LM(order=opt.order)
     return monom.as_expr()
@@ -2602,7 +2608,7 @@ def LT(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('LT', 1, exc)
+        raise ComputationFailed('LT', 1, exc) from exc
 
     monom, coeff = F.LT(order=opt.order)
     return coeff*monom.as_expr()
@@ -2626,7 +2632,7 @@ def div(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('div', 2, exc)
+        raise ComputationFailed('div', 2, exc) from exc
 
     q, r = F.div(G, auto=opt.auto)
 
@@ -2654,7 +2660,7 @@ def rem(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('rem', 2, exc)
+        raise ComputationFailed('rem', 2, exc) from exc
 
     r = F.rem(G, auto=opt.auto)
 
@@ -2682,7 +2688,7 @@ def quo(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('quo', 2, exc)
+        raise ComputationFailed('quo', 2, exc) from exc
 
     q = F.quo(G, auto=opt.auto)
 
@@ -2713,7 +2719,7 @@ def exquo(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('exquo', 2, exc)
+        raise ComputationFailed('exquo', 2, exc) from exc
 
     q = F.exquo(G, auto=opt.auto)
 
@@ -2847,7 +2853,7 @@ def subresultants(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('subresultants', 2, exc)
+        raise ComputationFailed('subresultants', 2, exc) from exc
 
     result = F.subresultants(G)
 
@@ -2874,7 +2880,7 @@ def resultant(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('resultant', 2, exc)
+        raise ComputationFailed('resultant', 2, exc) from exc
 
     if includePRS:
         result, R = F.resultant(G, includePRS=includePRS)
@@ -2907,7 +2913,7 @@ def discriminant(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('discriminant', 1, exc)
+        raise ComputationFailed('discriminant', 1, exc) from exc
 
     result = F.discriminant()
 
@@ -3127,7 +3133,7 @@ def trunc(f, p, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('trunc', 1, exc)
+        raise ComputationFailed('trunc', 1, exc) from exc
 
     result = F.trunc(sympify(p))
 
@@ -3153,7 +3159,7 @@ def monic(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('monic', 1, exc)
+        raise ComputationFailed('monic', 1, exc) from exc
 
     result = F.monic(auto=opt.auto)
 
@@ -3179,7 +3185,7 @@ def content(f, *gens, **args):
     try:
         (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('content', 1, exc)
+        raise ComputationFailed('content', 1, exc) from exc
 
     return F.content()
 
@@ -3217,7 +3223,7 @@ def primitive(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('primitive', 1, exc)
+        raise ComputationFailed('primitive', 1, exc) from exc
 
     cont, result = F.primitive()
     if not opt.polys:
@@ -3242,7 +3248,7 @@ def compose(f, g, *gens, **args):
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('compose', 2, exc)
+        raise ComputationFailed('compose', 2, exc) from exc
 
     result = F.compose(G)
 
@@ -3268,7 +3274,7 @@ def decompose(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('decompose', 1, exc)
+        raise ComputationFailed('decompose', 1, exc) from exc
 
     result = F.decompose()
 
@@ -3298,7 +3304,7 @@ def sqf_norm(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('sqf_norm', 1, exc)
+        raise ComputationFailed('sqf_norm', 1, exc) from exc
 
     s, g, r = F.sqf_norm()
 
@@ -3324,7 +3330,7 @@ def sqf_part(f, *gens, **args):
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('sqf_part', 1, exc)
+        raise ComputationFailed('sqf_part', 1, exc) from exc
 
     result = F.sqf_part()
 
@@ -3731,12 +3737,12 @@ def factor(f, *gens, **args):
 
     try:
         return _generic_factor(f, gens, args, method='factor')
-    except PolynomialError as msg:
+    except PolynomialError as exc:
         if not f.is_commutative:
             from ..core.exprtools import factor_nc
             return factor_nc(f)
         else:
-            raise PolynomialError(msg)
+            raise PolynomialError(exc) from exc
 
 
 def count_roots(f, inf=None, sup=None):
@@ -3757,8 +3763,9 @@ def count_roots(f, inf=None, sup=None):
     """
     try:
         F = Poly(f, greedy=False)
-    except GeneratorsNeeded:
-        raise PolynomialError(f"can't count roots of {f}, not a polynomial")
+    except GeneratorsNeeded as exc:
+        raise PolynomialError(f"can't count roots of {f}, "
+                              'not a polynomial') from exc
 
     return F.count_roots(inf=inf, sup=sup)
 
@@ -3776,9 +3783,9 @@ def real_roots(f, multiple=True):
     """
     try:
         F = Poly(f, greedy=False)
-    except GeneratorsNeeded:
+    except GeneratorsNeeded as exc:
         raise PolynomialError(f"can't compute real roots of {f}, "
-                              'not a polynomial')
+                              'not a polynomial') from exc
 
     return F.real_roots(multiple=multiple)
 
@@ -3798,9 +3805,9 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
     """
     try:
         F = Poly(f, greedy=False)
-    except GeneratorsNeeded:
-        raise PolynomialError(
-            f"can't compute numerical roots of {f}, not a polynomial")
+    except GeneratorsNeeded as exc:
+        raise PolynomialError("can't compute numerical roots of "
+                              f'{f}, not a polynomial') from exc
 
     return F.nroots(n=n, maxsteps=maxsteps, cleanup=cleanup)
 
@@ -3896,7 +3903,7 @@ def reduced(f, G, *gens, **args):
     try:
         polys, opt = parallel_poly_from_expr([f] + list(G), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('reduced', 0, exc)
+        raise ComputationFailed('reduced', 0, exc) from exc
 
     domain = opt.domain
     retract = False
@@ -3994,7 +4001,7 @@ class GroebnerBasis(Basic):
         try:
             polys, opt = parallel_poly_from_expr(F, *gens, **args)
         except PolificationFailed as exc:
-            raise ComputationFailed('groebner', len(F), exc)
+            raise ComputationFailed('groebner', len(F), exc) from exc
 
         ring = opt.domain.poly_ring(*opt.gens, order=opt.order)
 

@@ -197,7 +197,7 @@ def multiplicity(p, n):
     """
     try:
         p, n = as_int(p), as_int(n)
-    except ValueError:
+    except ValueError as exc:
         if all(isinstance(i, (numbers.Integral, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
             if p.denominator == 1:
@@ -207,10 +207,13 @@ def multiplicity(p, n):
             elif p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
             else:
-                like = min(multiplicity(p.numerator, n.numerator), multiplicity(p.denominator, n.denominator))
-                cross = min(multiplicity(p.denominator, n.numerator), multiplicity(p.numerator, n.denominator))
+                like = min(multiplicity(p.numerator, n.numerator),
+                           multiplicity(p.denominator, n.denominator))
+                cross = min(multiplicity(p.denominator, n.numerator),
+                            multiplicity(p.numerator, n.denominator))
                 return like - cross
-        raise ValueError(f'expecting ints or fractions, got {p} and {n}')
+        raise ValueError('expecting ints or fractions, '
+                         f'got {p} and {n}') from exc
 
     if n == 0:
         raise ValueError('multiplicity of 0 is not defined')

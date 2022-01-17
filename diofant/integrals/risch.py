@@ -750,9 +750,9 @@ def as_poly_1t(p, t, z):
     t_part = pa - one_t_part
     try:
         t_part = t_part.to_field().exquo(pd)
-    except DomainError as e:
+    except DomainError as exc:
         # issue sympy/sympy#4950
-        raise NotImplementedError(e)
+        raise NotImplementedError(exc) from exc
     # Compute the negative degree parts.
     od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
     one_t_part = Poly([0]*od + list(reversed(one_t_part.rep.all_coeffs())),

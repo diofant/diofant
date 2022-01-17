@@ -26,8 +26,10 @@ def groebner(seq, ring, method=None):
 
     try:
         _groebner = _groebner_methods[method]
-    except KeyError:
-        raise ValueError(f"'{method}' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')")
+    except KeyError as exc:
+        raise ValueError(f"'{method}' is not a valid Gröbner "
+                         "bases algorithm (valid are 'buchberger'"
+                         " and 'f5b')") from exc
 
     domain, orig = ring.domain, None
 

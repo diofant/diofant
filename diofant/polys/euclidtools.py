@@ -497,8 +497,8 @@ class _GCD:
             while True:
                 try:
                     a = next(domain_elts)
-                except StopIteration:
-                    raise HomomorphismFailed('no luck')
+                except StopIteration as exc:
+                    raise HomomorphismFailed('no luck') from exc
 
                 F = f.eval(x=1, a=a)
 

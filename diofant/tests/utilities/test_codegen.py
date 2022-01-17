@@ -1296,9 +1296,10 @@ def test_check_case_false_positive():
     x2 = symbols('x', my_assumption=True)
     try:
         codegen(('test', x*x2), 'f95', 'prefix')
-    except CodeGenError as e:
-        if e.args[0].startswith('Fortran ignores case.'):
-            raise AssertionError('This exception should not be raised!')
+    except CodeGenError as exc:
+        if exc.args[0].startswith('Fortran ignores case.'):
+            raise AssertionError('This exception should not '
+                                 'be raised!') from exc
 
 
 def test_c_fortran_omit_routine_name():

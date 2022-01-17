@@ -1157,14 +1157,14 @@ def evalf(x, prec, options):
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)
-    except KeyError:
+    except KeyError as exc:
         try:
             # Fall back to ordinary evalf if possible
             if 'subs' in options:
                 x = x.subs(evalf_subs(prec, options['subs']))
             re, im = x._eval_evalf(prec).as_real_imag()
             if re.has(re_) or im.has(im_):
-                raise NotImplementedError
+                raise NotImplementedError from exc
             if re == 0:
                 re = None
                 reprec = None
@@ -1178,8 +1178,8 @@ def evalf(x, prec, options):
                 im = im._to_mpmath(prec)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec
-        except AttributeError:
-            raise NotImplementedError
+        except AttributeError as exc:
+            raise NotImplementedError from exc
     chop = options.get('chop', False)
     if chop:
         if chop is True:
@@ -1295,19 +1295,19 @@ class EvalfMixin:
                 return make_mpf(re)
             else:
                 return make_mpf(fzero)
-        except NotImplementedError:
+        except NotImplementedError as exc:
             v = self._eval_evalf(prec)
             if v is None:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             re, im = v.as_real_imag()
             if re.is_Float:
                 re = re._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             if im.is_Float:
                 im = im._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             return make_mpc((re, im))
 
 

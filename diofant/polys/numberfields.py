@@ -575,9 +575,9 @@ def minimal_polynomial(ex, method=None, **args):
     _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
     try:
         _minpoly = _minpoly_methods[method]
-    except KeyError:
-        raise ValueError(f"'{method}' is not a valid algorithm for computing minimal "
-                         ' polynomial')
+    except KeyError as exc:
+        raise ValueError(f"'{method}' is not a valid algorithm "
+                         'for computing minimal polynomial') from exc
 
     ex = sympify(ex)
     if ex.is_number:

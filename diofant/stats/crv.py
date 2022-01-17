@@ -382,8 +382,9 @@ class ProductContinuousPSpace(ProductPSpace, ContinuousPSpace):
 def _reduce_inequalities(conditions, var, **kwargs):
     try:
         return reduce_rational_inequalities(conditions, var, **kwargs)
-    except PolynomialError:
-        raise ValueError(f'Reduction of condition failed {conditions[0]}\n')
+    except PolynomialError as exc:
+        raise ValueError('Reduction of condition '
+                         f'failed {conditions[0]}\n') from exc
 
 
 def reduce_rational_inequalities_wrap(condition, var):

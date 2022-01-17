@@ -944,8 +944,8 @@ def roots(f, *gens, **flags):
 
         try:
             query = handlers[filter]
-        except KeyError:
-            raise ValueError(f'Invalid filter: {filter}')
+        except KeyError as exc:
+            raise ValueError(f'Invalid filter: {filter}') from exc
 
         for zero in dict(result):
             if not query(zero):

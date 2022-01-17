@@ -136,7 +136,6 @@ disable = ['blacklisted-name',
            'mixed-line-endings',
            'trailing-newlines',
            'trailing-whitespace',
-           'raise-missing-from',
            'consider-using-f-string',
            'use-implicit-booleaness-not-comparison']
 [tool.pytest.ini_options]

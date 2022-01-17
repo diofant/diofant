@@ -73,11 +73,11 @@ class SparseMatrixBase(MatrixBase):
             try:
                 i, j = self.key2ij(key)
                 return self._smat.get((i, j), Integer(0))
-            except (TypeError, IndexError):
+            except (TypeError, IndexError) as exc:
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if true in (j < 0, j >= self.shape[1], i < 0,
                                 i >= self.shape[0]):
-                        raise ValueError('index out of boundary')
+                        raise ValueError('index out of boundary') from exc
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
 
@@ -87,7 +87,7 @@ class SparseMatrixBase(MatrixBase):
                     pass
                 else:
                     if i >= self.rows:
-                        raise IndexError('Row index out of bounds')
+                        raise IndexError('Row index out of bounds') from exc
                     i = [i]
                 if isinstance(j, slice):
                     j = range(self.cols)[j]
@@ -95,7 +95,7 @@ class SparseMatrixBase(MatrixBase):
                     pass
                 else:
                     if j >= self.cols:
-                        raise IndexError('Col index out of bounds')
+                        raise IndexError('Col index out of bounds') from exc
                     j = [j]
                 return self.extract(i, j)
 

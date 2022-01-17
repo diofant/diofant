@@ -4958,9 +4958,10 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             else:
                 try:
                     sol = solve(eq, df)
-                except NotImplementedError:
+                except NotImplementedError as exc:
                     raise NotImplementedError('Infinitesimals for the '
-                                              'first order ODE could not be found')
+                                              'first order ODE could '
+                                              'not be found') from exc
                 else:
                     h = sol[0][df]  # Find infinitesimals for one solution
 
@@ -5045,9 +5046,10 @@ def ode_lie_group(eq, func, order, match):
     else:
         try:
             sol = solve(eq, df)
-        except NotImplementedError:
-            raise NotImplementedError('Unable to solve the differential equation ' +
-                                      str(eq) + ' by the lie group method')
+        except NotImplementedError as exc:
+            raise NotImplementedError('Unable to solve the differential '
+                                      'equation ' + str(eq) +
+                                      ' by the lie group method') from exc
         else:
             if len(sol) > 1:
                 return [dsolve(df - _[df], func) for _ in sol]
@@ -5273,9 +5275,10 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                 else:
                     try:
                         sol = solve(eq, df)
-                    except NotImplementedError:
+                    except NotImplementedError as exc:
                         raise NotImplementedError('Infinitesimals for the '
-                                                  'first order ODE could not be found')
+                                                  'first order ODE could not '
+                                                  'be found') from exc
                     else:
                         h = sol[0][df]  # Find infinitesimals for one solution
                 y = Dummy('y')

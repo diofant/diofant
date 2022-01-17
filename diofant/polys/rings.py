@@ -228,9 +228,9 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
         try:
             return _rebuild(expr)
-        except CoercionFailed:
+        except CoercionFailed as exc:
             raise ValueError('expected an expression convertible to a '
-                             f'polynomial in {self}, got {expr}')
+                             f'polynomial in {self}, got {expr}') from exc
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""

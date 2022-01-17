@@ -65,11 +65,11 @@ class DenseMatrix(MatrixBase):
             try:
                 i, j = self.key2ij(key)
                 return self._mat[i*self.cols + j]
-            except (TypeError, IndexError):
+            except (TypeError, IndexError) as exc:
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if true in (j < 0, j >= self.shape[1], i < 0,
                                 i >= self.shape[0]):
-                        raise ValueError('index out of boundary')
+                        raise ValueError('index out of boundary') from exc
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
 

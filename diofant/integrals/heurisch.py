@@ -507,8 +507,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         try:
             numer = ring.from_expr(raw_numer)
-        except ValueError:
-            raise PolynomialError
+        except ValueError as exc:
+            raise PolynomialError from exc
 
         solution = solve_lin_sys(numer.values(), coeff_ring)
 

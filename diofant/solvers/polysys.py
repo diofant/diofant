@@ -111,7 +111,7 @@ def solve_poly_system(eqs, *gens, **args):
         polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
         polys = [p.to_exact() for p in polys]
     except PolificationFailed as exc:
-        raise ComputationFailed('solve_poly_system', len(eqs), exc)
+        raise ComputationFailed('solve_poly_system', len(eqs), exc) from exc
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""

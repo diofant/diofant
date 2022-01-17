@@ -220,13 +220,13 @@ class Indexed(Expr):
             return self.base.shape
         try:
             return Tuple(*[i.upper - i.lower + 1 for i in self.indices])
-        except AttributeError:
+        except AttributeError as exc:
             raise IndexException(filldedent(f"""
-                Range is not defined for all indices in: {self}"""))
-        except TypeError:
+                Range is not defined for all indices in: {self}""")) from exc
+        except TypeError as exc:
             raise IndexException(filldedent(f"""
                 Shape cannot be inferred from Idx with
-                undefined range: {self}"""))
+                undefined range: {self}""")) from exc
 
     @property
     def ranges(self):
