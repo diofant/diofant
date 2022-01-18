@@ -590,6 +590,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     from ..concrete import Product, Sum
     from ..functions.special.bessel import BesselBase
+    from ..integrals import Integral
     from .hyperexpand import hyperexpand
 
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
@@ -612,6 +613,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
             return choices[0]
         return min(choices, key=measure)
 
+    expr = bottom_up(expr,
+                     lambda e: e if isinstance(e, (Integral, Product, Sum)) else e.doit(deep=False))
     expr = bottom_up(expr, lambda w: w.normal())
     expr = Mul(*powsimp(expr).as_content_primitive())
     _e = cancel(expr)

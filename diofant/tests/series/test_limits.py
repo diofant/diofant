@@ -278,9 +278,9 @@ def test_sympyissue_5183():
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
                                    ['-', '+']))
-    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)), oo,
+    results = (oo, oo, -oo, oo, -oo*I, oo, -oo*cbrt(-1), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
-               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*sign(cbrt(-1)),
+               oo, oo, oo, -oo, oo, -oo*I, oo, -oo*cbrt(-1),
                0, 0, 0, 0, 0, 0, 0, 0)
     assert len(tests) == len(results)
     for args, res in zip(tests, results):
