@@ -280,7 +280,7 @@ class Equality(Relational):
 
     is_Equality = True
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -346,7 +346,7 @@ class Unequality(Relational):
 
     rel_op = '!='
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -371,7 +371,7 @@ class _Inequality(Relational):
 
     """
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 

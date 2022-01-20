@@ -1215,7 +1215,7 @@ class Integer(Rational):
         return mpmath.make_mpf(self._as_mpf_val(prec))
 
     @cacheit
-    def __new__(cls, i):
+    def __new__(cls, i):  # pylint: disable=signature-differs
         try:
             i = _int_dtype(i)
         except TypeError as exc:
@@ -1388,7 +1388,7 @@ class RationalConstant(Rational):
 
     """
 
-    def __new__(cls):
+    def __new__(cls):  # pylint: disable=signature-differs
         return AtomicExpr.__new__(cls)
 
 

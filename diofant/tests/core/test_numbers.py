@@ -295,8 +295,8 @@ def test_Rational_cmp():
     assert n2 < n3
     assert n1 < n2
     assert n3 > n1
-    assert not n3 < n1
-    assert not Integer(-1) > 0
+    assert n3 >= n1
+    assert Integer(-1) <= 0
     assert Integer(-1) < 0
 
     pytest.raises(TypeError, lambda: n1 < nan)
@@ -980,7 +980,7 @@ def test_accept_int():
 
 def test_dont_accept_str():
     assert Float('0.2') != '0.2'
-    assert not Float('0.2') == '0.2'
+    assert not Float('0.2') == '0.2'  # pylint: disable=unneeded-not
 
 
 def test_int():

@@ -909,7 +909,7 @@ class Integral(AddWithLimits):
 
         return Add(*parts)
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x, logx=None):
         expr = self.as_dummy()
         symb = x
         for l in expr.limits:

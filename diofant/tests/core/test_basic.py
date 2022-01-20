@@ -29,6 +29,7 @@ def test_structure():
 
 
 def test_equality():
+    # pylint: disable=unneeded-not
     instances = [b1, b2, b3, b21, Basic(b1, b1, b1), Basic]
     for i, b_i in enumerate(instances):
         for j, b_j in enumerate(instances):

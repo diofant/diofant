@@ -629,7 +629,7 @@ class erf2(Function):
 
     """
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         x, y = self.args
         if argindex == 1:
             return -2*exp(-x**2)/sqrt(pi)
@@ -887,7 +887,7 @@ class erf2inv(Function):
 
     """
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         x, y = self.args
         if argindex == 1:
             return exp(self.func(x, y)**2-x**2)
@@ -1200,7 +1200,7 @@ class expint(Function):
         else:
             return (exp(2*I*pi*nu*n) - 1)*z**(nu - 1)*gamma(1 - nu) + expint(nu, z)
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         from .hyper import meijerg
         nu, z = self.args
         if argindex == 1:
