@@ -38,7 +38,7 @@ class AssocOp(Expr):
         obj = cls._from_args(c_part + nc_part)
 
         if order_symbols is not None:
-            return Order(obj, *order_symbols)
+            return Order(obj, *order_symbols)  # pylint: disable=not-an-iterable
         return obj
 
     @classmethod

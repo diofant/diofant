@@ -1250,7 +1250,7 @@ class EvalfMixin:
                 raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
-            v = self._eval_evalf(prec)
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
                 return self
             else:
@@ -1272,7 +1272,7 @@ class EvalfMixin:
 
     def _evalf(self, prec):
         """Helper for evalf. Does the same thing but takes binary precision."""
-        r = self._eval_evalf(prec)
+        r = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
         if r is None:
             r = self
         return r
@@ -1296,7 +1296,7 @@ class EvalfMixin:
             else:
                 return make_mpf(fzero)
         except NotImplementedError as exc:
-            v = self._eval_evalf(prec)
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
                 raise ValueError(errmsg) from exc
             re, im = v.as_real_imag()

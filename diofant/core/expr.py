@@ -590,7 +590,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if self.is_number:
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -616,7 +616,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -633,7 +633,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -890,7 +890,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from .symbol import Dummy, Symbol
-        o = self.getO()
+        o = self.getO()  # pylint: disable=assignment-from-none
         if o is None:
             return
         elif o.is_Order:

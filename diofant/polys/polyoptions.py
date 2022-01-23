@@ -170,7 +170,7 @@ class Options(dict):
                 if self.get(exclude_option) is not None:
                     raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
-        for option in self.__order__:
+        for option in self.__order__:  # pylint: disable=not-an-iterable
             self.__options__[option].postprocess(self)
 
     @classmethod

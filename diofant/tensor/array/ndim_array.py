@@ -312,21 +312,21 @@ class NDimArray(DefaultPrinting):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError('scalar expected, use tensorproduct(...) for tensorial product')
         other = sympify(other)
-        result_list = [i*other for i in self]
+        result_list = [i*other for i in self]  # pylint: disable=not-an-iterable
         return type(self)(result_list, self.shape)
 
     def __rmul__(self, other):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError('scalar expected, use tensorproduct(...) for tensorial product')
         other = sympify(other)
-        result_list = [other*i for i in self]
+        result_list = [other*i for i in self]  # pylint: disable=not-an-iterable
         return type(self)(result_list, self.shape)
 
     def __truediv__(self, other):
         if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError('scalar expected')
         other = sympify(other)
-        result_list = [i/other for i in self]
+        result_list = [i/other for i in self]  # pylint: disable=not-an-iterable
         return type(self)(result_list, self.shape)
 
     def __rtruediv__(self, other):
@@ -368,7 +368,7 @@ class NDimArray(DefaultPrinting):
         return self._eval_transpose()
 
     def _eval_conjugate(self):
-        return self.func([i.conjugate() for i in self], self.shape)
+        return self.func([i.conjugate() for i in self], self.shape)  # pylint: disable=not-an-iterable
 
     def conjugate(self):
         return self._eval_conjugate()

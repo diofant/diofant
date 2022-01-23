@@ -53,6 +53,9 @@ class FiniteDomain(RandomDomain):
     def as_boolean(self):
         return Or(*[And(*[Eq(sym, val) for sym, val in item]) for item in self])
 
+    def __iter__(self):
+        raise NotImplementedError
+
 
 class SingleFiniteDomain(FiniteDomain):
     """
