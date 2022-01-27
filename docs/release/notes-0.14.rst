@@ -38,3 +38,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`22788`: RecursionError for unevluated expression in latex
 * :sympyissue:`22863`: Hangs: integrate((3*x**3-x**2+2*x-4)/sqrt(x**2-3*x+2), (x, 0, 1))
 * :sympyissue:`22862`: Problem with separable differential equation
+* :sympyissue:`22893`: 'limit' in combination with 'positive=True' gives wrong result
+* :sympyissue:`22878`: RecursionError in trigsimp

@@ -76,10 +76,10 @@ def integer_powers(exprs):
 
     terms = {}
     for term in exprs:
-        for j in terms:  # pylint: disable=consider-using-dict-items
+        for j, t in terms.items():
             a = cancel(term/j)
             if a.is_Rational:
-                terms[j].append((term, a))
+                t.append((term, a))
                 break
         else:
             terms[term] = [(term, Integer(1))]

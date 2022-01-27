@@ -655,7 +655,7 @@ class polygamma(Function):
             elif z in (oo, -oo):
                 return oo
             else:
-                t = z.extract_multiplicatively(I)
+                t = z.as_coefficient(I)
                 if t in (oo, -oo):
                     return oo
 

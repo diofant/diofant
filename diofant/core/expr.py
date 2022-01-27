@@ -537,6 +537,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from .exprtools import factor_terms
         from ..series import Order
 
         other = sympify(other)
@@ -584,7 +585,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
-        from .function import count_ops
+        from .function import Function, count_ops
 
         if self.is_number:
             try:
@@ -1336,8 +1337,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-        r = self.extract_multiplicatively(expr)
-        if r and not r.has(expr):
+        if (r := self.extract_multiplicatively(expr)) and not r.has(expr):
             return r
 
     def as_independent(self, *deps, **hint):
@@ -2363,6 +2363,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1/x
 
         """
+        from .function import expand_mul
         from .symbol import Dummy, Symbol
         from ..series import Order
         from ..simplify import collect
@@ -3193,7 +3194,5 @@ def _mag(x):
 from .add import Add
 from .mul import Mul
 from .power import Pow
-from .function import Function, expand_mul
 from .mod import Mod
-from .exprtools import factor_terms
 from .numbers import I, Integer, Rational, nan, oo, zoo

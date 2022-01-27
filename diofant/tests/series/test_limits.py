@@ -882,3 +882,9 @@ def test_sympyissue_22220():
 def test_sympyissue_22334():
     k = Symbol('k', positive=True)
     assert limit((n + 1)**k/((n + 1)**(k + 1) - n**(k + 1)), n, oo) == 1/(k + 1)
+
+
+def test_sympyissue_22893():
+    a, b = symbols('a b', positive=True)
+    e = (a*exp(-a*x) + b*exp(-b*x))*exp(b*x)
+    assert isinstance(limit(e, x, oo), Limit)
