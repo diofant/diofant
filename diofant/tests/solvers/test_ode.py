@@ -170,107 +170,152 @@ def test_linear_2eq_order2():
     x0, y0 = symbols('x0, y0', cls=Function)
 
     eq1 = (Eq(diff(f(t), t, t), 5*f(t) + 43*g(t)), Eq(diff(g(t), t, t), f(t) + 9*g(t)))
-    sol1 = [Eq(f(t), 43*C1*exp(t*RootOf(l**4 - 14*l**2 + 2, 0)) + 43*C2*exp(t*RootOf(l**4 - 14*l**2 + 2, 1)) +
-               43*C3*exp(t*RootOf(l**4 - 14*l**2 + 2, 2)) + 43*C4*exp(t*RootOf(l**4 - 14*l**2 + 2, 3))),
-            Eq(g(t), C1*(RootOf(l**4 - 14*l**2 + 2, 0)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 0)) +
-               C2*(RootOf(l**4 - 14*l**2 + 2, 1)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 1)) +
-               C3*(RootOf(l**4 - 14*l**2 + 2, 2)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 2)) +
-               C4*(RootOf(l**4 - 14*l**2 + 2, 3)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 3)))]
+    p = l**4 - 14*l**2 + 2
+    sol1 = [Eq(f(t), 43*C1*exp(t*RootOf(p, 0)) + 43*C2*exp(t*RootOf(p, 1)) +
+               43*C3*exp(t*RootOf(p, 2)) + 43*C4*exp(t*RootOf(p, 3))),
+            Eq(g(t), C1*(RootOf(p, 0)**2 - 5)*exp(t*RootOf(p, 0)) +
+               C2*(RootOf(p, 1)**2 - 5)*exp(t*RootOf(p, 1)) +
+               C3*(RootOf(p, 2)**2 - 5)*exp(t*RootOf(p, 2)) +
+               C4*(RootOf(p, 3)**2 - 5)*exp(t*RootOf(p, 3)))]
     assert dsolve(eq1) == sol1
 
-    eq1_1 = (Eq(diff(f(t), t, t), 5*f(t) - 4*g(t)), Eq(diff(g(t), t, t), f(t) + 9*g(t)))
-    sol1_1 = [Eq(f(t), 2*exp(sqrt(7)*t)*C1*(-4*t + 4*sqrt(7)) - 8*exp(sqrt(7)*t)*C3*t + 2*exp(-sqrt(7)*t)*C2*(-4*t - 4*sqrt(7)) - 8*exp(-sqrt(7)*t)*C4*t), Eq(g(t), 4*exp(sqrt(7)*t)*C1*t + exp(sqrt(7)*t)*C3*(4*t + 4*sqrt(7)) + 4*exp(-sqrt(7)*t)*C2*t + exp(-sqrt(7)*t)*C4*(4*t - 4*sqrt(7)))]
+    eq1_1 = [Eq(f(t).diff((t, 2)), 5*f(t) - 4*g(t)),
+             Eq(g(t).diff((t, 2)), f(t) + 9*g(t))]
+    sol1_1 = [Eq(f(t), 2*exp(sqrt(7)*t)*C1*(-4*t + 4*sqrt(7)) -
+                 8*exp(sqrt(7)*t)*C3*t + 2*exp(-sqrt(7)*t)*C2*(-4*t - 4*sqrt(7)) -
+                 8*exp(-sqrt(7)*t)*C4*t),
+              Eq(g(t), 4*exp(sqrt(7)*t)*C1*t + exp(sqrt(7)*t)*C3*(4*t + 4*sqrt(7)) +
+                 4*exp(-sqrt(7)*t)*C2*t + exp(-sqrt(7)*t)*C4*(4*t - 4*sqrt(7)))]
     assert dsolve(eq1_1) == sol1_1
 
-    eq1_2 = (Eq(diff(f(t), t, t), 5*f(t)), Eq(diff(g(t), t, t), f(t) + 5*g(t)))
-    sol1_2 = [Eq(f(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2), Eq(g(t), exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 - exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4)]
+    eq1_2 = [Eq(f(t).diff((t, 2)), 5*f(t)), Eq(g(t).diff((t, 2)), f(t) + 5*g(t))]
+    sol1_2 = [Eq(f(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2),
+              Eq(g(t), exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 -
+                 exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4)]
     assert dsolve(eq1_2) == sol1_2
 
-    eq1_3 = (Eq(diff(f(t), t, t), 5*f(t) - 4*g(t)), Eq(diff(g(t), t, t), 5*g(t)))
-    sol1_3 = [Eq(f(t), -4*exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 + 4*exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4), Eq(g(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2)]
+    eq1_3 = [Eq(f(t).diff((t, 2)), 5*f(t) - 4*g(t)), Eq(g(t).diff((t, 2)), 5*g(t))]
+    sol1_3 = [Eq(f(t), -4*exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 +
+                 4*exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4),
+              Eq(g(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2)]
     assert dsolve(eq1_3) == sol1_3
 
-    eq1_4 = [Eq(diff(f(t), t, t), 5*f(t) + 43*g(t)), Eq(diff(g(t), t, t), f(t) + t*g(t) + t)]
+    eq1_4 = [Eq(f(t).diff((t, 2)), 5*f(t) + 43*g(t)),
+             Eq(g(t).diff((t, 2)), f(t) + t*g(t) + t)]
     pytest.raises(NotImplementedError, lambda: dsolve(eq1_4))
 
-    eq1_5 = [Eq(diff(f(t), t, t), 5*f(t) + 43*g(t)), Eq(diff(g(t), t, t), f(t) + 2**t*g(t) + exp(t))]
+    eq1_5 = [Eq(f(t).diff((t, 2)), 5*f(t) + 43*g(t)),
+             Eq(g(t).diff((t, 2)), f(t) + 2**t*g(t) + exp(t))]
     pytest.raises(NotImplementedError, lambda: dsolve(eq1_5))
 
-    eq1_6 = [Eq(diff(f(t), t, t), 5*t*f(t) + 43*g(t)), Eq(diff(g(t), t, t), f(t) + 2*g(t) + exp(t))]
+    eq1_6 = [Eq(f(t).diff((t, 2)), 5*t*f(t) + 43*g(t)),
+             Eq(g(t).diff((t, 2)), f(t) + 2*g(t) + exp(t))]
     pytest.raises(NotImplementedError, lambda: dsolve(eq1_6))
 
-    eq2 = (Eq(diff(f(t), t, t), 8*f(t)+3*g(t)+31), Eq(diff(g(t), t, t), 9*f(t)+7*g(t)+12))
-    sol2 = [Eq(f(t), 3*C1*exp(t*RootOf(l**4 - 15*l**2 + 29, 0)) + 3*C2*exp(t*RootOf(l**4 - 15*l**2 + 29, 1)) +
-               3*C3*exp(t*RootOf(l**4 - 15*l**2 + 29, 2)) + 3*C4*exp(t*RootOf(l**4 - 15*l**2 + 29, 3)) - 181/29),
-            Eq(g(t), C1*(RootOf(l**4 - 15*l**2 + 29, 0)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 0)) +
-               C2*(RootOf(l**4 - 15*l**2 + 29, 1)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 1)) +
-               C3*(RootOf(l**4 - 15*l**2 + 29, 2)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 2)) +
-               C4*(RootOf(l**4 - 15*l**2 + 29, 3)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 3)) + 183/29)]
+    eq2 = [Eq(f(t).diff((t, 2)), 8*f(t) + 3*g(t) + 31),
+           Eq(g(t).diff((t, 2)), 9*f(t) + 7*g(t) + 12)]
+    p = l**4 - 15*l**2 + 29
+    sol2 = [Eq(f(t), 3*C1*exp(t*RootOf(p, 0)) + 3*C2*exp(t*RootOf(p, 1)) +
+               3*C3*exp(t*RootOf(p, 2)) + 3*C4*exp(t*RootOf(p, 3)) - 181/29),
+            Eq(g(t), C1*(RootOf(p, 0)**2 - 8)*exp(t*RootOf(p, 0)) +
+               C2*(RootOf(p, 1)**2 - 8)*exp(t*RootOf(p, 1)) +
+               C3*(RootOf(p, 2)**2 - 8)*exp(t*RootOf(p, 2)) +
+               C4*(RootOf(p, 3)**2 - 8)*exp(t*RootOf(p, 3)) + 183/29)]
     assert dsolve(eq2) == sol2
 
-    eq3 = (Eq(diff(f(t), t, t) - 9*diff(g(t), t) + 7*f(t), 0), Eq(diff(g(t), t, t) + 9*diff(f(t), t) + 7*g(t), 0))
-    sol3 = [Eq(f(t), C1*cos(t*(9/2 + sqrt(109)/2)) + C2*sin(t*(9/2 + sqrt(109)/2)) + C3*cos(t*(-sqrt(109)/2 + 9/2)) +
-               C4*sin(t*(-sqrt(109)/2 + 9/2))), Eq(g(t), -C1*sin(t*(9/2 + sqrt(109)/2)) + C2*cos(t*(9/2 + sqrt(109)/2)) -
-                                                   C3*sin(t*(-sqrt(109)/2 + 9/2)) + C4*cos(t*(-sqrt(109)/2 + 9/2)))]
+    eq3 = [Eq(f(t).diff((t, 2)) - 9*g(t).diff(t) + 7*f(t), 0),
+           Eq(g(t).diff((t, 2)) + 9*f(t).diff(t) + 7*g(t), 0)]
+    sol3 = [Eq(f(t), +C1*cos(t*(9/2 + sqrt(109)/2)) +
+               C2*sin(t*(9/2 + sqrt(109)/2)) + C3*cos(t*(-sqrt(109)/2 + 9/2)) +
+               C4*sin(t*(-sqrt(109)/2 + 9/2))),
+            Eq(g(t), -C1*sin(t*(9/2 + sqrt(109)/2)) +
+               C2*cos(t*(9/2 + sqrt(109)/2)) - C3*sin(t*(-sqrt(109)/2 + 9/2)) +
+               C4*cos(t*(-sqrt(109)/2 + 9/2)))]
     assert dsolve(eq3) == sol3
 
-    eq4 = (Eq(diff(f(t), t, t), 9*t*diff(g(t), t)-9*g(t)), Eq(diff(g(t), t, t), 7*t*diff(f(t), t)-7*f(t)))
-    sol4 = [Eq(f(t), C3*t + t*Integral((9*C1*exp(3*sqrt(7)*t**2/2) + 9*C2*exp(-3*sqrt(7)*t**2/2))/t**2, t)),
-            Eq(g(t), C4*t + t*Integral((3*sqrt(7)*C1*exp(3*sqrt(7)*t**2/2) - 3*sqrt(7)*C2*exp(-3*sqrt(7)*t**2/2))/t**2, t))]
+    eq4 = [Eq(f(t).diff((t, 2)), 9*t*g(t).diff(t) - 9*g(t)),
+           Eq(g(t).diff((t, 2)), 7*t*f(t).diff(t) - 7*f(t))]
+    sol4 = [Eq(f(t), C3*t + t*Integral((9*C1*exp(+3*sqrt(7)*t**2/2) +
+                                        9*C2*exp(-3*sqrt(7)*t**2/2))/t**2, t)),
+            Eq(g(t), C4*t + t*Integral((3*sqrt(7)*C1*exp(+3*sqrt(7)*t**2/2) -
+                                        3*sqrt(7)*C2*exp(-3*sqrt(7)*t**2/2))/t**2, t))]
     assert dsolve(eq4) == sol4
 
-    eq4_1 = (Eq(diff(f(t), t, t), -9*t*diff(g(t), t) + 9*g(t)), Eq(diff(g(t), t, t), 7*t*diff(f(t), t) - 7*f(t)))
-    sol4_1 = [Eq(f(t), C3*t + t*Integral((-9*C1*cos(3*sqrt(7)*t**2/2) - 9*C2*sin(3*sqrt(7)*t**2/2))/t**2, t)), Eq(g(t), C4*t + t*Integral((-3*sqrt(7)*C1*sin(3*sqrt(7)*t**2/2) + 3*sqrt(7)*C2*cos(3*sqrt(7)*t**2/2))/t**2, t))]
+    eq4_1 = [Eq(f(t).diff((t, 2)), -9*t*g(t).diff(t) + 9*g(t)),
+             Eq(g(t).diff((t, 2)), 7*t*f(t).diff(t) - 7*f(t))]
+    sol4_1 = [Eq(f(t), C3*t + t*Integral((-9*C1*cos(3*sqrt(7)*t**2/2) -
+                                          +9*C2*sin(3*sqrt(7)*t**2/2))/t**2, t)),
+              Eq(g(t), C4*t + t*Integral((-3*sqrt(7)*C1*sin(3*sqrt(7)*t**2/2) +
+                                          +3*sqrt(7)*C2*cos(3*sqrt(7)*t**2/2))/t**2, t))]
     assert dsolve(eq4_1) == sol4_1
 
-    eq5 = (Eq(diff(f(t), t, t), (log(t)+t**2)*diff(f(t), t)+(log(t)+t**2)*3*diff(g(t), t)), Eq(diff(g(t), t, t),
-                                                                                               (log(t)+t**2)*2*diff(f(t), t)+(log(t)+t**2)*9*diff(g(t), t)))
-    sol5 = [Eq(f(t), -sqrt(22)*(C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) + C2 -
-                                C3*Integral(exp((sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) - C4 -
-                                (sqrt(22) + 5)*(C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) + C2) +
-                                (-sqrt(22) + 5)*(C3*Integral(exp((sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) + C4))/88),
-            Eq(g(t), -sqrt(22)*(C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) +
-                                C2 - C3*Integral(exp((sqrt(22) + 5)*Integral(t**2 + log(t), t)), t) - C4)/44)]
+    eq5 = [Eq(f(t).diff((t, 2)), (log(t) + t**2)*f(t).diff(t) +
+              (log(t) + t**2)*3*g(t).diff(t)),
+           Eq(g(t).diff((t, 2)), (log(t) + t**2)*2*f(t).diff(t) +
+              (log(t) + t**2)*9*g(t).diff(t))]
+    sol5 = [Eq(f(t), -sqrt(22)*(C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t)))) + C2 -
+                                C3*Integral(exp((+sqrt(22) + 5)*Integral(t**2 + log(t)))) - C4 -
+                                (+sqrt(22) + 5)*(C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t)))) + C2) +
+                                (-sqrt(22) + 5)*(C3*Integral(exp((sqrt(22) + 5)*Integral(t**2 + log(t)))) + C4))/88),
+            Eq(g(t), -sqrt(22)*(+C1*Integral(exp((-sqrt(22) + 5)*Integral(t**2 + log(t)))) +
+                                -C3*Integral(exp((+sqrt(22) + 5)*Integral(t**2 + log(t)))) + C2 - C4)/44)]
     assert dsolve(eq5) == sol5
 
-    eq6 = (Eq(diff(f(t), t, t), log(t)*t*diff(g(t), t) - log(t)*g(t)), Eq(diff(g(t), t, t), log(t)*t*diff(f(t), t) - log(t)*f(t)))
-    sol6 = [Eq(f(t), C3*t + t*Integral((C1*exp(Integral(t*log(t), t)) +
-                                        C2*exp(-Integral(t*log(t), t)))/t**2, t)), Eq(g(t), C4*t + t*Integral((C1*exp(Integral(t*log(t), t)) -
-                                                                                                               C2*exp(-Integral(t*log(t), t)))/t**2, t))]
+    eq6 = [Eq(f(t).diff((t, 2)), log(t)*t*diff(g(t), t) - log(t)*g(t)),
+           Eq(g(t).diff((t, 2)), log(t)*t*diff(f(t), t) - log(t)*f(t))]
+    sol6 = [Eq(f(t), C3*t + t*Integral((C1*exp(+Integral(t*log(t))) +
+                                        C2*exp(-Integral(t*log(t))))/t**2, t)),
+            Eq(g(t), C4*t + t*Integral((C1*exp(+Integral(t*log(t))) -
+                                        C2*exp(-Integral(t*log(t))))/t**2, t))]
     assert dsolve(eq6) == sol6
 
-    eq6_1 = (Eq(diff(f(t), t, t), -log(t)*t*diff(g(t), t) + log(t)*g(t)), Eq(diff(g(t), t, t), log(t)*t*diff(f(t), t) - log(t)*f(t)))
-    sol6_1 = [Eq(f(t), C3*t + t*Integral((-C1*cos(Integral(t*log(t), t)) - C2*sin(Integral(t*log(t), t)))/t**2, t)), Eq(g(t), C4*t + t*Integral((-C1*sin(Integral(t*log(t), t)) + C2*cos(Integral(t*log(t), t)))/t**2, t))]
+    eq6_1 = [Eq(f(t).diff((t, 2)), -log(t)*t*g(t).diff(t) + log(t)*g(t)),
+             Eq(g(t).diff((t, 2)), log(t)*t*f(t).diff(t) - log(t)*f(t))]
+    sol6_1 = [Eq(f(t), C3*t + t*Integral((-C1*cos(Integral(t*log(t))) -
+                                          +C2*sin(Integral(t*log(t))))/t**2, t)),
+              Eq(g(t), C4*t + t*Integral((-C1*sin(Integral(t*log(t))) +
+                                          +C2*cos(Integral(t*log(t))))/t**2, t))]
     assert dsolve(eq6_1) == sol6_1
 
-    eq7 = (Eq(diff(f(t), t, t), log(t)*(t*diff(f(t), t) - f(t)) + exp(t)*(t*diff(g(t), t) - g(t))),
-           Eq(diff(g(t), t, t), (t**2)*(t*diff(f(t), t) - f(t)) + (t)*(t*diff(g(t), t) - g(t))))
-    sol7 = [Eq(f(t), C3*t + t*Integral((C1*x0(t) + C2*x0(t)*Integral(t*exp(t)*exp(Integral(t**2, t)) *
-                                                                     exp(Integral(t*log(t), t))/x0(t)**2, t))/t**2, t)), Eq(g(t), C4*t + t*Integral((C1*y0(t) +
-                                                                                                                                                     C2*(y0(t)*Integral(t*exp(t)*exp(Integral(t**2, t))*exp(Integral(t*log(t), t))/x0(t)**2, t) +
-                                                                                                                                                         exp(Integral(t**2, t))*exp(Integral(t*log(t), t))/x0(t)))/t**2, t))]
+    eq7 = [Eq(f(t).diff((t, 2)), log(t)*(t*f(t).diff(t) - f(t)) + exp(t)*(t*g(t).diff(t) - g(t))),
+           Eq(g(t).diff((t, 2)), (t**2)*(t*f(t).diff(t) - f(t)) + (t)*(t*g(t).diff(t) - g(t)))]
+    sol7 = [Eq(f(t), C3*t + t*Integral((C1*x0(t) + C2*x0(t)*Integral(t*exp(t)*exp(Integral(t**2)) *
+                                                                     exp(Integral(t*log(t)))/x0(t)**2, t))/t**2, t)),
+            Eq(g(t), C4*t + t*Integral((C1*y0(t) + C2*(y0(t)*Integral(t*exp(t)*exp(Integral(t**2))*exp(Integral(t*log(t)))/x0(t)**2) +
+                                        exp(Integral(t**2))*exp(Integral(t*log(t)))/x0(t)))/t**2, t))]
     assert dsolve(eq7) == sol7
 
-    eq8 = (Eq(diff(f(t), t, t), t*(4*f(t) + 9*g(t))), Eq(diff(g(t), t, t), t*(12*f(t) - 6*g(t))))
-    sol8 = ('[Eq(f(t), -sqrt(133)*((-sqrt(133) - 1)*(C2*(133*t**8/24 - t**3/6 + sqrt(133)*t**3/2 + 1) + '
-            'C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) + O(t**6)) - (-1 + sqrt(133))*(C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) + '
-            'C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6)) - 4*C2*(133*t**8/24 - t**3/6 + sqrt(133)*t**3/2 + 1) + '
-            '4*C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) - 4*C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) + '
-            '4*C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/3192), Eq(g(t), -sqrt(133)*(-C2*(133*t**8/24 - t**3/6 + '
-            'sqrt(133)*t**3/2 + 1) + C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) - C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) + '
-            'C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/266)]')
-    assert sstr(dsolve(eq8)) == sol8
+    eq8 = [Eq(f(t).diff((t, 2)), t*(4*f(t) + 9*g(t))),
+           Eq(g(t).diff((t, 2)), t*(12*f(t) - 6*g(t)))]
+    sol8 = [Eq(f(t), -sqrt(133)*((-sqrt(133) - 1) *
+               (C2*(133*t**8/24 - t**3/6 + sqrt(133)*t**3/2 + 1) +
+                C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) + O(t**6)) -
+               (-1 + sqrt(133))*(C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) +
+                                 C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) +
+                                 O(t**6)) -
+               4*C2*(133*t**8/24 - t**3/6 + sqrt(133)*t**3/2 + 1) +
+               4*C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) -
+               4*C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) +
+               4*C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/3192),
+            Eq(g(t), -sqrt(133)*(-C2*(133*t**8/24 - t**3/6 +
+                                 sqrt(133)*t**3/2 + 1) +
+               C2*(-sqrt(133)*t**3/6 - t**3/6 + 1) -
+               C1*t*(sqrt(133)*t**4/6 - t**3/12 + 1) +
+               C1*t*(-sqrt(133)*t**3/12 - t**3/12 + 1) + O(t**6))/266)]
+    assert dsolve(eq8) == sol8
 
-    eq9 = (Eq(diff(f(t), t, t), t*(4*diff(f(t), t) + 9*diff(g(t), t))), Eq(diff(g(t), t, t), t*(12*diff(f(t), t) - 6*diff(g(t), t))))
-    sol9 = [Eq(f(t), -sqrt(133)*(4*C1*Integral(exp((-sqrt(133) - 1)*Integral(t, t)), t) + 4*C2 -
-                                 4*C3*Integral(exp((-1 + sqrt(133))*Integral(t, t)), t) - 4*C4 - (-1 + sqrt(133))*(C1*Integral(exp((-sqrt(133) -
-                                                                                                                                    1)*Integral(t, t)), t) + C2) + (-sqrt(133) - 1)*(C3*Integral(exp((-1 + sqrt(133))*Integral(t, t)), t) +
-                                                                                                                                                                                     C4))/3192), Eq(g(t), -sqrt(133)*(C1*Integral(exp((-sqrt(133) - 1)*Integral(t, t)), t) + C2 -
-                                                                                                                                                                                                                      C3*Integral(exp((-1 + sqrt(133))*Integral(t, t)), t) - C4)/266)]
+    eq9 = [Eq(f(t).diff((t, 2)), t*(4*f(t).diff(t) + 9*g(t).diff(t))),
+           Eq(g(t).diff((t, 2)), t*(12*f(t).diff(t) - 6*g(t).diff(t)))]
+    sol9 = [Eq(f(t), -sqrt(133)*(4*C1*Integral(exp((-sqrt(133) - 1)*Integral(t)), t) +
+               4*C2 - 4*C3*Integral(exp((-1 + sqrt(133))*Integral(t)), t) - 4*C4 -
+               (-1 + sqrt(133))*(C1*Integral(exp((-sqrt(133) - 1)*Integral(t)), t) + C2) +
+               (-sqrt(133) - 1)*(C3*Integral(exp((-1 + sqrt(133))*Integral(t)), t) + C4))/3192),
+            Eq(g(t), -sqrt(133)*(C1*Integral(exp((-sqrt(133) - 1)*Integral(t, t)), t) + C2 -
+               C3*Integral(exp((-1 + sqrt(133))*Integral(t, t)), t) - C4)/266)]
     assert dsolve(eq9) == sol9
 
-    eq10 = (t**2*f(t).diff((t, 2)) + t*f(t).diff(t) + t*g(t).diff(t) + f(t) + g(t),
-            t**2*g(t).diff((t, 2)) + t*f(t).diff(t) - t*g(t).diff(t) + f(t) - g(t))
+    eq10 = [t**2*f(t).diff((t, 2)) + t*(f(t).diff(t) + g(t).diff(t)) + f(t) + g(t),
+            t**2*g(t).diff((t, 2)) + t*(f(t).diff(t) - g(t).diff(t)) + f(t) - g(t)]
     sol10 = [Eq(f(t), -exp((-sqrt(2)/2 + 1/2 -
                             sqrt(-3*sqrt(2)/2 + 3/4))*log(t)) *
                 C2*(-sqrt(2)/2 + 3/2 - sqrt(-3*sqrt(2)/2 + 3/4)) -
