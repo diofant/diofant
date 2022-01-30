@@ -585,7 +585,7 @@ class Function(Application, Expr):
         """Returns the first derivative of the function."""
         from .symbol import Dummy
 
-        if not (1 <= argindex <= len(self.args)):
+        if not 1 <= argindex <= len(self.args):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:

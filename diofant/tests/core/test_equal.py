@@ -69,7 +69,7 @@ def test_cmp_bug2():
 
 def test_cmp_sympyissue_4357():
     # pylint: disable=unneeded-not
-    assert not (Symbol == 1)
-    assert (Symbol != 1)
-    assert not (Symbol == 'x')
-    assert (Symbol != 'x')
+    assert not Symbol == 1
+    assert Symbol != 1
+    assert not Symbol == 'x'
+    assert Symbol != 'x'

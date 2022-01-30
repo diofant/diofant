@@ -992,7 +992,7 @@ class Rational(Number):
             if other.is_negative:
                 # (3/4)**-2 -> (4/3)**2
                 ne = -other
-                if (ne is S.One):
+                if ne is S.One:
                     return Rational(self.denominator, self.numerator)
                 if self.is_negative:
                     return -((S.NegativeOne)**((other.numerator % other.denominator) /

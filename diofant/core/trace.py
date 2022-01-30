@@ -106,14 +106,14 @@ class Tr(Expr):
 
         """
         # expect no indices,int or a tuple/list/Tuple
-        if (len(args) == 2):
+        if len(args) == 2:
             if not isinstance(args[1], (list, Tuple, tuple)):
                 indices = Tuple(args[1])
             else:
                 indices = Tuple(*args[1])
 
             expr = args[0]
-        elif (len(args) == 1):
+        elif len(args) == 1:
             indices = Tuple()
             expr = args[0]
         else:
@@ -143,7 +143,7 @@ class Tr(Expr):
             else:
                 return Expr.__new__(cls, expr, indices)
         else:
-            if (_is_scalar(expr)):
+            if _is_scalar(expr):
                 return expr
 
             return Expr.__new__(cls, expr, indices)

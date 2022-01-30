@@ -273,7 +273,7 @@ class Pow(Expr):
                 # floor(Rational(1, 2) - e*arg(b)/2/pi) == 0
 
                 # handle -1 as special case
-                if (e == -1):
+                if e == -1:
                     # floor arg. is 1/2 + arg(b)/2/pi
                     if _half(other):
                         if b.is_negative is True:
