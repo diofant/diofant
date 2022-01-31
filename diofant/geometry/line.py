@@ -1440,12 +1440,10 @@ class Ray(LinearEntity):
                     rv = other.y <= self.source.y
                 if rv in (true, false):
                     return bool(rv)
-                raise Undecidable(
-                    f'Cannot determine if {other} is in {self}')
-            else:
-                # Points are not collinear, so the rays are not parallel
-                # and hence it is impossible for self to contain o
-                return False
+                raise Undecidable(f'Cannot determine if {other} is in {self}')
+            # Points are not collinear, so the rays are not parallel
+            # and hence it is impossible for self to contain o
+            return False
 
         # No other known entity can be contained in a Ray
         return False

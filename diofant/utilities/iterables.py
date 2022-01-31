@@ -635,8 +635,7 @@ def topological_sort(graph, key=None):
 
     if E:
         raise ValueError('cycle detected')
-    else:
-        return L
+    return L
 
 
 def rotate_left(x, y):

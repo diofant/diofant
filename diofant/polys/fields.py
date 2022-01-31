@@ -437,7 +437,7 @@ class FracElement(DomainElement, CantSympify):
 
         if not other:
             raise ZeroDivisionError
-        elif isinstance(other, field.dtype):
+        if isinstance(other, field.dtype):
             return self.new(self.numerator*other.denominator, self.denominator*other.numerator)
         elif isinstance(other, field.ring.dtype):
             return self.new(self.numerator, self.denominator*other)
@@ -467,7 +467,7 @@ class FracElement(DomainElement, CantSympify):
     def __rtruediv__(self, other):
         if not self:
             raise ZeroDivisionError
-        elif isinstance(other, self.field.ring.dtype):
+        if isinstance(other, self.field.ring.dtype):
             return self.new(self.denominator*other, self.numerator)
 
         op, other_numer, other_denom = self._extract_ground(other)

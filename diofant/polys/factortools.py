@@ -1129,8 +1129,7 @@ class _Factor:
 
         if functools.reduce(operator.mul, H) != f:
             raise ExtraneousFactors
-        else:
-            return H
+        return H
 
     def _gf_Qmatrix(self, f):
         """

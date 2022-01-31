@@ -394,7 +394,7 @@ class Range(Set):
 
         if not step.is_finite:
             raise ValueError('Infinite step is not allowed')
-        elif start == stop:
+        if start == stop:
             return S.EmptySet
 
         n = ceiling((stop - start)/step)

@@ -482,10 +482,9 @@ class DifferentialExtension:
                                                                 reversed([f(self.x) for f in self.Tfuncs]))))
                         restart = True
                         break
-                    else:
-                        # TODO: give algebraic dependence in error string
-                        raise NotImplementedError('Cannot integrate over '
-                                                  'algebraic extensions.')
+                    # TODO: give algebraic dependence in error string
+                    raise NotImplementedError('Cannot integrate over '
+                                              'algebraic extensions.')
 
             else:
                 arga, argd = frac_in(arg, self.t)

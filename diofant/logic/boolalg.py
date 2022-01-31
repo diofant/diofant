@@ -612,7 +612,7 @@ class Xor(BooleanFunction):
                 if cj == nc:
                     odd = ~odd
                     break
-                elif cj == c:
+                if cj == c:
                     break
             else:
                 continue

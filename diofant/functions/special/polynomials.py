@@ -155,7 +155,7 @@ class jacobi(OrthogonalPolynomial):
         if argindex == 1:
             # Diff wrt n
             raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt a
             n, a, b, x = self.args
             k = Dummy('k')
@@ -352,7 +352,7 @@ class gegenbauer(OrthogonalPolynomial):
         if argindex == 1:
             # Diff wrt n
             raise ArgumentIndexError(self, argindex)
-        elif argindex == 2:
+        if argindex == 2:
             # Diff wrt a
             n, a, x = self.args
             k = Dummy('k')
@@ -728,10 +728,9 @@ class legendre(OrthogonalPolynomial):
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
-                raise ValueError(
-                    f'The index n must be nonnegative integer (got {n!r})')
-            else:
-                return cls._eval_at_order(n, x)
+                raise ValueError('The index n must be nonnegative '
+                                 f'integer (got {n!r})')
+            return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 2:
@@ -900,10 +899,9 @@ class hermite(OrthogonalPolynomial):
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
-                raise ValueError(
-                    f'The index n must be nonnegative integer (got {n!r})')
-            else:
-                return cls._eval_at_order(n, x)
+                raise ValueError('The index n must be nonnegative '
+                                 f'integer (got {n!r})')
+            return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 2:
@@ -992,10 +990,9 @@ class laguerre(OrthogonalPolynomial):
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
-                raise ValueError(
-                    f'The index n must be nonnegative integer (got {n!r})')
-            else:
-                return cls._eval_at_order(n, x)
+                raise ValueError('The index n must be nonnegative '
+                                 f'integer (got {n!r})')
+            return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 2:
@@ -1095,10 +1092,9 @@ class assoc_laguerre(OrthogonalPolynomial):
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
-                raise ValueError(
-                    f'The index n must be nonnegative integer (got {n!r})')
-            else:
-                return cls._eval_at_order(n, x, alpha)
+                raise ValueError('The index n must be nonnegative'
+                                 f' integer (got {n!r})')
+            return cls._eval_at_order(n, x, alpha)
 
     def fdiff(self, argindex=3):
         from ...concrete import Sum

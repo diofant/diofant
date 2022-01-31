@@ -353,7 +353,7 @@ class MinMaxBase(LatticeOp):
 
             if arg == cls.zero:
                 raise ShortCircuit(arg)
-            elif arg == cls.identity:
+            if arg == cls.identity:
                 continue
             elif arg.func == cls:
                 for x in arg.args:

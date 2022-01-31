@@ -382,12 +382,11 @@ def evalf_add(v, prec, options):
         acc = complex_accuracy((re, im, re_acc, im_acc))
         if acc >= target_prec:
             break
-        else:
-            if (prec - target_prec) > options['maxprec']:
-                break
+        if (prec - target_prec) > options['maxprec']:
+            break
 
-            prec = prec + max(10 + 2**i, target_prec - acc)
-            i += 1
+        prec = prec + max(10 + 2**i, target_prec - acc)
+        i += 1
 
     options['maxprec'] = oldmaxprec
     if iszero(re, scaled=True):

@@ -1289,7 +1289,7 @@ class Mul(AssocOp):
                 for j in range(take):
                     if nc[i + j][0] != old_nc[j][0]:
                         break
-                    elif j == 0:
+                    if j == 0:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))
                     elif j == take - 1:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))

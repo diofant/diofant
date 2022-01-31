@@ -631,8 +631,7 @@ def rsolve(f, *y, init={}, simplify=True):
     if len(f) > 1 or len(y) > 1:
         raise NotImplementedError('Support for systems of recurrence '
                                   'equations is not implemented yet.')
-    else:
-        f = f[0]
+    f = f[0]
 
     if not y:
         y = sorted(f.atoms(Function), key=default_sort_key)[0]

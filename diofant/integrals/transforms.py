@@ -1000,8 +1000,7 @@ def _laplace_transform(f, t, s_, simplify=True, noconds=False):
                 if soln.lts == t:
                     raise IntegralTransformError('Laplace', f,
                                                  'convergence not in half-plane?')
-                else:
-                    a_ = Min(soln.lts, a_)
+                a_ = Min(soln.lts, a_)
             if a_ != oo:
                 a = Max(a_, a)
             else:

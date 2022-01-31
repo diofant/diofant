@@ -854,7 +854,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not other:
             raise ZeroDivisionError('polynomial division')
-        elif isinstance(other, ring.dtype):
+        if isinstance(other, ring.dtype):
             (q,), r = self.div([other])
             return q, r
         elif isinstance(other, PolyElement):
@@ -881,7 +881,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not other:
             raise ZeroDivisionError('polynomial division')
-        elif isinstance(other, ring.domain.dtype):
+        if isinstance(other, ring.domain.dtype):
             return self.quo_ground(other)
 
         try:
@@ -1188,7 +1188,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not coeff:
             raise ZeroDivisionError('polynomial division')
-        elif not self:
+        if not self:
             return self.ring.zero
 
         ring = self.ring

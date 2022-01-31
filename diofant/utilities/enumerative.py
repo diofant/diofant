@@ -1028,8 +1028,7 @@ class MultisetPartitionTraverser:
                     self.pcount += (self.dp_map[pkey] - 1)
                     self.lpart -= 1
                     break
-                else:
-                    self.dp_stack.append([(pkey, self.pcount)])
+                self.dp_stack.append([(pkey, self.pcount)])
 
             # M4  count a leaf partition
             self.pcount += 1

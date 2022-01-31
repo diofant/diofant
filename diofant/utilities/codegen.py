@@ -797,7 +797,7 @@ class CCodeGen(CodeGen):
         """
         if len(routine.results) > 1:
             raise CodeGenError('C only supports a single or no return value.')
-        elif len(routine.results) == 1:
+        if len(routine.results) == 1:
             ctype = routine.results[0].get_datatype('C')
         else:
             ctype = 'void'
@@ -994,9 +994,9 @@ class FCodeGen(CodeGen):
         """Returns the opening statements of the fortran routine."""
         code_list = []
         if len(routine.results) > 1:
-            raise CodeGenError(
-                'Fortran only supports a single or no return value.')
-        elif len(routine.results) == 1:
+            raise CodeGenError('Fortran only supports a single '
+                               'or no return value.')
+        if len(routine.results) == 1:
             result = routine.results[0]
             code_list.append(result.get_datatype('fortran'))
             code_list.append('function')
@@ -1315,8 +1315,7 @@ class OctaveCodeGen(CodeGen):
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError('Octave: invalid argument of type %s' %
                                    str(type(arg)))
-            else:
-                args.append('%s' % self._get_symbol(arg.name))
+            args.append('%s' % self._get_symbol(arg.name))
         args = ', '.join(args)
         code_list.append(f'{routine.name}({args})\n')
         code_list = [''.join(code_list)]

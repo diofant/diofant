@@ -199,7 +199,7 @@ def mod_inverse(a, m):
         if not (big is S.true or big is S.false):
             raise ValueError('m > 1 did not evaluate; '
                              f'try to simplify {m}') from exc
-        elif big:
+        if big:
             c = 1/a
     if c is None:
         raise ValueError(f'inverse of {a} (mod {m}) does not exist')
@@ -266,7 +266,7 @@ class Number(AtomicExpr):
     def __divmod__(self, other):
         if not other:
             raise ZeroDivisionError('modulo by zero')
-        elif self.is_Integer and other.is_Integer:
+        if self.is_Integer and other.is_Integer:
             return Tuple(*divmod(self.numerator, other.numerator))
         else:
             rat = self/other

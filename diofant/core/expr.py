@@ -2688,7 +2688,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 s1 = coeff.aseries(x, n, bound=bound-1)
                 if gotO and s1.getO():
                     break
-                elif s1.getO():
+                if s1.getO():
                     gotO = True
                 s += (s1 * d**expo)
             else:

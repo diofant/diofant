@@ -358,10 +358,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         if len(self.variables) > 1:
             raise ValueError
-        else:
-            if self.limits[0][1:] != (0, oo):
-                raise ValueError
-            k = self.variables[0]
+
+        if self.limits[0][1:] != (0, oo):
+            raise ValueError
+        k = self.variables[0]
 
         if not n:
             try:

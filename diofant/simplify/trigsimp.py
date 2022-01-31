@@ -953,8 +953,7 @@ def __trigsimp(expr, deep=False):
                     if newexpr != expr:
                         expr = newexpr
                         break
-                    else:
-                        continue
+                    continue
 
                 # use Diofant matching instead
                 res = expr.match(pattern)

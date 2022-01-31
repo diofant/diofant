@@ -217,7 +217,7 @@ class BasisDependentMul(BasisDependent, Mul):
         # Make sure incompatible types weren't multiplied
         if count > 1:
             raise ValueError('Invalid multiplication')
-        elif count == 0:
+        if count == 0:
             return Mul(*args, **options)
         # Handle zero vector case
         if zeroflag:

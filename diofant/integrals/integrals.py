@@ -1011,10 +1011,9 @@ class Integral(AddWithLimits):
         if len(limits) > 1:
             raise NotImplementedError(
                 'Multidimensional midpoint rule not implemented yet')
-        else:
-            limit = limits[0]
-            if len(limit) != 3:
-                raise ValueError('Expecting a definite integral.')
+        limit = limits[0]
+        if len(limit) != 3:
+            raise ValueError('Expecting a definite integral.')
         if n <= 0:
             raise ValueError('n must be > 0')
         if n == oo:

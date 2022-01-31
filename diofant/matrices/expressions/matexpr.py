@@ -100,7 +100,7 @@ class MatrixExpr(Expr):
         from .matpow import MatPow
         if not self.is_square:
             raise ShapeError(f'Power of non-square matrix {self}')
-        elif self.is_Identity:
+        if self.is_Identity:
             return self
         elif other == -1:
             return Inverse(self)

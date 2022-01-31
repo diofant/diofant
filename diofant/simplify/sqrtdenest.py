@@ -866,8 +866,6 @@ def unrad(eq, *syms, **flags):
                                 raise NotImplementedError('no successful change'
                                                           ' of variable '
                                                           'found') from exc
-                            else:
-                                pass
                     if ok:
                         break
         elif len(rterms) == 3:
