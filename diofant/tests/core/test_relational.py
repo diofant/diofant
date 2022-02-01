@@ -88,7 +88,7 @@ def test_Eq():
     assert Eq(x**2, 0) == Eq(x**2, 0)
     assert Eq(x**2, 0) != Eq(x**2, 1)
 
-    pytest.raises(TypeError, lambda: Eq(x))
+    assert Eq(x) == Eq(x, 0)
 
     assert Eq(x, x)  # issue sympy/sympy#5719
 
