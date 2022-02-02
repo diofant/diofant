@@ -447,6 +447,11 @@ def test_diofantissue_55():
     assert limit((x + exp(x))/(x - 1), x, -oo) == 1
     assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue sympy/sympy#2929
 
+    # issue sympy/sympy#22982
+    assert limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) == oo
+    assert limit((log(E + 1/x))**(1 - sqrt(E + 1/x)), x, oo) == 1
+    assert limit((log(E + 1/x) - 1)**-sqrt(E + 1/x), x, oo) == oo
+
 
 def test_sympyissue_8061():
     assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
