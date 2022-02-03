@@ -41,3 +41,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22893`: 'limit' in combination with 'positive=True' gives wrong result
 * :sympyissue:`22878`: RecursionError in trigsimp
 * :sympyissue:`22982`: limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) returns 0 instead of oo
+* :sympyissue:`22986`: limit(acosh(1 + 1/x)*sqrt(x), x, oo) is evaluated incorrectly.
