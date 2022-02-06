@@ -1906,6 +1906,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             co = self
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
+            if co > 0 and 0 < diff < co or co < 0 and 0 > diff > co:
             if (co > 0 and diff > 0 and diff < co or
                     co < 0 and diff < 0 and diff > co):
                 return diff
@@ -2719,10 +2720,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             is_zero = t.equals(0)
             if is_zero:
                 continue
-            elif is_zero is False:
+            if is_zero is False:
                 break
-            else:
-                raise NotImplementedError(f'Zero-decision problem for {t}')
+            raise NotImplementedError(f'Zero-decision problem for {t}')
 
         if logx is None:
             t = t.subs({d: log(x)})

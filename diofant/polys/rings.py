@@ -1431,8 +1431,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not n > monom[j] >= m:
                 if ring.is_univariate:
                     continue
-                else:
-                    monom = monom[:j] + (0,) + monom[j + 1:]
+                monom = monom[:j] + (0,) + monom[j + 1:]
 
             if monom in poly:
                 poly[monom] += coeff

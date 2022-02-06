@@ -661,8 +661,8 @@ class RootOf(Expr):
             if im:
                 return false
             else:
-                return sympify(i.a < other and other < i.b)
-        return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
+                return sympify(i.a < other < i.b)
+        return sympify((i.ax < re < i.bx) and (i.ay < im < i.by))
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()

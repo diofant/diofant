@@ -355,7 +355,7 @@ class MinMaxBase(LatticeOp):
                 raise ShortCircuit(arg)
             if arg == cls.identity:
                 continue
-            elif arg.func == cls:
+            if arg.func == cls:
                 for x in arg.args:
                     yield x
             else:
@@ -525,7 +525,7 @@ class Max(MinMaxBase, Application):
     def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
-        if 0 < argindex and argindex <= n:
+        if 0 < argindex <= n:
             argindex -= 1
             if n == 2:
                 return Heaviside(self.args[argindex] - self.args[1 - argindex])
@@ -576,7 +576,7 @@ class Min(MinMaxBase, Application):
     def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
-        if 0 < argindex and argindex <= n:
+        if 0 < argindex <= n:
             argindex -= 1
             if n == 2:
                 return Heaviside(self.args[1-argindex] - self.args[argindex])

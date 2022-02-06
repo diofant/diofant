@@ -2232,37 +2232,36 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             # Make sure the above didn't fail.
             if testnum > 2:
                 continue
-            else:
-                # Substitute it into ODE to check for self consistency.
-                lhs, rhs = ode.lhs, ode.rhs
-                for i in range(order, -1, -1):
-                    if i == 0 and 0 not in diffsols:
-                        # We can only substitute f(x) if the solution was
-                        # solved for f(x).
-                        break
-                    lhs = sub_func_doit(lhs, func.diff((x, i)), diffsols[i])
-                    rhs = sub_func_doit(rhs, func.diff((x, i)), diffsols[i])
-                    ode_or_bool = Eq(lhs, rhs)
-                    ode_or_bool = simplify(ode_or_bool)
+            # Substitute it into ODE to check for self consistency.
+            lhs, rhs = ode.lhs, ode.rhs
+            for i in range(order, -1, -1):
+                if i == 0 and 0 not in diffsols:
+                    # We can only substitute f(x) if the solution was
+                    # solved for f(x).
+                    break
+                lhs = sub_func_doit(lhs, func.diff((x, i)), diffsols[i])
+                rhs = sub_func_doit(rhs, func.diff((x, i)), diffsols[i])
+                ode_or_bool = Eq(lhs, rhs)
+                ode_or_bool = simplify(ode_or_bool)
 
-                    if isinstance(ode_or_bool, (bool, BooleanAtom)):
-                        if ode_or_bool:
-                            lhs = rhs = Integer(0)
-                    else:
-                        lhs = ode_or_bool.lhs
-                        rhs = ode_or_bool.rhs
-                # No sense in overworking simplify -- just prove that the
-                # numerator goes to zero
-                num = trigsimp((lhs - rhs).as_numer_denom()[0])
-                # since solutions are obtained using force=True we test
-                # using the same level of assumptions
-                # replace function with dummy so assumptions will work
-                _func = Dummy('func')
-                num = num.subs({func: _func})
-                # posify the expression
-                num, reps = posify(num)
-                s = simplify(num).xreplace(reps).xreplace({_func: func})
-                testnum += 1
+                if isinstance(ode_or_bool, (bool, BooleanAtom)):
+                    if ode_or_bool:
+                        lhs = rhs = Integer(0)
+                else:
+                    lhs = ode_or_bool.lhs
+                    rhs = ode_or_bool.rhs
+            # No sense in overworking simplify -- just prove that the
+            # numerator goes to zero
+            num = trigsimp((lhs - rhs).as_numer_denom()[0])
+            # since solutions are obtained using force=True we test
+            # using the same level of assumptions
+            # replace function with dummy so assumptions will work
+            _func = Dummy('func')
+            num = num.subs({func: _func})
+            # posify the expression
+            num, reps = posify(num)
+            s = simplify(num).xreplace(reps).xreplace({_func: func})
+            testnum += 1
         else:
             break
 

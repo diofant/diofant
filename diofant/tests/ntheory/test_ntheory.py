@@ -285,7 +285,7 @@ def multiproduct(seq=(), start=1):
     for base, exp in seq:
         if not exp:
             continue
-        elif exp == 1:
+        if exp == 1:
             units *= base
         else:
             if exp % 2:

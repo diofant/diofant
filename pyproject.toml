@@ -12,9 +12,10 @@ atomic = true
 [tool.pylint.MASTER]
 jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
+[tool.pylint.BASIC]
+bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
-disable = ['blacklisted-name',
-           'invalid-name',
+disable = ['invalid-name',
            'missing-docstring',
            'unidiomatic-typecheck',
            'bad-mcs-method-argument',
@@ -55,9 +56,7 @@ disable = ['blacklisted-name',
            'no-else-return',
            'trailing-comma-tuple',
            'inconsistent-return-statements',
-           'chained-comparison',
            'dangerous-default-value',
-           'duplicate-key',
            'protected-access',
            'arguments-differ',
            'abstract-method',
@@ -67,7 +66,6 @@ disable = ['blacklisted-name',
            'global-variable-undefined',
            'global-variable-not-assigned',
            'global-statement',
-           'global-at-module-level',
            'unused-argument',
            'redefined-outer-name',
            'redefined-builtin',
@@ -80,7 +78,6 @@ disable = ['blacklisted-name',
            'unused-format-string-argument',
            'next-method-called',
            'import-outside-toplevel',
-           'no-else-continue',
            'arguments-out-of-order',
            'consider-using-f-string',
            'use-implicit-booleaness-not-comparison']

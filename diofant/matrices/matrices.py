@@ -4076,7 +4076,7 @@ def a2idx(j, n=None):
     if n is not None:
         if j < 0:
             j += n
-        if not (j >= 0 and j < n):
+        if not 0 <= j < n:
             raise IndexError(f'Index out of range: a[{j}]')
     return int(j)
 

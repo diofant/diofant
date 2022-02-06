@@ -875,8 +875,7 @@ def _factor(f, save):
 
             if A in history:
                 continue
-            else:
-                history.add(A)
+            history.add(A)
 
             try:
                 result = _test_evaluation_points(f_, gamma_, lcfactors, A, D)
@@ -902,8 +901,7 @@ def _factor(f, save):
 
             if result is None:
                 continue
-            else:
-                fA, denoms, divisors = result
+            fA, denoms, divisors = result
 
             with using(aa_factor_method='trager'):
                 _, fAfactors = _z_to_alpha(fA, uniring).factor_list()
@@ -914,8 +912,7 @@ def _factor(f, save):
             result = _leading_coeffs(f_, fAfactors, gamma_, lcfactors_, A, D, denoms, divisors)
             if result is None:
                 continue
-            else:
-                f_, lcs, fAfactors_ = result
+            f_, lcs, fAfactors_ = result
 
             prod = groundring.one
             for lc in lcs:

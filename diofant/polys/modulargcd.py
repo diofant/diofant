@@ -295,8 +295,7 @@ def _modgcd_p(f, g, degbound, contbound):
             if d < n:
                 d += 1
                 continue
-            else:
-                return
+            return
         else:
             n += 1
 
@@ -858,8 +857,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             if d < n:
                 d += 1
                 continue
-            else:
-                return
+            return
 
         if ha == 1:
             return ha

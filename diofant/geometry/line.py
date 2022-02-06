@@ -728,7 +728,7 @@ class LinearEntity(GeometrySet):
 
             def inseg(self):
                 def _between(a, b, c):
-                    return c >= a and c <= b or c <= a and c >= b
+                    return b >= c >= a or a >= c >= b
                 if _between(self.p1.x, self.p2.x, inter.x) and \
                         _between(self.p1.y, self.p2.y, inter.y):
                     return True

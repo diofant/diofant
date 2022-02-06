@@ -591,8 +591,7 @@ class Xor(BooleanFunction):
             if isinstance(arg, Number) or arg in (True, False):
                 if not arg:
                     continue
-                else:
-                    arg = true
+                arg = true
             if isinstance(arg, Xor):
                 for a in arg.args:
                     if a in argset:

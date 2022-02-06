@@ -509,8 +509,7 @@ def rsolve_hyper(coeffs, f, n):
         for q in q_factors:
             if p.is_integer and q.is_integer and p <= q:
                 continue
-            else:
-                factors += [(n - p, n - q)]
+            factors += [(n - p, n - q)]
 
     p = [(n - p, Integer(1)) for p in p_factors]
     q = [(Integer(1), n - q) for q in q_factors]

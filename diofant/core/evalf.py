@@ -448,13 +448,13 @@ def evalf_mul(v, prec, options):
         if i != last and pure_complex(arg):
             args[-1] = (args[-1]*arg).expand()
             continue
-        elif i == last and arg is S.One:
+        if i == last and arg is S.One:
             continue
         re, im, re_acc, im_acc = evalf(arg, working_prec, options)
         if re and im:
             complex_factors.append((re, im, re_acc, im_acc))
             continue
-        elif re:
+        if re:
             (s, m, e, b), w_acc = re, re_acc
         elif im:
             (s, m, e, b), w_acc = im, im_acc
@@ -673,8 +673,7 @@ def evalf_trig(v, prec, options):
             xprec += gap
             re, im, *_ = evalf(arg, xprec, options)
             continue
-        else:
-            return y, None, prec, None
+        return y, None, prec, None
 
 
 def evalf_log(expr, prec, options):

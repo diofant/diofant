@@ -2187,7 +2187,7 @@ def count_ops(expr, visual=False):
                     ops.append(DIV)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
-                elif d != 1:
+                if d != 1:
                     if not d.is_Integer:
                         args.append(d)
                     ops.append(DIV)

@@ -837,7 +837,7 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
                 if b.func == f:
                     fargs[b.args[0]] += e
                     continue
-                elif b.func == g:
+                if b.func == g:
                     gargs[b.args[0]] += e
                     continue
         args.append(x)

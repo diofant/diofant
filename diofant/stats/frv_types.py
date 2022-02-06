@@ -126,7 +126,7 @@ class DieDistribution(SingleFiniteDistribution):
     def pdf(self, x):  # pylint: disable=invalid-overridden-method
         x = sympify(x)
         if x.is_number:
-            if x.is_Integer and x >= 1 and x <= self.sides:
+            if x.is_Integer and 1 <= x <= self.sides:
                 return Rational(1, self.sides)
             return Integer(0)
         if x.is_Symbol:

@@ -33,7 +33,7 @@ def part_range_filter(partition_iterator, lb, ub):
     """
     for state in partition_iterator:
         _, lpart, _ = state
-        if lpart >= lb and lpart < ub:
+        if ub > lpart >= lb:
             yield state
 
 

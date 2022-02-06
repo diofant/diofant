@@ -468,8 +468,7 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
                     s1 = _trace_S(s, j, b, S_transversals)
                     if not s1:
                         continue
-                    else:
-                        s1 = [s[ix] for ix in s1]
+                    s1 = [s[ix] for ix in s1]
                 else:
                     s1 = s
                 assert s1[b] == j

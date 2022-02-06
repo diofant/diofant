@@ -706,7 +706,7 @@ def test_Infinity_inequations():
     x = Symbol('x')
     b = Symbol('b', real=True)
     assert (x < oo) == Lt(x, oo)  # issue sympy/sympy#7775
-    assert b < oo and b > -oo and b <= oo and b >= -oo
+    assert -oo < b < oo and -oo <= b <= oo
     assert oo > b and oo >= b and (oo < b) is false and (oo <= b) is false
     assert (-oo > b) is false and (-oo >= b) is false and -oo < b and -oo <= b
     assert (oo < x) == Lt(oo, x) and (oo > x) == Gt(oo, x)
