@@ -66,8 +66,9 @@ class Tuple(Basic):
     def __mul__(self, other):
         try:
             n = as_int(other)
-        except ValueError:
-            raise TypeError("Can't multiply sequence by non-integer of type '%s'" % type(other))
+        except ValueError as exc:
+            raise TypeError("Can't multiply sequence by non-integer "
+                            f"of type '{type(other)!s}'") from exc
         return self.func(*(self.args*n))
 
     __rmul__ = __mul__

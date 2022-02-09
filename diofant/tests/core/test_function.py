@@ -449,7 +449,7 @@ def test_fdiff_argument_index_error():
     class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
-        def fdiff(self, argindex):
+        def fdiff(self, argindex=1):
             raise ArgumentIndexError
     mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)

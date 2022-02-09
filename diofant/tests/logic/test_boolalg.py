@@ -529,8 +529,9 @@ def test_operators():
 
 
 def test_true_false():
-    assert true is true
-    assert false is false
+    # pylint: disable=singleton-comparison
+    assert true is true  # pylint: disable=comparison-with-itself
+    assert false is false  # pylint: disable=comparison-with-itself
     assert true is not True
     assert false is not False
     assert true

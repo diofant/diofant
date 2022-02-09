@@ -82,7 +82,8 @@ def test_sympyissue_3449():
 
 
 def test_sympyissue_3866():
-    assert --sqrt(sqrt(5) - 1) == sqrt(sqrt(5) - 1)
+    # pylint: disable=nonexistent-operator
+    assert -(-sqrt(sqrt(5) - 1)) == sqrt(sqrt(5) - 1)
 
 
 def test_negative_one():
@@ -204,7 +205,7 @@ def test_Pow_signs():
 def test_power_with_noncommutative_mul_as_base():
     x = Symbol('x', commutative=False)
     y = Symbol('y', commutative=False)
-    assert not (x*y)**3 == x**3*y**3
+    assert (x*y)**3 != x**3*y**3
     assert (2*x*y)**3 == 8*(x*y)**3
 
 

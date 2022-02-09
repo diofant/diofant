@@ -1138,13 +1138,13 @@ def _tsolve(eq, sym, **flags):
                 poly = lhs.as_poly()
                 g = _filtered_gens(poly, sym)
                 return _solve_lambert(lhs - rhs, sym, g)
-            except NotImplementedError:
+            except NotImplementedError as exc:
                 # maybe it's a convoluted function
                 if len(g) == 2:
                     try:
                         gpu = bivariate_type(lhs - rhs, *g)
                         if gpu is None:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                         g, p, u = gpu
                         flags['bivariate'] = False
                         inversion = _tsolve(g - u, sym, **flags)
@@ -1153,7 +1153,7 @@ def _tsolve(eq, sym, **flags):
                             return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
                         else:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                     except NotImplementedError:
                         pass
                 else:

@@ -80,7 +80,7 @@ class Point(GeometryEntity):
     def __contains__(self, item):
         return item == self
 
-    def is_concyclic(*points):
+    def is_concyclic(*points):  # pylint: disable=no-method-argument
         """Is a sequence of points concyclic?
 
         Test whether or not a sequence of points are concyclic (i.e., they lie
@@ -146,7 +146,7 @@ class Point(GeometryEntity):
                 return False
         return True
 
-    def is_collinear(*args):
+    def is_collinear(*args):  # pylint: disable=no-method-argument
         """Is a sequence of points collinear?
 
         Test whether or not a set of points are collinear. Returns True if

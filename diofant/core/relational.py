@@ -59,8 +59,9 @@ class Relational(Boolean, Expr, EvalfMixin):
         try:
             new_cls = cls.ValidRelationOperator[rop]
             return new_cls(lhs, rhs, **assumptions)
-        except KeyError:
-            raise ValueError(f'Invalid relational operator symbol: {rop!r}')
+        except KeyError as exc:
+            raise ValueError('Invalid relational operator '
+                             f'symbol: {rop!r}') from exc
 
     @property
     def lhs(self):
@@ -279,7 +280,7 @@ class Equality(Relational):
 
     is_Equality = True
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -345,7 +346,7 @@ class Unequality(Relational):
 
     rel_op = '!='
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -370,7 +371,7 @@ class _Inequality(Relational):
 
     """
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 

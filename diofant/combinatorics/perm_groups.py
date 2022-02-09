@@ -2285,8 +2285,8 @@ class PermutationGroup(Basic):
         else:
             try:
                 n = int(n)
-            except TypeError:
-                raise ValueError('n must be an integer or a sequence.')
+            except TypeError as exc:
+                raise ValueError('n must be an integer or a sequence.') from exc
         randrange = _randrange(seed)
 
         # start with the identity permutation

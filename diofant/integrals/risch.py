@@ -31,8 +31,8 @@ from ..abc import z
 from ..core import Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, oo, sympify
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
-from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
-                     real_roots, reduced)
+from ..polys import (Poly, PolynomialError, RootSum, cancel, gcd, real_roots,
+                     reduced)
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
@@ -748,11 +748,7 @@ def as_poly_1t(p, t, z):
     one_t_part = pa.slice(0, d + 1)
     r = pd.degree() - pa.degree()
     t_part = pa - one_t_part
-    try:
-        t_part = t_part.to_field().exquo(pd)
-    except DomainError as e:
-        # issue sympy/sympy#4950
-        raise NotImplementedError(e)
+    t_part = t_part.to_field().exquo(pd)
     # Compute the negative degree parts.
     od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
     one_t_part = Poly([0]*od + list(reversed(one_t_part.rep.all_coeffs())),

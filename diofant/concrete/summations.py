@@ -366,8 +366,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if not n:
             try:
                 n = (self.function.free_symbols - {k}).pop()
-            except KeyError:
-                raise ValueError
+            except KeyError as exc:
+                raise ValueError from exc
 
         a = Function('a')
 

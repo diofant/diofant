@@ -145,10 +145,10 @@ class CodeWrapper:
         command.extend(self.flags)
         try:
             retoutput = check_output(command, stderr=STDOUT)
-        except CalledProcessError as e:
+        except CalledProcessError as exc:
             raise CodeWrapError(
                 'Error while executing command: %s. Command output is:\n%s' % (
-                    ' '.join(command), e.output.decode()))
+                    ' '.join(command), exc.output.decode())) from exc
         if not self.quiet:
             print(retoutput)
 

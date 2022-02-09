@@ -2428,7 +2428,7 @@ class atan2(InverseTrigonometricFunction):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         y, x = self.args
         if argindex == 1:
             # Diff wrt y

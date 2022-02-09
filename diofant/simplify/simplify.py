@@ -458,6 +458,7 @@ def signsimp(expr, evaluate=None):
     if e.is_Add:
         return e.func(*[signsimp(a) for a in e.args])
     if evaluate:
+        # pylint: disable=nonexistent-operator
         e = e.xreplace({m: -(-m) for m in e.atoms(Mul) if -(-m) != m})
     return e
 

@@ -325,7 +325,7 @@ class And(LatticeOp, BooleanFunction):
         rel = []
         for x in reversed(list(args)):
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -393,7 +393,7 @@ class Or(LatticeOp, BooleanFunction):
         rel = []
         for x in args:
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -757,13 +757,13 @@ class Implies(BooleanFunction):
             newargs = []
             for x in args:
                 if isinstance(x, Number) or x in (0, 1):
-                    newargs.append(True if x else False)
+                    newargs.append(bool(x))
                 else:
                     newargs.append(x)
             A, B = newargs
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(f'{len(args)} operand(s) used for an Implies '
-                             f'(pairs are required): {args!s}')
+                             f'(pairs are required): {args!s}') from exc
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -810,7 +810,7 @@ class Equivalent(BooleanFunction):
         for x in args:
             if isinstance(x, Number) or x in [True, False]:  # Includes 0, 1
                 argset.discard(x)
-                argset.add(True if x else False)
+                argset.add(bool(x))
         rel = []
         for r in argset:
             if isinstance(r, Relational):
@@ -883,8 +883,8 @@ class ITE(BooleanFunction):
     def eval(cls, *args):
         try:
             a, b, c = args
-        except ValueError:
-            raise ValueError('ITE expects exactly 3 arguments')
+        except ValueError as exc:
+            raise ValueError('ITE expects exactly 3 arguments') from exc
         if a == true:
             return b
         elif a == false:

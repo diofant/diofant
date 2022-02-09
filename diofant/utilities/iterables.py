@@ -1541,7 +1541,7 @@ def generate_derangements(perm):
     """
     p = multiset_permutations(perm)
     indices = range(len(perm))
-    p0 = next(p)
+    p0 = next(p)  # pylint: disable=stop-iteration-return
     for pi in p:
         if all(pi[i] != p0[i] for i in indices):
             yield pi

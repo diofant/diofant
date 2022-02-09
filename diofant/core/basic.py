@@ -587,7 +587,7 @@ class Basic:
         if _aresame(self, old):
             return new
 
-        rv = self._eval_subs(old, new)
+        rv = self._eval_subs(old, new)  # pylint: disable=assignment-from-none
         if rv is None:
             rv = fallback(self, old, new)
         return rv

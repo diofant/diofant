@@ -46,6 +46,8 @@ def test_var():
     # check return value
     assert v == [d, e, fg]
 
+    # pylint: disable=undefined-variable
+
     # see if var() really injects into global namespace
     pytest.raises(NameError, lambda: z1)  # type: ignore[name-defined]
     _make_z1()

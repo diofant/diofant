@@ -739,6 +739,8 @@ def test_make_perm():
     assert cube.pgroup.make_perm(7, seed=list(range(7))) == \
         Permutation([6, 7, 3, 2, 5, 4, 0, 1])
 
+    pytest.raises(ValueError, lambda: cube.pgroup.make_perm({}, [0]))
+
     random.seed(0)
     assert cube.pgroup.make_perm(5) == Permutation([2, 1, 5, 6, 3, 0, 4, 7])
 

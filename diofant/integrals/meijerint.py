@@ -559,7 +559,7 @@ def _dummy_(name, token, **kwargs):
 
     """
     global _dummies
-    if not (name, token) in _dummies:
+    if (name, token) not in _dummies:
         _dummies[(name, token)] = Dummy(name, **kwargs)
     return _dummies[(name, token)]
 

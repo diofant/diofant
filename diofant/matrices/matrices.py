@@ -4076,8 +4076,8 @@ def a2idx(j, n=None):
     if type(j) is not int:
         try:
             j = j.__index__()
-        except AttributeError:
-            raise IndexError(f'Invalid index a[{j!r}]')
+        except AttributeError as exc:
+            raise IndexError(f'Invalid index a[{j!r}]') from exc
     if n is not None:
         if j < 0:
             j += n

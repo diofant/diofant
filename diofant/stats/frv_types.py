@@ -73,7 +73,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
     def set(self):
         return self.args
 
-    def pdf(self, x):
+    def pdf(self, x):  # pylint: disable=invalid-overridden-method
         if x in self.args:
             return self.p
         else:
@@ -124,7 +124,7 @@ class DieDistribution(SingleFiniteDistribution):
     def set(self):
         return list(map(Integer, range(1, self.sides + 1)))
 
-    def pdf(self, x):
+    def pdf(self, x):  # pylint: disable=invalid-overridden-method
         x = sympify(x)
         if x.is_number:
             if x.is_Integer and x >= 1 and x <= self.sides:

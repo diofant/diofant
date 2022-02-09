@@ -307,9 +307,9 @@ class Variable:
         """
         try:
             return self._datatype[language.upper()]
-        except KeyError:
+        except KeyError as exc:
             raise CodeGenError('Has datatypes for languages: %s' %
-                               ', '.join(self._datatype))
+                               ', '.join(self._datatype)) from exc
 
 
 class Argument(Variable):
@@ -768,7 +768,7 @@ class CCodeGen(CodeGen):
 
     def __init__(self, project='project', printer=None,
                  preprocessor_statements=None, cse=False):
-        super(CCodeGen, self).__init__(project=project, cse=cse)
+        super().__init__(project=project, cse=cse)
         self.printer = printer or CCodePrinter()
 
         self.preprocessor_statements = preprocessor_statements
@@ -1190,7 +1190,7 @@ class OctaveCodeGen(CodeGen):
 
     code_extension = 'm'
 
-    def routine(self, name, expr, argument_sequence, global_vars):
+    def routine(self, name, expr, argument_sequence, global_vars=None):
         """Specialized Routine creation for Octave."""
         # FIXME: this is probably general enough for other high-level
         # languages, perhaps its the C/Fortran one that is specialized!

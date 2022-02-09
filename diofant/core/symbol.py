@@ -108,11 +108,11 @@ class BaseSymbol(AtomicExpr, Boolean):
         cls._sanitize(assumptions, cls)
         return BaseSymbol.__xnew_cached_(cls, name, **assumptions)
 
-    def __new_stage2__(cls, name, **assumptions):
+    def __new_stage2__(self, name, **assumptions):
         if not isinstance(name, str):
             raise TypeError('name should be a string, not %s' % repr(type(name)))
 
-        obj = Expr.__new__(cls)
+        obj = Expr.__new__(self)
         obj.name = name
 
         # TODO: Issue sympy/sympy#8873: Forcing the commutative assumption here means

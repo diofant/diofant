@@ -1157,14 +1157,14 @@ def evalf(x, prec, options):
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)
-    except KeyError:
+    except KeyError as exc:
         try:
             # Fall back to ordinary evalf if possible
             if 'subs' in options:
                 x = x.subs(evalf_subs(prec, options['subs']))
             re, im = x._eval_evalf(prec).as_real_imag()
             if re.has(re_) or im.has(im_):
-                raise NotImplementedError
+                raise NotImplementedError from exc
             if re == 0:
                 re = None
                 reprec = None
@@ -1178,8 +1178,8 @@ def evalf(x, prec, options):
                 im = im._to_mpmath(prec)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec
-        except AttributeError:
-            raise NotImplementedError
+        except AttributeError as exc:
+            raise NotImplementedError from exc
     chop = options.get('chop', False)
     if chop:
         if chop is True:
@@ -1250,7 +1250,7 @@ class EvalfMixin:
                 raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
-            v = self._eval_evalf(prec)
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
                 return self
             else:
@@ -1272,7 +1272,7 @@ class EvalfMixin:
 
     def _evalf(self, prec):
         """Helper for evalf. Does the same thing but takes binary precision."""
-        r = self._eval_evalf(prec)
+        r = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
         if r is None:
             r = self
         return r
@@ -1295,19 +1295,19 @@ class EvalfMixin:
                 return make_mpf(re)
             else:
                 return make_mpf(fzero)
-        except NotImplementedError:
-            v = self._eval_evalf(prec)
+        except NotImplementedError as exc:
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             re, im = v.as_real_imag()
             if re.is_Float:
                 re = re._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             if im.is_Float:
                 im = im._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             return make_mpc((re, im))
 
 

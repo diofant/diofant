@@ -121,9 +121,9 @@ def _import(module):
     try:
         namespace, namespace_default, translations, import_commands = MODULES[
             module]
-    except KeyError:
-        raise NameError(
-            f"'{module}' module can't be used for lambdification")
+    except KeyError as exc:
+        raise NameError(f"'{module}' module can't be used "
+                        'for lambdification') from exc
 
     # Clear namespace or exit
     if namespace != namespace_default:

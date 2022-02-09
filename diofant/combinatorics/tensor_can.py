@@ -423,7 +423,7 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
         Dxtrav = _orbit_transversal(size, dsgsx1, p_i, False, af=True) \
             if dsgsx else None
         if Dxtrav:
-            Dxtrav = [_af_invert(x) for x in Dxtrav]
+            Dxtrav = [_af_invert(x) for x in Dxtrav]  # pylint: disable=not-an-iterable
         # compute the orbit of p_i
         for ii in range(num_types):
             if p_i in dumx[ii]:

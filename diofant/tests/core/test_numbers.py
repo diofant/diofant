@@ -295,8 +295,8 @@ def test_Rational_cmp():
     assert n2 < n3
     assert n1 < n2
     assert n3 > n1
-    assert not n3 < n1
-    assert not Integer(-1) > 0
+    assert n3 >= n1
+    assert Integer(-1) <= 0
     assert Integer(-1) < 0
 
     pytest.raises(TypeError, lambda: n1 < nan)
@@ -696,6 +696,8 @@ def test_Infinity_inequations():
     assert -oo < oo and -oo <= oo
     assert (-oo > oo) is false and (-oo >= oo) is false
 
+    # pylint: disable=comparison-with-itself
+
     assert (oo < oo) is false  # issue sympy/sympy#7775
     assert (oo > oo) is false
     assert (-oo > -oo) is false and (-oo < -oo) is false
@@ -714,7 +716,7 @@ def test_Infinity_inequations():
 
 
 def test_NaN():
-    assert nan == nan
+    assert nan == nan  # pylint: disable=comparison-with-itself
     assert nan != 1
     assert 1*nan == nan
     assert 1 != nan
@@ -978,7 +980,7 @@ def test_accept_int():
 
 def test_dont_accept_str():
     assert Float('0.2') != '0.2'
-    assert not Float('0.2') == '0.2'
+    assert not Float('0.2') == '0.2'  # pylint: disable=unneeded-not
 
 
 def test_int():

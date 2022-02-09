@@ -957,12 +957,12 @@ class _Factor:
         try:
             f, H, LC = self._zz_wang_lead_coeffs(f, T, cs, E, H, A)
             factors = self._zz_wang_hensel_lifting(f, H, LC, A, p)
-        except ExtraneousFactors:
+        except ExtraneousFactors as exc:
             if query('EEZ_RESTART_IF_NEEDED'):
                 return self._zz_wang(orig_f, mod + 1)
             else:
                 raise ExtraneousFactors('we need to restart algorithm '
-                                        'with better parameters')
+                                        'with better parameters') from exc
 
         result = []
 

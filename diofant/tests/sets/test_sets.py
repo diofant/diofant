@@ -622,7 +622,7 @@ def test_finite_basic():
     assert (A <= B) is False
     assert AorB > A and AorB > B
     assert AorB >= A and AorB >= B
-    assert A >= A and A <= A
+    assert A >= A and A <= A  # pylint: disable=comparison-with-itself
     assert A >= AandB and B >= AandB
     assert A > AandB and B > AandB
 

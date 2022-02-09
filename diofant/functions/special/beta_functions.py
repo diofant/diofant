@@ -76,7 +76,7 @@ class beta(Function):
 
     unbranched = True
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         x, y = self.args
         if argindex == 1:
             return beta(x, y)*(digamma(x) - digamma(x + y))

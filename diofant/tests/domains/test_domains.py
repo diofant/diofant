@@ -458,6 +458,10 @@ def test_Domain__contains__():
 
     assert F(1) in ZZ
 
+    # issue sympy/sympy#14433
+    F = QQ.inject(1/x).field
+    assert all(_ in F for _ in [x, 1/x])
+
 
 def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
@@ -823,8 +827,8 @@ def test_AlgebraicElement():
     a = A([QQ(1), QQ(1)])
     b = B([QQ(1), QQ(1)])
 
-    assert (a == a) is True
-    assert (a != a) is False
+    assert (a == a) is True  # pylint: disable=comparison-with-itself
+    assert (a != a) is False  # pylint: disable=comparison-with-itself
 
     assert (a == b) is False
     assert (a != b) is True

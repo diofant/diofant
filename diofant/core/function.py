@@ -919,10 +919,7 @@ class Derivative(Expr):
             False
 
         """
-        if self.expr.is_Function:
-            return True
-        else:
-            return False
+        return bool(self.expr.is_Function)
 
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy
@@ -1228,7 +1225,7 @@ class Derivative(Expr):
 
         return Derivative(*(x._subs(old, new) for x in self.args))
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x, logx=None):
         for term in self.expr.series(x, n=None, logx=logx):
             yield self.func(term, *self.variables)
 

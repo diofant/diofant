@@ -5,6 +5,7 @@ __all__ = ()
 
 
 def test_equal():
+    # pylint: disable=unneeded-not
     b = Symbol('b')
     a = Symbol('a')
     e1 = a + b
@@ -52,7 +53,7 @@ def test_cmp_bug1():
     t = T()
     x = Symbol('x')
 
-    assert not x == t
+    assert not x == t  # pylint: disable=unneeded-not
     assert x != t
 
 
@@ -62,11 +63,12 @@ def test_cmp_bug2():
 
     t = T()
 
-    assert not Symbol == t
+    assert not Symbol == t  # pylint: disable=unneeded-not
     assert Symbol != t
 
 
 def test_cmp_sympyissue_4357():
+    # pylint: disable=unneeded-not
     assert not (Symbol == 1)
     assert (Symbol != 1)
     assert not (Symbol == 'x')

@@ -4,15 +4,14 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Limit, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, asin, atan,
+from diofant import (E, Float, Function, I, Integral, Limit, O, Piecewise,
+                     PoleError, Rational, Sum, Symbol, acos, acosh, asin, atan,
                      besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
                      digamma, erf, erfi, exp, factorial, floor, gamma,
                      integrate, limit, log, nan, oo, pi, polygamma, root, sign,
                      simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
-from diofant.series.order import O
 
 
 __all__ = ()
@@ -446,6 +445,11 @@ def test_sympyissue_8730():
 def test_diofantissue_55():
     assert limit((x + exp(x))/(x - 1), x, -oo) == 1
     assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue sympy/sympy#2929
+
+    # issue sympy/sympy#22982
+    assert limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) == oo
+    assert limit((log(E + 1/x))**(1 - sqrt(E + 1/x)), x, oo) == 1
+    assert limit((log(E + 1/x) - 1)**-sqrt(E + 1/x), x, oo) == oo
 
 
 def test_sympyissue_8061():
@@ -888,3 +892,7 @@ def test_sympyissue_22893():
     a, b = symbols('a b', positive=True)
     e = (a*exp(-a*x) + b*exp(-b*x))*exp(b*x)
     assert isinstance(limit(e, x, oo), Limit)
+
+
+def test_sympyissue_22986():
+    assert limit(acosh(1 + 1/x)*sqrt(x), x, oo) == sqrt(2)

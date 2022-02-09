@@ -208,7 +208,7 @@ class Rationals(Set, metaclass=Singleton):
         seen = []
         pairs = cantor_product(S.Integers, S.Naturals)
         while True:
-            n, d = next(pairs)
+            n, d = next(pairs)  # pylint: disable=stop-iteration-return
             r = Rational(n, d)
             if r not in seen:
                 seen.append(r)
@@ -218,7 +218,7 @@ class Rationals(Set, metaclass=Singleton):
 class Reals(Interval, metaclass=Singleton):
     """The set of all reals."""
 
-    def __new__(cls):
+    def __new__(cls):  # pylint: disable=signature-differs
         return Interval.__new__(cls, -oo, oo, True, True)
 
     def __eq__(self, other):
@@ -231,7 +231,7 @@ class Reals(Interval, metaclass=Singleton):
 class ExtendedReals(Interval, metaclass=Singleton):
     """The set of all extended reals."""
 
-    def __new__(cls):
+    def __new__(cls):  # pylint: disable=signature-differs
         return Interval.__new__(cls, -oo, oo)
 
     def __eq__(self, other):
@@ -388,9 +388,9 @@ class Range(Set):
         try:
             start, stop, step = [w if w in [-oo, oo] else Integer(as_int(w))
                                  for w in (start, stop, step)]
-        except ValueError:
+        except ValueError as exc:
             raise ValueError('Inputs to Range must be Integer Valued\n' +
-                             'Use ImageSets of Ranges for other cases')
+                             'Use ImageSets of Ranges for other cases') from exc
 
         if not step.is_finite:
             raise ValueError('Infinite step is not allowed')

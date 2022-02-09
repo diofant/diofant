@@ -861,10 +861,11 @@ def unrad(eq, *syms, **flags):
                                 _cov(covsym, c)
                             ok = True
                             break
-                        except NotImplementedError:
+                        except NotImplementedError as exc:
                             if reverse:
-                                raise NotImplementedError(
-                                    'no successful change of variable found')
+                                raise NotImplementedError('no successful change'
+                                                          ' of variable '
+                                                          'found') from exc
                             else:
                                 pass
                     if ok:
