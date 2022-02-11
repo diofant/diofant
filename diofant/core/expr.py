@@ -1907,8 +1907,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
             if co > 0 and 0 < diff < co or co < 0 and 0 > diff > co:
-            if (co > 0 and diff > 0 and diff < co or
-                    co < 0 and diff < 0 and diff > co):
                 return diff
             return
 

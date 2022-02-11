@@ -926,7 +926,7 @@ def test_eigen():
 
     # issue sympy/sympy#10719
     assert Matrix([]).eigenvals() == {}
-    assert Matrix([]).eigenvects() == []
+    assert not Matrix([]).eigenvects()
 
 
 def test_subs():

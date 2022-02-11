@@ -12,6 +12,8 @@ atomic = true
 [tool.pylint.MASTER]
 jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
+[tool.pylint.format]
+max-line-length = 7000
 [tool.pylint.BASIC]
 bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
@@ -19,10 +21,8 @@ disable = ['invalid-name',
            'missing-docstring',
            'unidiomatic-typecheck',
            'bad-mcs-method-argument',
-           'line-too-long',
            'too-many-lines',
            'wrong-import-position',
-           'too-many-star-expressions',
            'non-iterator-returned',
            'relative-beyond-top-level',
            'no-name-in-module',
@@ -34,9 +34,7 @@ disable = ['invalid-name',
            'parameter-unpacking',
            'import-star-module-level',
            'bad-inline-option',
-           'use-symbolic-message-instead',
            'no-self-use',
-           'no-staticmethod-decorator',
            'cyclic-import',
            'duplicate-code',
            'too-many-ancestors',
@@ -73,8 +71,7 @@ disable = ['invalid-name',
            'next-method-called',
            'import-outside-toplevel',
            'arguments-out-of-order',
-           'consider-using-f-string',
-           'use-implicit-booleaness-not-comparison']
+           'consider-using-f-string']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

@@ -179,15 +179,15 @@ def test_FactRules_parse():
     pytest.raises(ValueError, lambda: FactRules('a ? b'))
 
     f = FactRules('a -> b & ~b')  # trivial test
-    assert f.prereq == {}
+    assert not f.prereq
 
     # tautologies
-    assert FactRules('a -> a | b').prereq == {}
+    assert not FactRules('a -> a | b').prereq
     # XXX: We don't support non-atomic left operands, so use Prover directly
     p = Prover()
     p.process_rule(And('a', 'b'), 'a')
     p.process_rule(Or('a', 'b'), 'a')
-    assert p.proved_rules == []
+    assert not p.proved_rules
 
 
 def test_FactRules_parse2():

@@ -205,7 +205,7 @@ def test_generate():
     assert prevprime(13) == 11
     assert prevprime(97) == 89
     assert prevprime(10**40) == (10**40 - 17)
-    assert list(primerange(3001110000000, 799999999)) == []
+    assert not list(primerange(3001110000000, 799999999))
     assert list(primerange(2, 7)) == [2, 3, 5]
     assert list(primerange(2, 10)) == [2, 3, 5, 7]
     assert list(primerange(1050, 1100)) == [1051, 1061,
@@ -785,7 +785,7 @@ def test_binomial_coefficients():
 
 
 def test_multinomial_coefficients():
-    assert multinomial_coefficients(0, 1) == {}
+    assert not multinomial_coefficients(0, 1)
     assert multinomial_coefficients(3, 0) == {(0, 0, 0): 1}
     assert multinomial_coefficients(1, 1) == {(1,): 1}
     assert multinomial_coefficients(1, 2) == {(2,): 1}
