@@ -14,6 +14,18 @@ jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
 [tool.pylint.format]
 max-line-length = 7000
+[tool.pylint.design]
+max-locals = 100
+max-returns = 35
+max-attributes = 30
+max-branches = 90
+max-parents = 12
+max-statements = 310
+max-args = 12
+max-nested-blocks = 10
+max-bool-expr = 10
+min-public-methods = 0
+max-public-methods = 110
 [tool.pylint.BASIC]
 bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
@@ -37,17 +49,6 @@ disable = ['invalid-name',
            'no-self-use',
            'cyclic-import',
            'duplicate-code',
-           'too-many-ancestors',
-           'too-many-instance-attributes',
-           'too-few-public-methods',
-           'too-many-public-methods',
-           'too-many-return-statements',
-           'too-many-branches',
-           'too-many-arguments',
-           'too-many-locals',
-           'too-many-statements',
-           'too-many-boolean-expressions',
-           'too-many-nested-blocks',
            'redefined-argument-from-local',
            'no-else-return',
            'trailing-comma-tuple',
