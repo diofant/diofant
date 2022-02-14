@@ -1441,3 +1441,7 @@ def test_sympyissue_22487():
 def test_sympyissue_22863():
     # not hangs
     integrate((3*x**3 - x**2 + 2*x - 4)/sqrt(x**2 - 3*x + 2), (x, 0, 1))
+
+
+def test_sympyissue_23069():
+    assert integrate(x**4*sqrt(1 - x**2), (x, 0, 1)) == pi/32
