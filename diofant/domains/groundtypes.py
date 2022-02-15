@@ -28,6 +28,7 @@ PythonRational = fractions.Fraction
 
 
 if HAS_GMPY:
+    # pylint: disable=no-name-in-module
     from gmpy2 import denom as gmpy_denom
     from gmpy2 import fac as gmpy_factorial
     from gmpy2 import gcd as gmpy_gcd

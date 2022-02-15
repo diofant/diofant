@@ -26,6 +26,8 @@ max-nested-blocks = 10
 max-bool-expr = 10
 min-public-methods = 0
 max-public-methods = 110
+[tool.pylint.similarities]
+min-similarity-lines = 10
 [tool.pylint.BASIC]
 bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
@@ -37,7 +39,6 @@ disable = ['invalid-name',
            'wrong-import-position',
            'non-iterator-returned',
            'relative-beyond-top-level',
-           'no-name-in-module',
            'unbalanced-tuple-unpacking',
            'no-member',
            'not-callable',
