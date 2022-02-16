@@ -571,7 +571,7 @@ def _rewrite_gamma(f, s, a, b):
                     cond = not cond
                 args += [(base, cond)]*abs(exp)
                 continue
-            elif not base.has(s):
+            if not base.has(s):
                 a, b = linear_arg(exp)
                 if not is_numer:
                     base = 1/base
@@ -1000,8 +1000,7 @@ def _laplace_transform(f, t, s_, simplify=True, noconds=False):
                 if soln.lts == t:
                     raise IntegralTransformError('Laplace', f,
                                                  'convergence not in half-plane?')
-                else:
-                    a_ = Min(soln.lts, a_)
+                a_ = Min(soln.lts, a_)
             if a_ != oo:
                 a = Max(a_, a)
             else:

@@ -49,7 +49,7 @@ def test_sort():
 
 def test_term():
     assert arguments(2) == ()
-    assert arguments(Integer(2)) == ()
+    assert not arguments(Integer(2))
     assert arguments(2 + x) == (2, x)
     assert operator(2 + x) == Add
     assert operator(Integer(2)) == Integer(2)

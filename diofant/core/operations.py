@@ -413,9 +413,9 @@ class LatticeOp(AssocOp):
         for arg in arg_sequence:
             if arg == ncls.zero:
                 raise ShortCircuit(arg)
-            elif arg == ncls.identity:
+            if arg == ncls.identity:
                 continue
-            elif arg.func == ncls:
+            if arg.func == ncls:
                 for x in arg.args:
                     yield x
             else:

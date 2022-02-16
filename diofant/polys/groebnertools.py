@@ -611,7 +611,7 @@ def f5b(F, ring):
                 cp = critical_pair(p, g, ring)
                 if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
                     continue
-                elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
+                if is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
                     continue
 
                 CP.append(cp)

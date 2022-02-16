@@ -138,8 +138,7 @@ class Limit(Expr):
             if not left.equals(right):
                 raise PoleError(f'left and right limits for expression {e} at '
                                 f'point {z}={z0} seems to be not equal')
-            else:
-                return right
+            return right
 
         use_heuristics = hints.get('heuristics', True)
 

@@ -1,4 +1,5 @@
-from diofant import Expr, Symbol
+from diofant import Expr
+from diofant.abc import x
 from diofant.core.decorators import call_highest_priority
 
 
@@ -73,7 +74,6 @@ class Higher2:
 
 
 def test_mul():
-    x = Symbol('x')
     h = Higher()
     l = Lower()
     l2 = Lower2()
@@ -87,7 +87,6 @@ def test_mul():
 
 
 def test_add():
-    x = Symbol('x')
     h = Higher()
     l = Lower()
     assert l + h == h + l == 'high'
@@ -96,7 +95,6 @@ def test_add():
 
 
 def test_sub():
-    x = Symbol('x')
     h = Higher()
     l = Lower()
     assert l - h == h - l == 'high'
@@ -105,7 +103,6 @@ def test_sub():
 
 
 def test_pow():
-    x = Symbol('x')
     h = Higher()
     l = Lower()
     assert l**h == h**l == 'high'
@@ -115,7 +112,6 @@ def test_pow():
 
 
 def test_div():
-    x = Symbol('x')
     h = Higher()
     l = Lower()
     assert l/h == h/l == 'high'

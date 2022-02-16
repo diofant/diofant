@@ -12,103 +12,68 @@ atomic = true
 [tool.pylint.MASTER]
 jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
+[tool.pylint.format]
+max-line-length = 7000
+[tool.pylint.design]
+max-locals = 100
+max-returns = 35
+max-attributes = 30
+max-branches = 90
+max-parents = 12
+max-statements = 310
+max-args = 12
+max-nested-blocks = 10
+max-bool-expr = 10
+min-public-methods = 0
+max-public-methods = 110
+[tool.pylint.similarities]
+min-similarity-lines = 10
+[tool.pylint.BASIC]
+bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
-disable = ['blacklisted-name',
-           'invalid-name',
+disable = ['invalid-name',
            'missing-docstring',
            'unidiomatic-typecheck',
            'bad-mcs-method-argument',
-           'line-too-long',
            'too-many-lines',
-           'multiple-statements',
-           'superfluous-parens',
-           'unexpected-line-ending-format',
-           'wrong-spelling-in-comment',
-           'wrong-spelling-in-docstring',
            'wrong-import-position',
-           'too-many-star-expressions',
            'non-iterator-returned',
            'relative-beyond-top-level',
-           'no-name-in-module',
            'unbalanced-tuple-unpacking',
            'no-member',
            'not-callable',
            'no-value-for-parameter',
            'invalid-unary-operand-type',
-           'too-many-format-args',
-           'too-few-format-args',
-           'bad-str-strip-call',
            'parameter-unpacking',
            'import-star-module-level',
            'bad-inline-option',
-           'use-symbolic-message-instead',
            'no-self-use',
-           'no-staticmethod-decorator',
            'cyclic-import',
            'duplicate-code',
-           'too-many-ancestors',
-           'too-many-instance-attributes',
-           'too-few-public-methods',
-           'too-many-public-methods',
-           'too-many-return-statements',
-           'too-many-branches',
-           'too-many-arguments',
-           'too-many-locals',
-           'too-many-statements',
-           'too-many-boolean-expressions',
-           'too-many-nested-blocks',
            'redefined-argument-from-local',
            'no-else-return',
            'trailing-comma-tuple',
            'inconsistent-return-statements',
-           'chained-comparison',
            'dangerous-default-value',
-           'duplicate-key',
            'protected-access',
            'arguments-differ',
            'abstract-method',
            'no-init',
-           'unnecessary-semicolon',
-           'bad-indentation',
-           'mixed-indentation',
            'relative-import',
            'fixme',
-           'invalid-encoded-data',
            'global-variable-undefined',
            'global-variable-not-assigned',
            'global-statement',
-           'global-at-module-level',
            'unused-argument',
            'redefined-outer-name',
            'redefined-builtin',
-           'redefine-in-handler',
            'undefined-loop-variable',
            'cell-var-from-loop',
-           'raising-format-tuple',
            'keyword-arg-before-vararg',
-           'logging-not-lazy',
-           'logging-format-interpolation',
-           'logging-fstring-interpolation',
-           'missing-format-argument-key',
-           'unused-format-string-argument',
-           'format-combined-specification',
-           'missing-format-attribute',
-           'invalid-format-index',
-           'anomalous-backslash-in-string',
-           'anomalous-unicode-escape-in-string',
-           'bad-thread-instantiation',
            'next-method-called',
            'import-outside-toplevel',
-           'no-else-continue',
-           'no-else-raise',
-           'no-else-break',
            'arguments-out-of-order',
-           'missing-final-newline',
-           'mixed-line-endings',
-           'trailing-newlines',
-           'trailing-whitespace',
-           'consider-using-f-string',
-           'use-implicit-booleaness-not-comparison']
+           'consider-using-f-string']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

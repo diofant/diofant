@@ -2475,8 +2475,8 @@ def test_all_roots():
 
 
 def test_nroots():
-    assert Integer(0).as_poly(x).nroots() == []
-    assert Integer(1).as_poly(x).nroots() == []
+    assert not Integer(0).as_poly(x).nroots()
+    assert not Integer(1).as_poly(x).nroots()
 
     assert (x**2 - 1).as_poly().nroots() == [-1.0, 1.0]
     assert (x**2 + 1).as_poly().nroots() == [-1.0*I, 1.0*I]
@@ -2705,7 +2705,7 @@ def test_reduced():
 
 
 def test_groebner():
-    assert groebner([], x, y, z) == []
+    assert not groebner([], x, y, z)
 
     assert groebner([x**2 + 1, y**4*x + x**3], x, y, order='lex') == [1 + x**2, -1 + y**4]
     assert groebner([x**2 + 1, y**4*x + x**3, x*y*z**3], x, y, z, order='grevlex') == [-1 + y**4, z**3, 1 + x**2]
@@ -2926,7 +2926,7 @@ def test_GroebnerBasis():
     assert G == P
     assert G == tuple(P)
 
-    assert G != []
+    assert G
 
     G = groebner(F, x, y, order='grevlex', polys=True)
 

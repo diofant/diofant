@@ -728,7 +728,7 @@ class LinearEntity(GeometrySet):
 
             def inseg(self):
                 def _between(a, b, c):
-                    return c >= a and c <= b or c <= a and c >= b
+                    return b >= c >= a or a >= c >= b
                 if _between(self.p1.x, self.p2.x, inter.x) and \
                         _between(self.p1.y, self.p2.y, inter.y):
                     return True
@@ -1440,12 +1440,10 @@ class Ray(LinearEntity):
                     rv = other.y <= self.source.y
                 if rv in (true, false):
                     return bool(rv)
-                raise Undecidable(
-                    f'Cannot determine if {other} is in {self}')
-            else:
-                # Points are not collinear, so the rays are not parallel
-                # and hence it is impossible for self to contain o
-                return False
+                raise Undecidable(f'Cannot determine if {other} is in {self}')
+            # Points are not collinear, so the rays are not parallel
+            # and hence it is impossible for self to contain o
+            return False
 
         # No other known entity can be contained in a Ray
         return False

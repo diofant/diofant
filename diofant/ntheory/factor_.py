@@ -1512,9 +1512,8 @@ class divisor_sigma(Function):
         if n.is_Integer:
             if n <= 0:
                 raise ValueError('n must be a positive integer')
-            else:
-                return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
-                             else e + 1 for p, e in factorint(n).items()])
+            return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
+                         else e + 1 for p, e in factorint(n).items()])
 
 
 def core(n, t=2):
@@ -1570,13 +1569,12 @@ def core(n, t=2):
     t = as_int(t)
     if n <= 0:
         raise ValueError('n must be a positive integer')
-    elif t <= 1:
+    if t <= 1:
         raise ValueError('t must be >= 2')
-    else:
-        y = 1
-        for p, e in factorint(n).items():
-            y *= p**(e % t)
-        return y
+    y = 1
+    for p, e in factorint(n).items():
+        y *= p**(e % t)
+    return y
 
 
 def square_factor(a):

@@ -60,7 +60,7 @@ def _peeloff_pi(arg):
         if a is pi:
             K = Integer(1)
             break
-        elif a.is_Mul:
+        if a.is_Mul:
             K, p = a.as_two_terms()
             if p is pi and K.is_Rational:
                 break

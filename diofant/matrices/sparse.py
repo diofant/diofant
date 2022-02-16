@@ -948,11 +948,9 @@ class SparseMatrixBase(MatrixBase):
         if not self.is_square:
             if self.rows < self.cols:
                 raise ValueError('Under-determined system.')
-            else:
-                raise ValueError('For over-determined system, M, having '
-                                 'more rows than columns, try M.solve_least_squares(rhs).')
-        else:
-            return self.inv(method=method)*rhs
+            raise ValueError('For over-determined system, M, having '
+                             'more rows than columns, try M.solve_least_squares(rhs).')
+        return self.inv(method=method)*rhs
 
     def _eval_inverse(self, **kwargs):
         """Return the matrix inverse using Cholesky or LDL (default)

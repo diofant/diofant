@@ -119,7 +119,7 @@ class exp_polar(Function):
         if bad:
             return self  # cannot evalf for this argument
         res = exp(self.exp).evalf(prec, strict=False)
-        if i > 0 and im(res) < 0:
+        if i > 0 > im(res):
             # i ~ pi, but exp(I*i) evaluated to argument slightly bigger than pi
             return re(res)
         return res

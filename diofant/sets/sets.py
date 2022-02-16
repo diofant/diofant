@@ -1275,9 +1275,8 @@ class Union(Set, EvalfMixin):
             for set in sets:
                 if set[0] in sos_list:
                     continue
-                else:
-                    sos_list.append(set[0])
-                    sets_list.append(set)
+                sos_list.append(set[0])
+                sets_list.append(set)
             sets = sets_list
 
             # Flip Parity - next time subtract/add if we added/subtracted here

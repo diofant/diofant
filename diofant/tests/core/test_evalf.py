@@ -271,8 +271,8 @@ def test_evalf_integer_parts():
 
     def check(x):
         c, f = ceiling(sqrt(x)), floor(sqrt(x))
-        assert (c - 1)**2 < x and c**2 >= x
-        assert (f + 1)**2 > x and f**2 <= x
+        assert (c - 1)**2 < x <= c**2
+        assert (f + 1)**2 > x >= f**2
 
     check(2**30 + 1)
     check(2**100 + 1)

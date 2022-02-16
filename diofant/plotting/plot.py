@@ -757,7 +757,7 @@ class MatplotlibBackend(BaseBackend):
         self.LineCollection = self.matplotlib.collections.LineCollection
         if any(are_3D) and not all(are_3D):
             raise ValueError('The matplotlib backend can not mix 2D and 3D.')
-        elif not any(are_3D):
+        if not any(are_3D):
             self.fig = self.plt.figure()
             self.ax = self.fig.add_subplot(111)
             self.ax.spines['left'].set_position('zero')

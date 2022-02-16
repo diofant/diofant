@@ -100,7 +100,7 @@ def test_dpll2_satisfiable():
     assert dpll2_satisfiable(Equivalent(A, B) & ~A) == {A: False, B: False}
 
     l = SATSolver([], set(), set())
-    assert l.lit_heap == []
+    assert not l.lit_heap
     assert l._vsids_calculate() == 0
 
     l0 = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
@@ -191,7 +191,7 @@ def test_entails():
 
 def test_PropKB():
     kb = PropKB()
-    assert kb.clauses == []
+    assert not kb.clauses
     assert kb.ask(A >> B) is False
     assert kb.ask(A >> (B >> A)) is True
     kb.tell(A >> B)

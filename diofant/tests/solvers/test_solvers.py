@@ -1212,7 +1212,7 @@ def test_lambert_multivariate():
                               x) == {exp(x), log(x), x}
         assert _filtered_gens((exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x).as_poly(),
                               x) == {exp(I*x), x, log(x)}
-    assert _lambert(x, x) == []
+    assert not _lambert(x, x)
     assert solve((x**2 - 2*x + 1).subs({x: log(x) + 3*x})) == [{x: LambertW(3*E)/3}]
     assert (solve((x**2 - 2*x + 1).subs({x: (log(x) + 3*x)**2 - 1})) ==
             [{x: LambertW(3*exp(-sqrt(2)))/3}, {x: LambertW(3*exp(sqrt(2)))/3}])

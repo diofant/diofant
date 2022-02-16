@@ -482,7 +482,7 @@ class Idx(Expr):
         if not label.is_integer:
             raise TypeError('Idx object requires an integer label.')
 
-        elif is_sequence(range):
+        if is_sequence(range):
             if len(range) != 2:
                 raise ValueError(filldedent(f"""
                     Idx range tuple must have length 2, but got {len(range)}"""))

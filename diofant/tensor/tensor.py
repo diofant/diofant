@@ -257,9 +257,8 @@ class TIDS(CantSympify):
                 if is_contr:
                     if contr:
                         raise ValueError(f'two equal contravariant indices in slots {pos:d} and {i:d}')
-                    else:
-                        free[pos] = False
-                        free[i] = False
+                    free[pos] = False
+                    free[i] = False
                 else:
                     if contr:
                         free[pos] = False

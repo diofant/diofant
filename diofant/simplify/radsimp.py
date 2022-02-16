@@ -778,7 +778,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
             nrad = len(rterms) - (1 if rterms[0][0] == 1 else 0)
             if nrad < 1:
                 break
-            elif nrad > max_terms:
+            if nrad > max_terms:
                 # there may have been invalid operations leading to this point
                 # so don't keep changes, e.g. this expression is troublesome
                 # in collecting terms so as not to raise the issue of 2834:

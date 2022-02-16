@@ -286,9 +286,8 @@ class ImageSet(Set):
             val = self.lamda(i)
             if val in already_seen:
                 continue
-            else:
-                already_seen.add(val)
-                yield val
+            already_seen.add(val)
+            yield val
 
     def _contains(self, other):
         from ..solvers import solve
@@ -394,7 +393,7 @@ class Range(Set):
 
         if not step.is_finite:
             raise ValueError('Infinite step is not allowed')
-        elif start == stop:
+        if start == stop:
             return S.EmptySet
 
         n = ceiling((stop - start)/step)
@@ -450,7 +449,7 @@ class Range(Set):
     def _contains(self, other):
         if (((self.start - other)/self.step).is_integer or
                 ((self.stop - other)/self.step).is_integer):
-            return sympify(other >= self.inf and other <= self.sup, strict=True)
+            return sympify(self.inf <= other <= self.sup, strict=True)
         else:
             return false
 
@@ -462,7 +461,7 @@ class Range(Set):
             i = self.start
             step = self.step
 
-        while(i < self.stop and i >= self.start):
+        while self.start <= i < self.stop:
             yield i
             i += step
 

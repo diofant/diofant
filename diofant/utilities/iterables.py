@@ -635,8 +635,7 @@ def topological_sort(graph, key=None):
 
     if E:
         raise ValueError('cycle detected')
-    else:
-        return L
+    return L
 
 
 def rotate_left(x, y):
@@ -1699,9 +1698,8 @@ def runs(seq, op=operator.gt):
         if op(ei, run[-1]):
             run.append(ei)
             continue
-        else:
-            cycles.append(run)
-            run = [ei]
+        cycles.append(run)
+        run = [ei]
     cycles.append(run)
     return cycles
 

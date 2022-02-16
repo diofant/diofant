@@ -310,16 +310,16 @@ class Order(Expr):
                     not all(p == self.point[0] for p in self.point)):
                 raise NotImplementedError('Order at points other than 0 '
                                           f'or oo not supported, got {self.point} as a point.')
-            else:
-                # self and/or expr is O(1):
-                if any(not p for p in [expr.point, self.point]):
-                    point = self.point + expr.point
-                    if point:
-                        point = point[0]
-                    else:
-                        point = Integer(0)
+            # self and/or expr is O(1):
+            if any(not p for p in [expr.point, self.point]):
+                point = self.point + expr.point
+                if point:
+                    point = point[0]
                 else:
-                    point = self.point[0]
+                    point = Integer(0)
+            else:
+                point = self.point[0]
+
             if expr.expr == self.expr:
                 # O(1) + O(1), O(1) + O(1, x), etc.
                 return all(x in self.args[1:] for x in expr.args[1:])

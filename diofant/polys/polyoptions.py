@@ -126,7 +126,7 @@ class Options(dict):
         if gens and args.get('gens', ()):
             raise OptionError("both '*gens' and keyword "
                               "argument 'gens' supplied")
-        elif gens:
+        if gens:
             args = dict(args)
             args['gens'] = gens
 
@@ -463,7 +463,7 @@ class Domain(Option, metaclass=OptionType):
                 (set(options['domain'].symbols) & set(options['gens'])):
             raise GeneratorsError('ground domain and generators '
                                   'interfere together')
-        elif ('gens' not in options or not options['gens']) and \
+        if ('gens' not in options or not options['gens']) and \
                 'domain' in options and options['domain'] == domains.EX:
             raise GeneratorsError('you have to provide generators because'
                                   ' EX domain was requested')

@@ -93,7 +93,7 @@ class RootOf(Expr):
 
         if index < -degree or index >= degree:
             raise IndexError(f'root index out of [{-degree}, {degree - 1}] range, got {index}')
-        elif index < 0:
+        if index < 0:
             index += degree
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
@@ -661,8 +661,8 @@ class RootOf(Expr):
             if im:
                 return false
             else:
-                return sympify(i.a < other and other < i.b)
-        return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
+                return sympify(i.a < other < i.b)
+        return sympify((i.ax < re < i.bx) and (i.ay < im < i.by))
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()

@@ -906,8 +906,7 @@ class _Factor:
 
                 if tuple(A) in history:
                     continue
-                else:
-                    history.add(tuple(A))
+                history.add(tuple(A))
 
                 try:
                     cs, s, E = self._zz_wang_test_points(f, T, ct, A)
@@ -922,8 +921,7 @@ class _Factor:
                     if rr != r:
                         if rr >= r:
                             continue
-                        else:
-                            configs, r = [], rr
+                        configs, r = [], rr
                 else:
                     r = rr
 
@@ -1129,8 +1127,7 @@ class _Factor:
 
         if functools.reduce(operator.mul, H) != f:
             raise ExtraneousFactors
-        else:
-            return H
+        return H
 
     def _gf_Qmatrix(self, f):
         """

@@ -244,8 +244,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     if issubclass(cls, type(None)):
         if strict:
             raise SympifyError(a)
-        else:
-            return a
+        return a
 
     try:
         return converter[cls](a)

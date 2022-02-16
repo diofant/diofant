@@ -108,11 +108,12 @@ class BaseSymbol(AtomicExpr, Boolean):
         cls._sanitize(assumptions, cls)
         return BaseSymbol.__xnew_cached_(cls, name, **assumptions)
 
-    def __new_stage2__(self, name, **assumptions):
+    @staticmethod
+    def __new_stage2__(obj_cls, name, **assumptions):
         if not isinstance(name, str):
             raise TypeError('name should be a string, not %s' % repr(type(name)))
 
-        obj = Expr.__new__(self)
+        obj = Expr.__new__(obj_cls)
         obj.name = name
 
         # TODO: Issue sympy/sympy#8873: Forcing the commutative assumption here means
@@ -132,10 +133,8 @@ class BaseSymbol(AtomicExpr, Boolean):
         obj._assumptions._generator = tmp_asm_copy  # Issue sympy/sympy#8873
         return obj
 
-    __xnew__ = staticmethod(
-        __new_stage2__)            # never cached (e.g. dummy)
-    __xnew_cached_ = staticmethod(
-        cacheit(__new_stage2__))   # symbols are always cached
+    __xnew__ = __new_stage2__  # never cached (e.g. dummy)
+    __xnew_cached_ = cacheit(__new_stage2__)  # symbols are always cached
 
     def __getnewargs__(self):
         return self.name,

@@ -695,17 +695,17 @@ def preprocess_roots(poly):
             for a, b in zip(base, strip):
                 if not a and not b:
                     continue
-                elif not a or not b:
+                if not a or not b:
                     break
-                elif b % a != 0:
+                if b % a != 0:
                     break
-                else:
-                    _ratio = b // a
 
-                    if ratio is None:
-                        ratio = _ratio
-                    elif ratio != _ratio:
-                        break
+                _ratio = b // a
+
+                if ratio is None:
+                    ratio = _ratio
+                elif ratio != _ratio:
+                    break
             else:
                 if reverse:
                     ratio = -ratio

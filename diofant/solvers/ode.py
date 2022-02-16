@@ -572,22 +572,21 @@ def dsolve(eq, func=None, hint='default', simplify=True,
 
         if match['type_of_equation'] is None:
             raise NotImplementedError
-        else:
-            if match['is_linear']:
-                if match['type_of_equation'] == 'type1' and match['order'] == 1:
-                    solvefunc = globals()[f"sysode_linear_neq_order{match['order']}"]
-                elif match['no_of_equation'] <= 3:
-                    solvefunc = globals()[f"sysode_linear_{match['no_of_equation']}eq_order{match['order']}"]
-                else:
-                    raise NotImplementedError
+        if match['is_linear']:
+            if match['type_of_equation'] == 'type1' and match['order'] == 1:
+                solvefunc = globals()[f"sysode_linear_neq_order{match['order']}"]
+            elif match['no_of_equation'] <= 3:
+                solvefunc = globals()[f"sysode_linear_{match['no_of_equation']}eq_order{match['order']}"]
             else:
-                solvefunc = globals()[f"sysode_nonlinear_{match['no_of_equation']}eq_order{match['order']}"]
-            sols = solvefunc(match)
-            if init:
-                constants = Tuple(*sols).free_symbols - Tuple(*eq).free_symbols
-                solved_constants = solve_init(sols, func, constants, init)
-                return [sol.subs(solved_constants) for sol in sols]
-            return sols
+                raise NotImplementedError
+        else:
+            solvefunc = globals()[f"sysode_nonlinear_{match['no_of_equation']}eq_order{match['order']}"]
+        sols = solvefunc(match)
+        if init:
+            constants = Tuple(*sols).free_symbols - Tuple(*eq).free_symbols
+            solved_constants = solve_init(sols, func, constants, init)
+            return [sol.subs(solved_constants) for sol in sols]
+        return sols
     else:
         given_hint = hint  # hint given by the user
 
@@ -2233,37 +2232,36 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
             # Make sure the above didn't fail.
             if testnum > 2:
                 continue
-            else:
-                # Substitute it into ODE to check for self consistency.
-                lhs, rhs = ode.lhs, ode.rhs
-                for i in range(order, -1, -1):
-                    if i == 0 and 0 not in diffsols:
-                        # We can only substitute f(x) if the solution was
-                        # solved for f(x).
-                        break
-                    lhs = sub_func_doit(lhs, func.diff((x, i)), diffsols[i])
-                    rhs = sub_func_doit(rhs, func.diff((x, i)), diffsols[i])
-                    ode_or_bool = Eq(lhs, rhs)
-                    ode_or_bool = simplify(ode_or_bool)
+            # Substitute it into ODE to check for self consistency.
+            lhs, rhs = ode.lhs, ode.rhs
+            for i in range(order, -1, -1):
+                if i == 0 and 0 not in diffsols:
+                    # We can only substitute f(x) if the solution was
+                    # solved for f(x).
+                    break
+                lhs = sub_func_doit(lhs, func.diff((x, i)), diffsols[i])
+                rhs = sub_func_doit(rhs, func.diff((x, i)), diffsols[i])
+                ode_or_bool = Eq(lhs, rhs)
+                ode_or_bool = simplify(ode_or_bool)
 
-                    if isinstance(ode_or_bool, (bool, BooleanAtom)):
-                        if ode_or_bool:
-                            lhs = rhs = Integer(0)
-                    else:
-                        lhs = ode_or_bool.lhs
-                        rhs = ode_or_bool.rhs
-                # No sense in overworking simplify -- just prove that the
-                # numerator goes to zero
-                num = trigsimp((lhs - rhs).as_numer_denom()[0])
-                # since solutions are obtained using force=True we test
-                # using the same level of assumptions
-                # replace function with dummy so assumptions will work
-                _func = Dummy('func')
-                num = num.subs({func: _func})
-                # posify the expression
-                num, reps = posify(num)
-                s = simplify(num).xreplace(reps).xreplace({_func: func})
-                testnum += 1
+                if isinstance(ode_or_bool, (bool, BooleanAtom)):
+                    if ode_or_bool:
+                        lhs = rhs = Integer(0)
+                else:
+                    lhs = ode_or_bool.lhs
+                    rhs = ode_or_bool.rhs
+            # No sense in overworking simplify -- just prove that the
+            # numerator goes to zero
+            num = trigsimp((lhs - rhs).as_numer_denom()[0])
+            # since solutions are obtained using force=True we test
+            # using the same level of assumptions
+            # replace function with dummy so assumptions will work
+            _func = Dummy('func')
+            num = num.subs({func: _func})
+            # posify the expression
+            num, reps = posify(num)
+            s = simplify(num).xreplace(reps).xreplace({_func: func})
+            testnum += 1
         else:
             break
 
@@ -3645,8 +3643,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
         if m2 is not None and i == m2 - m:
             if num:
                 raise NotImplementedError
-            else:
-                frobdict[numsyms[i]] = Integer(0)
+            frobdict[numsyms[i]] = Integer(0)
         else:
             frobdict[numsyms[i]] = -num/(indicial.subs({d: m+i}))
 
@@ -4576,8 +4573,7 @@ def _solve_undetermined_coefficients(eq, func, order, match):
             f'Could not solve `{eq}` using the '
             'method of undetermined coefficients '
             '(unable to solve for coefficients).')
-    else:
-        coeffvals = coeffvals[0]
+    coeffvals = coeffvals[0]
 
     psol = trialfunc.subs(coeffvals)
 
@@ -4940,49 +4936,49 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
     variables = func.args
     if len(variables) != 1:
         raise ValueError("ODE's have only one independent variable")
+
+    x = variables[0]
+    if not order:
+        order = ode_order(eq, func)
+    if order != 1:
+        raise NotImplementedError('Lie groups solver has been implemented '
+                                  'only for first order differential equations')
+
+    df = func.diff(x)
+    a = Wild('a', exclude=[df])
+    b = Wild('b', exclude=[df])
+    match = collect(expand(eq), df).match(a*df + b)
+
+    if match:
+        h = -simplify(match[b]/match[a])
     else:
-        x = variables[0]
-        if not order:
-            order = ode_order(eq, func)
-        if order != 1:
-            raise NotImplementedError('Lie groups solver has been implemented '
-                                      'only for first order differential equations')
+        try:
+            sol = solve(eq, df)
+        except NotImplementedError as exc:
+            raise NotImplementedError('Infinitesimals for the '
+                                      'first order ODE could '
+                                      'not be found') from exc
         else:
-            df = func.diff(x)
-            a = Wild('a', exclude=[df])
-            b = Wild('b', exclude=[df])
-            match = collect(expand(eq), df).match(a*df + b)
+            h = sol[0][df]  # Find infinitesimals for one solution
 
-            if match:
-                h = -simplify(match[b]/match[a])
-            else:
-                try:
-                    sol = solve(eq, df)
-                except NotImplementedError as exc:
-                    raise NotImplementedError('Infinitesimals for the '
-                                              'first order ODE could '
-                                              'not be found') from exc
-                else:
-                    h = sol[0][df]  # Find infinitesimals for one solution
-
-            y = Dummy('y')
-            h = h.subs({func: y})
-            xi = Function('xi')(x, y)
-            eta = Function('eta')(x, y)
-            dxi = Function('xi')(x, func)
-            deta = Function('eta')(x, func)
-            pde = (eta.diff(x) + (eta.diff(y) - xi.diff(x))*h -
-                   (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)))
-            soltup = []
-            for sol in infinitesimals:
-                tsol = {xi: sol[dxi].subs({func: y}),
-                        eta: sol[deta].subs({func: y})}
-                sol = simplify(pde.subs(tsol).doit())
-                if sol:
-                    soltup.append((False, sol.subs({y: func})))
-                else:
-                    soltup.append((True, 0))
-            return soltup
+    y = Dummy('y')
+    h = h.subs({func: y})
+    xi = Function('xi')(x, y)
+    eta = Function('eta')(x, y)
+    dxi = Function('xi')(x, func)
+    deta = Function('eta')(x, func)
+    pde = (eta.diff(x) + (eta.diff(y) - xi.diff(x))*h -
+           (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)))
+    soltup = []
+    for sol in infinitesimals:
+        tsol = {xi: sol[dxi].subs({func: y}),
+                eta: sol[deta].subs({func: y})}
+        sol = simplify(pde.subs(tsol).doit())
+        if sol:
+            soltup.append((False, sol.subs({y: func})))
+        else:
+            soltup.append((True, 0))
+    return soltup
 
 
 def ode_lie_group(eq, func, order, match):
@@ -5062,8 +5058,7 @@ def ode_lie_group(eq, func, order, match):
         if not checkinfsol(eq, inf, func=f(x), order=1)[0][0]:
             raise ValueError('The given infinitesimals xi and eta'
                              ' are not the infinitesimals to the given equation')
-        else:
-            heuristics = ['user_defined']
+        heuristics = ['user_defined']
 
     match = {'h': h, 'y': y}
 
@@ -5253,76 +5248,75 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
     variables = func.args
     if len(variables) != 1:
         raise ValueError("ODE's have only one independent variable")
+
+    x = variables[0]
+    if not order:
+        order = ode_order(eq, func)
+    if order != 1:
+        raise NotImplementedError('Infinitesimals for only '
+                                  "first order ODE's have been implemented")
+    df = func.diff(x)
+    # Matching differential equation of the form a*df + b
+    a = Wild('a', exclude=[df])
+    b = Wild('b', exclude=[df])
+    if match:  # Used by lie_group hint
+        h = match['h']
+        y = match['y']
     else:
-        x = variables[0]
-        if not order:
-            order = ode_order(eq, func)
-        if order != 1:
-            raise NotImplementedError('Infinitesimals for only '
-                                      "first order ODE's have been implemented")
+        match = collect(expand(eq), df).match(a*df + b)
+        if match:
+            h = -simplify(match[b]/match[a])
         else:
-            df = func.diff(x)
-            # Matching differential equation of the form a*df + b
-            a = Wild('a', exclude=[df])
-            b = Wild('b', exclude=[df])
-            if match:  # Used by lie_group hint
-                h = match['h']
-                y = match['y']
+            try:
+                sol = solve(eq, df)
+            except NotImplementedError as exc:
+                raise NotImplementedError('Infinitesimals for the '
+                                          'first order ODE could not '
+                                          'be found') from exc
             else:
-                match = collect(expand(eq), df).match(a*df + b)
-                if match:
-                    h = -simplify(match[b]/match[a])
-                else:
-                    try:
-                        sol = solve(eq, df)
-                    except NotImplementedError as exc:
-                        raise NotImplementedError('Infinitesimals for the '
-                                                  'first order ODE could not '
-                                                  'be found') from exc
-                    else:
-                        h = sol[0][df]  # Find infinitesimals for one solution
-                y = Dummy('y')
-                h = h.subs({func: y})
+                h = sol[0][df]  # Find infinitesimals for one solution
+        y = Dummy('y')
+        h = h.subs({func: y})
 
-            u = Dummy('u')
-            hx = h.diff(x)
-            hy = h.diff(y)
-            hinv = ((1/h).subs([(x, u), (y, x)])).subs({u: y})  # Inverse ODE
-            match = {'h': h, 'func': func, 'hx': hx, 'hy': hy, 'y': y, 'hinv': hinv}
-            if hint == 'all':
-                xieta = []
-                for heuristic in lie_heuristics:
-                    function = globals()['lie_heuristic_' + heuristic]
-                    inflist = function(match, comp=True)
-                    if inflist:
-                        xieta.extend([inf for inf in inflist if inf not in xieta])
-                if xieta:
-                    return xieta
-                else:
-                    raise NotImplementedError('Infinitesimals could not be found for '
-                                              'the given ODE')
+    u = Dummy('u')
+    hx = h.diff(x)
+    hy = h.diff(y)
+    hinv = ((1/h).subs([(x, u), (y, x)])).subs({u: y})  # Inverse ODE
+    match = {'h': h, 'func': func, 'hx': hx, 'hy': hy, 'y': y, 'hinv': hinv}
+    if hint == 'all':
+        xieta = []
+        for heuristic in lie_heuristics:
+            function = globals()['lie_heuristic_' + heuristic]
+            inflist = function(match, comp=True)
+            if inflist:
+                xieta.extend([inf for inf in inflist if inf not in xieta])
+        if xieta:
+            return xieta
+        else:
+            raise NotImplementedError('Infinitesimals could not be found for '
+                                      'the given ODE')
 
-            elif hint == 'default':
-                for heuristic in lie_heuristics:
-                    function = globals()['lie_heuristic_' + heuristic]
-                    xieta = function(match, comp=False)
-                    if xieta:
-                        return xieta
+    elif hint == 'default':
+        for heuristic in lie_heuristics:
+            function = globals()['lie_heuristic_' + heuristic]
+            xieta = function(match, comp=False)
+            if xieta:
+                return xieta
 
-                raise NotImplementedError('Infinitesimals could not be found for'
-                                          ' the given ODE')
+        raise NotImplementedError('Infinitesimals could not be found for'
+                                  ' the given ODE')
 
-            elif hint not in lie_heuristics:
-                raise ValueError('Heuristic not recognized: ' + hint)
+    elif hint not in lie_heuristics:
+        raise ValueError('Heuristic not recognized: ' + hint)
 
-            else:
-                function = globals()['lie_heuristic_' + hint]
-                xieta = function(match, comp=True)
-                if xieta:
-                    return xieta
-                else:
-                    raise ValueError('Infinitesimals could not be found using the'
-                                     ' given heuristic')
+    else:
+        function = globals()['lie_heuristic_' + hint]
+        xieta = function(match, comp=True)
+        if xieta:
+            return xieta
+        else:
+            raise ValueError('Infinitesimals could not be found using the'
+                             ' given heuristic')
 
 
 def lie_heuristic_abaco1_simple(match, comp):

@@ -234,8 +234,7 @@ class Vector(BasisDependent):
         # Handle the special cases
         if not isinstance(other, Vector):
             raise TypeError('Invalid operand for outer product')
-        elif (isinstance(self, VectorZero) or
-              isinstance(other, VectorZero)):
+        if isinstance(self, VectorZero) or isinstance(other, VectorZero):
             return Dyadic.zero
 
         # Iterate over components of both the vectors to generate
@@ -305,10 +304,9 @@ class Vector(BasisDependent):
         """Helper for division involving vectors."""
         if isinstance(other, Vector):
             raise TypeError('Cannot divide two vectors')
-        else:
-            if other == 0:
-                raise ValueError('Cannot divide a vector by zero')
-            return VectorMul(self, Pow(other, -1))
+        if other == 0:
+            raise ValueError('Cannot divide a vector by zero')
+        return VectorMul(self, Pow(other, -1))
 
 
 class BaseVector(Vector, AtomicExpr):

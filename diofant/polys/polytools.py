@@ -73,9 +73,8 @@ class Poly(Expr):
     def new(cls, rep, *gens):
         """Construct :class:`Poly` instance from raw representation."""
         if not isinstance(rep, PolyElement):
-            raise PolynomialError(
-                f'invalid polynomial representation: {rep}')
-        elif rep.ring.ngens != len(gens):
+            raise PolynomialError(f'invalid polynomial representation: {rep}')
+        if rep.ring.ngens != len(gens):
             raise PolynomialError(f'invalid arguments: {rep}, {gens}')
 
         obj = Expr.__new__(cls)
@@ -136,11 +135,11 @@ class Poly(Expr):
         gens = opt.gens
 
         if not gens:
-            raise GeneratorsNeeded(
-                "can't initialize from 'list' without generators")
-        elif len(gens) != 1:
-            raise MultivariatePolynomialError(
-                "'list' representation not supported")
+            raise GeneratorsNeeded("can't initialize from 'list'"
+                                   'without generators')
+        if len(gens) != 1:
+            raise MultivariatePolynomialError("'list' representation "
+                                              'not supported')
 
         domain = opt.domain
 
@@ -1334,14 +1333,13 @@ class Poly(Expr):
             if not auto:
                 raise DomainError(f"can't evaluate at {a}"
                                   f'in {f.domain}') from exc
-            else:
-                a_domain, [a] = construct_domain([a])
-                new_domain = f.domain.unify(a_domain, f.gens)
+            a_domain, [a] = construct_domain([a])
+            new_domain = f.domain.unify(a_domain, f.gens)
 
-                f = f.set_domain(new_domain)
-                a = new_domain.convert(a, a_domain)
+            f = f.set_domain(new_domain)
+            a = new_domain.convert(a, a_domain)
 
-                result = f.rep.eval(j, a)
+            result = f.rep.eval(j, a)
 
         return f.per(result, remove=j)
 
@@ -3371,7 +3369,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        elif arg.is_Pow and arg.base is not E:
+        if arg.is_Pow and arg.base is not E:
             base, exp = arg.base, arg.exp
             if base.is_Number:
                 factors.append((base, exp))

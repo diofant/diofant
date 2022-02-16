@@ -585,7 +585,7 @@ class Function(Application, Expr):
         """Returns the first derivative of the function."""
         from .symbol import Dummy
 
-        if not (1 <= argindex <= len(self.args)):
+        if not 1 <= argindex <= len(self.args):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:
@@ -632,8 +632,7 @@ class Function(Application, Expr):
             #
             raise NotImplementedError(
                 f'{self.func} has no _eval_as_leading_term routine')
-        else:
-            return self.func(*args)
+        return self.func(*args)
 
 
 class AppliedUndef(Function):
@@ -2188,7 +2187,7 @@ def count_ops(expr, visual=False):
                     ops.append(DIV)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
-                elif d != 1:
+                if d != 1:
                     if not d.is_Integer:
                         args.append(d)
                     ops.append(DIV)

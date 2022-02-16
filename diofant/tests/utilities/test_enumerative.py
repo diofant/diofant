@@ -33,7 +33,7 @@ def part_range_filter(partition_iterator, lb, ub):
     """
     for state in partition_iterator:
         _, lpart, _ = state
-        if lpart >= lb and lpart < ub:
+        if ub > lpart >= lb:
             yield state
 
 
@@ -197,10 +197,10 @@ def test_subrange_large():
 
 def test_coverage():
     m = MultisetPartitionTraverser()
-    assert list(m.enum_small([2, 2], 0)) == []
+    assert not list(m.enum_small([2, 2], 0))
     assert m.count_partitions([2, 2]) == 9  # fill dp_map
     assert m.count_partitions([2, 2]) == 9
-    assert list(m.enum_range([2, 2], 1, 0)) == []
-    assert list(m.enum_range([2, 2], 10, 2)) == []
-    assert list(m.enum_large([2, 2], 10)) == []
+    assert not list(m.enum_range([2, 2], 1, 0))
+    assert not list(m.enum_range([2, 2], 10, 2))
+    assert not list(m.enum_large([2, 2], 10))
     assert m.decrement_part_large(m.top_part(), 10) is False

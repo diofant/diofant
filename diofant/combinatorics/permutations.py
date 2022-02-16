@@ -868,8 +868,7 @@ class Permutation(Basic):
             if is_cycle:
                 raise ValueError('there were repeated elements; to resolve '
                                  f"cycles use Cycle{''.join([str(tuple(c)) for c in args])}.")
-            else:
-                raise ValueError('there were repeated elements.')
+            raise ValueError('there were repeated elements.')
         temp = set(temp)
 
         if not is_cycle and \

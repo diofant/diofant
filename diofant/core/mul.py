@@ -248,7 +248,7 @@ class Mul(AssocOp):
                 continue
 
             # 3
-            elif o.is_Number:
+            if o.is_Number:
                 if o is nan or coeff is zoo and o is S.Zero:
                     # we know for sure the result will be nan
                     return [nan], [], None
@@ -259,18 +259,18 @@ class Mul(AssocOp):
                         return [nan], [], None
                 continue
 
-            elif o is zoo:
+            if o is zoo:
                 if not coeff:
                     # 0 * zoo = NaN
                     return [nan], [], None
                 coeff = zoo
                 continue
 
-            elif o is I:
+            if o is I:
                 neg1e += S.Half
                 continue
 
-            elif o.is_commutative:
+            if o.is_commutative:
                 #      e
                 # o = b
                 b, e = o.as_base_exp()
@@ -290,16 +290,16 @@ class Mul(AssocOp):
                             if e.is_Integer:
                                 coeff *= Pow(b, e)  # it is an unevaluated power
                                 continue
-                            elif e.is_negative:    # also a sign of an unevaluated power
+                            if e.is_negative:    # also a sign of an unevaluated power
                                 seq.append(Pow(b, e))
                                 continue
-                            elif b.is_negative:
+                            if b.is_negative:
                                 neg1e += e
                                 b = -b
                             if b is not S.One:
                                 pnum_rat[b].append(e)
                             continue
-                        elif b.is_positive or e.is_integer:
+                        if b.is_positive or e.is_integer:
                             num_exp.append((b, e))
                             continue
 
@@ -339,8 +339,7 @@ class Mul(AssocOp):
                         if o12.is_commutative:
                             seq.append(o12)
                             continue
-                        else:
-                            nc_seq.insert(0, o12)
+                        nc_seq.insert(0, o12)
 
                     else:
                         nc_part.append(o1)
@@ -1072,7 +1071,7 @@ class Mul(AssocOp):
         for t in self.args:
             if t.is_positive:
                 continue
-            elif t.is_negative:
+            if t.is_negative:
                 sign = -sign
             elif t.is_zero:
                 if self.is_finite:
@@ -1289,7 +1288,7 @@ class Mul(AssocOp):
                 for j in range(take):
                     if nc[i + j][0] != old_nc[j][0]:
                         break
-                    elif j == 0:
+                    if j == 0:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))
                     elif j == take - 1:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))

@@ -69,7 +69,7 @@ def symmetric_poly(n, *gens, **args):
     """Generates symmetric polynomial of order `n`."""
     if n < 0 or n > len(gens) or not gens:
         raise ValueError(f"can't generate symmetric polynomial of order {n} for {gens}")
-    elif not n:
+    if not n:
         poly = Integer(1)
     else:
         poly = Add(*[Mul(*s) for s in subsets(gens, int(n))])

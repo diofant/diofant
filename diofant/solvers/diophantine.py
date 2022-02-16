@@ -2890,8 +2890,8 @@ def power_representation(n, p, k, zeros=False):
         feasible = _can_do_sum_of_squares(n, k)
         if not feasible:
             return
-        if not zeros and n > 33 and k >= 5 and k <= n and n - k in (13, 10, 7,
-                                                                    5, 4, 2, 1):
+        if not zeros and n > 33 and n >= k >= 5 and n - k in (13, 10, 7,
+                                                              5, 4, 2, 1):
             # Todd G. Will, "When Is n^2 a Sum of k Squares?", [online].
             # Available: https://www.maa.org/sites/default/files/Will-MMz-201037918.pdf
             return

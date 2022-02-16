@@ -169,7 +169,7 @@ def test_ellipse_geom():
     assert e2.tangent_lines(p1_2) == [Line(Point(3/2, 1), Point(3/2, 1/2))]
     assert e2.tangent_lines(p1_3) == [Line(Point(1, 2), Point(5/4, 2))]
     assert c1.tangent_lines(p1_1) != [Line(p1_1, Point(0, sqrt(2)))]
-    assert c1.tangent_lines(p1) == []
+    assert not c1.tangent_lines(p1)
     assert e2.is_tangent(Line(p1_2, p2 + Point(0.5, 1)))
     assert e2.is_tangent(Line(p1_3, p2 + Point(0.5, 1)))
     assert c1.is_tangent(Line(p1_1, Point(0, sqrt(2))))
@@ -294,7 +294,7 @@ def test_ellipse_geom():
     elip = Ellipse(Point(0, 0), 5, 20)
     assert intersection(circ, elip) in \
         [[Point(5, 0), Point(-5, 0)], [Point(-5, 0), Point(5, 0)]]
-    assert elip.tangent_lines(Point(0, 0)) == []
+    assert not elip.tangent_lines(Point(0, 0))
     elip = Ellipse(Point(0, 0), 3, 2)
     assert elip.tangent_lines(Point(3, 0)) == \
         [Line(Point(3, 0), Point(3, -12))]

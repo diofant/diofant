@@ -625,7 +625,7 @@ def _reduce_inequalities(inequalities, symbols):
     for inequality in inequalities:
         if inequality == true:
             continue
-        elif inequality == false:
+        if inequality == false:
             return false
 
         expr, rel = inequality.lhs, inequality.rel_op  # rhs is 0
@@ -643,10 +643,8 @@ def _reduce_inequalities(inequalities, symbols):
                 gen = common.pop()
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
-            else:
-                raise NotImplementedError('Solving multivariate inequalities '
-                                          'is implemented only for linear '
-                                          'case yet.')
+            raise NotImplementedError('Solving multivariate inequalities is '
+                                      'implemented only for linear case yet.')
 
         if expr.is_rational_function(gen):
             rat_part[gen].append((expr, rel))
@@ -701,7 +699,7 @@ def reduce_inequalities(inequalities, symbols=[]):
             i = Eq(i, 0)
         if i == true:
             continue
-        elif i == false:
+        if i == false:
             return false
         keep.append(i)
     inequalities = keep
