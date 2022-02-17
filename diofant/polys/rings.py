@@ -759,11 +759,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Multiply other to self with other in the coefficient domain of self."""
         return self.__mul__(other)
 
-    def _sparsity(self):
-        ring = self.ring
-        d = self.total_degree()
-        return len(self)/int(math.factorial(ring.ngens + d)/(math.factorial(d)*math.factorial(ring.ngens))) if d > 0 else 1.0
-
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""
         ring = self.ring
@@ -773,7 +768,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not n:
             return ring.one
-        elif self._sparsity() > 0.2 or mod:
+        elif len(self) > 5 or mod:
             return self._pow_generic(n, mod)
         elif len(self) == 1:
             [(monom, coeff)] = self.items()
