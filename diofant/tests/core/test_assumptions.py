@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
-                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
-                     oo, pi, simplify, sin, sqrt, zoo)
+                     Rational, Symbol, Wild, acos, asin, cbrt, exp, false, log,
+                     nan, oo, pi, simplify, sin, sqrt, zoo)
 from diofant.abc import x, y
 from diofant.core.facts import InconsistentAssumptions
 
@@ -914,3 +914,9 @@ def test_sympyissue_17556():
     z = I*oo
     assert z.is_imaginary is False
     assert z.is_finite is False
+
+
+def test_sympyissue_23086():
+    e = 180*acos(Rational(7823207, 7823209))/pi
+    assert e.is_zero is False
+    assert e.simplify()

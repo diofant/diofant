@@ -45,3 +45,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14433`: x not in QQ.frac_field(1/x)
 * :sympyissue:`23069`: integrate(r**4*sqrt(1 - r**2), (r, 0, 1)) gives incorrect result
 * :sympyissue:`19639`: TypeError in integrate
+* :sympyissue:`23086`: Incorrect result of simplify
