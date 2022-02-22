@@ -2773,6 +2773,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             b, e = p[0].as_base_exp()
             if b == x:
                 return c, e
+            elif b == -x:
+                return c*(-1)**e, e
         if s.has(x):
             s = s.simplify()
         return s, Integer(0)
