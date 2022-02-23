@@ -2,6 +2,7 @@
 
 import collections
 
+from ..core import expand_mul
 from ..domains import EX
 from ..matrices import Matrix
 from ..polys import (ComputationFailed, PolificationFailed, groebner,
@@ -66,7 +67,8 @@ def solve_linear_system(system, *symbols, **flags):
 
     """
     eqs = system*Matrix(symbols + (-1,))
-    polys, _ = parallel_poly_from_expr(eqs, *symbols, field=True)
+    polys, _ = parallel_poly_from_expr([expand_mul(e) for e in eqs],
+                                       *symbols, field=True)
     domain = polys[0].rep.ring
     polys = [_.rep for _ in polys]
 

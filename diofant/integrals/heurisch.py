@@ -3,7 +3,8 @@ from __future__ import annotations
 import functools
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
+from ..core import (Add, Basic, Dummy, E, Eq, Integer, Mul, Wild,
+                    expand_multinomial, expand_power_exp, pi, sympify)
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
                          binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
                          log, root, sin, sinh, sqrt, tan, tanh)
@@ -294,7 +295,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             terms |= set(hints)
 
     for g in set(terms):  # using copy of terms
-        terms |= components(cancel(g.diff(x)), x)
+        terms |= components(cancel(expand_power_exp(expand_multinomial(g.diff(x)))), x)
 
     # TODO: caching is significant factor for why permutations work at all. Change this.
     V = _symbols('x', len(terms))
@@ -317,7 +318,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     for mapping in mappings:
         mapping = list(mapping)
         mapping = mapping + unnecessary_permutations
-        diffs = [_substitute(cancel(g.diff(x))) for g in terms]
+        diffs = [_substitute(cancel(expand_multinomial(g.diff(x)))) for g in terms]
         denoms = [g.as_numer_denom()[1] for g in diffs]
         if all(h.is_polynomial(*V) for h in denoms) and _substitute(f).is_rational_function(*V):
             denom = functools.reduce(lambda p, q: lcm(p, q, *V), denoms)

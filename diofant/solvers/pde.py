@@ -38,7 +38,7 @@ import operator
 from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
-                    symbols)
+                    expand_trig, symbols)
 from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
@@ -213,7 +213,8 @@ def _handle_Integral(expr, func, order, hint):
         return expr
 
     elif hint == '1st_linear_constant_coeff':
-        return simplify(expr.doit())
+        expr = simplify(expr.doit())
+        return expr.func(expr.lhs.powsimp(), expr.rhs.powsimp())
 
     else:
         return expr
@@ -586,7 +587,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     # Integral should remain as it is in terms of xi,
     # doit() should be done in _handle_Integral.
     genterm = (1/(b**2 + c**2))*Integral(
-        (1/expterm*e).subs(solvedict), (xi, b*x + c*y))
+        expand_trig((1/expterm*e).subs(solvedict)), (xi, b*x + c*y))
     return Eq(f(x, y), Subs(expterm*(functerm + genterm),
                             (eta, c*x - b*y), (xi, b*x + c*y)))
 

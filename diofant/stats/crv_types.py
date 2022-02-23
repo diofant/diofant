@@ -1628,7 +1628,7 @@ def Normal(name, mean, std):
     >>> density(X)(z)
     sqrt(2)*E**(-(-mu + z)**2/(2*sigma**2))/(2*sqrt(pi)*sigma)
 
-    >>> C = simplify(cdf(X))(z)  # it needs a little more help...
+    >>> C = simplify(expand(cdf(X)))(z)  # it needs a little more help...
     >>> pprint(C, use_unicode=False)
          /  ___         \
          |\/ 2 *(mu - z)|
