@@ -3156,7 +3156,8 @@ def test_sympyissue_20640():
 
 
 def test_sympyissue_20973():
-    assert cancel(exp(1 + O(x))) == exp(1)*exp(O(x))
+    e = exp(1 + O(x))
+    assert cancel(e) == e
 
 
 def test_sympyissue_20985():

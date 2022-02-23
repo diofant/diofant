@@ -5,11 +5,12 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      Piecewise, Rational, Sum, Symbol, acos, asin, atan,
                      besseli, besselj, besselsimp, binomial, cancel, cbrt,
                      combsimp, cos, cosh, cosine_transform, count_ops, diff,
-                     erf, exp, exp_polar, expand, expand_multinomial, factor,
-                     factorial, gamma, hyper, hypersimp, integrate, ln, log,
-                     logcombine, nsimplify, oo, pi, posify, rad, root,
-                     separatevars, sign, signsimp, simplify, sin, sinh, solve,
-                     sqrt, sqrtdenest, sstr, symbols, tan, true, zoo)
+                     erf, exp, exp_polar, expand, expand_multinomial,
+                     expand_power_exp, factor, factorial, gamma, hyper,
+                     hypersimp, integrate, ln, log, logcombine, nsimplify, oo,
+                     pi, posify, rad, root, separatevars, sign, signsimp,
+                     simplify, sin, sinh, solve, sqrt, sqrtdenest, sstr,
+                     symbols, tan, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
@@ -115,7 +116,7 @@ def test_simplify_other():
                                                       (2*sqrt(t)))/(2*sqrt(t)) + pi*x*exp(-3*I*pi/4 + I*x**2/(4*t)) /
               (2*sqrt(t)))*exp(-I*x**2/(4*t))/(sqrt(pi)*x) - I*sqrt(pi) *
            (-erf(x*exp(I*pi/4)/(2*sqrt(t))) + 1)*exp(I*pi/4)/(2*sqrt(t)))
-    assert simplify(ans) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
+    assert simplify(expand_power_exp(ans)) == -(-1)**Rational(3, 4)*sqrt(pi)/sqrt(t)
     # issue sympy/sympy#6370
     assert simplify(2**(2 + x)/4) == 2**x
 

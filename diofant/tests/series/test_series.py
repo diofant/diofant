@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, E, Function, I, Integer, Integral, Mul, O,
+from diofant import (Derivative, E, Function, I, Integer, Integral, O,
                      Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
                      sin, sqrt, symbols)
 from diofant.abc import h, x, y
@@ -260,29 +260,22 @@ def test_sympyissue_20697():
 
 
 def test_sympyissue_21245():
-    fi = (1 + sqrt(5))/2
-    e = 1/(1 - x - x**2)
-    assert (e.series(x, 1/fi, 2) ==
-            -sqrt(5)/(Mul(5, x - 1/(Rational(1, 2) + sqrt(5)/2),
-                          evaluate=False)) + 1/(sqrt(5) + 5) +
-            sqrt(5)/(Mul(5, sqrt(5) + 5, evaluate=False)) +
-            (x - 1/(Rational(1, 2) + sqrt(5)/2)) *
-            (-6*sqrt(5)/(Mul(5, 10*sqrt(5) + 30, evaluate=False)) -
-             2/(10*sqrt(5) + 30)) + O((x - sqrt(5)/2 + Rational(1, 2))**2,
-                                      (x, -Rational(1, 2) + sqrt(5)/2)))
+    x0 = 1/((1 + sqrt(5))/2)
+    assert ((1/(1 - x - x**2)).series(x, x0=x0, n=2) ==
+            -sqrt(5)/(x - 1/(1/2 + sqrt(5)/2))/5 - 4/(-20 - 4*sqrt(5)) -
+            4*sqrt(5)/(-20 - 4*sqrt(5))/5 +
+            (x - 1/(1/2 + sqrt(5)/2))*(-96*sqrt(5)/(160*sqrt(5) + 480)/5 -
+                                       32/(160*sqrt(5) + 480)) +
+            O((x - sqrt(5)/2 + 1/2)**2, (x, -1/2 + sqrt(5)/2)))
 
 
 def test_diofantissue_1139():
-    res = (sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
-           24*I/(16*(1 - I)**3 + 16*I*(1 - I)**3) +
-           (x - sqrt(2)/2 + sqrt(2)*I/2)*(9*sqrt(2)*I/(8*(1 - I)**3) -
-                                          8*sqrt(2)*I/(16*(1 - I)**3 +
-                                                       16*I*(1 - I)**3) +
-                                          8*sqrt(2)/(16*(1 - I)**3 +
-                                                     16*I*(1 - I)**3)) +
-           O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
     x0 = sqrt(2)/2 - sqrt(2)*I/2
-    assert (1/(x**4 + 1)).series(x, x0=x0, n=2) == res
+    assert ((1/(x**4 + 1)).series(x, x0=x0, n=2) ==
+            sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
+            3*I/(4*(1 - I)**3) - 3/(4*(1 - I)**3) +
+            5*sqrt(2)*I*(x - sqrt(2)/2 + sqrt(2)*I/2)/(8*(1 - I)**3) +
+            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
 
 
 def test_sympyissue_22493():
