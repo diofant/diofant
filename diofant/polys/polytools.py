@@ -6,8 +6,8 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, E, Expr, Integer, Mul, Tuple, oo,
-                    preorder_traversal)
+from ..core import (Add, Basic, E, Expr, Integer, Mul, Tuple, expand_log,
+                    expand_power_exp, oo, preorder_traversal)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -41,7 +41,7 @@ __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
            'real_roots', 'nroots',
-           'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
+           'cancel', 'reduced', 'groebner', 'GroebnerBasis')
 
 
 class Poly(Expr):
@@ -176,8 +176,76 @@ class Poly(Expr):
     @classmethod
     def _from_expr(cls, rep, opt):
         """Construct a polynomial from an expression."""
-        (rep,), opt = _parallel_dict_from_expr([rep], opt)
-        return cls._from_dict(rep, opt)
+        def _poly(expr, opt):
+            terms, poly_terms = [], []
+
+            for term in Add.make_args(expr):
+                factors, poly_factors = [], []
+
+                for factor in Mul.make_args(term):
+                    if factor.is_Add:
+                        poly_factors.append(_poly(factor, opt))
+                    elif (factor.is_Pow and factor.base.is_Add and
+                          factor.exp.is_Integer and factor.exp >= 0):
+                        poly_factors.append(_poly(factor.base, opt)**factor.exp)
+                    else:
+                        factors.append(factor)
+
+                if not poly_factors:
+                    terms.append(term)
+                else:
+                    product = poly_factors[0]
+
+                    for factor in poly_factors[1:]:
+                        product *= factor
+
+                    if factors:
+                        factor = Mul(*factors)
+
+                        if factor.is_Number:
+                            product *= factor
+                        else:
+                            (factor,), _opt = _parallel_dict_from_expr([factor], opt)
+                            factor = cls._from_dict(factor, _opt)
+                            product *= factor
+
+                    poly_terms.append(product)
+
+            if not poly_terms:
+                (expr,), _opt = _parallel_dict_from_expr([expr], opt)
+                result = cls._from_dict(expr, _opt)
+            else:
+                result = poly_terms[0]
+
+                for term in poly_terms[1:]:
+                    result += term
+
+                if terms:
+                    term = Add(*terms)
+
+                    if term.is_Number:
+                        result += term
+                    else:
+                        (term,), _opt = _parallel_dict_from_expr([term], opt)
+                        term = cls._from_dict(term, _opt)
+                        result += term
+
+            return result.reorder(*opt.gens, sort=opt.sort, wrt=opt.wrt)
+
+        rep = sympify(rep)
+        rep = rep.replace(lambda e: e.is_Pow and e.base != E and
+                          not e.exp.is_number, expand_power_exp)
+        rep = expand_log(rep)
+
+        if not opt.gens:
+            gens = _find_gens([rep], opt)
+            opt = opt.clone({'gens': gens})
+
+        if opt.expand is False:
+            (rep,), opt = _parallel_dict_from_expr([rep], opt)
+            return cls._from_dict(rep, opt)
+        else:
+            return _poly(rep, opt.clone({'expand': False}))
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances."""
@@ -2466,9 +2534,6 @@ def parallel_poly_from_expr(exprs, *gens, **args):
 
                 expr = expr.__class__._from_poly(expr, opt)
             else:
-                if opt.expand:
-                    expr = expr.expand()
-
                 try:
                     expr = Poly._from_expr(expr, opt)
                     _exprs.append(i)
@@ -4244,91 +4309,3 @@ class GroebnerBasis(Basic):
 
         """
         return self.reduce(poly)[1] == 0
-
-
-def poly(expr, *gens, **args):
-    """
-    Efficiently transform an expression into a polynomial.
-
-    Examples
-    ========
-
-    >>> poly(x*(x**2 + x - 1)**2)
-    Poly(x**5 + 2*x**4 - x**3 - 2*x**2 + x, x, domain='ZZ')
-
-    """
-    allowed_flags(args, [])
-
-    def _poly(expr, opt):
-        terms, poly_terms = [], []
-
-        for term in Add.make_args(expr):
-            factors, poly_factors = [], []
-
-            for factor in Mul.make_args(term):
-                if factor.is_Add:
-                    poly_factors.append(_poly(factor, opt))
-                elif (factor.is_Pow and factor.base.is_Add and
-                      factor.exp.is_Integer and factor.exp >= 0):
-                    poly_factors.append(_poly(factor.base,
-                                              opt)**factor.exp)
-                else:
-                    factors.append(factor)
-
-            if not poly_factors:
-                terms.append(term)
-            else:
-                product = poly_factors[0]
-
-                for factor in poly_factors[1:]:
-                    product *= factor
-
-                if factors:
-                    factor = Mul(*factors)
-
-                    if factor.is_Number:
-                        product *= factor
-                    else:
-                        product *= Poly._from_expr(factor, opt)
-
-                poly_terms.append(product)
-
-        if not poly_terms:
-            result = Poly._from_expr(expr, opt)
-        else:
-            result = poly_terms[0]
-
-            for term in poly_terms[1:]:
-                result += term
-
-            if terms:
-                term = Add(*terms)
-
-                if term.is_Number:
-                    result += term
-                else:
-                    result += Poly._from_expr(term, opt)
-
-        return result.reorder(*opt.get('gens', ()), **args)
-
-    expr = sympify(expr)
-
-    if expr.is_Poly:
-        return Poly(expr, *gens, **args)
-
-    opt = build_options(gens, args)
-    no_gens = not opt.gens
-
-    if no_gens:
-        gens = _find_gens([expr], opt)
-        opt = opt.clone({'gens': gens})
-
-    if 'expand' not in args:
-        opt = opt.clone({'expand': False})
-
-    res = _poly(expr, opt)
-
-    if no_gens:
-        res = res.exclude()
-
-    return res
