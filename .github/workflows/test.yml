@@ -39,7 +39,6 @@ jobs:
     - name: Linting with flake8, flake8-rst and pylint
       if: ${{ ! github.event_name.schedule }}
       run: |
-        python -We:invalid -We::SyntaxWarning -m compileall -f diofant -q
         flake8-rst
         flake8
         pylint diofant
