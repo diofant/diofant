@@ -144,6 +144,8 @@ def test_lowergamma():
     assert lowergamma(k, y).rewrite(expint) == lowergamma(k, y)
     assert lowergamma(x, y).rewrite(uppergamma) == gamma(x) - uppergamma(x, y)
 
+    assert (x*lowergamma(x, 1)/gamma(x + 1)).limit(x, 0) == 1
+
 
 def test_uppergamma():
     assert uppergamma(4, 0) == 6

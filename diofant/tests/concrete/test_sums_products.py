@@ -899,3 +899,9 @@ def test_sympyissue_21651():
 @pytest.mark.timeout(10)
 def test_sympyissue_20461():
     assert Eq(Product(4*n**2/(4*n**2 - 1), (n, 1, oo)), pi/2) is not False
+
+
+def test_sympyissue_23156():
+    e = summation(1/gamma(n), (n, 0, x))
+    assert e == E - E*x*lowergamma(x, 1)/gamma(x + 1)
+    assert e.limit(x, 0) == 0

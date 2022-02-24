@@ -315,6 +315,9 @@ class lowergamma(Function):
     def _eval_rewrite_as_uppergamma(self, s, x):
         return gamma(s) - uppergamma(s, x)
 
+    def _eval_rewrite_as_tractable(self, s, x):
+        return self.rewrite(uppergamma)
+
     def _eval_rewrite_as_expint(self, s, x):
         from .error_functions import expint
         if s.is_integer and s.is_nonpositive:

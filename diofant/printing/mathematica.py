@@ -54,6 +54,7 @@ known_functions = {
     'fibonacci': [(lambda x: True, 'Fibonacci')],
     'polylog': [(lambda x, y: True, 'PolyLog')],
     'loggamma': [(lambda x: True, 'LogGamma')],
+    'uppergamma': [(lambda s, x: True, 'Gamma')],
 }
 
 

@@ -57,6 +57,7 @@ def main():
             ast_transformers.append(IntegerDivisionWrapper())
         shell.confirm_exit = False
         config.TerminalIPythonApp.display_banner = False
+        config.TerminalInteractiveShell.autoformatter = None
 
         app = IPython.terminal.ipapp.TerminalIPythonApp.instance(config=config)
         app.initialize(ipython_args)
