@@ -905,3 +905,4 @@ def test_sympyissue_23156():
     e = summation(1/gamma(n), (n, 0, x))
     assert e == E - E*x*lowergamma(x, 1)/gamma(x + 1)
     assert e.limit(x, 0) == 0
+    assert e.subs({x: 0}) is nan

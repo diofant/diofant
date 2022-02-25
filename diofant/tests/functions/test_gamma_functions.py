@@ -120,6 +120,7 @@ def test_lowergamma():
               lowergamma(Rational(1, 2) + 3, x), x)
     assert tn(lowergamma(Rational(1, 2) - 3, x, evaluate=False),
               lowergamma(Rational(1, 2) - 3, x), x)
+    assert lowergamma(0, 1) == zoo
 
     assert tn_branch(-3, lowergamma)
     assert tn_branch(-4, lowergamma)
