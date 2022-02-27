@@ -437,7 +437,7 @@ class StrPrinter(Printer):
         return self._print(expr.parent.to_expr(expr))
 
     def _print_ModularInteger(self, expr):
-        return f'{expr.rep} mod {expr.parent.characteristic}'
+        return f'{expr.rep}'
 
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python
