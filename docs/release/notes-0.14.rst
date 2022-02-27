@@ -47,3 +47,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19639`: TypeError in integrate
 * :sympyissue:`23086`: Incorrect result of simplify
 * :sympyissue:`23156`: sympy.Sum() bug when summing up reciprocal of gamma
+* :sympyissue:`23174`: Problem with gf_edf_zassenhaus()

@@ -9,7 +9,7 @@ from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      GeneratorsError, GeneratorsNeeded, I, Integer,
                      NotInvertible, PythonRational, QQ_python, Rational,
                      RealField, RootOf, UnificationFailed, ZZ_python, field,
-                     oo, ring, root, roots, sin, sqrt)
+                     im, oo, re, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -723,6 +723,9 @@ def test_Domain__algebraic_field():
 
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
+
+    assert QQ.algebraic_field(im(1/((1 + I)**2)) + re(1/((1 + I)**2))) == QQ
+    assert alg1.from_expr(im(1/((1 + I)**2))) == alg1.from_expr(-Rational(1, 2))
 
 
 def test_PolynomialRing_from_FractionField():

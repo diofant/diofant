@@ -296,6 +296,8 @@ class lowergamma(Function):
                 b = a - 1
                 if b.is_positive:
                     return b*cls(b, x) - x**b * exp(-x)
+                elif a == 0:
+                    return zoo
 
                 if not a.is_Integer:
                     return (cls(a + 1, x) + x**a * exp(-x))/a
