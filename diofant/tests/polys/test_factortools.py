@@ -960,3 +960,15 @@ def test__gf_trace_map():
     assert R._gf_trace_map(a, b, c, 5, f) == (5*x**3 + 2*x**2 + 10*x + 3,
                                               5*x**3 + 3*x**2)
     assert R._gf_trace_map(a, b, c, 11, f) == (x**3 + 10*x**2 + 6*x, 10)
+
+
+def test_sympyissue_23174():
+    _, x = ring('x', FF(2))
+
+    f = (x**16 + x**15 + x**14 + x**13 + x**12 + x**11 + x**10 + x**9 +
+         x**8 + x**7 + x**6 + x**5 + x**4 + x**3 + x**2 + x + 1)
+    r = (1, [(x**8 + x**5 + x**4 + x**3 + 1, 1),
+             (x**8 + x**7 + x**6 + x**4 + x**2 + x + 1, 1)])
+
+    with using(gf_factor_method='zassenhaus'):
+        assert f.factor_list() == r
