@@ -25,13 +25,13 @@ class _SQF:
         Note that e.g.:
 
         >>> f.diff(x)
-        0 mod 5
+        0
 
         This phenomenon doesn't happen in characteristic zero. However we can
         still compute square-free decomposition of ``f``:
 
         >>> R.sqf_list(f)
-        (1 mod 5, [(x*y + 1 mod 5, 5)])
+        (1, [(x*y + 1, 5)])
 
         """
         domain = self.domain

@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (CC, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
+from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
                      Complement, Derivative, Dict, Dummy, E, Eq, Equivalent,
                      EulerGamma, Expr, FiniteSet, Float, Function, GoldenRatio,
                      I, Integer, Integral, Interval, Lambda, Limit, Matrix,
@@ -768,3 +768,8 @@ def test_Differential():
 def test_ImmutableDenseNDimArray():
     m = [2*i + j for i in range(2) for j in range(2)]
     assert sstr(ImmutableDenseNDimArray(m, (2, 2))) == '[[0, 1], [2, 3]]'
+
+
+def test_sympyissue_21409():
+    _, x = ring('x', FF(7))
+    assert str(x**2 + 4*x + 3) == 'x**2 + 4*x + 3'
