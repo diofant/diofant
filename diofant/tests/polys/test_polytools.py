@@ -2276,7 +2276,12 @@ def test_factor():
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
                         x**3 + 65536*x**2 + 1)
 
-    assert factor(x**3 + 3*x + 2, modulus=4) == (x + 1)*(x**2 + x + 2)
+    assert (factor(x**3 + 3*x + 2, modulus=4) ==
+            factor((x**3 + 3*x + 2).as_poly(modulus=4)) ==
+            (x + 1)*(x**2 + x + 2))
+    assert (factor_list((x**3 + 3*x + 2).as_poly(modulus=4)) ==
+            (1, [((x + 1).as_poly(modulus=4), 1),
+                 ((x**2 + x + 2).as_poly(modulus=4), 1)]))
 
     f = x/pi + x*sin(x)/pi
     g = y/(pi**2 + 2*pi + 1) + y*sin(x)/(pi**2 + 2*pi + 1)
@@ -3204,3 +3209,13 @@ def test_sympyissue_22093():
                                  48*x*y**4*sin(x/y)**3*cos(x/y) +
                                  24*x*y**2*sin(x/y)**2 - 24*y**5*sin(x/y)**4)
     assert cancel(expr).equals(res)
+
+
+def test_sympyissue_22673():
+    e = x**7 - x
+    p = e.as_poly(modulus=7)
+    f = x*(x + 1)*(x + 2)*(x + 3)*(x + 4)*(x + 5)*(x + 6)
+    assert factor(e, modulus=7) == factor(p) == f
+    assert factor_list(e, modulus=7) == (1, [(x + i, 1) for i in range(7)])
+    assert factor_list(p) == (1, [((x + i).as_poly(modulus=7), 1)
+                                  for i in range(7)])
