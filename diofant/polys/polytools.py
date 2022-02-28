@@ -2537,7 +2537,7 @@ def degree(f, *gens, **args):
     -inf
 
     """
-    allowed_flags(args, ['gen', 'polys'])
+    allowed_flags(args, ['gen'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2558,8 +2558,6 @@ def LC(f, *gens, **args):
     4
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -2579,8 +2577,6 @@ def LM(f, *gens, **args):
     x**2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -2601,8 +2597,6 @@ def LT(f, *gens, **args):
     4*x**2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -3178,8 +3172,6 @@ def content(f, *gens, **args):
     2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
