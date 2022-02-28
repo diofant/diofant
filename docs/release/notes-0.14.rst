@@ -19,6 +19,8 @@ Compatibility breaks
 Minor changes
 =============
 
+* Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`'s over finite fields, see :pull:`1209`.
+
 Developer changes
 =================
 
@@ -49,3 +51,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23156`: sympy.Sum() bug when summing up reciprocal of gamma
 * :sympyissue:`23174`: Problem with gf_edf_zassenhaus()
 * :sympyissue:`21409`: Printing of polynomial over FF
+* :sympyissue:`22673`: Roots of a polynomial over a finite field computed regardless of specified polynomial domain

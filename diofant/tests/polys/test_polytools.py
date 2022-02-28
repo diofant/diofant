@@ -2478,6 +2478,11 @@ def test_all_roots():
     assert f.as_poly().all_roots(multiple=False) == [(-Rational(1, 2), 1), (2, 2)]
     assert g.as_poly().all_roots() == [RootOf(g, 0), RootOf(g, 1), RootOf(g, 2)]
 
+    f = (x**7 - x).as_poly(modulus=7)
+
+    # issue sympy/sympy#22673
+    assert f.all_roots() == [RootOf(f, i, evaluate=False) for i in range(7)]
+
 
 def test_nroots():
     assert not Integer(0).as_poly(x).nroots()
