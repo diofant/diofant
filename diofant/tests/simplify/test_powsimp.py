@@ -286,9 +286,9 @@ def test_powsimp_on_numbers():
     assert 2**(Rational(1, 3) - 2) == cbrt(2)/4
 
 
-def test_diofantissue_124():
+def test_diofantissue_143():
     n = Symbol('n', odd=True)
-    assert powsimp((-1)**(n/2)) in ((-1)**(n/2), I**n)
+    assert powsimp((-1)**(n/2)) == (-1)**(n/2)
     assert powsimp((-1)**(n/2 - Rational(1, 2)) -
                    (-1)**(3*n/2 - Rational(1, 2))) != 2  # sympy/sympy#10195
 
