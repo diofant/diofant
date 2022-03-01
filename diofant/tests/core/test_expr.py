@@ -1705,3 +1705,8 @@ def test_sympyissue_21334():
     e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
 
     assert e.as_leading_term(y) == 0
+
+
+def test_sympyissue_22583():
+    f = Function('f')
+    assert (1/f(x) + 1).is_polynomial(f(x)) is False
