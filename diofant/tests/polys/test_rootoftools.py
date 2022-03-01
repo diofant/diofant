@@ -106,6 +106,13 @@ def test_RootOf___new__():
 
     assert RootOf(x**7 - 0.1*x + 1, 0) == RootOf(10*x**7 - x + 10, 0)
 
+    e = x**7 - x
+    p = (x**7 - x).as_poly(modulus=7)
+    F7 = p.domain
+    assert (RootOf(p, 1) == RootOf(e, 1, modulus=7) ==
+            RootOf(e, x, 1, modulus=7) == RootOf(p, 1, evaluate=False) ==
+            RootOf(e, 1, domain=F7, evaluate=False))
+
 
 def test_RootOf_attributes():
     r = RootOf(x**3 + x + 3, 0)

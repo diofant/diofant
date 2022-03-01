@@ -673,7 +673,9 @@ def preprocess_roots(poly):
     _, poly = poly.clear_denoms(convert=True)
 
     poly = poly.primitive()[1]
-    poly = poly.retract()
+
+    if not poly.domain.characteristic:
+        poly = poly.retract()
 
     if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.values()):
         poly = poly.inject()

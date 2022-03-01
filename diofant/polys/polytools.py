@@ -2537,7 +2537,7 @@ def degree(f, *gens, **args):
     -inf
 
     """
-    allowed_flags(args, ['gen', 'polys'])
+    allowed_flags(args, ['gen'])
 
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
@@ -2558,8 +2558,6 @@ def LC(f, *gens, **args):
     4
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -2579,8 +2577,6 @@ def LM(f, *gens, **args):
     x**2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -2601,8 +2597,6 @@ def LT(f, *gens, **args):
     4*x**2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), opt = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -3178,8 +3172,6 @@ def content(f, *gens, **args):
     2
 
     """
-    allowed_flags(args, ['polys'])
-
     try:
         (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
@@ -3431,6 +3423,9 @@ def _symbolic_factor(expr, opt, method):
     if isinstance(expr, Expr) and not expr.is_Relational:
         if hasattr(expr, '_eval_factor'):
             return expr._eval_factor()
+        if expr.is_Poly:
+            opt['gens'] = opt.get('gens', expr.gens)
+            opt['domain'] = opt.get('domain', expr.domain)
         coeff, factors = _symbolic_factor_list(together(expr), opt, method)
         return _keep_coeff(coeff, _factors_product(factors))
     elif hasattr(expr, 'args'):
@@ -3449,6 +3444,10 @@ def _generic_factor_list(expr, gens, args, method):
     expr = sympify(expr)
 
     if isinstance(expr, Expr) and not expr.is_Relational:
+        if expr.is_Poly:
+            opt['gens'] = opt.get('gens', expr.gens)
+            opt['domain'] = opt.get('domain', expr.domain)
+
         numer, denom = together(expr).as_numer_denom()
 
         cp, fp = _symbolic_factor_list(numer, opt, method)

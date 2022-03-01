@@ -66,7 +66,8 @@ class RootOf(Expr):
 
     is_commutative = True
 
-    def __new__(cls, f, x, index=None, radicals=True, expand=True, evaluate=None):
+    def __new__(cls, f, x, index=None, radicals=True, expand=True,
+                evaluate=None, domain=None, modulus=None):
         """Construct a new ``RootOf`` object for ``k``-th root of ``f``."""
         x = sympify(x)
 
@@ -80,7 +81,8 @@ class RootOf(Expr):
         else:
             raise ValueError(f'expected an integer root index, got {index}')
 
-        poly = PurePoly(f, x, greedy=False, expand=expand)
+        poly = PurePoly(f, x, greedy=None if domain or modulus else False,
+                        expand=expand, domain=domain, modulus=modulus)
 
         if not poly.is_univariate:
             raise PolynomialError('only univariate polynomials are allowed')
