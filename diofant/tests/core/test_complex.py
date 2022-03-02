@@ -196,7 +196,7 @@ def test_real_imag():
     assert (2**x).as_real_imag(deep=False) == (re(2**x), im(2**x))
 
 
-def test_pow_sympyissue_4823():
+def test_sympyissue_4823():
     e = cbrt(-1)
     assert e.conjugate().evalf() == e.evalf().conjugate()
     e = (Rational(-2, 3) - cbrt(Rational(-29, 54) + sqrt(93)/18)

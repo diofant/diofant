@@ -179,22 +179,22 @@ def test_trigsimp_issues():
     assert trigsimp(-sin(x)**4 - 2*sin(x)**2*cos(x)**2 - cos(x)**4) == -1
 
 
-def test_trigsimp_sympyissue_5614():
+def test_sympyissue_5614():
     assert trigsimp(x*cos(x)*tan(x)) == x*sin(x)
     assert trigsimp(-sin(x) + cos(x)*tan(x)) == 0
 
 
-def test_trigsimp_sympyissue_6925():
+def test_sympyissue_6925():
     assert trigsimp(tan(2*x).expand(trig=True)) == tan(2*x)
 
 
-def test_trigsimp_sympyissue_7131():
+def test_sympyissue_7131():
     n = Symbol('n', integer=True, positive=True)
     assert trigsimp(2**(n/2)*cos(pi*n/4)/2 + 2**(n - 1)/2) == \
         2**(n/2)*cos(pi*n/4)/2 + 2**n/4
 
 
-def test_trigsimp_sympyissue_7761():
+def test_sympyissue_7761():
     assert trigsimp(cosh(pi/4)) == cosh(pi/4)
 
 

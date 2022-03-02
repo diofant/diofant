@@ -208,7 +208,7 @@ def test_pow_E():
     assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).evalf(strict=False)), E)
 
 
-def test_pow_sympyissue_3516():
+def test_sympyissue_3516():
     assert root(4, 4) == sqrt(2)
 
 
