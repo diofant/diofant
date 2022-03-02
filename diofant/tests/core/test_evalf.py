@@ -494,12 +494,15 @@ def test_evalf_integral():
     assert (Integral(sin(I*x), (x, -pi, pi + eps)).evalf(2)/I)._prec == 10
 
 
-def test_sympyissue_8821_highprec_from_str():
+def test_sympyissue_8821():
     s = str(pi.evalf(128))
     p = N(s)
     assert abs(sin(p)) < 1e-15
     p = N(s, 64)
     assert abs(sin(p)) < 1e-64
+    s = str(pi.evalf(128))
+    p = sympify(s)
+    assert abs(sin(p)) < 1e-127
 
 
 def test_sympyissue_8853():

@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
                      Poly, Pow, Range, Rational, Symbol, SympifyError, Tuple,
-                     Xor, evaluate, exp, false, pi, sin, sqrt, sympify, true)
+                     Xor, evaluate, exp, false, sin, sqrt, sympify, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -441,12 +441,6 @@ def test_sympyissue_6046():
     locals = {}
     exec('from diofant.abc import S, O', locals)  # pylint: disable=exec-used
     assert str(sympify('O&S', locals)) == 'O & S'
-
-
-def test_sympyissue_8821_highprec_from_str():
-    s = str(pi.evalf(128))
-    p = sympify(s)
-    assert abs(sin(p)) < 1e-127
 
 
 def test_Range():

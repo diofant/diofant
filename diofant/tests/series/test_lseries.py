@@ -46,8 +46,7 @@ def test_simple():
     s = (x + 1/x).series(n=None)
     assert list(s) == [1/x, x]
 
-
-def test_sympyissue_5183():
+    # issue sympy/sympy#5183
     s = (x + 1/x).series(n=None)
     assert next((x + x**2).series(n=None)) == x
     assert next(((1 + x)**7).series(x, n=None)) == 1

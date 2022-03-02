@@ -14,7 +14,7 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      erf, exp, factorial, fibonacci, gamma, li, limit, log,
                      loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan, tanh,
                      zeta)
-from diofant.abc import a, c, n, y
+from diofant.abc import a, n, y
 from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, signinf
 
 
@@ -406,19 +406,6 @@ def test_sympyissue_6843():
 
 def test_sympyissue_4190():
     assert limit(x - gamma(1/x), x, oo) == EulerGamma
-
-
-def test_sympyissue_5172():
-    n = Symbol('n', real=True, positive=True)
-    r = Symbol('r', positive=True)
-    p = Symbol('p', positive=True)
-    m = Symbol('m', negative=True)
-    expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
-            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
-    expr = expr.subs({c: c + 1})
-    assert limit(expr.subs({c: m}), n, oo) == 1
-    assert limit(expr.subs({c: p}), n, oo) == (2**(p + 1) + r -
-                                               1)/(r + 1)**(p + 1)
 
 
 def test_sympyissue_4109():

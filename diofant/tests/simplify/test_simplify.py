@@ -534,11 +534,6 @@ def test_polymorphism():
     assert simplify(a) == 1
 
 
-def test_sympyissue_from_PR1599():
-    n1 = Symbol('n1', negative=True)
-    assert simplify(I*sqrt(n1)) == -sqrt(-n1)
-
-
 def test_sympyissue_6811():
     eq = (x + 2*y)*(2*x + 2)
     assert simplify(eq) == (x + 1)*(x + 2*y)*2

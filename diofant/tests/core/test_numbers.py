@@ -1034,10 +1034,6 @@ def test_sympyissue_3423():
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
-def test_sympyissue_3449():
-    assert sqrt(x - 1).subs({x: 5}) == 2
-
-
 def test_Integer_factors():
     def F(i):
         return Integer(i).factors()

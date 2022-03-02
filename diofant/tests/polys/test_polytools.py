@@ -3038,8 +3038,10 @@ def test_poly_matching_consistency():
 
 
 def test_sympyissue_5786():
-    e = (x - I*y)*(z - I*t)
-    assert factor(expand(e), extension=[I]) == e
+    f, g = z - I*t, x - I*y
+    assert factor(expand(f*g), extension=[I]) == f*g
+    assert factor(expand(f**2*g), extension=[I]) == f**2*g
+    assert factor(expand(f*g**3), extension=[I]) == f*g**3
 
     # issue sympy/sympy#18895
     e = (x - 1)*(y - 1)

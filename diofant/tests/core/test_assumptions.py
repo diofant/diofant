@@ -676,6 +676,29 @@ def test_Add_is_imaginary():
     nn = Dummy(nonnegative=True, finite=True)
     assert (I*nn + I).is_imaginary  # issue sympy/sympy#8046, 17
 
+    # issue sympy/sympy#4149
+    assert (3 + I).is_complex
+    assert (3 + I).is_imaginary is False
+    assert (3*I + pi*I).is_imaginary
+    y = Symbol('y', real=True)
+    assert (3*I + pi*I + y*I).is_imaginary is True
+    p = Symbol('p', positive=True, finite=True)
+    assert (3*I + pi*I + p*I).is_imaginary
+    n = Symbol('n', negative=True, finite=True)
+    assert (-3*I - pi*I + n*I).is_imaginary
+
+    # tests from the PR sympy/sympy#7887:
+    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
+    assert e.is_extended_real is False
+    assert e.is_imaginary
+
+
+def test_Pow_is_imaginary():
+    # issue sympy/sympy#4149
+    i = Symbol('i', imaginary=True)
+    assert ([(i**a).is_imaginary for a in range(4)] ==
+            [False, True, False, True])
+
 
 def test_Add_is_algebraic():
     a = Symbol('a', algebraic=True)
@@ -841,27 +864,6 @@ def test_inconsistent():
 
 def test_sympyissue_2730():
     assert (1/(1 + I)).is_extended_real is False
-
-
-def test_sympyissue_4149():
-    assert (3 + I).is_complex
-    assert (3 + I).is_imaginary is False
-    assert (3*I + pi*I).is_imaginary
-    y = Symbol('y', real=True)
-    assert (3*I + pi*I + y*I).is_imaginary is True
-    p = Symbol('p', positive=True, finite=True)
-    assert (3*I + pi*I + p*I).is_imaginary
-    n = Symbol('n', negative=True, finite=True)
-    assert (-3*I - pi*I + n*I).is_imaginary
-
-    i = Symbol('i', imaginary=True)
-    assert ([(i**a).is_imaginary for a in range(4)] ==
-            [False, True, False, True])
-
-    # tests from the PR sympy/sympy#7887:
-    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
-    assert e.is_extended_real is False
-    assert e.is_imaginary
 
 
 def test_sympyissue_2920():
