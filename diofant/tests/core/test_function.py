@@ -709,7 +709,7 @@ def test_sympyissue_13098():
     assert ceiling(log(20 - x, 10)) == 2
 
 
-def test_undef_fcn_float_sympyissue_6938():
+def test_sympyissue_6938():
     f = Function('ceil')
     assert isinstance(f(0.3), Function)
     f = Function('sin')

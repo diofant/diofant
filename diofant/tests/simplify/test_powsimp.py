@@ -1,7 +1,6 @@
-from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
-                     Symbol, cbrt, exp, exp_polar, gamma, hyper, log, pi,
-                     polar_lift, powdenest, powsimp, root, simplify, sin, sqrt,
-                     symbols)
+from diofant import (Dummy, E, Function, I, Mul, Rational, Symbol, cbrt, exp,
+                     exp_polar, gamma, hyper, log, pi, polar_lift, powdenest,
+                     powsimp, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, c, x, y, z
 
 
@@ -202,13 +201,6 @@ def test_sympyissue_5805():
     arg = ((gamma(x)*hyper((), (), x))*pi)**2
     assert powdenest(arg) == (pi*gamma(x)*hyper((), (), x))**2
     assert arg.is_positive is None
-
-
-def test_sympyissue_9324_powsimp_on_matrix_symbol():
-    M = MatrixSymbol('M', 10, 10)
-    expr = powsimp(M, deep=True)
-    assert expr == M
-    assert expr.name == 'M'
 
 
 def test_sympyissue_6367():

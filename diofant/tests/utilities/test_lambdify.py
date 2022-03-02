@@ -323,8 +323,8 @@ def test_numpy_old_matrix():
 
 @with_numpy
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
-def test_python_div_zero_sympyissue_11306():
-    p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
+def test_sympyissue_11306():
+    p = Piecewise((1/x, y < -1), (x, y <= 1), (1/x, True))
     lambdify([x, y], p, modules='numpy')(0, 1)
 
 

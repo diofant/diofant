@@ -1615,7 +1615,7 @@ def test_jordan_form():
     assert m == J
 
 
-def test_jordan_form_complex_sympyissue_9274():
+def test_sympyissue_9274():
     A = Matrix([[ 2,  4,  1,  0],
                 [-4,  2,  0,  1],
                 [ 0,  0,  2,  4],

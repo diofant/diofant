@@ -401,7 +401,7 @@ def test_sympyissue_4788():
     assert repr(sympify(1.0 + 0J)) == repr(Float(1.0)) == repr(Float(1.0))
 
 
-def test_sympyissue_4798_None():
+def test_sympyissue_4798():
     assert sympify(None) is None
 
 
@@ -409,7 +409,7 @@ def test_sympyissue_3218():
     assert sympify('x+\ny') == x + y
 
 
-def test_sympyissue_4988_builtins():
+def test_sympyissue_4988():
     C = Symbol('C')
     vars = {}
     vars['C'] = C
@@ -427,9 +427,12 @@ def test_geometry():
     assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
 
 
-def test_sympyissue_6540_6552():
+def test_sympyissue_6540():
     assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
     assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
+
+
+def test_sympyissue_6552():
     assert sympify('[[[2*(1)]]]') == [[[2]]]
     assert sympify('Matrix([2*(1)])') == Matrix([2])
 

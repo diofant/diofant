@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Dummy, Float, GreaterThan, I, Integer, LessThan, Rational,
-                     StrictGreaterThan, StrictLessThan, Symbol, Wild, beta, pi,
-                     sstr, symbols, sympify)
+                     StrictGreaterThan, StrictLessThan, Symbol, Wild, pi, sstr,
+                     symbols, sympify)
 
 
 __all__ = ()
@@ -329,11 +329,11 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols('::a'))
 
 
-def test_sympyissue_9057_1():
+def test_sympyissue_9057():
+    from diofant import beta
+
     beta(2, 3)  # not raises
 
-
-def test_sympyissue_9057_2():
     beta = Symbol('beta')
     pytest.raises(TypeError, lambda: beta(2))
     pytest.raises(TypeError, lambda: beta(2.5))

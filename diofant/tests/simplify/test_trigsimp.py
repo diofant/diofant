@@ -1,10 +1,8 @@
-import pytest
-
 from diofant import (E, I, Matrix, Piecewise, Rational, Subs, Symbol, cos,
                      cosh, cot, coth, count_ops, csc, diff, exp, expand,
                      exptrigsimp, integrate, log, nan, pi, simplify, sin, sinh,
                      sqrt, tan, tanh, trigsimp)
-from diofant.abc import a, b, x, y, z
+from diofant.abc import a, b, x, y
 from diofant.simplify.trigsimp import trigsimp_groebner
 from diofant.utilities.randtest import verify_numerically as tn
 
@@ -400,13 +398,6 @@ def test_exptrigsimp():
         s = simplify(e)
         assert s == exptrigsimp(e)
         assert valid(s, 2*sinh(a))
-
-
-@pytest.mark.xfail
-def test_sympyissue_6811_fail():
-    xp = Symbol('xp')
-    eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*xp/(9*cos(x) - 5*cos(3*x))
-    assert trigsimp(eq) == -2*(2*cos(x)*tan(x)*y + 3*z)*xp/cos(x)
 
 
 def test_Piecewise():

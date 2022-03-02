@@ -418,7 +418,7 @@ def test_valued_components_with_wrong_symmetry():
     A_antisym.data = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
 
-def test_sympyissue_10972_TensMul_data():
+def test_sympyissue_10972():
     Lorentz = TensorIndexType('Lorentz', metric=False, dummy_fmt='i', dim=2)
     Lorentz.data = [-1, 1]
 
@@ -500,7 +500,7 @@ def test_TensMul_data():
     assert (mul_3.data == numpy.array([0, 0, 0, 0])).all()
 
 
-def test_sympyissue_11020_TensAdd_data():
+def test_sympyissue_11020():
     Lorentz = TensorIndexType('Lorentz', metric=False, dummy_fmt='i', dim=2)
     Lorentz.data = [-1, 1]
 

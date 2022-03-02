@@ -421,7 +421,7 @@ def test_Float_eval():
     assert (a**2).is_Float
 
 
-def test_Float_sympyissue_5206():
+def test_sympyissue_5206():
     a = Float(0.1, 10)
     b = Float('0.1', 10)
 

@@ -63,7 +63,7 @@ def test_cmp_bug2():
     assert Symbol != t
 
 
-def test_cmp_sympyissue_4357():
+def test_sympyissue_4357():
     # pylint: disable=unneeded-not
     assert not Symbol == 1
     assert Symbol != 1

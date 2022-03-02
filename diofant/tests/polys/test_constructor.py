@@ -119,8 +119,11 @@ def test_precision():
     assert result[1][0] - 1 > 1e-50
 
 
-def test_sympyissue_5428_14337():
+def test_sympyissue_5428():
     assert (x**2 + I).as_poly(x).domain == QQ.algebraic_field(I)
+
+
+def test_sympyissue_14337():
     assert (x**2 + sqrt(2)).as_poly(x).domain == QQ.algebraic_field(sqrt(2))
 
 

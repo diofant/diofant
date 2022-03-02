@@ -1328,7 +1328,7 @@ def test_Add_is_irrational():
 
 
 @pytest.mark.xfail
-def test_sympyissue_3531():
+def test_sympyissue_3531_fail():
     class MightyNumeric(tuple):
         def __rtruediv__(self, other):
             return 'something'
@@ -1336,7 +1336,7 @@ def test_sympyissue_3531():
     assert sympify(1)/MightyNumeric((1, 2)) == 'something'
 
 
-def test_sympyissue_3531b():
+def test_sympyissue_3531():
     class Foo:
         def __init__(self):
             self.field = 1.0

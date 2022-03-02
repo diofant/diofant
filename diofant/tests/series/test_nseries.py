@@ -499,11 +499,15 @@ def test_sympyissue_5925():
     assert sxy.subs({x: 1, y: 2}) == sx.subs({x: 3})
 
 
-def test_sympyissues_6235_6236():
+def test_sympyissue_6235():
     q = Symbol('q', positive=True)
     assert (((x - 1)**q + 1)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1 - x**q + (-1)**(q + 1) + (-1)**(q + 1)*x**q +
          (-1)**q*q*x**(q + 1) + (-1)**q*q*x)
+
+
+def test_sympyissue_6236():
+    q = Symbol('q', positive=True)
     assert (((x - 1)**q)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
 

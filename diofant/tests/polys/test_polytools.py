@@ -6,7 +6,7 @@ import math
 import pytest
 
 from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
-                     ComputationFailed, Derivative, DomainError, Eq,
+                     ComputationFailed, Derivative, DomainError, E, Eq,
                      ExactQuotientFailed, Expr, FlagError, Float,
                      GeneratorsError, GeneratorsNeeded, GroebnerBasis, I,
                      Integer, Integral, MatrixSymbol, Mul,
@@ -3109,8 +3109,8 @@ def test_sympyissue_15798():
 
 
 @pytest.mark.timeout(20)
-def test_sympyissue_16222_19670():
-    (x**100000000).as_poly()
+def test_sympyissue_19670():
+    (E**100000000).as_poly()
 
 
 def test_sympyissue_8810():

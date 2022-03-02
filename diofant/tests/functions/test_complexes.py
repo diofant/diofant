@@ -735,7 +735,7 @@ def test_sympyissue_3206():
     assert abs(abs(x)) == abs(x)
 
 
-def test_derivatives_sympyissue_4757():
+def test_sympyissue_4757():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')
