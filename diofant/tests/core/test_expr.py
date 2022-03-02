@@ -5,11 +5,11 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Max, Mul, Number, NumberSymbol, O, Piecewise, Pow,
                      Rational, Si, Subs, Sum, Symbol, Tuple, Wild,
                      WildFunction, apart, cancel, cbrt, collect, combsimp, cos,
-                     default_sort_key, diff, exp, exp_polar, expand, factor,
-                     factorial, false, gamma, log, lucas, nan, nsimplify, oo,
-                     pi, posify, powsimp, radsimp, ratsimp, root, simplify,
-                     sin, sqrt, symbols, sympify, tan, tanh, together,
-                     trigsimp, true, zoo)
+                     default_sort_key, diff, exp, exp_polar, expand,
+                     expand_multinomial, factor, factorial, false, gamma, log,
+                     lucas, nan, nsimplify, oo, pi, posify, powsimp, radsimp,
+                     ratsimp, root, simplify, sin, sqrt, symbols, sympify, tan,
+                     tanh, together, trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.utils import checksol
@@ -1507,6 +1507,7 @@ def test_equals():
                 (x1, sqrt(-x0 - Rational(13, 12))),
                 (x0, 2*cbrt(-(q - Rational(7, 8))**2/8 -
                             Rational(2197, 13824)))))
+    z = expand_multinomial(z)
     assert z.equals(0)
 
 

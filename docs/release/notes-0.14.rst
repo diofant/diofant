@@ -10,11 +10,14 @@ New features
 Major changes
 =============
 
+* Use recursive (former ``poly()`` method, without using :func:`~diofant.core.function.expand`) algorithm of creating polynomials from expressions, see :pull:`1047`.
+
 Compatibility breaks
 ====================
 
 * Removed support for CPython 3.9, see :pull:`1192`.
 * Removed ``to_mpi()`` method of :class:`~diofant.sets.sets.Interval`, see :pull:`1194`.
+* Removed ``poly()`` function, use :meth:`~diofant.core.expr.Expr.as_poly` method to create a :class:`~diofant.polys.polytools.Poly` instance from :class:`~diofant.core.expr.Expr`, see :pull:`1047`.
 
 Minor changes
 =============
@@ -52,3 +55,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`23174`: Problem with gf_edf_zassenhaus()
 * :sympyissue:`21409`: Printing of polynomial over FF
 * :sympyissue:`22673`: Roots of a polynomial over a finite field computed regardless of specified polynomial domain
+* :sympyissue:`12531`: cancel does not return expanded form
+* :sympyissue:`6322`: degree((x+1)**10000) takes too long

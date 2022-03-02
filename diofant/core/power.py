@@ -1176,7 +1176,7 @@ class Pow(Expr):
                 n += 1
                 b_series = self.base.nseries(x, n=n, logx=logx)
             b0 = b_series.as_leading_term(x)
-            t = expand_mul((b_series/b0 - 1).cancel())
+            t = expand_mul(expand_multinomial(b_series/b0 - 1).cancel())
             if t.is_Add:
                 t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
             c, e = b0.as_coeff_exponent(x)
