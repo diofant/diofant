@@ -26,8 +26,10 @@ def groebner(seq, ring, method=None):
 
     try:
         _groebner = _groebner_methods[method]
-    except KeyError:
-        raise ValueError(f"'{method}' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')")
+    except KeyError as exc:
+        raise ValueError(f"'{method}' is not a valid Gröbner "
+                         "bases algorithm (valid are 'buchberger'"
+                         " and 'f5b')") from exc
 
     domain, orig = ring.domain, None
 
@@ -609,7 +611,7 @@ def f5b(F, ring):
                 cp = critical_pair(p, g, ring)
                 if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
                     continue
-                elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
+                if is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
                     continue
 
                 CP.append(cp)

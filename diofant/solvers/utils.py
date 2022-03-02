@@ -125,7 +125,7 @@ def checksol(f, sol, **flags):
 
         if val == was:
             continue
-        elif val.is_Rational:
+        if val.is_Rational:
             return val == 0
         elif val.is_nonzero:
             return False

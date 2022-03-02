@@ -518,8 +518,7 @@ def no_cancel_equal(b, c, n, DE):
         else:
             if c.degree(DE.t) != DE.d.degree(DE.t) - 1:
                 raise NonElementaryIntegralException
-            else:
-                p = c.as_poly(DE.t).LC()/b.as_poly(DE.t).LC()
+            p = c.as_poly(DE.t).LC()/b.as_poly(DE.t).LC()
 
         q = q + p
         n = m - 1
@@ -701,22 +700,21 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
         if b.is_zero:
             raise NotImplementedError('Remaining cases for Poly (P)RDE are '
                                       'not yet implemented (is_deriv_in_field() required).')
+        if DE.case == 'exp':
+            if parametric:
+                raise NotImplementedError('Parametric RDE cancellation '
+                                          'hyperexponential case is not yet implemented.')
+            return cancel_exp(b, cQ, n, DE)
+
+        elif DE.case == 'primitive':
+            if parametric:
+                raise NotImplementedError('Parametric RDE cancellation '
+                                          'primitive case is not yet implemented.')
+            return cancel_primitive(b, cQ, n, DE)
+
         else:
-            if DE.case == 'exp':
-                if parametric:
-                    raise NotImplementedError('Parametric RDE cancellation '
-                                              'hyperexponential case is not yet implemented.')
-                return cancel_exp(b, cQ, n, DE)
-
-            elif DE.case == 'primitive':
-                if parametric:
-                    raise NotImplementedError('Parametric RDE cancellation '
-                                              'primitive case is not yet implemented.')
-                return cancel_primitive(b, cQ, n, DE)
-
-            else:
-                raise NotImplementedError('Other Poly (P)RDE cancellation '
-                                          f'cases are not yet implemented ({DE.case!s}).')
+            raise NotImplementedError('Other Poly (P)RDE cancellation '
+                                      f'cases are not yet implemented ({DE.case!s}).')
 
         raise NotImplementedError('Remaining cases for Poly RDE not yet '
                                   'implemented.')

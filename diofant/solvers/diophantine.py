@@ -150,9 +150,9 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
         assert not any(g.is_number for g in p.gens)
         eq = p.as_expr()
         assert eq.is_polynomial()
-    except (GeneratorsNeeded, AssertionError, AttributeError):
+    except (GeneratorsNeeded, AssertionError, AttributeError) as exc:
         raise TypeError('Equation should be a polynomial with '
-                        'Rational coefficients.')
+                        'Rational coefficients.') from exc
 
     try:
         # if we know that factoring should not be attempted, skip
@@ -313,8 +313,8 @@ def classify_diop(eq, _dict=True):
     try:
         var = list(eq.free_symbols)
         assert var
-    except (AttributeError, AssertionError):
-        raise ValueError('equation should have 1 or more free symbols')
+    except (AttributeError, AssertionError) as exc:
+        raise ValueError('equation should have 1 or more free symbols') from exc
     var.sort(key=default_sort_key)
     eq = eq.expand(force=True)
     coeff = eq.as_coefficients_dict()
@@ -2006,11 +2006,11 @@ def _diop_ternary_quadratic_normal(var, coeff):
     try:
         assert len([k for k in coeff if coeff[k]]) == 3
         assert all(coeff[i**2] for i in var)
-    except AssertionError:
+    except AssertionError as exc:
         raise ValueError(filldedent("""
     coeff dict is not consistent with assumption of this routine:
     coefficients should be those of an expression in the form
-    a*x**2 + b*y**2 + c*z**2 where a*b*c != 0."""))
+    a*x**2 + b*y**2 + c*z**2 where a*b*c != 0.""")) from exc
 
     (sqf_of_a, sqf_of_b, sqf_of_c), (a_1, b_1, c_1), (a_2, b_2, c_2) = sqf_normal(a, b, c, steps=True)
 
@@ -2890,8 +2890,8 @@ def power_representation(n, p, k, zeros=False):
         feasible = _can_do_sum_of_squares(n, k)
         if not feasible:
             return
-        if not zeros and n > 33 and k >= 5 and k <= n and n - k in (13, 10, 7,
-                                                                    5, 4, 2, 1):
+        if not zeros and n > 33 and n >= k >= 5 and n - k in (13, 10, 7,
+                                                              5, 4, 2, 1):
             # Todd G. Will, "When Is n^2 a Sum of k Squares?", [online].
             # Available: https://www.maa.org/sites/default/files/Will-MMz-201037918.pdf
             return

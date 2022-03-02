@@ -197,7 +197,7 @@ def multiplicity(p, n):
     """
     try:
         p, n = as_int(p), as_int(n)
-    except ValueError:
+    except ValueError as exc:
         if all(isinstance(i, (numbers.Integral, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
             if p.denominator == 1:
@@ -207,10 +207,13 @@ def multiplicity(p, n):
             elif p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
             else:
-                like = min(multiplicity(p.numerator, n.numerator), multiplicity(p.denominator, n.denominator))
-                cross = min(multiplicity(p.denominator, n.numerator), multiplicity(p.numerator, n.denominator))
+                like = min(multiplicity(p.numerator, n.numerator),
+                           multiplicity(p.denominator, n.denominator))
+                cross = min(multiplicity(p.denominator, n.numerator),
+                            multiplicity(p.numerator, n.denominator))
                 return like - cross
-        raise ValueError(f'expecting ints or fractions, got {p} and {n}')
+        raise ValueError('expecting ints or fractions, '
+                         f'got {p} and {n}') from exc
 
     if n == 0:
         raise ValueError('multiplicity of 0 is not defined')
@@ -1509,9 +1512,8 @@ class divisor_sigma(Function):
         if n.is_Integer:
             if n <= 0:
                 raise ValueError('n must be a positive integer')
-            else:
-                return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
-                             else e + 1 for p, e in factorint(n).items()])
+            return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
+                         else e + 1 for p, e in factorint(n).items()])
 
 
 def core(n, t=2):
@@ -1567,13 +1569,12 @@ def core(n, t=2):
     t = as_int(t)
     if n <= 0:
         raise ValueError('n must be a positive integer')
-    elif t <= 1:
+    if t <= 1:
         raise ValueError('t must be >= 2')
-    else:
-        y = 1
-        for p, e in factorint(n).items():
-            y *= p**(e % t)
-        return y
+    y = 1
+    for p, e in factorint(n).items():
+        y *= p**(e % t)
+    return y
 
 
 def square_factor(a):

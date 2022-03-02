@@ -124,9 +124,9 @@ class Options(dict):
         dict.__init__(self)
 
         if gens and args.get('gens', ()):
-            raise OptionError(
-                "both '*gens' and keyword argument 'gens' supplied")
-        elif gens:
+            raise OptionError("both '*gens' and keyword "
+                              "argument 'gens' supplied")
+        if gens:
             args = dict(args)
             args['gens'] = gens
 
@@ -136,12 +136,14 @@ class Options(dict):
             for option, value in args.items():
                 try:
                     cls = self.__options__[option]
-                except KeyError:
-                    raise OptionError(f"'{option}' is not a valid option")
+                except KeyError as exc:
+                    raise OptionError(f"'{option}' is not a "
+                                      'valid option') from exc
 
                 if issubclass(cls, Flag):
                     if strict and (flags is None or option not in flags):
-                        raise OptionError(f"'{option}' flag is not allowed in this context")
+                        raise OptionError(f"'{option}' flag is not "
+                                          'allowed in this context')
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -168,7 +170,7 @@ class Options(dict):
                 if self.get(exclude_option) is not None:
                     raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
-        for option in self.__order__:
+        for option in self.__order__:  # pylint: disable=not-an-iterable
             self.__options__[option].postprocess(self)
 
     @classmethod
@@ -188,9 +190,9 @@ class Options(dict):
 
             try:
                 cls.__order__ = topological_sort((vertices, list(edges)))
-            except ValueError:
+            except ValueError as exc:
                 raise RuntimeError('cycle detected in diofant.polys'
-                                   ' options framework')
+                                   ' options framework') from exc
 
     def clone(self, updates={}):
         """Clone ``self`` and update specified options."""
@@ -461,7 +463,7 @@ class Domain(Option, metaclass=OptionType):
                 (set(options['domain'].symbols) & set(options['gens'])):
             raise GeneratorsError('ground domain and generators '
                                   'interfere together')
-        elif ('gens' not in options or not options['gens']) and \
+        if ('gens' not in options or not options['gens']) and \
                 'domain' in options and options['domain'] == domains.EX:
             raise GeneratorsError('you have to provide generators because'
                                   ' EX domain was requested')
@@ -705,10 +707,10 @@ def allowed_flags(args, flags):
     for arg in args:
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
-                raise FlagError(
-                    f"'{arg}' flag is not allowed in this context")
-        except KeyError:
-            raise OptionError(f"'{arg}' is not a valid option")
+                raise FlagError(f"'{arg}' flag is not allowed "
+                                'in this context')
+        except KeyError as exc:
+            raise OptionError(f"'{arg}' is not a valid option") from exc
 
 
 def set_defaults(options, **defaults):

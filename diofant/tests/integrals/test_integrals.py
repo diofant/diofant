@@ -1435,3 +1435,18 @@ def test_sympyissue_22487():
     assert (integrate((cos(x**2) - cos(x))/x**2,
                       (x, -oo, oo)) ==
             pi + sqrt(2*pi)*gamma(Rational(-1, 4))/gamma(Rational(3, 4))/4)
+
+
+@pytest.mark.timeout(100)
+def test_sympyissue_22863():
+    # not hangs
+    integrate((3*x**3 - x**2 + 2*x - 4)/sqrt(x**2 - 3*x + 2), (x, 0, 1))
+
+
+def test_sympyissue_23069():
+    assert integrate(x**4*sqrt(1 - x**2), (x, 0, 1)) == pi/32
+
+
+def test_sympyissue_19639():
+    assert integrate(sqrt(1 - x**2)*(a*x**3 + b*x**4),
+                     (x, 0, 1)) == 2*a/15 + pi*b/32

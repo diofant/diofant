@@ -382,12 +382,11 @@ def evalf_add(v, prec, options):
         acc = complex_accuracy((re, im, re_acc, im_acc))
         if acc >= target_prec:
             break
-        else:
-            if (prec - target_prec) > options['maxprec']:
-                break
+        if (prec - target_prec) > options['maxprec']:
+            break
 
-            prec = prec + max(10 + 2**i, target_prec - acc)
-            i += 1
+        prec = prec + max(10 + 2**i, target_prec - acc)
+        i += 1
 
     options['maxprec'] = oldmaxprec
     if iszero(re, scaled=True):
@@ -449,13 +448,13 @@ def evalf_mul(v, prec, options):
         if i != last and pure_complex(arg):
             args[-1] = (args[-1]*arg).expand()
             continue
-        elif i == last and arg is S.One:
+        if i == last and arg is S.One:
             continue
         re, im, re_acc, im_acc = evalf(arg, working_prec, options)
         if re and im:
             complex_factors.append((re, im, re_acc, im_acc))
             continue
-        elif re:
+        if re:
             (s, m, e, b), w_acc = re, re_acc
         elif im:
             (s, m, e, b), w_acc = im, im_acc
@@ -674,8 +673,7 @@ def evalf_trig(v, prec, options):
             xprec += gap
             re, im, *_ = evalf(arg, xprec, options)
             continue
-        else:
-            return y, None, prec, None
+        return y, None, prec, None
 
 
 def evalf_log(expr, prec, options):
@@ -1157,14 +1155,14 @@ def evalf(x, prec, options):
     try:
         rf = evalf_table[x.func]
         r = rf(x, prec, options)
-    except KeyError:
+    except KeyError as exc:
         try:
             # Fall back to ordinary evalf if possible
             if 'subs' in options:
                 x = x.subs(evalf_subs(prec, options['subs']))
             re, im = x._eval_evalf(prec).as_real_imag()
             if re.has(re_) or im.has(im_):
-                raise NotImplementedError
+                raise NotImplementedError from exc
             if re == 0:
                 re = None
                 reprec = None
@@ -1178,8 +1176,8 @@ def evalf(x, prec, options):
                 im = im._to_mpmath(prec)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec
-        except AttributeError:
-            raise NotImplementedError
+        except AttributeError as exc:
+            raise NotImplementedError from exc
     chop = options.get('chop', False)
     if chop:
         if chop is True:
@@ -1250,7 +1248,7 @@ class EvalfMixin:
                 raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
-            v = self._eval_evalf(prec)
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
                 return self
             else:
@@ -1272,7 +1270,7 @@ class EvalfMixin:
 
     def _evalf(self, prec):
         """Helper for evalf. Does the same thing but takes binary precision."""
-        r = self._eval_evalf(prec)
+        r = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
         if r is None:
             r = self
         return r
@@ -1295,19 +1293,19 @@ class EvalfMixin:
                 return make_mpf(re)
             else:
                 return make_mpf(fzero)
-        except NotImplementedError:
-            v = self._eval_evalf(prec)
+        except NotImplementedError as exc:
+            v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             re, im = v.as_real_imag()
             if re.is_Float:
                 re = re._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             if im.is_Float:
                 im = im._mpf_
             else:
-                raise ValueError(errmsg)
+                raise ValueError(errmsg) from exc
             return make_mpc((re, im))
 
 

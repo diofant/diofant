@@ -140,8 +140,8 @@ def as_int(n):
         result = int(n)
         if result != n:
             raise TypeError
-    except TypeError:
-        raise ValueError(f'{n} is not an integer')
+    except TypeError as exc:
+        raise ValueError(f'{n} is not an integer') from exc
     return result
 
 

@@ -170,7 +170,7 @@ class besselj(BesselBase):
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return Integer(-1)**(-nu)*besselj(-nu, z)
-            newz = z.extract_multiplicatively(I)
+            newz = z.as_coefficient(I)
             if newz:  # NOTE we don't want to change the function if z==0
                 return I**(nu)*besseli(nu, newz)
 
@@ -335,7 +335,7 @@ class besseli(BesselBase):
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return besseli(-nu, z)
-            newz = z.extract_multiplicatively(I)
+            newz = z.as_coefficient(I)
             if newz:  # NOTE we don't want to change the function if z==0
                 return I**(-nu)*besselj(nu, -newz)
 

@@ -133,7 +133,7 @@ class Product(ExprWithIntLimits):
                 A *= RisingFactorial(a - r, n - a + 1)**m
                 Q *= (k - r)**m
 
-            if M < poly.degree() and M > 0:
+            if 0 < M < poly.degree():
                 arg = quo(poly, Q.as_poly(k)).as_expr(k)
                 B = self.func(arg, (k, a, n)).doit()
 

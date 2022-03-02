@@ -1665,6 +1665,7 @@ def test_polar():
 
 
 def test_sympyissue_6040():
+    # pylint: disable=unneeded-not
     a, b = Pow(1, 2, evaluate=False), 1
     assert a != b
     assert b != a

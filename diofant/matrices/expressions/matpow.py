@@ -33,7 +33,7 @@ class MatPow(MatrixExpr):
             # We still have a MatPow, make an explicit MatMul out of it.
             if not A.base.is_square:
                 raise ShapeError(f'Power of non-square matrix {A.base}')
-            elif A.exp.is_Integer and A.exp.is_positive:
+            if A.exp.is_Integer and A.exp.is_positive:
                 A = MatMul(*[A.base for k in range(A.exp)])
             # elif A.exp.is_Integer and self.exp.is_negative:
             # Note: possible future improvement: in principle we can take

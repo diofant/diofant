@@ -176,8 +176,7 @@ class ExprWithIntLimits(ExprWithLimits):
 
         if variables.count(x) != 1:
             raise ValueError(self, 'Number of instances of variable not equal to one')
-        else:
-            return variables.index(x)
+        return variables.index(x)
 
     def reorder(self, *arg):
         r"""

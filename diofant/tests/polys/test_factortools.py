@@ -791,12 +791,29 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
+    F4 = FF(2, [1, 1, 1])
+    R, x = ring('x', F4)
+
+    f = x**3 + F4(3)*x + F4(2)
+    g = (1, [(x + 1, 1), (x**2 + x + F4(2), 1)])
+
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
     F8 = FF(2, [1, 1, 0, 1])
     R, x = ring('x', F8)
 
     f = x**10 + x**9 + F8(2)*x**8 + F8(2)*x**7 + F8(5)*x**6 + F8(3)*x**5
-    g = (F8(1), [(x, 5), (x + F8(3), 1), (x + F8(6), 1),
-                 (x**3 + F8(4)*x**2 + x + F8(3), 1)])
+    g = (1, [(x, 5), (x + F8(3), 1), (x + F8(6), 1),
+             (x**3 + F8(4)*x**2 + x + F8(3), 1)])
+
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    f = x**4 + F8(5)*x**2 + 1
+    g = (1, [(x + F8(4), 2), (x + F8(7), 2)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
         with using(gf_factor_method=method):
@@ -960,3 +977,15 @@ def test__gf_trace_map():
     assert R._gf_trace_map(a, b, c, 5, f) == (5*x**3 + 2*x**2 + 10*x + 3,
                                               5*x**3 + 3*x**2)
     assert R._gf_trace_map(a, b, c, 11, f) == (x**3 + 10*x**2 + 6*x, 10)
+
+
+def test_sympyissue_23174():
+    _, x = ring('x', FF(2))
+
+    f = (x**16 + x**15 + x**14 + x**13 + x**12 + x**11 + x**10 + x**9 +
+         x**8 + x**7 + x**6 + x**5 + x**4 + x**3 + x**2 + x + 1)
+    r = (1, [(x**8 + x**5 + x**4 + x**3 + 1, 1),
+             (x**8 + x**7 + x**6 + x**4 + x**2 + x + 1, 1)])
+
+    with using(gf_factor_method='zassenhaus'):
+        assert f.factor_list() == r

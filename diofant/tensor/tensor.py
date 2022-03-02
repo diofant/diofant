@@ -257,9 +257,8 @@ class TIDS(CantSympify):
                 if is_contr:
                     if contr:
                         raise ValueError(f'two equal contravariant indices in slots {pos:d} and {i:d}')
-                    else:
-                        free[pos] = False
-                        free[i] = False
+                    free[pos] = False
+                    free[i] = False
                 else:
                     if contr:
                         free[pos] = False
@@ -2784,6 +2783,7 @@ class TensAdd(TensExpr):
         raise ValueError('cannot divide by a tensor')
 
     def __getitem__(self, item):
+        # pylint: disable=unsubscriptable-object
         return self.data[item]
 
     def contract_delta(self, delta):

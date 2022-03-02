@@ -358,16 +358,16 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         if len(self.variables) > 1:
             raise ValueError
-        else:
-            if self.limits[0][1:] != (0, oo):
-                raise ValueError
-            k = self.variables[0]
+
+        if self.limits[0][1:] != (0, oo):
+            raise ValueError
+        k = self.variables[0]
 
         if not n:
             try:
                 n = (self.function.free_symbols - {k}).pop()
-            except KeyError:
-                raise ValueError
+            except KeyError as exc:
+                raise ValueError from exc
 
         a = Function('a')
 

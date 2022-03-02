@@ -58,8 +58,7 @@ def singularities(f, x):
             r = l.doit()
             if r.is_infinite:
                 raise PoleError
-            else:
-                raise NotImplementedError
+            raise NotImplementedError
         except PoleError:
             res.add(s)
 

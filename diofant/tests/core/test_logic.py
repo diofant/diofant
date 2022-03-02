@@ -16,11 +16,10 @@ U = None
 def test_fuzzy_group():
     v = [T, F, U]
     for i in itertools.product(*[v]*3):
-        assert _fuzzy_group(i) is (
-            None if None in i else (True if all(j for j in i) else False))
+        assert _fuzzy_group(i) is (None if None in i else all(j for j in i))
         assert _fuzzy_group(i, quick_exit=True) is (
             None if (i.count(False) > 1) else (None if None in i else (
-                True if all(j for j in i) else False)))
+                all(j for j in i))))
 
 
 def test_fuzzy_not():

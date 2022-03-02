@@ -515,7 +515,7 @@ def _solve(f, symbol, **flags):
         # as a polynomial, followed (perhaps) by a change of variables if the
         # generator is not a symbol
 
-        poly = Poly(f_num, extension=False)
+        poly = Poly(f_num.expand(power_base=False, log=False), extension=False)
         gens = [g for g in poly.gens if g.has(symbol)]
 
         def _as_base_q(x):
@@ -621,7 +621,7 @@ def _solve(f, symbol, **flags):
             # polys (e.g. for symbols other than the one we are interested
             # in) so recast the poly in terms of our generator of interest.
 
-            poly = Poly(f_num, gens[0], extension=False)
+            poly = Poly(f_num.expand(power_base=False, log=False), gens[0], extension=False)
 
             # if we aren't on the tsolve-pass, use roots
             if not flags.pop('tsolve', False):
@@ -1120,7 +1120,7 @@ def _tsolve(eq, sym, **flags):
         # lambert forms may need some help being recognized, e.g. changing
         # 2**(3*x) + x**3*log(2)**3 + 3*x**2*log(2)**2 + 3*x*log(2) + 1
         # to 2**(3*x) + (x*log(2) + 1)**3
-        g = _filtered_gens(eq.as_poly(), sym)
+        g = _filtered_gens(expand_power_exp(eq).as_poly(), sym)
         up_or_log = set()
         for gi in g:
             if gi.is_Pow and gi.base is E or isinstance(gi, log):
@@ -1138,13 +1138,13 @@ def _tsolve(eq, sym, **flags):
                 poly = lhs.as_poly()
                 g = _filtered_gens(poly, sym)
                 return _solve_lambert(lhs - rhs, sym, g)
-            except NotImplementedError:
+            except NotImplementedError as exc:
                 # maybe it's a convoluted function
                 if len(g) == 2:
                     try:
                         gpu = bivariate_type(lhs - rhs, *g)
                         if gpu is None:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                         g, p, u = gpu
                         flags['bivariate'] = False
                         inversion = _tsolve(g - u, sym, **flags)
@@ -1153,7 +1153,7 @@ def _tsolve(eq, sym, **flags):
                             return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
                         else:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                     except NotImplementedError:
                         pass
                 else:

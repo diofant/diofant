@@ -38,10 +38,10 @@ def test_point():
     assert p1.origin == p3
     assert p1.ambient_dimension == 2
     assert p3.is_zero is True
-    assert p1 in p1
+    assert p1 in p1  # pylint: disable=comparison-with-itself
     assert p1 not in p2
 
-    assert p1 in p1
+    assert p1 in p1  # pylint: disable=comparison-with-itself
     assert p1 not in p2
     assert p2.y == y2
     assert (p3 + p4) == p4

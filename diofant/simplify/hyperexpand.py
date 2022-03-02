@@ -1635,7 +1635,7 @@ def try_shifted_sum(func, z):
     r = abuckets[Integer(0)][0]
     if r <= 0:
         return
-    if not Integer(0) in bbuckets:
+    if Integer(0) not in bbuckets:
         return
     l = list(bbuckets[Integer(0)])
     l.sort()
@@ -1736,7 +1736,7 @@ def try_lerchphi(func):
         bbuckets.pop(key, None)
     if bbuckets:
         return
-    if not Integer(0) in abuckets:
+    if Integer(0) not in abuckets:
         return
     aints, bints = paired[Integer(0)]
     # Account for the additional n! in denominator

@@ -202,10 +202,10 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                 try:
                     monom[indices[base]] += exp
                     continue
-                except KeyError:
+                except KeyError as exc:
                     if factor.free_symbols & set(opt.gens):
                         raise PolynomialError(f'{factor} contains an element'
-                                              ' of the generators set')
+                                              ' of the generators set') from exc
 
                 coeff.append(factor)
 

@@ -18,7 +18,7 @@ def _process_limits(*symbols):
         if isinstance(V, (Dummy, Symbol)) or getattr(V, '_diff_wrt', False):
             limits.append(Tuple(V))
             continue
-        elif is_sequence(V, Tuple):
+        if is_sequence(V, Tuple):
             V = sympify(flatten(V))
             if V[0].is_Symbol or getattr(V[0], '_diff_wrt', False):
                 newsymbol = V[0]
@@ -37,10 +37,10 @@ def _process_limits(*symbols):
                         nlim = V[1:]
                     limits.append(Tuple(newsymbol, *nlim))
                     continue
-                elif len(V) == 1 or (len(V) == 2 and V[1] is None):
+                if len(V) == 1 or (len(V) == 2 and V[1] is None):
                     limits.append(Tuple(newsymbol))
                     continue
-                elif len(V) == 2:
+                if len(V) == 2:
                     limits.append(Tuple(newsymbol, V[1]))
                     continue
 

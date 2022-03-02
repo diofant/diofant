@@ -1,14 +1,14 @@
 import pytest
 
 from diofant import (Derivative, Expr, Function, I, Integer, Rational, Symbol,
-                     cos, cot, exp, log, pi, sin, symbols, tan)
+                     cos, cot, exp, log, pi, sin, tan)
+from diofant.abc import a, b, c, x, y
 
 
 __all__ = ()
 
 
 def test_diff():
-    x, y = symbols('x, y')
     assert Rational(1, 3).diff(x) is Integer(0)
     assert I.diff(x) is Integer(0)
     assert pi.diff(x) is Integer(0)
@@ -18,9 +18,6 @@ def test_diff():
     assert (x**2).diff(x, y) == 0
     pytest.raises(ValueError, lambda: x.diff((1, x)))
 
-    a = Symbol('a')
-    b = Symbol('b')
-    c = Symbol('c')
     p = Integer(5)
     e = a*b + b**p
     assert e.diff(a) == b
@@ -46,7 +43,6 @@ def test_diff2():
     n3 = Integer(3)
     n2 = Integer(2)
     n6 = Integer(6)
-    x = Symbol('x')
 
     e = n3*(-n2 + x**n2)*cos(x) + x*(-n6 + x**n2)*sin(x)
     assert e == 3*(-2 + x**2)*cos(x) + x*(-6 + x**2)*sin(x)
@@ -61,7 +57,6 @@ def test_diff2():
 
 
 def test_diff3():
-    a, b, c = map(Symbol, 'abc')
     p = Integer(5)
     e = a*b + sin(b**p)
     assert e == a*b + sin(b**5)
@@ -85,7 +80,6 @@ def test_diff_no_eval_derivative():
         def __new__(cls, x):
             return Expr.__new__(cls, x)
 
-    x, y = symbols('x y')
     # My doesn't have its own _eval_derivative method
     assert isinstance(My(x).diff(x), Derivative)
     # it doesn't have y so it shouldn't need a method for this case
@@ -94,13 +88,11 @@ def test_diff_no_eval_derivative():
 
 def test_speed():
     # this should return in 0.0s. If it takes forever, it's wrong.
-    x = Symbol('x')
     assert x.diff((x, 10**8)) == 0
 
 
 def test_deriv_noncommutative():
     A = Symbol('A', commutative=False)
     f = Function('f')
-    x = Symbol('x')
     assert A*f(x)*A == f(x)*A**2
     assert A*f(x).diff(x)*A == f(x).diff(x) * A**2

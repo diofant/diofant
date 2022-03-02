@@ -128,7 +128,7 @@ class Piecewise(Function):
             if len(non_false_ecpairs) != 0:
                 if non_false_ecpairs[-1].cond == cond:
                     continue
-                elif non_false_ecpairs[-1].expr == expr:
+                if non_false_ecpairs[-1].expr == expr:
                     newcond = Or(cond, non_false_ecpairs[-1].cond)
                     if isinstance(newcond, (And, Or)):
                         newcond = distribute_and_over_or(newcond)
@@ -302,9 +302,9 @@ class Piecewise(Function):
             if sym not in cond.free_symbols:
                 independent_expr_cond.append((expr, cond))
                 continue
-            elif isinstance(cond, Equality):
+            if isinstance(cond, Equality):
                 continue
-            elif isinstance(cond, And):
+            if isinstance(cond, And):
                 lower = -oo
                 upper = oo
                 for cond2 in cond.args:

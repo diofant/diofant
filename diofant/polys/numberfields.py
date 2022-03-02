@@ -165,8 +165,7 @@ def _minimal_polynomial_sq(p, n, x):
         if p1 is p:
             p = p1.subs({x: x**n})
             break
-        else:
-            p = p1
+        p = p1
 
     # by construction `p` has root `pn`
     # the minimal polynomial is the factor vanishing in x = pn
@@ -575,9 +574,9 @@ def minimal_polynomial(ex, method=None, **args):
     _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
     try:
         _minpoly = _minpoly_methods[method]
-    except KeyError:
-        raise ValueError(f"'{method}' is not a valid algorithm for computing minimal "
-                         ' polynomial')
+    except KeyError as exc:
+        raise ValueError(f"'{method}' is not a valid algorithm "
+                         'for computing minimal polynomial') from exc
 
     ex = sympify(ex)
     if ex.is_number:
@@ -711,8 +710,7 @@ def primitive_element(extension, **args):
             H[i] = (y - h).eject(*Y).retract(field=True)
             if not (H[i].domain.is_RationalField or H[i].domain.is_AlgebraicField):
                 break  # G is not a triangular set
-            else:
-                H[i] = H[i].set_domain(domain)
+            H[i] = H[i].set_domain(domain)
         else:
             g = g.eject(*Y).set_domain(domain)
             break

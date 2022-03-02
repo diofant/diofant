@@ -1,6 +1,6 @@
 from diofant import (Add, Dummy, I, Mul, Rational, Symbol, cos, cosh, cot,
-                     coth, fu, pi, powsimp, root, sin, sinh, sqrt, symbols,
-                     tan, tanh)
+                     coth, exp, fu, pi, powsimp, root, sin, sinh, sqrt,
+                     symbols, tan, tanh)
 from diofant.abc import a, b, c, x, y, z
 from diofant.simplify.fu import _TR56 as T
 from diofant.simplify.fu import (TR1, TR2, TR3, TR5, TR6, TR7, TR8, TR9, TR10,
@@ -436,3 +436,12 @@ def test_as_f_sign_1():
     assert as_f_sign_1(2*x + 2) == (2, x, 1)
     assert as_f_sign_1(x*y - y) == (y, x, -1)
     assert as_f_sign_1(-x*y + y) == (-y, x, -1)
+
+
+def test_sympyissue_22878():
+    assert (fu(8*sqrt(2)*(-exp(2*I*x)*sin(2*x) +
+                          (-1 + 2*I)*exp(2*I*x)*cos(2*x) +
+                          1 + I)*exp(-x*(1 + 2*I))) ==
+            8*sqrt(2)*exp(-x*(1 + 2*I))*(-exp(2*I*x)*sin(2*x) +
+                                         exp(2*I*x)*(-1 + 2*I)*cos(2*x) +
+                                         1 + I))

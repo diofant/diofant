@@ -1,8 +1,9 @@
 import pytest
 
 from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
-                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
-                     oo, pi, simplify, sin, sqrt, zoo)
+                     Rational, Symbol, Wild, acos, asin, cbrt, exp, false, log,
+                     nan, oo, pi, simplify, sin, sqrt, zoo)
+from diofant.abc import x, y
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -592,8 +593,6 @@ def test_other_symbol():
 
 def test_sympyissue_3825():
     """catch: hash instability"""
-    x = Symbol('x')
-    y = Symbol('y')
     a1 = x + y
     a2 = y + x
     assert a2.is_comparable is False
@@ -621,7 +620,6 @@ def test_hash_vs_typeinfo():
 def test_hash_vs_typeinfo_2():
     """Different typeinfo should mean !eq"""
     # the following two are semantically different
-    x = Symbol('x')
     x1 = Symbol('x', even=True)
 
     assert x != x1
@@ -654,7 +652,6 @@ def test_Add_is_pos_neg():
     np = Symbol('n', nonpositive=True, infinite=True)
     p = Symbol('p', positive=True, infinite=True)
     r = Dummy(extended_real=True, finite=False)
-    x = Symbol('x')
     xf = Symbol('xb', finite=True, real=True)
     assert (n + p).is_positive is None
     assert (n + x).is_positive is None
@@ -685,7 +682,6 @@ def test_Add_is_algebraic():
     b = Symbol('a', algebraic=True)
     na = Symbol('na', algebraic=False)
     nb = Symbol('nb', algebraic=False)
-    x = Symbol('x')
     assert (a + b).is_algebraic
     assert (na + nb).is_algebraic is None
     assert (a + na).is_algebraic is False
@@ -699,7 +695,6 @@ def test_Mul_is_algebraic():
     na = Symbol('na', algebraic=False)
     an = Symbol('an', algebraic=True, nonzero=True)
     nb = Symbol('nb', algebraic=False)
-    x = Symbol('x')
     assert (a*b).is_algebraic
     assert (na*nb).is_algebraic is None
     assert (a*na).is_algebraic is None
@@ -720,7 +715,6 @@ def test_Pow_is_algebraic():
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
     r = Symbol('r', rational=True, nonzero=True)
-    x = Symbol('x')
     assert (an**r).is_algebraic
     assert (a**r**2).is_algebraic
     assert (a**x).is_algebraic is None
@@ -754,7 +748,6 @@ def test_Pow_is_algebraic():
 
 
 def test_Mul_is_infinite():
-    x = Symbol('x')
     f = Symbol('f', finite=True)
     i = Symbol('i', infinite=True)
     z = Dummy(zero=True)
@@ -787,7 +780,6 @@ def test_special_is_rational():
     r = Symbol('r', rational=True)
     rn = Symbol('r', rational=True, nonzero=True)
     nr = Symbol('nr', irrational=True)
-    x = Symbol('x')
     assert sqrt(3).is_rational is False
     assert (3 + sqrt(3)).is_rational is False
     assert (3*sqrt(3)).is_rational is False
@@ -907,7 +899,6 @@ def test_sympyissue_10024():
 
 
 def test_sympyissue_16530():
-    x = Symbol('x')
     e = 1/abs(x)
     assert e.is_real is None
     assert e.is_extended_real is None
@@ -923,3 +914,9 @@ def test_sympyissue_17556():
     z = I*oo
     assert z.is_imaginary is False
     assert z.is_finite is False
+
+
+def test_sympyissue_23086():
+    e = 180*acos(Rational(7823207, 7823209))/pi
+    assert e.is_zero is False
+    assert e.simplify()

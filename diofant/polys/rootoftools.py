@@ -66,7 +66,8 @@ class RootOf(Expr):
 
     is_commutative = True
 
-    def __new__(cls, f, x, index=None, radicals=True, expand=True, evaluate=None):
+    def __new__(cls, f, x, index=None, radicals=True, expand=True,
+                evaluate=None, domain=None, modulus=None):
         """Construct a new ``RootOf`` object for ``k``-th root of ``f``."""
         x = sympify(x)
 
@@ -80,7 +81,8 @@ class RootOf(Expr):
         else:
             raise ValueError(f'expected an integer root index, got {index}')
 
-        poly = PurePoly(f, x, greedy=False, expand=expand)
+        poly = PurePoly(f, x, greedy=None if domain or modulus else False,
+                        expand=expand, domain=domain, modulus=modulus)
 
         if not poly.is_univariate:
             raise PolynomialError('only univariate polynomials are allowed')
@@ -93,7 +95,7 @@ class RootOf(Expr):
 
         if index < -degree or index >= degree:
             raise IndexError(f'root index out of [{-degree}, {degree - 1}] range, got {index}')
-        elif index < 0:
+        if index < 0:
             index += degree
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
@@ -661,8 +663,8 @@ class RootOf(Expr):
             if im:
                 return false
             else:
-                return sympify(i.a < other and other < i.b)
-        return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
+                return sympify(i.a < other < i.b)
+        return sympify((i.ax < re < i.bx) and (i.ay < im < i.by))
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()

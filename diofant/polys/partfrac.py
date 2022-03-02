@@ -78,9 +78,9 @@ def apart(f, x=None, full=False, **options):
     options = set_defaults(options, extension=True)
     try:
         (P, Q), _ = parallel_poly_from_expr((P, Q), x, **options)
-    except PolynomialError as msg:
+    except PolynomialError as exc:
         if f.is_commutative:
-            raise PolynomialError(msg)
+            raise PolynomialError(exc) from exc
         # non-commutative
         if f.is_Mul:
             c, nc = f.args_cnc(split_1=False)

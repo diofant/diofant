@@ -31,7 +31,8 @@ from collections import defaultdict
 
 from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
                     Pow, Rational, Tuple, Wild, cacheit, expand, expand_mul,
-                    expand_power_base, factor_terms, nan, oo, pi, symbols, zoo)
+                    expand_multinomial, expand_power_base, factor_terms, nan,
+                    oo, pi, symbols, zoo)
 from ..core.sympify import sympify
 from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
@@ -559,7 +560,7 @@ def _dummy_(name, token, **kwargs):
 
     """
     global _dummies
-    if not (name, token) in _dummies:
+    if (name, token) not in _dummies:
         _dummies[(name, token)] = Dummy(name, **kwargs)
     return _dummies[(name, token)]
 
@@ -1618,7 +1619,7 @@ def _meijerint_indefinite_1(f, x):
 
         """
         from ..polys import cancel
-        res = expand_mul(cancel(res), deep=False)
+        res = expand_mul(cancel(expand_multinomial(res)), deep=False)
         return Add._from_args(res.as_coeff_add(x)[1])
 
     res = piecewise_fold(res)

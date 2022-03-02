@@ -273,7 +273,7 @@ class Pow(Expr):
                 # floor(Rational(1, 2) - e*arg(b)/2/pi) == 0
 
                 # handle -1 as special case
-                if (e == -1):
+                if e == -1:
                     # floor arg. is 1/2 + arg(b)/2/pi
                     if _half(other):
                         if b.is_negative is True:
@@ -1176,7 +1176,7 @@ class Pow(Expr):
                 n += 1
                 b_series = self.base.nseries(x, n=n, logx=logx)
             b0 = b_series.as_leading_term(x)
-            t = expand_mul((b_series/b0 - 1).cancel())
+            t = expand_mul(expand_multinomial(b_series/b0 - 1).cancel())
             if t.is_Add:
                 t = t.func(*[i for i in t.args if i.limit(x, 0).is_finite])
             c, e = b0.as_coeff_exponent(x)

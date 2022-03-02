@@ -296,6 +296,8 @@ class lowergamma(Function):
                 b = a - 1
                 if b.is_positive:
                     return b*cls(b, x) - x**b * exp(-x)
+                elif a == 0:
+                    return zoo
 
                 if not a.is_Integer:
                     return (cls(a + 1, x) + x**a * exp(-x))/a
@@ -314,6 +316,9 @@ class lowergamma(Function):
 
     def _eval_rewrite_as_uppergamma(self, s, x):
         return gamma(s) - uppergamma(s, x)
+
+    def _eval_rewrite_as_tractable(self, s, x):
+        return self.rewrite(uppergamma)
 
     def _eval_rewrite_as_expint(self, s, x):
         from .error_functions import expint
@@ -655,7 +660,7 @@ class polygamma(Function):
             elif z in (oo, -oo):
                 return oo
             else:
-                t = z.extract_multiplicatively(I)
+                t = z.as_coefficient(I)
                 if t in (oo, -oo):
                     return oo
 

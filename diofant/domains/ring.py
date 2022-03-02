@@ -20,8 +20,7 @@ class CommutativeRing(Domain):
         """Exact quotient of ``a`` and ``b``, implies ``__floordiv__``."""
         if a % b:
             raise ExactQuotientFailed(a, b, self)
-        else:
-            return a // b
+        return a // b
 
     def quo(self, a, b):
         """Quotient of ``a`` and ``b``, implies ``__floordiv__``."""

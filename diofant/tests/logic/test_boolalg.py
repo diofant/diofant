@@ -31,7 +31,6 @@ def test_overloading():
 
 
 def test_And():
-
     assert And() is true
     assert And(A) == A
     assert And(True) is true
@@ -55,7 +54,6 @@ def test_And():
 
 
 def test_Or():
-
     assert Or() is false
     assert Or(A) == A
     assert Or(True) is true
@@ -77,7 +75,6 @@ def test_Or():
 
 
 def test_Xor():
-
     assert Xor() is false
     assert Xor(A) == A
     assert Xor(A, A) is false
@@ -106,7 +103,6 @@ def test_Xor():
 
 
 def test_Not():
-
     pytest.raises(TypeError, lambda: Not(True, False))
     assert Not(True) is false
     assert Not(False) is true
@@ -117,7 +113,6 @@ def test_Not():
 
 
 def test_Nand():
-
     assert Nand() is false
     assert Nand(A) == ~A
     assert Nand(True) is false
@@ -133,7 +128,6 @@ def test_Nand():
 
 
 def test_Nor():
-
     assert Nor() is true
     assert Nor(A) == ~A
     assert Nor(True) is false
@@ -149,7 +143,6 @@ def test_Nor():
 
 
 def test_Implies():
-
     pytest.raises(ValueError, lambda: Implies(A, B, C))
     assert Implies(True, True) is true
     assert Implies(True, False) is false
@@ -166,7 +159,6 @@ def test_Implies():
 
 
 def test_Equivalent():
-
     assert Equivalent(A, B) == Equivalent(B, A) == Equivalent(A, B, A)
     assert Equivalent() is true
     assert Equivalent(A, A) == Equivalent(A) is true
@@ -289,7 +281,6 @@ def test_bool_symbol():
 
 
 def test_is_boolean():
-
     assert true.is_Boolean
     assert (A & B).is_Boolean
     assert (A | B).is_Boolean
@@ -298,7 +289,6 @@ def test_is_boolean():
 
 
 def test_subs():
-
     assert (A & B).subs({A: True}) == B
     assert (A & B).subs({A: False}) is false
     assert (A & B).subs({B: True}) == A
@@ -329,7 +319,6 @@ def test_and_associativity():
 
 
 def test_or_assicativity():
-
     assert ((A | B) | C) == (A | (B | C))
 
 
@@ -365,7 +354,6 @@ def test_disjuncts():
 
 
 def test_distribute():
-
     assert distribute_and_over_or(Or(And(A, B), C)) == And(Or(A, C), Or(B, C))
     assert distribute_or_over_and(And(A, Or(B, C))) == Or(And(A, B), And(A, C))
 
@@ -401,7 +389,6 @@ def test_to_nnf():
 
 
 def test_to_cnf():
-
     assert to_cnf(~(B | C)) == And(Not(B), Not(C))
     assert to_cnf((A & B) | C) == And(Or(A, C), Or(B, C))
     assert to_cnf(A >> B) == (~A) | B
@@ -529,8 +516,9 @@ def test_operators():
 
 
 def test_true_false():
-    assert true is true
-    assert false is false
+    # pylint: disable=singleton-comparison
+    assert true is true  # pylint: disable=comparison-with-itself
+    assert false is false  # pylint: disable=comparison-with-itself
     assert true is not True
     assert false is not False
     assert true

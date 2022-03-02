@@ -537,6 +537,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from .exprtools import factor_terms
         from ..series import Order
 
         other = sympify(other)
@@ -584,12 +585,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
-        from .function import count_ops
+        from .function import Function, count_ops
 
         if self.is_number:
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -615,7 +616,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -632,7 +633,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -889,7 +890,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from .symbol import Dummy, Symbol
-        o = self.getO()
+        o = self.getO()  # pylint: disable=assignment-from-none
         if o is None:
             return
         elif o.is_Order:
@@ -1336,8 +1337,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-        r = self.extract_multiplicatively(expr)
-        if r and not r.has(expr):
+        if (r := self.extract_multiplicatively(expr)) and not r.has(expr):
             return r
 
     def as_independent(self, *deps, **hint):
@@ -1906,8 +1906,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             co = self
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
-            if (co > 0 and diff > 0 and diff < co or
-                    co < 0 and diff < 0 and diff > co):
+            if co > 0 and 0 < diff < co or co < 0 and 0 > diff > co:
                 return diff
             return
 
@@ -2363,6 +2362,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1/x
 
         """
+        from .function import expand_mul
         from .symbol import Dummy, Symbol
         from ..series import Order
         from ..simplify import collect
@@ -2687,7 +2687,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 s1 = coeff.aseries(x, n, bound=bound-1)
                 if gotO and s1.getO():
                     break
-                elif s1.getO():
+                if s1.getO():
                     gotO = True
                 s += (s1 * d**expo)
             else:
@@ -2718,10 +2718,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             is_zero = t.equals(0)
             if is_zero:
                 continue
-            elif is_zero is False:
+            if is_zero is False:
                 break
-            else:
-                raise NotImplementedError(f'Zero-decision problem for {t}')
+            raise NotImplementedError(f'Zero-decision problem for {t}')
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2774,6 +2773,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             b, e = p[0].as_base_exp()
             if b == x:
                 return c, e
+            elif b == -x:
+                return c*(-1)**e, e
         if s.has(x):
             s = s.simplify()
         return s, Integer(0)
@@ -3193,7 +3194,5 @@ def _mag(x):
 from .add import Add
 from .mul import Mul
 from .power import Pow
-from .function import Function, expand_mul
 from .mod import Mod
-from .exprtools import factor_terms
 from .numbers import I, Integer, Rational, nan, oo, zoo

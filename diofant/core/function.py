@@ -585,7 +585,7 @@ class Function(Application, Expr):
         """Returns the first derivative of the function."""
         from .symbol import Dummy
 
-        if not (1 <= argindex <= len(self.args)):
+        if not 1 <= argindex <= len(self.args):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:
@@ -632,8 +632,7 @@ class Function(Application, Expr):
             #
             raise NotImplementedError(
                 f'{self.func} has no _eval_as_leading_term routine')
-        else:
-            return self.func(*args)
+        return self.func(*args)
 
 
 class AppliedUndef(Function):
@@ -919,10 +918,7 @@ class Derivative(Expr):
             False
 
         """
-        if self.expr.is_Function:
-            return True
-        else:
-            return False
+        return bool(self.expr.is_Function)
 
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy
@@ -1228,7 +1224,7 @@ class Derivative(Expr):
 
         return Derivative(*(x._subs(old, new) for x in self.args))
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x, logx=None):
         for term in self.expr.series(x, n=None, logx=logx):
             yield self.func(term, *self.variables)
 
@@ -2191,7 +2187,7 @@ def count_ops(expr, visual=False):
                     ops.append(DIV)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
-                elif d != 1:
+                if d != 1:
                     if not d.is_Integer:
                         args.append(d)
                     ops.append(DIV)

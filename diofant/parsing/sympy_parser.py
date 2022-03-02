@@ -380,8 +380,7 @@ def split_symbols_custom(predicate):
                     split = False
                     split_previous = True
                     continue
-                else:
-                    split = False
+                split = False
             result.append(tok)
         return result
     return _split_symbols
@@ -493,7 +492,7 @@ def auto_symbol(tokens, local_dict, global_dict):
                     and nextTokNum == OP and nextTokVal == '=')):
                 result.append((NAME, name))
                 continue
-            elif name in local_dict:
+            if name in local_dict:
                 if isinstance(local_dict[name], Symbol) and nextTokVal == '(':
                     result.extend([(NAME, 'Function'),
                                    (OP, '('),
@@ -502,7 +501,7 @@ def auto_symbol(tokens, local_dict, global_dict):
                 else:
                     result.append((NAME, name))
                 continue
-            elif name in global_dict:
+            if name in global_dict:
                 obj = global_dict[name]
                 assert isinstance(obj, (Basic, type)) or callable(obj)
                 result.append((NAME, name))

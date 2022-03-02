@@ -1,6 +1,7 @@
 """Integral Transforms."""
 
 import functools
+import inspect
 import math
 from itertools import repeat
 
@@ -144,8 +145,7 @@ class IntegralTransform(Function):
             if not extra:
                 return res
             try:
-                extra = self._collapse_extra(extra)
-                return (res,) + tuple(extra)
+                return (res,) + tuple(self._collapse_extra(extra))
             except IntegralTransformError:
                 pass
 
@@ -176,35 +176,21 @@ def _simplify(expr, doit):
     return expr
 
 
-def _noconds_(default):
+def _noconds(func):
     """
     This is a decorator generator for dropping convergence conditions.
 
     Suppose you define a function ``transform(*args)`` which returns a tuple of
     the form ``(result, cond1, cond2, ...)``.
-
-    Decorating it ``@_noconds_(default)`` will add a new keyword argument
-    ``noconds`` to it. If ``noconds=True``, the return value will be altered to
-    be only ``result``, whereas if ``noconds=False`` the return value will not
-    be altered.
-
-    The default value of the ``noconds`` keyword will be ``default`` (i.e. the
-    argument of this function).
-
     """
-    def make_wrapper(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            noconds = kwargs.pop('noconds', default)
-            res = func(*args, **kwargs)
-            if noconds:
-                return res[0]
-            return res
-        return wrapper
-    return make_wrapper
-
-
-_noconds = _noconds_(False)
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        default = inspect.signature(func).parameters['noconds'].default
+        if kwargs.get('noconds', default):
+            return res[0]
+        return res
+    return wrapper
 
 
 ##########################################################################
@@ -216,7 +202,8 @@ def _default_integrator(f, x):
 
 
 @_noconds
-def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
+def _mellin_transform(f, x, s_, integrator=_default_integrator,
+                      simplify=True, noconds=False):
     """Backend function to compute Mellin transforms."""
     from ..core import count_ops
     from ..functions import Max, Min, re
@@ -584,7 +571,7 @@ def _rewrite_gamma(f, s, a, b):
                     cond = not cond
                 args += [(base, cond)]*abs(exp)
                 continue
-            elif not base.has(s):
+            if not base.has(s):
                 a, b = linear_arg(exp)
                 if not is_numer:
                     base = 1/base
@@ -697,8 +684,8 @@ def _rewrite_gamma(f, s, a, b):
     return (an, ap), (bm, bq), arg, exponent, fac
 
 
-@_noconds_(True)
-def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
+@_noconds
+def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False, noconds=True):
     """A helper for the real inverse_mellin_transform function, this one here
     assumes x to be real and positive.
 
@@ -713,9 +700,8 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     for g in [factor(F), expand_mul(F), expand(F)]:
         if g.is_Add:
             # do all terms separately
-            ress = [_inverse_mellin_transform(G, s, x, strip, as_meijerg,  # pylint: disable=unexpected-keyword-arg
-                                              noconds=False)
-                    for G in g.args]
+            ress = [_inverse_mellin_transform(G, s, x, strip, as_meijerg,
+                                              noconds=False) for G in g.args]
             conds = [p[1] for p in ress]
             ress = [p[0] for p in ress]
             res = Add(*ress)
@@ -731,12 +717,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         if as_meijerg:
             h = G
         else:
-            try:
-                h = hyperexpand(G)
-            except NotImplementedError:
-                raise IntegralTransformError('Inverse Mellin', F,
-                                             'Could not calculate integral')
-
+            h = hyperexpand(G)
             if h.is_Piecewise and len(h.args) == 3:
                 # XXX we break modularity here!
                 h = Heaviside(x - abs(C))*h.args[0].args[0] \
@@ -949,7 +930,7 @@ def _simplifyconds(expr, s, a):
 
 
 @_noconds
-def _laplace_transform(f, t, s_, simplify=True):
+def _laplace_transform(f, t, s_, simplify=True, noconds=False):
     """The backend function for Laplace transforms."""
     from ..core import Wild, symbols
     from ..functions import Max, Min, cos, exp
@@ -1013,8 +994,7 @@ def _laplace_transform(f, t, s_, simplify=True):
                 if soln.lts == t:
                     raise IntegralTransformError('Laplace', f,
                                                  'convergence not in half-plane?')
-                else:
-                    a_ = Min(soln.lts, a_)
+                a_ = Min(soln.lts, a_)
             if a_ != oo:
                 a = Max(a_, a)
             else:
@@ -1119,8 +1099,8 @@ def laplace_transform(f, t, s, **hints):
     return LaplaceTransform(f, t, s).doit(**hints)
 
 
-@_noconds_(True)
-def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
+@_noconds
+def _inverse_laplace_transform(F, s, t_, plane, simplify=True, noconds=True):
     """The backend function for inverse Laplace transforms."""
     from ..core import expand_complex
     from ..functions import Heaviside, Piecewise, exp, log
@@ -1276,8 +1256,8 @@ def inverse_laplace_transform(F, s, t, plane=None, **hints):
 # Fourier Transform
 ##########################################################################
 
-@_noconds_(True)
-def _fourier_transform(f, x, k, a, b, name, simplify=True):
+@_noconds
+def _fourier_transform(f, x, k, a, b, name, simplify=True, noconds=True):
     """
     Compute a general Fourier-type transform
         F(k) = a int_-oo^oo exp(b*I*x*k) f(x) dx.
@@ -1436,8 +1416,8 @@ def inverse_fourier_transform(F, k, x, **hints):
 ##########################################################################
 
 
-@_noconds_(True)
-def _sine_cosine_transform(f, x, k, a, b, K, name, simplify=True):
+@_noconds
+def _sine_cosine_transform(f, x, k, a, b, K, name, simplify=True, noconds=True):
     """
     Compute a general sine or cosine-type transform
         F(k) = a int_0^oo b*sin(x*k) f(x) dx.
@@ -1711,8 +1691,8 @@ def inverse_cosine_transform(F, k, x, **hints):
 # Hankel Transform
 ##########################################################################
 
-@_noconds_(True)
-def _hankel_transform(f, r, k, nu, name, simplify=True):
+@_noconds
+def _hankel_transform(f, r, k, nu, name, simplify=True, noconds=True):
     r"""
     Compute a general Hankel transform
 

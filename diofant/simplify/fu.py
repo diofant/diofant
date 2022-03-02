@@ -1089,7 +1089,7 @@ def TR12i(rv):
                             n_args.extend(ni.args)
                             n_args[i] = Integer(1)
                         continue
-                    elif ni.is_Pow and (
+                    if ni.is_Pow and (
                             ni.exp.is_integer or ni.base.is_positive):
                         m = ok2(ni.base)
                         if m:
