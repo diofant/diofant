@@ -259,8 +259,8 @@ def test_sympyissue_4090():
 
 
 def test_sympyissue_4547():
-    assert limit(cot(x), x, 0, dir='+') == oo
-    assert limit(cot(x), x, pi/2, dir='+') == 0
+    assert limit(cot(x), x, 0) == oo
+    assert limit(cot(x), x, pi/2) == 0
 
 
 def test_sympyissue_5164():
@@ -412,8 +412,8 @@ def test_sympyissue_5172():
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs({c: c + 1})
     assert limit(expr.subs({c: m}), n, oo) == 1
-    assert limit(expr.subs({c: p}), n, oo).simplify() == \
-        (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
+    assert limit(expr.subs({c: p}), n, oo) == (2**(p + 1) + r -
+                                               1)/(r + 1)**(p + 1)
 
 
 def test_sympyissue_7088():

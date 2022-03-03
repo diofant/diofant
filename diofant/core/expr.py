@@ -2139,11 +2139,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             syms = self.free_symbols
 
-        if syms.intersection(self.free_symbols) == set():
-            # constant polynomial
-            return True
-        else:
-            return self._eval_is_polynomial(syms)
+        return self._eval_is_polynomial(syms)
 
     def _eval_is_rational_function(self, syms):
         if self.free_symbols.intersection(syms) == set():

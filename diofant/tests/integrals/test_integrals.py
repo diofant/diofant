@@ -954,7 +954,7 @@ def test_sympyissue_5907():
             x/(2*a**4 + 2*a**2*x**2) + atan(x/a)/(2*a**3))
 
 
-def test_sympyissue_4892a():
+def test_sympyissue_4892():
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -973,8 +973,6 @@ def test_sympyissue_4892a():
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]
 
-
-def test_sympyissue_4892b():
     # Issues relating to issue sympy/sympy#4596 are making the actual result of this hard
     # to test.  The answer should be something like
     #

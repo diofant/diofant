@@ -208,7 +208,7 @@ def test_pow_E():
     assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).evalf(strict=False)), E)
 
 
-def test_pow_sympyissue_3516():
+def test_sympyissue_3516():
     assert root(4, 4) == sqrt(2)
 
 
@@ -1328,7 +1328,7 @@ def test_Add_is_irrational():
 
 
 @pytest.mark.xfail
-def test_sympyissue_3531():
+def test_sympyissue_3531_fail():
     class MightyNumeric(tuple):
         def __rtruediv__(self, other):
             return 'something'
@@ -1336,7 +1336,7 @@ def test_sympyissue_3531():
     assert sympify(1)/MightyNumeric((1, 2)) == 'something'
 
 
-def test_sympyissue_3531b():
+def test_sympyissue_3531():
     class Foo:
         def __init__(self):
             self.field = 1.0
@@ -1876,7 +1876,7 @@ def test_mul_zero_detection():
         test2(z, b, e)
 
 
-def test_sympyissue_8247_8354():
+def test_sympyissue_8274():
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_positive is False  # it's 0
     z = (-cbrt(2)*(3*sqrt(93) + 29)**2 -
@@ -1888,6 +1888,9 @@ def test_sympyissue_8247_8354():
     z = 2*(-3*tan(19*pi/90) + sqrt(3))*cos(11*pi/90)*cos(19*pi/90) - \
         sqrt(3)*(-3 + 4*cos(19*pi/90)**2)
     assert z.is_positive is not True  # it's zero and it shouldn't hang
+
+
+def test_sympyissue_8354():
     z = (9*(3*sqrt(93) + 29)**Rational(2, 3)*(cbrt(3*sqrt(93) +
                                                    29)*(-2**Rational(2, 3)*cbrt(3*sqrt(93) +
                                                                                 29) - 2) - 2*cbrt(2))**3 +

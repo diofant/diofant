@@ -345,15 +345,15 @@ def test_minpoly_compose():
     pytest.raises(NotAlgebraic, lambda: minimal_polynomial(tan(pi*sqrt(2))))
 
 
-def test_minpoly_sympyissue_7113():
-    # see discussion in https://github.com/sympy/sympy/pull/2234
+def test_sympyissue_7113():
+    # see discussion in sympy/sympy#2234
     r = nsimplify(pi, tolerance=0.000000001)
     mp = minimal_polynomial(r)(x)
     assert mp == 1768292677839237920489538677417507171630859375*x**109 - \
         2734577732179183863586489182929671773182898498218854181690460140337930774573792597743853652058046464
 
 
-def test_minpoly_sympyissue_7574():
+def test_sympyissue_7574():
     ex = -cbrt(-1) + (-1)**Rational(2, 3)
     assert minimal_polynomial(ex)(x) == x + 1
 

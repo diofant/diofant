@@ -379,15 +379,12 @@ def test_evalf_relational():
 
 def test_sympyissue_5486():
     assert not cos(sqrt(0.5 + I)).evalf(strict=False).is_Function
+    assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
 
 
 def test_from_mpmath():
     # issue sympy/sympy#5486
     pytest.raises(TypeError, lambda: Expr._from_mpmath(I, 15))
-
-
-def test_sympyissue_5486_bug():
-    assert abs(Expr._from_mpmath(I._to_mpmath(15), 15) - I) < 1.0e-15
 
 
 def test_bugs():
@@ -405,8 +402,7 @@ def test_subs():
     pytest.raises(TypeError, lambda: x.evalf(subs=(x, 1)))
 
 
-def test_sympyissue_4956_5204():
-    # issue sympy/sympy#4956
+def test_sympyissue_4956():
     v = ((-27*cbrt(12)*sqrt(31)*I +
           27*2**Rational(2, 3)*cbrt(3)*sqrt(31)*I) /
          (-2511*2**Rational(2, 3)*cbrt(3) +
@@ -415,7 +411,8 @@ def test_sympyissue_4956_5204():
            87*cbrt(2)*root(3, 6)*I)**2))
     assert NS(v, 1, strict=False) == '0.e-198 - 0.e-198*I'
 
-    # issue sympy/sympy#5204
+
+def test_sympyissue_5204():
     x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 = symbols('x:10')
     v = ((-18873261792*x0 + 3110400000*I*x1*x5 + 1239810624*x1*x8 -
           97043832*x1*x9 + 304403832*x2*x6*(4*x0 + 1422)**Rational(2, 3) -
@@ -477,7 +474,7 @@ def test_to_mpmath():
     assert Float(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
 
 
-def test_sympyissue_6632_evalf():
+def test_sympyissue_6632():
     add = (-100000*sqrt(2500000001) + 5000000001)
     assert add.evalf() == 9.999999998e-11
     assert (add*add).evalf() == 9.999999996e-21
@@ -494,12 +491,15 @@ def test_evalf_integral():
     assert (Integral(sin(I*x), (x, -pi, pi + eps)).evalf(2)/I)._prec == 10
 
 
-def test_sympyissue_8821_highprec_from_str():
+def test_sympyissue_8821():
     s = str(pi.evalf(128))
     p = N(s)
     assert abs(sin(p)) < 1e-15
     p = N(s, 64)
     assert abs(sin(p)) < 1e-64
+    s = str(pi.evalf(128))
+    p = sympify(s)
+    assert abs(sin(p)) < 1e-127
 
 
 def test_sympyissue_8853():

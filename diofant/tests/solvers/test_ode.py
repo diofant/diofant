@@ -2129,7 +2129,7 @@ def test_sympyissue_4785():
              '1st_homogeneous_coeff_subs_dep_div_indep_Integral'))
 
 
-def test_constant_renumber_order_sympyissue_5308():
+def test_sympyissue_5308():
     assert (constant_renumber(C1*x + C2*y, 'C', 1, 2) ==
             constant_renumber(C1*y + C2*x, 'C', 1, 2) ==
             C1*x + C2*y)
@@ -2138,9 +2138,12 @@ def test_constant_renumber_order_sympyissue_5308():
                                  'C', 1, 3) == C1*(C2 + x)*(C3 + y)
 
 
-def test_sympyissue_5112_5430():
-    assert homogeneous_order(-log(x) + acosh(x), x) is None
-    assert homogeneous_order(-log(x) + y, x, y) is None
+def test_sympyissue_5112():
+    assert homogeneous_order(y - log(x), x, y) is None
+
+
+def test_sympyissue_5430():
+    assert homogeneous_order(acosh(x) - log(x), x) is None
 
 
 def test_nth_order_linear_euler_eq_homogeneous():

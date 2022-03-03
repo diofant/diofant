@@ -52,8 +52,7 @@ def test_sqrt():
 
 
 def test_sympyissue_3449():
-    # test if powers are simplified correctly
-    # see also issue sympy/sympy#3995
+    # test if powers are simplified correctly, see also sympy/sympy#3995
     assert cbrt(x)**2 == x**Rational(2, 3)
     assert (x**3)**Rational(2, 5) == Pow(x**3, Rational(2, 5), evaluate=False)
 
@@ -79,6 +78,8 @@ def test_sympyissue_3449():
     assert (a**3)**Rational(2, 5) == a**Rational(6, 5)
     assert (a**2)**b == (a**b)**2
     assert (a**Rational(2, 3))**x == (a**(2*x/3)) != (a**x)**Rational(2, 3)
+
+    assert sqrt(x - 1).subs({x: 5}) == 2
 
 
 def test_sympyissue_3866():
