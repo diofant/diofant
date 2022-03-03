@@ -1055,8 +1055,6 @@ class MatrixBase(DefaultPrinting):
         """Apply evalf() to each element of self."""
         return self.applyfunc(lambda i: i.evalf(dps, **options))
 
-    n = evalf
-
     def atoms(self, *types):
         """Returns the atoms that form the current object.
 

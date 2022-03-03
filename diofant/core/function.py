@@ -1455,9 +1455,6 @@ class Subs(Expr):
         """
         return self.doit().evalf(dps, **options)
 
-    #:
-    n = evalf
-
     @property
     def variables(self):
         """The variables to be evaluated."""

@@ -416,7 +416,6 @@ class MinMaxBase(LatticeOp):
 
     def evalf(self, dps=15, **options):
         return self.func(*[a.evalf(dps, **options) for a in self.args])
-    n = evalf
 
     @property
     def is_extended_real(self):
