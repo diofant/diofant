@@ -61,9 +61,9 @@ class Boolean(Expr):
 
         >>> (a >> b).equals(~b >> ~a)
         True
-        >>> Not(And(a, b, c)).equals(And(Not(a), Not(b), Not(c)))
+        >>> (~(a & b & c)).equals(~a & ~b & ~c)
         False
-        >>> Not(And(a, Not(a))).equals(Or(b, Not(b)))
+        >>> (~(a & ~a)).equals(b | ~b)
         False
 
         """
@@ -309,7 +309,7 @@ class And(LatticeOp, BooleanFunction):
     and. Hence, ``And(a, b)`` and ``a & b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> And(x, y).subs({x: 1})
+    >>> (x & y).subs({x: 1})
     y
 
     """
@@ -345,7 +345,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> And(x < 2, x > -2).as_set()
+        >>> ((x < 2) & (x > -2)).as_set()
         (-2, 2)
 
         """
@@ -379,7 +379,7 @@ class Or(LatticeOp, BooleanFunction):
     or. Hence, ``Or(a, b)`` and ``a | b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> Or(x, y).subs({x: 0})
+    >>> (x | y).subs({x: 0})
     y
 
     """
@@ -413,7 +413,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> Or(x > 2, x < -2).as_set()
+        >>> ((x > 2) | (x < -2)).as_set()
         [-oo, -2) U (2, oo]
 
         """
@@ -440,15 +440,15 @@ class Not(BooleanFunction):
     false
     >>> Not(False)
     true
-    >>> Not(And(True, False))
+    >>> ~And(True, False)
     true
-    >>> Not(Or(True, False))
+    >>> ~Or(True, False)
     false
-    >>> Not(And(And(True, x), Or(x, False)))
+    >>> ~(And(True, x) & Or(x, False))
     ~x
     >>> ~x
     ~x
-    >>> Not(And(Or(x, y), Or(~x, ~y)))
+    >>> ~((x | y) & (~x | ~y))
     ~((x | y) & (~x | ~y))
 
     Notes
@@ -579,7 +579,7 @@ class Xor(BooleanFunction):
     particular, ``a ^ b`` and ``Xor(a, b)`` will be different if ``a`` and
     ``b`` are integers.
 
-    >>> Xor(x, y).subs({y: 0})
+    >>> (x ^ y).subs({y: 0})
     x
 
     """
@@ -912,10 +912,10 @@ def conjuncts(expr):
     Examples
     ========
 
-    >>> conjuncts(a & b) == frozenset([a, b])
-    True
-    >>> conjuncts(a | b) == frozenset([Or(a, b)])
-    True
+    >>> conjuncts(a & b)
+    frozenset({a, b})
+    >>> conjuncts(a | b)
+    frozenset({a | b})
 
     """
     return And.make_args(expr)
@@ -927,10 +927,10 @@ def disjuncts(expr):
     Examples
     ========
 
-    >>> disjuncts(a | b) == frozenset([a, b])
-    True
-    >>> disjuncts(a & b) == frozenset([And(a, b)])
-    True
+    >>> disjuncts(a | b)
+    frozenset({a, b})
+    >>> disjuncts(a & b)
+    frozenset({a & b})
 
     """
     return Or.make_args(expr)
@@ -944,7 +944,7 @@ def distribute_and_over_or(expr):
     Examples
     ========
 
-    >>> distribute_and_over_or(Or(a, And(Not(b), Not(c))))
+    >>> distribute_and_over_or(a | (~b & ~c))
     (a | ~b) & (a | ~c)
 
     """
@@ -961,7 +961,7 @@ def distribute_or_over_and(expr):
     Examples
     ========
 
-    >>> distribute_or_over_and(And(Or(Not(a), b), c))
+    >>> distribute_or_over_and((~a | b) & c)
     (b & c) | (c & ~a)
 
     """
@@ -997,7 +997,7 @@ def to_nnf(expr, simplify=True):
     Examples
     ========
 
-    >>> to_nnf(Not((~a & ~b) | (c & d)))
+    >>> to_nnf(~((~a & ~b) | (c & d)))
     (a | b) & (~c | ~d)
     >>> to_nnf(Equivalent(a >> b, b >> a))
     (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
@@ -1085,7 +1085,7 @@ def is_nnf(expr, simplified=True):
     False
     >>> is_nnf((a | ~a) & (b | c), False)
     True
-    >>> is_nnf(Not(a & b) | c)
+    >>> is_nnf(~(a & b) | c)
     False
     >>> is_nnf((a >> b) & (b >> a))
     False
@@ -1206,7 +1206,7 @@ def eliminate_implications(expr):
     Examples
     ========
 
-    >>> eliminate_implications(Implies(a, b))
+    >>> eliminate_implications(a >> b)
     b | ~a
     >>> eliminate_implications(Equivalent(a, b))
     (a | ~b) & (b | ~a)
@@ -1230,7 +1230,7 @@ def is_literal(expr):
     True
     >>> is_literal(a + b)
     True
-    >>> is_literal(Or(a, b))
+    >>> is_literal(a | b)
     False
 
     """
@@ -1552,11 +1552,9 @@ def _finger(eq):
     counting Symbol as 1 and Not(Symbol) as 2
     ]
 
-    >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
+    >>> eq = (~y & a) | (~y & b) | (x & y)
     >>> dict(_finger(eq))
-    {(0, 0, 1, 0, 2): [x],
-     (0, 0, 1, 0, 3): [a, b],
-     (0, 0, 1, 2, 8): [y]}
+    {(0, 0, 1, 0, 2): [x], (0, 0, 1, 0, 3): [a, b], (0, 0, 1, 2, 8): [y]}
 
     So y and x have unique fingerprints, but a and b do not.
 
@@ -1592,7 +1590,7 @@ def bool_map(bool1, bool2):
     If more than one mappings of this sort exist, one of them
     is returned.
     For example, And(x, y) is logically equivalent to And(a, b) for
-    the mapping {x: a, y:b} or {x: b, y:a}.
+    the mapping {x: a, y: b} or {x: b, y: a}.
     If no such mapping exists, return False.
 
     Examples
@@ -1606,11 +1604,11 @@ def bool_map(bool1, bool2):
     The results are not necessarily unique, but they are canonical. Here,
     ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq1 = Or(And(Not(y), t), And(Not(y), z), And(x, y))
-    >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
+    >>> eq1 = (~y & t) | (~y & z) | (x & y)
+    >>> eq2 = (~c & a) | (~c & d) | (b & c)
     >>> bool_map(eq1, eq2)
     ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
-    >>> eq = And(Xor(a, b), c, And(c, d))
+    >>> eq = (a ^ b) & c & (c & d)
     >>> bool_map(eq, eq.subs({c: x}))
     (c & d & (a | b) & (~a | ~b), {a: a, b: b, c: d, d: x})
 
