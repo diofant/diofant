@@ -1495,7 +1495,7 @@ def test_sympyissue_12180():
             solve(e2, x, y) == [{x: y/a}])
 
 
-def test_diofantissue_427():
+def test_issue_427():
     assert solve([1 + y, x - y], x) == []
     assert solve([x - y, y - 3], x) == []
 
@@ -1525,7 +1525,7 @@ def test_sympyissue_14779():
 
 
 @pytest.mark.slow
-def test_diofantissue_709():
+def test_issue_709():
     eqs = [sqrt(x) + y + 2, root(y, 3)*x - 1]
     a1 = symbols('a1')
     r5, r6 = (a1**7 + 4*a1**4 + 4*a1 - 1).as_poly().all_roots()[-2:]

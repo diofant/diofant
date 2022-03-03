@@ -1714,7 +1714,7 @@ def test_add_flatten():
     assert zoo + 1 + zoo is nan
 
 
-def test_diofantissue_31():
+def test_issue_31():
     assert sin(x + O(x**2)) - sin(x + O(x**2)) == \
         Add(-sin(x + O(x**2)), sin(x + O(x**2)), evaluate=False)
     assert sin(O(x))/sin(O(x)) == Mul(1/sin(O(x)), sin(O(x)), evaluate=False)
@@ -1932,7 +1932,7 @@ def test_sympyissue_16971():
     assert (a - b).is_extended_real is None
 
 
-def test_diofantissue_849():
+def test_issue_849():
     a = Symbol('a', extended_real=True)
     b = Symbol('b', extended_real=True)
 
@@ -1943,7 +1943,7 @@ def test_diofantissue_849():
     assert (a*b).is_extended_real is None
 
 
-def test_diofantissue_1004():
+def test_issue_1004():
     assert Pow(Dummy(negative=True), -3,
                evaluate=False).is_negative is not True
     assert Pow(-oo, -3, evaluate=False).is_negative is not True

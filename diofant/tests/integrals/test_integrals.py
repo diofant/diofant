@@ -1251,7 +1251,7 @@ def test_sympyissue_13501():
     assert integrate(1/(1 + a**2*x**2), x) == atan(a*x)/a
 
 
-def test_diofantissue_447():
+def test_issue_447():
     assert integrate(1/(2*sin(x) + cos(x)),
                      x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
                             sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)
@@ -1288,7 +1288,7 @@ def test_sympyissue_15810():
     assert integrate(1/(2**(2*x/3) + 1), (x, 0, oo)) == Rational(3, 2)
 
 
-def test_diofantissue_149():
+def test_issue_149():
     a = Symbol('a', positive=True)
     expr = (2 - x)**a*sin(a/x)
     res = sqrt(pi)*a*meijerg(((), (a/2 + 1/2, a/2 + 1)),

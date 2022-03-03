@@ -1300,7 +1300,7 @@ def test_ComplexInterval():
     assert u1 <= u2 < s2 < s1
 
 
-def test_diofantissue_745():
+def test_issue_745():
     D, y = ring('y', ZZ)
     R, x = ring('x', D)
 

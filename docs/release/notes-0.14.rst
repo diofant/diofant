@@ -58,3 +58,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12531`: cancel does not return expanded form
 * :sympyissue:`6322`: degree((x+1)**10000) takes too long
 * :sympyissue:`22583`: is_polynomial right for wrong reasons (and sometimes wrong)
+* :sympyissue:`23202`: Dropping "all" __ne__ methods?

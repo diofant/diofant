@@ -427,7 +427,7 @@ def test_sympyissue_8462():
     assert limit(16**x/(x*binomial(2*x, x)**2), x, oo) == pi
 
 
-def test_diofantissue_74():
+def test_issue_74():
     assert limit(sign(log(1 + 1/x)), x, oo) == +1
     assert limit(sign(log(1 - 1/x)), x, oo) == -1
     assert limit(sign(sin(+1/x)), x, oo) == +1
@@ -438,7 +438,7 @@ def test_diofantissue_74():
     assert limit(sign(cos(pi/2 - 1/x)), x, oo) == +1
 
 
-def test_diofantissue_75():
+def test_issue_75():
     assert limit(abs(log(x)), x, oo) == oo
     assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
     assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo

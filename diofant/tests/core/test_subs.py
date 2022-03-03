@@ -646,7 +646,7 @@ def test_pow_eval_subs_no_cache():
     assert result == 1/y
 
 
-def test_diofantissue_124():
+def test_issue_124():
     n = Symbol('n', integer=True)
     assert exp(n*x).subs({exp(x): x}) == x**n
 
