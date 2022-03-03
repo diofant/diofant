@@ -512,7 +512,7 @@ def test_sympyissue_6236():
         (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
 
 
-def test_diofantissue_210():
+def test_issue_210():
     assert cos(x**6).series(x, n=12) == 1 + O(x**12)
     assert cos(x**6).series(x, n=23) == 1 - x**12/2 + O(x**23)
     assert cos(x**6).series(x, n=24) == 1 - x**12/2 + O(x**24)

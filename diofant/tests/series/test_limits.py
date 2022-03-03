@@ -442,7 +442,7 @@ def test_sympyissue_8730():
     assert limit(subfactorial(x), x, oo) == oo
 
 
-def test_diofantissue_55():
+def test_issue_55():
     assert limit((x + exp(x))/(x - 1), x, -oo) == 1
     assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue sympy/sympy#2929
 
@@ -487,7 +487,7 @@ def test_sympyissue_9558():
     assert limit(sin(x)**15, x, 0, '-') == 0  # should be fast
 
 
-def test_diofantissue_296():
+def test_issue_296():
     e = log(exp(1/x)/Float(2) + exp(-1/x)/2)*x**2
     assert e.limit(x, oo) == 0.5
 
@@ -600,7 +600,7 @@ def test_sympyissue_13575():
                                                       erf(I))
 
 
-def test_diofantissue_558():
+def test_issue_558():
     n = Symbol('n')
     r = Symbol('r', positive=True)
     c = Symbol('c')

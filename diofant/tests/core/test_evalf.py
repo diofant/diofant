@@ -517,7 +517,7 @@ def test_sympyissue_9326():
     assert e.evalf(subs={d1: 1, d2: 2}) == 3
 
 
-def test_diofantissue_161():
+def test_issue_161():
     n = sin(1)**2 + cos(1)**2 - 1
     f = n.evalf(strict=False)
     assert f.evalf(strict=False)._prec == 1
@@ -541,12 +541,12 @@ def test_AssocOp_Function():
     pytest.raises(ValueError, lambda: e.evalf(2, strict=False))
 
 
-def test_diofantissue_514():
+def test_issue_514():
     assert (-x).evalf(subs={x: oo}, strict=False) == Float('-inf')
     assert (-x - 1).evalf(subs={x: oo}, strict=False) == Float('-inf')
 
 
-def test_diofantissue_499():
+def test_issue_499():
     e = -3000 + log(1 + E**3000)
     pytest.raises(PrecisionExhausted, lambda: e.evalf(2))
     assert e.evalf(2, maxn=2000) == Float('1.3074e-1303', dps=2)

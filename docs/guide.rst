@@ -66,10 +66,9 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 5. PR should include tests:
 
-   1. Bugfixes should include regression tests.  Please format
-      them accordingly, to include references for fixed
-      issues (e.g. by naming test like ``test_diofantissue_123``
-      or adding comment with issue number).
+   1. Bugfixes should include regression tests (named as
+      ``test_issue_123`` for Diofant issues and ``test_sympyissue_123`` for
+      SymPy issues, respectively).
    2. All new functionality should be tested, every new line
       should be covered by tests.  Please use in tests only
       public interfaces.  Regression tests are not accounted in
@@ -119,9 +118,7 @@ Please note, that we have dozens of references to SymPy issues in our
 codebase.  Such reference must be either a direct URL of the issue, or
 a fully qualified reference in the Github format, like
 ``sympy/sympy#123``.  Unqualified references like ``#123`` or ``issue
-123`` --- are reserved for our `Github issues`_.  Functions for
-regression tests should be named like ``test_sympyissue_123`` and
-``test_diofantissue_123``, respectively.
+123`` --- are reserved for our `Github issues`_.
 
 However, in the old Git history, before commit :commit:`cbdd072`,
 please expect that ``#123``, ``issue #123`` or ``issue 123`` --- are

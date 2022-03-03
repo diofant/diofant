@@ -863,7 +863,7 @@ def test_sympyissue_8016():
                                        gamma(n/2 + 1)/gamma(m - n/2 + 1))
 
 
-def test_diofantissue_236():
+def test_issue_236():
     assert summation(n/((n + 2)*(n + 4)*(n + 8)), (n, 1, oo)) == Rational(4, 35)
 
 

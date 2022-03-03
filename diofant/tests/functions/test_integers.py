@@ -257,7 +257,7 @@ def test_sympyissue_4149():
     assert floor(3 + E + pi*I + y*I) == 5 + floor(pi + y)*I
 
 
-def test_diofantissue_1055():
+def test_issue_1055():
     e = 1/(sqrt(2) - 1) - sqrt(2)
     e1 = e - Rational(1, 10**15)
     e2 = e - 1

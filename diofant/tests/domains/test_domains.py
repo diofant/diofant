@@ -1192,14 +1192,14 @@ def test_sympyissue_14294():
     assert A.convert(a) == a
 
 
-def test_diofantissue_1075():
+def test_issue_1075():
     A = QQ.algebraic_field(520*sqrt(3)).algebraic_field(I)
     expr = 64*sqrt(3) + 64*I
 
     assert A.to_expr(A.from_expr(expr)) == expr
 
 
-def test_diofantissue_1008():
+def test_issue_1008():
     a = RootOf(4*x**2 + 2*x + 1, 0)
     A = QQ.algebraic_field(a)
     e = A.from_expr(a)
