@@ -85,9 +85,6 @@ class FractionField(Field, CompositeDomain):
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
-    def __ne__(self, other):
-        return self is not other
-
     def raw_new(self, numer, denom=None):
         return self.dtype(numer, denom)
 

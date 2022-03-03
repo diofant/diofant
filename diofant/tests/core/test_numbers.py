@@ -1523,9 +1523,6 @@ def test_comparisons_with_unknown_type():
                 return False
             return NotImplemented
 
-        def __ne__(self, other):
-            return not self == other
-
         def __lt__(self, other):
             if other is oo:
                 return True
