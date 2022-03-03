@@ -26,8 +26,7 @@ When opening a new issue, please take the following steps:
 
 2. If possible, try updating to master and reproducing your issue.
 
-3. Try to include a minimal reproducible code example that
-   demonstrates the problem.
+3. Try to include a minimal code example that demonstrates the problem.
 
 4. Include any relevant details of your local setup (Python
    version, installed libraries).
@@ -66,9 +65,8 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 5. PR should include tests:
 
-   1. Bugfixes should include regression tests (named as
-      ``test_issue_123`` for Diofant issues and ``test_sympyissue_123`` for
-      SymPy issues, respectively).
+   1. Bugfixes should include regression tests (named as ``test_issue_123``
+      for Diofant issues and as ``test_sympyissue_123`` for SymPy issues).
    2. All new functionality should be tested, every new line
       should be covered by tests.  Please use in tests only
       public interfaces.  Regression tests are not accounted in
@@ -127,8 +125,8 @@ because before commit :commit:`6f68fa1` - such unqualified references
 assume issues on the Google Code, not Github, unless other clearly
 stated.  SymPy issues from the Google Code were moved to the Github in
 March 2014 (see :sympyissue:`7235`).  Transfered issue numbers were
-shifted by 3099.  I.e. ``issue 123`` in the history - does mean issue
-``sympy/sympy#3222`` on Github.
+shifted by 3099.  I.e. ``issue 123`` in the git history before
+:commit:`6f68fa1` - does mean issue ``sympy/sympy#3222`` on Github.
 
 Versioning and Release Procedure
 ================================
