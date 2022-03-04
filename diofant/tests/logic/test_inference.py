@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (And, Equivalent, Implies, Or, false, numbered_symbols, pi,
                      satisfiable, true)
-from diofant.abc import A, B, C, x, y
+from diofant.abc import a, b, c, x, y
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            find_pure_symbol, find_unit_clause,
                                            unit_propagate)
@@ -24,10 +24,10 @@ __all__ = ()
 def test_literal():
     assert literal_symbol(True) is True
     assert literal_symbol(False) is False
-    assert literal_symbol(A) is A
-    assert literal_symbol(~A) is A
+    assert literal_symbol(a) is a
+    assert literal_symbol(~a) is a
 
-    pytest.raises(ValueError, lambda: literal_symbol(A + B))
+    pytest.raises(ValueError, lambda: literal_symbol(a + b))
 
 
 def test_find_pure_symbol():
@@ -68,36 +68,36 @@ def test_dpll():
 
 def test_dpll_satisfiable():
     assert dpll_satisfiable(false) is False
-    assert dpll_satisfiable(A & ~A) is False
-    assert dpll_satisfiable(A & ~B) == {A: True, B: False}
-    assert dpll_satisfiable(A | B) in ({A: True}, {B: True}, {A: True, B: True})
-    assert dpll_satisfiable((~A | B) & (~B | A)) in ({A: True, B: True},
-                                                     {A: False, B: False})
-    assert dpll_satisfiable((A | B) & (~B | C)) in ({A: True, B: False},
-                                                    {A: True, C: True},
-                                                    {B: True, C: True})
-    assert dpll_satisfiable(A & B & C) == {A: True, B: True, C: True}
-    assert dpll_satisfiable((A | B) & (A >> B)) == {B: True}
-    assert dpll_satisfiable(Equivalent(A, B) & A) == {A: True, B: True}
-    assert dpll_satisfiable(Equivalent(A, B) & ~A) == {A: False, B: False}
+    assert dpll_satisfiable(a & ~a) is False
+    assert dpll_satisfiable(a & ~b) == {a: True, b: False}
+    assert dpll_satisfiable(a | b) in ({a: True}, {b: True}, {a: True, b: True})
+    assert dpll_satisfiable((~a | b) & (~b | a)) in ({a: True, b: True},
+                                                     {a: False, b: False})
+    assert dpll_satisfiable((a | b) & (~b | c)) in ({a: True, b: False},
+                                                    {a: True, c: True},
+                                                    {b: True, c: True})
+    assert dpll_satisfiable(a & b & c) == {a: True, b: True, c: True}
+    assert dpll_satisfiable((a | b) & (a >> b)) == {b: True}
+    assert dpll_satisfiable(Equivalent(a, b) & a) == {a: True, b: True}
+    assert dpll_satisfiable(Equivalent(a, b) & ~a) == {a: False, b: False}
 
 
 def test_dpll2_satisfiable():
-    assert dpll2_satisfiable(A & ~A) is False
-    assert dpll2_satisfiable(A & ~B) == {A: True, B: False}
-    assert dpll2_satisfiable(A | B) in ({A: True}, {B: True},
-                                        {A: True, B: True})
-    assert dpll2_satisfiable((~A | B) & (~B | A)) in ({A: True, B: True},
-                                                      {A: False, B: False})
-    assert dpll2_satisfiable((A | B) & (~B | C)) in ({A: True, B: False,
-                                                      C: True},
-                                                     {A: True, B: True,
-                                                      C: True})
-    assert dpll2_satisfiable(A & B & C) == {A: True, B: True, C: True}
-    assert dpll2_satisfiable((A | B) & (A >> B)) in ({B: True, A: False},
-                                                     {B: True, A: True})
-    assert dpll2_satisfiable(Equivalent(A, B) & A) == {A: True, B: True}
-    assert dpll2_satisfiable(Equivalent(A, B) & ~A) == {A: False, B: False}
+    assert dpll2_satisfiable(a & ~a) is False
+    assert dpll2_satisfiable(a & ~b) == {a: True, b: False}
+    assert dpll2_satisfiable(a | b) in ({a: True}, {b: True},
+                                        {a: True, b: True})
+    assert dpll2_satisfiable((~a | b) & (~b | a)) in ({a: True, b: True},
+                                                      {a: False, b: False})
+    assert dpll2_satisfiable((a | b) & (~b | c)) in ({a: True, b: False,
+                                                      c: True},
+                                                     {a: True, b: True,
+                                                      c: True})
+    assert dpll2_satisfiable(a & b & c) == {a: True, b: True, c: True}
+    assert dpll2_satisfiable((a | b) & (a >> b)) in ({b: True, a: False},
+                                                     {b: True, a: True})
+    assert dpll2_satisfiable(Equivalent(a, b) & a) == {a: True, b: True}
+    assert dpll2_satisfiable(Equivalent(a, b) & ~a) == {a: False, b: False}
 
     l = SATSolver([], set(), set())
     assert not l.lit_heap
@@ -132,48 +132,48 @@ def test_dpll2_satisfiable():
 
 
 def test_satisfiable():
-    assert satisfiable(A & (A >> B) & ~B) is False
-    assert next(satisfiable(A & ~A, all_models=True)) is False
+    assert satisfiable(a & (a >> b) & ~b) is False
+    assert next(satisfiable(a & ~a, all_models=True)) is False
 
 
 def test_valid():
-    assert valid(A >> (B >> A)) is True
-    assert valid((A >> (B >> C)) >> ((A >> B) >> (A >> C))) is True
-    assert valid((~B >> ~A) >> (A >> B)) is True
-    assert valid(A | B | C) is False
-    assert valid(A >> B) is False
+    assert valid(a >> (b >> a)) is True
+    assert valid((a >> (b >> c)) >> ((a >> b) >> (a >> c))) is True
+    assert valid((~b >> ~a) >> (a >> b)) is True
+    assert valid(a | b | c) is False
+    assert valid(a >> b) is False
 
 
 def test_pl_true():
     assert pl_true(True) is True
-    assert pl_true(A & B, {A: True, B: True}) is True
-    assert pl_true(A | B, {A: True}) is True
-    assert pl_true(A | B, {B: True}) is True
-    assert pl_true(A | B, {A: None, B: True}) is True
-    assert pl_true(A >> B, {A: False}) is True
-    assert pl_true(A | B | ~C, {A: False, B: True, C: True}) is True
-    assert pl_true(Equivalent(A, B), {A: False, B: False}) is True
+    assert pl_true(a & b, {a: True, b: True}) is True
+    assert pl_true(a | b, {a: True}) is True
+    assert pl_true(a | b, {b: True}) is True
+    assert pl_true(a | b, {a: None, b: True}) is True
+    assert pl_true(a >> b, {a: False}) is True
+    assert pl_true(a | b | ~c, {a: False, b: True, c: True}) is True
+    assert pl_true(Equivalent(a, b), {a: False, b: False}) is True
 
     # test for false
     assert pl_true(False) is False
-    assert pl_true(A & B, {A: False, B: False}) is False
-    assert pl_true(A & B, {A: False}) is False
-    assert pl_true(A & B, {B: False}) is False
-    assert pl_true(A | B, {A: False, B: False}) is False
+    assert pl_true(a & b, {a: False, b: False}) is False
+    assert pl_true(a & b, {a: False}) is False
+    assert pl_true(a & b, {b: False}) is False
+    assert pl_true(a | b, {a: False, b: False}) is False
 
     # test for None
-    assert pl_true(B, {B: None}) is None
-    assert pl_true(A & B, {A: True, B: None}) is None
-    assert pl_true(A >> B, {A: True, B: None}) is None
-    assert pl_true(Equivalent(A, B), {A: None}) is None
-    assert pl_true(Equivalent(A, B), {A: True, B: None}) is None
+    assert pl_true(b, {b: None}) is None
+    assert pl_true(a & b, {a: True, b: None}) is None
+    assert pl_true(a >> b, {a: True, b: None}) is None
+    assert pl_true(Equivalent(a, b), {a: None}) is None
+    assert pl_true(Equivalent(a, b), {a: True, b: None}) is None
 
     # Test for deep
-    assert pl_true(A | B, {A: False}, deep=True) is None
-    assert pl_true(~A & ~B, {A: False}, deep=True) is None
-    assert pl_true(A | B, {A: False, B: False}, deep=True) is False
-    assert pl_true(A & B & (~A | ~B), {A: True}, deep=True) is False
-    assert pl_true((C >> A) >> (B >> A), {C: True}, deep=True) is True
+    assert pl_true(a | b, {a: False}, deep=True) is None
+    assert pl_true(~a & ~b, {a: False}, deep=True) is None
+    assert pl_true(a | b, {a: False, b: False}, deep=True) is False
+    assert pl_true(a & b & (~a | ~b), {a: True}, deep=True) is False
+    assert pl_true((c >> a) >> (b >> a), {c: True}, deep=True) is True
 
 
 def test_pl_true_wrong_input():
@@ -183,43 +183,42 @@ def test_pl_true_wrong_input():
 
 
 def test_entails():
-    assert entails(A, [A >> B, ~B]) is False
-    assert entails(B, [Equivalent(A, B), A]) is True
-    assert entails((A >> B) >> (~A >> ~B)) is False
-    assert entails((A >> B) >> (~B >> ~A)) is True
+    assert entails(a, [a >> b, ~b]) is False
+    assert entails(b, [Equivalent(a, b), a]) is True
+    assert entails((a >> b) >> (~a >> ~b)) is False
+    assert entails((a >> b) >> (~b >> ~a)) is True
 
 
 def test_PropKB():
     kb = PropKB()
     assert not kb.clauses
-    assert kb.ask(A >> B) is False
-    assert kb.ask(A >> (B >> A)) is True
-    kb.tell(A >> B)
-    assert kb.clauses == [~A | B]
-    kb.tell(B >> C)
-    assert kb.clauses == [~A | B, ~B | C]
-    assert kb.ask(A) is False
-    assert kb.ask(B) is False
-    assert kb.ask(C) is False
-    assert kb.ask(~A) is False
-    assert kb.ask(~B) is False
-    assert kb.ask(~C) is False
-    assert kb.ask(A >> C) is True
-    kb.tell(A)
-    assert kb.ask(A) is True
-    assert kb.ask(B) is True
-    assert kb.ask(C) is True
-    assert kb.ask(~C) is False
-    kb.retract(A)
-    assert kb.ask(C) is False
-    kb = PropKB((A >> B) & (B >> C))
-    assert kb.ask(A >> C) is True
+    assert kb.ask(a >> b) is False
+    assert kb.ask(a >> (b >> a)) is True
+    kb.tell(a >> b)
+    assert kb.clauses == [~a | b]
+    kb.tell(b >> c)
+    assert kb.clauses == [~a | b, ~b | c]
+    assert kb.ask(a) is False
+    assert kb.ask(b) is False
+    assert kb.ask(c) is False
+    assert kb.ask(~a) is False
+    assert kb.ask(~b) is False
+    assert kb.ask(~c) is False
+    assert kb.ask(a >> c) is True
+    kb.tell(a)
+    assert kb.ask(a) is True
+    assert kb.ask(b) is True
+    assert kb.ask(c) is True
+    assert kb.ask(~c) is False
+    kb.retract(a)
+    assert kb.ask(c) is False
+    kb = PropKB((a >> b) & (b >> c))
+    assert kb.ask(a >> c) is True
 
 
 def test_propKB_tolerant():
-    """Tolerant to bad input."""
     kb = PropKB()
-    assert kb.ask(B) is False
+    assert kb.ask(b) is False
 
 
 def test_satisfiable_non_symbols():
@@ -248,21 +247,22 @@ def test_satisfiable_bool():
 
 def test_satisfiable_all_models():
     assert next(satisfiable(False, all_models=True)) is False
-    assert list(satisfiable((A >> ~A) & A, all_models=True)) == [False]
+    assert list(satisfiable((a >> ~a) & a, all_models=True)) == [False]
     assert list(satisfiable(True, all_models=True)) == [{true: true}]
 
-    models = [{A: True, B: False}, {A: False, B: True}]
-    result = satisfiable(A ^ B, all_models=True)
+    models = [{a: True, b: False}, {a: False, b: True}]
+    result = satisfiable(a ^ b, all_models=True)
     models.remove(next(result))
     models.remove(next(result))
     pytest.raises(StopIteration, lambda: next(result))
     assert not models
 
-    assert list(satisfiable(Equivalent(A, B), all_models=True)) == \
-        [{A: False, B: False}, {A: True, B: True}]
+    assert list(satisfiable(Equivalent(a, b),
+                            all_models=True)) == [{a: False, b: False},
+                                                  {a: True, b: True}]
 
-    models = [{A: False, B: False}, {A: False, B: True}, {A: True, B: True}]
-    for model in satisfiable(A >> B, all_models=True):
+    models = [{a: False, b: False}, {a: False, b: True}, {a: True, b: True}]
+    for model in satisfiable(a >> b, all_models=True):
         models.remove(model)
     assert not models
 
