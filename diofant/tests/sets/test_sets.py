@@ -835,9 +835,12 @@ def test_image_EmptySet():
     assert imageset(x, 2*x, S.EmptySet) == S.EmptySet
 
 
-def test_sympyissue_5724_7680():
-    assert I not in S.Reals  # issue sympy/sympy#7680
+def test_sympyissue_5724():
     assert Interval(-oo, oo).contains(I) is false
+
+
+def test_sympyissue_7680():
+    assert I not in S.Reals
 
 
 def test_boundary():

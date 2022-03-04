@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
                      Poly, Pow, Range, Rational, Symbol, SympifyError, Tuple,
-                     Xor, evaluate, exp, false, pi, sin, sqrt, sympify, true)
+                     Xor, evaluate, exp, false, sin, sqrt, sympify, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -401,7 +401,7 @@ def test_sympyissue_4788():
     assert repr(sympify(1.0 + 0J)) == repr(Float(1.0)) == repr(Float(1.0))
 
 
-def test_sympyissue_4798_None():
+def test_sympyissue_4798():
     assert sympify(None) is None
 
 
@@ -409,7 +409,7 @@ def test_sympyissue_3218():
     assert sympify('x+\ny') == x + y
 
 
-def test_sympyissue_4988_builtins():
+def test_sympyissue_4988():
     C = Symbol('C')
     vars = {}
     vars['C'] = C
@@ -427,9 +427,12 @@ def test_geometry():
     assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
 
 
-def test_sympyissue_6540_6552():
+def test_sympyissue_6540():
     assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
     assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
+
+
+def test_sympyissue_6552():
     assert sympify('[[[2*(1)]]]') == [[[2]]]
     assert sympify('Matrix([2*(1)])') == Matrix([2])
 
@@ -441,12 +444,6 @@ def test_sympyissue_6046():
     locals = {}
     exec('from diofant.abc import S, O', locals)  # pylint: disable=exec-used
     assert str(sympify('O&S', locals)) == 'O & S'
-
-
-def test_sympyissue_8821_highprec_from_str():
-    s = str(pi.evalf(128))
-    p = sympify(s)
-    assert abs(sin(p)) < 1e-127
 
 
 def test_Range():

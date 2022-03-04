@@ -587,7 +587,7 @@ def test_sympyissue_3539():
     assert (6/x**2).match(a/x) == {a: 6/x}
 
 
-def test_diofantissue_423():
+def test_issue_423():
     a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
                                              cls=Wild, exclude=[x])
     pat = (a1*x + b1)/(c1*x + d1) + (a2*x + b2)/(c2*x + d2)
@@ -608,7 +608,7 @@ def test_sympyissue_8694():
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z, Y1: X + Y, Z1: -Y}
 
 
-def test_diofantissue_462():
+def test_issue_462():
     w = Wild('w', exclude=[x])
     assert (-x).match(2*w*x) == {w: Rational(-1, 2)}
     assert (-x**2).match(2*w*x**2) == {w: Rational(-1, 2)}

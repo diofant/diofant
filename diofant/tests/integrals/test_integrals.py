@@ -954,7 +954,7 @@ def test_sympyissue_5907():
             x/(2*a**4 + 2*a**2*x**2) + atan(x/a)/(2*a**3))
 
 
-def test_sympyissue_4892a():
+def test_sympyissue_4892():
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -973,8 +973,6 @@ def test_sympyissue_4892a():
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]
 
-
-def test_sympyissue_4892b():
     # Issues relating to issue sympy/sympy#4596 are making the actual result of this hard
     # to test.  The answer should be something like
     #
@@ -1253,7 +1251,7 @@ def test_sympyissue_13501():
     assert integrate(1/(1 + a**2*x**2), x) == atan(a*x)/a
 
 
-def test_diofantissue_447():
+def test_issue_447():
     assert integrate(1/(2*sin(x) + cos(x)),
                      x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
                             sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)
@@ -1290,7 +1288,7 @@ def test_sympyissue_15810():
     assert integrate(1/(2**(2*x/3) + 1), (x, 0, oo)) == Rational(3, 2)
 
 
-def test_diofantissue_149():
+def test_issue_149():
     a = Symbol('a', positive=True)
     expr = (2 - x)**a*sin(a/x)
     res = sqrt(pi)*a*meijerg(((), (a/2 + 1/2, a/2 + 1)),

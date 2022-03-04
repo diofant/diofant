@@ -47,22 +47,20 @@ def test_simple2():
 
 
 def test_hierarchical():
-    # Gruntz' thesis pp.
+    # Gruntz' thesis p.95
     # 6.21
     e = sin(1/x + exp(-x))
     assert e.aseries(x, n=3, hir=True) == -exp(-2*x)*sin(1/x)/2 + \
         exp(-x)*cos(1/x) + sin(1/x) + O(exp(-3*x), (x, oo))
+
+    a, b = symbols('a b', integer=True, nonzero=True)
+    e = exp(1/x + exp(-x**2)*(exp(a*x) - exp(b*x))) - exp(1/x)
+    assert e.aseries(x, n=3, hir=True) == (exp(2*a*x + 1/x)/2 + exp(2*b*x + 1/x)/2 -
+                                           exp(a*x + b*x + 1/x))*exp(-2*x**2) + (exp(a*x + 1/x) -
+                                                                                 exp(b*x + 1/x))*exp(-x**2) + O(exp(-3*x**2), (x, -oo))
 
     # A New Algorithm for Computing Asymptotic Series by Gruntz - Examples
     e = sin(x) * cos(exp(-x))
     assert e.aseries(x, hir=True) == exp(-4*x)*sin(x)/24 - \
         exp(-2*x)*sin(x)/2 + sin(x) + O(exp(-6*x), (x, oo))
     pytest.raises(PoleError, lambda: e.series(x, oo))
-
-
-def test_sympyissue_7872():
-    a, b = symbols('a b', integer=True, nonzero=True)
-    e = exp(1/x + exp(-x**2) * (exp(a*x) - exp(b*x))) - exp(1/x)
-    assert e.aseries(x, n=3, hir=True) == (exp(2*a*x + 1/x)/2 + exp(2*b*x + 1/x)/2 -
-                                           exp(a*x + b*x + 1/x))*exp(-2*x**2) + (exp(a*x + 1/x) -
-                                                                                 exp(b*x + 1/x))*exp(-x**2) + O(exp(-3*x**2), (x, -oo))

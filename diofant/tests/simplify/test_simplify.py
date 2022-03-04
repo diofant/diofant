@@ -10,7 +10,7 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      hypersimp, integrate, ln, log, logcombine, nsimplify, oo,
                      pi, posify, rad, root, separatevars, sign, signsimp,
                      simplify, sin, sinh, solve, sqrt, sqrtdenest, sstr,
-                     symbols, tan, true, zoo)
+                     symbols, tan, trigsimp, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
@@ -163,7 +163,7 @@ def test_simplify_measure():
     assert measure2(simplify(expr2, measure=measure2)) <= measure2(expr2)
 
 
-def test_simplify_sympyissue_4407():
+def test_sympyissue_4407():
     assert simplify(exp(-Rational(1, 2)) + exp(-Rational(3, 2))) == \
         (1 + E)*exp(-Rational(3, 2))
 
@@ -534,16 +534,17 @@ def test_polymorphism():
     assert simplify(a) == 1
 
 
-def test_sympyissue_from_PR1599():
-    n1 = Symbol('n1', negative=True)
-    assert simplify(I*sqrt(n1)) == -sqrt(-n1)
-
-
 def test_sympyissue_6811():
     eq = (x + 2*y)*(2*x + 2)
     assert simplify(eq) == (x + 1)*(x + 2*y)*2
     # reject the 2-arg Mul -- these are a headache for test writing
     assert simplify(eq.expand()) == 2*x**2 + 4*x*y + 2*x + 4*y
+
+
+@pytest.mark.xfail
+def test_sympyissue_6811_fail():
+    eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*t/(9*cos(x) - 5*cos(3*x))
+    assert trigsimp(eq) == -2*(2*sin(x)*y + 3*z)*t/cos(x)
 
 
 def test_sympyissue_6920():

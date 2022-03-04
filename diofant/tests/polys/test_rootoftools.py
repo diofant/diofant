@@ -593,7 +593,7 @@ def test_RootOf_algebraic():
 
 
 @pytest.mark.timeout(10)
-def test_diofantissue_730():
+def test_issue_730():
     e = RootOf(x**3 + 10*x**2 + 1, 2)
     assert e.is_real is False
     assert e.is_imaginary is False
@@ -603,7 +603,7 @@ def test_diofantissue_730():
 
 @pytest.mark.timeout(150)
 @pytest.mark.slow
-def test_diofantissue_723():
+def test_issue_723():
     p = x**5 + sqrt(3)*x - 2
     for _ in range(20):
         for j in (1, 2):

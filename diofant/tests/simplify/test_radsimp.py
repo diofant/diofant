@@ -152,7 +152,7 @@ def test_radsimp():
             15/(3*sqrt(3) + 5*sqrt(2) + 15 + 15*root(7, 4) + 15*sqrt(5)))
 
 
-def test_radsimp_sympyissue_6313():
+def test_sympyissue_6313():
     c, p = symbols('c p', positive=True)
     s = sqrt(c**2 - p**2)
     b = (c + I*p - s)/(c + I*p + s)

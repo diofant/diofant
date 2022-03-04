@@ -1,7 +1,6 @@
-from diofant import (Dummy, E, Function, I, MatrixSymbol, Mul, Rational,
-                     Symbol, cbrt, exp, exp_polar, gamma, hyper, log, pi,
-                     polar_lift, powdenest, powsimp, root, simplify, sin, sqrt,
-                     symbols)
+from diofant import (Dummy, E, Function, I, Mul, Rational, Symbol, cbrt, exp,
+                     exp_polar, gamma, hyper, log, pi, polar_lift, powdenest,
+                     powsimp, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, c, x, y, z
 
 
@@ -204,13 +203,6 @@ def test_sympyissue_5805():
     assert arg.is_positive is None
 
 
-def test_sympyissue_9324_powsimp_on_matrix_symbol():
-    M = MatrixSymbol('M', 10, 10)
-    expr = powsimp(M, deep=True)
-    assert expr == M
-    assert expr.name == 'M'
-
-
 def test_sympyissue_6367():
     z = -5*sqrt(2)/(2*sqrt(2*sqrt(29) + 29)) + sqrt(-sqrt(29)/29 + Rational(1, 2))
     assert Mul(*[powsimp(a) for a in Mul.make_args(z.normal())]) == 0
@@ -274,7 +266,8 @@ def test_powsimp_other():
 
 
 def test_sympyissue_from_PR1599():
-    n1, n2, n3, n4 = symbols('n1 n2 n3 n4', negative=True, finite=True)
+    n1 = symbols('n1', negative=True)
+    n2, n3, n4 = symbols('n2 n3 n4', negative=True, finite=True)
     assert simplify(I*sqrt(n1)) == -sqrt(-n1)
     assert (powsimp(sqrt(n1)*sqrt(n2)*sqrt(n3)) ==
             -I*sqrt(-n1)*sqrt(-n2)*sqrt(-n3))
@@ -286,9 +279,9 @@ def test_powsimp_on_numbers():
     assert 2**(Rational(1, 3) - 2) == cbrt(2)/4
 
 
-def test_diofantissue_124():
+def test_issue_143():
     n = Symbol('n', odd=True)
-    assert powsimp((-1)**(n/2)) in ((-1)**(n/2), I**n)
+    assert powsimp((-1)**(n/2)) == (-1)**(n/2)
     assert powsimp((-1)**(n/2 - Rational(1, 2)) -
                    (-1)**(3*n/2 - Rational(1, 2))) != 2  # sympy/sympy#10195
 

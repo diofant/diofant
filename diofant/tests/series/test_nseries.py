@@ -17,6 +17,12 @@ def test_simple_1():
     assert Rational(3, 4).series(x, n=5) == Rational(3, 4)
     assert x.series(x) == x
 
+    # issue sympy/sympy#5183
+    assert ((1 + x)**2).series(x) == 1 + 2*x + x**2
+    assert (1 + 1/x).series() == 1 + 1/x
+    assert (Derivative(exp(x).series(), x).doit() ==
+            1 + x + x**2/2 + x**3/6 + x**4/24 + Derivative(O(x**6), x))
+
 
 def test_mul_0():
     assert (x*ln(x)).series(x, n=5) == x*ln(x)
@@ -102,6 +108,15 @@ def test_log2():
 def test_log3():
     e = 1/log(-1/x)
     assert e.series(x, n=4, logx=l) == 1/(-l + log(-1))
+
+
+def test_x0():
+    # issue sympy/sympy#5654
+    assert ((1/(x**2 + a**2)**2).series(x, x0=I*a, n=0) ==
+            -I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(1, (x, I*a)))
+    assert ((1/(x**2 + a**2)**2).series(x, x0=I*a, n=1) ==
+            3/(16*a**4) - I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) +
+            O(-I*a + x, (x, I*a)))
 
 
 def test_series1():
@@ -432,9 +447,13 @@ def test_abs():
     assert abs(x).series(x, n=4) == x
     assert abs(-x).series(x, n=4) == x
     assert abs(x + 1).series(x, n=4) == x + 1
-    assert abs(sin(x)).series(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
-    assert abs(sin(-x)).series(x, n=4) == x - Rational(1, 6)*x**3 + O(x**4)
+    assert abs(sin(x)).series(x, n=4) == x - x**3/6 + O(x**4)
+    assert abs(sin(-x)).series(x, n=4) == x - x**3/6 + O(x**4)
     assert abs(x - a).series(x, 1) == (x - a)*sign(1 - a)
+
+    # issue sympy/sympy#5183
+    assert abs(x + x**2).series(n=1) == O(x)
+    assert abs(x + x**2).series(n=2) == x + O(x**2)
 
 
 def test_dir():
@@ -469,22 +488,6 @@ def test_sympyissue_4329():
     assert limit(tan(x)**tan(2*x), x, pi/4) == exp(-1)
 
 
-def test_sympyissue_5183():
-    assert abs(x + x**2).series(n=1) == O(x)
-    assert abs(x + x**2).series(n=2) == x + O(x**2)
-    assert ((1 + x)**2).series(x) == 1 + 2*x + x**2
-    assert (1 + 1/x).series() == 1 + 1/x
-    assert Derivative(exp(x).series(), x).doit() == \
-        1 + x + x**2/2 + x**3/6 + x**4/24 + Derivative(O(x**6), x)
-
-
-def test_sympyissue_5654():
-    assert (1/(x**2+a**2)**2).series(x, x0=I*a, n=0) == \
-        -I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(1, (x, I*a))
-    assert (1/(x**2+a**2)**2).series(x, x0=I*a, n=1) == 3/(16*a**4) \
-        - I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(-I*a + x, (x, I*a))
-
-
 def test_sympyissue_5925():
     sx = sqrt(x + z).series(z, 0, 1)
     sxy = sqrt(x + y + z).series(z, 0, 1)
@@ -496,16 +499,20 @@ def test_sympyissue_5925():
     assert sxy.subs({x: 1, y: 2}) == sx.subs({x: 3})
 
 
-def test_sympyissues_6235_6236():
+def test_sympyissue_6235():
     q = Symbol('q', positive=True)
     assert (((x - 1)**q + 1)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1 - x**q + (-1)**(q + 1) + (-1)**(q + 1)*x**q +
          (-1)**q*q*x**(q + 1) + (-1)**q*q*x)
+
+
+def test_sympyissue_6236():
+    q = Symbol('q', positive=True)
     assert (((x - 1)**q)/(x**q - 1)).nseries(x, n=2).removeO() == \
         (-1)**(q + 1) + (-1)**(q + 1)*x**q + (-1)**q*q*x**(q + 1) + (-1)**q*q*x
 
 
-def test_diofantissue_210():
+def test_issue_210():
     assert cos(x**6).series(x, n=12) == 1 + O(x**12)
     assert cos(x**6).series(x, n=23) == 1 - x**12/2 + O(x**23)
     assert cos(x**6).series(x, n=24) == 1 - x**12/2 + O(x**24)

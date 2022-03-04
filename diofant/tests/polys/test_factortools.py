@@ -443,16 +443,6 @@ def test_dmp_ext_factor(method):
                                                        (x + sqrt(2)*y, 1)])
 
 
-def test_sympyissue_5786():
-    _, x, y, z, t = ring('x y z t', QQ.algebraic_field(I))
-
-    f, g = z - I*t, x - I*y
-
-    assert (f*g).factor_list() == (1, [(f, 1), (g, 1)])
-    assert (f**2*g).factor_list() == (1, [(g, 1), (f, 2)])
-    assert (f*g**3).factor_list() == (1, [(f, 1), (g, 3)])
-
-
 def test_factor_list():
     R, x = ring('x', FF(2))
 

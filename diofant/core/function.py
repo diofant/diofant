@@ -1875,7 +1875,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
 def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
-    # test_sympyissue_8247_8354 in test_arit)
+    # sympy/sympy#8274 and sympy/sympy#8354)
     was = None
     while was != expr:
         was, expr = expr, expand_mul(expand_multinomial(expr))

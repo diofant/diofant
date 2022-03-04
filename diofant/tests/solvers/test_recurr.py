@@ -194,7 +194,7 @@ def test_sympyissue_6844():
                             f(1): 1}) == [{f: Lambda(n, 2**(1 - n)*n)}]
 
 
-def test_diofantissue_294():
+def test_issue_294():
     eq = f(n) - f(n - 1) - 2*f(n - 2) - 2*n
 
     assert rsolve(eq) == [{f: Lambda(n, (-1)**n*C0 + 2**n*C1 - n - 5/2)}]
@@ -224,19 +224,19 @@ def test_sympyissue_8697():
             [{f: Lambda(n, 2**n*C0 + 3**n*C1 + n/2 + 3/4)}])
 
 
-def test_diofantissue_451():
+def test_issue_451():
     assert rsolve(f(n) - 2*f(n - 1) - 3**n,
                   init={f(0): 1}) == [{f: Lambda(n, -2**(n + 1) +
                                                  3**(n + 1))}]
 
 
-def test_diofantissue_456():
+def test_issue_456():
     assert rsolve(f(n) - 2*f(n - 1) - 3**n*n,
                   init={f(0): 1}) == [{f: Lambda(n, 7*2**n +
                                                  3**(n + 1)*(n - 2))}]
 
 
-def test_diofantissue_13629():
+def test_sympyissue_13629():
     assert rsolve(f(n + 1) - (f(n) + (n + 1)**2),
                   init={f(0): 0}) == [{f: Lambda(n, n*(2*n**2 + 3*n + 1)/6)}]
 
@@ -249,13 +249,13 @@ def test_sympyissue_15553():
                                                  2*n - 4)}]
 
 
-def test_diofantissue_922():
+def test_issue_922():
     assert rsolve(-2*n/3 + f(n) - f(n - 1) + 2*(n - 1)**3/3 + 2*(n - 1)**2/3,
                   init={f(0): 0}) == [{f: Lambda(n, n*(-3*n**3 + 2*n**2 +
                                                        9*n + 4)/18)}]
 
 
-def test_diofantissue_923():
+def test_issue_923():
     assert rsolve(4*f(n) + 4*f(n + 1) +
                   f(n + 2)) == [{f: Lambda(n, (-2)**n*(C0 + C1*n))}]
 

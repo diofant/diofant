@@ -321,7 +321,7 @@ def test_dmp_sqf():
     assert f_6.sqf_part() == f_6
 
 
-def test_diofantissue_714():
+def test_issue_714():
     _, x, y, z = ring('x y z', ZZ)
 
     f = (x - y)*(z - 1)**2

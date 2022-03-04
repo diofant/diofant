@@ -421,7 +421,7 @@ def test_Float_eval():
     assert (a**2).is_Float
 
 
-def test_Float_sympyissue_5206():
+def test_sympyissue_5206():
     a = Float(0.1, 10)
     b = Float('0.1', 10)
 
@@ -1034,10 +1034,6 @@ def test_sympyissue_3423():
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
-def test_sympyissue_3449():
-    assert sqrt(x - 1).subs({x: 5}) == 2
-
-
 def test_Integer_factors():
     def F(i):
         return Integer(i).factors()
@@ -1526,9 +1522,6 @@ def test_comparisons_with_unknown_type():
             if isinstance(other, Number):
                 return False
             return NotImplemented
-
-        def __ne__(self, other):
-            return not self == other
 
         def __lt__(self, other):
             if other is oo:

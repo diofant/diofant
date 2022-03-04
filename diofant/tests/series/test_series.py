@@ -269,7 +269,7 @@ def test_sympyissue_21245():
             O((x - sqrt(5)/2 + 1/2)**2, (x, -1/2 + sqrt(5)/2)))
 
 
-def test_diofantissue_1139():
+def test_issue_1139():
     x0 = sqrt(2)/2 - sqrt(2)*I/2
     assert ((1/(x**4 + 1)).series(x, x0=x0, n=2) ==
             sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -

@@ -498,7 +498,7 @@ def test_args():
     assert (x**y).args[1] == y
 
 
-def test_noncommutative_expand_sympyissue_3757():
+def test_sympyissue_3757():
     A, B, C = symbols('A,B,C', commutative=False)
     assert A*B - B*A != 0
     assert (A*(A + B)*B).expand() == A**2*B + A*B**2
@@ -1705,3 +1705,8 @@ def test_sympyissue_21334():
     e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
 
     assert e.as_leading_term(y) == 0
+
+
+def test_sympyissue_22583():
+    f = Function('f')
+    assert (1/f(x) + 1).is_polynomial(f(x)) is False

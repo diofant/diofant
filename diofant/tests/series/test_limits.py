@@ -259,8 +259,8 @@ def test_sympyissue_4090():
 
 
 def test_sympyissue_4547():
-    assert limit(cot(x), x, 0, dir='+') == oo
-    assert limit(cot(x), x, pi/2, dir='+') == 0
+    assert limit(cot(x), x, 0) == oo
+    assert limit(cot(x), x, pi/2) == 0
 
 
 def test_sympyissue_5164():
@@ -412,8 +412,8 @@ def test_sympyissue_5172():
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs({c: c + 1})
     assert limit(expr.subs({c: m}), n, oo) == 1
-    assert limit(expr.subs({c: p}), n, oo).simplify() == \
-        (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
+    assert limit(expr.subs({c: p}), n, oo) == (2**(p + 1) + r -
+                                               1)/(r + 1)**(p + 1)
 
 
 def test_sympyissue_7088():
@@ -442,7 +442,7 @@ def test_sympyissue_8730():
     assert limit(subfactorial(x), x, oo) == oo
 
 
-def test_diofantissue_55():
+def test_issue_55():
     assert limit((x + exp(x))/(x - 1), x, -oo) == 1
     assert limit((x*exp(x))/(exp(x) - 1), x, -oo) == 0  # issue sympy/sympy#2929
 
@@ -487,7 +487,7 @@ def test_sympyissue_9558():
     assert limit(sin(x)**15, x, 0, '-') == 0  # should be fast
 
 
-def test_diofantissue_296():
+def test_issue_296():
     e = log(exp(1/x)/Float(2) + exp(-1/x)/2)*x**2
     assert e.limit(x, oo) == 0.5
 
@@ -600,7 +600,7 @@ def test_sympyissue_13575():
                                                       erf(I))
 
 
-def test_diofantissue_558():
+def test_issue_558():
     n = Symbol('n')
     r = Symbol('r', positive=True)
     c = Symbol('c')

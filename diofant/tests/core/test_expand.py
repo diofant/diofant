@@ -246,13 +246,13 @@ def test_expand_multinomial():
                                O(z))**3) == 1 + 3*x + 3*x**2 + x**3 + O(z)
 
 
-def test_sympyissues_5919_6830():
-    # issue sympy/sympy#5919
+def test_sympyissue_5919():
     n = -1 + 1/x
     z = n/x/(-n)**2 - 1/n/x
     assert expand(z) == 1/(x**2 - 2*x + 1) - 1/(x - 2 + 1/x) - 1/(-x + 1)
 
-    # issue sympy/sympy#6830
+
+def test_sympyissue_6830():
     p = (1 + x)**2
     assert expand_multinomial((1 + x*p)**2) == (
         x**2*(x**4 + 4*x**3 + 6*x**2 + 4*x + 1) + 2*x*(x**2 + 2*x + 1) + 1)

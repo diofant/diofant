@@ -85,6 +85,18 @@ def test_construct_domain():
     assert construct_domain([-x*y + x*(y + 42) -
                              42*x]) == (EX, [EX(-x*y + x*(y + 42) - 42*x)])
 
+    dom = ZZ.inject(E)
+
+    assert construct_domain(E) == (dom, dom(E))
+
+    dom = ZZ.inject(x, E)
+
+    assert construct_domain(x**2 + 2*x + E) == (dom, dom(x**2 + 2*x + E))
+
+    dom = QQ.algebraic_field(GoldenRatio).inject(x, y)
+
+    assert construct_domain(x + y + GoldenRatio) == (dom, dom(x + y + GoldenRatio))
+
 
 def test_composite_option():
     assert construct_domain({(1,): sin(y)}, composite=False) == (EX, {(1,): EX(sin(y))})
@@ -109,16 +121,11 @@ def test_precision():
     assert result[1][0] - 1 > 1e-50
 
 
-def test_sympyissue_11538():
-    assert construct_domain(E)[0] == ZZ.inject(E)
-    assert (construct_domain(x**2 + 2*x + E) == (ZZ.inject(x, E), ZZ.inject(x, E)(x**2 + 2*x + E)))
-    assert (construct_domain(x + y + GoldenRatio) ==
-            (QQ.algebraic_field(GoldenRatio).inject(x, y),
-             QQ.algebraic_field(GoldenRatio).inject(x, y)(x + y + GoldenRatio)))
-
-
-def test_sympyissue_5428_14337():
+def test_sympyissue_5428():
     assert (x**2 + I).as_poly(x).domain == QQ.algebraic_field(I)
+
+
+def test_sympyissue_14337():
     assert (x**2 + sqrt(2)).as_poly(x).domain == QQ.algebraic_field(sqrt(2))
 
 
