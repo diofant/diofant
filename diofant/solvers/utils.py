@@ -78,8 +78,6 @@ def checksol(f, sol, **flags):
         attempt += 1
         if attempt == 0:
             val = f.subs(sol)
-            if val.atoms() & illegal:
-                return False
         elif attempt == 1:
             assert val.free_symbols
             if not val.is_constant(*list(sol), simplify=not minimal):
