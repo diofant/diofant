@@ -360,7 +360,7 @@ class Function(Application, Expr):
 
         evaluate = options.get('evaluate', global_evaluate[0])
         result = super().__new__(cls, *args, **options)
-        if not evaluate or not isinstance(result, cls):
+        if not evaluate or not isinstance(result, cls) or not result.args:
             return result
 
         pr = max(cls._should_evalf(a) for a in result.args)
