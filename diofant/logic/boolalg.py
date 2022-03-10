@@ -1324,7 +1324,7 @@ def _rem_redundancy(l1, terms):
     return essential
 
 
-def SOPform(variables, minterms, dontcares=None):
+def SOPform(variables, minterms, dontcares=[]):
     """
     The SOPform function uses simplified_pairs and a redundant group-
     eliminating algorithm to convert the list of all input combos that
@@ -1359,7 +1359,7 @@ def SOPform(variables, minterms, dontcares=None):
         return false
 
     minterms = [list(i) for i in minterms]
-    dontcares = [list(i) for i in (dontcares or [])]
+    dontcares = [list(i) for i in dontcares]
     for d in dontcares:
         if d in minterms:
             raise ValueError(f'{d} in minterms is also in dontcares')
@@ -1373,7 +1373,7 @@ def SOPform(variables, minterms, dontcares=None):
     return Or(*[_convert_to_varsSOP(x, variables) for x in essential])
 
 
-def POSform(variables, minterms, dontcares=None):
+def POSform(variables, minterms, dontcares=[]):
     """
     The POSform function uses simplified_pairs and a redundant-group
     eliminating algorithm to convert the list of all input combinations
@@ -1408,7 +1408,7 @@ def POSform(variables, minterms, dontcares=None):
         return false
 
     minterms = [list(i) for i in minterms]
-    dontcares = [list(i) for i in (dontcares or [])]
+    dontcares = [list(i) for i in dontcares]
     for d in dontcares:
         if d in minterms:
             raise ValueError(f'{d} in minterms is also in dontcares')
