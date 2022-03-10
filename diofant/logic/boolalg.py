@@ -1324,9 +1324,9 @@ def _rem_redundancy(l1, terms):
     return essential
 
 
-def SOPform(variables, minterms, dontcares=[]):
+def _SOPform(variables, minterms, dontcares=[]):
     """
-    The SOPform function uses simplified_pairs and a redundant group-
+    The _SOPform function uses simplified_pairs and a redundant group-
     eliminating algorithm to convert the list of all input combos that
     generate '1' (the minterms) into the smallest Sum of Products form.
 
@@ -1345,7 +1345,7 @@ def SOPform(variables, minterms, dontcares=[]):
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform([t, x, y, z], minterms, dontcares)
+    >>> _SOPform([t, x, y, z], minterms, dontcares)
     (y & z) | (z & ~t)
 
     References
@@ -1373,9 +1373,9 @@ def SOPform(variables, minterms, dontcares=[]):
     return Or(*[_convert_to_varsSOP(x, variables) for x in essential])
 
 
-def POSform(variables, minterms, dontcares=[]):
+def _POSform(variables, minterms, dontcares=[]):
     """
-    The POSform function uses simplified_pairs and a redundant-group
+    The _POSform function uses simplified_pairs and a redundant-group
     eliminating algorithm to convert the list of all input combinations
     that generate '1' (the minterms) into the smallest Product of Sums form.
 
@@ -1394,7 +1394,7 @@ def POSform(variables, minterms, dontcares=[]):
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform([t, x, y, z], minterms, dontcares)
+    >>> _POSform([t, x, y, z], minterms, dontcares)
     z & (y | ~t)
 
     References
@@ -1478,8 +1478,8 @@ def simplify_logic(expr, form='cnf', deep=True):
         if deep:
             variables = [v.simplify() for v in variables]
         if form == 'dnf':
-            return SOPform(variables, truthtable)
+            return _SOPform(variables, truthtable)
         else:
-            return POSform(variables, truthtable)
+            return _POSform(variables, truthtable)
     else:
         raise ValueError('form can be cnf or dnf only')

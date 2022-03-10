@@ -38,13 +38,6 @@ Like most types in Diofant, Boolean expressions inherit from
     >>> (x | y).atoms()
     {x, y}
 
-The logic module also includes the following functions to derive boolean expressions
-from their truth tables-
-
-.. autofunction:: diofant.logic.boolalg.SOPform
-
-.. autofunction:: diofant.logic.boolalg.POSform
-
 Boolean functions
 -----------------
 

@@ -3,12 +3,13 @@ import itertools
 import pytest
 
 from diofant import (ITE, And, EmptySet, Equality, Equivalent, Implies,
-                     Integer, Interval, Nand, Nor, Not, Or, POSform, S,
-                     SOPform, Unequality, Union, Xor, false, oo,
-                     simplify_logic, sqrt, to_cnf, to_dnf, to_nnf, true)
+                     Integer, Interval, Nand, Nor, Not, Or, S, Unequality,
+                     Union, Xor, false, oo, simplify_logic, sqrt, to_cnf,
+                     to_dnf, to_nnf, true)
 from diofant.abc import a, b, c, d, w, x, y, z
-from diofant.logic.boolalg import (BooleanAtom, BooleanFunction, is_cnf,
-                                   is_dnf, is_literal, is_nnf, to_int_repr)
+from diofant.logic.boolalg import (BooleanAtom, BooleanFunction, _POSform,
+                                   _SOPform, is_cnf, is_dnf, is_literal,
+                                   is_nnf, to_int_repr)
 
 
 __all__ = ()
@@ -192,17 +193,17 @@ def test_equals():
 def test_simplification():
     set1 = [[0, 0, 1], [0, 1, 1], [1, 0, 0], [1, 1, 0]]
     set2 = [[0, 0, 0], [0, 1, 0], [1, 0, 1], [1, 1, 1]]
-    assert SOPform([x, y, z], set1) == (~x & z) | (~z & x)
-    assert ~SOPform([x, y, z], set2) == ~((~x & ~z) | (x & z))
-    assert POSform([x, y, z], set1 + set2) is true
-    assert SOPform([x, y, z], set1 + set2) is true
-    assert SOPform([w, x, y, z], set1 + set2) is true
+    assert _SOPform([x, y, z], set1) == (~x & z) | (~z & x)
+    assert ~_SOPform([x, y, z], set2) == ~((~x & ~z) | (x & z))
+    assert _POSform([x, y, z], set1 + set2) is true
+    assert _SOPform([x, y, z], set1 + set2) is true
+    assert _SOPform([w, x, y, z], set1 + set2) is true
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
                 [1, 1, 1, 1]]
     dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    assert SOPform([w, x, y, z], minterms, dontcares) == (~w & z) | (y & z)
-    assert POSform([w, x, y, z], minterms, dontcares) == (~w | y) & z
+    assert _SOPform([w, x, y, z], minterms, dontcares) == (~w & z) | (y & z)
+    assert _POSform([w, x, y, z], minterms, dontcares) == (~w | y) & z
 
     # test simplification
     assert (a & (b | c)).simplify() == a & (b | c)
@@ -223,23 +224,23 @@ def test_simplification():
     e = x & y ^ z | (z ^ x)
     res = [(x & ~z) | (z & ~x) | (z & ~y), (x & ~y) | (x & ~z) | (z & ~x)]
     assert to_dnf(e, simplify=True) in res
-    assert SOPform([z, y, x], [[0, 0, 1], [0, 1, 1],
-                               [1, 0, 0], [1, 0, 1], [1, 1, 0]]) == res[1]
+    assert _SOPform([z, y, x], [[0, 0, 1], [0, 1, 1],
+                                [1, 0, 0], [1, 0, 1], [1, 1, 0]]) == res[1]
 
     # check input
-    ans = SOPform([x, y], [[1, 0]])
-    assert SOPform([x, y], [[1, 0]]) == ans
-    assert POSform([x, y], [[1, 0]]) == ans
+    ans = _SOPform([x, y], [[1, 0]])
+    assert _SOPform([x, y], [[1, 0]]) == ans
+    assert _POSform([x, y], [[1, 0]]) == ans
 
-    pytest.raises(ValueError, lambda: SOPform([x], [[1]], [[1]]))
-    assert SOPform([x], [[1]], [[0]]) is true
-    assert SOPform([x], [[0]], [[1]]) is true
-    assert SOPform([x], [], []) is false
+    pytest.raises(ValueError, lambda: _SOPform([x], [[1]], [[1]]))
+    assert _SOPform([x], [[1]], [[0]]) is true
+    assert _SOPform([x], [[0]], [[1]]) is true
+    assert _SOPform([x], [], []) is false
 
-    pytest.raises(ValueError, lambda: POSform([x], [[1]], [[1]]))
-    assert POSform([x], [[1]], [[0]]) is true
-    assert POSform([x], [[0]], [[1]]) is true
-    assert POSform([x], [], []) is false
+    pytest.raises(ValueError, lambda: _POSform([x], [[1]], [[1]]))
+    assert _POSform([x], [[1]], [[0]]) is true
+    assert _POSform([x], [[0]], [[1]]) is true
+    assert _POSform([x], [], []) is false
 
     # check working of simplify
     assert ((a & b) | (a & c)).simplify() == a & (b | c)
