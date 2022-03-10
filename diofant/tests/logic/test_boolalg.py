@@ -4,9 +4,8 @@ import pytest
 
 from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
                      Implies, Integer, Interval, Nand, Nor, Not, Or, POSform,
-                     S, SOPform, Unequality, Union, Xor, bool_map, false, oo,
-                     simplify, simplify_logic, sqrt, to_cnf, to_dnf, to_nnf,
-                     true)
+                     S, SOPform, Unequality, Union, Xor, false, oo, simplify,
+                     simplify_logic, sqrt, to_cnf, to_dnf, to_nnf, true)
 from diofant.abc import a, b, c, d, w, x, y, z
 from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
                                    is_cnf, is_dnf, is_literal, is_nnf,
@@ -247,23 +246,6 @@ def test_simplification():
     assert simplify((a & b) | (a & c)) == a & (b | c)
     assert simplify(x & ~x) is false
     assert simplify(x | ~x) is true
-
-
-def test_bool_map():
-    minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
-                [1, 1, 1, 1]]
-    assert bool_map(~(~a), a) == (a, {a: a})
-    assert bool_map(SOPform([w, x, y, z], minterms),
-                    POSform([w, x, y, z], minterms)) == ((~w | y) & (~x | y) & z, {x: x, w: w, z: z, y: y})
-    assert bool_map(SOPform([x, z, y], [[1, 0, 1]]),
-                    SOPform([a, b, c], [[1, 0, 1]])) is not False
-    function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
-    function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
-    assert bool_map(function1, function2) == (function1, {y: a, z: b})
-    assert bool_map(x & ~y, y | ~x) is False
-    assert bool_map(x & ~y, y & ~x & z) is False
-    assert bool_map(x & ~y, (y | z) & ~x) is False
-    assert bool_map((~y & a) | (~y & b) | (x & y), x | y | a) is False
 
 
 def test_bool_symbol():

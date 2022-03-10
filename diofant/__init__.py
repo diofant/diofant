@@ -20,8 +20,8 @@ from .core import (Add, Atom, AtomicExpr, Basic, Catalan, Derivative, Dict,
                    oo, pi, preorder_traversal, symbols, sympify, var,
                    vectorize, zoo)
 from .logic import (ITE, And, Equivalent, Implies, Nand, Nor, Not, Or, POSform,
-                    SOPform, Xor, bool_map, false, satisfiable, simplify_logic,
-                    to_cnf, to_dnf, to_nnf, true)
+                    SOPform, Xor, false, satisfiable, simplify_logic, to_cnf,
+                    to_dnf, to_nnf, true)
 from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailed,
                     ComputationFailed, DomainError, EvaluationFailed,
                     ExactQuotientFailed, ExtraneousFactors, FlagError,
@@ -184,7 +184,7 @@ __all__ = (
     'integer_digits', 'integer_nthroot', 'mod_inverse', 'nan', 'nfloat',
     'oo', 'pi', 'preorder_traversal', 'symbols', 'sympify', 'var',
     'vectorize', 'zoo', 'ITE', 'And', 'Equivalent', 'Implies', 'Nand', 'Nor',
-    'Not', 'Or', 'POSform', 'SOPform', 'Xor', 'bool_map', 'false',
+    'Not', 'Or', 'POSform', 'SOPform', 'Xor', 'false',
     'satisfiable', 'simplify_logic', 'to_cnf', 'to_dnf', 'to_nnf', 'true',
     'LC', 'LM', 'LT', 'BasePolynomialError', 'CoercionFailed',
     'ComputationFailed', 'DomainError', 'EvaluationFailed',

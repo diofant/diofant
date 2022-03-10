@@ -95,8 +95,6 @@ Simplification and equivalence-testing
 Diofant's simplify() function can also be used to simplify logic expressions to their
 simplest forms.
 
-.. autofunction:: diofant.logic.boolalg.bool_map
-
 Inference
 ---------
 
