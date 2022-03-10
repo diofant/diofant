@@ -59,3 +59,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`6322`: degree((x+1)**10000) takes too long
 * :sympyissue:`22583`: is_polynomial right for wrong reasons (and sometimes wrong)
 * :sympyissue:`23202`: Dropping "all" __ne__ methods?
+* :sympyissue:`23223`: Wrong integration results of trigonometric functions

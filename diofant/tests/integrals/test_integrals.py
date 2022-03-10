@@ -1448,3 +1448,7 @@ def test_sympyissue_23069():
 def test_sympyissue_19639():
     assert integrate(sqrt(1 - x**2)*(a*x**3 + b*x**4),
                      (x, 0, 1)) == 2*a/15 + pi*b/32
+
+
+def test_sympyissue_23223():
+    assert integrate(abs(cos(x)), (x, -pi/2, pi/2)) == 2
