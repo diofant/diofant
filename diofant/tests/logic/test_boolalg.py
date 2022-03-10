@@ -9,9 +9,7 @@ from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
                      true)
 from diofant.abc import a, b, c, d, w, x, y, z
 from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
-                                   conjuncts, disjuncts,
-                                   distribute_and_over_or,
-                                   distribute_or_over_and, is_cnf, is_dnf,
+                                   conjuncts, disjuncts, is_cnf, is_dnf,
                                    is_literal, is_nnf, to_int_repr)
 
 
@@ -329,11 +327,6 @@ def test_disjuncts():
     assert disjuncts(False) == {False}
 
 
-def test_distribute():
-    assert distribute_and_over_or((a & b) | c) == (a | c) & (b | c)
-    assert distribute_or_over_and(a & (b | c)) == (a & b) | (a & c)
-
-
 def test_to_nnf():
     assert to_nnf(true) is true
     assert to_nnf(false) is false
@@ -372,11 +365,13 @@ def test_to_cnf():
     assert to_cnf(a >> b) == ~a | b
     assert to_cnf(a >> (b & c)) == (~a | b) & (~a | c)
     assert to_cnf(a & (b | c) | ~a & (b | c), True) == b | c
+    assert to_cnf(a | (~b & ~c)) == (a | ~b) & (a | ~c)
 
     assert to_cnf(Equivalent(a, b)) == (a | ~b) & (b | ~a)
     assert to_cnf(Equivalent(a, b & c)) == (~a | b) & (~a | c) & (~b | ~c | a)
     assert to_cnf(Equivalent(a, b | c), True) == (~b | a) & (~c | a) & (b | c | ~a)
     assert to_cnf(~(a | b) | c) == (~a | c) & (~b | c)
+    assert to_cnf((a & b) | c) == (a | c) & (b | c)
 
 
 def test_to_dnf():
@@ -384,6 +379,7 @@ def test_to_dnf():
     assert to_dnf(~b & ~c) == ~b & ~c
     assert to_dnf(~(b | c)) == ~b & ~c
     assert to_dnf(a & (b | c)) == (a & b) | (a & c)
+    assert to_dnf((~a | b) & c) == (b & c) | (c & ~a)
     assert to_dnf(a >> b) == ~a | b
     assert to_dnf(a >> (b & c)) == (~a) | (b & c)
 

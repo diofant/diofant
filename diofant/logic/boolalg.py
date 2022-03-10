@@ -936,38 +936,6 @@ def disjuncts(expr):
     return Or.make_args(expr)
 
 
-def distribute_and_over_or(expr):
-    """
-    Given a sentence s consisting of conjunctions and disjunctions
-    of literals, return an equivalent sentence in CNF.
-
-    Examples
-    ========
-
-    >>> distribute_and_over_or(a | (~b & ~c))
-    (a | ~b) & (a | ~c)
-
-    """
-    return _distribute((expr, And, Or))
-
-
-def distribute_or_over_and(expr):
-    """
-    Given a sentence s consisting of conjunctions and disjunctions
-    of literals, return an equivalent sentence in DNF.
-
-    Note that the output is NOT simplified.
-
-    Examples
-    ========
-
-    >>> distribute_or_over_and((~a | b) & c)
-    (b & c) | (c & ~a)
-
-    """
-    return _distribute((expr, Or, And))
-
-
 def _distribute(info):
     """Distributes info[1] over info[2] with respect to info[0]."""
     if isinstance(info[0], info[2]):
@@ -1036,7 +1004,7 @@ def to_cnf(expr, simplify=False):
         return expr
 
     expr = to_nnf(expr)
-    return distribute_and_over_or(expr)
+    return _distribute((expr, And, Or))
 
 
 def to_dnf(expr, simplify=False):
@@ -1066,7 +1034,7 @@ def to_dnf(expr, simplify=False):
         return expr
 
     expr = to_nnf(expr)
-    return distribute_or_over_and(expr)
+    return _distribute((expr, Or, And))
 
 
 def is_nnf(expr, simplified=True):

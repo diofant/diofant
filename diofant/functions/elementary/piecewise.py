@@ -2,7 +2,7 @@ from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
                      diff, oo)
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
-from ...logic.boolalg import Boolean, distribute_and_over_or
+from ...logic.boolalg import Boolean, to_cnf
 from ...sets import ExtendedReals
 from ...utilities import default_sort_key
 from .miscellaneous import Max, Min
@@ -131,7 +131,7 @@ class Piecewise(Function):
                 if non_false_ecpairs[-1].expr == expr:
                     newcond = Or(cond, non_false_ecpairs[-1].cond)
                     if isinstance(newcond, (And, Or)):
-                        newcond = distribute_and_over_or(newcond)
+                        newcond = to_cnf(newcond)
                     non_false_ecpairs[-1] = ExprCondPair(expr, newcond)
                     continue
             non_false_ecpairs.append(ExprCondPair(expr, cond))
