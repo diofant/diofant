@@ -46,7 +46,7 @@ from their truth tables-
 .. autofunction:: diofant.logic.boolalg.POSform
 
 Boolean functions
------------------------
+-----------------
 
 .. autoclass:: diofant.logic.boolalg.BooleanTrue
 
@@ -70,8 +70,8 @@ Boolean functions
 
 .. autoclass:: diofant.logic.boolalg.ITE
 
-The following functions can be used to handle Conjunctive and Disjunctive Normal
-forms-
+The following functions can be used to handle Conjunctive and Disjunctive
+Normal forms
 
 .. autofunction:: diofant.logic.boolalg.to_cnf
 
@@ -80,6 +80,12 @@ forms-
 .. autofunction:: diofant.logic.boolalg.is_cnf
 
 .. autofunction:: diofant.logic.boolalg.is_dnf
+
+The following functions can be used to handle Negation Normal Forms
+
+.. autofunction:: diofant.logic.boolalg.to_nnf
+
+.. autofunction:: diofant.logic.boolalg.is_nnf
 
 Simplification and equivalence-testing
 --------------------------------------

@@ -922,9 +922,8 @@ def _distribute(expr, a, b):
 
 def to_nnf(expr, simplify=True):
     """
-    Converts expr to Negation Normal Form.
-    A logical expression is in Negation Normal Form (NNF) if it
-    contains only And, Or and Not, and Not is applied only to literals.
+    Converts expr to Negation Normal Form (NNF).
+
     If simplify is True, the result contains no redundant clauses.
 
     Examples
@@ -934,6 +933,11 @@ def to_nnf(expr, simplify=True):
     (a | b) & (~c | ~d)
     >>> to_nnf(Equivalent(a >> b, b >> a))
     (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
+
+    See Also
+    ========
+
+    is_nnf
 
     """
     expr = sympify(expr)
@@ -946,8 +950,8 @@ def to_nnf(expr, simplify=True):
 
 def to_cnf(expr, simplify=False):
     """
-    Convert a propositional logical sentence s to conjunctive normal form.
-    That is, of the form ((A | ~B | ...) & (B | C | ...) & ...).
+    Convert expr to Conjunctive Normal Form (CNF).
+
     If simplify is True, the expr is evaluated to its simplest CNF form.
 
     Examples
@@ -958,6 +962,11 @@ def to_cnf(expr, simplify=False):
     >>> to_cnf((a | b) & (a | ~a), True)
     a | b
 
+    See Also
+    ========
+
+    is_cnf
+
     """
     expr = sympify(expr)
 
@@ -965,7 +974,7 @@ def to_cnf(expr, simplify=False):
         return expr
 
     if simplify:
-        return simplify_logic(expr, 'cnf', True)
+        return simplify_logic(expr, 'cnf')
 
     if is_cnf(expr):
         return expr
@@ -975,8 +984,8 @@ def to_cnf(expr, simplify=False):
 
 def to_dnf(expr, simplify=False):
     """
-    Convert a propositional logical sentence s to disjunctive normal form.
-    That is, of the form ((A & ~B & ...) | (B & C & ...) | ...).
+    Convert expr to Disjunctive Normal Form (DNF).
+
     If simplify is True, the expr is evaluated to its simplest DNF form.
 
     Examples
@@ -987,6 +996,11 @@ def to_dnf(expr, simplify=False):
     >>> to_dnf((a & b) | (a & ~b) | (b & c) | (~b & c), True)
     a | c
 
+    See Also
+    ========
+
+    is_dnf
+
     """
     expr = sympify(expr)
 
@@ -994,7 +1008,7 @@ def to_dnf(expr, simplify=False):
         return expr
 
     if simplify:
-        return simplify_logic(expr, 'dnf', True)
+        return simplify_logic(expr, 'dnf')
 
     if is_dnf(expr):
         return expr
@@ -1004,9 +1018,12 @@ def to_dnf(expr, simplify=False):
 
 def is_nnf(expr, simplified=True):
     """
-    Checks if expr is in Negation Normal Form.
-    A logical expression is in Negation Normal Form (NNF) if it
-    contains only And, Or and Not, and Not is applied only to literals.
+    Checks if expr is in Negation Normal Form (NNF).
+
+    A logical expression is in NNF if the negation operator is only
+    applied to literals and the only other allowed boolean functions
+    are conjunction and disjunction.
+
     If simplified is True, checks if result contains no redundant clauses.
 
     Examples
@@ -1022,6 +1039,13 @@ def is_nnf(expr, simplified=True):
     False
     >>> is_nnf((a >> b) & (b >> a))
     False
+
+    See Also
+    ========
+
+    to_nnf
+    is_cnf
+    is_dnf
 
     """
     expr = sympify(expr)
@@ -1048,7 +1072,10 @@ def is_nnf(expr, simplified=True):
 
 def is_cnf(expr):
     """
-    Test whether or not an expression is in conjunctive normal form.
+    Checks if expr is in Conjunctive Normal Form (CNF).
+
+    A logical expression is in CNF if it is a conjunction of one or more
+    clauses, where a clause is a disjunction of literals.
 
     Examples
     ========
@@ -1060,13 +1087,23 @@ def is_cnf(expr):
     >>> is_cnf((a & b) | c)
     False
 
+    See Also
+    ========
+
+    to_cnf
+    is_dnf
+    is_nnf
+
     """
     return _is_form(expr, And, Or)
 
 
 def is_dnf(expr):
     """
-    Test whether or not an expression is in disjunctive normal form.
+    Checks if expr is in Disjunctive Normal Form (DNF).
+
+    A logical expression is in DNF if it is a disjunction of one or more
+    clauses, where a clause is a conjunction of literals.
 
     Examples
     ========
@@ -1080,19 +1117,23 @@ def is_dnf(expr):
     >>> is_dnf(a & (b | c))
     False
 
+    See Also
+    ========
+
+    to_dnf
+    is_cnf
+    is_nnf
+
     """
     return _is_form(expr, Or, And)
 
 
 def _is_form(expr, function1, function2):
-    """Test whether or not an expression is of the required form."""
     expr = sympify(expr)
 
-    # Special case of an Atom
     if expr.is_Atom:
         return True
 
-    # Special case of a single expression of function2
     if isinstance(expr, function2):
         for lit in expr.args:
             if isinstance(lit, Not):
@@ -1103,7 +1144,6 @@ def _is_form(expr, function1, function2):
                     return False
         return True
 
-    # Special case of a single negation
     if isinstance(expr, Not):
         if not expr.args[0].is_Atom:
             return False
@@ -1148,9 +1188,8 @@ def is_literal(expr):
 
     """
     if isinstance(expr, Not):
-        return not isinstance(expr.args[0], BooleanFunction)
-    else:
-        return not isinstance(expr, BooleanFunction)
+        expr = expr.args[0]
+    return not isinstance(expr, BooleanFunction)
 
 
 def to_int_repr(clauses, symbols):
