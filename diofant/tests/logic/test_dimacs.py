@@ -1,14 +1,19 @@
-"""Various tests on satisfiability using dimacs cnf file syntax
-You can find lots of cnf files in
-ftp://dimacs.rutgers.edu/pub/challenge/satisfiability/benchmarks/cnf/
+"""
+Various tests on satisfiability using the DIMACS CNF file format.
+
+References
+==========
+
+* http://archive.dimacs.rutgers.edu/pub/challenge/satisfiability/benchmarks/cnf/
+
 """
 
 import os
 
-from diofant.logic.algorithms.dpll import dpll_satisfiable
-from diofant.logic.algorithms.dpll2 import \
-    dpll_satisfiable as dpll2_satisfiable
-from diofant.logic.utilities.dimacs import load
+import pytest
+
+from diofant.logic import satisfiable
+from diofant.logic.utils import parse_dimacs
 
 
 __all__ = ()
@@ -16,32 +21,26 @@ __all__ = ()
 
 def load_file(location):
     """Loads a boolean expression from a file."""
-    location = os.path.dirname(__file__) + '/' + location
+    location = os.path.dirname(__file__) + '/' + location + '.cnf'
     with open(location, encoding='utf-8') as f:
         s = f.read()
 
-    return load(s)
+    return parse_dimacs(s)
 
 
-def test_f1():
-    assert bool(dpll_satisfiable(load_file('simple_v3_c2.cnf')))
+def test_parse_dimacs():
+    pytest.raises(ValueError, lambda: parse_dimacs('q 1 2 3'))
+    pytest.raises(ValueError, lambda: parse_dimacs('p cnf 2 1\n1 ?'))
+    pytest.raises(ValueError, lambda: parse_dimacs('p cnf 2 2\n 1'))
 
 
-def test_f2():
-    assert bool(dpll_satisfiable(load_file('quinn.cnf')))
+@pytest.mark.parametrize('algorithm', ['dpll', 'dpll2'])
+@pytest.mark.parametrize('name', ['f3', 'f5', 'quinn', 'simple_v3_c2'])
+def test_dimacs_satisfiable(algorithm, name):
+    assert bool(satisfiable(load_file(name), algorithm=algorithm))
 
 
-def test_f3():
-    assert bool(dpll_satisfiable(load_file('f3.cnf')))
-
-
-def test_f4():
-    assert not bool(dpll_satisfiable(load_file('hole6.cnf')))
-
-
-def test_f5():
-    assert bool(dpll_satisfiable(load_file('f5.cnf')))
-
-
-def test_f6():
-    assert not bool(dpll2_satisfiable(load_file('aim-50-2_0-no-2.cnf')))
+@pytest.mark.parametrize('algorithm', ['dpll', 'dpll2'])
+@pytest.mark.parametrize('name', ['aim-50-2_0-no-2', 'hole6'])
+def test_dimacs_not_satisfiable(algorithm, name):
+    assert not bool(satisfiable(load_file(name), algorithm=algorithm))
