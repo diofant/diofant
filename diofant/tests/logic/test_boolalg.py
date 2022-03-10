@@ -11,8 +11,7 @@ from diofant.abc import a, b, c, d, w, x, y, z
 from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
                                    conjuncts, disjuncts,
                                    distribute_and_over_or,
-                                   distribute_or_over_and,
-                                   eliminate_implications, is_cnf, is_dnf,
+                                   distribute_or_over_and, is_cnf, is_dnf,
                                    is_literal, is_nnf, to_int_repr)
 
 
@@ -314,12 +313,6 @@ def test_double_negation():
     assert ~(~a) == a
 
 
-def test_eliminate_implications():
-    assert eliminate_implications(Implies(a, b, evaluate=False)) == ~a | b
-    assert eliminate_implications(a >> (c >> ~b)) == (~b | ~c) | ~a
-    assert eliminate_implications(Equivalent(a, b, c, d)) == (~a | b) & (~b | c) & (~c | d) & (~d | a)
-
-
 def test_conjuncts():
     assert conjuncts(a & b & c) == {a, b, c}
     assert conjuncts((a | b) & c) == {a | b, c}
@@ -356,7 +349,11 @@ def test_to_nnf():
     assert to_nnf(a | ~a | b) is true
     assert to_nnf(a & ~a & b) is false
     assert to_nnf(a >> b) == ~a | b
+    assert to_nnf(Implies(a, b, evaluate=False)) == ~a | b
+    assert to_nnf(a >> (c >> ~b)) == (~b | ~c) | ~a
+    assert to_nnf(Equivalent(a, b)) == (a | ~b) & (b | ~a)
     assert to_nnf(Equivalent(a, b, c)) == (~a | b) & (~b | c) & (~c | a)
+    assert to_nnf(Equivalent(a, b, c, d)) == (~a | b) & (~b | c) & (~c | d) & (~d | a)
     assert to_nnf(a ^ b ^ c) == (a | b | c) & (~a | ~b | c) & (a | ~b | ~c) & (~a | b | ~c)
     assert to_nnf(ITE(a, b, c)) == (~a | b) & (a | c)
     assert to_nnf(~(a | b | c)) == ~a & ~b & ~c

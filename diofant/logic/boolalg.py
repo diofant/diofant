@@ -1035,7 +1035,7 @@ def to_cnf(expr, simplify=False):
     if is_cnf(expr):
         return expr
 
-    expr = eliminate_implications(expr)
+    expr = to_nnf(expr)
     return distribute_and_over_or(expr)
 
 
@@ -1065,7 +1065,7 @@ def to_dnf(expr, simplify=False):
     if is_dnf(expr):
         return expr
 
-    expr = eliminate_implications(expr)
+    expr = to_nnf(expr)
     return distribute_or_over_and(expr)
 
 
@@ -1195,26 +1195,6 @@ def _is_form(expr, function1, function2):
                     return False
 
     return True
-
-
-def eliminate_implications(expr):
-    """
-    Change >>, <<, and Equivalent into &, |, and ~. That is, return an
-    expression that is equivalent to s, but has only &, |, and ~ as logical
-    operators.
-
-    Examples
-    ========
-
-    >>> eliminate_implications(a >> b)
-    b | ~a
-    >>> eliminate_implications(Equivalent(a, b))
-    (a | ~b) & (b | ~a)
-    >>> eliminate_implications(Equivalent(a, b, c))
-    (a | ~c) & (b | ~a) & (c | ~b)
-
-    """
-    return to_nnf(expr)
 
 
 def is_literal(expr):
