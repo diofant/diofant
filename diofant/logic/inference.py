@@ -2,7 +2,7 @@
 
 from ..core.sympify import sympify
 from ..utilities import ordered
-from .boolalg import And, Not, conjuncts, to_cnf
+from .boolalg import And, Not, to_cnf
 
 
 def literal_symbol(literal):
@@ -243,7 +243,7 @@ class PropKB(KB):
         [y, x | y]
 
         """
-        for c in conjuncts(to_cnf(sentence)):
+        for c in And.make_args(to_cnf(sentence)):
             self.clauses_.add(c)
 
     def ask(self, query):
@@ -281,5 +281,5 @@ class PropKB(KB):
         []
 
         """
-        for c in conjuncts(to_cnf(sentence)):
+        for c in And.make_args(to_cnf(sentence)):
             self.clauses_.discard(c)

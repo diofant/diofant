@@ -9,8 +9,8 @@ from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
                      true)
 from diofant.abc import a, b, c, d, w, x, y, z
 from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
-                                   conjuncts, disjuncts, is_cnf, is_dnf,
-                                   is_literal, is_nnf, to_int_repr)
+                                   is_cnf, is_dnf, is_literal, is_nnf,
+                                   to_int_repr)
 
 
 __all__ = ()
@@ -309,22 +309,6 @@ def test_logic_associativity():
 def test_double_negation():
     a = Boolean()
     assert ~(~a) == a
-
-
-def test_conjuncts():
-    assert conjuncts(a & b & c) == {a, b, c}
-    assert conjuncts((a | b) & c) == {a | b, c}
-    assert conjuncts(a) == {a}
-    assert conjuncts(True) == {True}
-    assert conjuncts(False) == {False}
-
-
-def test_disjuncts():
-    assert disjuncts(a | b | c) == {a, b, c}
-    assert disjuncts((a | b) & c) == {(a | b) & c}
-    assert disjuncts(a) == {a}
-    assert disjuncts(True) == {True}
-    assert disjuncts(False) == {False}
 
 
 def test_to_nnf():

@@ -16,7 +16,7 @@ from collections import defaultdict
 from heapq import heappop, heappush
 
 from ...utilities import default_sort_key, ordered
-from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
+from ..boolalg import And, _find_predicates, to_cnf, to_int_repr
 
 
 def dpll_satisfiable(expr, all_models=False):
@@ -34,7 +34,7 @@ def dpll_satisfiable(expr, all_models=False):
     False
 
     """
-    clauses = conjuncts(to_cnf(expr))
+    clauses = And.make_args(to_cnf(expr))
     if False in clauses:
         if all_models:
             return (f for f in [False])

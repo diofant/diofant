@@ -12,7 +12,7 @@ References
 """
 
 from ...utilities import default_sort_key
-from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
+from ..boolalg import And, _find_predicates, to_cnf, to_int_repr
 
 
 def dpll_satisfiable(expr):
@@ -26,7 +26,7 @@ def dpll_satisfiable(expr):
     False
 
     """
-    clauses = conjuncts(to_cnf(expr))
+    clauses = And.make_args(to_cnf(expr))
     if False in clauses:
         return False
     symbols = sorted(_find_predicates(expr), key=default_sort_key)

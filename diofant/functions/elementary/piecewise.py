@@ -1,8 +1,8 @@
 from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
                      diff, oo)
 from ...core.relational import Relational
-from ...logic import And, Not, Or, false, true
-from ...logic.boolalg import Boolean, to_cnf
+from ...logic import And, Not, Or, false, to_cnf, true
+from ...logic.boolalg import Boolean
 from ...sets import ExtendedReals
 from ...utilities import default_sort_key
 from .miscellaneous import Max, Min

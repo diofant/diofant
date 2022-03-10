@@ -10,7 +10,6 @@ from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
 from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
 from ..logic import And, Or, false, to_cnf, true
-from ..logic.boolalg import conjuncts, disjuncts
 from ..matrices import MatrixBase
 from ..simplify import simplify
 from ..solvers.inequalities import solve_univariate_inequality
@@ -229,13 +228,13 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator,
         a = -oo
         b = oo
         aux = True
-        conds = conjuncts(to_cnf(cond))
+        conds = And.make_args(to_cnf(cond))
         t = Dummy('t', extended_real=True)
         for c in conds:
             a_ = oo
             b_ = -oo
             aux_ = []
-            for d in disjuncts(c):
+            for d in Or.make_args(c):
                 d_ = d.replace(re,
                                lambda x: x.as_real_imag()[0]).subs({re(s): t})
                 if not d.is_Relational or d.rel_op in ('==', '!=') \
@@ -260,7 +259,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator,
                 aux = And(aux, Or(*aux_))
         return a, b, aux
 
-    conds = [process_conds(c) for c in disjuncts(cond)]
+    conds = [process_conds(c) for c in Or.make_args(cond)]
     conds = [x for x in conds if x[2] != false]
     conds.sort(key=lambda x: (x[0] - x[1], count_ops(x[2])))
 
@@ -955,13 +954,13 @@ def _laplace_transform(f, t, s_, simplify=True, noconds=False):
         """Turn ``conds`` into a strip and auxiliary conditions."""
         a = -oo
         aux = True
-        conds = conjuncts(to_cnf(conds))
+        conds = And.make_args(to_cnf(conds))
         p, q, w1, w2, w3, w4, w5 = symbols(
             'p q w1 w2 w3 w4 w5', cls=Wild, exclude=[s])
         for c in conds:
             a_ = oo
             aux_ = []
-            for d in disjuncts(c):
+            for d in Or.make_args(c):
                 m = d.match(abs(arg((s + w3)**p*q, w1)) < w2)
                 if not m:
                     m = d.match(abs(arg((s + w3)**p*q, w1)) <= w2)
@@ -1001,7 +1000,7 @@ def _laplace_transform(f, t, s_, simplify=True, noconds=False):
                 aux = And(aux, Or(*aux_))
         return a, aux
 
-    conds = [process_conds(c) for c in disjuncts(cond)]
+    conds = [process_conds(c) for c in Or.make_args(cond)]
     conds2 = [x for x in conds if x[1] != false and x[0] != -oo]
     if not conds2:
         conds2 = [x for x in conds if x[1] != false]

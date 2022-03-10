@@ -906,36 +906,6 @@ class ITE(BooleanFunction):
 # end class definitions. Some useful methods
 
 
-def conjuncts(expr):
-    """Return a list of the conjuncts in the expr s.
-
-    Examples
-    ========
-
-    >>> conjuncts(a & b)
-    frozenset({a, b})
-    >>> conjuncts(a | b)
-    frozenset({a | b})
-
-    """
-    return And.make_args(expr)
-
-
-def disjuncts(expr):
-    """Return a list of the disjuncts in the sentence s.
-
-    Examples
-    ========
-
-    >>> disjuncts(a | b)
-    frozenset({a, b})
-    >>> disjuncts(a & b)
-    frozenset({a & b})
-
-    """
-    return Or.make_args(expr)
-
-
 def _distribute(info):
     """Distributes info[1] over info[2] with respect to info[0]."""
     if isinstance(info[0], info[2]):
