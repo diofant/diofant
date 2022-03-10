@@ -903,26 +903,21 @@ class ITE(BooleanFunction):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
 
 
-# end class definitions. Some useful methods
-
-
-def _distribute(info):
-    """Distributes info[1] over info[2] with respect to info[0]."""
-    if isinstance(info[0], info[2]):
-        for arg in info[0].args:
-            if isinstance(arg, info[1]):
+def _distribute(expr, a, b):
+    """Distributes a over b with respect to expr."""
+    if isinstance(expr, b):
+        for arg in expr.args:
+            if isinstance(arg, a):
                 conj = arg
                 break
         else:
-            return info[0]
-        rest = info[2](*[a for a in info[0].args if a is not conj])
-        return info[1](*list(map(_distribute,
-                                 ((info[2](c, rest), info[1], info[2]) for c in conj.args))))
-    elif isinstance(info[0], info[1]):
-        return info[1](*list(map(_distribute,
-                                 ((x, info[1], info[2]) for x in info[0].args))))
+            return expr
+        rest = b(*(a for a in expr.args if a is not conj))
+        return a(*(_distribute(b(c, rest), a, b) for c in conj.args))
+    elif isinstance(expr, a):
+        return a(*(_distribute(c, a, b) for c in expr.args))
     else:
-        return info[0]
+        return expr
 
 
 def to_nnf(expr, simplify=True):
@@ -942,8 +937,10 @@ def to_nnf(expr, simplify=True):
 
     """
     expr = sympify(expr)
+
     if is_nnf(expr, simplify):
         return expr
+
     return expr.to_nnf(simplify)
 
 
@@ -963,18 +960,17 @@ def to_cnf(expr, simplify=False):
 
     """
     expr = sympify(expr)
+
     if not isinstance(expr, BooleanFunction):
         return expr
 
     if simplify:
         return simplify_logic(expr, 'cnf', True)
 
-    # Don't convert unless we have to
     if is_cnf(expr):
         return expr
 
-    expr = to_nnf(expr)
-    return _distribute((expr, And, Or))
+    return _distribute(to_nnf(expr), And, Or)
 
 
 def to_dnf(expr, simplify=False):
@@ -993,18 +989,17 @@ def to_dnf(expr, simplify=False):
 
     """
     expr = sympify(expr)
+
     if not isinstance(expr, BooleanFunction):
         return expr
 
     if simplify:
         return simplify_logic(expr, 'dnf', True)
 
-    # Don't convert unless we have to
     if is_dnf(expr):
         return expr
 
-    expr = to_nnf(expr)
-    return _distribute((expr, Or, And))
+    return _distribute(to_nnf(expr), Or, And)
 
 
 def is_nnf(expr, simplified=True):
