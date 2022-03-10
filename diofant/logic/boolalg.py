@@ -1439,7 +1439,7 @@ def _find_predicates(expr):
     return set().union(*(_find_predicates(i) for i in expr.args))
 
 
-def simplify_logic(expr, form=None, deep=True):
+def simplify_logic(expr, form='cnf', deep=True):
     """
     This function simplifies a boolean function to its simplified version
     in SOP or POS form. The return type is an Or or And object in Diofant.
@@ -1448,10 +1448,8 @@ def simplify_logic(expr, form=None, deep=True):
     ==========
 
     expr : string or boolean expression
-    form : string ('cnf' or 'dnf') or None (default).
-        If 'cnf' or 'dnf', the simplest expression in the corresponding
-        normal form is returned; if None, the answer is returned
-        according to the form with fewest args (in CNF by default).
+    form : string ('cnf' or 'dnf'), default to 'cnf'.
+        Selects the normal form in which the result is returned.
     deep : boolean (default True)
         indicates whether to recursively simplify any
         non-boolean functions contained within the input.
@@ -1469,10 +1467,8 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-    if form == 'cnf' or form == 'dnf' or form is None:
+    if form in ('cnf', 'dnf'):
         expr = sympify(expr)
-        if not isinstance(expr, BooleanFunction):
-            return expr
         variables = _find_predicates(expr)
         truthtable = []
         for t in product([0, 1], repeat=len(variables)):
@@ -1480,12 +1476,10 @@ def simplify_logic(expr, form=None, deep=True):
             if expr.xreplace(dict(zip(variables, t))):
                 truthtable.append(t)
         if deep:
-            from ..simplify import simplify
-            variables = [simplify(v) for v in variables]
-        if form == 'dnf' or \
-           (form is None and len(truthtable) >= (2 ** (len(variables) - 1))):
+            variables = [v.simplify() for v in variables]
+        if form == 'dnf':
             return SOPform(variables, truthtable)
-        elif form == 'cnf' or form is None:  # pragma: no branch
+        else:
             return POSform(variables, truthtable)
     else:
         raise ValueError('form can be cnf or dnf only')

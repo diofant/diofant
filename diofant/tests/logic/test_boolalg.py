@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
                      Implies, Integer, Interval, Nand, Nor, Not, Or, POSform,
-                     S, SOPform, Unequality, Union, Xor, false, oo, simplify,
+                     S, SOPform, Unequality, Union, Xor, false, oo,
                      simplify_logic, sqrt, to_cnf, to_dnf, to_nnf, true)
 from diofant.abc import a, b, c, d, w, x, y, z
 from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
@@ -206,24 +206,24 @@ def test_simplification():
     assert POSform([w, x, y, z], minterms, dontcares) == (~w | y) & z
 
     # test simplification
-    assert simplify_logic(a & (b | c)) == a & (b | c)
-    assert simplify_logic((a & b) | (a & c)) == a & (b | c)
-    assert simplify_logic(a >> b) == ~a | b
-    assert simplify_logic(Equivalent(a, b)) == (a & b) | (~a & ~b)
-    assert simplify_logic(Equality(a, 2) & c) == Equality(a, 2) & c
-    assert simplify_logic(Equality(a, 2) & a) == Equality(a, 2) & a
-    assert simplify_logic(Equality(a, b) & c) == Equality(a, b) & c
-    assert simplify_logic((Equality(a, 3) & b) | (Equality(a, 3) & c)) == Equality(a, 3) & (b | c)
+    assert (a & (b | c)).simplify() == a & (b | c)
+    assert ((a & b) | (a & c)).simplify() == a & (b | c)
+    assert (a >> b).simplify() == ~a | b
+    assert to_dnf(Equivalent(a, b), simplify=True) == (a & b) | (~a & ~b)
+    assert (Equality(a, 2) & c).simplify() == Equality(a, 2) & c
+    assert (Equality(a, 2) & a).simplify() == Equality(a, 2) & a
+    assert (Equality(a, b) & c).simplify() == Equality(a, b) & c
+    assert ((Equality(a, 3) & b) | (Equality(a, 3) & c)).simplify() == Equality(a, 3) & (b | c)
 
     e = a & (x**2 - x)
-    assert simplify_logic(e) == a & x*(x - 1)
+    assert e.simplify() == a & x*(x - 1)
     assert simplify_logic(e, deep=False) == e
 
     pytest.raises(ValueError, lambda: simplify_logic(a & (b | c), form='spam'))
 
     e = x & y ^ z | (z ^ x)
     res = [(x & ~z) | (z & ~x) | (z & ~y), (x & ~y) | (x & ~z) | (z & ~x)]
-    assert simplify_logic(e) in res
+    assert to_dnf(e, simplify=True) in res
     assert SOPform([z, y, x], [[0, 0, 1], [0, 1, 1],
                                [1, 0, 0], [1, 0, 1], [1, 1, 0]]) == res[1]
 
@@ -243,9 +243,9 @@ def test_simplification():
     assert POSform([x], [], []) is false
 
     # check working of simplify
-    assert simplify((a & b) | (a & c)) == a & (b | c)
-    assert simplify(x & ~x) is false
-    assert simplify(x | ~x) is true
+    assert ((a & b) | (a & c)).simplify() == a & (b | c)
+    assert (x & ~x).simplify() is false
+    assert (x | ~x).simplify() is true
 
 
 def test_bool_symbol():
