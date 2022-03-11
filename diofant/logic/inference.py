@@ -5,32 +5,6 @@ from ..utilities import ordered
 from .boolalg import And, Not, to_cnf
 
 
-def literal_symbol(literal):
-    """
-    The symbol in this literal (without the negation).
-
-    Examples
-    ========
-
-    >>> literal_symbol(a)
-    a
-    >>> literal_symbol(~a)
-    a
-
-    """
-    if literal is True or literal is False:
-        return literal
-    try:
-        if literal.is_Symbol:
-            return literal
-        if literal.is_Not:
-            return literal_symbol(literal.args[0])
-        else:
-            raise ValueError
-    except (AttributeError, ValueError) as exc:
-        raise ValueError('Argument must be a boolean literal.') from exc
-
-
 def satisfiable(expr, algorithm='dpll2', all_models=False):
     """
     Check satisfiability of a propositional sentence.

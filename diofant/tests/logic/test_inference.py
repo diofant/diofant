@@ -14,20 +14,10 @@ from diofant.logic.algorithms.dpll2 import SATSolver
 from diofant.logic.algorithms.dpll2 import \
     dpll_satisfiable as dpll2_satisfiable
 from diofant.logic.boolalg import Boolean
-from diofant.logic.inference import (PropKB, entails, literal_symbol, pl_true,
-                                     valid)
+from diofant.logic.inference import PropKB, entails, pl_true, valid
 
 
 __all__ = ()
-
-
-def test_literal():
-    assert literal_symbol(True) is True
-    assert literal_symbol(False) is False
-    assert literal_symbol(a) is a
-    assert literal_symbol(~a) is a
-
-    pytest.raises(ValueError, lambda: literal_symbol(a + b))
 
 
 def test_find_pure_symbol():
