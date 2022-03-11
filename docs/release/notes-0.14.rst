@@ -60,3 +60,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`22583`: is_polynomial right for wrong reasons (and sometimes wrong)
 * :sympyissue:`23202`: Dropping "all" __ne__ methods?
 * :sympyissue:`23223`: Wrong integration results of trigonometric functions
+* :sympyissue:`23224`: Python code printer not respecting tuple with one element

@@ -580,3 +580,8 @@ def test_Min_Max():
 def test_sympyissue_12092():
     f = implemented_function('f', lambda x: x**2)
     assert f(f(2)).evalf() == Float(16)
+
+
+def test_sympyissue_23224():
+    f = lambdify([], (1,))
+    assert f() == (1,)
