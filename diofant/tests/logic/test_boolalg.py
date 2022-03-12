@@ -2,14 +2,13 @@ import itertools
 
 import pytest
 
-from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
-                     Implies, Integer, Interval, Nand, Nor, Not, Or, POSform,
-                     S, SOPform, Unequality, Union, Xor, false, oo,
+from diofant import (ITE, And, EmptySet, Equality, Equivalent, Implies,
+                     Integer, Interval, Nand, Nor, Not, Or, POSform, S,
+                     SOPform, Unequality, Union, Xor, false, oo,
                      simplify_logic, sqrt, to_cnf, to_dnf, to_nnf, true)
 from diofant.abc import a, b, c, d, w, x, y, z
-from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
-                                   is_cnf, is_dnf, is_literal, is_nnf,
-                                   to_int_repr)
+from diofant.logic.boolalg import (BooleanAtom, BooleanFunction, is_cnf,
+                                   is_dnf, is_literal, is_nnf, to_int_repr)
 
 
 __all__ = ()
@@ -197,7 +196,7 @@ def test_simplification():
     assert ~SOPform([x, y, z], set2) == ~((~x & ~z) | (x & z))
     assert POSform([x, y, z], set1 + set2) is true
     assert SOPform([x, y, z], set1 + set2) is true
-    assert SOPform([Dummy(), Dummy(), Dummy()], set1 + set2) is true
+    assert SOPform([w, x, y, z], set1 + set2) is true
 
     minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1],
                 [1, 1, 1, 1]]
@@ -289,7 +288,6 @@ def test_logic_associativity():
 
 
 def test_double_negation():
-    a = Boolean()
     assert ~(~a) == a
 
 
@@ -611,6 +609,6 @@ def test_sympyissue_10641():
 
 
 def test_sympyissue_12522():
-    assert Eq(1, 1).simplify() is true
+    assert Equality(1, 1).simplify() is true
     assert true.simplify() is true
     assert false.simplify() is false
