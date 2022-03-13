@@ -896,3 +896,7 @@ def test_sympyissue_22893():
 
 def test_sympyissue_22986():
     assert limit(acosh(1 + 1/x)*sqrt(x), x, oo) == sqrt(2)
+
+
+def test_sympyissue_23231():
+    assert limit((2**x - 2**-x)/(2**x + 2**-x), x, -oo) == -1
