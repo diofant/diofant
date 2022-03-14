@@ -7,12 +7,9 @@ import pytest
 from diofant import (And, Equivalent, Implies, Or, false, numbered_symbols, pi,
                      satisfiable, true)
 from diofant.abc import a, b, c, x, y
-from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
-                                           find_pure_symbol, find_unit_clause,
-                                           unit_propagate)
+from diofant.logic.algorithms.dpll import (dpll, find_pure_symbol,
+                                           find_unit_clause, unit_propagate)
 from diofant.logic.algorithms.dpll2 import SATSolver
-from diofant.logic.algorithms.dpll2 import \
-    dpll_satisfiable as dpll2_satisfiable
 from diofant.logic.boolalg import Boolean
 from diofant.logic.inference import PropKB, entails, pl_true, valid
 
@@ -56,39 +53,7 @@ def test_dpll():
                 [1, 2, 3, 4], {1: False}) == {1: False, 4: True}
 
 
-def test_dpll_satisfiable():
-    assert dpll_satisfiable(false) is False
-    assert dpll_satisfiable(a & ~a) is False
-    assert dpll_satisfiable(a & ~b) == {a: True, b: False}
-    assert dpll_satisfiable(a | b) in ({a: True}, {b: True}, {a: True, b: True})
-    assert dpll_satisfiable((~a | b) & (~b | a)) in ({a: True, b: True},
-                                                     {a: False, b: False})
-    assert dpll_satisfiable((a | b) & (~b | c)) in ({a: True, b: False},
-                                                    {a: True, c: True},
-                                                    {b: True, c: True})
-    assert dpll_satisfiable(a & b & c) == {a: True, b: True, c: True}
-    assert dpll_satisfiable((a | b) & (a >> b)) == {b: True}
-    assert dpll_satisfiable(Equivalent(a, b) & a) == {a: True, b: True}
-    assert dpll_satisfiable(Equivalent(a, b) & ~a) == {a: False, b: False}
-
-
 def test_dpll2_satisfiable():
-    assert dpll2_satisfiable(a & ~a) is False
-    assert dpll2_satisfiable(a & ~b) == {a: True, b: False}
-    assert dpll2_satisfiable(a | b) in ({a: True}, {b: True},
-                                        {a: True, b: True})
-    assert dpll2_satisfiable((~a | b) & (~b | a)) in ({a: True, b: True},
-                                                      {a: False, b: False})
-    assert dpll2_satisfiable((a | b) & (~b | c)) in ({a: True, b: False,
-                                                      c: True},
-                                                     {a: True, b: True,
-                                                      c: True})
-    assert dpll2_satisfiable(a & b & c) == {a: True, b: True, c: True}
-    assert dpll2_satisfiable((a | b) & (a >> b)) in ({b: True, a: False},
-                                                     {b: True, a: True})
-    assert dpll2_satisfiable(Equivalent(a, b) & a) == {a: True, b: True}
-    assert dpll2_satisfiable(Equivalent(a, b) & ~a) == {a: False, b: False}
-
     l = SATSolver([], set(), set())
     assert not l.lit_heap
     assert l._vsids_calculate() == 0
@@ -119,11 +84,6 @@ def test_dpll2_satisfiable():
     l = copy.deepcopy(l0)
     assert next(l._find_model()) == {1: True, 2: False, 3: False}
     assert l._simple_compute_conflict() == [3]
-
-
-def test_satisfiable():
-    assert satisfiable(a & (a >> b) & ~b) is False
-    assert next(satisfiable(a & ~a, all_models=True)) is False
 
 
 def test_valid():
@@ -165,8 +125,6 @@ def test_pl_true():
     assert pl_true(a & b & (~a | ~b), {a: True}, deep=True) is False
     assert pl_true((c >> a) >> (b >> a), {c: True}, deep=True) is True
 
-
-def test_pl_true_wrong_input():
     pytest.raises(ValueError, lambda: pl_true('John Cleese'))
     pytest.raises(ValueError, lambda: pl_true(42 + pi + pi ** 2))
     pytest.raises(ValueError, lambda: pl_true(42))
@@ -205,40 +163,57 @@ def test_PropKB():
     kb = PropKB((a >> b) & (b >> c))
     assert kb.ask(a >> c) is True
 
-
-def test_propKB_tolerant():
     kb = PropKB()
     assert kb.ask(b) is False
 
 
-def test_satisfiable_non_symbols():
+@pytest.mark.parametrize('algorithm', ['dpll', 'dpll2'])
+def test_satisfiable(algorithm):
+    assert satisfiable(true, algorithm=algorithm) == {true: true}
+    assert satisfiable(false, algorithm=algorithm) is False
+    assert satisfiable(a & ~a, algorithm=algorithm) is False
+    assert satisfiable(a & ~b, algorithm=algorithm) == {a: True, b: False}
+    assert satisfiable(a | b, algorithm=algorithm) in ({a: True}, {b: True},
+                                                       {a: True, b: True})
+    assert satisfiable((~a | b) & (~b | a),
+                       algorithm=algorithm) in ({a: True, b: True},
+                                                {a: False, b: False})
+    assert satisfiable((a | b) & (~b | c),
+                       algorithm=algorithm) in ({a: True, b: False},
+                                                {a: True, c: True},
+                                                {b: True, c: True},
+                                                {a: True, c: True, b: False})
+    assert satisfiable(a & (a >> b) & ~b, algorithm=algorithm) is False
+    assert satisfiable(a & b & c, algorithm=algorithm) == {a: True, b: True,
+                                                           c: True}
+    assert satisfiable((a | b) & (a >> b),
+                       algorithm=algorithm) in ({b: True}, {b: True, a: False})
+    assert satisfiable(Equivalent(a, b) & a, algorithm=algorithm) == {a: True,
+                                                                      b: True}
+    assert satisfiable(Equivalent(a, b) & ~a, algorithm=algorithm) == {a: False,
+                                                                       b: False}
+
     class Zero(Boolean):
         pass
 
     assumptions = Zero(x*y)
     facts = Implies(Zero(x*y), Zero(x) | Zero(y))
     query = ~Zero(x) & ~Zero(y)
-    refutations = [
-        {Zero(x): True, Zero(x*y): True},
-        {Zero(y): True, Zero(x*y): True},
-        {Zero(x): True, Zero(y): True, Zero(x*y): True},
-        {Zero(x): True, Zero(y): False, Zero(x*y): True},
-        {Zero(x): False, Zero(y): True, Zero(x*y): True}]
-    assert not satisfiable(And(assumptions, facts, query), algorithm='dpll')
-    assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll') in refutations
-    assert not satisfiable(And(assumptions, facts, query), algorithm='dpll2')
-    assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll2') in refutations
-
-
-def test_satisfiable_bool():
-    assert satisfiable(true) == {true: true}
-    assert satisfiable(false) is False
+    refutations = [{Zero(x): True, Zero(x*y): True},
+                   {Zero(y): True, Zero(x*y): True},
+                   {Zero(x): True, Zero(y): True, Zero(x*y): True},
+                   {Zero(x): True, Zero(y): False, Zero(x*y): True},
+                   {Zero(x): False, Zero(y): True, Zero(x*y): True}]
+    assert not satisfiable(And(assumptions, facts, query), algorithm=algorithm)
+    assert satisfiable(And(assumptions, facts, ~query),
+                       algorithm=algorithm) in refutations
 
 
 def test_satisfiable_all_models():
     assert next(satisfiable(False, all_models=True)) is False
     assert list(satisfiable((a >> ~a) & a, all_models=True)) == [False]
     assert list(satisfiable(True, all_models=True)) == [{true: true}]
+    assert next(satisfiable(a & ~a, all_models=True)) is False
 
     models = [{a: True, b: False}, {a: False, b: True}]
     result = satisfiable(a ^ b, all_models=True)
