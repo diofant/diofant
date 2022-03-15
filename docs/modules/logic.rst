@@ -112,5 +112,3 @@ As you see, when a sentence is satisfiable, it returns a model that makes that
 sentence ``True``. If it is not satisfiable it will return ``False``.
 
 .. autofunction:: diofant.logic.inference.satisfiable
-
-.. TODO: write about CNF file format

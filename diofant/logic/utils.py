@@ -12,6 +12,27 @@ def parse_dimacs(s):
     r"""
     Loads a boolean expression from a string in the DIMACS CNF format.
 
+    The file in the DIMACS CNF format is an ASCII file consisting of
+    a two major sections: the preamble and the clauses.
+
+    The preamble contains information about the satisfability problem
+    instance, which is contained in lines.  Each line begins with a
+    single character (followed by whitespace character): either "c" (a
+    comment, rest of line is ignored) or "p" (the problem line).
+    The problem line has the following format:
+
+        p dnf VARIABLES CLAUSES
+
+    where VARIABLES and CLAUSES fields contain integers, specifying the
+    number of variables (n) and the number of clauses (m), respectively.
+
+    The m clauses appear immediately after the problem line.  The variables
+    are assumed to be numbered from 1 up to n.  Each clause should be
+    represented by a sequence of numbers, separated by one or more
+    whitespace characters.  The non-negated version of a variable i is
+    represented by i, the negated version is represented by -i.  Each
+    clause is terminated by the value 0.
+
     Examples
     ========
 
