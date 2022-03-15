@@ -18,6 +18,7 @@ Compatibility breaks
 * Removed support for CPython 3.9, see :pull:`1192`.
 * Removed ``to_mpi()`` method of :class:`~diofant.sets.sets.Interval`, see :pull:`1194`.
 * Removed ``poly()`` function, use :meth:`~diofant.core.expr.Expr.as_poly` method to create a :class:`~diofant.polys.polytools.Poly` instance from :class:`~diofant.core.expr.Expr`, see :pull:`1047`.
+* Removed functions ``bool_map()``, ``POSform()`` and ``SOPform()``, see :commit:`04ea41a220` and :commit:`be319badf5`.
 
 Minor changes
 =============
