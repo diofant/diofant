@@ -56,6 +56,12 @@ def test_dpll2_satisfiable():
     assert not l.lit_heap
     assert l._vsids_calculate() == 0
 
+    l = SATSolver([{1}, {-1}], {1}, set())
+    with pytest.raises(StopIteration):
+        next(l._find_model())
+    assert l._clause_sat(0) is False
+    assert l._clause_sat(1) is True
+
     l0 = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
                     {3, -2}], {1, 2, 3}, set())
 
@@ -81,7 +87,46 @@ def test_dpll2_satisfiable():
 
     l = copy.deepcopy(l0)
     assert next(l._find_model()) == {1: True, 2: False, 3: False}
+    assert l._current_level.decision == -3
+    assert l._current_level.flipped is False
+    assert l._current_level.var_settings == {-3, -2}
     assert l._simple_compute_conflict() == [3]
+    assert l._is_sentinel(2, 3) is True
+    assert l._is_sentinel(-3, 1) is False
+    assert l.var_settings == {-3, -2, 1}
+    level = l._current_level
+    assert (level.decision, level.var_settings,
+            level.flipped) == (-3, {-3, -2}, False)
+    l._undo()
+    level = l._current_level
+    assert (level.decision, level.var_settings, level.flipped) == (0, {1}, False)
+
+    l = copy.deepcopy(l0)
+    l._assign_literal(-1)
+    with pytest.raises(StopIteration):
+        next(l._find_model())
+    assert l.var_settings == {-1}
+
+    l = copy.deepcopy(l0)
+    assert list(l._find_model()) == [{1: True, 2: False, 3: False},
+                                     {1: True, 2: True, 3: True}]
+
+    l = copy.deepcopy(l0)
+    assert l.variable_set == [False, False, False, False]
+    l._simplify()
+    assert l.variable_set == [False, True, False, False]
+    assert l.sentinels == {-3: {0, 2}, -2: {3, 4}, -1: set(),
+                           2: {0, 3}, 3: {2, 4}}
+
+    l = copy.deepcopy(l0)
+    assert l.lit_heap == [(-2, -3), (-2, 2), (-2, -2), (0, 1), (-2, 3), (0, -1)]
+    assert l._vsids_calculate() == -3
+    assert l.lit_heap == [(-2, -2), (-2, 2), (0, -1), (0, 1), (-2, 3)]
+
+    l = copy.deepcopy(l0)
+    l._vsids_lit_unset(2)
+    assert l.lit_heap == [(-2, -3), (-2, -2), (-2, -2), (-2, 2), (-2, 3),
+                          (0, -1), (-2, 2), (0, 1)]
 
 
 def test_valid():
