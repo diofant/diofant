@@ -3,7 +3,6 @@
 from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
                      oo, pi, zoo)
 from ...core.function import ArgumentIndexError
-from ...core.sympify import sympify
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
 
@@ -416,17 +415,11 @@ class zeta(Function):
     """
 
     @classmethod
-    def eval(cls, z, a_=None):
-        if a_ is None:
-            z, a = list(map(sympify, (z, 1)))
-        else:
-            z, a = list(map(sympify, (z, a_)))
-
-        if a.is_Number:
-            if a == 1 and a_ is not None:
-                return cls(z)
-            # TODO Should a == 0 return nan as well?
-
+    def eval(cls, z, a=None):
+        if a == 1:
+            return cls(z)
+        elif a is None:
+            a = Integer(1)
         if z.is_Number:
             if z is oo:
                 return Integer(1)

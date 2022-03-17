@@ -66,7 +66,6 @@ class Piecewise(Function):
     is_Piecewise = True
 
     def __new__(cls, *args, **options):
-        # (Try to) sympify args first
         newargs = []
         for ec in args:
             # ec could be a ExprCondPair or a tuple
