@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Support calculating limits with :class:`~diofant.functions.elementary.piecewise.Piecewise` functions, see :pull:`1214`.
+
 Major changes
 =============
 
@@ -67,3 +69,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14387`: Tutorial on limits creates impression that they are two-sided by default
 * :sympyissue:`8166`: Limit assumes function is continuous?
 * :sympyissue:`14502`: Problem with limit including factorial.
+* :sympyissue:`18492`: Limit of Piecewise function - NotImplementedError: Don't know how to calculate the mrv

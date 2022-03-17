@@ -134,6 +134,16 @@ def mrv(e, x):
         return mrv(e.base, x)
     elif isinstance(e, log):
         return mrv(e.args[0], x)
+    elif e.is_Piecewise:
+        for a, c in e.args:
+            if not c.is_Atom:
+                c = c.func(c.lhs - c.rhs)
+                c = c.func(limitinf(c.lhs, x))
+                if not c.is_Atom:
+                    raise NotImplementedError("Parametric limits aren't supported yet.")
+                if c:
+                    break
+        return mrv(a, x)
     elif e.is_Function and not isinstance(e.func, UndefinedFunction):
         return functools.reduce(lambda a, b: mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])

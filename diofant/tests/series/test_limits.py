@@ -99,6 +99,19 @@ def test_basic4():
     e = ((n**(n + 1) + (n + 1)**n)/n**(n + 1))**n
     assert limit(e, n, oo) == E**E
 
+    # issue sympy/sympy#18492
+    e1 = 2*sqrt(x)*Piecewise(((4*x - 2)/abs(sqrt(4 - 4*(2*x - 1)**2)),
+                              4*x - 2 >= 0),
+                             ((2 - 4*x)/abs(sqrt(4 - 4*(2*x - 1)**2)), True))
+    e2 = Piecewise((x**2/2, x <= Rational(1, 2)), (x/2 - Rational(1, 8), True))
+    e3 = Piecewise(((x - 9)/5, x < -1), ((x - 9)/5, x > 4),
+                   (sqrt(abs(x - 3)), True))
+    assert limit(e1, x, 0) == 1
+    assert limit(e2, x, 0) == 0
+    assert limit(e2, x, oo) == oo
+    assert limit(e3, x, -1) == 2
+    assert limit(e3, x, oo) == oo
+
 
 def test_basic5():
     class MyFunction(Function):
