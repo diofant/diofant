@@ -60,7 +60,7 @@ def test_kronecker_delta():
 
 
 def test_kronecker_delta_secondquant():
-    """secondquant-specific methods"""
+    # secondquant-specific methods
     D = KroneckerDelta
     i, j, v, w = symbols('i j v w', below_fermi=True, cls=Dummy)
     a, b, t, u = symbols('a b t u', above_fermi=True, cls=Dummy)

@@ -1,4 +1,4 @@
-"""For more tests on satisfiability, see test_dimacs"""
+"""For more tests on satisfiability, see test_dimacs."""
 
 import copy
 

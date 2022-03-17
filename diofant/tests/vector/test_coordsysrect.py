@@ -88,10 +88,8 @@ def test_orienters():
 
 
 def test_coordinate_vars():
-    """
-    Tests the coordinate variables functionality with respect to
-    reorientation of coordinate systems.
-    """
+    # Tests the coordinate variables functionality with respect to
+    # reorientation of coordinate systems.
     A = CoordSysCartesian('A')
     # Note that the name given on the lhs is different from A.x._name
     assert BaseScalar('A.x', 0, A, 'A_x', r'\mathbf{{x}_{A}}') == A.x
@@ -212,10 +210,8 @@ def test_rotation_matrix():
 
 
 def test_vector():
-    """
-    Tests the effects of orientation of coordinate systems on
-    basic vector operations.
-    """
+    # Tests the effects of orientation of coordinate systems on
+    # basic vector operations.
     N = CoordSysCartesian('N')
     A = N.orient_new_axis('A', q1, N.k)
     B = A.orient_new_axis('B', q2, A.i)

@@ -1,9 +1,11 @@
-"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
-capabilities".
+"""
+Tests from Michael Wester's 1999 paper.
 
-http://www.math.unm.edu/~wester/cas/book/Wester.pdf
-See also http://math.unm.edu/~wester/cas_review.html for detailed output of
-each tested system.
+References
+==========
+
+* http://www.math.unm.edu/~wester/cas/book/Wester.pdf
+* http://math.unm.edu/~wester/cas_review.html
 """
 import itertools
 import math

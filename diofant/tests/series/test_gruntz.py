@@ -1,6 +1,7 @@
 """
-This test suite is testing the Gruntz algorithm implementation using the
-bottom up approach.  See the documentation in the gruntz module.  The
+This test suite is testing the Gruntz algorithm implementation.
+
+See the documentation in the gruntz module.  The
 algorithm itself is highly recursive by nature, so ``compare()`` is
 logically the lowest part of the algorithm, yet in some sense it's the most
 complex part, because it needs to calculate a limit to return the result.

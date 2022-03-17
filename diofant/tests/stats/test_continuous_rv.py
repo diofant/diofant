@@ -494,14 +494,13 @@ def test_uniform():
 
 
 def test_uniform_P():
-    """This stopped working because SingleContinuousPSpace.compute_density no
-    longer calls integrate on a DiracDelta but rather just solves directly.
-    integrate used to call UniformDistribution.expectation which special-cased
-    subsed out the Min and Max terms that Uniform produces.
-
-    I decided to regress on this class for general cleanliness (and I suspect
-    speed) of the algorithm.
-    """
+    # This stopped working because SingleContinuousPSpace.compute_density no
+    # longer calls integrate on a DiracDelta but rather just solves directly.
+    # integrate used to call UniformDistribution.expectation which special-cased
+    # subsed out the Min and Max terms that Uniform produces.
+    #
+    # I decided to regress on this class for general cleanliness (and I suspect
+    # speed) of the algorithm.
     l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
@@ -665,10 +664,9 @@ def test_conjugate_priors():
 
 
 def test_difficult_univariate():
-    """Since using solve in place of deltaintegrate we're able to perform
-    substantially more complex density computations on single continuous random
-    variables.
-    """
+    # Since using solve in place of deltaintegrate we're able to perform
+    # substantially more complex density computations on single continuous
+    # random variables.
     x = Normal('x', 0, 1)
     assert density(x**3)
     assert density(exp(x**2))

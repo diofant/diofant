@@ -1,7 +1,5 @@
-"""
-If the arbitrary constant class from issue sympy/sympy#4435 is ever implemented, this
-should serve as a set of test cases.
-"""
+# If the arbitrary constant class from issue sympy/sympy#4435 is ever
+# implemented, this should serve as a set of test cases.
 
 import pytest
 

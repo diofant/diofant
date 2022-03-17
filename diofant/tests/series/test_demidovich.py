@@ -1,7 +1,5 @@
-"""
-Numbers listed with the tests refer to problem numbers in books
-:cite:`demidovich1970problems` and :cite:`anti-demidovich2001` (with '*').
-"""
+# Numbers listed with the tests refer to problem numbers in books
+# :cite:`demidovich1970problems` and :cite:`anti-demidovich2001` (with '*').
 
 from diofant import (Rational, asin, cos, exp, limit, log, oo, pi, root, sign,
                      sin, sqrt, tan)

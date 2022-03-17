@@ -417,10 +417,8 @@ def test_complex_pure_imag_not_ordered():
 
 
 def test_x_minus_y_not_same_as_x_lt_y():
-    """
-    A consequence of pull request sympy/sympy#7792 is that `x - y < 0` and `x < y`
-    are not synonymous.
-    """
+    # A consequence of pull request sympy/sympy#7792 is that x - y < 0
+    # and x < y are not synonymous.
     x = I + 2
     y = I + 3
     pytest.raises(TypeError, lambda: x < y)

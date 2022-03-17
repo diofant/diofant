@@ -1,6 +1,4 @@
-"""This tests diofant/core/basic.py with (ideally) no reference to subclasses
-of Basic or Atom.
-"""
+"""This tests the basic submodule with (ideally) no reference to subclasses."""
 
 import collections
 

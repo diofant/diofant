@@ -12,31 +12,22 @@ __all__ = ()
 
 
 def test_no_stdlib_collections():
-    """
-    Make sure we get the right collections when it is not part of a
-    larger list.
-    """
+    # Make sure we get the right collections when it is not part of a
+    # larger list.
+
     matplotlib = import_module('matplotlib',
                                import__kwargs={'fromlist': ['cm', 'collections']},
                                min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
-
-def test_no_stdlib_collections2():
-    """
-    Make sure we get the right collections when it is not part of a
-    larger list.
-    """
     matplotlib = import_module('matplotlib',
                                import__kwargs={'fromlist': ['collections']},
                                min_module_version='1.1.0', catch=(RuntimeError,))
     if matplotlib:
         assert collections != matplotlib.collections
 
-
-def test_no_stdlib_collections3():
-    """Make sure we get the right collections with no catch."""
+    # Make sure we get the right collections with no catch.
     matplotlib = import_module('matplotlib',
                                import__kwargs={'fromlist': ['cm', 'collections']},
                                min_module_version='1.1.0')

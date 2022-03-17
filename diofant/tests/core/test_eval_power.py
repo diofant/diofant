@@ -195,7 +195,7 @@ def test_sympyissue_4362():
 
 
 def test_Pow_signs():
-    """Cf. issues sympy/sympy#4595 and sympy/sympy#5250"""
+    # Cf. issues sympy/sympy#4595 and sympy/sympy#5250
     n = Symbol('n', even=True)
     assert (3 - y)**2 != (y - 3)**2
     assert (3 - y)**n != (y - 3)**n

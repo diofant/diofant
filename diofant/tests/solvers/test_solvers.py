@@ -204,10 +204,8 @@ def test_solve_polynomial3():
 
 
 def test_solve_polynomial_cv_1a():
-    """
-    Test for solving on equations that can be converted to a polynomial equation
-    using the change of variable y -> x**Rational(p, q)
-    """
+    # Test for solving on equations that can be converted to a polynomial
+    # equation using the change of variable y -> x**Rational(p, q).
     assert solve(sqrt(x) - 1, x) == [{x: 1}]
     assert solve(sqrt(x) - 2, x) == [{x: 4}]
     assert solve(root(x, 4) - 2, x) == [{x: 16}]
@@ -221,10 +219,8 @@ def test_solve_polynomial_cv_1b():
 
 
 def test_solve_polynomial_cv_2():
-    """
-    Test for solving on equations that can be converted to a polynomial equation
-    multiplying both sides of the equation by x**m
-    """
+    # Test for solving on equations that can be converted to a polynomial
+    # equation multiplying both sides of the equation by x**m.
     assert (solve(x + 1/x - 1, x) in
             [[{x: Rational(1, 2) + I*sqrt(3)/2},
               {x: Rational(1, 2) - I*sqrt(3)/2}],
@@ -287,7 +283,6 @@ def test_quintics_2():
 
 
 def test_solve_rational():
-    """Test solve for rational functions"""
     assert solve((x - y**3)/((y**2)*sqrt(1 - y**2)), x) == [{x: y**3}]
 
     eq = x**2*(1/x - z**2/x)
