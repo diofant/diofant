@@ -63,3 +63,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23223`: Wrong integration results of trigonometric functions
 * :sympyissue:`23224`: Python code printer not respecting tuple with one element
 * :sympyissue:`23231`: Sympy giving the wrong solution
+* :sympyissue:`14387`: Tutorial on limits creates impression that they are two-sided by default
