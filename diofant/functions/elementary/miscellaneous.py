@@ -99,7 +99,6 @@ def sqrt(arg, **kwargs):
     * https://en.wikipedia.org/wiki/Principal_value
 
     """
-    # arg = sympify(arg) is handled by Pow
     return Pow(arg, Rational(1, 2), **kwargs)
 
 

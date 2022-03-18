@@ -592,7 +592,7 @@ def test_other_symbol():
 
 
 def test_sympyissue_3825():
-    """catch: hash instability"""
+    # catch: hash instability.
     a1 = x + y
     a2 = y + x
     assert a2.is_comparable is False
@@ -608,7 +608,7 @@ def test_sympyissue_4822():
 
 
 def test_hash_vs_typeinfo():
-    """Seemingly different typeinfo, but in fact equal."""
+    # Seemingly different typeinfo, but in fact equal.
     # the following two are semantically equal
     x1 = Symbol('x', even=True)
     x2 = Symbol('x', integer=True, odd=False)
@@ -618,8 +618,8 @@ def test_hash_vs_typeinfo():
 
 
 def test_hash_vs_typeinfo_2():
-    """Different typeinfo should mean !eq"""
-    # the following two are semantically different
+    # Different typeinfo should mean !eq.
+    # The following two are semantically different.
     x1 = Symbol('x', even=True)
 
     assert x != x1
@@ -627,7 +627,7 @@ def test_hash_vs_typeinfo_2():
 
 
 def test_hash_vs_eq():
-    """catch: different hash for equal objects"""
+    # Catch: different hash for equal objects.
     a = 1 + pi    # important: do not fold it into a Number instance
     ha = hash(a)  # it should be Add/Mul/... to trigger the bug
 

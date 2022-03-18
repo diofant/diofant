@@ -16,7 +16,7 @@ __all__ = ()
 
 
 def N_equals(a, b):
-    """Check whether two complex numbers are numerically close"""
+    """Check whether two complex numbers are numerically close."""
     return comp(a.evalf(), b.evalf(), 1.e-6)
 
 

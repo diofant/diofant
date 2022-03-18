@@ -30,10 +30,8 @@ exec('\n'.join(imports), ENV)  # pylint: disable=exec-used
 
 
 def sT(expr, string):
-    """
-    Tests that repr delivers the expected string and that
-    the condition eval(repr(expr))==expr holds.
-    """
+    # Tests that repr delivers the expected string and that
+    # the condition eval(repr(expr))==expr holds.
     assert repr(expr) == string
     assert eval(string, ENV) == expr  # pylint: disable=eval-used
 

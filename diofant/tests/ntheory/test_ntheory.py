@@ -252,9 +252,7 @@ def test_randprime():
 
 
 def fac_multiplicity(n, p):
-    """Return the power of the prime number p in the
-    factorization of n!
-    """
+    """Return the power of the prime number p in the factorization of n!."""
     if p > n:
         return 0
     if p > n//2:
@@ -267,15 +265,9 @@ def fac_multiplicity(n, p):
 
 
 def multiproduct(seq=(), start=1):
-    """
-    Return the product of a sequence of factors with multiplicities,
-    times the value of the parameter ``start``. The input may be a
-    sequence of (factor, exponent) pairs or a dict of such pairs.
-
-        >>> multiproduct({3: 7, 2: 5}, 4)  # = 3**7 * 2**5 * 4
-        279936
-
-    """
+    # Return the product of a sequence of factors with multiplicities,
+    # times the value of the parameter ``start``. The input may be a
+    # sequence of (factor, exponent) pairs or a dict of such pairs.
     if not seq:
         return start
     if isinstance(seq, dict):

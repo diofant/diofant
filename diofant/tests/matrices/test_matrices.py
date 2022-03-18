@@ -1398,10 +1398,8 @@ def test_inv_block():
 
 
 def test_creation_args():
-    """
-    Check that matrix dimensions can be specified using any reasonable type
-    (see issue sympy/sympy#4614).
-    """
+    # Check that matrix dimensions can be specified using any
+    # reasonable type (see issue sympy/sympy#4614).
     pytest.raises(ValueError, lambda: zeros(3, -1))
     pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))  # pylint: disable=too-many-function-args
     assert zeros(int(3)) == zeros(3)

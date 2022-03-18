@@ -1,5 +1,6 @@
 from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
                     nan, oo)
+from ..core.function import UndefinedFunction
 from ..core.sympify import sympify
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
@@ -41,7 +42,8 @@ def heuristics(e, z, z0, dir):
         rv = limit(e.subs({z: 1/z}), z, Integer(0), '+' if z0 is oo else '-')
         if isinstance(rv, Limit):
             return
-    elif e.is_Mul or e.is_Add or e.is_Pow or e.is_Function:
+    elif (e.is_Mul or e.is_Add or e.is_Pow or
+          (e.is_Function and not isinstance(e.func, UndefinedFunction))):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)

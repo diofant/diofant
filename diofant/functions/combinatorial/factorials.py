@@ -3,7 +3,6 @@ import math
 
 from ...core import Dummy, E, Function, Integer, cacheit, oo, zoo
 from ...core.function import ArgumentIndexError
-from ...core.sympify import sympify
 
 
 class CombinatorialFunction(Function):
@@ -80,8 +79,6 @@ class factorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, n):
-        n = sympify(n)
-
         if n.is_Number:
             if n is oo:
                 return oo
@@ -327,9 +324,6 @@ class RisingFactorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, x, k):
-        x = sympify(x)
-        k = sympify(k)
-
         if x == 1:
             return factorial(k)
         elif k.is_Integer:
@@ -399,9 +393,6 @@ class FallingFactorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, x, k):
-        x = sympify(x)
-        k = sympify(k)
-
         if k.is_Integer:
             if k == 0:
                 return Integer(1)
@@ -524,7 +515,6 @@ class binomial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, n, k):
-        n, k = map(sympify, (n, k))
         d = n - k
         if d.is_zero or k.is_zero:
             return Integer(1)

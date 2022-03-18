@@ -69,6 +69,10 @@ def test_basic1():
     # issue diofant/diofant#74
     assert limit(sign(log(1 - 1/x)), x, oo) == -1
 
+    # issue sympy/sympy#8166
+    f = Function('f')
+    assert limit(f(x), x, 4) == Limit(f(x), x, 4)
+
 
 def test_basic2():
     assert limit(x**x, x, 0) == 1

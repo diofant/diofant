@@ -64,6 +64,7 @@ import functools
 
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, oo
 from ..core.evaluate import evaluate
+from ..core.function import UndefinedFunction
 from ..functions import Abs, exp, log, sign
 from ..utilities import ordered
 
@@ -133,7 +134,7 @@ def mrv(e, x):
         return mrv(e.base, x)
     elif isinstance(e, log):
         return mrv(e.args[0], x)
-    elif e.is_Function:
+    elif e.is_Function and not isinstance(e.func, UndefinedFunction):
         return functools.reduce(lambda a, b: mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])
     else:

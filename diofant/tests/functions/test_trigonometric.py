@@ -983,21 +983,17 @@ def test_sincos_rewrite():
 
 
 def _check_even_rewrite(func, arg):
-    """Checks that the expr has been rewritten using f(-x) -> f(x)
-    arg : -x
-    """
+    """Checks that the expr has been rewritten using f(-x) -> f(x)."""
     return func(arg).args[0] == -arg
 
 
 def _check_odd_rewrite(func, arg):
-    """Checks that the expr has been rewritten using f(-x) -> -f(x)
-    arg : -x
-    """
+    """Checks that the expr has been rewritten using f(-x) -> -f(x)."""
     return func(arg).func.is_Mul
 
 
 def _check_no_rewrite(func, arg):
-    """Checks that the expr is not rewritten"""
+    """Checks that the expr is not rewritten."""
     return func(arg).args[0] == arg
 
 

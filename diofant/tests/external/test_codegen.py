@@ -225,9 +225,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
 
 
 def fortranize_double_constants(code_string):
-    """
-    Replaces every literal float with literal doubles
-    """
+    """Replaces every literal float with literal doubles."""
     pattern_exp = re.compile(r'\d+(\.)?\d*[eE]-?\d+')
     pattern_float = re.compile(r'\d+\.\d*(?!\d*d)')
 

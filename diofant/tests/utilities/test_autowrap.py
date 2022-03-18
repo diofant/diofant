@@ -21,13 +21,12 @@ __all__ = ()
 
 
 def get_string(dump_fn, routines, prefix='file'):
-    """Wrapper for dump_fn. dump_fn writes its results to a stream object and
-    this wrapper returns the contents of that stream as a string. This
-    auxiliary function is used by many tests below.
-
-    The header and the empty lines are not generator to facilitate the
-    testing of the output.
-    """
+    # Wrapper for dump_fn. dump_fn writes its results to a stream object and
+    # this wrapper returns the contents of that stream as a string. This
+    # auxiliary function is used by many tests below.
+    #
+    # The header and the empty lines are not generator to facilitate the
+    # testing of the output.
     output = io.StringIO()
     dump_fn(routines, output, prefix)
     source = output.getvalue()

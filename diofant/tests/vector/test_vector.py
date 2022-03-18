@@ -16,10 +16,8 @@ i, j, k = C.base_vectors()
 
 
 def test_vector_diofant():
-    """
-    Test whether the Vector framework confirms to the hashing
-    and equality testing properties of Diofant.
-    """
+    # Test whether the Vector framework confirms to the hashing
+    # and equality testing properties of Diofant.
     v1 = 3*j
     assert v1 == j*3
     assert v1.components == {j: 3}

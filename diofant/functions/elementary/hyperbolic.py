@@ -66,8 +66,6 @@ class sinh(HyperbolicFunction):
     def eval(cls, arg):
         from .trigonometric import sin
 
-        arg = sympify(arg)
-
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
@@ -209,7 +207,6 @@ class cosh(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import cos
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo):
@@ -356,7 +353,6 @@ class tanh(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import tan
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg is oo:
@@ -485,7 +481,6 @@ class coth(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import cot
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg is oo:
@@ -767,7 +762,6 @@ class asinh(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import asin
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo, 0):
@@ -846,8 +840,6 @@ class acosh(Function):
 
     @classmethod
     def eval(cls, arg):
-        arg = sympify(arg)
-
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
@@ -956,7 +948,6 @@ class atanh(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import atan
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg == 0:
@@ -1023,7 +1014,6 @@ class acoth(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import acot
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo):

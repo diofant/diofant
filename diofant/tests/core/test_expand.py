@@ -224,7 +224,6 @@ def test_expand_arit():
 
 
 def test_power_expand():
-    """Test for Pow.expand()"""
     p = (a + b)**2
     assert p.expand() == a**2 + b**2 + 2*a*b
 

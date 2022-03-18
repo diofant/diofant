@@ -277,9 +277,7 @@ def test_int_float():
             return 1.1
 
     class F1dot1b:
-        """
-        This class is still a float, even though it also implements __int__().
-        """
+        # This class is still a float, even though it also implements __int__().
 
         def __float__(self):
             return 1.1
@@ -288,9 +286,7 @@ def test_int_float():
             return 1
 
     class F1dot1c:
-        """
-        This class is still a float, because it implements _diofant_()
-        """
+        # This class is still a float, because it implements _diofant_().
 
         def __float__(self):
             return 1.1
@@ -306,14 +302,12 @@ def test_int_float():
             return 5
 
     class I5b:
-        """
-        This class implements both __int__() and __float__(), so it will be
-        treated as Float in Diofant. One could change this behavior, by using
-        float(a) == int(a), but deciding that integer-valued floats represent
-        exact numbers is arbitrary and often not correct, so we do not do it.
-        If, in the future, we decide to do it anyway, the tests for I5b need to
-        be changed.
-        """
+        # This class implements both __int__() and __float__(), so it will be
+        # treated as Float in Diofant. One could change this behavior, by using
+        # float(a) == int(a), but deciding that integer-valued floats represent
+        # exact numbers is arbitrary and often not correct, so we do not do it.
+        # If, in the future, we decide to do it anyway, the tests for I5b need to
+        # be changed.
 
         def __float__(self):
             return 5.0
@@ -322,10 +316,8 @@ def test_int_float():
             return 5
 
     class I5c:
-        """
-        This class implements both __int__() and __float__(), but also
-        a _diofant_() method, so it will be Integer.
-        """
+        # This class implements both __int__() and __float__(), but also
+        # a _diofant_() method, so it will be Integer.
 
         def __float__(self):
             return 5.0

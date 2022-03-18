@@ -3,7 +3,6 @@ from mpmath.libmp.libmpf import prec_to_dps
 from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
                      oo, pi, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
-from ...core.sympify import sympify
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
 
@@ -178,10 +177,8 @@ class log(Function):
     @classmethod
     def eval(cls, arg, base=None):
         from .complexes import unpolarify
-        arg = sympify(arg)
 
         if base is not None:
-            base = sympify(base)
             if base == 1:
                 if arg == 1:
                     return nan

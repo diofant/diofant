@@ -203,9 +203,6 @@ def _test_rational_new(cls):
 
 
 def test_Integer_new():
-    """
-    Test for Integer constructor
-    """
     _test_rational_new(Integer)
 
     assert _strictly_equal(Integer(0.9), Integer(0))
@@ -215,9 +212,6 @@ def test_Integer_new():
 
 
 def test_Rational_new():
-    """
-    Test for Rational constructor
-    """
     _test_rational_new(Rational)
 
     n1 = Rational(1, 2)
@@ -252,9 +246,6 @@ def test_Rational_new():
 
 
 def test_Number_new():
-    """
-    Test for Number constructor
-    """
     # Expected behavior on numbers and strings
     assert Number(1) is Integer(1)
     assert Number(2).__class__ is Integer
@@ -826,7 +817,6 @@ def test_integer_nthroot_overflow():
 
 
 def test_powers_Integer():
-    """Test Integer._eval_power"""
     # check infinity
     assert (+1) ** oo == nan
     assert (-1) ** oo == nan
@@ -921,7 +911,6 @@ def test_powers_Integer():
 
 
 def test_powers_Rational():
-    """Test Rational._eval_power"""
     # check infinity
     assert Rational(1, 2) ** oo == 0
     assert Rational(3, 2) ** oo == oo
@@ -1006,7 +995,7 @@ def test_bug_sqrt():
 
 
 def test_pi_Pi():
-    """Test that pi (instance) is imported, but Pi (class) is not"""
+    # Test that pi (instance) is imported, but Pi (class) is not.
     with pytest.raises(ImportError):
         # pylint: disable=unused-import,no-name-in-module
         from diofant import Pi  # noqa: F401
@@ -1488,11 +1477,10 @@ def test_sympyissue_13081():
 
 def test_comparisons_with_unknown_type():
     class Foo:
-        """
-        Class that is unaware of Basic, and relies on both classes returning
-        the NotImplemented singleton for equivalence to evaluate to False, and
-        the other comparisons to raise a TypeError.
-        """
+        # Class that is unaware of Basic, and relies on both classes returning
+        # the NotImplemented singleton for equivalence to evaluate to False, and
+        # the other comparisons to raise a TypeError.
+        pass
 
     ni, nf, nr = Integer(3), Float(1.0), Rational(1, 3)
     foo = Foo()
@@ -1512,11 +1500,9 @@ def test_comparisons_with_unknown_type():
         pytest.raises(TypeError, lambda: foo <= n)
 
     class Bar:
-        """
-        Class that considers itself greater than any instance of Number except
-        Infinity, and relies on the NotImplemented singleton for symmetric
-        relations.
-        """
+        # Class that considers itself greater than any instance of Number except
+        # Infinity, and relies on the NotImplemented singleton for symmetric
+        # relations.
 
         def __eq__(self, other):
             if isinstance(other, Number):
