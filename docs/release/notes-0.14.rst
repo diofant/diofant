@@ -24,6 +24,7 @@ Minor changes
 =============
 
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`'s over finite fields, see :pull:`1209`.
+* Provide default clause (condition :class:`~diofant.logic.boolalg.BooleanTrue`) for :class:`~diofant.functions.elementary.piecewise.Piecewise`, see :pull:`1215`.
 
 Developer changes
 =================

@@ -232,9 +232,6 @@ def test_octave_piecewise():
         'else\n'
         '  r = x.^5;\n'
         'end')
-    # Check that Piecewise without a True (default) condition error
-    expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    pytest.raises(ValueError, lambda: octave_code(expr))
 
 
 def test_octave_piecewise_times_const():

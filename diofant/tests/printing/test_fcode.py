@@ -379,9 +379,6 @@ def test_fcode_Piecewise():
     code = fcode(Piecewise((x, x < 1), (x**2, x > 1), (sin(x), True)), standard=95)
     expected = '      merge(x, merge(x**2, sin(x), x > 1), x < 1)'
     assert code == expected
-    # Check that Piecewise without a True (default) condition error
-    expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    pytest.raises(ValueError, lambda: fcode(expr))
 
     assert (fcode(Piecewise((0, x < -1), (1, And(x >= -1, x < 0)),
                             (-1, True)), assign_to='var') ==

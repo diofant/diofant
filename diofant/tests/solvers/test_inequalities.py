@@ -253,7 +253,7 @@ def test_reduce_piecewise_inequalities():
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
         Le(1, x)
-    assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, x >= 0)) < 1) == \
+    assert reduce_inequalities(Piecewise((x**2, x < 0), (2*x, True)) < 1) == \
         And(Lt(-1, x), x < Rational(1, 2))
 
 

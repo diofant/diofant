@@ -3,8 +3,8 @@ import pytest
 from diofant import (And, Basic, Eq, Function, Gt, I, Integral, Interval, Max,
                      Min, Not, O, Or, Piecewise, Rational, Symbol, adjoint,
                      conjugate, cos, diff, exp, expand, integrate, lambdify,
-                     log, oo, pi, piecewise_fold, sin, solve, symbols, sympify,
-                     transpose)
+                     log, nan, oo, pi, piecewise_fold, sin, solve, symbols,
+                     sympify, transpose)
 from diofant.abc import a, t, x, y
 
 
@@ -14,7 +14,6 @@ z = symbols('z', nonzero=True)
 
 
 def test_piecewise():
-
     # Test canonization
     assert Piecewise((x, x < 1), (0, True)) == Piecewise((x, x < 1), (0, True))
     assert Piecewise((x, x < 1), (0, True), (1, True)) == \
@@ -34,8 +33,8 @@ def test_piecewise():
     assert Piecewise((0, Eq(z, 0, evaluate=False)), (1, True)) == 1
 
     # Test subs
-    p = Piecewise((-1, x < -1), (x**2, x < 0), (log(x), x >= 0))
-    p_x2 = Piecewise((-1, x**2 < -1), (x**4, x**2 < 0), (log(x**2), x**2 >= 0))
+    p = Piecewise((-1, x < -1), (x**2, x < 0), (log(x), True))
+    p_x2 = Piecewise((-1, x**2 < -1), (x**4, x**2 < 0), (log(x**2), True))
     assert p.subs({x: x**2}) == p_x2
     assert p.subs({x: -5}) == -1
     assert p.subs({x: -1}) == 1
@@ -81,7 +80,7 @@ def test_piecewise():
     # Test differentiation
     f = x
     fp = x*p
-    dp = Piecewise((0, x < -1), (2*x, x < 0), (1/x, x >= 0))
+    dp = Piecewise((0, x < -1), (2*x, x < 0), (1/x, True))
     fp_dx = x*dp + p
     assert diff(p, x) == dp
     assert diff(f*p, x) == fp_dx
@@ -94,7 +93,7 @@ def test_piecewise():
     assert p - dp == -(dp - p)
 
     # Test power
-    dp2 = Piecewise((0, x < -1), (4*x**2, x < 0), (1/x**2, x >= 0))
+    dp2 = Piecewise((0, x < -1), (4*x**2, x < 0), (1/x**2, True))
     assert dp**2 == dp2
 
     # Test _eval_interval
@@ -119,7 +118,7 @@ def test_piecewise():
     assert peval4._eval_interval(x, -1, 1) == 2
 
     # Test integration
-    p_int = Piecewise((-x, x < -1), (x**3/3.0, x < 0), (-x + x*log(x), x >= 0))
+    p_int = Piecewise((-x, x < -1), (x**3/3.0, x < 0), (-x + x*log(x), True))
     assert integrate(p, x) == p_int
     p = Piecewise((x, x < 1), (x**2, -1 <= x), (x, 3 < x))
     assert integrate(p, (x, -2, 2)) == 5.0/6.0
@@ -127,7 +126,7 @@ def test_piecewise():
     p = Piecewise((0, x < 0), (1, x < 1), (0, x < 2), (1, x < 3), (0, True))
     assert integrate(p, (x, -oo, oo)) == 2
     p = Piecewise((x, x < -10), (x**2, x <= -1), (x, 1 < x))
-    pytest.raises(ValueError, lambda: integrate(p, (x, -2, 2)))
+    assert integrate(p, (x, -2, 2)) is nan
 
     # Test commutativity
     assert p.is_commutative is True
@@ -446,8 +445,8 @@ def test_piecewise_as_leading_term():
 
 
 def test_piecewise_complex():
-    p1 = Piecewise((2, x < 0), (1, 0 <= x))
-    p2 = Piecewise((2*I, x < 0), (I, 0 <= x))
+    p1 = Piecewise((2, x < 0), (1, True))
+    p2 = Piecewise((2*I, x < 0), (I, True))
     p3 = Piecewise((I*x, x > 1), (1 + I, True))
     p4 = Piecewise((-I*conjugate(x), x > 1), (1 - I, True))
 
@@ -487,7 +486,7 @@ def test_piecewise_evaluate():
 
 
 def test_as_expr_set_pairs():
-    assert Piecewise((x, x > 0), (-x, x <= 0)).as_expr_set_pairs() == \
+    assert Piecewise((x, x > 0), (-x, True)).as_expr_set_pairs() == \
         [(x, Interval(0, oo, True)), (-x, Interval(-oo, 0))]
 
     assert Piecewise(((x - 2)**2, x >= 0), (0, True)).as_expr_set_pairs() == \
