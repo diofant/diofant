@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import collections
 import inspect
-import typing
 
 import mpmath
 import mpmath.libmp as mlib
@@ -713,8 +712,6 @@ class WildFunction(Function, AtomicExpr):
     >>> f(x, y, 1).match(F)
 
     """
-
-    include: set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
         from ..sets.sets import FiniteSet, Set
