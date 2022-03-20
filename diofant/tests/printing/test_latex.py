@@ -813,8 +813,8 @@ def test_latex_Piecewise():
     assert latex(p, itex=True) == r'\begin{cases} x & \text{for}\: x \lt 1 \\x^{2} &' \
                                   r' \text{otherwise} \end{cases}'
     p = Piecewise((x, x < 0), (0, x >= 0))
-    assert latex(p) == r'\begin{cases} x & \text{for}\: x < 0 \\0 &' \
-                       r' \text{for}\: x \geq 0 \end{cases}'
+    assert latex(p) == r'\begin{cases} x & \text{for}\: x < 0 \\0 & '\
+                       r'\text{for}\: x \geq 0 \\\mathrm{NaN} & \text{otherwise} \end{cases}'
     A, B = symbols('A B', commutative=False)
     p = Piecewise((A**2, Eq(A, B)), (A*B, True))
     s = r'\begin{cases} A^{2} & \text{for}\: A = B \\A B & \text{otherwise} \end{cases}'

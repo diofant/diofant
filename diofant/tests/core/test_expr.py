@@ -1457,6 +1457,10 @@ def test_is_constant():
 
     assert Integer(2).is_constant() is True
 
+    for _ in range(5):
+        assert Piecewise((x, (x < 0)), (0, True)).is_constant() is not True
+        assert Piecewise((1, (x < 0)), (0, True)).is_constant() is not True
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)

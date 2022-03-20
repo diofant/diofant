@@ -437,6 +437,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
 
         """
+        from ..functions import Piecewise
+
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -485,7 +487,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     if a is None or a is nan:
                         # try random real
                         a = expr._random(None, -1, 0, 1, 0)
-            except ZeroDivisionError:
+            except (ZeroDivisionError, TypeError):
                 a = None
             if a is not None and a is not nan:
                 try:
@@ -494,7 +496,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
-                except ZeroDivisionError:
+                except (ZeroDivisionError, TypeError):
                     b = None
                 if b is not None and b is not nan and b.equals(a) is False:
                     return False
@@ -512,7 +514,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             deriv = expr.diff(w)
             if simplify:
                 deriv = deriv.simplify()
-            if deriv != 0:
+            if deriv:
                 if not (deriv.is_Number or pure_complex(deriv)):
                     if flags.get('failing_number', False):
                         return failing_number
@@ -520,7 +522,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         assert deriv.free_symbols
                         return  # dead line provided _random returns None in such cases
                 return False
-        return True
+        if not expr.has(Piecewise):
+            return True
 
     def equals(self, other, failing_expression=False):
         """Return True if self == other, False if it doesn't, or None. If

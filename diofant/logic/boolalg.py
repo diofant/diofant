@@ -73,8 +73,8 @@ class Boolean(Expr):
 
         if self.has(Relational) or other.has(Relational):
             raise NotImplementedError('handling of relationals')
-        return self.atoms() == other.atoms() and \
-            not satisfiable(Not(Equivalent(self, other)))
+        return (self.atoms() == other.atoms() and
+                not satisfiable(~Equivalent(self, other)))
 
 
 class BooleanAtom(Atom, Boolean):
@@ -274,12 +274,9 @@ class BooleanFunction(Application, Boolean):
             if not is_literal(arg):
                 arg = arg.to_nnf(simplify)
             if simplify:
-                if isinstance(arg, cls):
-                    arg = arg.args
-                else:
-                    arg = arg,
+                arg = arg.args if isinstance(arg, cls) else (arg,)
                 for a in arg:
-                    if Not(a) in argset:
+                    if ~a in argset:
                         return cls.zero
                     argset.add(a)
             else:
@@ -516,34 +513,33 @@ class Not(BooleanFunction):
 
         expr = self.args[0]
 
-        func, args = expr.func, expr.args
+        if isinstance(expr, And):
+            return Or._to_nnf(*[~arg for arg in expr.args], simplify=simplify)
 
-        if func == And:
-            return Or._to_nnf(*[~arg for arg in args], simplify=simplify)
+        if isinstance(expr, Or):
+            return And._to_nnf(*[~arg for arg in expr.args], simplify=simplify)
 
-        if func == Or:
-            return And._to_nnf(*[~arg for arg in args], simplify=simplify)
-
-        if func == Implies:
-            a, b = args
+        if isinstance(expr, Implies):
+            a, b = expr.args
             return And._to_nnf(a, ~b, simplify=simplify)
 
-        if func == Equivalent:
-            return And._to_nnf(Or(*args), Or(*[~arg for arg in args]), simplify=simplify)
+        if isinstance(expr, Equivalent):
+            return And._to_nnf(Or(*expr.args), Or(*[~arg for arg in expr.args]),
+                               simplify=simplify)
 
-        if func == Xor:
-            result = []
-            for i in range(1, len(args)+1, 2):
-                for neg in combinations(args, i):
-                    clause = [~s if s in neg else s for s in args]
-                    result.append(Or(*clause))
-            return And._to_nnf(*result, simplify=simplify)
+        if isinstance(expr, Xor):
+            args = []
+            for i in range(1, len(expr.args) + 1, 2):
+                for negs in combinations(expr.args, i):
+                    args.append(Or(*[~arg if arg in negs else arg
+                                     for arg in expr.args]))
+            return And._to_nnf(*args, simplify=simplify)
 
-        if func == ITE:
-            a, b, c = args
-            return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
+        if isinstance(expr, ITE):
+            a, b, c = expr.args
+            return And._to_nnf(a | ~c, ~a | ~b, simplify=simplify)
 
-        raise ValueError(f'Illegal operator {func} in expression')
+        raise ValueError(f'Illegal operator {expr.func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -627,7 +623,7 @@ class Xor(BooleanFunction):
             return argset.pop()
         elif True in argset:
             argset.remove(True)
-            return Not(Xor(*argset))
+            return ~Xor(*argset)
         else:
             obj._args = tuple(ordered(argset))
             obj._argset = frozenset(argset)
@@ -640,10 +636,10 @@ class Xor(BooleanFunction):
 
     def to_nnf(self, simplify=True):
         args = []
-        for i in range(0, len(self.args)+1, 2):
-            for neg in combinations(self.args, i):
-                clause = [~s if s in neg else s for s in self.args]
-                args.append(Or(*clause))
+        for i in range(0, len(self.args) + 1, 2):
+            for negs in combinations(self.args, i):
+                args.append(Or(*[~arg if arg in negs else arg
+                                 for arg in self.args]))
         return And._to_nnf(*args, simplify=simplify)
 
 
@@ -671,7 +667,7 @@ class Nand(BooleanFunction):
 
     @classmethod
     def eval(cls, *args):
-        return Not(And(*args))
+        return ~And(*args)
 
 
 class Nor(BooleanFunction):
@@ -702,7 +698,7 @@ class Nor(BooleanFunction):
 
     @classmethod
     def eval(cls, *args):
-        return Not(Or(*args))
+        return ~Or(*args)
 
 
 class Implies(BooleanFunction):
@@ -847,8 +843,8 @@ class Equivalent(BooleanFunction):
     def to_nnf(self, simplify=True):
         args = []
         for a, b in zip(self.args, self.args[1:]):
-            args.append(Or(~a, b))
-        args.append(Or(~self.args[-1], self.args[0]))
+            args.append(~a | b)
+        args.append(~self.args[-1] | self.args[0])
         return And._to_nnf(*args, simplify=simplify)
 
 
@@ -892,11 +888,11 @@ class ITE(BooleanFunction):
         elif b == true and c == false:
             return a
         elif b == false and c == true:
-            return Not(a)
+            return ~a
 
     def to_nnf(self, simplify=True):
         a, b, c = self.args
-        return And._to_nnf(Or(~a, b), Or(a, c), simplify=simplify)
+        return And._to_nnf(~a | b, a | c, simplify=simplify)
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
@@ -1059,7 +1055,7 @@ def is_nnf(expr, simplified=True):
             if simplified:
                 args = expr.args
                 for arg in args:
-                    if Not(arg) in args:
+                    if ~arg in args:
                         return False
             stack.extend(expr.args)
 
@@ -1239,7 +1235,7 @@ def _convert_to_varsSOP(minterm, variables):
     temp = []
     for i, m in enumerate(minterm):
         if m == 0:
-            temp.append(Not(variables[i]))
+            temp.append(~variables[i])
         elif m == 1:
             temp.append(variables[i])
     return And(*temp)
@@ -1254,7 +1250,7 @@ def _convert_to_varsPOS(maxterm, variables):
     temp = []
     for i, m in enumerate(maxterm):
         if m == 1:
-            temp.append(Not(variables[i]))
+            temp.append(~variables[i])
         elif m == 0:
             temp.append(variables[i])
     return Or(*temp)

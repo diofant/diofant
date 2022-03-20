@@ -16,7 +16,6 @@ from ..core.alphabets import greeks
 from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
-from ..logic import true
 from ..utilities import default_sort_key, has_variety
 from .conventions import requires_partial, split_super_sub
 from .precedence import PRECEDENCE, precedence
@@ -1236,13 +1235,7 @@ class LatexPrinter(Printer):
     def _print_Piecewise(self, expr):
         ecpairs = [r'%s & \text{for}\: %s' % (self._print(e), self._print(c))
                    for e, c in expr.args[:-1]]
-        if expr.args[-1].cond == true:
-            ecpairs.append(r'%s & \text{otherwise}' %
-                           self._print(expr.args[-1].expr))
-        else:
-            ecpairs.append(r'%s & \text{for}\: %s' %
-                           (self._print(expr.args[-1].expr),
-                            self._print(expr.args[-1].cond)))
+        ecpairs.append(r'%s & \text{otherwise}' % self._print(expr.args[-1].expr))
         tex = r'\begin{cases} %s \end{cases}'
         return tex % r' \\'.join(ecpairs)
 

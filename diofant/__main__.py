@@ -38,7 +38,7 @@ def main():
 
     lines = ['from diofant import *',
              'init_printing()',
-             "x, y, z, t = symbols('x y z t')",
+             "a, b, c, d, t, x, y, z = symbols('a:d t x:z')",
              "k, m, n = symbols('k m n', integer=True)",
              "f, g, h = symbols('f g h', cls=Function)",
              'init_printing(pretty_print=True, use_unicode=True)']

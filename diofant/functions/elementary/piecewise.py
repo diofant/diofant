@@ -1,5 +1,5 @@
 from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
-                     diff, oo)
+                     diff, nan, oo)
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, to_cnf, true
 from ...logic.boolalg import Boolean
@@ -40,9 +40,9 @@ class Piecewise(Function):
         - The conds are evaluated in turn returning the first that is True.
           If any of the evaluated conds are not determined explicitly False,
           e.g. x < 1, the function is returned in symbolic form.
-        - If the function is evaluated at a place where all conditions are False,
-          a ValueError exception will be raised.
         - Pairs where the cond is explicitly False, will be removed.
+        - The last condition is explicitely True.  It's value is a default
+          value for the function (nan if not specified othewise).
 
     Examples
     ========
@@ -80,6 +80,9 @@ class Piecewise(Function):
             newargs.append(pair)
             if cond == true:
                 break
+
+        if cond != true:
+            newargs.append(ExprCondPair(nan, true))
 
         if options.pop('evaluate', True):
             r = cls.eval(*newargs)
@@ -282,7 +285,7 @@ class Piecewise(Function):
         independent_expr_cond = []
         if isinstance(targetcond, Relational) and targetcond.has(sym):
             targetcond = solve_univariate_inequality(targetcond, sym)
-        for expr, cond in self.args:
+        for expr, cond in self.args:  # pragma: no branch
             if isinstance(cond, Relational) and cond.has(sym):
                 cond = solve_univariate_inequality(cond, sym)
             if isinstance(cond, Or):
@@ -292,7 +295,7 @@ class Piecewise(Function):
                 expr_cond.append((expr, cond))
             if cond == true:
                 break
-        for expr, cond in expr_cond:
+        for expr, cond in expr_cond:  # pragma: no branch
             if cond == true:
                 independent_expr_cond.append((expr, cond))
                 default = self.func(*independent_expr_cond)
@@ -404,10 +407,6 @@ class Piecewise(Function):
             int_expr.extend(holes)
             if targetcond == true:
                 return [(h[0], h[1], None) for h in holes]
-        elif holes and default is None:
-            raise ValueError('Called interval evaluation over piecewise '  # noqa: SFS101
-                             'function on undefined intervals %s' %
-                             ', '.join([str((h[0], h[1])) for h in holes]))
 
         return int_expr
 
@@ -422,15 +421,13 @@ class Piecewise(Function):
     def _eval_subs(self, old, new):
         """Piecewise conditions may contain bool which are not of Basic type."""
         args = list(self.args)
-        for i, (e, c) in enumerate(args):
+        for i, (e, c) in enumerate(args):  # pragma: no branch
             c = c._subs(old, new)
             if c != false:
                 e = e._subs(old, new)
             args[i] = e, c
             if c == true:
                 return self.func(*args)
-
-        return self.func(*args)
 
     def _eval_transpose(self):
         return self.func(*[(e.transpose(), c) for e, c in self.args])
@@ -517,9 +514,9 @@ def piecewise_fold(expr):
     Examples
     ========
 
-    >>> p = Piecewise((x, x < 1), (1, x >= 1))
+    >>> p = Piecewise((x, x < 1), (1, True))
     >>> piecewise_fold(x*p)
-    Piecewise((x**2, x < 1), (x, x >= 1))
+    Piecewise((x**2, x < 1), (x, true))
 
     See Also
     ========

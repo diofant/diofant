@@ -904,3 +904,10 @@ def test_sympyissue_22986():
 
 def test_sympyissue_23231():
     assert limit((2**x - 2**-x)/(2**x + 2**-x), x, -oo) == -1
+
+
+def test_issue_1164():
+    # also sympy/sympy#14502
+    assert limit(factorial(x) - x**x, x, oo) == -oo
+    l = Limit(factorial(x) - x**oo, x, oo)
+    assert l.doit() == l

@@ -24,6 +24,7 @@ Minor changes
 =============
 
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`'s over finite fields, see :pull:`1209`.
+* Provide default clause (condition :class:`~diofant.logic.boolalg.BooleanTrue`) for :class:`~diofant.functions.elementary.piecewise.Piecewise`, see :pull:`1215`.
 
 Developer changes
 =================
@@ -65,3 +66,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23231`: Sympy giving the wrong solution
 * :sympyissue:`14387`: Tutorial on limits creates impression that they are two-sided by default
 * :sympyissue:`8166`: Limit assumes function is continuous?
+* :sympyissue:`14502`: Problem with limit including factorial.
