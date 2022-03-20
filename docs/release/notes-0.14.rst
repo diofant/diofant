@@ -66,3 +66,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23231`: Sympy giving the wrong solution
 * :sympyissue:`14387`: Tutorial on limits creates impression that they are two-sided by default
 * :sympyissue:`8166`: Limit assumes function is continuous?
+* :sympyissue:`14502`: Problem with limit including factorial.
