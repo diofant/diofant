@@ -96,8 +96,8 @@ def test_ipython_console_bare_division_noauto():
     assert c.expect_exact('\r\nIn [1]: ') == 0
     assert c.send('1/2\r\n') == 5
     assert c.expect_exact('\r\nOut[1]: 0.5\r\n\r\nIn [2]: ') == 0
-    assert c.send('a\r\n') == 3
-    assert c.expect(".*NameError: name 'a' "
+    assert c.send('spam\r\n') == 6
+    assert c.expect(".*NameError: name 'spam' "
                     'is not defined\r\n\r\nIn [\\[]3[]]: ') == 0
     assert c.send('x\r\n') == 3
     assert c.expect_exact('\r\nOut[3]: x\r\n\r\nIn [4]: ') == 0
