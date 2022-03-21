@@ -8,9 +8,9 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Sum, Symbol, acos, acosh,
                      acoth, asin, atan, besselk, binomial, cbrt, ceiling, cos,
                      cosh, cot, diff, digamma, erf, erfc, erfi, exp, factorial,
-                     floor, gamma, integrate, limit, log, nan, oo, pi,
+                     false, floor, gamma, integrate, limit, log, nan, oo, pi,
                      polygamma, root, sign, simplify, sin, sinh, sqrt,
-                     subfactorial, symbols, tan)
+                     subfactorial, symbols, tan, true)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 
@@ -112,6 +112,18 @@ def test_basic4():
     assert limit(e3, x, -1) == 2
     assert limit(e3, x, oo) == oo
 
+    e4 = Piecewise((1, 0 < x), (0, True))
+
+    assert limit(e4, x, 0, '-') == 0
+    assert limit(e4, x, 0) == 1
+    pytest.raises(PoleError, lambda: limit(e4, x, 0, 'real'))
+
+    e5 = Piecewise((1, 0 < x), (2, 1 < x), (0, True))
+
+    assert limit(e5, x, oo) == 1
+    assert limit(e5, x, 1, '-') == 1
+    assert limit(e5, x, 1) == 1
+
 
 def test_basic5():
     class MyFunction(Function):
@@ -121,8 +133,12 @@ def test_basic5():
                 return nan
     assert limit(MyFunction(x), x, oo) == Limit(MyFunction(x), x, oo)
 
-    assert limit(4/x > 8, x, 0)  # relational test
+    assert limit(4/x > 8, x, 0) is true  # relational test
     assert limit(MyFunction(x) > 0, x, oo) == Limit(MyFunction(x) > 0, x, oo)
+
+    # issue diofant/diofant#1217
+    assert limit(x > 0, x, 0) is true
+    assert limit(x > 0, x, 0, '-') is false
 
     # issue sympy/sympy#11833
     a = Symbol('a', positive=True)

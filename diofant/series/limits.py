@@ -144,15 +144,6 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
-        if e.is_Relational:
-            ll = limit(e.lhs, z, z0, dir)
-            rl = limit(e.rhs, z, z0, dir)
-
-            if any(isinstance(a, Limit) for a in [ll, rl]):
-                return self
-            else:
-                return e.func(ll, rl)
-
         if e.has(Order):
             if (order := e.getO()) and (z, z0) in order.args[1:]:
                 order = limit(order.expr, z, z0, dir)
@@ -167,6 +158,15 @@ class Limit(Expr):
         # We need a fresh variable with correct assumptions.
         newz = Dummy(z.name, positive=True, finite=True)
         e = e.subs({z: newz})
+
+        if e.is_Boolean or e.is_Relational:
+            try:
+                has_oo = e.as_set().closure.contains(oo)
+            except NotImplementedError:
+                return self
+            if has_oo.is_Boolean:
+                return has_oo
+            raise NotImplementedError
 
         try:
             r = limitinf(e, newz)
