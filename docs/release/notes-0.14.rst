@@ -70,3 +70,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8166`: Limit assumes function is continuous?
 * :sympyissue:`14502`: Problem with limit including factorial.
 * :sympyissue:`18492`: Limit of Piecewise function - NotImplementedError: Don't know how to calculate the mrv
+* :sympyissue:`23266`: Regression(?) in 1.10 for limits
