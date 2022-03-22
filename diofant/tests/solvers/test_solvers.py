@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
-                     IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
-                     Mul, Or, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
+from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
+                     IndexedBase, Integer, Integral, LambertW, Matrix, Max,
+                     Mul, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
                      Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, oo, ordered, pi, posify, re, real_root,
@@ -652,24 +652,15 @@ def test_solve_linear():
 
 
 def test_solve_inequalities():
-    x = Symbol('x')
-    system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
-
-    assert reduce_inequalities(system) == \
-        And(Or(And(Lt(-sqrt(2), x), Lt(x, -1)),
-               And(Lt(1, x), Lt(x, sqrt(2)))), Eq(0, 0))
-
-    x = Symbol('x', extended_real=True)
-    system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
-
-    assert reduce_inequalities(system) == \
-        Or(And(Lt(-sqrt(2), x), Lt(x, -1)), And(Lt(1, x), Lt(x, sqrt(2))))
+    eqs = [x**2 - 2 < 0, x**2 - 1 > 0]
+    assert reduce_inequalities(eqs) == (((-sqrt(2) < x) & (x < -1)) |
+                                        ((Integer(1) < x) & (x < sqrt(2))))
 
     # issue sympy/sympy#6627, sympy/sympy#6547
-    assert reduce_inequalities((x - 3)/(x - 2) < 0, x) == And(Lt(2, x), Lt(x, 3))
-    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < Integer(-1))
+    assert reduce_inequalities((x - 3)/(x - 2) < 0) == (Integer(2) < x) & (x < 3)
+    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < -1)
 
-    assert reduce_inequalities(sin(x) > Rational(1, 2)) == And(pi/6 < x, x < 5*pi/6)
+    assert reduce_inequalities(sin(x) > Rational(1, 2)) == (pi/6 < x) & (x < 5*pi/6)
 
 
 def test_sympyissue_4793():
@@ -1330,7 +1321,7 @@ def test_sympyissue_2725():
 def test_piecewise():
     x = symbols('x')
     # if no symbol is given the piecewise detection must still work
-    assert solve(Piecewise((x - 2, Gt(x, 2)), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
+    assert solve(Piecewise((x - 2, x > 2), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
 
     assert solve(abs(y)*x - 1, x) == [{x: 1/abs(y)}]
 
@@ -1408,7 +1399,7 @@ def test_sympyissue_7322():
 
 
 def test_sympyissue_8587():
-    f = Piecewise((2*x**2, And(0 < x, x < 1)), (2, True))
+    f = Piecewise((2*x**2, (0 < x) & (x < 1)), (2, True))
     assert solve(f - 1) == [{x: 1/sqrt(2)}]
 
 
