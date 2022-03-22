@@ -256,6 +256,18 @@ def test_reduce_piecewise_inequalities():
         (Integer(-1) < x) & (x < Rational(1, 2))
 
 
+def test_solve_inequalities():
+    eqs = [x**2 - 2 < 0, x**2 - 1 > 0]
+    assert reduce_inequalities(eqs) == (((-sqrt(2) < x) & (x < -1)) |
+                                        ((Integer(1) < x) & (x < sqrt(2))))
+
+    # issue sympy/sympy#6627, sympy/sympy#6547
+    assert reduce_inequalities((x - 3)/(x - 2) < 0) == (Integer(2) < x) & (x < 3)
+    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < -1)
+
+    assert reduce_inequalities(sin(x) > Rational(1, 2)) == (pi/6 < x) & (x < 5*pi/6)
+
+
 def test_reduce_inequalities_general():
     assert reduce_inequalities(sqrt(2)*x >= 1) == (sqrt(2)/2 <= x)
     assert reduce_inequalities(PurePoly(x + 1, x) > 0) == (Integer(-1) < x)

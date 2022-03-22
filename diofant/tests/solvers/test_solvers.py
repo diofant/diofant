@@ -5,9 +5,9 @@ from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
                      Mul, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
                      Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
-                     nfloat, oo, ordered, pi, posify, re, real_root,
-                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
-                     solve, sqrt, sstr, symbols, tan, tanh)
+                     nfloat, ordered, pi, posify, re, real_root, root, sec,
+                     sech, simplify, sin, sinh, solve, sqrt, sstr, symbols,
+                     tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -649,18 +649,6 @@ def test_solve_linear():
     assert solve_linear(1/(1/x), x) == (x, 0)
     assert solve_linear(x**2*(1/x - z**2/x), x) == (x**2*(-z**2 + 1), x)
     assert solve_linear(x + y + z, y) == (y, -x - z)
-
-
-def test_solve_inequalities():
-    eqs = [x**2 - 2 < 0, x**2 - 1 > 0]
-    assert reduce_inequalities(eqs) == (((-sqrt(2) < x) & (x < -1)) |
-                                        ((Integer(1) < x) & (x < sqrt(2))))
-
-    # issue sympy/sympy#6627, sympy/sympy#6547
-    assert reduce_inequalities((x - 3)/(x - 2) < 0) == (Integer(2) < x) & (x < 3)
-    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < -1)
-
-    assert reduce_inequalities(sin(x) > Rational(1, 2)) == (pi/6 < x) & (x < 5*pi/6)
 
 
 def test_sympyissue_4793():
