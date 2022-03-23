@@ -297,7 +297,6 @@ def test_to_nnf():
     assert to_nnf(false) is false
     assert to_nnf(a) == a
     assert to_nnf(~a) == ~a
-    assert (~a).to_nnf() == ~a
 
     class Foo(BooleanFunction):
         pass

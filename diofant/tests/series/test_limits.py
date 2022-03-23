@@ -924,3 +924,8 @@ def test_issue_1164():
     assert limit(factorial(x) - x**x, x, oo) == -oo
     l = Limit(factorial(x) - x**oo, x, oo)
     assert l.doit() == l
+
+
+def test_sympyissue_23266():
+    assert limit(-0.295084971874737*exp(-18.9442719099992*x) +
+                 5.29508497187474*exp(-1.05572809000084*x), x, oo) == 0
