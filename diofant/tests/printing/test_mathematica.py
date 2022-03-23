@@ -7,10 +7,10 @@ from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
                      Rational, RootOf, RootSum, SparseMatrix, Sum, Tuple, acos,
                      acosh, acot, acoth, asin, asinh, atan, atanh, binomial,
-                     conjugate, cos, cosh, cot, coth, csch, erfc, exp,
-                     factorial, factorial2, false, fibonacci, gamma, hyper, im,
-                     log, loggamma, mathematica_code, meijerg, oo, pi,
-                     polygamma, polylog, re, rf, sech, sign, sin, sinh,
+                     conjugate, cos, cosh, cot, coth, csch, erf, erfc, erfi,
+                     exp, factorial, factorial2, false, fibonacci, gamma,
+                     hyper, im, log, loggamma, mathematica_code, meijerg, oo,
+                     pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
                      symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import x, y, z
 
@@ -75,6 +75,8 @@ def test_Function():
     assert mathematica_code(acoth(x)) == 'ArcCoth[x]'
     assert mathematica_code(sech(x)) == 'Sech[x]'
     assert mathematica_code(csch(x)) == 'Csch[x]'
+    assert mathematica_code(erf(x)) == 'Erf[x]'
+    assert mathematica_code(erfi(x)) == 'Erfi[x]'
     assert mathematica_code(erfc(x)) == 'Erfc[x]'
     assert mathematica_code(conjugate(x)) == 'Conjugate[x]'
     assert mathematica_code(re(x)) == 'Re[x]'
