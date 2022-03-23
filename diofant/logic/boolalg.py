@@ -263,26 +263,6 @@ class BooleanFunction(Application, Boolean):
     def _eval_simplify(self, ratio, measure):
         return simplify_logic(self)
 
-    def to_nnf(self, simplify=True):
-        return self._to_nnf(*self.args, simplify=simplify)
-
-    @classmethod
-    def _to_nnf(cls, *args, **kwargs):
-        simplify = kwargs.get('simplify', True)
-        argset = set()
-        for arg in args:
-            if not is_literal(arg):
-                arg = arg.to_nnf(simplify)
-            if simplify:
-                arg = arg.args if isinstance(arg, cls) else (arg,)
-                for a in arg:
-                    if ~a in argset:
-                        return cls.zero
-                    argset.add(a)
-            else:
-                argset.add(arg)
-        return cls(*argset)
-
 
 class And(LatticeOp, BooleanFunction):
     """
@@ -507,40 +487,6 @@ class Not(BooleanFunction):
                                       ' implemented for mutivariate'
                                       ' expressions')
 
-    def to_nnf(self, simplify=True):
-        if is_literal(self):
-            return self
-
-        expr = self.args[0]
-
-        if isinstance(expr, And):
-            return Or._to_nnf(*[~arg for arg in expr.args], simplify=simplify)
-
-        if isinstance(expr, Or):
-            return And._to_nnf(*[~arg for arg in expr.args], simplify=simplify)
-
-        if isinstance(expr, Implies):
-            a, b = expr.args
-            return And._to_nnf(a, ~b, simplify=simplify)
-
-        if isinstance(expr, Equivalent):
-            return And._to_nnf(Or(*expr.args), Or(*[~arg for arg in expr.args]),
-                               simplify=simplify)
-
-        if isinstance(expr, Xor):
-            args = []
-            for i in range(1, len(expr.args) + 1, 2):
-                for negs in combinations(expr.args, i):
-                    args.append(Or(*[~arg if arg in negs else arg
-                                     for arg in expr.args]))
-            return And._to_nnf(*args, simplify=simplify)
-
-        if isinstance(expr, ITE):
-            a, b, c = expr.args
-            return And._to_nnf(a | ~c, ~a | ~b, simplify=simplify)
-
-        raise ValueError(f'Illegal operator {expr.func} in expression')
-
 
 class Xor(BooleanFunction):
     """
@@ -633,14 +579,6 @@ class Xor(BooleanFunction):
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
-
-    def to_nnf(self, simplify=True):
-        args = []
-        for i in range(0, len(self.args) + 1, 2):
-            for negs in combinations(self.args, i):
-                args.append(Or(*[~arg if arg in negs else arg
-                                 for arg in self.args]))
-        return And._to_nnf(*args, simplify=simplify)
 
 
 class Nand(BooleanFunction):
@@ -770,10 +708,6 @@ class Implies(BooleanFunction):
         else:
             return Expr.__new__(cls, *args)
 
-    def to_nnf(self, simplify=True):
-        a, b = self.args
-        return Or._to_nnf(~a, b, simplify=simplify)
-
 
 class Equivalent(BooleanFunction):
     """
@@ -840,13 +774,6 @@ class Equivalent(BooleanFunction):
     def args(self):
         return tuple(ordered(self._argset))
 
-    def to_nnf(self, simplify=True):
-        args = []
-        for a, b in zip(self.args, self.args[1:]):
-            args.append(~a | b)
-        args.append(~self.args[-1] | self.args[0])
-        return And._to_nnf(*args, simplify=simplify)
-
 
 class ITE(BooleanFunction):
     """
@@ -889,10 +816,6 @@ class ITE(BooleanFunction):
             return a
         elif b == false and c == true:
             return ~a
-
-    def to_nnf(self, simplify=True):
-        a, b, c = self.args
-        return And._to_nnf(~a | b, a | c, simplify=simplify)
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
@@ -940,7 +863,66 @@ def to_nnf(expr, simplify=True):
     if is_nnf(expr, simplify):
         return expr
 
-    return expr.to_nnf(simplify)
+    if expr.is_Not:
+        expr = expr.args[0]
+
+        if isinstance(expr, And):
+            expr = Or(*[~arg for arg in expr.args])
+        elif isinstance(expr, Or):
+            expr = And(*[~arg for arg in expr.args])
+        elif isinstance(expr, Implies):
+            a, b = expr.args
+            expr = a & ~b
+        elif isinstance(expr, Equivalent):
+            expr = Or(*expr.args) & Or(*[~arg for arg in expr.args])
+        elif isinstance(expr, Xor):
+            args = []
+            for i in range(1, len(expr.args) + 1, 2):
+                for neg in combinations(expr.args, i):
+                    args.append(Or(*[~s if s in neg else s for s in expr.args]))
+            expr = And(*args)
+        elif isinstance(expr, ITE):
+            a, b, c = expr.args
+            expr = (a | ~c) & (~a | ~b)
+        else:
+            raise ValueError(f'Illegal operator {expr.func} in expression')
+
+    if isinstance(expr, Implies):
+        a, b = expr.args
+        expr = ~a | b
+
+    if isinstance(expr, Equivalent):
+        args = []
+        for a, b in zip(expr.args, expr.args[1:]):
+            args.append(~a | b)
+        args.append(~expr.args[-1] | expr.args[0])
+        expr = And(*args)
+
+    if isinstance(expr, Xor):
+        args = []
+        for i in range(0, len(expr.args) + 1, 2):
+            for neg in combinations(expr.args, i):
+                args.append(Or(*[~s if s in neg else s for s in expr.args]))
+        expr = And(*args)
+
+    if isinstance(expr, ITE):
+        a, b, c = expr.args
+        expr = (~a | b) & (a | c)
+
+    args = []
+    for arg in expr.args:
+        if not is_literal(arg):
+            arg = to_nnf(arg, simplify)
+        if simplify:
+            arg = arg.args if isinstance(arg, expr.func) else (arg,)
+            for a in arg:
+                if ~a in args:
+                    return expr.func.zero
+                args.append(a)
+        else:
+            args.append(arg)
+
+    return expr.func(*args)
 
 
 def to_cnf(expr, simplify=False):
