@@ -7,10 +7,10 @@ import pytest
 from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Sum, Symbol, acos, acosh,
                      asin, atan, besselk, binomial, cbrt, ceiling, cos, cosh,
-                     cot, diff, digamma, erf, erfi, exp, factorial, floor,
-                     gamma, integrate, limit, log, nan, oo, pi, polygamma,
-                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
-                     symbols, tan)
+                     cot, diff, digamma, erf, erfc, erfi, exp, factorial,
+                     floor, gamma, integrate, limit, log, nan, oo, pi,
+                     polygamma, root, sign, simplify, sin, sinh, sqrt,
+                     subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 
@@ -943,3 +943,8 @@ def test_sympyissue_7391():
 def test_issue_1216():
     assert (x/abs(sqrt(1 - x**2))).limit(x, oo) == 1
     assert((4*x - 2)/abs(sqrt(4 - 4*(2*x - 1)**2))).limit(x, oo) == 1
+
+
+def test_issue_1213():
+    # also sympy/sympy#11496
+    assert limit(erfc(log(1/x)), x, oo) == 2
