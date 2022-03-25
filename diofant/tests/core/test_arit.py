@@ -952,6 +952,9 @@ def test_Pow_is_integer():
 
     assert ((-1)**k).is_integer
 
+    # issue sympy/sympy#23287
+    assert (x**2/2).is_integer is None
+
     x = Symbol('x', extended_real=True, integer=False)
     assert (x**2).is_integer is None  # issue sympy/sympy#8641
 

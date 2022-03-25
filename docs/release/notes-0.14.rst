@@ -72,3 +72,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18492`: Limit of Piecewise function - NotImplementedError: Don't know how to calculate the mrv
 * :sympyissue:`23266`: Regression(?) in 1.10 for limits
 * :sympyissue:`7391`: Limits for expressions with undetermined functions give wrong results
+* :sympyissue:`23287`: Regression in is_integer for Mul of Pow
