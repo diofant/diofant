@@ -449,7 +449,7 @@ def test_abs():
     assert abs(x + 1).series(x, n=4) == x + 1
     assert abs(sin(x)).series(x, n=4) == x - x**3/6 + O(x**4)
     assert abs(sin(-x)).series(x, n=4) == x - x**3/6 + O(x**4)
-    assert abs(x - a).series(x, 1) == (x - a)*sign(1 - a)
+    assert abs(x - a).series(x, 1) == (x - a)/sign(1 - a)
 
     # issue sympy/sympy#5183
     assert abs(x + x**2).series(n=1) == O(x)

@@ -938,3 +938,8 @@ def test_sympyissue_7391():
     l = Limit(func.subs({y: f(x)}), x, 0)
     assert l.doit() == l
     assert l.subs({f: Lambda(x, sqrt(x))}).doit() == Rational(1, 2)
+
+
+def test_issue_1216():
+    assert (x/abs(sqrt(1 - x**2))).limit(x, oo) == 1
+    assert((4*x - 2)/abs(sqrt(4 - 4*(2*x - 1)**2))).limit(x, oo) == 1

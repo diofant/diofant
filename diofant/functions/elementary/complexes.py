@@ -507,9 +507,9 @@ class Abs(Function):
         s = self.args[0]._eval_nseries(x, n=n, logx=logx)
         when, lim = Eq(direction, 0), direction.limit(x, 0)
         if lim.equals(0) is False:
-            return sign(lim)*s
+            return s/sign(lim)
         else:
-            return Piecewise((lim, when), (sign(direction)*s, True))
+            return Piecewise((lim, when), (s/sign(direction), True))
 
     def _eval_derivative(self, s):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:
