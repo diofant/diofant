@@ -1042,7 +1042,7 @@ class acoth(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return pi*I / 2
+            return -pi*I / 2
         elif n < 0 or n % 2 == 0:
             return Integer(0)
         else:
@@ -1054,7 +1054,7 @@ class acoth(Function):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return I*pi/2
+            return -I*pi/2
         else:
             return self.func(arg)
 

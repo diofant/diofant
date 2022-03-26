@@ -659,8 +659,9 @@ def test_acoth():
 
 
 def test_acoth_series():
-    assert acoth(x).series(x, 0, 10) == \
-        I*pi/2 + x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
+    # see sympy/sympy#3663
+    assert (acoth(x).series(x, n=10) ==
+            -I*pi/2 + x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10))
 
 
 def test_inverses():
@@ -678,7 +679,7 @@ def test_leading_term():
     assert cosh(x).as_leading_term(x) == 1
     assert coth(x).as_leading_term(x) == 1/x
     assert acosh(x).as_leading_term(x) == I*pi/2
-    assert acoth(x).as_leading_term(x) == I*pi/2
+    assert acoth(x).as_leading_term(x) == -I*pi/2
     for func in [sinh, tanh, asinh, atanh]:
         assert func(x).as_leading_term(x) == x
     for func in [sinh, cosh, tanh, coth, asinh, acosh, atanh, acoth]:

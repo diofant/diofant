@@ -360,7 +360,7 @@ def test_hyperbolic():
     assert acosh(x).series(x, n=7) == \
         pi*I/2 - I*x - 3*I*x**5/40 - I*x**3/6 + O(x**7)
     assert atanh(x).series(x, n=7) == x + x**3/3 + x**5/5 + O(x**7)
-    assert acoth(x).series(x, n=7) == x + x**3/3 + x**5/5 + pi*I/2 + O(x**7)
+    assert acoth(x).series(x, n=7) == -I*pi/2 + x + x**3/3 + x**5/5 + O(x**7)
 
 
 def test_series2():
