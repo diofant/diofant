@@ -148,11 +148,9 @@ class sinh(HyperbolicFunction):
             return (sinh(x)*cosh(y) + sinh(y)*cosh(x)).expand(trig=True)
         return sinh(arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
-        return (exp(arg) - exp(-arg)) / 2
-
     def _eval_rewrite_as_exp(self, arg):
         return (exp(arg) - exp(-arg)) / 2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_cosh(self, arg):
         return -I*cosh(arg + pi*I/2)
@@ -290,11 +288,9 @@ class cosh(HyperbolicFunction):
             return (cosh(x)*cosh(y) + sinh(x)*sinh(y)).expand(trig=True)
         return cosh(arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
-        return (exp(arg) + exp(-arg)) / 2
-
     def _eval_rewrite_as_exp(self, arg):
         return (exp(arg) + exp(-arg)) / 2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return -I*sinh(arg + pi*I/2)
@@ -425,13 +421,10 @@ class tanh(HyperbolicFunction):
         denom = sinh(re)**2 + cos(im)**2
         return sinh(re)*cosh(re)/denom, sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_tractable(self, arg):
-        neg_exp, pos_exp = exp(-arg), exp(arg)
-        return (pos_exp - neg_exp)/(pos_exp + neg_exp)
-
     def _eval_rewrite_as_exp(self, arg):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp - neg_exp)/(pos_exp + neg_exp)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return I*sinh(arg)/sinh(pi*I/2 - arg)
@@ -553,13 +546,10 @@ class coth(HyperbolicFunction):
         denom = sinh(re)**2 + sin(im)**2
         return sinh(re)*cosh(re)/denom, -sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_tractable(self, arg):
-        neg_exp, pos_exp = exp(-arg), exp(arg)
-        return (pos_exp + neg_exp)/(pos_exp - neg_exp)
-
     def _eval_rewrite_as_exp(self, arg):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp + neg_exp)/(pos_exp - neg_exp)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return -I*sinh(pi*I/2 - arg)/sinh(arg)
@@ -811,6 +801,7 @@ class asinh(Function):
 
     def _eval_rewrite_as_log(self, x):
         return log(x + sqrt(x**2 + 1))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -915,6 +906,7 @@ class acosh(Function):
 
     def _eval_rewrite_as_log(self, x):
         return log(x + sqrt(x - 1)*sqrt(x + 1))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
@@ -992,6 +984,10 @@ class atanh(Function):
         else:
             return self.func(arg)
 
+    def _eval_rewrite_as_log(self, x):
+        return (log(1 + x) - log(1 - x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
+
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
         return tanh
@@ -1057,6 +1053,10 @@ class acoth(Function):
             return -I*pi/2
         else:
             return self.func(arg)
+
+    def _eval_rewrite_as_log(self, x):
+        return (log((x + 1)/x) - log((x - 1)/x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""

@@ -563,6 +563,10 @@ def test_acosh():
     pytest.raises(ArgumentIndexError, lambda: acosh(x).fdiff(2))
 
 
+def test_acosh_rewrite():
+    assert acosh(x).rewrite(log) == log(x + sqrt(x - 1)*sqrt(x + 1))
+
+
 def test_acosh_series():
     assert acosh(x).series(x, 0, 8) == \
         -I*x + pi*I/2 - I*x**3/6 - 3*I*x**5/40 - 5*I*x**7/112 + O(x**8)
@@ -612,6 +616,10 @@ def test_atanh():
     pytest.raises(ArgumentIndexError, lambda: atanh(x).fdiff(2))
 
 
+def test_atanh_rewrite():
+    assert atanh(x).rewrite(log) == (log(1 + x) - log(1 - x))/2
+
+
 def test_atanh_series():
     assert atanh(x).series(x, 0, 10) == \
         x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
@@ -656,6 +664,10 @@ def test_acoth():
     assert acoth(I*(sqrt(3) - 2)) == 5*pi*I/12
 
     pytest.raises(ArgumentIndexError, lambda: acoth(x).fdiff(2))
+
+
+def test_acoth_rewrite():
+    assert acoth(x).rewrite(log) == (log((x + 1)/x) - log((x - 1)/x))/2
 
 
 def test_acoth_series():
