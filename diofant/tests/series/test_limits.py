@@ -6,8 +6,8 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Sum, Symbol, acos, acosh,
-                     asin, atan, besselk, binomial, cbrt, ceiling, cos, cosh,
-                     cot, diff, digamma, erf, erfc, erfi, exp, factorial,
+                     acoth, asin, atan, besselk, binomial, cbrt, ceiling, cos,
+                     cosh, cot, diff, digamma, erf, erfc, erfi, exp, factorial,
                      floor, gamma, integrate, limit, log, nan, oo, pi,
                      polygamma, root, sign, simplify, sin, sinh, sqrt,
                      subfactorial, symbols, tan)
@@ -207,6 +207,30 @@ def test_ceiling_requires_robust_assumptions():
 def test_atan():
     assert limit(atan(x)*sin(1/x), x, 0) == 0
     assert limit(atan(x) + sqrt(x + 1) - sqrt(x), x, oo) == pi/2
+
+
+def test_acosh():
+    assert limit(acosh(I*x), x, 0) == I*pi/2
+    assert limit(acosh(I*x), x, 0, '-') == -I*pi/2
+    assert limit(acosh(-I*x), x, 0) == -I*pi/2
+    assert limit(acosh(-I*x), x, 0, '-') == I*pi/2
+    pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, 'real'))
+    assert limit(acosh(x - I*x), x, 0) == -I*pi/2
+    assert limit(acosh(x - I*x), x, 0, '-') == I*pi/2
+    pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, 'real'))
+    assert limit(acosh(I*x**2), x, 0, 'real') == I*pi/2
+    assert limit(acosh(x**2 - I*x**2), x, 0, 'real') == -I*pi/2
+
+
+def test_acoth():
+    assert limit(acoth(x), x, 0) == -I*pi/2
+    assert limit(acoth(x), x, 0, '-') == I*pi/2
+    pytest.raises(PoleError, lambda: limit(acoth(x), x, 0, 'real'))
+    assert limit(acoth(-x), x, 0) == I*pi/2
+    assert limit(acoth(x**2), x, 0, 'real') == -I*pi/2
+    assert limit(acoth(I*x), x, 0) == -I*pi/2
+    assert limit(acoth(I*x), x, 0, '-') == I*pi/2
+    pytest.raises(PoleError, lambda: limit(acoth(x - I*x), x, 0, 'real'))
 
 
 def test_abs():
