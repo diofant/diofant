@@ -4,12 +4,13 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Limit, O, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, acosh, asin, atan,
-                     besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
-                     digamma, erf, erfi, exp, factorial, floor, gamma,
-                     integrate, limit, log, nan, oo, pi, polygamma, root, sign,
-                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan)
+from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
+                     Piecewise, PoleError, Rational, Sum, Symbol, acos, acosh,
+                     asin, atan, besselk, binomial, cbrt, ceiling, cos, cosh,
+                     cot, diff, digamma, erf, erfi, exp, factorial, floor,
+                     gamma, integrate, limit, log, nan, oo, pi, polygamma,
+                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
+                     symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 
@@ -929,3 +930,11 @@ def test_issue_1164():
 def test_sympyissue_23266():
     assert limit(-0.295084971874737*exp(-18.9442719099992*x) +
                  5.29508497187474*exp(-1.05572809000084*x), x, oo) == 0
+
+
+def test_sympyissue_7391():
+    f = Function('f')
+    func = x*y*y/(x*x + y**4)
+    l = Limit(func.subs({y: f(x)}), x, 0)
+    assert l.doit() == l
+    assert l.subs({f: Lambda(x, sqrt(x))}).doit() == Rational(1, 2)

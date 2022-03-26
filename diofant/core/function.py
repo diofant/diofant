@@ -466,10 +466,6 @@ class Function(Application, Expr):
     def _eval_is_commutative(self):
         return fuzzy_and(a.is_commutative for a in self.args)
 
-    def as_base_exp(self):
-        """Returns the method as the 2-tuple (base, exponent)."""
-        return self, Integer(1)
-
     def _eval_aseries(self, n, args0, x, logx):
         """
         Compute an asymptotic expansion around args0, in terms of self.args.

@@ -132,7 +132,7 @@ class exp_polar(Function):
 
     def as_base_exp(self):
         if self.exp == 0:
-            return self, Integer(1)
+            return super().as_base_exp()
         return self.func(1), Mul(*self.args)
 
 
@@ -241,10 +241,6 @@ class log(Function):
                         return +pi*I/2 + cls(+coeff)
                     else:
                         return -pi*I/2 + cls(-coeff)
-
-    def as_base_exp(self):
-        """Returns this function in the form (base, exponent)."""
-        return self, Integer(1)
 
     def _eval_expand_log(self, deep=True, **hints):
         from ...concrete import Product, Sum
