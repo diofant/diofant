@@ -326,7 +326,7 @@ def test_limit():
     assert limit(27**(log(x, 3) + 1)/x**3, x, oo) == 27
 
     # issue sympy/sympy#9449
-    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)
+    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)**-1
 
     # issue sympy/sympy#8481
     assert limit(m**x * exp(-m) / factorial(x), x, oo) == 0
