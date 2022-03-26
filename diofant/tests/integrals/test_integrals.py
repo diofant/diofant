@@ -222,7 +222,7 @@ def test_multiple_integration():
         y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
 
     # issue sympy/sympy#14782
-    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
+    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) == -pi/8
 
 
 def test_sympyissue_3532():

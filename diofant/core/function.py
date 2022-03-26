@@ -1500,6 +1500,9 @@ class Subs(Expr):
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
 
+    def _eval_nseries(self, x, n, logx=None):
+        raise NotImplementedError
+
 
 def diff(f, *args, **kwargs):
     """
