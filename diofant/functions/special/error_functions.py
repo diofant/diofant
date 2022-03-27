@@ -2,7 +2,7 @@
 of incomplete gamma functions. It should probably be renamed.
 """
 
-from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
+from ...core import (Add, E, EulerGamma, Function, I, Integer, Pow, Rational,
                      cacheit, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
@@ -2254,9 +2254,11 @@ class _erfs(Function):
 
     @classmethod
     def eval(cls, z):
-        r = cls(z, evaluate=False).rewrite('intractable')
-        if r.is_number:
-            return r
+        if z in (0, 1, I, 1 + E**-1):
+            return cls(z, evaluate=False).rewrite('intractable')
+
+        if z.could_extract_minus_sign():
+            return 2*exp(z**2) - cls(-z, evaluate=False)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
