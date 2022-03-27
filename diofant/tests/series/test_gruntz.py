@@ -441,11 +441,15 @@ def test_issue_74():
 
 def test_issue_75():
     assert limit(abs(log(x)), x, oo) == oo
-    assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
-    assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
-
     assert limit(abs(log(2 + 1/x)) - log(2 + 1/x), x, oo) == 0
     assert limit(abs(log(2 - 1/x)) - log(2 - 1/x), x, oo) == 0
+
+
+@pytest.mark.xfail
+@pytest.mark.slow
+def test_issue_75_xfail():
+    assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
+    assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
 
 
 def test_sympyissue_8241():

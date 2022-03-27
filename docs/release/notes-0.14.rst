@@ -74,3 +74,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`7391`: Limits for expressions with undetermined functions give wrong results
 * :sympyissue:`23287`: Regression in is_integer for Mul of Pow
 * :sympyissue:`11496`: Wrong result in limit calculation of limit(erfc(ln(1/x)),x,oo)?
+* :sympyissue:`3663`: series expansion of acosh and acoth
