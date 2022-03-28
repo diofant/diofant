@@ -73,7 +73,8 @@ disable = ['invalid-name',
            'next-method-called',
            'import-outside-toplevel',
            'arguments-out-of-order',
-           'consider-using-f-string']
+           'consider-using-f-string',
+           'non-ascii-name']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

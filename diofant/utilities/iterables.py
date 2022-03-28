@@ -1469,7 +1469,7 @@ def uniq(seq, result=None):
             yield s
             result.append(s)
         if hasattr(seq, '__getitem__'):
-            for s in uniq(seq[i + 1:], result):
+            for s in uniq(seq[i + 1:], result):  # pylint: disable=used-before-assignment
                 yield s
         else:
             for s in uniq(seq, result):
