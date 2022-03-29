@@ -75,7 +75,7 @@ def clashing():
     Examples
     ========
 
-    >>> from diofant.abc import _clash1, _clash2, _clash
+    >>> from diofant.abc import _clash, _clash1, _clash2
     >>> sympify('Q & C', locals=_clash1)
     And(C, Q)
     >>> sympify('pi(x)', locals=_clash2)

@@ -106,7 +106,7 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
     Examples
     ========
 
-    >>> from diofant.stats import P, E
+    >>> from diofant.stats import E, P
 
     >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))  # Normal distribution
     >>> X = ContinuousRV(x, pdf)
@@ -302,7 +302,7 @@ def Beta(name, alpha, beta):
     Examples
     ========
 
-    >>> from diofant.stats import density, E
+    >>> from diofant.stats import E, density
 
     >>> alpha = Symbol('alpha', positive=True)
     >>> beta = Symbol('beta', positive=True)
@@ -481,7 +481,7 @@ def Chi(name, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, Chi
+    >>> from diofant.stats import Chi, density
 
     >>> X = Chi('x', k)
 
@@ -594,7 +594,7 @@ def ChiSquared(name, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> k = Symbol('k', integer=True, positive=True)
 
@@ -705,7 +705,7 @@ def Erlang(name, k, l):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance
+    >>> from diofant.stats import E, cdf, density, variance
 
     >>> k = Symbol('k', integer=True, positive=True)
     >>> l = Symbol('l', positive=True)
@@ -786,7 +786,7 @@ def Exponential(name, rate):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance, std, skewness
+    >>> from diofant.stats import E, cdf, density, skewness, std, variance
 
     >>> l = Symbol('lambda', positive=True)
 
@@ -1076,7 +1076,7 @@ def Gamma(name, k, theta):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance
+    >>> from diofant.stats import E, cdf, density, variance
 
     >>> k = Symbol('k', positive=True)
     >>> theta = Symbol('theta', positive=True)
@@ -1478,7 +1478,7 @@ def Maxwell(name, a):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> a = Symbol('a', positive=True)
 
@@ -1542,7 +1542,7 @@ def Nakagami(name, mu, omega):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> mu = Symbol('mu', positive=True)
     >>> omega = Symbol('omega', positive=True)
@@ -1618,7 +1618,7 @@ def Normal(name, mean, std):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std, cdf, skewness
+    >>> from diofant.stats import E, cdf, density, skewness, std
 
     >>> mu = Symbol('mu')
     >>> sigma = Symbol('sigma', positive=True)
@@ -1907,7 +1907,7 @@ def Rayleigh(name, sigma):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> sigma = Symbol('sigma', positive=True)
 
@@ -2134,7 +2134,7 @@ def Uniform(name, left, right):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance
+    >>> from diofant.stats import E, cdf, density, variance
 
     >>> a = Symbol('a', negative=True)
     >>> b = Symbol('b', positive=True)
@@ -2351,7 +2351,7 @@ def Weibull(name, alpha, beta):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> l = Symbol('lambda', positive=True)
     >>> k = Symbol('k', positive=True, real=True)
@@ -2416,7 +2416,7 @@ def WignerSemicircle(name, R):
     Examples
     ========
 
-    >>> from diofant.stats import density, E
+    >>> from diofant.stats import E, density
 
     >>> R = Symbol('R', positive=True)
 

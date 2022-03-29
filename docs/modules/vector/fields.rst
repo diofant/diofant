@@ -314,8 +314,7 @@ function, since it depends only on the endpoints of the path.
 
 This computation is performed as follows in :mod:`diofant.vector`.
 
-  >>> from diofant.vector import CoordSysCartesian
-  >>> from diofant.vector import scalar_potential_difference
+  >>> from diofant.vector import CoordSysCartesian, scalar_potential_difference
   >>> R = CoordSysCartesian('R')
   >>> P = R.origin.locate_new('P', 1*R.i + 2*R.j + 3*R.k)
   >>> vectfield = 4*R.x*R.y*R.i + 2*R.x**2*R.j

@@ -45,7 +45,7 @@ def FiniteRV(name, density):
 
     Returns a RandomSymbol.
 
-    >>> from diofant.stats import P, E
+    >>> from diofant.stats import E, P
 
     >>> density = {0: .1, 1: .2, 2: .3, 3: .4}
     >>> X = FiniteRV('X', density)

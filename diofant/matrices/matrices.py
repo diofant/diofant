@@ -1439,7 +1439,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import rho, phi
+        >>> from diofant.abc import phi, rho
         >>> X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
         >>> Y = Matrix([rho, phi])
         >>> X.jacobian(Y)
