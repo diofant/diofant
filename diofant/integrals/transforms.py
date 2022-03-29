@@ -1767,7 +1767,7 @@ def hankel_transform(f, r, k, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import r, nu, k
+    >>> from diofant.abc import k, nu, r
 
     >>> ht = hankel_transform(1/r**m, r, k, nu)
     >>> ht
@@ -1824,7 +1824,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import r, nu, k
+    >>> from diofant.abc import k, nu, r
 
     >>> ht = hankel_transform(1/r**m, r, k, nu)
     >>> ht

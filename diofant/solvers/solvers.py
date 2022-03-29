@@ -869,7 +869,7 @@ def _solve_system(exprs, symbols, **flags):
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
         for r in result:
-            for k in r:
+            for k in r.copy():
                 r[k] = simplify(r[k])
         flags['simplify'] = False  # don't need to do so in checksol now
 

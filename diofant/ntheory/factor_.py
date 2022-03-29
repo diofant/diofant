@@ -370,10 +370,10 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     so it is a good idea to allow for retries:
 
     >>> n = 16843009
-    >>> def F(x):
+    >>> def f(x):
     ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
-    ...     a, b = next(cycle_length(F, s))
+    ...     a, b = next(cycle_length(f, s))
     ...     print(f'loop length = {a:4d}; leader length = {b:3d}')
     ...
     loop length = 2489; leader length =  42
@@ -415,9 +415,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> n = 16843009
-    >>> def F(x):
+    >>> def f(x):
     ...     return (2048*pow(x, 2, n) + 32767) % n
-    >>> pollard_rho(n, F=F)
+    >>> pollard_rho(n, F=f)
     257
 
     Use the default setting with a bad value of ``a`` and no retries:

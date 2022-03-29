@@ -115,7 +115,7 @@ def test_IndexedBase_shape():
     assert b.shape == Tuple(m, n)
     assert a[i, j] != b[i, j]
     assert a[i, j] == b[i, j].subs({n: m})
-    assert b.func(*b.args) == b
+    assert b.func(b.label, shape=b.shape) == b
     assert b[i, j].func(*b[i, j].args) == b[i, j]
     pytest.raises(IndexException, lambda: b[i])
     pytest.raises(IndexException, lambda: b[i, i, j])

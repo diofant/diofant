@@ -1039,7 +1039,7 @@ def nP(n, k=None, replacement=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import multiset_permutations, multiset
+    >>> from diofant.utilities.iterables import multiset, multiset_permutations
 
     >>> nP(3, 2)
     6
@@ -1356,8 +1356,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import (multiset_partitions,
-    ...                                          permutations, subsets)
+    >>> from diofant.utilities.iterables import (multiset_partitions, permutations,
+    ...                                          subsets)
 
     First kind (unsigned by default):
 

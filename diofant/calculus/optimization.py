@@ -234,10 +234,10 @@ def simplex(c, m, b):
         status = solve_simplex(tableau, basis, phase1=True)
         assert status == 0
 
-        if tableau[-1, -1].is_nonzero:  # pylint: disable=unsubscriptable-object
+        if tableau[-1, -1].is_nonzero:
             raise InfeasibleProblem
 
-        del tableau[-1, :]  # pylint: disable=unsupported-delete-operation
+        del tableau[-1, :]
         for i in range(nneg):
             del tableau[:, -2]
 

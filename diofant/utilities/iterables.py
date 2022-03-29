@@ -912,7 +912,7 @@ def multiset_partitions(multiset, m=None):
     Stirling Number of the 2nd kind:
 
     >>> def s2(n, k):
-    ...     from diofant import Dummy, binomial, factorial, Sum
+    ...     from diofant import Dummy, Sum, binomial, factorial
     ...     if k > n:
     ...         return 0
     ...     j = Dummy()
@@ -1469,7 +1469,7 @@ def uniq(seq, result=None):
             yield s
             result.append(s)
         if hasattr(seq, '__getitem__'):
-            for s in uniq(seq[i + 1:], result):
+            for s in uniq(seq[i + 1:], result):  # pylint: disable=used-before-assignment
                 yield s
         else:
             for s in uniq(seq, result):
@@ -1710,7 +1710,7 @@ def cantor_product(*args):
     Each iterable is advanced in turn in a round-robin fashion. As usual with
     breadth-first, this comes at the cost of memory consumption.
 
-    >>> from itertools import islice, count
+    >>> from itertools import count, islice
     >>> list(islice(cantor_product(count(), count()), 9))
     [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
 
