@@ -1451,3 +1451,8 @@ def test_sympyissue_19639():
 
 def test_sympyissue_23223():
     assert integrate(abs(cos(x)), (x, -pi/2, pi/2)) == 2
+
+
+def test_sympyissue_23299():
+    e = Integral(a*x**(a - 1)*log(x), (x, 0, 1))
+    assert e.doit() == Piecewise((-1/a, -re(a) + 1 < 1), (e, True))
