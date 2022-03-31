@@ -134,16 +134,6 @@ def mrv(e, x):
         return mrv(e.base, x)
     elif isinstance(e, log):
         return mrv(e.args[0], x)
-    elif e.is_Piecewise:
-        for a, c in e.args:
-            if not c.is_Atom:
-                c = c.func(c.lhs - c.rhs)
-                c = c.func(limitinf(c.lhs, x))
-                if not c.is_Atom:
-                    raise NotImplementedError("Parametric limits aren't supported yet.")
-                if c:
-                    break
-        return mrv(a, x)
     elif e.is_Function and not isinstance(e.func, UndefinedFunction):
         return functools.reduce(lambda a, b: mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])
@@ -215,12 +205,22 @@ def limitinf(e, x):
     # Rewrite e in terms of tractable functions only:
     e = e.rewrite('tractable', deep=True)
 
-    def transform_abs(f):
+    def tr_abs(f):
         s = sign(limitinf(f.args[0], x))
         return s*f.args[0] if s in (1, -1) else f
 
-    e = e.replace(lambda f: isinstance(f, Abs) and f.has(x),
-                  transform_abs)
+    def tr_Piecewise(f):
+        for a, c in f.args:
+            if not c.is_Atom:
+                c = c.as_set().closure.contains(oo)
+                if not c.is_Atom:
+                    raise NotImplementedError("Parametric limits aren't supported yet.")
+                if c:
+                    break
+        return a
+
+    e = e.replace(lambda f: isinstance(f, Abs) and f.has(x), tr_abs)
+    e = e.replace(lambda f: f.is_Piecewise and f.has(x), tr_Piecewise)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite
