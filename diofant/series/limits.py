@@ -33,31 +33,24 @@ def limit(expr, z, z0, dir='+'):
 
 
 def heuristics(e, z, z0, dir):
-    rv = None
-
-    if isinstance(e, Expr):
-        e = e.expand()
+    e = e.expand()
 
     if abs(z0) is oo:
-        rv = limit(e.subs({z: 1/z}), z, Integer(0), '+' if z0 is oo else '-')
-        if isinstance(rv, Limit):
-            return
-    elif (e.is_Mul or e.is_Add or e.is_Pow or
-          (e.is_Function and not isinstance(e.func, UndefinedFunction))):
+        dir = '+' if z0 is oo else '-'
+        e, z0 = e.subs({z: 1/z}), Integer(0)
+
+    if (e.is_Mul or e.is_Add or e.is_Pow or
+            (e.is_Function and not isinstance(e.func, UndefinedFunction))):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if l.has(oo) and (l.func not in (sin, cos) and l.is_finite is None):
+            if (l.has(oo) and (l.func not in (sin, cos) and
+                               l.is_finite is None)) or isinstance(l, Limit):
                 return
-            elif isinstance(l, Limit):
-                return
-            else:
-                r.append(l)
-        rv = e.func(*r)
-        if rv is nan:
-            return
+            r.append(l)
 
-    return rv
+        if (rv := e.func(*r)) is not nan:
+            return rv
 
 
 class Limit(Expr):
