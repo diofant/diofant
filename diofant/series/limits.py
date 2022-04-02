@@ -1,5 +1,4 @@
-from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
-                    nan, oo)
+from ..core import Dummy, Expr, Float, PoleError, Rational, Symbol, nan, oo
 from ..core.function import UndefinedFunction
 from ..core.sympify import sympify
 from ..functions.elementary.trigonometric import cos, sin
@@ -34,11 +33,6 @@ def limit(expr, z, z0, dir='+'):
 
 def heuristics(e, z, z0, dir):
     e = e.expand()
-
-    if abs(z0) is oo:
-        dir = '+' if z0 is oo else '-'
-        e, z0 = e.subs({z: 1/z}), Integer(0)
-
     if (e.is_Mul or e.is_Add or e.is_Pow or
             (e.is_Function and not isinstance(e.func, UndefinedFunction))):
         r = []
@@ -84,9 +78,7 @@ class Limit(Expr):
     """
 
     def __new__(cls, e, z, z0, dir='+'):
-        e = sympify(e)
-        z = sympify(z)
-        z0 = sympify(z0)
+        e, z, z0 = map(sympify, [e, z, z0])
 
         if z0 is oo:
             dir = '-'
@@ -96,12 +88,13 @@ class Limit(Expr):
         if isinstance(dir, str):
             dir = Symbol(dir)
         elif not isinstance(dir, Symbol):
-            raise TypeError(f'direction must be of type str or Symbol, not {type(dir)}')
+            raise TypeError('direction must be of type str or '
+                            f'Symbol, not {type(dir)}')
         if str(dir) not in ('+', '-', 'real'):
-            raise ValueError(
-                f"direction must be either '+' or '-' or 'real', not {dir}")
+            raise ValueError("direction must be either '+' or '-' "
+                             f"or 'real', not {dir}")
 
-        obj = Expr.__new__(cls)
+        obj = super().__new__(cls)
         obj._args = (e, z, z0, dir)
         return obj
 
@@ -111,7 +104,8 @@ class Limit(Expr):
         return (e.free_symbols - z.free_symbols) | z0.free_symbols
 
     def doit(self, **hints):
-        """Evaluates limit.
+        """
+        Evaluates limit.
 
         Notes
         =====
@@ -135,8 +129,6 @@ class Limit(Expr):
                                 f'point {z}={z0} seems to be not equal')
             return right
 
-        use_heuristics = hints.get('heuristics', True)
-
         has_Floats = e.has(Float) or z0.has(Float)
         if has_Floats:
             e = e.subs({k: Rational(k) for k in e.atoms(Float)})
@@ -149,14 +141,8 @@ class Limit(Expr):
                 r = r.subs({newz: z})
             return r
 
-        if e == z:
-            return z0
-
         if not e.has(z):
             return e
-
-        if z0 is nan:
-            return nan
 
         if e.is_Relational:
             ll = limit(e.lhs, z, z0, dir)
@@ -165,39 +151,29 @@ class Limit(Expr):
             if any(isinstance(a, Limit) for a in [ll, rl]):
                 return self
             else:
-                try:
-                    return e.func(ll, rl)
-                except TypeError:
-                    return self
+                return e.func(ll, rl)
 
         if e.has(Order):
-            e = e.expand()
-            order = e.getO()
-            if order:
-                if (z, z0) in zip(order.variables, order.point):
-                    order = limit(order.expr, z, z0, dir)
-                    e = e.removeO() + order
+            if (order := e.getO()) and (z, z0) in order.args[1:]:
+                order = limit(order.expr, z, z0, dir)
+                e = e.removeO() + order
 
         # Convert to the limit z->oo and use Gruntz algorithm.
-        newe, newz = e, z
         if z0 == -oo:
-            newe = e.subs({z: -z})
+            e = e.subs({z: -z})
         elif z0 != oo:
-            if str(dir) == '+':
-                newe = e.subs({z: z0 + 1/z})
-            else:
-                newe = e.subs({z: z0 - 1/z})
+            e = e.subs({z: z0 + (1 if str(dir) == '+' else -1)/z})
 
         # We need a fresh variable with correct assumptions.
         newz = Dummy(z.name, positive=True, finite=True)
-        newe = newe.subs({z: newz})
+        e = e.subs({z: newz})
 
         try:
-            r = limitinf(newe, newz)
+            r = limitinf(e, newz)
         except (PoleError, ValueError, NotImplementedError):
             r = None
-            if use_heuristics:
-                r = heuristics(e, z, z0, dir)
+            if hints.get('heuristics', True):
+                r = heuristics(*self.args)
             if r is None:
                 return self
 
