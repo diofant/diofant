@@ -178,21 +178,21 @@ class Limit(Expr):
                     order = limit(order.expr, z, z0, dir)
                     e = e.removeO() + order
 
+        # Convert to the limit z->oo and use Gruntz algorithm.
+        newe, newz = e, z
+        if z0 == -oo:
+            newe = e.subs({z: -z})
+        elif z0 != oo:
+            if str(dir) == '+':
+                newe = e.subs({z: z0 + 1/z})
+            else:
+                newe = e.subs({z: z0 - 1/z})
+
+        # We need a fresh variable with correct assumptions.
+        newz = Dummy(z.name, positive=True, finite=True)
+        newe = newe.subs({z: newz})
+
         try:
-            # Convert to the limit z->oo and use Gruntz algorithm.
-            newe, newz = e, z
-            if z0 == -oo:
-                newe = e.subs({z: -z})
-            elif z0 != oo:
-                if str(dir) == '+':
-                    newe = e.subs({z: z0 + 1/z})
-                else:
-                    newe = e.subs({z: z0 - 1/z})
-
-            # We need a fresh variable with correct assumptions.
-            newz = Dummy(z.name, positive=True, finite=True)
-            newe = newe.subs({z: newz})
-
             r = limitinf(newe, newz)
         except (PoleError, ValueError, NotImplementedError):
             r = None
