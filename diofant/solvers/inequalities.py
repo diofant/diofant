@@ -328,13 +328,8 @@ def solve_rational_inequalities(eqs):
             intervals = []
             expr = numer.as_expr()/denom.as_expr()
             expr = Relational(expr, 0, rel)
-            gen = numer.gen
 
             for interval in global_intervals:
-                if interval.contains(oo) is true and expr.limit(gen, oo, '-') is false:
-                    interval -= FiniteSet(oo)
-                elif interval.contains(-oo) is true and expr.limit(gen, -oo) is false:
-                    interval -= FiniteSet(-oo)
                 intervals.append(interval)
 
             global_intervals = intervals
@@ -542,7 +537,6 @@ def solve_univariate_inequality(expr, gen, relational=True):
     [-oo, -2] U [2, oo]
 
     """
-    from ..series import limit
     from ..simplify import simplify
     from .solvers import denoms, solve
 
@@ -603,10 +597,15 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     rv = Union(*sol_sets)
 
-    if rv.contains(oo) is true and limit(expr, gen, oo, '-') is false:
-        rv -= FiniteSet(oo)
-    elif rv.contains(-oo) is true and limit(expr, gen, -oo) is false:
-        rv -= FiniteSet(-oo)
+    rel_map = {Lt: Le, Gt: Ge}
+
+    for t in [oo, -oo]:
+        try:
+            rel = rel_map.get(expr.func, expr.func)
+            if rv.contains(t) is true and rel(e.limit(gen, t)) is false:
+                rv -= FiniteSet(t)
+        except TypeError:
+            pass
 
     return rv if not relational else rv.as_relational(gen)
 

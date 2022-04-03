@@ -245,9 +245,9 @@ def test_reduce_piecewise_inequalities():
 
     # sympy/sympy#10198
     assert reduce_inequalities(-1 + 1/abs(1/x - 1) < 0) == \
-        ((Integer(0) < x) & (x < Rational(1, 2))) | ((-oo < x) & (x < 0))
+        ((Integer(0) < x) & (x < Rational(1, 2))) | (x < 0)
     assert reduce_inequalities(-1 + 1/abs(-1/x - 1) < 0) == \
-        ((-Rational(1, 2) < x) & (x < 0)) | ((Integer(0) < x) & (x < oo))
+        ((-Rational(1, 2) < x) & (x < 0)) | (Integer(0) < x)
 
     # sympy/sympy#10255
     assert reduce_inequalities(Piecewise((1, x < 1), (3, True)) > 1) == \
@@ -263,7 +263,7 @@ def test_solve_inequalities():
 
     # issue sympy/sympy#6627, sympy/sympy#6547
     assert reduce_inequalities((x - 3)/(x - 2) < 0) == (Integer(2) < x) & (x < 3)
-    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < -1)
+    assert reduce_inequalities(x/(x + 1) > 1, x) == (x < -1)
 
     assert reduce_inequalities(sin(x) > Rational(1, 2)) == (pi/6 < x) & (x < 5*pi/6)
 
@@ -363,7 +363,7 @@ def test_solve_univariate_inequality():
     # handle numerator and denominator; although these would be handled as
     # rational inequalities, these test confirm that the right thing is done
     # when the domain is EX (e.g. when 2 is replaced with sqrt(2))
-    assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x) & (x < oo)
+    assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x)
     den = ((x - 1)*(x - 2)).expand()
     assert isolve((x - 1)/den <= 0, x) == (x < 1) | ((Integer(1) < x) & (x < 2))
 

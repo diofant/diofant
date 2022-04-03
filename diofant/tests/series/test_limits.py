@@ -93,8 +93,7 @@ def test_basic4():
     assert integrate(1/(x**3 + 1), (x, 0, oo)) == 2*pi*sqrt(3)/9
 
     # coverage test
-    l = Limit(Piecewise((x, x > 1), (0, True)), x, -1)
-    assert l.doit() == l
+    assert limit(Piecewise((x, x > 1), (0, True)), x, -1) == 0
 
     # issue sympy/sympy#16714
     e = ((n**(n + 1) + (n + 1)**n)/n**(n + 1))**n
