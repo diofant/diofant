@@ -1,7 +1,7 @@
 from ..core import Dummy, Expr, Float, PoleError, Rational, Symbol, nan, oo
 from ..core.function import UndefinedFunction
 from ..core.sympify import sympify
-from ..functions.elementary.trigonometric import cos, sin
+from ..functions import Abs, cos, sign, sin
 from .gruntz import limitinf
 from .order import Order
 
@@ -167,6 +167,24 @@ class Limit(Expr):
             if has_oo.is_Boolean:
                 return has_oo
             raise NotImplementedError
+
+        def tr_abs(f):
+            s = sign(limit(f.args[0], newz, oo))
+            return s*f.args[0] if s in (1, -1) else f
+
+        def tr_Piecewise(f):
+            for a, c in f.args:
+                if not c.is_Atom:
+                    c = c.as_set().closure.contains(oo)
+                    if not c.is_Atom:
+                        raise NotImplementedError("Parametric limits aren't "
+                                                  'supported yet.')
+                    if c:
+                        break
+            return a
+
+        e = e.replace(lambda f: isinstance(f, Abs) and f.has(newz), tr_abs)
+        e = e.replace(lambda f: f.is_Piecewise and f.has(newz), tr_Piecewise)
 
         try:
             r = limitinf(e, newz)
