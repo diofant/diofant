@@ -76,3 +76,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11496`: Wrong result in limit calculation of limit(erfc(ln(1/x)),x,oo)?
 * :sympyissue:`3663`: series expansion of acosh and acoth
 * :sympyissue:`23299`: Sympy is unable to integrate this
+* :sympyissue:`23319`: testing limit of n*tan(pi/n) results in incorrect answer in 1.7rc1+
