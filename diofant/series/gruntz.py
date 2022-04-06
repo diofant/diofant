@@ -65,7 +65,7 @@ import functools
 from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, oo
 from ..core.evaluate import evaluate
 from ..core.function import UndefinedFunction
-from ..functions import Abs, exp, log, sign
+from ..functions import exp, log, sign
 from ..utilities import ordered
 
 
@@ -204,23 +204,6 @@ def limitinf(e, x):
 
     # Rewrite e in terms of tractable functions only:
     e = e.rewrite('tractable', deep=True)
-
-    def tr_abs(f):
-        s = sign(limitinf(f.args[0], x))
-        return s*f.args[0] if s in (1, -1) else f
-
-    def tr_Piecewise(f):
-        for a, c in f.args:
-            if not c.is_Atom:
-                c = c.as_set().closure.contains(oo)
-                if not c.is_Atom:
-                    raise NotImplementedError("Parametric limits aren't supported yet.")
-                if c:
-                    break
-        return a
-
-    e = e.replace(lambda f: isinstance(f, Abs) and f.has(x), tr_abs)
-    e = e.replace(lambda f: f.is_Piecewise and f.has(x), tr_Piecewise)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite
