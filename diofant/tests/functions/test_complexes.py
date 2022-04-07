@@ -281,6 +281,7 @@ def test_sign():
     assert sign(y).rewrite(Piecewise) == sign(y)
     assert sign(x).rewrite(Heaviside) == 2*Heaviside(x)-1
     assert sign(y).rewrite(Heaviside) == sign(y)
+    assert sign(1 + I).rewrite(exp) == exp(I*pi/4)
 
     # evaluate what can be evaluated
     assert sign(exp_polar(I*pi)*pi) is Integer(-1)

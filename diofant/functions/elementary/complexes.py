@@ -204,21 +204,11 @@ class im(Function):
 ###############################################################################
 
 class sign(Function):
-    """Returns the complex sign of an expression.
+    """
+    Returns the complex sign of an expression.
 
-    If the expression is real the sign will be:
-
-        * 1 if expression is positive
-        * 0 if expression is equal to zero
-        * -1 if expression is negative
-
-    If the expression is imaginary the sign will be:
-
-        * I if im(expression) is positive
-        * -I if im(expression) is negative
-
-    Otherwise an unevaluated expression will be returned. When evaluated, the
-    result (in general) will be ``cos(arg(expr)) + I*sin(arg(expr))``.
+    For nonzero complex number z is an equivalent of z/abs(z).
+    Else returns zero.
 
     Examples
     ========
@@ -237,8 +227,8 @@ class sign(Function):
     See Also
     ========
 
-    diofant.functions.elementary.complexes.Abs
-    diofant.functions.elementary.complexes.conjugate
+    Abs
+    conjugate
 
     """
 
@@ -337,6 +327,9 @@ class sign(Function):
         from .. import Heaviside
         if arg.is_extended_real:
             return Heaviside(arg)*2-1
+
+    def _eval_rewrite_as_exp(self, x):
+        return exp(I*arg(x))
 
     def _eval_simplify(self, ratio, measure):
         return self.func(self.args[0].factor())
