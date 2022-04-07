@@ -64,3 +64,11 @@ def test_hierarchical():
     assert e.aseries(x, hir=True) == exp(-4*x)*sin(x)/24 - \
         exp(-2*x)*sin(x)/2 + sin(x) + O(exp(-6*x), (x, oo))
     pytest.raises(PoleError, lambda: e.series(x, oo))
+
+
+def test_issue_1231():
+    e = log(x + sqrt(x**2 + 1))
+    assert e.series(x, +oo) == (-3/(32*x**4) + 1/(4*x**2) + log(2) +
+                                log(x) + O(x**(-6), (x, oo)))
+    assert e.series(x, -oo) == (3/(32*x**4) - 1/(4*x**2) - log(2) -
+                                log(-x) + O(x**(-6), (x, -oo)))

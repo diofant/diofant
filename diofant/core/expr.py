@@ -2313,9 +2313,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif not i and (n._prec > 1 or n._prec == -1):
                 return True
 
-    ###################################################################################
-    # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
-    ###################################################################################
+    ##############################################################
+    # ####### SERIES, LEADING TERM, LIMIT, ORDER METHODS ####### #
+    ##############################################################
 
     def series(self, x=None, x0=0, n=6, dir='+', logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
@@ -2347,8 +2347,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         [1, -x**2/2]
 
         For ``dir=+`` (default) the series is calculated from the right and
-        for ``dir=-`` the series from the left. For smooth functions this
-        flag will not alter the results.
+        for ``dir=-`` the series from the left.  For infinite ``x0`` (``oo``
+        or ``-oo``), the ``dir`` argument is determined from the direction
+        of the infinity (i.e. ``dir="-"`` for ``oo``).  For smooth functions
+        this flag will not alter the results.
 
         >>> abs(x).series(dir='+')
         x
@@ -2386,11 +2388,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if len(dir) != 1 or dir not in '+-':
             raise ValueError("Dir must be '+' or '-'")
 
-        if x0 in [oo, -oo]:
-            s = self.aseries(x, n)
-            if x0 == -oo:
-                return s.subs({x: -x})
-            return s
+        if x0 == oo:
+            return self.aseries(x, n)
+        elif x0 == -oo:
+            return self.subs({x: -x}).aseries(x, n).subs({x: -x})
 
         # use rep to shift origin to x0 and change sign (if dir is negative)
         # and undo the process with rep2
