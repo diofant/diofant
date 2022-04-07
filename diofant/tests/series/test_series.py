@@ -237,7 +237,7 @@ def test_sympyissue_14885():
 
 
 def test_sympyissue_15539():
-    assert series(exp(x), x, x0=-oo) == exp(-x)
+    assert series(exp(x), x, x0=-oo) == exp(x)
 
 
 def test_sympyissue_18008():

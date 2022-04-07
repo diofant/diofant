@@ -1,5 +1,5 @@
-from ..core import Integer, Mul
-from ..core.sympify import sympify
+from ..core import Integer, Mul, sympify
+from .order import Order
 
 
 def residue(expr, x, x0):
@@ -39,9 +39,7 @@ def residue(expr, x, x0):
     # understand why the resultant works in the general algorithm.
     # For the definition of a resultant, see section 1.4 (and any
     # previous sections for more review).
-
     from ..simplify import collect
-    from .order import Order
 
     expr = sympify(expr)
     if x0 != 0:

@@ -1,6 +1,6 @@
-from ..core import Dummy, Expr, Float, PoleError, Rational, Symbol, nan, oo
+from ..core import (Dummy, Expr, Float, PoleError, Rational, Symbol, nan, oo,
+                    sympify)
 from ..core.function import UndefinedFunction
-from ..core.sympify import sympify
 from ..functions import Abs, cos, sign, sin
 from .gruntz import limitinf
 from .order import Order
@@ -48,7 +48,8 @@ def heuristics(e, z, z0, dir):
 
 
 class Limit(Expr):
-    r"""Represents a directional limit of ``expr`` at the point ``z0``.
+    r"""
+    Represents a directional limit of ``expr`` at the point ``z0``.
 
     Parameters
     ==========
@@ -129,8 +130,7 @@ class Limit(Expr):
                                 f'point {z}={z0} seems to be not equal')
             return right
 
-        has_Floats = e.has(Float) or z0.has(Float)
-        if has_Floats:
+        if (has_Floats := e.has(Float) or z0.has(Float)):
             e = e.subs({k: Rational(k) for k in e.atoms(Float)})
             z0 = z0.subs({k: Rational(k) for k in z0.atoms(Float)})
 
@@ -144,10 +144,9 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
-        if e.has(Order):
-            if (order := e.getO()) and (z, z0) in order.args[1:]:
-                order = limit(order.expr, z, z0, dir)
-                e = e.removeO() + order
+        if e.has(Order) and (order := e.getO()) and (z, z0) in order.args[1:]:
+            order = limit(order.expr, z, z0, dir)
+            e = e.removeO() + order
 
         # Convert to the limit z->oo and use Gruntz algorithm.
         if z0 == -oo:

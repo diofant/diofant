@@ -2273,17 +2273,6 @@ class _erfs(Function):
             # It is very inefficient to first add the order and then do the nseries
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
-        # Expansion at I*oo
-        t = point.as_coefficient(I)
-        if t is oo:
-            z = self.args[0]
-            # TODO: is the series really correct?
-            l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                 factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
-            o = Order(1/z**(2*n + 1), x)
-            # It is very inefficient to first add the order and then do the nseries
-            return (Add(*l))._eval_nseries(x, n, logx) + o
-
         # All other points are not handled
         return super()._eval_aseries(n, args0, x, logx)
 

@@ -987,3 +987,7 @@ def test_issue_1216():
 def test_issue_1213():
     # also sympy/sympy#11496
     assert limit(erfc(log(1/x)), x, oo) == 2
+
+
+def test_sympyissue_23319():
+    assert limit(x*tan(pi/x), x, oo) == pi
