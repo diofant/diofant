@@ -62,8 +62,7 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, oo
-from ..core.evaluate import evaluate
+from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
 from ..core.function import UndefinedFunction
 from ..functions import exp, log, sign
 from ..utilities import ordered

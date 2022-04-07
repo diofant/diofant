@@ -1,7 +1,6 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, Tuple, cacheit,
-                    expand_log, expand_power_base, nan, oo)
+                    expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import is_sequence
-from ..core.sympify import sympify
 from ..utilities import default_sort_key
 from ..utilities.iterables import uniq
 
