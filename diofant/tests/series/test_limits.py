@@ -74,6 +74,16 @@ def test_basic1():
     f = Function('f')
     assert limit(f(x), x, 4) == Limit(f(x), x, 4)
 
+    assert limit(exp(x), x, 0, dir=exp(I*pi/3)) == 1
+
+    assert limit(sqrt(-1 + I*x), x, 0) == +I
+    assert limit(sqrt(-1 + I*x), x, 0, dir=1) == -I
+    assert limit(sqrt(-1 + I*x), x, 0, dir=exp(I*pi/3)) == -I
+
+    assert limit(log(x + sqrt(x**2 + 1)), x, I) == I*pi/2
+    assert limit(log(x + sqrt(x**2 + 1)), x, I, dir=1) == I*pi/2
+    assert limit(log(x + sqrt(x**2 + 1)), x, I, dir=exp(I*pi/3)) == I*pi/2
+
 
 def test_basic2():
     assert limit(x**x, x, 0) == 1
@@ -992,3 +1002,7 @@ def test_issue_1213():
 
 def test_sympyissue_23319():
     assert limit(x*tan(pi/x), x, oo) == pi
+
+
+def test_issue_1230():
+    assert limit(log(x + sqrt(x**2 + 1)), x, I*oo) == oo
