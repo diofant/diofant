@@ -1,7 +1,7 @@
 from ..core.sympify import sympify
 
 
-def series(expr, x=None, x0=0, n=6, dir='+'):
+def series(expr, x=None, x0=0, n=6, dir=None):
     """Series expansion of ``expr`` in ``x`` around point ``x0``.
 
     See Also

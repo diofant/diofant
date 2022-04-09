@@ -44,6 +44,7 @@ def test_simple():
     assert series(1, x) == 1
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=''))
+    pytest.raises(ValueError, lambda: x.series(dir=0))
 
     assert Derivative(x**2 + x**3*y**2,
                       (x, 2), (y, 1)).series(x).simplify() == 12*x*y + O(x**6)
@@ -57,10 +58,10 @@ def test_simple():
     assert (cos(x).series(x, 1) -
             cos(x + 1).series(x).subs({x: x - 1})).removeO() == 0
 
-    assert abs(x).series(x, oo, n=5, dir='+') == x
-    assert abs(x).series(x, -oo, n=5, dir='-') == -x
-    assert abs(-x).series(x, oo, n=5, dir='+') == x
-    assert abs(-x).series(x, -oo, n=5, dir='-') == -x
+    assert abs(x).series(x, oo, n=5, dir=-1) == x
+    assert abs(x).series(x, -oo, n=5, dir=+1) == -x
+    assert abs(-x).series(x, oo, n=5, dir=-1) == x
+    assert abs(-x).series(x, -oo, n=5, dir=+1) == -x
 
     # issue sympy/sympy#7203
     assert series(cos(x), x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3,
@@ -73,11 +74,11 @@ def test_sympyissue_5223():
 
     e = cos(x).series(x, 1, n=None)
     assert [next(e) for i in range(2)] == [cos(1), -((x - 1)*sin(1))]
-    e = cos(x).series(x, 1, n=None, dir='-')
+    e = cos(x).series(x, 1, n=None, dir=+1)
     assert [next(e) for i in range(2)] == [cos(1), (1 - x)*sin(1)]
     # the following test is exact so no need for x -> x - 1 replacement
-    assert abs(x).series(x, 1, dir='-') == x
-    assert exp(x).series(x, 1, dir='-', n=3).removeO() == \
+    assert abs(x).series(x, 1, dir=+1) == x
+    assert exp(x).series(x, 1, dir=+1, n=3).removeO() == \
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
     assert next(Derivative(cos(x), x).series(n=None)) == Derivative(1, x)
@@ -106,7 +107,7 @@ def test_sympyissue_5223():
 
 
 def test_sympyissue_3978():
-    assert f(x).series(x, 0, 3, dir='-') == \
+    assert f(x).series(x, 0, 3, dir=+1) == \
         f(0) + x*Subs(Derivative(f(x), x), (x, 0)) + \
         x**2*Subs(Derivative(f(x), x, x), (x, 0))/2 + O(x**3)
     assert f(x).series(x, 0, 3) == \

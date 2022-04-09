@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (O, PoleError, Rational, Symbol, cos, exp, log, oo, sin,
-                     sqrt, symbols)
+from diofant import (I, O, PoleError, Rational, Symbol, cos, exp, log, oo, pi,
+                     sin, sqrt, symbols)
 from diofant.abc import x
 
 
@@ -72,3 +72,7 @@ def test_issue_1231():
                                 log(x) + O(x**(-6), (x, oo)))
     assert e.series(x, -oo) == (3/(32*x**4) - 1/(4*x**2) - log(2) -
                                 log(-x) + O(x**(-6), (x, -oo)))
+    assert e.series(x, x0=+I*oo) == (-3/(32*x**4) + 1/(4*x**2) + I*pi/2 +
+                                     log(2) + log(-I*x) + O(x**(-6), (x, oo*I)))
+    assert e.series(x, x0=-I*oo) == (+3/(32*x**4) - 1/(4*x**2) - I*pi/2 -
+                                     log(2) - log(+I*x) + O(x**(-6), (x, -oo*I)))
