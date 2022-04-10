@@ -10,6 +10,9 @@ from diofant.abc import x, y, z
 __all__ = ()
 
 
+# pylint: disable=not-an-iterable,unsubscriptable-object
+
+
 def test_ndim_array_initiation():
     arr_with_one_element = MutableDenseNDimArray([23])
     assert len(arr_with_one_element) == 1
