@@ -434,6 +434,9 @@ def test_order_subs_limits():
 
     assert O(x).subs({x: y*z}) == O(y*z, y, z)
 
+    assert O(1/x, (x, oo)).subs({x: +I*x}) == O(1/x, (x, -I*oo))
+    assert O(1/x, (x, oo)).subs({x: -I*x}) == O(1/x, (x, +I*oo))
+
 
 def test_sympyissue_9351():
     assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, (x, 10))
