@@ -1042,9 +1042,11 @@ class Integral(AddWithLimits):
                     continue
             elif method == 'right':
                 xi = lower_limit + i*dx + dx
-                if i == n:
+                if i == n - 1:
                     result += self.function.limit(sym, upper_limit, '-')
                     continue
+            else:
+                raise NotImplementedError(f'Unknown method {method}')
             result += self.function.subs({sym: xi})
         return result*dx
 
