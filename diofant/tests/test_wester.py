@@ -1698,14 +1698,12 @@ def test_T12():
 
 
 def test_T13():
-    x = symbols('x', real=True)
-    assert [limit(x/abs(x), x, 0, dir='-'),
-            limit(x/abs(x), x, 0, dir='+')] == [-1, 1]
+    assert [limit(x/abs(x), x, 0, dir=1),
+            limit(x/abs(x), x, 0)] == [-1, 1]
 
 
 def test_T14():
-    x = symbols('x', real=True)
-    assert limit(atan(-log(x)), x, 0, dir='+') == pi/2
+    assert limit(atan(-log(x)), x, 0) == pi/2
 
 
 # U. Calculus

@@ -592,8 +592,10 @@ class LatexPrinter(Printer):
         tex = r'\lim_{%s \to ' % self._print(z)
         if str(dir) == 'real' or z0 in (oo, -oo):
             tex += r'%s}' % self._print(z0)
+        elif dir in [1, -1]:
+            tex += r'%s^%s}' % (self._print(z0), self._print('+' if dir == -1 else '-'))
         else:
-            tex += r'%s^%s}' % (self._print(z0), self._print(dir))
+            raise NotImplementedError
 
         if isinstance(e, (AssocOp, Relational)):
             return r'%s\left(%s\right)' % (tex, self._print(e))

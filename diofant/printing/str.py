@@ -192,10 +192,12 @@ class StrPrinter(Printer):
 
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
-        if str(dir) == '+':
+        if dir == -1:
             return f'Limit({e}, {z}, {z0})'
-        else:
+        elif str(dir) == 'real':
             return f"Limit({e}, {z}, {z0}, dir='{dir}')"
+        else:
+            return f'Limit({e}, {z}, {z0}, dir={dir})'
 
     def _print_list(self, expr):
         return '[%s]' % self.stringify(expr, ', ')

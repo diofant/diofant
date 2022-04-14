@@ -1020,11 +1020,11 @@ class Interval(Set, EvalfMixin):
             return
 
         if self.left_open:
-            _start = limit(expr, var, self.start, dir='+')
+            _start = limit(expr, var, self.start)
         elif self.start not in sing:
             _start = f(self.start)
         if self.right_open:
-            _end = limit(expr, var, self.end, dir='-')
+            _end = limit(expr, var, self.end, dir=1)
         elif self.end not in sing:
             _end = f(self.end)
 

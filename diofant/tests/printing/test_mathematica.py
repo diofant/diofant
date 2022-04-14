@@ -238,7 +238,7 @@ def test_AlgebraicElement():
 def test_Limit():
     e = Limit(sin(x)/x, x, 0)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> -1]]'
-    e = Limit(sin(x)/x, x, 0, '-')
+    e = Limit(sin(x)/x, x, 0, 1)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> 1]]'
     e = Limit(sin(x)/x, x, 0, 'real')
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> Reals]]'

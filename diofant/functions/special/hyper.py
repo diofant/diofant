@@ -15,7 +15,7 @@ from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
 class TupleArg(Tuple):
     """Arguments of the hyper/meijerg functions."""
 
-    def limit(self, x, xlim, dir='+'):
+    def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
         return self.func(*[_.limit(x, xlim, dir) for _ in self.args])
 

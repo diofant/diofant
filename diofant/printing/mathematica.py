@@ -157,15 +157,11 @@ class MCodePrinter(CodePrinter):
         return 'Hold[Integrate[' + ', '.join(self.doprint(a) for a in args) + ']]'
 
     def _print_Limit(self, expr):
-        direction = str(expr.args[-1])
-        if direction == '+':
-            direction = '-1'
-        elif direction == '-':
-            direction = '1'
-        elif direction == 'real':
+        direction = expr.args[-1]
+        if str(direction) == 'real':
             direction = 'Reals'
         else:
-            raise NotImplementedError
+            direction = self.doprint(direction)
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
         return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 

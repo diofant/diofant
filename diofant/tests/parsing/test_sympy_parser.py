@@ -28,7 +28,7 @@ def test_diofant_parser():
             Pow(2, 2, evaluate=False),
             Pow(3, 1, evaluate=False),
             evaluate=False),
-        'Limit(sin(x), x, 0, dir="-")': Limit(sin(x), x, 0, dir='-'),
+        'Limit(sin(x), x, 0, dir=1)': Limit(sin(x), x, 0, dir=1),
 
     }
     for text, result in inputs.items():

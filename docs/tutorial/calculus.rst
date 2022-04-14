@@ -287,7 +287,7 @@ To change side, pass ``'-'`` as a third argument to
 
 do
 
-    >>> limit(1/x, x, 0, dir='-')
+    >>> limit(1/x, x, 0, dir=1)
     -∞
 
 You can also evaluate bidirectional limit
