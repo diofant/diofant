@@ -518,7 +518,8 @@ def test_sympyissue_8229():
                  x, 16) == 0
 
 
-def test_sympyissue_9205():
+def test_Limit_free_symbols():
+    # issue sympy/sympy#9205
     assert Limit(x, x, a).free_symbols == {a}
     assert Limit(x, x, a, 1).free_symbols == {a}
     assert Limit(x + y, x + y, a).free_symbols == {a}
