@@ -76,6 +76,11 @@ class Limit(Expr):
     >>> Limit(1/x, x, 0, dir=1)
     Limit(1/x, x, 0, dir=1)
 
+    See Also
+    ========
+
+    limit
+
     """
 
     def __new__(cls, e, z, z0, dir=-1):
