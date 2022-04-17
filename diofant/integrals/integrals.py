@@ -15,10 +15,11 @@ from .trigonometry import trigintegrate
 
 
 class Integral(AddWithLimits):
-    """Represents unevaluated integral."""
+    """Represents an unevaluated integral."""
 
     def __new__(cls, function, *symbols, **assumptions):
-        """Create an unevaluated integral.
+        """
+        Create an unevaluated integral.
 
         Arguments are an integrand followed by one or more limits.
 
@@ -1052,7 +1053,8 @@ class Integral(AddWithLimits):
 
 
 def integrate(*args, **kwargs):
-    """integrate(f, var, ...)
+    """
+    integrate(f, var, ...)
 
     Compute definite or indefinite integral of one or more variables
     using Risch-Norman algorithm and table lookup. This procedure is

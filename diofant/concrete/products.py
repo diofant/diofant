@@ -6,7 +6,8 @@ from .expr_with_intlimits import ExprWithIntLimits
 
 
 class Product(ExprWithIntLimits):
-    r"""Represents unevaluated products.
+    r"""
+    Represents an unevaluated products.
 
     ``Product`` represents a finite or infinite product, with the first
     argument being the general form of terms in the series (which
@@ -270,7 +271,8 @@ class Product(ExprWithIntLimits):
 
 
 def product(*args, **kwargs):
-    r"""Compute the product.
+    r"""
+    Compute the product.
 
     The notation for symbols is similar to the notation used in Sum or
     Integral. product(f, (i, a, b)) computes the product of f with

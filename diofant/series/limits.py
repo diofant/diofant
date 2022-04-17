@@ -49,7 +49,7 @@ def heuristics(e, z, z0, dir):
 
 class Limit(Expr):
     r"""
-    Represents a directional limit of ``expr`` at the point ``z0``.
+    Represents an unevaluated directional limit of ``expr`` at the point ``z0``.
 
     Parameters
     ==========
