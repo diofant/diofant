@@ -292,9 +292,9 @@ do
 
 You can also evaluate bidirectional limit
 
-    >>> limit(sin(x)/x, x, 0, dir='real')
+    >>> limit(sin(x)/x, x, 0, dir=Reals)
     1
-    >>> limit(1/x, x, 0, dir='real')
+    >>> limit(1/x, x, 0, dir=Reals)
     Traceback (most recent call last):
     ...
     PoleError: left and right limits for expression 1/x at point x=0 seems to be not equal

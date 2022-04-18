@@ -16,6 +16,7 @@ from ..core.alphabets import greeks
 from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
+from ..sets import Reals
 from ..utilities import default_sort_key, has_variety
 from .conventions import requires_partial, split_super_sub
 from .precedence import PRECEDENCE, precedence
@@ -590,7 +591,7 @@ class LatexPrinter(Printer):
         e, z, z0, dir = expr.args
 
         tex = r'\lim_{%s \to ' % self._print(z)
-        if str(dir) == 'real' or z0 in (oo, -oo):
+        if dir == Reals or z0 in (oo, -oo):
             tex += r'%s}' % self._print(z0)
         elif dir in [1, -1]:
             tex += r'%s^%s}' % (self._print(z0), self._print('+' if dir == -1 else '-'))

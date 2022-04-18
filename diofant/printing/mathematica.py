@@ -8,6 +8,7 @@ import types
 import typing
 
 from ..core import Expr
+from ..sets import Reals
 from .codeprinter import CodePrinter
 from .precedence import precedence
 from .str import StrPrinter
@@ -158,7 +159,7 @@ class MCodePrinter(CodePrinter):
 
     def _print_Limit(self, expr):
         direction = expr.args[-1]
-        if str(direction) == 'real':
+        if direction == Reals:
             direction = 'Reals'
         else:
             direction = self.doprint(direction)
