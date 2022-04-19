@@ -72,11 +72,11 @@ def test_zeta_eval():
 
 
 def test__zetas():
-    assert _zetas(1/x).nseries(x, n=0) == O(1, x)
-    assert _zetas(1/x).nseries(x) == (1 + x**log(7) + x**log(6) + x**log(5) +
-                                      x**log(4) + x**log(3) + x**log(2) +
-                                      O(x**log(6)))
-    pytest.raises(PoleError, lambda: _zetas(-1/x).nseries(x, n=2))
+    assert _zetas(1/x).series(x, n=0) == O(1, x)
+    assert _zetas(1/x).series(x, n=2) == (1 + x**log(7) + x**log(6) +
+                                          x**log(5) + x**log(4) + x**log(3) +
+                                          x**log(2) + O(x**2))
+    pytest.raises(PoleError, lambda: _zetas(-1/x).series(x, n=2))
 
 
 def test_zeta_series():
