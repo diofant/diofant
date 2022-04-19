@@ -862,7 +862,7 @@ def test_is_real():
 def test_series():
     i = Integral(cos(x), (x, x))
     e = i.series(x, n=None)
-    s1 = i.nseries(x, n=8).removeO().doit()
+    s1 = i.series(x, n=8).removeO().doit()
     s2 = Add(*[next(e) for j in range(4)])
     assert s1 == s2
 

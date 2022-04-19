@@ -928,6 +928,7 @@ class Integral(AddWithLimits):
                 break
         terms, order = expr.function.nseries(
             x=symb, n=n, logx=logx).as_coeff_add(Order)
+        order = [o.subs({symb: x}) for o in order]
         return integrate(terms, *expr.limits) + Add(*order)*x
 
     def as_sum(self, n, method='midpoint'):
