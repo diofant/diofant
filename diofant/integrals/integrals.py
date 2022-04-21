@@ -1022,7 +1022,7 @@ class Integral(AddWithLimits):
 
         if method == 'trapezoid':
             l = self.function.limit(sym, lower_limit)
-            r = self.function.limit(sym, upper_limit, '-')
+            r = self.function.limit(sym, upper_limit, 1)
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
@@ -1043,7 +1043,7 @@ class Integral(AddWithLimits):
             elif method == 'right':
                 xi = lower_limit + i*dx + dx
                 if i == n - 1:
-                    result += self.function.limit(sym, upper_limit, '-')
+                    result += self.function.limit(sym, upper_limit, 1)
                     continue
             else:
                 raise NotImplementedError(f'Unknown method {method}')

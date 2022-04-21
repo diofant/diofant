@@ -25,8 +25,8 @@ def test_basic1():
     assert limit(x - x**2, x, oo) == -oo
     assert limit((1 + x)**(1 + sqrt(2)), x, 0) == 1
     assert limit((1 + x)**oo, x, 0) == oo
-    assert limit((1 + x)**oo, x, 0, dir='-') == 0
-    assert limit((1 + x + y)**oo, x, 0, dir='-') == (1 + y)**oo
+    assert limit((1 + x)**oo, x, 0, dir=1) == 0
+    assert limit((1 + x + y)**oo, x, 0, dir=1) == (1 + y)**oo
     assert limit(y/x/log(x), x, 0) == -oo*sign(y)
     assert limit(cos(x + y)/x, x, 0) == sign(cos(y))*oo
     limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
@@ -35,31 +35,31 @@ def test_basic1():
     assert limit(O(2)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
     assert limit(1/(x - 1), x, 1) == oo
-    assert limit(1/(x - 1), x, 1, dir='-') == -oo
+    assert limit(1/(x - 1), x, 1, dir=1) == -oo
     assert limit(1/(5 - x)**3, x, 5) == -oo
-    assert limit(1/(5 - x)**3, x, 5, dir='-') == oo
+    assert limit(1/(5 - x)**3, x, 5, dir=1) == oo
     assert limit(1/sin(x), x, pi) == -oo
-    assert limit(1/sin(x), x, pi, dir='-') == oo
+    assert limit(1/sin(x), x, pi, dir=1) == oo
     assert limit(1/cos(x), x, pi/2) == -oo
-    assert limit(1/cos(x), x, pi/2, dir='-') == oo
+    assert limit(1/cos(x), x, pi/2, dir=1) == oo
     assert limit(1/tan(x**3), x, cbrt(2*pi)) == oo
-    assert limit(1/tan(x**3), x, cbrt(2*pi), dir='-') == -oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir=1) == -oo
     assert limit(1/cot(x)**3, x, 3*pi/2) == -oo
-    assert limit(1/cot(x)**3, x, 3*pi/2, dir='-') == oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir=1) == oo
 
     # approaching 0
-    # from dir='+'
+    # from dir=-1
     assert limit(1 + 1/x, x, 0) == oo
-    # from dir='-'
+    # from dir=1
     # Add
-    assert limit(1 + 1/x, x, 0, dir='-') == -oo
+    assert limit(1 + 1/x, x, 0, dir=1) == -oo
     # Pow
-    assert limit(x**(-2), x, 0, dir='-') == oo
-    assert limit(x**(-3), x, 0, dir='-') == -oo
-    assert limit(1/sqrt(x), x, 0, dir='-') == (-oo)*I
-    assert limit(x**2, x, 0, dir='-') == 0
-    assert limit(sqrt(x), x, 0, dir='-') == 0
-    assert limit(x**-pi, x, 0, dir='-') == oo*sign((-1)**(-pi))
+    assert limit(x**(-2), x, 0, dir=1) == oo
+    assert limit(x**(-3), x, 0, dir=1) == -oo
+    assert limit(1/sqrt(x), x, 0, dir=1) == (-oo)*I
+    assert limit(x**2, x, 0, dir=1) == 0
+    assert limit(sqrt(x), x, 0, dir=1) == 0
+    assert limit(x**-pi, x, 0, dir=1) == oo*sign((-1)**(-pi))
     assert limit((1 + cos(x))**oo, x, 0) == oo
 
     assert limit(x**2, x, 0, dir='real') == 0
@@ -82,7 +82,7 @@ def test_basic2():
 
 def test_basic3():
     assert limit(1/x, x, 0) == oo
-    assert limit(1/x, x, 0, dir='-') == -oo
+    assert limit(1/x, x, 0, dir=1) == -oo
 
 
 def test_basic4():
@@ -114,14 +114,14 @@ def test_basic4():
 
     e4 = Piecewise((1, 0 < x), (0, True))
 
-    assert limit(e4, x, 0, '-') == 0
+    assert limit(e4, x, 0, 1) == 0
     assert limit(e4, x, 0) == 1
     pytest.raises(PoleError, lambda: limit(e4, x, 0, 'real'))
 
     e5 = Piecewise((1, 0 < x), (2, 1 < x), (0, True))
 
     assert limit(e5, x, oo) == 1
-    assert limit(e5, x, 1, '-') == 1
+    assert limit(e5, x, 1, 1) == 1
     assert limit(e5, x, 1) == 1
 
 
@@ -138,7 +138,7 @@ def test_basic5():
 
     # issue diofant/diofant#1217
     assert limit(x > 0, x, 0) is true
-    assert limit(x > 0, x, 0, '-') is false
+    assert limit(x > 0, x, 0, 1) is false
 
     # issue sympy/sympy#11833
     a = Symbol('a', positive=True)
@@ -150,10 +150,10 @@ def test_basic5():
 
 def test_basic6():
     # pull sympy/sympy#22491
-    assert limit(1/asin(x), x, 0, dir='+') == oo
-    assert limit(1/asin(x), x, 0, dir='-') == -oo
-    assert limit(1/sinh(x), x, 0, dir='+') == oo
-    assert limit(1/sinh(x), x, 0, dir='-') == -oo
+    assert limit(1/asin(x), x, 0) == oo
+    assert limit(1/asin(x), x, 0, dir=1) == -oo
+    assert limit(1/sinh(x), x, 0) == oo
+    assert limit(1/sinh(x), x, 0, dir=1) == -oo
     assert limit(log(1/x) + 1/sin(x), x, 0) == oo
     assert limit(log(1/x) + 1/x, x, 0) == oo
 
@@ -168,55 +168,55 @@ def test_Limit():
 
 
 def test_floor():
-    assert limit(floor(x), x, -2, '+') == -2
-    assert limit(floor(x), x, -2, '-') == -3
-    assert limit(floor(x), x, -1, '+') == -1
-    assert limit(floor(x), x, -1, '-') == -2
-    assert limit(floor(x), x, 0, '+') == 0
-    assert limit(floor(x), x, 0, '-') == -1
-    assert limit(floor(x), x, 1, '+') == 1
-    assert limit(floor(x), x, 1, '-') == 0
-    assert limit(floor(x), x, 2, '+') == 2
-    assert limit(floor(x), x, 2, '-') == 1
-    assert limit(floor(x), x, 248, '+') == 248
-    assert limit(floor(x), x, 248, '-') == 247
+    assert limit(floor(x), x, -2) == -2
+    assert limit(floor(x), x, -2, 1) == -3
+    assert limit(floor(x), x, -1) == -1
+    assert limit(floor(x), x, -1, 1) == -2
+    assert limit(floor(x), x, 0) == 0
+    assert limit(floor(x), x, 0, 1) == -1
+    assert limit(floor(x), x, 1) == 1
+    assert limit(floor(x), x, 1, 1) == 0
+    assert limit(floor(x), x, 2) == 2
+    assert limit(floor(x), x, 2, 1) == 1
+    assert limit(floor(x), x, 248) == 248
+    assert limit(floor(x), x, 248, 1) == 247
 
 
 def test_floor_requires_robust_assumptions():
-    assert limit(floor(sin(x)), x, 0, '+') == 0
-    assert limit(floor(sin(x)), x, 0, '-') == -1
-    assert limit(floor(cos(x)), x, 0, '+') == 0
-    assert limit(floor(cos(x)), x, 0, '-') == 0
-    assert limit(floor(5 + sin(x)), x, 0, '+') == 5
-    assert limit(floor(5 + sin(x)), x, 0, '-') == 4
-    assert limit(floor(5 + cos(x)), x, 0, '+') == 5
-    assert limit(floor(5 + cos(x)), x, 0, '-') == 5
+    assert limit(floor(sin(x)), x, 0) == 0
+    assert limit(floor(sin(x)), x, 0, 1) == -1
+    assert limit(floor(cos(x)), x, 0) == 0
+    assert limit(floor(cos(x)), x, 0, 1) == 0
+    assert limit(floor(5 + sin(x)), x, 0) == 5
+    assert limit(floor(5 + sin(x)), x, 0, 1) == 4
+    assert limit(floor(5 + cos(x)), x, 0) == 5
+    assert limit(floor(5 + cos(x)), x, 0, 1) == 5
 
 
 def test_ceiling():
-    assert limit(ceiling(x), x, -2, '+') == -1
-    assert limit(ceiling(x), x, -2, '-') == -2
-    assert limit(ceiling(x), x, -1, '+') == 0
-    assert limit(ceiling(x), x, -1, '-') == -1
-    assert limit(ceiling(x), x, 0, '+') == 1
-    assert limit(ceiling(x), x, 0, '-') == 0
-    assert limit(ceiling(x), x, 1, '+') == 2
-    assert limit(ceiling(x), x, 1, '-') == 1
-    assert limit(ceiling(x), x, 2, '+') == 3
-    assert limit(ceiling(x), x, 2, '-') == 2
-    assert limit(ceiling(x), x, 248, '+') == 249
-    assert limit(ceiling(x), x, 248, '-') == 248
+    assert limit(ceiling(x), x, -2) == -1
+    assert limit(ceiling(x), x, -2, 1) == -2
+    assert limit(ceiling(x), x, -1) == 0
+    assert limit(ceiling(x), x, -1, 1) == -1
+    assert limit(ceiling(x), x, 0) == 1
+    assert limit(ceiling(x), x, 0, 1) == 0
+    assert limit(ceiling(x), x, 1) == 2
+    assert limit(ceiling(x), x, 1, 1) == 1
+    assert limit(ceiling(x), x, 2) == 3
+    assert limit(ceiling(x), x, 2, 1) == 2
+    assert limit(ceiling(x), x, 248) == 249
+    assert limit(ceiling(x), x, 248, 1) == 248
 
 
 def test_ceiling_requires_robust_assumptions():
-    assert limit(ceiling(sin(x)), x, 0, '+') == 1
-    assert limit(ceiling(sin(x)), x, 0, '-') == 0
-    assert limit(ceiling(cos(x)), x, 0, '+') == 1
-    assert limit(ceiling(cos(x)), x, 0, '-') == 1
-    assert limit(ceiling(5 + sin(x)), x, 0, '+') == 6
-    assert limit(ceiling(5 + sin(x)), x, 0, '-') == 5
-    assert limit(ceiling(5 + cos(x)), x, 0, '+') == 6
-    assert limit(ceiling(5 + cos(x)), x, 0, '-') == 6
+    assert limit(ceiling(sin(x)), x, 0) == 1
+    assert limit(ceiling(sin(x)), x, 0, 1) == 0
+    assert limit(ceiling(cos(x)), x, 0) == 1
+    assert limit(ceiling(cos(x)), x, 0, 1) == 1
+    assert limit(ceiling(5 + sin(x)), x, 0) == 6
+    assert limit(ceiling(5 + sin(x)), x, 0, 1) == 5
+    assert limit(ceiling(5 + cos(x)), x, 0) == 6
+    assert limit(ceiling(5 + cos(x)), x, 0, 1) == 6
 
 
 def test_atan():
@@ -226,12 +226,12 @@ def test_atan():
 
 def test_acosh():
     assert limit(acosh(I*x), x, 0) == I*pi/2
-    assert limit(acosh(I*x), x, 0, '-') == -I*pi/2
+    assert limit(acosh(I*x), x, 0, 1) == -I*pi/2
     assert limit(acosh(-I*x), x, 0) == -I*pi/2
-    assert limit(acosh(-I*x), x, 0, '-') == I*pi/2
+    assert limit(acosh(-I*x), x, 0, 1) == I*pi/2
     pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, 'real'))
     assert limit(acosh(x - I*x), x, 0) == -I*pi/2
-    assert limit(acosh(x - I*x), x, 0, '-') == I*pi/2
+    assert limit(acosh(x - I*x), x, 0, 1) == I*pi/2
     pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, 'real'))
     assert limit(acosh(I*x**2), x, 0, 'real') == I*pi/2
     assert limit(acosh(x**2 - I*x**2), x, 0, 'real') == -I*pi/2
@@ -239,12 +239,12 @@ def test_acosh():
 
 def test_acoth():
     assert limit(acoth(x), x, 0) == -I*pi/2
-    assert limit(acoth(x), x, 0, '-') == I*pi/2
+    assert limit(acoth(x), x, 0, 1) == I*pi/2
     pytest.raises(PoleError, lambda: limit(acoth(x), x, 0, 'real'))
     assert limit(acoth(-x), x, 0) == I*pi/2
     assert limit(acoth(x**2), x, 0, 'real') == -I*pi/2
     assert limit(acoth(I*x), x, 0) == -I*pi/2
-    assert limit(acoth(I*x), x, 0, '-') == I*pi/2
+    assert limit(acoth(I*x), x, 0, 1) == I*pi/2
     pytest.raises(PoleError, lambda: limit(acoth(x - I*x), x, 0, 'real'))
 
 
@@ -263,9 +263,9 @@ def test_abs():
 
 def test_heuristic():
     x = Symbol('x', extended_real=True)
-    assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
-    assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
-    assert heuristics(tan(tan(1/x)), x, 0, '+') is None
+    assert heuristics(sin(1/x) + atan(x), x, 0, -1) == sin(oo)
+    assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, -1) == log(2)
+    assert heuristics(tan(tan(1/x)), x, 0, -1) is None
 
 
 def test_sympyissue_3871():
@@ -333,7 +333,7 @@ def test_sympyissue_5183():
     tests = list(itertools.product([x, -x],
                                    [-1, 1],
                                    [2, 3, Rational(1, 2), Rational(2, 3)],
-                                   ['-', '+']))
+                                   [1, -1]))
     results = (oo, oo, -oo, oo, -oo*I, oo, -oo*cbrt(-1), oo,
                0, 0, 0, 0, 0, 0, 0, 0,
                oo, oo, oo, -oo, oo, -oo*I, oo, -oo*cbrt(-1),
@@ -364,7 +364,7 @@ def test_sympyissue_4546():
     # using list(...) so pytest can recalculate values
     tests = list(itertools.product([cot, tan],
                                    [-pi/2, 0, pi/2, pi, 3*pi/2],
-                                   ['-', '+']))
+                                   [1, -1]))
     results = (0, 0, -oo, oo, 0, 0, -oo, oo, 0, 0,
                oo, -oo, 0, 0, oo, -oo, 0, 0, oo, -oo)
     assert len(tests) == len(results)
@@ -419,7 +419,7 @@ def test_sympyissue_5436():
 
 
 def test_Limit_dir():
-    pytest.raises(TypeError, lambda: Limit(x, x, 0, dir=0))
+    pytest.raises(ValueError, lambda: Limit(x, x, 0, dir=0))
     pytest.raises(ValueError, lambda: Limit(x, x, 0, dir='0'))
 
 
@@ -520,7 +520,7 @@ def test_sympyissue_8229():
 
 def test_sympyissue_9205():
     assert Limit(x, x, a).free_symbols == {a}
-    assert Limit(x, x, a, '-').free_symbols == {a}
+    assert Limit(x, x, a, 1).free_symbols == {a}
     assert Limit(x + y, x + y, a).free_symbols == {a}
     assert Limit(-x**2 + y, x**2, a).free_symbols == {y, a}
 
@@ -541,7 +541,7 @@ def test_sympyissue_8634():
 
 
 def test_sympyissue_9558():
-    assert limit(sin(x)**15, x, 0, '-') == 0  # should be fast
+    assert limit(sin(x)**15, x, 0, 1) == 0  # should be fast
 
 
 def test_issue_296():
@@ -557,7 +557,7 @@ def test_sympyissue_5383():
 def test_sympyissue_6171():
     e = Piecewise((0, x < 0), (1, True))
     assert e.limit(x, 0) == 1
-    assert e.limit(x, 0, '-') == 0
+    assert e.limit(x, 0, 1) == 0
 
 
 def test_sympyissue_11526():
@@ -700,7 +700,7 @@ def test_sympyissue_15323():
 
 
 def test_sympyissue_15984():
-    assert limit((-x + log(exp(x) + 1))/x, x, oo, dir='-') == 0
+    assert limit((-x + log(exp(x) + 1))/x, x, oo, dir=1) == 0
 
 
 def test_sympyissue_16222():
@@ -758,11 +758,11 @@ def test_sympyissue_17792():
 
 
 def test_sympyissue_18118():
-    assert limit(sign(x), x, 0, '+') == +1
-    assert limit(sign(x), x, 0, '-') == -1
+    assert limit(sign(x), x, 0) == +1
+    assert limit(sign(x), x, 0, 1) == -1
 
-    assert limit(sign(sin(x)), x, 0, '+') == +1
-    assert limit(sign(sin(x)), x, 0, '-') == -1
+    assert limit(sign(sin(x)), x, 0) == +1
+    assert limit(sign(sin(x)), x, 0, 1) == -1
 
 
 def test_sympyissue_6599():
@@ -792,8 +792,8 @@ def test_sympyissue_18399():
 
 
 def test_sympyissue_18452():
-    assert limit(abs(log(x))**x, x, 0, '+') == 1
-    assert limit(abs(log(x))**x, x, 0, '-') == 1
+    assert limit(abs(log(x))**x, x, 0) == 1
+    assert limit(abs(log(x))**x, x, 0, 1) == 1
 
 
 def test_sympyissue_18482():
@@ -804,7 +804,7 @@ def test_sympyissue_18482():
 
 
 def test_sympyissue_18501():
-    assert limit(abs(log(x - 1)**3 - 1), x, 1, '+') == oo
+    assert limit(abs(log(x - 1)**3 - 1), x, 1) == oo
 
 
 def test_sympyissue_18508():
@@ -878,8 +878,8 @@ def test_sympyissue_21029():
 def test_sympyissue_20578():
     e = abs(x)*sin(1/x)
 
-    assert all(_ == 0 for _ in [limit(e, x, 0, '+'),
-                                limit(e, x, 0, '-'),
+    assert all(_ == 0 for _ in [limit(e, x, 0),
+                                limit(e, x, 0, 1),
                                 limit(e, x, 0, 'real')])
 
 
@@ -915,8 +915,8 @@ def test_sympyissue_21550():
 
 
 def test_sympyissue_21606():
-    assert limit(cos(x)/sign(x), x, pi, '+') == -1
-    assert limit(cos(x)/sign(x), x, pi, '-') == -1
+    assert limit(cos(x)/sign(x), x, pi) == -1
+    assert limit(cos(x)/sign(x), x, pi, 1) == -1
 
 
 def test_sympyissue_21756():
@@ -925,7 +925,7 @@ def test_sympyissue_21756():
 
 
 def test_sympyissue_21785():
-    assert sqrt((-a**2 + x**2)/(1 - x**2)).limit(a, 1, '-') == I
+    assert sqrt((-a**2 + x**2)/(1 - x**2)).limit(a, 1, 1) == I
 
 
 def test_sympyissue_22220():
@@ -936,8 +936,8 @@ def test_sympyissue_22220():
     assert limit(e1, x, -pi) == -sqrt(30)*pi/60
     assert limit(e2, x, -pi) == -sqrt(30)*pi/30
 
-    assert limit(e1, x, -pi, '-') == sqrt(30)*pi/60
-    assert limit(e2, x, -pi, '-') == 0
+    assert limit(e1, x, -pi, 1) == sqrt(30)*pi/60
+    assert limit(e2, x, -pi, 1) == 0
 
 
 def test_sympyissue_22334():

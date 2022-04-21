@@ -667,7 +667,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a, '+' if (a < b) is not false else '-')
+                A = limit(self, x, a, -1 if (a < b) is not false else 1)
                 if isinstance(A, Limit):
                     raise NotImplementedError('Could not compute limit')
 
@@ -677,7 +677,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
-                B = limit(self, x, b, '-' if (a < b) is not false else '+')
+                B = limit(self, x, b, 1 if (a < b) is not false else -1)
                 if isinstance(B, Limit):
                     raise NotImplementedError('Could not compute limit')
 
@@ -2697,7 +2697,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             return (s + o).subs({d: exp(logw)})
 
-    def limit(self, x, xlim, dir='+'):
+    def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
         from ..series.limits import limit
         return limit(self, x, xlim, dir)

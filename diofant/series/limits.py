@@ -1,12 +1,12 @@
-from ..core import (Dummy, Expr, Float, PoleError, Rational, Symbol, nan, oo,
-                    sympify)
+from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
+                    nan, oo, sympify)
 from ..core.function import UndefinedFunction
 from ..functions import Abs, cos, sign, sin
 from .gruntz import limitinf
 from .order import Order
 
 
-def limit(expr, z, z0, dir='+'):
+def limit(expr, z, z0, dir=-1):
     """
     Compute the directional limit of ``expr`` at the point ``z0``.
 
@@ -15,9 +15,9 @@ def limit(expr, z, z0, dir='+'):
 
     >>> limit(sin(x)/x, x, 0)
     1
-    >>> limit(1/x, x, 0, dir='+')
+    >>> limit(1/x, x, 0)
     oo
-    >>> limit(1/x, x, 0, dir='-')
+    >>> limit(1/x, x, 0, dir=1)
     -oo
     >>> limit(1/x, x, oo)
     0
@@ -60,40 +60,39 @@ class Limit(Expr):
         variable of the ``expr``
     z0   : Expr
         limit point, `z_0`
-    dir  : {"+", "-", "real"}, optional
-        For ``dir="+"`` (default) it calculates the limit from the right
-        (`z\to z_0 + 0`) and for ``dir="-"`` the limit from the left (`z\to
+    dir  : {-1, 1, "real"}, optional
+        For ``dir=-1`` (default) it calculates the limit from the right
+        (`z\to z_0 + 0`) and for ``dir=1`` the limit from the left (`z\to
         z_0 - 0`).  If ``dir="real"``, the limit is the bidirectional real
         limit.  For infinite ``z0`` (``oo`` or ``-oo``), the ``dir`` argument
         is determined from the direction of the infinity (i.e.,
-        ``dir="-"`` for ``oo``).
+        ``dir=1`` for ``oo``).
 
     Examples
     ========
 
     >>> Limit(sin(x)/x, x, 0)
     Limit(sin(x)/x, x, 0)
-    >>> Limit(1/x, x, 0, dir='-')
-    Limit(1/x, x, 0, dir='-')
+    >>> Limit(1/x, x, 0, dir=1)
+    Limit(1/x, x, 0, dir=1)
 
     """
 
-    def __new__(cls, e, z, z0, dir='+'):
+    def __new__(cls, e, z, z0, dir=-1):
         e, z, z0 = map(sympify, [e, z, z0])
 
         if z0 is oo:
-            dir = '-'
+            dir = Integer(+1)
         elif z0 == -oo:
-            dir = '+'
+            dir = Integer(-1)
 
         if isinstance(dir, str):
             dir = Symbol(dir)
-        elif not isinstance(dir, Symbol):
-            raise TypeError('direction must be of type str or '
-                            f'Symbol, not {type(dir)}')
-        if str(dir) not in ('+', '-', 'real'):
-            raise ValueError("direction must be either '+' or '-' "
-                             f"or 'real', not {dir}")
+        else:
+            dir = sympify(dir)
+
+        if str(dir) not in ('1', '-1', 'real'):
+            raise ValueError(f"direction must be '±1' or 'real', not {dir}")
 
         obj = super().__new__(cls)
         obj._args = (e, z, z0, dir)
@@ -123,8 +122,8 @@ class Limit(Expr):
             z0 = z0.doit(**hints)
 
         if str(dir) == 'real':
-            right = limit(e, z, z0, '+')
-            left = limit(e, z, z0, '-')
+            right = limit(e, z, z0)
+            left = limit(e, z, z0, 1)
             if not left.equals(right):
                 raise PoleError(f'left and right limits for expression {e} at '
                                 f'point {z}={z0} seems to be not equal')
@@ -152,7 +151,7 @@ class Limit(Expr):
         if z0 == -oo:
             e = e.subs({z: -z})
         elif z0 != oo:
-            e = e.subs({z: z0 + (1 if str(dir) == '+' else -1)/z})
+            e = e.subs({z: z0 - dir/z})
 
         # We need a fresh variable with correct assumptions.
         newz = Dummy(z.name, positive=True, finite=True)

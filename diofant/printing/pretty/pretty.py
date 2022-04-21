@@ -509,9 +509,13 @@ class PrettyPrinter(Printer):
 
         if str(dir) == 'real' or z0 in (oo, -oo):
             dir = ''
-        else:
+        elif dir in [1, -1]:
             if self._use_unicode:
-                dir = '\N{SUPERSCRIPT PLUS SIGN}' if str(dir) == '+' else '\N{SUPERSCRIPT MINUS}'
+                dir = '\N{SUPERSCRIPT PLUS SIGN}' if dir == -1 else '\N{SUPERSCRIPT MINUS}'
+            else:
+                dir = '+' if dir == -1 else '-'
+        else:
+            raise NotImplementedError
 
         LimArg = prettyForm(*LimArg.right(self._print(dir)))
 

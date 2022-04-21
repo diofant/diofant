@@ -705,7 +705,7 @@ def test_latex_limits():
     # issue sympy/sympy#8175
     f = Function('f')
     assert latex(Limit(f(x), x, 0)) == r'\lim_{x \to 0^+} f{\left (x \right )}'
-    assert latex(Limit(f(x), x, 0, '-')) == r'\lim_{x \to 0^-} f{\left (x \right )}'
+    assert latex(Limit(f(x), x, 0, 1)) == r'\lim_{x \to 0^-} f{\left (x \right )}'
     assert latex(Limit(f(x), x, 0, 'real')) == r'\lim_{x \to 0} f{\left (x \right )}'
 
     assert latex(Limit(x + x**2, x, 0)) == r'\lim_{x \to 0^+}\left(x^{2} + x\right)'

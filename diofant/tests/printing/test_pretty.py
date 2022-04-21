@@ -3536,7 +3536,7 @@ x─→0⁺  x   \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Limit(sin(x)/x, x, 0, '-')
+    expr = Limit(sin(x)/x, x, 0, 1)
     ascii_str = \
         """\
      sin(x)\n\
