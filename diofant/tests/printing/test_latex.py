@@ -14,11 +14,11 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
                      KroneckerDelta, Lambda, LambertW, LaplaceTransform,
                      LeviCivita, Limit, Matrix, MatrixSymbol, Max,
                      MellinTransform, Min, Mod, Mul, Not, Or, Order, Piecewise,
-                     Poly, Pow, Product, Range, Rational, RisingFactorial,
-                     RootOf, RootSum, S, Shi, Si, SineTransform, Subs, Sum,
-                     Symbol, SymmetricDifference, Transpose, Tuple, Union,
-                     Wild, Xor, Ynm, ZeroMatrix, Znm, acot, airyai,
-                     airyaiprime, airybi, airybiprime, arg, asin,
+                     Poly, Pow, Product, Range, Rational, Reals,
+                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     SineTransform, Subs, Sum, Symbol, SymmetricDifference,
+                     Transpose, Tuple, Union, Wild, Xor, Ynm, ZeroMatrix, Znm,
+                     acot, airyai, airyaiprime, airybi, airybiprime, arg, asin,
                      assoc_laguerre, assoc_legendre, besseli, besselj, besselk,
                      bessely, binomial, catalan, cbrt, ceiling, chebyshevt,
                      chebyshevu, conjugate, cos, cot, coth, diff,
@@ -634,7 +634,7 @@ def test_latex_symmetric_difference():
 
 
 def test_latex_Complement():
-    assert latex(Complement(S.Reals, S.Naturals)) == r'\mathbb{R} \setminus \mathbb{N}'
+    assert latex(Complement(Reals, S.Naturals)) == r'\mathbb{R} \setminus \mathbb{N}'
 
 
 def test_latex_productset():
@@ -663,7 +663,7 @@ def test_latex_Rationals():
 
 
 def test_latex_Reals():
-    assert latex(S.Reals) == r'\mathbb{R}'
+    assert latex(Reals) == r'\mathbb{R}'
 
 
 def test_latex_ExtendedReals():
@@ -706,7 +706,7 @@ def test_latex_limits():
     f = Function('f')
     assert latex(Limit(f(x), x, 0)) == r'\lim_{x \to 0^+} f{\left (x \right )}'
     assert latex(Limit(f(x), x, 0, 1)) == r'\lim_{x \to 0^-} f{\left (x \right )}'
-    assert latex(Limit(f(x), x, 0, 'real')) == r'\lim_{x \to 0} f{\left (x \right )}'
+    assert latex(Limit(f(x), x, 0, Reals)) == r'\lim_{x \to 0} f{\left (x \right )}'
 
     assert latex(Limit(x + x**2, x, 0)) == r'\lim_{x \to 0^+}\left(x^{2} + x\right)'
     assert latex(Limit(x > 0, x, 0)) == r'\lim_{x \to 0^+}\left(x > 0\right)'

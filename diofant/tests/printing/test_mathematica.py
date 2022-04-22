@@ -5,13 +5,13 @@ import pytest
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral, Lambda, Le,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
-                     Rational, RootOf, RootSum, SparseMatrix, Sum, Tuple, acos,
-                     acosh, acot, acoth, asin, asinh, atan, atanh, binomial,
-                     conjugate, cos, cosh, cot, coth, csch, erf, erfc, erfi,
-                     exp, factorial, factorial2, false, fibonacci, gamma,
-                     hyper, im, log, loggamma, mathematica_code, meijerg, oo,
-                     pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
-                     symbols, tan, tanh, true, uppergamma, zeta)
+                     Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
+                     Tuple, acos, acosh, acot, acoth, asin, asinh, atan, atanh,
+                     binomial, conjugate, cos, cosh, cot, coth, csch, erf,
+                     erfc, erfi, exp, factorial, factorial2, false, fibonacci,
+                     gamma, hyper, im, log, loggamma, mathematica_code,
+                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
+                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import x, y, z
 
 
@@ -240,5 +240,5 @@ def test_Limit():
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> -1]]'
     e = Limit(sin(x)/x, x, 0, 1)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> 1]]'
-    e = Limit(sin(x)/x, x, 0, 'real')
+    e = Limit(sin(x)/x, x, 0, Reals)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> Reals]]'

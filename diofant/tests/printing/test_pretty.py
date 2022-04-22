@@ -13,10 +13,10 @@ from diofant import (FF, QQ, RR, ZZ, Add, Adjoint, And, Basic, Chi, Ci,
                      Intersection, Interval, Inverse, KroneckerDelta, Lambda,
                      Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul, Nand, Ne,
                      Nor, Not, O, Or, Piecewise, Pow, Product, Range, Rational,
-                     Ray, RealField, RootOf, RootSum, S, Segment, Shi, Si,
-                     Subs, Sum, Symbol, SymmetricDifference, Trace, Transpose,
-                     Tuple, Union, Xor, atan2, binomial, catalan, cbrt,
-                     ceiling, conjugate, cos, elliptic_e, elliptic_f,
+                     Ray, RealField, Reals, RootOf, RootSum, S, Segment, Shi,
+                     Si, Subs, Sum, Symbol, SymmetricDifference, Trace,
+                     Transpose, Tuple, Union, Xor, atan2, binomial, catalan,
+                     cbrt, ceiling, conjugate, cos, elliptic_e, elliptic_f,
                      elliptic_k, elliptic_pi, euler, exp, expint, factorial,
                      factorial2, floor, gamma, grlex, groebner, hyper, ilex,
                      log, lowergamma, meijerg, oo, pi, pprint, root, sin, sqrt,
@@ -3552,7 +3552,7 @@ x─→0⁻  x   \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Limit(sin(x)/x, x, 0, 'real')
+    expr = Limit(sin(x)/x, x, 0, dir=Reals)
     ascii_str = \
         """\
     sin(x)\n\
@@ -5138,10 +5138,10 @@ def test_sympyissue_7180():
 
 
 def test_pretty_Complement():
-    assert pretty(S.Reals - S.Naturals) == r'(-oo, oo) \ Naturals()'
-    assert upretty(S.Reals - S.Naturals) == r'ℝ \ ℕ'
-    assert pretty(S.Reals - S.Naturals0) == r'(-oo, oo) \ Naturals0()'
-    assert upretty(S.Reals - S.Naturals0) == r'ℝ \ ℕ₀'
+    assert pretty(Reals - S.Naturals) == r'(-oo, oo) \ Naturals()'
+    assert upretty(Reals - S.Naturals) == r'ℝ \ ℕ'
+    assert pretty(Reals - S.Naturals0) == r'(-oo, oo) \ Naturals0()'
+    assert upretty(Reals - S.Naturals0) == r'ℝ \ ℕ₀'
 
 
 def test_pretty_SymmetricDifference():

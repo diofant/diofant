@@ -11,6 +11,7 @@ from mpmath.libmp import prec_to_dps
 
 from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
+from ..sets import Reals
 from ..utilities import default_sort_key
 from .defaults import DefaultPrinting
 from .precedence import PRECEDENCE, precedence
@@ -194,8 +195,8 @@ class StrPrinter(Printer):
         e, z, z0, dir = expr.args
         if dir == -1:
             return f'Limit({e}, {z}, {z0})'
-        elif str(dir) == 'real':
-            return f"Limit({e}, {z}, {z0}, dir='{dir}')"
+        elif dir == Reals:
+            return f'Limit({e}, {z}, {z0}, dir=Reals)'
         else:
             return f'Limit({e}, {z}, {z0}, dir={dir})'
 

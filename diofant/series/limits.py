@@ -1,7 +1,7 @@
-from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
-                    nan, oo, sympify)
+from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
 from ..core.function import UndefinedFunction
 from ..functions import Abs, cos, sign, sin
+from ..sets import Reals
 from .gruntz import limitinf
 from .order import Order
 
@@ -60,10 +60,10 @@ class Limit(Expr):
         variable of the ``expr``
     z0   : Expr
         limit point, `z_0`
-    dir  : {-1, 1, "real"}, optional
+    dir  : {-1, 1, Reals}, optional
         For ``dir=-1`` (default) it calculates the limit from the right
         (`z\to z_0 + 0`) and for ``dir=1`` the limit from the left (`z\to
-        z_0 - 0`).  If ``dir="real"``, the limit is the bidirectional real
+        z_0 - 0`).  If ``dir=Reals``, the limit is the bidirectional real
         limit.  For infinite ``z0`` (``oo`` or ``-oo``), the ``dir`` argument
         is determined from the direction of the infinity (i.e.,
         ``dir=1`` for ``oo``).
@@ -84,20 +84,15 @@ class Limit(Expr):
     """
 
     def __new__(cls, e, z, z0, dir=-1):
-        e, z, z0 = map(sympify, [e, z, z0])
+        e, z, z0, dir = map(sympify, [e, z, z0, dir])
 
         if z0 is oo:
-            dir = Integer(+1)
+            dir = Rational(+1)
         elif z0 == -oo:
-            dir = Integer(-1)
+            dir = Rational(-1)
 
-        if isinstance(dir, str):
-            dir = Symbol(dir)
-        else:
-            dir = sympify(dir)
-
-        if str(dir) not in ('1', '-1', 'real'):
-            raise ValueError(f"direction must be '±1' or 'real', not {dir}")
+        if dir not in (1, -1, Reals):
+            raise ValueError(f'direction must be ±1 or Reals, not {dir}')
 
         obj = super().__new__(cls)
         obj._args = (e, z, z0, dir)
@@ -126,7 +121,7 @@ class Limit(Expr):
             z = z.doit(**hints)
             z0 = z0.doit(**hints)
 
-        if str(dir) == 'real':
+        if dir == Reals:
             right = limit(e, z, z0)
             left = limit(e, z, z0, 1)
             if not left.equals(right):

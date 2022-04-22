@@ -5,12 +5,12 @@ import itertools
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
-                     Piecewise, PoleError, Rational, Sum, Symbol, acos, acosh,
-                     acoth, asin, atan, besselk, binomial, cbrt, ceiling, cos,
-                     cosh, cot, diff, digamma, erf, erfc, erfi, exp, factorial,
-                     false, floor, gamma, integrate, limit, log, nan, oo, pi,
-                     polygamma, root, sign, simplify, sin, sinh, sqrt,
-                     subfactorial, symbols, tan, true)
+                     Piecewise, PoleError, Rational, Reals, Sum, Symbol, acos,
+                     acosh, acoth, asin, atan, besselk, binomial, cbrt,
+                     ceiling, cos, cosh, cot, diff, digamma, erf, erfc, erfi,
+                     exp, factorial, false, floor, gamma, integrate, limit,
+                     log, nan, oo, pi, polygamma, root, sign, simplify, sin,
+                     sinh, sqrt, subfactorial, symbols, tan, true)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 
@@ -62,10 +62,10 @@ def test_basic1():
     assert limit(x**-pi, x, 0, dir=1) == oo*sign((-1)**(-pi))
     assert limit((1 + cos(x))**oo, x, 0) == oo
 
-    assert limit(x**2, x, 0, dir='real') == 0
-    assert limit(exp(x), x, 0, dir='real') == 1
+    assert limit(x**2, x, 0, dir=Reals) == 0
+    assert limit(exp(x), x, 0, dir=Reals) == 1
 
-    pytest.raises(PoleError, lambda: limit(1/x, x, 0, dir='real'))
+    pytest.raises(PoleError, lambda: limit(1/x, x, 0, dir=Reals))
 
     # issue diofant/diofant#74
     assert limit(sign(log(1 - 1/x)), x, oo) == -1
@@ -116,7 +116,7 @@ def test_basic4():
 
     assert limit(e4, x, 0, 1) == 0
     assert limit(e4, x, 0) == 1
-    pytest.raises(PoleError, lambda: limit(e4, x, 0, 'real'))
+    pytest.raises(PoleError, lambda: limit(e4, x, 0, Reals))
 
     e5 = Piecewise((1, 0 < x), (2, 1 < x), (0, True))
 
@@ -229,23 +229,23 @@ def test_acosh():
     assert limit(acosh(I*x), x, 0, 1) == -I*pi/2
     assert limit(acosh(-I*x), x, 0) == -I*pi/2
     assert limit(acosh(-I*x), x, 0, 1) == I*pi/2
-    pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, 'real'))
+    pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, Reals))
     assert limit(acosh(x - I*x), x, 0) == -I*pi/2
     assert limit(acosh(x - I*x), x, 0, 1) == I*pi/2
-    pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, 'real'))
-    assert limit(acosh(I*x**2), x, 0, 'real') == I*pi/2
-    assert limit(acosh(x**2 - I*x**2), x, 0, 'real') == -I*pi/2
+    pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, Reals))
+    assert limit(acosh(I*x**2), x, 0, Reals) == I*pi/2
+    assert limit(acosh(x**2 - I*x**2), x, 0, Reals) == -I*pi/2
 
 
 def test_acoth():
     assert limit(acoth(x), x, 0) == -I*pi/2
     assert limit(acoth(x), x, 0, 1) == I*pi/2
-    pytest.raises(PoleError, lambda: limit(acoth(x), x, 0, 'real'))
+    pytest.raises(PoleError, lambda: limit(acoth(x), x, 0, Reals))
     assert limit(acoth(-x), x, 0) == I*pi/2
-    assert limit(acoth(x**2), x, 0, 'real') == -I*pi/2
+    assert limit(acoth(x**2), x, 0, Reals) == -I*pi/2
     assert limit(acoth(I*x), x, 0) == -I*pi/2
     assert limit(acoth(I*x), x, 0, 1) == I*pi/2
-    pytest.raises(PoleError, lambda: limit(acoth(x - I*x), x, 0, 'real'))
+    pytest.raises(PoleError, lambda: limit(acoth(x - I*x), x, 0, Reals))
 
 
 def test_abs():
@@ -881,7 +881,7 @@ def test_sympyissue_20578():
 
     assert all(_ == 0 for _ in [limit(e, x, 0),
                                 limit(e, x, 0, 1),
-                                limit(e, x, 0, 'real')])
+                                limit(e, x, 0, Reals)])
 
 
 def test_sympyissue_19453():
@@ -903,7 +903,7 @@ def test_sympyissue_19453():
 
 
 def test_sympyissue_19442():
-    pytest.raises(PoleError, lambda: limit(1/x, x, 0, 'real'))
+    pytest.raises(PoleError, lambda: limit(1/x, x, 0, Reals))
 
 
 def test_sympyissue_21530():
