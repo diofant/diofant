@@ -8,6 +8,7 @@ New features
 ============
 
 * Support calculating limits with :class:`~diofant.functions.elementary.piecewise.Piecewise` functions and boolean expressions, see :pull:`1214` and :pull:`1218`.
+* Support directional limits on the complex plane, see :pull:`1232`.
 
 Major changes
 =============
