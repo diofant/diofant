@@ -4,8 +4,7 @@ from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
-                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan,
-                     variations)
+                     root, simplify, sin, sinh, sqrt, symbols, tan, variations)
 from diofant.abc import A, a, b, c, d, k, l, m, n
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -692,13 +691,23 @@ def test_checksysodesol():
 def test_nonlinear_3eq_order1():
     eq1 = [4*f(t).diff(t) + 2*g(t)*h(t), 3*g(t).diff(t) - h(t)*f(t),
            5*h(t).diff(t) - f(t)*g(t)]
-    sol1 = '[Eq(f(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), (_y, f(t))), C3 + Integral(-sqrt(15)/15, t))), Eq(g(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, g(t))), C3 + Integral(sqrt(5)/10, t))), Eq(h(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*sqrt(4*C1 - C2 + 5*_y**2)), (_y, h(t))), C3 + Integral(sqrt(3)/6, t)))]'
-    assert sstr(dsolve(eq1)) == sol1
+    sol1 = [Eq(f(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*a**2)*sqrt(5*C1 - C2 - 4*a**2)),
+                                 (a, f(t))), C3 + Integral(-sqrt(15)/15, t))),
+            Eq(g(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*a**2)*sqrt(C1 - 4*C2 + 3*a**2)),
+                                 (a, g(t))), C3 + Integral(sqrt(5)/10, t))),
+            Eq(h(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*a**2)*sqrt(4*C1 - C2 + 5*a**2)),
+                                 (a, h(t))), C3 + Integral(sqrt(3)/6, t)))]
+    assert dsolve(eq1) == sol1
 
     eq2 = [4*f(t).diff(t) + 2*g(t)*h(t)*sin(t),
            3*g(t).diff(t) - h(t)*f(t)*sin(t), 5*h(t).diff(t) - f(t)*g(t)*sin(t)]
-    sol2 = '[Eq(f(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*_y**2)*sqrt(C1 - 4*C2 + 3*_y**2)), (_y, f(t))), C3 + Integral(-sqrt(5)*sin(t)/10, t))), Eq(g(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*_y**2)*sqrt(5*C1 - C2 - 4*_y**2)), (_y, g(t))), C3 + Integral(sqrt(15)*sin(t)/15, t))), Eq(h(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*_y**2)*sqrt(4*C1 - C2 + 5*_y**2)), (_y, h(t))), C3 + Integral(-sqrt(3)*sin(t)/6, t)))]'
-    assert sstr(dsolve(eq2)) == sol2
+    sol2 = [Eq(f(t), Eq(Integral(3/(sqrt(-C1 + 5*C2 - 6*a**2)*sqrt(C1 - 4*C2 + 3*a**2)), (a, f(t))),
+                        C3 + Integral(-sqrt(5)*sin(t)/10, t))),
+            Eq(g(t), Eq(Integral(4/(sqrt(-3*C1 + C2 - 4*a**2)*sqrt(5*C1 - C2 - 4*a**2)), (a, g(t))),
+                        C3 + Integral(sqrt(15)*sin(t)/15, t))),
+            Eq(h(t), Eq(Integral(5/(sqrt(-3*C1 + C2 - 10*a**2)*sqrt(4*C1 - C2 + 5*a**2)), (a, h(t))),
+                        C3 + Integral(-sqrt(3)*sin(t)/6, t)))]
+    assert dsolve(eq2) == sol2
 
     eq2_1 = [4*f(t).diff(t) + 2*g(t)*h(t)**2*sin(t),
              3*g(t).diff(t) - h(t)*f(t)*sin(t), 5*h(t).diff(t) - f(t)*g(t)*sin(t)]
@@ -1412,20 +1421,15 @@ def test_separable2():
     eq9 = exp(x + 1)*tan(f(x)) + cos(f(x))*f(x).diff(x)
     eq10 = (x*cos(f(x)) + x**2*sin(f(x))*f(x).diff(x) -
             a**2*sin(f(x))*f(x).diff(x))
-    # solve() messes this one up a little bit, so lets test _Integral here
-    # We have to test strings with _Integral because y is a dummy variable.
-    sol6str = ('Eq(Integral((_y - 2)/_y**3, (_y, f(x))), '
-               'C1 + Integral(x**(-2), x))')
+    sol6 = Eq(Integral((a - 2)/a**3, (a, f(x))), C1 + Integral(x**(-2), x))
     sol7 = Eq(-log(-1 + f(x)**2)/2, C1 - log(2 + x))
     sol8 = Eq(asinh(f(x)), C1 - log(log(x)))
-    # integrate cannot handle the integral on the lhs (cos/tan)
-    sol9str = ('Eq(Integral(cos(_y)/tan(_y), (_y, f(x))), '
-               'C1 + Integral(-E*E**x, x))')
+    sol9 = Eq(Integral(cos(a)/tan(a), (a, f(x))), C1 + Integral(-E*E**x, x))
     sol10 = Eq(-log(-1 + sin(f(x))**2)/2, C1 - log(x**2 - a**2)/2)
-    assert str(dsolve(eq6, hint='separable_Integral')) == sol6str
+    assert dsolve(eq6, hint='separable_Integral') == sol6
     assert dsolve(eq7, hint='separable', simplify=False) == sol7
     assert dsolve(eq8, hint='separable', simplify=False) == sol8
-    assert str(dsolve(eq9, hint='separable_Integral')) == sol9str
+    assert dsolve(eq9, hint='separable_Integral') == sol9
     assert dsolve(eq10, hint='separable', simplify=False) == sol10
     assert checkodesol(eq7, sol7, order=1, solve_for_func=False)[0]
     assert checkodesol(eq8, sol8, order=1, solve_for_func=False)[0]
@@ -2803,10 +2807,8 @@ def test_sympyissue_11290():
     eq = cos(f(x)) - (x*sin(f(x)) - f(x)**2)*f(x).diff(x)
     s0 = dsolve(eq, f(x), simplify=False, hint='1st_exact')
     s1 = dsolve(eq, f(x), simplify=False, hint='1st_exact_Integral')
-    assert (str(s1) ==
-            'Eq(Subs(Integral(-x*sin(_y) + _y**2 '
-            '- Integral(-sin(_y), x), _y) + '
-            'Integral(cos(_y), x), (_y, f(x))), C1)')
+    assert s1 == Eq(Subs(Integral(-x*sin(a) + a**2 - Integral(-sin(a), x), a) +
+                         Integral(cos(a), x), (a, f(x))), C1)
     assert s1.doit() == s0
 
 

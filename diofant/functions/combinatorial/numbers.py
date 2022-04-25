@@ -634,7 +634,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_Sum(self, n, m=None):
         from ...concrete import Sum
-        k = Dummy('k', integer=True)
+        k = Dummy('k')
         if m is None:
             m = Integer(1)
         return Sum(k**(-m), (k, 1, n))

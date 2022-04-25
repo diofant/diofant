@@ -4,7 +4,7 @@ from diofant import (And, Eq, Integer, Integral, Interval, N, Piecewise,
                      Rational, Sum, Symbol, besseli, beta, binomial, cos, erf,
                      exp, expand_func, factorial, floor, gamma, log,
                      lowergamma, oo, pi, simplify, sin, sqrt, symbols)
-from diofant.abc import x, y, z
+from diofant.abc import k, x, y, z
 from diofant.stats import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
                            ChiNoncentral, ChiSquared, ContinuousRV, Dagum, E,
                            Erlang, Exponential, FDistribution, FisherZ,
@@ -513,21 +513,8 @@ def test_uniformsum():
     X = UniformSum('x', n)
     assert X.pspace.domain.set == Interval(0, n)
 
-    # see test_uniformsum_d()
     d = density(X)(z)
-    assert str(d) == ('Sum((-1)**_k*(z - _k)**(n - 1)*binomial(n, _k), '
-                      '(_k, 0, floor(z)))/factorial(n - 1)')
-
-
-@pytest.mark.xfail
-def test_uniformsum_d():
-    n = Symbol('n', integer=True)
-    k = Symbol('k')
-
-    X = UniformSum('x', n)
-    d = density(X)(x)
-    assert d == 1/factorial(n - 1)*Sum((-1)**k*(x - k)**(n - 1) *
-                                       binomial(n, k), (k, 0, floor(x)))
+    assert d == Sum((-1)**k*(z - k)**(n - 1)*binomial(n, k), (k, 0, floor(z)))/factorial(n - 1)
 
 
 def test_von_mises():

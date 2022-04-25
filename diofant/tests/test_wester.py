@@ -2004,11 +2004,11 @@ def test_X4():
 
 
 def test_X5():
-    assert (str((diff(f(a*x), x) + g(b*x) +
-                integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2)) ==
-            ('Integral(h(c*_y), (_y, 0, x)) + g(b*d) + b*(-d + x)*Subs(Deriv'
-             'ative(g(_xi_1), _xi_1), (_xi_1, b*d)) + a*Subs(Derivative(f(_x'
-             'i_1), _xi_1), (_xi_1, a*x)) + O((-d + x)**2, (x, d))'))
+    assert ((diff(f(a*x), x) + g(b*x) +
+             integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2) ==
+            (Integral(h(c*y), (y, 0, x)) + g(b*d) +
+             b*(-d + x)*Subs(Derivative(g(y), y), (y, b*d)) +
+             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, (x, d))))
 
 
 def test_X6():
