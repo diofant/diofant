@@ -3,7 +3,7 @@ import pytest
 from diofant import (Derivative, E, Function, I, Integer, Integral, O,
                      Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
                      sin, sqrt, symbols)
-from diofant.abc import h, x, y
+from diofant.abc import h, x, y, z
 
 
 f = Function('f')
@@ -160,6 +160,21 @@ def test_exp_product_positive_factors():
     # (1 + a*b + a**2*b**2/2 +
     #  a**3*b**3/6 + a**4*b**4/24 + a**5*b**5/120 + a**6*b**6/720 +
     #  a**7*b**7/5040 + O(a**8*b**8))
+
+
+def test_series_of_Subs():
+    subs1 = Subs(sin(x), (x, y))
+    subs2 = Subs(sin(x)*cos(z), (x, y))
+    subs3 = Subs(sin(x*z), (x, z), (y, x))
+    subs4 = Subs(x, (x, z))
+
+    assert subs1.series(x) == subs1
+    assert subs1.series(y) == Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    assert subs1.series(z) == subs1
+    assert subs2.series(z) == Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    assert subs3.series(x) == subs3
+    assert subs3.series(z) == Subs(x*z, (x, z), (y, x)) + O(z**6)
+    assert subs4.series(z) == subs4
 
 
 def test_sympyissue_9173():

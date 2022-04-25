@@ -38,7 +38,7 @@ from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
                      rsolve, sec, sign, simplify, sin, sinh, solve, sqrt,
                      sqrtdenest, summation, symbols, tan, tanh, totient,
                      trigsimp, trunc, wronskian, zeta, zoo)
-from diofant.abc import a, b, c, s, t, v, w, x, y, z
+from diofant.abc import a, b, c, d, s, t, v, w, x, y, z
 from diofant.functions.combinatorial.numbers import stirling
 from diofant.utilities.iterables import partitions
 
@@ -46,7 +46,7 @@ from diofant.utilities.iterables import partitions
 __all__ = ()
 
 i, j, k, l, m, n = symbols('i j k l m n', integer=True)
-f, g = symbols('f g', cls=Function)
+f, g, h = symbols('f g h', cls=Function)
 
 
 # B. Set Theory
@@ -2003,12 +2003,12 @@ def test_X4():
     assert s1 == s2 == -x**2/6 - x**4/180 + O(x**6)
 
 
-@pytest.mark.xfail
 def test_X5():
-    h = Function('h')
-    a, b, c, d = symbols('a b c d', real=True)
-    (diff(f(a*x), x) + g(b*x) +
-     integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2)
+    assert (str((diff(f(a*x), x) + g(b*x) +
+                integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2)) ==
+            ('Integral(h(c*_y), (_y, 0, x)) + g(b*d) + b*(-d + x)*Subs(Deriv'
+             'ative(g(_xi_1), _xi_1), (_xi_1, b*d)) + a*Subs(Derivative(f(_x'
+             'i_1), _xi_1), (_xi_1, a*x)) + O((-d + x)**2, (x, d))'))
 
 
 def test_X6():
