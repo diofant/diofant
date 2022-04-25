@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Derivative, E, Function, I, Integer, Integral, O,
-                     Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
-                     sin, sqrt, symbols)
+                     Rational, Subs, Symbol, cos, exp, log, oo, pi, sin, sqrt,
+                     symbols)
 from diofant.abc import h, x, y, z
 
 
@@ -13,35 +13,31 @@ __all__ = ()
 
 
 def test_sin():
-    e1 = sin(x).series(x, 0)
-    e2 = series(sin(x), x, 0)
-    assert e1 == e2
+    e1 = sin(x).series(x)
+    assert e1 == x - x**3/6 + x**5/120 + O(x**6)
 
     # issue sympy/sympy#5223:
     assert ((1/sin(x))**oo).series() == oo
 
 
 def test_cos():
-    e1 = cos(x).series(x, 0)
-    e2 = series(cos(x), x, 0)
-    assert e1 == e2
+    e1 = cos(x).series(x)
+    assert e1 == 1 - x**2/2 + x**4/24 + O(x**6)
 
 
 def test_exp():
-    e1 = exp(x).series(x, 0)
-    e2 = series(exp(x), x, 0)
-    assert e1 == e2
+    e1 = exp(x).series(x)
+    assert e1 == 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
 
 
 def test_exp2():
     e1 = exp(cos(x)).series(x, 0)
-    e2 = series(exp(cos(x)), x, 0)
-    assert e1 == e2
+    assert e1 == E - E*x**2/2 + E*x**4/6 + O(x**6)
 
 
 def test_simple():
     # issue sympy/sympy#5223
-    assert series(1, x) == 1
+    assert Integer(1).series(x) == 1
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=''))
     pytest.raises(ValueError, lambda: x.series(dir=0))
@@ -52,7 +48,7 @@ def test_simple():
     assert (1 + x).getn() is None
 
     # issue sympy/sympy#8805
-    assert series(1, n=8) == 1
+    assert Integer(1).series(n=8) == 1
 
     # issue sympy/sympy#5223
     assert (cos(x).series(x, 1) -
@@ -64,8 +60,7 @@ def test_simple():
     assert abs(-x).series(x, -oo, n=5, dir=+1) == -x
 
     # issue sympy/sympy#7203
-    assert series(cos(x), x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3,
-                                                              (x, pi))
+    assert cos(x).series(x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
 
 def test_sympyissue_5223():
@@ -127,7 +122,7 @@ def test_sympyissue_3978():
 
 
 def test_sympyissue_5852():
-    assert series(1/cos(x/log(x)), x, 0) == 1 + x**2/(2*log(x)**2) + \
+    assert (1/cos(x/log(x))).series(x, 0) == 1 + x**2/(2*log(x)**2) + \
         5*x**4/(24*log(x)**4) + O(x**6)
 
 
@@ -155,8 +150,8 @@ def test_sin_power():
 @pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
-    x = a * b
-    series(exp(x), x, n=8)
+    x = a*b
+    exp(x).series(x, n=8)
     # (1 + a*b + a**2*b**2/2 +
     #  a**3*b**3/6 + a**4*b**4/24 + a**5*b**5/120 + a**6*b**6/720 +
     #  a**7*b**7/5040 + O(a**8*b**8))
@@ -253,7 +248,7 @@ def test_sympyissue_14885():
 
 
 def test_sympyissue_15539():
-    assert series(exp(x), x, x0=-oo) == exp(x)
+    assert exp(x).series(x, x0=-oo) == exp(x)
 
 
 def test_sympyissue_18008():

@@ -246,7 +246,6 @@ from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series.order import Order
-from ..series.series import series
 from ..simplify.cse_main import cse
 from ..simplify.powsimp import powsimp
 from ..simplify.radsimp import collect, collect_const
@@ -3554,7 +3553,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
         if not term.has(x):
             indicial.append(term)
         else:
-            term = series(term, n=1, x0=x0)
+            term = term.series(n=1, x0=x0)
             if isinstance(term, Order):
                 indicial.append(Integer(0))
             else:
@@ -3618,7 +3617,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
     serlist = []
     for ser in [p, q]:
         if x0 != 0 or not ser.is_polynomial(x) or Poly(ser, x).degree() > n:
-            tseries = series(ser, x=x, x0=x0, n=n + 1)
+            tseries = ser.series(x=x, x0=x0, n=n + 1)
             ser = tseries.removeO()
         dict_ = Poly(ser, x).as_dict()
         # Fill in with zeros, if coefficients are zero.

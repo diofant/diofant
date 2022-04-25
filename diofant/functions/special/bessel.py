@@ -801,7 +801,7 @@ class airyai(AiryBase):
 
     Series expansion is also supported:
 
-    >>> series(airyai(z), z, 0, 3)
+    >>> airyai(z).series(z, 0, 3)
     3**(5/6)*gamma(1/3)/(6*pi) - 3**(1/6)*z*gamma(2/3)/(2*pi) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
@@ -955,7 +955,7 @@ class airybi(AiryBase):
 
     Series expansion is also supported:
 
-    >>> series(airybi(z), z, 0, 3)
+    >>> airybi(z).series(z, 0, 3)
     3**(1/3)*gamma(1/3)/(2*pi) + 3**(2/3)*z*gamma(2/3)/(2*pi) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
@@ -1160,7 +1160,7 @@ class airyaiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> series(airyaiprime(z), z, 0, 3)
+    >>> airyaiprime(z).series(z, 0, 3)
     -3**(2/3)/(3*gamma(1/3)) + 3**(1/3)*z**2/(6*gamma(2/3)) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
@@ -1303,7 +1303,7 @@ class airybiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> series(airybiprime(z), z, 0, 3)
+    >>> airybiprime(z).series(z, 0, 3)
     3**(1/6)/gamma(1/3) + 3**(5/6)*z**2/(6*gamma(2/3)) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision

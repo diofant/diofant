@@ -52,7 +52,7 @@ class gamma(Function):
 
     Series expansion is also supported:
 
-    >>> series(gamma(x), x, 0, 3)
+    >>> gamma(x).series(x, 0, 3)
     1/x - EulerGamma + x*(EulerGamma**2/2 + pi**2/12) + x**2*(-EulerGamma*pi**2/12 + polygamma(2, 1)/6 - EulerGamma**3/6) + O(x**3)
 
     We can numerically evaluate the gamma function to arbitrary precision
@@ -786,7 +786,7 @@ class loggamma(Function):
 
     Series expansion is also supported:
 
-    >>> series(loggamma(x), x, 0, 4)
+    >>> loggamma(x).series(x, 0, 4)
     -log(x) - EulerGamma*x + pi**2*x**2/12 + x**3*polygamma(2, 1)/6 + O(x**4)
 
     We can numerically evaluate the gamma function to arbitrary precision

@@ -4,8 +4,8 @@ from diofant import (E, FiniteSet, Float, Heaviside, I, Matrix, Mul, O,
                      PoleError, Pow, Rational, Symbol, acos, acot, acoth, acsc,
                      arg, asec, asin, asinh, atan, atan2, atanh, cancel,
                      conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
-                     gcd, im, log, nan, oo, pi, re, sec, sech, series,
-                     simplify, sin, sinh, sqrt, symbols, tan, tanh, zoo)
+                     gcd, im, log, nan, oo, pi, re, sec, sech, simplify, sin,
+                     sinh, sqrt, symbols, tan, tanh, zoo)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -1296,13 +1296,13 @@ def test_sec():
     assert sec(x).is_finite is None
     assert sec(pi/2).is_finite is False
 
-    assert series(sec(x), x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
+    assert sec(x).series(x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
 
     # https://github.com/sympy/sympy/issues/7166
-    assert series(sqrt(sec(x))) == 1 + x**2/4 + 7*x**4/96 + O(x**6)
+    assert sqrt(sec(x)).series() == 1 + x**2/4 + 7*x**4/96 + O(x**6)
 
     # https://github.com/sympy/sympy/issues/7167
-    assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
+    assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +
             (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
@@ -1370,9 +1370,9 @@ def test_csc():
     assert csc(x).is_finite is None
     assert csc(pi/2).is_finite
 
-    assert series(csc(x), x, x0=pi/2, n=6) == \
+    assert csc(x).series(x, x0=pi/2, n=6) == \
         1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))
-    assert series(csc(x), x, x0=0, n=6) == \
+    assert csc(x).series(x, x0=0, n=6) == \
         1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
 
     assert csc(x).diff(x) == -cot(x)*csc(x)
