@@ -202,7 +202,7 @@ def limitinf(e, x):
     assert not e.has(Float)
 
     # Rewrite e in terms of tractable functions only:
-    e = e.rewrite('tractable', deep=True)
+    e = e.rewrite('tractable', deep=True, wrt=x)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite

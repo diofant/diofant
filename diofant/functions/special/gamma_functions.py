@@ -162,7 +162,7 @@ class gamma(Function):
         elif x.is_noninteger:
             return floor(x).is_even
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(loggamma(z))
 
     def _eval_rewrite_as_factorial(self, z):
@@ -316,7 +316,7 @@ class lowergamma(Function):
     def _eval_rewrite_as_uppergamma(self, s, x):
         return gamma(s) - uppergamma(s, x)
 
-    def _eval_rewrite_as_tractable(self, s, x):
+    def _eval_rewrite_as_tractable(self, s, x, **kwargs):
         return self.rewrite(uppergamma)
 
     def _eval_rewrite_as_expint(self, s, x):
@@ -878,7 +878,7 @@ class loggamma(Function):
         # It is very inefficient to first add the order and then do the nseries
         return (r + Add(*l))._eval_nseries(x, n, logx) + o
 
-    def _eval_rewrite_as_intractable(self, z):
+    def _eval_rewrite_as_intractable(self, z, **kwargs):
         return log(gamma(z))
 
     def _eval_is_extended_real(self):

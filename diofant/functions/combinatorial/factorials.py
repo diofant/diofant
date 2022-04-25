@@ -92,7 +92,7 @@ class factorial(CombinatorialFunction):
         from .. import gamma
         return gamma(n + 1)
 
-    def _eval_rewrite_as_tractable(self, n):
+    def _eval_rewrite_as_tractable(self, n, **kwargs):
         from .. import exp, loggamma
         return exp(loggamma(n + 1))
 
@@ -350,7 +350,7 @@ class RisingFactorial(CombinatorialFunction):
         from .. import gamma
         return gamma(x + k) / gamma(x)
 
-    def _eval_rewrite_as_tractable(self, x, k):
+    def _eval_rewrite_as_tractable(self, x, k, **kwargs):
         return self._eval_rewrite_as_gamma(x, k).rewrite('tractable')
 
     def _eval_is_integer(self):
@@ -554,14 +554,14 @@ class binomial(CombinatorialFunction):
 
         return self.func(*self.args)
 
-    def _eval_rewrite_as_factorial(self, n, k):
+    def _eval_rewrite_as_factorial(self, n, k, **kwargs):
         return factorial(n)/(factorial(k)*factorial(n - k))
 
     def _eval_rewrite_as_gamma(self, n, k):
         from .. import gamma
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
-    def _eval_rewrite_as_tractable(self, n, k):
+    def _eval_rewrite_as_tractable(self, n, k, **kwargs):
         return self._eval_rewrite_as_gamma(n, k).rewrite('tractable')
 
     def _eval_is_integer(self):

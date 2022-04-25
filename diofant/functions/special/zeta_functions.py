@@ -461,13 +461,13 @@ class zeta(Function):
         else:
             raise ArgumentIndexError
 
-    def _eval_rewrite_as_tractable(self, s, a=1):
+    def _eval_rewrite_as_tractable(self, s, a=1, **kwargs):
         if len(self.args) == 1:
             return _zetas(exp(s))
 
 
 class _zetas(Function):
-    def _eval_rewrite_as_intractable(self, s):
+    def _eval_rewrite_as_intractable(self, s, **kwargs):
         return zeta(log(s))
 
     def _eval_aseries(self, n, args0, x, logx):

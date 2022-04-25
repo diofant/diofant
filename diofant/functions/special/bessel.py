@@ -878,7 +878,7 @@ class airyai(AiryBase):
         pf2 = z / (root(3, 3)*gamma(Rational(1, 3)))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) - pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(-Rational(2, 3)*z**Rational(3, 2))*sqrt(pi*sqrt(z))/2*_airyais(z)
 
     def _eval_expand_func(self, **hints):
@@ -1036,7 +1036,7 @@ class airybi(AiryBase):
         pf2 = z*root(3, 6) / gamma(Rational(1, 3))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) + pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(Rational(2, 3)*z**Rational(3, 2))*sqrt(pi*sqrt(z))*_airybis(z)
 
     def _eval_expand_func(self, **hints):
@@ -1065,7 +1065,7 @@ class airybi(AiryBase):
 
 
 class _airyais(Function):
-    def _eval_rewrite_as_intractable(self, x):
+    def _eval_rewrite_as_intractable(self, x, **kwargs):
         return 2*airyai(x)*exp(Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):
@@ -1094,7 +1094,7 @@ class _airyais(Function):
 
 
 class _airybis(Function):
-    def _eval_rewrite_as_intractable(self, x):
+    def _eval_rewrite_as_intractable(self, x, **kwargs):
         return airybi(x)*exp(-Rational(2, 3)*x**Rational(3, 2))/sqrt(pi*sqrt(x))
 
     def _eval_aseries(self, n, args0, x, logx):

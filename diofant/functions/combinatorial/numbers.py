@@ -112,11 +112,10 @@ class fibonacci(Function):
                                      'only for positive integer indices.')
                 return cls._fibpoly(n).subs({_sym: sym})
 
-    def _eval_rewrite_as_sqrt(self, n, sym=None):
+    def _eval_rewrite_as_sqrt(self, n, sym=None, **kwargs):
         from .. import sqrt
         if sym is None:
             return (GoldenRatio**n - cos(pi*n)/GoldenRatio**n)/sqrt(5)
-
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 
 
@@ -672,7 +671,7 @@ class harmonic(Function):
 
         return self
 
-    def _eval_rewrite_as_tractable(self, n, m=1):
+    def _eval_rewrite_as_tractable(self, n, m=1, **kwargs):
         from .. import polygamma
         return self.rewrite(polygamma).rewrite('tractable', deep=True)
 
