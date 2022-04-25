@@ -909,16 +909,6 @@ class Integral(AddWithLimits):
 
         return Add(*parts)
 
-    def _eval_lseries(self, x, logx=None):
-        expr = self.as_dummy()
-        symb = x
-        for l in expr.limits:
-            if x in l[1:]:
-                symb = l[0]
-                break
-        for term in expr.function.series(symb, n=None, logx=logx):  # pragma: no branch
-            yield integrate(term, *expr.limits)
-
     def _eval_nseries(self, x, n, logx):
         expr = self.as_dummy()
         symb = x
