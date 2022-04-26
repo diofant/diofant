@@ -664,8 +664,8 @@ def test_sympyissue_13462():
 
 
 def test_sympyissue_13575():
-    assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
-                                                      erf(I))
+    assert limit(acos(erfi(x)), x, 1).equals(pi/2 + I*log(sqrt(erf(I)**2 + 1) +
+                                                          erf(I))) is True
 
 
 def test_issue_558():
