@@ -448,8 +448,7 @@ class Set(Basic):
         boundary
 
         """
-        if not Intersection(self, self.boundary):
-            return True
+        return not Intersection(self, self.boundary)
 
     @property
     def is_closed(self):
@@ -949,7 +948,9 @@ class Interval(Set, EvalfMixin):
 
     @property
     def boundary(self):
-        return FiniteSet(self.start, self.end)
+        return FiniteSet(*(p for p, c in [(self.start, not self.left_open),
+                                          (self.end, not self.right_open)]
+                           if abs(p) != oo or c))
 
     def _contains(self, other):
         if not isinstance(other, Expr) or other in (nan, zoo):
