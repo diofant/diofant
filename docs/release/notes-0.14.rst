@@ -80,3 +80,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23299`: Sympy is unable to integrate this
 * :sympyissue:`23319`: testing limit of n*tan(pi/n) results in incorrect answer in 1.7rc1+
 * :sympyissue:`5539`: Equal Integrals compare different when using different variables
+* :sympyissue:`23425`: PolynomialError when I try to call classify_ode

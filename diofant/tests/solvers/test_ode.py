@@ -3027,3 +3027,9 @@ def test_sympyissue_22862():
               root(2, 10)*root(5**9, 10)*I*sqrt(sqrt(5) + 5))/8)]
     assert 'separable' in classify_ode(eq)
     assert dsolve(eq) == res
+
+
+def test_sympyissue_23425():
+    eq = Eq(-exp(x)*f(x).diff((x, 2)) + f(x).diff(x))
+    assert classify_ode(eq) == ('Liouville', 'Liouville_Integral')
+    assert dsolve(eq) == Eq(f(x), C1 + C2*Integral(exp(-exp(-x)), x).doit())
