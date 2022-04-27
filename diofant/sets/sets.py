@@ -729,7 +729,7 @@ class Interval(Set, EvalfMixin):
 
     is_Interval = True
 
-    def __new__(cls, start, end, left_open=False, right_open=False):
+    def __new__(cls, start=-oo, end=oo, left_open=False, right_open=False):
 
         start = sympify(start, strict=True)
         end = sympify(end, strict=True)
