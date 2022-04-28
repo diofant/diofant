@@ -30,6 +30,7 @@ class Basic:
     is_Add = False
     is_Mul = False
     is_Pow = False
+    is_Exp = False
     is_Number = False
     is_Float = False
     is_Rational = False

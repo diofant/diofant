@@ -5,7 +5,7 @@ import inspect
 import math
 from itertools import repeat
 
-from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
+from ..core import (Add, Dummy, Function, I, Integer, Mul, Rational, expand,
                     expand_mul, oo, pi)
 from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
@@ -558,7 +558,7 @@ def _rewrite_gamma(f, s, a, b):
             ufacs += [fact]
         # exponentials
         elif fact.is_Pow:
-            if fact.is_Pow and fact.base is not E:
+            if fact.is_Pow and not fact.is_Exp:
                 base = fact.base
                 exp = fact.exp
             else:
@@ -1163,7 +1163,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True, noconds=True):
             k = log(rel.lts)
             return Heaviside(-(t + k))
     f = f.replace(Heaviside, simp_heaviside)
-    f = f.replace(lambda expr: expr.is_Pow and expr.base is E,
+    f = f.replace(lambda expr: expr.is_Exp,
                   lambda expr: expand_complex(exp(expr.exp)))
 
     # TODO it would be nice to fix cosh and sinh ... simplify messes these

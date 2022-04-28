@@ -62,7 +62,7 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
+from ..core import Add, Dummy, Float, Integer, Mul, cacheit, evaluate, oo
 from ..core.function import UndefinedFunction
 from ..functions import exp, log, sign
 from ..utilities import ordered
@@ -89,8 +89,8 @@ def compare(a, b, x):
 
     """
     # The log(exp(...)) must always be simplified here for termination.
-    la = a.exp if a.is_Pow and a.base is E else log(a)
-    lb = b.exp if b.is_Pow and b.base is E else log(b)
+    la = a.exp if a.is_Exp else log(a)
+    lb = b.exp if b.is_Exp else log(b)
 
     c = limitinf(la/lb, x)
     if c.is_zero:
@@ -121,7 +121,7 @@ def mrv(e, x):
     elif e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
         return mrv_max(mrv(a, x), mrv(b, x), x)
-    elif e.is_Pow and e.base is E:
+    elif e.is_Exp:
         if e.exp == x:
             return {e}
         elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
@@ -250,8 +250,8 @@ def mrv_leadterm(e, x):
     e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
     e = e.replace(lambda f: f.is_Mul and sum(a.is_Pow for a in f.args) > 1,
-                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Pow and a.base is E])),
-                                *[a for a in f.args if not a.is_Pow or a.base is not E]))
+                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Exp])),
+                                *[a for a in f.args if not a.is_Exp]))
 
     # The positive dummy, w, is used here so log(w*2) etc. will expand.
     # TODO: For limits of complex functions, the algorithm would have to
