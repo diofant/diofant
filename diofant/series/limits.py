@@ -1,6 +1,6 @@
 from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
 from ..core.function import UndefinedFunction
-from ..functions import Abs, cos, sign, sin
+from ..functions import cos, sign, sin
 from ..sets import Reals
 from .gruntz import limitinf
 from .order import Order
@@ -173,10 +173,6 @@ class Limit(Expr):
                 return has_oo
             raise NotImplementedError
 
-        def tr_abs(f):
-            s = sign(limit(f.args[0], z, oo))
-            return s*f.args[0] if s in (1, -1) else f
-
         def tr_Piecewise(f):
             for a, c in f.args:
                 if not c.is_Atom:
@@ -188,7 +184,6 @@ class Limit(Expr):
                         break
             return a
 
-        e = e.replace(lambda f: isinstance(f, Abs) and f.has(z), tr_abs)
         e = e.replace(lambda f: f.is_Piecewise and f.has(z), tr_Piecewise)
 
         try:

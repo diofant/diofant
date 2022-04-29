@@ -1,4 +1,4 @@
-from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
+from ...core import (Add, Derivative, Dummy, Eq, Expr, Function, I, Integer,
                      Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
                      zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
@@ -526,6 +526,10 @@ class Abs(Function):
     def _eval_rewrite_as_sign(self, arg):
         return arg/sign(arg)
 
+    def _eval_rewrite_as_tractable(self, arg, wrt=None, **kwargs):
+        if wrt is not None and (s := sign(arg.limit(wrt, oo))) in (1, -1):
+            return s*arg
+
 
 class arg(Function):
     """Returns the argument (in radians) of a complex number.
@@ -945,7 +949,7 @@ def _polarify(eq, lift, pause=False):
         return r
     elif eq.is_Function:
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
-    elif eq.is_Pow and eq.base is E:
+    elif eq.is_Exp:
         return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
     elif isinstance(eq, Integral):
         # Don't lift the integration variable
@@ -1029,12 +1033,12 @@ def _unpolarify(eq, exponents_only, pause=False):
         if isinstance(eq, polar_lift):
             return _unpolarify(eq.args[0], exponents_only)
 
-    if eq.is_Pow and eq.base is not E:
+    if eq.is_Pow and not eq.is_Exp:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
                            not (expo.is_integer and not pause))
         return base**expo
-    elif eq.is_Pow and eq.base is E:
+    elif eq.is_Exp:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
     elif isinstance(eq, ExprCondPair):
         return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),

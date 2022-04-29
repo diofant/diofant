@@ -229,7 +229,7 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
-from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
+from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, zoo)
@@ -246,7 +246,6 @@ from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
 from ..series.order import Order
-from ..series.series import series
 from ..simplify.cse_main import cse
 from ..simplify.powsimp import powsimp
 from ..simplify.radsimp import collect, collect_const
@@ -1607,7 +1606,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
                 if e.has(t):
                     tpart = e.as_independent(t, Mul)[1]
                     for i in Mul.make_args(tpart):
-                        if i.is_Pow and i.base is E:
+                        if i.is_Exp:
                             b, e = i.as_base_exp()
                             co = e.coeff(t)
                             if co and not co.has(t) and co.has(I):
@@ -2404,7 +2403,7 @@ def _get_constant_subexpressions(expr, Cs):
         if len(expr_syms) > 0 and expr_syms.issubset(Cs):
             Ces.append(expr)
         else:
-            if expr.is_Pow and expr.base is E:
+            if expr.is_Exp:
                 expr = expr.expand(mul=True)
             if expr.func in (Add, Mul):
                 d = sift(expr.args, lambda i: i.free_symbols.issubset(Cs))
@@ -2584,10 +2583,10 @@ def constantsimp(expr, constants):
             infac = False
             asfac = False
             for m in new_expr.args:
-                if m.is_Pow and m.base is E:
+                if m.is_Exp:
                     asfac = True
                 elif m.is_Add:
-                    infac = any(fi.is_Pow and fi.base is E for t in m.args
+                    infac = any(fi.is_Exp for t in m.args
                                 for fi in Mul.make_args(t))
                 if asfac and infac:
                     new_expr = expr
@@ -3554,7 +3553,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
         if not term.has(x):
             indicial.append(term)
         else:
-            term = series(term, n=1, x0=x0)
+            term = term.series(n=1, x0=x0)
             if isinstance(term, Order):
                 indicial.append(Integer(0))
             else:
@@ -3618,7 +3617,7 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
     serlist = []
     for ser in [p, q]:
         if x0 != 0 or not ser.is_polynomial(x) or Poly(ser, x).degree() > n:
-            tseries = series(ser, x=x, x0=x0, n=n + 1)
+            tseries = ser.series(x=x, x0=x0, n=n + 1)
             ser = tseries.removeO()
         dict_ = Poly(ser, x).as_dict()
         # Fill in with zeros, if coefficients are zero.

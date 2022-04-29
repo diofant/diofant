@@ -118,6 +118,10 @@ def test_basics():
     n = Symbol('n', commutative=False)
     assert Integral(n + x, x).is_commutative is False
 
+    # issue sympy/sympy#5539
+    assert Integral(x, (x, 0, 1)) == Integral(y, (y, 0, 1))
+    assert Integral(x, (x, 0, 1)) + Integral(y, (y, 0, 1)) == 2*Integral(x, (x, 0, 1))
+
 
 def test_diff_wrt():
     class Test(Expr):

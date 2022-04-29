@@ -148,7 +148,7 @@ class sinh(HyperbolicFunction):
             return (sinh(x)*cosh(y) + sinh(y)*cosh(x)).expand(trig=True)
         return sinh(arg)
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         return (exp(arg) - exp(-arg)) / 2
     _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
@@ -288,7 +288,7 @@ class cosh(HyperbolicFunction):
             return (cosh(x)*cosh(y) + sinh(x)*sinh(y)).expand(trig=True)
         return cosh(arg)
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         return (exp(arg) + exp(-arg)) / 2
     _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
@@ -421,7 +421,7 @@ class tanh(HyperbolicFunction):
         denom = sinh(re)**2 + cos(im)**2
         return sinh(re)*cosh(re)/denom, sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp - neg_exp)/(pos_exp + neg_exp)
     _eval_rewrite_as_tractable = _eval_rewrite_as_exp
@@ -546,7 +546,7 @@ class coth(HyperbolicFunction):
         denom = sinh(re)**2 + sin(im)**2
         return sinh(re)*cosh(re)/denom, -sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp + neg_exp)/(pos_exp - neg_exp)
     _eval_rewrite_as_tractable = _eval_rewrite_as_exp
@@ -904,7 +904,7 @@ class acosh(Function):
         """Returns the inverse of this function."""
         return cosh
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **hints):
         return log(x + sqrt(x - 1)*sqrt(x + 1))
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
@@ -1054,7 +1054,7 @@ class acoth(Function):
         else:
             return self.func(arg)
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return (log((x + 1)/x) - log((x - 1)/x))/2
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 

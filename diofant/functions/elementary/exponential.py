@@ -216,7 +216,7 @@ class log(Function):
                 if arg.denominator != 1:
                     return cls(arg.numerator) - cls(arg.denominator)
 
-        if arg.is_Pow and arg.base is E and arg.exp.is_extended_real:
+        if arg.is_Exp and arg.exp.is_extended_real:
             return arg.exp
         elif isinstance(arg, exp_polar):
             return unpolarify(arg.exp)

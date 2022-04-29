@@ -55,7 +55,7 @@ from .domains import (CC, EX, FF, GF, GROUND_TYPES, QQ, RR, ZZ, AlgebraicField,
                       IntegerRing, PythonRational, QQ_gmpy, QQ_python,
                       RationalField, RealAlgebraicField, RealField, ZZ_gmpy,
                       ZZ_python, IntegerModRing)
-from .series import Limit, O, Order, limit, residue, series
+from .series import Limit, O, Order, limit, residue
 from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         FallingFactorial, Heaviside, Id, KroneckerDelta,
                         LambertW, LeviCivita, Li, Max, Min, Piecewise,
@@ -215,7 +215,7 @@ __all__ = (
     'ComplexAlgebraicField', 'ComplexField', 'Domain', 'ExpressionDomain',
     'FF_gmpy', 'FF_python', 'FiniteField', 'IntegerRing', 'PythonRational',
     'QQ_gmpy', 'QQ_python', 'RationalField', 'RealAlgebraicField', 'RealField',
-    'ZZ_gmpy', 'ZZ_python', 'Limit', 'O', 'Order', 'limit', 'residue', 'series',
+    'ZZ_gmpy', 'ZZ_python', 'Limit', 'O', 'Order', 'limit', 'residue',
     'E1', 'Abs', 'Chi', 'Ci', 'DiracDelta', 'Ei', 'Eijk', 'FallingFactorial',
     'Heaviside', 'Id', 'KroneckerDelta', 'LambertW', 'LeviCivita', 'Li', 'Max',
     'Min', 'Piecewise', 'RisingFactorial', 'Shi', 'Si', 'Ynm', 'Ynm_c', 'Znm',

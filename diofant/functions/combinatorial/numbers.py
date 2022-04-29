@@ -112,11 +112,10 @@ class fibonacci(Function):
                                      'only for positive integer indices.')
                 return cls._fibpoly(n).subs({_sym: sym})
 
-    def _eval_rewrite_as_sqrt(self, n, sym=None):
+    def _eval_rewrite_as_sqrt(self, n, sym=None, **kwargs):
         from .. import sqrt
         if sym is None:
             return (GoldenRatio**n - cos(pi*n)/GoldenRatio**n)/sqrt(5)
-
     _eval_rewrite_as_tractable = _eval_rewrite_as_sqrt
 
 
@@ -634,7 +633,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_Sum(self, n, m=None):
         from ...concrete import Sum
-        k = Dummy('k', integer=True)
+        k = Dummy('k')
         if m is None:
             m = Integer(1)
         return Sum(k**(-m), (k, 1, n))
@@ -672,7 +671,7 @@ class harmonic(Function):
 
         return self
 
-    def _eval_rewrite_as_tractable(self, n, m=1):
+    def _eval_rewrite_as_tractable(self, n, m=1, **kwargs):
         from .. import polygamma
         return self.rewrite(polygamma).rewrite('tractable', deep=True)
 

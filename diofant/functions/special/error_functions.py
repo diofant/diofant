@@ -172,7 +172,7 @@ class erf(Function):
     def _eval_rewrite_as_expint(self, z):
         return sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return 1 - _erfs(z)*exp(-z**2)
 
     def _eval_rewrite_as_erfc(self, z):
@@ -339,7 +339,7 @@ class erfc(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
@@ -517,7 +517,7 @@ class erfi(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
@@ -1054,7 +1054,7 @@ class Ei(Function):
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
 
-    def _eval_rewrite_as_expint(self, z):
+    def _eval_rewrite_as_expint(self, z, **kwargs):
         return -expint(1, polar_lift(-1)*z) - I*pi
 
     def _eval_rewrite_as_li(self, z):
@@ -1072,7 +1072,7 @@ class Ei(Function):
     _eval_rewrite_as_Chi = _eval_rewrite_as_Si
     _eval_rewrite_as_Shi = _eval_rewrite_as_Si
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(z) * _eis(z)
 
     def _eval_nseries(self, x, n, logx):
@@ -1404,7 +1404,7 @@ class li(Function):
         return (-log(-log(z)) - (log(1/log(z)) - log(log(z)))/2
                 - meijerg(((), (1,)), ((0, 0), ()), -log(z)))
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return z * _eis(log(z))
 
 
@@ -1484,7 +1484,7 @@ class Li(Function):
     def _eval_rewrite_as_li(self, z):
         return li(z) - li(2)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(li).rewrite('tractable', deep=True)
 
 ###############################################################################

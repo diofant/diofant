@@ -1501,7 +1501,16 @@ class Subs(Expr):
                      for v, p in zip(self.variables, self.point)])
 
     def _eval_nseries(self, x, n, logx=None):
-        raise NotImplementedError
+        if x in self.point:
+            v = self.variables[self.point.index(x)]
+        else:
+            v = x
+        arg = self.expr.nseries(v, n=n, logx=logx)
+        rv = Add(*[self.func(a, *zip(self.variables, self.point))
+                   for a in Add.make_args(arg.removeO())])
+        if o := arg.getO():
+            rv += o.subs({v: x})
+        return rv
 
 
 def diff(f, *args, **kwargs):

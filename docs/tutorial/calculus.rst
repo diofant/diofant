@@ -304,7 +304,7 @@ Series Expansion
 
 Diofant can compute asymptotic series expansions of functions around a point.
 
-    >>> series(exp(sin(x)), x, 0, 4)
+    >>> exp(sin(x)).series(x, 0, 4)
              2
             x     ⎛ 4⎞
     1 + x + ── + O⎝x ⎠
@@ -314,7 +314,7 @@ The `O\left (x^4\right )` term, an instance of :class:`~diofant.series.order.O`
 at the end represents the Landau order term at `x=0` (not to be confused with
 big O notation used in computer science, which generally represents the Landau
 order term at `x=\infty`).  Order terms can be created and manipulated outside
-of :func:`~diofant.series.series.series`.
+of :meth:`~diofant.core.expr.Expr.series`.
 
     >>> x + x**3 + x**6 + O(x**4)
          3    ⎛ 4⎞
@@ -325,7 +325,7 @@ of :func:`~diofant.series.series.series`.
 If you do not want the order term, use the
 :meth:`~diofant.core.expr.Expr.removeO` method.
 
-    >>> series(exp(x), x, 0, 3).removeO()
+    >>> exp(x).series(x, 0, 3).removeO()
      2
     x
     ── + x + 1
@@ -333,7 +333,7 @@ If you do not want the order term, use the
 
 The :class:`~diofant.series.order.O` notation supports arbitrary limit points:
 
-    >>> series(exp(x - 1), x, x0=1)
+    >>> exp(x - 1).series(x, x0=1)
            2          3          4          5
     (x - 1)    (x - 1)    (x - 1)    (x - 1)         ⎛       6       ⎞
     ──────── + ──────── + ──────── + ──────── + x + O⎝(x - 1) ; x → 1⎠

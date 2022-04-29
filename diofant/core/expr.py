@@ -2317,7 +2317,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     # ####### SERIES, LEADING TERM, LIMIT, ORDER METHODS ####### #
     ##############################################################
 
-    def series(self, x=None, x0=0, n=6, dir='+', logx=None):
+    def series(self, x=None, x0=0, n=6, dir=None, logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2346,15 +2346,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> [next(term) for i in range(2)]
         [1, -x**2/2]
 
-        For ``dir=+`` (default) the series is calculated from the right and
-        for ``dir=-`` the series from the left.  For infinite ``x0`` (``oo``
+        For ``dir=-1`` (default) the series is calculated from the right and
+        for ``dir=+1`` the series from the left.  For infinite ``x0`` (``oo``
         or ``-oo``), the ``dir`` argument is determined from the direction
-        of the infinity (i.e. ``dir="-"`` for ``oo``).  For smooth functions
+        of the infinity (i.e. ``dir=+1`` for ``oo``).  For smooth functions
         this flag will not alter the results.
 
-        >>> abs(x).series(dir='+')
+        >>> abs(x).series(dir=-1)
         x
-        >>> abs(x).series(dir='-')
+        >>> abs(x).series(dir=+1)
         -x
 
         For rational expressions this method may return original expression.
@@ -2365,6 +2365,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from .function import expand_mul
         from .symbol import Dummy, Symbol
+        from ..functions import sign
         from ..series import Order
         from ..simplify import collect
 
@@ -2385,31 +2386,31 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 return self
 
-        if len(dir) != 1 or dir not in '+-':
-            raise ValueError("Dir must be '+' or '-'")
+        x0 = sympify(x0)
 
-        if x0 == oo:
-            return self.aseries(x, n)
-        elif x0 == -oo:
-            return self.subs({x: -x}).aseries(x, n).subs({x: -x})
+        if x0.is_infinite:
+            dir = sign(x0).simplify()
+        elif dir is None:
+            dir = Rational(-1)
+        else:
+            dir = sympify(dir)
 
-        # use rep to shift origin to x0 and change sign (if dir is negative)
-        # and undo the process with rep2
-        if x0 or dir == '-':
-            if dir == '-':
-                rep = -x + x0
-                rep2 = -x
-                rep2b = x0
-            else:
-                rep = x + x0
-                rep2 = x
-                rep2b = -x0
-            s = self.subs({x: rep}).series(x, x0=0, n=n, dir='+', logx=logx)
+        if not (isinstance(dir, Expr) and dir.is_nonzero):
+            raise ValueError(f'Direction must be a nonzero Expr, got {dir}')
+
+        dir = dir/abs(dir)
+
+        if x0.is_infinite:
+            return self.subs({x: dir*x}).aseries(x, n).subs({x: x/dir})
+
+        # use rep to shift origin to x0 and change dir to 1, then undo
+        if x0 or dir != -1:
+            s = self.subs({x: x0 - dir*x}).series(x, x0=0, n=n, dir=-1, logx=logx)
             if n is None:  # lseries...
-                return (si.subs({x: rep2 + rep2b}) for si in s)  # pragma: no branch
-            return s.subs({x: rep2 + rep2b})
+                return (si.subs({x: x0/dir - x/dir}) for si in s)  # pragma: no branch
+            return s.subs({x: x0/dir - x/dir})
 
-        # from here on it's x0=0 and dir='+' handling
+        # from here on it's x0=0 and dir=-1 handling
 
         if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
             # replace x with an x that has a positive assumption

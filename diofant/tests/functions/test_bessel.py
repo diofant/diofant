@@ -7,8 +7,7 @@ from diofant import (Float, I, Integer, Limit, O, Rational, Symbol, airyai,
                      besselk, besselsimp, bessely, cbrt, conjugate, cos, cosh,
                      diff, exp, exp_polar, expand_func, gamma, hankel1,
                      hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
-                     polar_lift, re, root, series, simplify, sin, sinh, sqrt,
-                     yn, zoo)
+                     polar_lift, re, root, simplify, sin, sinh, sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import fn
@@ -394,7 +393,7 @@ def test_airyai():
 
     assert diff(airyai(z), z) == airyaiprime(z)
 
-    assert series(airyai(z), z, 0, 3) == (
+    assert airyai(z).series(z, 0, 3) == (
         3**Rational(5, 6)*gamma(Rational(1, 3))/(6*pi) - root(3, 6)*z*gamma(Rational(2, 3))/(2*pi) + O(z**3))
 
     l = Limit(airyai(I/x)/(exp(-Rational(2, 3)*(I/x)**Rational(3, 2))*sqrt(pi*sqrt(I/x))/2), x, 0)
@@ -448,7 +447,7 @@ def test_airybi():
 
     assert diff(airybi(z), z) == airybiprime(z)
 
-    assert series(airybi(z), z, 0, 3) == (
+    assert airybi(z).series(z, 0, 3) == (
         cbrt(3)*gamma(Rational(1, 3))/(2*pi) + 3**Rational(2, 3)*z*gamma(Rational(2, 3))/(2*pi) + O(z**3))
     l = Limit(airybi(I/x)/(exp(Rational(2, 3)*(I/x)**Rational(3, 2))*sqrt(pi*sqrt(I/x))), x, 0)
     assert l.doit() == l
@@ -492,7 +491,7 @@ def test_airyaiprime():
 
     assert diff(airyaiprime(z), z) == z*airyai(z)
 
-    assert series(airyaiprime(z), z, 0, 3) == (
+    assert airyaiprime(z).series(z, 0, 3) == (
         -3**Rational(2, 3)/(3*gamma(Rational(1, 3))) + cbrt(3)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airyaiprime(z).rewrite(hyper) == (
@@ -533,7 +532,7 @@ def test_airybiprime():
 
     assert diff(airybiprime(z), z) == z*airybi(z)
 
-    assert series(airybiprime(z), z, 0, 3) == (
+    assert airybiprime(z).series(z, 0, 3) == (
         root(3, 6)/gamma(Rational(1, 3)) + 3**Rational(5, 6)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airybiprime(z).rewrite(hyper) == (
