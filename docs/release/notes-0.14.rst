@@ -81,3 +81,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23319`: testing limit of n*tan(pi/n) results in incorrect answer in 1.7rc1+
 * :sympyissue:`5539`: Equal Integrals compare different when using different variables
 * :sympyissue:`23425`: PolynomialError when I try to call classify_ode
+* :sympyissue:`23432`: Series expansion around float fails with NotImplementedError

@@ -294,3 +294,10 @@ def test_sympyissue_22493():
            h**2*(f(x, y).diff((x, 2)) + 2*f(x, y).diff(y, x) +
                  f(x, y).diff((y, 2)))/2 + O(h**3))
     assert f(x - h, y - h).series(h, x0=0, n=3).simplify() == res
+
+
+def test_sympyissue_23432():
+    e = 1/sqrt(1 - x**2)
+    ans = e.series(x, x0=Rational(1, 2), n=1)
+    assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), (x, Rational(1, 2)))
+    assert ans.removeO().evalf() == e.series(x, x0=0.5, n=1).removeO()
