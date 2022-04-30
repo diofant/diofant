@@ -134,6 +134,9 @@ def test_basic4():
     assert limit(e5, x, 1, 1) == 1
     assert limit(e5, x, 1) == 1
 
+    e6 = Limit(Piecewise((1, x > a), (0, True)), x, 0)
+    assert e6.doit() == e6
+
 
 def test_basic5():
     class MyFunction(Function):

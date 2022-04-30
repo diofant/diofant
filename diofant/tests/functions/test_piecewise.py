@@ -131,6 +131,8 @@ def test_piecewise():
     # Test commutativity
     assert p.is_commutative is True
 
+    assert p.rewrite('tractable') == p
+
 
 def test_piecewise_free_symbols():
     f = Piecewise((x, a < 0), (y, True))
