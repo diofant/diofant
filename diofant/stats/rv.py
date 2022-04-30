@@ -524,7 +524,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import E, Die
+    >>> from diofant.stats import Die, E
     >>> X = Die('X', 6)
     >>> E(X)
     7/2
@@ -579,7 +579,7 @@ def probability(condition, given_condition=None, numsamples=None,
     Examples
     ========
 
-    >>> from diofant.stats import P, Die
+    >>> from diofant.stats import Die, P
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2

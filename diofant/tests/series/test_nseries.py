@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Derivative, E, I, O, PoleError, Rational, Symbol, acosh,
                      acoth, asin, asinh, atanh, besselk, cbrt, ceiling, cos,
-                     cosh, cot, coth, exp, floor, limit, ln, log, pi, sign,
+                     cosh, cot, coth, exp, floor, limit, ln, log, oo, pi, sign,
                      sin, sinh, sqrt, tan, tanh)
 from diofant.abc import a, b, l, w, x, y, z
 
@@ -108,6 +108,12 @@ def test_log2():
 def test_log3():
     e = 1/log(-1/x)
     assert e.series(x, n=4, logx=l) == 1/(-l + log(-1))
+
+
+def test_log4():
+    assert (log(1 + x).series(x, x0=I*oo) ==
+            1/(5*x**5) - 1/(4*x**4) + 1/(3*x**3) - 1/(2*x**2) + 1/x +
+            I*pi/2 + log(-I*x) + O(x**(-6), (x, oo*I)))
 
 
 def test_x0():
@@ -360,7 +366,7 @@ def test_hyperbolic():
     assert acosh(x).series(x, n=7) == \
         pi*I/2 - I*x - 3*I*x**5/40 - I*x**3/6 + O(x**7)
     assert atanh(x).series(x, n=7) == x + x**3/3 + x**5/5 + O(x**7)
-    assert acoth(x).series(x, n=7) == x + x**3/3 + x**5/5 + pi*I/2 + O(x**7)
+    assert acoth(x).series(x, n=7) == -I*pi/2 + x + x**3/3 + x**5/5 + O(x**7)
 
 
 def test_series2():
@@ -449,7 +455,7 @@ def test_abs():
     assert abs(x + 1).series(x, n=4) == x + 1
     assert abs(sin(x)).series(x, n=4) == x - x**3/6 + O(x**4)
     assert abs(sin(-x)).series(x, n=4) == x - x**3/6 + O(x**4)
-    assert abs(x - a).series(x, 1) == (x - a)*sign(1 - a)
+    assert abs(x - a).series(x, 1) == (x - a)/sign(1 - a)
 
     # issue sympy/sympy#5183
     assert abs(x + x**2).series(n=1) == O(x)
@@ -457,13 +463,13 @@ def test_abs():
 
 
 def test_dir():
-    assert abs(x).series(x, 0, dir='+') == x
-    assert abs(x).series(x, 0, dir='-') == -x
-    assert floor(x + 2).series(x, 0, dir='+') == 2
-    assert floor(x + 2).series(x, 0, dir='-') == 1
-    assert floor(x + 2.2).series(x, 0, dir='-') == 2
-    assert ceiling(x + 2.2).series(x, 0, dir='-') == 3
-    assert sin(x + y).series(x, 0, dir='-') == sin(x + y).series(x, 0, dir='+')
+    assert abs(x).series(x, 0, dir=-1) == x
+    assert abs(x).series(x, 0, dir=+1) == -x
+    assert floor(x + 2).series(x, 0, dir=-1) == 2
+    assert floor(x + 2).series(x, 0, dir=+1) == 1
+    assert floor(x + 2.2).series(x, 0, dir=+1) == 2
+    assert ceiling(x + 2.2).series(x, 0, dir=+1) == 3
+    assert sin(x + y).series(x, 0, dir=+1) == sin(x + y).series(x, 0, dir=-1)
 
 
 def test_sympyissue_3504():

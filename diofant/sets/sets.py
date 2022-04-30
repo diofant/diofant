@@ -448,8 +448,7 @@ class Set(Basic):
         boundary
 
         """
-        if not Intersection(self, self.boundary):
-            return True
+        return not Intersection(self, self.boundary)
 
     @property
     def is_closed(self):
@@ -729,7 +728,7 @@ class Interval(Set, EvalfMixin):
 
     is_Interval = True
 
-    def __new__(cls, start, end, left_open=False, right_open=False):
+    def __new__(cls, start=-oo, end=oo, left_open=False, right_open=False):
 
         start = sympify(start, strict=True)
         end = sympify(end, strict=True)
@@ -949,7 +948,9 @@ class Interval(Set, EvalfMixin):
 
     @property
     def boundary(self):
-        return FiniteSet(self.start, self.end)
+        return FiniteSet(*(p for p, c in [(self.start, not self.left_open),
+                                          (self.end, not self.right_open)]
+                           if abs(p) != oo or c))
 
     def _contains(self, other):
         if not isinstance(other, Expr) or other in (nan, zoo):
@@ -1020,11 +1021,11 @@ class Interval(Set, EvalfMixin):
             return
 
         if self.left_open:
-            _start = limit(expr, var, self.start, dir='+')
+            _start = limit(expr, var, self.start)
         elif self.start not in sing:
             _start = f(self.start)
         if self.right_open:
-            _end = limit(expr, var, self.end, dir='-')
+            _end = limit(expr, var, self.end, dir=1)
         elif self.end not in sing:
             _end = f(self.end)
 

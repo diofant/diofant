@@ -2,7 +2,7 @@
 of incomplete gamma functions. It should probably be renamed.
 """
 
-from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
+from ...core import (Add, E, EulerGamma, Function, I, Integer, Pow, Rational,
                      cacheit, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
@@ -172,7 +172,7 @@ class erf(Function):
     def _eval_rewrite_as_expint(self, z):
         return sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return 1 - _erfs(z)*exp(-z**2)
 
     def _eval_rewrite_as_erfc(self, z):
@@ -339,7 +339,7 @@ class erfc(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
@@ -517,7 +517,7 @@ class erfi(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
@@ -1054,7 +1054,7 @@ class Ei(Function):
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
 
-    def _eval_rewrite_as_expint(self, z):
+    def _eval_rewrite_as_expint(self, z, **kwargs):
         return -expint(1, polar_lift(-1)*z) - I*pi
 
     def _eval_rewrite_as_li(self, z):
@@ -1072,7 +1072,7 @@ class Ei(Function):
     _eval_rewrite_as_Chi = _eval_rewrite_as_Si
     _eval_rewrite_as_Shi = _eval_rewrite_as_Si
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(z) * _eis(z)
 
     def _eval_nseries(self, x, n, logx):
@@ -1404,7 +1404,7 @@ class li(Function):
         return (-log(-log(z)) - (log(1/log(z)) - log(log(z)))/2
                 - meijerg(((), (1,)), ((0, 0), ()), -log(z)))
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return z * _eis(log(z))
 
 
@@ -1484,7 +1484,7 @@ class Li(Function):
     def _eval_rewrite_as_li(self, z):
         return li(z) - li(2)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return self.rewrite(li).rewrite('tractable', deep=True)
 
 ###############################################################################
@@ -2254,9 +2254,11 @@ class _erfs(Function):
 
     @classmethod
     def eval(cls, z):
-        r = cls(z, evaluate=False).rewrite('intractable')
-        if r.is_number:
-            return r
+        if z in (0, 1, I, 1 + E**-1):
+            return cls(z, evaluate=False).rewrite('intractable')
+
+        if z.could_extract_minus_sign():
+            return 2*exp(z**2) - cls(-z, evaluate=False)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
@@ -2265,17 +2267,6 @@ class _erfs(Function):
         # Expansion at oo
         if point is oo:
             z = self.args[0]
-            l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                 factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
-            o = Order(1/z**(2*n + 1), x)
-            # It is very inefficient to first add the order and then do the nseries
-            return (Add(*l))._eval_nseries(x, n, logx) + o
-
-        # Expansion at I*oo
-        t = point.as_coefficient(I)
-        if t is oo:
-            z = self.args[0]
-            # TODO: is the series really correct?
             l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
                  factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)

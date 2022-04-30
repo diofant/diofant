@@ -505,7 +505,7 @@ def test_equality():
         assert F(a, (x, 1, 2)) != F(a, (x, 1, 3))
         assert F(a, (x, 1, 2)) != F(b, (x, 1, 2))
         assert F(x, (x, 1, 2)) != F(r, (r, 1, 2))
-        assert F(1, (x, 1, x)) != F(1, (y, 1, x))
+        assert F(1, (x, 1, x)) == F(1, (y, 1, x))
         assert F(1, (x, 1, x)) != F(1, (y, 1, y))
 
     # issue sympy/sympy#5265

@@ -6,7 +6,7 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, E, Expr, Integer, Mul, Tuple, expand_log,
+from ..core import (Add, Basic, Expr, Integer, Mul, Tuple, expand_log,
                     expand_power_exp, oo, preorder_traversal)
 from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
@@ -233,7 +233,7 @@ class Poly(Expr):
             return result.reorder(*opt.gens, sort=opt.sort, wrt=opt.wrt)
 
         rep = sympify(rep)
-        rep = rep.replace(lambda e: e.is_Pow and e.base != E and
+        rep = rep.replace(lambda e: e.is_Pow and not e.is_Exp and
                           not e.exp.is_number, expand_power_exp)
         rep = expand_log(rep)
 
@@ -3426,7 +3426,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        if arg.is_Pow and arg.base is not E:
+        if arg.is_Pow and not arg.is_Exp:
             base, exp = arg.base, arg.exp
             if base.is_Number:
                 factors.append((base, exp))

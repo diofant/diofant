@@ -206,9 +206,7 @@ class Rationals(Set, metaclass=Singleton):
 
     def __iter__(self):
         seen = []
-        pairs = cantor_product(S.Integers, S.Naturals)
-        while True:
-            n, d = next(pairs)  # pylint: disable=stop-iteration-return
+        for n, d in cantor_product(S.Integers, S.Naturals):  # pragma: no branch
             r = Rational(n, d)
             if r not in seen:
                 seen.append(r)
@@ -218,8 +216,8 @@ class Rationals(Set, metaclass=Singleton):
 class Reals(Interval, metaclass=Singleton):
     """The set of all reals."""
 
-    def __new__(cls):  # pylint: disable=signature-differs
-        return Interval.__new__(cls, -oo, oo, True, True)
+    def __new__(cls, start=-oo, end=oo, left_open=False, right_open=False):
+        return super().__new__(cls, left_open=True, right_open=True)
 
     def __eq__(self, other):
         return other == Interval(-oo, oo, True, True)
@@ -231,8 +229,8 @@ class Reals(Interval, metaclass=Singleton):
 class ExtendedReals(Interval, metaclass=Singleton):
     """The set of all extended reals."""
 
-    def __new__(cls):  # pylint: disable=signature-differs
-        return Interval.__new__(cls, -oo, oo)
+    def __new__(cls, start=-oo, end=oo, left_open=False, right_open=False):
+        return super().__new__(cls)
 
     def __eq__(self, other):
         return other == Interval(-oo, oo)

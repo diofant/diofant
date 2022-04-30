@@ -211,7 +211,10 @@ class Pow(Expr):
                 obj = b._eval_power(e)
                 if obj is not None:
                     return obj
-        return Expr.__new__(cls, b, e)
+        obj = Expr.__new__(cls, b, e)
+        if b is E:
+            obj.is_Exp = True
+        return obj
 
     def _eval_is_commutative(self):
         return self.base.is_commutative and self.exp.is_commutative
@@ -410,7 +413,7 @@ class Pow(Expr):
                 return (2*I*e/pi).is_even
 
         if b.is_extended_real is None:
-            if b.func == self.func and b.base is E and b.exp.is_imaginary:
+            if b.func == self.func and b.is_Exp and b.exp.is_imaginary:
                 return e.is_imaginary
         if e.is_extended_real is None:
             return
@@ -591,7 +594,7 @@ class Pow(Expr):
                     new_l.append(Pow(self.base, Add(*o_al), evaluate=False))
                     return Mul(*new_l)
 
-        if old.is_Pow and old.base is E and self.exp.is_extended_real and self.base.is_positive:
+        if old.is_Exp and self.exp.is_extended_real and self.base.is_positive:
             ct1 = old.exp.as_independent(Symbol, as_Add=False)
             ct2 = (self.exp*log(self.base)).as_independent(
                 Symbol, as_Add=False)
@@ -956,7 +959,7 @@ class Pow(Expr):
             rp, tp = self.func(r, self.exp), t*self.exp
 
             return rp*cos(tp), rp*sin(tp)
-        elif self.base is E:
+        elif self.is_Exp:
             from ..functions import exp
             re, im = self.exp.as_real_imag()
             if deep:
@@ -1152,7 +1155,7 @@ class Pow(Expr):
         from ..functions import arg, exp, floor, log
         from ..series import Order, limit
         from ..simplify import powsimp
-        if self.base is E:
+        if self.is_Exp:
             e_series = self.exp.nseries(x, n=n, logx=logx)
             if e_series.is_Order:
                 return 1 + e_series
@@ -1213,7 +1216,7 @@ class Pow(Expr):
         from ..series import Order
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
-        elif self.base is E:
+        elif self.is_Exp:
             if self.exp.is_Mul:
                 k, arg = self.exp.as_independent(x)
             else:
@@ -1229,17 +1232,17 @@ class Pow(Expr):
 
     def _eval_rewrite_as_sin(self, base, exp):
         from ..functions import sin
-        if self.base is E:
+        if self.is_Exp:
             return sin(I*self.exp + pi/2) - I*sin(I*self.exp)
 
     def _eval_rewrite_as_cos(self, base, exp):
         from ..functions import cos
-        if self.base is E:
+        if self.is_Exp:
             return cos(I*self.exp) + I*cos(I*self.exp + pi/2)
 
     def _eval_rewrite_as_tanh(self, base, exp):
         from ..functions import tanh
-        if self.base is E:
+        if self.is_Exp:
             return (1 + tanh(self.exp/2))/(1 - tanh(self.exp/2))
 
     def as_content_primitive(self, radical=False):

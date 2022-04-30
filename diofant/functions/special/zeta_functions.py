@@ -1,9 +1,8 @@
 """Riemann zeta and related function."""
 
-from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
+from ...core import (Add, Dummy, Function, I, Integer, Rational, expand_mul,
                      oo, pi, zoo)
 from ...core.function import ArgumentIndexError
-from ...core.sympify import sympify
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
 
@@ -159,7 +158,7 @@ class lerchphi(Function):
                   / (unpolarify(zet)**k*root)**m for k in range(n)])
 
         # TODO use minpoly instead of ad-hoc methods when issue sympy/sympy#5888 is fixed
-        if z.is_Pow and z.base is E and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
+        if z.is_Exp and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
             # TODO reference?
             if z == -1:
                 p, q = Integer(1), Integer(2)
@@ -416,17 +415,11 @@ class zeta(Function):
     """
 
     @classmethod
-    def eval(cls, z, a_=None):
-        if a_ is None:
-            z, a = list(map(sympify, (z, 1)))
-        else:
-            z, a = list(map(sympify, (z, a_)))
-
-        if a.is_Number:
-            if a == 1 and a_ is not None:
-                return cls(z)
-            # TODO Should a == 0 return nan as well?
-
+    def eval(cls, z, a=None):
+        if a == 1:
+            return cls(z)
+        elif a is None:
+            a = Integer(1)
         if z.is_Number:
             if z is oo:
                 return Integer(1)
@@ -468,13 +461,13 @@ class zeta(Function):
         else:
             raise ArgumentIndexError
 
-    def _eval_rewrite_as_tractable(self, s, a=1):
+    def _eval_rewrite_as_tractable(self, s, a=1, **kwargs):
         if len(self.args) == 1:
             return _zetas(exp(s))
 
 
 class _zetas(Function):
-    def _eval_rewrite_as_intractable(self, s):
+    def _eval_rewrite_as_intractable(self, s, **kwargs):
         return zeta(log(s))
 
     def _eval_aseries(self, n, args0, x, logx):

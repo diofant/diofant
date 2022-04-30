@@ -6,6 +6,8 @@ on:
     - cron: '0 0 * * 2'
 jobs:
   test:
+    permissions:
+      contents: write
     strategy:
       matrix:
         python-version: ['3.10']
@@ -106,8 +108,6 @@ jobs:
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
         files: |
           dist/*
@@ -117,6 +117,7 @@ jobs:
         name: "Diofant ${{ steps.release.outputs.version }}"
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
+        token: ${{ secrets.RELEASES_DEPLOY_KEY }}
     - name: Publish package on PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
       uses: pypa/gh-action-pypi-publish@v1.4.2

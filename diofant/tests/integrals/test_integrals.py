@@ -25,10 +25,9 @@ f = Function('f')
 
 
 def diff_test(i):
-    """Return the set of symbols, s, which were used in testing that
-    i.diff(s) agrees with i.doit().diff(s). If there is an error then
-    the assertion will fail, causing the test to fail.
-    """
+    # Return the set of symbols, s, which were used in testing that
+    # i.diff(s) agrees with i.doit().diff(s). If there is an error then
+    # the assertion will fail, causing the test to fail.
     syms = i.free_symbols
     for s in syms:
         assert (i.diff(s).doit() - i.doit().diff(s)).expand() == 0
@@ -118,6 +117,10 @@ def test_basics():
     assert Integral(x).is_commutative
     n = Symbol('n', commutative=False)
     assert Integral(n + x, x).is_commutative is False
+
+    # issue sympy/sympy#5539
+    assert Integral(x, (x, 0, 1)) == Integral(y, (y, 0, 1))
+    assert Integral(x, (x, 0, 1)) + Integral(y, (y, 0, 1)) == 2*Integral(x, (x, 0, 1))
 
 
 def test_diff_wrt():
@@ -223,7 +226,7 @@ def test_multiple_integration():
         y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
 
     # issue sympy/sympy#14782
-    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
+    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) == -pi/8
 
 
 def test_sympyissue_3532():
@@ -863,7 +866,7 @@ def test_is_real():
 def test_series():
     i = Integral(cos(x), (x, x))
     e = i.series(x, n=None)
-    s1 = i.nseries(x, n=8).removeO().doit()
+    s1 = i.series(x, n=8).removeO().doit()
     s2 = Add(*[next(e) for j in range(4)])
     assert s1 == s2
 
@@ -1448,3 +1451,12 @@ def test_sympyissue_23069():
 def test_sympyissue_19639():
     assert integrate(sqrt(1 - x**2)*(a*x**3 + b*x**4),
                      (x, 0, 1)) == 2*a/15 + pi*b/32
+
+
+def test_sympyissue_23223():
+    assert integrate(abs(cos(x)), (x, -pi/2, pi/2)) == 2
+
+
+def test_sympyissue_23299():
+    e = Integral(a*x**(a - 1)*log(x), (x, 0, 1))
+    assert e.doit() == Piecewise((-1/a, -re(a) + 1 < 1), (e, True))

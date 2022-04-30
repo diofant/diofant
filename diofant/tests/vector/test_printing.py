@@ -8,12 +8,12 @@ __all__ = ()
 
 
 def pretty(expr):
-    """ASCII pretty-printing"""
+    """ASCII pretty-printing."""
     return xpretty(expr, use_unicode=False, wrap_line=False)
 
 
 def upretty(expr):
-    """Unicode pretty-printing"""
+    """Unicode pretty-printing."""
     return xpretty(expr, use_unicode=True, wrap_line=False)
 
 

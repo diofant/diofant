@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
-                     IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
-                     Mul, Or, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
+from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
+                     IndexedBase, Integer, Integral, LambertW, Matrix, Max,
+                     Mul, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
                      Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
-                     nfloat, oo, ordered, pi, posify, re, real_root,
-                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
-                     solve, sqrt, sstr, symbols, tan, tanh)
+                     nfloat, ordered, pi, posify, re, real_root, root, sec,
+                     sech, simplify, sin, sinh, solve, sqrt, sstr, symbols,
+                     tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -204,10 +204,8 @@ def test_solve_polynomial3():
 
 
 def test_solve_polynomial_cv_1a():
-    """
-    Test for solving on equations that can be converted to a polynomial equation
-    using the change of variable y -> x**Rational(p, q)
-    """
+    # Test for solving on equations that can be converted to a polynomial
+    # equation using the change of variable y -> x**Rational(p, q).
     assert solve(sqrt(x) - 1, x) == [{x: 1}]
     assert solve(sqrt(x) - 2, x) == [{x: 4}]
     assert solve(root(x, 4) - 2, x) == [{x: 16}]
@@ -221,10 +219,8 @@ def test_solve_polynomial_cv_1b():
 
 
 def test_solve_polynomial_cv_2():
-    """
-    Test for solving on equations that can be converted to a polynomial equation
-    multiplying both sides of the equation by x**m
-    """
+    # Test for solving on equations that can be converted to a polynomial
+    # equation multiplying both sides of the equation by x**m.
     assert (solve(x + 1/x - 1, x) in
             [[{x: Rational(1, 2) + I*sqrt(3)/2},
               {x: Rational(1, 2) - I*sqrt(3)/2}],
@@ -287,7 +283,6 @@ def test_quintics_2():
 
 
 def test_solve_rational():
-    """Test solve for rational functions"""
     assert solve((x - y**3)/((y**2)*sqrt(1 - y**2)), x) == [{x: y**3}]
 
     eq = x**2*(1/x - z**2/x)
@@ -654,27 +649,6 @@ def test_solve_linear():
     assert solve_linear(1/(1/x), x) == (x, 0)
     assert solve_linear(x**2*(1/x - z**2/x), x) == (x**2*(-z**2 + 1), x)
     assert solve_linear(x + y + z, y) == (y, -x - z)
-
-
-def test_solve_inequalities():
-    x = Symbol('x')
-    system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
-
-    assert reduce_inequalities(system) == \
-        And(Or(And(Lt(-sqrt(2), x), Lt(x, -1)),
-               And(Lt(1, x), Lt(x, sqrt(2)))), Eq(0, 0))
-
-    x = Symbol('x', extended_real=True)
-    system = [Lt(x**2 - 2, 0), Gt(x**2 - 1, 0)]
-
-    assert reduce_inequalities(system) == \
-        Or(And(Lt(-sqrt(2), x), Lt(x, -1)), And(Lt(1, x), Lt(x, sqrt(2))))
-
-    # issue sympy/sympy#6627, sympy/sympy#6547
-    assert reduce_inequalities((x - 3)/(x - 2) < 0, x) == And(Lt(2, x), Lt(x, 3))
-    assert reduce_inequalities(x/(x + 1) > 1, x) == (-oo < x) & (x < Integer(-1))
-
-    assert reduce_inequalities(sin(x) > Rational(1, 2)) == And(pi/6 < x, x < 5*pi/6)
 
 
 def test_sympyissue_4793():
@@ -1335,7 +1309,7 @@ def test_sympyissue_2725():
 def test_piecewise():
     x = symbols('x')
     # if no symbol is given the piecewise detection must still work
-    assert solve(Piecewise((x - 2, Gt(x, 2)), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
+    assert solve(Piecewise((x - 2, x > 2), (2 - x, True)) - 3) == [{x: -1}, {x: 5}]
 
     assert solve(abs(y)*x - 1, x) == [{x: 1/abs(y)}]
 
@@ -1413,7 +1387,7 @@ def test_sympyissue_7322():
 
 
 def test_sympyissue_8587():
-    f = Piecewise((2*x**2, And(0 < x, x < 1)), (2, True))
+    f = Piecewise((2*x**2, (0 < x) & (x < 1)), (2, True))
     assert solve(f - 1) == [{x: 1/sqrt(2)}]
 
 

@@ -1,23 +1,21 @@
-from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
-                    nan, oo)
-from ..core.sympify import sympify
-from ..functions.elementary.trigonometric import cos, sin
+from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
+from ..core.function import UndefinedFunction
+from ..functions import cos, sign, sin
+from ..sets import Reals
 from .gruntz import limitinf
 from .order import Order
 
 
-def limit(expr, z, z0, dir='+'):
+def limit(expr, z, z0, dir=None):
     """
     Compute the directional limit of ``expr`` at the point ``z0``.
 
     Examples
     ========
 
-    >>> limit(sin(x)/x, x, 0)
-    1
-    >>> limit(1/x, x, 0, dir='+')
+    >>> limit(1/x, x, 0)
     oo
-    >>> limit(1/x, x, 0, dir='-')
+    >>> limit(1/x, x, 0, dir=1)
     -oo
     >>> limit(1/x, x, oo)
     0
@@ -32,34 +30,24 @@ def limit(expr, z, z0, dir='+'):
 
 
 def heuristics(e, z, z0, dir):
-    rv = None
-
-    if isinstance(e, Expr):
-        e = e.expand()
-
-    if abs(z0) is oo:
-        rv = limit(e.subs({z: 1/z}), z, Integer(0), '+' if z0 is oo else '-')
-        if isinstance(rv, Limit):
-            return
-    elif e.is_Mul or e.is_Add or e.is_Pow or e.is_Function:
+    e = e.expand()
+    if (e.is_Mul or e.is_Add or e.is_Pow or
+            (e.is_Function and not isinstance(e.func, UndefinedFunction))):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if l.has(oo) and (l.func not in (sin, cos) and l.is_finite is None):
+            if (l.has(oo) and (l.func not in (sin, cos) and
+                               l.is_finite is None)) or isinstance(l, Limit):
                 return
-            elif isinstance(l, Limit):
-                return
-            else:
-                r.append(l)
-        rv = e.func(*r)
-        if rv is nan:
-            return
+            r.append(l)
 
-    return rv
+        if (rv := e.func(*r)) is not nan:
+            return rv
 
 
 class Limit(Expr):
-    r"""Represents a directional limit of ``expr`` at the point ``z0``.
+    r"""
+    Represents an unevaluated directional limit of ``expr`` at the point ``z0``.
 
     Parameters
     ==========
@@ -70,43 +58,46 @@ class Limit(Expr):
         variable of the ``expr``
     z0   : Expr
         limit point, `z_0`
-    dir  : {"+", "-", "real"}, optional
-        For ``dir="+"`` (default) it calculates the limit from the right
-        (`z\to z_0 + 0`) and for ``dir="-"`` the limit from the left (`z\to
-        z_0 - 0`).  If ``dir="real"``, the limit is the bidirectional real
-        limit.  For infinite ``z0`` (``oo`` or ``-oo``), the ``dir`` argument
-        is determined from the direction of the infinity (i.e.,
-        ``dir="-"`` for ``oo``).
+    dir  : Expr or Reals, optional
+        selects the direction (as ``sign(dir)``) to approach the limit point
+        if the ``dir`` is an Expr.  For instance, the limit from the
+        right (`z\to z_0 + 0`) if ``dir=-1`` (default).  For infinite ``z0``,
+        the default value is determined from the direction of the infinity
+        (e.g., ``dir=1`` for ``oo``).  If ``dir=Reals``, the limit is the
+        bidirectional real limit.
 
     Examples
     ========
 
-    >>> Limit(sin(x)/x, x, 0)
-    Limit(sin(x)/x, x, 0)
-    >>> Limit(1/x, x, 0, dir='-')
-    Limit(1/x, x, 0, dir='-')
+    >>> Limit(1/x, x, 0, dir=1)
+    Limit(1/x, x, 0, dir=1)
+    >>> _.doit()
+    -oo
+
+    See Also
+    ========
+
+    limit
 
     """
 
-    def __new__(cls, e, z, z0, dir='+'):
-        e = sympify(e)
-        z = sympify(z)
-        z0 = sympify(z0)
+    def __new__(cls, e, z, z0, dir=None):
+        e, z, z0, dir = map(sympify, [e, z, z0, dir])
 
-        if z0 is oo:
-            dir = '-'
-        elif z0 == -oo:
-            dir = '+'
+        if z0.is_infinite:
+            dir = sign(z0).simplify()
+        elif dir is None:
+            dir = Rational(-1)
 
-        if isinstance(dir, str):
-            dir = Symbol(dir)
-        elif not isinstance(dir, Symbol):
-            raise TypeError(f'direction must be of type str or Symbol, not {type(dir)}')
-        if str(dir) not in ('+', '-', 'real'):
-            raise ValueError(
-                f"direction must be either '+' or '-' or 'real', not {dir}")
+        if dir == Reals:
+            pass
+        elif isinstance(dir, Expr) and dir.is_nonzero:
+            dir = dir/abs(dir)
+        else:
+            raise ValueError('direction must be either a nonzero expression '
+                             f'or Reals, not {dir}')
 
-        obj = Expr.__new__(cls)
+        obj = super().__new__(cls)
         obj._args = (e, z, z0, dir)
         return obj
 
@@ -116,7 +107,8 @@ class Limit(Expr):
         return (e.free_symbols - z.free_symbols) | z0.free_symbols
 
     def doit(self, **hints):
-        """Evaluates limit.
+        """
+        Evaluates limit.
 
         Notes
         =====
@@ -132,18 +124,15 @@ class Limit(Expr):
             z = z.doit(**hints)
             z0 = z0.doit(**hints)
 
-        if str(dir) == 'real':
-            right = limit(e, z, z0, '+')
-            left = limit(e, z, z0, '-')
+        if dir == Reals:
+            right = limit(e, z, z0)
+            left = limit(e, z, z0, 1)
             if not left.equals(right):
-                raise PoleError(f'left and right limits for expression {e} at '
-                                f'point {z}={z0} seems to be not equal')
+                raise PoleError(f'left and right limits for the expression {e} '
+                                f'at point {z}={z0} seems to be not equal')
             return right
 
-        use_heuristics = hints.get('heuristics', True)
-
-        has_Floats = e.has(Float) or z0.has(Float)
-        if has_Floats:
+        if (has_Floats := e.has(Float) or z0.has(Float)):
             e = e.subs({k: Rational(k) for k in e.atoms(Float)})
             z0 = z0.subs({k: Rational(k) for k in z0.atoms(Float)})
 
@@ -154,55 +143,55 @@ class Limit(Expr):
                 r = r.subs({newz: z})
             return r
 
-        if e == z:
-            return z0
+        # Use a fresh variable to remove assumptions on the dummy variable.
+        newz = Dummy('z')
+        e, z = e.subs({z: newz}), newz
 
         if not e.has(z):
             return e
 
-        if z0 is nan:
-            return nan
+        if e.has(Order) and (order := e.getO()) and (z, z0) in order.args[1:]:
+            order = limit(order.expr, z, z0, dir)
+            e = e.removeO() + order
 
-        if e.is_Relational:
-            ll = limit(e.lhs, z, z0, dir)
-            rl = limit(e.rhs, z, z0, dir)
+        # Convert to the limit z->oo and use Gruntz algorithm.
+        e = e.subs({z: dir*z})
+        z0 = z0/dir
+        if z0 != oo:
+            e = e.subs({z: z0 - 1/z})
 
-            if any(isinstance(a, Limit) for a in [ll, rl]):
+        # We need a fresh variable with correct assumptions.
+        newz = Dummy(z.name, positive=True, finite=True)
+        e, z = e.subs({z: newz}), newz
+
+        if e.is_Boolean or e.is_Relational:
+            try:
+                has_oo = e.as_set().closure.contains(oo)
+            except NotImplementedError:
                 return self
-            else:
-                try:
-                    return e.func(ll, rl)
-                except TypeError:
-                    return self
+            if has_oo.is_Boolean:
+                return has_oo
+            raise NotImplementedError
 
-        if e.has(Order):
-            e = e.expand()
-            order = e.getO()
-            if order:
-                if (z, z0) in zip(order.variables, order.point):
-                    order = limit(order.expr, z, z0, dir)
-                    e = e.removeO() + order
+        def tr_Piecewise(f):
+            for a, c in f.args:
+                if not c.is_Atom:
+                    c = c.as_set().closure.contains(oo)
+                    if not c.is_Atom:
+                        raise NotImplementedError("Parametric limits aren't "
+                                                  'supported yet.')
+                    if c:
+                        break
+            return a
+
+        e = e.replace(lambda f: f.is_Piecewise and f.has(z), tr_Piecewise)
 
         try:
-            # Convert to the limit z->oo and use Gruntz algorithm.
-            newe, newz = e, z
-            if z0 == -oo:
-                newe = e.subs({z: -z})
-            elif z0 != oo:
-                if str(dir) == '+':
-                    newe = e.subs({z: z0 + 1/z})
-                else:
-                    newe = e.subs({z: z0 - 1/z})
-
-            # We need a fresh variable with correct assumptions.
-            newz = Dummy(z.name, positive=True, finite=True)
-            newe = newe.subs({z: newz})
-
-            r = limitinf(newe, newz)
+            r = limitinf(e, z)
         except (PoleError, ValueError, NotImplementedError):
             r = None
-            if use_heuristics:
-                r = heuristics(e, z, z0, dir)
+            if hints.get('heuristics', True):
+                r = heuristics(*self.args)
             if r is None:
                 return self
 

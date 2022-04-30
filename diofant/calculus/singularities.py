@@ -1,6 +1,7 @@
 from ..core import Add, Mul, PoleError, Pow, sympify
 from ..functions import log, sign
-from ..series.limits import Limit
+from ..series import Limit
+from ..sets import Reals
 from ..solvers import solve
 
 
@@ -53,7 +54,7 @@ def singularities(f, x):
         raise NotImplementedError
 
     for s in guess:
-        l = Limit(f, x, s, dir='real')
+        l = Limit(f, x, s, dir=Reals)
         try:
             r = l.doit()
             if r.is_infinite:

@@ -530,7 +530,7 @@ def exptrigsimp(expr, simplify=True):
         newexpr = newexpr.simplify()
 
     # conversion from exp to hyperbolic
-    ex = {a for a in newexpr.atoms(Pow) if a.base is E} | newexpr.atoms(E)
+    ex = {a for a in newexpr.atoms(Pow) if a.is_Exp} | newexpr.atoms(E)
     if ex:
         ex0 = {list(ex)[0]}
         ex = [ei for ei in ex if 1/ei not in ex]
@@ -553,7 +553,7 @@ def exptrigsimp(expr, simplify=True):
         n, d = ei - 1, ei + 1
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
-        a = ei.exp if ei.is_Pow and ei.base is E else Integer(1)
+        a = ei.exp if ei.is_Exp else Integer(1)
         if a.is_Mul or a is I:
             c = a.as_coefficient(I)
             if c:
@@ -1041,7 +1041,7 @@ def __trigsimp(expr, deep=False):
     try:
         if not expr.has(*_trigs):
             raise TypeError
-        e = {a for a in expr.atoms(Pow) if a.base is E}
+        e = {a for a in expr.atoms(Pow) if a.is_Exp}
         new = expr.rewrite(exp, deep=deep)
         if new == e:
             raise TypeError
@@ -1049,7 +1049,7 @@ def __trigsimp(expr, deep=False):
         if fnew != new:
             new = sorted([new, factor(new)], key=count_ops)[0]
         # if all exp that were introduced disappeared then accept it
-        ne = {a for a in new.atoms(Pow) if a.base is E}
+        ne = {a for a in new.atoms(Pow) if a.is_Exp}
         if not ne - e:
             expr = new
     except TypeError:

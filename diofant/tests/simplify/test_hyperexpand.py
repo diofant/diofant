@@ -354,14 +354,12 @@ def test_ushift_operators():
 
 
 def can_do_meijer(a1, a2, b1, b2, numeric=True):
-    """
-    This helper function tries to hyperexpand() the meijer g-function
-    corresponding to the parameters a1, a2, b1, b2.
-    It returns False if this expansion still contains g-functions.
-    If numeric is True, it also tests the so-obtained formula numerically
-    (at random values) and returns False if the test fails.
-    Else it returns True.
-    """
+    # This helper function tries to hyperexpand() the meijer g-function
+    # corresponding to the parameters a1, a2, b1, b2.
+    # It returns False if this expansion still contains g-functions.
+    # If numeric is True, it also tests the so-obtained formula numerically
+    # (at random values) and returns False if the test fails.
+    # Else it returns True.
     r = hyperexpand(meijerg(a1, a2, b1, b2, z))
     if r.has(meijerg):
         return False

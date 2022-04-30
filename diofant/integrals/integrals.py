@@ -15,10 +15,11 @@ from .trigonometry import trigintegrate
 
 
 class Integral(AddWithLimits):
-    """Represents unevaluated integral."""
+    """Represents an unevaluated integral."""
 
     def __new__(cls, function, *symbols, **assumptions):
-        """Create an unevaluated integral.
+        """
+        Create an unevaluated integral.
 
         Arguments are an integrand followed by one or more limits.
 
@@ -908,16 +909,6 @@ class Integral(AddWithLimits):
 
         return Add(*parts)
 
-    def _eval_lseries(self, x, logx=None):
-        expr = self.as_dummy()
-        symb = x
-        for l in expr.limits:
-            if x in l[1:]:
-                symb = l[0]
-                break
-        for term in expr.function.series(symb, n=None, logx=logx):  # pragma: no branch
-            yield integrate(term, *expr.limits)
-
     def _eval_nseries(self, x, n, logx):
         expr = self.as_dummy()
         symb = x
@@ -927,6 +918,7 @@ class Integral(AddWithLimits):
                 break
         terms, order = expr.function.nseries(
             x=symb, n=n, logx=logx).as_coeff_add(Order)
+        order = [o.subs({symb: x}) for o in order]
         return integrate(terms, *expr.limits) + Add(*order)*x
 
     def as_sum(self, n, method='midpoint'):
@@ -1022,7 +1014,7 @@ class Integral(AddWithLimits):
 
         if method == 'trapezoid':
             l = self.function.limit(sym, lower_limit)
-            r = self.function.limit(sym, upper_limit, '-')
+            r = self.function.limit(sym, upper_limit, 1)
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
@@ -1042,15 +1034,18 @@ class Integral(AddWithLimits):
                     continue
             elif method == 'right':
                 xi = lower_limit + i*dx + dx
-                if i == n:
-                    result += self.function.limit(sym, upper_limit, '-')
+                if i == n - 1:
+                    result += self.function.limit(sym, upper_limit, 1)
                     continue
+            else:
+                raise NotImplementedError(f'Unknown method {method}')
             result += self.function.subs({sym: xi})
         return result*dx
 
 
 def integrate(*args, **kwargs):
-    """integrate(f, var, ...)
+    """
+    integrate(f, var, ...)
 
     Compute definite or indefinite integral of one or more variables
     using Risch-Norman algorithm and table lookup. This procedure is

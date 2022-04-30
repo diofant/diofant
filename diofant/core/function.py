@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import collections
 import inspect
-import typing
 
 import mpmath
 import mpmath.libmp as mlib
@@ -360,7 +359,7 @@ class Function(Application, Expr):
 
         evaluate = options.get('evaluate', global_evaluate[0])
         result = super().__new__(cls, *args, **options)
-        if not evaluate or not isinstance(result, cls):
+        if not evaluate or not isinstance(result, cls) or not result.args:
             return result
 
         pr = max(cls._should_evalf(a) for a in result.args)
@@ -466,10 +465,6 @@ class Function(Application, Expr):
 
     def _eval_is_commutative(self):
         return fuzzy_and(a.is_commutative for a in self.args)
-
-    def as_base_exp(self):
-        """Returns the method as the 2-tuple (base, exponent)."""
-        return self, Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
         """
@@ -713,8 +708,6 @@ class WildFunction(Function, AtomicExpr):
     >>> f(x, y, 1).match(F)
 
     """
-
-    include: set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
         from ..sets.sets import FiniteSet, Set
@@ -1455,9 +1448,6 @@ class Subs(Expr):
         """
         return self.doit().evalf(dps, **options)
 
-    #:
-    n = evalf
-
     @property
     def variables(self):
         """The variables to be evaluated."""
@@ -1509,6 +1499,18 @@ class Subs(Expr):
                     if s not in self.variables else Integer(0)),
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
+
+    def _eval_nseries(self, x, n, logx=None):
+        if x in self.point:
+            v = self.variables[self.point.index(x)]
+        else:
+            v = x
+        arg = self.expr.nseries(v, n=n, logx=logx)
+        rv = Add(*[self.func(a, *zip(self.variables, self.point))
+                   for a in Add.make_args(arg.removeO())])
+        if o := arg.getO():
+            rv += o.subs({v: x})
+        return rv
 
 
 def diff(f, *args, **kwargs):

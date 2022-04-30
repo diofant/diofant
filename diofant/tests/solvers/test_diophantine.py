@@ -293,11 +293,10 @@ def test_length():
 
 def is_pell_transformation_ok(eq):
     """
-    Test whether X*Y, X, or Y terms are present in the equation
-    after transforming the equation using the transformation returned
-    by transformation_to_pell(). If they are not present we are good.
-    Moreover, coefficient of X**2 should be a divisor of coefficient of
-    Y**2 and the constant term.
+    Test whether X*Y, X, or Y terms are present after transformation_to_pell().
+
+    If they are not present we are good.  Moreover, coefficient of X**2
+    should be a divisor of coefficient of Y**2 and the constant term.
     """
     A, B = transformation_to_DN(eq)
     u = (A*Matrix([X, Y]) + B)[0]
@@ -692,9 +691,10 @@ def test_assumptions():
 
 def check_solutions(eq):
     """
-    Determines whether solutions returned by diophantine() satisfy the original
-    equation. Hope to generalize this so we can remove functions like check_ternay_quadratic,
-    check_solutions_normal, check_solutions()
+    Check solutions returned by diophantine().
+
+    Hope to generalize this so we can remove functions like
+    check_ternay_quadratic, check_solutions_normal, check_solutions()
     """
     s = diophantine(eq)
 

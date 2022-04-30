@@ -6,7 +6,7 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
                      Complement, Derivative, Dict, Dummy, E, Eq, Equivalent,
                      EulerGamma, Expr, FiniteSet, Float, Function, GoldenRatio,
                      I, Integer, Integral, Interval, Lambda, Limit, Matrix,
-                     MatrixSymbol, Mul, Ne, O, Poly, Pow, Rational, Rel,
+                     MatrixSymbol, Mul, Ne, O, Poly, Pow, Rational, Reals, Rel,
                      RootOf, RootSum, S, SparseMatrix, StrPrinter, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor,
                      ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
@@ -181,8 +181,8 @@ def test_Lambda():
 def test_Limit():
     assert str(Limit(sin(x)/x, x, y)) == 'Limit(sin(x)/x, x, y)'
     assert str(Limit(1/x, x, 0)) == 'Limit(1/x, x, 0)'
-    assert str(
-        Limit(sin(x)/x, x, y, dir='-')) == "Limit(sin(x)/x, x, y, dir='-')"
+    assert str(Limit(sin(x)/x, x, y, dir=1)) == 'Limit(sin(x)/x, x, y, dir=1)'
+    assert str(Limit(sin(x)/x, x, y, dir=Reals)) == 'Limit(sin(x)/x, x, y, dir=Reals)'
 
 
 def test_list():
@@ -743,7 +743,7 @@ def test_Xor():
 
 
 def test_Complement():
-    assert str(Complement(S.Reals, S.Naturals)) == '(-oo, oo) \\ Naturals()'
+    assert str(Complement(Reals, S.Naturals)) == '(-oo, oo) \\ Naturals()'
 
 
 def test_SymmetricDifference():

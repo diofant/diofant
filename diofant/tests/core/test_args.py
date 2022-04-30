@@ -1806,7 +1806,7 @@ def test_diofant__polys__rootoftools__RootSum():
 
 
 def test_diofant__series__limits__Limit():
-    assert _test_args(Limit(x, x, 0, dir='-'))
+    assert _test_args(Limit(x, x, 0, dir=1))
 
 
 def test_diofant__series__order__Order():

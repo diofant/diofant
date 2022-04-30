@@ -1055,8 +1055,6 @@ class MatrixBase(DefaultPrinting):
         """Apply evalf() to each element of self."""
         return self.applyfunc(lambda i: i.evalf(dps, **options))
 
-    n = evalf
-
     def atoms(self, *types):
         """Returns the atoms that form the current object.
 
@@ -1441,7 +1439,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import rho, phi
+        >>> from diofant.abc import phi, rho
         >>> X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
         >>> Y = Matrix([rho, phi])
         >>> X.jacobian(Y)

@@ -3,7 +3,6 @@ import math
 
 from ...core import Dummy, E, Function, Integer, cacheit, oo, zoo
 from ...core.function import ArgumentIndexError
-from ...core.sympify import sympify
 
 
 class CombinatorialFunction(Function):
@@ -80,8 +79,6 @@ class factorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, n):
-        n = sympify(n)
-
         if n.is_Number:
             if n is oo:
                 return oo
@@ -95,7 +92,7 @@ class factorial(CombinatorialFunction):
         from .. import gamma
         return gamma(n + 1)
 
-    def _eval_rewrite_as_tractable(self, n):
+    def _eval_rewrite_as_tractable(self, n, **kwargs):
         from .. import exp, loggamma
         return exp(loggamma(n + 1))
 
@@ -327,9 +324,6 @@ class RisingFactorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, x, k):
-        x = sympify(x)
-        k = sympify(k)
-
         if x == 1:
             return factorial(k)
         elif k.is_Integer:
@@ -356,7 +350,7 @@ class RisingFactorial(CombinatorialFunction):
         from .. import gamma
         return gamma(x + k) / gamma(x)
 
-    def _eval_rewrite_as_tractable(self, x, k):
+    def _eval_rewrite_as_tractable(self, x, k, **kwargs):
         return self._eval_rewrite_as_gamma(x, k).rewrite('tractable')
 
     def _eval_is_integer(self):
@@ -399,9 +393,6 @@ class FallingFactorial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, x, k):
-        x = sympify(x)
-        k = sympify(k)
-
         if k.is_Integer:
             if k == 0:
                 return Integer(1)
@@ -524,7 +515,6 @@ class binomial(CombinatorialFunction):
 
     @classmethod
     def eval(cls, n, k):
-        n, k = map(sympify, (n, k))
         d = n - k
         if d.is_zero or k.is_zero:
             return Integer(1)
@@ -564,14 +554,14 @@ class binomial(CombinatorialFunction):
 
         return self.func(*self.args)
 
-    def _eval_rewrite_as_factorial(self, n, k):
+    def _eval_rewrite_as_factorial(self, n, k, **kwargs):
         return factorial(n)/(factorial(k)*factorial(n - k))
 
     def _eval_rewrite_as_gamma(self, n, k):
         from .. import gamma
         return gamma(n + 1)/(gamma(k + 1)*gamma(n - k + 1))
 
-    def _eval_rewrite_as_tractable(self, n, k):
+    def _eval_rewrite_as_tractable(self, n, k, **kwargs):
         return self._eval_rewrite_as_gamma(n, k).rewrite('tractable')
 
     def _eval_is_integer(self):

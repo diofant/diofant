@@ -40,7 +40,7 @@ def variance(X, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, Bernoulli
+    >>> from diofant.stats import Bernoulli, Die
 
     >>> X = Die('X', 6)
     >>> p = Symbol('p')

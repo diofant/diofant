@@ -7,7 +7,7 @@ import warnings
 from collections import defaultdict
 from types import GeneratorType
 
-from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
+from ..core import (Add, Dummy, Equality, Expr, Float, Function, Ge, I,
                     Integer, Lambda, Mul, Symbol, expand_log, expand_mul,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal)
 from ..core.assumptions import check_assumptions
@@ -869,7 +869,7 @@ def _solve_system(exprs, symbols, **flags):
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
         for r in result:
-            for k in r:
+            for k in r.copy():
                 r[k] = simplify(r[k])
         flags['simplify'] = False  # don't need to do so in checksol now
 
@@ -1123,7 +1123,7 @@ def _tsolve(eq, sym, **flags):
         g = _filtered_gens(expand_power_exp(eq).as_poly(), sym)
         up_or_log = set()
         for gi in g:
-            if gi.is_Pow and gi.base is E or isinstance(gi, log):
+            if gi.is_Exp or isinstance(gi, log):
                 up_or_log.add(gi)
             elif gi.is_Pow:
                 gisimp = powdenest(expand_power_exp(gi))
@@ -1315,7 +1315,7 @@ def _invert(eq, *symbols, **kwargs):
                 y, x = lhs.args
                 lhs = 2*atan(y/(sqrt(x**2 + y**2) + x))
 
-        if lhs.is_Pow and lhs.base is E:
+        if lhs.is_Exp:
             rhs = log(rhs)
             lhs = lhs.exp
 

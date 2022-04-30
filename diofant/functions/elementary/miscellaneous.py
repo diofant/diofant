@@ -99,7 +99,6 @@ def sqrt(arg, **kwargs):
     * https://en.wikipedia.org/wiki/Principal_value
 
     """
-    # arg = sympify(arg) is handled by Pow
     return Pow(arg, Rational(1, 2), **kwargs)
 
 
@@ -416,7 +415,6 @@ class MinMaxBase(LatticeOp):
 
     def evalf(self, dps=15, **options):
         return self.func(*[a.evalf(dps, **options) for a in self.args])
-    n = evalf
 
     @property
     def is_extended_real(self):

@@ -2715,7 +2715,7 @@ class PermutationGroup(Basic):
             for i in range(r):
                 temp = gens[i]._array_form[b]
                 if used[temp] is False:
-                    orb.append(temp)
+                    orb.append(temp)  # pylint: disable=modified-iterating-list
                     used[temp] = True
                     v[temp] = i
         return v
@@ -3130,7 +3130,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
             for gen in gens:
                 temp = tuple(gen[x] for x in b)
                 if temp not in used:
-                    orb.append(temp)
+                    orb.append(temp)  # pylint: disable=modified-iterating-list
                     used.add(temp)
         return set(orb)
     elif action == 'sets':
@@ -3141,7 +3141,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
             for gen in gens:
                 temp = frozenset(gen[x] for x in b)
                 if temp not in used:
-                    orb.append(temp)
+                    orb.append(temp)  # pylint: disable=modified-iterating-list
                     used.add(temp)
         return {tuple(x) for x in orb}
 
@@ -3210,7 +3210,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
         for gen in gens:
             temp = gen[x]
             if used[temp] is False:
-                tr.append((temp, _af_rmul(gen, px)))
+                tr.append((temp, _af_rmul(gen, px)))  # pylint: disable=modified-iterating-list
                 used[temp] = True
     if pairs:
         if not af:
@@ -3259,7 +3259,7 @@ def _stabilizer(degree, generators, alpha):
             temp = gen[b]
             if used[temp] is False:
                 gen_temp = _af_rmul(gen, table[b])
-                orb.append(temp)
+                orb.append(temp)  # pylint: disable=modified-iterating-list
                 table[temp] = gen_temp
                 table_inv[temp] = _af_invert(gen_temp)
                 used[temp] = True

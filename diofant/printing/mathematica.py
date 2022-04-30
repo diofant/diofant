@@ -8,6 +8,7 @@ import types
 import typing
 
 from ..core import Expr
+from ..sets import Reals
 from .codeprinter import CodePrinter
 from .precedence import precedence
 from .str import StrPrinter
@@ -38,6 +39,8 @@ known_functions = {
     'meijerg': [(lambda *x: True, 'MeijerG')],
     'hyper': [(lambda *x: True, 'HypergeometricPFQ')],
     'binomial': [(lambda n, k: True, 'Binomial')],
+    'erf': [(lambda x: True, 'Erf')],
+    'erfi': [(lambda x: True, 'Erfi')],
     'erfc': [(lambda x: True, 'Erfc')],
     'conjugate': [(lambda x: True, 'Conjugate')],
     're': [(lambda x: True, 'Re')],
@@ -155,15 +158,11 @@ class MCodePrinter(CodePrinter):
         return 'Hold[Integrate[' + ', '.join(self.doprint(a) for a in args) + ']]'
 
     def _print_Limit(self, expr):
-        direction = str(expr.args[-1])
-        if direction == '+':
-            direction = '-1'
-        elif direction == '-':
-            direction = '1'
-        elif direction == 'real':
+        direction = expr.args[-1]
+        if direction == Reals:
             direction = 'Reals'
         else:
-            raise NotImplementedError
+            direction = self.doprint(direction)
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
         return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 

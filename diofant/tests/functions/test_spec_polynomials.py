@@ -51,16 +51,12 @@ def test_jacobi():
     assert diff(jacobi(n, a, b, x), x) == \
         (a + b + n + 1)*jacobi(n - 1, a + 1, b + 1, x)/2
 
-    # XXX see issue sympy/sympy#5539
-    assert str(jacobi(n, a, b, x).diff(a)) == \
-        ('Sum((jacobi(n, a, b, x) + (a + b + 2*_k + 1)*RisingFactorial(b + '
-         '_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + '
-         'b + _k + 1, n - _k)))/(a + b + n + _k + 1), (_k, 0, n - 1))')
-    assert str(jacobi(n, a, b, x).diff(b)) == \
-        ('Sum(((-1)**(n - _k)*(a + b + 2*_k + 1)*RisingFactorial(a + '
-         '_k + 1, n - _k)*jacobi(_k, a, b, x)/((n - _k)*RisingFactorial(a + '
-         'b + _k + 1, n - _k)) + jacobi(n, a, b, x))/(a + b + n + '
-         '_k + 1), (_k, 0, n - 1))')
+    assert (jacobi(n, a, b, x).diff(a) ==
+            Sum((jacobi(n, a, b, x) + (a + b + 2*k + 1)*RisingFactorial(b + k + 1, n - k) *
+                jacobi(k, a, b, x)/((n - k)*RisingFactorial(a + b + k + 1, n - k)))/(a + b + n + k + 1), (k, 0, n - 1)))
+    assert (jacobi(n, a, b, x).diff(b) ==
+            Sum(((-1)**(n - k)*(a + b + 2*k + 1)*RisingFactorial(a + k + 1, n - k) *
+                 jacobi(k, a, b, x)/((n - k)*RisingFactorial(a + b + k + 1, n - k)) + jacobi(n, a, b, x))/(a + b + n + k + 1), (k, 0, n - 1)))
 
     assert jacobi_normalized(n, a, b, x) == \
         (jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)
@@ -106,11 +102,9 @@ def test_gegenbauer():
 
     pytest.raises(ArgumentIndexError, lambda: gegenbauer(n, a, x).fdiff(4))
 
-    # XXX see issue sympy/sympy#5539
-    assert str(gegenbauer(n, a, x).diff(a)) == \
-        ('Sum((2*(-1)**(n - _k) + 2)*(a + _k)*gegenbauer(_k, a, x)/((n - '
-         '_k)*(2*a + n + _k)) + (2/(2*a + n + _k) + (2*_k + 2)/((2*a + '
-         '_k)*(2*a + 2*_k + 1)))*gegenbauer(n, a, x), (_k, 0, n - 1))')
+    assert (gegenbauer(n, a, x).diff(a) ==
+            Sum((2*(-1)**(n - k) + 2)*(a + k)*gegenbauer(k, a, x)/((n - k)*(2*a + n + k)) +
+                (2/(2*a + n + k) + (2*k + 2)/((2*a + k)*(2*a + 2*k + 1)))*gegenbauer(n, a, x), (k, 0, n - 1)))
 
 
 def test_legendre():
@@ -194,8 +188,8 @@ def test_assoc_legendre():
 
     pytest.raises(ArgumentIndexError, lambda: assoc_legendre(n, m, x).fdiff(1))
 
-    assert (str(assoc_laguerre(n, m, x).diff(m)) ==
-            'Sum(assoc_laguerre(_k, m, x)/(-m + n), (_k, 0, n - 1))')
+    assert (assoc_laguerre(n, m, x).diff(m) ==
+            Sum(assoc_laguerre(k, m, x)/(-m + n), (k, 0, n - 1)))
 
 
 def test_chebyshev():
@@ -342,9 +336,5 @@ def test_assoc_laguerre():
     X = assoc_laguerre(Rational(5, 2), alpha, x)
     assert isinstance(X, assoc_laguerre)
 
-
-@pytest.mark.xfail
-def test_laguerre_2():
-    # This fails due to issue for Sum, like issue sympy/sympy#5539
-    assert diff(assoc_laguerre(n, alpha, x), alpha) == \
-        Sum(assoc_laguerre(k, alpha, x)/(-alpha + n), (k, 0, n - 1))
+    assert (diff(assoc_laguerre(n, alpha, x), alpha) ==
+            Sum(assoc_laguerre(k, alpha, x)/(-alpha + n), (k, 0, n - 1)))

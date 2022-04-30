@@ -42,6 +42,10 @@ def test_bug1():
 def test_general_function():
     nu = Function('nu')
 
+    e = nu()
+    assert e.diff(x) == 0
+    assert e.diff(y) == 0
+
     e = nu(x)
     edx = e.diff(x)
     edy = e.diff(y)

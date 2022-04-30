@@ -184,6 +184,23 @@ class ExprWithLimits(Expr):
                 isyms.update(i.free_symbols)
         return isyms
 
+    def __eq__(self, other):
+        if not isinstance(other, self.func):
+            return False
+
+        return (self.function.xreplace(self.canonical_variables) ==
+                other.function.xreplace(other.canonical_variables) and
+                [[_[0].xreplace(self.canonical_variables) if len(_) > 1 else _[0], *_[1:]]
+                 for _ in self.limits] ==
+                [[_[0].xreplace(other.canonical_variables) if len(_) > 1 else _[0], *_[1:]]
+                 for _ in other.limits])
+    __hash__ = Expr.__hash__
+
+    def _hashable_content(self):
+        return (self.function.xreplace(self.canonical_variables),
+                *((_[0].xreplace(self.canonical_variables) if len(_) > 1 else _[0], *_[1:])
+                  for _ in self.limits))
+
     @property
     def is_number(self):
         """Return True if the Sum has no free symbols, else False."""

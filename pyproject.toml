@@ -1,7 +1,64 @@
 [build-system]
-requires = ['setuptools>=42', 'wheel', 'setuptools_scm[toml]>=6.0']
+requires = ['pip>=20.3', 'setuptools>=61', 'wheel',
+            'setuptools_scm[toml]>=6.0']
 build-backend = 'setuptools.build_meta'
-[tool.setuptools_scm]
+
+[project]
+name = 'Diofant'
+description = 'Computer algebra system (CAS) in Python'
+keywords = ['Math', 'CAS']
+license = {text = 'BSD'}
+authors = [{name = 'Sergey B Kirpichev et al'}]
+maintainers = [{name = 'Sergey B Kirpichev', email = 'diofant@googlegroups.com'}]
+classifiers = ['Development Status :: 4 - Beta',
+               'Intended Audience :: Education',
+               'Intended Audience :: Science/Research',
+               'License :: OSI Approved :: BSD License',
+               'Operating System :: OS Independent',
+               'Programming Language :: Python',
+               'Topic :: Scientific/Engineering',
+               'Topic :: Scientific/Engineering :: Mathematics',
+               'Topic :: Scientific/Engineering :: Physics',
+               'Topic :: Software Development :: Libraries :: Python Modules',
+               'Programming Language :: Python :: 3',
+               'Programming Language :: Python :: 3 :: Only',
+               'Programming Language :: Python :: 3.10',
+               'Programming Language :: Python :: Implementation :: CPython']
+requires-python = '>=3.10'
+dependencies = ['mpmath>=1.2', 'packaging']
+dynamic = ['version']
+[project.readme]
+file = 'docs/README.rst'
+content-type = 'text/x-rst'
+[project.urls]
+Homepage = 'https://diofant.readthedocs.io/'
+'Source Code' = 'https://github.com/diofant/diofant/'
+'Bug Tracker' = 'https://github.com/diofant/diofant/issues/'
+Download = 'https://github.com/diofant/diofant/releases/'
+[project.optional-dependencies]
+exports = ['numpy>=1.19', 'scipy>=1.6', 'cython']
+gmpy = ['gmpy2>=2.1.0']
+plot = ['matplotlib>=3.5.0']
+interactive = ['ipykernel']
+docs = ['sphinx>=4', 'sphinxcontrib-bibtex>=2.1', 'sphinxcontrib-autoprogram',
+        'sphinx_rtd_theme>=0.2']
+tests = ['pytest>=6', 'hypothesis', 'pytest-timeout', 'pexpect']
+develop = ['diofant[tests]', 'flake8>=3.8', 'flake8-docstrings>=1.3',
+            'pep8-naming', 'flake8-comprehensions', 'flake8-isort>=4.1',
+            'flake8-rst', 'flake8-quotes>=3', 'flake8-sfs', 'pytest-xdist>=1.22',
+            'pytest-cov', 'pylint>=2.13.1', 'coverage[toml]>=6.1.2',
+            'coverage_enable_subprocess', 'types-pkg_resources',
+            'mypy', 'build']
+testing = ['diofant[develop]']
+[tool.setuptools]
+zip-safe = true
+include-package-data = false
+[tool.setuptools.packages]
+find = {namespaces = false}
+[tool.setuptools.package-data]
+diofant = ['tests/logic/*.cnf']
+[tool.setuptools.dynamic]
+version = {attr = 'setuptools_scm.get_version'}
 [tool.isort]
 lines_after_imports = 2
 skip = ['diofant/core/expr.py',
@@ -17,7 +74,7 @@ max-line-length = 7000
 [tool.pylint.design]
 max-locals = 100
 max-returns = 35
-max-attributes = 30
+max-attributes = 120
 max-branches = 90
 max-parents = 12
 max-statements = 310
@@ -73,7 +130,8 @@ disable = ['invalid-name',
            'next-method-called',
            'import-outside-toplevel',
            'arguments-out-of-order',
-           'consider-using-f-string']
+           'consider-using-f-string',
+           'non-ascii-name']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

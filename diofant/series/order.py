@@ -1,7 +1,6 @@
 from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, Tuple, cacheit,
-                    expand_log, expand_power_base, nan, oo)
+                    expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import is_sequence
-from ..core.sympify import sympify
 from ..utilities import default_sort_key
 from ..utilities.iterables import uniq
 
@@ -144,7 +143,7 @@ class Order(Expr):
         if variables:
             if any(p != point[0] for p in point):
                 raise NotImplementedError
-            if point[0] in [oo, -oo]:
+            if point[0].as_coefficient(oo):
                 s = {k: 1/Dummy() for k in variables}
                 rs = {1/v: 1/k for k, v in s.items()}
             elif point[0] != 0:

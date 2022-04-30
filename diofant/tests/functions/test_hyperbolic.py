@@ -563,12 +563,19 @@ def test_acosh():
     pytest.raises(ArgumentIndexError, lambda: acosh(x).fdiff(2))
 
 
+def test_acosh_rewrite():
+    assert acosh(x).rewrite(log) == log(x + sqrt(x - 1)*sqrt(x + 1))
+
+
 def test_acosh_series():
-    assert acosh(x).series(x, 0, 8) == \
-        -I*x + pi*I/2 - I*x**3/6 - 3*I*x**5/40 - 5*I*x**7/112 + O(x**8)
+    assert (acosh(x).series(x, 0, 8) ==
+            -I*x + pi*I/2 - I*x**3/6 - 3*I*x**5/40 - 5*I*x**7/112 + O(x**8))
     t5 = acosh(x).taylor_term(5, x)
     assert t5 == - 3*I*x**5/40
     assert acosh(x).taylor_term(7, x, t5, 0) == - 5*I*x**7/112
+    assert (acosh(x).series(x, x0=1, n=2) ==
+            sqrt(2)*sqrt(x - 1) - sqrt(2)*sqrt(x - 1)**3/12 +
+            O((x - 1)**2, (x, 1)))
 
 
 # TODO please write more tests -- see issue sympy/sympy#3751
@@ -610,6 +617,10 @@ def test_atanh():
     assert atanh(-oo) == I*pi/2
 
     pytest.raises(ArgumentIndexError, lambda: atanh(x).fdiff(2))
+
+
+def test_atanh_rewrite():
+    assert atanh(x).rewrite(log) == (log(1 + x) - log(1 - x))/2
 
 
 def test_atanh_series():
@@ -658,9 +669,14 @@ def test_acoth():
     pytest.raises(ArgumentIndexError, lambda: acoth(x).fdiff(2))
 
 
+def test_acoth_rewrite():
+    assert acoth(x).rewrite(log) == (log((x + 1)/x) - log((x - 1)/x))/2
+
+
 def test_acoth_series():
-    assert acoth(x).series(x, 0, 10) == \
-        I*pi/2 + x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10)
+    # see sympy/sympy#3663
+    assert (acoth(x).series(x, n=10) ==
+            -I*pi/2 + x + x**3/3 + x**5/5 + x**7/7 + x**9/9 + O(x**10))
 
 
 def test_inverses():
@@ -678,7 +694,7 @@ def test_leading_term():
     assert cosh(x).as_leading_term(x) == 1
     assert coth(x).as_leading_term(x) == 1/x
     assert acosh(x).as_leading_term(x) == I*pi/2
-    assert acoth(x).as_leading_term(x) == I*pi/2
+    assert acoth(x).as_leading_term(x) == -I*pi/2
     for func in [sinh, tanh, asinh, atanh]:
         assert func(x).as_leading_term(x) == x
     for func in [sinh, cosh, tanh, coth, asinh, acosh, atanh, acoth]:

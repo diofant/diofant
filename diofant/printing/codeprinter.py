@@ -52,7 +52,7 @@ class Assignment(Relational):
 
     rel_op = ':='
 
-    def __new__(cls, lhs, rhs=0, **assumptions):
+    def __new__(cls, lhs, rhs=0, **assumptions):  # pylint: disable=signature-differs
         from ..matrices.expressions.matexpr import MatrixElement, MatrixSymbol
         from ..tensor import Indexed
         lhs = sympify(lhs, strict=True)

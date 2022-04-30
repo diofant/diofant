@@ -4,7 +4,7 @@ from diofant import (And, Eq, Integer, Integral, Interval, N, Piecewise,
                      Rational, Sum, Symbol, besseli, beta, binomial, cos, erf,
                      exp, expand_func, factorial, floor, gamma, log,
                      lowergamma, oo, pi, simplify, sin, sqrt, symbols)
-from diofant.abc import x, y, z
+from diofant.abc import k, x, y, z
 from diofant.stats import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
                            ChiNoncentral, ChiSquared, ContinuousRV, Dagum, E,
                            Erlang, Exponential, FDistribution, FisherZ,
@@ -494,14 +494,13 @@ def test_uniform():
 
 
 def test_uniform_P():
-    """This stopped working because SingleContinuousPSpace.compute_density no
-    longer calls integrate on a DiracDelta but rather just solves directly.
-    integrate used to call UniformDistribution.expectation which special-cased
-    subsed out the Min and Max terms that Uniform produces.
-
-    I decided to regress on this class for general cleanliness (and I suspect
-    speed) of the algorithm.
-    """
+    # This stopped working because SingleContinuousPSpace.compute_density no
+    # longer calls integrate on a DiracDelta but rather just solves directly.
+    # integrate used to call UniformDistribution.expectation which special-cased
+    # subsed out the Min and Max terms that Uniform produces.
+    #
+    # I decided to regress on this class for general cleanliness (and I suspect
+    # speed) of the algorithm.
     l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
@@ -514,21 +513,8 @@ def test_uniformsum():
     X = UniformSum('x', n)
     assert X.pspace.domain.set == Interval(0, n)
 
-    # see test_uniformsum_d()
     d = density(X)(z)
-    assert str(d) == ('Sum((-1)**_k*(z - _k)**(n - 1)*binomial(n, _k), '
-                      '(_k, 0, floor(z)))/factorial(n - 1)')
-
-
-@pytest.mark.xfail
-def test_uniformsum_d():
-    n = Symbol('n', integer=True)
-    k = Symbol('k')
-
-    X = UniformSum('x', n)
-    d = density(X)(x)
-    assert d == 1/factorial(n - 1)*Sum((-1)**k*(x - k)**(n - 1) *
-                                       binomial(n, k), (k, 0, floor(x)))
+    assert d == Sum((-1)**k*(z - k)**(n - 1)*binomial(n, k), (k, 0, floor(z)))/factorial(n - 1)
 
 
 def test_von_mises():
@@ -665,10 +651,9 @@ def test_conjugate_priors():
 
 
 def test_difficult_univariate():
-    """Since using solve in place of deltaintegrate we're able to perform
-    substantially more complex density computations on single continuous random
-    variables.
-    """
+    # Since using solve in place of deltaintegrate we're able to perform
+    # substantially more complex density computations on single continuous
+    # random variables.
     x = Normal('x', 0, 1)
     assert density(x**3)
     assert density(exp(x**2))

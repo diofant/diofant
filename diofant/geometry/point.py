@@ -351,8 +351,6 @@ class Point(GeometryEntity):
         coords = [x.evalf(dps, **options) for x in self.args]
         return Point(*coords, evaluate=False)
 
-    n = evalf
-
     def intersection(self, o):
         """The intersection between this point and another point.
 

@@ -160,7 +160,7 @@ def test_sympyissue_6313():
 
 
 def test_collect_1():
-    """Collect with respect to a Symbol"""
+    # Collect with respect to a Symbol.
     assert collect(x + y*x, x) == x * (1 + y)
     assert collect(x + x**2, x) == x + x**2
     assert collect(x**2 + y*x**2, x) == (x**2)*(1 + y)
@@ -177,13 +177,13 @@ def test_collect_1():
 
 
 def test_collect_2():
-    """Collect with respect to a sum"""
+    # Collect with respect to a sum.
     assert collect(a*(cos(x) + sin(x)) + b*(cos(x) + sin(x)),
                    sin(x) + cos(x)) == (a + b)*(cos(x) + sin(x))
 
 
 def test_collect_3():
-    """Collect with respect to a product"""
+    # Collect with respect to a product.
     f = Function('f')
 
     assert collect(-x/8 + x*y, -x) == x*(y - Rational(1, 8))
@@ -299,7 +299,7 @@ def test_collect_D_0():
 
 
 def test_collect_Wild():
-    """Collect with respect to functions with Wild argument"""
+    # Collect with respect to functions with Wild argument.
     f = Function('f')
     w1 = Wild('.1')
     w2 = Wild('.2')
