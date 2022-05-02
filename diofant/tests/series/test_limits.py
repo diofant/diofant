@@ -1009,3 +1009,10 @@ def test_sympyissue_23319():
 
 def test_issue_1230():
     assert limit(log(x + sqrt(x**2 + 1)), x, I*oo) == oo
+
+
+def test_sympyissue_8433():
+    d = Symbol('d', positive=True)
+    e = erf(1 - x/d)
+    assert limit(e, x, oo) == -1
+    assert limit(e.subs({d: 2}), x, oo) == -1
