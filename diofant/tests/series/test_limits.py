@@ -1016,3 +1016,10 @@ def test_sympyissue_8433():
     e = erf(1 - x/d)
     assert limit(e, x, oo) == -1
     assert limit(e.subs({d: 2}), x, oo) == -1
+
+
+def test_sympyissue_13750():
+    assert limit(erf(-x), x, oo) == -1
+    assert limit(erf(1 - x), x, oo) == -1
+    assert limit(erf(a - x), x, oo) == -1
+    assert limit(erf(sqrt(x) - x), x, oo) == -1
