@@ -374,9 +374,7 @@ def test_solve_univariate_inequality():
 
 
 def test_slow_general_univariate():
-    r = RootOf(x**5 - x**2 + 1, 0)
-    assert reduce_inequalities(sqrt(x) + 1/root(x, 3) > 1) == \
-        ((Integer(0) < x) & (x < r**6)) | (r**6 < x)
+    assert reduce_inequalities(sqrt(x) + 1/root(x, 3) > 1) == (Integer(0) < x)
 
 
 def test_sympyissue_8545():
