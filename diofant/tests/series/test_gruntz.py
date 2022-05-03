@@ -10,11 +10,11 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
-                     Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
-                     airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
-                     erf, exp, factorial, fibonacci, gamma, li, limit, log,
-                     loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan, tanh,
-                     zeta)
+                     Limit, Max, Min, Mul, Pow, Rational, Symbol, acosh, acot,
+                     airyai, airybi, atan, binomial, cbrt, cos, cosh, coth,
+                     digamma, erf, exp, factorial, fibonacci, gamma, li, limit,
+                     log, loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan,
+                     tanh, zeta)
 from diofant.abc import a, n, y
 from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, signinf
 
@@ -104,8 +104,8 @@ def test_gruntz_eval_special_slow():
                  exp(-x)*exp(exp(x))*x, x, oo) == -1
     assert limit(exp((log(2) + 1)*x)*(zeta(x + exp(-x)) - zeta(x)),
                  x, oo) == -log(2)
-
-    # TODO 8.36 - 8.37 (bessel, max-min)
+    # TODO 8.36 (bessel)
+    assert limit(Max(x, exp(x))/log(Min(exp(-x), exp(-exp(x)))), x, oo) == -1
 
 
 def test_gruntz_other():
@@ -378,6 +378,8 @@ def test_intractable():
 
     # issue sympy/sympy#10976
     assert limit(erf(m/x)/erf(1/x), x, oo) == m
+
+    assert limit(Max(x**2, x, exp(x))/x, x, oo) == oo
 
 
 def test_branch_cuts():

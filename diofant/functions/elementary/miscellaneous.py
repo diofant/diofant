@@ -424,6 +424,14 @@ class MinMaxBase(LatticeOp):
         from .. import Heaviside, Piecewise
         return self.rewrite(Heaviside).rewrite(Piecewise)
 
+    def _eval_rewrite_as_tractable(self, *args, wrt=None, **kwargs):
+        r = args[0]
+        for a in args[1:]:
+            t = self.func((a - r).limit(wrt, oo), 0)
+            if (self.func is Max and t != 0) or (self.func is Min and t == 0):
+                r = a
+        return r
+
     def _eval_simplify(self, ratio, measure):
         args = [arg.simplify(ratio=ratio, measure=measure) for arg in self.args]
         arg_sets = [set(Mul.make_args(arg)) for arg in args]
