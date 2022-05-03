@@ -2,12 +2,12 @@ import pytest
 
 from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
                      IndexedBase, Integer, Integral, LambertW, Matrix, Max,
-                     Mul, Piecewise, Pow, Rational, RootOf, Symbol, Tuple,
-                     Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
-                     erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
-                     nfloat, ordered, pi, posify, re, root, sec, sech,
-                     simplify, sin, sinh, solve, sqrt, sstr, symbols, tan,
-                     tanh)
+                     Mul, Piecewise, Poly, Pow, Rational, RootOf, Symbol,
+                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
+                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
+                     im, log, nan, nfloat, ordered, pi, posify, re, root, sec,
+                     sech, simplify, sin, sinh, solve, sqrt, sstr, symbols,
+                     tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
