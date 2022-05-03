@@ -12,13 +12,6 @@ from .symbol import Dummy, Symbol
 from .sympify import sympify
 
 
-__all__ = (
-    'Rel', 'Eq', 'Ne', 'Lt', 'Le', 'Gt', 'Ge',
-    'Relational', 'Equality', 'Unequality', 'StrictLessThan', 'LessThan',
-    'StrictGreaterThan', 'GreaterThan',
-)
-
-
 # Note, see issue sympy/sympy#4986.  Ideally, we wouldn't want to subclass both Boolean
 # and Expr.
 
@@ -50,7 +43,7 @@ class Relational(Boolean, Expr, EvalfMixin):
     # ValidRelationOperator - Defined below, because the necessary classes
     #   have not yet been defined
 
-    def __new__(cls, lhs, rhs, rop=None, **assumptions):
+    def __new__(cls, lhs, rhs=0, rop=None, **assumptions):
         # If called by a subclass, do nothing special and pass on to Expr.
         if cls is not Relational:
             return Expr.__new__(cls, lhs, rhs, **assumptions)
@@ -59,8 +52,9 @@ class Relational(Boolean, Expr, EvalfMixin):
         try:
             new_cls = cls.ValidRelationOperator[rop]
             return new_cls(lhs, rhs, **assumptions)
-        except KeyError:
-            raise ValueError(f'Invalid relational operator symbol: {rop!r}')
+        except KeyError as exc:
+            raise ValueError('Invalid relational operator '
+                             f'symbol: {rop!r}') from exc
 
     @property
     def lhs(self):
@@ -279,7 +273,7 @@ class Equality(Relational):
 
     is_Equality = True
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs=0, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -345,7 +339,7 @@ class Unequality(Relational):
 
     rel_op = '!='
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs=0, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -370,7 +364,7 @@ class _Inequality(Relational):
 
     """
 
-    def __new__(cls, lhs, rhs, **options):
+    def __new__(cls, lhs, rhs=0, **options):  # pylint: disable=signature-differs
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 

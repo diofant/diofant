@@ -31,8 +31,8 @@ from ..abc import z
 from ..core import Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, oo, sympify
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
-from ..polys import (DomainError, Poly, PolynomialError, RootSum, cancel, gcd,
-                     real_roots, reduced)
+from ..polys import (Poly, PolynomialError, RootSum, cancel, gcd, real_roots,
+                     reduced)
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
@@ -76,10 +76,10 @@ def integer_powers(exprs):
 
     terms = {}
     for term in exprs:
-        for j in terms:  # pylint: disable=consider-using-dict-items
+        for j, t in terms.items():
             a = cancel(term/j)
             if a.is_Rational:
-                terms[j].append((term, a))
+                t.append((term, a))
                 break
         else:
             terms[term] = [(term, Integer(1))]
@@ -455,59 +455,57 @@ class DifferentialExtension:
 
                     continue
 
-                else:
-                    # Bad news: we have an algebraic radical.  But maybe we
-                    # could still avoid it by choosing a different extension.
-                    # For example, integer_powers() won't handle exp(x/2 + 1)
-                    # over QQ(x, exp(x)), but if we pull out the exp(1), it
-                    # will.  Or maybe we have exp(x + x**2/2), over
-                    # QQ(x, exp(x), exp(x**2)), which is exp(x)*sqrt(exp(x**2)),
-                    # but if we use QQ(x, exp(x), exp(x**2/2)), then they will
-                    # all work.
-                    #
-                    # So here is what we do: If there is a non-zero const, pull
-                    # it out and retry.  Also, if len(ans) > 1, then rewrite
-                    # exp(arg) as the product of exponentials from ans, and
-                    # retry that.  If const == 0 and len(ans) == 1, then we
-                    # assume that it would have been handled by either
-                    # integer_powers() or n == 1 above if it could be handled,
-                    # so we give up at that point.  For example, you can never
-                    # handle exp(log(x)/2) because it equals sqrt(x).
+                # Bad news: we have an algebraic radical.  But maybe we
+                # could still avoid it by choosing a different extension.
+                # For example, integer_powers() won't handle exp(x/2 + 1)
+                # over QQ(x, exp(x)), but if we pull out the exp(1), it
+                # will.  Or maybe we have exp(x + x**2/2), over
+                # QQ(x, exp(x), exp(x**2)), which is exp(x)*sqrt(exp(x**2)),
+                # but if we use QQ(x, exp(x), exp(x**2/2)), then they will
+                # all work.
+                #
+                # So here is what we do: If there is a non-zero const, pull
+                # it out and retry.  Also, if len(ans) > 1, then rewrite
+                # exp(arg) as the product of exponentials from ans, and
+                # retry that.  If const == 0 and len(ans) == 1, then we
+                # assume that it would have been handled by either
+                # integer_powers() or n == 1 above if it could be handled,
+                # so we give up at that point.  For example, you can never
+                # handle exp(log(x)/2) because it equals sqrt(x).
 
-                    if const or len(ans) > 1:
-                        rad = Mul(*[term**(power/n) for term, power in ans])
-                        self.newf = self.newf.xreplace({exp(p*exparg):
-                                                        exp(const*p)*rad for exparg, p in others})
-                        self.newf = self.newf.xreplace(dict(zip(reversed(self.T),
-                                                                reversed([f(self.x) for f in self.Tfuncs]))))
-                        restart = True
-                        break
-                    else:
-                        # TODO: give algebraic dependence in error string
-                        raise NotImplementedError('Cannot integrate over '
-                                                  'algebraic extensions.')
+                if const or len(ans) > 1:
+                    rad = Mul(*[term**(power/n) for term, power in ans])
+                    self.newf = self.newf.xreplace({exp(p*exparg):
+                                                    exp(const*p)*rad for exparg, p in others})
+                    self.newf = self.newf.xreplace(dict(zip(reversed(self.T),
+                                                            reversed([f(self.x) for f in self.Tfuncs]))))
+                    restart = True
+                    break
+                # TODO: give algebraic dependence in error string
+                raise NotImplementedError('Cannot integrate over '
+                                          'algebraic extensions.')
 
+            arga, argd = frac_in(arg, self.t)
+            darga = (argd*derivation(Poly(arga, self.t), self) -
+                     arga*derivation(Poly(argd, self.t), self))
+            dargd = argd**2
+            darga, dargd = darga.cancel(dargd, include=True)
+            darg = darga.as_expr()/dargd.as_expr()
+            self.t = next(self.ts)
+            self.T.append(self.t)
+            self.E_args.append(arg)
+            self.E_K.append(len(self.T) - 1)
+            self.D.append(darg.as_poly(self.t,
+                                       expand=False)*Poly(self.t, self.t,
+                                                          expand=False))
+            if dummy:
+                i = Dummy('i')
             else:
-                arga, argd = frac_in(arg, self.t)
-                darga = (argd*derivation(Poly(arga, self.t), self) -
-                         arga*derivation(Poly(argd, self.t), self))
-                dargd = argd**2
-                darga, dargd = darga.cancel(dargd, include=True)
-                darg = darga.as_expr()/dargd.as_expr()
-                self.t = next(self.ts)
-                self.T.append(self.t)
-                self.E_args.append(arg)
-                self.E_K.append(len(self.T) - 1)
-                self.D.append(darg.as_poly(self.t, expand=False)*Poly(self.t,
-                                                                      self.t, expand=False))
-                if dummy:
-                    i = Dummy('i')
-                else:
-                    i = Symbol('i')
-                self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs({self.x: i})))]
-                self.newf = self.newf.xreplace(
-                    {exp(exparg): self.t**p for exparg, p in others})
-                new_extension = True
+                i = Symbol('i')
+            self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs({self.x: i})))]
+            self.newf = self.newf.xreplace({exp(exparg): self.t**p
+                                            for exparg, p in others})
+            new_extension = True
 
         if not restart:
             return new_extension
@@ -542,25 +540,24 @@ class DifferentialExtension:
                 self.newf = self.newf.xreplace({log(arg): newterm})
                 continue
 
+            arga, argd = frac_in(arg, self.t)
+            darga = (argd*derivation(Poly(arga, self.t), self) -
+                     arga*derivation(Poly(argd, self.t), self))
+            dargd = argd**2
+            darg = darga.as_expr()/dargd.as_expr()
+            self.t = next(self.ts)
+            self.T.append(self.t)
+            self.L_args.append(arg)
+            self.L_K.append(len(self.T) - 1)
+            self.D.append(cancel(darg.as_expr()/arg).as_poly(self.t,
+                                                             expand=False))
+            if dummy:
+                i = Dummy('i')
             else:
-                arga, argd = frac_in(arg, self.t)
-                darga = (argd*derivation(Poly(arga, self.t), self) -
-                         arga*derivation(Poly(argd, self.t), self))
-                dargd = argd**2
-                darg = darga.as_expr()/dargd.as_expr()
-                self.t = next(self.ts)
-                self.T.append(self.t)
-                self.L_args.append(arg)
-                self.L_K.append(len(self.T) - 1)
-                self.D.append(cancel(darg.as_expr()/arg).as_poly(self.t,
-                                                                 expand=False))
-                if dummy:
-                    i = Dummy('i')
-                else:
-                    i = Symbol('i')
-                self.Tfuncs = self.Tfuncs + [Lambda(i, log(arg.subs({self.x: i})))]
-                self.newf = self.newf.xreplace({log(arg): self.t})
-                new_extension = True
+                i = Symbol('i')
+            self.Tfuncs = self.Tfuncs + [Lambda(i, log(arg.subs({self.x: i})))]
+            self.newf = self.newf.xreplace({log(arg): self.t})
+            new_extension = True
 
         return new_extension
 
@@ -748,13 +745,9 @@ def as_poly_1t(p, t, z):
     one_t_part = pa.slice(0, d + 1)
     r = pd.degree() - pa.degree()
     t_part = pa - one_t_part
-    try:
-        t_part = t_part.to_field().exquo(pd)
-    except DomainError as e:
-        # issue sympy/sympy#4950
-        raise NotImplementedError(e)
+    t_part = t_part.to_field().exquo(pd)
     # Compute the negative degree parts.
-    od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
+    od = max(-r - one_t_part.degree() if r < 0 < d else 0, 0)
     one_t_part = Poly([0]*od + list(reversed(one_t_part.rep.all_coeffs())),
                       *one_t_part.gens, domain=one_t_part.domain)
     if 0 < r < oo:
@@ -1373,7 +1366,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
         for i in range(-p.degree(z), p.degree(t1) + 1):
             if not i:
                 continue
-            elif i < 0:
+            if i < 0:
                 # If you get AttributeError: 'NoneType' object has no attribute 'nth'
                 # then this should really not have expand=False
                 # But it shouldn't happen because p is already a Poly in t and z

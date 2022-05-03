@@ -120,7 +120,7 @@ class erf(Function):
             return 1 - arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(I)
+        t = arg.as_coefficient(I)
         if t in (oo, -oo):
             return arg
 
@@ -172,7 +172,9 @@ class erf(Function):
     def _eval_rewrite_as_expint(self, z):
         return sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, wrt=None, **kwargs):
+        if wrt is not None and z.limit(wrt, oo) == -oo:
+            return -1 + _erfs(-z)*exp(-z**2)
         return 1 - _erfs(z)*exp(-z**2)
 
     def _eval_rewrite_as_erfc(self, z):
@@ -306,7 +308,7 @@ class erfc(Function):
             return arg.args[0]
 
         # Try to pull out factors of I
-        t = arg.extract_multiplicatively(I)
+        t = arg.as_coefficient(I)
         if t in (oo, -oo):
             return -arg
 
@@ -339,8 +341,8 @@ class erfc(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite('tractable', deep=True)
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
+        return self.rewrite(erf).rewrite('tractable', **kwargs)
 
     def _eval_rewrite_as_erf(self, z):
         return 1 - erf(z)
@@ -485,7 +487,7 @@ class erfi(Function):
             return -cls(-z)
 
         # Try to pull out factors of I
-        nz = z.extract_multiplicatively(I)
+        nz = z.as_coefficient(I)
         if nz is not None:
             if nz is oo:
                 return I
@@ -517,8 +519,8 @@ class erfi(Function):
         elif arg.is_imaginary and arg.is_nonzero:
             return False
 
-    def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite('tractable', deep=True)
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
+        return self.rewrite(erf).rewrite('tractable', **kwargs)
 
     def _eval_rewrite_as_erf(self, z):
         return -I*erf(I*z)
@@ -629,7 +631,7 @@ class erf2(Function):
 
     """
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         x, y = self.args
         if argindex == 1:
             return -2*exp(-x**2)/sqrt(pi)
@@ -769,7 +771,7 @@ class erfinv(Function):
             return z.args[0]
 
         # Try to pull out factors of -1
-        nz = z.extract_multiplicatively(-1)
+        nz = z.as_coefficient(-1)
         if isinstance(nz, erf) and nz.args[0].is_extended_real:
             return -nz.args[0]
 
@@ -887,7 +889,7 @@ class erf2inv(Function):
 
     """
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         x, y = self.args
         if argindex == 1:
             return exp(self.func(x, y)**2-x**2)
@@ -1054,7 +1056,7 @@ class Ei(Function):
         #     immediately turns into expint
         return -uppergamma(0, polar_lift(-1)*z) - I*pi
 
-    def _eval_rewrite_as_expint(self, z):
+    def _eval_rewrite_as_expint(self, z, **kwargs):
         return -expint(1, polar_lift(-1)*z) - I*pi
 
     def _eval_rewrite_as_li(self, z):
@@ -1072,7 +1074,7 @@ class Ei(Function):
     _eval_rewrite_as_Chi = _eval_rewrite_as_Si
     _eval_rewrite_as_Shi = _eval_rewrite_as_Si
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(z) * _eis(z)
 
     def _eval_nseries(self, x, n, logx):
@@ -1200,7 +1202,7 @@ class expint(Function):
         else:
             return (exp(2*I*pi*nu*n) - 1)*z**(nu - 1)*gamma(1 - nu) + expint(nu, z)
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         from .hyper import meijerg
         nu, z = self.args
         if argindex == 1:
@@ -1404,7 +1406,7 @@ class li(Function):
         return (-log(-log(z)) - (log(1/log(z)) - log(log(z)))/2
                 - meijerg(((), (1,)), ((0, 0), ()), -log(z)))
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return z * _eis(log(z))
 
 
@@ -1484,8 +1486,8 @@ class Li(Function):
     def _eval_rewrite_as_li(self, z):
         return li(z) - li(2)
 
-    def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(li).rewrite('tractable', deep=True)
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
+        return self.rewrite(li).rewrite('tractable', **kwargs)
 
 ###############################################################################
 # ################## TRIGONOMETRIC INTEGRALS ################################ #
@@ -1504,18 +1506,18 @@ class TrigonometricIntegral(Function):
         elif z == -oo:
             return cls._atneginf()
 
-        nz = z.extract_multiplicatively(polar_lift(I))
+        nz = z.as_coefficient(polar_lift(I))
         if nz is None and cls._trigfunc(0) == 0:
-            nz = z.extract_multiplicatively(I)
+            nz = z.as_coefficient(I)
         if nz is not None:
             return cls._Ifactor(nz, 1)
-        nz = z.extract_multiplicatively(polar_lift(-I))
+        nz = z.as_coefficient(polar_lift(-I))
         if nz is not None:
             return cls._Ifactor(nz, -1)
 
-        nz = z.extract_multiplicatively(polar_lift(-1))
+        nz = z.as_coefficient(polar_lift(-1))
         if nz is None and cls._trigfunc(0) == 0:
-            nz = z.extract_multiplicatively(-1)
+            nz = z.as_coefficient(-1)
         if nz is not None:
             return cls._minusfactor(nz)
 
@@ -1923,13 +1925,13 @@ class FresnelIntegral(Function):
         newarg = z
         changed = False
 
-        nz = newarg.extract_multiplicatively(-1)
+        nz = newarg.as_coefficient(-1)
         if nz is not None:
             prefact = -prefact
             newarg = nz
             changed = True
 
-        nz = newarg.extract_multiplicatively(I)
+        nz = newarg.as_coefficient(I)
         if nz is not None:
             prefact = cls._sign*I*prefact
             newarg = nz
@@ -2254,9 +2256,8 @@ class _erfs(Function):
 
     @classmethod
     def eval(cls, z):
-        r = cls(z, evaluate=False).rewrite('intractable')
-        if r.is_number:
-            return r
+        if z.is_zero:
+            return Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
@@ -2265,17 +2266,6 @@ class _erfs(Function):
         # Expansion at oo
         if point is oo:
             z = self.args[0]
-            l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
-                 factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
-            o = Order(1/z**(2*n + 1), x)
-            # It is very inefficient to first add the order and then do the nseries
-            return (Add(*l))._eval_nseries(x, n, logx) + o
-
-        # Expansion at I*oo
-        t = point.extract_multiplicatively(I)
-        if t is oo:
-            z = self.args[0]
-            # TODO: is the series really correct?
             l = [1/sqrt(pi)*factorial(2*k)*(-Integer(4))**(-k) /
                  factorial(k)*(1/z)**(2*k + 1) for k in range(n)]
             o = Order(1/z**(2*n + 1), x)
@@ -2294,6 +2284,9 @@ class _erfs(Function):
 
     def _eval_rewrite_as_intractable(self, z):
         return (1 - erf(z))*exp(z**2)
+
+    def _eval_evalf(self, prec):
+        return self.rewrite('intractable').evalf(prec)
 
 
 class _eis(Function):

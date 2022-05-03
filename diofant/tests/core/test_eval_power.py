@@ -52,8 +52,7 @@ def test_sqrt():
 
 
 def test_sympyissue_3449():
-    # test if powers are simplified correctly
-    # see also issue sympy/sympy#3995
+    # test if powers are simplified correctly, see also sympy/sympy#3995
     assert cbrt(x)**2 == x**Rational(2, 3)
     assert (x**3)**Rational(2, 5) == Pow(x**3, Rational(2, 5), evaluate=False)
 
@@ -80,9 +79,12 @@ def test_sympyissue_3449():
     assert (a**2)**b == (a**b)**2
     assert (a**Rational(2, 3))**x == (a**(2*x/3)) != (a**x)**Rational(2, 3)
 
+    assert sqrt(x - 1).subs({x: 5}) == 2
+
 
 def test_sympyissue_3866():
-    assert --sqrt(sqrt(5) - 1) == sqrt(sqrt(5) - 1)
+    # pylint: disable=nonexistent-operator
+    assert -(-sqrt(sqrt(5) - 1)) == sqrt(sqrt(5) - 1)
 
 
 def test_negative_one():
@@ -111,7 +113,7 @@ def test_sympyissue_4362():
     nneg = -1
     dpos = 2 - sqrt(3)
     dneg = 1 - sqrt(3)
-    assert dpos > 0 and dneg < 0 and npos > 0 and nneg < 0
+    assert dpos > 0 > dneg and npos > 0 > nneg
     # pos or neg integer
     eq = eqn(npos, dpos, 2)
     assert eq.is_Pow and eq.as_numer_denom() == (1, dpos**2)
@@ -193,7 +195,7 @@ def test_sympyissue_4362():
 
 
 def test_Pow_signs():
-    """Cf. issues sympy/sympy#4595 and sympy/sympy#5250"""
+    # Cf. issues sympy/sympy#4595 and sympy/sympy#5250
     n = Symbol('n', even=True)
     assert (3 - y)**2 != (y - 3)**2
     assert (3 - y)**n != (y - 3)**n
@@ -204,7 +206,7 @@ def test_Pow_signs():
 def test_power_with_noncommutative_mul_as_base():
     x = Symbol('x', commutative=False)
     y = Symbol('y', commutative=False)
-    assert not (x*y)**3 == x**3*y**3
+    assert (x*y)**3 != x**3*y**3
     assert (2*x*y)**3 == 8*(x*y)**3
 
 

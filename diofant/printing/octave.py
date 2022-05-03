@@ -379,14 +379,6 @@ class OctaveCodePrinter(CodePrinter):
             return self._print_not_supported(expr)
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != true:
-            # We need the last conditional to be a True, otherwise the resulting
-            # function may not return a result.
-            raise ValueError('All Piecewise expressions must contain an '
-                             '(expr, True) statement to be used as a default '
-                             'condition. Without one, the generated '
-                             'expression may not evaluate to anything under '
-                             'some condition.')
         lines = []
         if self._settings['inline']:
             # Express each (cond, expr) pair in a nested Horner form:

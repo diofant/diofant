@@ -635,8 +635,7 @@ def topological_sort(graph, key=None):
 
     if E:
         raise ValueError('cycle detected')
-    else:
-        return L
+    return L
 
 
 def rotate_left(x, y):
@@ -913,7 +912,7 @@ def multiset_partitions(multiset, m=None):
     Stirling Number of the 2nd kind:
 
     >>> def s2(n, k):
-    ...     from diofant import Dummy, binomial, factorial, Sum
+    ...     from diofant import Dummy, Sum, binomial, factorial
     ...     if k > n:
     ...         return 0
     ...     j = Dummy()
@@ -1470,7 +1469,7 @@ def uniq(seq, result=None):
             yield s
             result.append(s)
         if hasattr(seq, '__getitem__'):
-            for s in uniq(seq[i + 1:], result):
+            for s in uniq(seq[i + 1:], result):  # pylint: disable=used-before-assignment
                 yield s
         else:
             for s in uniq(seq, result):
@@ -1541,7 +1540,7 @@ def generate_derangements(perm):
     """
     p = multiset_permutations(perm)
     indices = range(len(perm))
-    p0 = next(p)
+    p0 = next(p)  # pylint: disable=stop-iteration-return
     for pi in p:
         if all(pi[i] != p0[i] for i in indices):
             yield pi
@@ -1699,9 +1698,8 @@ def runs(seq, op=operator.gt):
         if op(ei, run[-1]):
             run.append(ei)
             continue
-        else:
-            cycles.append(run)
-            run = [ei]
+        cycles.append(run)
+        run = [ei]
     cycles.append(run)
     return cycles
 
@@ -1712,7 +1710,7 @@ def cantor_product(*args):
     Each iterable is advanced in turn in a round-robin fashion. As usual with
     breadth-first, this comes at the cost of memory consumption.
 
-    >>> from itertools import islice, count
+    >>> from itertools import count, islice
     >>> list(islice(cantor_product(count(), count()), 9))
     [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
 

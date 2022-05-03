@@ -108,8 +108,9 @@ class FiniteField(Field, IntegerModRing):
             if not order or len(pp) != 1:
                 raise ValueError
             mod, deg = pp.popitem()
-        except ValueError:
-            raise ValueError(f'order must be a prime power, got {order}')
+        except ValueError as exc:
+            raise ValueError('order must be a prime power, '
+                             f'got {order}') from exc
 
         if deg == 1:
             if modulus:
@@ -146,7 +147,7 @@ class FiniteField(Field, IntegerModRing):
 
         try:
             obj.dtype = _modular_integer_cache[key]
-        except KeyError:
+        except KeyError as exc:
             if deg == 1:
                 obj.dtype = type('ModularInteger', (ModularInteger,),
                                  {'mod': mod, 'domain': dom, '_parent': obj})
@@ -154,7 +155,8 @@ class FiniteField(Field, IntegerModRing):
                 ff = dom.finite_field(mod).inject(Dummy('x'))
                 mod = ff.from_list(modulus)
                 if not mod.is_irreducible:
-                    raise ValueError('defining polynomial must be irreducible')
+                    raise ValueError('defining polynomial must be '
+                                     'irreducible') from exc
                 obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
                                  {'mod': mod, 'domain': ff, '_parent': obj})
             _modular_integer_cache[key] = obj.dtype

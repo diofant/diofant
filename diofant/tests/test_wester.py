@@ -1,9 +1,11 @@
-"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
-capabilities".
+"""
+Tests from Michael Wester's 1999 paper.
 
-http://www.math.unm.edu/~wester/cas/book/Wester.pdf
-See also http://math.unm.edu/~wester/cas_review.html for detailed output of
-each tested system.
+References
+==========
+
+* http://www.math.unm.edu/~wester/cas/book/Wester.pdf
+* http://math.unm.edu/~wester/cas_review.html
 """
 import itertools
 import math
@@ -33,10 +35,10 @@ from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
                      oo, pi, polygamma, polylog, powdenest, powsimp,
                      primerange, primitive, primitive_root, product, radsimp,
                      re, reduce_inequalities, residue, resultant, rf, root,
-                     rsolve, sec, series, sign, simplify, sin, sinh, solve,
-                     sqrt, sqrtdenest, summation, symbols, tan, tanh, totient,
+                     rsolve, sec, sign, simplify, sin, sinh, solve, sqrt,
+                     sqrtdenest, summation, symbols, tan, tanh, totient,
                      trigsimp, trunc, wronskian, zeta, zoo)
-from diofant.abc import a, b, c, s, t, w, x, y, z
+from diofant.abc import a, b, c, d, s, t, v, w, x, y, z
 from diofant.functions.combinatorial.numbers import stirling
 from diofant.utilities.iterables import partitions
 
@@ -44,7 +46,7 @@ from diofant.utilities.iterables import partitions
 __all__ = ()
 
 i, j, k, l, m, n = symbols('i j k l m n', integer=True)
-f, g = symbols('f g', cls=Function)
+f, g, h = symbols('f g h', cls=Function)
 
 
 # B. Set Theory
@@ -1485,8 +1487,8 @@ def test_R8():
 
 def test_R9():
     n, k = symbols('n k', integer=True, positive=True)
-    Sm = Sum(binomial(n, k - 1)/k, (k, 1, n + 1))
-    assert Sm.doit().simplify() == (2**(n + 1) - 1)/(n + 1)
+    Sm = summation(binomial(n, k - 1)/k, (k, 1, n + 1))
+    assert Sm.simplify() == (2**(n + 1) - 1)/(n + 1)
 
 
 def test_R10():
@@ -1573,8 +1575,8 @@ def test_R24():
 
 def test_S1():
     k = symbols('k', integer=True, positive=True)
-    Pr = Product(gamma(k/3), (k, 1, 8))
-    assert Pr.doit().simplify() == 640*sqrt(3)*pi**3/6561
+    Pr = product(gamma(k/3), (k, 1, 8))
+    assert Pr.simplify() == 640*sqrt(3)*pi**3/6561
 
 
 def test_S2():
@@ -1584,12 +1586,12 @@ def test_S2():
 
 def test_S3():
     n, k = symbols('n k', integer=True, positive=True)
-    assert Product(x**k, (k, 1, n)).doit().simplify() == x**(n*(n + 1)/2)
+    assert product(x**k, (k, 1, n)).simplify() == x**(n*(n + 1)/2)
 
 
 def test_S4():
     n, k = symbols('n k', integer=True, positive=True)
-    assert Product(1 + 1/k, (k, 1, n - 1)).doit().simplify() == n
+    assert product(1 + 1/k, (k, 1, n - 1)).simplify() == n
 
 
 def test_S5():
@@ -1696,14 +1698,12 @@ def test_T12():
 
 
 def test_T13():
-    x = symbols('x', real=True)
-    assert [limit(x/abs(x), x, 0, dir='-'),
-            limit(x/abs(x), x, 0, dir='+')] == [-1, 1]
+    assert [limit(x/abs(x), x, 0, dir=1),
+            limit(x/abs(x), x, 0)] == [-1, 1]
 
 
 def test_T14():
-    x = symbols('x', real=True)
-    assert limit(atan(-log(x)), x, 0, dir='+') == pi/2
+    assert limit(atan(-log(x)), x, 0) == pi/2
 
 
 # U. Calculus
@@ -1714,8 +1714,8 @@ def test_U1():
 
 
 def test_U2():
-    f = Lambda(x, Piecewise((-x, x < 0), (x, x >= 0)))
-    assert diff(f(x), x) == Piecewise((-1, x < 0), (1, x >= 0))
+    f = Lambda(x, Piecewise((-x, x < 0), (x, True)))
+    assert diff(f(x), x) == Piecewise((-1, x < 0), (1, True))
 
 
 def test_U3():
@@ -1982,45 +1982,41 @@ def test_W27():
 # X. Series
 
 def test_X1():
-    v, c = symbols('v c', real=True)
-    assert (series(1/sqrt(1 - (v/c)**2), v, x0=0, n=8) ==
+    assert ((1/sqrt(1 - (v/c)**2)).series(v, n=8) ==
             5*v**6/(16*c**6) + 3*v**4/(8*c**4) + v**2/(2*c**2) + 1 + O(v**8))
 
 
 def test_X2():
-    v, c = symbols('v c', real=True)
-    s1 = series(1/sqrt(1 - (v/c)**2), v, x0=0, n=8)
+    s1 = (1/sqrt(1 - (v/c)**2)).series(v, n=8)
     assert (1/s1**2).series(v, x0=0, n=8) == -v**2/c**2 + 1 + O(v**8)
 
 
 def test_X3():
     s1 = (sin(x).series()/cos(x).series()).series()
     s2 = tan(x).series()
-    assert s2 == x + x**3/3 + 2*x**5/15 + O(x**6)
-    assert s1 == s2
+    assert s1 == s2 == x + x**3/3 + 2*x**5/15 + O(x**6)
 
 
 def test_X4():
     s1 = log(sin(x)/x).series()
-    assert s1 == -x**2/6 - x**4/180 + O(x**6)
-    assert log(series(sin(x)/x)).series() == s1
+    s2 = log((sin(x)/x).series()).series()
+    assert s1 == s2 == -x**2/6 - x**4/180 + O(x**6)
 
 
-@pytest.mark.xfail
 def test_X5():
-    h = Function('h')
-    a, b, c, d = symbols('a b c d', real=True)
-    series(diff(f(a*x), x) + g(b*x) + integrate(h(c*y), (y, 0, x)),
-           x, x0=d, n=2)
+    assert ((diff(f(a*x), x) + g(b*x) +
+             integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2) ==
+            (Integral(h(c*y), (y, 0, x)) + g(b*d) +
+             b*(-d + x)*Subs(Derivative(g(y), y), (y, b*d)) +
+             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, (x, d))))
 
 
 def test_X6():
     # Taylor series of nonscalar objects (noncommutative multiplication)
     # expected result => (B A - A B) t^2/2 + O(t^3)   [Stanly Steinberg]
-    a, b = symbols('a b', commutative=False, scalar=False)
-    assert (series(exp((a + b)*x) - exp(a*x) * exp(b*x), x,
-                   x0=0, n=3).expand().collect(x) ==
-            x**2*(-a*b/2 + b*a/2) + O(x**3))
+    a, b = symbols('a b', commutative=False)
+    assert ((exp((a + b)*x) - exp(a*x)*exp(b*x)).series(x, n=3) ==
+            x**2*(b*a/2 - a*b/2) + O(x**3))
 
 
 @pytest.mark.slow
@@ -2028,7 +2024,7 @@ def test_X7():
     # => sum( Bernoulli[k]/k! x^(k - 2), k = 1..infinity )
     #    = 1/x^2 - 1/(2 x) + 1/12 - x^2/720 + x^4/30240 + O(x^6)
     #    [Levinson and Redheffer, p. 173]
-    assert (series(1/(x*(exp(x) - 1)), x, 0, 7) == x**(-2) - 1/(2*x) +
+    assert ((1/(x*(exp(x) - 1))).series(x, n=7) == x**(-2) - 1/(2*x) +
             Rational(1, 12) - x**2/720 + x**4/30240 - x**6/1209600 + O(x**7))
 
 
@@ -2036,47 +2032,46 @@ def test_X8():
     # Puiseux series (terms with fractional degree):
     # => 1/sqrt(x - 3/2 pi) + (x - 3/2 pi)^(3/2) / 12 + O([x - 3/2 pi]^(7/2))
 
-    # see issue sympy/sympy#7167:
-    x = symbols('x', real=True)
-    assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
+    # see issue sympy/sympy#7167
+    assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + sqrt(x - 3*pi/2)**3/12 +
             sqrt(x - 3*pi/2)**7/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
 
 def test_X9():
-    assert (series(x**x, x, x0=0, n=4) == 1 + x*log(x) + x**2*log(x)**2/2 +
+    assert ((x**x).series(x, n=4) == 1 + x*log(x) + x**2*log(x)**2/2 +
             x**3*log(x)**3/6 + x**4*log(x)**4) + O(x**4)
 
 
 def test_X10():
-    assert (series(log(sinh(z)) + log(cosh(z + w)), z, x0=0, n=2) ==
+    assert ((log(sinh(z)) + log(cosh(z + w))).series(z, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
 def test_X11():
-    assert (series(log(sinh(z) * cosh(z + w)), z, x0=0, n=2) ==
+    assert (log(sinh(z)*cosh(z + w)).series(z, n=2) ==
             log(cosh(w)) + log(z) + z*sinh(w)/cosh(w) + O(z**2))
 
 
 def test_X13():
-    assert series(sqrt(2*x**2 + 1), x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
+    assert sqrt(2*x**2 + 1).series(x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
 
 
 @pytest.mark.xfail
 def test_X14():
-    series(1/2**(2*n)*binomial(2*n, n), n, x0=oo, n=1)
+    (1/2**(2*n)*binomial(2*n, n)).series(n, x0=oo, n=1)
 
 
 @pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7164')
 def test_X15():
     x, t = symbols('x t', real=True)
     e1 = integrate(exp(-t)/t, (t, x, oo))
-    series(e1, x, x0=oo, n=5)
+    e1.series(x, x0=oo, n=5)
 
 
 @pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_X16():
-    series(cos(x + y), x + y, x0=0, n=4)
+    cos(x + y).series(x + y, x0=0, n=4)
 
 
 # Y. Transforms
@@ -2131,7 +2126,7 @@ def test_Y9():
 
 def test_Y10():
     assert (fourier_transform(abs(x)*exp(-3*abs(x)), x, z) ==
-            (-8*pi**2*z**2 + 18)/(16*pi**4*z**4 + 72*pi**2*z**2 + 81))
+            2*((-4*pi**2*z**2 + 9)/(16*pi**4*z**4 + 72*pi**2*z**2 + 81)))
 
 
 def test_Y12():

@@ -137,9 +137,9 @@ rational field, its algebraic extension or the finite field of order 5
 
 The finite fields of prime power order are supported
 
-    >>> factor(x**3 + 3*x + 2, modulus=4)
-            ⎛ 2        ⎞
-    (x + 1)⋅⎝x  + x + 2⎠
+    >>> factor(f, modulus=8)
+           2        2
+    (x + 4) ⋅(x + 7)
 
 You also may use ``gaussian`` keyword to obtain a factorization over
 Gaussian rationals

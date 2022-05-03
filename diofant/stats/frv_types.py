@@ -45,7 +45,7 @@ def FiniteRV(name, density):
 
     Returns a RandomSymbol.
 
-    >>> from diofant.stats import P, E
+    >>> from diofant.stats import E, P
 
     >>> density = {0: .1, 1: .2, 2: .3, 3: .4}
     >>> X = FiniteRV('X', density)
@@ -73,7 +73,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
     def set(self):
         return self.args
 
-    def pdf(self, x):
+    def pdf(self, x):  # pylint: disable=invalid-overridden-method
         if x in self.args:
             return self.p
         else:
@@ -111,8 +111,7 @@ class DieDistribution(SingleFiniteDistribution):
         sides_sym = sympify(sides)
         if fuzzy_not(fuzzy_and((sides_sym.is_integer, sides_sym.is_positive))):
             raise ValueError("'sides' must be a positive integer.")
-        else:
-            return super().__new__(cls, sides)
+        return super().__new__(cls, sides)
 
     @property  # type: ignore[misc]
     @cacheit
@@ -124,10 +123,10 @@ class DieDistribution(SingleFiniteDistribution):
     def set(self):
         return list(map(Integer, range(1, self.sides + 1)))
 
-    def pdf(self, x):
+    def pdf(self, x):  # pylint: disable=invalid-overridden-method
         x = sympify(x)
         if x.is_number:
-            if x.is_Integer and x >= 1 and x <= self.sides:
+            if x.is_Integer and 1 <= x <= self.sides:
                 return Rational(1, self.sides)
             return Integer(0)
         if x.is_Symbol:
@@ -221,10 +220,9 @@ class BinomialDistribution(SingleFiniteDistribution):
 
         if fuzzy_not(fuzzy_and((n_sym.is_integer, n_sym.is_nonnegative))):
             raise ValueError(f"'n' must be positive integer. n = {n!s}.")
-        elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
+        if fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
             raise ValueError(f"'p' must be: 0 <= p <= 1 . p = {p!s}")
-        else:
-            return super().__new__(cls, *args)
+        return super().__new__(cls, *args)
 
     @property
     def n(self):

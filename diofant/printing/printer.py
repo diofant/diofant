@@ -123,7 +123,7 @@ class Printer:
     >>> from diofant.printing.str import StrPrinter
 
     >>> class CustomStrPrinter(StrPrinter):
-    ...     def _print_Derivative(self, expr):
+    ...     def _print_Derivative(self, expr):  # noqa: N802
     ...         return str(expr.args[0].func) + "'"*len(expr.args[1:])
     >>> def mystr(e):
     ...     return CustomStrPrinter().doprint(e)

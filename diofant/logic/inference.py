@@ -2,33 +2,7 @@
 
 from ..core.sympify import sympify
 from ..utilities import ordered
-from .boolalg import And, Not, conjuncts, to_cnf
-
-
-def literal_symbol(literal):
-    """
-    The symbol in this literal (without the negation).
-
-    Examples
-    ========
-
-    >>> literal_symbol(a)
-    a
-    >>> literal_symbol(~a)
-    a
-
-    """
-    if literal is True or literal is False:
-        return literal
-    try:
-        if literal.is_Symbol:
-            return literal
-        if literal.is_Not:
-            return literal_symbol(literal.args[0])
-        else:
-            raise ValueError
-    except (AttributeError, ValueError):
-        raise ValueError('Argument must be a boolean literal.')
+from .boolalg import And, Not, to_cnf
 
 
 def satisfiable(expr, algorithm='dpll2', all_models=False):
@@ -243,7 +217,7 @@ class PropKB(KB):
         [y, x | y]
 
         """
-        for c in conjuncts(to_cnf(sentence)):
+        for c in And.make_args(to_cnf(sentence)):
             self.clauses_.add(c)
 
     def ask(self, query):
@@ -281,5 +255,5 @@ class PropKB(KB):
         []
 
         """
-        for c in conjuncts(to_cnf(sentence)):
+        for c in And.make_args(to_cnf(sentence)):
             self.clauses_.discard(c)

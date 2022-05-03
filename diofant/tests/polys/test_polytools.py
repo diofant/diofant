@@ -6,7 +6,7 @@ import math
 import pytest
 
 from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
-                     ComputationFailed, Derivative, DomainError, Eq,
+                     ComputationFailed, Derivative, DomainError, E, Eq,
                      ExactQuotientFailed, Expr, FlagError, Float,
                      GeneratorsError, GeneratorsNeeded, GroebnerBasis, I,
                      Integer, Integral, MatrixSymbol, Mul,
@@ -18,7 +18,7 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      div, exp, expand, exquo, factor, factor_list, false, gcd,
                      gcdex, grevlex, grlex, groebner, half_gcdex, im, invert,
                      lcm, lex, log, monic, nroots, oo, parallel_poly_from_expr,
-                     pi, poly, primitive, quo, re, real_roots, reduced, rem,
+                     pi, primitive, quo, re, real_roots, reduced, rem,
                      resultant, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt,
                      subresultants, symbols, sympify, tan, tanh, terms_gcd,
                      true, trunc)
@@ -1118,6 +1118,11 @@ def test_Poly_degree():
 
     # issue sympy/sympy#20389
     assert degree(x*(x + 1) - x**2 - x, x) == -oo
+
+
+@pytest.mark.timeout(30)
+def test_sympyissue_6322():
+    assert degree((1 + x)**10000) == 10000
 
 
 def test_Poly_degree_list():
@@ -2276,7 +2281,12 @@ def test_factor():
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
                         x**3 + 65536*x**2 + 1)
 
-    assert factor(x**3 + 3*x + 2, modulus=4) == (x + 1)*(x**2 + x + 2)
+    assert (factor(x**3 + 3*x + 2, modulus=4) ==
+            factor((x**3 + 3*x + 2).as_poly(modulus=4)) ==
+            (x + 1)*(x**2 + x + 2))
+    assert (factor_list((x**3 + 3*x + 2).as_poly(modulus=4)) ==
+            (1, [((x + 1).as_poly(modulus=4), 1),
+                 ((x**2 + x + 2).as_poly(modulus=4), 1)]))
 
     f = x/pi + x*sin(x)/pi
     g = y/(pi**2 + 2*pi + 1) + y*sin(x)/(pi**2 + 2*pi + 1)
@@ -2473,10 +2483,15 @@ def test_all_roots():
     assert f.as_poly().all_roots(multiple=False) == [(-Rational(1, 2), 1), (2, 2)]
     assert g.as_poly().all_roots() == [RootOf(g, 0), RootOf(g, 1), RootOf(g, 2)]
 
+    f = (x**7 - x).as_poly(modulus=7)
+
+    # issue sympy/sympy#22673
+    assert f.all_roots() == [RootOf(f, i, evaluate=False) for i in range(7)]
+
 
 def test_nroots():
-    assert Integer(0).as_poly(x).nroots() == []
-    assert Integer(1).as_poly(x).nroots() == []
+    assert not Integer(0).as_poly(x).nroots()
+    assert not Integer(1).as_poly(x).nroots()
 
     assert (x**2 - 1).as_poly().nroots() == [-1.0, 1.0]
     assert (x**2 + 1).as_poly().nroots() == [-1.0*I, 1.0*I]
@@ -2660,6 +2675,12 @@ def test_cancel():
     assert cancel(((x - 1)**2/(x - 1), (x + 2*x**2)/x,
                    (x - x**3)/x)) == (x - 1, 2*x + 1, -x**2 + 1)
 
+    # issue sympy/sympy#12531
+    e = (x**4/24 - x*(x**3/24 + Rational(7, 8)) +
+         13*x/12)/((x**3/24 + Rational(7, 8))*(-x**4/6 - x/3) +
+                   (x**3/6 - Rational(1, 2))*(x**4/24 + 13*x/12))
+    assert cancel(e) == Rational(-1, 4)
+
 
 def test_reduced():
     f = 2*x**4 + y**2 - x**2 + y**3
@@ -2705,7 +2726,7 @@ def test_reduced():
 
 
 def test_groebner():
-    assert groebner([], x, y, z) == []
+    assert not groebner([], x, y, z)
 
     assert groebner([x**2 + 1, y**4*x + x**3], x, y, order='lex') == [1 + x**2, -1 + y**4]
     assert groebner([x**2 + 1, y**4*x + x**3, x*y*z**3], x, y, z, order='grevlex') == [-1 + y**4, z**3, 1 + x**2]
@@ -2926,7 +2947,7 @@ def test_GroebnerBasis():
     assert G == P
     assert G == tuple(P)
 
-    assert G != []
+    assert G
 
     G = groebner(F, x, y, order='grevlex', polys=True)
 
@@ -2947,68 +2968,53 @@ def test_GroebnerBasis():
     assert (G == 1) is False
 
 
-def test_poly():
-    assert poly(x) == x.as_poly()
-    assert poly(y) == y.as_poly()
+def test_Poly_from_expr_recursive():
+    assert (x*(x**2 + x - 1)**2).as_poly() == (x**5 + 2*x**4 - x**3 -
+                                               2*x**2 + x).as_poly()
 
-    assert poly(x + y) == (x + y).as_poly()
-    assert poly(x + sin(x)) == (x + sin(x)).as_poly()
+    assert (x + y).as_poly(wrt=y) == (x + y).as_poly(y, x)
+    assert (x + sin(x)).as_poly(wrt=sin(x)) == (x + sin(x)).as_poly(sin(x), x)
 
-    assert poly(x + y, wrt=y) == (x + y).as_poly(y, x)
-    assert poly(x + sin(x), wrt=sin(x)) == (x + sin(x)).as_poly(sin(x), x)
+    assert (2*(y + z)**2 - 1).as_poly() == (2*y**2 + 4*y*z +
+                                            2*z**2 - 1).as_poly()
+    assert (x*(y + z)**2 - 1).as_poly() == (x*y**2 + 2*x*y*z +
+                                            x*z**2 - 1).as_poly()
+    assert (2*x*(y + z)**2 - 1).as_poly() == (2*x*y**2 + 4*x*y*z +
+                                              2*x*z**2 - 1).as_poly()
 
-    assert poly(x*y + 2*x*z**2 + 17) == (x*y + 2*x*z**2 + 17).as_poly()
+    assert (2*(y + z)**2 - x - 1).as_poly() == (2*y**2 + 4*y*z + 2*z**2 -
+                                                x - 1).as_poly()
+    assert (x*(y + z)**2 - x - 1).as_poly() == (x*y**2 + 2*x*y*z +
+                                                x*z**2 - x - 1).as_poly()
+    assert (2*x*(y + z)**2 - x - 1).as_poly() == (2*x*y**2 + 4*x*y*z + 2 *
+                                                  x*z**2 - x - 1).as_poly()
 
-    assert poly(2*(y + z)**2 - 1) == (2*y**2 + 4*y*z + 2*z**2 - 1).as_poly()
-    assert poly(
-        x*(y + z)**2 - 1) == (x*y**2 + 2*x*y*z + x*z**2 - 1).as_poly()
-    assert poly(2*x*(
-        y + z)**2 - 1) == (2*x*y**2 + 4*x*y*z + 2*x*z**2 - 1).as_poly()
+    assert (x*y + (x + y)**2 + (x + z)**2).as_poly() == (2*x*z + 3*x*y + y**2 +
+                                                         z**2 + 2*x**2).as_poly()
+    assert (x*y*(x + y)*(x + z)**2).as_poly() == (x**3*y**2 + x*y**2*z**2 +
+                                                  y*x**2*z**2 + 2*z*x**2*y**2 +
+                                                  2*y*z*x**3 + y*x**4).as_poly()
 
-    assert poly(2*(
-        y + z)**2 - x - 1) == (2*y**2 + 4*y*z + 2*z**2 - x - 1).as_poly()
-    assert poly(x*(
-        y + z)**2 - x - 1) == (x*y**2 + 2*x*y*z + x*z**2 - x - 1).as_poly()
-    assert poly(2*x*(y + z)**2 - x - 1) == (2*x*y**2 + 4*x*y*z + 2 *
-                                            x*z**2 - x - 1).as_poly()
-
-    assert poly(x*y + (x + y)**2 + (x + z)**2) == \
-        (2*x*z + 3*x*y + y**2 + z**2 + 2*x**2).as_poly()
-    assert poly(x*y*(x + y)*(x + z)**2) == \
-        (x**3*y**2 + x*y**2*z**2 + y*x**2*z**2 + 2*z*x**2 *
-         y**2 + 2*y*z*x**3 + y*x**4).as_poly()
-
-    assert poly((x + y + z).as_poly(y, x, z)) == (x + y + z).as_poly(y, x, z)
-
-    assert poly((x + y)**2, x) == (x**2 + 2*x*y + y**2).as_poly(x, domain=ZZ.inject(y))
-    assert poly((x + y)**2, x, expand=True) == (x**2 + 2*x*y +
-                                                y**2).as_poly(x, domain=ZZ.inject(y))
-    assert poly((x + y)**2, y) == (x**2 + 2*x*y + y**2).as_poly(y, domain=ZZ.inject(x))
-
-    assert poly(1, x) == Integer(1).as_poly(x)
-
-    pytest.raises(GeneratorsNeeded, lambda: poly(1))
-
-    assert poly((x + y)**2 - y**2 - 2*x*y) == (x**2).as_poly()
-    assert poly((x + y)**2 - y**2 - 2*x*y, x, y) == (x**2).as_poly(x, y)
+    assert ((x + y)**2).as_poly(x) == (x**2 + 2*x*y + y**2).as_poly(x)
+    assert ((x + y)**2).as_poly(x, expand=True) == (x**2 + 2*x*y +
+                                                    y**2).as_poly(x)
+    assert ((x + y)**2).as_poly(y) == (x**2 + 2*x*y + y**2).as_poly(y)
+    assert ((x + y)**2 - y**2 - 2*x*y).as_poly() == (x**2).as_poly(x, y)
 
     e = x**2 + (1 + sqrt(2))*x + 1
 
-    assert (poly(e, greedy=False) == poly(e, x, greedy=False) ==
+    assert (e.as_poly(x, greedy=False) ==
             e.as_poly(x, domain=QQ.algebraic_field(sqrt(2))))
 
-    # issue sympy/sympy#6184
-    assert poly(x + y, x, y) == (x + y).as_poly()
-    assert poly(x + y, y, x) == (x + y).as_poly(y, x)
-
     # issue sympy/sympy#12400
-    assert (poly(1/(1 + sqrt(2)), x) ==
+    assert ((1/(1 + sqrt(2))).as_poly(x) ==
             (1/(1 + sqrt(2))).as_poly(x, domain=QQ.algebraic_field(1/(1 + sqrt(2)))))
 
     # issue sympy/sympy#19755
-    assert (poly(x + (2*x + 3)**2/5 + Rational(6, 5)) ==
+    assert ((x + (2*x + 3)**2/5 + Rational(6, 5)).as_poly() ==
             (4*x**2/5 + 17*x/5 + 3).as_poly(domain=QQ))
-    assert poly(((x + 1)**2)/2) == (x**2/2 + x + Rational(1, 2)).as_poly(domain=QQ)
+    assert (((x + 1)**2)/2).as_poly() == (x**2/2 + x +
+                                          Rational(1, 2)).as_poly(domain=QQ)
 
 
 def test_keep_coeff():
@@ -3032,8 +3038,10 @@ def test_poly_matching_consistency():
 
 
 def test_sympyissue_5786():
-    e = (x - I*y)*(z - I*t)
-    assert factor(expand(e), extension=[I]) == e
+    f, g = z - I*t, x - I*y
+    assert factor(expand(f*g), extension=[I]) == f*g
+    assert factor(expand(f**2*g), extension=[I]) == f**2*g
+    assert factor(expand(f*g**3), extension=[I]) == f*g**3
 
     # issue sympy/sympy#18895
     e = (x - 1)*(y - 1)
@@ -3101,8 +3109,8 @@ def test_sympyissue_15798():
 
 
 @pytest.mark.timeout(20)
-def test_sympyissue_16222_19670():
-    (x**100000000).as_poly()
+def test_sympyissue_19670():
+    (E**100000000).as_poly()
 
 
 def test_sympyissue_8810():
@@ -3150,7 +3158,8 @@ def test_sympyissue_20640():
 
 
 def test_sympyissue_20973():
-    assert cancel(exp(1 + O(x))) == exp(1)*exp(O(x))
+    e = exp(1 + O(x))
+    assert cancel(e) == e
 
 
 def test_sympyissue_20985():
@@ -3204,3 +3213,13 @@ def test_sympyissue_22093():
                                  48*x*y**4*sin(x/y)**3*cos(x/y) +
                                  24*x*y**2*sin(x/y)**2 - 24*y**5*sin(x/y)**4)
     assert cancel(expr).equals(res)
+
+
+def test_sympyissue_22673():
+    e = x**7 - x
+    p = e.as_poly(modulus=7)
+    f = x*(x + 1)*(x + 2)*(x + 3)*(x + 4)*(x + 5)*(x + 6)
+    assert factor(e, modulus=7) == factor(p) == f
+    assert factor_list(e, modulus=7) == (1, [(x + i, 1) for i in range(7)])
+    assert factor_list(p) == (1, [((x + i).as_poly(modulus=7), 1)
+                                  for i in range(7)])

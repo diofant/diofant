@@ -252,7 +252,7 @@ def viete(f, roots=None, *gens, **args):
     try:
         (f,), _ = parallel_poly_from_expr((f,), *gens, **args)
     except PolificationFailed as exc:
-        raise ComputationFailed('viete', 1, exc)
+        raise ComputationFailed('viete', 1, exc) from exc
 
     if f.is_multivariate:
         raise MultivariatePolynomialError('multivariate polynomials are'

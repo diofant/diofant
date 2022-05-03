@@ -926,7 +926,7 @@ def test_eigen():
 
     # issue sympy/sympy#10719
     assert Matrix([]).eigenvals() == {}
-    assert Matrix([]).eigenvects() == []
+    assert not Matrix([]).eigenvects()
 
 
 def test_subs():
@@ -1398,10 +1398,8 @@ def test_inv_block():
 
 
 def test_creation_args():
-    """
-    Check that matrix dimensions can be specified using any reasonable type
-    (see issue sympy/sympy#4614).
-    """
+    # Check that matrix dimensions can be specified using any
+    # reasonable type (see issue sympy/sympy#4614).
     pytest.raises(ValueError, lambda: zeros(3, -1))
     pytest.raises(TypeError, lambda: zeros(1, 2, 3, 4))  # pylint: disable=too-many-function-args
     assert zeros(int(3)) == zeros(3)
@@ -1615,7 +1613,7 @@ def test_jordan_form():
     assert m == J
 
 
-def test_jordan_form_complex_sympyissue_9274():
+def test_sympyissue_9274():
     A = Matrix([[ 2,  4,  1,  0],
                 [-4,  2,  0,  1],
                 [ 0,  0,  2,  4],
@@ -2078,6 +2076,7 @@ def test_condition_number():
 
 
 def test_equality():
+    # pylint: disable=unneeded-not
     A = Matrix(((1, 2, 3), (4, 5, 6), (7, 8, 9)))
     B = Matrix(((9, 8, 7), (6, 5, 4), (3, 2, 1)))
     assert A == A[:, :]
@@ -2222,7 +2221,7 @@ def test_zero_dimension_multiply():
     assert zeros(0, 3)*zeros(3, 0) == Matrix()
 
 
-def test_slice_sympyissue_5983():
+def test_sympyissue_5983():
     m = Matrix(2, 2, range(4))
     assert m[1, :] == Matrix([[2, 3]])
     assert m[-1, :] == Matrix([[2, 3]])
@@ -2232,7 +2231,7 @@ def test_slice_sympyissue_5983():
     pytest.raises(IndexError, lambda: m[2, 2])
 
 
-def test_slice_sympyissue_6500():
+def test_sympyissue_6500():
     assert zeros(0, 3)[:, -1].shape == (0, 1)
     assert zeros(3, 0)[0, :] == Matrix(1, 0, [])
 

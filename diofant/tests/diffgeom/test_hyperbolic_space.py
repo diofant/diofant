@@ -1,6 +1,7 @@
 r"""
-unit test describing the hyperbolic half-plane with the Poincare metric. This
-is a basic model of hyperbolic geometry on the (positive) half-space
+Unit tests describing the hyperbolic half-plane with the Poincare metric.
+
+This is a basic model of hyperbolic geometry on the (positive) half-space
 
 {(x,y) \in R^2 | y > 0}
 

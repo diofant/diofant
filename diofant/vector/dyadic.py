@@ -179,8 +179,7 @@ class Dyadic(BasisDependent):
         """Helper for division involving dyadics."""
         if isinstance(other, Dyadic):
             raise TypeError('Cannot divide two dyadics')
-        else:
-            return DyadicMul(self, Pow(other, -1))
+        return DyadicMul(self, Pow(other, -1))
 
 
 class BaseDyadic(Dyadic, AtomicExpr):
@@ -192,10 +191,10 @@ class BaseDyadic(Dyadic, AtomicExpr):
         # Verify arguments
         if not isinstance(vector1, (BaseVector, VectorZero)) or \
                 not isinstance(vector2, (BaseVector, VectorZero)):
-            raise TypeError('BaseDyadic cannot be composed of non-base ' +
+            raise TypeError('BaseDyadic cannot be composed of non-base '
                             'vectors')
         # Handle special case of zero vector
-        elif Vector.zero in (vector1, vector2):
+        if Vector.zero in (vector1, vector2):
             return Dyadic.zero
         # Initialize instance
         obj = super().__new__(cls, vector1, vector2)

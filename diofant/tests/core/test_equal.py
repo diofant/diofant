@@ -1,12 +1,12 @@
 from diofant import Symbol, exp
+from diofant.abc import a, b, x
 
 
 __all__ = ()
 
 
 def test_equal():
-    b = Symbol('b')
-    a = Symbol('a')
+    # pylint: disable=unneeded-not
     e1 = a + b
     e2 = 2*a*b
     e3 = a**3*b**2
@@ -18,7 +18,6 @@ def test_equal():
     assert e2 != e3
     assert not e2 == e3
 
-    x = Symbol('x')
     e1 = exp(x + 1/x)
     y = Symbol('x')
     e2 = exp(y + 1/y)
@@ -39,7 +38,6 @@ def test_equal():
 
 
 def test_expevalbug():
-    x = Symbol('x')
     e1 = exp(1*x)
     e3 = exp(x)
     assert e1 == e3
@@ -50,9 +48,8 @@ def test_cmp_bug1():
         pass
 
     t = T()
-    x = Symbol('x')
 
-    assert not x == t
+    assert not x == t  # pylint: disable=unneeded-not
     assert x != t
 
 
@@ -62,12 +59,13 @@ def test_cmp_bug2():
 
     t = T()
 
-    assert not Symbol == t
+    assert not Symbol == t  # pylint: disable=unneeded-not
     assert Symbol != t
 
 
-def test_cmp_sympyissue_4357():
-    assert not (Symbol == 1)
-    assert (Symbol != 1)
-    assert not (Symbol == 'x')
-    assert (Symbol != 'x')
+def test_sympyissue_4357():
+    # pylint: disable=unneeded-not
+    assert not Symbol == 1
+    assert Symbol != 1
+    assert not Symbol == 'x'
+    assert Symbol != 'x'

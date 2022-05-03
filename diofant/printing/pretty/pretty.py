@@ -3,6 +3,7 @@ import itertools
 from ...core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
 from ...logic import true
+from ...sets import Reals
 from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
 from ..printer import Printer
@@ -507,11 +508,15 @@ class PrettyPrinter(Printer):
             LimArg = prettyForm(*LimArg.right('->'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
-        if str(dir) == 'real' or z0 in (oo, -oo):
+        if dir == Reals or z0 in (oo, -oo):
             dir = ''
-        else:
+        elif dir in [1, -1]:
             if self._use_unicode:
-                dir = '\N{SUPERSCRIPT PLUS SIGN}' if str(dir) == '+' else '\N{SUPERSCRIPT MINUS}'
+                dir = '\N{SUPERSCRIPT PLUS SIGN}' if dir == -1 else '\N{SUPERSCRIPT MINUS}'
+            else:
+                dir = '+' if dir == -1 else '-'
+        else:
+            raise NotImplementedError
 
         LimArg = prettyForm(*LimArg.right(self._print(dir)))
 

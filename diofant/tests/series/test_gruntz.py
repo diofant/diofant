@@ -1,6 +1,7 @@
 """
-This test suite is testing the Gruntz algorithm implementation using the
-bottom up approach.  See the documentation in the gruntz module.  The
+This test suite is testing the Gruntz algorithm implementation.
+
+See the documentation in the gruntz module.  The
 algorithm itself is highly recursive by nature, so ``compare()`` is
 logically the lowest part of the algorithm, yet in some sense it's the most
 complex part, because it needs to calculate a limit to return the result.
@@ -14,7 +15,7 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      erf, exp, factorial, fibonacci, gamma, li, limit, log,
                      loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan, tanh,
                      zeta)
-from diofant.abc import a, c, n, y
+from diofant.abc import a, n, y
 from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, signinf
 
 
@@ -90,6 +91,7 @@ def test_gruntz_eval_special():
     assert limit(x*(gamma(x - 1/gamma(x)) - gamma(x) + log(x)),
                  x, oo) == Rational(1, 2)
     assert limit((gamma(x + 1/gamma(x)) - gamma(x))/log(x), x, oo) == 1
+    assert limit(erf(log(1/x)), x, oo) == -1
 
 
 @pytest.mark.slow
@@ -325,7 +327,7 @@ def test_limit():
     assert limit(27**(log(x, 3) + 1)/x**3, x, oo) == 27
 
     # issue sympy/sympy#9449
-    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)
+    assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)**-1
 
     # issue sympy/sympy#8481
     assert limit(m**x * exp(-m) / factorial(x), x, oo) == 0
@@ -408,19 +410,6 @@ def test_sympyissue_4190():
     assert limit(x - gamma(1/x), x, oo) == EulerGamma
 
 
-def test_sympyissue_5172():
-    n = Symbol('n', real=True, positive=True)
-    r = Symbol('r', positive=True)
-    p = Symbol('p', positive=True)
-    m = Symbol('m', negative=True)
-    expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
-            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
-    expr = expr.subs({c: c + 1})
-    assert limit(expr.subs({c: m}), n, oo) == 1
-    assert limit(expr.subs({c: p}), n, oo) == (2**(p + 1) + r -
-                                               1)/(r + 1)**(p + 1)
-
-
 def test_sympyissue_4109():
     assert limit(1/gamma(1/x), x, oo) == 0
     assert limit(gamma(1/x)/x, x, oo) == 1
@@ -440,7 +429,7 @@ def test_sympyissue_8462():
     assert limit(16**x/(x*binomial(2*x, x)**2), x, oo) == pi
 
 
-def test_diofantissue_74():
+def test_issue_74():
     assert limit(sign(log(1 + 1/x)), x, oo) == +1
     assert limit(sign(log(1 - 1/x)), x, oo) == -1
     assert limit(sign(sin(+1/x)), x, oo) == +1
@@ -451,13 +440,17 @@ def test_diofantissue_74():
     assert limit(sign(cos(pi/2 - 1/x)), x, oo) == +1
 
 
-def test_diofantissue_75():
+def test_issue_75():
     assert limit(abs(log(x)), x, oo) == oo
-    assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
-    assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
-
     assert limit(abs(log(2 + 1/x)) - log(2 + 1/x), x, oo) == 0
     assert limit(abs(log(2 - 1/x)) - log(2 - 1/x), x, oo) == 0
+
+
+@pytest.mark.xfail
+@pytest.mark.slow
+def test_issue_75_xfail():
+    assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
+    assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
 
 
 def test_sympyissue_8241():

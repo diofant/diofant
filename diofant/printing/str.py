@@ -11,6 +11,7 @@ from mpmath.libmp import prec_to_dps
 
 from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
+from ..sets import Reals
 from ..utilities import default_sort_key
 from .defaults import DefaultPrinting
 from .precedence import PRECEDENCE, precedence
@@ -192,10 +193,12 @@ class StrPrinter(Printer):
 
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
-        if str(dir) == '+':
+        if dir == -1:
             return f'Limit({e}, {z}, {z0})'
+        elif dir == Reals:
+            return f'Limit({e}, {z}, {z0}, dir=Reals)'
         else:
-            return f"Limit({e}, {z}, {z0}, dir='{dir}')"
+            return f'Limit({e}, {z}, {z0}, dir={dir})'
 
     def _print_list(self, expr):
         return '[%s]' % self.stringify(expr, ', ')
@@ -437,7 +440,7 @@ class StrPrinter(Printer):
         return self._print(expr.parent.to_expr(expr))
 
     def _print_ModularInteger(self, expr):
-        return f'{expr.rep} mod {expr.parent.characteristic}'
+        return f'{expr.rep}'
 
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python

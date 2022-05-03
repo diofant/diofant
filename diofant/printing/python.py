@@ -77,7 +77,7 @@ def python(expr, **settings):
                     break
         result += newfunctionname + " = Function('" + functionname + "')\n"
 
-    if not len(renamings) == 0:
+    if len(renamings) != 0:
         exprp = expr.subs(renamings)
     result += 'e = ' + printer._str(exprp)
     return result

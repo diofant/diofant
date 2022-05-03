@@ -181,9 +181,6 @@ def test_ccode_Piecewise():
         'else {\n'
         '   c = pow(x, 2);\n'
         '}')
-    # Check that Piecewise without a True (default) condition error
-    expr = Piecewise((x, x < 1), (x**2, x > 1), (sin(x), x > 0))
-    pytest.raises(ValueError, lambda: ccode(expr))
 
 
 def test_ccode_Piecewise_deep():

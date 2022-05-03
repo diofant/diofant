@@ -2,7 +2,6 @@
 Boolean algebra module for Diofant.
 """
 
-from collections import defaultdict
 from itertools import combinations, product
 
 from ..core import Atom, cacheit
@@ -61,9 +60,9 @@ class Boolean(Expr):
 
         >>> (a >> b).equals(~b >> ~a)
         True
-        >>> Not(And(a, b, c)).equals(And(Not(a), Not(b), Not(c)))
+        >>> (~(a & b & c)).equals(~a & ~b & ~c)
         False
-        >>> Not(And(a, Not(a))).equals(Or(b, Not(b)))
+        >>> (~(a & ~a)).equals(b | ~b)
         False
 
         """
@@ -74,8 +73,8 @@ class Boolean(Expr):
 
         if self.has(Relational) or other.has(Relational):
             raise NotImplementedError('handling of relationals')
-        return self.atoms() == other.atoms() and \
-            not satisfiable(Not(Equivalent(self, other)))
+        return (self.atoms() == other.atoms() and
+                not satisfiable(~Equivalent(self, other)))
 
 
 class BooleanAtom(Atom, Boolean):
@@ -264,29 +263,6 @@ class BooleanFunction(Application, Boolean):
     def _eval_simplify(self, ratio, measure):
         return simplify_logic(self)
 
-    def to_nnf(self, simplify=True):
-        return self._to_nnf(*self.args, simplify=simplify)
-
-    @classmethod
-    def _to_nnf(cls, *args, **kwargs):
-        simplify = kwargs.get('simplify', True)
-        argset = set()
-        for arg in args:
-            if not is_literal(arg):
-                arg = arg.to_nnf(simplify)
-            if simplify:
-                if isinstance(arg, cls):
-                    arg = arg.args
-                else:
-                    arg = arg,
-                for a in arg:
-                    if Not(a) in argset:
-                        return cls.zero
-                    argset.add(a)
-            else:
-                argset.add(arg)
-        return cls(*argset)
-
 
 class And(LatticeOp, BooleanFunction):
     """
@@ -309,7 +285,7 @@ class And(LatticeOp, BooleanFunction):
     and. Hence, ``And(a, b)`` and ``a & b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> And(x, y).subs({x: 1})
+    >>> (x & y).subs({x: 1})
     y
 
     """
@@ -325,7 +301,7 @@ class And(LatticeOp, BooleanFunction):
         rel = []
         for x in reversed(list(args)):
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -345,7 +321,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> And(x < 2, x > -2).as_set()
+        >>> ((x < 2) & (x > -2)).as_set()
         (-2, 2)
 
         """
@@ -379,7 +355,7 @@ class Or(LatticeOp, BooleanFunction):
     or. Hence, ``Or(a, b)`` and ``a | b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> Or(x, y).subs({x: 0})
+    >>> (x | y).subs({x: 0})
     y
 
     """
@@ -393,7 +369,7 @@ class Or(LatticeOp, BooleanFunction):
         rel = []
         for x in args:
             if isinstance(x, Number) or x in (0, 1):
-                newargs.append(True if x else False)
+                newargs.append(bool(x))
                 continue
             if x.is_Relational:
                 c = x.canonical
@@ -413,7 +389,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> Or(x > 2, x < -2).as_set()
+        >>> ((x > 2) | (x < -2)).as_set()
         [-oo, -2) U (2, oo]
 
         """
@@ -440,15 +416,15 @@ class Not(BooleanFunction):
     false
     >>> Not(False)
     true
-    >>> Not(And(True, False))
+    >>> ~And(True, False)
     true
-    >>> Not(Or(True, False))
+    >>> ~Or(True, False)
     false
-    >>> Not(And(And(True, x), Or(x, False)))
+    >>> ~(And(True, x) & Or(x, False))
     ~x
     >>> ~x
     ~x
-    >>> Not(And(Or(x, y), Or(~x, ~y)))
+    >>> ~((x | y) & (~x | ~y))
     ~((x | y) & (~x | ~y))
 
     Notes
@@ -511,41 +487,6 @@ class Not(BooleanFunction):
                                       ' implemented for mutivariate'
                                       ' expressions')
 
-    def to_nnf(self, simplify=True):
-        if is_literal(self):
-            return self
-
-        expr = self.args[0]
-
-        func, args = expr.func, expr.args
-
-        if func == And:
-            return Or._to_nnf(*[~arg for arg in args], simplify=simplify)
-
-        if func == Or:
-            return And._to_nnf(*[~arg for arg in args], simplify=simplify)
-
-        if func == Implies:
-            a, b = args
-            return And._to_nnf(a, ~b, simplify=simplify)
-
-        if func == Equivalent:
-            return And._to_nnf(Or(*args), Or(*[~arg for arg in args]), simplify=simplify)
-
-        if func == Xor:
-            result = []
-            for i in range(1, len(args)+1, 2):
-                for neg in combinations(args, i):
-                    clause = [~s if s in neg else s for s in args]
-                    result.append(Or(*clause))
-            return And._to_nnf(*result, simplify=simplify)
-
-        if func == ITE:
-            a, b, c = args
-            return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
-
-        raise ValueError(f'Illegal operator {func} in expression')
-
 
 class Xor(BooleanFunction):
     """
@@ -579,7 +520,7 @@ class Xor(BooleanFunction):
     particular, ``a ^ b`` and ``Xor(a, b)`` will be different if ``a`` and
     ``b`` are integers.
 
-    >>> Xor(x, y).subs({y: 0})
+    >>> (x ^ y).subs({y: 0})
     x
 
     """
@@ -591,8 +532,7 @@ class Xor(BooleanFunction):
             if isinstance(arg, Number) or arg in (True, False):
                 if not arg:
                     continue
-                else:
-                    arg = true
+                arg = true
             if isinstance(arg, Xor):
                 for a in arg.args:
                     if a in argset:
@@ -612,7 +552,7 @@ class Xor(BooleanFunction):
                 if cj == nc:
                     odd = ~odd
                     break
-                elif cj == c:
+                if cj == c:
                     break
             else:
                 continue
@@ -629,7 +569,7 @@ class Xor(BooleanFunction):
             return argset.pop()
         elif True in argset:
             argset.remove(True)
-            return Not(Xor(*argset))
+            return ~Xor(*argset)
         else:
             obj._args = tuple(ordered(argset))
             obj._argset = frozenset(argset)
@@ -639,14 +579,6 @@ class Xor(BooleanFunction):
     @cacheit
     def args(self):
         return tuple(ordered(self._argset))
-
-    def to_nnf(self, simplify=True):
-        args = []
-        for i in range(0, len(self.args)+1, 2):
-            for neg in combinations(self.args, i):
-                clause = [~s if s in neg else s for s in self.args]
-                args.append(Or(*clause))
-        return And._to_nnf(*args, simplify=simplify)
 
 
 class Nand(BooleanFunction):
@@ -673,7 +605,7 @@ class Nand(BooleanFunction):
 
     @classmethod
     def eval(cls, *args):
-        return Not(And(*args))
+        return ~And(*args)
 
 
 class Nor(BooleanFunction):
@@ -704,7 +636,7 @@ class Nor(BooleanFunction):
 
     @classmethod
     def eval(cls, *args):
-        return Not(Or(*args))
+        return ~Or(*args)
 
 
 class Implies(BooleanFunction):
@@ -757,13 +689,13 @@ class Implies(BooleanFunction):
             newargs = []
             for x in args:
                 if isinstance(x, Number) or x in (0, 1):
-                    newargs.append(True if x else False)
+                    newargs.append(bool(x))
                 else:
                     newargs.append(x)
             A, B = newargs
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(f'{len(args)} operand(s) used for an Implies '
-                             f'(pairs are required): {args!s}')
+                             f'(pairs are required): {args!s}') from exc
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -775,10 +707,6 @@ class Implies(BooleanFunction):
                 return B
         else:
             return Expr.__new__(cls, *args)
-
-    def to_nnf(self, simplify=True):
-        a, b = self.args
-        return Or._to_nnf(~a, b, simplify=simplify)
 
 
 class Equivalent(BooleanFunction):
@@ -810,7 +738,7 @@ class Equivalent(BooleanFunction):
         for x in args:
             if isinstance(x, Number) or x in [True, False]:  # Includes 0, 1
                 argset.discard(x)
-                argset.add(True if x else False)
+                argset.add(bool(x))
         rel = []
         for r in argset:
             if isinstance(r, Relational):
@@ -846,13 +774,6 @@ class Equivalent(BooleanFunction):
     def args(self):
         return tuple(ordered(self._argset))
 
-    def to_nnf(self, simplify=True):
-        args = []
-        for a, b in zip(self.args, self.args[1:]):
-            args.append(Or(~a, b))
-        args.append(Or(~self.args[-1], self.args[0]))
-        return And._to_nnf(*args, simplify=simplify)
-
 
 class ITE(BooleanFunction):
     """
@@ -883,8 +804,8 @@ class ITE(BooleanFunction):
     def eval(cls, *args):
         try:
             a, b, c = args
-        except ValueError:
-            raise ValueError('ITE expects exactly 3 arguments')
+        except ValueError as exc:
+            raise ValueError('ITE expects exactly 3 arguments') from exc
         if a == true:
             return b
         elif a == false:
@@ -894,126 +815,120 @@ class ITE(BooleanFunction):
         elif b == true and c == false:
             return a
         elif b == false and c == true:
-            return Not(a)
-
-    def to_nnf(self, simplify=True):
-        a, b, c = self.args
-        return And._to_nnf(Or(~a, b), Or(a, c), simplify=simplify)
+            return ~a
 
     def _eval_derivative(self, x):
         return self.func(self.args[0], *[a.diff(x) for a in self.args[1:]])
 
 
-# end class definitions. Some useful methods
-
-
-def conjuncts(expr):
-    """Return a list of the conjuncts in the expr s.
-
-    Examples
-    ========
-
-    >>> conjuncts(a & b) == frozenset([a, b])
-    True
-    >>> conjuncts(a | b) == frozenset([Or(a, b)])
-    True
-
-    """
-    return And.make_args(expr)
-
-
-def disjuncts(expr):
-    """Return a list of the disjuncts in the sentence s.
-
-    Examples
-    ========
-
-    >>> disjuncts(a | b) == frozenset([a, b])
-    True
-    >>> disjuncts(a & b) == frozenset([And(a, b)])
-    True
-
-    """
-    return Or.make_args(expr)
-
-
-def distribute_and_over_or(expr):
-    """
-    Given a sentence s consisting of conjunctions and disjunctions
-    of literals, return an equivalent sentence in CNF.
-
-    Examples
-    ========
-
-    >>> distribute_and_over_or(Or(a, And(Not(b), Not(c))))
-    (a | ~b) & (a | ~c)
-
-    """
-    return _distribute((expr, And, Or))
-
-
-def distribute_or_over_and(expr):
-    """
-    Given a sentence s consisting of conjunctions and disjunctions
-    of literals, return an equivalent sentence in DNF.
-
-    Note that the output is NOT simplified.
-
-    Examples
-    ========
-
-    >>> distribute_or_over_and(And(Or(Not(a), b), c))
-    (b & c) | (c & ~a)
-
-    """
-    return _distribute((expr, Or, And))
-
-
-def _distribute(info):
-    """Distributes info[1] over info[2] with respect to info[0]."""
-    if isinstance(info[0], info[2]):
-        for arg in info[0].args:
-            if isinstance(arg, info[1]):
+def _distribute(expr, a, b):
+    """Distributes a over b with respect to expr."""
+    if isinstance(expr, b):
+        for arg in expr.args:
+            if isinstance(arg, a):
                 conj = arg
                 break
         else:
-            return info[0]
-        rest = info[2](*[a for a in info[0].args if a is not conj])
-        return info[1](*list(map(_distribute,
-                                 ((info[2](c, rest), info[1], info[2]) for c in conj.args))))
-    elif isinstance(info[0], info[1]):
-        return info[1](*list(map(_distribute,
-                                 ((x, info[1], info[2]) for x in info[0].args))))
+            return expr
+        rest = b(*(a for a in expr.args if a is not conj))
+        return a(*(_distribute(b(c, rest), a, b) for c in conj.args))
+    elif isinstance(expr, a):
+        return a(*(_distribute(c, a, b) for c in expr.args))
     else:
-        return info[0]
+        return expr
 
 
 def to_nnf(expr, simplify=True):
     """
-    Converts expr to Negation Normal Form.
-    A logical expression is in Negation Normal Form (NNF) if it
-    contains only And, Or and Not, and Not is applied only to literals.
+    Converts expr to Negation Normal Form (NNF).
+
     If simplify is True, the result contains no redundant clauses.
 
     Examples
     ========
 
-    >>> to_nnf(Not((~a & ~b) | (c & d)))
+    >>> to_nnf(~((~a & ~b) | (c & d)))
     (a | b) & (~c | ~d)
     >>> to_nnf(Equivalent(a >> b, b >> a))
     (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
 
+    See Also
+    ========
+
+    is_nnf
+
     """
     expr = sympify(expr)
+
     if is_nnf(expr, simplify):
         return expr
-    return expr.to_nnf(simplify)
+
+    if expr.is_Not:
+        expr = expr.args[0]
+
+        if isinstance(expr, And):
+            expr = Or(*[~arg for arg in expr.args])
+        elif isinstance(expr, Or):
+            expr = And(*[~arg for arg in expr.args])
+        elif isinstance(expr, Implies):
+            a, b = expr.args
+            expr = a & ~b
+        elif isinstance(expr, Equivalent):
+            expr = Or(*expr.args) & Or(*[~arg for arg in expr.args])
+        elif isinstance(expr, Xor):
+            args = []
+            for i in range(1, len(expr.args) + 1, 2):
+                for neg in combinations(expr.args, i):
+                    args.append(Or(*[~s if s in neg else s for s in expr.args]))
+            expr = And(*args)
+        elif isinstance(expr, ITE):
+            a, b, c = expr.args
+            expr = (a | ~c) & (~a | ~b)
+        else:
+            raise ValueError(f'Illegal operator {expr.func} in expression')
+
+    if isinstance(expr, Implies):
+        a, b = expr.args
+        expr = ~a | b
+
+    if isinstance(expr, Equivalent):
+        args = []
+        for a, b in zip(expr.args, expr.args[1:]):
+            args.append(~a | b)
+        args.append(~expr.args[-1] | expr.args[0])
+        expr = And(*args)
+
+    if isinstance(expr, Xor):
+        args = []
+        for i in range(0, len(expr.args) + 1, 2):
+            for neg in combinations(expr.args, i):
+                args.append(Or(*[~s if s in neg else s for s in expr.args]))
+        expr = And(*args)
+
+    if isinstance(expr, ITE):
+        a, b, c = expr.args
+        expr = (~a | b) & (a | c)
+
+    args = []
+    for arg in expr.args:
+        if not is_literal(arg):
+            arg = to_nnf(arg, simplify)
+        if simplify:
+            arg = arg.args if isinstance(arg, expr.func) else (arg,)
+            for a in arg:
+                if ~a in args:
+                    return expr.func.zero
+                args.append(a)
+        else:
+            args.append(arg)
+
+    return expr.func(*args)
 
 
 def to_cnf(expr, simplify=False):
     """
-    Convert a propositional logical sentence s to conjunctive normal form.
-    That is, of the form ((A | ~B | ...) & (B | C | ...) & ...).
+    Convert expr to Conjunctive Normal Form (CNF).
+
     If simplify is True, the expr is evaluated to its simplest CNF form.
 
     Examples
@@ -1024,26 +939,30 @@ def to_cnf(expr, simplify=False):
     >>> to_cnf((a | b) & (a | ~a), True)
     a | b
 
+    See Also
+    ========
+
+    is_cnf
+
     """
     expr = sympify(expr)
+
     if not isinstance(expr, BooleanFunction):
         return expr
 
     if simplify:
-        return simplify_logic(expr, 'cnf', True)
+        return simplify_logic(expr, 'cnf')
 
-    # Don't convert unless we have to
     if is_cnf(expr):
         return expr
 
-    expr = eliminate_implications(expr)
-    return distribute_and_over_or(expr)
+    return _distribute(to_nnf(expr), And, Or)
 
 
 def to_dnf(expr, simplify=False):
     """
-    Convert a propositional logical sentence s to disjunctive normal form.
-    That is, of the form ((A & ~B & ...) | (B & C & ...) | ...).
+    Convert expr to Disjunctive Normal Form (DNF).
+
     If simplify is True, the expr is evaluated to its simplest DNF form.
 
     Examples
@@ -1054,27 +973,34 @@ def to_dnf(expr, simplify=False):
     >>> to_dnf((a & b) | (a & ~b) | (b & c) | (~b & c), True)
     a | c
 
+    See Also
+    ========
+
+    is_dnf
+
     """
     expr = sympify(expr)
+
     if not isinstance(expr, BooleanFunction):
         return expr
 
     if simplify:
-        return simplify_logic(expr, 'dnf', True)
+        return simplify_logic(expr, 'dnf')
 
-    # Don't convert unless we have to
     if is_dnf(expr):
         return expr
 
-    expr = eliminate_implications(expr)
-    return distribute_or_over_and(expr)
+    return _distribute(to_nnf(expr), Or, And)
 
 
 def is_nnf(expr, simplified=True):
     """
-    Checks if expr is in Negation Normal Form.
-    A logical expression is in Negation Normal Form (NNF) if it
-    contains only And, Or and Not, and Not is applied only to literals.
+    Checks if expr is in Negation Normal Form (NNF).
+
+    A logical expression is in NNF if the negation operator is only
+    applied to literals and the only other allowed boolean functions
+    are conjunction and disjunction.
+
     If simplified is True, checks if result contains no redundant clauses.
 
     Examples
@@ -1086,10 +1012,17 @@ def is_nnf(expr, simplified=True):
     False
     >>> is_nnf((a | ~a) & (b | c), False)
     True
-    >>> is_nnf(Not(a & b) | c)
+    >>> is_nnf(~(a & b) | c)
     False
     >>> is_nnf((a >> b) & (b >> a))
     False
+
+    See Also
+    ========
+
+    to_nnf
+    is_cnf
+    is_dnf
 
     """
     expr = sympify(expr)
@@ -1104,7 +1037,7 @@ def is_nnf(expr, simplified=True):
             if simplified:
                 args = expr.args
                 for arg in args:
-                    if Not(arg) in args:
+                    if ~arg in args:
                         return False
             stack.extend(expr.args)
 
@@ -1116,7 +1049,10 @@ def is_nnf(expr, simplified=True):
 
 def is_cnf(expr):
     """
-    Test whether or not an expression is in conjunctive normal form.
+    Checks if expr is in Conjunctive Normal Form (CNF).
+
+    A logical expression is in CNF if it is a conjunction of one or more
+    clauses, where a clause is a disjunction of literals.
 
     Examples
     ========
@@ -1128,13 +1064,23 @@ def is_cnf(expr):
     >>> is_cnf((a & b) | c)
     False
 
+    See Also
+    ========
+
+    to_cnf
+    is_dnf
+    is_nnf
+
     """
     return _is_form(expr, And, Or)
 
 
 def is_dnf(expr):
     """
-    Test whether or not an expression is in disjunctive normal form.
+    Checks if expr is in Disjunctive Normal Form (DNF).
+
+    A logical expression is in DNF if it is a disjunction of one or more
+    clauses, where a clause is a conjunction of literals.
 
     Examples
     ========
@@ -1148,19 +1094,23 @@ def is_dnf(expr):
     >>> is_dnf(a & (b | c))
     False
 
+    See Also
+    ========
+
+    to_dnf
+    is_cnf
+    is_nnf
+
     """
     return _is_form(expr, Or, And)
 
 
 def _is_form(expr, function1, function2):
-    """Test whether or not an expression is of the required form."""
     expr = sympify(expr)
 
-    # Special case of an Atom
     if expr.is_Atom:
         return True
 
-    # Special case of a single expression of function2
     if isinstance(expr, function2):
         for lit in expr.args:
             if isinstance(lit, Not):
@@ -1171,7 +1121,6 @@ def _is_form(expr, function1, function2):
                     return False
         return True
 
-    # Special case of a single negation
     if isinstance(expr, Not):
         if not expr.args[0].is_Atom:
             return False
@@ -1198,26 +1147,6 @@ def _is_form(expr, function1, function2):
     return True
 
 
-def eliminate_implications(expr):
-    """
-    Change >>, <<, and Equivalent into &, |, and ~. That is, return an
-    expression that is equivalent to s, but has only &, |, and ~ as logical
-    operators.
-
-    Examples
-    ========
-
-    >>> eliminate_implications(Implies(a, b))
-    b | ~a
-    >>> eliminate_implications(Equivalent(a, b))
-    (a | ~b) & (b | ~a)
-    >>> eliminate_implications(Equivalent(a, b, c))
-    (a | ~c) & (b | ~a) & (c | ~b)
-
-    """
-    return to_nnf(expr)
-
-
 def is_literal(expr):
     """
     Returns True if expr is a literal, else False.
@@ -1231,14 +1160,13 @@ def is_literal(expr):
     True
     >>> is_literal(a + b)
     True
-    >>> is_literal(Or(a, b))
+    >>> is_literal(a | b)
     False
 
     """
     if isinstance(expr, Not):
-        return not isinstance(expr.args[0], BooleanFunction)
-    else:
-        return not isinstance(expr, BooleanFunction)
+        expr = expr.args[0]
+    return not isinstance(expr, BooleanFunction)
 
 
 def to_int_repr(clauses, symbols):
@@ -1289,7 +1217,7 @@ def _convert_to_varsSOP(minterm, variables):
     temp = []
     for i, m in enumerate(minterm):
         if m == 0:
-            temp.append(Not(variables[i]))
+            temp.append(~variables[i])
         elif m == 1:
             temp.append(variables[i])
     return And(*temp)
@@ -1304,7 +1232,7 @@ def _convert_to_varsPOS(maxterm, variables):
     temp = []
     for i, m in enumerate(maxterm):
         if m == 1:
-            temp.append(Not(variables[i]))
+            temp.append(~variables[i])
         elif m == 0:
             temp.append(variables[i])
     return Or(*temp)
@@ -1374,9 +1302,9 @@ def _rem_redundancy(l1, terms):
     return essential
 
 
-def SOPform(variables, minterms, dontcares=None):
+def _SOPform(variables, minterms, dontcares=[]):
     """
-    The SOPform function uses simplified_pairs and a redundant group-
+    The _SOPform function uses simplified_pairs and a redundant group-
     eliminating algorithm to convert the list of all input combos that
     generate '1' (the minterms) into the smallest Sum of Products form.
 
@@ -1395,7 +1323,7 @@ def SOPform(variables, minterms, dontcares=None):
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform([t, x, y, z], minterms, dontcares)
+    >>> _SOPform([t, x, y, z], minterms, dontcares)
     (y & z) | (z & ~t)
 
     References
@@ -1409,7 +1337,7 @@ def SOPform(variables, minterms, dontcares=None):
         return false
 
     minterms = [list(i) for i in minterms]
-    dontcares = [list(i) for i in (dontcares or [])]
+    dontcares = [list(i) for i in dontcares]
     for d in dontcares:
         if d in minterms:
             raise ValueError(f'{d} in minterms is also in dontcares')
@@ -1423,9 +1351,9 @@ def SOPform(variables, minterms, dontcares=None):
     return Or(*[_convert_to_varsSOP(x, variables) for x in essential])
 
 
-def POSform(variables, minterms, dontcares=None):
+def _POSform(variables, minterms, dontcares=[]):
     """
-    The POSform function uses simplified_pairs and a redundant-group
+    The _POSform function uses simplified_pairs and a redundant-group
     eliminating algorithm to convert the list of all input combinations
     that generate '1' (the minterms) into the smallest Product of Sums form.
 
@@ -1444,7 +1372,7 @@ def POSform(variables, minterms, dontcares=None):
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform([t, x, y, z], minterms, dontcares)
+    >>> _POSform([t, x, y, z], minterms, dontcares)
     z & (y | ~t)
 
     References
@@ -1458,7 +1386,7 @@ def POSform(variables, minterms, dontcares=None):
         return false
 
     minterms = [list(i) for i in minterms]
-    dontcares = [list(i) for i in (dontcares or [])]
+    dontcares = [list(i) for i in dontcares]
     for d in dontcares:
         if d in minterms:
             raise ValueError(f'{d} in minterms is also in dontcares')
@@ -1489,7 +1417,7 @@ def _find_predicates(expr):
     return set().union(*(_find_predicates(i) for i in expr.args))
 
 
-def simplify_logic(expr, form=None, deep=True):
+def simplify_logic(expr, form='cnf', deep=True):
     """
     This function simplifies a boolean function to its simplified version
     in SOP or POS form. The return type is an Or or And object in Diofant.
@@ -1498,10 +1426,8 @@ def simplify_logic(expr, form=None, deep=True):
     ==========
 
     expr : string or boolean expression
-    form : string ('cnf' or 'dnf') or None (default).
-        If 'cnf' or 'dnf', the simplest expression in the corresponding
-        normal form is returned; if None, the answer is returned
-        according to the form with fewest args (in CNF by default).
+    form : string ('cnf' or 'dnf'), default to 'cnf'.
+        Selects the normal form in which the result is returned.
     deep : boolean (default True)
         indicates whether to recursively simplify any
         non-boolean functions contained within the input.
@@ -1519,10 +1445,8 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-    if form == 'cnf' or form == 'dnf' or form is None:
+    if form in ('cnf', 'dnf'):
         expr = sympify(expr)
-        if not isinstance(expr, BooleanFunction):
-            return expr
         variables = _find_predicates(expr)
         truthtable = []
         for t in product([0, 1], repeat=len(variables)):
@@ -1530,135 +1454,10 @@ def simplify_logic(expr, form=None, deep=True):
             if expr.xreplace(dict(zip(variables, t))):
                 truthtable.append(t)
         if deep:
-            from ..simplify import simplify
-            variables = [simplify(v) for v in variables]
-        if form == 'dnf' or \
-           (form is None and len(truthtable) >= (2 ** (len(variables) - 1))):
-            return SOPform(variables, truthtable)
-        elif form == 'cnf' or form is None:  # pragma: no branch
-            return POSform(variables, truthtable)
+            variables = [v.simplify() for v in variables]
+        if form == 'dnf':
+            return _SOPform(variables, truthtable)
+        else:
+            return _POSform(variables, truthtable)
     else:
         raise ValueError('form can be cnf or dnf only')
-
-
-def _finger(eq):
-    """
-    Assign a 5-item fingerprint to each symbol in the equation:
-    [
-    # of times it appeared as a Symbol,
-    # of times it appeared as a Not(symbol),
-    # of times it appeared as a Symbol in an And or Or,
-    # of times it appeared as a Not(Symbol) in an And or Or,
-    sum of the number of arguments with which it appeared,
-    counting Symbol as 1 and Not(Symbol) as 2
-    ]
-
-    >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
-    >>> dict(_finger(eq))
-    {(0, 0, 1, 0, 2): [x],
-     (0, 0, 1, 0, 3): [a, b],
-     (0, 0, 1, 2, 8): [y]}
-
-    So y and x have unique fingerprints, but a and b do not.
-
-    """
-    f = eq.free_symbols
-    d = {fi: [0] * 5 for fi in f}
-    for a in eq.args:
-        if a.is_Symbol:
-            d[a][0] += 1
-        elif a.is_Not:
-            d[a.args[0]][1] += 1
-        else:
-            o = len(a.args) + sum(isinstance(ai, Not) for ai in a.args)
-            for ai in a.args:
-                if ai.is_Symbol:
-                    d[ai][2] += 1
-                    d[ai][-1] += o
-                else:
-                    d[ai.args[0]][3] += 1
-                    d[ai.args[0]][-1] += o
-    inv = defaultdict(list)
-    for k, v in ordered(d.items()):
-        inv[tuple(v)].append(k)
-    return inv
-
-
-def bool_map(bool1, bool2):
-    """
-    Return the simplified version of bool1, and the mapping of variables
-    that makes the two expressions bool1 and bool2 represent the same
-    logical behaviour for some correspondence between the variables
-    of each.
-    If more than one mappings of this sort exist, one of them
-    is returned.
-    For example, And(x, y) is logically equivalent to And(a, b) for
-    the mapping {x: a, y:b} or {x: b, y:a}.
-    If no such mapping exists, return False.
-
-    Examples
-    ========
-
-    >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
-    >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
-    >>> bool_map(function1, function2)
-    (y & ~z, {y: a, z: b})
-
-    The results are not necessarily unique, but they are canonical. Here,
-    ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
-
-    >>> eq1 = Or(And(Not(y), t), And(Not(y), z), And(x, y))
-    >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq1, eq2)
-    ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
-    >>> eq = And(Xor(a, b), c, And(c, d))
-    >>> bool_map(eq, eq.subs({c: x}))
-    (c & d & (a | b) & (~a | ~b), {a: a, b: b, c: d, d: x})
-
-    """
-
-    def match(function1, function2):
-        """Return the mapping that equates variables between two
-        simplified boolean expressions if possible.
-
-        By "simplified" we mean that a function has been denested
-        and is either an And (or an Or) whose arguments are either
-        symbols (x), negated symbols (Not(x)), or Or (or an And) whose
-        arguments are only symbols or negated symbols. For example,
-        And(x, Not(y), Or(w, Not(z))).
-
-        Basic.match is not robust enough (see issue sympy/sympy#4835) so this is
-        a workaround that is valid for simplified boolean expressions.
-
-        """
-        # do some quick checks
-        if function1.__class__ != function2.__class__:
-            return
-        if len(function1.args) != len(function2.args):
-            return
-        if function1.is_Symbol:
-            return {function1: function2}
-
-        # get the fingerprint dictionaries
-        f1 = _finger(function1)
-        f2 = _finger(function2)
-
-        # more quick checks
-        if len(f1) != len(f2):
-            return
-
-        # assemble the match dictionary if possible
-        matchdict = {}
-        for k in f1:
-            if k not in f2 or len(f1[k]) != len(f2[k]):
-                return
-            for i, x in enumerate(f1[k]):
-                matchdict[x] = f2[k][i]
-        return matchdict if matchdict else None
-
-    a = simplify_logic(bool1)
-    b = simplify_logic(bool2)
-    m = match(a, b)
-    if m:
-        return a, m
-    return m is not None

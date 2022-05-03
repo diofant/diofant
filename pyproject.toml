@@ -1,11 +1,67 @@
 [build-system]
-requires = ['setuptools>=42', 'wheel', 'setuptools_scm[toml]>=6.0']
+requires = ['pip>=20.3', 'setuptools>=61', 'wheel',
+            'setuptools_scm[toml]>=6.0']
 build-backend = 'setuptools.build_meta'
-[tool.setuptools_scm]
+
+[project]
+name = 'Diofant'
+description = 'Computer algebra system (CAS) in Python'
+keywords = ['Math', 'CAS']
+license = {text = 'BSD'}
+authors = [{name = 'Sergey B Kirpichev et al'}]
+maintainers = [{name = 'Sergey B Kirpichev', email = 'diofant@googlegroups.com'}]
+classifiers = ['Development Status :: 4 - Beta',
+               'Intended Audience :: Education',
+               'Intended Audience :: Science/Research',
+               'License :: OSI Approved :: BSD License',
+               'Operating System :: OS Independent',
+               'Programming Language :: Python',
+               'Topic :: Scientific/Engineering',
+               'Topic :: Scientific/Engineering :: Mathematics',
+               'Topic :: Scientific/Engineering :: Physics',
+               'Topic :: Software Development :: Libraries :: Python Modules',
+               'Programming Language :: Python :: 3',
+               'Programming Language :: Python :: 3 :: Only',
+               'Programming Language :: Python :: 3.10',
+               'Programming Language :: Python :: Implementation :: CPython']
+requires-python = '>=3.10'
+dependencies = ['mpmath>=1.2', 'packaging']
+dynamic = ['version']
+[project.readme]
+file = 'docs/README.rst'
+content-type = 'text/x-rst'
+[project.urls]
+Homepage = 'https://diofant.readthedocs.io/'
+'Source Code' = 'https://github.com/diofant/diofant/'
+'Bug Tracker' = 'https://github.com/diofant/diofant/issues/'
+Download = 'https://github.com/diofant/diofant/releases/'
+[project.optional-dependencies]
+exports = ['numpy>=1.19', 'scipy>=1.6', 'cython']
+gmpy = ['gmpy2>=2.1.0']
+plot = ['matplotlib>=3.5.0']
+interactive = ['ipykernel']
+docs = ['sphinx>=4', 'sphinxcontrib-bibtex>=2.1', 'sphinxcontrib-autoprogram',
+        'sphinx_rtd_theme>=0.2']
+tests = ['pytest>=6', 'hypothesis', 'pytest-timeout', 'pexpect']
+develop = ['diofant[tests]', 'flake8>=3.8', 'flake8-docstrings>=1.3',
+            'pep8-naming', 'flake8-comprehensions', 'flake8-isort>=4.1',
+            'flake8-rst', 'flake8-quotes>=3', 'flake8-sfs', 'pytest-xdist>=1.22',
+            'pytest-cov', 'pylint>=2.13.1', 'coverage[toml]>=6.1.2',
+            'coverage_enable_subprocess', 'types-pkg_resources',
+            'mypy', 'build']
+testing = ['diofant[develop]']
+[tool.setuptools]
+zip-safe = true
+include-package-data = false
+[tool.setuptools.packages]
+find = {namespaces = false}
+[tool.setuptools.package-data]
+diofant = ['tests/logic/*.cnf']
+[tool.setuptools.dynamic]
+version = {attr = 'setuptools_scm.get_version'}
 [tool.isort]
 lines_after_imports = 2
-skip = ['diofant/core/mul.py',
-        'diofant/core/expr.py',
+skip = ['diofant/core/expr.py',
         'diofant/__init__.py',
         'diofant/core/__init__.py',
         'diofant/polys/__init__.py']
@@ -13,172 +69,69 @@ atomic = true
 [tool.pylint.MASTER]
 jobs = 0
 init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
+[tool.pylint.format]
+max-line-length = 7000
+[tool.pylint.design]
+max-locals = 100
+max-returns = 35
+max-attributes = 120
+max-branches = 90
+max-parents = 12
+max-statements = 310
+max-args = 12
+max-nested-blocks = 10
+max-bool-expr = 10
+min-public-methods = 0
+max-public-methods = 110
+[tool.pylint.similarities]
+min-similarity-lines = 10
+[tool.pylint.BASIC]
+bad-names = []
 [tool.pylint.'MESSAGES CONTROL']
-disable = ['blacklisted-name',
-           'invalid-name',
+disable = ['invalid-name',
            'missing-docstring',
-           'unneeded-not',
-           'singleton-comparison',
-           'misplaced-comparison-constant',
            'unidiomatic-typecheck',
            'bad-mcs-method-argument',
-           'single-string-used-for-slots',
-           'line-too-long',
            'too-many-lines',
-           'multiple-statements',
-           'superfluous-parens',
-           'unexpected-line-ending-format',
-           'wrong-spelling-in-comment',
-           'wrong-spelling-in-docstring',
-           'invalid-characters-in-docstring',
            'wrong-import-position',
-           'bad-option-value',
-           'not-in-loop',
-           'return-arg-in-generator',
-           'nonexistent-operator',
-           'bad-reversed-sequence',
-           'too-many-star-expressions',
-           'nonlocal-and-global',
-           'nonlocal-without-binding',
-           'used-prior-global-declaration',
-           'misplaced-format-function',
-           'method-hidden',
-           'access-member-before-definition',
-           'no-method-argument',
-           'no-self-argument',
            'non-iterator-returned',
            'relative-beyond-top-level',
-           'undefined-variable',
-           'no-name-in-module',
            'unbalanced-tuple-unpacking',
-           'bad-exception-context',
            'no-member',
            'not-callable',
-           'assignment-from-no-return',
            'no-value-for-parameter',
-           'assignment-from-none',
            'invalid-unary-operand-type',
-           'not-an-iterable',
-           'unsubscriptable-object',
-           'bad-format-character',
-           'truncated-format-string',
-           'format-needs-mapping',
-           'missing-format-string-key',
-           'too-many-format-args',
-           'too-few-format-args',
-           'bad-str-strip-call',
-           'invalid-envvar-value',
            'parameter-unpacking',
-           'long-suffix',
            'import-star-module-level',
-           'method-check-failed',
-           'raw-checker-failed',
            'bad-inline-option',
-           'locally-disabled',
-           'locally-enabled',
-           'suppressed-message',
-           'useless-suppression',
-           'use-symbolic-message-instead',
-           'literal-comparison',
-           'comparison-with-itself',
            'no-self-use',
-           'no-staticmethod-decorator',
            'cyclic-import',
            'duplicate-code',
-           'too-many-ancestors',
-           'too-many-instance-attributes',
-           'too-few-public-methods',
-           'too-many-public-methods',
-           'too-many-return-statements',
-           'too-many-branches',
-           'too-many-arguments',
-           'too-many-locals',
-           'too-many-statements',
-           'too-many-boolean-expressions',
-           'too-many-nested-blocks',
-           'simplifiable-if-statement',
            'redefined-argument-from-local',
            'no-else-return',
-           'consider-using-ternary',
            'trailing-comma-tuple',
-           'stop-iteration-return',
-           'simplify-boolean-expression',
            'inconsistent-return-statements',
-           'chained-comparison',
            'dangerous-default-value',
-           'duplicate-key',
            'protected-access',
            'arguments-differ',
-           'signature-differs',
            'abstract-method',
            'no-init',
-           'unnecessary-semicolon',
-           'bad-indentation',
-           'mixed-indentation',
-           'lowercase-l-suffix',
            'relative-import',
            'fixme',
-           'invalid-encoded-data',
            'global-variable-undefined',
            'global-variable-not-assigned',
            'global-statement',
-           'global-at-module-level',
            'unused-argument',
            'redefined-outer-name',
            'redefined-builtin',
-           'redefine-in-handler',
            'undefined-loop-variable',
            'cell-var-from-loop',
-           'possibly-unused-variable',
-           'try-except-raise',
-           'nonstandard-exception',
-           'binary-op-exception',
-           'raising-format-tuple',
            'keyword-arg-before-vararg',
-           'logging-not-lazy',
-           'logging-format-interpolation',
-           'logging-fstring-interpolation',
-           'bad-format-string-key',
-           'unused-format-string-key',
-           'bad-format-string',
-           'missing-format-argument-key',
-           'unused-format-string-argument',
-           'format-combined-specification',
-           'missing-format-attribute',
-           'invalid-format-index',
-           'anomalous-backslash-in-string',
-           'anomalous-unicode-escape-in-string',
-           'bad-open-mode',
-           'redundant-unittest-assert',
-           'bad-thread-instantiation',
-           'shallow-copy-environ',
-           'invalid-envvar-default',
            'next-method-called',
-           'metaclass-assignment',
-           'indexing-exception',
-           'raising-string',
-           'exception-message-attribute',
-           'exception-escape',
-           'comprehension-escape',
            'import-outside-toplevel',
-           'no-else-continue',
-           'no-else-raise',
-           'no-else-break',
-           'redeclared-assigned-name',
            'arguments-out-of-order',
-           'simplifiable-if-expression',
-           'invalid-overridden-method',
-           'invalid-str-returned',
-           'isinstance-second-argument-not-valid-type',
-           'missing-final-newline',
-           'mixed-line-endings',
-           'trailing-newlines',
-           'trailing-whitespace',
-           'raise-missing-from',
-           'super-with-arguments',
            'consider-using-f-string',
-           'consider-using-with',
-           'use-implicit-booleaness-not-comparison']
+           'non-ascii-name']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

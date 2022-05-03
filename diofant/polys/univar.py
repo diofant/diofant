@@ -115,7 +115,7 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 
         """
         # Check for valid input
-        same = False if q is not None else True
+        same = q is None
         if same:
             q = p
 
@@ -235,7 +235,7 @@ class UnivarPolyElement(PolyElement):
             coeff = domain.zero
 
             for j in range(i):
-                if not (n + j - i,) in f:
+                if (n + j - i,) not in f:
                     continue
 
                 assert (s - j,) in g

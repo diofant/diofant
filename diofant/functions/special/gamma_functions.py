@@ -3,7 +3,6 @@ from mpmath import mp, workprec
 from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
                      Rational, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
-from ...core.sympify import sympify
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
 from ..elementary.exponential import exp, log
@@ -53,7 +52,7 @@ class gamma(Function):
 
     Series expansion is also supported:
 
-    >>> series(gamma(x), x, 0, 3)
+    >>> gamma(x).series(x, 0, 3)
     1/x - EulerGamma + x*(EulerGamma**2/2 + pi**2/12) + x**2*(-EulerGamma*pi**2/12 + polygamma(2, 1)/6 - EulerGamma**3/6) + O(x**3)
 
     We can numerically evaluate the gamma function to arbitrary precision
@@ -163,7 +162,7 @@ class gamma(Function):
         elif x.is_noninteger:
             return floor(x).is_even
 
-    def _eval_rewrite_as_tractable(self, z):
+    def _eval_rewrite_as_tractable(self, z, **kwargs):
         return exp(loggamma(z))
 
     def _eval_rewrite_as_factorial(self, z):
@@ -296,6 +295,8 @@ class lowergamma(Function):
                 b = a - 1
                 if b.is_positive:
                     return b*cls(b, x) - x**b * exp(-x)
+                elif a == 0:
+                    return zoo
 
                 if not a.is_Integer:
                     return (cls(a + 1, x) + x**a * exp(-x))/a
@@ -314,6 +315,9 @@ class lowergamma(Function):
 
     def _eval_rewrite_as_uppergamma(self, s, x):
         return gamma(s) - uppergamma(s, x)
+
+    def _eval_rewrite_as_tractable(self, s, x, **kwargs):
+        return self.rewrite(uppergamma)
 
     def _eval_rewrite_as_expint(self, s, x):
         from .error_functions import expint
@@ -606,7 +610,6 @@ class polygamma(Function):
 
     @classmethod
     def eval(cls, n, z):
-        n, z = list(map(sympify, (n, z)))
         from .. import unpolarify
 
         if n.is_integer:
@@ -655,7 +658,7 @@ class polygamma(Function):
             elif z in (oo, -oo):
                 return oo
             else:
-                t = z.extract_multiplicatively(I)
+                t = z.as_coefficient(I)
                 if t in (oo, -oo):
                     return oo
 
@@ -783,7 +786,7 @@ class loggamma(Function):
 
     Series expansion is also supported:
 
-    >>> series(loggamma(x), x, 0, 4)
+    >>> loggamma(x).series(x, 0, 4)
     -log(x) - EulerGamma*x + pi**2*x**2/12 + x**3*polygamma(2, 1)/6 + O(x**4)
 
     We can numerically evaluate the gamma function to arbitrary precision
@@ -817,8 +820,6 @@ class loggamma(Function):
 
     @classmethod
     def eval(cls, z):
-        z = sympify(z)
-
         if z.is_integer:
             if z.is_nonpositive:
                 return oo
@@ -877,7 +878,7 @@ class loggamma(Function):
         # It is very inefficient to first add the order and then do the nseries
         return (r + Add(*l))._eval_nseries(x, n, logx) + o
 
-    def _eval_rewrite_as_intractable(self, z):
+    def _eval_rewrite_as_intractable(self, z, **kwargs):
         return log(gamma(z))
 
     def _eval_is_extended_real(self):

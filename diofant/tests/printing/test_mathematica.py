@@ -5,13 +5,13 @@ import pytest
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral, Lambda, Le,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
-                     Rational, RootOf, RootSum, SparseMatrix, Sum, Tuple, acos,
-                     acosh, acot, acoth, asin, asinh, atan, atanh, binomial,
-                     conjugate, cos, cosh, cot, coth, csch, erfc, exp,
-                     factorial, factorial2, false, fibonacci, gamma, hyper, im,
-                     log, loggamma, mathematica_code, meijerg, oo, pi,
-                     polygamma, polylog, re, rf, sech, sign, sin, sinh,
-                     symbols, tan, tanh, true, zeta)
+                     Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
+                     Tuple, acos, acosh, acot, acoth, asin, asinh, atan, atanh,
+                     binomial, conjugate, cos, cosh, cot, coth, csch, erf,
+                     erfc, erfi, exp, factorial, factorial2, false, fibonacci,
+                     gamma, hyper, im, log, loggamma, mathematica_code,
+                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
+                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import x, y, z
 
 
@@ -75,6 +75,8 @@ def test_Function():
     assert mathematica_code(acoth(x)) == 'ArcCoth[x]'
     assert mathematica_code(sech(x)) == 'Sech[x]'
     assert mathematica_code(csch(x)) == 'Csch[x]'
+    assert mathematica_code(erf(x)) == 'Erf[x]'
+    assert mathematica_code(erfi(x)) == 'Erfi[x]'
     assert mathematica_code(erfc(x)) == 'Erfc[x]'
     assert mathematica_code(conjugate(x)) == 'Conjugate[x]'
     assert mathematica_code(re(x)) == 'Re[x]'
@@ -89,6 +91,7 @@ def test_Function():
     assert mathematica_code(fibonacci(x)) == 'Fibonacci[x]'
     assert mathematica_code(polylog(x, y)) == 'PolyLog[x, y]'
     assert mathematica_code(loggamma(x)) == 'LogGamma[x]'
+    assert mathematica_code(uppergamma(x, y)) == 'Gamma[x, y]'
 
     class MyFunc1(Function):
         @classmethod
@@ -235,7 +238,7 @@ def test_AlgebraicElement():
 def test_Limit():
     e = Limit(sin(x)/x, x, 0)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> -1]]'
-    e = Limit(sin(x)/x, x, 0, '-')
+    e = Limit(sin(x)/x, x, 0, 1)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> 1]]'
-    e = Limit(sin(x)/x, x, 0, 'real')
+    e = Limit(sin(x)/x, x, 0, Reals)
     assert mathematica_code(e) == 'Hold[Limit[Sin[x]/x, x -> 0, Direction -> Reals]]'

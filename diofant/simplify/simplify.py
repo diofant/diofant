@@ -4,7 +4,8 @@ import mpmath
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, expand_func, expand_log,
-                    expand_mul, expand_power_exp, factor_terms, oo, pi)
+                    expand_mul, expand_multinomial, expand_power_exp,
+                    factor_terms, oo, pi)
 from ..core.compatibility import as_int, iterable
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
@@ -372,7 +373,7 @@ def hypersimp(f, k):
     g = g.rewrite(gamma)
     g = expand_func(g)
     g = powsimp(g, deep=True, combine='exp')
-    g = g.cancel()
+    g = g.expand(power_exp=False).cancel()
     g = combsimp(g)
 
     if g.is_rational_function(k):
@@ -458,6 +459,7 @@ def signsimp(expr, evaluate=None):
     if e.is_Add:
         return e.func(*[signsimp(a) for a in e.args])
     if evaluate:
+        # pylint: disable=nonexistent-operator
         e = e.xreplace({m: -(-m) for m in e.atoms(Mul) if -(-m) != m})
     return e
 
@@ -590,6 +592,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     from ..concrete import Product, Sum
     from ..functions.special.bessel import BesselBase
+    from ..integrals import Integral
     from .hyperexpand import hyperexpand
 
     if not isinstance(expr, Basic) or not expr.args:  # XXX: temporary hack
@@ -612,6 +615,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
             return choices[0]
         return min(choices, key=measure)
 
+    expr = bottom_up(expr,
+                     lambda e: e if isinstance(e, (Integral, Product, Sum)) else e.doit(deep=False))
     expr = bottom_up(expr, lambda w: w.normal())
     expr = Mul(*powsimp(expr).as_content_primitive())
     _e = cancel(expr)
@@ -653,6 +658,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     short = shorter(powsimp(expr, combine='exp', deep=True), powsimp(expr), expr)
     short = shorter(short, factor_terms(short), expand_power_exp(expand_mul(short)))
+    short = shorter(short, expand_multinomial(short))
     if (short.has(TrigonometricFunction, HyperbolicFunction, exp_polar) or
             any(a.base is E for a in short.atoms(Pow))):
         short = exptrigsimp(short, simplify=False)

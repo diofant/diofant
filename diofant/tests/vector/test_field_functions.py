@@ -101,8 +101,7 @@ def test_del_operator():
 
 def test_product_rules():
     """
-    Tests the six product rules defined with respect to the Del
-    operator
+    Tests the six product rules defined with respect to the Del operator.
 
     References
     ==========

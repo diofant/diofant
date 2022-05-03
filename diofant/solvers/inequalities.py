@@ -328,13 +328,8 @@ def solve_rational_inequalities(eqs):
             intervals = []
             expr = numer.as_expr()/denom.as_expr()
             expr = Relational(expr, 0, rel)
-            gen = numer.gen
 
             for interval in global_intervals:
-                if interval.contains(oo) is true and expr.limit(gen, oo, '-') is false:
-                    interval -= FiniteSet(oo)
-                elif interval.contains(-oo) is true and expr.limit(gen, -oo) is false:
-                    interval -= FiniteSet(-oo)
                 intervals.append(interval)
 
             global_intervals = intervals
@@ -542,20 +537,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
     [-oo, -2] U [2, oo]
 
     """
-    from ..series import limit
     from ..simplify import simplify
     from .solvers import denoms, solve
 
     e = expr.lhs - expr.rhs
-    parts = n, d = e.as_numer_denom()
-    if all(i.is_polynomial(gen) for i in parts):
-        solns = solve(n, gen, check=False)
-        singularities = solve(d, gen, check=False)
-    else:
-        solns = solve(e, gen, check=False)
-        singularities = []
-        for d in denoms(e):
-            singularities.extend(solve(d, gen))
+    solns = solve(e, gen)
+    singularities = []
+    for d in denoms(e):
+        singularities.extend(solve(d, gen))
     solns = [s[gen] for s in solns]
     singularities = [s[gen] for s in singularities]
 
@@ -603,10 +592,15 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     rv = Union(*sol_sets)
 
-    if rv.contains(oo) is true and limit(expr, gen, oo, '-') is false:
-        rv -= FiniteSet(oo)
-    elif rv.contains(-oo) is true and limit(expr, gen, -oo) is false:
-        rv -= FiniteSet(-oo)
+    rel_map = {Lt: Le, Gt: Ge}
+
+    for t in [oo, -oo]:
+        try:
+            rel = rel_map.get(expr.func, expr.func)
+            if rv.contains(t) is true and rel(e.limit(gen, t)) is false:
+                rv -= FiniteSet(t)
+        except TypeError:
+            pass
 
     return rv if not relational else rv.as_relational(gen)
 
@@ -625,7 +619,7 @@ def _reduce_inequalities(inequalities, symbols):
     for inequality in inequalities:
         if inequality == true:
             continue
-        elif inequality == false:
+        if inequality == false:
             return false
 
         expr, rel = inequality.lhs, inequality.rel_op  # rhs is 0
@@ -643,10 +637,8 @@ def _reduce_inequalities(inequalities, symbols):
                 gen = common.pop()
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
-            else:
-                raise NotImplementedError('Solving multivariate inequalities '
-                                          'is implemented only for linear '
-                                          'case yet.')
+            raise NotImplementedError('Solving multivariate inequalities is '
+                                      'implemented only for linear case yet.')
 
         if expr.is_rational_function(gen):
             rat_part[gen].append((expr, rel))
@@ -701,7 +693,7 @@ def reduce_inequalities(inequalities, symbols=[]):
             i = Eq(i, 0)
         if i == true:
             continue
-        elif i == false:
+        if i == false:
             return false
         keep.append(i)
     inequalities = keep

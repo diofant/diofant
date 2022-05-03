@@ -271,7 +271,7 @@ def get_contraction_structure(expr):
     ========
 
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
-    >>> i, j, k, l = map(Idx, ['i', 'j', 'k', 'l'])
+    >>> i, j = map(Idx, ['i', 'j'])
     >>> get_contraction_structure(x[i]*y[i] + A[j, j])
     {(i,): {x[i]*y[i]}, (j,): {A[j, j]}}
     >>> get_contraction_structure(x[i]*y[j])

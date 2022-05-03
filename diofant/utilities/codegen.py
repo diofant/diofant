@@ -307,9 +307,9 @@ class Variable:
         """
         try:
             return self._datatype[language.upper()]
-        except KeyError:
+        except KeyError as exc:
             raise CodeGenError('Has datatypes for languages: %s' %
-                               ', '.join(self._datatype))
+                               ', '.join(self._datatype)) from exc
 
 
 class Argument(Variable):
@@ -768,7 +768,7 @@ class CCodeGen(CodeGen):
 
     def __init__(self, project='project', printer=None,
                  preprocessor_statements=None, cse=False):
-        super(CCodeGen, self).__init__(project=project, cse=cse)
+        super().__init__(project=project, cse=cse)
         self.printer = printer or CCodePrinter()
 
         self.preprocessor_statements = preprocessor_statements
@@ -797,7 +797,7 @@ class CCodeGen(CodeGen):
         """
         if len(routine.results) > 1:
             raise CodeGenError('C only supports a single or no return value.')
-        elif len(routine.results) == 1:
+        if len(routine.results) == 1:
             ctype = routine.results[0].get_datatype('C')
         else:
             ctype = 'void'
@@ -994,9 +994,9 @@ class FCodeGen(CodeGen):
         """Returns the opening statements of the fortran routine."""
         code_list = []
         if len(routine.results) > 1:
-            raise CodeGenError(
-                'Fortran only supports a single or no return value.')
-        elif len(routine.results) == 1:
+            raise CodeGenError('Fortran only supports a single '
+                               'or no return value.')
+        if len(routine.results) == 1:
             result = routine.results[0]
             code_list.append(result.get_datatype('fortran'))
             code_list.append('function')
@@ -1190,7 +1190,7 @@ class OctaveCodeGen(CodeGen):
 
     code_extension = 'm'
 
-    def routine(self, name, expr, argument_sequence, global_vars):
+    def routine(self, name, expr, argument_sequence, global_vars=None):
         """Specialized Routine creation for Octave."""
         # FIXME: this is probably general enough for other high-level
         # languages, perhaps its the C/Fortran one that is specialized!
@@ -1315,8 +1315,7 @@ class OctaveCodeGen(CodeGen):
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError('Octave: invalid argument of type %s' %
                                    str(type(arg)))
-            else:
-                args.append('%s' % self._get_symbol(arg.name))
+            args.append('%s' % self._get_symbol(arg.name))
         args = ', '.join(args)
         code_list.append(f'{routine.name}({args})\n')
         code_list = [''.join(code_list)]

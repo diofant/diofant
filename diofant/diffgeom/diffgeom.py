@@ -1416,7 +1416,7 @@ def vectors_in_basis(expr, to_sys):
     Examples
     ========
 
-    >>> from diofant.diffgeom.rn import R2_r, R2_p
+    >>> from diofant.diffgeom.rn import R2_p, R2_r
     >>> vectors_in_basis(R2_r.e_x, R2_p)
     -y*e_theta/(x**2 + y**2) + x*e_r/sqrt(x**2 + y**2)
     >>> vectors_in_basis(R2_p.e_r, R2_r)

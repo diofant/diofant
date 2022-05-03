@@ -9,7 +9,7 @@ from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      GeneratorsError, GeneratorsNeeded, I, Integer,
                      NotInvertible, PythonRational, QQ_python, Rational,
                      RealField, RootOf, UnificationFailed, ZZ_python, field,
-                     oo, ring, root, roots, sin, sqrt)
+                     im, oo, re, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -458,6 +458,10 @@ def test_Domain__contains__():
 
     assert F(1) in ZZ
 
+    # issue sympy/sympy#14433
+    F = QQ.inject(1/x).field
+    assert all(_ in F for _ in [x, 1/x])
+
 
 def test_Domain_ring():
     assert ZZ.has_assoc_Ring is True
@@ -720,6 +724,9 @@ def test_Domain__algebraic_field():
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
 
+    assert QQ.algebraic_field(im(1/((1 + I)**2)) + re(1/((1 + I)**2))) == QQ
+    assert alg1.from_expr(im(1/((1 + I)**2))) == alg1.from_expr(-Rational(1, 2))
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field('x y', ZZ)
@@ -823,8 +830,8 @@ def test_AlgebraicElement():
     a = A([QQ(1), QQ(1)])
     b = B([QQ(1), QQ(1)])
 
-    assert (a == a) is True
-    assert (a != a) is False
+    assert (a == a) is True  # pylint: disable=comparison-with-itself
+    assert (a != a) is False  # pylint: disable=comparison-with-itself
 
     assert (a == b) is False
     assert (a != b) is True
@@ -1185,14 +1192,14 @@ def test_sympyissue_14294():
     assert A.convert(a) == a
 
 
-def test_diofantissue_1075():
+def test_issue_1075():
     A = QQ.algebraic_field(520*sqrt(3)).algebraic_field(I)
     expr = 64*sqrt(3) + 64*I
 
     assert A.to_expr(A.from_expr(expr)) == expr
 
 
-def test_diofantissue_1008():
+def test_issue_1008():
     a = RootOf(4*x**2 + 2*x + 1, 0)
     A = QQ.algebraic_field(a)
     e = A.from_expr(a)

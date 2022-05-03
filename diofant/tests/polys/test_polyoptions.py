@@ -82,7 +82,7 @@ def test_Expand_postprocess():
 
 
 def test_Gens_preprocess():
-    assert Gens.preprocess((None,)) == ()
+    assert not Gens.preprocess((None,))
     assert Gens.preprocess((x, y, z)) == (x, y, z)
 
     a = Symbol('a', commutative=False)
@@ -100,8 +100,8 @@ def test_Gens_postprocess():
 
 def test_Wrt_preprocess():
     assert Wrt.preprocess(x) == ['x']
-    assert Wrt.preprocess('') == []
-    assert Wrt.preprocess(' ') == []
+    assert not Wrt.preprocess('')
+    assert not Wrt.preprocess(' ')
     assert Wrt.preprocess('x,y') == ['x', 'y']
     assert Wrt.preprocess('x y') == ['x', 'y']
     assert Wrt.preprocess('x, y') == ['x', 'y']

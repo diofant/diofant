@@ -426,23 +426,21 @@ def limited_integrate(fa, fd, G, DE):
         # Continue with param_rischDE()
         raise NotImplementedError('param_rischDE() is required to solve this '
                                   'integral.')
-    elif len(l) == 0:
+    if len(l) == 0:
         raise NonElementaryIntegralException
-    elif len(l) == 1:
+    if len(l) == 1:
         # The c1 == 1.  In this case, we can assume a normal Risch DE
         if l[0][0].is_zero:
             raise NonElementaryIntegralException
-        else:
-            l[0] *= 1/l[0][0]
-            C = sum(Poly(i, DE.t)*q for (i, q) in zip(l[0], Q))
-            # Custom version of rischDE() that uses the already computed
-            # denominator and degree bound from above.
-            B, C, m, alpha, beta = spde(A, B, C, N, DE)
-            y = solve_poly_rde(B, C, m, DE)
+        l[0] *= 1/l[0][0]
+        C = sum(Poly(i, DE.t)*q for (i, q) in zip(l[0], Q))
+        # Custom version of rischDE() that uses the already computed
+        # denominator and degree bound from above.
+        B, C, m, alpha, beta = spde(A, B, C, N, DE)
+        y = solve_poly_rde(B, C, m, DE)
 
-            return (alpha*y + beta, h), list(l[0][1:])
-    else:
-        raise NotImplementedError
+        return (alpha*y + beta, h), list(l[0][1:])
+    raise NotImplementedError
 
 
 def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
@@ -628,23 +626,22 @@ def is_deriv_k(fa, fd, DE):
         if not all(i.is_Rational for i in u):
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
-        else:
-            terms = DE.E_args + [DE.T[i] for i in DE.L_K]
-            ans = list(zip(terms, u))
-            result = Add(*[Mul(i, j) for i, j in ans])
-            argterms = [DE.T[i] for i in DE.E_K] + DE.L_args
-            l, ld = [], []
-            for i, j in zip(argterms, u):
-                # We need to get around things like sqrt(x**2) != x
-                # and also sqrt(x**2 + 2*x + 1) != x + 1
-                i, d = i.as_numer_denom()
-                icoeff, iterms = sqf_list(i)
-                l.append(Mul(*([Pow(icoeff, j)] + [Pow(b, e*j) for b, e in iterms])))
-                dcoeff, dterms = sqf_list(d)
-                ld.append(Mul(*([Pow(dcoeff, j)] + [Pow(b, e*j) for b, e in dterms])))
-            const = cancel(fa.as_expr()/fd.as_expr()/Mul(*l)*Mul(*ld))
+        terms = DE.E_args + [DE.T[i] for i in DE.L_K]
+        ans = list(zip(terms, u))
+        result = Add(*[Mul(i, j) for i, j in ans])
+        argterms = [DE.T[i] for i in DE.E_K] + DE.L_args
+        l, ld = [], []
+        for i, j in zip(argterms, u):
+            # We need to get around things like sqrt(x**2) != x
+            # and also sqrt(x**2 + 2*x + 1) != x + 1
+            i, d = i.as_numer_denom()
+            icoeff, iterms = sqf_list(i)
+            l.append(Mul(*([Pow(icoeff, j)] + [Pow(b, e*j) for b, e in iterms])))
+            dcoeff, dterms = sqf_list(d)
+            ld.append(Mul(*([Pow(dcoeff, j)] + [Pow(b, e*j) for b, e in dterms])))
+        const = cancel(fa.as_expr()/fd.as_expr()/Mul(*l)*Mul(*ld))
 
-            return ans, result, const
+        return ans, result, const
 
 
 def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
@@ -734,20 +731,19 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # anyway, even if the result might potentially be wrong.
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
-        else:
-            n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for i in u])
-            u *= Integer(n)
-            terms = [DE.T[i] for i in DE.E_K] + DE.L_args
-            ans = list(zip(terms, u))
-            result = Mul(*[Pow(i, j) for i, j in ans])
+        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for i in u])
+        u *= Integer(n)
+        terms = [DE.T[i] for i in DE.E_K] + DE.L_args
+        ans = list(zip(terms, u))
+        result = Mul(*[Pow(i, j) for i, j in ans])
 
-            # exp(f) will be the same as result up to a multiplicative
-            # constant.  We now find the log of that constant.
-            argterms = DE.E_args + [DE.T[i] for i in DE.L_K]
-            const = cancel(fa.as_expr()/fd.as_expr() -
-                           Add(*[Mul(i, j/n) for i, j in zip(argterms, u)]))
+        # exp(f) will be the same as result up to a multiplicative
+        # constant.  We now find the log of that constant.
+        argterms = DE.E_args + [DE.T[i] for i in DE.L_K]
+        const = cancel(fa.as_expr()/fd.as_expr() -
+                       Add(*[Mul(i, j/n) for i, j in zip(argterms, u)]))
 
-            return ans, result, n, const
+        return ans, result, n, const
 
 
 def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):

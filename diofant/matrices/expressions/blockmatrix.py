@@ -141,13 +141,11 @@ class BlockMatrix(MatrixExpr):
         for row_block, numrows in enumerate(self.rowblocksizes):  # pragma: no branch
             if (i < numrows) != false:
                 break
-            else:
-                i -= numrows
+            i -= numrows
         for col_block, numcols in enumerate(self.colblocksizes):  # pragma: no branch
             if (j < numcols) != false:
                 break
-            else:
-                j -= numcols
+            j -= numcols
         return self.blocks[row_block, col_block][i, j]
 
     @property

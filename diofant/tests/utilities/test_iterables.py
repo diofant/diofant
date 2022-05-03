@@ -84,8 +84,8 @@ def test_flatten():
 
 
 def test_group():
-    assert group([]) == []
-    assert group([], multiple=False) == []
+    assert not group([])
+    assert not group([], multiple=False)
 
     assert group([1]) == [[1]]
     assert group([1], multiple=False) == [(1, 1)]
@@ -129,7 +129,7 @@ def test_subsets():
                                                     (2, 3, 3), (3, 3, 3)]
     assert len(list(subsets(l, 4, repetition=True))) == 35
 
-    assert list(subsets(l[:2], 3, repetition=False)) == []
+    assert not list(subsets(l[:2], 3, repetition=False))
     assert list(subsets(l[:2], 3, repetition=True)) == [(0, 0, 0),
                                                         (0, 0, 1),
                                                         (0, 1, 1),
@@ -161,7 +161,7 @@ def test_variations():
                                                        (3, 3)]
     assert len(list(variations(l, 3, repetition=True))) == 64
     assert len(list(variations(l, 4, repetition=True))) == 256
-    assert list(variations(l[:2], 3, repetition=False)) == []
+    assert not list(variations(l[:2], 3, repetition=False))
     assert list(variations(l[:2], 3, repetition=True)) == [
         (0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
         (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)
@@ -190,7 +190,7 @@ def test_sift():
 
 
 def test_prefixes():
-    assert list(prefixes([])) == []
+    assert not list(prefixes([]))
     assert list(prefixes([1])) == [[1]]
     assert list(prefixes([1, 2])) == [[1], [1, 2]]
 
@@ -199,7 +199,7 @@ def test_prefixes():
 
 
 def test_postfixes():
-    assert list(postfixes([])) == []
+    assert not list(postfixes([]))
     assert list(postfixes([1])) == [[1]]
     assert list(postfixes([1, 2])) == [[2], [1, 2]]
 
@@ -227,13 +227,13 @@ def test_rotate():
     assert rotate_right(A, 1) == [4, 0, 1, 2, 3]
     A = []
     B = rotate_right(A, 1)
-    assert B == []
+    assert not B
     B.append(1)
-    assert A == []
+    assert not A
     B = rotate_left(A, 1)
-    assert B == []
+    assert not B
     B.append(1)
-    assert A == []
+    assert not A
 
 
 def test_multiset_partitions():
@@ -268,16 +268,15 @@ def test_multiset_partitions():
     assert list(multiset_partitions([1] * 3)) == [
         [[1, 1, 1]], [[1], [1, 1]], [[1], [1], [1]]]
     a = [3, 2, 1]
-    assert list(multiset_partitions(a)) == \
-        list(multiset_partitions(sorted(a)))
-    assert list(multiset_partitions(a, 5)) == []
+    assert list(multiset_partitions(a)) == list(multiset_partitions(sorted(a)))
+    assert not list(multiset_partitions(a, 5))
     assert list(multiset_partitions(a, 1)) == [[[1, 2, 3]]]
-    assert list(multiset_partitions(a + [4], 5)) == []
+    assert not list(multiset_partitions(a + [4], 5))
     assert list(multiset_partitions(a + [4], 1)) == [[[1, 2, 3, 4]]]
-    assert list(multiset_partitions(2, 5)) == []
+    assert not list(multiset_partitions(2, 5))
     assert list(multiset_partitions(2, 1)) == [[[0, 1]]]
     assert list(multiset_partitions('a')) == [[['a']]]
-    assert list(multiset_partitions('a', 2)) == []
+    assert not list(multiset_partitions('a', 2))
     assert list(multiset_partitions('ab')) == [[['a', 'b']], [['a'], ['b']]]
     assert list(multiset_partitions('ab', 1)) == [[['a', 'b']]]
     assert list(multiset_partitions('aaa', 1)) == [['aaa']]
@@ -500,13 +499,13 @@ def test_unflatten():
 
 
 def test_common_prefix_suffix():
-    assert common_prefix([], [1]) == []
+    assert not common_prefix([], [1])
     assert common_prefix(list(range(3))) == [0, 1, 2]
     assert common_prefix(list(range(3)), list(range(4))) == [0, 1, 2]
     assert common_prefix([1, 2, 3], [1, 2, 5]) == [1, 2]
     assert common_prefix([1, 2, 3], [1, 3, 5]) == [1]
 
-    assert common_suffix([], [1]) == []
+    assert not common_suffix([], [1])
     assert common_suffix(list(range(3))) == [0, 1, 2]
     assert common_suffix(list(range(3)), list(range(3))) == [0, 1, 2]
     assert common_suffix(list(range(3)), list(range(4))) == []
@@ -538,7 +537,7 @@ def test_ordered():
 
 
 def test_runs():
-    assert runs([]) == []
+    assert not runs([])
     assert runs([1]) == [[1]]
     assert runs([1, 1]) == [[1], [1]]
     assert runs([1, 1, 2]) == [[1], [1, 2]]
@@ -576,8 +575,8 @@ def test__partition():
 
 
 def test_cantor_product():
-    assert list(cantor_product([], [1, 2])) == []
-    assert list(cantor_product([], itertools.count(1))) == []
+    assert not list(cantor_product([], [1, 2]))
+    assert not list(cantor_product([], itertools.count(1)))
 
     assert (list(cantor_product([1, 2, 3], [3, 4])) ==
             [(1, 3), (1, 4), (2, 3), (2, 4), (3, 3), (3, 4)])

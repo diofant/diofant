@@ -192,14 +192,14 @@ def test_DN():
     # Covers cases where D <= 0 or D > 0 and D is a square or N = 0
     # Solutions are straightforward in these cases.
     assert diop_DN(3, 0) == [(0, 0)]
-    assert diop_DN(-17, -5) == []
+    assert not diop_DN(-17, -5)
     assert diop_DN(-19, 23) == [(2, 1)]
     assert diop_DN(-13, 17) == [(2, 1)]
-    assert diop_DN(-15, 13) == []
-    assert diop_DN(0, 5) == []
+    assert not diop_DN(-15, 13)
+    assert not diop_DN(0, 5)
     assert diop_DN(0, 9) == [(3, t)]
     assert diop_DN(9, 0) == [(3*t, t)]
-    assert diop_DN(16, 24) == []
+    assert not diop_DN(16, 24)
     assert diop_DN(9, 180) == [(18, 4)]
     assert diop_DN(9, -180) == [(12, 6)]
     assert diop_DN(7, 0) == [(0, 0)]
@@ -222,11 +222,11 @@ def test_DN():
 
     # N = -1
     assert diop_DN(13, -1) == [(18, 5)]
-    assert diop_DN(991, -1) == []
+    assert not diop_DN(991, -1)
     assert diop_DN(41, -1) == [(32, 5)]
     assert diop_DN(290, -1) == [(17, 1)]
     assert diop_DN(21257, -1) == [(13913102721304, 95427381109)]
-    assert diop_DN(32, -1) == []
+    assert not diop_DN(32, -1)
 
     # |N| > 1
     # Some tests were created using calculator at
@@ -242,10 +242,10 @@ def test_DN():
         {(13, 1), (10663, 851), (579160, 46222),
          (483790960, 38610722), (26277068347, 2097138361), (21950079635497, 1751807067011)}
     assert diop_DN(13, 25) == [(3245, 900)]
-    assert diop_DN(192, 18) == []
+    assert not diop_DN(192, 18)
     assert diop_DN(23, 13) == [(-6, 1), (6, 1)]
     assert diop_DN(167, 2) == [(13, 1)]
-    assert diop_DN(167, -2) == []
+    assert not diop_DN(167, -2)
 
     assert diop_DN(123, -2) == [(11, 1)]
     # One calculator returned [(11, 1), (-11, 1)] but both of these are in
@@ -255,9 +255,9 @@ def test_DN():
     assert diop_DN(123, -23) == [(-10, 1), (10, 1)]
 
     assert diop_DN(0, 0, t) == [(0, t)]
-    assert diop_DN(0, -1, t) == []
+    assert not diop_DN(0, -1, t)
 
-    assert diop_DN(133, 75) == []
+    assert not diop_DN(133, 75)
 
     # tests for _special_diop_DN
     assert diop_DN(13, -3) == [(7, 2), (137, 38)]
@@ -268,7 +268,7 @@ def test_DN():
 def test_bf_pell():
     assert diop_bf_DN(13, -4) == [(3, 1), (-3, 1), (36, 10)]
     assert diop_bf_DN(13, 27) == [(12, 3), (-12, 3), (40, 11), (-40, 11)]
-    assert diop_bf_DN(167, -2) == []
+    assert not diop_bf_DN(167, -2)
     assert diop_bf_DN(1729, 1) == [(44611924489705, 1072885712316)]
     assert diop_bf_DN(89, -8) == [(9, 1), (-9, 1)]
     assert diop_bf_DN(21257, -1) == [(13913102721304, 95427381109)]
@@ -277,7 +277,7 @@ def test_bf_pell():
     assert diop_bf_DN(0, 0, t) == [(0, t)]
     assert diop_bf_DN(4, 0, t) == [(2*t, t), (-2*t, t)]
     assert diop_bf_DN(3, 0, t) == [(0, 0)]
-    assert diop_bf_DN(1, -2, t) == []
+    assert not diop_bf_DN(1, -2, t)
 
 
 def test_length():
@@ -293,11 +293,10 @@ def test_length():
 
 def is_pell_transformation_ok(eq):
     """
-    Test whether X*Y, X, or Y terms are present in the equation
-    after transforming the equation using the transformation returned
-    by transformation_to_pell(). If they are not present we are good.
-    Moreover, coefficient of X**2 should be a divisor of coefficient of
-    Y**2 and the constant term.
+    Test whether X*Y, X, or Y terms are present after transformation_to_pell().
+
+    If they are not present we are good.  Moreover, coefficient of X**2
+    should be a divisor of coefficient of Y**2 and the constant term.
     """
     A, B = transformation_to_DN(eq)
     u = (A*Matrix([X, Y]) + B)[0]
@@ -588,7 +587,7 @@ def test_diop_partition():
         for k in range(1, 8):
             for p in partition(n, k):
                 assert len(p) == k
-    assert list(partition(3, 5)) == []
+    assert not list(partition(3, 5))
     assert [list(p) for p in partition(3, 5, 1)] == [
         [0, 0, 0, 0, 3], [0, 0, 0, 1, 2], [0, 0, 1, 1, 1]]
     assert list(partition(0)) == [()]
@@ -656,23 +655,23 @@ def test_power_representation():
     pytest.raises(ValueError, lambda: list(power_representation(1.2, 2, 2)))
     pytest.raises(ValueError, lambda: list(power_representation(2, 0, 2)))
     pytest.raises(ValueError, lambda: list(power_representation(2, 2, 0)))
-    assert list(power_representation(-1, 2, 2)) == []
+    assert not list(power_representation(-1, 2, 2))
     assert list(power_representation(1, 1, 1)) == [(1,)]  # issue sympy/sympy#11000
-    assert list(power_representation(4**5, 3, 1)) == []  # issue sympy/sympy#11021
-    assert list(power_representation(3, 2, 1)) == []
+    assert not list(power_representation(4**5, 3, 1))  # issue sympy/sympy#11021
+    assert not list(power_representation(3, 2, 1))
     assert list(power_representation(4, 2, 1)) == [(2,)]
     assert list(power_representation(3**4, 4, 6, zeros=True)) == [(1, 2, 2, 2, 2, 2), (0, 0, 0, 0, 0, 3)]
-    assert list(power_representation(3**4, 4, 5, zeros=False)) == []
+    assert not list(power_representation(3**4, 4, 5, zeros=False))
     assert list(power_representation(-2, 3, 2)) == [(-1, -1)]
-    assert list(power_representation(-2, 4, 2)) == []
+    assert not list(power_representation(-2, 4, 2))
     assert list(power_representation(0, 3, 2, True)) == [(0, 0)]
-    assert list(power_representation(0, 3, 2, False)) == []
+    assert not list(power_representation(0, 3, 2, False))
     # when we are dealing with squares, do feasibility checks
     assert len(list(power_representation(4**10*(8*10 + 7), 2, 3))) == 0
     # there will be a recursion error if these aren't recognized
     big = 2**30
     for i in [13, 10, 7, 5, 4, 2, 1]:
-        assert list(sum_of_powers(big, 2, big - i)) == []
+        assert not list(sum_of_powers(big, 2, big - i))
 
 
 def test_assumptions():
@@ -692,9 +691,10 @@ def test_assumptions():
 
 def check_solutions(eq):
     """
-    Determines whether solutions returned by diophantine() satisfy the original
-    equation. Hope to generalize this so we can remove functions like check_ternay_quadratic,
-    check_solutions_normal, check_solutions()
+    Check solutions returned by diophantine().
+
+    Hope to generalize this so we can remove functions like
+    check_ternay_quadratic, check_solutions_normal, check_solutions()
     """
     s = diophantine(eq)
 
@@ -832,12 +832,12 @@ def test_diop_sum_of_even_powers():
 
 def test_sum_of_squares_powers():
     pytest.raises(ValueError, lambda: list(sum_of_squares(10, -1)))
-    assert list(sum_of_squares(-10, 2)) == []
-    assert list(sum_of_squares(2, 3)) == []
+    assert not list(sum_of_squares(-10, 2))
+    assert not list(sum_of_squares(2, 3))
     assert list(sum_of_squares(0, 3, True)) == [(0, 0, 0)]
-    assert list(sum_of_squares(0, 3)) == []
+    assert not list(sum_of_squares(0, 3))
     assert list(sum_of_squares(4, 1)) == [(2,)]
-    assert list(sum_of_squares(5, 1)) == []
+    assert not list(sum_of_squares(5, 1))
     assert list(sum_of_squares(50, 2)) == [(5, 5), (1, 7)]
     assert list(sum_of_squares(11, 5, True)) == [(1, 1, 1, 2, 2), (0, 0, 1, 1, 3)]
     assert list(sum_of_squares(8, 8)) == [(1, 1, 1, 1, 1, 1, 1, 1)]
@@ -865,14 +865,14 @@ def test_sum_of_squares_powers():
     pytest.raises(ValueError, lambda: list(sum_of_powers(2, -1, 1)))
     pytest.raises(ValueError, lambda: list(sum_of_powers(2, 1, -1)))
     assert list(sum_of_powers(-2, 3, 2)) == [(-1, -1)]
-    assert list(sum_of_powers(-2, 4, 2)) == []
+    assert not list(sum_of_powers(-2, 4, 2))
     assert list(sum_of_powers(2, 1, 1)) == [(2,)]
     assert list(sum_of_powers(2, 1, 3, True)) == [(0, 0, 2), (0, 1, 1)]
     assert list(sum_of_powers(5, 1, 2, True)) == [(0, 5), (1, 4), (2, 3)]
-    assert list(sum_of_powers(6, 2, 2)) == []
-    assert list(sum_of_powers(3**5, 3, 1)) == []
+    assert not list(sum_of_powers(6, 2, 2))
+    assert not list(sum_of_powers(3**5, 3, 1))
     assert list(sum_of_powers(3**6, 3, 1)) == [(9,)]
-    assert list(sum_of_powers(2**1000, 5, 2)) == []
+    assert not list(sum_of_powers(2**1000, 5, 2))
 
 
 def test__can_do_sum_of_squares():

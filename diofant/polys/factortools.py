@@ -906,8 +906,7 @@ class _Factor:
 
                 if tuple(A) in history:
                     continue
-                else:
-                    history.add(tuple(A))
+                history.add(tuple(A))
 
                 try:
                     cs, s, E = self._zz_wang_test_points(f, T, ct, A)
@@ -922,8 +921,7 @@ class _Factor:
                     if rr != r:
                         if rr >= r:
                             continue
-                        else:
-                            configs, r = [], rr
+                        configs, r = [], rr
                 else:
                     r = rr
 
@@ -957,12 +955,12 @@ class _Factor:
         try:
             f, H, LC = self._zz_wang_lead_coeffs(f, T, cs, E, H, A)
             factors = self._zz_wang_hensel_lifting(f, H, LC, A, p)
-        except ExtraneousFactors:
+        except ExtraneousFactors as exc:
             if query('EEZ_RESTART_IF_NEEDED'):
                 return self._zz_wang(orig_f, mod + 1)
             else:
                 raise ExtraneousFactors('we need to restart algorithm '
-                                        'with better parameters')
+                                        'with better parameters') from exc
 
         result = []
 
@@ -1129,8 +1127,7 @@ class _Factor:
 
         if functools.reduce(operator.mul, H) != f:
             raise ExtraneousFactors
-        else:
-            return H
+        return H
 
     def _gf_Qmatrix(self, f):
         """
@@ -1143,15 +1140,11 @@ class _Factor:
 
         >>> f = 3*x**2 + 2*x + 4
         >>> R._gf_Qmatrix(f)
-        [[1 mod 5, 0 mod 5],
-         [3 mod 5, 4 mod 5]]
+        [[1, 0], [3, 4]]
 
         >>> f = x**4 + 1
         >>> R._gf_Qmatrix(f)
-        [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
-         [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
-         [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
-         [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
+        [[1, 0, 0, 0], [0, 4, 0, 0], [0, 0, 1, 0], [0, 0, 0, 4]]
 
         References
         ==========
@@ -1186,7 +1179,7 @@ class _Factor:
         >>> R, x = ring('x', FF(5))
 
         >>> R._gf_berlekamp(x**4 + 1)
-        [x**2 + 2 mod 5, x**2 + 3 mod 5]
+        [x**2 + 2, x**2 + 3]
 
         References
         ==========
@@ -1242,7 +1235,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(11))
         >>> R._gf_ddf_zassenhaus(x**15 - 1)
-        [(x**5 + 10 mod 11, 1), (x**10 + x**5 + 1 mod 11, 2)]
+        [(x**5 + 10, 1), (x**10 + x**5 + 1, 2)]
 
         To obtain factorization into irreducibles, use equal degree factorization
         procedure (EDF) with each of the factors.
@@ -1293,7 +1286,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(5))
         >>> R._gf_edf_zassenhaus(x**3 + x**2 + x + 1, 1)
-        [x + 1 mod 5, x + 2 mod 5, x + 3 mod 5]
+        [x + 1, x + 2, x + 3]
 
         References
         ==========
@@ -1345,7 +1338,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(5))
         >>> R._gf_zassenhaus(x**2 + 4*x + 3)
-        [x + 1 mod 5, x + 3 mod 5]
+        [x + 1, x + 3]
 
         """
         assert self.is_univariate
@@ -1378,7 +1371,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(3))
         >>> R._gf_ddf_shoup(x**6 - x**5 + x**4 + x**3 - x)
-        [(x**2 + x, 1), (x**4 + x**3 + x + 2 mod 3, 2)]
+        [(x**2 + x, 1), (x**4 + x**3 + x + 2, 2)]
 
         References
         ==========
@@ -1467,7 +1460,7 @@ class _Factor:
         >>> c = x + 1
         >>> f = 3*x**2 + 2*x + 4
         >>> R._gf_trace_map(a, b, c, 4, f)
-        (x + 3 mod 5, x + 3 mod 5)
+        (x + 3, x + 3)
 
         References
         ==========
@@ -1519,7 +1512,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(2917))
         >>> R._gf_edf_shoup(x**2 + 2837*x + 2277, 1)
-        [x + 852 mod 2917, x + 1985 mod 2917]
+        [x + 852, x + 1985]
 
         References
         ==========
@@ -1575,7 +1568,7 @@ class _Factor:
 
         >>> R, x = ring('x', FF(5))
         >>> R._gf_shoup(x**2 + 4*x + 3)
-        [x + 1 mod 5, x + 3 mod 5]
+        [x + 1, x + 3]
 
         """
         assert self.is_univariate
@@ -1618,7 +1611,7 @@ class _Factor:
         >>> R, x = ring('x', FF(5))
         >>> f = x**2 + 4*x + 3
         >>> R._gf_factor_sqf(f)
-        [x + 1 mod 5, x + 3 mod 5]
+        [x + 1, x + 3]
 
         References
         ==========

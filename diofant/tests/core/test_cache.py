@@ -68,9 +68,9 @@ def test_nocache(clear_imports, monkeypatch):
     from diofant.functions import exp, sin, sinh, sqrt
 
     # test that we don't use cache
-    assert CACHE == []
+    assert not CACHE
     x = Symbol('x')
-    assert CACHE == []
+    assert not CACHE
 
     # issue sympy/sympy#8840
     assert (1 + x)*x is not None  # not raises

@@ -3,7 +3,7 @@ import pytest
 from diofant import (I, Integer, Mul, O, Pow, Rational, Symbol, cbrt, cos, exp,
                      expand, expand_multinomial, expand_power_base, log, pi,
                      sin, sqrt)
-from diofant.abc import x, y, z
+from diofant.abc import a, b, c, x, y, z
 from diofant.simplify.radsimp import expand_numer
 from diofant.utilities.randtest import verify_numerically
 
@@ -39,8 +39,6 @@ def test_expand_non_commutative():
     A = Symbol('A', commutative=False)
     B = Symbol('B', commutative=False)
     C = Symbol('C', commutative=False)
-    a = Symbol('a')
-    b = Symbol('b')
     i = Symbol('i', integer=True)
     n = Symbol('n', negative=True, finite=True)
     m = Symbol('m', negative=True, finite=True)
@@ -162,9 +160,7 @@ def test_expand_power_base():
 
 
 def test_expand_arit():
-    a = Symbol('a')
     b = Symbol('b', positive=True)
-    c = Symbol('c')
 
     p = Integer(5)
     e = (a + b)*c
@@ -186,7 +182,6 @@ def test_expand_arit():
     e = (a + b + c)*(a + c + p)
     assert e == (5 + a + c)*(a + b + c)
     assert e.expand() == 5*a + 5*b + 5*c + 2*a*c + b*c + a*b + a**2 + c**2
-    x = Symbol('x')
     s = exp(x*x) - 1
     e = s.series(x)/x**2
     assert e.expand() == 1 + x**2/2 + O(x**4)
@@ -221,7 +216,6 @@ def test_expand_arit():
     ]
 
     # Check that this isn't too slow
-    x = Symbol('x')
     W = 1
     for i in range(1, 21):
         W = W * (x - i)
@@ -230,9 +224,6 @@ def test_expand_arit():
 
 
 def test_power_expand():
-    """Test for Pow.expand()"""
-    a = Symbol('a')
-    b = Symbol('b')
     p = (a + b)**2
     assert p.expand() == a**2 + b**2 + 2*a*b
 
@@ -254,13 +245,13 @@ def test_expand_multinomial():
                                O(z))**3) == 1 + 3*x + 3*x**2 + x**3 + O(z)
 
 
-def test_sympyissues_5919_6830():
-    # issue sympy/sympy#5919
+def test_sympyissue_5919():
     n = -1 + 1/x
     z = n/x/(-n)**2 - 1/n/x
     assert expand(z) == 1/(x**2 - 2*x + 1) - 1/(x - 2 + 1/x) - 1/(-x + 1)
 
-    # issue sympy/sympy#6830
+
+def test_sympyissue_6830():
     p = (1 + x)**2
     assert expand_multinomial((1 + x*p)**2) == (
         x**2*(x**4 + 4*x**3 + 6*x**2 + 4*x + 1) + 2*x*(x**2 + 2*x + 1) + 1)

@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import collections
 import inspect
-import typing
 
 import mpmath
 import mpmath.libmp as mlib
@@ -360,7 +359,7 @@ class Function(Application, Expr):
 
         evaluate = options.get('evaluate', global_evaluate[0])
         result = super().__new__(cls, *args, **options)
-        if not evaluate or not isinstance(result, cls):
+        if not evaluate or not isinstance(result, cls) or not result.args:
             return result
 
         pr = max(cls._should_evalf(a) for a in result.args)
@@ -466,10 +465,6 @@ class Function(Application, Expr):
 
     def _eval_is_commutative(self):
         return fuzzy_and(a.is_commutative for a in self.args)
-
-    def as_base_exp(self):
-        """Returns the method as the 2-tuple (base, exponent)."""
-        return self, Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
         """
@@ -585,7 +580,7 @@ class Function(Application, Expr):
         """Returns the first derivative of the function."""
         from .symbol import Dummy
 
-        if not (1 <= argindex <= len(self.args)):
+        if not 1 <= argindex <= len(self.args):
             raise ArgumentIndexError(self, argindex)
 
         if self.args[argindex - 1].is_Symbol:
@@ -632,8 +627,7 @@ class Function(Application, Expr):
             #
             raise NotImplementedError(
                 f'{self.func} has no _eval_as_leading_term routine')
-        else:
-            return self.func(*args)
+        return self.func(*args)
 
 
 class AppliedUndef(Function):
@@ -714,8 +708,6 @@ class WildFunction(Function, AtomicExpr):
     >>> f(x, y, 1).match(F)
 
     """
-
-    include: set[typing.Any] = set()
 
     def __init__(self, name, **assumptions):
         from ..sets.sets import FiniteSet, Set
@@ -919,10 +911,7 @@ class Derivative(Expr):
             False
 
         """
-        if self.expr.is_Function:
-            return True
-        else:
-            return False
+        return bool(self.expr.is_Function)
 
     def __new__(cls, expr, *args, **assumptions):
         from .symbol import Dummy
@@ -1228,7 +1217,7 @@ class Derivative(Expr):
 
         return Derivative(*(x._subs(old, new) for x in self.args))
 
-    def _eval_lseries(self, x, logx):
+    def _eval_lseries(self, x, logx=None):
         for term in self.expr.series(x, n=None, logx=logx):
             yield self.func(term, *self.variables)
 
@@ -1459,9 +1448,6 @@ class Subs(Expr):
         """
         return self.doit().evalf(dps, **options)
 
-    #:
-    n = evalf
-
     @property
     def variables(self):
         """The variables to be evaluated."""
@@ -1513,6 +1499,18 @@ class Subs(Expr):
                     if s not in self.variables else Integer(0)),
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
+
+    def _eval_nseries(self, x, n, logx=None):
+        if x in self.point:
+            v = self.variables[self.point.index(x)]
+        else:
+            v = x
+        arg = self.expr.nseries(v, n=n, logx=logx)
+        rv = Add(*[self.func(a, *zip(self.variables, self.point))
+                   for a in Add.make_args(arg.removeO())])
+        if o := arg.getO():
+            rv += o.subs({v: x})
+        return rv
 
 
 def diff(f, *args, **kwargs):
@@ -1879,7 +1877,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
 def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
-    # test_sympyissue_8247_8354 in test_arit)
+    # sympy/sympy#8274 and sympy/sympy#8354)
     was = None
     while was != expr:
         was, expr = expr, expand_mul(expand_multinomial(expr))
@@ -2191,7 +2189,7 @@ def count_ops(expr, visual=False):
                     ops.append(DIV)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
-                elif d != 1:
+                if d != 1:
                     if not d.is_Integer:
                         args.append(d)
                     ops.append(DIV)

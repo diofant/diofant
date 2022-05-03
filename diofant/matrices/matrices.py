@@ -243,17 +243,15 @@ class MatrixBase(DefaultPrinting):
                 self.copyin_list(key, value)
                 return
             raise ValueError(f'unexpected value: {value}')
+        if not is_mat and not isinstance(value, Basic) and is_sequence(value):
+            value = Matrix(value)
+            is_mat = True
+        if is_mat:
+            assert not is_slice
+            key = (slice(i, i + value.rows), slice(j, j + value.cols))
+            self.copyin_matrix(key, value)
         else:
-            if (not is_mat and
-                    not isinstance(value, Basic) and is_sequence(value)):
-                value = Matrix(value)
-                is_mat = True
-            if is_mat:
-                assert not is_slice
-                key = (slice(i, i + value.rows), slice(j, j + value.cols))
-                self.copyin_matrix(key, value)
-            else:
-                return i, j, self._sympify(value)
+            return i, j, self._sympify(value)
 
     def copy(self):
         """Returns the copy of a matrix."""
@@ -1057,8 +1055,6 @@ class MatrixBase(DefaultPrinting):
         """Apply evalf() to each element of self."""
         return self.applyfunc(lambda i: i.evalf(dps, **options))
 
-    n = evalf
-
     def atoms(self, *types):
         """Returns the atoms that form the current object.
 
@@ -1443,7 +1439,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import rho, phi
+        >>> from diofant.abc import phi, rho
         >>> X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
         >>> Y = Matrix([rho, phi])
         >>> X.jacobian(Y)
@@ -1627,11 +1623,9 @@ class MatrixBase(DefaultPrinting):
             raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}.')
         if not self.rows * self.cols == b.rows * b.cols == 3:
             raise ShapeError('Dimensions incorrect for cross product.')
-        else:
-            return self._new(self.rows, self.cols, (
-                (self[1]*b[2] - self[2]*b[1]),
-                (self[2]*b[0] - self[0]*b[2]),
-                (self[0]*b[1] - self[1]*b[0])))
+        return self._new(self.rows, self.cols, ((self[1]*b[2] - self[2]*b[1]),
+                                                (self[2]*b[0] - self[0]*b[2]),
+                                                (self[0]*b[1] - self[1]*b[0])))
 
     def dot(self, b):
         """Return the dot product of Matrix self and b relaxing the condition
@@ -3272,23 +3266,22 @@ class MatrixBase(DefaultPrinting):
         if not self.is_diagonalizable(reals_only, False):
             self._diagonalize_clear_subproducts()
             raise MatrixError('Matrix is not diagonalizable')
-        else:
-            assert self._eigenvects is not None
-            if sort:
-                self._eigenvects.sort(key=default_sort_key)
-                self._eigenvects.reverse()
-            diagvals = []
-            P = self._new(self.rows, 0, [])
-            for eigenval, multiplicity, vects in self._eigenvects:
-                for k in range(multiplicity):
-                    diagvals.append(eigenval)
-                    vec = vects[k]
-                    if normalize:
-                        vec = vec / vec.norm()
-                    P = P.col_insert(P.cols, vec)
-            D = diag(*diagvals)
-            self._diagonalize_clear_subproducts()
-            return P, D
+        assert self._eigenvects is not None
+        if sort:
+            self._eigenvects.sort(key=default_sort_key)
+            self._eigenvects.reverse()
+        diagvals = []
+        P = self._new(self.rows, 0, [])
+        for eigenval, multiplicity, vects in self._eigenvects:
+            for k in range(multiplicity):
+                diagvals.append(eigenval)
+                vec = vects[k]
+                if normalize:
+                    vec = vec / vec.norm()
+                P = P.col_insert(P.cols, vec)
+        D = diag(*diagvals)
+        self._diagonalize_clear_subproducts()
+        return P, D
 
     def is_diagonalizable(self, reals_only=False, clear_subproducts=True):
         """Check if matrix is diagonalizable.
@@ -3346,7 +3339,7 @@ class MatrixBase(DefaultPrinting):
             if len(vects) != multiplicity:
                 all_iscorrect = False
                 break
-            elif reals_only and not eigenval.is_extended_real:
+            if reals_only and not eigenval.is_extended_real:
                 all_iscorrect = False
                 break
         res = all_iscorrect
@@ -4076,12 +4069,12 @@ def a2idx(j, n=None):
     if type(j) is not int:
         try:
             j = j.__index__()
-        except AttributeError:
-            raise IndexError(f'Invalid index a[{j!r}]')
+        except AttributeError as exc:
+            raise IndexError(f'Invalid index a[{j!r}]') from exc
     if n is not None:
         if j < 0:
             j += n
-        if not (j >= 0 and j < n):
+        if not 0 <= j < n:
             raise IndexError(f'Index out of range: a[{j}]')
     return int(j)
 

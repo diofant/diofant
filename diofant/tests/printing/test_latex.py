@@ -14,11 +14,11 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
                      KroneckerDelta, Lambda, LambertW, LaplaceTransform,
                      LeviCivita, Limit, Matrix, MatrixSymbol, Max,
                      MellinTransform, Min, Mod, Mul, Not, Or, Order, Piecewise,
-                     Poly, Pow, Product, Range, Rational, RisingFactorial,
-                     RootOf, RootSum, S, Shi, Si, SineTransform, Subs, Sum,
-                     Symbol, SymmetricDifference, Transpose, Tuple, Union,
-                     Wild, Xor, Ynm, ZeroMatrix, Znm, acot, airyai,
-                     airyaiprime, airybi, airybiprime, arg, asin,
+                     Poly, Pow, Product, Range, Rational, Reals,
+                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     SineTransform, Subs, Sum, Symbol, SymmetricDifference,
+                     Transpose, Tuple, Union, Wild, Xor, Ynm, ZeroMatrix, Znm,
+                     acot, airyai, airyaiprime, airybi, airybiprime, arg, asin,
                      assoc_laguerre, assoc_legendre, besseli, besselj, besselk,
                      bessely, binomial, catalan, cbrt, ceiling, chebyshevt,
                      chebyshevu, conjugate, cos, cot, coth, diff,
@@ -634,7 +634,7 @@ def test_latex_symmetric_difference():
 
 
 def test_latex_Complement():
-    assert latex(Complement(S.Reals, S.Naturals)) == r'\mathbb{R} \setminus \mathbb{N}'
+    assert latex(Complement(Reals, S.Naturals)) == r'\mathbb{R} \setminus \mathbb{N}'
 
 
 def test_latex_productset():
@@ -663,7 +663,7 @@ def test_latex_Rationals():
 
 
 def test_latex_Reals():
-    assert latex(S.Reals) == r'\mathbb{R}'
+    assert latex(Reals) == r'\mathbb{R}'
 
 
 def test_latex_ExtendedReals():
@@ -705,8 +705,8 @@ def test_latex_limits():
     # issue sympy/sympy#8175
     f = Function('f')
     assert latex(Limit(f(x), x, 0)) == r'\lim_{x \to 0^+} f{\left (x \right )}'
-    assert latex(Limit(f(x), x, 0, '-')) == r'\lim_{x \to 0^-} f{\left (x \right )}'
-    assert latex(Limit(f(x), x, 0, 'real')) == r'\lim_{x \to 0} f{\left (x \right )}'
+    assert latex(Limit(f(x), x, 0, 1)) == r'\lim_{x \to 0^-} f{\left (x \right )}'
+    assert latex(Limit(f(x), x, 0, Reals)) == r'\lim_{x \to 0} f{\left (x \right )}'
 
     assert latex(Limit(x + x**2, x, 0)) == r'\lim_{x \to 0^+}\left(x^{2} + x\right)'
     assert latex(Limit(x > 0, x, 0)) == r'\lim_{x \to 0^+}\left(x > 0\right)'
@@ -813,8 +813,8 @@ def test_latex_Piecewise():
     assert latex(p, itex=True) == r'\begin{cases} x & \text{for}\: x \lt 1 \\x^{2} &' \
                                   r' \text{otherwise} \end{cases}'
     p = Piecewise((x, x < 0), (0, x >= 0))
-    assert latex(p) == r'\begin{cases} x & \text{for}\: x < 0 \\0 &' \
-                       r' \text{for}\: x \geq 0 \end{cases}'
+    assert latex(p) == r'\begin{cases} x & \text{for}\: x < 0 \\0 & '\
+                       r'\text{for}\: x \geq 0 \\\mathrm{NaN} & \text{otherwise} \end{cases}'
     A, B = symbols('A B', commutative=False)
     p = Piecewise((A**2, Eq(A, B)), (A*B, True))
     s = r'\begin{cases} A^{2} & \text{for}\: A = B \\A B & \text{otherwise} \end{cases}'
@@ -919,13 +919,13 @@ def test_latex_mul_symbol():
     assert latex(4*x, mul_symbol='ldot') == r'4 \,.\, x'
 
 
-def test_latex_sympyissue_4381():
+def test_sympyissue_4381():
     y = 4*4**log(2)
     assert latex(y) == r'4 \cdot 4^{\log{\left (2 \right )}}'
     assert latex(1/y) == r'\frac{1}{4 \cdot 4^{\log{\left (2 \right )}}}'
 
 
-def test_latex_sympyissue_4576():
+def test_sympyissue_4576():
     assert latex(Symbol('beta_13_2')) == r'\beta_{13 2}'
     assert latex(Symbol('beta_132_20')) == r'\beta_{132 20}'
     assert latex(Symbol('beta_13')) == r'\beta_{13}'

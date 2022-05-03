@@ -99,7 +99,6 @@ def sqrt(arg, **kwargs):
     * https://en.wikipedia.org/wiki/Principal_value
 
     """
-    # arg = sympify(arg) is handled by Pow
     return Pow(arg, Rational(1, 2), **kwargs)
 
 
@@ -353,9 +352,9 @@ class MinMaxBase(LatticeOp):
 
             if arg == cls.zero:
                 raise ShortCircuit(arg)
-            elif arg == cls.identity:
+            if arg == cls.identity:
                 continue
-            elif arg.func == cls:
+            if arg.func == cls:
                 for x in arg.args:
                     yield x
             else:
@@ -416,7 +415,6 @@ class MinMaxBase(LatticeOp):
 
     def evalf(self, dps=15, **options):
         return self.func(*[a.evalf(dps, **options) for a in self.args])
-    n = evalf
 
     @property
     def is_extended_real(self):
@@ -525,7 +523,7 @@ class Max(MinMaxBase, Application):
     def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
-        if 0 < argindex and argindex <= n:
+        if 0 < argindex <= n:
             argindex -= 1
             if n == 2:
                 return Heaviside(self.args[argindex] - self.args[1 - argindex])
@@ -576,7 +574,7 @@ class Min(MinMaxBase, Application):
     def fdiff(self, argindex):
         from .. import Heaviside
         n = len(self.args)
-        if 0 < argindex and argindex <= n:
+        if 0 < argindex <= n:
             argindex -= 1
             if n == 2:
                 return Heaviside(self.args[1-argindex] - self.args[argindex])

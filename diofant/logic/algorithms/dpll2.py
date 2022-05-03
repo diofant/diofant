@@ -1,4 +1,5 @@
-"""Implementation of DPLL algorithm.
+"""
+Implementation of DPLL algorithm.
 
 Features:
   - Clause learning
@@ -16,25 +17,17 @@ from collections import defaultdict
 from heapq import heappop, heappush
 
 from ...utilities import default_sort_key, ordered
-from ..boolalg import _find_predicates, conjuncts, to_cnf, to_int_repr
+from ..boolalg import And, _find_predicates, to_cnf, to_int_repr
 
 
 def dpll_satisfiable(expr, all_models=False):
     """
     Check satisfiability of a propositional sentence.
-    It returns a model rather than True when it succeeds.
-    Returns a generator of all models if all_models is True.
 
-    Examples
-    ========
-
-    >>> dpll_satisfiable(a & ~b)
-    {a: True, b: False}
-    >>> dpll_satisfiable(a & ~a)
-    False
+    Returns a model or a generator of all models if all_models is True.
 
     """
-    clauses = conjuncts(to_cnf(expr))
+    clauses = And.make_args(to_cnf(expr))
     if False in clauses:
         if all_models:
             return (f for f in [False])
@@ -123,7 +116,8 @@ class SATSolver:
         self.variable_set = [False] * (len(variables) + 1)
 
     def _initialize_clauses(self, clauses):
-        """Set up the clause data structures needed.
+        """
+        Set up the clause data structures needed.
 
         For each clause, the following changes are made:
         - Unit clauses are queued for propagation right away.
@@ -157,22 +151,9 @@ class SATSolver:
         the opposite is chosen and the search continues. The solver
         halts when every variable has a setting.
 
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> list(l._find_model())
-        [{1: True, 2: False, 3: False}, {1: True, 2: True, 3: True}]
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set(), [a, b, c])
-        >>> list(l._find_model())
-        [{a: True, b: False, c: False}, {a: True, b: True, c: True}]
-
         """
         # We use this variable to keep track of if we should flip a
-        #  variable setting in successive rounds
+        # variable setting in successive rounds
         flip_var = False
 
         # Check if unit prop says the theory is unsat right off the bat
@@ -239,64 +220,21 @@ class SATSolver:
     ########################
     #    Helper Methods    #
     ########################
+
     @property
     def _current_level(self):
-        """The current decision level data structure
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{1}, {2}], {1, 2}, set())
-        >>> next(l._find_model())
-        {1: True, 2: True}
-        >>> l._current_level.decision
-        0
-        >>> l._current_level.flipped
-        False
-        >>> l._current_level.var_settings
-        {1, 2}
-
-        """
+        """The current decision level data structure."""
         return self.levels[-1]
 
     def _clause_sat(self, cls):
-        """Check if a clause is satisfied by the current variable setting.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{1}, {-1}], {1}, set())
-        >>> try:
-        ...     next(l._find_model())
-        ... except StopIteration:
-        ...     pass
-        >>> l._clause_sat(0)
-        False
-        >>> l._clause_sat(1)
-        True
-
-        """
+        """Check if a clause is satisfied by the current variable setting."""
         for lit in self.clauses[cls]:
             if lit in self.var_settings:
                 return True
         return False
 
     def _is_sentinel(self, lit, cls):
-        """Check if a literal is a sentinel of a given clause.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> next(l._find_model())
-        {1: True, 2: False, 3: False}
-        >>> l._is_sentinel(2, 3)
-        True
-        >>> l._is_sentinel(-3, 1)
-        False
-
-        """
+        """Check if a literal is a sentinel of a given clause."""
         return cls in self.sentinels[lit]
 
     def _assign_literal(self, lit):
@@ -307,26 +245,6 @@ class SATSolver:
         sentinel of any clause, then a new sentinel must be chosen. If
         this is not possible, then unit propagation is triggered and
         another literal is added to the queue to be set in the future.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> next(l._find_model())
-        {1: True, 2: False, 3: False}
-        >>> l.var_settings
-        {-3, -2, 1}
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> l._assign_literal(-1)
-        >>> try:
-        ...     next(l._find_model())
-        ... except StopIteration:
-        ...     pass
-        >>> l.var_settings
-        {-1}
 
         """
         self.var_settings.add(lit)
@@ -354,25 +272,7 @@ class SATSolver:
                     self._unit_prop_queue.append(other_sentinel)
 
     def _undo(self):
-        """
-        _undo the changes of the most recent decision level.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> next(l._find_model())
-        {1: True, 2: False, 3: False}
-        >>> level = l._current_level
-        >>> (level.decision, level.var_settings, level.flipped)
-        (-3, {-3, -2}, False)
-        >>> l._undo()
-        >>> level = l._current_level
-        >>> (level.decision, level.var_settings, level.flipped)
-        (0, {1}, False)
-
-        """
+        """Undo the changes of the most recent decision level."""
         # Undo the variable settings
         for lit in self._current_level.var_settings:
             self.var_settings.remove(lit)
@@ -391,24 +291,7 @@ class SATSolver:
     # otherwise.
 
     def _simplify(self):
-        """Iterate over the various forms of propagation to simplify the theory.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> l.variable_set
-        [False, False, False, False]
-        >>> l.sentinels
-        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}}
-        >>> l._simplify()
-        >>> l.variable_set
-        [False, True, False, False]
-        >>> l.sentinels
-        {-3: {0, 2}, -2: {3, 4}, -1: set(), 2: {0, 3}, 3: {2, 4}}
-
-        """
+        """Iterate over the various forms of propagation to simplify the theory."""
         changed = True
         while changed:
             changed = False
@@ -448,43 +331,14 @@ class SATSolver:
             heappush(self.lit_heap, (self.lit_scores[-var], -var))
 
     def _vsids_decay(self):
-        """Decay the VSIDS scores for every literal.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> l.lit_scores
-        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
-        >>> l._vsids_decay()
-        >>> l.lit_scores
-        {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
-
-        """
+        """Decay the VSIDS scores for every literal."""
         # We divide every literal score by 2 for a decay factor
         #  Note: This doesn't change the heap property
         for lit in self.lit_scores:
             self.lit_scores[lit] /= 2.0
 
     def _vsids_calculate(self):
-        """
-        VSIDS Heuristic Calculation
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-
-        >>> l.lit_heap
-        [(-2.0, -3), (-2.0, 2), (-2.0, -2), (0.0, 1), (-2.0, 3), (0.0, -1)]
-        >>> l._vsids_calculate()
-        -3
-        >>> l.lit_heap
-        [(-2.0, -2), (-2.0, 2), (0.0, -1), (0.0, 1), (-2.0, 3)]
-
-        """
+        """VSIDS Heuristic Calculation."""
         if len(self.lit_heap) == 0:
             return 0
 
@@ -500,47 +354,13 @@ class SATSolver:
         """Handle the assignment of a literal for the VSIDS heuristic."""
 
     def _vsids_lit_unset(self, lit):
-        """Handle the unsetting of a literal for the VSIDS heuristic.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-
-        >>> l.lit_heap
-        [(-2.0, -3), (-2.0, 2), (-2.0, -2), (0.0, 1), (-2.0, 3), (0.0, -1)]
-        >>> l._vsids_lit_unset(2)
-        >>> l.lit_heap
-        [(-2.0, -3), (-2.0, -2), (-2.0, -2), (-2.0, 2), (-2.0, 3), (0.0, -1),
-         (-2.0, 2), (0.0, 1)]
-
-        """
+        """Handle the unsetting of a literal for the VSIDS heuristic."""
         var = abs(lit)
         heappush(self.lit_heap, (self.lit_scores[var], var))
         heappush(self.lit_heap, (self.lit_scores[-var], -var))
 
     def _vsids_clause_added(self, cls):
-        """Handle the addition of a new clause for the VSIDS heuristic.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-
-        >>> l.num_learned_clauses
-        0
-        >>> l.lit_scores
-        {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
-
-        >>> l._vsids_clause_added({2, -3})
-        >>> l.num_learned_clauses
-        1
-        >>> l.lit_scores
-        {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
-
-        """
+        """Handle the addition of a new clause for the VSIDS heuristic."""
         self.num_learned_clauses += 1
         for lit in cls:
             self.lit_scores[lit] += 1
@@ -548,29 +368,9 @@ class SATSolver:
     ########################
     #   Clause Learning    #
     ########################
+
     def _simple_add_learned_clause(self, cls):
-        """Add a new clause to the theory.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-
-        >>> l.num_learned_clauses
-        0
-        >>> l.clauses
-        [[2, -3], [1], [3, -3], [2, -2], [3, -2]]
-        >>> l.sentinels
-        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}}
-
-        >>> l._simple_add_learned_clause([3])
-        >>> l.clauses
-        [[2, -3], [1], [3, -3], [2, -2], [3, -2], [3]]
-        >>> l.sentinels
-        {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}}
-
-        """
+        """Add a new clause to the theory."""
         cls_num = len(self.clauses)
         self.clauses.append(cls)
 
@@ -583,20 +383,7 @@ class SATSolver:
         self.heur_clause_added(cls)
 
     def _simple_compute_conflict(self):
-        """Build a clause representing the fact that at least one decision made
-        so far is wrong.
-
-        Examples
-        ========
-
-        >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set())
-        >>> next(l._find_model())
-        {1: True, 2: False, 3: False}
-        >>> l._simple_compute_conflict()
-        [3]
-
-        """
+        """Build a clause representing the fact that at least one decision made so far is wrong."""
         return [-(level.decision) for level in self.levels[1:]]
 
 

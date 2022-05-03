@@ -25,10 +25,9 @@ f = Function('f')
 
 
 def diff_test(i):
-    """Return the set of symbols, s, which were used in testing that
-    i.diff(s) agrees with i.doit().diff(s). If there is an error then
-    the assertion will fail, causing the test to fail.
-    """
+    # Return the set of symbols, s, which were used in testing that
+    # i.diff(s) agrees with i.doit().diff(s). If there is an error then
+    # the assertion will fail, causing the test to fail.
     syms = i.free_symbols
     for s in syms:
         assert (i.diff(s).doit() - i.doit().diff(s)).expand() == 0
@@ -118,6 +117,10 @@ def test_basics():
     assert Integral(x).is_commutative
     n = Symbol('n', commutative=False)
     assert Integral(n + x, x).is_commutative is False
+
+    # issue sympy/sympy#5539
+    assert Integral(x, (x, 0, 1)) == Integral(y, (y, 0, 1))
+    assert Integral(x, (x, 0, 1)) + Integral(y, (y, 0, 1)) == 2*Integral(x, (x, 0, 1))
 
 
 def test_diff_wrt():
@@ -223,7 +226,7 @@ def test_multiple_integration():
         y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
 
     # issue sympy/sympy#14782
-    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
+    assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) == -pi/8
 
 
 def test_sympyissue_3532():
@@ -863,7 +866,7 @@ def test_is_real():
 def test_series():
     i = Integral(cos(x), (x, x))
     e = i.series(x, n=None)
-    s1 = i.nseries(x, n=8).removeO().doit()
+    s1 = i.series(x, n=8).removeO().doit()
     s2 = Add(*[next(e) for j in range(4)])
     assert s1 == s2
 
@@ -954,7 +957,7 @@ def test_sympyissue_5907():
             x/(2*a**4 + 2*a**2*x**2) + atan(x/a)/(2*a**3))
 
 
-def test_sympyissue_4892a():
+def test_sympyissue_4892():
     c = Symbol('c', nonzero=True)
     P1 = -A*exp(-z)
     P2 = -A/(c*t)*(sin(x)**2 + cos(y)**2)
@@ -973,8 +976,6 @@ def test_sympyissue_4892a():
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
     ]
 
-
-def test_sympyissue_4892b():
     # Issues relating to issue sympy/sympy#4596 are making the actual result of this hard
     # to test.  The answer should be something like
     #
@@ -1253,7 +1254,7 @@ def test_sympyissue_13501():
     assert integrate(1/(1 + a**2*x**2), x) == atan(a*x)/a
 
 
-def test_diofantissue_447():
+def test_issue_447():
     assert integrate(1/(2*sin(x) + cos(x)),
                      x) == (sqrt(5)*log(tan(x/2) - 2 + sqrt(5))/5 -
                             sqrt(5)*log(tan(x/2) - sqrt(5) - 2)/5)
@@ -1290,7 +1291,7 @@ def test_sympyissue_15810():
     assert integrate(1/(2**(2*x/3) + 1), (x, 0, oo)) == Rational(3, 2)
 
 
-def test_diofantissue_149():
+def test_issue_149():
     a = Symbol('a', positive=True)
     expr = (2 - x)**a*sin(a/x)
     res = sqrt(pi)*a*meijerg(((), (a/2 + 1/2, a/2 + 1)),
@@ -1435,3 +1436,27 @@ def test_sympyissue_22487():
     assert (integrate((cos(x**2) - cos(x))/x**2,
                       (x, -oo, oo)) ==
             pi + sqrt(2*pi)*gamma(Rational(-1, 4))/gamma(Rational(3, 4))/4)
+
+
+@pytest.mark.timeout(100)
+def test_sympyissue_22863():
+    # not hangs
+    integrate((3*x**3 - x**2 + 2*x - 4)/sqrt(x**2 - 3*x + 2), (x, 0, 1))
+
+
+def test_sympyissue_23069():
+    assert integrate(x**4*sqrt(1 - x**2), (x, 0, 1)) == pi/32
+
+
+def test_sympyissue_19639():
+    assert integrate(sqrt(1 - x**2)*(a*x**3 + b*x**4),
+                     (x, 0, 1)) == 2*a/15 + pi*b/32
+
+
+def test_sympyissue_23223():
+    assert integrate(abs(cos(x)), (x, -pi/2, pi/2)) == 2
+
+
+def test_sympyissue_23299():
+    e = Integral(a*x**(a - 1)*log(x), (x, 0, 1))
+    assert e.doit() == Piecewise((-1/a, -re(a) + 1 < 1), (e, True))

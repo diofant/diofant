@@ -52,7 +52,7 @@ class Assignment(Relational):
 
     rel_op = ':='
 
-    def __new__(cls, lhs, rhs=0, **assumptions):
+    def __new__(cls, lhs, rhs=0, **assumptions):  # pylint: disable=signature-differs
         from ..matrices.expressions.matexpr import MatrixElement, MatrixSymbol
         from ..tensor import Indexed
         lhs = sympify(lhs, strict=True)
@@ -70,7 +70,7 @@ class Assignment(Relational):
         if lhs_is_mat:
             if not rhs_is_mat:
                 raise ValueError('Cannot assign a scalar to a matrix.')
-            elif lhs.shape != rhs.shape:
+            if lhs.shape != rhs.shape:
                 raise ValueError("Dimensions of lhs and rhs don't align.")
         elif rhs_is_mat and not lhs_is_mat:
             raise ValueError('Cannot assign a matrix to a scalar.')
@@ -207,29 +207,29 @@ class CodePrinter(StrPrinter):
                         # (temporary variables?)
                         raise NotImplementedError(
                             'FIXME: no support for contractions in factor yet')
-                    else:
 
-                        # We need the lhs expression as an accumulator for
-                        # the loops, i.e
-                        #
-                        # for (int d=0; d < dim; d++){
-                        #    lhs[] = lhs[] + term[][d]
-                        # }           ^.................. the accumulator
-                        #
-                        # We check if the expression already contains the
-                        # lhs, and raise an exception if it does, as that
-                        # syntax is currently undefined.  FIXME: What would be
-                        # a good interpretation?
-                        assert assign_to is not None
-                        assert not term.has(assign_to)
+                    # We need the lhs expression as an accumulator for
+                    # the loops, i.e
+                    #
+                    # for (int d=0; d < dim; d++){
+                    #    lhs[] = lhs[] + term[][d]
+                    # }           ^.................. the accumulator
+                    #
+                    # We check if the expression already contains the
+                    # lhs, and raise an exception if it does, as that
+                    # syntax is currently undefined.  FIXME: What would be
+                    # a good interpretation?
+                    assert assign_to is not None
+                    assert not term.has(assign_to)
 
-                        lines.extend(openloop)
-                        lines.extend(openloop_d)
-                        text = '%s = %s' % (lhs_printed, StrPrinter.doprint(
-                            self, assign_to + term))
-                        lines.append(self._get_statement(text))
-                        lines.extend(closeloop_d)
-                        lines.extend(closeloop)
+                    lines.extend(openloop)
+                    lines.extend(openloop_d)
+                    text = '%s = %s' % (lhs_printed,
+                                        StrPrinter.doprint(self,
+                                                           assign_to + term))
+                    lines.append(self._get_statement(text))
+                    lines.extend(closeloop_d)
+                    lines.extend(closeloop)
 
         return '\n'.join(lines)
 

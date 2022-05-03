@@ -437,6 +437,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
 
         """
+        from ..functions import Piecewise
+
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -485,7 +487,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     if a is None or a is nan:
                         # try random real
                         a = expr._random(None, -1, 0, 1, 0)
-            except ZeroDivisionError:
+            except (ZeroDivisionError, TypeError):
                 a = None
             if a is not None and a is not nan:
                 try:
@@ -494,7 +496,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
-                except ZeroDivisionError:
+                except (ZeroDivisionError, TypeError):
                     b = None
                 if b is not None and b is not nan and b.equals(a) is False:
                     return False
@@ -512,7 +514,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             deriv = expr.diff(w)
             if simplify:
                 deriv = deriv.simplify()
-            if deriv != 0:
+            if deriv:
                 if not (deriv.is_Number or pure_complex(deriv)):
                     if flags.get('failing_number', False):
                         return failing_number
@@ -520,7 +522,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         assert deriv.free_symbols
                         return  # dead line provided _random returns None in such cases
                 return False
-        return True
+        if not expr.has(Piecewise):
+            return True
 
     def equals(self, other, failing_expression=False):
         """Return True if self == other, False if it doesn't, or None. If
@@ -537,6 +540,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from .exprtools import factor_terms
         from ..series import Order
 
         other = sympify(other)
@@ -584,12 +588,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
-        from .function import count_ops
+        from .function import Function, count_ops
 
         if self.is_number:
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -615,7 +619,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -632,7 +636,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return False
             try:
                 # check to see that we can get a value
-                n2 = self._eval_evalf(2)
+                n2 = self._eval_evalf(2)  # pylint: disable=assignment-from-none
                 if n2 is None or n2._prec == 1:
                     raise AttributeError
                 if n2 == nan:
@@ -663,7 +667,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a, '+' if (a < b) is not false else '-')
+                A = limit(self, x, a, -1 if (a < b) is not false else 1)
                 if isinstance(A, Limit):
                     raise NotImplementedError('Could not compute limit')
 
@@ -673,7 +677,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
-                B = limit(self, x, b, '-' if (a < b) is not false else '+')
+                B = limit(self, x, b, 1 if (a < b) is not false else -1)
                 if isinstance(B, Limit):
                     raise NotImplementedError('Could not compute limit')
 
@@ -889,7 +893,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from .symbol import Dummy, Symbol
-        o = self.getO()
+        o = self.getO()  # pylint: disable=assignment-from-none
         if o is None:
             return
         elif o.is_Order:
@@ -1336,8 +1340,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-        r = self.extract_multiplicatively(expr)
-        if r and not r.has(expr):
+        if (r := self.extract_multiplicatively(expr)) and not r.has(expr):
             return r
 
     def as_independent(self, *deps, **hint):
@@ -1906,8 +1909,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             co = self
             diff = co - c
             # XXX should we match types? i.e should 3 - .1 succeed?
-            if (co > 0 and diff > 0 and diff < co or
-                    co < 0 and diff < 0 and diff > co):
+            if co > 0 and 0 < diff < co or co < 0 and 0 > diff > co:
                 return diff
             return
 
@@ -2140,11 +2142,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             syms = self.free_symbols
 
-        if syms.intersection(self.free_symbols) == set():
-            # constant polynomial
-            return True
-        else:
-            return self._eval_is_polynomial(syms)
+        return self._eval_is_polynomial(syms)
 
     def _eval_is_rational_function(self, syms):
         if self.free_symbols.intersection(syms) == set():
@@ -2315,11 +2313,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif not i and (n._prec > 1 or n._prec == -1):
                 return True
 
-    ###################################################################################
-    # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
-    ###################################################################################
+    ##############################################################
+    # ####### SERIES, LEADING TERM, LIMIT, ORDER METHODS ####### #
+    ##############################################################
 
-    def series(self, x=None, x0=0, n=6, dir='+', logx=None):
+    def series(self, x=None, x0=0, n=6, dir=None, logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2348,13 +2346,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> [next(term) for i in range(2)]
         [1, -x**2/2]
 
-        For ``dir=+`` (default) the series is calculated from the right and
-        for ``dir=-`` the series from the left. For smooth functions this
-        flag will not alter the results.
+        For ``dir=-1`` (default) the series is calculated from the right and
+        for ``dir=+1`` the series from the left.  For infinite ``x0`` (``oo``
+        or ``-oo``), the ``dir`` argument is determined from the direction
+        of the infinity (i.e. ``dir=+1`` for ``oo``).  For smooth functions
+        this flag will not alter the results.
 
-        >>> abs(x).series(dir='+')
+        >>> abs(x).series(dir=-1)
         x
-        >>> abs(x).series(dir='-')
+        >>> abs(x).series(dir=+1)
         -x
 
         For rational expressions this method may return original expression.
@@ -2363,7 +2363,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1/x
 
         """
+        from .function import expand_mul
         from .symbol import Dummy, Symbol
+        from ..functions import sign
         from ..series import Order
         from ..simplify import collect
 
@@ -2384,32 +2386,31 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 return self
 
-        if len(dir) != 1 or dir not in '+-':
-            raise ValueError("Dir must be '+' or '-'")
+        x0 = sympify(x0)
 
-        if x0 in [oo, -oo]:
-            s = self.aseries(x, n)
-            if x0 == -oo:
-                return s.subs({x: -x})
-            return s
+        if x0.is_infinite:
+            dir = sign(x0).simplify()
+        elif dir is None:
+            dir = Rational(-1)
+        else:
+            dir = sympify(dir)
 
-        # use rep to shift origin to x0 and change sign (if dir is negative)
-        # and undo the process with rep2
-        if x0 or dir == '-':
-            if dir == '-':
-                rep = -x + x0
-                rep2 = -x
-                rep2b = x0
-            else:
-                rep = x + x0
-                rep2 = x
-                rep2b = -x0
-            s = self.subs({x: rep}).series(x, x0=0, n=n, dir='+', logx=logx)
+        if not (isinstance(dir, Expr) and dir.is_nonzero):
+            raise ValueError(f'Direction must be a nonzero Expr, got {dir}')
+
+        dir = dir/abs(dir)
+
+        if x0.is_infinite:
+            return self.subs({x: dir*x}).aseries(x, n).subs({x: x/dir})
+
+        # use rep to shift origin to x0 and change dir to 1, then undo
+        if x0 or dir != -1:
+            s = self.subs({x: x0 - dir*x}).series(x, x0=0, n=n, dir=-1, logx=logx)
             if n is None:  # lseries...
-                return (si.subs({x: rep2 + rep2b}) for si in s)  # pragma: no branch
-            return s.subs({x: rep2 + rep2b})
+                return (si.subs({x: x0/dir - x/dir}) for si in s)  # pragma: no branch
+            return s.subs({x: x0/dir - x/dir})
 
-        # from here on it's x0=0 and dir='+' handling
+        # from here on it's x0=0 and dir=-1 handling
 
         if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
             # replace x with an x that has a positive assumption
@@ -2687,7 +2688,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 s1 = coeff.aseries(x, n, bound=bound-1)
                 if gotO and s1.getO():
                     break
-                elif s1.getO():
+                if s1.getO():
                     gotO = True
                 s += (s1 * d**expo)
             else:
@@ -2697,7 +2698,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             return (s + o).subs({d: exp(logw)})
 
-    def limit(self, x, xlim, dir='+'):
+    def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
         from ..series.limits import limit
         return limit(self, x, xlim, dir)
@@ -2718,10 +2719,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             is_zero = t.equals(0)
             if is_zero:
                 continue
-            elif is_zero is False:
+            if is_zero is False:
                 break
-            else:
-                raise NotImplementedError(f'Zero-decision problem for {t}')
+            raise NotImplementedError(f'Zero-decision problem for {t}')
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2774,6 +2774,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             b, e = p[0].as_base_exp()
             if b == x:
                 return c, e
+            elif b == -x:
+                return c*(-1)**e, e
         if s.has(x):
             s = s.simplify()
         return s, Integer(0)
@@ -3024,9 +3026,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..polys import cancel
         return cancel(self, *gens, **args)
 
-    def invert(self, g, *gens, **args):
-        """Return the multiplicative inverse of ``self`` mod ``g``
-        where ``self`` (and ``g``) may be symbolic expressions).
+    def invert(self, other, *gens, **args):
+        """Return the multiplicative inverse of ``self`` mod ``other``
+        where ``self`` (and ``other``) may be symbolic expressions).
 
         See Also
         ========
@@ -3037,9 +3039,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from ..polys.polytools import invert
         from .numbers import mod_inverse
-        if self.is_number and getattr(g, 'is_number', True):
-            return mod_inverse(self, g)
-        return invert(self, g, *gens, **args)
+        if self.is_number and getattr(other, 'is_number', True):
+            return mod_inverse(self, other)
+        return invert(self, other, *gens, **args)
 
     def round(self, p=0):
         """Return x rounded to the given decimal place.
@@ -3193,7 +3195,5 @@ def _mag(x):
 from .add import Add
 from .mul import Mul
 from .power import Pow
-from .function import Function, expand_mul
 from .mod import Mod
-from .exprtools import factor_terms
 from .numbers import I, Integer, Rational, nan, oo, zoo

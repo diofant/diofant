@@ -60,7 +60,7 @@ def _peeloff_pi(arg):
         if a is pi:
             K = Integer(1)
             break
-        elif a.is_Mul:
+        if a.is_Mul:
             K, p = a.as_two_terms()
             if p is pi and K.is_Rational:
                 break
@@ -2428,7 +2428,7 @@ class atan2(InverseTrigonometricFunction):
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate(), self.args[1].conjugate())
 
-    def fdiff(self, argindex):
+    def fdiff(self, argindex=1):
         y, x = self.args
         if argindex == 1:
             # Diff wrt y

@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from ..utilities import default_sort_key
+from .add import Add
 from .basic import Basic
 from .cache import cacheit
 from .logic import _fuzzy_group, fuzzy_and
@@ -93,7 +94,7 @@ class Mul(AssocOp):
               as ``Mul(Mul(a, b), c)``. This can have undesirable consequences.
 
               -  Sometimes terms are not combined as one would like:
-                 {c.f. https://github.com/sympy/sympy/issues/4596}
+                 {c.f. :sympyissue:`4596`}
 
                 >>> 2*(x + 1)  # this is the 2-arg Mul behavior
                 2*x + 2
@@ -109,7 +110,7 @@ class Mul(AssocOp):
                 Powers with compound bases may not find a single base to
                 combine with unless all arguments are processed at once.
                 Post-processing may be necessary in such cases.
-                {c.f. https://github.com/sympy/sympy/issues/5728}
+                {c.f. :sympyissue:`5728`}
 
                 >>> a = sqrt(x*sqrt(y))
                 >>> a**3
@@ -145,7 +146,7 @@ class Mul(AssocOp):
               create a new Mul, ``M/d[i]`` the args of which will be traversed
               again when it is multiplied by ``n[i]``.
 
-              {c.f. https://github.com/sympy/sympy/issues/5706}
+              {c.f. :sympyissue:`5706`}
 
               This consideration is moot if the cache is turned off.
 
@@ -156,6 +157,8 @@ class Mul(AssocOp):
 
         """
         from ..series.order import Order
+        from .numbers import I, Rational, nan, oo, zoo
+        from .power import Pow
 
         rv = None
         if len(seq) == 2:
@@ -245,7 +248,7 @@ class Mul(AssocOp):
                 continue
 
             # 3
-            elif o.is_Number:
+            if o.is_Number:
                 if o is nan or coeff is zoo and o is S.Zero:
                     # we know for sure the result will be nan
                     return [nan], [], None
@@ -256,18 +259,18 @@ class Mul(AssocOp):
                         return [nan], [], None
                 continue
 
-            elif o is zoo:
+            if o is zoo:
                 if not coeff:
                     # 0 * zoo = NaN
                     return [nan], [], None
                 coeff = zoo
                 continue
 
-            elif o is I:
+            if o is I:
                 neg1e += S.Half
                 continue
 
-            elif o.is_commutative:
+            if o.is_commutative:
                 #      e
                 # o = b
                 b, e = o.as_base_exp()
@@ -287,16 +290,16 @@ class Mul(AssocOp):
                             if e.is_Integer:
                                 coeff *= Pow(b, e)  # it is an unevaluated power
                                 continue
-                            elif e.is_negative:    # also a sign of an unevaluated power
+                            if e.is_negative:    # also a sign of an unevaluated power
                                 seq.append(Pow(b, e))
                                 continue
-                            elif b.is_negative:
+                            if b.is_negative:
                                 neg1e += e
                                 b = -b
                             if b is not S.One:
                                 pnum_rat[b].append(e)
                             continue
-                        elif b.is_positive or e.is_integer:
+                        if b.is_positive or e.is_integer:
                             num_exp.append((b, e))
                             continue
 
@@ -336,8 +339,7 @@ class Mul(AssocOp):
                         if o12.is_commutative:
                             seq.append(o12)
                             continue
-                        else:
-                            nc_seq.insert(0, o12)
+                        nc_seq.insert(0, o12)
 
                     else:
                         nc_part.append(o1)
@@ -570,6 +572,7 @@ class Mul(AssocOp):
         return c_part, nc_part, order_symbols
 
     def _eval_power(self, other):
+        from .power import Pow
 
         # don't break up NC terms: (A*B)**3 != A**3*B**3, it is A*B*A*B*A*B
         cargs, nc = self.args_cnc(split_1=False)
@@ -680,8 +683,8 @@ class Mul(AssocOp):
         diofant.core.expr.Expr.as_real_imag
 
         """
-        from .function import expand_mul
         from ..functions import Abs, im, re
+        from .function import expand_mul
         other = []
         coeffr = []
         coeffi = []
@@ -1029,6 +1032,7 @@ class Mul(AssocOp):
             return real  # doesn't matter what zero is
 
     def _eval_is_imaginary(self):
+        from .numbers import I
         obj = I*self
         if obj.is_Mul:
             return fuzzy_and([obj._eval_is_extended_real(),
@@ -1067,7 +1071,7 @@ class Mul(AssocOp):
         for t in self.args:
             if t.is_positive:
                 continue
-            elif t.is_negative:
+            if t.is_negative:
                 sign = -sign
             elif t.is_zero:
                 if self.is_finite:
@@ -1113,11 +1117,12 @@ class Mul(AssocOp):
             return is_integer
 
     def _eval_subs(self, old, new):
-        from . import Integer
         from ..functions.elementary.complexes import sign
         from ..ntheory.factor_ import multiplicity
         from ..simplify.powsimp import powdenest
         from ..simplify.radsimp import fraction
+        from .numbers import Integer, oo
+        from .power import Pow
 
         if not old.is_Mul:
             return
@@ -1205,7 +1210,7 @@ class Mul(AssocOp):
             # if coeffs are the same there will be no updating to do
             # below after breakup() step; so skip (and keep co_xmul=None)
             if co_old != co_self:
-                co_xmul = co_self.extract_multiplicatively(co_old)
+                co_xmul = co_self/co_old
         elif co_old.is_Rational:
             return rv
 
@@ -1283,7 +1288,7 @@ class Mul(AssocOp):
                 for j in range(take):
                     if nc[i + j][0] != old_nc[j][0]:
                         break
-                    elif j == 0:
+                    if j == 0:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))
                     elif j == take - 1:
                         rat.append(ndiv(nc[i + j][1], old_nc[j][1]))
@@ -1510,8 +1515,3 @@ def expand_2arg(e):
         return e
 
     return bottom_up(e, do)
-
-
-from .numbers import I, Rational, nan, oo, zoo
-from .power import Pow
-from .add import Add

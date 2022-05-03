@@ -1,7 +1,7 @@
 from diofant import (ITE, And, Basic, Derivative, Eq, Equivalent, I, Implies,
                      Integer, Integral, MatrixSymbol, Nand, Nor, Not, Or,
                      Rational, Symbol, Tuple, Xor, cos, count_ops, exp, pi,
-                     sin, symbols)
+                     powsimp, sin, symbols)
 from diofant.abc import a, x, y, z
 
 
@@ -124,6 +124,9 @@ def test_sympyissue_9324():
     P = MatrixSymbol('P', 3, 3)
     Q = MatrixSymbol('Q', 3, 3)
     assert count(P + Q) == 9
+    expr = powsimp(M, deep=True)
+    assert expr == M
+    assert expr.name == 'M'
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True)
     M = MatrixSymbol('M', m + n, m * m)

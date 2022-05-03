@@ -1,15 +1,15 @@
+import random
 import string
-from random import choice
 
 import pytest
 
-from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, bell, bernoulli, binomial, catalan,
-                     cos, cot, diff, digamma, euler, expand_func, factorial,
-                     fibonacci, gamma, genocchi, harmonic, hyper, im, limit,
-                     log, lucas, nan, oo, pi, polygamma, re, simplify, sin,
-                     sqrt, sstr, subsets, symbols, trigamma, zeta, zoo)
-from diofant.abc import x
+from diofant import (EulerGamma, GoldenRatio, I, Integer, Product, Rational,
+                     Sum, Symbol, bell, bernoulli, binomial, catalan, cos, cot,
+                     diff, digamma, euler, expand_func, factorial, fibonacci,
+                     gamma, genocchi, harmonic, hyper, im, limit, log, lucas,
+                     nan, oo, pi, polygamma, re, simplify, sin, sqrt, sstr,
+                     subsets, symbols, trigamma, zeta, zoo)
+from diofant.abc import k, m, n, x
 from diofant.combinatorics.permutations import Permutation
 from diofant.functions.combinatorial.numbers import (_AOP_product,
                                                      _multiset_histogram, nC,
@@ -123,8 +123,6 @@ def test_bell():
 
 
 def test_harmonic():
-    n = Symbol('n')
-
     assert harmonic(n, 0) == n
     assert harmonic(n).evalf() == harmonic(n)
     assert harmonic(n, 1) == harmonic(n)
@@ -228,9 +226,6 @@ def test_harmonic_evalf():
 
 
 def test_harmonic_rewrite_polygamma():
-    n = Symbol('n')
-    m = Symbol('m')
-
     assert harmonic(n).rewrite(digamma) == polygamma(0, n + 1) + EulerGamma
     assert harmonic(n).rewrite(trigamma) == polygamma(0, n + 1) + EulerGamma
     assert harmonic(n).rewrite(polygamma) == polygamma(0, n + 1) + EulerGamma
@@ -251,7 +246,6 @@ def test_harmonic_rewrite_polygamma():
 
 
 def test_harmonic_limit():
-    n = Symbol('n')
     m = Symbol('m', positive=True)
     assert limit(harmonic(n, m + 1), n, oo) == zeta(m + 1)
 
@@ -259,31 +253,9 @@ def test_harmonic_limit():
     assert limit(harmonic(n, 3), n, oo) == -polygamma(2, 1)/2
 
 
-@pytest.mark.xfail
-def test_harmonic_rewrite_sum_fail():
-    n = Symbol('n')
-    m = Symbol('m')
-
-    _k = Dummy('k')
-    assert harmonic(n).rewrite(Sum) == Sum(1/_k, (_k, 1, n))
-    assert harmonic(n, m).rewrite(Sum) == Sum(_k**(-m), (_k, 1, n))
-
-
-def replace_dummy(expr, sym):
-    dum = expr.atoms(Dummy)
-    if not dum:
-        return expr
-    assert len(dum) == 1
-    return expr.xreplace({dum.pop(): sym})
-
-
 def test_harmonic_rewrite_sum():
-    n = Symbol('n')
-    m = Symbol('m')
-
-    _k = Dummy('k')
-    assert replace_dummy(harmonic(n).rewrite(Sum), _k) == Sum(1/_k, (_k, 1, n))
-    assert replace_dummy(harmonic(n, m).rewrite(Sum), _k) == Sum(_k**(-m), (_k, 1, n))
+    assert harmonic(n).rewrite(Sum) == Sum(1/k, (k, 1, n))
+    assert harmonic(n, m).rewrite(Sum) == Sum(k**(-m), (k, 1, n))
 
 
 def test_euler():
@@ -386,7 +358,7 @@ def test_genocchi():
 def test_nC_nP_nT():
     c = string.ascii_lowercase
     for i in range(100):
-        s = ''.join(choice(c) for i in range(7))
+        s = ''.join(random.choice(c) for i in range(7))
         u = len(s) == len(set(s))
         try:
             tot = 0
@@ -397,12 +369,12 @@ def test_nC_nP_nT():
                 if u:
                     assert nP(len(s), i) == check
             assert nP(s) == tot
-        except AssertionError:
+        except AssertionError as exc:
             print(s, i, 'failed perm test')
-            raise ValueError()
+            raise ValueError() from exc
 
     for i in range(100):
-        s = ''.join(choice(c) for i in range(7))
+        s = ''.join(random.choice(c) for i in range(7))
         u = len(s) == len(set(s))
         try:
             tot = 0
@@ -415,9 +387,9 @@ def test_nC_nP_nT():
             assert nC(s) == tot
             if u:
                 assert nC(len(s)) == tot
-        except AssertionError:
+        except AssertionError as exc:
             print(s, i, 'failed combo test')
-            raise ValueError()
+            raise ValueError() from exc
 
     for i in range(1, 10):
         tot = 0
@@ -436,7 +408,7 @@ def test_nC_nP_nT():
         assert nT(range(i)) == tot
 
     for i in range(100):
-        s = ''.join(choice(c) for i in range(7))
+        s = ''.join(random.choice(c) for i in range(7))
         u = len(s) == len(set(s))
         try:
             tot = 0
@@ -449,9 +421,9 @@ def test_nC_nP_nT():
             if u:
                 assert nT(range(len(s))) == tot
             assert nT(s) == tot
-        except AssertionError:
+        except AssertionError as exc:
             print(s, i, 'failed partition test')
-            raise ValueError()
+            raise ValueError() from exc
 
     # tests for Stirling numbers of the first kind that are not tested in the
     # above
@@ -539,8 +511,5 @@ def test_nC_nP_nT():
 
 
 def test_sympyissue_8496():
-    n = Symbol('n')
-    k = Symbol('k')
-
     pytest.raises(TypeError, lambda: catalan(n, k))
     pytest.raises(TypeError, lambda: euler(n, k))

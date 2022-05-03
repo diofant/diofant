@@ -10,6 +10,9 @@ from diofant.abc import x, y, z
 __all__ = ()
 
 
+# pylint: disable=not-an-iterable,unsubscriptable-object
+
+
 def test_ndim_array_initiation():
     arr_with_one_element = MutableDenseNDimArray([23])
     assert len(arr_with_one_element) == 1
@@ -32,7 +35,7 @@ def test_ndim_array_initiation():
     vector = MutableSparseNDimArray.zeros(number5)
     assert len(vector) == number5
     assert vector.shape == (number5,)
-    assert vector._sparse_array == {}
+    assert not vector._sparse_array
     assert vector.rank() == 1
 
     n_dim_array = MutableDenseNDimArray(range(3**4), (3, 3, 3, 3,))

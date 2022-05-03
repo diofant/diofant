@@ -1,4 +1,4 @@
-from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
+from ...core import (Add, Derivative, Dummy, Eq, Expr, Function, I, Integer,
                      Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
                      zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
@@ -204,21 +204,11 @@ class im(Function):
 ###############################################################################
 
 class sign(Function):
-    """Returns the complex sign of an expression.
+    """
+    Returns the complex sign of an expression.
 
-    If the expression is real the sign will be:
-
-        * 1 if expression is positive
-        * 0 if expression is equal to zero
-        * -1 if expression is negative
-
-    If the expression is imaginary the sign will be:
-
-        * I if im(expression) is positive
-        * -I if im(expression) is negative
-
-    Otherwise an unevaluated expression will be returned. When evaluated, the
-    result (in general) will be ``cos(arg(expr)) + I*sin(arg(expr))``.
+    For nonzero complex number z is an equivalent of z/abs(z).
+    Else returns zero.
 
     Examples
     ========
@@ -237,8 +227,8 @@ class sign(Function):
     See Also
     ========
 
-    diofant.functions.elementary.complexes.Abs
-    diofant.functions.elementary.complexes.conjugate
+    Abs
+    conjugate
 
     """
 
@@ -337,6 +327,9 @@ class sign(Function):
         from .. import Heaviside
         if arg.is_extended_real:
             return Heaviside(arg)*2-1
+
+    def _eval_rewrite_as_exp(self, x):
+        return exp(I*arg(x))
 
     def _eval_simplify(self, ratio, measure):
         return self.func(self.args[0].factor())
@@ -507,9 +500,9 @@ class Abs(Function):
         s = self.args[0]._eval_nseries(x, n=n, logx=logx)
         when, lim = Eq(direction, 0), direction.limit(x, 0)
         if lim.equals(0) is False:
-            return sign(lim)*s
+            return s/sign(lim)
         else:
-            return Piecewise((lim, when), (sign(direction)*s, True))
+            return Piecewise((lim, when), (s/sign(direction), True))
 
     def _eval_derivative(self, s):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:
@@ -532,6 +525,10 @@ class Abs(Function):
 
     def _eval_rewrite_as_sign(self, arg):
         return arg/sign(arg)
+
+    def _eval_rewrite_as_tractable(self, arg, wrt=None, **kwargs):
+        if wrt is not None and (s := sign(arg.limit(wrt, oo))) in (1, -1):
+            return s*arg
 
 
 class arg(Function):
@@ -952,7 +949,7 @@ def _polarify(eq, lift, pause=False):
         return r
     elif eq.is_Function:
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
-    elif eq.is_Pow and eq.base is E:
+    elif eq.is_Exp:
         return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
     elif isinstance(eq, Integral):
         # Don't lift the integration variable
@@ -1036,12 +1033,12 @@ def _unpolarify(eq, exponents_only, pause=False):
         if isinstance(eq, polar_lift):
             return _unpolarify(eq.args[0], exponents_only)
 
-    if eq.is_Pow and eq.base is not E:
+    if eq.is_Pow and not eq.is_Exp:
         expo = _unpolarify(eq.exp, exponents_only)
         base = _unpolarify(eq.base, exponents_only,
                            not (expo.is_integer and not pause))
         return base**expo
-    elif eq.is_Pow and eq.base is E:
+    elif eq.is_Exp:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
     elif isinstance(eq, ExprCondPair):
         return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),

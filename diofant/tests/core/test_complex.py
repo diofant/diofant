@@ -1,6 +1,7 @@
 from diofant import (I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
                      coth, exp, expand_complex, im, oo, pi, re, root, sign,
                      sin, sinh, sqrt, symbols, tan, tanh)
+from diofant.abc import x, y, z
 
 
 __all__ = ()
@@ -19,7 +20,6 @@ def test_conjugate():
     b = Symbol('b', extended_real=True)
     c = Symbol('c', imaginary=True)
     d = Symbol('d', imaginary=True)
-    x = Symbol('x')
     z = a + I*b + c + I*d
     zc = a - I*b - c + I*d
     assert conjugate(z) == zc
@@ -57,7 +57,6 @@ def test_abs2():
 def test_evalc():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', extended_real=True)
-    z = Symbol('z')
     assert ((x + I*y)**2).expand(complex=True) == x**2 + 2*I*x*y - y**2
     assert expand_complex(z**(2*I)) == (re((re(z) + I*im(z))**(2*I)) +
                                         I*im((re(z) + I*im(z))**(2*I)))
@@ -96,7 +95,6 @@ def test_evalc():
 
 
 def test_pythoncomplex():
-    x = Symbol('x')
     assert 4j*x == 4*x*I
     assert 4j*x == 4.0*x*I
     assert 4.1j*x != 4*x*I
@@ -149,14 +147,12 @@ def test_expand():
 
 
 def test_re_im1652():
-    x = Symbol('x')
     assert re(x) == re(conjugate(x))
     assert im(x) == - im(conjugate(x))
     assert im(x)*re(conjugate(x)) + im(conjugate(x)) * re(x) == 0
 
 
 def test_sympyissue_5084():
-    x = Symbol('x')
     assert ((x + x*I)/(1 + I)).as_real_imag() == (re((x + I*x)/(1 + I)),
                                                   im((x + I*x)/(1 + I)))
 
@@ -167,7 +163,6 @@ def test_sympyissue_5236():
 
 
 def test_real_imag():
-    x, y, z = symbols('x y z')
     X, Z = symbols('X Z', commutative=False)
     a = Symbol('a', extended_real=True)
     assert (2*a*x).as_real_imag() == (2*a*re(x), 2*a*im(x))
@@ -201,7 +196,7 @@ def test_real_imag():
     assert (2**x).as_real_imag(deep=False) == (re(2**x), im(2**x))
 
 
-def test_pow_sympyissue_4823():
+def test_sympyissue_4823():
     e = cbrt(-1)
     assert e.conjugate().evalf() == e.evalf().conjugate()
     e = (Rational(-2, 3) - cbrt(Rational(-29, 54) + sqrt(93)/18)

@@ -52,6 +52,7 @@ class TmpFileManager:
 
     @classmethod
     def tmp_file(cls, name=''):
+        # pylint: disable=consider-using-with
         cls.tmp_files.append(tempfile.NamedTemporaryFile(prefix=name, suffix='.png').name)
         return cls.tmp_files[-1]
 

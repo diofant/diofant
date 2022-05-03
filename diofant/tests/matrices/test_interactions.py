@@ -1,9 +1,4 @@
-"""
-We have a few different kind of Matrices
-Matrix, ImmutableMatrix, MatrixExpr
-
-Here we test the extent to which they cooperate
-"""
+"""Interaction tests for different kind of Matrices."""
 
 import pytest
 

@@ -502,16 +502,18 @@ def test_laplace_transform():
         ])
 
 
-def test_sympyissue_8368_7173():
+def test_sympyissue_7173():
     LT = laplace_transform
-    # hyperbolic
-    assert LT(sinh(x), x, s) == (1/(s**2 - 1), 1, True)
-    assert LT(cosh(x), x, s) == (s/(s**2 - 1), 1, True)
-    assert LT(sinh(x + 3), x, s) == (
-        (s*sinh(3) + cosh(3))/(s**2 - 1), 1, True)
 
+    # hyperbolic
+    assert LT(sinh(x + 3), x, s) == ((s*sinh(3) + cosh(3))/(s**2 - 1), 1, True)
     # trig (make sure they are not being rewritten in terms of exp)
     assert LT(cos(x + 3), x, s) == ((s*cos(3) - sin(3))/(s**2 + 1), 0, True)
+
+    t = symbols('t', real=True, positive=True)
+    w = symbols('w', real=True)
+
+    assert LT(sinh(w*t)*cosh(w*t), t, s)[0] == w/(s**2 - 4*w**2)
 
 
 def test_inverse_laplace_transform():

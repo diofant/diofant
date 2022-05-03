@@ -29,9 +29,6 @@ class MonomialOrder:
     def __hash__(self):
         return hash(self.__class__)
 
-    def __ne__(self, other):
-        return not self == other
-
 
 class LexOrder(MonomialOrder):
     """Lexicographic order of monomials."""
@@ -227,8 +224,9 @@ def monomial_key(order=None, gens=None):
     if isinstance(order, str):
         try:
             order = _monomial_key[order]
-        except KeyError:
-            raise ValueError(f"supported monomial orderings are 'lex', 'grlex' and 'grevlex', got {order!r}")
+        except KeyError as exc:
+            raise ValueError("supported monomial orderings are 'lex', "
+                             f"'grlex' and 'grevlex', got {order!r}") from exc
     if hasattr(order, '__call__'):
         if gens is not None:
             def _order(expr):
@@ -237,7 +235,8 @@ def monomial_key(order=None, gens=None):
             return _order
         return order
     else:
-        raise ValueError(f'monomial ordering specification must be a string or a callable, got {order}')
+        raise ValueError('monomial ordering specification must be a '
+                         f'string or a callable, got {order}')
 
 
 class _ItemGetter:

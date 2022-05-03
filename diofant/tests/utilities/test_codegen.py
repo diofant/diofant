@@ -19,13 +19,12 @@ __all__ = ()
 
 
 def get_string(dump_fn, routines, prefix='file', header=False, empty=False):
-    """Wrapper for dump_fn. dump_fn writes its results to a stream object and
-    this wrapper returns the contents of that stream as a string. This
-    auxiliary function is used by many tests below.
-
-    The header and the empty lines are not generated to facilitate the
-    testing of the output.
-    """
+    # Wrapper for dump_fn. dump_fn writes its results to a stream object and
+    # this wrapper returns the contents of that stream as a string. This
+    # auxiliary function is used by many tests below.
+    #
+    # The header and the empty lines are not generated to facilitate the
+    # testing of the output.
     output = io.StringIO()
     dump_fn(routines, output, prefix, header, empty)
     source = output.getvalue()
@@ -1296,9 +1295,10 @@ def test_check_case_false_positive():
     x2 = symbols('x', my_assumption=True)
     try:
         codegen(('test', x*x2), 'f95', 'prefix')
-    except CodeGenError as e:
-        if e.args[0].startswith('Fortran ignores case.'):
-            raise AssertionError('This exception should not be raised!')
+    except CodeGenError as exc:
+        if exc.args[0].startswith('Fortran ignores case.'):
+            raise AssertionError('This exception should not '
+                                 'be raised!') from exc
 
 
 def test_c_fortran_omit_routine_name():

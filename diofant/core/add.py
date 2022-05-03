@@ -73,7 +73,7 @@ class Add(AssocOp):
                 continue
 
             # 3 or NaN
-            elif o.is_Number:
+            if o.is_Number:
                 if (o is nan or coeff is zoo and
                         o.is_finite is False):
                     # we know for sure the result will be nan
@@ -85,7 +85,7 @@ class Add(AssocOp):
                         return [nan], [], None
                 continue
 
-            elif o is zoo:
+            if o is zoo:
                 if coeff.is_finite is False:
                     # we know for sure the result will be nan
                     return [nan], [], None
@@ -93,12 +93,12 @@ class Add(AssocOp):
                 continue
 
             # Add([...])
-            elif o.is_Add:
+            if o.is_Add:
                 # NB: here we assume Add is always commutative
                 seq.extend(o.args)  # TODO zerocopy?
                 continue
 
-            elif o.has(Order):
+            if o.has(Order):
                 c, s = Integer(1), o
 
             # Mul([...])
@@ -143,7 +143,7 @@ class Add(AssocOp):
             if c == 0:
                 continue
             # 1*s
-            elif c == 1 and not c.is_Float:
+            if c == 1 and not c.is_Float:
                 newseq.append(s)
             # c*s
             else:
@@ -474,7 +474,7 @@ class Add(AssocOp):
         for a in args:
             if a.is_positive:
                 continue
-            elif a.is_nonnegative:
+            if a.is_nonnegative:
                 nonneg += 1
                 if a.is_zero:
                     nonpos += 1
@@ -503,7 +503,7 @@ class Add(AssocOp):
         for a in args:
             if a.is_negative:
                 continue
-            elif a.is_nonpositive:
+            if a.is_nonpositive:
                 nonpos += 1
                 if a.is_zero:
                     nonneg += 1

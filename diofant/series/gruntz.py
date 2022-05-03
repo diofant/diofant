@@ -62,9 +62,9 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, oo
-from ..core.evaluate import evaluate
-from ..functions import Abs, exp, log, sign
+from ..core import Add, Dummy, Float, Integer, Mul, cacheit, evaluate, oo
+from ..core.function import UndefinedFunction
+from ..functions import exp, log, sign
 from ..utilities import ordered
 
 
@@ -89,8 +89,8 @@ def compare(a, b, x):
 
     """
     # The log(exp(...)) must always be simplified here for termination.
-    la = a.exp if a.is_Pow and a.base is E else log(a)
-    lb = b.exp if b.is_Pow and b.base is E else log(b)
+    la = a.exp if a.is_Exp else log(a)
+    lb = b.exp if b.is_Exp else log(b)
 
     c = limitinf(la/lb, x)
     if c.is_zero:
@@ -121,7 +121,7 @@ def mrv(e, x):
     elif e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
         return mrv_max(mrv(a, x), mrv(b, x), x)
-    elif e.is_Pow and e.base is E:
+    elif e.is_Exp:
         if e.exp == x:
             return {e}
         elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
@@ -133,7 +133,7 @@ def mrv(e, x):
         return mrv(e.base, x)
     elif isinstance(e, log):
         return mrv(e.args[0], x)
-    elif e.is_Function:
+    elif e.is_Function and not isinstance(e.func, UndefinedFunction):
         return functools.reduce(lambda a, b: mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])
     else:
@@ -142,14 +142,11 @@ def mrv(e, x):
 
 def mrv_max(f, g, x):
     """Computes the maximum of two MRV sets."""
-    if not f or not g or f & g:
-        return f | g
-
-    c = compare(list(f)[0], list(g)[0], x)
-    if c:
-        return f if c > 0 else g
-    else:
-        return f | g
+    for a, b in zip(f, g):
+        if (c := compare(a, b, x)) in (1, -1):
+            return f if c > 0 else g
+        break
+    return f | g
 
 
 @cacheit
@@ -202,21 +199,14 @@ def limitinf(e, x):
     assert not e.has(Float)
 
     # Rewrite e in terms of tractable functions only:
-    e = e.rewrite('tractable', deep=True)
-
-    def transform_abs(f):
-        s = sign(limitinf(f.args[0], x))
-        return s*f.args[0] if s in (1, -1) else f
-
-    e = e.replace(lambda f: isinstance(f, Abs) and f.has(x),
-                  transform_abs)
+    e = e.rewrite('tractable', wrt=x)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite
         # tractable functions in terms of familiar intractable ones.
         # TODO: It might be nicer to rewrite the exactly to what they were
         # initially, but that would take some work to implement.
-        return e.rewrite('intractable', deep=True)
+        return e.rewrite('intractable')
 
     c0, e0 = mrv_leadterm(e, x)
     sig = signinf(e0, x)
@@ -260,8 +250,8 @@ def mrv_leadterm(e, x):
     e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
     e = e.replace(lambda f: f.is_Mul and sum(a.is_Pow for a in f.args) > 1,
-                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Pow and a.base is E])),
-                                *[a for a in f.args if not a.is_Pow or a.base is not E]))
+                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Exp])),
+                                *[a for a in f.args if not a.is_Exp]))
 
     # The positive dummy, w, is used here so log(w*2) etc. will expand.
     # TODO: For limits of complex functions, the algorithm would have to

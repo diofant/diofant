@@ -37,7 +37,7 @@ sub_dict = {
     '**': re.compile(r'\^'),
     'oo': re.compile(r'\binf\b'),
     '-oo': re.compile(r'\bminf\b'),
-    "'-'": re.compile(r'\bminus\b'),
+    '1': re.compile(r'\bminus\b'),
     'maxima_expand': re.compile(r'\bexpand\b'),
     'maxima_float': re.compile(r'\bfloat\b'),
     'maxima_trigexpand': re.compile(r'\btrigexpand'),

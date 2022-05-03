@@ -408,7 +408,7 @@ def check_assumptions(expr, **assumptions):
         test = getattr(expr, 'is_' + key, None)
         if test is expected:
             continue
-        elif test is not None:
+        if test is not None:
             return False
         else:
             result = None

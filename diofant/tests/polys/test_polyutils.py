@@ -56,7 +56,7 @@ def test__nsort():
 
 
 def test__sort_gens():
-    assert _sort_gens([]) == ()
+    assert not _sort_gens([])
 
     assert _sort_gens([x]) == (x,)
     assert _sort_gens([p]) == (p,)
@@ -110,7 +110,7 @@ def test__sort_gens():
 
 
 def test__unify_gens():
-    assert _unify_gens([], []) == ()
+    assert not _unify_gens([], [])
 
     assert _unify_gens([x], [x]) == (x,)
     assert _unify_gens([y], [y]) == (y,)

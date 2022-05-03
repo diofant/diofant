@@ -197,7 +197,7 @@ def multiplicity(p, n):
     """
     try:
         p, n = as_int(p), as_int(n)
-    except ValueError:
+    except ValueError as exc:
         if all(isinstance(i, (numbers.Integral, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
             if p.denominator == 1:
@@ -207,10 +207,13 @@ def multiplicity(p, n):
             elif p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
             else:
-                like = min(multiplicity(p.numerator, n.numerator), multiplicity(p.denominator, n.denominator))
-                cross = min(multiplicity(p.denominator, n.numerator), multiplicity(p.numerator, n.denominator))
+                like = min(multiplicity(p.numerator, n.numerator),
+                           multiplicity(p.denominator, n.denominator))
+                cross = min(multiplicity(p.denominator, n.numerator),
+                            multiplicity(p.numerator, n.denominator))
                 return like - cross
-        raise ValueError(f'expecting ints or fractions, got {p} and {n}')
+        raise ValueError('expecting ints or fractions, '
+                         f'got {p} and {n}') from exc
 
     if n == 0:
         raise ValueError('multiplicity of 0 is not defined')
@@ -367,10 +370,10 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     so it is a good idea to allow for retries:
 
     >>> n = 16843009
-    >>> def F(x):
+    >>> def f(x):
     ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
-    ...     a, b = next(cycle_length(F, s))
+    ...     a, b = next(cycle_length(f, s))
     ...     print(f'loop length = {a:4d}; leader length = {b:3d}')
     ...
     loop length = 2489; leader length =  42
@@ -412,9 +415,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> n = 16843009
-    >>> def F(x):
+    >>> def f(x):
     ...     return (2048*pow(x, 2, n) + 32767) % n
-    >>> pollard_rho(n, F=F)
+    >>> pollard_rho(n, F=f)
     257
 
     Use the default setting with a bad value of ``a`` and no retries:
@@ -1509,9 +1512,8 @@ class divisor_sigma(Function):
         if n.is_Integer:
             if n <= 0:
                 raise ValueError('n must be a positive integer')
-            else:
-                return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
-                             else e + 1 for p, e in factorint(n).items()])
+            return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
+                         else e + 1 for p, e in factorint(n).items()])
 
 
 def core(n, t=2):
@@ -1567,13 +1569,12 @@ def core(n, t=2):
     t = as_int(t)
     if n <= 0:
         raise ValueError('n must be a positive integer')
-    elif t <= 1:
+    if t <= 1:
         raise ValueError('t must be >= 2')
-    else:
-        y = 1
-        for p, e in factorint(n).items():
-            y *= p**(e % t)
-        return y
+    y = 1
+    for p, e in factorint(n).items():
+        y *= p**(e % t)
+    return y
 
 
 def square_factor(a):

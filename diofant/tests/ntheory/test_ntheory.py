@@ -205,7 +205,7 @@ def test_generate():
     assert prevprime(13) == 11
     assert prevprime(97) == 89
     assert prevprime(10**40) == (10**40 - 17)
-    assert list(primerange(3001110000000, 799999999)) == []
+    assert not list(primerange(3001110000000, 799999999))
     assert list(primerange(2, 7)) == [2, 3, 5]
     assert list(primerange(2, 10)) == [2, 3, 5, 7]
     assert list(primerange(1050, 1100)) == [1051, 1061,
@@ -252,9 +252,7 @@ def test_randprime():
 
 
 def fac_multiplicity(n, p):
-    """Return the power of the prime number p in the
-    factorization of n!
-    """
+    """Return the power of the prime number p in the factorization of n!."""
     if p > n:
         return 0
     if p > n//2:
@@ -267,15 +265,9 @@ def fac_multiplicity(n, p):
 
 
 def multiproduct(seq=(), start=1):
-    """
-    Return the product of a sequence of factors with multiplicities,
-    times the value of the parameter ``start``. The input may be a
-    sequence of (factor, exponent) pairs or a dict of such pairs.
-
-        >>> multiproduct({3: 7, 2: 5}, 4)  # = 3**7 * 2**5 * 4
-        279936
-
-    """
+    # Return the product of a sequence of factors with multiplicities,
+    # times the value of the parameter ``start``. The input may be a
+    # sequence of (factor, exponent) pairs or a dict of such pairs.
     if not seq:
         return start
     if isinstance(seq, dict):
@@ -285,7 +277,7 @@ def multiproduct(seq=(), start=1):
     for base, exp in seq:
         if not exp:
             continue
-        elif exp == 1:
+        if exp == 1:
             units *= base
         else:
             if exp % 2:
@@ -785,7 +777,7 @@ def test_binomial_coefficients():
 
 
 def test_multinomial_coefficients():
-    assert multinomial_coefficients(0, 1) == {}
+    assert not multinomial_coefficients(0, 1)
     assert multinomial_coefficients(3, 0) == {(0, 0, 0): 1}
     assert multinomial_coefficients(1, 1) == {(1,): 1}
     assert multinomial_coefficients(1, 2) == {(2,): 1}

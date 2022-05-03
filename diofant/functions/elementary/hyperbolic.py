@@ -66,8 +66,6 @@ class sinh(HyperbolicFunction):
     def eval(cls, arg):
         from .trigonometric import sin
 
-        arg = sympify(arg)
-
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
@@ -150,11 +148,9 @@ class sinh(HyperbolicFunction):
             return (sinh(x)*cosh(y) + sinh(y)*cosh(x)).expand(trig=True)
         return sinh(arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         return (exp(arg) - exp(-arg)) / 2
-
-    def _eval_rewrite_as_exp(self, arg):
-        return (exp(arg) - exp(-arg)) / 2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_cosh(self, arg):
         return -I*cosh(arg + pi*I/2)
@@ -209,7 +205,6 @@ class cosh(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import cos
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo):
@@ -293,11 +288,9 @@ class cosh(HyperbolicFunction):
             return (cosh(x)*cosh(y) + sinh(x)*sinh(y)).expand(trig=True)
         return cosh(arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         return (exp(arg) + exp(-arg)) / 2
-
-    def _eval_rewrite_as_exp(self, arg):
-        return (exp(arg) + exp(-arg)) / 2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return -I*sinh(arg + pi*I/2)
@@ -356,7 +349,6 @@ class tanh(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import tan
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg is oo:
@@ -429,13 +421,10 @@ class tanh(HyperbolicFunction):
         denom = sinh(re)**2 + cos(im)**2
         return sinh(re)*cosh(re)/denom, sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_tractable(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp - neg_exp)/(pos_exp + neg_exp)
-
-    def _eval_rewrite_as_exp(self, arg):
-        neg_exp, pos_exp = exp(-arg), exp(arg)
-        return (pos_exp - neg_exp)/(pos_exp + neg_exp)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return I*sinh(arg)/sinh(pi*I/2 - arg)
@@ -485,7 +474,6 @@ class coth(HyperbolicFunction):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import cot
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg is oo:
@@ -558,13 +546,10 @@ class coth(HyperbolicFunction):
         denom = sinh(re)**2 + sin(im)**2
         return sinh(re)*cosh(re)/denom, -sin(im)*cos(im)/denom
 
-    def _eval_rewrite_as_tractable(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         neg_exp, pos_exp = exp(-arg), exp(arg)
         return (pos_exp + neg_exp)/(pos_exp - neg_exp)
-
-    def _eval_rewrite_as_exp(self, arg):
-        neg_exp, pos_exp = exp(-arg), exp(arg)
-        return (pos_exp + neg_exp)/(pos_exp - neg_exp)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sinh(self, arg):
         return -I*sinh(pi*I/2 - arg)/sinh(arg)
@@ -767,7 +752,6 @@ class asinh(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import asin
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo, 0):
@@ -817,6 +801,7 @@ class asinh(Function):
 
     def _eval_rewrite_as_log(self, x):
         return log(x + sqrt(x**2 + 1))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -846,8 +831,6 @@ class acosh(Function):
 
     @classmethod
     def eval(cls, arg):
-        arg = sympify(arg)
-
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
@@ -921,8 +904,9 @@ class acosh(Function):
         """Returns the inverse of this function."""
         return cosh
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **hints):
         return log(x + sqrt(x - 1)*sqrt(x + 1))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
@@ -956,7 +940,6 @@ class atanh(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import atan
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg == 0:
@@ -1001,6 +984,10 @@ class atanh(Function):
         else:
             return self.func(arg)
 
+    def _eval_rewrite_as_log(self, x):
+        return (log(1 + x) - log(1 - x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
+
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
         return tanh
@@ -1023,7 +1010,6 @@ class acoth(Function):
     @classmethod
     def eval(cls, arg):
         from .trigonometric import acot
-        arg = sympify(arg)
 
         if arg.is_Number:
             if arg in (oo, -oo):
@@ -1052,7 +1038,7 @@ class acoth(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return pi*I / 2
+            return -pi*I / 2
         elif n < 0 or n % 2 == 0:
             return Integer(0)
         else:
@@ -1064,9 +1050,13 @@ class acoth(Function):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return I*pi/2
+            return -I*pi/2
         else:
             return self.func(arg)
+
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return (log((x + 1)/x) - log((x - 1)/x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""

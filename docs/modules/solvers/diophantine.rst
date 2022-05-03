@@ -195,7 +195,7 @@ are. For example consider the following example where we set n equal to 9.
 Any binary quadratic of the form `ax^2 + bxy + cy^2 + dx + ey + f = 0` can be
 transformed to an equivalent form `X^2 - DY^2 = N`.
 
->>> from diofant.solvers.diophantine import find_DN, diop_DN, transformation_to_DN
+>>> from diofant.solvers.diophantine import diop_DN, find_DN, transformation_to_DN
 >>> find_DN(x**2 - 3*x*y + y**2 - 7*x + 5*y - 3)
 (5, 920)
 

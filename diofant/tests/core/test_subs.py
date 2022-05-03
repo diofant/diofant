@@ -404,7 +404,7 @@ def test_add():
     assert e.subs({-y + 1: x}) == ans
 
 
-def test_subs_sympyissue_4009():
+def test_sympyissue_4009():
     assert (I*Symbol('a')).subs({1: 2}) == I*Symbol('a')
 
 
@@ -591,11 +591,10 @@ def test_sympyissue_5261():
 
 @pytest.mark.xfail
 def test_mul2():
-    """When this fails, remove things labelled "2-arg hack"
-    1) remove special handling in the fallback of subs that
-    was added in the same commit as this test
-    2) remove the special handling in Mul.flatten
-    """
+    # When this fails, remove things labelled "2-arg hack"
+    # 1) remove special handling in the fallback of subs that
+    # was added in the same commit as this test
+    # 2) remove the special handling in Mul.flatten
     assert (2*(x + 1)).is_Mul
 
 
@@ -646,7 +645,7 @@ def test_pow_eval_subs_no_cache():
     assert result == 1/y
 
 
-def test_diofantissue_124():
+def test_issue_124():
     n = Symbol('n', integer=True)
     assert exp(n*x).subs({exp(x): x}) == x**n
 
@@ -657,10 +656,8 @@ def test_sympyissue_11159():
     assert exp0.subs({exp1: exp0}) == E**4
 
 
-def test_RootOf_sympyissue_10092():
-    x = Symbol('x', real=True)
-    eq = x**3 - 17*x**2 + 81*x - 118
-    r = RootOf(eq, 0)
+def test_sympyissue_10092():
+    r = RootOf(x**3 - 17*x**2 + 81*x - 118, 0)
     assert (x < r).subs({x: r}) is false
 
 

@@ -6,7 +6,7 @@ import pytest
 
 from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
                      Poly, Pow, Range, Rational, Symbol, SympifyError, Tuple,
-                     Xor, evaluate, exp, false, pi, sin, sqrt, sympify, true)
+                     Xor, evaluate, exp, false, sin, sqrt, sympify, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -277,9 +277,7 @@ def test_int_float():
             return 1.1
 
     class F1dot1b:
-        """
-        This class is still a float, even though it also implements __int__().
-        """
+        # This class is still a float, even though it also implements __int__().
 
         def __float__(self):
             return 1.1
@@ -288,9 +286,7 @@ def test_int_float():
             return 1
 
     class F1dot1c:
-        """
-        This class is still a float, because it implements _diofant_()
-        """
+        # This class is still a float, because it implements _diofant_().
 
         def __float__(self):
             return 1.1
@@ -306,14 +302,12 @@ def test_int_float():
             return 5
 
     class I5b:
-        """
-        This class implements both __int__() and __float__(), so it will be
-        treated as Float in Diofant. One could change this behavior, by using
-        float(a) == int(a), but deciding that integer-valued floats represent
-        exact numbers is arbitrary and often not correct, so we do not do it.
-        If, in the future, we decide to do it anyway, the tests for I5b need to
-        be changed.
-        """
+        # This class implements both __int__() and __float__(), so it will be
+        # treated as Float in Diofant. One could change this behavior, by using
+        # float(a) == int(a), but deciding that integer-valued floats represent
+        # exact numbers is arbitrary and often not correct, so we do not do it.
+        # If, in the future, we decide to do it anyway, the tests for I5b need to
+        # be changed.
 
         def __float__(self):
             return 5.0
@@ -322,10 +316,8 @@ def test_int_float():
             return 5
 
     class I5c:
-        """
-        This class implements both __int__() and __float__(), but also
-        a _diofant_() method, so it will be Integer.
-        """
+        # This class implements both __int__() and __float__(), but also
+        # a _diofant_() method, so it will be Integer.
 
         def __float__(self):
             return 5.0
@@ -401,7 +393,7 @@ def test_sympyissue_4788():
     assert repr(sympify(1.0 + 0J)) == repr(Float(1.0)) == repr(Float(1.0))
 
 
-def test_sympyissue_4798_None():
+def test_sympyissue_4798():
     assert sympify(None) is None
 
 
@@ -409,7 +401,7 @@ def test_sympyissue_3218():
     assert sympify('x+\ny') == x + y
 
 
-def test_sympyissue_4988_builtins():
+def test_sympyissue_4988():
     C = Symbol('C')
     vars = {}
     vars['C'] = C
@@ -427,9 +419,12 @@ def test_geometry():
     assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
 
 
-def test_sympyissue_6540_6552():
+def test_sympyissue_6540():
     assert sympify('[[1/3,2], (2/5,)]') == [[Rational(1, 3), 2], (Rational(2, 5),)]
     assert sympify('[[2/6,2], (2/4,)]') == [[Rational(1, 3), 2], (Rational(1, 2),)]
+
+
+def test_sympyissue_6552():
     assert sympify('[[[2*(1)]]]') == [[[2]]]
     assert sympify('Matrix([2*(1)])') == Matrix([2])
 
@@ -441,12 +436,6 @@ def test_sympyissue_6046():
     locals = {}
     exec('from diofant.abc import S, O', locals)  # pylint: disable=exec-used
     assert str(sympify('O&S', locals)) == 'O & S'
-
-
-def test_sympyissue_8821_highprec_from_str():
-    s = str(pi.evalf(128))
-    p = sympify(s)
-    assert abs(sin(p)) < 1e-127
 
 
 def test_Range():

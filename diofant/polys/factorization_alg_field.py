@@ -542,8 +542,7 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
         result = _div(f, g, minpoly, p)
         if result is None:
             raise NotImplementedError
-        else:
-            quo, rem = result
+        quo, rem = result
         f, g = g, rem
         s0, s1 = s1 - quo*s0, s0
         t0, t1 = t1 - quo*t0, t0
@@ -574,8 +573,7 @@ def _diophantine_univariate(F, m, minpoly, p):
         result = _extended_euclidean_algorithm(g, f, minpoly, p)
         if result is None:
             raise NotImplementedError
-        else:
-            s, t, _ = result
+        s, t, _ = result
 
         s *= m
         t *= m
@@ -600,8 +598,7 @@ def _diophantine_univariate(F, m, minpoly, p):
             result = _diophantine([g, f], T[-1], [], 0, minpoly, p)
             if result is None:
                 raise NotImplementedError
-            else:
-                t, s = result
+            t, s = result
             T.append(t)
             S.append(s)
 
@@ -650,8 +647,7 @@ def _diophantine(F, c, A, d, minpoly, p):
         S = _diophantine(G, C, A, d, minpoly, p)
         if S is None:
             raise NotImplementedError
-        else:
-            S = [s.set_ring(ring) for s in S]
+        S = [s.set_ring(ring) for s in S]
 
         for s, b in zip(S, B):
             c = c - s*b
@@ -879,8 +875,7 @@ def _factor(f, save):
 
             if A in history:
                 continue
-            else:
-                history.add(A)
+            history.add(A)
 
             try:
                 result = _test_evaluation_points(f_, gamma_, lcfactors, A, D)
@@ -906,8 +901,7 @@ def _factor(f, save):
 
             if result is None:
                 continue
-            else:
-                fA, denoms, divisors = result
+            fA, denoms, divisors = result
 
             with using(aa_factor_method='trager'):
                 _, fAfactors = _z_to_alpha(fA, uniring).factor_list()
@@ -918,8 +912,7 @@ def _factor(f, save):
             result = _leading_coeffs(f_, fAfactors, gamma_, lcfactors_, A, D, denoms, divisors)
             if result is None:
                 continue
-            else:
-                f_, lcs, fAfactors_ = result
+            f_, lcs, fAfactors_ = result
 
             prod = groundring.one
             for lc in lcs:

@@ -84,8 +84,8 @@ class EPath:
                 if selector.startswith('['):
                     try:
                         i = selector.index(']')
-                    except ValueError:
-                        raise ValueError("expected ']', got EOL")
+                    except ValueError as exc:
+                        raise ValueError("expected ']', got EOL") from exc
 
                     _span, span = selector[1:i], []
 

@@ -19,7 +19,7 @@ __all__ = ()
 
 def part_range_filter(partition_iterator, lb, ub):
     """
-    Filters (on the number of parts) a multiset partition enumeration
+    Filters (on the number of parts) a multiset partition enumeration.
 
     Arguments
     =========
@@ -33,12 +33,13 @@ def part_range_filter(partition_iterator, lb, ub):
     """
     for state in partition_iterator:
         _, lpart, _ = state
-        if lpart >= lb and lpart < ub:
+        if ub > lpart >= lb:
             yield state
 
 
 def multiset_partitions_baseline(multiplicities, components):
-    """Enumerates partitions of a multiset
+    """
+    Enumerates partitions of a multiset.
 
     Parameters
     ==========
@@ -87,11 +88,8 @@ def multiset_partitions_baseline(multiplicities, components):
 
 
 def compare_multiset_w_baseline(multiplicities):
-    """
-    Enumerates the partitions of multiset with AOCP algorithm and
-    baseline implementation, and compare the results.
-
-    """
+    # Enumerates the partitions of multiset with AOCP algorithm and
+    # baseline implementation, and compare the results.
     letters = string.ascii_lowercase
     bl_partitions = multiset_partitions_baseline(multiplicities, letters)
 
@@ -108,7 +106,8 @@ def compare_multiset_w_baseline(multiplicities):
 
 
 def compare_multiset_states(s1, s2):
-    """Compare for equality two instances of multiset partition states
+    """
+    Compare for equality two instances of multiset partition states.
 
     This is useful for comparing different versions of the algorithm
     to verify correctness.
@@ -126,10 +125,9 @@ def compare_multiset_states(s1, s2):
 
 
 def test_multiset_partitions_taocp():
-    """Compares the output of multiset_partitions_taocp with a baseline
-    (set partition based) implementation.
-
-    """
+    # Compares the output of multiset_partitions_taocp with a baseline
+    # (set partition based) implementation.
+    #
     # Test cases should not be too large, since the baseline
     # implementation is fairly slow.
     multiplicities = [2, 2]
@@ -150,7 +148,8 @@ def test_multiset_partitions_versions():
 
 
 def subrange_exercise(mult, lb, ub):
-    """Compare filter-based and more optimized subrange implementations
+    """
+    Compare filter-based and more optimized subrange implementations.
 
     Helper for tests, called with both small and larger multisets.
 
@@ -197,10 +196,10 @@ def test_subrange_large():
 
 def test_coverage():
     m = MultisetPartitionTraverser()
-    assert list(m.enum_small([2, 2], 0)) == []
+    assert not list(m.enum_small([2, 2], 0))
     assert m.count_partitions([2, 2]) == 9  # fill dp_map
     assert m.count_partitions([2, 2]) == 9
-    assert list(m.enum_range([2, 2], 1, 0)) == []
-    assert list(m.enum_range([2, 2], 10, 2)) == []
-    assert list(m.enum_large([2, 2], 10)) == []
+    assert not list(m.enum_range([2, 2], 1, 0))
+    assert not list(m.enum_range([2, 2], 10, 2))
+    assert not list(m.enum_large([2, 2], 10))
     assert m.decrement_part_large(m.top_part(), 10) is False

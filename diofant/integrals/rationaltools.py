@@ -351,7 +351,7 @@ def log_to_real(h, q, x, t):
         for r_v in R_v_paired:
             D = d.subs({u: r_u, v: r_v})
 
-            if D.evalf(2, chop=True) != 0:
+            if D.cancel().evalf(2, chop=True) != 0:
                 continue
 
             A = a.subs({u: r_u, v: r_v}).as_poly(x, extension=False)

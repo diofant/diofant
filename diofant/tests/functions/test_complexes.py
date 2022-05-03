@@ -16,7 +16,7 @@ __all__ = ()
 
 
 def N_equals(a, b):
-    """Check whether two complex numbers are numerically close"""
+    """Check whether two complex numbers are numerically close."""
     return comp(a.evalf(), b.evalf(), 1.e-6)
 
 
@@ -281,6 +281,7 @@ def test_sign():
     assert sign(y).rewrite(Piecewise) == sign(y)
     assert sign(x).rewrite(Heaviside) == 2*Heaviside(x)-1
     assert sign(y).rewrite(Heaviside) == sign(y)
+    assert sign(1 + I).rewrite(exp) == exp(I*pi/4)
 
     # evaluate what can be evaluated
     assert sign(exp_polar(I*pi)*pi) is Integer(-1)
@@ -735,7 +736,7 @@ def test_sympyissue_3206():
     assert abs(abs(x)) == abs(x)
 
 
-def test_derivatives_sympyissue_4757():
+def test_sympyissue_4757():
     x = Symbol('x', extended_real=True)
     y = Symbol('y', imaginary=True)
     f = Function('f')

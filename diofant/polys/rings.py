@@ -228,9 +228,9 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
         try:
             return _rebuild(expr)
-        except CoercionFailed:
+        except CoercionFailed as exc:
             raise ValueError('expected an expression convertible to a '
-                             f'polynomial in {self}, got {expr}')
+                             f'polynomial in {self}, got {expr}') from exc
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""
@@ -759,11 +759,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Multiply other to self with other in the coefficient domain of self."""
         return self.__mul__(other)
 
-    def _sparsity(self):
-        ring = self.ring
-        d = self.total_degree()
-        return len(self)/int(math.factorial(ring.ngens + d)/(math.factorial(d)*math.factorial(ring.ngens))) if d > 0 else 1.0
-
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""
         ring = self.ring
@@ -773,7 +768,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not n:
             return ring.one
-        elif self._sparsity() > 0.2 or mod:
+        elif len(self) > 5 or mod:
             return self._pow_generic(n, mod)
         elif len(self) == 1:
             [(monom, coeff)] = self.items()
@@ -854,7 +849,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not other:
             raise ZeroDivisionError('polynomial division')
-        elif isinstance(other, ring.dtype):
+        if isinstance(other, ring.dtype):
             (q,), r = self.div([other])
             return q, r
         elif isinstance(other, PolyElement):
@@ -881,7 +876,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not other:
             raise ZeroDivisionError('polynomial division')
-        elif isinstance(other, ring.domain.dtype):
+        if isinstance(other, ring.domain.dtype):
             return self.quo_ground(other)
 
         try:
@@ -1188,7 +1183,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         if not coeff:
             raise ZeroDivisionError('polynomial division')
-        elif not self:
+        if not self:
             return self.ring.zero
 
         ring = self.ring
@@ -1431,8 +1426,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not n > monom[j] >= m:
                 if ring.is_univariate:
                     continue
-                else:
-                    monom = monom[:j] + (0,) + monom[j + 1:]
+                monom = monom[:j] + (0,) + monom[j + 1:]
 
             if monom in poly:
                 poly[monom] += coeff

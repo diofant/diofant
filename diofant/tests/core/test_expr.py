@@ -5,11 +5,11 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      Max, Mul, Number, NumberSymbol, O, Piecewise, Pow,
                      Rational, Si, Subs, Sum, Symbol, Tuple, Wild,
                      WildFunction, apart, cancel, cbrt, collect, combsimp, cos,
-                     default_sort_key, diff, exp, exp_polar, expand, factor,
-                     factorial, false, gamma, log, lucas, nan, nsimplify, oo,
-                     pi, posify, powsimp, radsimp, ratsimp, root, simplify,
-                     sin, sqrt, symbols, sympify, tan, tanh, together,
-                     trigsimp, true, zoo)
+                     default_sort_key, diff, exp, exp_polar, expand,
+                     expand_multinomial, factor, factorial, false, gamma, log,
+                     lucas, nan, nsimplify, oo, pi, posify, powsimp, radsimp,
+                     ratsimp, root, simplify, sin, sqrt, symbols, sympify, tan,
+                     tanh, together, trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
 from diofant.solvers.utils import checksol
@@ -498,7 +498,7 @@ def test_args():
     assert (x**y).args[1] == y
 
 
-def test_noncommutative_expand_sympyissue_3757():
+def test_sympyissue_3757():
     A, B, C = symbols('A,B,C', commutative=False)
     assert A*B - B*A != 0
     assert (A*(A + B)*B).expand() == A**2*B + A*B**2
@@ -934,8 +934,8 @@ def test_as_coeff_exponent():
     assert (-1*x**0).as_coeff_exponent(x) == (-1, 0)
     assert (-2*x**0).as_coeff_exponent(x) == (-2, 0)
     assert (2*x**3 + pi*x**3).as_coeff_exponent(x) == (2 + pi, 3)
-    assert (x*log(2)/(2*x + pi*x)).as_coeff_exponent(x) == \
-        (log(2)/(2 + pi), 0)
+    assert (x*log(2)/(2*x + pi*x)).as_coeff_exponent(x) == (log(2)/(2 + pi), 0)
+    assert ((-x)**-pi).as_coeff_exponent(x) == ((-1)**-pi, -pi)
     # issue sympy/sympy#4784
     D = Derivative
     f = Function('f')
@@ -1457,6 +1457,10 @@ def test_is_constant():
 
     assert Integer(2).is_constant() is True
 
+    for _ in range(5):
+        assert Piecewise((x, (x < 0)), (0, True)).is_constant() is not True
+        assert Piecewise((1, (x < 0)), (0, True)).is_constant() is not True
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
@@ -1507,6 +1511,7 @@ def test_equals():
                 (x1, sqrt(-x0 - Rational(13, 12))),
                 (x0, 2*cbrt(-(q - Rational(7, 8))**2/8 -
                             Rational(2197, 13824)))))
+    z = expand_multinomial(z)
     assert z.equals(0)
 
 
@@ -1704,3 +1709,8 @@ def test_sympyissue_21334():
     e = exp(-x**2/(x + 1) + x) - exp(x/(x + 1)) + O(y)
 
     assert e.as_leading_term(y) == 0
+
+
+def test_sympyissue_22583():
+    f = Function('f')
+    assert (1/f(x) + 1).is_polynomial(f(x)) is False

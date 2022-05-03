@@ -15,10 +15,11 @@ from .trigonometry import trigintegrate
 
 
 class Integral(AddWithLimits):
-    """Represents unevaluated integral."""
+    """Represents an unevaluated integral."""
 
     def __new__(cls, function, *symbols, **assumptions):
-        """Create an unevaluated integral.
+        """
+        Create an unevaluated integral.
 
         Arguments are an integrand followed by one or more limits.
 
@@ -460,8 +461,7 @@ class Integral(AddWithLimits):
                 if ret is not None:
                     function = ret
                     continue
-                else:
-                    meijerg1 = False
+                meijerg1 = False
 
             # If the special meijerg code did not succeed in finding a definite
             # integral, then the code using meijerint_indefinite will not either
@@ -500,73 +500,73 @@ class Integral(AddWithLimits):
                 if not isinstance(factored_function, Integral):
                     function = factored_function
                 continue
+
+            if len(xab) == 1:
+                function = antideriv
             else:
-                if len(xab) == 1:
-                    function = antideriv
+                if len(xab) == 3:
+                    x, a, b = xab
+                elif len(xab) == 2:
+                    x, b = xab
+                    a = None
                 else:
-                    if len(xab) == 3:
-                        x, a, b = xab
-                    elif len(xab) == 2:
-                        x, b = xab
-                        a = None
-                    else:
-                        raise NotImplementedError
+                    raise NotImplementedError
 
-                    if deep:
-                        if isinstance(a, Basic):
-                            a = a.doit(**hints)
-                        if isinstance(b, Basic):
-                            b = b.doit(**hints)
+                if deep:
+                    if isinstance(a, Basic):
+                        a = a.doit(**hints)
+                    if isinstance(b, Basic):
+                        b = b.doit(**hints)
 
-                    if antideriv.is_Poly:
-                        gens = list(antideriv.gens)
-                        gens.remove(x)
+                if antideriv.is_Poly:
+                    gens = list(antideriv.gens)
+                    gens.remove(x)
 
-                        antideriv = antideriv.as_expr()
+                    antideriv = antideriv.as_expr()
 
-                        function = antideriv._eval_interval(x, a, b)
-                        function = function.as_poly(*gens)
-                    elif (isinstance(antideriv, Add) and
-                          any(isinstance(t, Integral) for t in antideriv.args)):
-                        function = Add(*[i._eval_interval(x, a, b) for i in
-                                         Add.make_args(antideriv)])
-                    else:
-                        def is_indef_int(g, x):
-                            return (isinstance(g, Integral) and
-                                    any(i == (x,) for i in g.limits))
+                    function = antideriv._eval_interval(x, a, b)
+                    function = function.as_poly(*gens)
+                elif (isinstance(antideriv, Add) and
+                      any(isinstance(t, Integral) for t in antideriv.args)):
+                    function = Add(*[i._eval_interval(x, a, b) for i in
+                                     Add.make_args(antideriv)])
+                else:
+                    def is_indef_int(g, x):
+                        return (isinstance(g, Integral) and
+                                any(i == (x,) for i in g.limits))
 
-                        def eval_factored(f, x, a, b):
-                            # _eval_interval for integrals with
-                            # (constant) factors
-                            # a single indefinite integral is assumed
-                            args = []
-                            for g in Mul.make_args(f):
-                                if is_indef_int(g, x):
-                                    args.append(g._eval_interval(x, a, b))
-                                else:
-                                    args.append(g)
-                            return Mul(*args)
-
-                        integrals, others = [], []
-                        for f in Add.make_args(antideriv):
-                            if any(is_indef_int(g, x)
-                                   for g in Mul.make_args(f)):
-                                integrals.append(f)
+                    def eval_factored(f, x, a, b):
+                        # _eval_interval for integrals with
+                        # (constant) factors
+                        # a single indefinite integral is assumed
+                        args = []
+                        for g in Mul.make_args(f):
+                            if is_indef_int(g, x):
+                                args.append(g._eval_interval(x, a, b))
                             else:
-                                others.append(f)
-                        uneval = Add(*[eval_factored(f, x, a, b)
-                                       for f in integrals])
-                        try:
-                            evalued = Add(*others)._eval_interval(x, a, b)
-                            function = uneval + evalued
-                        except NotImplementedError:
-                            # This can happen if _eval_interval depends in a
-                            # complicated way on limits that cannot be computed
-                            undone_limits.append(xab)
-                            function = self.func(*([function] + [xab]))
-                            factored_function = function.factor()
-                            if not isinstance(factored_function, Integral):
-                                function = factored_function
+                                args.append(g)
+                        return Mul(*args)
+
+                    integrals, others = [], []
+                    for f in Add.make_args(antideriv):
+                        if any(is_indef_int(g, x)
+                               for g in Mul.make_args(f)):
+                            integrals.append(f)
+                        else:
+                            others.append(f)
+                    uneval = Add(*[eval_factored(f, x, a, b)
+                                   for f in integrals])
+                    try:
+                        evalued = Add(*others)._eval_interval(x, a, b)
+                        function = uneval + evalued
+                    except NotImplementedError:
+                        # This can happen if _eval_interval depends in a
+                        # complicated way on limits that cannot be computed
+                        undone_limits.append(xab)
+                        function = self.func(*([function] + [xab]))
+                        factored_function = function.factor()
+                        if not isinstance(factored_function, Integral):
+                            function = factored_function
         return function
 
     def _eval_derivative(self, sym):
@@ -909,16 +909,6 @@ class Integral(AddWithLimits):
 
         return Add(*parts)
 
-    def _eval_lseries(self, x, logx):
-        expr = self.as_dummy()
-        symb = x
-        for l in expr.limits:
-            if x in l[1:]:
-                symb = l[0]
-                break
-        for term in expr.function.series(symb, n=None, logx=logx):  # pragma: no branch
-            yield integrate(term, *expr.limits)
-
     def _eval_nseries(self, x, n, logx):
         expr = self.as_dummy()
         symb = x
@@ -928,6 +918,7 @@ class Integral(AddWithLimits):
                 break
         terms, order = expr.function.nseries(
             x=symb, n=n, logx=logx).as_coeff_add(Order)
+        order = [o.subs({symb: x}) for o in order]
         return integrate(terms, *expr.limits) + Add(*order)*x
 
     def as_sum(self, n, method='midpoint'):
@@ -1011,10 +1002,9 @@ class Integral(AddWithLimits):
         if len(limits) > 1:
             raise NotImplementedError(
                 'Multidimensional midpoint rule not implemented yet')
-        else:
-            limit = limits[0]
-            if len(limit) != 3:
-                raise ValueError('Expecting a definite integral.')
+        limit = limits[0]
+        if len(limit) != 3:
+            raise ValueError('Expecting a definite integral.')
         if n <= 0:
             raise ValueError('n must be > 0')
         if n == oo:
@@ -1024,7 +1014,7 @@ class Integral(AddWithLimits):
 
         if method == 'trapezoid':
             l = self.function.limit(sym, lower_limit)
-            r = self.function.limit(sym, upper_limit, '-')
+            r = self.function.limit(sym, upper_limit, 1)
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
@@ -1044,15 +1034,18 @@ class Integral(AddWithLimits):
                     continue
             elif method == 'right':
                 xi = lower_limit + i*dx + dx
-                if i == n:
-                    result += self.function.limit(sym, upper_limit, '-')
+                if i == n - 1:
+                    result += self.function.limit(sym, upper_limit, 1)
                     continue
+            else:
+                raise NotImplementedError(f'Unknown method {method}')
             result += self.function.subs({sym: xi})
         return result*dx
 
 
 def integrate(*args, **kwargs):
-    """integrate(f, var, ...)
+    """
+    integrate(f, var, ...)
 
     Compute definite or indefinite integral of one or more variables
     using Risch-Norman algorithm and table lookup. This procedure is

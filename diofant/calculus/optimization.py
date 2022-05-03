@@ -117,10 +117,10 @@ def minimize_univariate(f, x, dom):
         if not dom.left_open:
             extr[dom.start] = limit(f, x, dom.start)
         if not dom.right_open:
-            extr[dom.end] = limit(f, x, dom.end, dir='-')
+            extr[dom.end] = limit(f, x, dom.end, dir=1)
         for s in singularities(f, x):
             if s in dom:
-                m = Min(limit(f, x, s), limit(f, x, s, dir='-'))
+                m = Min(limit(f, x, s), limit(f, x, s, dir=1))
                 if m == -oo:
                     return -oo, dict({x: s})
                 else:
@@ -237,7 +237,7 @@ def simplex(c, m, b):
         if tableau[-1, -1].is_nonzero:
             raise InfeasibleProblem
 
-        del tableau[-1, :]  # pylint: disable=unsupported-delete-operation
+        del tableau[-1, :]
         for i in range(nneg):
             del tableau[:, -2]
 

@@ -4,8 +4,8 @@ from diofant import (E, FiniteSet, Float, Heaviside, I, Matrix, Mul, O,
                      PoleError, Pow, Rational, Symbol, acos, acot, acoth, acsc,
                      arg, asec, asin, asinh, atan, atan2, atanh, cancel,
                      conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
-                     gcd, im, log, nan, oo, pi, re, sec, sech, series,
-                     simplify, sin, sinh, sqrt, symbols, tan, tanh, zoo)
+                     gcd, im, log, nan, oo, pi, re, sec, sech, simplify, sin,
+                     sinh, sqrt, symbols, tan, tanh, zoo)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -983,21 +983,17 @@ def test_sincos_rewrite():
 
 
 def _check_even_rewrite(func, arg):
-    """Checks that the expr has been rewritten using f(-x) -> f(x)
-    arg : -x
-    """
+    """Checks that the expr has been rewritten using f(-x) -> f(x)."""
     return func(arg).args[0] == -arg
 
 
 def _check_odd_rewrite(func, arg):
-    """Checks that the expr has been rewritten using f(-x) -> -f(x)
-    arg : -x
-    """
+    """Checks that the expr has been rewritten using f(-x) -> -f(x)."""
     return func(arg).func.is_Mul
 
 
 def _check_no_rewrite(func, arg):
-    """Checks that the expr is not rewritten"""
+    """Checks that the expr is not rewritten."""
     return func(arg).args[0] == arg
 
 
@@ -1019,12 +1015,6 @@ def test_evenodd_rewrite():
         assert _check_no_rewrite(func, a*b)
         assert func(
             x - y) == -func(y - x)  # it doesn't matter which form is canonical
-
-
-def test_sympyissue_4547():
-    assert sin(x).rewrite(cot) == 2*cot(x/2)/(1 + cot(x/2)**2)
-    assert cos(x).rewrite(cot) == -(1 - cot(x/2)**2)/(1 + cot(x/2)**2)
-    assert tan(x).rewrite(cot) == 1/cot(x)
 
 
 def test_leading_terms():
@@ -1060,10 +1050,10 @@ def test_aseries():
     def t(n, v, d, e):
         assert abs(n(1/v).evalf(strict=False) -
                    n(1/x).series(x, dir=d).removeO().subs({x: v})) < e
-    t(atan, 0.1, '+', 1e-5)
-    t(atan, -0.1, '-', 1e-5)
-    t(acot, 0.1, '+', 1e-5)
-    t(acot, -0.1, '-', 1e-5)
+    t(atan, 0.1, -1, 1e-5)
+    t(atan, -0.1, +1, 1e-5)
+    t(acot, 0.1, -1, 1e-5)
+    t(acot, -0.1, +1, 1e-5)
     pytest.raises(PoleError, lambda: atan(y/x).series(x, n=1))
     pytest.raises(PoleError, lambda: acot(y/x).series(x, n=1))
 
@@ -1306,13 +1296,13 @@ def test_sec():
     assert sec(x).is_finite is None
     assert sec(pi/2).is_finite is False
 
-    assert series(sec(x), x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
+    assert sec(x).series(x, x0=0, n=6) == 1 + x**2/2 + 5*x**4/24 + O(x**6)
 
     # https://github.com/sympy/sympy/issues/7166
-    assert series(sqrt(sec(x))) == 1 + x**2/4 + 7*x**4/96 + O(x**6)
+    assert sqrt(sec(x)).series() == 1 + x**2/4 + 7*x**4/96 + O(x**6)
 
     # https://github.com/sympy/sympy/issues/7167
-    assert (series(sqrt(sec(x)), x, x0=pi*3/2, n=4) ==
+    assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +
             (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
 
@@ -1380,9 +1370,9 @@ def test_csc():
     assert csc(x).is_finite is None
     assert csc(pi/2).is_finite
 
-    assert series(csc(x), x, x0=pi/2, n=6) == \
+    assert csc(x).series(x, x0=pi/2, n=6) == \
         1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))
-    assert series(csc(x), x, x0=0, n=6) == \
+    assert csc(x).series(x, x0=0, n=6) == \
         1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
 
     assert csc(x).diff(x) == -cot(x)*csc(x)

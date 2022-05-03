@@ -42,6 +42,10 @@ def test_bug1():
 def test_general_function():
     nu = Function('nu')
 
+    e = nu()
+    assert e.diff(x) == 0
+    assert e.diff(y) == 0
+
     e = nu(x)
     edx = e.diff(x)
     edy = e.diff(y)
@@ -449,7 +453,7 @@ def test_fdiff_argument_index_error():
     class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
-        def fdiff(self, argindex):
+        def fdiff(self, argindex=1):
             raise ArgumentIndexError
     mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)
@@ -709,7 +713,7 @@ def test_sympyissue_13098():
     assert ceiling(log(20 - x, 10)) == 2
 
 
-def test_undef_fcn_float_sympyissue_6938():
+def test_sympyissue_6938():
     f = Function('ceil')
     assert isinstance(f(0.3), Function)
     f = Function('sin')

@@ -355,10 +355,7 @@ def roots_binomial(f):
     neg = base.is_negative
     even = n % 2 == 0
     if neg:
-        if even and (base + 1).is_positive:
-            big = True
-        else:
-            big = False
+        big = bool(even and (base + 1).is_positive)
 
     # get the indices in the right order so the computed
     # roots will be sorted when the domain is ZZ
@@ -676,7 +673,9 @@ def preprocess_roots(poly):
     _, poly = poly.clear_denoms(convert=True)
 
     poly = poly.primitive()[1]
-    poly = poly.retract()
+
+    if not poly.domain.characteristic:
+        poly = poly.retract()
 
     if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.values()):
         poly = poly.inject()
@@ -698,17 +697,17 @@ def preprocess_roots(poly):
             for a, b in zip(base, strip):
                 if not a and not b:
                     continue
-                elif not a or not b:
+                if not a or not b:
                     break
-                elif b % a != 0:
+                if b % a != 0:
                     break
-                else:
-                    _ratio = b // a
 
-                    if ratio is None:
-                        ratio = _ratio
-                    elif ratio != _ratio:
-                        break
+                _ratio = b // a
+
+                if ratio is None:
+                    ratio = _ratio
+                elif ratio != _ratio:
+                    break
             else:
                 if reverse:
                     ratio = -ratio
@@ -947,8 +946,8 @@ def roots(f, *gens, **flags):
 
         try:
             query = handlers[filter]
-        except KeyError:
-            raise ValueError(f'Invalid filter: {filter}')
+        except KeyError as exc:
+            raise ValueError(f'Invalid filter: {filter}') from exc
 
         for zero in dict(result):
             if not query(zero):

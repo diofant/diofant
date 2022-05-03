@@ -113,7 +113,6 @@ def test_Min():
 
     # issue sympy/sympy#7233
     e = Min(0, x)
-    assert e.evalf == e.n
     assert e.evalf(strict=False).args == (0, x)
 
 
@@ -165,7 +164,6 @@ def test_Max():
 
     # issue sympy/sympy#7233
     e = Max(0, x)
-    assert e.evalf == e.n
     assert e.evalf(strict=False).args == (0, x)
 
     assert Max(2*a*b*sqrt(2), a*b*6).simplify() == 6*a*b

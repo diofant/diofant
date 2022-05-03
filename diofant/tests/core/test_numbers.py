@@ -10,13 +10,12 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      comp, cos, exp, factorial, false, integer_digits,
                      integer_nthroot, latex, log, mod_inverse, nan, nextprime,
                      oo, pi, root, sin, sqrt, true, zoo)
+from diofant.abc import x
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import igcdex, mpf_norm
 
 
 __all__ = ()
-
-t = Symbol('t', real=False)
 
 
 def same_and_same_prec(a, b):
@@ -204,9 +203,6 @@ def _test_rational_new(cls):
 
 
 def test_Integer_new():
-    """
-    Test for Integer constructor
-    """
     _test_rational_new(Integer)
 
     assert _strictly_equal(Integer(0.9), Integer(0))
@@ -216,9 +212,6 @@ def test_Integer_new():
 
 
 def test_Rational_new():
-    """
-    Test for Rational constructor
-    """
     _test_rational_new(Rational)
 
     n1 = Rational(1, 2)
@@ -253,9 +246,6 @@ def test_Rational_new():
 
 
 def test_Number_new():
-    """
-    Test for Number constructor
-    """
     # Expected behavior on numbers and strings
     assert Number(1) is Integer(1)
     assert Number(2).__class__ is Integer
@@ -295,8 +285,8 @@ def test_Rational_cmp():
     assert n2 < n3
     assert n1 < n2
     assert n3 > n1
-    assert not n3 < n1
-    assert not Integer(-1) > 0
+    assert n3 >= n1
+    assert Integer(-1) <= 0
     assert Integer(-1) < 0
 
     pytest.raises(TypeError, lambda: n1 < nan)
@@ -412,6 +402,8 @@ def test_Float():
     assert Float(-oo) == Float('-inf')
 
     assert Float(0)**2 is Integer(0)
+
+    t = Symbol('t', real=False)
     assert Float(0)**t == Pow(Float(0), t, evaluate=False)
 
 
@@ -420,7 +412,7 @@ def test_Float_eval():
     assert (a**2).is_Float
 
 
-def test_Float_sympyissue_5206():
+def test_sympyissue_5206():
     a = Float(0.1, 10)
     b = Float('0.1', 10)
 
@@ -595,6 +587,7 @@ def test_Infinity():
     assert oo**(-1 + I) is Integer(0)
     assert (-oo)**I is nan
     assert (-oo)**(-1 + I) is Integer(0)
+    t = Symbol('t', real=False)
     assert oo**t == Pow(oo, t, evaluate=False)
     assert (-oo)**t == Pow(-oo, t, evaluate=False)
 
@@ -603,7 +596,6 @@ def test_Infinity():
 
 
 def test_Infinity_2():
-    x = Symbol('x')
     assert oo*x != oo
     assert oo*(pi - 1) == oo
     assert oo*(1 - pi) == -oo
@@ -696,15 +688,16 @@ def test_Infinity_inequations():
     assert -oo < oo and -oo <= oo
     assert (-oo > oo) is false and (-oo >= oo) is false
 
+    # pylint: disable=comparison-with-itself
+
     assert (oo < oo) is false  # issue sympy/sympy#7775
     assert (oo > oo) is false
     assert (-oo > -oo) is false and (-oo < -oo) is false
     assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
 
-    x = Symbol('x')
     b = Symbol('b', real=True)
     assert (x < oo) == Lt(x, oo)  # issue sympy/sympy#7775
-    assert b < oo and b > -oo and b <= oo and b >= -oo
+    assert -oo < b < oo and -oo <= b <= oo
     assert oo > b and oo >= b and (oo < b) is false and (oo <= b) is false
     assert (-oo > b) is false and (-oo >= b) is false and -oo < b and -oo <= b
     assert (oo < x) == Lt(oo, x) and (oo > x) == Gt(oo, x)
@@ -714,7 +707,7 @@ def test_Infinity_inequations():
 
 
 def test_NaN():
-    assert nan == nan
+    assert nan == nan  # pylint: disable=comparison-with-itself
     assert nan != 1
     assert 1*nan == nan
     assert 1 != nan
@@ -824,7 +817,6 @@ def test_integer_nthroot_overflow():
 
 
 def test_powers_Integer():
-    """Test Integer._eval_power"""
     # check infinity
     assert (+1) ** oo == nan
     assert (-1) ** oo == nan
@@ -866,7 +858,6 @@ def test_powers_Integer():
     assert sqrt(2) * sqrt(3) == sqrt(6)
 
     # separate symbols & constansts
-    x = Symbol('x')
     assert sqrt(49 * x) == 7 * sqrt(x)
     assert sqrt((3 - sqrt(pi)) ** 2) == 3 - sqrt(pi)
 
@@ -920,7 +911,6 @@ def test_powers_Integer():
 
 
 def test_powers_Rational():
-    """Test Rational._eval_power"""
     # check infinity
     assert Rational(1, 2) ** oo == 0
     assert Rational(3, 2) ** oo == oo
@@ -978,7 +968,7 @@ def test_accept_int():
 
 def test_dont_accept_str():
     assert Float('0.2') != '0.2'
-    assert not Float('0.2') == '0.2'
+    assert not Float('0.2') == '0.2'  # pylint: disable=unneeded-not
 
 
 def test_int():
@@ -996,7 +986,6 @@ def test_int():
 
 
 def test_real_bug():
-    x = Symbol('x')
     assert str(2.0*x*x) in ['(2.0*x)*x', '2.0*x**2', '2.00000000000000*x**2']
     assert str(2.1*x*x) != '(2.0*x)*x'
 
@@ -1006,9 +995,10 @@ def test_bug_sqrt():
 
 
 def test_pi_Pi():
-    """Test that pi (instance) is imported, but Pi (class) is not"""
+    # Test that pi (instance) is imported, but Pi (class) is not.
     with pytest.raises(ImportError):
-        from diofant import Pi  # noqa: F401 pylint: disable=unused-import
+        # pylint: disable=unused-import,no-name-in-module
+        from diofant import Pi  # noqa: F401
 
 
 def test_no_len():
@@ -1029,14 +1019,8 @@ def test_sympyissue_3692():
 
 
 def test_sympyissue_3423():
-    x = Symbol('x')
     assert sqrt(x - 1).as_base_exp() == (x - 1, Rational(1, 2))
     assert sqrt(x - 1) != I*sqrt(1 - x)
-
-
-def test_sympyissue_3449():
-    x = Symbol('x')
-    assert sqrt(x - 1).subs({x: 5}) == 2
 
 
 def test_Integer_factors():
@@ -1178,7 +1162,6 @@ def test_sympyissue_4611():
     assert abs(Catalan._evalf(50) - 0.915965594177219) < 1e-10
     assert abs(EulerGamma._evalf(50) - 0.577215664901533) < 1e-10
     assert abs(GoldenRatio._evalf(50) - 1.61803398874989) < 1e-10
-    x = Symbol('x')
     assert (pi + x).evalf(strict=False) == pi.evalf() + x
     assert (E + x).evalf(strict=False) == E.evalf() + x
     assert (Catalan + x).evalf(strict=False) == Catalan.evalf() + x
@@ -1468,7 +1451,6 @@ def test_mod_inverse():
     assert mod_inverse(123, 44) == 39
     assert mod_inverse(2, 5) == 3
     assert mod_inverse(-2, 5) == -3
-    x = Symbol('x')
     assert Integer(2).invert(x) == Rational(1, 2)
     pytest.raises(TypeError, lambda: mod_inverse(2, x))
     pytest.raises(ValueError, lambda: mod_inverse(2, Rational(1, 2)))
@@ -1495,11 +1477,10 @@ def test_sympyissue_13081():
 
 def test_comparisons_with_unknown_type():
     class Foo:
-        """
-        Class that is unaware of Basic, and relies on both classes returning
-        the NotImplemented singleton for equivalence to evaluate to False, and
-        the other comparisons to raise a TypeError.
-        """
+        # Class that is unaware of Basic, and relies on both classes returning
+        # the NotImplemented singleton for equivalence to evaluate to False, and
+        # the other comparisons to raise a TypeError.
+        pass
 
     ni, nf, nr = Integer(3), Float(1.0), Rational(1, 3)
     foo = Foo()
@@ -1519,19 +1500,14 @@ def test_comparisons_with_unknown_type():
         pytest.raises(TypeError, lambda: foo <= n)
 
     class Bar:
-        """
-        Class that considers itself greater than any instance of Number except
-        Infinity, and relies on the NotImplemented singleton for symmetric
-        relations.
-        """
+        # Class that considers itself greater than any instance of Number except
+        # Infinity, and relies on the NotImplemented singleton for symmetric
+        # relations.
 
         def __eq__(self, other):
             if isinstance(other, Number):
                 return False
             return NotImplemented
-
-        def __ne__(self, other):
-            return not self == other
 
         def __lt__(self, other):
             if other is oo:

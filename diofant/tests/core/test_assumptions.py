@@ -1,8 +1,9 @@
 import pytest
 
 from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
-                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
-                     oo, pi, simplify, sin, sqrt, zoo)
+                     Rational, Symbol, Wild, acos, asin, cbrt, exp, false, log,
+                     nan, oo, pi, simplify, sin, sqrt, zoo)
+from diofant.abc import x, y
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -591,9 +592,7 @@ def test_other_symbol():
 
 
 def test_sympyissue_3825():
-    """catch: hash instability"""
-    x = Symbol('x')
-    y = Symbol('y')
+    # catch: hash instability.
     a1 = x + y
     a2 = y + x
     assert a2.is_comparable is False
@@ -609,7 +608,7 @@ def test_sympyissue_4822():
 
 
 def test_hash_vs_typeinfo():
-    """Seemingly different typeinfo, but in fact equal."""
+    # Seemingly different typeinfo, but in fact equal.
     # the following two are semantically equal
     x1 = Symbol('x', even=True)
     x2 = Symbol('x', integer=True, odd=False)
@@ -619,9 +618,8 @@ def test_hash_vs_typeinfo():
 
 
 def test_hash_vs_typeinfo_2():
-    """Different typeinfo should mean !eq"""
-    # the following two are semantically different
-    x = Symbol('x')
+    # Different typeinfo should mean !eq.
+    # The following two are semantically different.
     x1 = Symbol('x', even=True)
 
     assert x != x1
@@ -629,7 +627,7 @@ def test_hash_vs_typeinfo_2():
 
 
 def test_hash_vs_eq():
-    """catch: different hash for equal objects"""
+    # Catch: different hash for equal objects.
     a = 1 + pi    # important: do not fold it into a Number instance
     ha = hash(a)  # it should be Add/Mul/... to trigger the bug
 
@@ -654,7 +652,6 @@ def test_Add_is_pos_neg():
     np = Symbol('n', nonpositive=True, infinite=True)
     p = Symbol('p', positive=True, infinite=True)
     r = Dummy(extended_real=True, finite=False)
-    x = Symbol('x')
     xf = Symbol('xb', finite=True, real=True)
     assert (n + p).is_positive is None
     assert (n + x).is_positive is None
@@ -679,13 +676,35 @@ def test_Add_is_imaginary():
     nn = Dummy(nonnegative=True, finite=True)
     assert (I*nn + I).is_imaginary  # issue sympy/sympy#8046, 17
 
+    # issue sympy/sympy#4149
+    assert (3 + I).is_complex
+    assert (3 + I).is_imaginary is False
+    assert (3*I + pi*I).is_imaginary
+    y = Symbol('y', real=True)
+    assert (3*I + pi*I + y*I).is_imaginary is True
+    p = Symbol('p', positive=True, finite=True)
+    assert (3*I + pi*I + p*I).is_imaginary
+    n = Symbol('n', negative=True, finite=True)
+    assert (-3*I - pi*I + n*I).is_imaginary
+
+    # tests from the PR sympy/sympy#7887:
+    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
+    assert e.is_extended_real is False
+    assert e.is_imaginary
+
+
+def test_Pow_is_imaginary():
+    # issue sympy/sympy#4149
+    i = Symbol('i', imaginary=True)
+    assert ([(i**a).is_imaginary for a in range(4)] ==
+            [False, True, False, True])
+
 
 def test_Add_is_algebraic():
     a = Symbol('a', algebraic=True)
     b = Symbol('a', algebraic=True)
     na = Symbol('na', algebraic=False)
     nb = Symbol('nb', algebraic=False)
-    x = Symbol('x')
     assert (a + b).is_algebraic
     assert (na + nb).is_algebraic is None
     assert (a + na).is_algebraic is False
@@ -699,7 +718,6 @@ def test_Mul_is_algebraic():
     na = Symbol('na', algebraic=False)
     an = Symbol('an', algebraic=True, nonzero=True)
     nb = Symbol('nb', algebraic=False)
-    x = Symbol('x')
     assert (a*b).is_algebraic
     assert (na*nb).is_algebraic is None
     assert (a*na).is_algebraic is None
@@ -720,7 +738,6 @@ def test_Pow_is_algebraic():
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
     r = Symbol('r', rational=True, nonzero=True)
-    x = Symbol('x')
     assert (an**r).is_algebraic
     assert (a**r**2).is_algebraic
     assert (a**x).is_algebraic is None
@@ -754,7 +771,6 @@ def test_Pow_is_algebraic():
 
 
 def test_Mul_is_infinite():
-    x = Symbol('x')
     f = Symbol('f', finite=True)
     i = Symbol('i', infinite=True)
     z = Dummy(zero=True)
@@ -787,7 +803,6 @@ def test_special_is_rational():
     r = Symbol('r', rational=True)
     rn = Symbol('r', rational=True, nonzero=True)
     nr = Symbol('nr', irrational=True)
-    x = Symbol('x')
     assert sqrt(3).is_rational is False
     assert (3 + sqrt(3)).is_rational is False
     assert (3*sqrt(3)).is_rational is False
@@ -851,27 +866,6 @@ def test_sympyissue_2730():
     assert (1/(1 + I)).is_extended_real is False
 
 
-def test_sympyissue_4149():
-    assert (3 + I).is_complex
-    assert (3 + I).is_imaginary is False
-    assert (3*I + pi*I).is_imaginary
-    y = Symbol('y', real=True)
-    assert (3*I + pi*I + y*I).is_imaginary is True
-    p = Symbol('p', positive=True, finite=True)
-    assert (3*I + pi*I + p*I).is_imaginary
-    n = Symbol('n', negative=True, finite=True)
-    assert (-3*I - pi*I + n*I).is_imaginary
-
-    i = Symbol('i', imaginary=True)
-    assert ([(i**a).is_imaginary for a in range(4)] ==
-            [False, True, False, True])
-
-    # tests from the PR sympy/sympy#7887:
-    e = -sqrt(3)*I/2 + Float(0.866025403784439)*I
-    assert e.is_extended_real is False
-    assert e.is_imaginary
-
-
 def test_sympyissue_2920():
     n = Symbol('n', real=True, negative=True)
     assert sqrt(n).is_imaginary
@@ -907,7 +901,6 @@ def test_sympyissue_10024():
 
 
 def test_sympyissue_16530():
-    x = Symbol('x')
     e = 1/abs(x)
     assert e.is_real is None
     assert e.is_extended_real is None
@@ -923,3 +916,9 @@ def test_sympyissue_17556():
     z = I*oo
     assert z.is_imaginary is False
     assert z.is_finite is False
+
+
+def test_sympyissue_23086():
+    e = 180*acos(Rational(7823207, 7823209))/pi
+    assert e.is_zero is False
+    assert e.simplify()

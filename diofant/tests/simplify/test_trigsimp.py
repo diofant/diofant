@@ -1,10 +1,8 @@
-import pytest
-
 from diofant import (E, I, Matrix, Piecewise, Rational, Subs, Symbol, cos,
                      cosh, cot, coth, count_ops, csc, diff, exp, expand,
                      exptrigsimp, integrate, log, nan, pi, simplify, sin, sinh,
                      sqrt, tan, tanh, trigsimp)
-from diofant.abc import a, b, x, y, z
+from diofant.abc import a, b, x, y
 from diofant.simplify.trigsimp import trigsimp_groebner
 from diofant.utilities.randtest import verify_numerically as tn
 
@@ -179,22 +177,22 @@ def test_trigsimp_issues():
     assert trigsimp(-sin(x)**4 - 2*sin(x)**2*cos(x)**2 - cos(x)**4) == -1
 
 
-def test_trigsimp_sympyissue_5614():
+def test_sympyissue_5614():
     assert trigsimp(x*cos(x)*tan(x)) == x*sin(x)
     assert trigsimp(-sin(x) + cos(x)*tan(x)) == 0
 
 
-def test_trigsimp_sympyissue_6925():
+def test_sympyissue_6925():
     assert trigsimp(tan(2*x).expand(trig=True)) == tan(2*x)
 
 
-def test_trigsimp_sympyissue_7131():
+def test_sympyissue_7131():
     n = Symbol('n', integer=True, positive=True)
     assert trigsimp(2**(n/2)*cos(pi*n/4)/2 + 2**(n - 1)/2) == \
         2**(n/2)*cos(pi*n/4)/2 + 2**n/4
 
 
-def test_trigsimp_sympyissue_7761():
+def test_sympyissue_7761():
     assert trigsimp(cosh(pi/4)) == cosh(pi/4)
 
 
@@ -400,13 +398,6 @@ def test_exptrigsimp():
         s = simplify(e)
         assert s == exptrigsimp(e)
         assert valid(s, 2*sinh(a))
-
-
-@pytest.mark.xfail
-def test_sympyissue_6811_fail():
-    xp = Symbol('xp')
-    eq = 4*(-19*sin(x)*y + 5*sin(3*x)*y + 15*cos(2*x)*z - 21*z)*xp/(9*cos(x) - 5*cos(3*x))
-    assert trigsimp(eq) == -2*(2*cos(x)*tan(x)*y + 3*z)*xp/cos(x)
 
 
 def test_Piecewise():

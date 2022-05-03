@@ -2,6 +2,7 @@
 
 import collections
 
+from ..core import expand_mul
 from ..domains import EX
 from ..matrices import Matrix
 from ..polys import (ComputationFailed, PolificationFailed, groebner,
@@ -66,7 +67,8 @@ def solve_linear_system(system, *symbols, **flags):
 
     """
     eqs = system*Matrix(symbols + (-1,))
-    polys, _ = parallel_poly_from_expr(eqs, *symbols, field=True)
+    polys, _ = parallel_poly_from_expr([expand_mul(e) for e in eqs],
+                                       *symbols, field=True)
     domain = polys[0].rep.ring
     polys = [_.rep for _ in polys]
 
@@ -111,7 +113,7 @@ def solve_poly_system(eqs, *gens, **args):
         polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
         polys = [p.to_exact() for p in polys]
     except PolificationFailed as exc:
-        raise ComputationFailed('solve_poly_system', len(eqs), exc)
+        raise ComputationFailed('solve_poly_system', len(eqs), exc) from exc
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""

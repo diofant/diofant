@@ -9,7 +9,8 @@ from .gosper import gosper_sum
 
 
 class Sum(AddWithLimits, ExprWithIntLimits):
-    r"""Represents unevaluated summation.
+    r"""
+    Represents an unevaluated summation.
 
     ``Sum`` represents a finite or infinite series, with the first
     argument being the general form of terms in the series (which
@@ -358,16 +359,16 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         if len(self.variables) > 1:
             raise ValueError
-        else:
-            if self.limits[0][1:] != (0, oo):
-                raise ValueError
-            k = self.variables[0]
+
+        if self.limits[0][1:] != (0, oo):
+            raise ValueError
+        k = self.variables[0]
 
         if not n:
             try:
                 n = (self.function.free_symbols - {k}).pop()
-            except KeyError:
-                raise ValueError
+            except KeyError as exc:
+                raise ValueError from exc
 
         a = Function('a')
 
@@ -408,7 +409,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
 
 def summation(f, *symbols, **kwargs):
-    r"""Compute the summation of f with respect to symbols.
+    r"""
+    Compute the summation of f with respect to symbols.
 
     The notation for symbols is similar to the notation used in Integral.
     summation(f, (i, a, b)) computes the sum of f with respect to i from a to b,

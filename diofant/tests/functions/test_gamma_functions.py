@@ -120,6 +120,7 @@ def test_lowergamma():
               lowergamma(Rational(1, 2) + 3, x), x)
     assert tn(lowergamma(Rational(1, 2) - 3, x, evaluate=False),
               lowergamma(Rational(1, 2) - 3, x), x)
+    assert lowergamma(0, 1) == zoo
 
     assert tn_branch(-3, lowergamma)
     assert tn_branch(-4, lowergamma)
@@ -143,6 +144,8 @@ def test_lowergamma():
     k = Symbol('k', integer=True, positive=False)
     assert lowergamma(k, y).rewrite(expint) == lowergamma(k, y)
     assert lowergamma(x, y).rewrite(uppergamma) == gamma(x) - uppergamma(x, y)
+
+    assert (x*lowergamma(x, 1)/gamma(x + 1)).limit(x, 0) == 1
 
 
 def test_uppergamma():

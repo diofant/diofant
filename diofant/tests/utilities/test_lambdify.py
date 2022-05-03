@@ -323,8 +323,8 @@ def test_numpy_old_matrix():
 
 @with_numpy
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
-def test_python_div_zero_sympyissue_11306():
-    p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
+def test_sympyissue_11306():
+    p = Piecewise((1/x, y < -1), (x, y <= 1), (1/x, True))
     lambdify([x, y], p, modules='numpy')(0, 1)
 
 
@@ -580,3 +580,8 @@ def test_Min_Max():
 def test_sympyissue_12092():
     f = implemented_function('f', lambda x: x**2)
     assert f(f(2)).evalf() == Float(16)
+
+
+def test_sympyissue_23224():
+    f = lambdify([], (1,))
+    assert f() == (1,)

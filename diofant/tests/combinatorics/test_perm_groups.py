@@ -739,6 +739,8 @@ def test_make_perm():
     assert cube.pgroup.make_perm(7, seed=list(range(7))) == \
         Permutation([6, 7, 3, 2, 5, 4, 0, 1])
 
+    pytest.raises(ValueError, lambda: cube.pgroup.make_perm({}, [0]))
+
     random.seed(0)
     assert cube.pgroup.make_perm(5) == Permutation([2, 1, 5, 6, 3, 0, 4, 7])
 
@@ -790,7 +792,7 @@ def test_PermutationGroup():
     assert G.make_perm([0, 1, 0]) == Permutation(0, 2, 3, 1)
 
     S = SymmetricGroup(5)
-    base, strong_gens = S.schreier_sims_random(consec_succ=5)
+    base, strong_gens = S.schreier_sims_random()
     assert _verify_bsgs(S, base, strong_gens)
 
     D = DihedralGroup(4)
@@ -805,3 +807,9 @@ def test_PermutationGroup():
     G = PermutationGroup([a])
     assert G.orbit(0) == {0, 1, 2}
     assert G.orbit([0, 4], 'union') == {0, 1, 2, 3, 4, 5, 6}
+    assert G.orbit([0, 4], 'sets') == {(0, 3), (0, 4), (0, 5), (0, 6), (1, 3),
+                                       (1, 4), (1, 5), (1, 6), (2, 3), (2, 4),
+                                       (2, 5), (2, 6)}
+    assert G.orbit([0, 4], 'tuples') == {(0, 3), (0, 4), (0, 5), (0, 6), (1, 3),
+                                         (1, 4), (1, 5), (1, 6), (2, 3), (2, 4),
+                                         (2, 5), (2, 6)}

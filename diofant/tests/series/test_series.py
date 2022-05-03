@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Derivative, E, Function, I, Integer, Integral, Mul, O,
-                     Rational, Subs, Symbol, cos, exp, log, oo, pi, series,
-                     sin, sqrt, symbols)
-from diofant.abc import h, x, y
+from diofant import (Derivative, E, Function, I, Integer, Integral, O,
+                     Rational, Subs, Symbol, cos, exp, log, oo, pi, sin, sqrt,
+                     symbols)
+from diofant.abc import h, x, y, z
 
 
 f = Function('f')
@@ -13,58 +13,54 @@ __all__ = ()
 
 
 def test_sin():
-    e1 = sin(x).series(x, 0)
-    e2 = series(sin(x), x, 0)
-    assert e1 == e2
+    e1 = sin(x).series(x)
+    assert e1 == x - x**3/6 + x**5/120 + O(x**6)
 
     # issue sympy/sympy#5223:
     assert ((1/sin(x))**oo).series() == oo
 
 
 def test_cos():
-    e1 = cos(x).series(x, 0)
-    e2 = series(cos(x), x, 0)
-    assert e1 == e2
+    e1 = cos(x).series(x)
+    assert e1 == 1 - x**2/2 + x**4/24 + O(x**6)
 
 
 def test_exp():
-    e1 = exp(x).series(x, 0)
-    e2 = series(exp(x), x, 0)
-    assert e1 == e2
+    e1 = exp(x).series(x)
+    assert e1 == 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
 
 
 def test_exp2():
     e1 = exp(cos(x)).series(x, 0)
-    e2 = series(exp(cos(x)), x, 0)
-    assert e1 == e2
+    assert e1 == E - E*x**2/2 + E*x**4/6 + O(x**6)
 
 
 def test_simple():
     # issue sympy/sympy#5223
-    assert series(1, x) == 1
+    assert Integer(1).series(x) == 1
     pytest.raises(ValueError, lambda: cos(x + y).series())
     pytest.raises(ValueError, lambda: x.series(dir=''))
+    pytest.raises(ValueError, lambda: x.series(dir=0))
 
-    D = Derivative
-    assert D(x**2 + x**3*y**2, (x, 2), (y, 1)).series(x).doit().removeO() == 12*x*y
+    assert Derivative(x**2 + x**3*y**2,
+                      (x, 2), (y, 1)).series(x).simplify() == 12*x*y + O(x**6)
 
     assert (1 + x).getn() is None
 
     # issue sympy/sympy#8805
-    assert series(1, n=8) == 1
+    assert Integer(1).series(n=8) == 1
 
     # issue sympy/sympy#5223
     assert (cos(x).series(x, 1) -
             cos(x + 1).series(x).subs({x: x - 1})).removeO() == 0
 
-    assert abs(x).series(x, oo, n=5, dir='+') == x
-    assert abs(x).series(x, -oo, n=5, dir='-') == -x
-    assert abs(-x).series(x, oo, n=5, dir='+') == x
-    assert abs(-x).series(x, -oo, n=5, dir='-') == -x
+    assert abs(x).series(x, oo, n=5, dir=-1) == x
+    assert abs(x).series(x, -oo, n=5, dir=+1) == -x
+    assert abs(-x).series(x, oo, n=5, dir=-1) == x
+    assert abs(-x).series(x, -oo, n=5, dir=+1) == -x
 
     # issue sympy/sympy#7203
-    assert series(cos(x), x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3,
-                                                              (x, pi))
+    assert cos(x).series(x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
 
 
 def test_sympyissue_5223():
@@ -73,17 +69,18 @@ def test_sympyissue_5223():
 
     e = cos(x).series(x, 1, n=None)
     assert [next(e) for i in range(2)] == [cos(1), -((x - 1)*sin(1))]
-    e = cos(x).series(x, 1, n=None, dir='-')
+    e = cos(x).series(x, 1, n=None, dir=+1)
     assert [next(e) for i in range(2)] == [cos(1), (1 - x)*sin(1)]
     # the following test is exact so no need for x -> x - 1 replacement
-    assert abs(x).series(x, 1, dir='-') == x
-    assert exp(x).series(x, 1, dir='-', n=3).removeO() == \
+    assert abs(x).series(x, 1, dir=+1) == x
+    assert exp(x).series(x, 1, dir=+1, n=3).removeO() == \
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
-    D = Derivative
-    assert next(D(cos(x), x).series(n=None)) == D(1, x)
-    assert D(exp(x), x).series(n=3) == (D(1, x) + D(x, x) + D(x**2/2, x) +
-                                        D(x**3/6, x) + O(x**3))
+    assert next(Derivative(cos(x), x).series(n=None)) == Derivative(1, x)
+    assert Derivative(exp(x),
+                      x).series(n=3) == (Derivative(1, x) + Derivative(x, x) +
+                                         Derivative(x**2/2, x) +
+                                         Derivative(x**3/6, x) + O(x**3))
 
     assert Integral(x, (x, 1, 3), (y, 1, x)).series(x) == -4 + 4*x
 
@@ -105,7 +102,7 @@ def test_sympyissue_5223():
 
 
 def test_sympyissue_3978():
-    assert f(x).series(x, 0, 3, dir='-') == \
+    assert f(x).series(x, 0, 3, dir=+1) == \
         f(0) + x*Subs(Derivative(f(x), x), (x, 0)) + \
         x**2*Subs(Derivative(f(x), x, x), (x, 0))/2 + O(x**3)
     assert f(x).series(x, 0, 3) == \
@@ -125,7 +122,7 @@ def test_sympyissue_3978():
 
 
 def test_sympyissue_5852():
-    assert series(1/cos(x/log(x)), x, 0) == 1 + x**2/(2*log(x)**2) + \
+    assert (1/cos(x/log(x))).series(x, 0) == 1 + x**2/(2*log(x)**2) + \
         5*x**4/(24*log(x)**4) + O(x**6)
 
 
@@ -153,11 +150,26 @@ def test_sin_power():
 @pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
-    x = a * b
-    series(exp(x), x, n=8)
+    x = a*b
+    exp(x).series(x, n=8)
     # (1 + a*b + a**2*b**2/2 +
     #  a**3*b**3/6 + a**4*b**4/24 + a**5*b**5/120 + a**6*b**6/720 +
     #  a**7*b**7/5040 + O(a**8*b**8))
+
+
+def test_series_of_Subs():
+    subs1 = Subs(sin(x), (x, y))
+    subs2 = Subs(sin(x)*cos(z), (x, y))
+    subs3 = Subs(sin(x*z), (x, z), (y, x))
+    subs4 = Subs(x, (x, z))
+
+    assert subs1.series(x) == subs1
+    assert subs1.series(y) == Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    assert subs1.series(z) == subs1
+    assert subs2.series(z) == Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    assert subs3.series(x) == subs3
+    assert subs3.series(z) == Subs(x*z, (x, z), (y, x)) + O(z**6)
+    assert subs4.series(z) == subs4
 
 
 def test_sympyissue_9173():
@@ -236,7 +248,7 @@ def test_sympyissue_14885():
 
 
 def test_sympyissue_15539():
-    assert series(exp(x), x, x0=-oo) == exp(-x)
+    assert exp(x).series(x, x0=-oo) == exp(x)
 
 
 def test_sympyissue_18008():
@@ -259,33 +271,33 @@ def test_sympyissue_20697():
 
 
 def test_sympyissue_21245():
-    fi = (1 + sqrt(5))/2
-    e = 1/(1 - x - x**2)
-    assert (e.series(x, 1/fi, 2) ==
-            -sqrt(5)/(Mul(5, x - 1/(Rational(1, 2) + sqrt(5)/2),
-                          evaluate=False)) + 1/(sqrt(5) + 5) +
-            sqrt(5)/(Mul(5, sqrt(5) + 5, evaluate=False)) +
-            (x - 1/(Rational(1, 2) + sqrt(5)/2)) *
-            (-6*sqrt(5)/(Mul(5, 10*sqrt(5) + 30, evaluate=False)) -
-             2/(10*sqrt(5) + 30)) + O((x - sqrt(5)/2 + Rational(1, 2))**2,
-                                      (x, -Rational(1, 2) + sqrt(5)/2)))
+    x0 = 1/((1 + sqrt(5))/2)
+    assert ((1/(1 - x - x**2)).series(x, x0=x0, n=2) ==
+            -sqrt(5)/(x - 1/(1/2 + sqrt(5)/2))/5 - 4/(-20 - 4*sqrt(5)) -
+            4*sqrt(5)/(-20 - 4*sqrt(5))/5 +
+            (x - 1/(1/2 + sqrt(5)/2))*(-96*sqrt(5)/(160*sqrt(5) + 480)/5 -
+                                       32/(160*sqrt(5) + 480)) +
+            O((x - sqrt(5)/2 + 1/2)**2, (x, -1/2 + sqrt(5)/2)))
 
 
-def test_diofantissue_1139():
-    res = (sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
-           24*I/(16*(1 - I)**3 + 16*I*(1 - I)**3) +
-           (x - sqrt(2)/2 + sqrt(2)*I/2)*(9*sqrt(2)*I/(8*(1 - I)**3) -
-                                          8*sqrt(2)*I/(16*(1 - I)**3 +
-                                                       16*I*(1 - I)**3) +
-                                          8*sqrt(2)/(16*(1 - I)**3 +
-                                                     16*I*(1 - I)**3)) +
-           O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
+def test_issue_1139():
     x0 = sqrt(2)/2 - sqrt(2)*I/2
-    assert (1/(x**4 + 1)).series(x, x0=x0, n=2) == res
+    assert ((1/(x**4 + 1)).series(x, x0=x0, n=2) ==
+            sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
+            3*I/(4*(1 - I)**3) - 3/(4*(1 - I)**3) +
+            5*sqrt(2)*I*(x - sqrt(2)/2 + sqrt(2)*I/2)/(8*(1 - I)**3) +
+            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
 
 
 def test_sympyissue_22493():
     res = (f(x, y) - h*(f(x, y).diff(x) + f(x, y).diff(y)) +
            h**2*(f(x, y).diff((x, 2)) + 2*f(x, y).diff(y, x) +
                  f(x, y).diff((y, 2)))/2 + O(h**3))
-    assert f(x - h, y - h).series(h, x0=0, n=3).doit().simplify() == res
+    assert f(x - h, y - h).series(h, x0=0, n=3).simplify() == res
+
+
+def test_sympyissue_23432():
+    e = 1/sqrt(1 - x**2)
+    ans = e.series(x, x0=Rational(1, 2), n=1)
+    assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), (x, Rational(1, 2)))
+    assert ans.removeO().evalf() == e.series(x, x0=0.5, n=1).removeO()

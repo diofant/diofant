@@ -30,6 +30,7 @@ class Basic:
     is_Add = False
     is_Mul = False
     is_Pow = False
+    is_Exp = False
     is_Number = False
     is_Float = False
     is_Rational = False
@@ -587,7 +588,7 @@ class Basic:
         if _aresame(self, old):
             return new
 
-        rv = self._eval_subs(old, new)
+        rv = self._eval_subs(old, new)  # pylint: disable=assignment-from-none
         if rv is None:
             rv = fallback(self, old, new)
         return rv
@@ -1074,7 +1075,7 @@ class Basic:
 
         if pattern is None or isinstance(self, pattern):
             if hasattr(self, rule):
-                rewritten = getattr(self, rule)(*args)
+                rewritten = getattr(self, rule)(*args, **hints)
                 if rewritten is not None:
                     return rewritten
         return self.func(*args)

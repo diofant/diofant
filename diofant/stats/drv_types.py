@@ -50,7 +50,7 @@ def Poisson(name, lamda):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> rate = Symbol('lambda', positive=True)
 
@@ -81,7 +81,7 @@ class GeometricDistribution(SingleDiscreteDistribution):
 
     @staticmethod
     def check(p):
-        _value_check(0 < p and p <= 1, 'p must be between 0 and 1')
+        _value_check(0 < p <= 1, 'p must be between 0 and 1')
 
     def pdf(self, k):
         return (1 - self.p)**(k - 1) * self.p
@@ -109,7 +109,7 @@ def Geometric(name, p):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import E, density, variance
 
     >>> p = Rational(1, 5)
 

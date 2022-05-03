@@ -22,7 +22,7 @@ Queries on random expressions can be made using the functions
 Examples
 ========
 
->>> from diofant.stats import P, E, variance, Die, Normal
+>>> from diofant.stats import Die, E, Normal, P, variance
 >>> X, Y = Die('X', 6), Die('Y', 6)  # Define two six sided dice
 >>> Z = Normal('Z', 0, 1)  # Declare a Normal random variable with mean 0, std 1
 >>> P(X > 3)  # Probability X is greater than 3

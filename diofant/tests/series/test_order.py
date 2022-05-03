@@ -351,8 +351,7 @@ def test_sympyissue_6753():
 
 
 def test_sympyissue_7872():
-    assert O(x**3).subs({x: exp(-x**2)}) in [O(exp(-3*x**2), (x, oo)),
-                                             O(exp(-3*x**2), (x, -oo))]
+    assert O(x**3).subs({x: exp(-x**2)}) == O(exp(-3*x**2), (x, -oo))
 
 
 def test_order_at_infinity():
@@ -399,6 +398,9 @@ def test_order_at_infinity():
     # issue sympy/sympy#9917
     assert O(x*sin(x) + 1, (x, oo)) != O(x*sin(x), (x, oo))
 
+    # issue sympy/sympy#15539
+    assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
+
 
 def test_mixing_order_at_zero_and_infinity():
     assert (O(x, (x, 0)) + O(x, (x, oo))).is_Add
@@ -432,6 +434,9 @@ def test_order_subs_limits():
 
     assert O(x).subs({x: y*z}) == O(y*z, y, z)
 
+    assert O(1/x, (x, oo)).subs({x: +I*x}) == O(1/x, (x, -I*oo))
+    assert O(1/x, (x, oo)).subs({x: -I*x}) == O(1/x, (x, +I*oo))
+
 
 def test_sympyissue_9351():
     assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, (x, 10))
@@ -440,10 +445,6 @@ def test_sympyissue_9351():
 def test_sympyissue_7599():
     n = Symbol('n', integer=True)
     assert O(x**n, x) + O(x**2) == Add(O(x**2), O(x**n, x), evaluate=False)
-
-
-def test_sympyissue_15539():
-    assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
 
 
 def test_sympyissue_22836():

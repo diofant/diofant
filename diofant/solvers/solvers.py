@@ -7,7 +7,7 @@ import warnings
 from collections import defaultdict
 from types import GeneratorType
 
-from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
+from ..core import (Add, Dummy, Equality, Expr, Float, Function, Ge, I,
                     Integer, Lambda, Mul, Symbol, expand_log, expand_mul,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal)
 from ..core.assumptions import check_assumptions
@@ -514,7 +514,7 @@ def _solve(f, symbol, **flags):
         # as a polynomial, followed (perhaps) by a change of variables if the
         # generator is not a symbol
 
-        poly = Poly(f_num)
+        poly = Poly(f_num.expand(power_base=False, log=False))
         gens = [g for g in poly.gens if g.has(symbol)]
 
         def _as_base_q(x):
@@ -620,7 +620,7 @@ def _solve(f, symbol, **flags):
             # polys (e.g. for symbols other than the one we are interested
             # in) so recast the poly in terms of our generator of interest.
 
-            poly = Poly(f_num, gens[0], extension=False)
+            poly = Poly(f_num.expand(power_base=False, log=False), gens[0], extension=False)
 
             # if we aren't on the tsolve-pass, use roots
             if not flags.pop('tsolve', False):
@@ -863,7 +863,7 @@ def _solve_system(exprs, symbols, **flags):
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
         for r in result:
-            for k in r:
+            for k in r.copy():
                 r[k] = simplify(r[k])
         flags['simplify'] = False  # don't need to do so in checksol now
 
@@ -1114,10 +1114,10 @@ def _tsolve(eq, sym, **flags):
         # lambert forms may need some help being recognized, e.g. changing
         # 2**(3*x) + x**3*log(2)**3 + 3*x**2*log(2)**2 + 3*x*log(2) + 1
         # to 2**(3*x) + (x*log(2) + 1)**3
-        g = _filtered_gens(eq.as_poly(), sym)
+        g = _filtered_gens(expand_power_exp(eq).as_poly(), sym)
         up_or_log = set()
         for gi in g:
-            if gi.is_Pow and gi.base is E or isinstance(gi, log):
+            if gi.is_Exp or isinstance(gi, log):
                 up_or_log.add(gi)
             elif gi.is_Pow:
                 gisimp = powdenest(expand_power_exp(gi))
@@ -1132,13 +1132,13 @@ def _tsolve(eq, sym, **flags):
                 poly = lhs.as_poly()
                 g = _filtered_gens(poly, sym)
                 return _solve_lambert(lhs - rhs, sym, g)
-            except NotImplementedError:
+            except NotImplementedError as exc:
                 # maybe it's a convoluted function
                 if len(g) == 2:
                     try:
                         gpu = bivariate_type(lhs - rhs, *g)
                         if gpu is None:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                         g, p, u = gpu
                         flags['bivariate'] = False
                         inversion = _tsolve(g - u, sym, **flags)
@@ -1147,7 +1147,7 @@ def _tsolve(eq, sym, **flags):
                             return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
                         else:
-                            raise NotImplementedError
+                            raise NotImplementedError from exc
                     except NotImplementedError:
                         pass
                 else:
@@ -1309,7 +1309,7 @@ def _invert(eq, *symbols, **kwargs):
                 y, x = lhs.args
                 lhs = 2*atan(y/(sqrt(x**2 + y**2) + x))
 
-        if lhs.is_Pow and lhs.base is E:
+        if lhs.is_Exp:
             rhs = log(rhs)
             lhs = lhs.exp
 
