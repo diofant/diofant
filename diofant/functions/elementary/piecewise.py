@@ -505,6 +505,14 @@ class Piecewise(Function):
             exp_sets.append((expr, cond_int))
         return exp_sets
 
+    def _eval_rewrite_as_tractable(self, *args, wrt=None, **kwargs):
+        if wrt is not None:
+            for a, c in args:  # pragma: no branch
+                if c.free_symbols - {wrt}:
+                    return
+                if c.limit(wrt, oo):
+                    return a
+
 
 def piecewise_fold(expr):
     """

@@ -134,6 +134,9 @@ def test_basic4():
     assert limit(e5, x, 1, 1) == 1
     assert limit(e5, x, 1) == 1
 
+    e6 = Limit(Piecewise((1, x > a), (0, True)), x, 0)
+    assert e6.doit() == e6
+
 
 def test_basic5():
     class MyFunction(Function):
@@ -664,8 +667,8 @@ def test_sympyissue_13462():
 
 
 def test_sympyissue_13575():
-    assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
-                                                      erf(I))
+    assert limit(acos(erfi(x)), x, 1).equals(pi/2 + I*log(sqrt(erf(I)**2 + 1) +
+                                                          erf(I))) is True
 
 
 def test_issue_558():
@@ -1006,3 +1009,17 @@ def test_sympyissue_23319():
 
 def test_issue_1230():
     assert limit(log(x + sqrt(x**2 + 1)), x, I*oo) == oo
+
+
+def test_sympyissue_8433():
+    d = Symbol('d', positive=True)
+    e = erf(1 - x/d)
+    assert limit(e, x, oo) == -1
+    assert limit(e.subs({d: 2}), x, oo) == -1
+
+
+def test_sympyissue_13750():
+    assert limit(erf(-x), x, oo) == -1
+    assert limit(erf(1 - x), x, oo) == -1
+    assert limit(erf(a - x), x, oo) == -1
+    assert limit(erf(sqrt(x) - x), x, oo) == -1

@@ -91,6 +91,7 @@ def test_gruntz_eval_special():
     assert limit(x*(gamma(x - 1/gamma(x)) - gamma(x) + log(x)),
                  x, oo) == Rational(1, 2)
     assert limit((gamma(x + 1/gamma(x)) - gamma(x))/log(x), x, oo) == 1
+    assert limit(erf(log(1/x)), x, oo) == -1
 
 
 @pytest.mark.slow
