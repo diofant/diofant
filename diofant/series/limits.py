@@ -32,7 +32,8 @@ def limit(expr, z, z0, dir=None):
 def heuristics(e, z, z0, dir):
     e = e.expand()
     if (e.is_Mul or e.is_Add or e.is_Pow or
-            (e.is_Function and not isinstance(e.func, UndefinedFunction))):
+            (e.is_Function and not e.is_Piecewise and
+             not isinstance(e.func, UndefinedFunction))):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
@@ -172,19 +173,6 @@ class Limit(Expr):
             if has_oo.is_Boolean:
                 return has_oo
             raise NotImplementedError
-
-        def tr_Piecewise(f):
-            for a, c in f.args:
-                if not c.is_Atom:
-                    c = c.as_set().closure.contains(oo)
-                    if not c.is_Atom:
-                        raise NotImplementedError("Parametric limits aren't "
-                                                  'supported yet.')
-                    if c:
-                        break
-            return a
-
-        e = e.replace(lambda f: f.is_Piecewise and f.has(z), tr_Piecewise)
 
         try:
             r = limitinf(e, z)

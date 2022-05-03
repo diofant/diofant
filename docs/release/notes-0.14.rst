@@ -82,3 +82,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`5539`: Equal Integrals compare different when using different variables
 * :sympyissue:`23425`: PolynomialError when I try to call classify_ode
 * :sympyissue:`23432`: Series expansion around float fails with NotImplementedError
+* :sympyissue:`8433`: limit involving error function returns bad result
+* :sympyissue:`13750`: erf has wrong limit in -oo

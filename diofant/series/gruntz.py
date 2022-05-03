@@ -199,14 +199,14 @@ def limitinf(e, x):
     assert not e.has(Float)
 
     # Rewrite e in terms of tractable functions only:
-    e = e.rewrite('tractable', deep=True, wrt=x)
+    e = e.rewrite('tractable', wrt=x)
 
     if not e.has(x):
         # This is a bit of a heuristic for nice results.  We always rewrite
         # tractable functions in terms of familiar intractable ones.
         # TODO: It might be nicer to rewrite the exactly to what they were
         # initially, but that would take some work to implement.
-        return e.rewrite('intractable', deep=True)
+        return e.rewrite('intractable')
 
     c0, e0 = mrv_leadterm(e, x)
     sig = signinf(e0, x)

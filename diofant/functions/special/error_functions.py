@@ -2,7 +2,7 @@
 of incomplete gamma functions. It should probably be renamed.
 """
 
-from ...core import (Add, E, EulerGamma, Function, I, Integer, Pow, Rational,
+from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
                      cacheit, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
@@ -172,7 +172,9 @@ class erf(Function):
     def _eval_rewrite_as_expint(self, z):
         return sqrt(z**2)/z - z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
-    def _eval_rewrite_as_tractable(self, z, **kwargs):
+    def _eval_rewrite_as_tractable(self, z, wrt=None, **kwargs):
+        if wrt is not None and z.limit(wrt, oo) == -oo:
+            return -1 + _erfs(-z)*exp(-z**2)
         return 1 - _erfs(z)*exp(-z**2)
 
     def _eval_rewrite_as_erfc(self, z):
@@ -340,7 +342,7 @@ class erfc(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
-        return self.rewrite(erf).rewrite('tractable', deep=True)
+        return self.rewrite(erf).rewrite('tractable', **kwargs)
 
     def _eval_rewrite_as_erf(self, z):
         return 1 - erf(z)
@@ -518,7 +520,7 @@ class erfi(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
-        return self.rewrite(erf).rewrite('tractable', deep=True)
+        return self.rewrite(erf).rewrite('tractable', **kwargs)
 
     def _eval_rewrite_as_erf(self, z):
         return -I*erf(I*z)
@@ -1485,7 +1487,7 @@ class Li(Function):
         return li(z) - li(2)
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
-        return self.rewrite(li).rewrite('tractable', deep=True)
+        return self.rewrite(li).rewrite('tractable', **kwargs)
 
 ###############################################################################
 # ################## TRIGONOMETRIC INTEGRALS ################################ #
@@ -2254,11 +2256,8 @@ class _erfs(Function):
 
     @classmethod
     def eval(cls, z):
-        if z in (0, 1, I, 1 + E**-1):
-            return cls(z, evaluate=False).rewrite('intractable')
-
-        if z.could_extract_minus_sign():
-            return 2*exp(z**2) - cls(-z, evaluate=False)
+        if z.is_zero:
+            return Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
@@ -2285,6 +2284,9 @@ class _erfs(Function):
 
     def _eval_rewrite_as_intractable(self, z):
         return (1 - erf(z))*exp(z**2)
+
+    def _eval_evalf(self, prec):
+        return self.rewrite('intractable').evalf(prec)
 
 
 class _eis(Function):
