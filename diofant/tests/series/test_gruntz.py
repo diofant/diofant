@@ -71,6 +71,8 @@ def test_gruntz_evaluation():
                      log(log(log(exp(x) + x + log(x))))), x, oo) == E
     # Another
     assert limit(exp(exp(exp(x + exp(-x))))/exp(exp(x)), x, oo) == oo
+    assert limit(log(log(x*exp(x*exp(x)) + 1)) -
+                 exp(exp(log(log(x)) + 1/x)), x, oo) == 0
 
 
 def test_gruntz_eval_special():
