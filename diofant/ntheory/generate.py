@@ -446,8 +446,8 @@ def randprime(a, b):
     Examples
     ========
 
-    >>> randprime(1, 30)  # doctest: +SKIP
-    13
+    >>> randprime(1, 30)
+    29
     >>> isprime(randprime(1, 30))
     True
 

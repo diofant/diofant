@@ -2144,7 +2144,7 @@ def Uniform(name, left, right):
     >>> density(X)(z)
     Piecewise((1/(-a + b), (a <= z) & (z <= b)), (0, true))
 
-    >>> cdf(X)(z)  # doctest: +SKIP
+    >>> cdf(X)(z)
     -a/(-a + b) + z/(-a + b)
 
     >>> simplify(E(X))

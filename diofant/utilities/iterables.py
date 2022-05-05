@@ -1080,22 +1080,22 @@ def partitions(n, m=None, k=None, size=False):
 
     >>> from diofant.utilities.iterables import partitions
 
-    >>> for p in partitions(6, k=2):  # doctest: +SKIP
+    >>> for p in partitions(6, k=2):
     ...     print(p)
     {2: 3}
-    {1: 2, 2: 2}
-    {1: 4, 2: 1}
+    {2: 2, 1: 2}
+    {2: 1, 1: 4}
     {1: 6}
 
     The maximum number of parts in the partition (the sum of the values in
     the returned dict) are limited with m:
 
-    >>> for p in partitions(6, m=2):  # doctest: +SKIP
+    >>> for p in partitions(6, m=2):
     ...     print(p)
     ...
     {6: 1}
-    {1: 1, 5: 1}
-    {2: 1, 4: 1}
+    {5: 1, 1: 1}
+    {4: 1, 2: 1}
     {3: 2}
 
     Note that the _same_ dictionary object is returned each time.
@@ -1108,9 +1108,9 @@ def partitions(n, m=None, k=None, size=False):
     If you want to build a list of the returned dictionaries then
     make a copy of them:
 
-    >>> [p.copy() for p in partitions(6, k=2)]  # doctest: +SKIP
+    >>> [p.copy() for p in partitions(6, k=2)]
     [{2: 3}, {1: 2, 2: 2}, {1: 4, 2: 1}, {1: 6}]
-    >>> [(M, p.copy()) for M, p in partitions(6, k=2, size=True)]  # doctest: +SKIP
+    >>> [(M, p.copy()) for M, p in partitions(6, k=2, size=True)]
     [(3, {2: 3}), (4, {1: 2, 2: 2}), (5, {1: 4, 2: 1}), (6, {1: 6})]
 
     References

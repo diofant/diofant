@@ -1,5 +1,6 @@
 """Pytest configuration and fixtures for the Diofant test suite."""
 
+import random
 import sys
 
 import pytest
@@ -59,3 +60,4 @@ def add_np(doctest_namespace):
         doctest_namespace[str(sym)] = sym
     for name in dir(diofant):
         doctest_namespace[name] = getattr(diofant, name)
+    random.seed(0)

@@ -316,8 +316,8 @@ def random_bitstring(n):
     Examples
     ========
 
-    >>> random_bitstring(3)  # doctest: +SKIP
-    100
+    >>> random_bitstring(3)
+    '110'
 
     """
     return ''.join([random.choice('01') for i in range(n)])
