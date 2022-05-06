@@ -19,7 +19,7 @@ summation, the above equality instance will be translated to low-level code for
 a matrix vector product.  This is how you tell Diofant to generate the code,
 compile it and wrap it as a python function:
 
->>> matvec = autowrap(instruction)                 # doctest: +SKIP
+>>> matvec = autowrap(instruction)
 
 That's it.  Now let's test it with some numpy arrays.  The default wrapper
 backend is f2py.  The wrapper function it provides is set up to accept python
@@ -28,7 +28,7 @@ matrix vector product like this:
 
 >>> M = [[0, 1],
 ...      [1, 0]]
->>> matvec(M, [2, 3])                              # doctest: +SKIP
+>>> matvec(M, [2, 3])
 [ 3.  2.]
 
 Implementation details
