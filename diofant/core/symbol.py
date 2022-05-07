@@ -239,9 +239,6 @@ class Dummy(BaseSymbol):
     used. This is useful when a temporary variable is needed and the name
     of the variable used in the expression is not important.
 
-    >>> Dummy()  # doctest: +SKIP
-    _Dummy_10
-
     See Also
     ========
 
