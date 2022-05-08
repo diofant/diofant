@@ -62,7 +62,7 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, Float, Integer, Mul, cacheit, evaluate, oo
+from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, oo
 from ..core.function import UndefinedFunction
 from ..functions import exp, log, sign
 from ..utilities import ordered
@@ -81,8 +81,6 @@ def compare(a, b, x):
 
     Examples
     ========
-
-    >>> x = Symbol('x', real=True, positive=True)
 
     >>> compare(exp(x), x**5, x)
     1
@@ -108,8 +106,6 @@ def mrv(e, x):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True, positive=True)
-
     >>> mrv(log(x - log(x))/log(x), x)
     {x}
 
@@ -120,12 +116,12 @@ def mrv(e, x):
         return {x}
     elif e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
-        return mrv_max(mrv(a, x), mrv(b, x), x)
+        return _mrv_max(mrv(a, x), mrv(b, x), x)
     elif e.is_Exp:
         if e.exp == x:
             return {e}
         elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
-            return mrv_max({e}, mrv(e.exp, x), x)
+            return _mrv_max({e}, mrv(e.exp, x), x)
         else:
             return mrv(e.exp, x)
     elif e.is_Pow:
@@ -134,13 +130,13 @@ def mrv(e, x):
     elif isinstance(e, log):
         return mrv(e.args[0], x)
     elif e.is_Function and not isinstance(e.func, UndefinedFunction):
-        return functools.reduce(lambda a, b: mrv_max(a, b, x),
+        return functools.reduce(lambda a, b: _mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])
     else:
         raise NotImplementedError(f"Don't know how to calculate the mrv of '{e}'")
 
 
-def mrv_max(f, g, x):
+def _mrv_max(f, g, x):
     """Computes the maximum of two MRV sets."""
     for a, b in zip(f, g):
         if (c := compare(a, b, x)) in (1, -1):
@@ -177,7 +173,7 @@ def signinf(e, x):
         if s == 1:
             return 1
 
-    c0, _ = mrv_leadterm(e, x)
+    c0, _ = leadterm(e, x)
     return signinf(c0, x)
 
 
@@ -189,15 +185,10 @@ def limitinf(e, x):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True, positive=True)
-
     >>> limitinf(exp(x)*(exp(1/x - exp(-x)) - exp(1/x)), x)
     -1
 
     """
-    assert x.is_real and x.is_positive
-    assert not e.has(Float)
-
     # Rewrite e in terms of tractable functions only:
     e = e.rewrite('tractable', wrt=x)
 
@@ -208,7 +199,7 @@ def limitinf(e, x):
         # initially, but that would take some work to implement.
         return e.rewrite('intractable')
 
-    c0, e0 = mrv_leadterm(e, x)
+    c0, e0 = leadterm(e, x)
     sig = signinf(e0, x)
     if sig == 1:
         return Integer(0)
@@ -223,7 +214,7 @@ def limitinf(e, x):
 
 
 @cacheit
-def mrv_leadterm(e, x):
+def leadterm(e, x):
     """
     Compute the leading term of the series.
 
@@ -238,9 +229,7 @@ def mrv_leadterm(e, x):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True, positive=True)
-
-    >>> mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x)
+    >>> leadterm(1/exp(-x + exp(-x)) - exp(x), x)
     (-1, 0)
 
     """
@@ -262,7 +251,7 @@ def mrv_leadterm(e, x):
     lt = e.compute_leading_term(w, logx=logw)
     c0, e0 = lt.as_coeff_exponent(w)
     if c0.has(w):
-        raise NotImplementedError(f'Cannot compute mrv_leadterm({e}, {x}). '
+        raise NotImplementedError(f'Cannot compute leadterm({e}, {x}). '
                                   'The coefficient should have been free of '
                                   f'{w}, but got {c0}.')
     return c0, e0
@@ -292,11 +281,8 @@ def rewrite(e, x, w):
     Examples
     ========
 
-    >>> x = Symbol('x', real=True, positive=True)
-    >>> m = Symbol('m', real=True, positive=True)
-
-    >>> rewrite(exp(x)*log(log(exp(x))), x, m)
-    (log(x)/m, -x)
+    >>> rewrite(exp(x)*log(x), x, y)
+    (log(x)/y, -x)
 
     """
     Omega = mrv(e, x)
