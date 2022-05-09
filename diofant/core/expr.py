@@ -327,12 +327,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> x._random()                         # doctest: +SKIP
-        0.0392918155679172 + 0.916050214307199*I
-        >>> x._random(2)                        # doctest: +SKIP
-        -0.77 - 0.87*I
-        >>> (x + y/2)._random(2)                # doctest: +SKIP
-        -0.57 + 0.16*I
+        >>> x._random()
+        0.688843703050096 + 0.515908805880605*I
         >>> sqrt(2)._random(2)
         1.4
 

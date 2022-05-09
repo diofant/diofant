@@ -10,13 +10,13 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
-                     Limit, Mul, Pow, Rational, Symbol, acosh, acot, airyai,
-                     airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
-                     erf, exp, factorial, fibonacci, gamma, li, limit, log,
-                     loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan, tanh,
-                     zeta)
+                     Limit, Max, Min, Mul, Pow, Rational, Symbol, acosh, acot,
+                     airyai, airybi, atan, binomial, cbrt, cos, cosh, coth,
+                     digamma, erf, exp, factorial, fibonacci, gamma, li, limit,
+                     log, loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan,
+                     tanh, zeta)
 from diofant.abc import a, n, y
-from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite, signinf
+from diofant.series.gruntz import compare, leadterm, mrv, rewrite, signinf
 
 
 __all__ = ()
@@ -71,6 +71,8 @@ def test_gruntz_evaluation():
                      log(log(log(exp(x) + x + log(x))))), x, oo) == E
     # Another
     assert limit(exp(exp(exp(x + exp(-x))))/exp(exp(x)), x, oo) == oo
+    assert limit(log(log(x*exp(x*exp(x)) + 1)) -
+                 exp(exp(log(log(x)) + 1/x)), x, oo) == 0
 
 
 def test_gruntz_eval_special():
@@ -104,8 +106,8 @@ def test_gruntz_eval_special_slow():
                  exp(-x)*exp(exp(x))*x, x, oo) == -1
     assert limit(exp((log(2) + 1)*x)*(zeta(x + exp(-x)) - zeta(x)),
                  x, oo) == -log(2)
-
-    # TODO 8.36 - 8.37 (bessel, max-min)
+    # TODO 8.36 (bessel)
+    assert limit(Max(x, exp(x))/log(Min(exp(-x), exp(-exp(x)))), x, oo) == -1
 
 
 def test_gruntz_other():
@@ -266,21 +268,20 @@ def test_rewrite():
                                     evaluate=False), -x + 1/x**2)
 
 
-def test_mrv_leadterm():
-    assert mrv_leadterm(Integer(1), x) == (1, 0)
+def test_leadterm():
+    assert leadterm(Integer(1), x) == (1, 0)
 
-    assert mrv_leadterm(-exp(1/x), x) == (-1, 0)
-    assert mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)
-    assert mrv_leadterm(
-        (exp(1/x - exp(-x)) - exp(1/x))*exp(x), x) == (-exp(1/x), 0)
+    assert leadterm(-exp(1/x), x) == (-1, 0)
+    assert leadterm(1/exp(-x + exp(-x)) - exp(x), x) == (-1, 0)
+    assert leadterm((exp(1/x - exp(-x)) - exp(1/x))*exp(x), x) == (-exp(1/x), 0)
 
     # Gruntz: p51, 3.25
-    assert mrv_leadterm((log(exp(x) + x) - x)/log(exp(x) + log(x))*exp(x),
-                        x) == (1, 0)
+    assert leadterm((log(exp(x) + x) - x)/log(exp(x) + log(x))*exp(x),
+                    x) == (1, 0)
 
     # Gruntz: p56, 3.27
     assert mrv(exp(-x + exp(-x)*exp(-x*log(x))), x) == {exp(-x*log(x))}
-    assert mrv_leadterm(exp(-x + exp(-x)*exp(-x*log(x))), x) == (exp(-x), 0)
+    assert leadterm(exp(-x + exp(-x)*exp(-x*log(x))), x) == (exp(-x), 0)
 
 
 def test_limit():
@@ -378,6 +379,8 @@ def test_intractable():
 
     # issue sympy/sympy#10976
     assert limit(erf(m/x)/erf(1/x), x, oo) == m
+
+    assert limit(Max(x**2, x, exp(x))/x, x, oo) == oo
 
 
 def test_branch_cuts():
