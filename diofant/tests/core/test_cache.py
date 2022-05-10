@@ -41,7 +41,7 @@ def test_print_cache(capfd):
     assert resout.find('_identity ' + str(info)) >= 0
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def clear_imports(request):
     # Clear namespace
     orig = sys.modules.copy()
