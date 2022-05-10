@@ -1749,3 +1749,7 @@ def test_sympyissue_22248():
 
 def test_sympyissue_22837():
     assert solve(Eq(0, (4 - 4*x + x**2)/(4*a**2)), x) == [{x: 2}]
+
+
+def test_issue_1195():
+    assert solve(0.9**x - 0.35) == [{x: 9.964094404284511}]
