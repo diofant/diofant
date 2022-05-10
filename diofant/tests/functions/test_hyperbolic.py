@@ -564,7 +564,7 @@ def test_acosh():
 
 
 def test_acosh_rewrite():
-    assert acosh(x).rewrite(log) == log(x + sqrt(x - 1)*sqrt(x + 1))
+    assert acosh(x).rewrite(log) == 2*log(sqrt(x - 1) + sqrt(x + 1)) - log(2)
 
 
 def test_acosh_series():

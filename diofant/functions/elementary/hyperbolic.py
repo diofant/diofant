@@ -905,7 +905,7 @@ class acosh(Function):
         return cosh
 
     def _eval_rewrite_as_log(self, x, **hints):
-        return log(x + sqrt(x - 1)*sqrt(x + 1))
+        return 2*log(sqrt(x - 1) + sqrt(x + 1)) - log(2)
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_nseries(self, x, n, logx):
