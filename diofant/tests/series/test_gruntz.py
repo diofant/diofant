@@ -388,6 +388,9 @@ def test_branch_cuts():
     assert limit(sqrt(-1 - I/x), x, oo) == -I
     assert limit(log(-1 + I/x), x, oo) == +I*pi
     assert limit(log(-1 - I/x), x, oo) == -I*pi
+    # Gruntz: p23
+    assert limit(atan(2*I - x), x, 0, -1) == I*log(3)/2 - pi/2
+    assert limit(atan(2*I - x), x, 0, +1) == I*log(3)/2 + pi/2
 
 
 def test_aseries_trig():
