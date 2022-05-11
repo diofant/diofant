@@ -550,7 +550,6 @@ class MultisetPartitionTraverser:
                     self.k2 += 1
                     return False
                 return True
-        assert False  # pragma: no cover
 
     def decrement_part_large(self, part, lb):
         """Decrements part, while respecting size constraint.
@@ -601,7 +600,6 @@ class MultisetPartitionTraverser:
                 else:
                     deficit -= part[i].v
                     part[i].v = 0
-        assert False  # pragma: no cover
 
     def decrement_part_range(self, part, lb, ub):
         """Decrements part (a subrange of pstack), if possible, returning

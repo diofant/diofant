@@ -195,7 +195,7 @@ def test_minimal_polynomial_conjugate():
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
-@pytest.mark.parametrize('method', ('groebner', 'compose'))
+@pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_minimal_polynomial_rootof(method):
     e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
     assert (minimal_polynomial(e, method=method)(x) ==
@@ -204,12 +204,12 @@ def test_minimal_polynomial_rootof(method):
                               domain=e.poly.domain)(y) == e.poly(y)
 
 
-@pytest.mark.parametrize('method', ('groebner', 'compose'))
+@pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_minimal_polynomial_GoldenRatio(method):
     assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
 
 
-@pytest.mark.parametrize('method', ('groebner', 'compose'))
+@pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_abs_re_im(method):
     # issue diofant/diofant#662
     e1 = abs(sqrt(1 + sqrt(2 + I)))
@@ -676,14 +676,14 @@ def test_sympyissue_18874():
                                              [0, QQ(59, 78), 0, QQ(-1, 78)]])
 
 
-@pytest.mark.parametrize('method', ('groebner', 'compose'))
+@pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_sympyissue_19760(method):
     e = 1/(sqrt(1 + sqrt(2)) - sqrt(2)*sqrt(1 + sqrt(2))) + 1
     assert minimal_polynomial(e, method=method)(x) == x**4 - 4*x**3 + 4*x**2 - 2
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.parametrize('method', ('groebner', 'compose'))
+@pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_sympyissue_22400(method):
     e = root(2, 3) + root(3, 3) + (-1 + I*sqrt(3))/2*root(5, 3)
     r = (x**27 - 90*x**24 + 1089*x**21 - 62130*x**18 + 105507*x**15 -

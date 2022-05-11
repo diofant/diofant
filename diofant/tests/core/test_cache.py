@@ -42,7 +42,7 @@ def test_print_cache(capfd):
 
 
 @pytest.fixture
-def clear_imports(request):
+def clear_imports(request):  # noqa: PT004
     # Clear namespace
     orig = sys.modules.copy()
     for m in list(sys.modules):
@@ -57,7 +57,7 @@ def clear_imports(request):
         for m in orig:
             sys.modules[m] = orig[m]
 
-    request.addfinalizer(restore_imports)
+    request.addfinalizer(restore_imports)  # noqa: PT021
 
 
 def test_nocache(clear_imports, monkeypatch):

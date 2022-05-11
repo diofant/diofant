@@ -34,17 +34,17 @@ def pytest_collection_modifyitems(items):
 
 
 @pytest.fixture(autouse=True, scope='module')
-def file_clear_cache():
+def _file_clear_cache():
     diofant.core.cache.clear_cache()
 
 
 @pytest.fixture(autouse=True, scope='session')
-def set_displayhook():
+def _set_displayhook():
     sys.__displayhook__ = sys.displayhook  # https://bugs.python.org/26092
 
 
 @pytest.fixture(autouse=True, scope='session')
-def enable_mpl_agg_backend():
+def _enable_mpl_agg_backend():
     try:
         import matplotlib
         matplotlib.use('Agg')
@@ -53,7 +53,7 @@ def enable_mpl_agg_backend():
 
 
 @pytest.fixture(autouse=True)
-def add_np(doctest_namespace):
+def _add_np(doctest_namespace):
     for sym in (diofant.symbols('a:d t x:z') +
                 diofant.symbols('k m n', integer=True) +
                 diofant.symbols('f:h', cls=diofant.Function)):

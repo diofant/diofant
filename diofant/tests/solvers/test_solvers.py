@@ -1601,8 +1601,6 @@ def test_unrad1():
                   simplify=False, check=False)
         if any((a[y] - ans).expand().is_zero for a in Y):
             break
-    else:
-        assert None  # no answer was found
     assert (solve(sqrt(x + 1) + root(x, 3) - 2) ==
             [{x: (-11/(9*cbrt(Rational(47, 54) + sqrt(93)/6)) +
                   Rational(1, 3) + cbrt(Rational(47, 54) +
