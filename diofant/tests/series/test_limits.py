@@ -11,7 +11,7 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      exp, factorial, false, floor, gamma, integrate, limit,
                      log, nan, oo, pi, polygamma, root, sign, simplify, sin,
                      sinh, sqrt, subfactorial, symbols, tan, true)
-from diofant.abc import a, b, c, n, x, y, z
+from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.series.limits import heuristics
 
 
@@ -503,9 +503,8 @@ def test_sympyissue_4099():
 
 
 def test_sympyissue_4503():
-    dx = Symbol('dx')
-    assert limit((sqrt(1 + exp(x + dx)) - sqrt(1 + exp(x)))/dx, dx, 0) == \
-        exp(x)/(2*sqrt(exp(x) + 1))
+    assert limit((sqrt(1 + exp(x + y)) - sqrt(1 + exp(x)))/y,
+                 y, 0) == exp(x)/(2*sqrt(exp(x) + 1))
 
 
 def test_sympyissue_8730():
@@ -672,9 +671,7 @@ def test_sympyissue_13575():
 
 
 def test_issue_558():
-    n = Symbol('n')
     r = Symbol('r', positive=True)
-    c = Symbol('c')
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs({c: c + 1})
@@ -786,7 +783,6 @@ def test_sympyissue_6599():
 def test_sympyissue_18176():
     x = Symbol('x', real=True, positive=True)
     n = Symbol('n', integer=True, positive=True)
-    k = Symbol('k')
     e = x**n - x**(n - k)
     assert limit(e.subs({k: 0}), x, oo) == 0
     assert limit(e.subs({k: 1}), x, oo) == oo
