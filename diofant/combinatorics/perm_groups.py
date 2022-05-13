@@ -2474,8 +2474,6 @@ class PermutationGroup(Basic):
                 for new in id_af:
                     if gen._array_form[new] != new:
                         break
-                else:
-                    assert None  # can this ever happen?
                 _base.append(new)
         # distribute generators according to basic stabilizers
         strong_gens_distr = _distribute_gens_by_base(_base, _gens)

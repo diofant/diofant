@@ -238,16 +238,16 @@ def test_atan():
 
 
 def test_acosh():
-    assert limit(acosh(I*x), x, 0) == I*pi/2
-    assert limit(acosh(I*x), x, 0, 1) == -I*pi/2
-    assert limit(acosh(-I*x), x, 0) == -I*pi/2
-    assert limit(acosh(-I*x), x, 0, 1) == I*pi/2
+    assert limit(acosh(I*x), x, 0) == 2*log(1 + I) - log(2)
+    assert limit(acosh(I*x), x, 0, 1) == 2*log(1 - I) - log(2)
+    assert limit(acosh(-I*x), x, 0) == 2*log(1 - I) - log(2)
+    assert limit(acosh(-I*x), x, 0, 1) == 2*log(1 + I) - log(2)
     pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, Reals))
-    assert limit(acosh(x - I*x), x, 0) == -I*pi/2
-    assert limit(acosh(x - I*x), x, 0, 1) == I*pi/2
+    assert limit(acosh(x - I*x), x, 0) == 2*log(1 - I) - log(2)
+    assert limit(acosh(x - I*x), x, 0, 1) == 2*log(1 + I) - log(2)
     pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, Reals))
-    assert limit(acosh(I*x**2), x, 0, Reals) == I*pi/2
-    assert limit(acosh(x**2 - I*x**2), x, 0, Reals) == -I*pi/2
+    assert limit(acosh(I*x**2), x, 0, Reals) == 2*log(1 + I) - log(2)
+    assert limit(acosh(x**2 - I*x**2), x, 0, Reals) == 2*log(1 - I) - log(2)
 
 
 def test_acoth():

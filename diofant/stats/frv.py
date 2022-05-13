@@ -299,8 +299,6 @@ class FinitePSpace(PSpace):
                 # return dictionary mapping RandomSymbols to values
                 return dict(zip(expr, value))
 
-        assert False, 'We should never have gotten to this point'  # pragma: no cover
-
 
 class SingleFinitePSpace(SinglePSpace, FinitePSpace):
     """

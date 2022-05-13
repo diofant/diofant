@@ -401,7 +401,7 @@ def test_dmp_zz_factor():
                                       2*z*t, 1)])
 
 
-@pytest.mark.parametrize('method', ('modular', 'trager'))
+@pytest.mark.parametrize('method', ['modular', 'trager'])
 def test_dmp_ext_factor(method):
     with using(aa_factor_method=method):
         R, x = ring('x', QQ.algebraic_field(I))

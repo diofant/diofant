@@ -1601,8 +1601,6 @@ def test_unrad1():
                   simplify=False, check=False)
         if any((a[y] - ans).expand().is_zero for a in Y):
             break
-    else:
-        assert None  # no answer was found
     assert (solve(sqrt(x + 1) + root(x, 3) - 2) ==
             [{x: (-11/(9*cbrt(Rational(47, 54) + sqrt(93)/6)) +
                   Rational(1, 3) + cbrt(Rational(47, 54) +
@@ -1749,3 +1747,7 @@ def test_sympyissue_22248():
 
 def test_sympyissue_22837():
     assert solve(Eq(0, (4 - 4*x + x**2)/(4*a**2)), x) == [{x: 2}]
+
+
+def test_issue_1195():
+    assert solve(0.9**x - 0.35) == [{x: 9.964094404284511}]

@@ -1889,9 +1889,9 @@ class atan(InverseTrigonometricFunction):
     def _eval_is_extended_real(self):
         return self.args[0].is_extended_real
 
-    def _eval_rewrite_as_log(self, x):
-        return I/2 * (log(
-            (Integer(1) - I * x)/(Integer(1) + I * x)))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return I*(log(1 - I*x) - log(1 + I*x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == oo:

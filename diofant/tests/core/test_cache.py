@@ -41,8 +41,8 @@ def test_print_cache(capfd):
     assert resout.find('_identity ' + str(info)) >= 0
 
 
-@pytest.fixture(scope='function')
-def clear_imports(request):
+@pytest.fixture
+def clear_imports(request):  # noqa: PT004
     # Clear namespace
     orig = sys.modules.copy()
     for m in list(sys.modules):
@@ -57,7 +57,7 @@ def clear_imports(request):
         for m in orig:
             sys.modules[m] = orig[m]
 
-    request.addfinalizer(restore_imports)
+    request.addfinalizer(restore_imports)  # noqa: PT021
 
 
 def test_nocache(clear_imports, monkeypatch):

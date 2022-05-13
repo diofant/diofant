@@ -388,6 +388,9 @@ def test_branch_cuts():
     assert limit(sqrt(-1 - I/x), x, oo) == -I
     assert limit(log(-1 + I/x), x, oo) == +I*pi
     assert limit(log(-1 - I/x), x, oo) == -I*pi
+    # Gruntz: p23
+    assert limit(atan(2*I - x), x, 0, -1) == I*log(3)/2 - pi/2
+    assert limit(atan(2*I - x), x, 0, +1) == I*log(3)/2 + pi/2
 
 
 def test_aseries_trig():
@@ -445,15 +448,11 @@ def test_issue_74():
 
 def test_issue_75():
     assert limit(abs(log(x)), x, oo) == oo
-    assert limit(abs(log(2 + 1/x)) - log(2 + 1/x), x, oo) == 0
-    assert limit(abs(log(2 - 1/x)) - log(2 - 1/x), x, oo) == 0
-
-
-@pytest.mark.xfail
-@pytest.mark.slow
-def test_issue_75_xfail():
     assert limit(tan(abs(pi/2 + 1/x))/acosh(pi/2 + 1/x), x, oo) == -oo
     assert limit(tan(abs(pi/2 - 1/x))/acosh(pi/2 - 1/x), x, oo) == +oo
+
+    assert limit(abs(log(2 + 1/x)) - log(2 + 1/x), x, oo) == 0
+    assert limit(abs(log(2 - 1/x)) - log(2 - 1/x), x, oo) == 0
 
 
 def test_sympyissue_8241():

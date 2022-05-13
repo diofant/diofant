@@ -390,10 +390,6 @@ def solve(f, *symbols, **flags):
     # returned.
     check = flags.get('check', True)
 
-    # restore floats
-    if floats and solution and flags.get('rational', None) is None:
-        solution = nfloat(solution, exponent=False)
-
     if check and solution:  # assumption checking
         def test_assumptions(sol):
             return fuzzy_and([check_assumptions(sol[sym], **sym._assumptions)
@@ -411,6 +407,10 @@ def solve(f, *symbols, **flags):
 
         solution = [s for s in solution if
                     all(not checksol(den, s, **flags) for den in piecewise_dens)]
+
+    # restore floats
+    if floats and solution and flags.get('rational', None) is None:
+        solution = nfloat(solution, exponent=False)
 
     #
     # done
