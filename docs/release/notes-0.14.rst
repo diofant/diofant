@@ -84,3 +84,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23432`: Series expansion around float fails with NotImplementedError
 * :sympyissue:`8433`: limit involving error function returns bad result
 * :sympyissue:`13750`: erf has wrong limit in -oo
+* :sympyissue:`23497`: binomial(-1, -1) returns 0, should return 1
