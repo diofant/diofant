@@ -163,13 +163,25 @@ def test_series_of_Subs():
     subs3 = Subs(sin(x*z), (x, z), (y, x))
     subs4 = Subs(x, (x, z))
 
+    res1 = Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    res2 = Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    res3 = Subs(x*z, (x, z), (y, x)) + O(z**6)
+
     assert subs1.series(x) == subs1
-    assert subs1.series(y) == Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    assert subs1.series(y) == res1
     assert subs1.series(z) == subs1
-    assert subs2.series(z) == Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    assert subs2.series(z) == res2
     assert subs3.series(x) == subs3
-    assert subs3.series(z) == Subs(x*z, (x, z), (y, x)) + O(z**6)
+    assert subs3.series(z) == res3
     assert subs4.series(z) == subs4
+
+    assert subs1.doit().series(x) == subs1.doit()
+    assert subs1.doit().series(y) == res1.doit()
+    assert subs1.doit().series(z) == subs1.doit()
+    assert subs2.doit().series(z) == res2.doit()
+    assert subs3.doit().series(x) == subs3.doit()
+    assert subs3.doit().series(z) == res3.doit()
+    assert subs4.doit().series(z) == subs4.doit()
 
 
 def test_sympyissue_9173():
