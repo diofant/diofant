@@ -96,7 +96,7 @@ graphviz_output_format = 'svg'
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy-1.8.0/html-scipyorg/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
 }
 
 # Dictionary of external sites, mapping unique short alias names to a
