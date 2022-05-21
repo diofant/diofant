@@ -125,7 +125,6 @@ def mrv(e, x):
         else:
             return mrv(e.exp, x)
     elif e.is_Pow:
-        assert not e.exp.has(x)
         return mrv(e.base, x)
     elif isinstance(e, log):
         return mrv(e.args[0], x)
@@ -199,9 +198,7 @@ def limitinf(e, x):
     if sig == 1:
         return Integer(0)
     elif sig == -1:
-        s = signinf(c0, x)
-        assert s != 0
-        return s*oo
+        return signinf(c0, x)*oo
     elif sig == 0:
         return limitinf(c0, x)
     else:
@@ -283,8 +280,6 @@ def rewrite(e, x, w):
     Omega = mrv(e, x)
     if not Omega:
         return e, None  # e really does not depend on x
-
-    assert all(e.has(t) for t in Omega)
 
     if x in Omega:
         # Moving up in the asymptotical scale:
