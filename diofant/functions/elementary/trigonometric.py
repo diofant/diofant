@@ -1554,8 +1554,9 @@ class asin(InverseTrigonometricFunction):
     def _eval_rewrite_as_atan(self, x):
         return 2*atan(x/(1 + sqrt(1 - x**2)))
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return -I*log(I*x + sqrt(1 - x**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_acot(self, arg):
         return 2*acot((1 + sqrt(1 - arg**2))/arg)
@@ -1729,9 +1730,9 @@ class acos(InverseTrigonometricFunction):
     def _eval_nseries(self, x, n, logx):
         return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
 
-    def _eval_rewrite_as_log(self, x):
-        return pi/2 + I * \
-            log(I * x + sqrt(1 - x**2))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return pi/2 + I*log(I*x + sqrt(1 - x**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, x):
         return pi/2 - asin(x)
@@ -2040,9 +2041,9 @@ class acot(InverseTrigonometricFunction):
         else:
             return super()._eval_aseries(n, args0, x, logx)
 
-    def _eval_rewrite_as_log(self, x):
-        return I/2 * \
-            (log((x - I)/(x + I)))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return I*(log((x - I)/x) - log((x + I)/x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -2159,8 +2160,9 @@ class asec(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_rewrite_as_log(self, arg):
+    def _eval_rewrite_as_log(self, arg, **kwargs):
         return pi/2 + I*log(I/arg + sqrt(1 - 1/arg**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, arg):
         return pi/2 - asin(1/arg)
@@ -2251,8 +2253,9 @@ class acsc(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_rewrite_as_log(self, arg):
+    def _eval_rewrite_as_log(self, arg, **kwargs):
         return -I*log(I/arg + sqrt(1 - 1/arg**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, arg):
         return asin(1/arg)
