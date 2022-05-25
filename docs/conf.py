@@ -102,11 +102,11 @@ intersphinx_mapping = {
 # Dictionary of external sites, mapping unique short alias names to a
 # base URL and a prefix.
 extlinks = {
-    'issue': ('https://github.com/diofant/diofant/issues/%s', '#'),
-    'pull': ('https://github.com/diofant/diofant/pull/%s', '#'),
-    'commit': ('https://github.com/diofant/diofant/commit/%s', ''),
-    'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
-    'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
+    'issue': ('https://github.com/diofant/diofant/issues/%s', '#%s'),
+    'pull': ('https://github.com/diofant/diofant/pull/%s', '#%s'),
+    'commit': ('https://github.com/diofant/diofant/commit/%s', '%s'),
+    'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#%s'),
+    'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#%s'),
 }
 
 # The number of times the linkcheck builder will attempt to check a URL
