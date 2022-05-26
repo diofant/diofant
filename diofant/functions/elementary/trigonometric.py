@@ -2005,7 +2005,7 @@ class acot(InverseTrigonometricFunction):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return pi / 2  # FIX THIS
+            return pi / 2
         elif n < 0 or n % 2 == 0:
             return Integer(0)
         else:
