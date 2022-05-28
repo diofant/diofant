@@ -182,8 +182,8 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     elif language == 'C':
         f_name = 'main.c'
     else:
-        raise NotImplementedError(
-            f'FIXME: filename extension unknown for language: {language}')
+        raise NotImplementedError('filename extension unknown for '
+                                  f'language: {language}')
 
     with open(f_name, 'w', encoding='utf-8') as f:
         f.write(
