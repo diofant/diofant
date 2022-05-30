@@ -981,12 +981,6 @@ class Rational(Number):
         else:
             return other.__rmod__(self)
 
-    @_sympifyit('other', NotImplemented)
-    def __rmod__(self, other):
-        if isinstance(other, Rational):
-            return Rational.__mod__(other, self)
-        return Number.__rmod__(self, other)
-
     def _eval_power(self, other):
         if isinstance(other, Number):
             if other.is_negative:

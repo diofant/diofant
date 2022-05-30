@@ -149,7 +149,7 @@ def test_calculation():
     assert c == MutableDenseNDimArray([8]*9, (3, 3))
     assert c == MutableSparseNDimArray([8]*9, (3, 3))
 
-    assert c.__rtruediv__(1) == NotImplemented
+    pytest.raises(TypeError, lambda: c + 1)
 
 
 def test_ndim_array_converting():

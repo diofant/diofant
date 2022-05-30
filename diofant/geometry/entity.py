@@ -250,12 +250,6 @@ class GeometryEntity(Basic):
         """
         raise NotImplementedError()
 
-    def __radd__(self, a):
-        return a.__add__(self)
-
-    def __rsub__(self, a):
-        return a.__sub__(self)
-
     def __str__(self):
         """String representation of a GeometryEntity."""
         from ..printing import sstr

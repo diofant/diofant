@@ -155,8 +155,8 @@ def test_latex_printing():
 def test_custom_names():
     A = CoordSysCartesian('A', vector_names=['x', 'y', 'z'],
                           variable_names=['i', 'j', 'k'])
-    assert A.i.__str__() == 'x'
-    assert A.x.__str__() == 'i'
+    assert str(A.i) == 'x'
+    assert str(A.x) == 'i'
     assert A.i._pretty_form == 'A_x'
     assert A.x._pretty_form == 'A_i'
     assert A.i._latex_form == r'\mathbf{\hat{x}_{A}}'
