@@ -1081,7 +1081,7 @@ class Permutation(Basic):
 
         """
         a = self.array_form
-        return [i for i, e in enumerate(a) if a[i] != i]
+        return [i for i, e in enumerate(a) if e != i]
 
     def __add__(self, other):
         """Return permutation that is other higher in rank than self.

@@ -278,7 +278,7 @@ class GeometrySet(GeometryEntity, Set):
 
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
-        return self.__contains__(other)
+        return other in self
 
     def _union(self, other):
         """Returns the union of self and o
