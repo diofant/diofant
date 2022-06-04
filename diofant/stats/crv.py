@@ -162,7 +162,8 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
-        return Expr.__new__(cls, *args)
+        ret = Expr.__new__(cls, *args)
+        return ret
 
     @staticmethod
     def check(*args):
