@@ -213,14 +213,14 @@ def opt_cse(exprs, order='canonical'):
         func_args = [set(e.args) for e in funcs]
         for i, _ in enumerate(func_args):
             for j in range(i + 1, len(func_args)):
-                com_args = func_args[i].intersection(func_args[j])
+                com_args = func_args[i].intersection(func_args[j])  # pylint: disable=unnecessary-list-index-lookup
                 if len(com_args) > 1:
                     com_func = Func(*com_args)
 
                     # for all sets, replace the common symbols by the function
                     # over them, to allow recursive matches
 
-                    diff_i = func_args[i].difference(com_args)
+                    diff_i = func_args[i].difference(com_args)  # pylint: disable=unnecessary-list-index-lookup
                     func_args[i] = diff_i | {com_func}
                     if diff_i:
                         opt_subs[funcs[i]] = Func(Func(*diff_i), com_func,
