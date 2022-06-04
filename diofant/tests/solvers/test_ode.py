@@ -3033,3 +3033,9 @@ def test_sympyissue_23425():
     eq = Eq(-exp(x)*f(x).diff((x, 2)) + f(x).diff(x))
     assert classify_ode(eq) == ('Liouville', 'Liouville_Integral')
     assert dsolve(eq) == Eq(f(x), C1 + C2*Integral(exp(-exp(-x)), x).doit())
+
+
+def test_sympyissue_23562():
+    assert dsolve(f(x).diff(x) + g(y), f(x)) == Eq(f(x), C1 - x*g(y))
+    assert dsolve(f(x).diff(x) + g(y).diff(y),
+                  f(x)) == Eq(f(x), C1 - x*g(y).diff(y))
