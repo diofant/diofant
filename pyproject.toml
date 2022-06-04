@@ -46,7 +46,7 @@ tests = ['pytest>=6', 'hypothesis', 'pytest-timeout', 'pexpect']
 develop = ['diofant[tests]', 'flake8>=3.8', 'flake8-docstrings>=1.3',
             'pep8-naming', 'flake8-comprehensions', 'flake8-isort>=4.1',
             'flake8-rst', 'flake8-quotes>=3', 'flake8-sfs', 'pytest-xdist>=1.22',
-            'pytest-cov', 'pylint>=2.13.1,<2.14', 'coverage[toml]>=6.1.2',
+            'pytest-cov', 'pylint>=2.14', 'coverage[toml]>=6.1.2',
             'coverage_enable_subprocess', 'types-pkg_resources',
             'mypy', 'build', 'flake8-pytest-style']
 testing = ['diofant[develop]']
@@ -68,7 +68,6 @@ skip = ['diofant/core/expr.py',
 atomic = true
 [tool.pylint.MASTER]
 jobs = 0
-init_hook = 'import sys; sys.setrecursionlimit(2000)'  # PyCQA/pylint#2388
 [tool.pylint.format]
 max-line-length = 7000
 [tool.pylint.design]
@@ -101,10 +100,7 @@ disable = ['invalid-name',
            'not-callable',
            'no-value-for-parameter',
            'invalid-unary-operand-type',
-           'parameter-unpacking',
-           'import-star-module-level',
            'bad-inline-option',
-           'no-self-use',
            'cyclic-import',
            'duplicate-code',
            'redefined-argument-from-local',
@@ -115,8 +111,6 @@ disable = ['invalid-name',
            'protected-access',
            'arguments-differ',
            'abstract-method',
-           'no-init',
-           'relative-import',
            'fixme',
            'global-variable-undefined',
            'global-variable-not-assigned',
@@ -127,7 +121,6 @@ disable = ['invalid-name',
            'undefined-loop-variable',
            'cell-var-from-loop',
            'keyword-arg-before-vararg',
-           'next-method-called',
            'import-outside-toplevel',
            'arguments-out-of-order',
            'consider-using-f-string',
