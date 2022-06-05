@@ -85,3 +85,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8433`: limit involving error function returns bad result
 * :sympyissue:`13750`: erf has wrong limit in -oo
 * :sympyissue:`23497`: binomial(-1, -1) returns 0, should return 1
+* :sympyissue:`23562`: In new version of sympy, dsolve does not give a solution when another derivative is involved

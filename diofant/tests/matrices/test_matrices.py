@@ -36,8 +36,6 @@ def test_args():
 
 def test_division():
     v = Matrix(1, 2, [x, y])
-    assert v.__truediv__(z) == Matrix(1, 2, [x/z, y/z])
-    assert v.__truediv__(z) == Matrix(1, 2, [x/z, y/z])
     assert v/z == Matrix(1, 2, [x/z, y/z])
 
 

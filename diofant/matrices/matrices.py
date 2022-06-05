@@ -4068,7 +4068,8 @@ def a2idx(j, n=None):
     """Return integer after making positive and validating against n."""
     if type(j) is not int:
         try:
-            j = j.__index__()
+            j = getattr(j, '__index__')
+            j = j()
         except AttributeError as exc:
             raise IndexError(f'Invalid index a[{j!r}]') from exc
     if n is not None:

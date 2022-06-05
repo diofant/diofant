@@ -106,7 +106,7 @@ def _unify_gens(f_gens, g_gens):
 
     for i, gen in enumerate(g_gens):
         if gen in common:
-            g_gens[i], k = common[k], k + 1
+            g_gens[i], k = common[k], k + 1  # pylint: disable=unnecessary-list-index-lookup
 
     for gen in common:
         i = f_gens.index(gen)

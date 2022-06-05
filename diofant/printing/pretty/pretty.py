@@ -688,7 +688,7 @@ class PrettyPrinter(Printer):
             items = [(0, expr)]
         for _, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key=lambda x: x[0].__str__())
+            inneritems.sort(key=lambda x: str(x[0]))
             for k, v in inneritems:
                 # If the coef of the basis vector is 1 - we skip the 1
                 if v == 1:
@@ -1339,7 +1339,7 @@ class PrettyPrinter(Printer):
                 return prettyForm('1')/self._print(Pow(b, -e, evaluate=False))
 
         if b.is_Relational or isinstance(b, Limit):
-            return prettyForm(*self._print(b).parens()).__pow__(self._print(e))
+            return prettyForm(*self._print(b).parens())**self._print(e)
 
         return self._print(b)**self._print(e)
 

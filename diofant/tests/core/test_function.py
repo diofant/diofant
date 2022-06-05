@@ -253,7 +253,7 @@ def test_Subs():
     e1 = Subs(z*f(x), (x, 1))
     e2 = Subs(z*f(y), (y, 1))
     assert e1 + e2 == 2*e1
-    assert e1.__hash__() == e2.__hash__()
+    assert hash(e1) == hash(e2)
     assert Subs(z*f(x + 1), (x, 1)) not in (e1, e2)
     assert Derivative(f(x), x).subs({x: g(x)}) == Derivative(f(g(x)), g(x))
     assert Derivative(f(x), x).subs({x: x + y}) == Subs(Derivative(f(x), x),

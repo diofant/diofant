@@ -310,7 +310,7 @@ class StrPrinter(Printer):
         Cycle(1, 2)
 
         """
-        return expr.__repr__()
+        return repr(expr)
 
     def _print_Permutation(self, expr):
         from ..combinatorics import Cycle, Permutation
@@ -319,7 +319,7 @@ class StrPrinter(Printer):
                 return 'Permutation()'
             # before taking Cycle notation, see if the last element is
             # a singleton and move it to the head of the string
-            s = Cycle(expr)(expr.size - 1).__repr__()[len('Cycle'):]
+            s = repr(Cycle(expr)(expr.size - 1))[len('Cycle'):]
             last = s.rfind('(')
             if not last == 0 and ',' not in s[last:]:
                 s = s[last:] + s[:last]

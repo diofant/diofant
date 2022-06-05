@@ -95,7 +95,7 @@ def test_coordinate_vars():
     assert BaseScalar('A.x', 0, A, 'A_x', r'\mathbf{{x}_{A}}') == A.x
     assert BaseScalar('A.y', 1, A, 'A_y', r'\mathbf{{y}_{A}}') == A.y
     assert BaseScalar('A.z', 2, A, 'A_z', r'\mathbf{{z}_{A}}') == A.z
-    assert BaseScalar('A.x', 0, A, 'A_x', r'\mathbf{{x}_{A}}').__hash__() == A.x.__hash__()
+    assert hash(BaseScalar('A.x', 0, A, 'A_x', r'\mathbf{{x}_{A}}')) == hash(A.x)
     assert all(isinstance(_, BaseScalar) for _ in (A.x, A.y, A.z))
     assert A.x*A.y == A.y*A.x
     pytest.raises(TypeError, lambda: BaseScalar('Ax', 0, 1, ' ', ' '))

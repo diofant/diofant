@@ -75,8 +75,7 @@ def test_mod():
     # exactly.
     assert Rational(3, 4) % Float(1.1) == 0.75
     assert Float(1.5) % Rational(5, 4) == 0.25
-    assert Rational(5, 4).__rmod__(Float('1.5')) == 0.25
-    assert Float('1.5').__rmod__(Float('2.75')) == Float('1.25')
+    assert Float('2.75') % Float('1.5') == Float('1.25')
     assert 2.75 % Float('1.5') == Float('1.25')
 
     a = Integer(7)
@@ -88,7 +87,7 @@ def test_mod():
     assert Rational(7, 5) % Integer(1) == Rational(2, 5)
     assert Integer(2) % 1.5 == 0.5
 
-    assert Integer(3).__rmod__(Integer(10)) == Integer(1)
+    assert Integer(10) % Integer(3) == Integer(1)
     assert Integer(10) % 4 == 2
     assert 15 % Integer(4) == 3
 

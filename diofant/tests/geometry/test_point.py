@@ -95,8 +95,8 @@ def test_point():
     assert p3.scale(2, 3) == p3
 
     assert p4.rotate(pi, Point(0.5, 0.5)) == p3
-    assert p1.__radd__(p2) == p1.midpoint(p2).scale(2, 2)
-    assert (-p3).__rsub__(p4) == p3.midpoint(p4).scale(2, 2)
+    assert p1 + p2 == p1.midpoint(p2).scale(2, 2)
+    assert p4 - (-p3) == p3.midpoint(p4).scale(2, 2)
 
     assert p4 * 5 == Point(5, 5)
     assert p4 / 5 == Point(0.2, 0.2)

@@ -984,26 +984,21 @@ def logcombine(expr, force=False):
     return bottom_up(expr, f)
 
 
-def bottom_up(rv, F, atoms=False, nonbasic=False):
+def bottom_up(rv, F, atoms=False):
     """Apply ``F`` to all expressions in an expression tree from the
-    bottom up. If ``atoms`` is True, apply ``F`` even if there are no args;
-    if ``nonbasic`` is True, try to apply ``F`` to non-Basic objects.
+    bottom up. If ``atoms`` is True, apply ``F`` even if there are no args.
 
     """
     try:
         if rv.args:
-            args = tuple(bottom_up(a, F, atoms, nonbasic) for a in rv.args)
+            args = tuple(bottom_up(a, F, atoms) for a in rv.args)
             if args != rv.args:
                 rv = rv.func(*args)
             rv = F(rv)
         elif atoms:
             rv = F(rv)
     except AttributeError:
-        if nonbasic:
-            try:
-                rv = F(rv)
-            except TypeError:
-                pass
+        pass
 
     return rv
 
