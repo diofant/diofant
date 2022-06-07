@@ -21,8 +21,7 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
-        ret = Expr.__new__(cls, *args)
-        return ret
+        return Expr.__new__(cls, *args)
 
     @cacheit
     def compute_cdf(self, **kwargs):

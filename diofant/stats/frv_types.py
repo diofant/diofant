@@ -36,8 +36,7 @@ class FiniteDistributionHandmade(SingleFiniteDistribution):
 
     def __new__(cls, density):
         density = Dict(density)
-        ret = Expr.__new__(cls, density)
-        return ret
+        return Expr.__new__(cls, density)
 
 
 def FiniteRV(name, density):
@@ -112,8 +111,7 @@ class DieDistribution(SingleFiniteDistribution):
         sides_sym = sympify(sides)
         if fuzzy_not(fuzzy_and((sides_sym.is_integer, sides_sym.is_positive))):
             raise ValueError("'sides' must be a positive integer.")
-        ret = super().__new__(cls, sides)
-        return ret
+        return super().__new__(cls, sides)
 
     @property  # type: ignore[misc]
     @cacheit
@@ -224,8 +222,7 @@ class BinomialDistribution(SingleFiniteDistribution):
             raise ValueError(f"'n' must be positive integer. n = {n!s}.")
         if fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
             raise ValueError(f"'p' must be: 0 <= p <= 1 . p = {p!s}")
-        ret = super().__new__(cls, *args)
-        return ret
+        return super().__new__(cls, *args)
 
     @property
     def n(self):

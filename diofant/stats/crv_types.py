@@ -977,8 +977,7 @@ class FrechetDistribution(SingleContinuousDistribution):
 
     def __new__(cls, a, s=1, m=0):
         a, s, m = list(map(sympify, (a, s, m)))
-        ret = Expr.__new__(cls, a, s, m)
-        return ret
+        return Expr.__new__(cls, a, s, m)
 
     def pdf(self, x):
         a, s, m = self.a, self.s, self.m
