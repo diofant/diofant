@@ -230,7 +230,7 @@ def solve_surd_system(eqs, *gens, **args):
 
     denoms = []
     for i, e in enumerate(eqs):
-        eqs[i], d = e.as_numer_denom()  # pylint: disable=unnecessary-list-index-lookup
+        eqs[i], d = e.as_numer_denom()
         if not d.is_constant(*gens):
             denoms.insert(0, d)
 
