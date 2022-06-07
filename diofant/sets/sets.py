@@ -1644,7 +1644,7 @@ class UniversalSet(Set, metaclass=Singleton):
 
 class FiniteSet(Set, EvalfMixin):
     """
-    Represents a finite set of discrete numbers
+    Represents a set that has a finite number of elements.
 
     Examples
     ========
