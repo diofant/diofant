@@ -132,7 +132,8 @@ class FunctionClass(ManagedProperties):
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
-    @property
+    @property  # type: ignore[misc]
+    @cacheit
     def nargs(self):
         """Return a set of the allowed number of arguments for the function.
 
