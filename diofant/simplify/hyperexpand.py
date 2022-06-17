@@ -1555,7 +1555,7 @@ def devise_plan(target, origin, z):
                 sh = dec
                 ch = -1
 
-            while to[i] != fro[i]:  # pylint: disable=unnecessary-list-index-lookup
+            while to[i] != fro[i]:
                 ops += [sh(fro, i)]
                 fro[i] += ch
 

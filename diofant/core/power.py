@@ -15,7 +15,6 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
 from .numbers import E, I, Integer, Rational, nan, oo, pi, zoo
-from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
 
@@ -177,9 +176,9 @@ class Pow(Expr):
         if evaluate:
             if nan in (b, e):
                 return nan
-            elif e is S.Zero:
+            elif e is Integer(0):
                 return Integer(1)
-            elif e is S.One:
+            elif e is Integer(1):
                 return b
             elif e is zoo:
                 return nan
@@ -188,7 +187,7 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if b is S.One:
+            if b is Integer(1):
                 if abs(e).is_infinite:
                     return nan
                 return Integer(1)
@@ -388,7 +387,7 @@ class Pow(Expr):
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
         if b.is_integer and e.is_integer:
-            if b is S.NegativeOne:
+            if b is Integer(-1):
                 return True
             if e.is_nonnegative or e.is_positive:
                 return True
@@ -453,7 +452,7 @@ class Pow(Expr):
             return
 
         if b.is_extended_real and e.is_imaginary:
-            if b is S.NegativeOne:
+            if b is Integer(-1):
                 return True
             c = e.coeff(I)
             if c in (1, -1):
@@ -507,7 +506,7 @@ class Pow(Expr):
                 return b.is_odd
             elif e.is_nonnegative and b.is_odd:
                 return True
-            elif b is S.NegativeOne:
+            elif b is Integer(-1):
                 return True
 
     def _eval_is_finite(self):
@@ -721,14 +720,14 @@ class Pow(Expr):
             elif i == 2:
                 if neg:
                     nonn = -neg.pop()
-                    if nonn is not S.One:
+                    if nonn is not Integer(1):
                         nonneg.append(nonn)
                 else:
                     neg.append(Integer(-1))
             else:
                 if neg:
                     nonn = -neg.pop()
-                    if nonn is not S.One:
+                    if nonn is not Integer(1):
                         nonneg.append(nonn)
                 else:
                     neg.append(Integer(-1))
@@ -758,10 +757,10 @@ class Pow(Expr):
                     o = -o
                 for n in neg:
                     nonneg.append(-n)
-                if o is not S.One:
+                if o is not Integer(1):
                     other.append(o)
             elif neg and other:
-                if neg[0].is_Number and neg[0] is not S.NegativeOne:
+                if neg[0].is_Number and neg[0] is not Integer(-1):
                     other.append(Integer(-1))
                     nonneg.append(-neg[0])
                 else:
@@ -944,7 +943,7 @@ class Pow(Expr):
         elif self.exp.is_Rational:
             re, im = self.base.as_real_imag(deep=deep)
 
-            if im.is_zero and self.exp is S.Half:
+            if im.is_zero and self.exp is Rational(1, 2):
                 if re.is_nonnegative:
                     return self, Integer(0)
                 if re.is_nonpositive:
@@ -1080,7 +1079,7 @@ class Pow(Expr):
         if not self.is_commutative:
             return self, Integer(1)
         base, exp = self.as_base_exp()
-        if base is S.One:
+        if base is Integer(1):
             return self, Integer(1)
         n, d = base.as_numer_denom()
         neg_exp = exp.is_negative
@@ -1104,9 +1103,9 @@ class Pow(Expr):
         if neg_exp:
             n, d = d, n
             exp = -exp
-        if d is S.One:
+        if d is Integer(1):
             return self.func(n, exp), Integer(1)
-        if n is S.One:
+        if n is Integer(1):
             return Integer(1), self.func(d, exp)
         return self.func(n, exp), self.func(d, exp)
 
@@ -1122,7 +1121,7 @@ class Pow(Expr):
         expr = sympify(expr, strict=True)
 
         # special case, pattern = 1 and expr.exp can match to 0
-        if expr is S.One:
+        if expr is Integer(1):
             d = repl_dict.copy()
             d = self.exp._matches(Integer(0), d)
             if d is not None:
@@ -1318,7 +1317,7 @@ class Pow(Expr):
             h, t = b.as_content_primitive(radical=radical)  # h is positive
             c, m = self.func(h, e).as_coeff_Mul()  # so c is positive
             m, me = m.as_base_exp()
-            if m is S.One or me == e:  # probably always true
+            if m is Integer(1) or me == e:  # probably always true
                 # return the following, not return c, m*Pow(t, e)
                 # which would change Pow into Mul; we let diofant
                 # decide what to do by using the unevaluated Mul, e.g

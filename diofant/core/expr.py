@@ -10,7 +10,6 @@ from .cache import cacheit
 from .compatibility import as_int
 from .decorators import _sympifyit, call_highest_priority
 from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
-from .singleton import S
 from .sympify import sympify
 
 
@@ -814,7 +813,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def as_terms(self):
         """Transform an expression to a list of terms."""
-        from . import Add, Mul, S
+        from . import Add, Mul
         from .exprtools import decompose_power
 
         gens, terms = set(), []
@@ -825,7 +824,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             coeff = complex(coeff)
             cpart, ncpart = {}, []
 
-            if _term is not S.One:
+            if _term is not Integer(1):
                 for factor in Mul.make_args(_term):
                     if factor.is_number:
                         try:
@@ -894,7 +893,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return
         elif o.is_Order:
             o = o.expr
-            if o is S.One:
+            if o is Integer(1):
                 return Integer(0)
             elif o.is_Symbol:
                 return Integer(1)
@@ -966,7 +965,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c and split_1 and (
             c[0].is_Number and
             c[0].is_negative and
-                c[0] is not S.NegativeOne):
+                c[0] is not Integer(-1)):
             c[:1] = [Integer(-1), -c[0]]
 
         if cset:
@@ -1091,9 +1090,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return Integer(1)
             return Integer(0)
 
-        if x is S.One:
+        if x is Integer(1):
             co = [a for a in Add.make_args(self)
-                  if a.as_coeff_Mul()[0] is S.One]
+                  if a.as_coeff_Mul()[0] is Integer(1)]
             if not co:
                 return Integer(0)
             return Add(*co)
@@ -1754,7 +1753,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def normal(self):
         """Canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
-        if d is S.One:
+        if d is Integer(1):
             return n
         return n/d
 
@@ -1782,13 +1781,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c = sympify(c)
         if self is nan:
             return
-        if c is S.One:
+        if c is Integer(1):
             return self
         elif c == self:
             return Integer(1)
         if c.is_Add:
             cc, pc = c.primitive()
-            if cc is not S.One:
+            if cc is not Integer(1):
                 c = Mul(cc, pc, evaluate=False)
         if c.is_Mul:
             a, b = c.as_two_terms()
@@ -1830,7 +1829,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()
-            if cs is not S.One:
+            if cs is not Integer(1):
                 return Mul(cs, ps, evaluate=False).extract_multiplicatively(c)
             newargs = []
             for arg in self.args:
@@ -1892,11 +1891,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c = sympify(c)
         if self is nan:
             return
-        if c is S.Zero:
+        if c is Integer(0):
             return self
         elif c == self:
             return Integer(0)
-        elif self is S.Zero:
+        elif self is Integer(0):
             return
 
         if self.is_Number:
@@ -2419,7 +2418,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
-            cur_order = s1.getO() or S.Zero
+            cur_order = s1.getO() or Integer(0)
 
             # Now make sure the requested order is returned
             target_order = Order(x**n, x)
@@ -2583,7 +2582,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import collect
         if x.is_positive and x.is_finite:
             series = self._eval_nseries(x, n=n, logx=logx)
-            order = series.getO() or S.Zero
+            order = series.getO() or Integer(0)
             return collect(series.removeO(), x) + order
         else:
             p = Dummy('x', positive=True, finite=True)
