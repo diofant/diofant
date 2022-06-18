@@ -897,7 +897,7 @@ def _factor(f, save):
                     xi = gens[i]
                     factors = [g.compose(xi, (xi - x).quo_ground(ci)) for g in factors]
 
-                return (lc, factors)
+                return lc, factors
 
             if result is None:
                 continue
@@ -907,7 +907,7 @@ def _factor(f, save):
                 _, fAfactors = _z_to_alpha(fA, uniring).factor_list()
             if len(fAfactors) == 1:
                 g = _z_to_alpha(f_, ring)
-                return (f.LC, [g.monic()])
+                return f.LC, [g.monic()]
 
             result = _leading_coeffs(f_, fAfactors, gamma_, lcfactors_, A, D, denoms, divisors)
             if result is None:
@@ -937,7 +937,7 @@ def _factor(f, save):
                 B *= B
                 continue
 
-            return (f.LC, [_z_to_alpha(g.primitive()[1], ring).monic() for g in factors])
+            return f.LC, [_z_to_alpha(g.primitive()[1], ring).monic() for g in factors]
 
         N += 1
 
@@ -962,7 +962,7 @@ def efactor(f, save=True):
     assert ring.domain.is_AlgebraicField
 
     if f.is_ground:
-        return (f[1], [])
+        return f[1], []
 
     n = ring.ngens
 
@@ -976,7 +976,7 @@ def efactor(f, save=True):
             lccont, contfactors = efactor(cont)
             lc, factors = efactor(f)
             contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
-            return (lccont * lc, _sort_factors(contfactors + factors))
+            return lccont * lc, _sort_factors(contfactors + factors)
 
         # this is only correct because the content in x_0 is already divided out
         lc, sqflist = f.sqf_list()
@@ -986,4 +986,4 @@ def efactor(f, save=True):
             lc *= lcg
             factors = factors + [(gi, exp) for gi in gfactors]
 
-        return (lc, _sort_factors(factors))
+        return lc, _sort_factors(factors)
