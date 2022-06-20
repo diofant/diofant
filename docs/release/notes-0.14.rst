@@ -90,3 +90,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23596`: Integral of real function has complex result
 * :sympyissue:`23605`: Inefficiency in the Integrator with a Rational Expression
 * :sympyissue:`23637`: Missing solutions from polynomial system (various solvers)
+* :sympyissue:`23479`: Sparse poly gcd fails with HeuristicGCDFailed('no luck')
