@@ -690,3 +690,7 @@ def test_sympyissue_22400(method):
          16537410*x**12 - 30081453*x**9 - 1886601330*x**6 +
          73062900*x**3 - 6859000)
     assert minimal_polynomial(e, method=method)(x) == r
+
+
+def test_sympyissue_22605():
+    assert minimal_polynomial(cos(pi/9))(x) == 8*x**3 - 6*x - 1
