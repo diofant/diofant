@@ -89,3 +89,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`23585`: FiniteSet documentation inconsistent with usage in sympy
 * :sympyissue:`23596`: Integral of real function has complex result
 * :sympyissue:`23605`: Inefficiency in the Integrator with a Rational Expression
+* :sympyissue:`23637`: Missing solutions from polynomial system (various solvers)
+* :sympyissue:`23479`: Sparse poly gcd fails with HeuristicGCDFailed('no luck')
+* :sympyissue:`22605`: Incorrect result from minpoly(cos(pi/9))
+* :sympyissue:`23677`: minimal_polynomial fails for very complicated algebraic number
