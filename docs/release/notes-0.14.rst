@@ -98,3 +98,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23855`: linsolve gives odd result if symbols are duplicated
 * :sympyissue:`24067`: incorrect limit in simple parametric rational polynomial
 * :sympyissue:`24127`: Error on all limits with Piecewise
+* :sympyissue:`23702`: Cannot specify ODE initial conditions as just f(0)

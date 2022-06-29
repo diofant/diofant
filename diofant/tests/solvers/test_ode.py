@@ -948,9 +948,9 @@ def test_classify_ode_init():
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
-    # XXX: Should be NotImplementedError
     init = {f(0): f(1)}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
+    assert classify_ode(eq, f(x), init=init) == ('nth_linear_constant_coeff_homogeneous',
+                                                 '2nd_power_series_ordinary')
 
     # Does not raise
     init = {f(0): 1}
@@ -3039,3 +3039,8 @@ def test_sympyissue_23562():
     assert dsolve(f(x).diff(x) + g(y), f(x)) == Eq(f(x), C1 - x*g(y))
     assert dsolve(f(x).diff(x) + g(y).diff(y),
                   f(x)) == Eq(f(x), C1 - x*g(y).diff(y))
+
+
+def test_sympyissue_23702():
+    assert dsolve(f(x).diff(x) - f(x), f(x),
+                  init={f(0): f(0)}) == Eq(f(x),  f(0)*exp(x))

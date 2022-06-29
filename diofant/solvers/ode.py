@@ -975,8 +975,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
             # Separating functions
             elif isinstance(funcarg, AppliedUndef):
-                if (funcarg.func == f and len(funcarg.args) == 1 and
-                        not funcarg.args[0].has(x) and not init[funcarg].has(f)):
+                if funcarg.func == f and len(funcarg.args) == 1 and not funcarg.args[0].has(x):
                     boundary.update({'f0': funcarg.args[0], 'f0val': init[funcarg]})
                 else:
                     raise ValueError('Enter valid boundary conditions for Function')
