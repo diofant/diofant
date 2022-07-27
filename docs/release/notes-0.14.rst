@@ -93,3 +93,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23479`: Sparse poly gcd fails with HeuristicGCDFailed('no luck')
 * :sympyissue:`22605`: Incorrect result from minpoly(cos(pi/9))
 * :sympyissue:`23677`: minimal_polynomial fails for very complicated algebraic number
+* :sympyissue:`23836`: Incorrect results for limits of Piecewise at discontinuity

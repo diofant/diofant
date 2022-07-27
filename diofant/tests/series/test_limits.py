@@ -1019,3 +1019,9 @@ def test_sympyissue_13750():
     assert limit(erf(1 - x), x, oo) == -1
     assert limit(erf(a - x), x, oo) == -1
     assert limit(erf(sqrt(x) - x), x, oo) == -1
+
+
+def test_sympyissue_23836():
+    p = Piecewise((x**3, x < 3), (-x**2, x > 3), (2, True))
+    assert limit(p, x, 3) == -9
+    assert limit(p, x, 3, 1) == 27
