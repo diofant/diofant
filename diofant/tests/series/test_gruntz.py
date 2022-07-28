@@ -458,3 +458,13 @@ def test_issue_75():
 def test_sympyissue_8241():
     e = x/log(x)**(log(x)/(m*log(log(x))))
     assert isinstance(limit(e, x, oo), Limit)
+
+
+def test_sympyissue_23845():
+    e = ((-sqrt(5)*(-sqrt(5)/2 + Rational(3, 2))**x +
+          5*(-sqrt(5)/2 + Rational(3, 2))**x +
+          (sqrt(5)/2 + Rational(3, 2))**x*(sqrt(5) + 5)) /
+         (-3*sqrt(5)*(-sqrt(5)/2 + Rational(3, 2))**x +
+          5*(-sqrt(5)/2 + Rational(3, 2))**x +
+          (5 + 3*sqrt(5))*(sqrt(5)/2 + Rational(3, 2))**x))
+    assert limit(e, x, oo) == (sqrt(5) + 5)/(5 + 3*sqrt(5))
