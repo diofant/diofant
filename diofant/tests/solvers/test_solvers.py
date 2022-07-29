@@ -1766,3 +1766,7 @@ def test_sympyissue_23637():
            {x: -2.0, y: -1.0}, {x: 1.3235849477227735, y: -0.32419504840343982},
            {x: 3.0040159362898193, y: -1.0015924793400075}, {x: 5.0, y: -4.0}]
     assert solve([rea1, rea2], x, y) == sol
+
+
+def test_sympyissue_23855():
+    assert solve([x - 1], x, x) == [{x: 1}]
