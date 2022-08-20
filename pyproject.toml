@@ -36,7 +36,7 @@ Homepage = 'https://diofant.readthedocs.io/'
 'Bug Tracker' = 'https://github.com/diofant/diofant/issues/'
 Download = 'https://github.com/diofant/diofant/releases/'
 [project.optional-dependencies]
-exports = ['numpy>=1.19', 'scipy>=1.6', 'cython']
+exports = ['numpy>=1.19,<1.23', 'scipy>=1.6', 'cython']
 gmpy = ['gmpy2>=2.1.0']
 plot = ['matplotlib>=3.5.0']
 interactive = ['ipykernel']
