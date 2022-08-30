@@ -54,8 +54,8 @@ def clear_imports(request):  # noqa: PT004
             if m.startswith('diofant'):
                 del sys.modules[m]
 
-        for m in orig:
-            sys.modules[m] = orig[m]
+        for m, n in orig.items():
+            sys.modules[m] = n
 
     request.addfinalizer(restore_imports)  # noqa: PT021
 

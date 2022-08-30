@@ -428,7 +428,7 @@ def test_logic_operators():
 
 
 def test_true_false():
-    # pylint: disable=singleton-comparison,comparison-with-itself
+    # pylint: disable=singleton-comparison,comparison-with-itself,unneeded-not
     assert true is true
     assert false is false
     assert true is not True
