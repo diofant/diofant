@@ -929,6 +929,13 @@ def test_atan2():
     assert simplify(diff(atan2(y, x).rewrite(log), x)) == -y/(x**2 + y**2)
     assert simplify(diff(atan2(y, x).rewrite(log), y)) == x/(x**2 + y**2)
 
+    e = sin(x) - cos(x)*atan2(sin(x), cos(x))
+
+    assert e.limit(x, -pi) == -pi
+    assert e.limit(x, -pi, dir=1) == pi
+    assert e.limit(x, pi) == -pi
+    assert e.limit(x, pi, dir=1) == pi
+
     pytest.raises(ArgumentIndexError, lambda: atan2(x, y).fdiff(3))
 
 

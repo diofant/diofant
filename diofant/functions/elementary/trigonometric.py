@@ -2411,8 +2411,9 @@ class atan2(InverseTrigonometricFunction):
     def _eval_rewrite_as_log(self, y, x):
         return -I*log((x + I*y) / sqrt(x**2 + y**2))
 
-    def _eval_rewrite_as_atan(self, y, x):
+    def _eval_rewrite_as_atan(self, y, x, **kwargs):
         return 2*atan(y / (sqrt(x**2 + y**2) + x))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_atan
 
     def _eval_rewrite_as_arg(self, y, x):
         from .complexes import arg
