@@ -671,7 +671,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
-                B = limit(self, x, b)
                 B = limit(self, x, b, 1 if (a < b) is not false else -1)
                 if isinstance(B, Limit):
                     raise NotImplementedError('Could not compute limit')
