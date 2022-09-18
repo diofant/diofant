@@ -96,3 +96,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23836`: Incorrect results for limits of Piecewise at discontinuity
 * :sympyissue:`23845`: Gruntz should have been free of _w, value error, recursion error
 * :sympyissue:`23855`: linsolve gives odd result if symbols are duplicated
+* :sympyissue:`24067`: incorrect limit in simple parametric rational polynomial

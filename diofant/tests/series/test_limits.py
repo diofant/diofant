@@ -1025,3 +1025,12 @@ def test_sympyissue_23836():
     p = Piecewise((x**3, x < 3), (-x**2, x > 3), (2, True))
     assert limit(p, x, 3) == -9
     assert limit(p, x, 3, 1) == 27
+
+
+def test_sympyissue_24067():
+    n = symbols('n', positive=True)
+    e = (5*x)**(n + 2)/x**2
+    assert limit(e, x, 0) == 0
+    assert limit(e.simplify(), x, 0) == 0
+    e = x**(n + 2)/x**2
+    assert limit(e, x, 0) == 0
