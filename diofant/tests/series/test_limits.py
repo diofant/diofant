@@ -1034,3 +1034,8 @@ def test_sympyissue_24067():
     assert limit(e.simplify(), x, 0) == 0
     e = x**(n + 2)/x**2
     assert limit(e, x, 0) == 0
+
+
+def test_sympyissue_24127():
+    assert limit(Piecewise((sin(x), x < 0),
+                           (Rational(1, 2), True)), x, 1) == Rational(1, 2)
