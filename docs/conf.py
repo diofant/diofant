@@ -124,6 +124,10 @@ linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
 # set, is inherited form parents.
 autodoc_inherit_docstrings = False
 
+# Create table of contents entries for domain objects (e.g. functions,
+# classes, attributes, etc).
+toc_object_entries = False
+
 # A list of paths that contain custom static files.  Relative paths are taken as
 # relative to the configuration directory.  They are copied to the output’s
 # _static directory.
