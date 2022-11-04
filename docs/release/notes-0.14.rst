@@ -100,3 +100,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24127`: Error on all limits with Piecewise
 * :sympyissue:`23702`: Cannot specify ODE initial conditions as just f(0)
 * :sympyissue:`23707`: AttributeError in integral
+* :sympyissue:`24210`: Error on limits regarding terms like (1+u)^v.

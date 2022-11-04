@@ -1039,3 +1039,7 @@ def test_sympyissue_24067():
 def test_sympyissue_24127():
     assert limit(Piecewise((sin(x), x < 0),
                            (Rational(1, 2), True)), x, 1) == Rational(1, 2)
+
+
+def test_sympyissue_24210():
+    assert limit(exp(x)/((1 + 1/x)**(x**2)), x, oo) == sqrt(E)
