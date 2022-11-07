@@ -101,3 +101,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23702`: Cannot specify ODE initial conditions as just f(0)
 * :sympyissue:`23707`: AttributeError in integral
 * :sympyissue:`24210`: Error on limits regarding terms like (1+u)^v.
+* :sympyissue:`24225`: Multivariable limit should be undefined, but gives unity.

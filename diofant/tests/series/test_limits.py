@@ -1043,3 +1043,9 @@ def test_sympyissue_24127():
 
 def test_sympyissue_24210():
     assert limit(exp(x)/((1 + 1/x)**(x**2)), x, oo) == sqrt(E)
+
+
+def test_sympyissue_24225():
+    e = (log(1 + x) + log(1 + y)) / (x + y)
+    assert limit(limit(e, x, 0, dir=Reals), y, 0, dir=Reals) == 1
+    assert limit(limit(e, y, 0, dir=Reals), x, 0, dir=Reals) == 1
