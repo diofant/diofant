@@ -660,20 +660,16 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if a is None:
             A = 0
         else:
-            A = self.subs({x: a})
-            if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a, -1 if (a < b) is not false else 1)
-                if isinstance(A, Limit):
-                    raise NotImplementedError('Could not compute limit')
+            A = limit(self, x, a, -1 if (a < b) is not false else 1)
+            if isinstance(A, Limit):
+                raise NotImplementedError('Could not compute limit')
 
         if b is None:
             B = 0
         else:
-            B = self.subs({x: b})
-            if B.has(nan, oo, -oo, zoo):
-                B = limit(self, x, b, 1 if (a < b) is not false else -1)
-                if isinstance(B, Limit):
-                    raise NotImplementedError('Could not compute limit')
+            B = limit(self, x, b, 1 if (a < b) is not false else -1)
+            if isinstance(B, Limit):
+                raise NotImplementedError('Could not compute limit')
 
         return B - A
 

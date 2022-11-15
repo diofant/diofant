@@ -4,7 +4,7 @@ from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
                      Expr, Float, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
-                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     asinh, atan, atan2, cbrt, cos, cosh, diff, erf, erfi, exp,
                      expand_func, expand_mul, factor, floor, fresnels, gamma,
                      im, integrate, log, lowergamma, meijerg, nan, oo, pi,
                      polar_lift, polygamma, re, sign, simplify, sin, sinh,
@@ -1481,3 +1481,7 @@ def test_sympyissue_23707():
                      t) == Piecewise((t, Eq(x, y + 1)),
                                      (-exp(t)/(exp(t*sqrt(x - y))*sqrt(x - y) -
                                                exp(t*sqrt(x - y))), True))
+
+
+def test_sympyissue_24004():
+    assert integrate(sin(x)*atan2(sin(x), cos(x)), (x, -pi, pi)) == 2*pi
