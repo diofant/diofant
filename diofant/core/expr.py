@@ -660,14 +660,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if a is None:
             A = 0
         else:
-            A = limit(self, x, a, -1 if (a < b) is not false else 1)
+            A = limit(self, x, a, -1 if b is None or (a < b) is not false else 1)
             if isinstance(A, Limit):
                 raise NotImplementedError('Could not compute limit')
 
         if b is None:
             B = 0
         else:
-            B = limit(self, x, b, 1 if (a < b) is not false else -1)
+            B = limit(self, x, b, 1 if a is None or (a < b) is not false else -1)
             if isinstance(B, Limit):
                 raise NotImplementedError('Could not compute limit')
 
