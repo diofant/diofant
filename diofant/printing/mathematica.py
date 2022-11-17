@@ -138,8 +138,7 @@ class MCodePrinter(CodePrinter):
     _print_MinMaxBase = _print_Function
 
     def _print_atan2(self, expr):
-        y, x = expr.args
-        return f'ArcTan[{self.doprint(x)}, {self.doprint(y)}]'
+        return f"ArcTan[{', '.join(map(self.doprint, reversed(expr.args)))}]"
 
     def _print_Piecewise(self, expr):
         return expr.func.__name__ + '[{%s}]' % self.stringify(expr.args, ', ')
