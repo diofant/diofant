@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Derivative, E, Function, I, Integer, Integral, O,
-                     Rational, Subs, Symbol, cos, exp, log, oo, pi, sin, sqrt,
-                     symbols)
+from diofant import (Derivative, E, EulerGamma, Function, I, Integer, Integral,
+                     O, Rational, Subs, Symbol, cos, exp, gamma, log, oo, pi,
+                     sin, sqrt, symbols)
 from diofant.abc import h, x, y, z
 
 
@@ -313,3 +313,11 @@ def test_sympyissue_23432():
     ans = e.series(x, x0=Rational(1, 2), n=1)
     assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), (x, Rational(1, 2)))
     assert ans.removeO().evalf() == e.series(x, x0=0.5, n=1).removeO()
+
+
+def test_sympyissue_24266():
+    assert (exp(-I*pi*(2*x + 1)).series(x, n=3) ==
+            -1 + 2*I*pi*x + 2*pi**2*x**2 + O(x**3))
+    assert ((exp(-I*pi*(2*x + 1))*gamma(1 + x)).series(x, n=3) ==
+            -1 + x*(EulerGamma + 2*I*pi) +
+            x**2*(-EulerGamma**2/2 + 23*pi**2/12 - 2*EulerGamma*I*pi) + O(x**3))
