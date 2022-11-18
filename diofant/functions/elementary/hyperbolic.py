@@ -1,5 +1,3 @@
-import typing
-
 from ...core import Function, I, Integer, Rational, cacheit, nan, oo, pi, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...core.sympify import sympify
@@ -575,8 +573,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
 
     # To be defined in class
     _reciprocal_of = None
-    _is_even: typing.Optional[bool] = None
-    _is_odd: typing.Optional[bool] = None
+    _is_even: bool | None = None
+    _is_odd: bool | None = None
 
     @classmethod
     def eval(cls, arg):

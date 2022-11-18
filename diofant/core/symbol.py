@@ -111,7 +111,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     @staticmethod
     def __new_stage2__(obj_cls, name, **assumptions):
         if not isinstance(name, str):
-            raise TypeError('name should be a string, not %s' % repr(type(name)))
+            raise TypeError(f'name should be a string, not {type(name)!r}')
 
         obj = Expr.__new__(obj_cls)
         obj.name = name

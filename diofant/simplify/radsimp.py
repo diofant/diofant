@@ -830,7 +830,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
         if d.is_Number or d.is_Add:
             n2, d2 = fraction(gcd_terms(_unevaluated_Mul(n, 1/d)))
             if d2.is_Number or (d2.count_ops() <= d.count_ops()):
-                n, d = [signsimp(i) for i in (n2, d2)]
+                n, d = map(signsimp, (n2, d2))
                 if n.is_Mul and n.args[0].is_Number:
                     n = n.func(*n.args)
 

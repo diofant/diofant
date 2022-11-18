@@ -1,5 +1,3 @@
-import typing
-
 from ...core import (Add, Function, Integer, Rational, Symbol, cacheit,
                      expand_mul)
 from ...core.function import ArgumentIndexError
@@ -1041,8 +1039,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     # _is_even and _is_odd are used for correct evaluation of csc(-x), sec(-x)
     # TODO refactor into TrigonometricFunction common parts of
     # trigonometric functions eval() like even/odd, func(x+2*k*pi), etc.
-    _is_even: typing.Optional[bool] = None  # optional, to be defined in subclass
-    _is_odd: typing.Optional[bool] = None  # optional, to be defined in subclass
+    _is_even: bool | None = None  # optional, to be defined in subclass
+    _is_odd: bool | None = None  # optional, to be defined in subclass
 
     @classmethod
     def eval(cls, arg):
@@ -1843,8 +1841,8 @@ class atan(InverseTrigonometricFunction):
                 -(1 + sqrt(2)): Rational(8, 3),
                 (sqrt(2) - 1): 8,
                 (1 - sqrt(2)): -8,
-                sqrt((5 + 2*sqrt(5))): Rational(5, 2),
-                -sqrt((5 + 2*sqrt(5))): -Rational(5, 2),
+                sqrt(5 + 2*sqrt(5)): Rational(5, 2),
+                -sqrt(5 + 2*sqrt(5)): -Rational(5, 2),
                 (2 - sqrt(3)): 12,
                 -(2 - sqrt(3)): -12
             }

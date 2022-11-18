@@ -19,7 +19,7 @@ __all__ = ()
 def test_printmethod():
     class MyFunction(Function):
         def _fcode(self, printer):
-            return 'myf(%s)' % printer._print(self.args[0])
+            return f'myf({printer._print(self.args[0])})'
     assert fcode(MyFunction(x)) == '      myf(x)'
 
 

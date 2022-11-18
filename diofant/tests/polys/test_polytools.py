@@ -1529,7 +1529,7 @@ def test_div():
     f, g = x**2 - y**2, x - y
     q, r = x + y, Integer(0)
 
-    F, G, Q, R = [h.as_poly(x, y) for h in (f, g, q, r)]
+    F, G, Q, R = (h.as_poly(x, y) for h in (f, g, q, r))
 
     assert F.div(G) == (Q, R)
     assert F.rem(G) == R
@@ -1639,7 +1639,7 @@ def test_gcdex():
     f, g = 2*x, x**2 - 16
     s, t, h = x/32, -Rational(1, 16), Integer(1)
 
-    F, G, S, T, H = [u.as_poly(x, domain=QQ) for u in (f, g, s, t, h)]
+    F, G, S, T, H = (u.as_poly(x, domain=QQ) for u in (f, g, s, t, h))
 
     assert F.half_gcdex(G) == (S, H)
     assert F.gcdex(G) == (S, T, H)
@@ -1851,7 +1851,7 @@ def test_gcd():
     s, t = x**2 + x + 1, x + 1
     h, r = x - 1, x**4 + x**3 - x - 1
 
-    F, G, S, T, H, R = [u.as_poly() for u in (f, g, s, t, h, r)]
+    F, G, S, T, H, R = (u.as_poly() for u in (f, g, s, t, h, r))
 
     assert F.cofactors(G) == (H, S, T)
     assert F.gcd(G) == H
@@ -2573,7 +2573,7 @@ def test_cancel():
     assert cancel((0, 1), x) == (1, 0, 1)
 
     f, g, p, q = 4*x**2 - 4, 2*x - 2, 2*x + 2, Integer(1)
-    F, G, P, Q = [u.as_poly(x) for u in (f, g, p, q)]
+    F, G, P, Q = (u.as_poly(x) for u in (f, g, p, q))
 
     assert F.cancel(G) == (1, P, Q)
     assert cancel((f, g)) == (1, p, q)

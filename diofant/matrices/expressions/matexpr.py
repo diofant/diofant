@@ -1,5 +1,3 @@
-import typing
-
 from ...core import AtomicExpr, Expr, Integer, Symbol, Tuple
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
@@ -38,7 +36,7 @@ class MatrixExpr(Expr):
 
     is_Matrix = True
     is_MatrixExpr = True
-    is_Identity: typing.Optional[bool] = None
+    is_Identity: bool | None = None
     is_Inverse = False
     is_Transpose = False
     is_ZeroMatrix = False

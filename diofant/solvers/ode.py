@@ -1003,7 +1003,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
         else:
             u = Dummy('u')
             ind, dep = (reduced_eq + u).as_independent(f)
-            ind, dep = [tmp.subs({u: 0}) for tmp in [ind, dep]]
+            ind, dep = (tmp.subs({u: 0}) for tmp in [ind, dep])
         r = {a: dep.coeff(df),
              b: dep.coeff(f(x)),
              c: ind}
@@ -1420,7 +1420,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     else:
         for func_ in funcs:
             order[func_] = 0
-    funcs = list(ordered((set(funcs))))
+    funcs = list(ordered(set(funcs)))
     if len(funcs) < len(eq):
         raise ValueError(f'Number of functions given is less than number of equations {funcs}')
     for func in funcs:
@@ -2449,7 +2449,7 @@ def __remove_linear_redundancies(expr, Cs):
         return expr
 
     if isinstance(expr, Equality):
-        lhs, rhs = [_recursive_walk(i) for i in expr.args]
+        lhs, rhs = map(_recursive_walk, expr.args)
 
         def f(i):
             return isinstance(i, Number) or i in Cs
@@ -3279,7 +3279,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     x = func.args[0]
     f = func.func
     r = match  # a2*diff(f(x),x) + b2*f(x) + c2*f(x)/x + d2/x**2
-    a2, b2, c2, d2 = [r[r[s]] for s in 'a2 b2 c2 d2'.split()]
+    a2, b2, c2, d2 = (r[r[s]] for s in 'a2 b2 c2 d2'.split())
     C1 = get_numbered_constants(eq, num=1)
     mu = sqrt(4*d2*b2 - (a2 - c2)**2)
     return Eq(f(x), (a2 - c2 - mu*tan(mu/(2*a2)*log(x) + C1))/(2*b2*x))

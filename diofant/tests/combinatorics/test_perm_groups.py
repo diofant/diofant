@@ -289,7 +289,7 @@ def test_eq():
         1, 2, 0, 3, 4, 5]]
     a = [Permutation(p) for p in a + [[1, 2, 3, 4, 5, 0]]]
     g = Permutation([1, 2, 3, 4, 5, 0])
-    G1, G2, G3 = [PermutationGroup(x) for x in [a[:2], a[2:4], [g, g**2]]]
+    G1, G2, G3 = map(PermutationGroup, [a[:2], a[2:4], [g, g**2]])
     assert G1.order() == G2.order() == G3.order() == 6
     assert G1.is_subgroup(G2)
     assert not G1.is_subgroup(G3)

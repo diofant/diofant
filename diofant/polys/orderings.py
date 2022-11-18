@@ -1,7 +1,5 @@
 """Definitions of monomial orderings."""
 
-import typing
-
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
@@ -14,7 +12,7 @@ class MonomialOrder:
     """Base class for monomial orderings."""
 
     alias: str
-    is_global: typing.Optional[bool] = None
+    is_global: bool | None = None
     is_default = False
 
     def __str__(self):

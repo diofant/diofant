@@ -1232,8 +1232,8 @@ def residue_reduce_to_basic(H, DE, z):
     i = Dummy('i')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))
 
-    return sum((RootSum(a[0].as_poly(z), Lambda(i, i*log(a[1].as_expr()).subs(
-        {z: i}).subs(s))) for a in H))
+    return sum(RootSum(a[0].as_poly(z), Lambda(i, i*log(a[1].as_expr()).subs(
+        {z: i}).subs(s))) for a in H)
 
 
 def residue_reduce_derivation(H, DE, z):
@@ -1246,8 +1246,8 @@ def residue_reduce_derivation(H, DE, z):
     """
     # TODO: verify that this is correct for multiple extensions
     i = Dummy('i')
-    return sympify(sum((RootSum(a[0].as_poly(z),
-                        Lambda(i, i*derivation(a[1], DE).as_expr().subs({z: i})/a[1].as_expr().subs({z: i}))) for a in H)))
+    return sympify(sum(RootSum(a[0].as_poly(z),
+                       Lambda(i, i*derivation(a[1], DE).as_expr().subs({z: i})/a[1].as_expr().subs({z: i}))) for a in H))
 
 
 def integrate_primitive_polynomial(p, DE):

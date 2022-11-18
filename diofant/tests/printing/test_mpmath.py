@@ -27,14 +27,12 @@ def test_RootOf():
     p = MpmathPrinter()
 
     e = RootOf(x**3 + x - 1, x, 0)
-    r = ('findroot(lambda x: x**3 + x - 1, (%s, %s), '
-         "method='bisection')" % (p.doprint(QQ(0)), p.doprint(QQ(1))))
+    r = f"findroot(lambda x: x**3 + x - 1, ({p.doprint(QQ(0))}, {p.doprint(QQ(1))}), method='bisection')"
 
     assert p.doprint(e) == r
 
     e = RootOf(x**3 + x - 1, x, 1)
-    r = ('findroot(lambda x: x**3 + x - 1, mpc(%s, %s), '
-         "method='secant')" % (p.doprint(QQ(-3, 8)), p.doprint(QQ(-9, 8))))
+    r = f"findroot(lambda x: x**3 + x - 1, mpc({p.doprint(QQ(-3, 8))}, {p.doprint(QQ(-9, 8))}), method='secant')"
 
     assert p.doprint(e) == r
 

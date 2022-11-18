@@ -387,7 +387,7 @@ class Add(AssocOp):
                 nd[d] = self.func(*n)
 
         # assemble single numerator and denominator
-        denoms, numers = [list(i) for i in zip(*nd.items())]
+        denoms, numers = map(list, zip(*nd.items()))
         n, d = self.func(*[Mul(*(denoms[:i] + [numers[i]] + denoms[i + 1:]))
                            for i in range(len(numers))]), Mul(*denoms)
 

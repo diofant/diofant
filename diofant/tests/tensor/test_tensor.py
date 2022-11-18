@@ -743,7 +743,7 @@ def test_substitute_indices():
     assert _is_equal(asc1, A(i, -i) + B(i, -i))
 
     assert A(i, -i) == A(i, -i)()
-    assert A(i, -i) + B(-j, j) == ((A(i, -i) + B(i, -i)))()
+    assert A(i, -i) + B(-j, j) == (A(i, -i) + B(i, -i))()
     assert _is_equal(A(i, j)*B(-j, k), (A(m, -j)*B(j, n))(i, k))
     pytest.raises(ValueError, lambda: A(i, -i)(j, k))
 

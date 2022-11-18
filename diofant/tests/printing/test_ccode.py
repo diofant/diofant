@@ -18,7 +18,7 @@ __all__ = ()
 def test_printmethod():
     class Fabs(Abs):
         def _ccode(self, printer):
-            return 'fabs(%s)' % printer._print(self.args[0])
+            return f'fabs({printer._print(self.args[0])})'
     assert ccode(Fabs(x)) == 'fabs(x)'
 
 
@@ -101,7 +101,7 @@ def test_ccode_inline_function():
     assert ccode(g(x)) == '2*x'
     g = implemented_function('g', Lambda(x, 2*x/Catalan))
     assert ccode(
-        g(x)) == 'double const Catalan = %s;\n2*x/Catalan' % Catalan.evalf()
+        g(x)) == f'double const Catalan = {Catalan.evalf()};\n2*x/Catalan'
     A = IndexedBase('A')
     i = Idx('i', symbols('n', integer=True))
     g = implemented_function('g', Lambda(x, x*(1 + x)*(2 + x)))
@@ -235,9 +235,9 @@ def test_ccode_Indexed():
     x = IndexedBase('x')[j]
     assert p._print_Indexed(x) == 'x[j]'
     A = IndexedBase('A')[i, j]
-    assert p._print_Indexed(A) == 'A[%s]' % (m*i+j)
+    assert p._print_Indexed(A) == f'A[{m*i + j}]'
     B = IndexedBase('B')[i, j, k]
-    assert p._print_Indexed(B) == 'B[%s]' % (i*o*m+j*o+k)
+    assert p._print_Indexed(B) == f'B[{i*o*m + j*o + k}]'
 
     assert p._not_c == set()
 
@@ -250,7 +250,7 @@ def test_ccode_Indexed_without_looking_for_contraction():
     i = Idx('i', len_y - 1)
     e = Eq(Dy[i], (y[i + 1] - y[i])/(x[i + 1] - x[i]))
     code0 = ccode(e.rhs, assign_to=e.lhs, contract=False)
-    assert code0 == 'Dy[i] = (y[%s] - y[i])/(x[%s] - x[i]);' % (i + 1, i + 1)
+    assert code0 == f'Dy[i] = (y[{i + 1}] - y[i])/(x[{i + 1}] - x[i]);'
 
 
 def test_ccode_loops_matrix_vector():

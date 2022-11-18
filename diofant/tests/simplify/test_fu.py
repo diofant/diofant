@@ -376,7 +376,7 @@ def test_hyper_as_trig():
 
 
 def test_TR12i():
-    ta, tb, tc = [tan(i) for i in (a, b, c)]
+    ta, tb, tc = map(tan, (a, b, c))
     assert TR12i((ta + tb)/(-ta*tb + 1)) == tan(a + b)
     assert TR12i((ta + tb)/(ta*tb - 1)) == -tan(a + b)
     assert TR12i((-ta - tb)/(ta*tb - 1)) == tan(a + b)

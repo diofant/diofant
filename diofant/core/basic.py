@@ -1271,12 +1271,10 @@ class preorder_traversal:
             if keys:
                 args = ordered(args)
             for arg in args:
-                for subtree in self._preorder_traversal(arg, keys):
-                    yield subtree
+                yield from self._preorder_traversal(arg, keys)
         elif iterable(node):
             for item in node:
-                for subtree in self._preorder_traversal(item, keys):
-                    yield subtree
+                yield from self._preorder_traversal(item, keys)
 
     def skip(self):
         """

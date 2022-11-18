@@ -428,7 +428,7 @@ def test_pareto_numeric():
     X = Pareto('x', xm, alpha)
 
     assert E(X) == alpha*xm/(alpha - 1)
-    assert variance(X) == xm**2*alpha/(((alpha - 1)**2*(alpha - 2)))
+    assert variance(X) == xm**2*alpha/((alpha - 1)**2*(alpha - 2))
     # Skewness tests too slow. Try shortcutting function?
 
 

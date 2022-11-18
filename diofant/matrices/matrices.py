@@ -1,7 +1,6 @@
 import collections
 import functools
 import math
-import typing
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
@@ -44,7 +43,7 @@ class MatrixBase(DefaultPrinting):
     __array_priority__ = 11
 
     is_Matrix = True
-    is_Identity: typing.Optional[bool] = None
+    is_Identity: bool | None = None
     _class_priority = 3
     _sympify = staticmethod(sympify)
 
@@ -620,9 +619,6 @@ class MatrixBase(DefaultPrinting):
         >>> print(M.table(printer, rowsep=',\n'))
         [  1, 2],
         [-33, 4]
-        >>> print('[%s]' % M.table(printer, rowsep=',\n'))
-        [[  1, 2],
-        [-33, 4]]
         >>> print(M.table(printer, colsep=' '))
         [  1 2]
         [-33 4]
@@ -1015,7 +1011,7 @@ class MatrixBase(DefaultPrinting):
         key2ij
 
         """
-        islice, jslice = [isinstance(k, slice) for k in keys]
+        islice, jslice = (isinstance(k, slice) for k in keys)
         if islice:
             assert self.rows
             rlo, rhi = keys[0].indices(self.rows)[:2]
