@@ -10,7 +10,7 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      cbrt, ceiling, cos, cosh, cot, diff, digamma, erf, erfc,
                      erfi, exp, factorial, false, floor, gamma, integrate,
                      limit, log, nan, oo, pi, polygamma, root, sign, simplify,
-                     sin, sinh, sqrt, subfactorial, symbols, tan, true)
+                     sin, sinh, sqrt, subfactorial, symbols, tan, tanh, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1069,3 +1069,11 @@ def test_sympyissue_24331():
 
 def test_sympyissue_24386():
     assert limit((x + y)/(exp(z) + 1) - y, z, -oo) == x
+
+
+def test_sympyissue_24276():
+    e = pi*(tan(pi*tanh(x)/2)**2 + 1)*(-tanh(x)**2 + 1)/(2*tan(pi*tanh(x)/2))
+    assert limit(e, x, oo) == 2
+    assert limit(e.simplify(), x, oo) == 2
+    assert limit(e.rewrite(sin), x, oo) == 2
+    assert limit(e.rewrite(sin).simplify(), x, oo) == 2

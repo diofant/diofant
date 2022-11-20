@@ -284,8 +284,9 @@ class sin(TrigonometricFunction):
             else:
                 return (-1)**(n//2) * x**n/factorial(n)
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         return (exp(arg*I) - exp(-arg*I)) / (2*I)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_Pow(self, arg):
         if isinstance(arg, log):
@@ -965,9 +966,10 @@ class tan(TrigonometricFunction):
                 return (im(P)/re(P)).subs({z: tan(terms)})
         return tan(arg)
 
-    def _eval_rewrite_as_exp(self, arg):
+    def _eval_rewrite_as_exp(self, arg, **kwargs):
         neg_exp, pos_exp = exp(-arg*I), exp(arg*I)
         return I*(neg_exp - pos_exp)/(neg_exp + pos_exp)
+    _eval_rewrite_as_tractable = _eval_rewrite_as_exp
 
     def _eval_rewrite_as_sin(self, x):
         return 2*sin(x)**2/sin(2*x)

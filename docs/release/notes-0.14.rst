@@ -120,3 +120,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24390`: Incorrectly evaluated expression
 * :sympyissue:`24461`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck -- when multiplying two Polys
 * :sympyissue:`24543`: Rational calc value error
+* :sympyissue:`24276`: A non-terminating limit
