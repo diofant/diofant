@@ -326,8 +326,6 @@ def solve_rational_inequalities(eqs):
                 break
 
             intervals = []
-            expr = numer.as_expr()/denom.as_expr()
-            expr = Relational(expr, 0, rel)
 
             for interval in global_intervals:
                 intervals.append(interval)

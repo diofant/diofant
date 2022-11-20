@@ -2182,7 +2182,6 @@ def test_nth_order_linear_euler_eq_homogeneous():
 
     eq = (6*f(x) - 6*f(x).diff(x)*x + x**2*f(x).diff((x, 2)) +
           x**3*f(x).diff((x, 3)))
-    sol = dsolve(eq, f(x), hint=our_hint)
     sol = C1/x**2 + C2*x + C3*x**3
     sols = constant_renumber(sol, 'C', 1, 4)
     assert our_hint in classify_ode(eq)

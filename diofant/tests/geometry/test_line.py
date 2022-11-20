@@ -293,7 +293,6 @@ def test_line_geom():
     r2 = Ray(Point(2, 2), Point(0, 0))
     r3 = Ray(Point(1, 1), Point(-1, -1))
     r4 = Ray(Point(0, 4), Point(-1, -5))
-    r5 = Ray(Point(2, 2), Point(3, 3))
     assert intersection(r1, r2) == [Segment(Point(1, 1), Point(2, 2))]
     assert intersection(r1, r3) == [Point(1, 1)]
     assert r1.projection(r3) == Point(1, 1)

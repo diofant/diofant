@@ -653,7 +653,6 @@ class MultisetPartitionTraverser:
         part has no unallocated multiplicity.
 
         """
-        j = self.f[self.lpart]  # base of current top part
         k = self.f[self.lpart + 1]  # ub of current; potential base of next
         base = k  # save for later comparison
 

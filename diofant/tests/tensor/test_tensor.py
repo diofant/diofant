@@ -861,7 +861,6 @@ def test_contract_metric2():
     t1 = 2*g(a, b)*p(c)*p(-c)
     t2 = - 3*g(-a, -b)*q(c)*q(-c)
     t = t1*t2
-    t = t.contract_metric(g)
     t = 6*g(a, b)*g(-a, -b)*p(c)*p(-c)*q(d)*q(-d)
     t = t.contract_metric(g)
 
@@ -1307,8 +1306,6 @@ def test_from_components_and_indices():
 
 
 def test_get_components_with_free_indices():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     T = tensorhead('T', [Lorentz]*4, [[1]*4])

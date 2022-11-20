@@ -4369,7 +4369,6 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     charroots = defaultdict(int)
     for root in chareqroots:
         charroots[root] += 1
-    gsol = Integer(0)
     # We need to keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
     global collectterms
@@ -4506,7 +4505,6 @@ def _solve_undetermined_coefficients(eq, func, order, match):
     gsol = r['sol']
     trialset = r['trialset']
     notneedset = set()
-    newtrialset = set()
     global collectterms
     if len(gensols) != order:
         raise NotImplementedError('Cannot find ' + str(order) +

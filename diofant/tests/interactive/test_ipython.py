@@ -28,14 +28,10 @@ def test_IntegerDivisionWrapper():
     assert ast.dump(tree_new) == dump
 
     tree = ast.parse('2**3/7')
-    tree2 = ast.parse('Fraction(2**3, 7)')
-    dump = ast.dump(tree2)
     tree_new = IntegerDivisionWrapper().visit(tree)
     assert ast.dump(tree_new) == ast.dump(tree)
 
     tree = ast.parse('(3 + 5)/7')
-    tree2 = ast.parse('Fraction(3 + 5, 7)')
-    dump = ast.dump(tree2)
     tree_new = IntegerDivisionWrapper().visit(tree)
     assert ast.dump(tree_new) == ast.dump(tree)
 
