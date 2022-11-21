@@ -221,8 +221,6 @@ def test_dup_zz_factor():
               (10000*x**4 - 3000*x**3 + 400*x**2 - 20*x + 1, 2),
               (10000*x**4 + 2000*x**3 + 400*x**2 + 30*x + 1, 2)]))
 
-    f = x**10 - 1
-
     for test in (True, False):
         with using(use_cyclotomic_factor=test):
             f = x**10 - 1

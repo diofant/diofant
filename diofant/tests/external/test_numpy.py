@@ -80,10 +80,6 @@ def test_basics():
 
 
 def test_arrays():
-    one = Integer(1)
-    zero = Integer(0)
-    X = numpy.array([one, zero, zero])
-    Y = one*X
     X = numpy.array([Symbol('a') + Rational(1, 2)])
     Y = X + X
     assert Y == numpy.array([1 + 2*Symbol('a')])
@@ -108,10 +104,6 @@ def test_conversion2():
     b = list2numpy([2*x**2, 2*x])
     assert (a == b).all()
 
-    one = Integer(1)
-    zero = Integer(0)
-    X = list2numpy([one, zero, zero])
-    Y = one*X
     X = list2numpy([Symbol('a') + Rational(1, 2)])
     Y = X + X
     assert Y == numpy.array([1 + 2*Symbol('a')])

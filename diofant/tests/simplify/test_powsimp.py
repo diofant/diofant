@@ -146,7 +146,6 @@ def test_sympyissue_6440():
 def test_powdenest():
     x, y = symbols('x,y')
     p, q = symbols('p q', positive=True)
-    i, j = symbols('i,j', integer=True)
 
     assert powdenest(x) == x
     assert powdenest(x + 2*(x**(2*a/3))**(3*x)) == (x + 2*(x**(2*a/3))**(3*x))

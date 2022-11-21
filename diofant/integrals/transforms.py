@@ -509,7 +509,6 @@ def _rewrite_gamma(f, s, a, b):
             s_multiplier = common_coefficient \
                 * functools.reduce(math.gcd, [Integer(x.numerator) for x in s_multipliers])
 
-    exponent = Integer(1)
     fac = Integer(1)
     f = f.subs({s: s/s_multiplier})
     fac /= s_multiplier

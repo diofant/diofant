@@ -434,9 +434,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     for poly in polys:
         if poly.has(*V):
             try:
-                factorization = factor(poly, greedy=True)
+                factor(poly, greedy=True)
             except PolynomialError:
-                factorization = poly
+                pass
             factorization = poly
 
             if factorization.is_Mul:

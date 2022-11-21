@@ -1094,7 +1094,6 @@ def diop_DN(D, N, t=symbols('t', integer=True)):
 
                         for i in pqa:  # pragma: no branch
 
-                            a = i[2]
                             G.append(i[5])
                             B.append(i[4])
 
@@ -1935,8 +1934,6 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     # called for a*x**2 + b*y**2 + c*z**2 + d*x*y + e*y*z + f*x*z = 0
     assert 1 not in coeff
 
-    x, y, z = _var
-
     x_0, y_0, z_0 = solution
 
     v = list(_var)  # copy
@@ -2088,7 +2085,7 @@ def sqf_normal(a, b, c, steps=False):
     diofant.solvers.diophantine.reconstruct
 
     """
-    ABC = A, B, C = _remove_gcd(a, b, c)
+    ABC = _remove_gcd(a, b, c)
     sq = tuple(square_factor(i) for i in ABC)
     sqf = A, B, C = tuple(i//j**2 for i, j in zip(ABC, sq))
     pc = math.gcd(A, B)

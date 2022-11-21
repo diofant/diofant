@@ -345,7 +345,7 @@ class prettyForm(stringPict):
 
         args = self
         if args.binding > prettyForm.MUL:
-            arg = stringPict(*args.parens())
+            stringPict(*args.parens())
         result = [args]
         for arg in others:
             result.append(xsym('*'))

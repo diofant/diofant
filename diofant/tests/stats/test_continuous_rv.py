@@ -356,13 +356,6 @@ def test_logistic():
 
 
 def test_lognormal():
-    mean = Symbol('mu', real=True)
-    std = Symbol('sigma', positive=True, real=True)
-    X = LogNormal('x', mean, std)
-    # The diofant integrator can't do this too well
-    # assert E(X) == exp(mean+std**2/2)
-    # assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
-
     # Right now, only density function and sampling works
     # Test sampling: Only e^mean in sample std of 0
     for i in range(3):
@@ -380,6 +373,15 @@ def test_lognormal():
 
     X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
     assert density(X)(x) == sqrt(2)*exp(-log(x)**2/2)/(2*x*sqrt(pi))
+
+
+@pytest.mark.xfail
+def test_lognormal_xfail():
+    mean = Symbol('mu', real=True)
+    std = Symbol('sigma', positive=True, real=True)
+    X = LogNormal('x', mean, std)
+    assert E(X) == exp(mean+std**2/2)
+    assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
 
 
 def test_maxwell():

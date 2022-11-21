@@ -567,7 +567,6 @@ def test_residue():
         for i in range(p):
             d[pow(i, 2, p)].append(i)
         for i in range(1, p):
-            it = sqrt_mod_iter(i, p)
             v = sqrt_mod(i, p, True)
             if v:
                 v = sorted(v)

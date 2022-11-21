@@ -271,7 +271,6 @@ def test_minpoly_compose():
     assert mp == x**8 - x**7 + x**5 - x**4 + x**3 - x + 1
     mp = minimal_polynomial(cos(2*pi/7))(x)
     assert mp == 8*x**3 + 4*x**2 - 4*x - 1
-    mp = minimal_polynomial(sin(2*pi/7))(x)
     ex = (5*cos(2*pi/7) - 7)/(9*cos(pi/7) - 5*cos(3*pi/7))
     mp = minimal_polynomial(ex)(x)
     assert mp == x**3 + 2*x**2 - x - 1
