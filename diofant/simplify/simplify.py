@@ -721,11 +721,9 @@ def _real_to_rational(expr, tolerance=None):
                     float = -float
                     d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
                     r = -Rational(str(float/d))*d
-                elif float > 0:
+                else:
                     d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
                     r = Rational(str(float/d))*d
-                else:
-                    r = Integer(0)
         reps[key] = r
     return p.subs(reps, simultaneous=True)
 

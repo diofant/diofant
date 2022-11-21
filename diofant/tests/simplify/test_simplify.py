@@ -256,6 +256,7 @@ def test_separatevars():
     # a noncommutable object present
     eq = x*(1 + hyper((), (), y*z))
     assert separatevars(eq) == eq
+    pytest.raises(ValueError, lambda: separatevars(3, [x**y], dict=True))
 
 
 def test_separatevars_advanced_factor():
