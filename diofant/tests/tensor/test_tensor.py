@@ -859,12 +859,6 @@ def test_contract_metric2():
     assert t == 3*p(a)*p(-a)*q(b)*q(-b)
 
     t1 = 2*g(a, b)*p(c)*p(-c)
-    t2 = - 3*g(-a, -b)*q(c)*q(-c)
-    t = t1*t2
-    t = 6*g(a, b)*g(-a, -b)*p(c)*p(-c)*q(d)*q(-d)
-    t = t.contract_metric(g)
-
-    t1 = 2*g(a, b)*p(c)*p(-c)
     t2 = q(-a)*q(-b) + 3*g(-a, -b)*q(c)*q(-c)
     t = t1*t2
     t = t.contract_metric(g)

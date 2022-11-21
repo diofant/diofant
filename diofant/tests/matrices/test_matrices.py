@@ -520,10 +520,10 @@ def test_expand():
 
 
 def test_random():
-    M = randMatrix(3, 3)
-    M = randMatrix(3, 3, seed=3)
-    M = randMatrix(3, 4, 0, 150)
-    M = randMatrix(3, symmetric=True, percent=50)
+    randMatrix(3, 3)
+    randMatrix(3, 3, seed=3)
+    randMatrix(3, 4, 0, 150)
+    randMatrix(3, symmetric=True, percent=50)
     M = randMatrix(3, symmetric=True)
     S = M.copy()
     S.simplify()

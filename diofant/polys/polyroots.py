@@ -354,8 +354,6 @@ def roots_binomial(f):
     # to real part and imaginary part, e.g. -1, 1, -1 + I, 2 - I
     neg = base.is_negative
     even = n % 2 == 0
-    if neg:
-        big = bool(even and (base + 1).is_positive)
 
     # get the indices in the right order so the computed
     # roots will be sorted when the domain is ZZ
@@ -373,10 +371,6 @@ def roots_binomial(f):
             ks.extend([-i, i])
     if neg:
         ks.append(0)
-        if big:
-            for i in range(0, len(ks), 2):
-                pair = ks[i: i + 2]
-                pair = list(reversed(pair))
 
     # compute the roots
     roots, d = [], 2*I*pi/n
