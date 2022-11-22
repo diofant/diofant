@@ -578,7 +578,7 @@ def TR8(rv, first=True):
             return rv
 
         if first:
-            n, d = [expand_mul(i) for i in rv.as_numer_denom()]
+            n, d = map(expand_mul, rv.as_numer_denom())
             newn = TR8(n, first=False)
             newd = TR8(d, first=False)
             if newn != n or newd != d:
@@ -1792,7 +1792,7 @@ def trig_split(a, b, two=False):
     if _ROOT2 is None:
         _roots()
 
-    a, b = [Factors(i) for i in (a, b)]
+    a, b = map(Factors, (a, b))
     ua, ub = a.normal(b)
     gcd = a.gcd(b).as_expr()
     n1 = n2 = 1
@@ -1802,7 +1802,7 @@ def trig_split(a, b, two=False):
     elif -1 in ub.factors:
         ub = ub.quo(Integer(-1))
         n2 = -n2
-    a, b = [i.as_expr() for i in (ua, ub)]
+    a, b = (i.as_expr() for i in (ua, ub))
 
     def pow_cos_sin(a, two):
         """Return ``a`` as a tuple (r, c, s) such that
@@ -1952,7 +1952,7 @@ def as_f_sign_1(e):
             g = -g
         return g, b, a
     # gcd match
-    a, b = [Factors(i) for i in e.args]
+    a, b = map(Factors, e.args)
     ua, ub = a.normal(b)
     gcd = a.gcd(b).as_expr()
     if -1 in ua.factors:
@@ -1965,7 +1965,7 @@ def as_f_sign_1(e):
         n2 = -1
     else:
         n1 = n2 = 1
-    a, b = [i.as_expr() for i in (ua, ub)]
+    a, b = (i.as_expr() for i in (ua, ub))
     if a == 1:
         a, b = b, a
         n1, n2 = n2, n1

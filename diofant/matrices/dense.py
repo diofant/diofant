@@ -1274,9 +1274,8 @@ def diag(*values, **kwargs):
         from . import Matrix as cls  # noqa: N813
 
     if kwargs:
-        raise ValueError('unrecognized keyword%s: %s' % (  # noqa: SFS101
-            's' if len(kwargs) > 1 else '',
-            ', '.join(kwargs)))
+        raise ValueError(f"unrecognized keyword{'s' if len(kwargs) > 1 else ''}: "
+                         f"{', '.join(kwargs)}")
     rows = 0
     cols = 0
     values = list(values)

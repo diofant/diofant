@@ -81,7 +81,7 @@ def roots_quadratic(f):
         r0 = B - D
         r1 = B + D
         if not dom.is_Numerical:
-            r0, r1 = [expand_2arg(i) for i in (r0, r1)]
+            r0, r1 = map(expand_2arg, (r0, r1))
 
     return [r0, r1]
 
@@ -282,8 +282,7 @@ def roots_quartic(f):
         aon4 = a/4
 
         if f == 0:
-            y1, y2 = [sqrt(tmp) for tmp in
-                      roots([1, e, g], multiple=True)]
+            y1, y2 = map(sqrt, roots([1, e, g], multiple=True))
             return [tmp - aon4 for tmp in [-y1, -y2, y1, y2]]
         if g == 0:
             y = [Integer(0)] + roots([1, 0, e, f], multiple=True)

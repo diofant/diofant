@@ -423,11 +423,11 @@ class PrettyPrinter(Printer):
                 lines.append('_'*w + ' ')
                 lines.append(r'\%s`' % (' '*(w - 1)))
                 for i in range(1, d):
-                    lines.append('%s\\%s' % (' '*i, ' '*(w - i)))
+                    lines.append(f"{' ' * i}\\{' ' * (w - i)}")
                 if more:
-                    lines.append('%s)%s' % (' '*d, ' '*(w - d)))
+                    lines.append(f"{' ' * d}){' ' * (w - d)}")
                 for i in reversed(range(1, d)):
-                    lines.append('%s/%s' % (' '*i, ' '*(w - i)))
+                    lines.append(f"{' ' * i}/{' ' * (w - i)}")
                 lines.append('/' + '_'*(w - 1) + ',')
                 return d, h + more, lines, 0
             else:
@@ -436,9 +436,9 @@ class PrettyPrinter(Printer):
                 vsum = vobj('sum', 4)
                 lines.append('_'*w)
                 for i in range(d):
-                    lines.append('%s%s%s' % (' '*i, vsum[2], ' '*(w - i - 1)))
+                    lines.append(f"{' ' * i}{vsum[2]}{' ' * (w - i - 1)}")
                 for i in reversed(range(d)):
-                    lines.append('%s%s%s' % (' '*i, vsum[4], ' '*(w - i - 1)))
+                    lines.append(f"{' ' * i}{vsum[4]}{' ' * (w - i - 1)}")
                 lines.append(vsum[8]*w)
                 return d, h + 2*more, lines, more
 
@@ -1410,7 +1410,7 @@ class PrettyPrinter(Printer):
 
     def _print_Intersection(self, u):
 
-        delimiter = ' %s ' % pretty_atom('Intersection', 'n')
+        delimiter = f" {pretty_atom('Intersection', 'n')} "
 
         return self._print_seq(u.args, None, None, delimiter,
                                parenthesize=lambda set: set.is_ProductSet or
@@ -1418,7 +1418,7 @@ class PrettyPrinter(Printer):
 
     def _print_Union(self, u):
 
-        union_delimiter = ' %s ' % pretty_atom('Union', 'U')
+        union_delimiter = f" {pretty_atom('Union', 'U')} "
 
         return self._print_seq(u.args, None, None, union_delimiter,
                                parenthesize=lambda set: set.is_ProductSet or
@@ -1428,7 +1428,7 @@ class PrettyPrinter(Printer):
         if not self._use_unicode:
             raise NotImplementedError('ASCII pretty printing of SymmetricDifference is not implemented')
 
-        sym_delimeter = ' %s ' % pretty_atom('SymmetricDifference')
+        sym_delimeter = f" {pretty_atom('SymmetricDifference')} "
 
         return self._print_seq(u.args, None, None, sym_delimeter)
 
@@ -1661,8 +1661,8 @@ class PrettyPrinter(Printer):
 
     def _print_KroneckerDelta(self, e):
         pform = self._print(e.args[0])
-        pform = prettyForm(*pform.right((prettyForm(','))))
-        pform = prettyForm(*pform.right((self._print(e.args[1]))))
+        pform = prettyForm(*pform.right(prettyForm(',')))
+        pform = prettyForm(*pform.right(self._print(e.args[1])))
         if self._use_unicode:
             a = stringPict(pretty_symbol('delta'))
         else:

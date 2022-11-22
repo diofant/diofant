@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-import typing
 
 from ..core import Basic, I
 from ..core.sympify import sympify
@@ -117,7 +116,7 @@ class Options(dict):
 
     """
 
-    __order__: typing.Optional[list[str]] = None
+    __order__: list[str] | None = None
     __options__: dict[str, type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):

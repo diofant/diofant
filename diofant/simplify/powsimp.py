@@ -138,7 +138,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             if term.is_commutative:
                 b, e = term.as_base_exp()
                 if deep:
-                    b, e = [recurse(i) for i in [b, e]]
+                    b, e = map(recurse, [b, e])
                 if b.is_Pow:
                     # don't let smthg like sqrt(x**a) split into x**a, 1/2
                     # or else it will be joined as x**(a/2) later
@@ -650,7 +650,7 @@ def _denest_pow(eq):
     # we want 3*x. Neither work with noncommutatives.
 
     def nc_gcd(aa, bb):
-        a, b = [i.as_coeff_Mul() for i in [aa, bb]]
+        a, b = (i.as_coeff_Mul() for i in [aa, bb])
         c = gcd(a[0], b[0]).as_numer_denom()[0]
         g = Mul(*(a[1].args_cnc(cset=True)[0] & b[1].args_cnc(cset=True)[0]))
         return _keep_coeff(c, g)

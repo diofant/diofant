@@ -224,7 +224,7 @@ def _sqrtdenest0(expr):
                 expr = sqrt(_mexpand(Add(*[_sqrtdenest0(x) for x in args])))
             return _sqrtdenest1(expr)
         else:
-            n, d = [_sqrtdenest0(i) for i in (n, d)]
+            n, d = map(_sqrtdenest0, (n, d))
             return n/d
     if isinstance(expr, Expr):
         args = expr.args
@@ -719,8 +719,8 @@ def unrad(eq, *syms, **flags):
         return False
     _take = flags.setdefault('_take', _take)
 
-    cov, nwas, rpt = [flags.setdefault(k, v) for k, v in
-                      sorted({'cov': [], 'n': None, 'rpt': 0}.items())]
+    cov, nwas, rpt = (flags.setdefault(k, v) for k, v in
+                      sorted({'cov': [], 'n': None, 'rpt': 0}.items()))
 
     # preconditioning
     eq = powdenest(factor_terms(eq, radical=True))
@@ -891,7 +891,7 @@ def unrad(eq, *syms, **flags):
                     ok = True
                 elif info[2][LCM] < 5:
                     # a*root(A, 3) + b*root(B, 3) + others = c
-                    a, b, c, d, A, B = [Dummy(i) for i in 'abcdAB']
+                    a, b, c, d, A, B = map(Dummy, 'abcdAB')
                     # zz represents the unraded expression into which the
                     # specifics for this case are substituted
                     zz = (c - d)*(A**3*a**9 + 3*A**2*B*a**6*b**3 -

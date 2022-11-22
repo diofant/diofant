@@ -25,7 +25,7 @@ R2_r: typing.Any = CoordSystem('rectangular', R2_origin, ['x', 'y'])
 R2_p: typing.Any = CoordSystem('polar', R2_origin, ['r', 'theta'])
 
 # Connecting the coordinate charts.
-x, y, r, theta = [Dummy(s) for s in ['x', 'y', 'r', 'theta']]
+x, y, r, theta = map(Dummy, ['x', 'y', 'r', 'theta'])
 R2_r.connect_to(R2_p, [x, y],
                 [sqrt(x**2 + y**2), atan2(y, x)],
                 inverse=False, fill_in_gaps=False)
@@ -60,8 +60,8 @@ R3_c: typing.Any = CoordSystem('cylindrical', R3_origin, ['rho', 'psi', 'z'])
 R3_s: typing.Any = CoordSystem('spherical', R3_origin, ['r', 'theta', 'phi'])
 
 # Connecting the coordinate charts.
-x, y, z, rho, psi, r, theta, phi = [Dummy(s) for s in ['x', 'y', 'z',
-                                                       'rho', 'psi', 'r', 'theta', 'phi']]
+x, y, z, rho, psi, r, theta, phi = map(Dummy, ['x', 'y', 'z', 'rho', 'psi',
+                                               'r', 'theta', 'phi'])
 # rectangular <-> cylindrical
 R3_r.connect_to(R3_c, [x, y, z],
                 [sqrt(x**2 + y**2), atan2(y, x), z],

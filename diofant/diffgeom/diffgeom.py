@@ -43,9 +43,9 @@ class Manifold(Basic):
         name = str(self.name)
         if len(name) == 1:
             if name.isupper():
-                return r'\mathbb{%s}^{%s}' % (self.name, self.dim)
+                return f'\\mathbb{{{self.name}}}^{{{self.dim}}}'
 
-        return r'\mathrm{%s}' % self.name
+        return f'\\mathrm{{{self.name}}}'
 
 
 class Patch(Basic):
@@ -89,7 +89,7 @@ class Patch(Basic):
         return self.manifold.dim
 
     def _latex(self, printer, *args):
-        return r'\mathrm{%s}_{%s}' % (self.name, self.manifold._latex(printer, *args))
+        return f'\\mathrm{{{self.name}}}_{{{self.manifold._latex(printer, *args)}}}'
 
 
 class CoordSystem(Basic):
@@ -378,8 +378,7 @@ class CoordSystem(Basic):
     ##########################################################################
 
     def _latex(self, printer, *args):
-        return r'\mathrm{%s}^{\mathrm{%s}}_{%s}' % (
-            self.name, self.patch.name, self.patch.manifold._latex(printer, *args))
+        return f'\\mathrm{{{self.name}}}^{{\\mathrm{{{self.patch.name}}}}}_{{{self.patch.manifold._latex(printer, *args)}}}'
 
 
 class Point(Basic):
@@ -668,8 +667,8 @@ class Commutator(Expr):
             # actually evaluate the commutator.
             if all(isinstance(v, BaseVectorField) for v in (v1, v2)):
                 return Zero()
-            bases_1, bases_2 = [list(v.atoms(BaseVectorField))
-                                for v in (v1, v2)]
+            bases_1, bases_2 = (list(v.atoms(BaseVectorField))
+                                for v in (v1, v2))
             coeffs_1 = [v1.expand().coeff(b) for b in bases_1]
             coeffs_2 = [v2.expand().coeff(b) for b in bases_2]
             res = 0

@@ -551,8 +551,8 @@ class Hyper_Function(Expr):
         """
         if self.gamma != func.gamma:
             return -1
-        oabuckets, obbuckets, abuckets, bbuckets = [sift(params, _mod1) for
-                                                    params in (self.ap, self.bq, func.ap, func.bq)]
+        oabuckets, obbuckets, abuckets, bbuckets = (sift(params, _mod1) for
+                                                    params in (self.ap, self.bq, func.ap, func.bq))
 
         diff = 0
         for bucket, obucket in [(abuckets, oabuckets), (bbuckets, obbuckets)]:
@@ -745,13 +745,13 @@ class Formula:
                                  f'formula must be equal to {(a,)}')
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
-        abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
+        abuckets, bbuckets = (sift(params, _mod1) for params in [ap, bq])
         critical_values = [[0] for _ in self.symbols]
         result = []
         _n = Dummy()
         for repl in base_repl:
-            symb_a, symb_b = [sift(params, lambda x: _mod1(x.xreplace(repl)))
-                              for params in [self.func.ap, self.func.bq]]
+            symb_a, symb_b = (sift(params, lambda x: _mod1(x.xreplace(repl)))
+                              for params in [self.func.ap, self.func.bq])
             for bucket, obucket in [(abuckets, symb_a), (bbuckets, symb_b)]:
                 for mod in set(list(bucket) + list(obucket)):
                     if (mod not in bucket) or (mod not in obucket) \
@@ -861,7 +861,7 @@ class MeijerFormula:
     """
 
     def __init__(self, an, ap, bm, bq, z, symbols, B, C, M, matcher):
-        an, ap, bm, bq = [Tuple(*list(map(expand, w))) for w in [an, ap, bm, bq]]
+        an, ap, bm, bq = (Tuple(*list(map(expand, w))) for w in [an, ap, bm, bq])
         self.func = G_Function(an, ap, bm, bq)
         self.z = z
         self.symbols = symbols
@@ -1536,8 +1536,8 @@ def devise_plan(target, origin, z):
     <Increment upper -2.>
 
     """
-    abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
-                                                params in (target.ap, target.bq, origin.ap, origin.bq)]
+    abuckets, bbuckets, nabuckets, nbbuckets = (sift(params, _mod1) for
+                                                params in (target.ap, target.bq, origin.ap, origin.bq))
 
     if len(list(abuckets)) != len(list(nabuckets)) or \
             len(list(bbuckets)) != len(list(nbbuckets)):
@@ -1586,8 +1586,8 @@ def devise_plan(target, origin, z):
         if len(al) != len(nal) or len(bk) != len(nbk):
             raise ValueError(f'{target} not reachable from {origin}')
 
-        al, nal, bk, nbk = [sorted(w, key=default_sort_key)
-                            for w in [al, nal, bk, nbk]]
+        al, nal, bk, nbk = (sorted(w, key=default_sort_key)
+                            for w in [al, nal, bk, nbk])
 
         def others(dic, key):
             l = []

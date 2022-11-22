@@ -374,7 +374,7 @@ def _find_splitting_points(expr, x):
     {-3, 0}
 
     """
-    p, q = [Wild(n, exclude=[x]) for n in 'pq']
+    p, q = (Wild(n, exclude=[x]) for n in 'pq')
 
     def compute_innermost(expr, res):
         if not isinstance(expr, Expr):

@@ -587,7 +587,7 @@ def is_nthpow_residue(a, n, m):
     * P. Hackman "Elementary Number Theory" (2009),  page 76
 
     """
-    a, n, m = [as_int(i) for i in (a, n, m)]
+    a, n, m = map(as_int, (a, n, m))
     if m <= 0:
         raise ValueError('m must be > 0')
     if n < 0:

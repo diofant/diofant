@@ -224,8 +224,8 @@ def test_solve_biquadratic():
     f_2 = (x - 1)**2 + (y - 1)**2 - r**2
 
     assert (solve_poly_system([f_1, f_2], x, y) ==
-            [{x: 1 - sqrt(((2*r - 1)*(2*r + 1)))/2, y: Rational(3, 2)},
-             {x: 1 + sqrt(((2*r - 1)*(2*r + 1)))/2, y: Rational(3, 2)}])
+            [{x: 1 - sqrt((2*r - 1)*(2*r + 1))/2, y: Rational(3, 2)},
+             {x: 1 + sqrt((2*r - 1)*(2*r + 1))/2, y: Rational(3, 2)}])
 
     def query(expr):
         return expr.is_Pow and expr.exp is Rational(1, 2)

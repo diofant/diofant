@@ -1642,7 +1642,7 @@ class Triangle(Polygon):
         if not isinstance(other, Polygon):
             return False
 
-        s1_1, s1_2, s1_3 = [side.length for side in self.sides]
+        s1_1, s1_2, s1_3 = (side.length for side in self.sides)
         s2 = [side.length for side in other.sides]
 
         def _are_similar(u1, u2, u3, v1, v2, v3):
@@ -1850,7 +1850,7 @@ class Triangle(Polygon):
         Point(1/2, 1/2)
 
         """
-        a, b, _ = [x.perpendicular_bisector() for x in self.sides]
+        a, b, _ = (x.perpendicular_bisector() for x in self.sides)
         return a.intersection(b)[0]
 
     @property

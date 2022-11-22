@@ -54,7 +54,7 @@ k, m, n = symbols('k m n', integer=True)
 def test_printmethod():
     class R(Abs):
         def _latex(self, printer):
-            return 'foo(%s)' % printer._print(self.args[0])
+            return f'foo({printer._print(self.args[0])})'
     assert latex(R(x)) == 'foo(x)'
 
     class R2(Abs):
@@ -642,8 +642,7 @@ def test_latex_productset():
     bigline = Interval(0, 10)
     fset = FiniteSet(1, 2, 3)
     assert latex(line**2) == r'%s^2' % latex(line)
-    assert latex(line * bigline * fset) == r'%s \times %s \times %s' % (
-        latex(line), latex(bigline), latex(fset))
+    assert latex(line * bigline * fset) == f'{latex(line)} \\times {latex(bigline)} \\times {latex(fset)}'
 
 
 def test_latex_Naturals():

@@ -533,7 +533,7 @@ class Ellipse(GeometrySet):
             c = c.reflect(line)
             return self.func(c, -self.hradius, self.vradius)
         else:
-            x, y = [_uniquely_named_symbol(name, self, line) for name in 'xy']
+            x, y = (_uniquely_named_symbol(name, self, line) for name in 'xy')
             expr = self.equation(x, y)
             p = Point(x, y).reflect(line)
             result = expr.subs(zip((x, y), p.args))
@@ -585,7 +585,7 @@ class Ellipse(GeometrySet):
         # than the combined distance from the foci to the minor axis
         # (which is the same as the major axis length) then p is inside
         # the ellipse
-        h1, h2 = [f.distance(p) for f in self.foci]
+        h1, h2 = (f.distance(p) for f in self.foci)
         test = 2*self.major - (h1 + h2)
 
         return fuzzy_bool(test.is_positive)
@@ -1373,7 +1373,7 @@ class Circle(Ellipse):
             pt = Point(pt)
             return self.translate(*(-pt).args).scale(x, y).translate(*pt.args)
         c = c.scale(x, y)
-        x, y = [abs(i) for i in (x, y)]
+        x, y = map(abs, (x, y))
         if x == y:
             return self.func(c, x*self.radius)
         h = v = self.radius

@@ -355,8 +355,7 @@ class MinMaxBase(LatticeOp):
             if arg == cls.identity:
                 continue
             if arg.func == cls:
-                for x in arg.args:
-                    yield x
+                yield from arg.args
             else:
                 yield arg
 

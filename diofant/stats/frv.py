@@ -128,9 +128,9 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         # where 'z' is a symbol that we don't know about
         # We will never be able to test this equality through iteration
         if not cond.free_symbols.issubset(domain.free_symbols):
-            raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (  # noqa: SFS101
-                condition, tuple(cond.free_symbols - domain.free_symbols)) +
-                'Will be unable to iterate using this condition')
+            raise ValueError(f'Condition "{condition}" contains foreign symbols'
+                             f' \n{tuple(cond.free_symbols - domain.free_symbols)}.\n'
+                             'Will be unable to iterate using this condition')
 
         return Expr.__new__(cls, domain, cond)
 

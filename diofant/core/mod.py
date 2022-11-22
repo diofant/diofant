@@ -85,8 +85,8 @@ class Mod(Function):
         # extract gcd; any further simplification should be done by the user
         G = gcd(p, q)
         if G != 1:
-            p, q = [
-                gcd_terms(i/G, clear=False, fraction=False) for i in (p, q)]
+            p, q = (
+                gcd_terms(i/G, clear=False, fraction=False) for i in (p, q))
         pwas, qwas = p, q
 
         # simplify terms
@@ -121,7 +121,7 @@ class Mod(Function):
 
         # simple -1 extraction
         if p.could_extract_minus_sign() and q.could_extract_minus_sign():
-            G, p, q = [-i for i in (G, p, q)]
+            G, p, q = (-i for i in (G, p, q))
 
         # check again to see if p and q can now be handled as numbers
         rv = doit(p, q)

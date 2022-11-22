@@ -749,7 +749,7 @@ def test_sympyissue_4671():
     assert (solve((2**exp(y**2/x) + 2)/(x**2 + 15), y) ==
             [{y: -sqrt(x)*sqrt(-log(log(2)) + log(log(2) + I*pi))},
              {y: sqrt(x)*sqrt(-log(log(2)) + log(log(2) + I*pi))}])
-    assert (solve((sqrt(x**2 - 1) - 2)) in
+    assert (solve(sqrt(x**2 - 1) - 2) in
             ([{x: sqrt(5)}, {x: -sqrt(5)}], [{x: -sqrt(5)}, {x: sqrt(5)}]))
 
 
@@ -1446,7 +1446,7 @@ def test_sympyissue_8828():
     A = solve(F, v)
     B = solve(G, v)
 
-    p, q = [{tuple(i.evalf(2) for i in ordered(j)) for j in R} for R in [A, B]]
+    p, q = ({tuple(i.evalf(2) for i in ordered(j)) for j in R} for R in [A, B])
     assert p == q
 
 
@@ -1638,7 +1638,7 @@ def test_unrad1_fail():
 def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
-    eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
+    eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*(1 + sqrt(1 + 2*sqrt(1 - 4*x**2))))
     assert solve(eq) == [{x: Rational(1, 2)}]
 
 

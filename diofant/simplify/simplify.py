@@ -152,7 +152,7 @@ def _separatevars(expr, force):
 
 def _separatevars_dict(expr, symbols):
     if symbols:
-        if not all((t.is_Atom for t in symbols)):
+        if not all(t.is_Atom for t in symbols):
             raise ValueError('symbols must be Atoms.')
         symbols = list(symbols)
     elif symbols is None:
@@ -719,13 +719,11 @@ def _real_to_rational(expr, tolerance=None):
             elif not r.is_Rational:
                 if float < 0:
                     float = -float
-                    d = Pow(10, int((mpmath.log(float)/mpmath.log(10))))
+                    d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
                     r = -Rational(str(float/d))*d
-                elif float > 0:
-                    d = Pow(10, int((mpmath.log(float)/mpmath.log(10))))
-                    r = Rational(str(float/d))*d
                 else:
-                    r = Integer(0)
+                    d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
+                    r = Rational(str(float/d))*d
         reps[key] = r
     return p.subs(reps, simultaneous=True)
 

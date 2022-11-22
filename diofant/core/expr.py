@@ -971,8 +971,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             clen = len(c)
             c = set(c)
             if clen and warn and len(c) != clen:
-                raise ValueError('repeated commutative arguments: %s' %
-                                 [ci for ci in c if list(self.args).count(ci) > 1])
+                raise ValueError('repeated commutative arguments: '
+                                 f'{[ci for ci in c if list(self.args).count(ci) > 1]}')
         return [c, nc]
 
     def coeff(self, x, n=1, right=False):
@@ -2805,8 +2805,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         u = '_'
         while any(str(s).endswith(u) for s in V):
             u += '_'
-        name = '%%i%s' % u
-        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
+        return {v: Symbol(f'{i}{u}', **v._assumptions) for i, v in enumerate(V)}
 
     ###################################################################################
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
@@ -2876,8 +2875,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         expr = self
         if hints.pop('frac', False):
-            n, d = [a.expand(deep=deep, modulus=modulus, **hints)
-                    for a in fraction(self)]
+            n, d = (a.expand(deep=deep, modulus=modulus, **hints)
+                    for a in fraction(self))
             return n/d
         elif hints.pop('denom', False):
             n, d = fraction(self)
@@ -3085,7 +3084,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .numbers import Float
         x = self
         if not x.is_number:
-            raise TypeError('%s is not a number' % type(x))
+            raise TypeError(f'{type(x)} is not a number')
         if x in (nan, oo, -oo, zoo):
             return x
         if not x.is_extended_real:

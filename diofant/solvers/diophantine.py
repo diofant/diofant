@@ -746,7 +746,7 @@ def _diop_quadratic(var, coeff, t):
     E = coeff[y]
     F = coeff[1]
 
-    A, B, C, D, E, F = [as_int(i) for i in _remove_gcd(A, B, C, D, E, F)]
+    A, B, C, D, E, F = map(as_int, _remove_gcd(A, B, C, D, E, F))
 
     # (1) Simple-Hyperbolic case: A = C = 0, B != 0
     # In this case equation can be converted to (Bx + E)(By + D) = DE - BF
@@ -1535,7 +1535,7 @@ def _transformation_to_DN(var, coeff):
     e = coeff[y]
     f = coeff[1]
 
-    a, b, c, d, e, f = [as_int(i) for i in _remove_gcd(a, b, c, d, e, f)]
+    a, b, c, d, e, f = map(as_int, _remove_gcd(a, b, c, d, e, f))
 
     X, Y = symbols('X, Y', integer=True)
 
@@ -2849,7 +2849,7 @@ def power_representation(n, p, k, zeros=False):
      (12, -1), (-12, -1)]
 
     """
-    n, p, k = [as_int(i) for i in (n, p, k)]
+    n, p, k = map(as_int, (n, p, k))
 
     if n < 0:
         if p % 2:
@@ -2922,12 +2922,10 @@ def pow_rep_recursive(n_i, k, n_remaining, terms, p):
         yield tuple(terms)
     else:
         if n_i >= 1 and k > 0:
-            for t in pow_rep_recursive(n_i - 1, k, n_remaining, terms, p):
-                yield t
+            yield from pow_rep_recursive(n_i - 1, k, n_remaining, terms, p)
             residual = n_remaining - pow(n_i, p)
             if residual >= 0:
-                for t in pow_rep_recursive(n_i, k - 1, residual, terms + [n_i], p):
-                    yield t
+                yield from pow_rep_recursive(n_i, k - 1, residual, terms + [n_i], p)
 
 
 def sum_of_squares(n, k, zeros=False):
@@ -2975,8 +2973,7 @@ def sum_of_squares(n, k, zeros=False):
     diofant.utilities.iterables.signed_permutations
 
     """
-    for t in power_representation(n, 2, k, zeros):
-        yield t
+    yield from power_representation(n, 2, k, zeros)
 
 
 def _can_do_sum_of_squares(n, k):

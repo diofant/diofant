@@ -178,9 +178,9 @@ class gamma(Function):
     def _latex(self, printer, exp=None):
         aa = printer._print(self.args[0])
         if exp:
-            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)  # noqa: SFS101
+            return f'\\Gamma^{{{printer._print(exp)}}}{{\\left({aa} \\right)}}'
         else:
-            return r'\Gamma{\left(%s \right)}' % aa  # noqa: SFS101
+            return f'\\Gamma{{\\left({aa} \\right)}}'
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -708,7 +708,7 @@ class polygamma(Function):
 
     def _eval_as_leading_term(self, x):
         from ...series import Order
-        n, z = [a.as_leading_term(x) for a in self.args]
+        n, z = (a.as_leading_term(x) for a in self.args)
         o = Order(z, x)
         if n == 0 and o.contains(1/x):
             return o.getn() * log(x)

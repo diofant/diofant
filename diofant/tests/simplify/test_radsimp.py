@@ -342,7 +342,7 @@ def test_collect_sqrt():
     assert collect_sqrt(eq + 2) == \
         2*sqrt(sqrt(2) + 3)*(sqrt(5)*x + y) + 2
 
-    r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
+    r2, r3, r5 = map(sqrt, [2, 3, 5])
     assert (collect_sqrt(a*r2 + b*r2 + a*r3 + b*r5, evaluate=False) ==
             ((sqrt(3)*a, sqrt(5)*b, sqrt(2)*(a + b)), 3))
 

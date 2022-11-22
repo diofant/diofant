@@ -1,7 +1,6 @@
 """Generic set theory interfaces."""
 
 import itertools
-import typing
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
 from ..core.compatibility import iterable
@@ -36,11 +35,11 @@ class Set(Basic):
     is_Interval = False
     is_ProductSet = False
     is_Union = False
-    is_Intersection: typing.Optional[bool] = None
-    is_EmptySet: typing.Optional[bool] = None
-    is_UniversalSet: typing.Optional[bool] = None
-    is_Complement: typing.Optional[bool] = None
-    is_SymmetricDifference: typing.Optional[bool] = None
+    is_Intersection: bool | None = None
+    is_EmptySet: bool | None = None
+    is_UniversalSet: bool | None = None
+    is_Complement: bool | None = None
+    is_SymmetricDifference: bool | None = None
 
     @staticmethod
     def _infimum_key(expr):

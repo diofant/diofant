@@ -263,9 +263,10 @@ def chop_parts(value, prec):
 def check_target(expr, result, prec):
     a = complex_accuracy(result)
     if a < prec:
-        raise PrecisionExhausted('Failed to distinguish the expression: \n\n%s\n\n'
-                                 'from zero. Try simplifying the input, using chop=True, or providing '
-                                 'a higher maxn for evalf' % expr)
+        raise PrecisionExhausted('Failed to distinguish the expression: '
+                                 f'\n\n{expr}\n\nfrom zero. Try simplifying '
+                                 'the input, using chop=True, or providing '
+                                 'a higher maxn for evalf')
 
 
 ############################################################################
@@ -967,7 +968,7 @@ def hypsum(expr, n, start, prec):
     h, g, p = check_convergence(num, den, n)
 
     if h < 0:
-        raise ValueError('Sum diverges like (n!)^%i' % (-h))
+        raise ValueError(f'Sum diverges like (n!)^{int(-h)}')
 
     term = expr.subs({n: 0})
     if not term.is_Rational:
@@ -987,9 +988,9 @@ def hypsum(expr, n, start, prec):
     else:
         alt = g < 0
         if abs(g) < 1:
-            raise ValueError('Sum diverges like (%i)^n' % abs(1/g))
+            raise ValueError(f'Sum diverges like ({int(abs(1/g))})^n')
         if p < 1 or (p == 1 and not alt):
-            raise ValueError('Sum diverges like n^%i' % (-p))
+            raise ValueError(f'Sum diverges like n^{int(-p)}')
         # We have polynomial convergence: use Richardson extrapolation
         vold = None
         ndig = prec_to_dps(prec)

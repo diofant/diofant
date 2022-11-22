@@ -415,7 +415,7 @@ def test_roots0():
 
     f = (x**2 + 2*x + 3).subs({x: 2*x**2 + 3*x}).subs({x: 5*x - 4})
 
-    r13_20, r1_20 = [Rational(*r) for r in ((13, 20), (1, 20))]
+    r13_20, r1_20 = (Rational(*r) for r in ((13, 20), (1, 20)))
 
     s2 = sqrt(2)
     assert roots(f, x) == {
@@ -427,7 +427,7 @@ def test_roots0():
 
     f = x**4 + x**3 + x**2 + x + 1
 
-    r1_4, r1_8, r5_8 = [Rational(*r) for r in ((1, 4), (1, 8), (5, 8))]
+    r1_4, r1_8, r5_8 = (Rational(*r) for r in ((1, 4), (1, 8), (5, 8)))
 
     assert roots(f, x) == {
         -r1_4 + r1_4*5**r1_2 + I*(r5_8 + r1_8*5**r1_2)**r1_2: 1,

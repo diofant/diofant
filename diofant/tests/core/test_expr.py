@@ -1109,7 +1109,7 @@ def test_coeff2():
     psi = Function('psi')
     g = 1/r**2 * (2*r*psi(r).diff((r, 1)) + r**2 * psi(r).diff((r, 2)))
     g = g.expand()
-    assert g.coeff((psi(r).diff(r))) == 2/r
+    assert g.coeff(psi(r).diff(r)) == 2/r
 
 
 def test_coeff2_0():
@@ -1149,7 +1149,7 @@ def test_sympyissue_4963():
 
 
 def test_action_verbs():
-    assert nsimplify((1/(exp(3*pi*x/5) + 1))) == \
+    assert nsimplify(1/(exp(3*pi*x/5) + 1)) == \
         (1/(exp(3*pi*x/5) + 1)).nsimplify()
     assert ratsimp(1/x + 1/y) == (1/x + 1/y).ratsimp()
     assert trigsimp(log(x), deep=True) == (log(x)).trigsimp(deep=True)

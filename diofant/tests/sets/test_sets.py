@@ -377,7 +377,7 @@ def test_is_subset():
     assert FiniteSet(1).is_subset(Interval(0, 2))
     assert FiniteSet(1, 2).is_subset(Interval(0, 2, True, True)) is False
     assert (Interval(1, 2) + FiniteSet(3)).is_subset(
-        (Interval(0, 2, False, True) + FiniteSet(2, 3)))
+        Interval(0, 2, False, True) + FiniteSet(2, 3))
 
     assert Interval(3, 4).is_subset(Union(Interval(0, 1), Interval(2, 5))) is True
     assert Interval(3, 6).is_subset(Union(Interval(0, 1), Interval(2, 5))) is False
@@ -412,7 +412,7 @@ def test_is_superset():
     assert FiniteSet(1).is_superset(Interval(0, 2)) is False
     assert FiniteSet(1, 2).is_superset(Interval(0, 2, True, True)) is False
     assert (Interval(1, 2) + FiniteSet(3)).is_superset(
-        (Interval(0, 2, False, True) + FiniteSet(2, 3))) is False
+        Interval(0, 2, False, True) + FiniteSet(2, 3)) is False
 
     assert Interval(3, 4).is_superset(Union(Interval(0, 1), Interval(2, 5))) is False
 

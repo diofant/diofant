@@ -191,7 +191,7 @@ def test_sympyissue_4362():
     e = sqrt(1/c)
     assert e.as_numer_denom() == (e, 1)
     i = Symbol('i', integer=True)
-    assert (((1 + x/y)**i)).as_numer_denom() == ((x + y)**i, y**i)
+    assert ((1 + x/y)**i).as_numer_denom() == ((x + y)**i, y**i)
 
 
 def test_Pow_signs():

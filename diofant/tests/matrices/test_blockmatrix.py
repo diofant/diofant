@@ -114,20 +114,20 @@ def test_BlockMatrix():
 
 
 def test_BlockMatrix_trace():
-    A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
+    A, B, C, D = (MatrixSymbol(s, 3, 3) for s in 'ABCD')
     X = BlockMatrix([[A, B], [C, D]])
     assert trace(X) == trace(A) + trace(D)
 
 
 def test_BlockMatrix_equals():
-    A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
+    A, B, C, D = (MatrixSymbol(s, 3, 3) for s in 'ABCD')
     X = BlockMatrix([[A, B], [C, D]])
     assert X.equals(X) is True
     assert X.equals(Matrix([1, 2])) is False
 
 
 def test_BlockMatrix_Determinant():
-    A, B, C, D = [MatrixSymbol(s, 3, 3) for s in 'ABCD']
+    A, B, C, D = (MatrixSymbol(s, 3, 3) for s in 'ABCD')
     X = BlockMatrix([[A, B], [C, D]])
 
     assert isinstance(det(X), Expr)
