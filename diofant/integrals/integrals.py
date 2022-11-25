@@ -3,7 +3,7 @@ from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
                     diff, nan, oo)
 from ..core.compatibility import is_sequence
 from ..core.sympify import sympify
-from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
+from ..functions import Piecewise, log, piecewise_fold, sqrt
 from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
@@ -301,24 +301,16 @@ class Integral(AddWithLimits):
             a unique integrand."""))
         newfunc = newfuncs.pop()
 
-        def _calc_limit_1(F, a, b):
-            """
-            Replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered.
-
-            """
+        def _calc_limit_1(F, a, dir):
+            """Replace d with a."""
             wok = F.subs({d: a})
             if wok is nan or wok.is_finite is False and a.is_finite:
-                return limit(sign(b)*F, d, a)
+                return limit(F, d, a, dir)
             return wok
 
-        def _calc_limit(a, b):
-            """
-            Replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered.
-
-            """
-            avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
+        def _calc_limit(a, dir=-1):
+            """Replace d with a, using subs if possible otherwise limit."""
+            avals = list({_calc_limit_1(Fi, a, dir=dir) for Fi in F})
             if len(avals) > 1:
                 raise ValueError(filldedent("""
                 The mapping between F(x) and f(u) did not
@@ -331,7 +323,7 @@ class Integral(AddWithLimits):
             if sym == xvar:
                 if len(xab) == 3:
                     a, b = xab[1:]
-                    a, b = _calc_limit(a, b), _calc_limit(b, a)
+                    a, b = _calc_limit(a), _calc_limit(b, dir=1)
                     if a - b > 0:
                         a, b = b, a
                         newfunc = -newfunc

@@ -430,6 +430,10 @@ def test_transform():
     pytest.raises(ValueError, lambda: i2.transform(x, (z*y, y)))
     pytest.raises(ValueError, lambda: i.transform(x, (sin(y), y)))
 
+    assert (Integral(1/(1 + y*cos(x)),
+                     (x, 0, pi)).transform(tan(x/2), x).simplify().simplify() ==
+            Integral(2/(x**2 - y*(x**2 - 1) + 1), (x, 0, oo)))
+
 
 def test_sympyissue_4052():
     f = Rational(1, 2)*asin(x) + x*sqrt(1 - x**2)/2
