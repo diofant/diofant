@@ -137,7 +137,7 @@ class Printer:
     _default_settings: dict[str, typing.Any] = {}
 
     emptyPrinter = str
-    printmethod: typing.Optional[str] = None
+    printmethod: str | None = None
 
     def __init__(self, settings=None):
         from ..external import import_module

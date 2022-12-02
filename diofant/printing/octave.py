@@ -111,7 +111,7 @@ class OctaveCodePrinter(CodePrinter):
         # print complex numbers nicely in Octave
         if (expr.is_number and expr.is_imaginary and
                 expr.as_coeff_Mul()[0].is_integer):
-            return '%si' % self._print(-I*expr)
+            return f'{self._print(-I * expr)}i'
 
         # cribbed from str.py
         prec = precedence(expr)
@@ -170,7 +170,7 @@ class OctaveCodePrinter(CodePrinter):
         else:
             divsym = '/' if all(bi.is_number for bi in b) else './'
             return (sign + multjoin(a, a_str) +
-                    divsym + '(%s)' % multjoin(b, b_str))
+                    divsym + f'({multjoin(b, b_str)})')
 
     def _print_Pow(self, expr):
         powsymbol = '^' if all(x.is_number for x in expr.args) else '.^'
@@ -178,23 +178,21 @@ class OctaveCodePrinter(CodePrinter):
         PREC = precedence(expr)
 
         if expr.exp == Rational(1, 2):
-            return 'sqrt(%s)' % self._print(expr.base)
+            return f'sqrt({self._print(expr.base)})'
 
         if expr.is_commutative:
             if expr.exp == -Rational(1, 2):
                 sym = '/' if expr.base.is_number else './'
-                return '1' + sym + 'sqrt(%s)' % self._print(expr.base)
+                return '1' + sym + f'sqrt({self._print(expr.base)})'
             if expr.exp == -1:
                 sym = '/' if expr.base.is_number else './'
-                return '1' + sym + '%s' % self.parenthesize(expr.base, PREC)
+                return '1' + sym + f'{self.parenthesize(expr.base, PREC)}'
 
-        return '%s%s%s' % (self.parenthesize(expr.base, PREC), powsymbol,
-                           self.parenthesize(expr.exp, PREC))
+        return f'{self.parenthesize(expr.base, PREC)}{powsymbol}{self.parenthesize(expr.exp, PREC)}'
 
     def _print_MatPow(self, expr):
         PREC = precedence(expr)
-        return '%s^%s' % (self.parenthesize(expr.base, PREC),
-                          self.parenthesize(expr.exp, PREC))
+        return f'{self.parenthesize(expr.base, PREC)}^{self.parenthesize(expr.exp, PREC)}'
 
     def _print_Pi(self, expr):
         return 'pi'
@@ -278,12 +276,12 @@ class OctaveCodePrinter(CodePrinter):
             # Octave does not distinguish between scalars and 1x1 matrices
             return self._print(expr[0, 0])
         elif expr.rows == 1:
-            return '[%s]' % expr.table(self, rowstart='', rowend='', colsep=' ')
+            return f"[{expr.table(self, rowstart='', rowend='', colsep=' ')}]"
         elif expr.cols == 1:
             # note .table would unnecessarily equispace the rows
-            return '[%s]' % '; '.join([self._print(a) for a in expr])
-        return '[%s]' % expr.table(self, rowstart='', rowend='',
-                                   rowsep=';\n', colsep=' ')
+            return f"[{'; '.join([self._print(a) for a in expr])}]"
+        return '[{}]'.format(expr.table(self, rowstart='', rowend='',  # noqa: SFS201
+                                        rowsep=';\n', colsep=' '))
 
     def _print_SparseMatrixBase(self, A):
         from ..matrices import Matrix
@@ -292,11 +290,10 @@ class OctaveCodePrinter(CodePrinter):
         I = Matrix([[k[0] + 1 for k in L]])
         J = Matrix([[k[1] + 1 for k in L]])
         AIJ = Matrix([[k[2] for k in L]])
-        return 'sparse(%s, %s, %s, %s, %s)' % (self._print(I), self._print(J),
-                                               self._print(AIJ), A.rows, A.cols)
+        return f'sparse({self._print(I)}, {self._print(J)}, {self._print(AIJ)}, {A.rows}, {A.cols})'
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '(%s, %s)' % (expr.i + 1, expr.j + 1)
+        return self._print(expr.parent) + f'({expr.i + 1}, {expr.j + 1})'
 
     def _print_MatrixSlice(self, expr):
         def strslice(x, lim):
@@ -320,21 +317,19 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_Indexed(self, expr):
         inds = [self._print(i) for i in expr.indices]
-        return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
+        return f"{self._print(expr.base.label)}({', '.join(inds)})"
 
     def _print_Idx(self, expr):
         return self._print(expr.label)
 
     def _print_Identity(self, expr):
-        return 'eye(%s)' % self._print(expr.shape[0])
+        return f'eye({self._print(expr.shape[0])})'
 
     def _print_uppergamma(self, expr):
-        return "gammainc(%s, %s, 'upper')" % (self._print(expr.args[1]),
-                                              self._print(expr.args[0]))
+        return f"gammainc({self._print(expr.args[1])}, {self._print(expr.args[0])}, 'upper')"
 
     def _print_lowergamma(self, expr):
-        return "gammainc(%s, %s, 'lower')" % (self._print(expr.args[1]),
-                                              self._print(expr.args[0]))
+        return f"gammainc({self._print(expr.args[1])}, {self._print(expr.args[0])}, 'lower')"
 
     def _print_hankel1(self, expr):
         return f'besselh({self._print(expr.order)}, 1, {self._print(expr.argument)})'
@@ -356,16 +351,16 @@ class OctaveCodePrinter(CodePrinter):
         return self._print(expr2)
 
     def _print_airyai(self, expr):
-        return 'airy(0, %s)' % self._print(expr.args[0])
+        return f'airy(0, {self._print(expr.args[0])})'
 
     def _print_airyaiprime(self, expr):
-        return 'airy(1, %s)' % self._print(expr.args[0])
+        return f'airy(1, {self._print(expr.args[0])})'
 
     def _print_airybi(self, expr):
-        return 'airy(2, %s)' % self._print(expr.args[0])
+        return f'airy(2, {self._print(expr.args[0])})'
 
     def _print_airybiprime(self, expr):
-        return 'airy(3, %s)' % self._print(expr.args[0])
+        return f'airy(3, {self._print(expr.args[0])})'
 
     def _print_LambertW(self, expr):
         # argument order is reversed
@@ -386,7 +381,7 @@ class OctaveCodePrinter(CodePrinter):
             # Expressions that result in multiple statements won't work here.
             ecpairs = [f'({self._print(c)}).*({self._print(e)}) + (~({self._print(c)})).*('
                        for e, c in expr.args[:-1]]
-            elast = '%s' % self._print(expr.args[-1].expr)
+            elast = f'{self._print(expr.args[-1].expr)}'
             pw = ' ...\n'.join(ecpairs) + elast + ')'*len(ecpairs)
             # Note: current need these outer brackets for 2*pw.  Would be
             # nicer to teach parenthesize() to do this for us when needed!
@@ -394,11 +389,11 @@ class OctaveCodePrinter(CodePrinter):
         else:
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append('if (%s)' % self._print(c))
+                    lines.append(f'if ({self._print(c)})')
                 elif i == len(expr.args) - 1 and c == true:
                     lines.append('else')
                 else:
-                    lines.append('elseif (%s)' % self._print(c))
+                    lines.append(f'elseif ({self._print(c)})')
                 code0 = self._print(e)
                 lines.append(code0)
                 if i == len(expr.args) - 1:
@@ -428,7 +423,7 @@ class OctaveCodePrinter(CodePrinter):
         level = 0
         for n, line in enumerate(code):
             level -= decrease[n]
-            pretty.append('%s%s' % (tab*level, line))
+            pretty.append(f'{tab * level}{line}')
             level += increase[n]
         return pretty
 

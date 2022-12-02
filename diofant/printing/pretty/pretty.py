@@ -421,7 +421,7 @@ class PrettyPrinter(Printer):
             lines = []
             if use_ascii:
                 lines.append('_'*w + ' ')
-                lines.append(r'\%s`' % (' '*(w - 1)))
+                lines.append(f"\\{' '*(w - 1)}`")
                 for i in range(1, d):
                     lines.append(f"{' ' * i}\\{' ' * (w - i)}")
                 if more:

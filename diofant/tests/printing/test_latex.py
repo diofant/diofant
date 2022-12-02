@@ -641,7 +641,7 @@ def test_latex_productset():
     line = Interval(0, 1)
     bigline = Interval(0, 10)
     fset = FiniteSet(1, 2, 3)
-    assert latex(line**2) == r'%s^2' % latex(line)
+    assert latex(line**2) == f'{latex(line)}^2'
     assert latex(line * bigline * fset) == f'{latex(line)} \\times {latex(bigline)} \\times {latex(fset)}'
 
 
@@ -818,8 +818,8 @@ def test_latex_Piecewise():
     p = Piecewise((A**2, Eq(A, B)), (A*B, True))
     s = r'\begin{cases} A^{2} & \text{for}\: A = B \\A B & \text{otherwise} \end{cases}'
     assert latex(p) == s
-    assert latex(A*p) == r'A \left(%s\right)' % s
-    assert latex(p*A) == r'\left(%s\right) A' % s
+    assert latex(A*p) == f'A \\left({s}\\right)'
+    assert latex(p*A) == f'\\left({s}\\right) A'
 
 
 def test_latex_Matrix():

@@ -194,12 +194,10 @@ def postorder_traversal(node, keys=None):
             else:
                 args = ordered(args)
         for arg in args:
-            for subtree in postorder_traversal(arg, keys):
-                yield subtree
+            yield from postorder_traversal(arg, keys)
     elif iterable(node):
         for item in node:
-            for subtree in postorder_traversal(item, keys):
-                yield subtree
+            yield from postorder_traversal(item, keys)
     yield node
 
 
@@ -235,14 +233,12 @@ def variations(seq, n, repetition=False):
         seq = tuple(seq)
         if len(seq) < n:
             return
-        for i in permutations(seq, n):
-            yield i
+        yield from permutations(seq, n)
     else:
         if n == 0:
             yield ()
         else:
-            for i in product(seq, repeat=n):
-                yield i
+            yield from product(seq, repeat=n)
 
 
 def subsets(seq, k=None, repetition=False):
@@ -286,15 +282,12 @@ def subsets(seq, k=None, repetition=False):
     """
     if k is None:
         for k in range(len(seq) + 1):
-            for i in subsets(seq, k, repetition):
-                yield i
+            yield from subsets(seq, k, repetition)
     else:
         if not repetition:
-            for i in combinations(seq, k):
-                yield i
+            yield from combinations(seq, k)
         else:
-            for i in combinations_with_replacement(seq, k):
-                yield i
+            yield from combinations_with_replacement(seq, k)
 
 
 def filter_symbols(iterator, exclude):
@@ -1736,9 +1729,8 @@ def cantor_product(*args):
             except StopIteration:
                 exhausted[n] = True
             else:
-                for result in product(*(argslist[:n] + [argslist[n][-1:]] +
-                                        argslist[n + 1:])):
-                    yield result
+                yield from product(*(argslist[:n] + [argslist[n][-1:]] +
+                                     argslist[n + 1:]))
 
 
 def permute_signs(t):
@@ -1891,8 +1883,7 @@ def ordered(seq, keys=None, default=True, warn=False):
                 u = list(uniq(d[k]))
                 if len(u) > 1:
                     raise ValueError(f'not enough keys to break ties: {u}')
-        for v in d[k]:
-            yield v
+        yield from d[k]
         d.pop(k)
 
 

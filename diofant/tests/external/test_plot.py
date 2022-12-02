@@ -173,8 +173,8 @@ def test_matplotlib_intro():
 
         # 3d surface single plot.
         p = plot3d(x * y)
-        assert str(p) in ("""Plot object containing:
-[0]: cartesian surface: x*y for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+        assert str(p) in (f"""Plot object containing:
+[0]: cartesian surface: x*y for {_[0]} over (-10.0, 10.0) and {_[1]} over (-10.0, 10.0)"""
                           for _ in [(x, y), (y, x)])
         p.save(tmp_file(f'{name}_surface'))
         del p
@@ -194,8 +194,8 @@ def test_matplotlib_intro():
 
         # Single Parametric 3D plot
         p = plot3d_parametric_surface(sin(x + y), cos(x - y), x - y)
-        assert str(p) in ("""Plot object containing:
-[0]: parametric cartesian surface: (sin(x + y), cos(x - y), x - y) for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+        assert str(p) in (f"""Plot object containing:
+[0]: parametric cartesian surface: (sin(x + y), cos(x - y), x - y) for {_[0]} over (-10.0, 10.0) and {_[1]} over (-10.0, 10.0)"""
                           for _ in [(x, y), (y, x)])
         p.save(tmp_file(f'{name}_parametric_surface'))
         del p

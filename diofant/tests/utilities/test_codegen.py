@@ -423,10 +423,10 @@ def test_loops_c():
         '}\n'
     )
 
-    assert code in (expected % {'rhs': 'A[%s]*x[j]' % (i * n + j)},
-                    expected % {'rhs': 'A[%s]*x[j]' % (j + i * n)},
-                    expected % {'rhs': 'x[j]*A[%s]' % (i * n + j)},
-                    expected % {'rhs': 'x[j]*A[%s]' % (j + i * n)})
+    assert code in (expected % {'rhs': f'A[{i * n + j}]*x[j]'},
+                    expected % {'rhs': f'A[{j + i * n}]*x[j]'},
+                    expected % {'rhs': f'x[j]*A[{i * n + j}]'},
+                    expected % {'rhs': f'x[j]*A[{j + i * n}]'})
     assert f2 == 'file.h'
     assert interface == (
         '#ifndef PROJECT__FILE__H\n'
@@ -441,15 +441,16 @@ def test_dummy_loops_c():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i = Idx(i, m)
-    expected = (
-        '#include "file.h"\n'
-        '#include <math.h>\n'
-        'void test_dummies(int m_%(mno)i, double *x, double *y) {\n'
-        '   for (int i_%(ino)i=0; i_%(ino)i<m_%(mno)i; i_%(ino)i++){\n'
-        '      y[i_%(ino)i] = x[i_%(ino)i];\n'
-        '   }\n'
-        '}\n'
-    ) % {'ino': i.label.dummy_index, 'mno': m.dummy_index}
+    ino = i.label.dummy_index
+    mno = m.dummy_index
+    expected = f"""#include "file.h"
+#include <math.h>
+void test_dummies(int m_{mno}, double *x, double *y) {{
+   for (int i_{ino}=0; i_{ino}<m_{mno}; i_{ino}++){{
+      y[i_{ino}] = x[i_{ino}];
+   }}
+}}
+"""
     r = make_routine('test_dummies', Eq(y[i], x[i]))
     c = CCodeGen()
     code = get_string(c.dump_c, [r])
@@ -470,32 +471,30 @@ def test_partial_loops_c():
         ('matrix_vector', Eq(y[i], A[i, j]*x[j])), 'C', 'file', header=False, empty=False)
 
     assert f1 == 'file.c'
-    expected = (
-        '#include "file.h"\n'
-        '#include <math.h>\n'
-        'void matrix_vector(double *A, int m, int n, int o, int p, double *x, double *y) {\n'
-        '   for (int i=o; i<%(upperi)s; i++){\n'
-        '      y[i] = 0;\n'
-        '   }\n'
-        '   for (int i=o; i<%(upperi)s; i++){\n'
-        '      for (int j=0; j<n; j++){\n'
-        '         y[i] = %(rhs)s + y[i];\n'
-        '      }\n'
-        '   }\n'
-        '}\n'
-    ) % {'upperi': m - 4, 'rhs': '%(rhs)s'}
 
-    assert code in (expected % {'rhs': 'A[%s]*x[j]' % (i * p + j)},
-                    expected % {'rhs': 'A[%s]*x[j]' % (j + i * p)},
-                    expected % {'rhs': 'x[j]*A[%s]' % (i * p + j)},
-                    expected % {'rhs': 'x[j]*A[%s]' % (j + i * p)})
+    upperi = m - 4
+    rhs = f'x[j]*A[{j + i * p}]'
+    expected = f"""#include "file.h"
+#include <math.h>
+void matrix_vector(double *A, int m, int n, int o, int p, double *x, double *y) {{
+   for (int i=o; i<{upperi}; i++){{
+      y[i] = 0;
+   }}
+   for (int i=o; i<{upperi}; i++){{
+      for (int j=0; j<n; j++){{
+         y[i] = {rhs} + y[i];
+      }}
+   }}
+}}
+"""
+
+    assert code == expected
     assert f2 == 'file.h'
-    assert interface == (
-        '#ifndef PROJECT__FILE__H\n'
-        '#define PROJECT__FILE__H\n'
-        'void matrix_vector(double *A, int m, int n, int o, int p, double *x, double *y);\n'
-        '#endif\n'
-    )
+    assert interface == """#ifndef PROJECT__FILE__H
+#define PROJECT__FILE__H
+void matrix_vector(double *A, int m, int n, int o, int p, double *x, double *y);
+#endif
+"""
 
 
 def test_output_arg_c():
@@ -1095,18 +1094,19 @@ def test_dummy_loops_f95():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i = Idx(i, m)
-    expected = (
-        'subroutine test_dummies(m_%(mcount)i, x, y)\n'
-        'implicit none\n'
-        'INTEGER*4, intent(in) :: m_%(mcount)i\n'
-        'REAL*8, intent(in), dimension(1:m_%(mcount)i) :: x\n'
-        'REAL*8, intent(out), dimension(1:m_%(mcount)i) :: y\n'
-        'INTEGER*4 :: i_%(icount)i\n'
-        'do i_%(icount)i = 1, m_%(mcount)i\n'
-        '   y(i_%(icount)i) = x(i_%(icount)i)\n'
-        'end do\n'
-        'end subroutine\n'
-    ) % {'icount': i.label.dummy_index, 'mcount': m.dummy_index}
+    icount = i.label.dummy_index
+    mcount = m.dummy_index
+    expected = f"""subroutine test_dummies(m_{mcount}, x, y)
+implicit none
+INTEGER*4, intent(in) :: m_{mcount}
+REAL*8, intent(in), dimension(1:m_{mcount}) :: x
+REAL*8, intent(out), dimension(1:m_{mcount}) :: y
+INTEGER*4 :: i_{icount}
+do i_{icount} = 1, m_{mcount}
+   y(i_{icount}) = x(i_{icount})
+end do
+end subroutine
+"""
     r = make_routine('test_dummies', Eq(y[i], x[i]))
     c = FCodeGen()
     code = get_string(c.dump_f95, [r])
@@ -1168,39 +1168,36 @@ def test_partial_loops_f():
     i = Idx('i', (o, m - 5))  # Note: bounds are inclusive
     j = Idx('j', n)          # dimension n corresponds to bounds (0, n - 1)
 
-    (_, code), _ = codegen(
-        ('matrix_vector', Eq(y[i], A[i, j]*x[j])), 'F95', 'file', header=False, empty=False)
+    (_, code), _ = codegen(('matrix_vector', Eq(y[i], A[i, j]*x[j])),
+                           'F95', 'file', header=False, empty=False)
 
-    expected = (
-        'subroutine matrix_vector(A, m, n, o, p, x, y)\n'
-        'implicit none\n'
-        'INTEGER*4, intent(in) :: m\n'
-        'INTEGER*4, intent(in) :: n\n'
-        'INTEGER*4, intent(in) :: o\n'
-        'INTEGER*4, intent(in) :: p\n'
-        'REAL*8, intent(in), dimension(1:m, 1:p) :: A\n'
-        'REAL*8, intent(in), dimension(1:n) :: x\n'
-        'REAL*8, intent(out), dimension(1:%(iup-ilow)s) :: y\n'
-        'INTEGER*4 :: i\n'
-        'INTEGER*4 :: j\n'
-        'do i = %(ilow)s, %(iup)s\n'
-        '   y(i) = 0\n'
-        'end do\n'
-        'do i = %(ilow)s, %(iup)s\n'
-        '   do j = 1, n\n'
-        '      y(i) = %(rhs)s + y(i)\n'
-        '   end do\n'
-        'end do\n'
-        'end subroutine\n'
-    ) % {
-        'rhs': '%(rhs)s',
-        'iup': str(m - 4),
-        'ilow': str(1 + o),
-        'iup-ilow': str(m - 4 - o)
-    }
+    rhs = 'x(j)*A(i, j)'
+    iup = str(m - 4)
+    ilow = str(1 + o)
+    iup_ilow = str(m - 4 - o)
+    expected = f"""subroutine matrix_vector(A, m, n, o, p, x, y)
+implicit none
+INTEGER*4, intent(in) :: m
+INTEGER*4, intent(in) :: n
+INTEGER*4, intent(in) :: o
+INTEGER*4, intent(in) :: p
+REAL*8, intent(in), dimension(1:m, 1:p) :: A
+REAL*8, intent(in), dimension(1:n) :: x
+REAL*8, intent(out), dimension(1:{iup_ilow}) :: y
+INTEGER*4 :: i
+INTEGER*4 :: j
+do i = {ilow}, {iup}
+   y(i) = 0
+end do
+do i = {ilow}, {iup}
+   do j = 1, n
+      y(i) = {rhs} + y(i)
+   end do
+end do
+end subroutine
+"""
 
-    assert code in (expected % {'rhs': 'A(i, j)*x(j)'},
-                    expected % {'rhs': 'x(j)*A(i, j)'})
+    assert code == expected
 
 
 def test_output_arg_f():

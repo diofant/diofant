@@ -552,11 +552,11 @@ def test_dummy_loops():
     y = IndexedBase('y')
     i = Idx(i, m)
 
-    expected = (
-        'do i_%(icount)i = 1, m_%(mcount)i\n'
-        '   y(i_%(icount)i) = x(i_%(icount)i)\n'
-        'end do'
-    ) % {'icount': i.label.dummy_index, 'mcount': m.dummy_index}
+    icount = i.label.dummy_index
+    mcount = m.dummy_index
+    expected = f"""do i_{icount} = 1, m_{mcount}
+   y(i_{icount}) = x(i_{icount})
+end do"""
     code = fcode(x[i], assign_to=y[i], source_format='free')
     assert code == expected
 
