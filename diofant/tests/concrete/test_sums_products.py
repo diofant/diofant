@@ -159,12 +159,14 @@ def test_arithmetic_sums():
     s1 = Sum(n, (n, lo, hi))
     s2 = Sum(n, (n, hi, lo))
     assert s1 != s2
-    assert s1.doit() == 3 and s2.doit() == 0
+    assert s1.doit() == 3
+    assert s2.doit() == 0
     lo, hi = x, x + 1
     s1 = Sum(n, (n, lo, hi))
     s2 = Sum(n, (n, hi, lo))
     assert s1 != s2
-    assert s1.doit() == 2*x + 1 and s2.doit() == 0
+    assert s1.doit() == 2*x + 1
+    assert s2.doit() == 0
     assert Sum(Integral(x, (x, 1, y)) + x, (x, 1, 2)).doit() == y**2 + 2
     assert summation(1, (n, 1, 10)) == 10
     assert summation(2*n, (n, 0, 10**10)) == 100000000010000000000
@@ -338,7 +340,8 @@ def test_euler_maclaurin():
     def check_exact(f, a, b, m, n):
         A = Sum(f, (k, a, b))
         s, e = A.euler_maclaurin(m, n)
-        assert (e == 0) and (s.expand() == A.doit())
+        assert e == 0
+        assert s.expand() == A.doit()
     check_exact(k**4, a, b, 0, 2)
     check_exact(k**4 + 2*k, a, b, 1, 2)
     check_exact(k**4 + k**2, a, b, 1, 5)

@@ -324,7 +324,8 @@ def test_factor_nc():
         ex = _mexpand(e)
         assert ex.is_Add
         f = factor_nc(ex)
-        assert not f.is_Add and _mexpand(f) == ex
+        assert not f.is_Add
+        assert _mexpand(f) == ex
 
     factor_nc_test(x*(1 + y))
     factor_nc_test(n*(x + 1))

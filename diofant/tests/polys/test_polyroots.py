@@ -594,7 +594,8 @@ def test_roots_preprocessed():
 
     for r1, r2 in zip(R1, R2):
         match = r1.match(p)
-        assert match is not None and abs(match[w] - r2) < 1e-10
+        assert match is not None
+        assert abs(match[w] - r2) < 1e-10
 
 
 def test_roots_mixed():

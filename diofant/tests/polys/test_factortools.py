@@ -259,11 +259,13 @@ def test__zz_wang():
     S = w_1.eval([(y, A[0]), (z, A[1])])
     cs, s = S.primitive()
 
-    assert cs == 1 and s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
-                                  105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
+    assert cs == 1
+    assert s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
+                      105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
 
     assert R._zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert s.is_squarefree and s.degree() == w_1.degree()
+    assert s.is_squarefree
+    assert s.degree() == w_1.degree()
 
     _, H = UV._zz_factor_sqf(s)
 

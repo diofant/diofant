@@ -106,8 +106,11 @@ def test_union():
     X = Interval(1, 3) + FiniteSet(5)
     Y = Interval(1, 2) + FiniteSet(3)
     XandY = X.intersection(Y)
-    assert 2 in X and 3 in X and 3 in XandY
-    assert XandY.is_subset(X) and XandY.is_subset(Y)
+    assert 2 in X
+    assert 3 in X
+    assert 3 in XandY
+    assert XandY.is_subset(X)
+    assert XandY.is_subset(Y)
 
     pytest.raises(TypeError, lambda: Union(1, 2, 3))
 
@@ -599,12 +602,15 @@ def test_finite_basic():
     B = FiniteSet(3, 4, 5)
     AorB = Union(A, B)
     AandB = A.intersection(B)
-    assert A.is_subset(AorB) and B.is_subset(AorB)
+    assert A.is_subset(AorB)
+    assert B.is_subset(AorB)
     assert AandB.is_subset(A)
     assert AandB == FiniteSet(3)
 
-    assert A.inf == 1 and A.sup == 3
-    assert AorB.inf == 1 and AorB.sup == 5
+    assert A.inf == 1
+    assert A.sup == 3
+    assert AorB.inf == 1
+    assert AorB.sup == 5
     assert FiniteSet(x, 1, 5).sup == Max(x, 5)
     assert FiniteSet(x, 1, 5).inf == Min(x, 1)
 
@@ -620,11 +626,16 @@ def test_finite_basic():
     assert (A >= B) is False
     assert (A < B) is False
     assert (A <= B) is False
-    assert AorB > A and AorB > B
-    assert AorB >= A and AorB >= B
-    assert A >= A and A <= A  # pylint: disable=comparison-with-itself
-    assert A >= AandB and B >= AandB
-    assert A > AandB and B > AandB
+    assert AorB > A
+    assert AorB > B
+    assert AorB >= A
+    assert AorB >= B
+    assert A >= A  # pylint: disable=comparison-with-itself
+    assert A <= A  # pylint: disable=comparison-with-itself
+    assert A >= AandB
+    assert B >= AandB
+    assert A > AandB
+    assert B > AandB
 
     assert (FiniteSet(pi, E).evalf() ==
             FiniteSet(Float('2.7182818284590451', dps=15),

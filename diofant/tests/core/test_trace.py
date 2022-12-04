@@ -59,7 +59,8 @@ def test_trace_new():
 
     # trace indices test
     t = Tr((A + B), [2])
-    assert t.args[0].args[1] == Tuple(2) and t.args[1].args[1] == Tuple(2)
+    assert t.args[0].args[1] == Tuple(2)
+    assert t.args[1].args[1] == Tuple(2)
 
     t = Tr(a*A, [2, 3])
     assert t.args[1].args[1] == Tuple(2, 3)
@@ -100,4 +101,5 @@ def test_permute():
 
     t1 = Tr(A*B)
     t2 = t1.permute(1)
-    assert id(t1) != id(t2) and t1 == t2
+    assert id(t1) != id(t2)
+    assert t1 == t2

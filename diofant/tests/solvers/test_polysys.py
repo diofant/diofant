@@ -235,7 +235,8 @@ def test_solve_biquadratic():
 
     result = [tuple(r.values()) for r in solve_poly_system([f_1, f_2], x, y)]
 
-    assert len(result) == 2 and all(len(r) == 2 for r in result)
+    assert len(result) == 2
+    assert all(len(r) == 2 for r in result)
     assert all(r.count(query) == 1 for r in flatten(result))
 
     f_1 = (x - x0)**2 + (y - y0)**2 - r**2
@@ -243,7 +244,8 @@ def test_solve_biquadratic():
 
     result = [tuple(r.values()) for r in solve_poly_system([f_1, f_2], x, y)]
 
-    assert len(result) == 2 and all(len(r) == 2 for r in result)
+    assert len(result) == 2
+    assert all(len(r) == 2 for r in result)
     assert all(len(r.find(query)) == 1 for r in flatten(result))
 
     eqs = [y**2 - 4 + x, y*2 + 3*x - 7]

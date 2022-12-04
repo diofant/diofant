@@ -156,7 +156,9 @@ def _minimal_polynomial_sq(p, n, x):
     """
     p = sympify(p)
     n = sympify(n)
-    assert n.is_Integer and n > 1 and _is_sum_surds(p)
+    assert n.is_Integer
+    assert n > 1
+    assert _is_sum_surds(p)
     pn = root(p, n)
     # eliminate the square roots
     p -= x

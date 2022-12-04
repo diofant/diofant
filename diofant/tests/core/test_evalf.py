@@ -461,7 +461,8 @@ def test_scaled_zero():
 
 def test_chop_value():
     for i in range(-27, 28):
-        assert (Pow(10, i)*2).evalf(chop=10**i) and not (Pow(10, i)).evalf(chop=10**i)
+        assert (Pow(10, i)*2).evalf(chop=10**i)
+        assert not (Pow(10, i)).evalf(chop=10**i)
 
 
 def test_infinities():

@@ -132,8 +132,11 @@ def test_Dict():
     assert set(d.keys()) == {x, y, z}
     assert set(d.values()) == {1, 2, 3}
     assert d.get(5, 'default') == 'default'
-    assert x in d and z in d and 5 not in d
-    assert d.has(x) and d.has(1)  # Diofant Basic .has method
+    assert x in d
+    assert z in d
+    assert 5 not in d
+    assert d.has(x)
+    assert d.has(1)  # Diofant Basic .has method
 
     # Test input types
     # input - a python dict

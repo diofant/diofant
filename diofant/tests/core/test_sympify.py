@@ -64,7 +64,8 @@ def test_sympify1():
 
 def test_sympify_Fraction():
     value = sympify(fractions.Fraction(101, 127))
-    assert value == Rational(101, 127) and type(value) is Rational
+    assert value == Rational(101, 127)
+    assert type(value) is Rational
 
 
 def test_sympify_gmpy():
@@ -72,16 +73,19 @@ def test_sympify_gmpy():
         import gmpy2 as gmpy
 
         value = sympify(gmpy.mpz(1000001))
-        assert value == Integer(1000001) and type(value) is Integer
+        assert value == Integer(1000001)
+        assert type(value) is Integer
 
         value = sympify(gmpy.mpq(101, 127))
-        assert value == Rational(101, 127) and type(value) is Rational
+        assert value == Rational(101, 127)
+        assert type(value) is Rational
 
 
 @conserve_mpmath_dps
 def test_sympify_mpmath():
     value = sympify(mpmath.mpf(1.0))
-    assert value == Float(1.0) and type(value) is Float
+    assert value == Float(1.0)
+    assert type(value) is Float
 
     mpmath.mp.dps = 12
     assert sympify(
@@ -414,9 +418,11 @@ def test_sympyissue_4988():
 
 def test_geometry():
     p = sympify(Point(0, 1))
-    assert p == Point(0, 1) and isinstance(p, Point)
+    assert p == Point(0, 1)
+    assert isinstance(p, Point)
     L = sympify(Line(p, (1, 0)))
-    assert L == Line((0, 1), (1, 0)) and isinstance(L, Line)
+    assert L == Line((0, 1), (1, 0))
+    assert isinstance(L, Line)
 
 
 def test_sympyissue_6540():

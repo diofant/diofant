@@ -97,7 +97,8 @@ def test_Xor():
     assert Xor(e, e.canonical) == Xor(0, 0) == Xor(1, 1)
 
     e = Integer(1) < a
-    assert e != e.canonical and Xor(e, e.canonical) is false
+    assert e != e.canonical
+    assert Xor(e, e.canonical) is false
 
     assert Xor(a > 1, b > c) == Xor(a > 1, b > c, evaluate=False)
 

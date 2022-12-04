@@ -141,7 +141,8 @@ def test_nargs():
     pytest.raises(ValueError, lambda: Function('f', nargs=()))
 
     p = Function('g', nargs=(1, 2))(1)
-    assert p.args == (1,) and p.nargs == FiniteSet(1, 2)
+    assert p.args == (1,)
+    assert p.nargs == FiniteSet(1, 2)
 
     pytest.raises(ValueError, lambda: sin(x, no_such_option=1))
 

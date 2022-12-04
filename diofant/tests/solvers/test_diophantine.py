@@ -602,7 +602,8 @@ def test_prime_as_sum_of_two_squares():
         assert a**2 + b**2 == i
     assert prime_as_sum_of_two_squares(7) is None
     ans = prime_as_sum_of_two_squares(800029)
-    assert ans == (450, 773) and type(ans[0]) is int
+    assert ans == (450, 773)
+    assert type(ans[0]) is int
 
 
 def test_sum_of_three_squares():

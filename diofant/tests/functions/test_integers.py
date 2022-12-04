@@ -55,7 +55,8 @@ def test_floor():
     assert floor(I) == I
     assert floor(-I) == -I
     e = floor(i)
-    assert isinstance(e, floor) and e.args[0] == i
+    assert isinstance(e, floor)
+    assert e.args[0] == i
 
     assert floor(oo*I) == oo*I
     assert floor(-oo*I) == -oo*I
@@ -167,7 +168,8 @@ def test_ceiling():
     assert ceiling(I) == I
     assert ceiling(-I) == -I
     e = ceiling(i)
-    assert isinstance(e, ceiling) and e.args[0] == i
+    assert isinstance(e, ceiling)
+    assert e.args[0] == i
 
     assert ceiling(oo*I) == oo*I
     assert ceiling(-oo*I) == -oo*I

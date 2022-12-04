@@ -58,7 +58,8 @@ def test_PolynomialRing___init__():
 
     R, _ = ring(x, ZZ)
 
-    assert R.ngens == 1 and R.domain == ZZ
+    assert R.ngens == 1
+    assert R.domain == ZZ
 
 
 def test_PolynomialRing___hash__():
@@ -360,23 +361,28 @@ def test_PolyElement_from_expr():
 
     f = R.convert(1)
 
-    assert f == 1 and isinstance(f, R.dtype)
+    assert f == 1
+    assert isinstance(f, R.dtype)
 
     f = R.convert(x)
 
-    assert f == X and isinstance(f, R.dtype)
+    assert f == X
+    assert isinstance(f, R.dtype)
 
     f = R.convert(x*y*z)
 
-    assert f == X*Y*Z and isinstance(f, R.dtype)
+    assert f == X*Y*Z
+    assert isinstance(f, R.dtype)
 
     f = R.convert(x*y*z + x*y + x)
 
-    assert f == X*Y*Z + X*Y + X and isinstance(f, R.dtype)
+    assert f == X*Y*Z + X*Y + X
+    assert isinstance(f, R.dtype)
 
     f = R.convert(x**3*y*z + x**2*y**7 + 1)
 
-    assert f == X**3*Y*Z + X**2*Y**7 + 1 and isinstance(f, R.dtype)
+    assert f == X**3*Y*Z + X**2*Y**7 + 1
+    assert isinstance(f, R.dtype)
 
     pytest.raises(CoercionFailed, lambda: R.convert(1/x))
     pytest.raises(CoercionFailed, lambda: R.convert(2**x))
@@ -830,20 +836,24 @@ def test_PolyElement___add__():
     m = (1, 2)
     p1 = p._iadd_term((m, 5))
 
-    assert p is p1 and p1 == x**4 + 5*x*y**2 + 2*y
+    assert p is p1
+    assert p1 == x**4 + 5*x*y**2 + 2*y
 
     p2 = p._iadd_term(((0, 1), 2))
 
-    assert p == p2 and p2 == x**4 + 5*x*y**2 + 4*y
+    assert p == p2
+    assert p2 == x**4 + 5*x*y**2 + 4*y
 
     p3 = p._iadd_term(((0, 1), -4))
 
-    assert p == p3 and p3 == x**4 + 5*x*y**2
+    assert p == p3
+    assert p3 == x**4 + 5*x*y**2
 
     p = x
     p1 = p._iadd_term((m, 5))
 
-    assert p is not p1 and p1 == 5*x*y**2 + x
+    assert p is not p1
+    assert p1 == 5*x*y**2 + x
 
     assert (x + y - 1) + 1 == x + y
 
@@ -869,7 +879,8 @@ def test_PolyElement___add__():
 
     p = p1._iadd_poly_term(p2, (m, 3))
 
-    assert p is p1 and p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
+    assert p is p1
+    assert p == x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
 
     f = f_polys()[0]
 
@@ -2621,7 +2632,8 @@ def test_PolyElement_eval():
     f = x**3 + 4*x**2 + 2*x + 3
     r = f.eval(x, 0)
 
-    assert r == 3 and not isinstance(r, PolyElement)
+    assert r == 3
+    assert not isinstance(r, PolyElement)
 
     pytest.raises(CoercionFailed, lambda: f.eval(x, QQ(1, 7)))
 
@@ -2660,23 +2672,28 @@ def test_PolyElement_eval():
     f = (x*y)**3 + 4*(x*y)**2 + 2*x*y + 3
     r = f.eval(x, 0)
 
-    assert r == 3 and isinstance(r, R.drop(x).dtype)
+    assert r == 3
+    assert isinstance(r, R.drop(x).dtype)
 
     r = f.eval([(x, 0), (y, 0)])
 
-    assert r == 3 and isinstance(r, R.drop(x, y).dtype)
+    assert r == 3
+    assert isinstance(r, R.drop(x, y).dtype)
 
     r = f.eval(y, 0)
 
-    assert r == 3 and isinstance(r, R.drop(y).dtype)
+    assert r == 3
+    assert isinstance(r, R.drop(y).dtype)
 
     r = f.eval([(y, 0), (x, 0)])
 
-    assert r == 3 and isinstance(r, R.drop(y, x).dtype)
+    assert r == 3
+    assert isinstance(r, R.drop(y, x).dtype)
 
     r = f.eval([(x, 0), (y, 0), (z, 0)])
 
-    assert r == 3 and not isinstance(r, PolyElement)
+    assert r == 3
+    assert not isinstance(r, PolyElement)
 
     pytest.raises(CoercionFailed, lambda: f.eval([(x, 1), (y, QQ(1, 7))]))
     pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, 1)]))
@@ -2794,7 +2811,8 @@ def test_PolyElement_compose():
     f = x**3 + 4*x**2 + 2*x + 3
     r = f.compose(x, 0)
 
-    assert r == 3 and isinstance(r, R.dtype)
+    assert r == 3
+    assert isinstance(r, R.dtype)
 
     assert f.compose(x, x) == f
     assert f.compose(x, x**2) == x**6 + 4*x**4 + 2*x**2 + 3
@@ -2844,22 +2862,26 @@ def test_PolyElement_compose():
     f = x**3 + 4*x**2 + 2*x + 3
     r = f.compose(x, 0)
 
-    assert r == 3 and isinstance(r, R.dtype)
+    assert r == 3
+    assert isinstance(r, R.dtype)
 
     r = f.compose([(x, 0), (y, 0)])
 
-    assert r == 3 and isinstance(r, R.dtype)
+    assert r == 3
+    assert isinstance(r, R.dtype)
 
     r = f.compose({x: 0, y: 0})
 
-    assert r == 3 and isinstance(r, R.dtype)
+    assert r == 3
+    assert isinstance(r, R.dtype)
 
     pytest.raises(ValueError, lambda: f.compose('spam'))
 
     r = (x**3 + 4*x**2 + 2*x*y*z + 3).compose(x, y*z**2 - 1)
     q = (y*z**2 - 1)**3 + 4*(y*z**2 - 1)**2 + 2*(y*z**2 - 1)*y*z + 3
 
-    assert r == q and isinstance(r, R.dtype)
+    assert r == q
+    assert isinstance(r, R.dtype)
 
 
 def test_PolyElement_is_():

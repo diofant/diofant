@@ -249,7 +249,8 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols(('x', '', 'y', '', 'z')))
 
     a, b = symbols('x,y', extended_real=True)
-    assert a.is_extended_real and b.is_extended_real
+    assert a.is_extended_real
+    assert b.is_extended_real
 
     x0 = Symbol('x0')
     x1 = Symbol('x1')

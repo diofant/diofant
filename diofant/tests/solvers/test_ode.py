@@ -1670,8 +1670,10 @@ def test_1st_homogeneous_coeff_corner_case():
     c2 = classify_ode(eq2, f(x))
     sdi = '1st_homogeneous_coeff_subs_dep_div_indep'
     sid = '1st_homogeneous_coeff_subs_indep_div_dep'
-    assert sid not in c1 and sdi not in c1
-    assert sid not in c2 and sdi not in c2
+    assert sid not in c1
+    assert sdi not in c1
+    assert sid not in c2
+    assert sdi not in c2
 
 
 def test_nth_linear_constant_coeff_homogeneous():

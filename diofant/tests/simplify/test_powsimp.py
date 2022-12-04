@@ -92,7 +92,8 @@ def test_powsimp():
 
     # issue sympy/sympy#6368
     eq = Mul(*[sqrt(Dummy(imaginary=True)) for i in range(3)])
-    assert powsimp(eq) == eq and eq.is_Mul
+    assert powsimp(eq) == eq
+    assert eq.is_Mul
 
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
