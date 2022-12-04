@@ -416,7 +416,7 @@ classify_diop.__doc__ = """
     is one of the following:
 
         * %s
-""" % ('\n        * '.join(sorted(diop_known)))
+""" % ('\n        * '.join(sorted(diop_known)))  # noqa: SFS101
 
 
 def diop_linear(eq, param=symbols('t', integer=True)):

@@ -114,24 +114,23 @@ class DiofantDeprecationWarning(DeprecationWarning):
 
         if feature:
             if deprecated_since_version:
-                self.fullMessage = '%s has been deprecated since Diofant %s. ' % \
-                                   (feature, deprecated_since_version)
+                self.fullMessage = f'{feature} has been deprecated since Diofant {deprecated_since_version}. '
             else:
                 self.fullMessage = f'{feature} has been deprecated. '
 
         if last_supported_version:
             self.fullMessage += ('It will be last supported in Diofant '
-                                 'version %s. ') % last_supported_version
+                                 f'version {last_supported_version}. ')
         if useinstead:
             self.fullMessage += f'Use {useinstead} instead. '
         if issue:
             self.fullMessage += ('See '
-                                 'https://github.com/diofant/diofant/issues/%d for more '
-                                 'info. ') % issue
+                                 f'https://github.com/diofant/diofant/issues/{issue}'
+                                 ' for more info. ')
 
         if value:
             if not isinstance(value, str):
-                value = '(%s)' % repr(value)
+                value = f'({value!r})'
             value = ' ' + value
         else:
             value = ''
@@ -139,7 +138,7 @@ class DiofantDeprecationWarning(DeprecationWarning):
         self.fullMessage += value
 
     def __str__(self):
-        return '\n%s\n' % filldedent(self.fullMessage)
+        return f'\n{filldedent(self.fullMessage)}\n'
 
     def warn(self, stacklevel=2):
         see_above = self.fullMessage

@@ -1105,7 +1105,7 @@ class CovarDerivativeOp(Expr):
         return self._wrt.subs(list(zip(vectors, base_ops))).rcall(field)
 
     def _latex(self, printer, *args):
-        return r'\mathbb{\nabla}_{%s}' % printer._print(self._wrt)
+        return f'\\mathbb{{\\nabla}}_{{{printer._print(self._wrt)}}}'
 
 
 ###############################################################################

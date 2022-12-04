@@ -145,9 +145,9 @@ class CCodePrinter(CodePrinter):
             return self._print_Function(expr)
         PREC = precedence(expr)
         if expr.exp == -1:
-            return '1.0/%s' % (self.parenthesize(expr.base, PREC))
+            return f'1.0/{self.parenthesize(expr.base, PREC)}'
         elif expr.exp == 0.5:
-            return 'sqrt(%s)' % self._print(expr.base)
+            return f'sqrt({self._print(expr.base)})'
         else:
             return f'pow({self._print(expr.base)}, {self._print(expr.exp)})'
 
@@ -185,11 +185,11 @@ class CCodePrinter(CodePrinter):
         if expr.has(Assignment):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append('if (%s) {' % self._print(c))
+                    lines.append(f'if ({self._print(c)}) {{')
                 elif i == len(expr.args) - 1 and c == true:
                     lines.append('else {')
                 else:
-                    lines.append('else if (%s) {' % self._print(c))
+                    lines.append(f'else if ({self._print(c)}) {{')
                 code0 = self._print(e)
                 lines.append(code0)
                 lines.append('}')
@@ -201,7 +201,7 @@ class CCodePrinter(CodePrinter):
             # Indexed expressions).
             ecpairs = [f'(({self._print(c)}) ? (\n{self._print(e)}\n)\n'
                        for e, c in expr.args[:-1]]
-            last_line = ': (\n%s\n)' % self._print(expr.args[-1].expr)
+            last_line = f': (\n{self._print(expr.args[-1].expr)}\n)'
             return ': '.join(ecpairs) + last_line + ' '.join([')'*len(ecpairs)])
 
     def _print_ITE(self, expr):
@@ -248,7 +248,7 @@ class CCodePrinter(CodePrinter):
                 pretty.append(line)
                 continue
             level -= decrease[n]
-            pretty.append('%s%s' % (tab*level, line))
+            pretty.append(f'{tab * level}{line}')
             level += increase[n]
         return pretty
 

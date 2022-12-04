@@ -152,20 +152,14 @@ class MpmathPrinter(LambdaPrinter):
 
     def _print_RootOf(self, expr):
         if expr.is_real:
-            return ('findroot(lambda %s: %s, %s, '
-                    "method='bisection')" % (self._print(expr.poly.gen),
-                                             self._print(expr.expr),
-                                             self._print(expr.interval.as_tuple())))
+            return f"findroot(lambda {self._print(expr.poly.gen)}: {self._print(expr.expr)}, {self._print(expr.interval.as_tuple())}, method='bisection')"
         else:
-            return ('findroot(lambda %s: %s, mpc%s, '
-                    "method='secant')" % (self._print(expr.poly.gen),
-                                          self._print(expr.expr),
-                                          self._print(expr.interval.center)))
+            return f"findroot(lambda {self._print(expr.poly.gen)}: {self._print(expr.expr)}, mpc{self._print(expr.interval.center)}, method='secant')"
 
     def _print_Sum(self, expr):
-        return 'nsum(lambda %s: %s, %s)' % (','.join([self._print(v) for v in expr.variables]),
-                                            self._print(expr.function),
-                                            ','.join([self._print(v[1:]) for v in expr.limits]))
+        return 'nsum(lambda {}: {}, {})'.format(','.join([self._print(v) for v in expr.variables]),  # noqa: SFS201
+                                                self._print(expr.function),
+                                                ','.join([self._print(v[1:]) for v in expr.limits]))
 
     def _print_Infinity(self, expr):
         return 'inf'

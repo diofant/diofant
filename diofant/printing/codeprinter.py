@@ -60,7 +60,7 @@ class Assignment(Relational):
         # Tuple of things that can be on the lhs of an assignment
         assignable = (Symbol, MatrixSymbol, MatrixElement, Indexed)
         if not isinstance(lhs, assignable):
-            raise TypeError('Cannot assign to lhs of type %s.' % type(lhs))
+            raise TypeError(f'Cannot assign to lhs of type {type(lhs)}.')
         # Indexed types implement shape, but don't define it until later. This
         # causes issues in assignment validation. For now, matrices are defined
         # as anything with a shape that is not an Indexed
@@ -224,9 +224,7 @@ class CodePrinter(StrPrinter):
 
                     lines.extend(openloop)
                     lines.extend(openloop_d)
-                    text = '%s = %s' % (lhs_printed,
-                                        StrPrinter.doprint(self,
-                                                           assign_to + term))
+                    text = f'{lhs_printed} = {StrPrinter.doprint(self, assign_to + term)}'
                     lines.append(self._get_statement(text))
                     lines.extend(closeloop_d)
                     lines.extend(closeloop)
@@ -374,7 +372,7 @@ class CodePrinter(StrPrinter):
             try:
                 return func(*[self.parenthesize(item, 0) for item in expr.args])
             except TypeError:
-                return '%s(%s)' % (func, self.stringify(expr.args, ', '))
+                return f"{func}({self.stringify(expr.args, ', ')})"
         elif hasattr(expr, '_imp_') and isinstance(expr._imp_, Lambda):
             # inlined function
             return self._print(expr._imp_(*expr.args))
@@ -411,27 +409,27 @@ class CodePrinter(StrPrinter):
 
     def _print_And(self, expr):
         PREC = precedence(expr)
-        return (' %s ' % self._operators['and']).join(self.parenthesize(a, PREC)
-                                                      for a in sorted(expr.args, key=default_sort_key))
+        return (f" {self._operators['and']} ").join(self.parenthesize(a, PREC)
+                                                    for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Or(self, expr):
         PREC = precedence(expr)
-        return (' %s ' % self._operators['or']).join(self.parenthesize(a, PREC)
-                                                     for a in sorted(expr.args, key=default_sort_key))
+        return (f" {self._operators['or']} ").join(self.parenthesize(a, PREC)
+                                                   for a in sorted(expr.args, key=default_sort_key))
 
     def _print_Xor(self, expr):
         if self._operators.get('xor') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
-        return (' %s ' % self._operators['xor']).join(self.parenthesize(a, PREC)
-                                                      for a in expr.args)
+        return (f" {self._operators['xor']} ").join(self.parenthesize(a, PREC)
+                                                    for a in expr.args)
 
     def _print_Equivalent(self, expr):
         if self._operators.get('equivalent') is None:
             return self._print_not_supported(expr)
         PREC = precedence(expr)
-        return (' %s ' % self._operators['equivalent']).join(self.parenthesize(a, PREC)
-                                                             for a in expr.args)
+        return (f" {self._operators['equivalent']} ").join(self.parenthesize(a, PREC)
+                                                           for a in expr.args)
 
     def _print_Not(self, expr):
         PREC = precedence(expr)
@@ -477,7 +475,7 @@ class CodePrinter(StrPrinter):
         elif len(b) == 1:
             return sign + '*'.join(a_str) + '/' + b_str[0]
         else:
-            return sign + '*'.join(a_str) + '/(%s)' % '*'.join(b_str)
+            return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
 
     def _print_not_supported(self, expr):
         self._not_supported.add(expr)
