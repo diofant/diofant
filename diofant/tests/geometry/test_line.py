@@ -333,13 +333,17 @@ def test_line_geom():
     assert Segment(Point(0, -1), s1.random_point()).slope == s1.slope
     p_r3 = r3.random_point()
     p_r4 = r4.random_point()
-    assert p_r3.x >= p1.x and p_r3.y >= p1.y
-    assert p_r4.x <= p2.x and p_r4.y <= p2.y
+    assert p_r3.x >= p1.x
+    assert p_r3.y >= p1.y
+    assert p_r4.x <= p2.x
+    assert p_r4.y <= p2.y
     p10 = Point(2000, 2000)
     s1 = Segment(p1, p10)
     p_s1 = s1.random_point()
-    assert p1.x <= p_s1.x and p_s1.x <= p10.x and \
-        p1.y <= p_s1.y and p_s1.y <= p10.y
+    assert p1.x <= p_s1.x
+    assert p_s1.x <= p10.x
+    assert p1.y <= p_s1.y
+    assert p_s1.y <= p10.y
     s2 = Segment(p10, p1)
     assert hash(s1) == hash(s2)
     p11 = p10.scale(2, 2)

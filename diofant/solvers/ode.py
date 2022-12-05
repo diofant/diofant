@@ -2015,7 +2015,8 @@ def odesimp(eq, func, order, constants, hint):
             global collectterms
             collectterms.sort(key=default_sort_key)
             collectterms.reverse()
-            assert len(eq) == 1 and eq[0].lhs == f(x)
+            assert len(eq) == 1
+            assert eq[0].lhs == f(x)
             sol = eq[0].rhs
             sol = expand_mul(sol)
             for i, reroot, imroot in collectterms:
@@ -6327,7 +6328,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
                 gsol1 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)
                 gsol2 = r['c']*C1*t*exp(sa*t)-r['c']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
             else:
-                assert r['a'] == r['d'] != 0 and r['c'] == 0
+                assert r['a'] == r['d'] != 0
+                assert r['c'] == 0
                 sa = sqrt(r['a'])
                 gsol1 = r['b']*C1*t*exp(sa*t)-r['b']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
                 gsol2 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)

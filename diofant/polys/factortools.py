@@ -164,7 +164,8 @@ class _Factor:
         """Factor primitive square-free polynomial in `Z[x]`."""
         domain = self.domain
 
-        assert self.is_univariate and domain.is_IntegerRing
+        assert self.is_univariate
+        assert domain.is_IntegerRing
 
         n = f.degree()
 
@@ -273,7 +274,8 @@ class _Factor:
         """Factor square-free (non-primitive) polynomials in `Z[x]`."""
         domain = self.domain
 
-        assert self.is_univariate and domain.is_IntegerRing
+        assert self.is_univariate
+        assert domain.is_IntegerRing
 
         cont, g = f.primitive()
 

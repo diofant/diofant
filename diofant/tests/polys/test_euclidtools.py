@@ -706,17 +706,23 @@ def test_dmp_gcd():
                 f, g, h = R.fateman_poly_F_1()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = R.fateman_poly_F_2()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = R.fateman_poly_F_3()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
     R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2), sqrt(3)))
 
@@ -781,7 +787,9 @@ def test_dmp_gcd():
                 f, g, h = R.fateman_poly_F_3()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
                            12*x*y**7 + x**4 - 1)
@@ -796,12 +804,16 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
             f, g, h = R.fateman_poly_F_3()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     R, x, y, z, u, _, a, b = ring('x y z u v a b', ZZ)
 
@@ -810,7 +822,9 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     R, x, y, z, u, _, a, b, *_ = ring('x y z u v a b c d', ZZ)
 
@@ -819,7 +833,9 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     F, x = field('x', QQ)
     R, _ = ring('t', F)
@@ -1014,19 +1030,22 @@ def test_sympyissue_10996():
     H, cff, cfg = f.cofactors(g)
 
     assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
-    assert H*cff == f and H*cfg == g
+    assert H*cff == f
+    assert H*cfg == g
 
 
 def test_sympyissue_21460():
     R = ZZ.inject('x')
 
     r = R.gcd(R(4), R(6))
-    assert type(r) is R.dtype and r == 2
+    assert type(r) is R.dtype
+    assert r == 2
 
     R = QQ.inject('x')
 
     r = R.gcd(R(4), R(6))
-    assert type(r) is R.dtype and r == 1
+    assert type(r) is R.dtype
+    assert r == 1
 
 
 @pytest.mark.slow

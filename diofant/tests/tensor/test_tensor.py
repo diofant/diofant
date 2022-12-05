@@ -500,7 +500,8 @@ def test_tensorsymmetry():
     sym1 = TensorSymmetry(get_symmetric_group_sgs(2, 1))
     assert sym == sym1
     sym2 = tensorsymmetry()
-    assert sym2.base == Tuple() and sym2.generators == Tuple(Permutation(1))
+    assert sym2.base == Tuple()
+    assert sym2.generators == Tuple(Permutation(1))
     pytest.raises(NotImplementedError, lambda: tensorsymmetry([2, 1]))
 
 
@@ -1044,13 +1045,17 @@ def test_contract_delta1():
     delta = Color.delta
 
     def idn(a, b, d, c):
-        assert a.is_up and d.is_up
-        assert not (b.is_up or c.is_up)
+        assert a.is_up
+        assert d.is_up
+        assert not b.is_up
+        assert not c.is_up
         return delta(a, c)*delta(d, b)
 
     def T(a, b, d, c):
-        assert a.is_up and d.is_up
-        assert not (b.is_up or c.is_up)
+        assert a.is_up
+        assert d.is_up
+        assert not b.is_up
+        assert not c.is_up
         return delta(a, b)*delta(d, c)
 
     def P1(a, b, c, d):

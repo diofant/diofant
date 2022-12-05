@@ -361,7 +361,8 @@ def test_sympyissue_4516():
 
 def test_sympyissue_7450():
     ans = integrate(exp(-(1 + I)*x), (x, 0, oo))
-    assert re(ans) == Rational(1, 2) and im(ans) == Rational(-1, 2)
+    assert re(ans) == Rational(1, 2)
+    assert im(ans) == Rational(-1, 2)
 
 
 def test_matrices():
@@ -805,11 +806,14 @@ def test_is_number():
     # `foo.is_number` should always be eqivalent to `not foo.free_symbols`
     # in each of these cases, there are pseudo-free symbols
     i = Integral(x, (y, 1, 1))
-    assert i.is_number is False and i.evalf() == 0
+    assert i.is_number is False
+    assert i.evalf() == 0
     i = Integral(x, (y, z, z))
-    assert i.is_number is False and i.evalf() == 0
+    assert i.is_number is False
+    assert i.evalf() == 0
     i = Integral(1, (y, z, z + 2))
-    assert i.is_number is False and i.evalf() == 2
+    assert i.is_number is False
+    assert i.evalf() == 2
 
     assert Integral(x*y, (x, 1, 2), (y, 1, 3)).is_number is True
     assert Integral(x*y, (x, 1, 2), (y, 1, z)).is_number is False

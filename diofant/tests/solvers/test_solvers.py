@@ -270,7 +270,8 @@ def test_quintics_1():
 def test_highorder_poly():
     # just testing that the uniq generator is unpacked
     sol = solve(x**6 - 2*x + 2)
-    assert all(isinstance(i[x], RootOf) for i in sol) and len(sol) == 6
+    assert all(isinstance(i[x], RootOf) for i in sol)
+    assert len(sol) == 6
 
 
 def test_quintics_2():
@@ -440,8 +441,8 @@ def test_solve_transcendental():
     assert solve(3**(2 - x), x) == []
     assert solve(x + 2**x, x) == [{x: -LambertW(log(2))/log(2)}]
     ans = solve(3*x + 5 + 2**(-5*x + 3), x)
-    assert len(ans) == 1 and ans[0][x].expand() == \
-        -Rational(5, 3) + LambertW(-10240*root(2, 3)*log(2)/3)/(5*log(2))
+    assert len(ans) == 1
+    assert ans[0][x].expand() == -Rational(5, 3) + LambertW(-10240*root(2, 3)*log(2)/3)/(5*log(2))
     assert (solve(5*x - 1 + 3*exp(2 - 7*x), x) ==
             [{x: Rational(1, 5) + LambertW(-21*exp(Rational(3, 5))/5)/7}])
     assert (solve(2*x + 5 + log(3*x - 2), x) ==
@@ -450,7 +451,8 @@ def test_solve_transcendental():
     assert solve((2*x + 8)*(8 + exp(x))) == [{x: -4}, {x: log(8) + pi*I}]
     eq = 2*exp(3*x + 4) - 3
     ans = solve(eq, x)  # this generated a failure in flatten
-    assert len(ans) == 3 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
+    assert len(ans) == 3
+    assert all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(2*log(3*x + 4) - 3, x) == [{x: (exp(Rational(3, 2)) - 4)/3}]
     assert solve(exp(x) + 1, x) == [{x: pi*I}]
 
@@ -664,7 +666,8 @@ def test_sympyissue_4793():
     assert solve(x**2 + x + sin(y)**2 + cos(y)**2 - 1, x) in [[{x: 0}, {x: -1}], [{x: -1}, {x: 0}]]
     eq = 4*3**(5*x + 2) - 7
     ans = solve(eq, x)
-    assert len(ans) == 5 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
+    assert len(ans) == 5
+    assert all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(log(x**2) - y**2/exp(x),
                  x, y) == [{y: -sqrt(exp(x)*log(x**2))},
                            {y: sqrt(exp(x)*log(x**2))}]
@@ -945,9 +948,11 @@ def test_sympyissue_5912():
             [{x: Rational(1, 2) + sqrt(35)/10},
              {x: Rational(1, 2) - sqrt(35)/10}])
     ans = solve(x**2 - x - 0.1, rational=False)
-    assert len(ans) == 2 and all(a[x].is_Number for a in ans)
+    assert len(ans) == 2
+    assert all(a[x].is_Number for a in ans)
     ans = solve(x**2 - x - 0.1)
-    assert len(ans) == 2 and all(a[x].is_Number for a in ans)
+    assert len(ans) == 2
+    assert all(a[x].is_Number for a in ans)
 
 
 def test_float_handling():
@@ -961,9 +966,11 @@ def test_float_handling():
     assert test(nfloat(1 + 2*x), 1.0 + 2.0*x)
     for contain in [list, tuple, set]:
         ans = nfloat(contain([1 + 2*x]))
-        assert type(ans) is contain and test(list(ans)[0], 1.0 + 2.0*x)
+        assert type(ans) is contain
+        assert test(list(ans)[0], 1.0 + 2.0*x)
     k, v = list(nfloat({2*x: [1 + 2*x]}).items())[0]
-    assert test(k, 2*x) and test(v[0], 1.0 + 2.0*x)
+    assert test(k, 2*x)
+    assert test(v[0], 1.0 + 2.0*x)
     assert test(nfloat(cos(2*x)), cos(2.0*x))
     assert test(nfloat(3*x**2), 3.0*x**2)
     assert test(nfloat(3*x**2, exponent=True), 3.0*x**2.0)
@@ -1590,7 +1597,8 @@ def test_unrad1():
 
     ans = solve(sqrt(x) + sqrt(x + 1) -
                 sqrt(1 - x) - sqrt(2 + x))
-    assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
+    assert len(ans) == 1
+    assert NS(ans[0][x])[:4] == '0.73'
     # the fence optimization problem
     # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
     eq = F - (2*x + 2*y + sqrt(x**2 + y**2))

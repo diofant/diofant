@@ -651,7 +651,8 @@ class cos(TrigonometricFunction):
         }
 
         def fermatCoords(n):
-            assert n > 1 and n % 2
+            assert n > 1
+            assert n % 2
             primes = {p: 0 for p in cst_table_some}
             assert 1 not in primes
             for p_i in primes:

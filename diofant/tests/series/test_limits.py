@@ -612,9 +612,11 @@ def test_sympyissue_5415():
 
 def test_sympyissue_2865():
     l1 = limit(O(1/x, (x, oo)), x, 0)
-    assert l1 != 0 and isinstance(l1, Limit)
+    assert l1 != 0
+    assert isinstance(l1, Limit)
     l2 = limit(O(x, (x, oo)), x, 0)
-    assert l2 != 0 and isinstance(l2, Limit)
+    assert l2 != 0
+    assert isinstance(l2, Limit)
 
 
 def test_sympyissue_11879():

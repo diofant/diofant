@@ -120,7 +120,8 @@ def test_RootOf_attributes():
     assert r.free_symbols == set()
 
     r = RootOf(x**3 + y*x + 1, x, 0)
-    assert isinstance(r, RootOf) and r.expr == x**3 + y*x + 1
+    assert isinstance(r, RootOf)
+    assert r.expr == x**3 + y*x + 1
     assert r.free_symbols == {y}
     assert r.is_number is False
 
@@ -367,7 +368,8 @@ def test_RootOf_all_roots():
 
     r = ((x**3 + x + 20)*(x**3 + x + 21)).as_poly().all_roots()
 
-    assert r[0].is_real and r[1].is_real
+    assert r[0].is_real
+    assert r[1].is_real
     assert all(not _.is_real for _ in r[2:])
 
     assert r == [RootOf(x**3 + x + 21, 0), RootOf(x**3 + x + 20, 0),

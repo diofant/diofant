@@ -271,7 +271,8 @@ def test_Poly__new__():
 
     f = Poly({}, x, y, z)
 
-    assert f.gens == (x, y, z) and f.as_expr() == 0
+    assert f.gens == (x, y, z)
+    assert f.as_expr() == 0
 
     assert ((a*x + b*y).as_poly(x, y)).as_poly(x) == (a*x + b*y).as_poly(x)
 
@@ -1289,22 +1290,34 @@ def test_Poly_ET():
 
 def test_Poly_clear_denoms():
     coeff, poly = (x + 2).as_poly().clear_denoms()
-    assert coeff == 1 and poly == (x + 2).as_poly(domain=ZZ) and poly.domain == ZZ
+    assert coeff == 1
+    assert poly == (x + 2).as_poly(domain=ZZ)
+    assert poly.domain == ZZ
 
     coeff, poly = (x/2 + 1).as_poly().clear_denoms()
-    assert coeff == 2 and poly == (x + 2).as_poly(domain=QQ) and poly.domain == QQ
+    assert coeff == 2
+    assert poly == (x + 2).as_poly(domain=QQ)
+    assert poly.domain == QQ
 
     coeff, poly = (x/2 + 1).as_poly().clear_denoms(convert=True)
-    assert coeff == 2 and poly == (x + 2).as_poly(domain=ZZ) and poly.domain == ZZ
+    assert coeff == 2
+    assert poly == (x + 2).as_poly(domain=ZZ)
+    assert poly.domain == ZZ
 
     coeff, poly = (x/y + 1).as_poly(x).clear_denoms(convert=True)
-    assert coeff == y and poly == (x + y).as_poly(x, domain=ZZ.inject(y)) and poly.domain == ZZ.inject(y)
+    assert coeff == y
+    assert poly == (x + y).as_poly(x, domain=ZZ.inject(y))
+    assert poly.domain == ZZ.inject(y)
 
     coeff, poly = (x/3 + sqrt(2)).as_poly(x, domain=EX).clear_denoms()
-    assert coeff == 3 and poly == (x + 3*sqrt(2)).as_poly(x, domain=EX) and poly.domain == EX
+    assert coeff == 3
+    assert poly == (x + 3*sqrt(2)).as_poly(x, domain=EX)
+    assert poly.domain == EX
 
     coeff, poly = (x/3 + sqrt(2)).as_poly(x, domain=EX).clear_denoms(convert=True)
-    assert coeff == 3 and poly == (x + 3*sqrt(2)).as_poly(x, domain=EX) and poly.domain == EX
+    assert coeff == 3
+    assert poly == (x + 3*sqrt(2)).as_poly(x, domain=EX)
+    assert poly.domain == EX
 
 
 def test_Poly_rat_clear_denoms():
@@ -1616,7 +1629,8 @@ def test_div():
     f, g = (x**2).as_poly(), x.as_poly()
 
     q, r = f.div(g)
-    assert q.domain.is_IntegerRing and r.domain.is_IntegerRing
+    assert q.domain.is_IntegerRing
+    assert r.domain.is_IntegerRing
     r = f.rem(g)
     assert r.domain.is_IntegerRing
     q = f.quo(g)
@@ -1632,7 +1646,8 @@ def test_div():
 
     f, g = (x + y).as_poly(x), (2*x + y).as_poly(x)
     q, r = f.div(g)
-    assert q.domain.is_FractionField and r.domain.is_FractionField
+    assert q.domain.is_FractionField
+    assert r.domain.is_FractionField
 
 
 def test_gcdex():
@@ -2204,7 +2219,8 @@ def test_factor():
     assert factor_list(sqrt(2)*x) == (1, [(2, Rational(1, 2)), (x, 1)])
     assert factor_list(sqrt(2)*sin(x), sin(x)) == (1, [(2, 1/2), (sin(x), 1)])
 
-    assert factor(6) == 6 and factor(6).is_Integer
+    assert factor(6) == 6
+    assert factor(6).is_Integer
 
     assert factor_list(3*x) == (3, [(x, 1)])
     assert factor_list(3*x**2) == (3, [(x, 2)])
@@ -2929,12 +2945,17 @@ def test_GroebnerBasis():
 
     assert len(G) == 3
 
-    assert G[0] == H[0] and not G[0].is_Poly
-    assert G[1] == H[1] and not G[1].is_Poly
-    assert G[2] == H[2] and not G[2].is_Poly
+    assert G[0] == H[0]
+    assert not G[0].is_Poly
+    assert G[1] == H[1]
+    assert not G[1].is_Poly
+    assert G[2] == H[2]
+    assert not G[2].is_Poly
 
-    assert G[1:] == H[1:] and not any(g.is_Poly for g in G[1:])
-    assert G[:2] == H[:2] and not any(g.is_Poly for g in G[1:])
+    assert G[1:] == H[1:]
+    assert not any(g.is_Poly for g in G[1:])
+    assert G[:2] == H[:2]
+    assert not any(g.is_Poly for g in G[1:])
 
     assert G.exprs == H
     assert G.polys == P
@@ -2951,12 +2972,17 @@ def test_GroebnerBasis():
 
     G = groebner(F, x, y, order='grevlex', polys=True)
 
-    assert G[0] == P[0] and G[0].is_Poly
-    assert G[1] == P[1] and G[1].is_Poly
-    assert G[2] == P[2] and G[2].is_Poly
+    assert G[0] == P[0]
+    assert G[0].is_Poly
+    assert G[1] == P[1]
+    assert G[1].is_Poly
+    assert G[2] == P[2]
+    assert G[2].is_Poly
 
-    assert G[1:] == P[1:] and all(g.is_Poly for g in G[1:])
-    assert G[:2] == P[:2] and all(g.is_Poly for g in G[1:])
+    assert G[1:] == P[1:]
+    assert all(g.is_Poly for g in G[1:])
+    assert G[:2] == P[:2]
+    assert all(g.is_Poly for g in G[1:])
 
     assert tuple(G) == ((y**3 - 2*y).as_poly(x, y, order='grevlex'),
                         (x**2 - 2*y**2).as_poly(x, y, order='grevlex'),

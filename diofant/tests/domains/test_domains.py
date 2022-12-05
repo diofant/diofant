@@ -930,86 +930,121 @@ def test_ModularInteger():
     F3 = FF(3)
 
     a = F3(0)
-    assert isinstance(a, F3.dtype) and a == 0
+    assert isinstance(a, F3.dtype)
+    assert a == 0
     a = F3(1)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)
-    assert isinstance(a, F3.dtype) and a == 2
+    assert isinstance(a, F3.dtype)
+    assert a == 2
     a = F3(3)
-    assert isinstance(a, F3.dtype) and a == 0
+    assert isinstance(a, F3.dtype)
+    assert a == 0
     a = F3(4)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     assert a.numerator == a
     assert a.denominator == F3.one
 
     a = F3(F3(0))
-    assert isinstance(a, F3.dtype) and a == 0
+    assert isinstance(a, F3.dtype)
+    assert a == 0
     a = F3(F3(1))
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(F3(2))
-    assert isinstance(a, F3.dtype) and a == 2
+    assert isinstance(a, F3.dtype)
+    assert a == 2
     a = F3(F3(3))
-    assert isinstance(a, F3.dtype) and a == 0
+    assert isinstance(a, F3.dtype)
+    assert a == 0
     a = F3(F3(4))
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = -F3(1)
-    assert isinstance(a, F3.dtype) and a == 2
+    assert isinstance(a, F3.dtype)
+    assert a == 2
     a = -F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = 2 + F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2) + 2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2) + F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2) + F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = 3 - F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(3) - 2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(3) - F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(3) - F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = 2*F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)*2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)*F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)*F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = 2/F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)/2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)/F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)/F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = 1 % F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(1) % 2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(1) % F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(1) % F3(2)
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     a = F3(2)**0
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
     a = F3(2)**1
-    assert isinstance(a, F3.dtype) and a == 2
+    assert isinstance(a, F3.dtype)
+    assert a == 2
     a = F3(2)**2
-    assert isinstance(a, F3.dtype) and a == 1
+    assert isinstance(a, F3.dtype)
+    assert a == 1
 
     assert bool(F3(3)) is False
     assert bool(F3(4)) is True
@@ -1019,13 +1054,17 @@ def test_ModularInteger():
     F5 = FF(5)
 
     a = F5(1)**(-1)
-    assert isinstance(a, F5.dtype) and a == 1
+    assert isinstance(a, F5.dtype)
+    assert a == 1
     a = F5(2)**(-1)
-    assert isinstance(a, F5.dtype) and a == 3
+    assert isinstance(a, F5.dtype)
+    assert a == 3
     a = F5(3)**(-1)
-    assert isinstance(a, F5.dtype) and a == 2
+    assert isinstance(a, F5.dtype)
+    assert a == 2
     a = F5(4)**(-1)
-    assert isinstance(a, F5.dtype) and a == 4
+    assert isinstance(a, F5.dtype)
+    assert a == 4
 
     pytest.raises(NotInvertible, lambda: F5(0)**(-1))
     pytest.raises(NotInvertible, lambda: F5(5)**(-1))
@@ -1135,7 +1174,8 @@ def test_RR_Float():
     assert RR2(f2)-1 > 1e-50  # RR's precision is equal to f2's
 
     a = RR(2.1)
-    assert a.numerator == a and a.denominator == 1
+    assert a.numerator == a
+    assert a.denominator == 1
 
 
 def test_CC_double():
@@ -1154,7 +1194,8 @@ def test_CC_double():
     assert CC(1e-40j).imag > 1e-50
 
     a = CC(2.1 + 1j)
-    assert a.numerator == a and a.denominator == 1
+    assert a.numerator == a
+    assert a.denominator == 1
 
 
 def test_almosteq():

@@ -366,7 +366,8 @@ def modgcd(f, g):
     * :cite:`Brown1971gcd`
 
     """
-    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
+    assert f.ring == g.ring
+    assert f.ring.domain.is_IntegerRing
 
     ring = f.ring
     domain = ring.domain
@@ -1351,7 +1352,8 @@ def func_field_modgcd(f, g):
     domain = ring.domain
     n = ring.ngens
 
-    assert ring == g.ring and domain.is_AlgebraicField
+    assert ring == g.ring
+    assert domain.is_AlgebraicField
 
     if not f:
         return ring._gcd_zero(g)

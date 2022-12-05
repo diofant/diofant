@@ -315,7 +315,8 @@ def test_minpoly_compose():
 
     ex = sqrt(1 + cbrt(2)) + sqrt(1 + root(2, 4)) + sqrt(2)
     mp = minimal_polynomial(ex)(x)
-    assert degree(mp) == 48 and mp.subs({x: 0}) == -16630256576
+    assert degree(mp) == 48
+    assert mp.subs({x: 0}) == -16630256576
 
     mp = minimal_polynomial(sin(pi/27))(x)
     assert mp == (262144*x**18 - 1179648*x**16 + 2211840*x**14 -

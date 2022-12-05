@@ -139,7 +139,8 @@ def test_sample():
     Z = ContinuousRV(z, exp(-z), set=Interval(0, oo))
     assert sample(Z) in Z.pspace.domain.set
     sym, val = list(Z.pspace.sample().items())[0]
-    assert sym == Z and val in Interval(0, oo)
+    assert sym == Z
+    assert val in Interval(0, oo)
 
 
 def test_ContinuousRV():
@@ -491,7 +492,8 @@ def test_uniform():
 
     # With numbers all is well
     X = Uniform('x', 3, 5)
-    assert P(X < 3) == 0 and P(X > 5) == 0
+    assert P(X < 3) == 0
+    assert P(X > 5) == 0
     assert P(X < 4) == P(X > 4) == Rational(1, 2)
 
 
@@ -506,7 +508,8 @@ def test_uniform_P():
     l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
-    assert P(X < l) == 0 and P(X > l + w) == 0
+    assert P(X < l) == 0
+    assert P(X > l + w) == 0
 
 
 def test_uniformsum():

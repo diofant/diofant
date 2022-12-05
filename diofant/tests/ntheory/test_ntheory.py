@@ -247,7 +247,8 @@ def test_randprime():
     for a in [100, 300, 500, 250000]:
         for b in [100, 300, 500, 250000]:
             p = randprime(a, a + b)
-            assert a <= p < (a + b) and isprime(p)
+            assert a <= p < (a + b)
+            assert isprime(p)
     assert randprime(70, 7) is None
 
 

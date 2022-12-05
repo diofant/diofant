@@ -423,7 +423,8 @@ def test_imps():
     func = diofant.Function('myfunc')
     assert not hasattr(func, '_imp_')
     my_f = implemented_function(func, lambda x: 2*x)
-    assert hasattr(func, '_imp_') and hasattr(my_f, '_imp_')
+    assert hasattr(func, '_imp_')
+    assert hasattr(my_f, '_imp_')
     # Error for functions with same name and different implementation
     f2 = implemented_function('f', lambda x: x + 101)
     pytest.raises(ValueError, lambda: lambdify(x, f(f2(x))))

@@ -61,11 +61,11 @@ class Limit(Expr):
         limit point, `z_0`
     dir  : Expr or Reals, optional
         selects the direction (as ``sign(dir)``) to approach the limit point
-        if the ``dir`` is an Expr.  For instance, the limit from the
-        right (`z\to z_0 + 0`) if ``dir=-1`` (default).  For infinite ``z0``,
-        the default value is determined from the direction of the infinity
-        (e.g., ``dir=1`` for ``oo``).  If ``dir=Reals``, the limit is the
-        bidirectional real limit.
+        if the ``dir`` is an Expr.  For infinite ``z0``, the default value
+        is determined from the direction of the infinity (e.g., the limit
+        from the left, ``dir=1``, for ``oo``).  Otherwise, the default is
+        the limit from the right, ``dir=-1``.   If ``dir=Reals``, the limit
+        is the bidirectional real limit.
 
     Examples
     ========

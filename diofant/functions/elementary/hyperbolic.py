@@ -596,7 +596,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
         t = self._call_reciprocal(method_name, arg)
-        assert t is not None and t != self._reciprocal_of(arg)
+        assert t is not None
+        assert t != self._reciprocal_of(arg)
         return 1/t
 
     def _eval_rewrite_as_exp(self, arg):

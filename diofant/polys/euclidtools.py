@@ -188,7 +188,8 @@ class _GCD:
         * :cite:`Liao1995heuristic`
 
         """
-        assert self == f.ring == g.ring and self.domain.is_IntegerRing
+        assert self == f.ring == g.ring
+        assert self.domain.is_IntegerRing
 
         x0 = self.gens[0]
         domain = self.domain

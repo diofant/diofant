@@ -1128,7 +1128,8 @@ def _special_diop_DN(D, N):
     * :cite:`Andreescu15`, Section 4.4.4.
 
     """
-    assert (1 < N**2 < D) and (not integer_nthroot(D, 2)[1])
+    assert 1 < N**2 < D
+    assert not integer_nthroot(D, 2)[1]
 
     sqrt_D = sqrt(D)
     F = [(N, 1)]
