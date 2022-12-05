@@ -181,6 +181,8 @@ def test_Lambda():
 def test_Limit():
     assert str(Limit(sin(x)/x, x, y)) == 'Limit(sin(x)/x, x, y)'
     assert str(Limit(1/x, x, 0)) == 'Limit(1/x, x, 0)'
+    assert str(Limit(1/x, x, oo)) == 'Limit(1/x, x, oo)'
+    assert str(Limit(1/x, x, -oo)) == 'Limit(1/x, x, -oo)'
     assert str(Limit(sin(x)/x, x, y, dir=1)) == 'Limit(sin(x)/x, x, y, dir=1)'
     assert str(Limit(sin(x)/x, x, y, dir=Reals)) == 'Limit(sin(x)/x, x, y, dir=Reals)'
 

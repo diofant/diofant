@@ -193,7 +193,7 @@ class StrPrinter(Printer):
 
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
-        if dir == -1:
+        if dir == -1 or z0 in (oo, -oo):
             return f'Limit({e}, {z}, {z0})'
         elif dir == Reals:
             return f'Limit({e}, {z}, {z0}, dir=Reals)'
