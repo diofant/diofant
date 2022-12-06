@@ -308,8 +308,7 @@ class Variable:
         try:
             return self._datatype[language.upper()]
         except KeyError as exc:
-            raise CodeGenError('Has datatypes for languages: %s' %
-                               ', '.join(self._datatype)) from exc
+            raise CodeGenError(f"Has datatypes for languages: {', '.join(self._datatype)}") from exc
 
 
 class Argument(Variable):
@@ -437,7 +436,7 @@ class Result(Variable, ResultBase):
             raise TypeError('The first argument must be a diofant expression.')
 
         if name is None:
-            name = 'result_%d' % abs(hash(expr))
+            name = f'result_{abs(hash(expr))}'
 
         if isinstance(name, str):
             if isinstance(expr, (MatrixBase, MatrixExpr)):
@@ -565,7 +564,7 @@ class CodeGen:
                 symbols.remove(symbol)
             elif isinstance(expr, (ImmutableMatrix, MatrixSlice)):
                 # Create a "dummy" MatrixSymbol to use as the Output arg
-                out_arg = MatrixSymbol('out_%s' % abs(hash(expr)), *expr.shape)
+                out_arg = MatrixSymbol(f'out_{abs(hash(expr))}', *expr.shape)
                 dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                 output_args.append(
                     OutputArgument(out_arg, out_arg, expr, dimensions=dims))
@@ -782,7 +781,7 @@ class CCodeGen(CodeGen):
         tmp = header_comment % {'version': diofant_version,
                                 'project': self.project}
         for line in tmp.splitlines():
-            code_lines.append(' *%s*\n' % line.center(76))
+            code_lines.append(f' *{line.center(76)}*\n')
         code_lines.append(' ' + '*'*78 + '/\n')
         return code_lines
 
@@ -809,7 +808,7 @@ class CCodeGen(CodeGen):
                 type_args.append((arg.get_datatype('C'), f'*{name}'))
             else:
                 type_args.append((arg.get_datatype('C'), name))
-        arguments = ', '.join(['%s %s' % t for t in type_args])
+        arguments = ', '.join([f"{t[0] + ' ' + t[1]}" for t in type_args])
         return f'{ctype} {routine.name}({arguments})'
 
     def _preprocessor_statements(self, prefix):
@@ -820,7 +819,7 @@ class CCodeGen(CodeGen):
 
     def _get_routine_opening(self, routine):
         prototype = self.get_prototype(routine)
-        return ['%s {\n' % prototype]
+        return [f'{prototype} {{\n']
 
     def _declare_arguments(self, routine):
         # arguments are declared in prototype
@@ -932,8 +931,7 @@ class CCodeGen(CodeGen):
         """
         if header:
             print(''.join(self._get_header()), file=f)
-        guard_name = '%s__%s__H' % (self.project.replace(
-            ' ', '_').upper(), prefix.replace('/', '_').upper())
+        guard_name = f"{self.project.replace(' ', '_').upper()}__{prefix.replace('/', '_').upper()}__H"
         # include guards
         if empty:
             print(file=f)
@@ -983,7 +981,7 @@ class FCodeGen(CodeGen):
         tmp = header_comment % {'version': diofant_version,
                                 'project': self.project}
         for line in tmp.splitlines():
-            code_lines.append('!*%s*\n' % line.center(76))
+            code_lines.append(f'!*{line.center(76)}*\n')
         code_lines.append('!' + '*'*78 + '\n')
         return code_lines
 
@@ -1003,7 +1001,7 @@ class FCodeGen(CodeGen):
         else:
             code_list.append('subroutine')
 
-        args = ', '.join('%s' % self._get_symbol(arg.name)
+        args = ', '.join(f'{self._get_symbol(arg.name)}'
                          for arg in routine.arguments)
 
         call_sig = f'{routine.name}({args})\n'
@@ -1025,19 +1023,18 @@ class FCodeGen(CodeGen):
         for arg in routine.arguments:
 
             if isinstance(arg, InputArgument):
-                typeinfo = '%s, intent(in)' % arg.get_datatype('fortran')
+                typeinfo = f"{arg.get_datatype('fortran')}, intent(in)"
             elif isinstance(arg, InOutArgument):
-                typeinfo = '%s, intent(inout)' % arg.get_datatype('fortran')
+                typeinfo = f"{arg.get_datatype('fortran')}, intent(inout)"
             else:
-                typeinfo = '%s, intent(out)' % arg.get_datatype('fortran')
+                typeinfo = f"{arg.get_datatype('fortran')}, intent(out)"
 
             fprint = self._get_symbol
 
             if arg.dimensions:
                 # fortran arrays start at 1
-                dimstr = ', '.join(['%s:%s' % (
-                    fprint(dim[0] + 1), fprint(dim[1] + 1))
-                    for dim in arg.dimensions])
+                dimstr = ', '.join([f'{fprint(dim[0] + 1)}:{fprint(dim[1] + 1)}'
+                                    for dim in arg.dimensions])
                 typeinfo += f', dimension({dimstr})'
                 array_list.append(f'{typeinfo} :: {fprint(arg.name)}\n')
             else:
@@ -1123,8 +1120,7 @@ class FCodeGen(CodeGen):
             lowercase = {str(x).lower() for x in r.variables}
             orig_case = {str(x) for x in r.variables}
             if len(lowercase) < len(orig_case):
-                raise CodeGenError('Fortran ignores case. Got symbols: %s' %
-                                   (', '.join([str(var) for var in r.variables])))
+                raise CodeGenError(f"Fortran ignores case. Got symbols: {', '.join([str(var) for var in r.variables])}")
         self.dump_code(routines, f, prefix, header, empty)
     dump_f95.extension = code_extension  # type: ignore[attr-defined]
     dump_f95.__doc__ = CodeGen.dump_code.__doc__
@@ -1232,7 +1228,7 @@ class OctaveCodeGen(CodeGen):
 
             else:
                 # we have no name for this output
-                return_vals.append(Result(expr, name='out%d' % (i+1)))
+                return_vals.append(Result(expr, name=f'out{i + 1}'))
 
         # setup input argument list
         arg_list = []
@@ -1313,9 +1309,8 @@ class OctaveCodeGen(CodeGen):
         args = []
         for arg in routine.arguments:
             if isinstance(arg, (OutputArgument, InOutArgument)):
-                raise CodeGenError('Octave: invalid argument of type %s' %
-                                   str(type(arg)))
-            args.append('%s' % self._get_symbol(arg.name))
+                raise CodeGenError(f'Octave: invalid argument of type {type(arg)!s}')
+            args.append(f'{self._get_symbol(arg.name)}')
         args = ', '.join(args)
         code_list.append(f'{routine.name}({args})\n')
         code_list = [''.join(code_list)]

@@ -10,7 +10,6 @@ from .cache import cacheit
 from .compatibility import as_int
 from .decorators import _sympifyit, call_highest_priority
 from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
-from .singleton import S
 from .sympify import sympify
 
 
@@ -327,12 +326,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> x._random()                         # doctest: +SKIP
-        0.0392918155679172 + 0.916050214307199*I
-        >>> x._random(2)                        # doctest: +SKIP
-        -0.77 - 0.87*I
-        >>> (x + y/2)._random(2)                # doctest: +SKIP
-        -0.57 + 0.16*I
+        >>> x._random()
+        0.688843703050096 + 0.515908805880605*I
         >>> sqrt(2)._random(2)
         1.4
 
@@ -676,7 +671,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
-                B = limit(self, x, b)
                 B = limit(self, x, b, 1 if (a < b) is not false else -1)
                 if isinstance(B, Limit):
                     raise NotImplementedError('Could not compute limit')
@@ -818,7 +812,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def as_terms(self):
         """Transform an expression to a list of terms."""
-        from . import Add, Mul, S
+        from . import Add, Mul
         from .exprtools import decompose_power
 
         gens, terms = set(), []
@@ -829,7 +823,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             coeff = complex(coeff)
             cpart, ncpart = {}, []
 
-            if _term is not S.One:
+            if _term is not Integer(1):
                 for factor in Mul.make_args(_term):
                     if factor.is_number:
                         try:
@@ -898,7 +892,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return
         elif o.is_Order:
             o = o.expr
-            if o is S.One:
+            if o is Integer(1):
                 return Integer(0)
             elif o.is_Symbol:
                 return Integer(1)
@@ -970,15 +964,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c and split_1 and (
             c[0].is_Number and
             c[0].is_negative and
-                c[0] is not S.NegativeOne):
+                c[0] is not Integer(-1)):
             c[:1] = [Integer(-1), -c[0]]
 
         if cset:
             clen = len(c)
             c = set(c)
             if clen and warn and len(c) != clen:
-                raise ValueError('repeated commutative arguments: %s' %
-                                 [ci for ci in c if list(self.args).count(ci) > 1])
+                raise ValueError('repeated commutative arguments: '
+                                 f'{[ci for ci in c if list(self.args).count(ci) > 1]}')
         return [c, nc]
 
     def coeff(self, x, n=1, right=False):
@@ -1095,9 +1089,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return Integer(1)
             return Integer(0)
 
-        if x is S.One:
+        if x is Integer(1):
             co = [a for a in Add.make_args(self)
-                  if a.as_coeff_Mul()[0] is S.One]
+                  if a.as_coeff_Mul()[0] is Integer(1)]
             if not co:
                 return Integer(0)
             return Add(*co)
@@ -1758,7 +1752,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def normal(self):
         """Canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
-        if d is S.One:
+        if d is Integer(1):
             return n
         return n/d
 
@@ -1786,13 +1780,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c = sympify(c)
         if self is nan:
             return
-        if c is S.One:
+        if c is Integer(1):
             return self
         elif c == self:
             return Integer(1)
         if c.is_Add:
             cc, pc = c.primitive()
-            if cc is not S.One:
+            if cc is not Integer(1):
                 c = Mul(cc, pc, evaluate=False)
         if c.is_Mul:
             a, b = c.as_two_terms()
@@ -1834,7 +1828,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()
-            if cs is not S.One:
+            if cs is not Integer(1):
                 return Mul(cs, ps, evaluate=False).extract_multiplicatively(c)
             newargs = []
             for arg in self.args:
@@ -1896,11 +1890,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c = sympify(c)
         if self is nan:
             return
-        if c is S.Zero:
+        if c is Integer(0):
             return self
         elif c == self:
             return Integer(0)
-        elif self is S.Zero:
+        elif self is Integer(0):
             return
 
         if self.is_Number:
@@ -2423,7 +2417,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
-            cur_order = s1.getO() or S.Zero
+            cur_order = s1.getO() or Integer(0)
 
             # Now make sure the requested order is returned
             target_order = Order(x**n, x)
@@ -2587,7 +2581,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import collect
         if x.is_positive and x.is_finite:
             series = self._eval_nseries(x, n=n, logx=logx)
-            order = series.getO() or S.Zero
+            order = series.getO() or Integer(0)
             return collect(series.removeO(), x) + order
         else:
             p = Dummy('x', positive=True, finite=True)
@@ -2811,8 +2805,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         u = '_'
         while any(str(s).endswith(u) for s in V):
             u += '_'
-        name = '%%i%s' % u
-        return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
+        return {v: Symbol(f'{i}{u}', **v._assumptions) for i, v in enumerate(V)}
 
     ###################################################################################
     # ################### DERIVATIVE, INTEGRAL, FUNCTIONAL METHODS ################## #
@@ -2882,8 +2875,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         expr = self
         if hints.pop('frac', False):
-            n, d = [a.expand(deep=deep, modulus=modulus, **hints)
-                    for a in fraction(self)]
+            n, d = (a.expand(deep=deep, modulus=modulus, **hints)
+                    for a in fraction(self))
             return n/d
         elif hints.pop('denom', False):
             n, d = fraction(self)
@@ -3091,7 +3084,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .numbers import Float
         x = self
         if not x.is_number:
-            raise TypeError('%s is not a number' % type(x))
+            raise TypeError(f'{type(x)} is not a number')
         if x in (nan, oo, -oo, zoo):
             return x
         if not x.is_extended_real:

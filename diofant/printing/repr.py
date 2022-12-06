@@ -42,7 +42,7 @@ class ReprPrinter(Printer):
             l = []
             for o in expr.args:
                 l.append(self._print(o))
-            return expr.__class__.__name__ + '(%s)' % ', '.join(l)
+            return expr.__class__.__name__ + f"({', '.join(l)})"
         elif hasattr(expr, '__repr__') and not issubclass(expr.__class__,
                                                           DefaultPrinting):
             return repr(expr)
@@ -53,16 +53,16 @@ class ReprPrinter(Printer):
         l = []
         for o in sorted(expr.args, key=default_sort_key):
             l.append(self._print(o))
-        return expr.__class__.__name__ + '(%s)' % ', '.join(l)
+        return expr.__class__.__name__ + f"({', '.join(l)})"
 
     def _print_Add(self, expr, order=None):
         args = expr.as_ordered_terms(order=order or self.order)
         args = map(self._print, args)
-        return 'Add(%s)' % ', '.join(args)
+        return f"Add({', '.join(args)})"
 
     def _print_Function(self, expr):
         r = self._print(expr.func)
-        r += '(%s)' % ', '.join([self._print(a) for a in expr.args])
+        r += f"({', '.join([self._print(a) for a in expr.args])})"
         return r
 
     def _print_FunctionClass(self, expr):
@@ -81,18 +81,15 @@ class ReprPrinter(Printer):
         return str(expr)
 
     def _print_Integer(self, expr):
-        return 'Integer(%i)' % int(expr.numerator)
+        return f'Integer({expr.numerator})'
 
     def _print_list(self, expr):
-        return '[%s]' % self.reprify(expr, ', ')
+        return f"[{self.reprify(expr, ', ')}]"
 
     def _print_MatrixBase(self, expr):
         # special case for some empty matrices
         if (expr.rows == 0) ^ (expr.cols == 0):
-            return '%s(%s, %s, %s)' % (expr.__class__.__name__,
-                                       self._print(expr.rows),
-                                       self._print(expr.cols),
-                                       self._print([]))
+            return f'{expr.__class__.__name__}({self._print(expr.rows)}, {self._print(expr.cols)}, {self._print([])})'
         l = []
         for i in range(expr.rows):
             l.append([])
@@ -113,11 +110,10 @@ class ReprPrinter(Printer):
         terms = expr.args
         args = expr._new_rawargs(*terms).as_ordered_factors()
         args = map(self._print, args)
-        return 'Mul(%s)' % ', '.join(args)
+        return f"Mul({', '.join(args)})"
 
     def _print_Rational(self, expr):
-        return 'Rational(%s, %s)' % (self._print(int(expr.numerator)),
-                                     self._print(int(expr.denominator)))
+        return f'Rational({self._print(int(expr.numerator))}, {self._print(int(expr.denominator))})'
 
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
@@ -130,26 +126,22 @@ class ReprPrinter(Printer):
             return f'{expr.__class__.__name__}({self._print(expr.name)})'
         else:
             attr = [f'{k}={v}' for k, v in d.items()]
-            return '%s(%s, %s)' % (expr.__class__.__name__,
-                                   self._print(expr.name), ', '.join(attr))
+            return f"{expr.__class__.__name__}({self._print(expr.name)}, {', '.join(attr)})"
 
     def _print_str(self, expr):
         return repr(expr)
 
     def _print_tuple(self, expr):
         if len(expr) == 1:
-            return '(%s,)' % self._print(expr[0])
+            return f'({self._print(expr[0])},)'
         else:
-            return '(%s)' % self.reprify(expr, ', ')
+            return f"({self.reprify(expr, ', ')})"
 
     def _print_WildFunction(self, expr):
         return f"{expr.__class__.__name__}('{expr.name}')"
 
     def _print_PolynomialRing(self, ring):
-        return '%s(%s, %s, %s)' % (ring.__class__.__name__,
-                                   self._print(ring.domain),
-                                   self._print(ring.symbols),
-                                   self._print(ring.order))
+        return f'{ring.__class__.__name__}({self._print(ring.domain)}, {self._print(ring.symbols)}, {self._print(ring.order)})'
 
     def _print_GMPYIntegerRing(self, expr):
         return f'{expr.__class__.__name__}()'
@@ -161,8 +153,7 @@ class ReprPrinter(Printer):
     _print_GradedLexOrder = _print_LexOrder
 
     def _print_FractionField(self, field):
-        return '%s(%s, %s, %s)' % (field.__class__.__name__,
-                                   self._print(field.domain), self._print(field.symbols), self._print(field.order))
+        return f'{field.__class__.__name__}({self._print(field.domain)}, {self._print(field.symbols)}, {self._print(field.order)})'
 
     def _print_PolyElement(self, poly):
         terms = list(poly.items())
@@ -179,12 +170,10 @@ class ReprPrinter(Printer):
         return f'{frac.__class__.__name__}({self._print(frac.field)}, {numer}, {denom})'
 
     def _print_AlgebraicField(self, expr):
-        return 'AlgebraicField(%s, %s)' % (self._print(expr.domain),
-                                           self._print(expr.ext.as_expr()))
+        return f'AlgebraicField({self._print(expr.domain)}, {self._print(expr.ext.as_expr())})'
 
     def _print_AlgebraicElement(self, expr):
-        return '%s(%s)' % (self._print(expr.parent),
-                           self._print(list(map(expr.domain.domain.to_expr, expr.rep.all_coeffs()))))
+        return f'{self._print(expr.parent)}({self._print(list(map(expr.domain.domain.to_expr, expr.rep.all_coeffs())))})'
 
     def _print_Domain(self, expr):
         return expr.rep

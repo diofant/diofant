@@ -477,7 +477,7 @@ def test_diophantine():
     assert check_solutions((x - y)*(y - z)*(z - x))
     assert check_solutions((x - y)*(x**2 + y**2 - z**2))
     assert check_solutions((x - 3*y + 7*z)*(x**2 + y**2 - z**2))
-    assert check_solutions((x**2 - 3*y**2 - 1))
+    assert check_solutions(x**2 - 3*y**2 - 1)
     # assert check_solutions(y**2 + 7*x*y)
     # assert check_solutions(x**2 - 3*x*y + y**2)
     # assert check_solutions(z*(x**2 - y**2 - 15))
@@ -602,7 +602,8 @@ def test_prime_as_sum_of_two_squares():
         assert a**2 + b**2 == i
     assert prime_as_sum_of_two_squares(7) is None
     ans = prime_as_sum_of_two_squares(800029)
-    assert ans == (450, 773) and type(ans[0]) is int
+    assert ans == (450, 773)
+    assert type(ans[0]) is int
 
 
 def test_sum_of_three_squares():
@@ -810,8 +811,8 @@ def test_sympyissue_9539():
 
 
 def test_sympyissue_8943():
-    assert diophantine((3*(x**2 + y**2 + z**2) -
-                       14*(x*y + y*z + z*x))) == {(0, 0, 0)}
+    assert diophantine(3*(x**2 + y**2 + z**2) -
+                       14*(x*y + y*z + z*x)) == {(0, 0, 0)}
 
 
 def test_diop_sum_of_even_powers():

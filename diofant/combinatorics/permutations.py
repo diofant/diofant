@@ -313,8 +313,7 @@ class Cycle(dict):
         return arg
 
     def __iter__(self):
-        for i in self.list():
-            yield i
+        yield from self.list()
 
     def __call__(self, *other):
         """Return product of cycles processed from R to L.
@@ -1081,7 +1080,7 @@ class Permutation(Basic):
 
         """
         a = self.array_form
-        return [i for i, e in enumerate(a) if a[i] != i]
+        return [i for i, e in enumerate(a) if e != i]
 
     def __add__(self, other):
         """Return permutation that is other higher in rank than self.
@@ -1478,8 +1477,7 @@ class Permutation(Basic):
         [0, 1, 2]
 
         """
-        for i in self.array_form:
-            yield i
+        yield from self.array_form
 
     def __call__(self, *i):
         """

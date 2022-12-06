@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import typing
 import unicodedata
 
 from ...core.alphabets import greeks
@@ -49,11 +48,11 @@ def pretty_use_unicode(flag=None):
 
 
 def g(l):
-    return U('GREEK SMALL LETTER %s' % l.upper())
+    return U(f'GREEK SMALL LETTER {l.upper()}')
 
 
 def G(l):
-    return U('GREEK CAPITAL LETTER %s' % l.upper())
+    return U(f'GREEK CAPITAL LETTER {l.upper()}')
 
 
 greek_letters = list(greeks)  # make a copy
@@ -61,7 +60,7 @@ greek_letters = list(greeks)  # make a copy
 greek_letters[greek_letters.index('lambda')] = 'lamda'
 
 # {}  greek letter -> (g,G)
-greek_unicode: dict[str, typing.Union[tuple, str]] = {l: (g(l), G(l)) for l in greek_letters}
+greek_unicode: dict[str, tuple | str] = {l: (g(l), G(l)) for l in greek_letters}
 greek_unicode = {L: g(L) for L in greek_letters}
 greek_unicode.update((L[0].upper() + L[1:], G(L)) for L in greek_letters)
 
@@ -104,11 +103,11 @@ symb_2txt = {
 
 
 def LSUB(letter):
-    return U('LATIN SUBSCRIPT SMALL LETTER %s' % letter.upper())
+    return U(f'LATIN SUBSCRIPT SMALL LETTER {letter.upper()}')
 
 
 def GSUB(letter):
-    return U('GREEK SUBSCRIPT SMALL LETTER %s' % letter.upper())
+    return U(f'GREEK SUBSCRIPT SMALL LETTER {letter.upper()}')
 
 
 def DSUB(digit):
@@ -120,7 +119,7 @@ def SSUB(symb):
 
 
 def LSUP(letter):
-    return U('SUPERSCRIPT LATIN SMALL LETTER %s' % letter.upper())
+    return U(f'SUPERSCRIPT LATIN SMALL LETTER {letter.upper()}')
 
 
 def DSUP(digit):

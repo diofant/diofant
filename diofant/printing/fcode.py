@@ -92,12 +92,10 @@ class FCodePrinter(CodePrinter):
             self._lead_cont = '      '
             self._lead_comment = '! '
         else:
-            raise ValueError('Unknown source '
-                             'format: %s' % self._settings['source_format'])
+            raise ValueError(f"Unknown source format: {self._settings['source_format']}")
         standards = {66, 77, 90, 95, 2003, 2008}
         if self._settings['standard'] not in standards:
-            raise ValueError('Unknown Fortran '
-                             'standard: %s' % self._settings['standard'])
+            raise ValueError(f"Unknown Fortran standard: {self._settings['standard']}")
 
     def _rate_index_position(self, p):
         return -p*5
@@ -134,11 +132,11 @@ class FCodePrinter(CodePrinter):
         if expr.has(Assignment):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append('if (%s) then' % self._print(c))
+                    lines.append(f'if ({self._print(c)}) then')
                 elif i == len(expr.args) - 1 and c == true:
                     lines.append('else')
                 else:
-                    lines.append('else if (%s) then' % self._print(c))
+                    lines.append(f'else if ({self._print(c)}) then')
                 lines.append(self._print(e))
             lines.append('end if')
             return '\n'.join(lines)
@@ -189,16 +187,9 @@ class FCodePrinter(CodePrinter):
                 else:
                     sign = '+'
 
-                return 'cmplx(%s,%s) %s %s' % (
-                    self._print(Add(*pure_real)),
-                    self._print(-I*Add(*pure_imaginary)),
-                    sign, t,
-                )
+                return f'cmplx({self._print(Add(*pure_real))},{self._print(-I * Add(*pure_imaginary))}) {sign} {t}'
             else:
-                return 'cmplx(%s,%s)' % (
-                    self._print(Add(*pure_real)),
-                    self._print(-I*Add(*pure_imaginary)),
-                )
+                return f'cmplx({self._print(Add(*pure_real))},{self._print(-I * Add(*pure_imaginary))})'
         else:
             return CodePrinter._print_Add(self, expr)
 
@@ -222,25 +213,23 @@ class FCodePrinter(CodePrinter):
     def _print_Mul(self, expr):
         # purpose: print complex numbers nicely in Fortran.
         if expr.is_number and expr.is_imaginary:
-            return 'cmplx(0,%s)' % (
-                self._print(-I*expr)
-            )
+            return f'cmplx(0,{self._print(-I * expr)})'
         else:
             return CodePrinter._print_Mul(self, expr)
 
     def _print_Pow(self, expr):
         PREC = precedence(expr)
         if expr.exp == -1:
-            return '1.0/%s' % (self.parenthesize(expr.base, PREC))
+            return f'1.0/{self.parenthesize(expr.base, PREC)}'
         elif expr.exp == 0.5:
             if expr.base.is_integer:
                 # Fortan intrinsic sqrt() does not accept integer argument
                 if expr.base.is_Number:
-                    return 'sqrt(%s.0d0)' % self._print(expr.base)
+                    return f'sqrt({self._print(expr.base)}.0d0)'
                 else:
-                    return 'sqrt(dble(%s))' % self._print(expr.base)
+                    return f'sqrt(dble({self._print(expr.base)}))'
             else:
-                return 'sqrt(%s)' % self._print(expr.base)
+                return f'sqrt({self._print(expr.base)})'
         else:
             return CodePrinter._print_Pow(self, expr)
 
@@ -252,12 +241,12 @@ class FCodePrinter(CodePrinter):
         printed = CodePrinter._print_Float(self, expr)
         e = printed.find('e')
         if e > -1:
-            return '%sd%s' % (printed[:e], printed[e + 1:])
+            return f'{printed[:e]}d{printed[e + 1:]}'
         return f'{printed}d0'
 
     def _print_Indexed(self, expr):
         inds = [self._print(i) for i in expr.indices]
-        return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
+        return f"{self._print(expr.base.label)}({', '.join(inds)})"
 
     def _print_Idx(self, expr):
         return self._print(expr.label)

@@ -91,9 +91,11 @@ def test_meijerint_indefinite_numerically():
 
 def test_meijerint_definite():
     v, b = meijerint_definite(x, x, 0, 0)
-    assert v.is_zero and b is True
+    assert v.is_zero
+    assert b is True
     v, b = meijerint_definite(x, x, oo, oo)
-    assert v.is_zero and b is True
+    assert v.is_zero
+    assert b is True
 
 
 def test_inflate():

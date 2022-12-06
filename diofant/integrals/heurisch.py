@@ -288,8 +288,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             if M[a].is_positive:
                                 terms.add(acosh(sqrt(M[a]/M[b])*x))
                             elif M[a].is_negative:
-                                terms.add((-M[b]/2*sqrt(-M[a]) *
-                                           atan(sqrt(-M[a])*x/sqrt(M[a]*x**2 - M[b]))))
+                                terms.add(-M[b]/2*sqrt(-M[a]) *
+                                          atan(sqrt(-M[a])*x/sqrt(M[a]*x**2 - M[b])))
 
         else:
             terms |= set(hints)
@@ -400,7 +400,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         return
 
     # --- definitions for _integrate ---
-    a, b, c = [p.total_degree() for p in polified]
+    a, b, c = (p.total_degree() for p in polified)
 
     poly_denom = (s * v_split[0] * _deflation(v_split[1])).as_expr()
 
@@ -434,9 +434,9 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     for poly in polys:
         if poly.has(*V):
             try:
-                factorization = factor(poly, greedy=True)
+                factor(poly, greedy=True)
             except PolynomialError:
-                factorization = poly
+                pass
             factorization = poly
 
             if factorization.is_Mul:

@@ -132,8 +132,11 @@ def test_Dict():
     assert set(d.keys()) == {x, y, z}
     assert set(d.values()) == {1, 2, 3}
     assert d.get(5, 'default') == 'default'
-    assert x in d and z in d and 5 not in d
-    assert d.has(x) and d.has(1)  # Diofant Basic .has method
+    assert x in d
+    assert z in d
+    assert 5 not in d
+    assert d.has(x)
+    assert d.has(1)  # Diofant Basic .has method
 
     # Test input types
     # input - a python dict
@@ -148,9 +151,9 @@ def test_Dict():
     assert set(d.items()) == {Tuple(x, 1), Tuple(y, 2), Tuple(z, 3)}
     assert set(d) == {x, y, z}
     assert str(d) == '{x: 1, y: 2, z: 3}'
-    assert d.__repr__() == ("Dict(Tuple(Symbol('x'), Integer(1)), "
-                            "Tuple(Symbol('y'), Integer(2)), "
-                            "Tuple(Symbol('z'), Integer(3)))")
+    assert repr(d) == ("Dict(Tuple(Symbol('x'), Integer(1)), "
+                       "Tuple(Symbol('y'), Integer(2)), "
+                       "Tuple(Symbol('z'), Integer(3)))")
 
     # Test creating a Dict from a Dict.
     d = Dict({x: 1, y: 2, z: 3})
@@ -165,7 +168,7 @@ def test_Dict():
     d = Dict(d)
     assert len(d) == 3
     assert set(d) == {x, y, z}
-    assert set(d.values()) == {0, 0, 0}
+    assert set(d.values()) == {0}
 
 
 def test_eq_and_args():

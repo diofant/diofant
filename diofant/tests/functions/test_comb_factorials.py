@@ -174,7 +174,6 @@ def test_factorial2():
     assert isinstance(factorial2(oo), factorial2)
 
     pytest.raises(ValueError, lambda: factorial2(-2))
-    nn = Symbol('nn', negative=True)
     assert isinstance(factorial2(Rational(-1, 2)), factorial2)
 
     # The following is exhaustive
@@ -262,7 +261,7 @@ def test_binomial():
     assert binomial(1, 2) == 0
     assert binomial(1, -1) == 0
     assert binomial(-1, 1) == -1
-    assert binomial(-1, -1) == 1
+    assert binomial(-1, -1) == 1  # issue sympy/sympy#23497
     assert binomial(Rational(1, 2), Rational(1, 2)) == 1
     assert binomial(-10, 1) == -10
     assert binomial(-10, 7) == -11440

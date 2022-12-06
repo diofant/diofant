@@ -948,9 +948,9 @@ def test_classify_ode_init():
     pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
 
     # point contains f
-    # XXX: Should be NotImplementedError
     init = {f(0): f(1)}
-    pytest.raises(ValueError, lambda: classify_ode(eq, f(x), init=init))
+    assert classify_ode(eq, f(x), init=init) == ('nth_linear_constant_coeff_homogeneous',
+                                                 '2nd_power_series_ordinary')
 
     # Does not raise
     init = {f(0): 1}
@@ -1670,8 +1670,10 @@ def test_1st_homogeneous_coeff_corner_case():
     c2 = classify_ode(eq2, f(x))
     sdi = '1st_homogeneous_coeff_subs_dep_div_indep'
     sid = '1st_homogeneous_coeff_subs_indep_div_dep'
-    assert sid not in c1 and sdi not in c1
-    assert sid not in c2 and sdi not in c2
+    assert sid not in c1
+    assert sdi not in c1
+    assert sid not in c2
+    assert sdi not in c2
 
 
 def test_nth_linear_constant_coeff_homogeneous():
@@ -2182,7 +2184,6 @@ def test_nth_order_linear_euler_eq_homogeneous():
 
     eq = (6*f(x) - 6*f(x).diff(x)*x + x**2*f(x).diff((x, 2)) +
           x**3*f(x).diff((x, 3)))
-    sol = dsolve(eq, f(x), hint=our_hint)
     sol = C1/x**2 + C2*x + C3*x**3
     sols = constant_renumber(sol, 'C', 1, 4)
     assert our_hint in classify_ode(eq)
@@ -3033,3 +3034,14 @@ def test_sympyissue_23425():
     eq = Eq(-exp(x)*f(x).diff((x, 2)) + f(x).diff(x))
     assert classify_ode(eq) == ('Liouville', 'Liouville_Integral')
     assert dsolve(eq) == Eq(f(x), C1 + C2*Integral(exp(-exp(-x)), x).doit())
+
+
+def test_sympyissue_23562():
+    assert dsolve(f(x).diff(x) + g(y), f(x)) == Eq(f(x), C1 - x*g(y))
+    assert dsolve(f(x).diff(x) + g(y).diff(y),
+                  f(x)) == Eq(f(x), C1 - x*g(y).diff(y))
+
+
+def test_sympyissue_23702():
+    assert dsolve(f(x).diff(x) - f(x), f(x),
+                  init={f(0): f(0)}) == Eq(f(x),  f(0)*exp(x))

@@ -82,8 +82,7 @@ class ArgumentIndexError(ValueError):
     """Raised when an invalid operation for positional argument happened."""
 
     def __str__(self):
-        return ('Invalid operation with argument number %s for Function %s' %
-                (self.args[1], self.args[0]))
+        return f'Invalid operation with argument number {self.args[1]} for Function {self.args[0]}'
 
 
 class FunctionClass(ManagedProperties):
@@ -116,7 +115,7 @@ class FunctionClass(ManagedProperties):
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             if not nargs:
-                raise ValueError('Incorrectly specified nargs as %s' % str(nargs))
+                raise ValueError(f'Incorrectly specified nargs as {nargs!s}')
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = as_int(nargs),
@@ -132,7 +131,8 @@ class FunctionClass(ManagedProperties):
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
-    @property
+    @property  # type: ignore[misc]
+    @cacheit
     def nargs(self):
         """Return a set of the allowed number of arguments for the function.
 
@@ -475,9 +475,9 @@ class Function(Application, Expr):
 
         """
         from ..utilities.misc import filldedent
-        raise PoleError(filldedent("""
-            Asymptotic expansion of %s around %s is
-            not implemented.""" % (type(self), args0)))
+        raise PoleError(filldedent(f"""
+            Asymptotic expansion of {type(self)} around {args0} is
+            not implemented."""))
 
     def _eval_nseries(self, x, n, logx):
         """
@@ -925,9 +925,9 @@ class Derivative(Expr):
             args = tuple(variables)
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
-                raise ValueError(filldedent("""
+                raise ValueError(filldedent(f"""
                     The variable(s) of differentiation
-                    must be supplied to differentiate %s""" % expr))
+                    must be supplied to differentiate {expr}"""))
 
         # Standardize the args by sympifying them and making appending a
         # count of 1 if there is only variable: diff(e, x) -> diff(e, (x, 1)).
@@ -942,8 +942,8 @@ class Derivative(Expr):
             if not v._diff_wrt:
                 from ..utilities.misc import filldedent
                 ordinal = 'st' if count == 1 else 'nd' if count == 2 else 'rd' if count == 3 else 'th'
-                raise ValueError(filldedent("""
-                Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
+                raise ValueError(filldedent(f"""
+                Can't calculate {count}{ordinal} derivative wrt {v}."""))
             if count:
                 if all_zero:
                     all_zero = False
@@ -1381,8 +1381,7 @@ class Subs(Expr):
 
         if tuple(uniq(variables)) != variables:
             repeated = [v for v in set(variables) if variables.count(v) > 1]
-            raise ValueError('cannot substitute expressions %s more than '
-                             'once.' % repeated)
+            raise ValueError(f'cannot substitute expressions {repeated} more than once.')
 
         expr = sympify(expr)
 

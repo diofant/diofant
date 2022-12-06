@@ -975,8 +975,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
             # Separating functions
             elif isinstance(funcarg, AppliedUndef):
-                if (funcarg.func == f and len(funcarg.args) == 1 and
-                        not funcarg.args[0].has(x) and not init[funcarg].has(f)):
+                if funcarg.func == f and len(funcarg.args) == 1 and not funcarg.args[0].has(x):
                     boundary.update({'f0': funcarg.args[0], 'f0val': init[funcarg]})
                 else:
                     raise ValueError('Enter valid boundary conditions for Function')
@@ -1004,7 +1003,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
         else:
             u = Dummy('u')
             ind, dep = (reduced_eq + u).as_independent(f)
-            ind, dep = [tmp.subs({u: 0}) for tmp in [ind, dep]]
+            ind, dep = (tmp.subs({u: 0}) for tmp in [ind, dep])
         r = {a: dep.coeff(df),
              b: dep.coeff(f(x)),
              c: ind}
@@ -1421,7 +1420,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     else:
         for func_ in funcs:
             order[func_] = 0
-    funcs = list(ordered((set(funcs))))
+    funcs = list(ordered(set(funcs)))
     if len(funcs) < len(eq):
         raise ValueError(f'Number of functions given is less than number of equations {funcs}')
     for func in funcs:
@@ -2016,7 +2015,8 @@ def odesimp(eq, func, order, constants, hint):
             global collectterms
             collectterms.sort(key=default_sort_key)
             collectterms.reverse()
-            assert len(eq) == 1 and eq[0].lhs == f(x)
+            assert len(eq) == 1
+            assert eq[0].lhs == f(x)
             sol = eq[0].rhs
             sol = expand_mul(sol)
             for i, reroot, imroot in collectterms:
@@ -2450,7 +2450,7 @@ def __remove_linear_redundancies(expr, Cs):
         return expr
 
     if isinstance(expr, Equality):
-        lhs, rhs = [_recursive_walk(i) for i in expr.args]
+        lhs, rhs = map(_recursive_walk, expr.args)
 
         def f(i):
             return isinstance(i, Number) or i in Cs
@@ -3280,7 +3280,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     x = func.args[0]
     f = func.func
     r = match  # a2*diff(f(x),x) + b2*f(x) + c2*f(x)/x + d2/x**2
-    a2, b2, c2, d2 = [r[r[s]] for s in 'a2 b2 c2 d2'.split()]
+    a2, b2, c2, d2 = (r[r[s]] for s in 'a2 b2 c2 d2'.split())
     C1 = get_numbered_constants(eq, num=1)
     mu = sqrt(4*d2*b2 - (a2 - c2)**2)
     return Eq(f(x), (a2 - c2 - mu*tan(mu/(2*a2)*log(x) + C1))/(2*b2*x))
@@ -4370,7 +4370,6 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     charroots = defaultdict(int)
     for root in chareqroots:
         charroots[root] += 1
-    gsol = Integer(0)
     # We need to keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
     global collectterms
@@ -4507,7 +4506,6 @@ def _solve_undetermined_coefficients(eq, func, order, match):
     gsol = r['sol']
     trialset = r['trialset']
     notneedset = set()
-    newtrialset = set()
     global collectterms
     if len(gensols) != order:
         raise NotImplementedError('Cannot find ' + str(order) +
@@ -6330,7 +6328,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
                 gsol1 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)
                 gsol2 = r['c']*C1*t*exp(sa*t)-r['c']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
             else:
-                assert r['a'] == r['d'] != 0 and r['c'] == 0
+                assert r['a'] == r['d'] != 0
+                assert r['c'] == 0
                 sa = sqrt(r['a'])
                 gsol1 = r['b']*C1*t*exp(sa*t)-r['b']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
                 gsol2 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)

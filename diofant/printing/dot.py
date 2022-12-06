@@ -34,7 +34,7 @@ def attrprint(d, delimiter=', '):
     "color"="blue", "shape"="ellipse"
 
     """
-    return delimiter.join('"%s"="%s"' % item for item in sorted(d.items()))
+    return delimiter.join(f'"{k}"="{v}"' for k, v in sorted(d.items()))
 
 
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
@@ -53,7 +53,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     style['label'] = label
     expr_str = repr(expr)
     if repeat:
-        expr_str += '_%s' % str(pos)
+        expr_str += f'_{pos!s}'
     return f'"{expr_str}" [{attrprint(style)}];'
 
 
@@ -77,8 +77,8 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
         expr_str = repr(expr)
         arg_strs = [repr(arg) for arg in expr.args]
         if repeat:
-            expr_str += '_%s' % str(pos)
-            arg_strs = [arg_str + '_%s' % str(pos + (i,)) for i, arg_str in enumerate(arg_strs)]
+            expr_str += f'_{pos!s}'
+            arg_strs = [arg_str + f'_{pos + (i,)!s}' for i, arg_str in enumerate(arg_strs)]
         return [f'"{expr_str}" -> "{arg_str}";' for arg_str in arg_strs]
 
 

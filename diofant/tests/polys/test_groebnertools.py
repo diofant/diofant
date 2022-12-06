@@ -17,7 +17,7 @@ from diofant.polys.groebnertools import (Num, Polyn, Sign,
 __all__ = ()
 
 
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_groebner(method):
     with using(groebner=method):
         R,  x, y = ring('x y', QQ, lex)
@@ -148,7 +148,7 @@ def test_groebner(method):
         assert not is_minimal(b, R)
 
 
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_benchmark_minimal_polynomial(method):
     with using(groebner=method):
         R,  x, y, z = ring('x y z', QQ, lex)
@@ -196,7 +196,7 @@ def test_benchmark_coloring():
     assert groebner(I, R) == [1]
 
 
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_benchmark_katsura_3(method):
     with using(groebner=method):
         R,  x0, x1, x2 = ring('x:3', ZZ, lex)
@@ -221,7 +221,7 @@ def test_benchmark_katsura_3(method):
         ]
 
 
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_benchmark_katsura_4(method):
     with using(groebner=method):
         R,  x0, x1, x2, x3 = ring('x:4', ZZ, lex)
@@ -254,7 +254,7 @@ def test_benchmark_katsura_4(method):
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_benchmark_czichowski(method):
     # This is very slow (> 2 minutes on 3.4 GHz) without GMPY
 
@@ -327,7 +327,7 @@ def test_benchmark_czichowski(method):
         ]
 
 
-@pytest.mark.parametrize('method', ('buchberger', 'f5b'))
+@pytest.mark.parametrize('method', ['buchberger', 'f5b'])
 def test_benchmark_cyclic_4(method):
     with using(groebner=method):
         R,  a, b, c, d = ring('a b c d', ZZ, lex)

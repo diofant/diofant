@@ -485,7 +485,7 @@ class LatexPrinter(Printer):
 
         for _, vect in items:
             inneritems = list(vect.components.items())
-            inneritems.sort(key=lambda x: x[0].__str__())
+            inneritems.sort(key=lambda x: str(x[0]))
             for k, v in inneritems:
                 if v == 1:
                     o1.append(' + ' + k._latex_form)

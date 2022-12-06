@@ -250,12 +250,6 @@ class GeometryEntity(Basic):
         """
         raise NotImplementedError()
 
-    def __radd__(self, a):
-        return a.__add__(self)
-
-    def __rsub__(self, a):
-        return a.__sub__(self)
-
     def __str__(self):
         """String representation of a GeometryEntity."""
         from ..printing import sstr
@@ -284,7 +278,7 @@ class GeometrySet(GeometryEntity, Set):
 
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
-        return self.__contains__(other)
+        return other in self
 
     def _union(self, other):
         """Returns the union of self and o

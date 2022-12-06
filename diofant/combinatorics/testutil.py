@@ -220,7 +220,6 @@ def canonicalize_naive(g, dummies, sym, *v):
         base_i, gens_i, n_i, sym_i = vi
         v1.append((base_i, gens_i, [[]]*n_i, sym_i))
     size, _, sgens = gens_products(*v1)
-    dgens = dummy_sgs(dummies, sym, size-2)
     if isinstance(sym, int):
         num_types = 1
         dummies = [dummies]

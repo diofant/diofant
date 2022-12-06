@@ -1,5 +1,3 @@
-import typing
-
 from ...core import (Add, Function, Integer, Rational, Symbol, cacheit,
                      expand_mul)
 from ...core.function import ArgumentIndexError
@@ -653,7 +651,8 @@ class cos(TrigonometricFunction):
         }
 
         def fermatCoords(n):
-            assert n > 1 and n % 2
+            assert n > 1
+            assert n % 2
             primes = {p: 0 for p in cst_table_some}
             assert 1 not in primes
             for p_i in primes:
@@ -1041,8 +1040,8 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
     # _is_even and _is_odd are used for correct evaluation of csc(-x), sec(-x)
     # TODO refactor into TrigonometricFunction common parts of
     # trigonometric functions eval() like even/odd, func(x+2*k*pi), etc.
-    _is_even: typing.Optional[bool] = None  # optional, to be defined in subclass
-    _is_odd: typing.Optional[bool] = None  # optional, to be defined in subclass
+    _is_even: bool | None = None  # optional, to be defined in subclass
+    _is_odd: bool | None = None  # optional, to be defined in subclass
 
     @classmethod
     def eval(cls, arg):
@@ -1554,8 +1553,9 @@ class asin(InverseTrigonometricFunction):
     def _eval_rewrite_as_atan(self, x):
         return 2*atan(x/(1 + sqrt(1 - x**2)))
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return -I*log(I*x + sqrt(1 - x**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_acot(self, arg):
         return 2*acot((1 + sqrt(1 - arg**2))/arg)
@@ -1729,9 +1729,9 @@ class acos(InverseTrigonometricFunction):
     def _eval_nseries(self, x, n, logx):
         return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
 
-    def _eval_rewrite_as_log(self, x):
-        return pi/2 + I * \
-            log(I * x + sqrt(1 - x**2))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return pi/2 + I*log(I*x + sqrt(1 - x**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, x):
         return pi/2 - asin(x)
@@ -1842,8 +1842,8 @@ class atan(InverseTrigonometricFunction):
                 -(1 + sqrt(2)): Rational(8, 3),
                 (sqrt(2) - 1): 8,
                 (1 - sqrt(2)): -8,
-                sqrt((5 + 2*sqrt(5))): Rational(5, 2),
-                -sqrt((5 + 2*sqrt(5))): -Rational(5, 2),
+                sqrt(5 + 2*sqrt(5)): Rational(5, 2),
+                -sqrt(5 + 2*sqrt(5)): -Rational(5, 2),
                 (2 - sqrt(3)): 12,
                 -(2 - sqrt(3)): -12
             }
@@ -1889,9 +1889,9 @@ class atan(InverseTrigonometricFunction):
     def _eval_is_extended_real(self):
         return self.args[0].is_extended_real
 
-    def _eval_rewrite_as_log(self, x):
-        return I/2 * (log(
-            (Integer(1) - I * x)/(Integer(1) + I * x)))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return I*(log(1 - I*x) - log(1 + I*x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_aseries(self, n, args0, x, logx):
         if args0[0] == oo:
@@ -2004,7 +2004,7 @@ class acot(InverseTrigonometricFunction):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
-            return pi / 2  # FIX THIS
+            return pi / 2
         elif n < 0 or n % 2 == 0:
             return Integer(0)
         else:
@@ -2040,9 +2040,9 @@ class acot(InverseTrigonometricFunction):
         else:
             return super()._eval_aseries(n, args0, x, logx)
 
-    def _eval_rewrite_as_log(self, x):
-        return I/2 * \
-            (log((x - I)/(x + I)))
+    def _eval_rewrite_as_log(self, x, **kwargs):
+        return I*(log((x - I)/x) - log((x + I)/x))/2
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -2159,8 +2159,9 @@ class asec(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_rewrite_as_log(self, arg):
+    def _eval_rewrite_as_log(self, arg, **kwargs):
         return pi/2 + I*log(I/arg + sqrt(1 - 1/arg**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, arg):
         return pi/2 - asin(1/arg)
@@ -2251,8 +2252,9 @@ class acsc(InverseTrigonometricFunction):
         else:
             return self.func(arg)
 
-    def _eval_rewrite_as_log(self, arg):
+    def _eval_rewrite_as_log(self, arg, **kwargs):
         return -I*log(I/arg + sqrt(1 - 1/arg**2))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_rewrite_as_asin(self, arg):
         return asin(1/arg)
@@ -2408,8 +2410,9 @@ class atan2(InverseTrigonometricFunction):
     def _eval_rewrite_as_log(self, y, x):
         return -I*log((x + I*y) / sqrt(x**2 + y**2))
 
-    def _eval_rewrite_as_atan(self, y, x):
+    def _eval_rewrite_as_atan(self, y, x, **kwargs):
         return 2*atan(y / (sqrt(x**2 + y**2) + x))
+    _eval_rewrite_as_tractable = _eval_rewrite_as_atan
 
     def _eval_rewrite_as_arg(self, y, x):
         from .complexes import arg

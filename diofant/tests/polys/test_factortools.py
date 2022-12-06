@@ -221,8 +221,6 @@ def test_dup_zz_factor():
               (10000*x**4 - 3000*x**3 + 400*x**2 - 20*x + 1, 2),
               (10000*x**4 + 2000*x**3 + 400*x**2 + 30*x + 1, 2)]))
 
-    f = x**10 - 1
-
     for test in (True, False):
         with using(use_cyclotomic_factor=test):
             f = x**10 - 1
@@ -261,11 +259,13 @@ def test__zz_wang():
     S = w_1.eval([(y, A[0]), (z, A[1])])
     cs, s = S.primitive()
 
-    assert cs == 1 and s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
-                                  105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
+    assert cs == 1
+    assert s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
+                      105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
 
     assert R._zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert s.is_squarefree and s.degree() == w_1.degree()
+    assert s.is_squarefree
+    assert s.degree() == w_1.degree()
 
     _, H = UV._zz_factor_sqf(s)
 
@@ -401,7 +401,7 @@ def test_dmp_zz_factor():
                                       2*z*t, 1)])
 
 
-@pytest.mark.parametrize('method', ('modular', 'trager'))
+@pytest.mark.parametrize('method', ['modular', 'trager'])
 def test_dmp_ext_factor(method):
     with using(aa_factor_method=method):
         R, x = ring('x', QQ.algebraic_field(I))

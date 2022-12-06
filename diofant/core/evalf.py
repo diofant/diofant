@@ -40,7 +40,6 @@ from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 
 from .compatibility import is_sequence
-from .singleton import S
 from .sympify import sympify
 
 
@@ -264,9 +263,10 @@ def chop_parts(value, prec):
 def check_target(expr, result, prec):
     a = complex_accuracy(result)
     if a < prec:
-        raise PrecisionExhausted('Failed to distinguish the expression: \n\n%s\n\n'
-                                 'from zero. Try simplifying the input, using chop=True, or providing '
-                                 'a higher maxn for evalf' % expr)
+        raise PrecisionExhausted('Failed to distinguish the expression: '
+                                 f'\n\n{expr}\n\nfrom zero. Try simplifying '
+                                 'the input, using chop=True, or providing '
+                                 'a higher maxn for evalf')
 
 
 ############################################################################
@@ -407,7 +407,7 @@ def evalf_mul(v, prec, options):
 
     # see if any argument is NaN or oo and thus warrants a special return
     special, other = [], []
-    from .numbers import Float, nan
+    from .numbers import Float, Integer, nan
     for arg in args:
         arg = evalf(arg, prec, options)
         if arg[0] is None:
@@ -441,14 +441,14 @@ def evalf_mul(v, prec, options):
     # to be multiplied out after the first phase.
     last = len(args)
     direction = 0
-    args.append(S.One)
+    args.append(Integer(1))
     complex_factors = []
 
     for i, arg in enumerate(args):
         if i != last and pure_complex(arg):
             args[-1] = (args[-1]*arg).expand()
             continue
-        if i == last and arg is S.One:
+        if i == last and arg is Integer(1):
             continue
         re, im, re_acc, im_acc = evalf(arg, working_prec, options)
         if re and im:
@@ -512,7 +512,7 @@ def evalf_mul(v, prec, options):
 
 
 def evalf_pow(v, prec, options):
-    from .numbers import E
+    from .numbers import E, Rational
 
     target_prec = prec
     base, exp = v.args
@@ -553,7 +553,7 @@ def evalf_pow(v, prec, options):
         return finalize_complex(re, im, target_prec)
 
     # Pure square root
-    if exp is S.Half:
+    if exp is Rational(1, 2):
         xre, xim, _, _ = evalf(base, prec + 5, options)
         # General complex square root
         if xim:
@@ -701,7 +701,7 @@ def evalf_log(expr, prec, options):
     size = fastlog(re)
     if prec - size > workprec:
         # We actually need to compute 1+x accurately, not x
-        arg = Add(S.NegativeOne, arg, evaluate=False)
+        arg = Add(-1, arg, evaluate=False)
         xre, xim, _, _ = evalf_add(arg, prec, options)
         prec2 = workprec - fastlog(xre)
         # xre is now x - 1 so we add 1 back here to calculate x
@@ -968,7 +968,7 @@ def hypsum(expr, n, start, prec):
     h, g, p = check_convergence(num, den, n)
 
     if h < 0:
-        raise ValueError('Sum diverges like (n!)^%i' % (-h))
+        raise ValueError(f'Sum diverges like (n!)^{int(-h)}')
 
     term = expr.subs({n: 0})
     if not term.is_Rational:
@@ -988,9 +988,9 @@ def hypsum(expr, n, start, prec):
     else:
         alt = g < 0
         if abs(g) < 1:
-            raise ValueError('Sum diverges like (%i)^n' % abs(1/g))
+            raise ValueError(f'Sum diverges like ({int(abs(1/g))})^n')
         if p < 1 or (p == 1 and not alt):
-            raise ValueError('Sum diverges like n^%i' % (-p))
+            raise ValueError(f'Sum diverges like n^{int(-p)}')
         # We have polynomial convergence: use Richardson extrapolation
         vold = None
         ndig = prec_to_dps(prec)
@@ -1029,14 +1029,14 @@ def evalf_prod(expr, prec, options):
 
 
 def evalf_sum(expr, prec, options):
-    from .numbers import Float, oo
+    from .numbers import Float, Integer, oo
     if 'subs' in options:
         expr = expr.subs(options['subs'])
     func = expr.function
     limits = expr.limits
     if len(limits) != 1 or len(limits[0]) != 3:
         raise NotImplementedError
-    if func is S.Zero:
+    if func is Integer(0):
         return mpf(0), None, None, None
     prec2 = prec + 10
     try:
@@ -1225,7 +1225,7 @@ class EvalfMixin:
                 integrals on an infinite interval, try quad='osc'.
 
         """
-        from .numbers import Float, I
+        from .numbers import Float, I, Integer
 
         if subs and is_sequence(subs):
             raise TypeError('subs must be given as a dictionary')
@@ -1260,7 +1260,7 @@ class EvalfMixin:
             p = max(min(prec, re_acc), 1)
             re = Float._new(re, p)
         else:
-            re = S.Zero
+            re = Integer(0)
         if im:
             p = max(min(prec, im_acc), 1)
             im = Float._new(im, p)

@@ -414,8 +414,7 @@ def primerange(a, b):
 
     # if we already have the range, return it
     if b <= sieve._list[-1]:
-        for i in sieve.primerange(a, b):
-            yield i
+        yield from sieve.primerange(a, b)
         return
     # otherwise compute, without storing, the desired range
     if a >= b:
@@ -446,8 +445,8 @@ def randprime(a, b):
     Examples
     ========
 
-    >>> randprime(1, 30)  # doctest: +SKIP
-    13
+    >>> randprime(1, 30)
+    29
     >>> isprime(randprime(1, 30))
     True
 

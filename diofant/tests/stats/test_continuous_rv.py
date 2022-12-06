@@ -139,7 +139,8 @@ def test_sample():
     Z = ContinuousRV(z, exp(-z), set=Interval(0, oo))
     assert sample(Z) in Z.pspace.domain.set
     sym, val = list(Z.pspace.sample().items())[0]
-    assert sym == Z and val in Interval(0, oo)
+    assert sym == Z
+    assert val in Interval(0, oo)
 
 
 def test_ContinuousRV():
@@ -356,13 +357,6 @@ def test_logistic():
 
 
 def test_lognormal():
-    mean = Symbol('mu', real=True)
-    std = Symbol('sigma', positive=True, real=True)
-    X = LogNormal('x', mean, std)
-    # The diofant integrator can't do this too well
-    # assert E(X) == exp(mean+std**2/2)
-    # assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
-
     # Right now, only density function and sampling works
     # Test sampling: Only e^mean in sample std of 0
     for i in range(3):
@@ -380,6 +374,15 @@ def test_lognormal():
 
     X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
     assert density(X)(x) == sqrt(2)*exp(-log(x)**2/2)/(2*x*sqrt(pi))
+
+
+@pytest.mark.xfail
+def test_lognormal_xfail():
+    mean = Symbol('mu', real=True)
+    std = Symbol('sigma', positive=True, real=True)
+    X = LogNormal('x', mean, std)
+    assert E(X) == exp(mean+std**2/2)
+    assert variance(X) == (exp(std**2)-1) * exp(2*mean + std**2)
 
 
 def test_maxwell():
@@ -426,7 +429,7 @@ def test_pareto_numeric():
     X = Pareto('x', xm, alpha)
 
     assert E(X) == alpha*xm/(alpha - 1)
-    assert variance(X) == xm**2*alpha/(((alpha - 1)**2*(alpha - 2)))
+    assert variance(X) == xm**2*alpha/((alpha - 1)**2*(alpha - 2))
     # Skewness tests too slow. Try shortcutting function?
 
 
@@ -489,7 +492,8 @@ def test_uniform():
 
     # With numbers all is well
     X = Uniform('x', 3, 5)
-    assert P(X < 3) == 0 and P(X > 5) == 0
+    assert P(X < 3) == 0
+    assert P(X > 5) == 0
     assert P(X < 4) == P(X > 4) == Rational(1, 2)
 
 
@@ -504,7 +508,8 @@ def test_uniform_P():
     l = Symbol('l', real=True)
     w = Symbol('w', positive=True, finite=True)
     X = Uniform('x', l, l + w)
-    assert P(X < l) == 0 and P(X > l + w) == 0
+    assert P(X < l) == 0
+    assert P(X > l + w) == 0
 
 
 def test_uniformsum():

@@ -101,8 +101,7 @@ class MCodePrinter(CodePrinter):
 
     def _print_Pow(self, expr):
         PREC = precedence(expr)
-        return '%s^%s' % (self.parenthesize(expr.base, PREC),
-                          self.parenthesize(expr.exp, PREC))
+        return f'{self.parenthesize(expr.base, PREC)}^{self.parenthesize(expr.exp, PREC)}'
 
     def _print_Mul(self, expr):
         PREC = precedence(expr)
@@ -133,12 +132,15 @@ class MCodePrinter(CodePrinter):
         if fname in self.known_functions:
             cond, mfunc = self.known_functions[fname][0]
             if cond(*expr.args):
-                return '%s[%s]' % (mfunc, self.stringify(expr.args, ', '))
-        return fname + '[%s]' % self.stringify(expr.args, ', ')
+                return f"{mfunc}[{self.stringify(expr.args, ', ')}]"
+        return fname + f"[{self.stringify(expr.args, ', ')}]"
     _print_MinMaxBase = _print_Function
 
+    def _print_atan2(self, expr):
+        return f"ArcTan[{', '.join(map(self.doprint, reversed(expr.args)))}]"
+
     def _print_Piecewise(self, expr):
-        return expr.func.__name__ + '[{%s}]' % self.stringify(expr.args, ', ')
+        return expr.func.__name__ + f"[{{{self.stringify(expr.args, ', ')}}}]"
 
     def _print_BooleanTrue(self, expr):
         return 'True'
@@ -147,8 +149,7 @@ class MCodePrinter(CodePrinter):
         return 'False'
 
     def _print_Derivative(self, expr):
-        return 'Hold[D[%s, %s]]' % (self.doprint(expr.expr),
-                                    ', '.join(self.doprint(a) for a in expr.variables))
+        return f"Hold[D[{self.doprint(expr.expr)}, {', '.join(self.doprint(a) for a in expr.variables)}]]"
 
     def _print_Integral(self, expr):
         if len(expr.variables) == 1 and not expr.limits[0][1:]:
@@ -163,7 +164,7 @@ class MCodePrinter(CodePrinter):
             direction = 'Reals'
         else:
             direction = self.doprint(direction)
-        e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
+        e, x, x0 = (self.doprint(a) for a in expr.args[:-1])
         return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 
     def _print_Sum(self, expr):
@@ -184,16 +185,12 @@ class MCodePrinter(CodePrinter):
 
     def _print_Relational(self, expr):
         PREC = precedence(expr)
-        return '%s %s %s' % (self.parenthesize(expr.lhs, PREC),
-                             expr.rel_op,
-                             self.parenthesize(expr.rhs, PREC))
+        return f'{self.parenthesize(expr.lhs, PREC)} {expr.rel_op} {self.parenthesize(expr.rhs, PREC)}'
 
     def _print_RootOf(self, expr):
         from ..core import Symbol
 
-        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs({expr.poly.gen:
-                                                                Symbol('#')})),
-                                   self.doprint(expr.index + 1))
+        return f"Root[{self.doprint(expr.expr.subs({expr.poly.gen: Symbol('#')}))} &, {self.doprint(expr.index + 1)}]"
 
     def _print_Lambda(self, obj):
         return f'Function[{self.doprint(obj.variables)}, {self.doprint(obj.expr)}]'
@@ -201,13 +198,11 @@ class MCodePrinter(CodePrinter):
     def _print_RootSum(self, expr):
         from ..core import Lambda
         p, f = expr.poly, expr.fun
-        return 'RootSum[%s, %s]' % (self.doprint(Lambda(p.gens, p.as_expr())),
-                                    self.doprint(f))
+        return f'RootSum[{self.doprint(Lambda(p.gens, p.as_expr()))}, {self.doprint(f)}]'
 
     def _print_AlgebraicElement(self, expr):
         coeffs = expr.rep.all_coeffs()
-        return 'AlgebraicNumber[%s, %s]' % (self.doprint(expr.parent.ext),
-                                            self.doprint(coeffs))
+        return f'AlgebraicNumber[{self.doprint(expr.parent.ext)}, {self.doprint(coeffs)}]'
 
     def _print_Dummy(self, expr):
         return f'{expr.name}{expr.dummy_index}'

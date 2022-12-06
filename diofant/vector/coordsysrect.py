@@ -91,14 +91,14 @@ class CoordSysCartesian(Basic):
         # Initialize the base vectors
         if vector_names is None:
             vector_names = (name + '.i', name + '.j', name + '.k')
-            latex_vects = [(r'\mathbf{\hat{i}_{%s}}' % name),
-                           (r'\mathbf{\hat{j}_{%s}}' % name),
-                           (r'\mathbf{\hat{k}_{%s}}' % name)]
+            latex_vects = [f'\\mathbf{{\\hat{{i}}_{{{name}}}}}',
+                           f'\\mathbf{{\\hat{{j}}_{{{name}}}}}',
+                           f'\\mathbf{{\\hat{{k}}_{{{name}}}}}']
             pretty_vects = (name + '_i', name + '_j', name + '_k')
         else:
             _check_strings('vector_names', vector_names)
             vector_names = list(vector_names)
-            latex_vects = [(r'\mathbf{\hat{%s}_{%s}}' % (x, name)) for
+            latex_vects = [f'\\mathbf{{\\hat{{{x}}}_{{{name}}}}}' for
                            x in vector_names]
             pretty_vects = [(name + '_' + x) for x in vector_names]
 
@@ -112,14 +112,14 @@ class CoordSysCartesian(Basic):
         # Initialize the base scalars
         if variable_names is None:
             variable_names = (name + '.x', name + '.y', name + '.z')
-            latex_scalars = [(r'\mathbf{{x}_{%s}}' % name),
-                             (r'\mathbf{{y}_{%s}}' % name),
-                             (r'\mathbf{{z}_{%s}}' % name)]
+            latex_scalars = [f'\\mathbf{{{{x}}_{{{name}}}}}',
+                             f'\\mathbf{{{{y}}_{{{name}}}}}',
+                             f'\\mathbf{{{{z}}_{{{name}}}}}']
             pretty_scalars = (name + '_x', name + '_y', name + '_z')
         else:
             _check_strings('variable_names', vector_names)
             variable_names = list(variable_names)
-            latex_scalars = [(r'\mathbf{{%s}_{%s}}' % (x, name)) for
+            latex_scalars = [f'\\mathbf{{{{{x}}}_{{{name}}}}}' for
                              x in variable_names]
             pretty_scalars = [(name + '_' + x) for x in variable_names]
 

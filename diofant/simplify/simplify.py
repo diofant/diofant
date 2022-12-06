@@ -152,7 +152,7 @@ def _separatevars(expr, force):
 
 def _separatevars_dict(expr, symbols):
     if symbols:
-        if not all((t.is_Atom for t in symbols)):
+        if not all(t.is_Atom for t in symbols):
             raise ValueError('symbols must be Atoms.')
         symbols = list(symbols)
     elif symbols is None:
@@ -719,13 +719,11 @@ def _real_to_rational(expr, tolerance=None):
             elif not r.is_Rational:
                 if float < 0:
                     float = -float
-                    d = Pow(10, int((mpmath.log(float)/mpmath.log(10))))
+                    d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
                     r = -Rational(str(float/d))*d
-                elif float > 0:
-                    d = Pow(10, int((mpmath.log(float)/mpmath.log(10))))
-                    r = Rational(str(float/d))*d
                 else:
-                    r = Integer(0)
+                    d = Pow(10, int(mpmath.log(float)/mpmath.log(10)))
+                    r = Rational(str(float/d))*d
         reps[key] = r
     return p.subs(reps, simultaneous=True)
 
@@ -984,26 +982,21 @@ def logcombine(expr, force=False):
     return bottom_up(expr, f)
 
 
-def bottom_up(rv, F, atoms=False, nonbasic=False):
+def bottom_up(rv, F, atoms=False):
     """Apply ``F`` to all expressions in an expression tree from the
-    bottom up. If ``atoms`` is True, apply ``F`` even if there are no args;
-    if ``nonbasic`` is True, try to apply ``F`` to non-Basic objects.
+    bottom up. If ``atoms`` is True, apply ``F`` even if there are no args.
 
     """
     try:
         if rv.args:
-            args = tuple(bottom_up(a, F, atoms, nonbasic) for a in rv.args)
+            args = tuple(bottom_up(a, F, atoms) for a in rv.args)
             if args != rv.args:
                 rv = rv.func(*args)
             rv = F(rv)
         elif atoms:
             rv = F(rv)
     except AttributeError:
-        if nonbasic:
-            try:
-                rv = F(rv)
-            except TypeError:
-                pass
+        pass
 
     return rv
 

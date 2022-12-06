@@ -179,8 +179,7 @@ class Factors:
         return hash((keys, values))
 
     def __repr__(self):
-        return 'Factors({%s})' % ', '.join(
-            ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
+        return f"Factors({{{', '.join([f'{k!s}: {v!s}' for k, v in ordered(self.factors.items())])}}})"
 
     @property
     def is_zero(self):

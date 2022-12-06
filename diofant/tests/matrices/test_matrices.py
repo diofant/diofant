@@ -25,9 +25,12 @@ def test_args():
     for c, cls in enumerate(classes):
         m = cls.zeros(3, 2)
         # all should give back the same type of arguments, e.g. ints for shape
-        assert m.shape == (3, 2) and all(type(i) is int for i in m.shape)
-        assert m.rows == 3 and type(m.rows) is int
-        assert m.cols == 2 and type(m.cols) is int
+        assert m.shape == (3, 2)
+        assert all(type(i) is int for i in m.shape)
+        assert m.rows == 3
+        assert type(m.rows) is int
+        assert m.cols == 2
+        assert type(m.cols) is int
         if not c % 2:
             assert type(m._mat) is list
         else:
@@ -36,8 +39,6 @@ def test_args():
 
 def test_division():
     v = Matrix(1, 2, [x, y])
-    assert v.__truediv__(z) == Matrix(1, 2, [x/z, y/z])
-    assert v.__truediv__(z) == Matrix(1, 2, [x/z, y/z])
     assert v/z == Matrix(1, 2, [x/z, y/z])
 
 
@@ -522,10 +523,10 @@ def test_expand():
 
 
 def test_random():
-    M = randMatrix(3, 3)
-    M = randMatrix(3, 3, seed=3)
-    M = randMatrix(3, 4, 0, 150)
-    M = randMatrix(3, symmetric=True, percent=50)
+    randMatrix(3, 3)
+    randMatrix(3, 3, seed=3)
+    randMatrix(3, 4, 0, 150)
+    randMatrix(3, symmetric=True, percent=50)
     M = randMatrix(3, symmetric=True)
     S = M.copy()
     S.simplify()
@@ -1519,7 +1520,8 @@ def test_eigen_vects():
     assert not m.is_diagonalizable(True)
     pytest.raises(MatrixError, lambda: m.diagonalize(True))
     (P, D) = m.diagonalize()
-    assert D == m and P == eye(2)
+    assert D == m
+    assert P == eye(2)
 
 
 def test_jordan_form():
@@ -2050,7 +2052,9 @@ def test_singular_values():
     A[1, 1] = x
     A[2, 2] = 5
     vals = A.singular_values()
-    assert 1 in vals and 5 in vals and abs(x) in vals
+    assert 1 in vals
+    assert 5 in vals
+    assert abs(x) in vals
 
     A = Matrix([[sin(x), cos(x)], [-cos(x), sin(x)]])
     vals = [sv.trigsimp() for sv in A.singular_values()]
@@ -2402,7 +2406,8 @@ def test_cross():
 def test_hash():
     for cls in classes[-2:]:
         s = {cls.eye(1), cls.eye(1)}
-        assert len(s) == 1 and s.pop() == cls.eye(1)
+        assert len(s) == 1
+        assert s.pop() == cls.eye(1)
     # issue sympy/sympy#3979
     for cls in classes[:2]:
         assert not isinstance(cls.eye(1), collections.abc.Hashable)
@@ -2672,7 +2677,8 @@ def test_sympyissue_10770():
         for op in ops:
             f = getattr(M, op)
             new = f(m) if 'join' in op else f(42, m)
-            assert new == m and id(new) != id(m)
+            assert new == m
+            assert id(new) != id(m)
 
 
 def test_vstack():

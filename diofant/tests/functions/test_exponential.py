@@ -222,8 +222,10 @@ def test_log_symbolic():
 
     assert (log(x**-5)**-1).expand() != -1/log(x)/5
     assert (log(p**-5)**-1).expand() == -1/log(p)/5
-    assert isinstance(log(-x), log) and log(-x).args[0] == -x
-    assert isinstance(log(-p), log) and log(-p).args[0] == -p
+    assert isinstance(log(-x), log)
+    assert log(-x).args[0] == -x
+    assert isinstance(log(-p), log)
+    assert log(-p).args[0] == -p
 
     pytest.raises(ArgumentIndexError, lambda: log(x).fdiff(3))
 

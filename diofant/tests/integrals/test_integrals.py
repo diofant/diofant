@@ -54,7 +54,7 @@ def test_improper_integral():
         (0, True))
 
     # issue sympy/sympy#10211
-    assert integrate((1/sqrt(((y - x)**2 + h**2))**3),
+    assert integrate((1/sqrt((y - x)**2 + h**2)**3),
                      (x, 0, w), (y, 0, w)) == 2*sqrt(1 + w**2/h**2)/h - 2/h
 
 
@@ -361,7 +361,8 @@ def test_sympyissue_4516():
 
 def test_sympyissue_7450():
     ans = integrate(exp(-(1 + I)*x), (x, 0, oo))
-    assert re(ans) == Rational(1, 2) and im(ans) == Rational(-1, 2)
+    assert re(ans) == Rational(1, 2)
+    assert im(ans) == Rational(-1, 2)
 
 
 def test_matrices():
@@ -429,6 +430,10 @@ def test_transform():
     pytest.raises(ValueError, lambda: i.transform(x, (y, y + z)))
     pytest.raises(ValueError, lambda: i2.transform(x, (z*y, y)))
     pytest.raises(ValueError, lambda: i.transform(x, (sin(y), y)))
+
+    assert (Integral(1/(1 + y*cos(x)),
+                     (x, 0, pi)).transform(tan(x/2), x).simplify().simplify() ==
+            Integral(2/(x**2 - y*(x**2 - 1) + 1), (x, 0, oo)))
 
 
 def test_sympyissue_4052():
@@ -801,11 +806,14 @@ def test_is_number():
     # `foo.is_number` should always be eqivalent to `not foo.free_symbols`
     # in each of these cases, there are pseudo-free symbols
     i = Integral(x, (y, 1, 1))
-    assert i.is_number is False and i.evalf() == 0
+    assert i.is_number is False
+    assert i.evalf() == 0
     i = Integral(x, (y, z, z))
-    assert i.is_number is False and i.evalf() == 0
+    assert i.is_number is False
+    assert i.evalf() == 0
     i = Integral(1, (y, z, z + 2))
-    assert i.is_number is False and i.evalf() == 2
+    assert i.is_number is False
+    assert i.evalf() == 2
 
     assert Integral(x*y, (x, 1, 2), (y, 1, 3)).is_number is True
     assert Integral(x*y, (x, 1, 2), (y, 1, z)).is_number is False
@@ -1460,3 +1468,24 @@ def test_sympyissue_23223():
 def test_sympyissue_23299():
     e = Integral(a*x**(a - 1)*log(x), (x, 0, 1))
     assert e.doit() == Piecewise((-1/a, -re(a) + 1 < 1), (e, True))
+
+
+def test_sympyissue_23596():
+    assert integrate(((1 + x)/x**2)*exp(-1/x), (x, 0, oo)) == oo
+
+
+def test_sympyissue_23605():
+    p, T, nu = symbols('p T nu', positive=True)
+    R, b = symbols('R b', positive=True)
+    a = Function('a', positive=True)(T)
+    srk_p = R*T/(nu-b) - a/(nu**2 + b*nu)
+    integrand = p - T*diff(srk_p, T)
+    ans = -R*T*log(R**2*T**2*(-R*b**4/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3) - 3*b**3*a.diff(T)/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3)) + R**2*b**3/(2*R**2*b**2 - 2*a.diff(T)**2) + R*b**2/(2*a.diff(T)) + R*b**2*a.diff(T)/(2*R**2*b**2 - 2*a.diff(T)**2) + 2*b*a.diff(T)**2/(2*R**2*b**2 - 2*a.diff(T)**2) + nu) - 2*T*sqrt(-a.diff(T)**2)*atan(a.diff(T)/sqrt(-a.diff(T)**2) + 2*nu*a.diff(T)/(b*sqrt(-a.diff(T)**2)))/b + nu*p
+    assert integrate(integrand, nu) == ans
+
+
+def test_sympyissue_23707():
+    assert integrate(exp(t)*exp(-t*sqrt(x - y)),
+                     t) == Piecewise((t, Eq(x, y + 1)),
+                                     (-exp(t)/(exp(t*sqrt(x - y))*sqrt(x - y) -
+                                               exp(t*sqrt(x - y))), True))

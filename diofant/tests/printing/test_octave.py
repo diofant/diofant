@@ -264,8 +264,6 @@ def test_octave_matrix_1x1():
     B = MatrixSymbol('B', 1, 1)
     C = MatrixSymbol('C', 1, 2)
     assert octave_code(A, assign_to=B) == 'B = 3;'
-    # FIXME?
-    # assert octave_code(A, assign_to=x) == 'x = 3;'
     pytest.raises(ValueError, lambda: octave_code(A, assign_to=C))
 
 

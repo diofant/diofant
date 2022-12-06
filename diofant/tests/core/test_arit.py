@@ -521,7 +521,9 @@ def test_Mul_is_negative_positive():
     z = Symbol('z', zero=True)
 
     e = 2*z
-    assert e.is_Mul and e.is_positive is False and e.is_negative is False
+    assert e.is_Mul
+    assert e.is_positive is False
+    assert e.is_negative is False
     assert (x*y).is_positive is None
 
     neg = Symbol('neg', negative=True)
@@ -1521,15 +1523,20 @@ def test_Mod():
     assert Mod(-3.3, 1) == 1 - point3
     assert Mod(0.7, 1) == Float(0.7)
     e = Mod(1.3, 1)
-    assert comp(e, .3) and e.is_Float
+    assert comp(e, .3)
+    assert e.is_Float
     e = Mod(1.3, .7)
-    assert comp(e, .6) and e.is_Float
+    assert comp(e, .6)
+    assert e.is_Float
     e = Mod(1.3, Rational(7, 10))
-    assert comp(e, .6) and e.is_Float
+    assert comp(e, .6)
+    assert e.is_Float
     e = Mod(Rational(13, 10), 0.7)
-    assert comp(e, .6) and e.is_Float
+    assert comp(e, .6)
+    assert e.is_Float
     e = Mod(Rational(13, 10), Rational(7, 10))
-    assert comp(e, .6) and e.is_Rational
+    assert comp(e, .6)
+    assert e.is_Rational
 
     # check that sign is right
     r2 = sqrt(2)
@@ -1835,7 +1842,8 @@ def test_mul_zero_detection():
     # real is unknonwn
     def test(z, b, e):
         if z.is_zero and b.is_finite:
-            assert e.is_extended_real and e.is_zero
+            assert e.is_extended_real
+            assert e.is_zero
         else:
             assert e.is_extended_real is None
             if b.is_finite:

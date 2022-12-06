@@ -111,7 +111,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     @staticmethod
     def __new_stage2__(obj_cls, name, **assumptions):
         if not isinstance(name, str):
-            raise TypeError('name should be a string, not %s' % repr(type(name)))
+            raise TypeError(f'name should be a string, not {type(name)!r}')
 
         obj = Expr.__new__(obj_cls)
         obj.name = name
@@ -238,9 +238,6 @@ class Dummy(BaseSymbol):
     If a name is not supplied then a string value of the count index will be
     used. This is useful when a temporary variable is needed and the name
     of the variable used in the expression is not important.
-
-    >>> Dummy()  # doctest: +SKIP
-    _Dummy_10
 
     See Also
     ========

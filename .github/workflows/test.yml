@@ -10,7 +10,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: ['3.10']
+        python-version: ['3.10', '3.11']
         coverage: [false]
         include:
           - python-version: '3.10'
@@ -19,16 +19,20 @@ jobs:
     env:
       TERM: xterm
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install libs
       run: |
         sudo apt update
+        if [[ ${{matrix.python-version}} != "3.10" ]]
+        then
+          sudo apt install libmpc-dev libmpfr-dev libgmp-dev
+        fi
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
         sudo apt install libatlas-base-dev liblapack-dev gfortran
@@ -66,7 +70,7 @@ jobs:
         coverage xml
     - name: Upload coverage data
       if: matrix.coverage
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
     - name: Get version
@@ -88,7 +92,7 @@ jobs:
     - name: Make packages
       run: python -m build
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: matrix.coverage
       with:
         path: |
@@ -120,7 +124,7 @@ jobs:
         token: ${{ secrets.RELEASES_DEPLOY_KEY }}
     - name: Publish package on PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-      uses: pypa/gh-action-pypi-publish@v1.4.2
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}

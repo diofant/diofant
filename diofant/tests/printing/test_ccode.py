@@ -18,7 +18,7 @@ __all__ = ()
 def test_printmethod():
     class Fabs(Abs):
         def _ccode(self, printer):
-            return 'fabs(%s)' % printer._print(self.args[0])
+            return f'fabs({printer._print(self.args[0])})'
     assert ccode(Fabs(x)) == 'fabs(x)'
 
 
@@ -101,7 +101,7 @@ def test_ccode_inline_function():
     assert ccode(g(x)) == '2*x'
     g = implemented_function('g', Lambda(x, 2*x/Catalan))
     assert ccode(
-        g(x)) == 'double const Catalan = %s;\n2*x/Catalan' % Catalan.evalf()
+        g(x)) == f'double const Catalan = {Catalan.evalf()};\n2*x/Catalan'
     A = IndexedBase('A')
     i = Idx('i', symbols('n', integer=True))
     g = implemented_function('g', Lambda(x, x*(1 + x)*(2 + x)))
@@ -235,9 +235,9 @@ def test_ccode_Indexed():
     x = IndexedBase('x')[j]
     assert p._print_Indexed(x) == 'x[j]'
     A = IndexedBase('A')[i, j]
-    assert p._print_Indexed(A) == 'A[%s]' % (m*i+j)
+    assert p._print_Indexed(A) == f'A[{m*i + j}]'
     B = IndexedBase('B')[i, j, k]
-    assert p._print_Indexed(B) == 'B[%s]' % (i*o*m+j*o+k)
+    assert p._print_Indexed(B) == f'B[{i*o*m + j*o + k}]'
 
     assert p._not_c == set()
 
@@ -250,7 +250,7 @@ def test_ccode_Indexed_without_looking_for_contraction():
     i = Idx('i', len_y - 1)
     e = Eq(Dy[i], (y[i + 1] - y[i])/(x[i + 1] - x[i]))
     code0 = ccode(e.rhs, assign_to=e.lhs, contract=False)
-    assert code0 == 'Dy[i] = (y[%s] - y[i])/(x[%s] - x[i]);' % (i + 1, i + 1)
+    assert code0 == f'Dy[i] = (y[{i + 1}] - y[i])/(x[{i + 1}] - x[i]);'
 
 
 def test_ccode_loops_matrix_vector():
@@ -268,7 +268,7 @@ def test_ccode_loops_matrix_vector():
         '}\n'
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +
+        f'      y[i] = x[j]*A[{i*n + j}] + y[i];\n'
         '   }\n'
         '}'
     )
@@ -297,11 +297,11 @@ def test_dummy_loops():
     y = IndexedBase('y')
     i = Idx(i, m)
 
-    expected = (
-        'for (int i_%(icount)i=0; i_%(icount)i<m_%(mcount)i; i_%(icount)i++){\n'
-        '   y[i_%(icount)i] = x[i_%(icount)i];\n'
-        '}'
-    ) % {'icount': i.label.dummy_index, 'mcount': m.dummy_index}
+    icount = i.label.dummy_index
+    mcount = m.dummy_index
+    expected = f"""for (int i_{icount}=0; i_{icount}<m_{mcount}; i_{icount}++){{
+   y[i_{icount}] = x[i_{icount}];
+}}"""
     code = ccode(x[i], assign_to=y[i])
     assert code == expected
 
@@ -321,7 +321,7 @@ def test_ccode_loops_add():
         '}\n'
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = x[j]*A[%s] + y[i];\n' % (i*n + j) +
+        f'      y[i] = x[j]*A[{i*n + j}] + y[i];\n'
         '   }\n'
         '}'
     )
@@ -347,7 +347,7 @@ def test_ccode_loops_multiple_contractions():
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
         '         for (int l=0; l<p; l++){\n'
-        '            y[i] = y[i] + b[%s]*a[%s];\n' % (j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l) +
+        f'            y[i] = y[i] + b[{j*o*p + k*p + l}]*a[{i*n*o*p + j*o*p + k*p + l}];\n'
         '         }\n'
         '      }\n'
         '   }\n'
@@ -376,7 +376,7 @@ def test_ccode_loops_addfactor():
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
         '         for (int l=0; l<p; l++){\n'
-        '            y[i] = (a[%s] + b[%s])*c[%s] + y[i];\n' % (i*n*o*p + j*o*p + k*p + l, i*n*o*p + j*o*p + k*p + l, j*o*p + k*p + l) +
+        f'            y[i] = (a[{i*n*o*p + j*o*p + k*p + l}] + b[{i*n*o*p + j*o*p + k*p + l}])*c[{j*o*p + k*p + l}] + y[i];\n'
         '         }\n'
         '      }\n'
         '   }\n'
@@ -405,7 +405,7 @@ def test_ccode_loops_multiple_terms():
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
         '      for (int k=0; k<o; k++){\n'
-        '         y[i] = b[j]*b[k]*c[%s] + y[i];\n' % (i*n*o + j*o + k) +
+        f'         y[i] = b[j]*b[k]*c[{i*n*o + j*o + k}] + y[i];\n'
         '      }\n'
         '   }\n'
         '}\n'
@@ -413,14 +413,14 @@ def test_ccode_loops_multiple_terms():
     s2 = (
         'for (int i=0; i<m; i++){\n'
         '   for (int k=0; k<o; k++){\n'
-        '      y[i] = b[k]*a[%s] + y[i];\n' % (i*o + k) +
+        f'      y[i] = b[k]*a[{i*o + k}] + y[i];\n'
         '   }\n'
         '}\n'
     )
     s3 = (
         'for (int i=0; i<m; i++){\n'
         '   for (int j=0; j<n; j++){\n'
-        '      y[i] = b[j]*a[%s] + y[i];\n' % (i*n + j) +
+        f'      y[i] = b[j]*a[{i*n + j}] + y[i];\n'
         '   }\n'
         '}\n'
     )

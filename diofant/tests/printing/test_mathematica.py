@@ -6,12 +6,13 @@ from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral, Lambda, Le,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
                      Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
-                     Tuple, acos, acosh, acot, acoth, asin, asinh, atan, atanh,
-                     binomial, conjugate, cos, cosh, cot, coth, csch, erf,
-                     erfc, erfi, exp, factorial, factorial2, false, fibonacci,
-                     gamma, hyper, im, log, loggamma, mathematica_code,
-                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
-                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
+                     Tuple, acos, acosh, acot, acoth, asin, asinh, atan, atan2,
+                     atanh, binomial, conjugate, cos, cosh, cot, coth, csch,
+                     erf, erfc, erfi, exp, factorial, factorial2, false,
+                     fibonacci, gamma, hyper, im, log, loggamma,
+                     mathematica_code, meijerg, oo, pi, polygamma, polylog, re,
+                     rf, sech, sign, sin, sinh, symbols, tan, tanh, true,
+                     uppergamma, zeta)
 from diofant.abc import x, y, z
 
 
@@ -92,6 +93,7 @@ def test_Function():
     assert mathematica_code(polylog(x, y)) == 'PolyLog[x, y]'
     assert mathematica_code(loggamma(x)) == 'LogGamma[x]'
     assert mathematica_code(uppergamma(x, y)) == 'Gamma[x, y]'
+    assert mathematica_code(atan2(y, x)) == 'ArcTan[x, y]'
 
     class MyFunc1(Function):
         @classmethod

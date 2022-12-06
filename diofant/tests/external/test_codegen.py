@@ -167,8 +167,7 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     #    includes the numerical tests
     test_strings = []
     for fn_name, args, expected, threshold in numerical_tests:
-        call_string = '%s(%s)-(%s)' % (
-            fn_name, ','.join(str(arg) for arg in args), expected)
+        call_string = f"{fn_name}({','.join(str(arg) for arg in args)})-({expected})"
         if language == 'F95':
             call_string = fortranize_double_constants(call_string)
             threshold = fortranize_double_constants(str(threshold))
@@ -182,8 +181,8 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     elif language == 'C':
         f_name = 'main.c'
     else:
-        raise NotImplementedError(
-            f'FIXME: filename extension unknown for language: {language}')
+        raise NotImplementedError('filename extension unknown for '
+                                  f'language: {language}')
 
     with open(f_name, 'w', encoding='utf-8') as f:
         f.write(
@@ -218,10 +217,8 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
         os.chdir(oldwork)
 
     # 7) Do the assertions in the end
-    assert compiled, 'failed to compile %s code with:\n%s' % (
-        language, '\n'.join(commands))
-    assert executed, 'failed to execute %s code from:\n%s' % (
-        language, '\n'.join(commands))
+    assert compiled, 'failed to compile {} code with:\n{}'.format(language, '\n'.join(commands))  # noqa: SFS201
+    assert executed, 'failed to execute {} code from:\n{}'.format(language, '\n'.join(commands))  # noqa: SFS201
 
 
 def fortranize_double_constants(code_string):
@@ -233,7 +230,7 @@ def fortranize_double_constants(code_string):
         return re.sub('[eE]', 'd', matchobj.group(0))
 
     def subs_float(matchobj):
-        return '%sd0' % matchobj.group(0)
+        return f'{matchobj.group(0)}d0'
 
     code_string = pattern_exp.sub(subs_exp, code_string)
     code_string = pattern_float.sub(subs_float, code_string)

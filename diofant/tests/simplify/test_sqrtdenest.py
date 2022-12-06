@@ -9,8 +9,7 @@ from diofant.simplify.sqrtdenest import unrad
 
 __all__ = ()
 
-r2, r3, r5, r6, r7, r10, r15, r29 = [sqrt(x) for x in [2, 3, 5, 6, 7, 10,
-                                                       15, 29]]
+r2, r3, r5, r6, r7, r10, r15, r29 = map(sqrt, [2, 3, 5, 6, 7, 10, 15, 29])
 
 
 def test_sqrtdenest():
@@ -119,7 +118,6 @@ def test_sqrtdenest3():
 def test_sqrtdenest4():
     # see Denest_en.pdf in https://github.com/sympy/sympy/issues/3192
     z = sqrt(8 - r2*sqrt(5 - r5) - sqrt(3)*(1 + r5))
-    z1 = sqrtdenest(z)
     c = sqrt(-r5 + 5)
     z1 = ((-r15*c - r3*c + c + r5*c - r6 - r2 + r10 + sqrt(30))/4).expand()
     assert sqrtdenest(z) == z1
@@ -285,7 +283,7 @@ def test_unrad1():
                  (x**2 - x + 4, []))
 
     # issue sympy/sympy#8622
-    assert unrad((root(x + 1, 5) - root(x, 3))) == (
+    assert unrad(root(x + 1, 5) - root(x, 3)) == (
         x**5 - x**3 - 3*x**2 - 3*x - 1, [])
     # issue sympy/sympy#8679
     assert check(unrad(x + root(x, 3) + root(x, 3)**2 + sqrt(y), x),

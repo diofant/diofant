@@ -85,7 +85,9 @@ def test_dice():
 
     assert density(X + Y) == density(Y + Z) != density(X + X)
     d = density(2*X + Y**Z)
-    assert d[22] == Rational(1, 108) and d[4100] == Rational(1, 216) and 3130 not in d
+    assert d[22] == Rational(1, 108)
+    assert d[4100] == Rational(1, 216)
+    assert 3130 not in d
 
     assert pspace(X).domain.as_boolean() == Or(
         *[Eq(X.symbol, i) for i in [1, 2, 3, 4, 5, 6]])

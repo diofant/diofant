@@ -135,10 +135,10 @@ class Polyhedron(Basic):
         can be applied to the polyhedron to give the orientation produced
         by those individual permutations.
 
-        Here, 3 permutations are used:
+        Here, 2 permutations are used:
 
-        >>> tetra.pgroup.make_perm(3)  # doctest: +SKIP
-        Permutation([0, 3, 1, 2])
+        >>> tetra.pgroup.make_perm(3)
+        Permutation([2, 0, 1, 3])
 
         To select the permutations that should be used, supply a list
         of indices to the permutations in pgroup in the order they should
@@ -383,8 +383,8 @@ class Polyhedron(Basic):
         if pgroup and pgroup[0].size != len(corners):
             raise ValueError('Permutation size unequal to number of corners.')
         # use the identity permutation if none are given
-        obj._pgroup = PermutationGroup((pgroup or
-                                        [Permutation(range(len(corners)))]))
+        obj._pgroup = PermutationGroup(pgroup or
+                                       [Permutation(range(len(corners)))])
         return obj
 
     @property

@@ -4325,32 +4325,6 @@ x = 0     \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Sum(1/y**(a/b), (x, 0, oo), (y, 1, 2))
-    ascii_str = \
-        """\
-  2     oo     \n\
-____  ____     \n\
-\\   ` \\   `    \n\
- \\     \\     -a\n\
-  \\     \\    --\n\
-  /     /    b \n\
- /     /    y  \n\
-/___, /___,    \n\
-y = 1 x = 0    \
-"""
-    ucode_str = \
-        """\
-  2     ∞      \n\
-____  ____     \n\
-╲     ╲        \n\
- ╲     ╲     -a\n\
-  ╲     ╲    ──\n\
-  ╱     ╱    b \n\
- ╱     ╱    y  \n\
-╱     ╱        \n\
-‾‾‾‾  ‾‾‾‾     \n\
-y = 1 x = 0    \
-"""
     expr = Sum(1/(1 + 1/(
         1 + 1/k)) + 1, (k, 111, 1 + 1/n), (k, 1/(1 + m), oo)) + 1/(1 + 1/k)
     ascii_str = \

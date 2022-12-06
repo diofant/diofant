@@ -147,8 +147,7 @@ class CodeWrapper:
             retoutput = check_output(command, stderr=STDOUT)
         except CalledProcessError as exc:
             raise CodeWrapError(
-                'Error while executing command: %s. Command output is:\n%s' % (
-                    ' '.join(command), exc.output.decode())) from exc
+                f"Error while executing command: {' '.join(command)}. Command output is:\n{exc.output.decode()}") from exc
         if not self.quiet:
             print(retoutput)
 

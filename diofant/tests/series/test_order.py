@@ -107,7 +107,7 @@ def test_simple_8():
 
 def test_as_expr_variables():
     assert O(x).as_expr_variables(None) == (x, ((x, 0),))
-    assert O(x).as_expr_variables((((x, 0),))) == (x, ((x, 0),))
+    assert O(x).as_expr_variables(((x, 0),)) == (x, ((x, 0),))
     assert O(y).as_expr_variables(((x, 0),)) == (y, ((x, 0), (y, 0)))
     assert O(y).as_expr_variables(((x, 0), (y, 0))) == (y, ((x, 0), (y, 0)))
 

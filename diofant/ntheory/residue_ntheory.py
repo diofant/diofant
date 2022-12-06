@@ -587,7 +587,7 @@ def is_nthpow_residue(a, n, m):
     * P. Hackman "Elementary Number Theory" (2009),  page 76
 
     """
-    a, n, m = [as_int(i) for i in (a, n, m)]
+    a, n, m = map(as_int, (a, n, m))
     if m <= 0:
         raise ValueError('m must be > 0')
     if n < 0:
@@ -607,7 +607,9 @@ def is_nthpow_residue(a, n, m):
 
 def _is_nthpow_residue_bign(a, n, m):
     """Returns True if ``x**n == a (mod m)`` has solutions for n > 2."""
-    assert n > 2 and a >= 0 and m > 0
+    assert n > 2
+    assert a >= 0
+    assert m > 0
     if primitive_root(m) is None:
         assert m >= 8
         for prime, power in factorint(m).items():
@@ -624,7 +626,10 @@ def _is_nthpow_residue_bign_prime_power(a, n, p, k):
     does/doesn't exist.
 
     """
-    assert a >= 0 and n > 2 and isprime(p) and k > 0
+    assert a >= 0
+    assert n > 2
+    assert isprime(p)
+    assert k > 0
     if a % p:
         if p != 2:
             return _is_nthpow_residue_bign(a, n, pow(p, k))

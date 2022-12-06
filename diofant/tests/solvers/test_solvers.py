@@ -270,7 +270,8 @@ def test_quintics_1():
 def test_highorder_poly():
     # just testing that the uniq generator is unpacked
     sol = solve(x**6 - 2*x + 2)
-    assert all(isinstance(i[x], RootOf) for i in sol) and len(sol) == 6
+    assert all(isinstance(i[x], RootOf) for i in sol)
+    assert len(sol) == 6
 
 
 def test_quintics_2():
@@ -440,8 +441,8 @@ def test_solve_transcendental():
     assert solve(3**(2 - x), x) == []
     assert solve(x + 2**x, x) == [{x: -LambertW(log(2))/log(2)}]
     ans = solve(3*x + 5 + 2**(-5*x + 3), x)
-    assert len(ans) == 1 and ans[0][x].expand() == \
-        -Rational(5, 3) + LambertW(-10240*root(2, 3)*log(2)/3)/(5*log(2))
+    assert len(ans) == 1
+    assert ans[0][x].expand() == -Rational(5, 3) + LambertW(-10240*root(2, 3)*log(2)/3)/(5*log(2))
     assert (solve(5*x - 1 + 3*exp(2 - 7*x), x) ==
             [{x: Rational(1, 5) + LambertW(-21*exp(Rational(3, 5))/5)/7}])
     assert (solve(2*x + 5 + log(3*x - 2), x) ==
@@ -450,7 +451,8 @@ def test_solve_transcendental():
     assert solve((2*x + 8)*(8 + exp(x))) == [{x: -4}, {x: log(8) + pi*I}]
     eq = 2*exp(3*x + 4) - 3
     ans = solve(eq, x)  # this generated a failure in flatten
-    assert len(ans) == 3 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
+    assert len(ans) == 3
+    assert all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(2*log(3*x + 4) - 3, x) == [{x: (exp(Rational(3, 2)) - 4)/3}]
     assert solve(exp(x) + 1, x) == [{x: pi*I}]
 
@@ -664,7 +666,8 @@ def test_sympyissue_4793():
     assert solve(x**2 + x + sin(y)**2 + cos(y)**2 - 1, x) in [[{x: 0}, {x: -1}], [{x: -1}, {x: 0}]]
     eq = 4*3**(5*x + 2) - 7
     ans = solve(eq, x)
-    assert len(ans) == 5 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
+    assert len(ans) == 5
+    assert all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(log(x**2) - y**2/exp(x),
                  x, y) == [{y: -sqrt(exp(x)*log(x**2))},
                            {y: sqrt(exp(x)*log(x**2))}]
@@ -749,7 +752,7 @@ def test_sympyissue_4671():
     assert (solve((2**exp(y**2/x) + 2)/(x**2 + 15), y) ==
             [{y: -sqrt(x)*sqrt(-log(log(2)) + log(log(2) + I*pi))},
              {y: sqrt(x)*sqrt(-log(log(2)) + log(log(2) + I*pi))}])
-    assert (solve((sqrt(x**2 - 1) - 2)) in
+    assert (solve(sqrt(x**2 - 1) - 2) in
             ([{x: sqrt(5)}, {x: -sqrt(5)}], [{x: -sqrt(5)}, {x: sqrt(5)}]))
 
 
@@ -945,9 +948,11 @@ def test_sympyissue_5912():
             [{x: Rational(1, 2) + sqrt(35)/10},
              {x: Rational(1, 2) - sqrt(35)/10}])
     ans = solve(x**2 - x - 0.1, rational=False)
-    assert len(ans) == 2 and all(a[x].is_Number for a in ans)
+    assert len(ans) == 2
+    assert all(a[x].is_Number for a in ans)
     ans = solve(x**2 - x - 0.1)
-    assert len(ans) == 2 and all(a[x].is_Number for a in ans)
+    assert len(ans) == 2
+    assert all(a[x].is_Number for a in ans)
 
 
 def test_float_handling():
@@ -961,9 +966,11 @@ def test_float_handling():
     assert test(nfloat(1 + 2*x), 1.0 + 2.0*x)
     for contain in [list, tuple, set]:
         ans = nfloat(contain([1 + 2*x]))
-        assert type(ans) is contain and test(list(ans)[0], 1.0 + 2.0*x)
+        assert type(ans) is contain
+        assert test(list(ans)[0], 1.0 + 2.0*x)
     k, v = list(nfloat({2*x: [1 + 2*x]}).items())[0]
-    assert test(k, 2*x) and test(v[0], 1.0 + 2.0*x)
+    assert test(k, 2*x)
+    assert test(v[0], 1.0 + 2.0*x)
     assert test(nfloat(cos(2*x)), cos(2.0*x))
     assert test(nfloat(3*x**2), 3.0*x**2)
     assert test(nfloat(3*x**2, exponent=True), 3.0*x**2.0)
@@ -1446,7 +1453,7 @@ def test_sympyissue_8828():
     A = solve(F, v)
     B = solve(G, v)
 
-    p, q = [{tuple(i.evalf(2) for i in ordered(j)) for j in R} for R in [A, B]]
+    p, q = ({tuple(i.evalf(2) for i in ordered(j)) for j in R} for R in [A, B])
     assert p == q
 
 
@@ -1590,7 +1597,8 @@ def test_unrad1():
 
     ans = solve(sqrt(x) + sqrt(x + 1) -
                 sqrt(1 - x) - sqrt(2 + x))
-    assert len(ans) == 1 and NS(ans[0][x])[:4] == '0.73'
+    assert len(ans) == 1
+    assert NS(ans[0][x])[:4] == '0.73'
     # the fence optimization problem
     # https://github.com/sympy/sympy/issues/4793#issuecomment-36994519
     eq = F - (2*x + 2*y + sqrt(x**2 + y**2))
@@ -1601,8 +1609,6 @@ def test_unrad1():
                   simplify=False, check=False)
         if any((a[y] - ans).expand().is_zero for a in Y):
             break
-    else:
-        assert None  # no answer was found
     assert (solve(sqrt(x + 1) + root(x, 3) - 2) ==
             [{x: (-11/(9*cbrt(Rational(47, 54) + sqrt(93)/6)) +
                   Rational(1, 3) + cbrt(Rational(47, 54) +
@@ -1640,7 +1646,7 @@ def test_unrad1_fail():
 def test_unrad_slow():
     # this has roots with multiplicity > 1; there should be no
     # repeats in roots obtained, however
-    eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*((1 + sqrt(1 + 2*sqrt(1 - 4*x**2)))))
+    eq = (sqrt(1 + sqrt(1 - 4*x**2)) - x*(1 + sqrt(1 + 2*sqrt(1 - 4*x**2))))
     assert solve(eq) == [{x: Rational(1, 2)}]
 
 
@@ -1749,3 +1755,26 @@ def test_sympyissue_22248():
 
 def test_sympyissue_22837():
     assert solve(Eq(0, (4 - 4*x + x**2)/(4*a**2)), x) == [{x: 2}]
+
+
+def test_issue_1195():
+    assert solve(0.9**x - 0.35) == [{x: 9.964094404284511}]
+
+
+@pytest.mark.slow
+@pytest.mark.timeout(2100)
+def test_sympyissue_23637():
+    p, q, s, t = 4*y + 3*x + 1, -2*y - x + 1, -y - x + 1, 2*y + 2*x + 6
+    rea1 = 1.0*10**(-4)*(x + 2)*p**3 - 1.3*q*s*t**2
+    rea2 = 1.0*10**(-4)*(y + 1)*p**4 - 2.99*q**2*s*t**2
+    sol = [{x: -11.0, y: 8.0}, {x: -8.474434848793706, y: 9.4724262173802511},
+           {x: -4.0297080219649217, y: 0.99590437023147171},
+           {x: -3.814341662315357, y: 0.84581641948719222},
+           {x: -3.0, y: 2.0}, {x: -2.0091163509386085, y: -0.98835947935546686},
+           {x: -2.0, y: -1.0}, {x: 1.3235849477227735, y: -0.32419504840343982},
+           {x: 3.0040159362898193, y: -1.0015924793400075}, {x: 5.0, y: -4.0}]
+    assert solve([rea1, rea2], x, y) == sol
+
+
+def test_sympyissue_23855():
+    assert solve([x - 1], x, x) == [{x: 1}]

@@ -113,60 +113,82 @@ def test_sympyissue_4362():
     nneg = -1
     dpos = 2 - sqrt(3)
     dneg = 1 - sqrt(3)
-    assert dpos > 0 > dneg and npos > 0 > nneg
+    assert dpos > 0 > dneg
+    assert npos > 0 > nneg
     # pos or neg integer
     eq = eqn(npos, dpos, 2)
-    assert eq.is_Pow and eq.as_numer_denom() == (1, dpos**2)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (1, dpos**2)
     eq = eqn(npos, dneg, 2)
-    assert eq.is_Pow and eq.as_numer_denom() == (1, dneg**2)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (1, dneg**2)
     eq = eqn(nneg, dpos, 2)
-    assert eq.is_Pow and eq.as_numer_denom() == (1, dpos**2)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (1, dpos**2)
     eq = eqn(nneg, dneg, 2)
-    assert eq.is_Pow and eq.as_numer_denom() == (1, dneg**2)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (1, dneg**2)
     eq = eqn(npos, dpos, -2)
-    assert eq.is_Pow and eq.as_numer_denom() == (dpos**2, 1)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dpos**2, 1)
     eq = eqn(npos, dneg, -2)
-    assert eq.is_Pow and eq.as_numer_denom() == (dneg**2, 1)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dneg**2, 1)
     eq = eqn(nneg, dpos, -2)
-    assert eq.is_Pow and eq.as_numer_denom() == (dpos**2, 1)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dpos**2, 1)
     eq = eqn(nneg, dneg, -2)
-    assert eq.is_Pow and eq.as_numer_denom() == (dneg**2, 1)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dneg**2, 1)
     # pos or neg rational
     pow = Rational(1, 2)
     eq = eqn(npos, dpos, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == (npos**pow, dpos**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (npos**pow, dpos**pow)
     eq = eqn(npos, dneg, pow)
-    assert eq.is_Pow is False and eq.as_numer_denom() == ((-npos)**pow, (-dneg)**pow)
+    assert eq.is_Pow is False
+    assert eq.as_numer_denom() == ((-npos)**pow, (-dneg)**pow)
     eq = eqn(nneg, dpos, pow)
     assert not eq.is_Pow or eq.as_numer_denom() == (nneg**pow, dpos**pow)
     eq = eqn(nneg, dneg, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-nneg)**pow, (-dneg)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-nneg)**pow, (-dneg)**pow)
     eq = eqn(npos, dpos, -pow)
-    assert eq.is_Pow and eq.as_numer_denom() == (dpos**pow, npos**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dpos**pow, npos**pow)
     eq = eqn(npos, dneg, -pow)
-    assert eq.is_Pow is False and eq.as_numer_denom() == (-(-npos)**pow*(-dneg)**pow, npos)
+    assert eq.is_Pow is False
+    assert eq.as_numer_denom() == (-(-npos)**pow*(-dneg)**pow, npos)
     eq = eqn(nneg, dpos, -pow)
     assert not eq.is_Pow or eq.as_numer_denom() == (dpos**pow, nneg**pow)
     eq = eqn(nneg, dneg, -pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
     # unknown exponent
     pow = 2*any
     eq = eqn(npos, dpos, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == (npos**pow, dpos**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (npos**pow, dpos**pow)
     eq = eqn(npos, dneg, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-npos)**pow, (-dneg)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-npos)**pow, (-dneg)**pow)
     eq = eqn(nneg, dpos, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == (nneg**pow, dpos**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (nneg**pow, dpos**pow)
     eq = eqn(nneg, dneg, pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-nneg)**pow, (-dneg)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-nneg)**pow, (-dneg)**pow)
     eq = eqn(npos, dpos, -pow)
     assert eq.as_numer_denom() == (dpos**pow, npos**pow)
     eq = eqn(npos, dneg, -pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-npos)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-dneg)**pow, (-npos)**pow)
     eq = eqn(nneg, dpos, -pow)
-    assert eq.is_Pow and eq.as_numer_denom() == (dpos**pow, nneg**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == (dpos**pow, nneg**pow)
     eq = eqn(nneg, dneg, -pow)
-    assert eq.is_Pow and eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
+    assert eq.is_Pow
+    assert eq.as_numer_denom() == ((-dneg)**pow, (-nneg)**pow)
 
     assert ((1/(1 + x/3))**-1).as_numer_denom() == (3 + x, 3)
     notp = Symbol('notp', positive=False)  # not positive does not imply real
@@ -191,7 +213,7 @@ def test_sympyissue_4362():
     e = sqrt(1/c)
     assert e.as_numer_denom() == (e, 1)
     i = Symbol('i', integer=True)
-    assert (((1 + x/y)**i)).as_numer_denom() == ((x + y)**i, y**i)
+    assert ((1 + x/y)**i).as_numer_denom() == ((x + y)**i, y**i)
 
 
 def test_Pow_signs():

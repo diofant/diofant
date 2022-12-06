@@ -1,5 +1,3 @@
-import typing
-
 from ...core import Function, I, Integer, Rational, cacheit, nan, oo, pi, zoo
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...core.sympify import sympify
@@ -575,8 +573,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
 
     # To be defined in class
     _reciprocal_of = None
-    _is_even: typing.Optional[bool] = None
-    _is_odd: typing.Optional[bool] = None
+    _is_even: bool | None = None
+    _is_odd: bool | None = None
 
     @classmethod
     def eval(cls, arg):
@@ -598,7 +596,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
         t = self._call_reciprocal(method_name, arg)
-        assert t is not None and t != self._reciprocal_of(arg)
+        assert t is not None
+        assert t != self._reciprocal_of(arg)
         return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
@@ -905,7 +904,7 @@ class acosh(Function):
         return cosh
 
     def _eval_rewrite_as_log(self, x, **hints):
-        return log(x + sqrt(x - 1)*sqrt(x + 1))
+        return 2*log(sqrt(x - 1) + sqrt(x + 1)) - log(2)
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_nseries(self, x, n, logx):

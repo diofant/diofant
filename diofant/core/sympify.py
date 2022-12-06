@@ -25,9 +25,8 @@ class SympifyError(ValueError):
         except TypeError:
             s = repr(self.expr)
 
-        return ("Sympify of expression '%s' failed, because of exception being "
-                'raised:\n%s: %s' % (s, self.base_exc.__class__.__name__,
-                                     str(self.base_exc)))
+        return (f"Sympify of expression '{s}' failed, because of exception "
+                f'being raised:\n{self.base_exc.__class__.__name__}: {self.base_exc!s}')
 
 
 converter: dict[type[typing.Any],

@@ -63,11 +63,13 @@ def test_mod():
     f = Float('.36', 3)
     m = r % f
     ans = Float(r % Rational(f), 3)
-    assert m == ans and m._prec == ans._prec
+    assert m == ans
+    assert m._prec == ans._prec
     f = Float('8.36', 3)
     m = f % r
     ans = Float(Rational(f) % r, 3)
-    assert m == ans and m._prec == ans._prec
+    assert m == ans
+    assert m._prec == ans._prec
 
     assert Integer(0) % float(1) == 0
 
@@ -75,8 +77,7 @@ def test_mod():
     # exactly.
     assert Rational(3, 4) % Float(1.1) == 0.75
     assert Float(1.5) % Rational(5, 4) == 0.25
-    assert Rational(5, 4).__rmod__(Float('1.5')) == 0.25
-    assert Float('1.5').__rmod__(Float('2.75')) == Float('1.25')
+    assert Float('2.75') % Float('1.5') == Float('1.25')
     assert 2.75 % Float('1.5') == Float('1.25')
 
     a = Integer(7)
@@ -88,7 +89,7 @@ def test_mod():
     assert Rational(7, 5) % Integer(1) == Rational(2, 5)
     assert Integer(2) % 1.5 == 0.5
 
-    assert Integer(3).__rmod__(Integer(10)) == Integer(1)
+    assert Integer(10) % Integer(3) == Integer(1)
     assert Integer(10) % 4 == 2
     assert 15 % Integer(4) == 3
 
@@ -511,24 +512,40 @@ def test_Infinity():
     assert 2 - oo == -oo
     assert oo/I == -oo*I
     assert -oo/I == oo*I
-    assert oo*float(1) == Float('inf') and (oo*float(1)).is_Float
-    assert -oo*float(1) == Float('-inf') and (-oo*float(1)).is_Float
-    assert oo/float(1) == Float('inf') and (oo/float(1)).is_Float
-    assert -oo/float(1) == Float('-inf') and (-oo/float(1)).is_Float
-    assert oo*float(-1) == Float('-inf') and (oo*float(-1)).is_Float
-    assert -oo*float(-1) == Float('inf') and (-oo*float(-1)).is_Float
-    assert oo/float(-1) == Float('-inf') and (oo/float(-1)).is_Float
-    assert -oo/float(-1) == Float('inf') and (-oo/float(-1)).is_Float
-    assert oo + float(1) == Float('inf') and (oo + float(1)).is_Float
-    assert -oo + float(1) == Float('-inf') and (-oo + float(1)).is_Float
-    assert oo - float(1) == Float('inf') and (oo - float(1)).is_Float
-    assert -oo - float(1) == Float('-inf') and (-oo - float(1)).is_Float
-    assert float(1)*oo == Float('inf') and (float(1)*oo).is_Float
-    assert float(1)*-oo == Float('-inf') and (float(1)*-oo).is_Float
+    assert oo*float(1) == Float('inf')
+    assert (oo*float(1)).is_Float
+    assert -oo*float(1) == Float('-inf')
+    assert (-oo*float(1)).is_Float
+    assert oo/float(1) == Float('inf')
+    assert (oo/float(1)).is_Float
+    assert -oo/float(1) == Float('-inf')
+    assert (-oo/float(1)).is_Float
+    assert oo*float(-1) == Float('-inf')
+    assert (oo*float(-1)).is_Float
+    assert -oo*float(-1) == Float('inf')
+    assert (-oo*float(-1)).is_Float
+    assert oo/float(-1) == Float('-inf')
+    assert (oo/float(-1)).is_Float
+    assert -oo/float(-1) == Float('inf')
+    assert (-oo/float(-1)).is_Float
+    assert oo + float(1) == Float('inf')
+    assert (oo + float(1)).is_Float
+    assert -oo + float(1) == Float('-inf')
+    assert (-oo + float(1)).is_Float
+    assert oo - float(1) == Float('inf')
+    assert (oo - float(1)).is_Float
+    assert -oo - float(1) == Float('-inf')
+    assert (-oo - float(1)).is_Float
+    assert float(1)*oo == Float('inf')
+    assert (float(1)*oo).is_Float
+    assert float(1)*-oo == Float('-inf')
+    assert (float(1)*-oo).is_Float
     assert float(1)/oo == 0
     assert float(1)/-oo == 0
-    assert float(-1)*oo == Float('-inf') and (float(-1)*oo).is_Float
-    assert float(-1)*-oo == Float('inf') and (float(-1)*-oo).is_Float
+    assert float(-1)*oo == Float('-inf')
+    assert (float(-1)*oo).is_Float
+    assert float(-1)*-oo == Float('inf')
+    assert (float(-1)*-oo).is_Float
     assert float(-1)/oo == 0
     assert float(-1)/-oo == 0
     assert float(1) + oo == Float('inf')
@@ -683,27 +700,46 @@ def test_Infinity_inequations():
     pytest.raises(TypeError, lambda: I > -oo)
     pytest.raises(TypeError, lambda: I >= -oo)
 
-    assert oo > -oo and oo >= -oo
-    assert (oo < -oo) is false and (oo <= -oo) is false
-    assert -oo < oo and -oo <= oo
-    assert (-oo > oo) is false and (-oo >= oo) is false
+    assert oo > -oo
+    assert oo >= -oo
+    assert (oo < -oo) is false
+    assert (oo <= -oo) is false
+    assert -oo < oo
+    assert -oo <= oo
+    assert (-oo > oo) is false
+    assert (-oo >= oo) is false
 
     # pylint: disable=comparison-with-itself
 
     assert (oo < oo) is false  # issue sympy/sympy#7775
     assert (oo > oo) is false
-    assert (-oo > -oo) is false and (-oo < -oo) is false
-    assert oo >= oo and oo <= oo and -oo >= -oo and -oo <= -oo
+    assert (-oo > -oo) is false
+    assert (-oo < -oo) is false
+    assert oo >= oo
+    assert oo <= oo
+    assert -oo >= -oo
+    assert -oo <= -oo
 
     b = Symbol('b', real=True)
     assert (x < oo) == Lt(x, oo)  # issue sympy/sympy#7775
-    assert -oo < b < oo and -oo <= b <= oo
-    assert oo > b and oo >= b and (oo < b) is false and (oo <= b) is false
-    assert (-oo > b) is false and (-oo >= b) is false and -oo < b and -oo <= b
-    assert (oo < x) == Lt(oo, x) and (oo > x) == Gt(oo, x)
-    assert (oo <= x) == Le(oo, x) and (oo >= x) == Ge(oo, x)
-    assert (-oo < x) == Lt(-oo, x) and (-oo > x) == Gt(-oo, x)
-    assert (-oo <= x) == Le(-oo, x) and (-oo >= x) == Ge(-oo, x)
+    assert -oo < b < oo
+    assert -oo <= b <= oo
+    assert oo > b
+    assert oo >= b
+    assert (oo < b) is false
+    assert (oo <= b) is false
+    assert (-oo > b) is false
+    assert (-oo >= b) is false
+    assert -oo < b
+    assert -oo <= b
+    assert (oo < x) == Lt(oo, x)
+    assert (oo > x) == Gt(oo, x)
+    assert (oo <= x) == Le(oo, x)
+    assert (oo >= x) == Ge(oo, x)
+    assert (-oo < x) == Lt(-oo, x)
+    assert (-oo > x) == Gt(-oo, x)
+    assert (-oo <= x) == Le(-oo, x)
+    assert (-oo >= x) == Ge(-oo, x)
 
 
 def test_NaN():

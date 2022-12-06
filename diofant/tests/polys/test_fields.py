@@ -94,34 +94,44 @@ def test_FracElement_from_expr():
     F, X, Y, Z = field((x, y, z), ZZ)
 
     f = F.convert(1)
-    assert f == 1 and isinstance(f, F.dtype)
+    assert f == 1
+    assert isinstance(f, F.dtype)
 
     f = F.convert(Rational(3, 7))
-    assert f == F(3)/7 and isinstance(f, F.dtype)
+    assert f == F(3)/7
+    assert isinstance(f, F.dtype)
 
     f = F.convert(x)
-    assert f == X and isinstance(f, F.dtype)
+    assert f == X
+    assert isinstance(f, F.dtype)
 
     f = F.convert(Rational(3, 7)*x)
-    assert f == 3*X/7 and isinstance(f, F.dtype)
+    assert f == 3*X/7
+    assert isinstance(f, F.dtype)
 
     f = F.convert(1/x)
-    assert f == 1/X and isinstance(f, F.dtype)
+    assert f == 1/X
+    assert isinstance(f, F.dtype)
 
     f = F.convert(x*y*z)
-    assert f == X*Y*Z and isinstance(f, F.dtype)
+    assert f == X*Y*Z
+    assert isinstance(f, F.dtype)
 
     f = F.convert(x*y/z)
-    assert f == X*Y/Z and isinstance(f, F.dtype)
+    assert f == X*Y/Z
+    assert isinstance(f, F.dtype)
 
     f = F.convert(x*y*z + x*y + x)
-    assert f == X*Y*Z + X*Y + X and isinstance(f, F.dtype)
+    assert f == X*Y*Z + X*Y + X
+    assert isinstance(f, F.dtype)
 
     f = F.convert((x*y*z + x*y + x)/(x*y + 7))
-    assert f == (X*Y*Z + X*Y + X)/(X*Y + 7) and isinstance(f, F.dtype)
+    assert f == (X*Y*Z + X*Y + X)/(X*Y + 7)
+    assert isinstance(f, F.dtype)
 
     f = F.convert(x**3*y*z + x**2*y**7 + 1)
-    assert f == X**3*Y*Z + X**2*Y**7 + 1 and isinstance(f, F.dtype)
+    assert f == X**3*Y*Z + X**2*Y**7 + 1
+    assert isinstance(f, F.dtype)
 
     pytest.raises(CoercionFailed, lambda: F.convert(2**x))
     pytest.raises(CoercionFailed, lambda: F.convert(7*x + sqrt(2)))
@@ -318,7 +328,8 @@ def test_FracElement___call__():
     pytest.raises(ValueError, lambda: f(1, 1, 1, 1))
 
     r = f(1, 1, 1)
-    assert r == 4 and not isinstance(r, FracElement)
+    assert r == 4
+    assert not isinstance(r, FracElement)
     pytest.raises(ZeroDivisionError, lambda: f(1, 1, 0))
 
     Fz = ZZ.inject('z').field

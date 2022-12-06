@@ -201,7 +201,7 @@ def test_evalf_bugs():
     # because the order depends on the hashes of the terms.
     assert NS(20 - 5008329267844*n**25 - 477638700*n**37 - 19*n,
               subs={n: .01}, strict=False) == '19.8100000000000'
-    assert NS(((x - 1)*((1 - x))**1000).evalf(strict=False),
+    assert NS(((x - 1)*(1 - x)**1000).evalf(strict=False),
               strict=False) == '(-x + 1.00000000000000)**1000*(x - 1.00000000000000)'
     assert NS((-x).evalf(strict=False)) == '-x'
     assert NS((-2*x).evalf(strict=False), strict=False) == '-2.00000000000000*x'
@@ -254,9 +254,9 @@ def test_evalf_integer_parts():
         int(11188719610782480504630258070757734324011354208865721592720336800)
     assert int(ceiling(factorial(50)/E, evaluate=False).evalf(70)) == \
         int(11188719610782480504630258070757734324011354208865721592720336801)
-    assert int(floor((GoldenRatio**999 / sqrt(5) + Rational(1, 2)))
+    assert int(floor(GoldenRatio**999 / sqrt(5) + Rational(1, 2))
                .evalf(1000)) == fibonacci(999)
-    assert int(floor((GoldenRatio**1000 / sqrt(5) + Rational(1, 2)))
+    assert int(floor(GoldenRatio**1000 / sqrt(5) + Rational(1, 2))
                .evalf(1000)) == fibonacci(1000)
 
     assert ceiling(x).evalf(subs={x: 3}) == 3
@@ -461,7 +461,8 @@ def test_scaled_zero():
 
 def test_chop_value():
     for i in range(-27, 28):
-        assert (Pow(10, i)*2).evalf(chop=10**i) and not (Pow(10, i)).evalf(chop=10**i)
+        assert (Pow(10, i)*2).evalf(chop=10**i)
+        assert not (Pow(10, i)).evalf(chop=10**i)
 
 
 def test_infinities():

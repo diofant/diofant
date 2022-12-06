@@ -721,7 +721,6 @@ def test_diofant__stats__frv__ConditionalFiniteDomain():
 
 
 def test_diofant__stats__frv__FinitePSpace():
-    xd = SingleFiniteDomain(x, {1, 2, 3, 4, 5, 6})
     xd = SingleFiniteDomain(x, {1, 2})
     assert _test_args(FinitePSpace(xd, {(x, 1): Rational(1, 2), (x, 2): Rational(1, 2)}))
 

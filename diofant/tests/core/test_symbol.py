@@ -249,7 +249,8 @@ def test_symbols():
     pytest.raises(ValueError, lambda: symbols(('x', '', 'y', '', 'z')))
 
     a, b = symbols('x,y', extended_real=True)
-    assert a.is_extended_real and b.is_extended_real
+    assert a.is_extended_real
+    assert b.is_extended_real
 
     x0 = Symbol('x0')
     x1 = Symbol('x1')
@@ -301,8 +302,8 @@ def test_symbols():
     assert sym('a0:4') == '(a0, a1, a2, a3)'
     assert sym('a2:4,b1:3') == '(a2, a3, b1, b2)'
     assert sym('a1(2:4)') == '(a12, a13)'
-    assert sym(('a0:2.0:2')) == '(a0.0, a0.1, a1.0, a1.1)'
-    assert sym(('aa:cz')) == '(aaz, abz, acz)'
+    assert sym('a0:2.0:2') == '(a0.0, a0.1, a1.0, a1.1)'
+    assert sym('aa:cz') == '(aaz, abz, acz)'
     assert sym('aa:c0:2') == '(aa0, aa1, ab0, ab1, ac0, ac1)'
     assert sym('aa:ba:b') == '(aaa, aab, aba, abb)'
     assert sym('a:3b') == '(a0b, a1b, a2b)'

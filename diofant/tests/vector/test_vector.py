@@ -24,7 +24,7 @@ def test_vector_diofant():
     v2 = 3*i + 4*j + 5*k
     v3 = 2*i + 4*j + i + 4*k + k
     assert v3 == v2
-    assert v3.__hash__() == v2.__hash__()
+    assert hash(v3) == hash(v2)
 
 
 def test_vector():

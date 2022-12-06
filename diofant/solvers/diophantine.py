@@ -416,7 +416,7 @@ classify_diop.__doc__ = """
     is one of the following:
 
         * %s
-""" % ('\n        * '.join(sorted(diop_known)))
+""" % ('\n        * '.join(sorted(diop_known)))  # noqa: SFS101
 
 
 def diop_linear(eq, param=symbols('t', integer=True)):
@@ -746,7 +746,7 @@ def _diop_quadratic(var, coeff, t):
     E = coeff[y]
     F = coeff[1]
 
-    A, B, C, D, E, F = [as_int(i) for i in _remove_gcd(A, B, C, D, E, F)]
+    A, B, C, D, E, F = map(as_int, _remove_gcd(A, B, C, D, E, F))
 
     # (1) Simple-Hyperbolic case: A = C = 0, B != 0
     # In this case equation can be converted to (Bx + E)(By + D) = DE - BF
@@ -1094,7 +1094,6 @@ def diop_DN(D, N, t=symbols('t', integer=True)):
 
                         for i in pqa:  # pragma: no branch
 
-                            a = i[2]
                             G.append(i[5])
                             B.append(i[4])
 
@@ -1129,7 +1128,8 @@ def _special_diop_DN(D, N):
     * :cite:`Andreescu15`, Section 4.4.4.
 
     """
-    assert (1 < N**2 < D) and (not integer_nthroot(D, 2)[1])
+    assert 1 < N**2 < D
+    assert not integer_nthroot(D, 2)[1]
 
     sqrt_D = sqrt(D)
     F = [(N, 1)]
@@ -1536,7 +1536,7 @@ def _transformation_to_DN(var, coeff):
     e = coeff[y]
     f = coeff[1]
 
-    a, b, c, d, e, f = [as_int(i) for i in _remove_gcd(a, b, c, d, e, f)]
+    a, b, c, d, e, f = map(as_int, _remove_gcd(a, b, c, d, e, f))
 
     X, Y = symbols('X, Y', integer=True)
 
@@ -1935,8 +1935,6 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     # called for a*x**2 + b*y**2 + c*z**2 + d*x*y + e*y*z + f*x*z = 0
     assert 1 not in coeff
 
-    x, y, z = _var
-
     x_0, y_0, z_0 = solution
 
     v = list(_var)  # copy
@@ -2088,7 +2086,7 @@ def sqf_normal(a, b, c, steps=False):
     diofant.solvers.diophantine.reconstruct
 
     """
-    ABC = A, B, C = _remove_gcd(a, b, c)
+    ABC = _remove_gcd(a, b, c)
     sq = tuple(square_factor(i) for i in ABC)
     sqf = A, B, C = tuple(i//j**2 for i, j in zip(ABC, sq))
     pc = math.gcd(A, B)
@@ -2852,7 +2850,7 @@ def power_representation(n, p, k, zeros=False):
      (12, -1), (-12, -1)]
 
     """
-    n, p, k = [as_int(i) for i in (n, p, k)]
+    n, p, k = map(as_int, (n, p, k))
 
     if n < 0:
         if p % 2:
@@ -2925,12 +2923,10 @@ def pow_rep_recursive(n_i, k, n_remaining, terms, p):
         yield tuple(terms)
     else:
         if n_i >= 1 and k > 0:
-            for t in pow_rep_recursive(n_i - 1, k, n_remaining, terms, p):
-                yield t
+            yield from pow_rep_recursive(n_i - 1, k, n_remaining, terms, p)
             residual = n_remaining - pow(n_i, p)
             if residual >= 0:
-                for t in pow_rep_recursive(n_i, k - 1, residual, terms + [n_i], p):
-                    yield t
+                yield from pow_rep_recursive(n_i, k - 1, residual, terms + [n_i], p)
 
 
 def sum_of_squares(n, k, zeros=False):
@@ -2978,8 +2974,7 @@ def sum_of_squares(n, k, zeros=False):
     diofant.utilities.iterables.signed_permutations
 
     """
-    for t in power_representation(n, 2, k, zeros):
-        yield t
+    yield from power_representation(n, 2, k, zeros)
 
 
 def _can_do_sum_of_squares(n, k):

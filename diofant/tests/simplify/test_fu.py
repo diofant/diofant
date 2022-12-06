@@ -70,7 +70,8 @@ def test_TR3():
     for f in (cos, sin, tan, cot, csc, sec):
         i = f(3*pi/7)
         j = TR3(i)
-        assert verify_numerically(i, j) and i.func != j.func
+        assert verify_numerically(i, j)
+        assert i.func != j.func
 
 
 def test__TR56():
@@ -139,7 +140,7 @@ def test_TR9():
             t = TR9(ex)
             assert not (a[0].func == a[1].func and (
                 not verify_numerically(ex, t.expand(trig=True)) or t.is_Add)
-                or a[1].func != a[0].func and ex != t)
+                and ex != t)
 
 
 def test_TR10():
@@ -193,7 +194,8 @@ def test_TR10i():
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
-            assert not (ex - t.expand(trig=True) or t.is_Add)
+            assert not ex - t.expand(trig=True)
+            assert not t.is_Add
 
     c = cos(x)
     s = sin(x)
@@ -204,7 +206,8 @@ def test_TR10i():
             args = zip(si, a)
             ex = Add(*[Mul(*ai) for ai in args])
             t = TR10i(ex)
-            assert not (ex - t.expand(trig=True) or t.is_Add)
+            assert not ex - t.expand(trig=True)
+            assert not t.is_Add
 
 
 def test_TR11():
@@ -376,7 +379,7 @@ def test_hyper_as_trig():
 
 
 def test_TR12i():
-    ta, tb, tc = [tan(i) for i in (a, b, c)]
+    ta, tb, tc = map(tan, (a, b, c))
     assert TR12i((ta + tb)/(-ta*tb + 1)) == tan(a + b)
     assert TR12i((ta + tb)/(ta*tb - 1)) == -tan(a + b)
     assert TR12i((-ta - tb)/(ta*tb - 1)) == tan(a + b)

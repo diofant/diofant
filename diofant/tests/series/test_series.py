@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Derivative, E, Function, I, Integer, Integral, O,
-                     Rational, Subs, Symbol, cos, exp, log, oo, pi, sin, sqrt,
-                     symbols)
+from diofant import (Derivative, E, EulerGamma, Function, I, Integer, Integral,
+                     O, Rational, Subs, Symbol, cos, exp, gamma, log, oo, pi,
+                     sin, sqrt, symbols)
 from diofant.abc import h, x, y, z
 
 
@@ -163,13 +163,25 @@ def test_series_of_Subs():
     subs3 = Subs(sin(x*z), (x, z), (y, x))
     subs4 = Subs(x, (x, z))
 
+    res1 = Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    res2 = Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    res3 = Subs(x*z, (x, z), (y, x)) + O(z**6)
+
     assert subs1.series(x) == subs1
-    assert subs1.series(y) == Subs(x, (x, y)) + Subs(-x**3/6, (x, y)) + Subs(x**5/120, (x, y)) + O(y**6)
+    assert subs1.series(y) == res1
     assert subs1.series(z) == subs1
-    assert subs2.series(z) == Subs(z**4*sin(x)/24, (x, y)) + Subs(-z**2*sin(x)/2, (x, y)) + Subs(sin(x), (x, y)) + O(z**6)
+    assert subs2.series(z) == res2
     assert subs3.series(x) == subs3
-    assert subs3.series(z) == Subs(x*z, (x, z), (y, x)) + O(z**6)
+    assert subs3.series(z) == res3
     assert subs4.series(z) == subs4
+
+    assert subs1.doit().series(x) == subs1.doit()
+    assert subs1.doit().series(y) == res1.doit()
+    assert subs1.doit().series(z) == subs1.doit()
+    assert subs2.doit().series(z) == res2.doit()
+    assert subs3.doit().series(x) == subs3.doit()
+    assert subs3.doit().series(z) == res3.doit()
+    assert subs4.doit().series(z) == subs4.doit()
 
 
 def test_sympyissue_9173():
@@ -301,3 +313,11 @@ def test_sympyissue_23432():
     ans = e.series(x, x0=Rational(1, 2), n=1)
     assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), (x, Rational(1, 2)))
     assert ans.removeO().evalf() == e.series(x, x0=0.5, n=1).removeO()
+
+
+def test_sympyissue_24266():
+    assert (exp(-I*pi*(2*x + 1)).series(x, n=3) ==
+            -1 + 2*I*pi*x + 2*pi**2*x**2 + O(x**3))
+    assert ((exp(-I*pi*(2*x + 1))*gamma(1 + x)).series(x, n=3) ==
+            -1 + x*(EulerGamma + 2*I*pi) +
+            x**2*(-EulerGamma**2/2 + 23*pi**2/12 - 2*EulerGamma*I*pi) + O(x**3))

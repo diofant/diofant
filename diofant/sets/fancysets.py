@@ -383,8 +383,8 @@ class Range(Set):
         slc = slice(*args)
         start, stop, step = slc.start or 0, slc.stop, slc.step or 1
         try:
-            start, stop, step = [w if w in [-oo, oo] else Integer(as_int(w))
-                                 for w in (start, stop, step)]
+            start, stop, step = (w if w in [-oo, oo] else Integer(as_int(w))
+                                 for w in (start, stop, step))
         except ValueError as exc:
             raise ValueError('Inputs to Range must be Integer Valued\n' +
                              'Use ImageSets of Ranges for other cases') from exc

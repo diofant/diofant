@@ -706,17 +706,23 @@ def test_dmp_gcd():
                 f, g, h = R.fateman_poly_F_1()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = R.fateman_poly_F_2()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = R.fateman_poly_F_3()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
     R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2), sqrt(3)))
 
@@ -781,7 +787,9 @@ def test_dmp_gcd():
                 f, g, h = R.fateman_poly_F_3()
                 H, cff, cfg = f.cofactors(g)
 
-                assert H == h and H*cff == f and H*cfg == g
+                assert H == h
+                assert H*cff == f
+                assert H*cfg == g
 
                 f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
                            12*x*y**7 + x**4 - 1)
@@ -796,12 +804,16 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
             f, g, h = R.fateman_poly_F_3()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     R, x, y, z, u, _, a, b = ring('x y z u v a b', ZZ)
 
@@ -810,7 +822,9 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     R, x, y, z, u, _, a, b, *_ = ring('x y z u v a b c d', ZZ)
 
@@ -819,7 +833,9 @@ def test_dmp_gcd():
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
-            assert H == h and H*cff == f and H*cfg == g
+            assert H == h
+            assert H*cff == f
+            assert H*cfg == g
 
     F, x = field('x', QQ)
     R, _ = ring('t', F)
@@ -1014,16 +1030,56 @@ def test_sympyissue_10996():
     H, cff, cfg = f.cofactors(g)
 
     assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
-    assert H*cff == f and H*cfg == g
+    assert H*cff == f
+    assert H*cfg == g
 
 
 def test_sympyissue_21460():
     R = ZZ.inject('x')
 
     r = R.gcd(R(4), R(6))
-    assert type(r) is R.dtype and r == 2
+    assert type(r) is R.dtype
+    assert r == 2
 
     R = QQ.inject('x')
 
     r = R.gcd(R(4), R(6))
-    assert type(r) is R.dtype and r == 1
+    assert type(r) is R.dtype
+    assert r == 1
+
+
+@pytest.mark.slow
+def test_sympyissue_23479():
+    xs = ' '.join(f'x{i}' for i in range(13))
+    _, x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = ring(xs, ZZ)
+
+    p1 = (917280*x0*x4*x12**933 - 5640390*x0*x4*x12**905 + 14354685*x0*x4*x12**877 -
+          19360440*x0*x4*x12**849 + 14597910*x0*x4*x12**821 -
+          5834970*x0*x4*x12**793 + 965925*x0*x4*x12**765 -
+          970200*x1*x2*x5*x11**493 + 5904990*x1*x2*x5*x11**479 -
+          14883885*x1*x2*x5*x11**465 + 19889640*x1*x2*x5*x11**451 -
+          14862510*x1*x2*x5*x11**437 + 5887890*x1*x2*x5*x11**423 -
+          965925*x1*x2*x5*x11**409 - 34300*x1*x2*x7*x11**507 +
+          224420*x1*x2*x7*x11**493 - 607600*x1*x2*x7*x11**479 +
+          872200*x1*x2*x7*x11**465 - 700700*x1*x2*x7*x11**451 +
+          298900*x1*x2*x7*x11**437 - 52920*x1*x2*x7*x11**423 -
+          12005*x1*x2*x10*x11**521 + 72030*x1*x2*x10*x11**507 -
+          180075*x1*x2*x10*x11**493 + 240100*x1*x2*x10*x11**479 -
+          180075*x1*x2*x10*x11**465 + 72030*x1*x2*x10*x11**451 -
+          12005*x1*x2*x10*x11**437 - 929160*x1*x3*x6*x11**489 +
+          5699790*x1*x3*x6*x11**475 - 14473485*x1*x3*x6*x11**461 +
+          19479240*x1*x3*x6*x11**447 - 14657310*x1*x3*x6*x11**433 +
+          5846850*x1*x3*x6*x11**419 - 965925*x1*x3*x6*x11**405 -
+          2178*x1*x3*x8*x11**517 + 13068*x1*x3*x8*x11**503 -
+          32670*x1*x3*x8*x11**489 + 43560*x1*x3*x8*x11**475 -
+          32670*x1*x3*x8*x11**461 + 13068*x1*x3*x8*x11**447 -
+          2178*x1*x3*x8*x11**433 - 4356*x1*x3*x9*x11**503 +
+          33660*x1*x3*x9*x11**489 - 102960*x1*x3*x9*x11**475 +
+          162360*x1*x3*x9*x11**461 - 140580*x1*x3*x9*x11**447 +
+          63756*x1*x3*x9*x11**433 - 11880*x1*x3*x9*x11**419)
+
+    p2 = (3889620*x0*x12**1129 - 23337720*x0*x12**1101 + 58344300*x0*x12**1073 -
+          77792400*x0*x12**1045 + 58344300*x0*x12**1017 - 23337720*x0*x12**989 +
+          3889620*x0*x12**961)
+
+    assert p1.gcd(p2) == 1

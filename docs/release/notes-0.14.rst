@@ -84,3 +84,22 @@ These Sympy issues also were addressed:
 * :sympyissue:`23432`: Series expansion around float fails with NotImplementedError
 * :sympyissue:`8433`: limit involving error function returns bad result
 * :sympyissue:`13750`: erf has wrong limit in -oo
+* :sympyissue:`23497`: binomial(-1, -1) returns 0, should return 1
+* :sympyissue:`23562`: In new version of sympy, dsolve does not give a solution when another derivative is involved
+* :sympyissue:`23585`: FiniteSet documentation inconsistent with usage in sympy
+* :sympyissue:`23596`: Integral of real function has complex result
+* :sympyissue:`23605`: Inefficiency in the Integrator with a Rational Expression
+* :sympyissue:`23637`: Missing solutions from polynomial system (various solvers)
+* :sympyissue:`23479`: Sparse poly gcd fails with HeuristicGCDFailed('no luck')
+* :sympyissue:`22605`: Incorrect result from minpoly(cos(pi/9))
+* :sympyissue:`23677`: minimal_polynomial fails for very complicated algebraic number
+* :sympyissue:`23836`: Incorrect results for limits of Piecewise at discontinuity
+* :sympyissue:`23845`: Gruntz should have been free of _w, value error, recursion error
+* :sympyissue:`23855`: linsolve gives odd result if symbols are duplicated
+* :sympyissue:`24067`: incorrect limit in simple parametric rational polynomial
+* :sympyissue:`24127`: Error on all limits with Piecewise
+* :sympyissue:`23702`: Cannot specify ODE initial conditions as just f(0)
+* :sympyissue:`23707`: AttributeError in integral
+* :sympyissue:`24210`: Error on limits regarding terms like (1+u)^v.
+* :sympyissue:`24225`: Multivariable limit should be undefined, but gives unity.
+* :sympyissue:`24266`: Changed behaviour of series() involving exp, I

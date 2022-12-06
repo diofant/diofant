@@ -11,7 +11,7 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      exp, factorial, false, floor, gamma, integrate, limit,
                      log, nan, oo, pi, polygamma, root, sign, simplify, sin,
                      sinh, sqrt, subfactorial, symbols, tan, true)
-from diofant.abc import a, b, c, n, x, y, z
+from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.series.limits import heuristics
 
 
@@ -238,16 +238,16 @@ def test_atan():
 
 
 def test_acosh():
-    assert limit(acosh(I*x), x, 0) == I*pi/2
-    assert limit(acosh(I*x), x, 0, 1) == -I*pi/2
-    assert limit(acosh(-I*x), x, 0) == -I*pi/2
-    assert limit(acosh(-I*x), x, 0, 1) == I*pi/2
+    assert limit(acosh(I*x), x, 0) == 2*log(1 + I) - log(2)
+    assert limit(acosh(I*x), x, 0, 1) == 2*log(1 - I) - log(2)
+    assert limit(acosh(-I*x), x, 0) == 2*log(1 - I) - log(2)
+    assert limit(acosh(-I*x), x, 0, 1) == 2*log(1 + I) - log(2)
     pytest.raises(PoleError, lambda: limit(acosh(I*x), x, 0, Reals))
-    assert limit(acosh(x - I*x), x, 0) == -I*pi/2
-    assert limit(acosh(x - I*x), x, 0, 1) == I*pi/2
+    assert limit(acosh(x - I*x), x, 0) == 2*log(1 - I) - log(2)
+    assert limit(acosh(x - I*x), x, 0, 1) == 2*log(1 + I) - log(2)
     pytest.raises(PoleError, lambda: limit(acosh(x - I*x), x, 0, Reals))
-    assert limit(acosh(I*x**2), x, 0, Reals) == I*pi/2
-    assert limit(acosh(x**2 - I*x**2), x, 0, Reals) == -I*pi/2
+    assert limit(acosh(I*x**2), x, 0, Reals) == 2*log(1 + I) - log(2)
+    assert limit(acosh(x**2 - I*x**2), x, 0, Reals) == 2*log(1 - I) - log(2)
 
 
 def test_acoth():
@@ -503,9 +503,8 @@ def test_sympyissue_4099():
 
 
 def test_sympyissue_4503():
-    dx = Symbol('dx')
-    assert limit((sqrt(1 + exp(x + dx)) - sqrt(1 + exp(x)))/dx, dx, 0) == \
-        exp(x)/(2*sqrt(exp(x) + 1))
+    assert limit((sqrt(1 + exp(x + y)) - sqrt(1 + exp(x)))/y,
+                 y, 0) == exp(x)/(2*sqrt(exp(x) + 1))
 
 
 def test_sympyissue_8730():
@@ -613,9 +612,11 @@ def test_sympyissue_5415():
 
 def test_sympyissue_2865():
     l1 = limit(O(1/x, (x, oo)), x, 0)
-    assert l1 != 0 and isinstance(l1, Limit)
+    assert l1 != 0
+    assert isinstance(l1, Limit)
     l2 = limit(O(x, (x, oo)), x, 0)
-    assert l2 != 0 and isinstance(l2, Limit)
+    assert l2 != 0
+    assert isinstance(l2, Limit)
 
 
 def test_sympyissue_11879():
@@ -672,9 +673,7 @@ def test_sympyissue_13575():
 
 
 def test_issue_558():
-    n = Symbol('n')
     r = Symbol('r', positive=True)
-    c = Symbol('c')
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
     expr = expr.subs({c: c + 1})
@@ -786,7 +785,6 @@ def test_sympyissue_6599():
 def test_sympyissue_18176():
     x = Symbol('x', real=True, positive=True)
     n = Symbol('n', integer=True, positive=True)
-    k = Symbol('k')
     e = x**n - x**(n - k)
     assert limit(e.subs({k: 0}), x, oo) == 0
     assert limit(e.subs({k: 1}), x, oo) == oo
@@ -1023,3 +1021,33 @@ def test_sympyissue_13750():
     assert limit(erf(1 - x), x, oo) == -1
     assert limit(erf(a - x), x, oo) == -1
     assert limit(erf(sqrt(x) - x), x, oo) == -1
+
+
+def test_sympyissue_23836():
+    p = Piecewise((x**3, x < 3), (-x**2, x > 3), (2, True))
+    assert limit(p, x, 3) == -9
+    assert limit(p, x, 3, 1) == 27
+
+
+def test_sympyissue_24067():
+    n = symbols('n', positive=True)
+    e = (5*x)**(n + 2)/x**2
+    assert limit(e, x, 0) == 0
+    assert limit(e.simplify(), x, 0) == 0
+    e = x**(n + 2)/x**2
+    assert limit(e, x, 0) == 0
+
+
+def test_sympyissue_24127():
+    assert limit(Piecewise((sin(x), x < 0),
+                           (Rational(1, 2), True)), x, 1) == Rational(1, 2)
+
+
+def test_sympyissue_24210():
+    assert limit(exp(x)/((1 + 1/x)**(x**2)), x, oo) == sqrt(E)
+
+
+def test_sympyissue_24225():
+    e = (log(1 + x) + log(1 + y)) / (x + y)
+    assert limit(limit(e, x, 0, dir=Reals), y, 0, dir=Reals) == 1
+    assert limit(limit(e, y, 0, dir=Reals), x, 0, dir=Reals) == 1

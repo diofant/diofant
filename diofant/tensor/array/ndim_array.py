@@ -221,7 +221,8 @@ class NDimArray(DefaultPrinting):
         [[1, 0], [0, y]]
 
         """
-        return type(self)(map(lambda x: x.diff(*args, **kwargs), self), self.shape)
+        # pylint: disable=not-an-iterable
+        return type(self)((x.diff(*args, **kwargs) for x in self), self.shape)
 
     def applyfunc(self, f):
         """Apply a function to each element of the N-dim array.

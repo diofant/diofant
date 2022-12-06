@@ -92,7 +92,8 @@ def test_powsimp():
 
     # issue sympy/sympy#6368
     eq = Mul(*[sqrt(Dummy(imaginary=True)) for i in range(3)])
-    assert powsimp(eq) == eq and eq.is_Mul
+    assert powsimp(eq) == eq
+    assert eq.is_Mul
 
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
@@ -146,7 +147,6 @@ def test_sympyissue_6440():
 def test_powdenest():
     x, y = symbols('x,y')
     p, q = symbols('p q', positive=True)
-    i, j = symbols('i,j', integer=True)
 
     assert powdenest(x) == x
     assert powdenest(x + 2*(x**(2*a/3))**(3*x)) == (x + 2*(x**(2*a/3))**(3*x))

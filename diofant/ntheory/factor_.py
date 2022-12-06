@@ -116,8 +116,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
             return n
         d = {}
         for li in n.splitlines():
-            k, v = [int(i) for i in
-                    li.split('has')[0].split('=')[1].split('**')]
+            k, v = map(int, li.split('has')[0].split('=')[1].split('**'))
             d[k] = v
         if visual is not True and visual is not False:
             return d
@@ -1259,8 +1258,7 @@ def _divisors(n):
                 for p in pows:
                     yield p * q
 
-    for p in rec_gen():
-        yield p
+    yield from rec_gen()
 
 
 def divisors(n, generator=False):

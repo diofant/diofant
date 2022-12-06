@@ -147,7 +147,6 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('init_printing()')
     app.run_cell("inst.display_formatter.formatters['text/latex'].enabled = False")
     app.run_cell("a = format({Symbol('pi'): 3.14, Symbol('n_i'): 3})")
-    text = app.user_ns['a'][0]['text/plain']
     pytest.raises(KeyError, lambda: app.user_ns['a'][0]['text/latex'])
 
     # something to test default pretty/latex printing

@@ -81,7 +81,7 @@ def roots_quadratic(f):
         r0 = B - D
         r1 = B + D
         if not dom.is_Numerical:
-            r0, r1 = [expand_2arg(i) for i in (r0, r1)]
+            r0, r1 = map(expand_2arg, (r0, r1))
 
     return [r0, r1]
 
@@ -282,8 +282,7 @@ def roots_quartic(f):
         aon4 = a/4
 
         if f == 0:
-            y1, y2 = [sqrt(tmp) for tmp in
-                      roots([1, e, g], multiple=True)]
+            y1, y2 = map(sqrt, roots([1, e, g], multiple=True))
             return [tmp - aon4 for tmp in [-y1, -y2, y1, y2]]
         if g == 0:
             y = [Integer(0)] + roots([1, 0, e, f], multiple=True)
@@ -354,8 +353,6 @@ def roots_binomial(f):
     # to real part and imaginary part, e.g. -1, 1, -1 + I, 2 - I
     neg = base.is_negative
     even = n % 2 == 0
-    if neg:
-        big = bool(even and (base + 1).is_positive)
 
     # get the indices in the right order so the computed
     # roots will be sorted when the domain is ZZ
@@ -373,10 +370,6 @@ def roots_binomial(f):
             ks.extend([-i, i])
     if neg:
         ks.append(0)
-        if big:
-            for i in range(0, len(ks), 2):
-                pair = ks[i: i + 2]
-                pair = list(reversed(pair))
 
     # compute the roots
     roots, d = [], 2*I*pi/n
@@ -564,8 +557,6 @@ def roots_quintic(f):
         if comp(im(r1_n*Res_n[4][i]), 0, tol):
             r4 = Res[4][i]
             break
-
-    u, v = quintic.uv(theta, d)
 
     # Now we have various Res values. Each will be a list of five
     # values. We have to pick one r value from those five for each Res

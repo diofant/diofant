@@ -486,8 +486,8 @@ class FactKB(dict):
     """
 
     def __str__(self):
-        return '{\n%s}' % ',\n'.join(
-            ['\t%s: %s' % i for i in sorted(self.items())])
+        items = ',\n'.join(f'\t{i[0]}: {i[1]}' for i in sorted(self.items()))
+        return f'{{\n{items}}}'
 
     def __init__(self, rules):
         super().__init__()

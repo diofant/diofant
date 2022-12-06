@@ -871,7 +871,8 @@ class SparseMatrixBase(MatrixBase):
             raise ValueError('LDL decomposition applies only to '
                              'symmetric matrices.')
         L, D = self.as_mutable()._LDL_sparse()
-        assert not L.has(nan, oo) and not D.has(nan, oo)
+        assert not L.has(nan, oo)
+        assert not D.has(nan, oo)
         return self._new(L), self._new(D)
 
     def solve_least_squares(self, rhs, method='LDL'):
@@ -1403,7 +1404,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
                         self._smat.pop((i, j), None)
             else:
                 for i, j, _ in self.row_list():
-                    assert rlo <= i < rhi and clo <= j < chi
+                    assert rlo <= i < rhi
+                    assert clo <= j < chi
                     self._smat.pop((i, j), None)
             for k, _ in value._smat.items():
                 i, j = k

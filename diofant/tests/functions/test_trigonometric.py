@@ -851,7 +851,7 @@ def test_atan():
 
 
 def test_atan_rewrite():
-    assert atan(x).rewrite(log) == I*log((1 - I*x)/(1 + I*x))/2
+    assert atan(x).rewrite(log) == I*(log(1 - I*x) - log(1 + I*x))/2
     assert atan(x).rewrite(asin) == (-asin(1/sqrt(x**2 + 1)) + pi/2)*sqrt(x**2)/x
     assert atan(x).rewrite(acos) == sqrt(x**2)*acos(1/sqrt(x**2 + 1))/x
     assert atan(x).rewrite(acot) == acot(1/x)
@@ -929,6 +929,13 @@ def test_atan2():
     assert simplify(diff(atan2(y, x).rewrite(log), x)) == -y/(x**2 + y**2)
     assert simplify(diff(atan2(y, x).rewrite(log), y)) == x/(x**2 + y**2)
 
+    e = sin(x) - cos(x)*atan2(sin(x), cos(x))
+
+    assert e.limit(x, -pi) == -pi
+    assert e.limit(x, -pi, dir=1) == pi
+    assert e.limit(x, pi) == -pi
+    assert e.limit(x, pi, dir=1) == pi
+
     pytest.raises(ArgumentIndexError, lambda: atan2(x, y).fdiff(3))
 
 
@@ -963,7 +970,7 @@ def test_acot():
 
 
 def test_acot_rewrite():
-    assert acot(x).rewrite(log) == I*log((x - I)/(x + I))/2
+    assert acot(x).rewrite(log) == I*(log((x - I)/x) - log((x + I)/x))/2
     assert acot(x).rewrite(asin) == x*(-asin(sqrt(-x**2)/sqrt(-x**2 - 1)) + pi/2)*sqrt(x**(-2))
     assert acot(x).rewrite(acos) == x*sqrt(x**(-2))*acos(sqrt(-x**2)/sqrt(-x**2 - 1))
     assert acot(x).rewrite(atan) == atan(1/x)

@@ -1274,9 +1274,8 @@ def diag(*values, **kwargs):
         from . import Matrix as cls  # noqa: N813
 
     if kwargs:
-        raise ValueError('unrecognized keyword%s: %s' % (  # noqa: SFS101
-            's' if len(kwargs) > 1 else '',
-            ', '.join(kwargs)))
+        raise ValueError(f"unrecognized keyword{'s' if len(kwargs) > 1 else ''}: "
+                         f"{', '.join(kwargs)}")
     rows = 0
     cols = 0
     values = list(values)
@@ -1529,32 +1528,37 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     Examples
     ========
 
-    >>> randMatrix(3)  # doctest:+SKIP
-    [25, 45, 27]
-    [44, 54,  9]
-    [23, 96, 46]
-    >>> randMatrix(3, 2)  # doctest:+SKIP
-    [87, 29]
-    [23, 37]
-    [90, 26]
-    >>> randMatrix(3, 3, 0, 2)  # doctest:+SKIP
-    [0, 2, 0]
-    [2, 0, 1]
-    [0, 0, 1]
-    >>> randMatrix(3, symmetric=True)  # doctest:+SKIP
-    [85, 26, 29]
-    [26, 71, 43]
-    [29, 43, 57]
+    >>> randMatrix(3, seed=0)
+    Matrix([
+    [49, 97, 53],
+    [ 5, 33, 65],
+    [62, 51, 38]])
+    >>> randMatrix(3, 2, seed=0)
+    Matrix([
+    [49, 97],
+    [53,  5],
+    [33, 65]])
+    >>> randMatrix(3, 3, 0, 2, seed=0)
+    Matrix([
+    [1, 1, 0],
+    [1, 2, 1],
+    [1, 1, 1]])
+    >>> randMatrix(3, symmetric=True, seed=0)
+    Matrix([
+    [49, 97, 53],
+    [97,  5, 33],
+    [53, 33, 65]])
     >>> A = randMatrix(3, seed=1)
     >>> B = randMatrix(3, seed=2)
-    >>> A == B  # doctest:+SKIP
+    >>> A == B
     False
     >>> A == randMatrix(3, seed=1)
     True
-    >>> randMatrix(3, symmetric=True, percent=50)  # doctest:+SKIP
-    [0, 68, 43]
-    [0, 68,  0]
-    [0, 91, 34]
+    >>> randMatrix(3, symmetric=True, percent=50, seed=0)
+    Matrix([
+    [ 0,  0,  5],
+    [33,  0,  0],
+    [65, 53, 33]])
 
     """
     from . import Matrix

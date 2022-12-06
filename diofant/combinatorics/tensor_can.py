@@ -1054,7 +1054,6 @@ def tensor_gens(base, gens, list_free_indices, sym=0):
     # so there is no resulting slot symmetry
     if not base and list_free_indices.count([]) < 2:
         n = len(list_free_indices)
-        size = gens[0].size
         size = n * (gens[0].size - 2) + 2
         return size, [], [_af_new(list(range(size)))]
 

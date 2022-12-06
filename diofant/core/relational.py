@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import typing
-
 from ..logic.boolalg import Boolean, BooleanAtom, false, true
 from ..utilities import ordered
 from .evalf import EvalfMixin
@@ -38,7 +36,7 @@ class Relational(Boolean, Expr, EvalfMixin):
 
     is_Relational = True
 
-    ValidRelationOperator: dict[typing.Optional[str], type[Relational]]
+    ValidRelationOperator: dict[str | None, type[Relational]]
 
     # ValidRelationOperator - Defined below, because the necessary classes
     #   have not yet been defined

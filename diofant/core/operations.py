@@ -416,8 +416,7 @@ class LatticeOp(AssocOp):
             if arg == ncls.identity:
                 continue
             if arg.func == ncls:
-                for x in arg.args:
-                    yield x
+                yield from arg.args
             else:
                 yield arg
 

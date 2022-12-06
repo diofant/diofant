@@ -500,7 +500,8 @@ def test_tensorsymmetry():
     sym1 = TensorSymmetry(get_symmetric_group_sgs(2, 1))
     assert sym == sym1
     sym2 = tensorsymmetry()
-    assert sym2.base == Tuple() and sym2.generators == Tuple(Permutation(1))
+    assert sym2.base == Tuple()
+    assert sym2.generators == Tuple(Permutation(1))
     pytest.raises(NotImplementedError, lambda: tensorsymmetry([2, 1]))
 
 
@@ -743,7 +744,7 @@ def test_substitute_indices():
     assert _is_equal(asc1, A(i, -i) + B(i, -i))
 
     assert A(i, -i) == A(i, -i)()
-    assert A(i, -i) + B(-j, j) == ((A(i, -i) + B(i, -i)))()
+    assert A(i, -i) + B(-j, j) == (A(i, -i) + B(i, -i))()
     assert _is_equal(A(i, j)*B(-j, k), (A(m, -j)*B(j, n))(i, k))
     pytest.raises(ValueError, lambda: A(i, -i)(j, k))
 
@@ -857,13 +858,6 @@ def test_contract_metric2():
     t = t.contract_metric(g)
     t = t.canon_bp()
     assert t == 3*p(a)*p(-a)*q(b)*q(-b)
-
-    t1 = 2*g(a, b)*p(c)*p(-c)
-    t2 = - 3*g(-a, -b)*q(c)*q(-c)
-    t = t1*t2
-    t = t.contract_metric(g)
-    t = 6*g(a, b)*g(-a, -b)*p(c)*p(-c)*q(d)*q(-d)
-    t = t.contract_metric(g)
 
     t1 = 2*g(a, b)*p(c)*p(-c)
     t2 = q(-a)*q(-b) + 3*g(-a, -b)*q(c)*q(-c)
@@ -1051,13 +1045,17 @@ def test_contract_delta1():
     delta = Color.delta
 
     def idn(a, b, d, c):
-        assert a.is_up and d.is_up
-        assert not (b.is_up or c.is_up)
+        assert a.is_up
+        assert d.is_up
+        assert not b.is_up
+        assert not c.is_up
         return delta(a, c)*delta(d, b)
 
     def T(a, b, d, c):
-        assert a.is_up and d.is_up
-        assert not (b.is_up or c.is_up)
+        assert a.is_up
+        assert d.is_up
+        assert not b.is_up
+        assert not c.is_up
         return delta(a, b)*delta(d, c)
 
     def P1(a, b, c, d):
@@ -1307,8 +1305,6 @@ def test_from_components_and_indices():
 
 
 def test_get_components_with_free_indices():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
     T = tensorhead('T', [Lorentz]*4, [[1]*4])

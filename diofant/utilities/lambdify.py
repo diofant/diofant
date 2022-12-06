@@ -449,9 +449,8 @@ def lambdastr(args, expr, printer=None, dummify=False):
                               for i, a in zip(dum_args, args)])
         lstr = lambdastr(flatten(args), expr, printer=printer, dummify=dummify)
         flat = '__flatten_args__'
-        rv = 'lambda %s: (%s)(*list(%s([%s])))' % (
-            ','.join(dum_args), lstr, flat, iter_args)
-        if len(re.findall(r'\b%s\b' % flat, rv)) > 1:
+        rv = f"lambda {','.join(dum_args)}: ({lstr})(*list({flat}([{iter_args}])))"
+        if len(re.findall(f'\\b{flat}\\b', rv)) > 1:
             raise ValueError(f'the name {flat} is reserved by lambdastr')
         return rv
 
@@ -530,9 +529,7 @@ def _imp_namespace(expr, namespace=None):
         if imp is not None:
             name = expr.func.__name__
             if name in namespace and namespace[name] != imp:
-                raise ValueError('We found more than one '
-                                 'implementation with name '
-                                 '"%s"' % name)
+                raise ValueError(f'We found more than one implementation with name "{name}"')
             namespace[name] = imp
     # and / or they may take Functions as arguments
     if hasattr(expr, 'args'):

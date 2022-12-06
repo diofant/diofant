@@ -93,21 +93,17 @@ graphviz_output_format = 'svg'
 
 # Contains mapping the locations and names of other projects that
 # should be linked to in this documentation.
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://numpy.org/doc/stable/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy-1.8.0/html-scipyorg/', None),
-}
+intersphinx_mapping = {'python': ('https://docs.python.org/3/', None),
+                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       'scipy': ('https://docs.scipy.org/doc/scipy/', None)}
 
 # Dictionary of external sites, mapping unique short alias names to a
 # base URL and a prefix.
-extlinks = {
-    'issue': ('https://github.com/diofant/diofant/issues/%s', '#'),
-    'pull': ('https://github.com/diofant/diofant/pull/%s', '#'),
-    'commit': ('https://github.com/diofant/diofant/commit/%s', ''),
-    'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#'),
-    'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#'),
-}
+extlinks = {'issue': ('https://github.com/diofant/diofant/issues/%s', '#%s'),
+            'pull': ('https://github.com/diofant/diofant/pull/%s', '#%s'),
+            'commit': ('https://github.com/diofant/diofant/commit/%s', '%s'),
+            'sympyissue': ('https://github.com/sympy/sympy/issues/%s', 'sympy/sympy#%s'),
+            'sympypull': ('https://github.com/sympy/sympy/pull/%s', 'sympy/sympy#%s')}
 
 # The number of times the linkcheck builder will attempt to check a URL
 # before declaring it broken.
@@ -124,6 +120,10 @@ linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
 # set, is inherited form parents.
 autodoc_inherit_docstrings = False
 
+# Create table of contents entries for domain objects (e.g. functions,
+# classes, attributes, etc).
+toc_object_entries = False
+
 # A list of paths that contain custom static files.  Relative paths are taken as
 # relative to the configuration directory.  They are copied to the output’s
 # _static directory.
@@ -131,9 +131,7 @@ html_static_path = ['_static']
 
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
-html_css_files = [
-    'custom.css',
-]
+html_css_files = ['custom.css']
 
 # Should we show "Created using Sphinx" in the HTML footer?
 html_show_sphinx = False
@@ -144,19 +142,18 @@ html_favicon = '_static/favicon.ico'
 latex_logo = '_static/logo.png'
 
 # Theme-specific options.
-html_theme_options = {
-    'logo_only': True,
-    'display_version': False,
-    'analytics_id': 'UA-147167689-1',
-}
+html_theme_options = {'logo_only': True,
+                      'display_version': False,
+                      'analytics_id': 'UA-147167689-1'}
 
 # The inline configuration options for mathjax.  The value is used as
 # a parameter of MathJax.Hub.Config().
-mathjax3_config = {
-    'CommonHTML': {'linebreaks': {'automatic': True}},
-    'HTML-CSS': {'linebreaks': {'automatic': True}},
-    'SVG': {'linebreaks': {'automatic': True}},
-}
+mathjax3_config = {'CommonHTML': {'linebreaks': {'automatic': True}},
+                   'HTML-CSS': {'linebreaks': {'automatic': True}},
+                   'SVG': {'linebreaks': {'automatic': True}}}
+
+# The maximum number of days to cache remote inventories.
+intersphinx_cache_limit = 30
 
 
 def linkcode_resolve(domain, info):
@@ -175,7 +172,7 @@ def linkcode_resolve(domain, info):
     for part in fullname.split('.'):
         try:
             obj = getattr(obj, part)
-        except Exception:
+        except AttributeError:
             return
 
     # strip decorators, which would resolve to the source of the decorator
@@ -189,14 +186,14 @@ def linkcode_resolve(domain, info):
 
     try:
         fn = inspect.getsourcefile(obj)
-    except Exception:
+    except TypeError:
         fn = None
     if not fn:
         return
 
     try:
         source, lineno = inspect.getsourcelines(obj)
-    except Exception:
+    except OSError:
         lineno = None
 
     if lineno:

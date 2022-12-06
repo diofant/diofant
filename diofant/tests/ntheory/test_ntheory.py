@@ -62,9 +62,9 @@ def test_trailing():
     assert trailing(7) == 0
     assert trailing(-7) == 0
     for i in range(100):
-        assert trailing((1 << i)) == i
+        assert trailing(1 << i) == i
         assert trailing((1 << i) * 31337) == i
-    assert trailing((1 << 1000001)) == 1000001
+    assert trailing(1 << 1000001) == 1000001
     assert trailing((1 << 273956)*7**37) == 273956
 
 
@@ -247,7 +247,8 @@ def test_randprime():
     for a in [100, 300, 500, 250000]:
         for b in [100, 300, 500, 250000]:
             p = randprime(a, a + b)
-            assert a <= p < (a + b) and isprime(p)
+            assert a <= p < (a + b)
+            assert isprime(p)
     assert randprime(70, 7) is None
 
 
@@ -567,7 +568,6 @@ def test_residue():
         for i in range(p):
             d[pow(i, 2, p)].append(i)
         for i in range(1, p):
-            it = sqrt_mod_iter(i, p)
             v = sqrt_mod(i, p, True)
             if v:
                 v = sorted(v)

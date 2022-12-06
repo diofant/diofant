@@ -81,7 +81,7 @@ def test_RandomSymbol():
 
     assert X.name == X.symbol.name
 
-    X = Normal('lambda', 0, 1)  # make sure we can use protected terms
+    Normal('lambda', 0, 1)  # make sure we can use protected terms
     X = Normal('Lambda', 0, 1)  # make sure we can use Diofant terms
 
     pytest.raises(TypeError, lambda: Normal(1, 0, 1))
