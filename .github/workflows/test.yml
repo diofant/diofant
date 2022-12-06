@@ -10,7 +10,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: ['3.10']
+        python-version: ['3.10', '3.11']
         coverage: [false]
         include:
           - python-version: '3.10'
@@ -29,6 +29,10 @@ jobs:
     - name: Install libs
       run: |
         sudo apt update
+        if [[ ${{matrix.python-version}} != "3.10" ]]
+        then
+          sudo apt install libmpc-dev libmpfr-dev libgmp-dev
+        fi
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
         sudo apt install libatlas-base-dev liblapack-dev gfortran
