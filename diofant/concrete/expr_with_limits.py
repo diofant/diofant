@@ -407,7 +407,9 @@ class AddWithLimits(ExprWithLimits):
         else:
             summand = self.func(self.function, self.limits[0:-1]).factor()
             if not summand.has(self.variables[-1]):
-                return self.func(1, [self.limits[-1]]).doit()*summand
+                return self.func(1, [self.limits[-1]])*summand
+            elif isinstance(summand, Mul):
+                return self.func(summand, self.limits[-1]).factor()
         return self
 
     def _eval_expand_basic(self, **hints):

@@ -223,7 +223,7 @@ def test_multiple_integration():
 
     # issue sympy/sympy#5167
     assert Integral(f(x), (x, 1, 2), (w, 1, x), (z, 1, y)).doit() == \
-        y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
+        y*Integral(1, (w, 1, x))*Integral(f(x), (x, 1, 2)) - Integral(1, (w, 1, x))*Integral(f(x), (x, 1, 2))
 
     # issue sympy/sympy#14782
     assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) == -pi/8

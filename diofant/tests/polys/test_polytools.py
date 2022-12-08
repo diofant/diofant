@@ -2356,6 +2356,13 @@ def test_factor():
     assert (2*Sum(3*x, (x, 1, 9))).factor() == 6*Sum(x, (x, 1, 9))
     assert (2*Sum(x**2, (x, 1, 9))).factor() == 2*Sum(x**2, (x, 1, 9))
 
+    # issue sympy/sympy#24346
+    i = Integral(2*x, x, y)
+    assert factor(i) == 2*Integral(x, x)*Integral(1, y)
+    assert factor(1 + i) == 1 + i
+    i2 = Integral(2*x*y, x, y)
+    assert factor(i2) == 2*Integral(x, x)*Integral(y, y)
+
     A, B = symbols('A B', commutative=False)
     f = (x - A)*(y - B)
     assert factor(f.expand()) == f
