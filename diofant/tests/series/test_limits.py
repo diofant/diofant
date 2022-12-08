@@ -1051,3 +1051,11 @@ def test_sympyissue_24225():
     e = (log(1 + x) + log(1 + y)) / (x + y)
     assert limit(limit(e, x, 0, dir=Reals), y, 0, dir=Reals) == 1
     assert limit(limit(e, y, 0, dir=Reals), x, 0, dir=Reals) == 1
+
+
+def test_sympyissue_24331():
+    z = Symbol('z', complex=True)
+    assert limit(log(z), z, 0) == -oo
+
+    z = Symbol('z', infinite=True)
+    assert limit(log(z), z, 0) == -oo
