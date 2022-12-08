@@ -2217,7 +2217,8 @@ def test_factor():
 
     # issue sympy/sympy#11198
     assert factor_list(sqrt(2)*x) == (1, [(2, Rational(1, 2)), (x, 1)])
-    assert factor_list(sqrt(2)*sin(x), sin(x)) == (1, [(2, 1/2), (sin(x), 1)])
+    assert factor_list(sqrt(2)*sin(x),
+                       sin(x)) == (1, [(2, Rational(1, 2)), (sin(x), 1)])
 
     assert factor(6) == 6
     assert factor(6).is_Integer
@@ -2273,18 +2274,20 @@ def test_factor():
     assert factor(f) == f
     assert factor(f, extension=I) == (x**2 - I)*(x**2 + I)
     assert factor(f, gaussian=True) == (x**2 - I)*(x**2 + I)
-    assert factor(
-        f, extension=sqrt(2)) == (x**2 + sqrt(2)*x + 1)*(x**2 - sqrt(2)*x + 1)
+    assert factor(f, extension=sqrt(2)) == (x**2 + sqrt(2)*x +
+                                            1)*(x**2 - sqrt(2)*x + 1)
 
     f = x**2 + 2*sqrt(2)*x + 2
 
     assert factor(f, extension=sqrt(2)) == (x + sqrt(2))**2
+    assert factor(f, extension=True) == (x + sqrt(2))**2
     assert factor(f**3, extension=sqrt(2)) == (x + sqrt(2))**6
+    assert factor(f**3, extension=True) == (x + sqrt(2))**6
 
-    assert factor(x**2 - 2*y**2, extension=sqrt(2)) == \
-        (x + sqrt(2)*y)*(x - sqrt(2)*y)
-    assert factor(2*x**2 - 4*y**2, extension=sqrt(2)) == \
-        2*((x + sqrt(2)*y)*(x - sqrt(2)*y))
+    assert factor(x**2 - 2*y**2,
+                  extension=sqrt(2)) == (x + sqrt(2)*y)*(x - sqrt(2)*y)
+    assert factor(2*x**2 - 4*y**2,
+                  extension=sqrt(2)) == 2*((x + sqrt(2)*y)*(x - sqrt(2)*y))
 
     assert factor(x - 1) == x - 1
     assert factor(-x - 1) == -x - 1
@@ -2293,9 +2296,10 @@ def test_factor():
 
     assert factor(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
-    assert factor(x**11 + x + 1, modulus=65537) == \
-        (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
-                        x**3 + 65536*x**2 + 1)
+    assert factor(x**11 + x + 1,
+                  modulus=65537) == (x**2 + x + 1)*(x**9 + 65536*x**8 +
+                                                    x**6 + 65536*x**5 +
+                                                    x**3 + 65536*x**2 + 1)
 
     assert (factor(x**3 + 3*x + 2, modulus=4) ==
             factor((x**3 + 3*x + 2).as_poly(modulus=4)) ==
@@ -2310,8 +2314,8 @@ def test_factor():
     assert factor(f) == x*(sin(x) + 1)/pi
     assert factor(g) == y*(sin(x) + 1)/(pi + 1)**2
 
-    assert factor(Eq(
-        x**2 + 2*x + 1, x**3 + 1)) == Eq((x + 1)**2, (x + 1)*(x**2 - x + 1))
+    assert factor(Eq(x**2 + 2*x + 1, x**3 + 1)) == Eq((x + 1)**2,
+                                                      (x + 1)*(x**2 - x + 1))
 
     f = (x**2 - 1)/(x**2 + 4*x + 4)
 
@@ -2331,20 +2335,22 @@ def test_factor():
 
     pytest.raises(FlagError, lambda: factor(x**2 - 1, polys=True))
 
-    assert factor([x, Eq(x**2 - y**2, Tuple(x**2 - z**2, 1/x + 1/y))]) == \
-        [x, Eq((x - y)*(x + y), Tuple((x - z)*(x + z), (x + y)/x/y))]
+    assert (factor([x, Eq(x**2 - y**2,
+                          Tuple(x**2 - z**2, 1/x + 1/y))]) ==
+            [x, Eq((x - y)*(x + y), Tuple((x - z)*(x + z), (x + y)/x/y))])
 
-    assert not isinstance(
-        (x**3 + x + 1).as_poly().factor_list()[1][0][0], PurePoly) is True
-    assert isinstance(
-        PurePoly(x**3 + x + 1).factor_list()[1][0][0], PurePoly) is True
+    assert not isinstance((x**3 + x + 1).as_poly().factor_list()[1][0][0],
+                          PurePoly) is True
+    assert isinstance(PurePoly(x**3 + x + 1).factor_list()[1][0][0],
+                      PurePoly) is True
 
     assert factor(sqrt(-x)) == sqrt(-x)
 
     # issue sympy/sympy#5917
-    e = (-2*x*(-x + 1)*(x - 1)*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)*(x**2*(x -
-                                                                           1) - x*(x - 1) - x) - (-2*x**2*(x - 1)**2 - x*(-x + 1)*(-x*(-x + 1) +
-                                                                                                                                   x*(x - 1)))*(x**2*(x - 1)**4 - x*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)))
+    e = (-2*x*(-x + 1)*(x - 1)*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2) *
+         (x**2*(x - 1) - x*(x - 1) - x) -
+         (-2*x**2*(x - 1)**2 - x*(-x + 1)*(-x*(-x + 1) + x*(x - 1))) *
+         (x**2*(x - 1)**4 - x*(-x*(-x + 1)*(x - 1) - x*(x - 1)**2)))
     assert factor(e) == 0
 
     # deep option
@@ -2376,7 +2382,8 @@ def test_factor():
 
     assert factor(x**4/2 + 5*x**3/12 - x**2/3) == x**2*(2*x - 1)*(3*x + 4)/12
 
-    assert factor(x**6 - 4*x**4 + 4*x**3 - x**2) == x**2*(x - 1)**2*(x**2 + 2*x - 1)
+    assert factor(x**6 - 4*x**4 + 4*x**3 -
+                  x**2) == x**2*(x - 1)**2*(x**2 + 2*x - 1)
 
     # issue sympy/sympy#9607
     assert factor(1e-20*x - 7.292115e-5) == 1e-20*x - 7.292115e-5
@@ -3094,8 +3101,7 @@ def test_noncommutative():
 
 
 def test_to_rational_coeffs():
-    assert to_rational_coeffs(
-        (x**3 + y*x**2 + sqrt(y)).as_poly(x, domain=EX)) is None
+    assert to_rational_coeffs((x**3 + y*x**2 + sqrt(y)).as_poly(x, domain=EX)) is None
     assert to_rational_coeffs((((x**2 - 1)*(x - 2)*y).subs({x: x*(1 + sqrt(2))})).as_poly(x, y, domain=EX)) is None
     assert to_rational_coeffs((x**5 + sqrt(2)*x**2 + 1).as_poly(x, domain=EX)) is None
 
@@ -3104,10 +3110,8 @@ def test_sympyissue_8754():
     z = 0.0001*(x*(x + (4.0*y))) + 0.0001*(y*(x + (4.0*y)))
     w = expand(z)
     v = factor(w)
-    assert v == Mul(Float('10000.0', 15),
-                    Float('0.0001', 15)*x + Float('0.0001', 15)*y,
-                    Float('0.0001', 15)*x + Float('0.00040000000000000002', 15)*y,
-                    evaluate=False)
+    assert v == 10000.0*((0.0001*x + 0.0001*y)*(0.0001*x +
+                                                0.00040000000000000002*y))
     assert expand(v) == w
 
 
@@ -3223,9 +3227,8 @@ def test_sympyissue_21760():
 
 def test_sympyissue_21761():
     t = tan(pi/7)
-    assert factor(-exp(x)*t + 1,
-                  extension=True) == Mul(-1, exp(x) - 5*t - t**5/7 + 3*t**3,
-                                         t, evaluate=False)
+    assert factor(-exp(x)*t + 1, extension=True) == -((exp(x) - 5*t - t**5/7 +
+                                                       3*t**3)*t)
 
 
 def test_sympyissue_22093():
