@@ -58,6 +58,9 @@ known_functions = {
     'polylog': [(lambda x, y: True, 'PolyLog')],
     'loggamma': [(lambda x: True, 'LogGamma')],
     'uppergamma': [(lambda s, x: True, 'Gamma')],
+    'floor': [(lambda x: True, 'Floor')],
+    'ceiling': [(lambda x: True, 'Ceiling')],
+    'arg': [(lambda x: True, 'Arg')],
 }
 
 
