@@ -104,3 +104,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24225`: Multivariable limit should be undefined, but gives unity.
 * :sympyissue:`24266`: Changed behaviour of series() involving exp, I
 * :sympyissue:`24331`: Limit of log(z) as z goes to 0 with z complex returns '-oo' instead of 'zoo'
+* :sympyissue:`23766`: Factor hangs on exponential functions with base e

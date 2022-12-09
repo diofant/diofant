@@ -3259,3 +3259,19 @@ def test_sympyissue_22673():
     assert factor_list(e, modulus=7) == (1, [(x + i, 1) for i in range(7)])
     assert factor_list(p) == (1, [((x + i).as_poly(modulus=7), 1)
                                   for i in range(7)])
+
+
+@pytest.mark.timeout(10)
+def test_sympyissue_23766():
+    assert factor(exp((x + 1)**25 + 1),
+                  deep=True) == exp((x + 2)*(x**4 + 3*x**3 + 4*x**2 + 2*x +
+                                             1)*(x**20 + 20*x**19 + 190*x**18 +
+                                                 1140*x**17 + 4845*x**16 +
+                                                 15503*x**15 + 38745*x**14 +
+                                                 77415*x**13 + 125515*x**12 +
+                                                 166595*x**11 + 181754*x**10 +
+                                                 162965*x**9 + 119580*x**8 +
+                                                 71205*x**7 + 33965*x**6 +
+                                                 12752*x**5 + 3685*x**4 +
+                                                 795*x**3 + 120*x**2 +
+                                                 10*x + 1))
