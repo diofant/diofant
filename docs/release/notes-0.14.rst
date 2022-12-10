@@ -105,3 +105,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24266`: Changed behaviour of series() involving exp, I
 * :sympyissue:`24331`: Limit of log(z) as z goes to 0 with z complex returns '-oo' instead of 'zoo'
 * :sympyissue:`23766`: Factor hangs on exponential functions with base e
+* :sympyissue:`24360`: Remove usage of numpy.distutils in autowrap module
