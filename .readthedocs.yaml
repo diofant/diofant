@@ -3,11 +3,11 @@ formats:
     - htmlzip
     - pdf
 build:
-    os: ubuntu-20.04
+    os: ubuntu-22.04
     apt_packages:
         - graphviz
     tools:
-        python: "3.10"
+        python: "3"
 python:
     install:
         - method: pip
