@@ -57,11 +57,7 @@ All work should be submitted via `Pull Requests (PR)`_.
 
        flake8
 
-   to check formatting and::
-
-       flake8-rst
-
-   if your change affects doctests.
+   to check formatting.
 
 5. PR should include tests:
 

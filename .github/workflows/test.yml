@@ -42,10 +42,9 @@ jobs:
         pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
-    - name: Linting with flake8, flake8-rst and pylint
+    - name: Linting with flake8 and pylint
       if: ${{ ! github.event_name.schedule }}
       run: |
-        flake8-rst
         flake8
         pylint diofant
     - name: Run type checks with mypy

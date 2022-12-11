@@ -33,6 +33,8 @@ Minor changes
 Developer changes
 =================
 
+* Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_.
+
 Issues closed
 =============
 
