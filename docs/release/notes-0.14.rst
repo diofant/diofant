@@ -33,6 +33,8 @@ Minor changes
 Developer changes
 =================
 
+* Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_ and depend on the `flake518 <https://github.com/carstencodes/flake518>`_ instead, see :pull:`1268`.
+
 Issues closed
 =============
 
@@ -105,3 +107,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24266`: Changed behaviour of series() involving exp, I
 * :sympyissue:`24331`: Limit of log(z) as z goes to 0 with z complex returns '-oo' instead of 'zoo'
 * :sympyissue:`23766`: Factor hangs on exponential functions with base e
+* :sympyissue:`24360`: Remove usage of numpy.distutils in autowrap module

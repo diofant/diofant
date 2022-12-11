@@ -864,3 +864,6 @@ class RootSum(Expr):
         var, expr = self.fun.args
         func = Lambda(var, expr.diff(x))
         return self.new(self.poly, func, self.auto)
+
+    def _eval_rewrite_as_tractable(self, expr, func, x, **kwargs):
+        return self.doit().rewrite('tractable', **kwargs)

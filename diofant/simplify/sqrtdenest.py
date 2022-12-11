@@ -574,11 +574,7 @@ def _denester(nested, av0, h, max_depth_level):
                 if vad <= 0:
                     # return the radicand from the previous invocation.
                     return sqrt(nested[-1]), [0]*len(nested)
-                if not(sqrt_depth(vad) <= sqrt_depth(R) + 1 or
-                       (vad**2).is_Number):
-                    av0[1] = None
-                    return None, None
-
+                assert sqrt_depth(vad) <= sqrt_depth(R) + 1
                 sqvad = _sqrtdenest1(sqrt(vad), denester=False)
                 if not sqrt_depth(sqvad) <= sqrt_depth(R) + 1:
                     av0[1] = None

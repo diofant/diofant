@@ -349,11 +349,12 @@ def test_piecewise_fold_piecewise_in_cond():
     assert p2.subs({x: 1}) == 0.0
     assert p2.subs({x: -pi/4}) == 1.0
     p4 = Piecewise((0, Eq(p1, 0)), (1, True))
-    assert(piecewise_fold(p4) == Piecewise(
-        (0, Or(And(Eq(cos(x), 0), x < 0), Not(x < 0))), (1, True)))
+    assert piecewise_fold(p4) == Piecewise((0, Or(And(Eq(cos(x), 0), x < 0),
+                                                  Not(x < 0))),
+                                           (1, True))
 
     r1 = 1 < Piecewise((1, x < 1), (3, True))
-    assert(piecewise_fold(r1) == Not(x < 1))
+    assert piecewise_fold(r1) == Not(x < 1)
 
     p5 = Piecewise((1, x < 0), (3, True))
     p6 = Piecewise((1, x < 1), (3, True))
@@ -370,8 +371,8 @@ def test_piecewise_fold_expand():
                            (Piecewise((-x, Interval(0, 1, False, True).contains(x)), (0, True)), True))
 
     p2 = expand(piecewise_fold((1 - x)*p1))
-    assert p2 == Piecewise(
-        (1 - x, Interval(0, 1, False, True).contains(x)), (0, True))
+    assert p2 == Piecewise((1 - x, Interval(0, 1, False, True).contains(x)),
+                           (0, True))
 
 
 def test_piecewise_duplicate():
