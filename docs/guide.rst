@@ -55,7 +55,7 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 4. Please conform to `PEP 8`_ and `PEP 257`_; run::
 
-       flake8
+       flake518
 
    to check formatting.
 
@@ -145,6 +145,5 @@ and publish this release tag::
 .. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
-.. _flake8: http://flake8.rtfd.io/
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
 .. _mention closed issues: https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue

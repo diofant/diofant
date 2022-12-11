@@ -33,7 +33,7 @@ Minor changes
 Developer changes
 =================
 
-* Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_.
+* Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_ and depend on the `flake518 <https://github.com/carstencodes/flake518>`_ instead, see :pull:`1268`.
 
 Issues closed
 =============

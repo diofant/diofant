@@ -46,7 +46,7 @@ jobs:
     - name: Linting with flake8 and pylint
       if: ${{ ! github.event_name.schedule }}
       run: |
-        flake8
+        flake518
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant
