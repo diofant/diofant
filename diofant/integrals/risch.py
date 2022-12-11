@@ -1360,7 +1360,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
     b = True
 
     if p.is_zero:
-        return(qa, qd, b)
+        return qa, qd, b
 
     with DecrementLevel(DE):
         for i in range(-p.degree(z), p.degree(t1) + 1):

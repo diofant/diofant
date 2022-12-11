@@ -255,7 +255,7 @@ def _implicit_application(tokens, local_dict, global_dict):
                 # or if there's already a parenthesis (if parenthesis, still
                 # stop skipping tokens)
                 if not (nextTok[0] == OP and nextTok[1] == '*'):
-                    if not(nextTok[0] == OP and nextTok[1] == '('):
+                    if not (nextTok[0] == OP and nextTok[1] == '('):
                         result.append((OP, '('))
                         appendParen += 1
                     exponentSkip = False

@@ -999,7 +999,7 @@ def test_sympyissue_7391():
 
 def test_issue_1216():
     assert (x/abs(sqrt(1 - x**2))).limit(x, oo) == 1
-    assert((4*x - 2)/abs(sqrt(4 - 4*(2*x - 1)**2))).limit(x, oo) == 1
+    assert ((4*x - 2)/abs(sqrt(4 - 4*(2*x - 1)**2))).limit(x, oo) == 1
 
 
 def test_issue_1213():
