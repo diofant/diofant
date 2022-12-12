@@ -719,3 +719,9 @@ def test_sympyissue_21263():
     assert r == {-root(y, 3) - 1: 1,
                  -root(y, 3)*(-Rational(1, 2) - sqrt(3)*I/2) - 1: 1,
                  -root(y, 3)*(-Rational(1, 2) + sqrt(3)*I/2) - 1: 1}
+
+
+@pytest.mark.timeout(2)
+def test_sympyissue_20913():
+    i = 9671406556917067856609794
+    assert (x + i).as_poly().real_roots() == [-i]
