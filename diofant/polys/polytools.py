@@ -3475,6 +3475,13 @@ def _symbolic_factor_list(expr, opt, method):
 
                 factors.append((_factors_product(other), exp))
 
+    if len([1 for f, _ in factors if f.is_Poly]) > 1:
+        domain = functools.reduce(lambda x, y: x.unify(y),
+                                  [f.domain for f, _ in factors if f.is_Poly])
+        if domain.is_Exact and domain != opt.domain:
+            return _symbolic_factor_list(expr, opt.clone({'domain': domain}),
+                                         method)
+
     if method == 'sqf':
         factors = [(functools.reduce(operator.mul,
                                      (f for f, _ in factors if _ == k)), k)

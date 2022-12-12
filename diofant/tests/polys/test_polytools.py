@@ -2284,6 +2284,11 @@ def test_factor():
     assert factor(f**3, extension=sqrt(2)) == (x + sqrt(2))**6
     assert factor(f**3, extension=True) == (x + sqrt(2))**6
 
+    # issue sympy/sympy#24346
+    f = (x**2 - 2)/(x + sqrt(2))
+    assert factor(f, extension=sqrt(2)) == x - sqrt(2)
+    assert factor(f, extension=True) == x - sqrt(2)
+
     assert factor(x**2 - 2*y**2,
                   extension=sqrt(2)) == (x + sqrt(2)*y)*(x - sqrt(2)*y)
     assert factor(2*x**2 - 4*y**2,
