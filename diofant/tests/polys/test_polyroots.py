@@ -2,6 +2,7 @@
 
 import itertools
 
+import hypothesis
 import mpmath
 import pytest
 
@@ -725,3 +726,13 @@ def test_sympyissue_21263():
 def test_sympyissue_20913():
     i = 9671406556917067856609794
     assert (x + i).as_poly().real_roots() == [-i]
+
+
+@pytest.mark.slow
+@hypothesis.given(hypothesis.strategies.lists(hypothesis.strategies.integers(),
+                                              max_size=5))
+@hypothesis.settings(max_examples=1000, deadline=None)
+def test_real_roots_sorted(l):
+    p = sum((c*x**n for n, c in enumerate(l)), start=Integer(0)).as_poly(x)
+    roots = p.real_roots()
+    assert sorted(roots) == roots
