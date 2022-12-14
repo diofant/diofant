@@ -637,6 +637,12 @@ def _integer_basis(poly):
     monoms = monoms[:-1]
     coeffs = coeffs[:-1]
 
+    if len(monoms) == 1:
+        r = root(coeffs[0], monoms[0])
+        if r.is_Integer:
+            return int(r)
+        return
+
     divs = reversed(divisors(math.gcd(*coeffs))[1:])
 
     try:

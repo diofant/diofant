@@ -109,3 +109,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23766`: Factor hangs on exponential functions with base e
 * :sympyissue:`24360`: Remove usage of numpy.distutils in autowrap module
 * :sympyissue:`24346`: factor with extension=True fails for rational expression
+* :sympyissue:`20913`: Poly(x + 9671406556917067856609794, x).real_roots() is slow
