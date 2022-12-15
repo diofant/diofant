@@ -1453,3 +1453,9 @@ def test_sympyissue_8653():
     assert sin(n).is_irrational is None
     assert cos(n).is_irrational is None
     assert tan(n).is_irrational is None
+
+
+def test_sympyissue_24390():
+    expr = sin(acos((98 - 14*cos(pi**2/2160))/(14*sqrt(50 - 14*cos(pi**2/2160)))))
+    assert expr != 0
+    assert expr.evalf() == Float('0.00076153935374937783', dps=15)

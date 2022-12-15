@@ -111,3 +111,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24346`: factor with extension=True fails for rational expression
 * :sympyissue:`20913`: Poly(x + 9671406556917067856609794, x).real_roots() is slow
 * :sympyissue:`24386`: sympy.limit yields wrong limit in sigmoidal expression
+* :sympyissue:`24390`: Incorrectly evaluated expression
