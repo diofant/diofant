@@ -1065,3 +1065,7 @@ def test_sympyissue_24331():
 
     z = Symbol('z', infinite=True)
     assert limit(log(z), z, 0) == -oo
+
+
+def test_sympyissue_24386():
+    assert limit((x + y)/(exp(z) + 1) - y, z, -oo) == x
