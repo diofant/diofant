@@ -131,6 +131,7 @@ doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
 addopts = """\
           --durations=20 -r X --doctest-glob='*.rst' \
           --cov-config=pyproject.toml -n auto \
+          -p diofant.tests.config --noconftest \
           """
 norecursedirs = ['build', '.eggs', '.git']
 timeout = 1000
