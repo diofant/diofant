@@ -4,9 +4,6 @@ Calculus
 
 .. automodule:: diofant.calculus
 
-.. automodule:: diofant.calculus.euler
-    :members:
-
 .. automodule:: diofant.calculus.singularities
     :members:
 
