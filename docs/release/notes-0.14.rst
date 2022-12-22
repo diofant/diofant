@@ -23,7 +23,7 @@ Compatibility breaks
 * Removed ``poly()`` function, use :meth:`~diofant.core.expr.Expr.as_poly` method to create a :class:`~diofant.polys.polytools.Poly` instance from :class:`~diofant.core.expr.Expr`, see :pull:`1047`.
 * Removed functions ``bool_map()``, ``POSform()`` and ``SOPform()``, see :commit:`04ea41a220` and :commit:`be319badf5`.
 * Changed semantics of the ``dir`` kwarg for the :class:`~diofant.series.limits.Limit`, now '+' is -1, '-' is 1 and 'real' is :class:`~diofant.sets.fancysets.Reals`, see :pull:`1234` and :pull:`1235`.
-* Removed ``diofant.calculus.euler`` module, see :pull:`1271`.
+* Removed ``diofant.calculus.euler`` and ``diofant.calculus.finite_diff`` modules, see :pull:`1271`.
 
 Minor changes
 =============
