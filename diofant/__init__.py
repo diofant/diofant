@@ -55,7 +55,7 @@ from .domains import (CC, EX, FF, GF, GROUND_TYPES, QQ, RR, ZZ, AlgebraicField,
                       IntegerRing, PythonRational, QQ_gmpy, QQ_python,
                       RationalField, RealAlgebraicField, RealField, ZZ_gmpy,
                       ZZ_python, IntegerModRing)
-from .series import Limit, O, Order, limit, residue
+from .series import Limit, O, Order, limit
 from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         FallingFactorial, Heaviside, Id, KroneckerDelta,
                         LambertW, LeviCivita, Li, Max, Min, Piecewise,
@@ -150,7 +150,7 @@ from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
                      SparseNDimArray, derive_by_array,
                      get_contraction_structure, get_indices, permutedims,
                      tensorcontraction, tensorproduct)
-from .calculus import maximize, minimize
+from .calculus import maximize, minimize, residue
 from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
                             DihedralGroup, DirectProduct, GrayCode,
                             IntegerPartition, Partition, Permutation,

@@ -9,6 +9,3 @@ function and many related functions.
 
 .. automodule:: diofant.series.order
    :members:
-
-.. automodule:: diofant.series.residues
-   :members:

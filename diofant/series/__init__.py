@@ -2,7 +2,6 @@
 """
 from .limits import Limit, limit
 from .order import O, Order
-from .residues import residue
 
 
-__all__ = 'Limit', 'O', 'Order', 'limit', 'residue'
+__all__ = 'Limit', 'O', 'Order', 'limit'
