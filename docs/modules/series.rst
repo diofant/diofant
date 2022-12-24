@@ -6,6 +6,3 @@ function and many related functions.
 
 .. automodule:: diofant.series.limits
    :members:
-
-.. automodule:: diofant.series.order
-   :members:

@@ -229,6 +229,7 @@ of those tests will surely fail.
 from collections import defaultdict
 from itertools import islice
 
+from ..calculus import Order
 from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
@@ -245,7 +246,6 @@ from ..matrices import BlockDiagMatrix, Matrix, wronskian
 from ..polys import Poly, PolynomialError, RootOf, lcm, terms_gcd
 from ..polys.polyroots import roots_quartic
 from ..polys.polytools import cancel, degree, div
-from ..series.order import Order
 from ..simplify.cse_main import cse
 from ..simplify.powsimp import powsimp
 from ..simplify.radsimp import collect, collect_const

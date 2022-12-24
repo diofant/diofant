@@ -535,8 +535,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         used to return True or False.
 
         """
+        from ..calculus import Order
         from .exprtools import factor_terms
-        from ..series import Order
 
         other = sympify(other)
         if self == other:
@@ -653,7 +653,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..logic import false
-        from ..series import limit, Limit
+        from ..series import Limit, limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
 
@@ -1464,8 +1464,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coeff_mul
 
         """
-        from .symbol import Dummy, Symbol
         from ..utilities.iterables import sift
+        from .symbol import Dummy, Symbol
 
         func = self.func
         # sift out deps into symbolic and other and ignore
@@ -2026,9 +2026,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (1, -1/2)
 
         """
+        from ..functions import ceiling, exp_polar
         from .add import Add
-        from .numbers import pi, I
-        from ..functions import exp_polar, ceiling
+        from .numbers import I, pi
         n = Integer(0)
         res = Integer(1)
         args = Mul.make_args(self)
@@ -2357,11 +2357,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1/x
 
         """
+        from ..calculus import Order
+        from ..functions import sign
+        from ..simplify import collect
         from .function import expand_mul
         from .symbol import Dummy, Symbol
-        from ..functions import sign
-        from ..series import Order
-        from ..simplify import collect
 
         if x is None:
             syms = self.atoms(Dummy, Symbol)
@@ -2473,8 +2473,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         redefine it to make it faster by using the "previous_terms".
 
         """
-        from .symbol import Dummy
         from ..functions import factorial
+        from .symbol import Dummy
         x = sympify(x)
         _x = Dummy('x')
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
@@ -2577,8 +2577,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         log(x) + log(1 + p) if p.is_positive.)
 
         """
-        from .symbol import Dummy
         from ..simplify import collect
+        from .symbol import Dummy
         if x.is_positive and x.is_finite:
             series = self._eval_nseries(x, n=n, logx=logx)
             order = series.getO() or Integer(0)
@@ -2636,10 +2636,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         * https://en.wikipedia.org/wiki/Asymptotic_expansion
 
         """
-        from . import Dummy
-        from ..series.gruntz import mrv, rewrite
+        from ..calculus import Order
         from ..functions import exp, log
-        from ..series import Order
+        from ..series.gruntz import mrv, rewrite
+        from . import Dummy
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)
@@ -2702,8 +2702,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         This is a wrapper to compute a series first.
 
         """
-        from .symbol import Dummy
         from ..functions import log
+        from .symbol import Dummy
 
         d = logx if logx else Dummy('logx')
 
@@ -3169,7 +3169,8 @@ def _mag(x):
     4
 
     """
-    from math import log10, ceil, log
+    from math import ceil, log, log10
+
     from .numbers import Float
     xpos = abs(x.evalf(strict=False))
     if not xpos:
@@ -3186,7 +3187,7 @@ def _mag(x):
 
 
 from .add import Add
-from .mul import Mul
-from .power import Pow
 from .mod import Mod
+from .mul import Mul
 from .numbers import I, Integer, Rational, nan, oo, zoo
+from .power import Pow

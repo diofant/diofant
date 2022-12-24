@@ -33,7 +33,7 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
-        from ..series.order import Order
+        from ..calculus import Order
         from .mul import Mul
 
         rv = None
@@ -591,7 +591,7 @@ class Add(AssocOp):
         ((x, O(x)),)
 
         """
-        from ..series import Order
+        from ..calculus import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
         point = [0]*len(symbols)
@@ -635,7 +635,7 @@ class Add(AssocOp):
         return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
-        from ..series import Order
+        from ..calculus import Order
         from . import factor_terms
 
         by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)

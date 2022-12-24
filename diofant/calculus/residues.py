@@ -1,5 +1,5 @@
 from ..core import Integer, Mul, sympify
-from ..series import Order
+from .order import Order
 
 
 def residue(expr, x, x0):

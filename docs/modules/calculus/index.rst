@@ -10,5 +10,8 @@ Calculus
 .. automodule:: diofant.calculus.optimization
     :members:
 
+.. automodule:: diofant.calculus.order
+    :members:
+
 .. automodule:: diofant.calculus.residues
     :members:

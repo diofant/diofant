@@ -1,7 +1,6 @@
 """A module that handles series: find a limit, order the series etc.
 """
 from .limits import Limit, limit
-from .order import O, Order
 
 
-__all__ = 'Limit', 'O', 'Order', 'limit'
+__all__ = 'Limit', 'limit'

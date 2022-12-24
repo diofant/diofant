@@ -1808,7 +1808,7 @@ def test_diofant__series__limits__Limit():
     assert _test_args(Limit(x, x, 0, dir=1))
 
 
-def test_diofant__series__order__Order():
+def test_diofant__calculus__order__Order():
     assert _test_args(Order(1, x, y))
 
 

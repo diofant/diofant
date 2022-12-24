@@ -156,7 +156,7 @@ class Mul(AssocOp):
             sensitive.
 
         """
-        from ..series.order import Order
+        from ..calculus import Order
         from .numbers import I, Rational, nan, oo, zoo
         from .power import Pow
 

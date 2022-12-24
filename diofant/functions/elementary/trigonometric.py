@@ -349,7 +349,7 @@ class sin(TrigonometricFunction):
         return sin(arg)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -721,7 +721,7 @@ class cos(TrigonometricFunction):
         return cos(arg)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -987,7 +987,7 @@ class tan(TrigonometricFunction):
             return y
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1401,7 +1401,7 @@ class cot(ReciprocalTrigonometricFunction):
         return cot(arg)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1539,7 +1539,7 @@ class asin(InverseTrigonometricFunction):
                 return R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1700,7 +1700,7 @@ class acos(InverseTrigonometricFunction):
                 return -R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1865,7 +1865,7 @@ class atan(InverseTrigonometricFunction):
             return (-1)**((n - 1)//2) * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -2012,7 +2012,7 @@ class acot(InverseTrigonometricFunction):
             return (-1)**((n + 1)//2) * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -2152,7 +2152,7 @@ class asec(InverseTrigonometricFunction):
         return sec
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
         if Order(1, x).contains(arg):
             return log(arg)
@@ -2245,7 +2245,7 @@ class acsc(InverseTrigonometricFunction):
         return csc
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
         if Order(1, x).contains(arg):
             return log(arg)

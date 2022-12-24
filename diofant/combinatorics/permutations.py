@@ -6,7 +6,6 @@ from mpmath.libmp.libintmath import ifac
 
 from ..core import Basic, Tuple, sympify
 from ..core.compatibility import as_int, is_sequence
-from ..matrices import zeros
 from ..polys import lcm
 from ..utilities import flatten, has_dups, has_variety
 from ..utilities.iterables import minlex, runs
@@ -2447,6 +2446,8 @@ class Permutation(Basic):
         get_precedence_distance, get_adjacency_matrix, get_adjacency_distance
 
         """
+        from ..matrices import zeros
+
         m = zeros(self.size)
         perm = self.array_form
         for i in range(m.rows):
@@ -2526,6 +2527,8 @@ class Permutation(Basic):
         get_precedence_matrix, get_precedence_distance, get_adjacency_distance
 
         """
+        from ..matrices import zeros
+
         m = zeros(self.size)
         perm = self.array_form
         for i in range(self.size - 1):

@@ -1,8 +1,5 @@
 from ..core import Add, Mul, PoleError, Pow, sympify
-from ..functions import log, sign
-from ..series import Limit
 from ..sets import Reals
-from ..solvers import solve
 
 
 def singularities(f, x):
@@ -31,6 +28,10 @@ def singularities(f, x):
     * https://en.wikipedia.org/wiki/Mathematical_singularity
 
     """
+    from ..functions import log, sign
+    from ..series import Limit
+    from ..solvers import solve
+
     f, x = sympify(f), sympify(x)
     guess, res = set(), set()
 

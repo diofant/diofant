@@ -568,7 +568,7 @@ class polygamma(Function):
                 return True
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
             return super()._eval_aseries(n, args0, x, logx)
@@ -707,7 +707,7 @@ class polygamma(Function):
                 return (-1)**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         n, z = (a.as_leading_term(x) for a in self.args)
         o = Order(z, x)
         if n == 0 and o.contains(1/x):
@@ -865,7 +865,7 @@ class loggamma(Function):
         return super()._eval_nseries(x, n, logx)
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[0] != oo:
             return super()._eval_aseries(n, args0, x, logx)
         z = self.args[0]

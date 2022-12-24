@@ -1,9 +1,9 @@
+from ..calculus import Order
 from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
 from ..core.function import UndefinedFunction
 from ..functions import cos, sign, sin
 from ..sets import Reals
 from .gruntz import limitinf
-from .order import Order
 
 
 def limit(expr, z, z0, dir=None):

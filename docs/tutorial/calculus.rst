@@ -310,7 +310,7 @@ Diofant can compute asymptotic series expansions of functions around a point.
     1 + x + ── + O⎝x ⎠
             2
 
-The `O\left (x^4\right )` term, an instance of :class:`~diofant.series.order.O`
+The `O\left (x^4\right )` term, an instance of :class:`~diofant.calculus.order.O`
 at the end represents the Landau order term at `x=0` (not to be confused with
 big O notation used in computer science, which generally represents the Landau
 order term at `x=\infty`).  Order terms can be created and manipulated outside
@@ -331,7 +331,7 @@ If you do not want the order term, use the
     ── + x + 1
     2
 
-The :class:`~diofant.series.order.O` notation supports arbitrary limit points:
+The :class:`~diofant.calculus.order.O` notation supports arbitrary limit points:
 
     >>> exp(x - 1).series(x, x0=1)
            2          3          4          5
