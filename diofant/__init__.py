@@ -8,7 +8,7 @@ import pkg_resources
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
 
-from .calculus import O, Order, maximize, minimize, residue
+from .calculus import Limit, O, Order, limit, maximize, minimize, residue
 from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
                             DihedralGroup, DirectProduct, GrayCode,
                             IntegerPartition, Partition, Permutation,
@@ -145,7 +145,6 @@ from .printing import (StrPrinter, ccode, dotprint, fcode, latex,
                        mathematica_code, mathml, octave_code, pprint,
                        pprint_use_unicode, pretty, pretty_print, python, srepr,
                        sstr, sstrrepr)
-from .series import Limit, limit
 from .sets import (Complement, Contains, EmptySet, ExtendedReals, FiniteSet,
                    ImageSet, Integers, Intersection, Interval, Naturals,
                    Naturals0, ProductSet, Range, Rationals, Reals, Set,

@@ -241,7 +241,7 @@ Limits
 ======
 
 Diofant can compute symbolic limits with the
-:func:`~diofant.series.limits.limit` function.  To compute a directional limit
+:func:`~diofant.calculus.limits.limit` function.  To compute a directional limit
 
 .. math::
 
@@ -252,7 +252,7 @@ do
     >>> limit(sin(x)/x, x, 0)
     1
 
-:func:`~diofant.series.limits.limit` should be used instead of
+:func:`~diofant.calculus.limits.limit` should be used instead of
 :meth:`~diofant.core.basic.Basic.subs` whenever the point of evaluation is a
 singularity.  Even though Diofant has objects to represent `\infty`, using them
 for evaluation is not reliable because they do not keep track of things like
@@ -267,9 +267,9 @@ rate of growth.  Also, things like `\infty - \infty` and
 
 Like :class:`~diofant.core.function.Derivative` and
 :class:`~diofant.integrals.integrals.Integral`,
-:func:`~diofant.series.limits.limit` has an unevaluated counterpart,
-:class:`~diofant.series.limits.Limit`.  To evaluate it, use
-:meth:`~diofant.series.limits.Limit.doit`.
+:func:`~diofant.calculus.limits.limit` has an unevaluated counterpart,
+:class:`~diofant.calculus.limits.Limit`.  To evaluate it, use
+:meth:`~diofant.calculus.limits.Limit.doit`.
 
     >>> Limit((cos(x) - 1)/x, x, 0)
          cos(x) - 1
@@ -279,7 +279,7 @@ Like :class:`~diofant.core.function.Derivative` and
     0
 
 To change side, pass ``'-'`` as a third argument to
-:func:`~diofant.series.limits.limit`.  For example, to compute
+:func:`~diofant.calculus.limits.limit`.  For example, to compute
 
 .. math::
 

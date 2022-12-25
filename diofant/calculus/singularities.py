@@ -29,8 +29,8 @@ def singularities(f, x):
 
     """
     from ..functions import log, sign
-    from ..series import Limit
     from ..solvers import solve
+    from .limits import Limit
 
     f, x = sympify(f), sympify(x)
     guess, res = set(), set()

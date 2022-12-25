@@ -977,10 +977,10 @@ class Interval(Set, EvalfMixin):
         return sympify(expr, strict=True)
 
     def _eval_imageset(self, f):
+        from ..calculus import limit
         from ..calculus.singularities import singularities
         from ..core import Lambda, diff
         from ..functions import Max, Min
-        from ..series import limit
         from ..solvers import solve
 
         # TODO: handle functions with infinitely many solutions (eg, sin, tan)

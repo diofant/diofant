@@ -652,8 +652,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         respectively.
 
         """
+        from ..calculus import Limit, limit
         from ..logic import false
-        from ..series import Limit, limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
 
@@ -2637,8 +2637,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..calculus import Order
+        from ..calculus.gruntz import mrv, rewrite
         from ..functions import exp, log
-        from ..series.gruntz import mrv, rewrite
         from . import Dummy
 
         if x.is_positive is x.is_negative is None:
@@ -2694,7 +2694,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
-        from ..series.limits import limit
+        from ..calculus.limits import limit
         return limit(self, x, xlim, dir)
 
     def compute_leading_term(self, x, logx=None):

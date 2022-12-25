@@ -3,7 +3,7 @@ The Gruntz Algorithm
 ====================
 
 This section explains the basics of the algorithm :cite:`Gruntz1996limits` used for computing
-limits.  Most of the time the :py:func:`~diofant.series.limits.limit` function
+limits.  Most of the time the :py:func:`~diofant.calculus.limits.limit` function
 should just work.  However it is still useful to keep in mind how it is
 implemented in case something does not work as expected.
 
@@ -64,7 +64,6 @@ import functools
 
 from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, oo
 from ..core.function import UndefinedFunction
-from ..functions import exp, log, sign
 from ..utilities import ordered
 
 
@@ -86,6 +85,8 @@ def compare(a, b, x):
     1
 
     """
+    from ..functions import log
+
     # The log(exp(...)) must always be simplified here for termination.
     la = a.exp if a.is_Exp else log(a)
     lb = b.exp if b.is_Exp else log(b)
@@ -110,6 +111,8 @@ def mrv(e, x):
     {x}
 
     """
+    from ..functions import log
+
     if not e.has(x):
         return set()
     elif e == x:
@@ -157,6 +160,8 @@ def signinf(e, x):
         large and zero if `e` is *constantly* zero for `x\to\infty`.
 
     """
+    from ..functions import sign
+
     if not e.has(x):
         return sign(e).simplify()
     elif e == x:
@@ -225,6 +230,8 @@ def leadterm(e, x):
     (-1, 0)
 
     """
+    from ..functions import exp, log
+
     if not e.has(x):
         return e, Integer(0)
 
@@ -277,6 +284,8 @@ def rewrite(e, x, w):
     (log(x)/y, -x)
 
     """
+    from ..functions import exp
+
     Omega = mrv(e, x)
     if not Omega:
         return e, None  # e really does not depend on x

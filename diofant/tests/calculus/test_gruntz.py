@@ -16,7 +16,7 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      log, loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan,
                      tanh, zeta)
 from diofant.abc import a, n, y
-from diofant.series.gruntz import compare, leadterm, mrv, rewrite, signinf
+from diofant.calculus.gruntz import compare, leadterm, mrv, rewrite, signinf
 
 
 __all__ = ()

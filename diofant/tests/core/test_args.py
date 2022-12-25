@@ -1804,7 +1804,7 @@ def test_diofant__polys__rootoftools__RootSum():
     assert _test_args(RootSum(x**3 + x + 1, sin))
 
 
-def test_diofant__series__limits__Limit():
+def test_diofant__calculus__limits__Limit():
     assert _test_args(Limit(x, x, 0, dir=1))
 
 

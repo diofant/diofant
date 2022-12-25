@@ -1151,9 +1151,8 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
-        from ..calculus import Order
+        from ..calculus import Order, limit
         from ..functions import arg, exp, floor, log
-        from ..series import limit
         from ..simplify import powsimp
         if self.is_Exp:
             e_series = self.exp.nseries(x, n=n, logx=logx)

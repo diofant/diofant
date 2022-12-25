@@ -35,7 +35,6 @@ automatically generated using Diofant's docstrings.
    printing
    interactive
    plotting
-   series
    sets
    simplify/simplify
    stats

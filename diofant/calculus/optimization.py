@@ -106,8 +106,8 @@ def maximize(f, *v):
 
 def minimize_univariate(f, x, dom):
     from ..functions import Min
-    from ..series import limit
     from ..solvers import solve
+    from .limits import limit
 
     extr = {}
 

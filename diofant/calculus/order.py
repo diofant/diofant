@@ -298,8 +298,8 @@ class Order(Expr):
             relation cannot be determined.
 
         """
-        from ..series import Limit
         from ..simplify import powsimp
+        from .limits import Limit
         if expr == 0:
             return True
         if expr is nan:
