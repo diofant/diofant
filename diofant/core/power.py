@@ -1151,8 +1151,8 @@ class Pow(Expr):
         return d
 
     def _eval_nseries(self, x, n, logx):
+        from ..calculus import Order, limit
         from ..functions import arg, exp, floor, log
-        from ..series import Order, limit
         from ..simplify import powsimp
         if self.is_Exp:
             e_series = self.exp.nseries(x, n=n, logx=logx)
@@ -1211,8 +1211,8 @@ class Pow(Expr):
             return powsimp(pow_series, deep=True, combine='exp')
 
     def _eval_as_leading_term(self, x):
+        from ..calculus import Order
         from ..functions import exp, log
-        from ..series import Order
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
         elif self.is_Exp:

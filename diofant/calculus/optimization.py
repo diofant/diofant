@@ -1,11 +1,6 @@
 from ..core import Integer, Lt, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence
-from ..functions import Min
-from ..matrices import eye, zeros
-from ..series import limit
 from ..sets import Interval
-from ..solvers import reduce_inequalities, solve
-from ..solvers.inequalities import canonicalize_inequalities
 from ..utilities import ordered
 from .singularities import singularities
 
@@ -33,6 +28,9 @@ def minimize(f, *v):
     maximize
 
     """
+    from ..solvers import reduce_inequalities
+    from ..solvers.inequalities import canonicalize_inequalities
+
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
     constraints = {c for c in f if c.is_Relational}
@@ -107,6 +105,10 @@ def maximize(f, *v):
 
 
 def minimize_univariate(f, x, dom):
+    from ..functions import Min
+    from ..solvers import solve
+    from .limits import limit
+
     extr = {}
 
     if dom.is_Union:
@@ -168,6 +170,8 @@ def simplex(c, m, b):
       Programming and Game Theory, Third edition, 2008, Ch. 3.
 
     """
+    from ..matrices import eye, zeros
+
     rows, cols = len(b), len(c)
 
     if len(m) != rows or any(len(_) != cols for _ in m):

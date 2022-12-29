@@ -12,7 +12,7 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      limit, log, nan, oo, pi, polygamma, root, sign, simplify,
                      sin, sinh, sqrt, subfactorial, symbols, tan, true)
 from diofant.abc import a, b, c, k, n, x, y, z
-from diofant.series.limits import heuristics
+from diofant.calculus.limits import heuristics
 
 
 __all__ = ()

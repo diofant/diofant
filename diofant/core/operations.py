@@ -21,7 +21,7 @@ class AssocOp(Expr):
 
     @cacheit
     def __new__(cls, *args, **options):
-        from ..series import Order
+        from ..calculus import Order
         args = [sympify(a, strict=True) for a in args]
 
         if not options.pop('evaluate', global_evaluate[0]):

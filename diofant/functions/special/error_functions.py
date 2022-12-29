@@ -184,7 +184,7 @@ class erf(Function):
         return -I*erfi(I*z)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -372,7 +372,7 @@ class erfc(Function):
         return 1 - sqrt(z**2)/z + z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -2090,7 +2090,7 @@ class fresnels(FresnelIntegral):
                 * meijerg([], [1], [Rational(3, 4)], [Rational(1, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2218,7 +2218,7 @@ class fresnelc(FresnelIntegral):
                 * meijerg([], [1], [Rational(1, 4)], [Rational(3, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2260,7 +2260,7 @@ class _erfs(Function):
             return Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2297,7 +2297,7 @@ class _eis(Function):
     """
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[0] != oo:
             return super()._eval_aseries(n, args0, x, logx)
 

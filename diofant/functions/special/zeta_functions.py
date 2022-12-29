@@ -471,7 +471,7 @@ class _zetas(Function):
         return zeta(log(s))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo

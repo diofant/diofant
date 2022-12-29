@@ -1326,7 +1326,7 @@ class PrettyPrinter(Printer):
         return s
 
     def _print_Pow(self, power):
-        from ...series import Limit
+        from ...calculus import Limit
         from ...simplify import fraction
         b, e = power.as_base_exp()
         if power.is_commutative and not e.is_Float:

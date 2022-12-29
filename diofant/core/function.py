@@ -498,7 +498,7 @@ class Function(Application, Expr):
         -1/x - log(x)/x + log(x)/2 + O(1)
 
         """
-        from ..series import Order
+        from ..calculus import Order
         from ..sets.sets import FiniteSet
         from .symbol import Dummy
         args = self.args
@@ -608,7 +608,7 @@ class Function(Application, Expr):
         See, for example, cos._eval_as_leading_term.
 
         """
-        from ..series import Order
+        from ..calculus import Order
         args = [a.as_leading_term(x) for a in self.args]
         o = Order(1, x)
         if any(x in a.free_symbols and o.contains(a) for a in args):

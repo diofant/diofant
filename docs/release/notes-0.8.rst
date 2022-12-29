@@ -21,7 +21,7 @@ Major changes
 =============
 
 * Depend on setuptools, see :pull:`44`.
-* :mod:`The Gruntz Algorithm <diofant.series.gruntz>` reimplemented correctly, see :pull:`68`.
+* :mod:`The Gruntz Algorithm <diofant.calculus.gruntz>` reimplemented correctly, see :pull:`68`.
 * Replaced ``exp(x)`` with ``E**x`` internally, see :pull:`79`.
 * Used :func:`~diofant.printing.repr.srepr` instead of :func:`~diofant.printing.str.sstr` for :meth:`~object.__repr__` printing, see :pull:`39`.
 * Major cleanup for series methods, see :pull:`187`.

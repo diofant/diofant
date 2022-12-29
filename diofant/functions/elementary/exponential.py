@@ -363,7 +363,7 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from ...series import Order
+        from ...calculus import Order
         from .complexes import arg
         from .integers import floor
         if not logx:
@@ -505,7 +505,7 @@ class LambertW(Function):
 
     def _eval_nseries(self, x, n, logx):
         if len(self.args) == 1:
-            from ...series import Order
+            from ...calculus import Order
             from .. import factorial
             x = self.args[0]
             o = Order(x**n, x)

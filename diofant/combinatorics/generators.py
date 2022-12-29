@@ -1,5 +1,4 @@
 from ..core import symbols
-from ..matrices import Matrix
 from ..utilities import variations
 from ..utilities.iterables import rotate_left
 from .permutations import Permutation
@@ -131,6 +130,8 @@ def rubik(n):
     slices from the front.
 
     """
+    from ..matrices import Matrix
+
     if n < 2:
         raise ValueError('dimension of cube must be > 1')
 

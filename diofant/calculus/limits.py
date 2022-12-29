@@ -1,6 +1,5 @@
 from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
 from ..core.function import UndefinedFunction
-from ..functions import cos, sign, sin
 from ..sets import Reals
 from .gruntz import limitinf
 from .order import Order
@@ -30,6 +29,8 @@ def limit(expr, z, z0, dir=None):
 
 
 def heuristics(e, z, z0, dir):
+    from ..functions import cos, sin
+
     e = e.expand()
     if (e.is_Mul or e.is_Add or e.is_Pow or
             (e.is_Function and not e.is_Piecewise and
@@ -83,6 +84,8 @@ class Limit(Expr):
     """
 
     def __new__(cls, e, z, z0, dir=None):
+        from ..functions import sign
+
         e, z, z0, dir = map(sympify, [e, z, z0, dir])
 
         if z0.is_infinite:
@@ -115,7 +118,7 @@ class Limit(Expr):
         =====
 
         First we handle some trivial cases (i.e. constant), then try
-        Gruntz algorithm (see the :py:mod:`~diofant.series.gruntz` module).
+        Gruntz algorithm (see the :py:mod:`~diofant.calculus.gruntz` module).
 
         """
         e, z, z0, dir = self.args

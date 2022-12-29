@@ -78,7 +78,6 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_sqrts2, hyper, meijerg)
 from ..polys import Poly, cancel
 from ..printing import sstr
-from ..series import residue
 from ..utilities import default_sort_key, sift
 from .powsimp import powdenest
 from .simplify import simplify
@@ -2240,6 +2239,8 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
         return True
 
     def do_slater(an, bm, ap, bq, z, zfinal):
+        from ..calculus import residue
+
         # zfinal is the value that will eventually be substituted for z.
         # We pass it to _hyperexpand to improve performance.
         func = G_Function(an, bm, ap, bq)

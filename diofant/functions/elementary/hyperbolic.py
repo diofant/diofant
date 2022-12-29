@@ -162,7 +162,7 @@ class sinh(HyperbolicFunction):
         return 2*coth_half/(coth_half**2 - 1)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -302,7 +302,7 @@ class cosh(HyperbolicFunction):
         return (coth_half + 1)/(coth_half - 1)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -434,7 +434,7 @@ class tanh(HyperbolicFunction):
         return 1/coth(arg)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -559,7 +559,7 @@ class coth(HyperbolicFunction):
         return 1/tanh(arg)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -790,7 +790,7 @@ class asinh(Function):
                 return (-1)**k * R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -891,7 +891,7 @@ class acosh(Function):
                 return -R / F * I * x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -975,7 +975,7 @@ class atanh(Function):
             return x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
@@ -1045,7 +1045,7 @@ class acoth(Function):
             return x**n / n
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):

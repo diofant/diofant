@@ -1,3 +1,4 @@
+from ..calculus import Order, limit
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
                     diff, nan, oo)
@@ -7,7 +8,6 @@ from ..functions import Piecewise, log, piecewise_fold, sqrt
 from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
-from ..series import Order, limit
 from ..simplify.fu import sincos_to_sum
 from ..utilities import filldedent
 from .meijerint import meijerint_definite, meijerint_indefinite

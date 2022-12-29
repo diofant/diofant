@@ -1,10 +1,23 @@
 """Diofant is a Python library for symbolic mathematics."""
 
 from fractions import Fraction
+
 import pkg_resources
+
+
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
 
+from .calculus import Limit, O, Order, limit, maximize, minimize, residue
+from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
+                            DihedralGroup, DirectProduct, GrayCode,
+                            IntegerPartition, Partition, Permutation,
+                            PermutationGroup, Polyhedron, Prufer, RGS_enum,
+                            RGS_rank, RGS_unrank, RubikGroup, Subset,
+                            SymmetricGroup, alternating, cube, cyclic,
+                            dihedral, dodecahedron, icosahedron, octahedron,
+                            symmetric, tetrahedron)
+from .concrete import Product, Sum, product, summation
 from .core import (Add, Atom, AtomicExpr, Basic, Catalan, Derivative, Dict,
                    Dummy, E, Eq, Equality, EulerGamma, Expr, Float, Function,
                    FunctionClass, Ge, GoldenRatio, GreaterThan, Gt, I, Integer,
@@ -19,43 +32,12 @@ from .core import (Add, Atom, AtomicExpr, Basic, Catalan, Derivative, Dict,
                    integer_digits, integer_nthroot, mod_inverse, nan, nfloat,
                    oo, pi, preorder_traversal, symbols, sympify, var,
                    vectorize, zoo)
-from .logic import (ITE, And, Equivalent, Implies, Nand, Nor, Not, Or,
-                    Xor, false, satisfiable, simplify_logic, to_cnf,
-                    to_dnf, to_nnf, true)
-from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailed,
-                    ComputationFailed, DomainError, EvaluationFailed,
-                    ExactQuotientFailed, ExtraneousFactors, FlagError,
-                    FractionField, GeneratorsError, GeneratorsNeeded,
-                    GroebnerBasis, HeuristicGCDFailed, HomomorphismFailed,
-                    IsomorphismFailed, Monomial, MultivariatePolynomialError,
-                    NotAlgebraic, NotInvertible, NotReversible,
-                    OperationNotSupported, OptionError, Options,
-                    PolificationFailed, Poly, PolynomialDivisionFailed,
-                    PolynomialError, PolynomialRing, PurePoly,
-                    RefinementFailed, RootOf, RootSum, UnificationFailed,
-                    UnivariatePolynomialError, UnivarPolynomialRing, apart,
-                    apart_list, assemble_partfrac_list, cancel,
-                    chebyshevt_poly, chebyshevu_poly, cofactors, compose,
-                    construct_domain, content, count_roots, cyclotomic_poly,
-                    decompose, degree, discriminant, div, exquo,
-                    factor, factor_list, field, field_isomorphism, gcd,
-                    gcdex, grevlex, grlex, groebner, half_gcdex,
-                    hermite_poly, horner, igrevlex, igrlex, ilex, interpolate,
-                    interpolating_poly, invert, itermonomials, jacobi_poly,
-                    laguerre_poly, lcm, legendre_poly, lex,
-                    minimal_polynomial, monic, nroots, parallel_poly_from_expr,
-                    primitive, primitive_element, quo, random_poly,
-                    real_roots, reduced, rem, resultant, ring, roots,
-                    spherical_bessel_fn, sqf, sqf_list, sqf_norm, sqf_part,
-                    subresultants, swinnerton_dyer_poly, symmetric_poly,
-                    symmetrize, terms_gcd, together, trunc, viete)
 from .domains import (CC, EX, FF, GF, GROUND_TYPES, QQ, RR, ZZ, AlgebraicField,
                       ComplexAlgebraicField, ComplexField, Domain,
                       ExpressionDomain, FF_gmpy, FF_python, FiniteField,
-                      IntegerRing, PythonRational, QQ_gmpy, QQ_python,
-                      RationalField, RealAlgebraicField, RealField, ZZ_gmpy,
-                      ZZ_python, IntegerModRing)
-from .series import Limit, O, Order, limit, residue
+                      IntegerModRing, IntegerRing, PythonRational, QQ_gmpy,
+                      QQ_python, RationalField, RealAlgebraicField, RealField,
+                      ZZ_gmpy, ZZ_python)
 from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         FallingFactorial, Heaviside, Id, KroneckerDelta,
                         LambertW, LeviCivita, Li, Max, Min, Piecewise,
@@ -81,33 +63,26 @@ from .functions import (E1, Abs, Chi, Ci, DiracDelta, Ei, Eijk,
                         real_root, rf, root, sec, sech, sign, sin, sinh, sqrt,
                         subfactorial, tan, tanh, transpose, trigamma,
                         unbranched_argument, unpolarify, uppergamma, yn, zeta)
-from .ntheory import (Sieve, binomial_coefficients, binomial_coefficients_list,
-                      continued_fraction_convergents,
-                      continued_fraction_iterator, continued_fraction_periodic,
-                      continued_fraction_reduce, cycle_length, discrete_log,
-                      divisor_count, divisor_sigma, divisors,
-                      egyptian_fraction, factorint, factorrat,
-                      is_nthpow_residue, is_primitive_root, is_quad_residue,
-                      is_square, isprime, jacobi_symbol, legendre_symbol,
-                      mobius, multinomial_coefficients, multiplicity, n_order,
-                      nextprime, npartitions, nthroot_mod, perfect_power,
-                      pollard_pm1, pollard_rho, prevprime, prime, primefactors,
-                      primepi, primerange, primitive_root, primorial,
-                      quadratic_residues, randprime, sieve, sqrt_mod,
-                      sqrt_mod_iter, square_factor, totient, trailing)
-from .concrete import Product, Sum, product, summation
-from .simplify import (FU, EPath, besselsimp, bottom_up, collect,
-                       collect_const, combsimp, cse, denom, epath, exptrigsimp,
-                       fraction, fu, hyperexpand, hypersimilar, hypersimp,
-                       logcombine, nsimplify, numer, posify, powdenest,
-                       powsimp, radsimp, ratsimp, ratsimpmodprime, rcollect,
-                       separatevars, signsimp, simplify, sqrtdenest, trigsimp,
-                       use)
-from .sets import (Complement, Contains, EmptySet, FiniteSet, ImageSet,
-                   Integers, Intersection, Interval, Naturals, Naturals0,
-                   ProductSet, Range, Rationals, Reals, Set,
-                   SymmetricDifference, Union, imageset, ExtendedReals)
-from .solvers import dsolve, reduce_inequalities, rsolve, solve
+from .geometry import (Circle, Curve, Ellipse, GeometryError, Line, Point,
+                       Polygon, Ray, RegularPolygon, Segment, Triangle,
+                       are_similar, centroid, convex_hull, deg, idiff,
+                       intersection, rad)
+from .integrals import (CosineTransform, FourierTransform, HankelTransform,
+                        Integral, InverseCosineTransform,
+                        InverseFourierTransform, InverseHankelTransform,
+                        InverseLaplaceTransform, InverseMellinTransform,
+                        InverseSineTransform, LaplaceTransform,
+                        MellinTransform, SineTransform, cosine_transform,
+                        fourier_transform, hankel_transform, integrate,
+                        inverse_cosine_transform, inverse_fourier_transform,
+                        inverse_hankel_transform, inverse_laplace_transform,
+                        inverse_mellin_transform, inverse_sine_transform,
+                        laplace_transform, line_integrate, mellin_transform,
+                        sine_transform)
+from .interactive import init_printing
+from .logic import (ITE, And, Equivalent, Implies, Nand, Nor, Not, Or, Xor,
+                    false, satisfiable, simplify_logic, to_cnf, to_dnf, to_nnf,
+                    true)
 from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                        DiagonalMatrix, DiagonalOf, FunctionMatrix, GramSchmidt,
                        HadamardProduct, Identity, ImmutableDenseMatrix,
@@ -122,51 +97,77 @@ from .matrices import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                        matrix_multiply_elementwise, ones, randMatrix,
                        rot_axis1, rot_axis2, rot_axis3, symarray, trace,
                        vandermonde, wronskian, zeros)
-from .geometry import (Circle, Curve, Ellipse, GeometryError, Line,
-                       Point, Polygon, Ray,
-                       RegularPolygon, Segment, Triangle,
-                       are_similar, centroid, convex_hull, deg, idiff,
-                       intersection, rad)
-from .utilities import (cantor_product, capture, default_sort_key, filldedent,
-                        flatten, group, has_dups, has_variety, lambdify,
-                        numbered_symbols, ordered, postfixes,
-                        postorder_traversal, prefixes, sift, subsets,
-                        topological_sort, unflatten, variations)
-from .integrals import (CosineTransform, FourierTransform, HankelTransform,
-                        Integral, InverseCosineTransform,
-                        InverseFourierTransform, InverseHankelTransform,
-                        InverseLaplaceTransform, InverseMellinTransform,
-                        InverseSineTransform, LaplaceTransform,
-                        MellinTransform, SineTransform, cosine_transform,
-                        fourier_transform, hankel_transform, integrate,
-                        inverse_cosine_transform, inverse_fourier_transform,
-                        inverse_hankel_transform, inverse_laplace_transform,
-                        inverse_mellin_transform, inverse_sine_transform,
-                        laplace_transform, line_integrate, mellin_transform,
-                        sine_transform)
+from .ntheory import (Sieve, binomial_coefficients, binomial_coefficients_list,
+                      continued_fraction_convergents,
+                      continued_fraction_iterator, continued_fraction_periodic,
+                      continued_fraction_reduce, cycle_length, discrete_log,
+                      divisor_count, divisor_sigma, divisors,
+                      egyptian_fraction, factorint, factorrat,
+                      is_nthpow_residue, is_primitive_root, is_quad_residue,
+                      is_square, isprime, jacobi_symbol, legendre_symbol,
+                      mobius, multinomial_coefficients, multiplicity, n_order,
+                      nextprime, npartitions, nthroot_mod, perfect_power,
+                      pollard_pm1, pollard_rho, prevprime, prime, primefactors,
+                      primepi, primerange, primitive_root, primorial,
+                      quadratic_residues, randprime, sieve, sqrt_mod,
+                      sqrt_mod_iter, square_factor, totient, trailing)
+from .plotting import (plot, plot3d, plot3d_parametric_line,
+                       plot3d_parametric_surface, plot_backends, plot_implicit,
+                       plot_parametric)
+from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailed,
+                    ComputationFailed, DomainError, EvaluationFailed,
+                    ExactQuotientFailed, ExtraneousFactors, FlagError,
+                    FractionField, GeneratorsError, GeneratorsNeeded,
+                    GroebnerBasis, HeuristicGCDFailed, HomomorphismFailed,
+                    IsomorphismFailed, Monomial, MultivariatePolynomialError,
+                    NotAlgebraic, NotInvertible, NotReversible,
+                    OperationNotSupported, OptionError, Options,
+                    PolificationFailed, Poly, PolynomialDivisionFailed,
+                    PolynomialError, PolynomialRing, PurePoly,
+                    RefinementFailed, RootOf, RootSum, UnificationFailed,
+                    UnivariatePolynomialError, UnivarPolynomialRing, apart,
+                    apart_list, assemble_partfrac_list, cancel,
+                    chebyshevt_poly, chebyshevu_poly, cofactors, compose,
+                    construct_domain, content, count_roots, cyclotomic_poly,
+                    decompose, degree, discriminant, div, exquo, factor,
+                    factor_list, field, field_isomorphism, gcd, gcdex, grevlex,
+                    grlex, groebner, half_gcdex, hermite_poly, horner,
+                    igrevlex, igrlex, ilex, interpolate, interpolating_poly,
+                    invert, itermonomials, jacobi_poly, laguerre_poly, lcm,
+                    legendre_poly, lex, minimal_polynomial, monic, nroots,
+                    parallel_poly_from_expr, primitive, primitive_element, quo,
+                    random_poly, real_roots, reduced, rem, resultant, ring,
+                    roots, spherical_bessel_fn, sqf, sqf_list, sqf_norm,
+                    sqf_part, subresultants, swinnerton_dyer_poly,
+                    symmetric_poly, symmetrize, terms_gcd, together, trunc,
+                    viete)
+from .printing import (StrPrinter, ccode, dotprint, fcode, latex,
+                       mathematica_code, mathml, octave_code, pprint,
+                       pprint_use_unicode, pretty, pretty_print, python, srepr,
+                       sstr, sstrrepr)
+from .sets import (Complement, Contains, EmptySet, ExtendedReals, FiniteSet,
+                   ImageSet, Integers, Intersection, Interval, Naturals,
+                   Naturals0, ProductSet, Range, Rationals, Reals, Set,
+                   SymmetricDifference, Union, imageset)
+from .simplify import (FU, EPath, besselsimp, bottom_up, collect,
+                       collect_const, combsimp, cse, denom, epath, exptrigsimp,
+                       fraction, fu, hyperexpand, hypersimilar, hypersimp,
+                       logcombine, nsimplify, numer, posify, powdenest,
+                       powsimp, radsimp, ratsimp, ratsimpmodprime, rcollect,
+                       separatevars, signsimp, simplify, sqrtdenest, trigsimp,
+                       use)
+from .solvers import dsolve, reduce_inequalities, rsolve, solve
 from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
                      ImmutableSparseNDimArray, Indexed, IndexedBase,
                      MutableDenseNDimArray, MutableSparseNDimArray, NDimArray,
                      SparseNDimArray, derive_by_array,
                      get_contraction_structure, get_indices, permutedims,
                      tensorcontraction, tensorproduct)
-from .calculus import maximize, minimize
-from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
-                            DihedralGroup, DirectProduct, GrayCode,
-                            IntegerPartition, Partition, Permutation,
-                            PermutationGroup, Polyhedron, Prufer, RGS_enum,
-                            RGS_rank, RGS_unrank, RubikGroup, Subset,
-                            SymmetricGroup, alternating, cube, cyclic,
-                            dihedral, dodecahedron, icosahedron, octahedron,
-                            symmetric, tetrahedron)
-from .plotting import (plot, plot3d, plot3d_parametric_line,
-                       plot3d_parametric_surface, plot_backends, plot_implicit,
-                       plot_parametric)
-from .printing import (StrPrinter, ccode, dotprint, fcode, latex,
-                       mathematica_code, mathml, octave_code, pprint,
-                       pprint_use_unicode, pretty, pretty_print, python, srepr,
-                       sstr, sstrrepr)
-from .interactive import init_printing
+from .utilities import (cantor_product, capture, default_sort_key, filldedent,
+                        flatten, group, has_dups, has_variety, lambdify,
+                        numbered_symbols, ordered, postfixes,
+                        postorder_traversal, prefixes, sift, subsets,
+                        topological_sort, unflatten, variations)
 
 
 __all__ = (
