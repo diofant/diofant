@@ -4,3 +4,5 @@
 *.toml  text
 *.yml   text
 *.yaml  text
+*.cnf   text
+*.bib   text
