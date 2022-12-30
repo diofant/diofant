@@ -25,7 +25,7 @@ from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
                      Transpose, Tuple, Unequality, Union, Wild, WildFunction,
                      Xor, ZeroMatrix, divisor_sigma, false, mobius, oo, sin,
                      symbols, totient, true)
-from diofant.abc import a, b, c, w, x, y, z
+from diofant.abc import a, b, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
 from diofant.concrete.expr_with_limits import AddWithLimits, ExprWithLimits
 from diofant.core.function import Application, AppliedUndef
@@ -147,12 +147,6 @@ from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
                                    TensorIndexType, TensorSymmetry, TensorType,
                                    get_symmetric_group_sgs, tensor_indices)
 from diofant.utilities.exceptions import DiofantDeprecationWarning
-from diofant.vector import (AxisOrienter, BaseDyadic, BaseScalar, BaseVector,
-                            BodyOrienter, CoordSysCartesian, Del, DyadicAdd,
-                            DyadicMul, DyadicZero)
-from diofant.vector import Point as VPoint
-from diofant.vector import (QuaternionOrienter, SpaceOrienter, VectorAdd,
-                            VectorMul, VectorZero)
 
 
 __all__ = ()
@@ -540,7 +534,6 @@ def test_diofant__sets__sets__SymmetricDifference():
 
 
 def test_diofant__core__trace__Tr():
-    a, b = symbols('a b')
     assert _test_args(Tr(a + b))
 
 
@@ -2055,133 +2048,3 @@ def test_diofant__ntheory__residue_ntheory__mobius():
 
 def test_diofant__printing__codeprinter__Assignment():
     assert _test_args(Assignment(x, y))
-
-
-def test_diofant__vector__coordsysrect__CoordSysCartesian():
-    assert _test_args(CoordSysCartesian('C'))
-
-
-def test_diofant__vector__point__Point():
-    assert _test_args(VPoint('P'))
-
-
-def test_diofant__vector__basisdependent__BasisDependent():
-    # from diofant.vector.basisdependent import BasisDependent
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentMul():
-    # from diofant.vector.basisdependent import BasisDependentMul
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentAdd():
-    # from diofant.vector.basisdependent import BasisDependentAdd
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentZero():
-    # from diofant.vector.basisdependent import BasisDependentZero
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__vector__BaseVector():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseVector('Ci', 0, C, ' ', ' '))
-
-
-def test_diofant__vector__vector__VectorAdd():
-    C = CoordSysCartesian('C')
-    v1 = a*C.i + b*C.j + c*C.k
-    v2 = x*C.i + y*C.j + z*C.k
-    assert _test_args(VectorAdd(v1, v2))
-    assert _test_args(VectorMul(x, v1))
-
-
-def test_diofant__vector__vector__VectorMul():
-    C = CoordSysCartesian('C')
-    assert _test_args(VectorMul(a, C.i))
-
-
-def test_diofant__vector__vector__VectorZero():
-    assert _test_args(VectorZero())
-
-
-def test_diofant__vector__vector__Vector():
-    # from diofant.vector.vector import Vector
-    # Vector is never to be initialized using args
-    pass
-
-
-def test_diofant__vector__dyadic__Dyadic():
-    # from diofant.vector.dyadic import Dyadic
-    # Dyadic is never to be initialized using args
-    pass
-
-
-def test_diofant__vector__dyadic__BaseDyadic():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseDyadic(C.i, C.j))
-
-
-def test_diofant__vector__dyadic__DyadicMul():
-    C = CoordSysCartesian('C')
-    assert _test_args(DyadicMul(3, BaseDyadic(C.i, C.j)))
-
-
-def test_diofant__vector__dyadic__DyadicAdd():
-    C = CoordSysCartesian('C')
-    assert _test_args(2 * DyadicAdd(BaseDyadic(C.i, C.i),
-                                    BaseDyadic(C.i, C.j)))
-
-
-def test_diofant__vector__dyadic__DyadicZero():
-    assert _test_args(DyadicZero())
-
-
-def test_diofant__vector__deloperator__Del():
-    C = CoordSysCartesian('C')
-    assert _test_args(Del(C))
-
-
-def test_diofant__vector__orienters__Orienter():
-    # from diofant.vector.orienters import Orienter
-    pass
-    # Not to be initialized
-
-
-def test_diofant__vector__orienters__ThreeAngleOrienter():
-    # from diofant.vector.orienters import ThreeAngleOrienter
-    pass
-    # Not to be initialized
-
-
-def test_diofant__vector__orienters__AxisOrienter():
-    C = CoordSysCartesian('C')
-    assert _test_args(AxisOrienter(x, C.i))
-
-
-def test_diofant__vector__orienters__BodyOrienter():
-    assert _test_args(BodyOrienter(x, y, z, '123'))
-
-
-def test_diofant__vector__orienters__SpaceOrienter():
-    assert _test_args(SpaceOrienter(x, y, z, '123'))
-
-
-def test_diofant__vector__orienters__QuaternionOrienter():
-    a, b, c, d = symbols('a b c d')
-    assert _test_args(QuaternionOrienter(a, b, c, d))
-
-
-def test_diofant__vector__scalar__BaseScalar():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseScalar('Cx', 0, C, ' ', ' '))
