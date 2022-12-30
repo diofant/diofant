@@ -1,5 +1,5 @@
 *       text=auto
 *.py    diff=python text
 *.rst   text
-*.cfg   text
+*.toml  text
 *.yml   text
