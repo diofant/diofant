@@ -3,3 +3,4 @@
 *.rst   text
 *.toml  text
 *.yml   text
+*.yaml  text
