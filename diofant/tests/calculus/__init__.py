@@ -1,3 +1,1 @@
-"""
-Tests for calculus package.
-"""
+"""Tests for calculus package."""

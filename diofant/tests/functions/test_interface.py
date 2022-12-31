@@ -1,6 +1,4 @@
-"""
-This test file tests the Diofant function interface.
-"""
+"""This test file tests the Diofant function interface."""
 
 from diofant import Function, cos, limit, sin, sympify, tanh
 from diofant.abc import x

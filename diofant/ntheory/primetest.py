@@ -1,7 +1,4 @@
-"""
-Primality testing
-
-"""
+"""Primality testing."""
 
 from ..core.compatibility import as_int
 

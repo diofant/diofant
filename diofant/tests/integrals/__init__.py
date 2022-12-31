@@ -1,3 +1,1 @@
-"""
-Tests for integrals.
-"""
+"""Tests for integrals."""

@@ -1,3 +1,1 @@
-"""
-Tests for functions module.
-"""
+"""Tests for functions module."""

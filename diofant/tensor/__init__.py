@@ -1,6 +1,4 @@
-"""A module to manipulate symbolic objects with indices including tensors
-
-"""
+"""A module to manipulate symbolic objects with indices including tensors."""
 from .array import (Array, DenseNDimArray, ImmutableDenseNDimArray,
                     ImmutableSparseNDimArray, MutableDenseNDimArray,
                     MutableSparseNDimArray, NDimArray, SparseNDimArray,

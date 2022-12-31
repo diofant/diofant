@@ -3603,10 +3603,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
 
 
 def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
-    r"""
-    Returns a dict with keys as coefficients and values as their values in terms of C0
-
-    """
+    r"""Returns a dict with keys as coefficients and values as their values in terms of C0."""
     n = int(n)
     # In cases where m1 - m2 is not an integer
     m2 = check
@@ -4616,10 +4613,7 @@ def _undetermined_coefficients_match(expr, x):
     retdict = {}
 
     def _test_term(expr, x):
-        r"""
-        Test if ``expr`` fits the proper form for undetermined coefficients.
-
-        """
+        r"""Test if ``expr`` fits the proper form for undetermined coefficients."""
         if expr.is_Add:
             return all(_test_term(i, x) for i in expr.args)
         elif expr.is_Mul:

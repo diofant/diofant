@@ -1,3 +1,1 @@
-"""
-Tests for utilities.
-"""
+"""Tests for utilities."""

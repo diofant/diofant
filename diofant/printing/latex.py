@@ -1,6 +1,4 @@
-"""
-A Printer which converts an expression into its LaTeX equivalent.
-"""
+"""A Printer which converts an expression into its LaTeX equivalent."""
 
 from __future__ import annotations
 

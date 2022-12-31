@@ -1,3 +1,1 @@
-"""
-Tests for polynomials.
-"""
+"""Tests for polynomials."""

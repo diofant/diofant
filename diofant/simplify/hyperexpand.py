@@ -1841,10 +1841,7 @@ def try_lerchphi(func):
 
 
 def build_hypergeometric_formula(func):
-    """
-    Create a formula object representing the hypergeometric function ``func``.
-
-    """
+    """Create a formula object representing the hypergeometric function ``func``."""
     # We know that no `ap` are negative integers, otherwise "detect poly"
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.

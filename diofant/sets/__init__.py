@@ -1,6 +1,4 @@
-"""
-Package for set theory.
-"""
+"""Package for set theory."""
 
 from ..core.singleton import S
 from .contains import Contains

@@ -1,6 +1,4 @@
-"""
-Some helper functions for the logic module.
-"""
+"""Some helper functions for the logic module."""
 
 import re
 

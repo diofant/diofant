@@ -203,7 +203,5 @@ class MpmathPrinter(LambdaPrinter):
 
 
 def lambdarepr(expr, **settings):
-    """
-    Returns a string usable for lambdifying.
-    """
+    """Returns a string usable for lambdifying."""
     return LambdaPrinter(settings).doprint(expr)

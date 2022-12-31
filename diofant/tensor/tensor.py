@@ -564,10 +564,7 @@ class TIDS(CantSympify):
         return TIDS(components, free, dum)
 
     def get_indices(self):
-        """
-        Get a list of indices, creating new tensor indices to complete dummy indices.
-
-        """
+        """Get a list of indices, creating new tensor indices to complete dummy indices."""
         components = self.components
         free = self.free
         dum = self.dum

@@ -1,3 +1,1 @@
-"""
-Tests for tensor package.
-"""
+"""Tests for tensor package."""

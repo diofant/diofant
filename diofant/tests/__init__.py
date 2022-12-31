@@ -1,3 +1,1 @@
-"""
-Generic tests.
-"""
+"""Generic tests."""

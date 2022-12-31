@@ -1,3 +1,1 @@
-"""
-Tests for optional external dependencies.
-"""
+"""Tests for optional external dependencies."""

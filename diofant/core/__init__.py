@@ -1,5 +1,4 @@
-"""Core module. Provides the basic operations needed in diofant.
-"""
+"""Core module. Provides the basic operations needed in diofant."""
 
 from .sympify import sympify, SympifyError
 from .cache import cacheit

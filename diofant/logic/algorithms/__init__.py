@@ -1,3 +1,1 @@
-"""
-Various algorithms for solving CNF-SAT problem.
-"""
+"""Various algorithms for solving CNF-SAT problem."""

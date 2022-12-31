@@ -1,3 +1,1 @@
-"""
-Tests for diffgeom package.
-"""
+"""Tests for diffgeom package."""

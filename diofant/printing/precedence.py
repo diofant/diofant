@@ -113,9 +113,7 @@ PRECEDENCE_FUNCTIONS = {
 
 
 def precedence(item):
-    """
-    Returns the precedence of a given object.
-    """
+    """Returns the precedence of a given object."""
     mro = item.__class__.__mro__
     for i in mro:
         n = i.__name__

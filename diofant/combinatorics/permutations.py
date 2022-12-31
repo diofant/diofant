@@ -1177,10 +1177,7 @@ class Permutation(Basic):
         return rv
 
     def mul_inv(self, other):
-        """
-        other*~self, self and other have _array_form
-
-        """
+        """other*~self, self and other have _array_form."""
         a = _af_invert(self._array_form)
         b = other._array_form
         return _af_new(_af_rmul(a, b))

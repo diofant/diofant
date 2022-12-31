@@ -1,6 +1,4 @@
-"""
-A Printer for generating readable representation of most diofant classes.
-"""
+"""A Printer for generating readable representation of most diofant classes."""
 
 from __future__ import annotations
 

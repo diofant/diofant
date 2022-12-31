@@ -1,7 +1,4 @@
-"""
-Generating and counting primes.
-
-"""
+"""Generating and counting primes."""
 
 import array
 import bisect

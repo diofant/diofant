@@ -409,9 +409,7 @@ def limited_integrate_reduce(fa, fd, G, DE):
 
 
 def limited_integrate(fa, fd, G, DE):
-    """
-    Solves the limited integration problem:  f = Dv + Sum(ci*wi, (i, 1, n))
-    """
+    """Solves the limited integration problem:  f = Dv + Sum(ci*wi, (i, 1, n))."""
     fa, fd = fa*Poly(1/fd.LC(), DE.t), fd.monic()
     A, B, h, N, g, V = limited_integrate_reduce(fa, fd, G, DE)
     V = [g] + V

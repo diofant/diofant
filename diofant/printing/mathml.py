@@ -1,6 +1,4 @@
-"""
-A MathML printer.
-"""
+"""A MathML printer."""
 
 from ..core import Mul
 from ..core.function import _coeff_isneg

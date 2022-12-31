@@ -1224,10 +1224,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
 
 def residue_reduce_to_basic(H, DE, z):
-    """
-    Converts the tuple returned by residue_reduce() into a Basic expression.
-
-    """
+    """Converts the tuple returned by residue_reduce() into a Basic expression."""
     # TODO: check what Lambda does with RootOf
     i = Dummy('i')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))

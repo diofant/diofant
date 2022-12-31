@@ -614,10 +614,7 @@ def _diophantine_univariate(F, m, minpoly, p):
 
 
 def _diophantine(F, c, A, d, minpoly, p):
-    r"""
-    Solve multivariate Diophantine equations over `\mathbb Z_p[z]/(\mu(z))`.
-
-    """
+    r"""Solve multivariate Diophantine equations over `\mathbb Z_p[z]/(\mu(z))`."""
     ring = c.ring
 
     if not A:
@@ -775,10 +772,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 
 
 def _sqf_p(f, minpoly, p):
-    r"""
-    Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`.
-
-    """
+    r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
     lcinv, *_ = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
 

@@ -1,3 +1,1 @@
-"""
-Package for special functions.
-"""
+"""Package for special functions."""
