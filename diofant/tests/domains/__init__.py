@@ -1,3 +1,1 @@
-"""
-Tests for domains.
-"""
+"""Tests for domains."""

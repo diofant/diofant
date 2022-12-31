@@ -1,6 +1,4 @@
-"""
-A few practical conventions common to all printers.
-"""
+"""A few practical conventions common to all printers."""
 
 import collections
 import re

@@ -684,9 +684,7 @@ class MultisetPartitionTraverser:
         return False
 
     def top_part(self):
-        """Return current top part on the stack, as a slice of pstack.
-
-        """
+        """Return current top part on the stack, as a slice of pstack."""
         return self.pstack[self.f[self.lpart]:self.f[self.lpart + 1]]
 
     # Same interface and functionality as multiset_partitions_taocp(),

@@ -1,3 +1,1 @@
-"""
-Tests for solvers package.
-"""
+"""Tests for solvers package."""

@@ -526,9 +526,7 @@ class PrettyPrinter(Printer):
         return Lim
 
     def _print_matrix_contents(self, e):
-        """
-        This method factors out what is essentially grid printing.
-        """
+        """This method factors out what is essentially grid printing."""
         M = e   # matrix
         Ms = {}  # i,j -> pretty(M[i,j])
         for i in range(M.rows):

@@ -1,3 +1,1 @@
-"""
-Tests for concrete mathematics.
-"""
+"""Tests for concrete mathematics."""

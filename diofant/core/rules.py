@@ -1,6 +1,4 @@
-"""
-Replacement rules.
-"""
+"""Replacement rules."""
 
 
 class Transform:

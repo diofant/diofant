@@ -1,6 +1,4 @@
-"""
-This module implements sums and products containing the Kronecker Delta function.
-"""
+"""This module implements sums and products containing the Kronecker Delta function."""
 
 from ..core import Add, Dummy, Integer, Mul, cacheit
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold

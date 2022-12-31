@@ -1,6 +1,4 @@
-"""
-Package for differential geometry.
-"""
+"""Package for differential geometry."""
 
 from .diffgeom import (BaseCovarDerivativeOp, BaseScalarField, BaseVectorField,
                        Commutator, CoordSystem, CovarDerivativeOp,

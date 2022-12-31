@@ -1,3 +1,1 @@
-"""
-Tests for parsing.
-"""
+"""Tests for parsing."""

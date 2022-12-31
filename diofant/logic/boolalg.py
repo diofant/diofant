@@ -1,6 +1,4 @@
-"""
-Boolean algebra module for Diofant.
-"""
+"""Boolean algebra module for Diofant."""
 
 from itertools import combinations, product
 

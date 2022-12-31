@@ -1,3 +1,1 @@
-"""
-Tests for combinatorics package.
-"""
+"""Tests for combinatorics package."""

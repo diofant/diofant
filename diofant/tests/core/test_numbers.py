@@ -185,9 +185,7 @@ def _strictly_equal(a, b):
 
 
 def _test_rational_new(cls):
-    """
-    Tests that are common between Integer and Rational.
-    """
+    """Tests that are common between Integer and Rational."""
     for a, b in ((0, Integer(0)), (1, Integer(1)), (-1, Integer(-1)),
                  # These look odd, but are similar to int():
                  ('1', Integer(1)), ('-1', Integer(-1))):

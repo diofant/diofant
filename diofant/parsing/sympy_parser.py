@@ -753,10 +753,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 
 
 def evaluateFalse(s):
-    """
-    Replaces operators with the Diofant equivalent and sets evaluate=False.
-
-    """
+    """Replaces operators with the Diofant equivalent and sets evaluate=False."""
     node = ast.parse(s)
     node = EvaluateFalseTransformer().visit(node)
     # node is a Module, we want an Expression

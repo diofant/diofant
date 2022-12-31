@@ -1,3 +1,1 @@
-"""
-Tests for logic package.
-"""
+"""Tests for logic package."""

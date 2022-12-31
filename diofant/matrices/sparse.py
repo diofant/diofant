@@ -715,8 +715,7 @@ class SparseMatrixBase(MatrixBase):
         return C
 
     def _LDL_sparse(self):
-        """Algorithm for numeric LDL factization, exploiting sparse structure.
-        """
+        """Algorithm for numeric LDL factization, exploiting sparse structure."""
         Lrowstruc = self.row_structure_symbolic_cholesky()
         L = self.eye(self.rows)
         D = self.zeros(self.rows, self.cols)

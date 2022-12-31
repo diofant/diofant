@@ -1,6 +1,4 @@
-"""
-Mathematica code printer
-"""
+"""Mathematica code printer."""
 
 from __future__ import annotations
 

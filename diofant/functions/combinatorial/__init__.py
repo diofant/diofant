@@ -1,3 +1,1 @@
-"""
-Package for combinatorial functions.
-"""
+"""Package for combinatorial functions."""

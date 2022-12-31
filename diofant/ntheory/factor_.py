@@ -1,6 +1,4 @@
-"""
-Integer factorization
-"""
+"""Integer factorization."""
 
 import math
 import numbers

@@ -1,3 +1,1 @@
-"""
-Tests for number theory.
-"""
+"""Tests for number theory."""

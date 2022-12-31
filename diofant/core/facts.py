@@ -480,10 +480,7 @@ class InconsistentAssumptions(ValueError):
 
 
 class FactKB(dict):
-    """
-    A simple propositional knowledge base relying on compiled inference rules.
-
-    """
+    """A simple propositional knowledge base relying on compiled inference rules."""
 
     def __str__(self):
         items = ',\n'.join(f'\t{i[0]}: {i[1]}' for i in sorted(self.items()))

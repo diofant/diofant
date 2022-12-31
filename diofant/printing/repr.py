@@ -29,15 +29,11 @@ class ReprPrinter(Printer):
     }
 
     def reprify(self, args, sep):
-        """
-        Prints each item in `args` and joins them with `sep`.
-        """
+        """Prints each item in `args` and joins them with `sep`."""
         return sep.join([self.doprint(item) for item in args])
 
     def emptyPrinter(self, expr):
-        """
-        The fallback printer.
-        """
+        """The fallback printer."""
         if hasattr(expr, 'args') and hasattr(expr.args, '__iter__'):
             l = []
             for o in expr.args:

@@ -1,3 +1,1 @@
-"""
-Tests for geometry package.
-"""
+"""Tests for geometry package."""

@@ -1,6 +1,4 @@
-"""
-General Diofant exceptions and warnings.
-"""
+"""General Diofant exceptions and warnings."""
 
 import warnings
 

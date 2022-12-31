@@ -1,6 +1,4 @@
-"""
-Number theory module (primes, etc)
-"""
+"""Number theory module (primes, etc)."""
 
 from .continued_fraction import (continued_fraction_convergents,
                                  continued_fraction_iterator,

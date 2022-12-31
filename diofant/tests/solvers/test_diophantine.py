@@ -676,9 +676,7 @@ def test_power_representation():
 
 
 def test_assumptions():
-    """
-    Test whether diophantine respects the assumptions.
-    """
+    """Test whether diophantine respects the assumptions."""
     # Test case taken from the below so question regarding assumptions in diophantine module
     # https://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
     m, n = symbols('m n', integer=True, positive=True)

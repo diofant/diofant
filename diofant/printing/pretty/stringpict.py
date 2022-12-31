@@ -372,8 +372,7 @@ class prettyForm(stringPict):
         return prettyForm(binding=bin, *stringPict.next(*result))
 
     def __pow__(self, b):
-        """Make a pretty power.
-        """
+        """Make a pretty power."""
         a = self
         use_inline_func_form = False
         if b.binding == prettyForm.POW:

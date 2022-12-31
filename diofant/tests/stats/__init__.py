@@ -1,3 +1,1 @@
-"""
-Tests for stats package.
-"""
+"""Tests for stats package."""
