@@ -4,8 +4,8 @@ import math
 
 import pytest
 
-from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, ring, sqrt,
-                     subsets)
+from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailedError, ring,
+                     sqrt, subsets)
 from diofant.polys.rootisolation import RealInterval
 
 
@@ -234,7 +234,7 @@ def test__refine_real_root():
     assert R._refine_real_root(f, s, t, steps=3) == (-QQ(3, 2), -QQ(7, 5))
     assert R._refine_real_root(f, s, t, steps=4) == (-QQ(10, 7), -QQ(7, 5))
 
-    pytest.raises(RefinementFailed, lambda: R._refine_real_root(f, 0, 1))
+    pytest.raises(RefinementFailedError, lambda: R._refine_real_root(f, 0, 1))
 
     s, t, u, v, w = 1, 2, QQ(24, 17), QQ(17, 12), QQ(7, 5)
 

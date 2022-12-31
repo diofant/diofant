@@ -2,11 +2,12 @@
 
 import pytest
 
-from diofant import (QQ, Add, CoercionFailed, GoldenRatio, I, Integer,
-                     NotAlgebraic, PurePoly, Rational, RootOf, cbrt, conjugate,
-                     cos, degree, exp, exp_polar, expand, expand_multinomial,
-                     field_isomorphism, im, minimal_polynomial, nsimplify, oo,
-                     pi, primitive_element, re, root, sin, solve, sqrt, tan)
+from diofant import (QQ, Add, CoercionFailedError, GoldenRatio, I, Integer,
+                     NotAlgebraicError, PurePoly, Rational, RootOf, cbrt,
+                     conjugate, cos, degree, exp, exp_polar, expand,
+                     expand_multinomial, field_isomorphism, im,
+                     minimal_polynomial, nsimplify, oo, pi, primitive_element,
+                     re, root, sin, solve, sqrt, tan)
 from diofant.abc import x, y, z
 
 
@@ -22,11 +23,11 @@ def test_minimal_polynomial():
 
     assert minimal_polynomial(Rational(1, 3), method='groebner')(x) == 3*x - 1
 
-    pytest.raises(NotAlgebraic,
+    pytest.raises(NotAlgebraicError,
                   lambda: minimal_polynomial(pi, method='groebner'))
-    pytest.raises(NotAlgebraic,
+    pytest.raises(NotAlgebraicError,
                   lambda: minimal_polynomial(sin(sqrt(2)), method='groebner'))
-    pytest.raises(NotAlgebraic,
+    pytest.raises(NotAlgebraicError,
                   lambda: minimal_polynomial(2**pi, method='groebner'))
 
     pytest.raises(ValueError, lambda: minimal_polynomial(1, method='spam'))
@@ -65,9 +66,9 @@ def test_minimal_polynomial():
     assert minimal_polynomial(1/a)(x) == 392*x**4 - 1232*x**3 + 612*x**2 + 4*x - 1
     assert minimal_polynomial(1/sqrt(a))(x) == 392*x**8 - 1232*x**6 + 612*x**4 + 4*x**2 - 1
 
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(oo))
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(2**y))
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(sin(1)))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(oo))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(2**y))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(sin(1)))
 
     assert minimal_polynomial(sqrt(2))(x) == x**2 - 2
 
@@ -304,9 +305,9 @@ def test_minpoly_compose():
     ex = cbrt(2)*exp(Rational(2, 3)*I*pi)
     assert minimal_polynomial(ex)(x) == x**3 - 2
 
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(cos(pi*sqrt(2))))
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(sin(pi*sqrt(2))))
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(exp(I*pi*sqrt(2))))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(cos(pi*sqrt(2))))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(sin(pi*sqrt(2))))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(exp(I*pi*sqrt(2))))
 
     # issue sympy/sympy#5934
     ex = 1/(-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
@@ -342,7 +343,7 @@ def test_minpoly_compose():
     mp = minimal_polynomial(ex)(x)
     assert mp == 5*x**4 - 10*x**2 + 1
 
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(tan(pi*sqrt(2))))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(tan(pi*sqrt(2))))
 
 
 def test_sympyissue_7113():
@@ -567,7 +568,7 @@ def test_to_number_field():
 
     assert B.from_expr(sqrt(2)) == a
 
-    pytest.raises(CoercionFailed, lambda: QQ.algebraic_field(sqrt(3)).convert(sqrt(2)))
+    pytest.raises(CoercionFailedError, lambda: QQ.algebraic_field(sqrt(3)).convert(sqrt(2)))
 
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
@@ -611,7 +612,7 @@ def test_minpoly_fraction_field():
 
     assert minimal_polynomial(a)(y) == y
 
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(exp(x)))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(exp(x)))
 
 
 @pytest.mark.slow
@@ -626,7 +627,7 @@ def test_minpoly_domain():
     assert minimal_polynomial(sqrt(8), domain=F)(x) == x - 2*sqrt(2)
     assert minimal_polynomial(sqrt(Rational(3, 2)), domain=F)(x) == 2*x**2 - 3
 
-    pytest.raises(NotAlgebraic, lambda: minimal_polynomial(y, domain=QQ))
+    pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(y, domain=QQ))
 
     # issue sympy/sympy#14494
 

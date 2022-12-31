@@ -4,31 +4,33 @@ import warnings
 
 import pytest
 
-from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
-                     Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
-                     Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
-                     ExtraneousFactors, FlagError, Float, FractionField,
+from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
+                     CoercionFailedError, Derivative, DiracDelta, DomainError,
+                     Dummy, E, Eijk, Equality, EulerGamma,
+                     EvaluationFailedError, ExpressionDomain,
+                     ExtraneousFactorsError, FlagError, Float, FractionField,
                      Function, FunctionClass, GeneratorsError,
-                     GeneratorsNeeded, GoldenRatio, GreaterThan, GroebnerBasis,
-                     Heaviside, HeuristicGCDFailed, HomomorphismFailed, I,
-                     Integer, Integral, Interval, IsomorphismFailed, Lambda,
-                     LambertW, LessThan, Limit, Matrix, Monomial, Mul,
-                     MultivariatePolynomialError, NotAlgebraic, NotInvertible,
-                     NotReversible, OptionError, Options, Order, Piecewise,
-                     Poly, PolynomialError, PolynomialRing, Pow, Product,
-                     PurePoly, PythonRational, Rational, RefinementFailed,
+                     GeneratorsNeededError, GoldenRatio, GreaterThan,
+                     GroebnerBasis, Heaviside, HeuristicGCDFailedError,
+                     HomomorphismFailedError, I, Integer, Integral, Interval,
+                     IsomorphismFailedError, Lambda, LambertW, LessThan, Limit,
+                     Matrix, Monomial, Mul, MultivariatePolynomialError,
+                     NotAlgebraicError, NotInvertibleError, NotReversibleError,
+                     OptionError, Options, Order, Piecewise, Poly,
+                     PolynomialError, PolynomialRing, Pow, Product, PurePoly,
+                     PythonRational, Rational, RefinementFailedError,
                      Relational, RootOf, RootSum, Sieve, SparseMatrix,
                      StrictGreaterThan, StrictLessThan, Sum, Symbol,
-                     Unequality, UnificationFailed, UnivariatePolynomialError,
-                     Wild, WildFunction, acos, acosh, acot, acoth, arg, asin,
-                     asinh, assoc_legendre, atan, atan2, atanh, bell,
-                     bernoulli, binomial, ceiling, chebyshevt, chebyshevt_root,
-                     chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
-                     coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
-                     floor, gamma, harmonic, hermite, im, legendre, ln, log,
-                     loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
-                     rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
-                     vectorize, zeta, zoo)
+                     Unequality, UnificationFailedError,
+                     UnivariatePolynomialError, Wild, WildFunction, acos,
+                     acosh, acot, acoth, arg, asin, asinh, assoc_legendre,
+                     atan, atan2, atanh, bell, bernoulli, binomial, ceiling,
+                     chebyshevt, chebyshevt_root, chebyshevu, chebyshevu_root,
+                     conjugate, cos, cosh, cot, coth, dirichlet_eta, erf, exp,
+                     factorial, ff, fibonacci, floor, gamma, harmonic, hermite,
+                     im, legendre, ln, log, loggamma, lowergamma, lucas, nan,
+                     oo, pi, polygamma, re, rf, sign, sin, sinh, sqrt, tan,
+                     tanh, uppergamma, vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
@@ -390,32 +392,32 @@ def test_pickling_polys_monomials():
 
 def test_pickling_polys_errors():
     # TODO: TypeError: __init__() takes at least 3 arguments (1 given)
-    # for c in (ExactQuotientFailed, ExactQuotientFailed(x, 3*x, ZZ)):
+    # for c in (ExactQuotientFailedError, ExactQuotientFailedError(x, 3*x, ZZ)):
     #    check(c)
 
     # TODO: TypeError: can't pickle instancemethod objects
-    # for c in (OperationNotSupported, OperationNotSupported(Poly(x), Poly.gcd)):
+    # for c in (OperationNotSupportedError, OperationNotSupportedError(Poly(x), Poly.gcd)):
     #    check(c)
 
-    for c in (HeuristicGCDFailed, HeuristicGCDFailed(),
-              HomomorphismFailed, HomomorphismFailed(),
-              IsomorphismFailed, IsomorphismFailed(),
-              ExtraneousFactors, ExtraneousFactors(),
-              EvaluationFailed, EvaluationFailed(),
-              RefinementFailed, RefinementFailed(),
-              CoercionFailed, CoercionFailed(),
-              NotInvertible, NotInvertible(),
-              NotReversible, NotReversible(),
-              NotAlgebraic, NotAlgebraic(),
+    for c in (HeuristicGCDFailedError, HeuristicGCDFailedError(),
+              HomomorphismFailedError, HomomorphismFailedError(),
+              IsomorphismFailedError, IsomorphismFailedError(),
+              ExtraneousFactorsError, ExtraneousFactorsError(),
+              EvaluationFailedError, EvaluationFailedError(),
+              RefinementFailedError, RefinementFailedError(),
+              CoercionFailedError, CoercionFailedError(),
+              NotInvertibleError, NotInvertibleError(),
+              NotReversibleError, NotReversibleError(),
+              NotAlgebraicError, NotAlgebraicError(),
               DomainError, DomainError(),
               PolynomialError, PolynomialError(),
-              UnificationFailed, UnificationFailed(),
+              UnificationFailedError, UnificationFailedError(),
               GeneratorsError, GeneratorsError(),
-              GeneratorsNeeded, GeneratorsNeeded()):
+              GeneratorsNeededError, GeneratorsNeededError()):
         check(c)
 
     # TODO: PicklingError: Can't pickle <function <lambda> at 0x38578c0>: it's not found as __main__.<lambda>
-    # for c in (ComputationFailed, ComputationFailed(lambda t: t, 3, None)):
+    # for c in (ComputationFailedError, ComputationFailedError(lambda t: t, 3, None)):
     #    check(c)
 
     for c in (UnivariatePolynomialError, UnivariatePolynomialError(),
@@ -423,7 +425,7 @@ def test_pickling_polys_errors():
         check(c)
 
     # TODO: TypeError: __init__() takes at least 3 arguments (1 given)
-    # for c in (PolificationFailed, PolificationFailed({}, x, x, False)):
+    # for c in (PolificationFailedError, PolificationFailedError({}, x, x, False)):
     #    check(c)
 
     for c in (OptionError, OptionError(), FlagError, FlagError()):

@@ -10,7 +10,7 @@ from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
                        nextprime, perfect_power, sqrt_mod, square_factor)
-from ..polys import GeneratorsNeeded, factor_list
+from ..polys import GeneratorsNeededError, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
@@ -150,7 +150,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
         assert not any(g.is_number for g in p.gens)
         eq = p.as_expr()
         assert eq.is_polynomial()
-    except (GeneratorsNeeded, AssertionError, AttributeError) as exc:
+    except (GeneratorsNeededError, AssertionError, AttributeError) as exc:
         raise TypeError('Equation should be a polynomial with '
                         'Rational coefficients.') from exc
 

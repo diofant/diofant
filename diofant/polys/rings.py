@@ -20,8 +20,9 @@ from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import lex
-from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, PolynomialDivisionFailed)
+from .polyerrors import (CoercionFailedError, ExactQuotientFailedError,
+                         GeneratorsError, GeneratorsNeededError,
+                         PolynomialDivisionFailedError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .specialpolys import _test_polys
@@ -54,7 +55,7 @@ def ring(symbols, domain, order=lex):
 
 def _parse_symbols(symbols):
     if not symbols:
-        raise GeneratorsNeeded("generators weren't specified")
+        raise GeneratorsNeededError("generators weren't specified")
 
     if isinstance(symbols, str):
         return _symbols(symbols, seq=True)
@@ -228,7 +229,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
 
         try:
             return _rebuild(expr)
-        except CoercionFailed as exc:
+        except CoercionFailedError as exc:
             raise ValueError('expected an expression convertible to a '
                              f'polynomial in {self}, got {expr}') from exc
 
@@ -314,7 +315,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
     def _from_PolynomialRing(self, a, K0):
         try:
             return a.set_ring(self)
-        except (CoercionFailed, GeneratorsError):
+        except (CoercionFailedError, GeneratorsError):
             return
 
     def _from_FractionField(self, a, K0):
@@ -430,7 +431,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return new_ring.from_terms(terms)
         else:
-            raise CoercionFailed(f"Can't set element ring to {new_ring}")
+            raise CoercionFailedError(f"Can't set element ring to {new_ring}")
 
     def set_domain(self, new_domain):
         if self.ring.domain == new_domain:
@@ -701,7 +702,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         try:
             other = ring.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         result = self.copy()
         for t in other.items():
@@ -716,7 +717,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         try:
             other = ring.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         result = self.copy()
         for k, v in other.items():
@@ -743,7 +744,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         try:
             other = ring.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
 
         if len(other) == 1:
@@ -860,7 +861,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         try:
             other = ring.domain_new(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         else:
             return self.quo_ground(other), self.trunc_ground(other)
@@ -881,7 +882,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         try:
             other = ring.domain_new(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         else:
             return self.quo_ground(other)
@@ -953,7 +954,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1
                     if p and order(p.LM) >= order(lt.LM):
-                        raise PolynomialDivisionFailed(self, fv[i], self.ring)
+                        raise PolynomialDivisionFailedError(self, fv[i], self.ring)
                 else:
                     i += 1
             if not divoccurred:
@@ -969,7 +970,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not r:
             return q
         else:
-            raise ExactQuotientFailed(self, other)
+            raise ExactQuotientFailedError(self, other)
 
     def _iadd_term(self, term):
         """Add to self the term inplace.

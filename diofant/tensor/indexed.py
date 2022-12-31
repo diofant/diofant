@@ -106,7 +106,7 @@ from ..core.compatibility import NotIterable, is_sequence
 from ..core.sympify import sympify
 
 
-class IndexException(Exception):
+class IndexExceptionError(Exception):
     """Generic index error."""
 
 
@@ -133,7 +133,7 @@ class Indexed(Expr):
         from .array.ndim_array import NDimArray
 
         if not args:
-            raise IndexException('Indexed needs at least one index.')
+            raise IndexExceptionError('Indexed needs at least one index.')
         if isinstance(base, (str, Symbol)):
             base = IndexedBase(base)
         elif not hasattr(base, '__getitem__') and not isinstance(base, IndexedBase):
@@ -221,10 +221,10 @@ class Indexed(Expr):
         try:
             return Tuple(*[i.upper - i.lower + 1 for i in self.indices])
         except AttributeError as exc:
-            raise IndexException(filldedent(f"""
+            raise IndexExceptionError(filldedent(f"""
                 Range is not defined for all indices in: {self}""")) from exc
         except TypeError as exc:
-            raise IndexException(filldedent(f"""
+            raise IndexExceptionError(filldedent(f"""
                 Shape cannot be inferred from Idx with
                 undefined range: {self}""")) from exc
 
@@ -350,11 +350,11 @@ class IndexedBase(Expr, NotIterable):
         if is_sequence(indices):
             # Special case needed because M[*my_tuple] is a syntax error.
             if self.shape and len(self.shape) != len(indices):
-                raise IndexException('Rank mismatch.')
+                raise IndexExceptionError('Rank mismatch.')
             return Indexed(self, *indices, **kw_args)
         else:
             if self.shape and len(self.shape) != 1:
-                raise IndexException('Rank mismatch.')
+                raise IndexExceptionError('Rank mismatch.')
             return Indexed(self, indices, **kw_args)
 
     @property

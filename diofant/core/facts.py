@@ -259,7 +259,7 @@ def rules_2prereq(rules):
 ################
 
 
-class TautologyDetected(Exception):
+class TautologyDetectedError(Exception):
     """(internal) Prover uses it for reporting detected tautology."""
 
 
@@ -329,7 +329,7 @@ class Prover:
         # this is the core of processing
         try:
             self._process_rule(a, b)
-        except TautologyDetected:
+        except TautologyDetectedError:
             pass
 
     def _process_rule(self, a, b):
@@ -349,7 +349,7 @@ class Prover:
             if not isinstance(a, Logic):    # Atom
                 # tautology:  a -> a|c|...
                 if a in b.args:
-                    raise TautologyDetected(a, b, 'a -> a|c|...')
+                    raise TautologyDetectedError(a, b, 'a -> a|c|...')
             self.process_rule(And(*[Not(barg) for barg in b.args]), Not(a))
 
             for bidx, barg in enumerate(b.args):
@@ -362,13 +362,13 @@ class Prover:
         #                    (this will be the basis of beta-network)
         elif isinstance(a, And):
             if b in a.args:
-                raise TautologyDetected(a, b, 'a & b -> a')
+                raise TautologyDetectedError(a, b, 'a & b -> a')
             self.proved_rules.append((a, b))
             # XXX NOTE at present we ignore  ~c -> ~a | ~b
 
         elif isinstance(a, Or):
             if b in a.args:
-                raise TautologyDetected(a, b, 'a | b -> a')
+                raise TautologyDetectedError(a, b, 'a | b -> a')
             for aarg in a.args:
                 self.process_rule(aarg, b)
 

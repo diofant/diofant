@@ -13,7 +13,7 @@ from ..ntheory import divisors, isprime, nextprime
 from ..simplify.powsimp import powsimp
 from ..simplify.simplify import simplify
 from ..utilities import ordered
-from .polyerrors import GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeededError, PolynomialError
 from .polyquinticconst import PolyQuintic
 from .polytools import Poly, cancel, discriminant, factor
 from .rationaltools import together
@@ -814,7 +814,7 @@ def roots(f, *gens, **flags):
     else:
         try:
             f = Poly(f, *gens, **flags)
-        except GeneratorsNeeded:
+        except GeneratorsNeededError:
             if multiple:
                 return []
             else:

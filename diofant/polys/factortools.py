@@ -8,8 +8,8 @@ from ..config import query
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
-                         ExtraneousFactors)
+from .polyerrors import (CoercionFailedError, DomainError,
+                         EvaluationFailedError, ExtraneousFactorsError)
 from .polyutils import _sort_factors
 
 
@@ -653,7 +653,7 @@ class _Factor:
             try:
                 f = f.set_domain(domain.ring)
                 return f.is_cyclotomic
-            except CoercionFailed:
+            except CoercionFailedError:
                 return False
         elif not domain.is_IntegerRing:
             return False
@@ -895,7 +895,7 @@ class _Factor:
                 return [f]
 
             configs = [(s, cs, E, H, A)]
-        except EvaluationFailed:
+        except EvaluationFailedError:
             pass
 
         eez_num_configs = query('EEZ_NUMBER_OF_CONFIGS')
@@ -912,7 +912,7 @@ class _Factor:
 
                 try:
                     cs, s, E = self._zz_wang_test_points(f, T, ct, A)
-                except EvaluationFailed:
+                except EvaluationFailedError:
                     continue
 
                 _, H = uring._zz_factor_sqf(s)
@@ -957,12 +957,12 @@ class _Factor:
         try:
             f, H, LC = self._zz_wang_lead_coeffs(f, T, cs, E, H, A)
             factors = self._zz_wang_hensel_lifting(f, H, LC, A, p)
-        except ExtraneousFactors as exc:
+        except ExtraneousFactorsError as exc:
             if query('EEZ_RESTART_IF_NEEDED'):
                 return self._zz_wang(orig_f, mod + 1)
             else:
-                raise ExtraneousFactors('we need to restart algorithm '
-                                        'with better parameters') from exc
+                raise ExtraneousFactorsError('we need to restart algorithm '
+                                             'with better parameters') from exc
 
         result = []
 
@@ -976,12 +976,12 @@ class _Factor:
     def _zz_wang_test_points(self, f, T, ct, A):
         """Wang/EEZ: Test evaluation points for suitability."""
         if not f.eject(*self.gens[1:]).LC(*A):
-            raise EvaluationFailed('no luck')
+            raise EvaluationFailedError('no luck')
 
         g = f.eject(0)(*A)
 
         if not g.is_squarefree:
-            raise EvaluationFailed('no luck')
+            raise EvaluationFailedError('no luck')
 
         c, h = g.primitive()
 
@@ -991,7 +991,7 @@ class _Factor:
         if D is not None:
             return c, h, E
         else:
-            raise EvaluationFailed('no luck')
+            raise EvaluationFailedError('no luck')
 
     def _zz_wang_non_divisors(self, E, cs, ct):
         """Wang/EEZ: Compute a set of valid divisors."""
@@ -1036,7 +1036,7 @@ class _Factor:
             C.append(c)
 
         if any(not j for j in J):  # pragma: no cover
-            raise ExtraneousFactors
+            raise ExtraneousFactorsError
 
         CC, HH = [], []
 
@@ -1128,7 +1128,7 @@ class _Factor:
                     c = h.trunc_ground(p)
 
         if functools.reduce(operator.mul, H) != f:
-            raise ExtraneousFactors
+            raise ExtraneousFactorsError
         return H
 
     def _gf_Qmatrix(self, f):

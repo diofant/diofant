@@ -3,7 +3,7 @@ import pytest
 from diofant import (Function, Idx, IndexedBase, Pow, exp,
                      get_contraction_structure, get_indices)
 from diofant.abc import a, x, y
-from diofant.tensor.index_methods import IndexConformanceException
+from diofant.tensor.index_methods import IndexConformanceExceptionError
 
 
 __all__ = ()
@@ -44,7 +44,7 @@ def test_get_indices_exceptions():
     x = IndexedBase('x')
     y = IndexedBase('y')
     i, j = Idx('i'), Idx('j')
-    pytest.raises(IndexConformanceException, lambda: get_indices(x[i] + y[j]))
+    pytest.raises(IndexConformanceExceptionError, lambda: get_indices(x[i] + y[j]))
 
 
 def test_scalar_broadcast():

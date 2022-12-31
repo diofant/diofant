@@ -9,7 +9,7 @@ from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise, sign
 from ..logic import And, Or, false, true
 from ..matrices import Matrix, diag
-from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
+from ..polys import PolificationFailedError, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent, ordered
@@ -607,7 +607,7 @@ def _reduce_inequalities(inequalities, symbols):
     if len(symbols) > 1:
         try:
             return solve_linear_inequalities(inequalities, *symbols)
-        except (PolificationFailed, ValueError):
+        except (PolificationFailedError, ValueError):
             pass
 
     rat_part = collections.defaultdict(list)

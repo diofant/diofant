@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (ComputationFailed, MultivariatePolynomialError, horner,
-                     interpolate, symbols, symmetrize, viete)
+from diofant import (ComputationFailedError, MultivariatePolynomialError,
+                     horner, interpolate, symbols, symmetrize, viete)
 from diofant.abc import a, b, c, d, e, x, y, z
 
 
@@ -88,4 +88,4 @@ def test_viete():
     pytest.raises(ValueError, lambda: viete(x**2 + 1, [r1]))
 
     pytest.raises(MultivariatePolynomialError, lambda: viete(x + y, [r1]))
-    pytest.raises(ComputationFailed, lambda: viete(1))
+    pytest.raises(ComputationFailedError, lambda: viete(1))

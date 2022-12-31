@@ -5,11 +5,11 @@ import abc
 import pytest
 
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
-                     CoercionFailed, ComplexField, DomainError, Float,
-                     GeneratorsError, GeneratorsNeeded, I, Integer,
-                     NotInvertible, PythonRational, QQ_python, Rational,
-                     RealField, RootOf, UnificationFailed, ZZ_python, field,
-                     im, oo, re, ring, root, roots, sin, sqrt)
+                     CoercionFailedError, ComplexField, DomainError, Float,
+                     GeneratorsError, GeneratorsNeededError, I, Integer,
+                     NotInvertibleError, PythonRational, QQ_python, Rational,
+                     RealField, RootOf, UnificationFailedError, ZZ_python,
+                     field, im, oo, re, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -297,8 +297,8 @@ def test_Domain_unify_algebraic_slow():
 
 
 def test_Domain_unify_with_symbols():
-    pytest.raises(UnificationFailed, lambda: ZZ.inject(x, y).unify(ZZ, (y, z)))
-    pytest.raises(UnificationFailed, lambda: ZZ.unify(ZZ.inject(x, y), (y, z)))
+    pytest.raises(UnificationFailedError, lambda: ZZ.inject(x, y).unify(ZZ, (y, z)))
+    pytest.raises(UnificationFailedError, lambda: ZZ.unify(ZZ.inject(x, y), (y, z)))
 
 
 def test_Domain__contains__():
@@ -535,18 +535,18 @@ def test_Domain_convert():
     F3 = FF(3)
     assert F3.convert(Float(2.0)) == F3.dtype(2)
     assert F3.convert(PythonRational(2, 1)) == F3.dtype(2)
-    pytest.raises(CoercionFailed, lambda: F3.convert(PythonRational(1, 2)))
+    pytest.raises(CoercionFailedError, lambda: F3.convert(PythonRational(1, 2)))
     assert F3.convert(2.0) == F3.dtype(2)
-    pytest.raises(CoercionFailed, lambda: F3.convert(2.1))
+    pytest.raises(CoercionFailedError, lambda: F3.convert(2.1))
 
     assert RR.convert(CC(1)) == RR(1)
-    pytest.raises(CoercionFailed, lambda: RR.convert(CC(1, 2)))
+    pytest.raises(CoercionFailedError, lambda: RR.convert(CC(1, 2)))
 
     assert QQ.convert(ALG(1), ALG) == QQ(1)
-    pytest.raises(CoercionFailed, lambda: QQ.convert(ALG([1, 1]), ALG))
+    pytest.raises(CoercionFailedError, lambda: QQ.convert(ALG([1, 1]), ALG))
 
     assert ZZ.convert(ALG(1), ALG) == ZZ(1)
-    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG([1, 1]), ALG))
+    pytest.raises(CoercionFailedError, lambda: ZZ.convert(ALG([1, 1]), ALG))
 
     assert EX.convert(ALG([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
 
@@ -558,21 +558,21 @@ def test_Domain_convert():
     assert CC.convert(a) == CC(1.4142135623730951)
 
     assert ZZ_python.convert(3.0) == ZZ_python.dtype(3)
-    pytest.raises(CoercionFailed, lambda: ZZ_python.convert(3.2))
+    pytest.raises(CoercionFailedError, lambda: ZZ_python.convert(3.2))
 
     assert CC.convert(QQ_python(1, 2)) == CC(0.5)
     CC01 = ComplexField(tol=0.1)
     assert CC.convert(CC01(0.3)) == CC(0.3)
 
-    pytest.raises(CoercionFailed, lambda: ALG2.convert(CC(1j)))
+    pytest.raises(CoercionFailedError, lambda: ALG2.convert(CC(1j)))
 
     assert RR.convert(complex(2 + 0j)) == RR(2)
-    pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
+    pytest.raises(CoercionFailedError, lambda: RR.convert(complex(2 + 3j)))
 
     assert ALG.convert(EX(sqrt(2)), EX) == ALG.from_expr(sqrt(2))
-    pytest.raises(CoercionFailed, lambda: ALG.convert(EX(sqrt(5)), EX))
+    pytest.raises(CoercionFailedError, lambda: ALG.convert(EX(sqrt(5)), EX))
 
-    pytest.raises(CoercionFailed, lambda: ALG2.convert(ALG.unit))
+    pytest.raises(CoercionFailedError, lambda: ALG2.convert(ALG.unit))
 
 
 def test_arithmetics():
@@ -626,11 +626,11 @@ def test_Ring():
 
 
 def test_PolynomialRing__init():
-    pytest.raises(GeneratorsNeeded, ZZ.inject)
+    pytest.raises(GeneratorsNeededError, ZZ.inject)
 
 
 def test_FractionField__init():
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.inject().field)
+    pytest.raises(GeneratorsNeededError, lambda: ZZ.inject().field)
 
 
 def test_inject():
@@ -736,8 +736,8 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    pytest.raises(CoercionFailed, lambda: R.convert(f, F))
-    pytest.raises(CoercionFailed, lambda: R.convert(g, F))
+    pytest.raises(CoercionFailedError, lambda: R.convert(f, F))
+    pytest.raises(CoercionFailedError, lambda: R.convert(g, F))
     assert R.convert(h, F) == X**2 + Y**2
 
     F,  x, y = field('x y', QQ)
@@ -747,7 +747,7 @@ def test_PolynomialRing_from_FractionField():
     g = (x**2 + y**2)/4
     h = x**2 + y**2
 
-    pytest.raises(CoercionFailed, lambda: R.convert(f, F))
+    pytest.raises(CoercionFailedError, lambda: R.convert(f, F))
     assert R.convert(g, F) == X**2/4 + Y**2/4
     assert R.convert(h, F) == X**2 + Y**2
 
@@ -763,7 +763,7 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
     _,  u, v = ring('u v', ALG)
-    pytest.raises(CoercionFailed,
+    pytest.raises(CoercionFailedError,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
@@ -798,7 +798,7 @@ def test_RealField_from_expr():
     assert RR.convert(sin(1)) == RR.dtype(sin(1).evalf())
     assert RR.convert(oo) == RR('+inf')
     assert RR.convert(-oo) == RR('-inf')
-    pytest.raises(CoercionFailed, lambda: RR.convert(x))
+    pytest.raises(CoercionFailedError, lambda: RR.convert(x))
 
 
 def test_AlgebraicElement():
@@ -1066,8 +1066,8 @@ def test_ModularInteger():
     assert isinstance(a, F5.dtype)
     assert a == 4
 
-    pytest.raises(NotInvertible, lambda: F5(0)**(-1))
-    pytest.raises(NotInvertible, lambda: F5(5)**(-1))
+    pytest.raises(NotInvertibleError, lambda: F5(0)**(-1))
+    pytest.raises(NotInvertibleError, lambda: F5(5)**(-1))
 
     pytest.raises(ValueError, lambda: FF(0))
     pytest.raises(ValueError, lambda: FF(2.1))

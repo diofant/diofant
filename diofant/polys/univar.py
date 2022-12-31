@@ -2,7 +2,7 @@ import random
 
 from ..config import query
 from ..domains import ZZ
-from .polyerrors import CoercionFailed, DomainError
+from .polyerrors import CoercionFailedError, DomainError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
 
@@ -356,7 +356,7 @@ class UnivarPolyElement(PolyElement):
         ring = self.ring
         try:
             other = ring.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         if max(self.degree(), other.degree()) > query('KARATSUBA_CUTOFF'):
             return self._mul_karatsuba(other)

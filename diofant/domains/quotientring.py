@@ -1,6 +1,6 @@
 import numbers
 
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .domainelement import DomainElement
 
 
@@ -35,7 +35,7 @@ class QuotientRingElement(DomainElement):
     def __add__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self.__class__(self.rep + other.rep)
 
@@ -45,7 +45,7 @@ class QuotientRingElement(DomainElement):
     def __sub__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self.__class__(self.rep - other.rep)
 
@@ -55,7 +55,7 @@ class QuotientRingElement(DomainElement):
     def __mul__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self.__class__(self.rep * other.rep)
 
@@ -65,7 +65,7 @@ class QuotientRingElement(DomainElement):
     def __truediv__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self * other**-1
 
@@ -75,14 +75,14 @@ class QuotientRingElement(DomainElement):
     def __mod__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self.__class__(self.rep % other.rep)
 
     def __rmod__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return other.__mod__(self)
 
@@ -98,7 +98,7 @@ class QuotientRingElement(DomainElement):
     def __eq__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
         return self.rep == other.rep
 

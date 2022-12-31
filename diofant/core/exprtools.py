@@ -9,7 +9,7 @@ from .add import Add
 from .basic import Basic, preorder_traversal
 from .compatibility import is_sequence, iterable
 from .containers import Dict, Tuple
-from .coreerrors import NonCommutativeExpression
+from .coreerrors import NonCommutativeExpressionError
 from .expr import Expr
 from .mul import Mul, _keep_coeff
 from .numbers import I, Integer, Number, Rational, oo
@@ -560,7 +560,7 @@ class Term:
     def __init__(self, term, numer=None, denom=None):
         if numer is None and denom is None:
             if not term.is_commutative:
-                raise NonCommutativeExpression(
+                raise NonCommutativeExpressionError(
                     'commutative expression expected')
 
             coeff, factors = term.as_coeff_mul()

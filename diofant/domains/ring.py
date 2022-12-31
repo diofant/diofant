@@ -2,7 +2,7 @@
 
 import abc
 
-from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
+from ..polys.polyerrors import ExactQuotientFailedError, NotInvertibleError
 from .domain import Domain
 
 
@@ -19,7 +19,7 @@ class CommutativeRing(Domain):
     def exquo(self, a, b):
         """Exact quotient of ``a`` and ``b``, implies ``__floordiv__``."""
         if a % b:
-            raise ExactQuotientFailed(a, b, self)
+            raise ExactQuotientFailedError(a, b, self)
         return a // b
 
     def quo(self, a, b):
@@ -41,7 +41,7 @@ class CommutativeRing(Domain):
         if h == 1:
             return s % b
         else:
-            raise NotInvertible('zero divisor')
+            raise NotInvertibleError('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""

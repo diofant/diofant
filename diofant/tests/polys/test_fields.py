@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (CC, QQ, ZZ, CoercionFailed, I, Rational, field, ring,
+from diofant import (CC, QQ, ZZ, CoercionFailedError, I, Rational, field, ring,
                      sqrt, symbols)
 from diofant.polys.fields import FracElement
 
@@ -133,8 +133,8 @@ def test_FracElement_from_expr():
     assert f == X**3*Y*Z + X**2*Y**7 + 1
     assert isinstance(f, F.dtype)
 
-    pytest.raises(CoercionFailed, lambda: F.convert(2**x))
-    pytest.raises(CoercionFailed, lambda: F.convert(7*x + sqrt(2)))
+    pytest.raises(CoercionFailedError, lambda: F.convert(2**x))
+    pytest.raises(CoercionFailedError, lambda: F.convert(7*x + sqrt(2)))
 
     F,  X, Y = field((2**x, y), ZZ)
     f = F.convert(2**(2*x) + 1)

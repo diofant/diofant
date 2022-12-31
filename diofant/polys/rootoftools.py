@@ -15,7 +15,7 @@ from ..functions import root as _root
 from ..functions import sign
 from ..logic import false
 from ..utilities import lambdify, ordered, sift
-from .polyerrors import (DomainError, GeneratorsNeeded,
+from .polyerrors import (DomainError, GeneratorsNeededError,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
 from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
@@ -787,14 +787,14 @@ class RootSum(Expr):
 
         try:
             p = p.as_poly(domain=domain, expand=False)
-        except GeneratorsNeeded:
+        except GeneratorsNeededError:
             p, p_coeff = None, (p,)
         else:
             p_monom, p_coeff = zip(*p.terms())
 
         try:
             q = q.as_poly(domain=domain, expand=False)
-        except GeneratorsNeeded:
+        except GeneratorsNeededError:
             q, q_coeff = None, (q,)
         else:
             q_monom, q_coeff = zip(*q.terms())

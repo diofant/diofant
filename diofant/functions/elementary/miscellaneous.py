@@ -3,7 +3,7 @@ from ...core import (Add, Dummy, Equality, Expr, Integer, Lambda, Mul, Pow,
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
-from ...core.operations import LatticeOp, ShortCircuit
+from ...core.operations import LatticeOp, ShortCircuitError
 from ...core.rules import Transform
 from ...core.singleton import SingletonWithManagedProperties as Singleton
 from ...core.sympify import sympify
@@ -312,7 +312,7 @@ class MinMaxBase(LatticeOp):
         # also reshape Max(a, Max(b, c)) to Max(a, b, c)
         try:
             _args = frozenset(cls._new_args_filter(args))
-        except ShortCircuit:
+        except ShortCircuitError:
             return cls.zero
 
         # second filter
@@ -351,7 +351,7 @@ class MinMaxBase(LatticeOp):
                 raise ValueError(f"The argument '{arg}' is not comparable.")
 
             if arg == cls.zero:
-                raise ShortCircuit(arg)
+                raise ShortCircuitError(arg)
             if arg == cls.identity:
                 continue
             if arg.func == cls:

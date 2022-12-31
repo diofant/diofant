@@ -5,7 +5,7 @@ from __future__ import annotations
 import mpmath
 
 from ..core import Float
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -80,7 +80,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         if number.is_Number:
             return self.dtype(number)
         else:
-            raise CoercionFailed(f'expected real number, got {expr}')
+            raise CoercionFailedError(f'expected real number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)

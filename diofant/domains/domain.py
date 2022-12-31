@@ -6,7 +6,7 @@ import inspect
 from ..core import Expr
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
-from ..polys.polyerrors import CoercionFailed, UnificationFailed
+from ..polys.polyerrors import CoercionFailedError, UnificationFailedError
 from ..polys.polyutils import _unify_gens
 from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
@@ -68,8 +68,8 @@ class Domain(DefaultPrinting, abc.ABC):
                 if result is not None:
                     return result
 
-        raise CoercionFailed(f"can't convert {element} of type {type(element)} "
-                             f'from {base} to {self}')
+        raise CoercionFailedError(f"can't convert {element} of type {type(element)} "
+                                  f'from {base} to {self}')
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``."""
@@ -119,14 +119,14 @@ class Domain(DefaultPrinting, abc.ABC):
             except (TypeError, ValueError):
                 pass
 
-        raise CoercionFailed(f"can't convert {element} of type {type(element)} to {self}")
+        raise CoercionFailedError(f"can't convert {element} of type {type(element)} to {self}")
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain."""
         try:
             self.convert(a)
             return True
-        except CoercionFailed:
+        except CoercionFailedError:
             return False
 
     def _from_PolynomialRing(self, a, K0):
@@ -158,8 +158,8 @@ class Domain(DefaultPrinting, abc.ABC):
         if symbols:
             if any(isinstance(d, CompositeDomain) and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
-                raise UnificationFailed(f"Can't unify {self} with {K1}, "
-                                        f'given {symbols} generators')
+                raise UnificationFailedError(f"Can't unify {self} with {K1}, "
+                                             f'given {symbols} generators')
 
             return self.unify(K1)
 

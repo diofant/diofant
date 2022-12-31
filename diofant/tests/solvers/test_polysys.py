@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (ComputationFailed, I, Matrix, Mul, PolynomialError,
+from diofant import (ComputationFailedError, I, Matrix, Mul, PolynomialError,
                      Rational, RootOf, flatten, ordered, root, sqrt, symbols)
 from diofant.abc import n, t, x, y, z
 from diofant.solvers.polysys import (solve_linear_system, solve_poly_system,
@@ -26,7 +26,7 @@ def test_solve_linear_system():
 def test_solve_poly_system():
     assert solve_poly_system([x - 1], x) == [{x: 1}]
 
-    pytest.raises(ComputationFailed, lambda: solve_poly_system([0, 1]))
+    pytest.raises(ComputationFailedError, lambda: solve_poly_system([0, 1]))
 
     assert solve_poly_system([y - x, y - x - 1], x, y) == []
 

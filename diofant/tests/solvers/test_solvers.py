@@ -500,7 +500,7 @@ def test_solve_transcendental():
     # make sure that the right variables is picked up in tsolve
     pytest.raises(NotImplementedError, lambda: solve((exp(x) + 1)**x - 2))
 
-    # shouldn't generate a GeneratorsNeeded error in _tsolve when the NaN is generated
+    # shouldn't generate a GeneratorsNeededError error in _tsolve when the NaN is generated
     # for eq_down. Actual answers, as determined numerically are approx. +/- 0.83
     pytest.raises(NotImplementedError, lambda:
                   solve(sinh(x)*sinh(sinh(x)) + cosh(x)*cosh(sinh(x)) - 3))

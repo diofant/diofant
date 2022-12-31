@@ -2,7 +2,7 @@
 
 import abc
 
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
                           gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_sqrt,
@@ -37,7 +37,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(expr)
         else:
-            raise CoercionFailed(f'expected an integer, got {expr}')
+            raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
