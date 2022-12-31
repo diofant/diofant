@@ -84,16 +84,6 @@ def combsimp(expr):
             rewrite = True
             n = _n
 
-        # this sort of binomial has already been removed by
-        # rising factorials but is left here in case the order
-        # of rule application is changed
-        if k.is_Add:
-            ck, _k = k.as_coeff_Add()
-            if _k and ck.is_Integer and ck:
-                coeff *= _rf(n - ck - _k + 1, ck)/_rf(_k + 1, ck)
-                rewrite = True
-                k = _k
-
         if rewrite:
             return coeff*binomial(n, k)
 
@@ -476,7 +466,7 @@ class _rf(Function):
                     result *= a + i
 
                 return result
-            elif n < 0:
+            else:
                 for i in range(1, -n + 1):
                     result *= a - i
 

@@ -6164,14 +6164,11 @@ def _linear_2eq_order1_type7(x, y, t, r, eq):
         sol1 = dsolve(r['b']*diff(x(t), t, t) - m1*diff(x(t), t)).rhs
         sol2 = dsolve(diff(y(t), t) - r['c']*sol1 - r['d']*y(t)).rhs
     elif e2 == 0:
-        sol2 = dsolve(r['c']*diff(y(t), t, t) - m2*diff(y(t), t)).rhs
-        sol1 = dsolve(diff(x(t), t) - r['a']*x(t) - r['b']*sol2).rhs
+        raise NotImplementedError
     elif not (e1/r['b']).has(t) and not (m1/r['b']).has(t):
-        sol1 = dsolve(diff(x(t), t, t) - (m1/r['b'])*diff(x(t), t) - (e1/r['b'])*x(t)).rhs
-        sol2 = dsolve(diff(y(t), t) - r['c']*sol1 - r['d']*y(t)).rhs
+        raise NotImplementedError
     elif not (e2/r['c']).has(t) and not (m2/r['c']).has(t):
-        sol2 = dsolve(diff(y(t), t, t) - (m2/r['c'])*diff(y(t), t) - (e2/r['c'])*y(t)).rhs
-        sol1 = dsolve(diff(x(t), t) - r['a']*x(t) - r['b']*sol2).rhs
+        raise NotImplementedError
     else:
         x0, y0 = symbols('x0, y0', cls=Function)  # x0 and y0 being particular solutions
         F = exp(Integral(r['a'], t))
