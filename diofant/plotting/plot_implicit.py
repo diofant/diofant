@@ -29,6 +29,7 @@ class ImplicitSeries(BaseSeries):
     def __init__(self, expr, var_start_end_x, var_start_end_y,
                  has_equality, use_interval_math, depth, nb_of_points,
                  line_color):
+        """Initialize self."""
         super().__init__()
         self.expr = sympify(expr)
         self.var_x = sympify(var_start_end_x[0])

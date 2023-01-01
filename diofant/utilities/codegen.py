@@ -223,6 +223,7 @@ class DataType:
     """Holds strings for a certain datatype in different languages."""
 
     def __init__(self, cname, fname, pyname, octname):
+        """Initialize self."""
         self.cname = cname
         self.fname = fname
         self.pyname = pyname
@@ -333,6 +334,7 @@ class ResultBase:
     """
 
     def __init__(self, expr, result_var):
+        """Initialize self."""
         self.expr = expr
         self.result_var = result_var
 
@@ -381,6 +383,7 @@ class InOutArgument(Argument, ResultBase):
     """InOutArgument are never initialized in the routine."""
 
     def __init__(self, name, result_var, expr, datatype=None, dimensions=None, precision=None):
+        """Initialize self."""
         if not datatype:
             datatype = get_default_datatype(expr)
         Argument.__init__(self, name, datatype, dimensions, precision)
@@ -767,6 +770,7 @@ class CCodeGen(CodeGen):
 
     def __init__(self, project='project', printer=None,
                  preprocessor_statements=None, cse=False):
+        """Initialize self."""
         super().__init__(project=project, cse=cse)
         self.printer = printer or CCodePrinter()
 
@@ -968,6 +972,7 @@ class FCodeGen(CodeGen):
     interface_extension = 'h'
 
     def __init__(self, project='project'):
+        """Initialize self."""
         CodeGen.__init__(self, project)
 
     def _get_symbol(self, s):

@@ -224,6 +224,7 @@ class GaloisFieldElement(ModularInteger):
     """A class representing a Galois field element."""
 
     def __init__(self, rep):
+        """Initialize self."""
         if isinstance(rep, numbers.Integral):
             rep = list(reversed(integer_digits(rep % self.parent.order, self.parent.mod)))
 

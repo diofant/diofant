@@ -13,6 +13,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
     """A printer which converts an expression into its Python interpretation."""
 
     def __init__(self, settings=None):
+        """Initialize self."""
         ReprPrinter.__init__(self)
         StrPrinter.__init__(self, settings)
         self.symbols = []

@@ -419,6 +419,7 @@ class Point(Basic):
     """
 
     def __init__(self, coord_sys, coords):
+        """Initialize self."""
         super().__init__()
         self._coord_sys = coord_sys
         self._coords = Matrix(coords).as_immutable()
@@ -680,6 +681,7 @@ class Commutator(Expr):
             return super().__new__(cls, v1, v2)
 
     def __init__(self, v1, v2):
+        """Initialize self."""
         super().__init__()
         self._args = (v1, v2)
         self._v1 = v1
@@ -752,6 +754,7 @@ class Differential(Expr):
             return super().__new__(cls, form_field)
 
     def __init__(self, form_field):
+        """Initialize self."""
         super().__init__()
         self._form_field = form_field
         self._args = (self._form_field, )
@@ -863,6 +866,7 @@ class TensorProduct(Expr):
             return scalar
 
     def __init__(self, *args):
+        """Initialize self."""
         super().__init__()
         self._args = args
 
@@ -984,6 +988,7 @@ class LieDerivative(Expr):
             return v_field.rcall(expr)
 
     def __init__(self, v_field, expr):
+        """Initialize self."""
         super().__init__()
         self._v_field = v_field
         self._expr = expr
@@ -1018,6 +1023,7 @@ class BaseCovarDerivativeOp(Expr):
     """
 
     def __init__(self, coord_sys, index, christoffel):
+        """Initialize self."""
         super().__init__()
         self._coord_sys = coord_sys
         self._index = Integer(index)
@@ -1086,6 +1092,7 @@ class CovarDerivativeOp(Expr):
     """
 
     def __init__(self, wrt, christoffel):
+        """Initialize self."""
         super().__init__()
         if len({v._coord_sys
                 for v in wrt.atoms(BaseVectorField)}) > 1:

@@ -43,6 +43,7 @@ class Transform:
     """
 
     def __init__(self, transform, filter=lambda x: True):
+        """Initialize self."""
         self._transform = transform
         self._filter = filter
 

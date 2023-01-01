@@ -12,6 +12,7 @@ class QuotientRingElement(DomainElement):
         return self._parent
 
     def __init__(self, rep):
+        """Initialize self."""
         if isinstance(rep, self.__class__):
             self.rep = rep.rep % self.mod
         else:

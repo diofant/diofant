@@ -95,6 +95,7 @@ class FunctionClass(ManagedProperties):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize self."""
         assert hasattr(self, 'eval')
         evalargspec = inspect.getfullargspec(self.eval)
         if evalargspec.varargs:
@@ -710,6 +711,7 @@ class WildFunction(Function, AtomicExpr):
     """
 
     def __init__(self, name, **assumptions):
+        """Initialize self."""
         from ..sets.sets import FiniteSet, Set
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)

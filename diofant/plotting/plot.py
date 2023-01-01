@@ -132,6 +132,7 @@ class Plot:
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize self."""
         super().__init__()
 
         #  Options for the graph as a whole.
@@ -341,6 +342,7 @@ class Line2DBaseSeries(BaseSeries):
     _dim = 2
 
     def __init__(self):
+        """Initialize self."""
         super().__init__()
         self.label = None
         self.steps = False
@@ -375,6 +377,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
     """Representation for a line consisting of a Diofant expression over a range."""
 
     def __init__(self, expr, var_start_end, **kwargs):
+        """Initialize self."""
         super().__init__()
         self.expr = sympify(expr)
         self.label = str(self.expr)
@@ -470,6 +473,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
     is_parametric = True
 
     def __init__(self, expr_x, expr_y, var_start_end, **kwargs):
+        """Initialize self."""
         super().__init__()
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
@@ -590,6 +594,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
     """
 
     def __init__(self, expr_x, expr_y, expr_z, var_start_end, **kwargs):
+        """Initialize self."""
         super().__init__()
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
@@ -626,6 +631,7 @@ class SurfaceBaseSeries(BaseSeries):
     is_3Dsurface = True
 
     def __init__(self):
+        """Initialize self."""
         super().__init__()
         self.surface_color = None
 
@@ -659,6 +665,7 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
     """
 
     def __init__(self, expr, var_start_end_x, var_start_end_y, **kwargs):
+        """Initialize self."""
         super().__init__()
         self.expr = sympify(expr)
         self.var_x = sympify(var_start_end_x[0])
@@ -696,6 +703,7 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
     def __init__(
         self, expr_x, expr_y, expr_z, var_start_end_u, var_start_end_v,
             **kwargs):
+        """Initialize self."""
         super().__init__()
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
@@ -737,6 +745,7 @@ class BaseBackend:
     """Base backend class."""
 
     def __init__(self, parent):
+        """Initialize self."""
         super().__init__()
         self.parent = parent
 
@@ -747,6 +756,7 @@ class MatplotlibBackend(BaseBackend):
     """Matplotlib backend."""
 
     def __init__(self, parent):
+        """Initialize self."""
         super().__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]
         self.matplotlib = import_module('matplotlib',

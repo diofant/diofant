@@ -94,7 +94,7 @@ class CodePrinter(StrPrinter):
     }
 
     def __init__(self, settings=None):
-
+        """Initialize self."""
         super().__init__(settings=settings)
 
         self.reserved_words = set()

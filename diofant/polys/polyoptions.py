@@ -61,6 +61,7 @@ class OptionType(type):
     """Base type for all options that does registers options."""
 
     def __init__(cls, *args, **kwargs):
+        """Initialize cls."""
         super().__init__(cls)
 
         @property
@@ -120,6 +121,7 @@ class Options(dict):
     __options__: dict[str, type[Option]] = {}
 
     def __init__(self, gens, args, flags=None, strict=False):
+        """Initialize self."""
         dict.__init__(self)
 
         if gens and args.get('gens', ()):

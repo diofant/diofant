@@ -75,6 +75,7 @@ class OctaveCodePrinter(CodePrinter):
     # for Octave.
 
     def __init__(self, settings={}):
+        """Initialize self."""
         super().__init__(settings)
         self.known_functions = dict(zip(known_fcns_src1, known_fcns_src1))
         self.known_functions.update(dict(known_fcns_src2))

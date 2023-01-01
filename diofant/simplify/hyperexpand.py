@@ -699,6 +699,7 @@ class Formula:
         self.M = m.row_insert(n, -Matrix([l])/poly.LC())
 
     def __init__(self, func, z, res, symbols, B=None, C=None, M=None):
+        """Initialize self."""
         z = sympify(z)
         res = sympify(res)
         symbols = [x for x in sympify(symbols) if func.has(x)]
@@ -860,6 +861,7 @@ class MeijerFormula:
     """
 
     def __init__(self, an, ap, bm, bq, z, symbols, B, C, M, matcher):
+        """Initialize self."""
         an, ap, bm, bq = (Tuple(*list(map(expand, w))) for w in [an, ap, bm, bq])
         self.func = G_Function(an, ap, bm, bq)
         self.z = z
@@ -894,6 +896,7 @@ class MeijerFormulaCollection:
     """This class holds a collection of meijer g formulae."""
 
     def __init__(self):
+        """Initialize self."""
         formulae = []
         add_meijerg_formulae(formulae)
         self.formulae = defaultdict(list)
@@ -960,6 +963,7 @@ class MultOperator(Operator):
     """Simply multiply by a "constant"."""
 
     def __init__(self, p):
+        """Initialize self."""
         self._poly = Poly(p, _x)
 
 
@@ -967,6 +971,7 @@ class ShiftA(Operator):
     """Increment an upper index."""
 
     def __init__(self, ai):
+        """Initialize self."""
         ai = sympify(ai)
         if ai == 0:
             raise ValueError('Cannot increment zero upper index.')
@@ -980,6 +985,7 @@ class ShiftB(Operator):
     """Decrement a lower index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         if bi == 1:
             raise ValueError('Cannot decrement unit lower index.')
@@ -993,7 +999,10 @@ class UnShiftA(Operator):
     """Decrement an upper index."""
 
     def __init__(self, ap, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1034,7 +1043,10 @@ class UnShiftB(Operator):
     """Increment a lower index."""
 
     def __init__(self, ap, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1075,6 +1087,7 @@ class MeijerShiftA(Operator):
     """Increment an upper b index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(bi - _x, _x)
 
@@ -1086,6 +1099,7 @@ class MeijerShiftB(Operator):
     """Decrement an upper a index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(1 - bi + _x, _x)
 
@@ -1097,6 +1111,7 @@ class MeijerShiftC(Operator):
     """Increment a lower b index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(-bi + _x, _x)
 
@@ -1108,6 +1123,7 @@ class MeijerShiftD(Operator):
     """Decrement a lower a index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(bi - 1 - _x, _x)
 
@@ -1119,7 +1135,10 @@ class MeijerUnShiftA(Operator):
     """Decrement an upper b index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1166,7 +1185,10 @@ class MeijerUnShiftB(Operator):
     """Increment an upper a index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1219,7 +1241,10 @@ class MeijerUnShiftC(Operator):
     #     again.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1269,7 +1294,10 @@ class MeijerUnShiftD(Operator):
     #     See comment at MeijerUnShiftC.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an

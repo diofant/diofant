@@ -211,6 +211,7 @@ class FracElement(DomainElement, CantSympify):
     """
 
     def __init__(self, numer, denom=None):
+        """Initialize self."""
         if denom is None:
             denom = self.field.ring.one
         elif not denom:

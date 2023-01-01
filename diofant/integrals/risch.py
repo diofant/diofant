@@ -643,6 +643,7 @@ class DecrementLevel:
     """A context manager for decrementing the level of a DifferentialExtension."""
 
     def __init__(self, DE):
+        """Initialize self."""
         self.DE = DE
 
     def __enter__(self):

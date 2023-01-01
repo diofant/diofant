@@ -69,7 +69,7 @@ class SATSolver:
 
     def __init__(self, clauses, variables, var_settings, symbols=None,
                  heuristic='vsids', clause_learning='none', INTERVAL=500):
-
+        """Initialize self."""
         self.var_settings = var_settings
         self.heuristic = heuristic
         self.is_unsatisfied = False
@@ -395,6 +395,7 @@ class Level:
     """
 
     def __init__(self, decision, flipped=False):
+        """Initialize self."""
         self.decision = decision
         self.var_settings = set()
         self.flipped = flipped

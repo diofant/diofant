@@ -9,6 +9,7 @@ class ExactQuotientFailedError(BasePolynomialError):
     """Raised when exact quotient is failed."""
 
     def __init__(self, f, g, dom=None):
+        """Initialize self."""
         super().__init__()
 
         self.f = f
@@ -28,6 +29,7 @@ class PolynomialDivisionFailedError(BasePolynomialError):
     """Raised when polynomial division is failed."""
 
     def __init__(self, f, g, domain):
+        """Initialize self."""
         super().__init__()
 
         self.f = f
@@ -58,6 +60,7 @@ class OperationNotSupportedError(BasePolynomialError):
     """Raised when an operation is not supported."""
 
     def __init__(self, poly, func):
+        """Initialize self."""
         super().__init__()
 
         self.poly = poly
@@ -139,6 +142,7 @@ class ComputationFailedError(BasePolynomialError):
     """Raised when polynomial computation failed."""
 
     def __init__(self, func, nargs, exc):
+        """Initialize self."""
         super().__init__()
 
         self.func = func
@@ -161,6 +165,7 @@ class PolificationFailedError(PolynomialError):
     """Raised if polunomial construction is failed."""
 
     def __init__(self, opt, origs, exprs, seq=False):
+        """Initialize self."""
         super().__init__()
 
         if not seq:

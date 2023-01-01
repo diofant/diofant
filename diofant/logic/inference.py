@@ -177,6 +177,7 @@ class KB:
     """Base class for all knowledge bases."""
 
     def __init__(self, sentence=None):
+        """Initialize self."""
         self.clauses_ = set()
         if sentence:
             self.tell(sentence)

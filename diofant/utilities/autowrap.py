@@ -226,6 +226,7 @@ class CythonCodeWrapper(CodeWrapper):
         '{body}')
 
     def __init__(self, *args, **kwargs):
+        """Initialize self."""
         super().__init__(*args, **kwargs)
         self._need_numpy = False
 

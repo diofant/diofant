@@ -32,6 +32,7 @@ class PrettyPrinter(Printer):
     }
 
     def __init__(self, settings=None):
+        """Initialize self."""
         Printer.__init__(self, settings)
         self.emptyPrinter = lambda x: prettyForm(str(x))
 
