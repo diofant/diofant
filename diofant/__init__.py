@@ -4,10 +4,6 @@ from fractions import Fraction
 
 import pkg_resources
 
-
-__version__ = pkg_resources.get_distribution(__name__).version
-del pkg_resources
-
 from .calculus import Limit, O, Order, limit, maximize, minimize, residue
 from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
                             DihedralGroup, DirectProduct, GrayCode,
@@ -308,3 +304,6 @@ __all__ = (
     'dotprint', 'fcode', 'latex', 'mathematica_code', 'mathml', 'octave_code',
     'pprint', 'pprint_use_unicode', 'pretty', 'pretty_print', 'python', 'srepr',
     'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals', 'IntegerModRing')
+
+__version__ = pkg_resources.get_distribution(__name__).version
+del pkg_resources
