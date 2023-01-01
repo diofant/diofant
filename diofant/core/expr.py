@@ -3186,8 +3186,8 @@ def _mag(x):
     return mag_first_dig
 
 
-from .add import Add
-from .mod import Mod
-from .mul import Mul
-from .numbers import I, Integer, Rational, nan, oo, zoo
-from .power import Pow
+from .add import Add  # noqa: E402
+from .mod import Mod  # noqa: E402
+from .mul import Mul  # noqa: E402
+from .numbers import I, Integer, Rational, nan, oo, zoo  # noqa: E402
+from .power import Pow  # noqa: E402

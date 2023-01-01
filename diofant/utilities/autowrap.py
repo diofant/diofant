@@ -59,8 +59,6 @@ When is this module NOT the best approach?
 
 """
 
-_doctest_depends_on = {'exe': ('f2py', 'gfortran', 'gcc'), 'modules': ('numpy',)}
-
 import os
 import shutil
 import sys
@@ -76,6 +74,9 @@ from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
                       get_code_generator, make_routine)
 from .decorator import doctest_depends_on
 from .lambdify import implemented_function
+
+
+_doctest_depends_on = {'exe': ('f2py', 'gfortran', 'gcc'), 'modules': ('numpy',)}
 
 
 class CodeWrapError(Exception):
