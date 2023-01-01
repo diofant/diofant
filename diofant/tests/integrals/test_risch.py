@@ -599,7 +599,7 @@ def test_DifferentialExtension_Rothstein():
 
 
 def test_DecrementLevel():
-    class TestingException(Exception):
+    class TestingExceptionError(Exception):
         """Dummy Exception class for testing."""
 
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)
@@ -633,8 +633,8 @@ def test_DecrementLevel():
     # Test that __exit__ is called after an exception correctly
     try:
         with DecrementLevel(DE):
-            raise TestingException
-    except TestingException:
+            raise TestingExceptionError
+    except TestingExceptionError:
         pass
     else:
         raise AssertionError('Did not raise.')

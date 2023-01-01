@@ -11,7 +11,7 @@ from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
 from .orderings import lex
-from .polyerrors import CoercionFailed, GeneratorsError
+from .polyerrors import CoercionFailedError, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
@@ -94,7 +94,7 @@ class FractionField(Field, CompositeDomain):
     def ground_new(self, element):
         try:
             return self(self.ring.ground_new(element))
-        except CoercionFailed as exc:
+        except CoercionFailedError as exc:
             domain = self.domain
 
             if not domain.is_Field and hasattr(domain, 'field'):
@@ -157,7 +157,7 @@ class FractionField(Field, CompositeDomain):
 
         try:
             return _rebuild(expr)
-        except CoercionFailed as exc:
+        except CoercionFailedError as exc:
             raise ValueError('expected an expression convertible to a '
                              f'rational function in {self}, '
                              f'got {expr}') from exc
@@ -180,13 +180,13 @@ class FractionField(Field, CompositeDomain):
     def _from_PolynomialRing(self, a, K0):
         try:
             return self(a)
-        except (CoercionFailed, GeneratorsError):
+        except (CoercionFailedError, GeneratorsError):
             return
 
     def _from_FractionField(self, a, K0):
         try:
             return a.set_field(self)
-        except (CoercionFailed, GeneratorsError):
+        except (CoercionFailedError, GeneratorsError):
             return
 
     @property
@@ -286,12 +286,12 @@ class FracElement(DomainElement, CantSympify):
 
         try:
             element = domain.convert(element)
-        except CoercionFailed:
+        except CoercionFailedError:
             ground_field = domain.field
 
             try:
                 element = ground_field.convert(element)
-            except CoercionFailed:
+            except CoercionFailedError:
                 return 0, None, None
             else:
                 return -1, element.numerator, element.denominator

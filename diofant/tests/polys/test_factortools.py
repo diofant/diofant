@@ -5,8 +5,8 @@ import operator
 
 import pytest
 
-from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
-                     nextprime, pi, ring, sin, sqrt)
+from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactorsError,
+                     I, nextprime, pi, ring, sin, sqrt)
 from diofant.config import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -297,7 +297,7 @@ def test__zz_wang():
     assert R._zz_wang(f, seed=random_sequence) == [f]
 
     with using(eez_restart_if_needed=False):
-        pytest.raises(ExtraneousFactors,
+        pytest.raises(ExtraneousFactorsError,
                       lambda: R._zz_wang(f, seed=random_sequence))
 
 

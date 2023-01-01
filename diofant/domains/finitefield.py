@@ -7,7 +7,7 @@ import random
 
 from ..core import Dummy, integer_digits
 from ..ntheory import factorint, is_primitive_root, isprime
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
@@ -72,7 +72,7 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(self.domain.dtype(int(expr)))
         else:
-            raise CoercionFailed(f'expected an integer, got {expr}')
+            raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))

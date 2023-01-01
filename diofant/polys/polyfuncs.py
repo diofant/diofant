@@ -4,8 +4,8 @@ import itertools
 
 from ..core import Add, Integer, Mul
 from ..utilities import numbered_symbols
-from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
-                         PolificationFailed)
+from .polyerrors import (ComputationFailedError, MultivariatePolynomialError,
+                         PolificationFailedError)
 from .polyoptions import allowed_flags
 from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
@@ -50,7 +50,7 @@ def symmetrize(F, *gens, **args):
 
     try:
         F, opt = parallel_poly_from_expr(F, *gens, **args)
-    except PolificationFailed as exc:
+    except PolificationFailedError as exc:
         result = []
 
         for expr in exc.exprs:
@@ -174,7 +174,7 @@ def horner(f, *gens, **args):
 
     try:
         (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
+    except PolificationFailedError as exc:
         return exc.exprs[0]
 
     form, gen = Integer(0), F.gen
@@ -251,8 +251,8 @@ def viete(f, roots=None, *gens, **args):
 
     try:
         (f,), _ = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('viete', 1, exc) from exc
+    except PolificationFailedError as exc:
+        raise ComputationFailedError('viete', 1, exc) from exc
 
     if f.is_multivariate:
         raise MultivariatePolynomialError('multivariate polynomials are'

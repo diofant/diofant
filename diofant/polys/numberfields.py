@@ -20,7 +20,7 @@ from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
 from ..utilities.iterables import uniq
 from .orthopolys import chebyshevt_poly
-from .polyerrors import NotAlgebraic
+from .polyerrors import NotAlgebraicError
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, resultant)
 from .rootoftools import RootOf
@@ -290,7 +290,7 @@ def _minpoly_pow(ex, pw, x, dom):
     pw = sympify(pw)
     mp = _minpoly_compose(ex, x, dom)
     if not pw.is_rational:
-        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+        raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
     if pw < 0:
         if mp == x:
             raise ZeroDivisionError(f'{ex} is zero')
@@ -363,7 +363,7 @@ def _minpoly_sin(ex, x):
         expr = sqrt((1 - cos(2*c*pi))/2)
         return _minpoly_compose(expr, x, QQ)
 
-    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+    raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_cos(ex, x):
@@ -393,7 +393,7 @@ def _minpoly_cos(ex, x):
         _, factors = factor_list(r)
         return _choose_factor(factors, x, ex)
 
-    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+    raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_tan(ex, x):
@@ -412,7 +412,7 @@ def _minpoly_tan(ex, x):
         _, factors = factor_list(r)
         return _choose_factor(factors, x, ex)
 
-    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+    raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_exp(ex, x):
@@ -442,7 +442,7 @@ def _minpoly_exp(ex, x):
         # x**(2*q) = product(factors)
         factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
         return _choose_factor(factors, x, ex)
-    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+    raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_rootof(ex, x):
@@ -533,7 +533,7 @@ def _minpoly_compose(ex, x, dom):
     elif isinstance(ex, im):
         res = _minpoly_compose((ex.args[0] - ex.args[0].conjugate())/2/I, x, dom)
     else:
-        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
+        raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
     return res
 
 
@@ -669,7 +669,7 @@ def minpoly_groebner(ex, x, domain):
         elif isinstance(ex, im):
             return bottom_up_scan((ex.args[0] - ex.args[0].conjugate())/2/I)
 
-        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic number")
+        raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic number")
 
     if ex.is_Pow and ex.exp.is_negative:
         n, d = Integer(1), bottom_up_scan(1/ex)

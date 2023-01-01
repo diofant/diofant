@@ -5,7 +5,7 @@ import pytest
 from diofant import (E, Eq, Rational, exp, maximize, minimize, nan, oo, sign,
                      sqrt)
 from diofant.abc import t, w, x, y, z
-from diofant.calculus.optimization import InfeasibleProblem, simplex
+from diofant.calculus.optimization import InfeasibleProblemError, simplex
 
 
 __all__ = ()
@@ -76,11 +76,11 @@ def test_minimize_linear():
     assert minimize([-x - y, x + 2*y <= 8, 3*x + 2*y <= 12,
                      x + 3*y >= 6, x >= 0, y >= 0],
                     x, y) == (-5, {x: 2, y: 3})
-    pytest.raises(InfeasibleProblem,
+    pytest.raises(InfeasibleProblemError,
                   lambda: minimize([-x - y, x + 2*y <= 8, 3*x + 2*y <= 12,
                                     x + 3*y >= 13, x >= 0, y >= 0],
                                    x, y))
-    pytest.raises(InfeasibleProblem,
+    pytest.raises(InfeasibleProblemError,
                   lambda: minimize([-x - y, x + 2*y <= 8, 3*x + 2*y <= 12,
                                    x + 3*y >= 13, x >= 0, y >= 0], x, y))
     assert minimize([-x - y, 2*x + y >= 4,
@@ -110,7 +110,7 @@ def test_simplex():
     pytest.raises(ValueError, lambda: simplex([1, 3], [[1, 2],
                                                        [2, 3]], [4]))
 
-    pytest.raises(InfeasibleProblem,
+    pytest.raises(InfeasibleProblemError,
                   lambda: simplex([1, 3], [[1, 2], [2, 3]], [-3, 1]))
 
     assert simplex([2, 3, 2], [[2, 1, 1], [1, 2, 1], [0, 0, 1]],
@@ -130,7 +130,7 @@ def test_simplex():
                                    [2, 0, 0, 1]],
                    [1, -2, 3]) == (-4, (0, 1, 0, 3))
 
-    pytest.raises(InfeasibleProblem,
+    pytest.raises(InfeasibleProblemError,
                   lambda: simplex([1, 2, 3, -2],
                                   [[3, -2, 1, 1], [-2, 1, 10, -1],
                                    [2, 0, 0, 1], [0, -1, 2, 0]],

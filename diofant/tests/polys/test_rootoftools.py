@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (Eq, Float, Function, GeneratorsNeeded, I, Integer, Lambda,
-                     MultivariatePolynomialError, PolynomialError, Pow,
+from diofant import (Eq, Float, Function, GeneratorsNeededError, I, Integer,
+                     Lambda, MultivariatePolynomialError, PolynomialError, Pow,
                      PurePoly, Rational, RootOf, RootSum, Symbol, conjugate,
                      exp, expand_func, false, legendre_poly, log, oo, root,
                      solve, sqrt, tan, true)
@@ -64,8 +64,8 @@ def test_RootOf___new__():
     assert RootOf(x**4 + 3*x**3, 2) == 0
     assert RootOf(x**4 + 3*x**3, 3) == 0
 
-    pytest.raises(GeneratorsNeeded, lambda: RootOf(0, 0))
-    pytest.raises(GeneratorsNeeded, lambda: RootOf(1, 0))
+    pytest.raises(GeneratorsNeededError, lambda: RootOf(0, 0))
+    pytest.raises(GeneratorsNeededError, lambda: RootOf(1, 0))
 
     pytest.raises(PolynomialError, lambda: RootOf(Integer(0).as_poly(x), 0))
     pytest.raises(PolynomialError, lambda: RootOf(Integer(1).as_poly(x), 0))

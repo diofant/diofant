@@ -6,7 +6,8 @@ import functools
 
 from ..core import I, cacheit
 from ..core.sympify import CantSympify, sympify
-from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
+from ..polys.polyerrors import (CoercionFailedError, DomainError,
+                                NotAlgebraicError)
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .quotientring import QuotientRingElement
@@ -112,8 +113,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         try:
             _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
-        except NotAlgebraic as exc:
-            raise CoercionFailed(f'{expr} is not an algebraic number') from exc
+        except NotAlgebraicError as exc:
+            raise CoercionFailedError(f'{expr} is not an algebraic number') from exc
 
         K0 = self.domain.algebraic_field(c*expr)
         if K0.is_AlgebraicField:
@@ -148,7 +149,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
-            raise CoercionFailed(f'{K0} is not in a subfield of {self}')
+            raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
 
     def _from_ExpressionDomain(self, a, K0):
         return self.from_expr(K0.to_expr(a))
@@ -252,7 +253,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
     def __lt__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
 
         coeff, root = self.parent._ext_root

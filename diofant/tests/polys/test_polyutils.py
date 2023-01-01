@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (ZZ, GeneratorsNeeded, I, Integer, Integral, Mul,
+from diofant import (ZZ, GeneratorsNeededError, I, Integer, Integral, Mul,
                      PolynomialError, Rational, cos, erf, exp, factor,
                      integrate, pi, sin, sqrt, symbols)
 from diofant.abc import p, q, t, x, y, z
@@ -241,7 +241,7 @@ def test__dict_from_expr_if_gens():
 
 
 def test__dict_from_expr_no_gens():
-    pytest.raises(GeneratorsNeeded,
+    pytest.raises(GeneratorsNeededError,
                   lambda: parallel_dict_from_expr([Integer(17)]))
 
     assert parallel_dict_from_expr([x]) == ([{(1,): 1}], (x,))
@@ -252,7 +252,7 @@ def test__dict_from_expr_no_gens():
                                                 (x, y))
 
     assert parallel_dict_from_expr([sqrt(2)]) == ([{(1,): 1}], (sqrt(2),))
-    pytest.raises(GeneratorsNeeded,
+    pytest.raises(GeneratorsNeededError,
                   lambda: parallel_dict_from_expr([sqrt(2)], greedy=False))
 
     assert parallel_dict_from_expr([x*y],

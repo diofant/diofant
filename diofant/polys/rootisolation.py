@@ -5,7 +5,7 @@ import math
 import operator
 
 from ..core import Dummy, I
-from .polyerrors import DomainError, RefinementFailed
+from .polyerrors import DomainError, RefinementFailedError
 
 
 def _mobius_from_interval(I, field):
@@ -1202,7 +1202,7 @@ class _FindRoot:
         f = self._transform(f, a*x + b, c*x + d)
 
         if self._sign_variations(f) != 1:
-            raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
+            raise RefinementFailedError(f'there should be exactly one root in ({s}, {t}) interval')
 
         return self._inner_refine_real_root(f, (a, b, c, d), eps=eps, steps=steps, disjoint=disjoint)
 

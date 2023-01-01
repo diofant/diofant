@@ -6,7 +6,7 @@ from diofant import (Add, Basic, Dict, Expr, Float, I, Integer, Integral,
                      Interval, Mul, O, Rational, Sum, Symbol, Tuple, cbrt,
                      collect, cos, exp, oo, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, t, x, y, z
-from diofant.core.coreerrors import NonCommutativeExpression
+from diofant.core.coreerrors import NonCommutativeExpressionError
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
                                     factor_nc, factor_terms, gcd_terms)
 from diofant.core.function import _mexpand
@@ -188,7 +188,7 @@ def test_Term():
         Term(18, Factors({x + 1: 1, x + 2: 2}), Factors({}))
 
     A = Symbol('A', commutative=False)
-    pytest.raises(NonCommutativeExpression, lambda: Term(A))
+    pytest.raises(NonCommutativeExpressionError, lambda: Term(A))
 
     f1, f2 = Factors({x: 2}), Factors()
     assert Term(2, numer=f1) == Term(2, f1, f2)

@@ -23,9 +23,10 @@ from ..matrices import Matrix, eye, zeros
 from ..polys import Poly, cancel, lcm, sqf_list
 from ..solvers import solve
 from .rde import order_at, order_at_oo, solve_poly_rde, spde
-from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
-                    frac_in, gcdex_diophantine, recognize_log_derivative,
-                    residue_reduce, residue_reduce_derivation, splitfactor)
+from .risch import (DecrementLevel, NonElementaryIntegralExceptionError,
+                    derivation, frac_in, gcdex_diophantine,
+                    recognize_log_derivative, residue_reduce,
+                    residue_reduce_derivation, splitfactor)
 
 
 def prde_normal_denom(fa, fd, G, DE):
@@ -424,11 +425,11 @@ def limited_integrate(fa, fd, G, DE):
         raise NotImplementedError('param_rischDE() is required to solve this '
                                   'integral.')
     if len(l) == 0:
-        raise NonElementaryIntegralException
+        raise NonElementaryIntegralExceptionError
     if len(l) == 1:
         # The c1 == 1.  In this case, we can assume a normal Risch DE
         if l[0][0].is_zero:
-            raise NonElementaryIntegralException
+            raise NonElementaryIntegralExceptionError
         l[0] *= 1/l[0][0]
         C = sum(Poly(i, DE.t)*q for (i, q) in zip(l[0], Q))
         # Custom version of rischDE() that uses the already computed

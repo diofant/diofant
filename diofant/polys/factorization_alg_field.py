@@ -9,7 +9,7 @@ from ..integrals.heurisch import _symbols
 from ..ntheory import nextprime
 from .modulargcd import (_euclidean_algorithm, _gf_gcdex, _minpoly_from_dense,
                          _trunc)
-from .polyerrors import NotInvertible, UnluckyLeadingCoefficient
+from .polyerrors import NotInvertibleError, UnluckyLeadingCoefficientError
 from .polyutils import _sort_factors
 from .rings import PolynomialRing
 from .solvers import solve_lin_sys
@@ -356,7 +356,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
         denoms.append(_denominator(_alpha_to_z(lA**(-1), qring)))
 
     if any(denoms.count(denom) > 1 for denom in denoms):
-        raise UnluckyLeadingCoefficient
+        raise UnluckyLeadingCoefficientError
 
     divisors = _distinct_prime_divisors(denoms, ring.domain)
 
@@ -466,7 +466,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
             solution = solve_lin_sys([_.set_domain(P_domain)
                                       for _ in poly.values()],
                                      coeffring.clone(domain=P_domain))
-        except NotInvertible:
+        except NotInvertibleError:
             return
 
         if solution is None:
@@ -873,7 +873,7 @@ def _factor(f, save):
 
             try:
                 result = _test_evaluation_points(f_, gamma_, lcfactors, A, D)
-            except UnluckyLeadingCoefficient:
+            except UnluckyLeadingCoefficientError:
                 # TODO: check interval
                 C = [random.randint(1, 3*(N + 1)) for _ in range(n - 1)]
                 gens = zring.gens

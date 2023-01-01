@@ -16,7 +16,7 @@ from ..core import Function
 from .indexed import Idx, Indexed
 
 
-class IndexConformanceException(Exception):
+class IndexConformanceExceptionError(Exception):
     """Raised if indexes are not consistent."""
 
 
@@ -142,7 +142,7 @@ def _get_indices_Add(expr):
         return set(), {}
 
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
-        raise IndexConformanceException(f'Indices are not consistent: {expr}')
+        raise IndexConformanceExceptionError(f'Indices are not consistent: {expr}')
 
     # FIXME: search for symmetries
     symmetries = {}
@@ -170,19 +170,19 @@ def get_indices(expr):
     (set(), {})
 
     In the case of many terms, the terms are required to have identical
-    outer indices.  Else an IndexConformanceException is raised.
+    outer indices.  Else an IndexConformanceExceptionError is raised.
 
     >>> get_indices(x[i] + A[i, j]*y[j])
     ({i}, {})
 
     :Exceptions:
 
-    An IndexConformanceException means that the terms are not compatible, e.g.
+    An IndexConformanceExceptionError means that the terms are not compatible, e.g.
 
     >>> get_indices(x[i] + y[j])
     Traceback (most recent call last):
     ...
-    IndexConformanceException: Indices are not consistent: x(i) + y(j)
+    IndexConformanceExceptionError: Indices are not consistent: x(i) + y(j)
 
     .. warning::
        The concept of *outer* indices applies recursively, starting on the deepest

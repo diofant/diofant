@@ -2,7 +2,8 @@
 
 import pytest
 
-from diofant import CC, FF, QQ, RR, ZZ, I, NotInvertible, field, ring, sqrt
+from diofant import (CC, FF, QQ, RR, ZZ, I, NotInvertibleError, field, ring,
+                     sqrt)
 from diofant.config import using
 from diofant.polys.specialpolys import f_polys
 
@@ -62,7 +63,7 @@ def test_dup_invert():
     assert R.invert(2*x, x**2 - 16) == x/32
     assert R.invert(x**2 - 1, 2*x - 1) == QQ(-4, 3)
 
-    pytest.raises(NotInvertible, lambda: R.invert(x**2 - 1, x - 1))
+    pytest.raises(NotInvertibleError, lambda: R.invert(x**2 - 1, x - 1))
 
 
 def test_dmp_prem():

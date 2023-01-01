@@ -146,7 +146,7 @@ def minimize_univariate(f, x, dom):
         return min, dict({x: point})
 
 
-class InfeasibleProblem(Exception):
+class InfeasibleProblemError(Exception):
     pass
 
 
@@ -239,7 +239,7 @@ def simplex(c, m, b):
         assert status == 0
 
         if tableau[-1, -1].is_nonzero:
-            raise InfeasibleProblem
+            raise InfeasibleProblemError
 
         del tableau[-1, :]
         for i in range(nneg):

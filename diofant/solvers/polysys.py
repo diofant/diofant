@@ -5,7 +5,7 @@ import collections
 from ..core import expand_mul
 from ..domains import EX
 from ..matrices import Matrix
-from ..polys import (ComputationFailed, PolificationFailed, groebner,
+from ..polys import (ComputationFailedError, PolificationFailedError, groebner,
                      parallel_poly_from_expr)
 from ..polys.solvers import solve_lin_sys
 from ..simplify.simplify import simplify
@@ -112,8 +112,8 @@ def solve_poly_system(eqs, *gens, **args):
         args['extension'] = False
         polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
         polys = [p.to_exact() for p in polys]
-    except PolificationFailed as exc:
-        raise ComputationFailed('solve_poly_system', len(eqs), exc) from exc
+    except PolificationFailedError as exc:
+        raise ComputationFailedError('solve_poly_system', len(eqs), exc) from exc
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""

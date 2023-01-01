@@ -5,7 +5,7 @@ from __future__ import annotations
 import mpmath
 
 from ..core import Float, I
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -81,7 +81,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
         else:
-            raise CoercionFailed(f'expected complex number, got {expr}')
+            raise CoercionFailedError(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)

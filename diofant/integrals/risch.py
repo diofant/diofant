@@ -652,7 +652,7 @@ class DecrementLevel:
         self.DE.increment_level()
 
 
-class NonElementaryIntegralException(Exception):
+class NonElementaryIntegralExceptionError(Exception):
     """
     Exception used by subroutines within the Risch algorithm to indicate to one
     another that the function being integrated does not have an elementary
@@ -1281,7 +1281,7 @@ def integrate_primitive_polynomial(p, DE):
                 (ba, bd), c = limited_integrate(aa, ad, [(Dta, Dtb)], DE)
                 if len(c) != 1:
                     raise ValueError('Length of c should  be 1')
-            except NonElementaryIntegralException:
+            except NonElementaryIntegralExceptionError:
                 return q, p, False
 
         m = p.degree(DE.t)
@@ -1380,7 +1380,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
             try:
                 va, vd = rischDE(iDta, iDtd, Poly(aa, DE.t), Poly(ad, DE.t), DE)
                 va, vd = frac_in((va, vd), t1)
-            except NonElementaryIntegralException:
+            except NonElementaryIntegralExceptionError:
                 b = False
             else:
                 qa = qa*vd + va*Poly(t1**i)*qd

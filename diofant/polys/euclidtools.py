@@ -6,7 +6,7 @@ import operator
 from ..config import query
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
+from .polyerrors import HeuristicGCDFailedError, HomomorphismFailedError
 
 
 class _GCD:
@@ -131,7 +131,7 @@ class _GCD:
         if query('USE_HEU_GCD'):
             try:
                 return self._zz_heu_gcd(f, g)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailedError:
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
@@ -241,7 +241,7 @@ class _GCD:
 
             x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
 
-        raise HeuristicGCDFailed('no luck')
+        raise HeuristicGCDFailedError('no luck')
 
     def _gcd_interpolate(self, h, x):
         """Interpolate polynomial GCD from integer GCD."""
@@ -441,7 +441,7 @@ class _GCD:
 
             try:
                 R = self.clone(domain=p_domain)._modular_resultant(F, G)
-            except HomomorphismFailed:
+            except HomomorphismFailedError:
                 continue
 
             if P == 1:
@@ -499,7 +499,7 @@ class _GCD:
                 try:
                     a = next(domain_elts)
                 except StopIteration as exc:
-                    raise HomomorphismFailed('no luck') from exc
+                    raise HomomorphismFailedError('no luck') from exc
 
                 F = f.eval(x=1, a=a)
 

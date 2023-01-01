@@ -5,7 +5,7 @@ import re
 from ..core import Add, Mul, Pow
 from ..core.exprtools import decompose_power
 from ..utilities import default_sort_key
-from .polyerrors import GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeededError, PolynomialError
 from .polyoptions import build_options
 
 
@@ -159,11 +159,11 @@ def _find_gens(exprs, opt):
                             gens |= set(_find_gens([base], opt))
                         else:
                             gens.add(base)
-                except GeneratorsNeeded:
+                except GeneratorsNeededError:
                     pass
 
     if not gens:
-        raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
+        raise GeneratorsNeededError(f'specify generators to give {exprs} a meaning')
 
     return _sort_gens(gens, opt=opt)
 

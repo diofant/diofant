@@ -349,7 +349,7 @@ class AssocOp(Expr):
             return expr,
 
 
-class ShortCircuit(Exception):
+class ShortCircuitError(Exception):
     """Helper exception to detect absorbing element among arguments."""
 
 
@@ -393,7 +393,7 @@ class LatticeOp(AssocOp):
         if options.pop('evaluate', global_evaluate[0]):
             try:
                 _args = frozenset(cls._new_args_filter(args))
-            except ShortCircuit:
+            except ShortCircuitError:
                 return sympify(cls.zero)
             if not _args:
                 return sympify(cls.identity)
@@ -412,7 +412,7 @@ class LatticeOp(AssocOp):
         ncls = call_cls or cls
         for arg in arg_sequence:
             if arg == ncls.zero:
-                raise ShortCircuit(arg)
+                raise ShortCircuitError(arg)
             if arg == ncls.identity:
                 continue
             if arg.func == ncls:

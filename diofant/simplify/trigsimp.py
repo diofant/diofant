@@ -14,7 +14,7 @@ from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr
-from ..polys.polyerrors import PolificationFailed
+from ..polys.polyerrors import PolificationFailedError
 from ..polys.polytools import groebner
 from .cse_main import cse
 
@@ -346,7 +346,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
     num, denom = cancel(expr).as_numer_denom()
     try:
         (_, pdenom), opt = parallel_poly_from_expr([num, denom])
-    except PolificationFailed:
+    except PolificationFailedError:
         return expr
     ideal, freegens, gens = analyse_gens(opt.gens, hints)
     # NOTE we force the domain to be ZZ to stop polys from injecting generators

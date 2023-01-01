@@ -5,7 +5,7 @@ from ..core.sympify import sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from ..utilities import ordered
-from .polyerrors import GeneratorsNeeded
+from .polyerrors import GeneratorsNeededError
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_expr
 
@@ -119,7 +119,7 @@ def _construct_composite(coeffs, opt):
 
     try:
         polys, gens = parallel_dict_from_expr(numers + denoms)  # XXX: sorting
-    except GeneratorsNeeded:
+    except GeneratorsNeededError:
         return
 
     if opt.composite is None:

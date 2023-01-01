@@ -1,8 +1,8 @@
 from itertools import combinations_with_replacement
 
 from ..core import Add, Dummy, Rational, symbols
-from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
-                     reduced)
+from ..polys import (ComputationFailedError, Poly, cancel,
+                     parallel_poly_from_expr, reduced)
 from ..polys.monomials import Monomial
 
 
@@ -20,7 +20,7 @@ def ratsimp(expr):
     f, g = cancel(expr).as_numer_denom()
     try:
         Q, r = reduced(f, [g], field=True, expand=False)
-    except ComputationFailed:
+    except ComputationFailedError:
         return f/g
 
     return Add(*Q) + cancel(r/g)
