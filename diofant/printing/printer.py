@@ -140,6 +140,7 @@ class Printer:
     printmethod: str | None = None
 
     def __init__(self, settings=None):
+        """Initialize self."""
         from ..external import import_module
 
         self._str = str

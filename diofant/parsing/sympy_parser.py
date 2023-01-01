@@ -55,6 +55,7 @@ class AppliedFunction:
     """
 
     def __init__(self, function, args, exponent=[]):
+        """Initialize self."""
         self.function = function
         self.args = args
         self.exponent = exponent

@@ -26,6 +26,7 @@ class MathMLPrinter(Printer):
     }
 
     def __init__(self, settings=None):
+        """Initialize self."""
         Printer.__init__(self, settings)
         from xml.dom.minidom import Document
         self.dom = Document()

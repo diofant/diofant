@@ -295,6 +295,7 @@ class Prover:
     """
 
     def __init__(self):
+        """Initialize self."""
         self.proved_rules = []
         self._rules_seen = set()
 
@@ -487,6 +488,7 @@ class FactKB(dict):
         return f'{{\n{items}}}'
 
     def __init__(self, rules):
+        """Initialize self."""
         super().__init__()
         self.rules = rules
 

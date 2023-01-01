@@ -332,6 +332,7 @@ class StdFactKB(FactKB):
     """
 
     def __init__(self, facts=None):
+        """Initialize self."""
         super().__init__(_assume_rules)
         # save a copy of the facts dict
         if not facts:
@@ -477,6 +478,7 @@ class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions."""
 
     def __init__(cls, *args, **kws):
+        """Initialize cls."""
         super().__init__(cls)
         local_defs = {}
         for k in _assume_defined:

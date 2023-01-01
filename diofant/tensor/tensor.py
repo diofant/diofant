@@ -100,6 +100,7 @@ class TIDS(CantSympify):
     """
 
     def __init__(self, components, free, dum):
+        """Initialize self."""
         self.components = components
         self.free = free
         self.dum = dum

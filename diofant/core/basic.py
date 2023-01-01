@@ -1258,6 +1258,7 @@ class preorder_traversal:
     """
 
     def __init__(self, node, keys=None):
+        """Initialize self."""
         self._skip_flag = False
         self._pt = self._preorder_traversal(node, keys)
 

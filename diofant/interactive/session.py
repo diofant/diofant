@@ -36,6 +36,7 @@ class AutomaticSymbols(ast.NodeTransformer):
     """Add missing :class:`~diofant.core.symbol.Symbol` definitions automatically."""
 
     def __init__(self, ns={}):
+        """Initialize self."""
         super().__init__()
         self.names = []
         self.ns = ns

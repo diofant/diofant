@@ -82,6 +82,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     """
 
     def __init__(self, function, *symbols, **assumptions):
+        """Initialize self."""
         super().__init__(function, *symbols, **assumptions)
         if any(len(l) != 3 or None in l for l in self.limits):
             raise ValueError('Sum requires values for lower and upper bounds.')

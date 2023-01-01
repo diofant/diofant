@@ -14,6 +14,7 @@ class SparseMatrixBase(MatrixBase):
     """A sparse matrix base class."""
 
     def __init__(self, *args):
+        """Initialize self."""
         from . import Matrix
 
         if len(args) == 1 and isinstance(args[0], SparseMatrixBase):

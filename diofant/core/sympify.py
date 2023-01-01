@@ -15,6 +15,7 @@ class SympifyError(ValueError):
     """Generic sympification error."""
 
     def __init__(self, expr, base_exc=None):
+        """Initialize self."""
         super().__init__()
         self.expr = expr
         self.base_exc = base_exc

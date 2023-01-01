@@ -129,6 +129,7 @@ class LatexPrinter(Printer):
     }
 
     def __init__(self, settings=None):
+        """Initialize self."""
         Printer.__init__(self, settings)
 
         valid_modes = ['inline', 'plain', 'equation', 'equation*']

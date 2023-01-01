@@ -104,6 +104,7 @@ class PartComponent:
     """
 
     def __init__(self):
+        """Initialize self."""
         # Component number
         self.c = 0
 
@@ -392,6 +393,7 @@ class MultisetPartitionTraverser:
     """
 
     def __init__(self):
+        """Initialize self."""
         # TRACING variables.  These are useful for gathering
         # statistics on the algorithm itself, but have no particular
         # benefit to a user of the code.

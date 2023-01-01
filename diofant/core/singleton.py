@@ -46,6 +46,7 @@ class SingletonRegistry:
     """
 
     def __init__(self):
+        """Initialize self."""
         self._classes_to_install = {}
         # Dict of classes that have been registered, but that have not have been
         # installed as an attribute of this SingletonRegistry.

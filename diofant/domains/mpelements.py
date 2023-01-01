@@ -67,6 +67,7 @@ class MPContext(PythonMPContext):
     """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
+        """Initialize self."""
         super().__init__()
 
         new = object.__new__

@@ -558,6 +558,7 @@ class Term:
     """Efficient representation of ``coeff*(numer/denom)``."""
 
     def __init__(self, term, numer=None, denom=None):
+        """Initialize self."""
         if numer is None and denom is None:
             if not term.is_commutative:
                 raise NonCommutativeExpressionError(
