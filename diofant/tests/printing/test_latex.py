@@ -33,9 +33,6 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
 from diofant.abc import a, b, mu, t, tau, w, x, y, z
 from diofant.combinatorics.permutations import Cycle, Permutation
 from diofant.core.trace import Tr
-from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
-                              TensorProduct, metric_to_Christoffel_2nd)
-from diofant.diffgeom.rn import R2, R2_r
 from diofant.parsing.sympy_parser import parse_expr
 from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
                                     other_symbols, tex_greek_dictionary,
@@ -1449,29 +1446,6 @@ def test_sympyissue_8409():
 
 def test_sympyissue_2934():
     assert latex(Symbol(r'\frac{a_1}{b_1}')) == '\\frac{a_1}{b_1}'
-
-
-def test_diffgeom():
-    assert latex(R2) == r'\mathbb{R}^{2}'
-    r2 = Manifold('r', 2)
-    assert latex(r2) == r'\mathrm{r}'
-    foo = Manifold('Foo', 2)
-    assert latex(foo) == r'\mathrm{Foo}'
-    R2_origin = Patch('origin', R2)
-    assert latex(R2_origin) == r'\mathrm{origin}_{\mathbb{R}^{2}}'
-    assert latex(R2_r) == r'\mathrm{rectangular}^{\mathrm{origin}}_{\mathbb{R}^{2}}'
-    tp1 = TensorProduct(R2.dx, R2.dy)
-    assert latex(tp1) == r'\mathrm{d}x\otimes\mathrm{d}y'
-    ch = metric_to_Christoffel_2nd(TensorProduct(R2.dx, R2.dx) +
-                                   TensorProduct(R2.dy, R2.dy))
-    cvd = CovarDerivativeOp(R2.x*R2.e_x, ch)
-    assert latex(cvd) == r'\mathbb{\nabla}_{\boldsymbol{\mathrm{x}} \partial_{x}}'
-
-    g = Function('g')
-    s_field = g(R2.x, R2.y)
-    dg = Differential(s_field)
-    assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
-                        r'\boldsymbol{\mathrm{y}} \right )})'
 
 
 def test_sympyissue_20491():

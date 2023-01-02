@@ -24,8 +24,6 @@ from diofant import (FF, QQ, RR, ZZ, Add, Adjoint, And, Basic, Chi, Ci,
 from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
                          x, y, z)
 from diofant.core.trace import Tr
-from diofant.diffgeom import BaseVectorField
-from diofant.diffgeom.rn import R2, R2_r
 from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
 from diofant.stats import Die, Exponential, Normal, pspace, where
@@ -5203,22 +5201,6 @@ def test_sympyissue_6134():
      0                              0                   \
 """
     assert upretty(e) == ucode_str
-
-
-def test_BaseVectorField():
-    assert upretty(BaseVectorField(R2_r, 1)) == '∂_y'
-
-
-def test_BaseScalarField():
-    v = BaseVectorField(R2_r, 1)
-    g = Function('g')
-    s_field = g(R2.x, R2.y)
-    assert pretty(v(s_field)) == \
-        """\
-/  d              \\|      \n\
-|-----(g(x, xi_2))||      \n\
-\\dxi_2            /|xi_2=y\
-"""
 
 
 def test_MatrixElement():
