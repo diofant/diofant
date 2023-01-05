@@ -37,7 +37,6 @@ from diofant.parsing.sympy_parser import parse_expr
 from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
                                     other_symbols, tex_greek_dictionary,
                                     translate)
-from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
                             MutableDenseNDimArray, MutableSparseNDimArray,
                             tensorproduct)
@@ -1102,20 +1101,6 @@ def test_latex_MatrixSlice():
         r'X\left[:5, 1:9:2\right]'
     assert latex(MatrixSymbol('X', 10, 10)[5, :5:2]) == \
         r'X\left[5, :5:2\right]'
-
-
-def test_latex_RandomDomain():
-    X = Normal('x1', 0, 1)
-    assert latex(where(X > 0)) == r'Domain: 0 < x_{1} \wedge x_{1} < \infty'
-
-    D = Die('d1', 6)
-    assert latex(where(D > 4)) == r'Domain: d_{1} = 5 \vee d_{1} = 6'
-
-    A = Exponential('a', 1)
-    B = Exponential('b', 1)
-    assert latex(
-        pspace(Tuple(A, B)).domain) == \
-        r'Domain: 0 \leq a \wedge 0 \leq b \wedge a < \infty \wedge b < \infty'
 
 
 def test_PrettyPoly():

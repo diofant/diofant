@@ -1471,9 +1471,6 @@ class LatexPrinter(Printer):
         else:
             return r' \times '.join(self._print(set) for set in p.sets)
 
-    def _print_RandomDomain(self, d):
-        return 'Domain: ' + self._print(d.as_boolean())
-
     def _print_FiniteSet(self, s):
         items = sorted(s.args, key=default_sort_key)
         return self._print_set(items)

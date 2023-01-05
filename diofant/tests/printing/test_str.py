@@ -8,16 +8,15 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
                      I, Integer, Integral, Interval, Lambda, Limit, Matrix,
                      MatrixSymbol, Mul, Ne, O, Poly, Pow, Rational, Reals, Rel,
                      RootOf, RootSum, S, SparseMatrix, StrPrinter, Sum, Symbol,
-                     SymmetricDifference, Tuple, Wild, WildFunction, Xor,
-                     ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
-                     false, field, grlex, groebner, nan, oo, pi, ring, root,
-                     sin, sqrt, sstr, sstrrepr, subfactorial, summation,
-                     symbols, true, zeta, zoo)
+                     SymmetricDifference, Wild, WildFunction, Xor, ZeroMatrix,
+                     cbrt, cos, exp, factor, factorial, factorial2, false,
+                     field, grlex, groebner, nan, oo, pi, ring, root, sin,
+                     sqrt, sstr, sstrrepr, subfactorial, summation, symbols,
+                     true, zeta, zoo)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core.trace import Tr
 from diofant.geometry import Circle, Point
-from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor.array import ImmutableDenseNDimArray
 
 
@@ -675,18 +674,6 @@ def test_empty_printer():
 
 def test_settings():
     pytest.raises(TypeError, lambda: sstr(Integer(4), method='garbage'))
-
-
-def test_RandomDomain():
-    X = Normal('x1', 0, 1)
-    assert str(where(X > 0)) == 'Domain: (0 < x1) & (x1 < oo)'
-
-    D = Die('d1', 6)
-    assert str(where(D > 4)) == 'Domain: Eq(d1, 5) | Eq(d1, 6)'
-
-    A = Exponential('a', 1)
-    B = Exponential('b', 1)
-    assert str(pspace(Tuple(A, B)).domain) == 'Domain: (0 <= a) & (0 <= b) & (a < oo) & (b < oo)'
 
 
 def test_FiniteSet():
