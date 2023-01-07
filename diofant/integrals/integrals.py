@@ -2,9 +2,8 @@ from ..calculus import Order, limit
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
                     diff, nan, oo)
-from ..core.compatibility import is_sequence
 from ..core.sympify import sympify
-from ..functions import Piecewise, log, piecewise_fold, sqrt
+from ..functions import Piecewise, log, piecewise_fold
 from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
@@ -1186,53 +1185,3 @@ def integrate(*args, **kwargs):
                              risch=risch)
     else:
         return integral
-
-
-def line_integrate(field, curve, vars):
-    """line_integrate(field, Curve, variables)
-
-    Compute the line integral.
-
-    Examples
-    ========
-
-    >>> C = Curve([E**t + 1, E**t - 1], (t, 0, ln(2)))
-    >>> line_integrate(x + y, C, [x, y])
-    3*sqrt(2)
-
-    See Also
-    ========
-
-    diofant.integrals.integrals.integrate
-    diofant.integrals.integrals.Integral
-
-    """
-    from ..geometry import Curve
-    F = sympify(field)
-    if not F:
-        raise ValueError(
-            'Expecting function specifying field as first argument.')
-    if not isinstance(curve, Curve):
-        raise ValueError('Expecting Curve entity as second argument.')
-    if not is_sequence(vars):
-        raise ValueError('Expecting ordered iterable for variables.')
-    if len(curve.functions) != len(vars):
-        raise ValueError('Field variable size does not match curve dimension.')
-
-    if curve.parameter in vars:
-        raise ValueError('Curve parameter clashes with field parameters.')
-
-    # Calculate derivatives for line parameter functions
-    # F(r) -> F(r(t)) and finally F(r(t)*r'(t))
-    Ft = F
-    dldt = 0
-    for i, var in enumerate(vars):
-        _f = curve.functions[i]
-        _dn = diff(_f, curve.parameter)
-        # ...arc length
-        dldt = dldt + (_dn * _dn)
-        Ft = Ft.subs({var: _f})
-    Ft = Ft * sqrt(dldt)
-
-    integral = Integral(Ft, curve.limits).doit(deep=False)
-    return integral

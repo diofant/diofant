@@ -16,7 +16,6 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core.trace import Tr
-from diofant.geometry import Circle, Point
 from diofant.tensor.array import ImmutableDenseNDimArray
 
 
@@ -126,11 +125,6 @@ def test_Function():
     assert str(f) == 'f'
     assert str(fx) == 'f(x)'
     assert str(w) == 'w_'
-
-
-def test_Geometry():
-    assert sstr(Point(0, 0)) == 'Point(0, 0)'
-    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point(0, 0), 3)'
 
 
 def test_GoldenRatio():

@@ -13,7 +13,6 @@ from diofant import (FF, QQ, ZZ, Abs, Catalan, Dummy, E, EulerGamma, Float,
                      srepr, true, zoo)
 from diofant.abc import x, y
 from diofant.core.exprtools import Factors
-from diofant.geometry import Ellipse, Point
 
 
 __all__ = ()
@@ -56,13 +55,6 @@ def test_Function():
 
     sT(sin(x), "sin(Symbol('x'))")
     sT(sin, 'sin')
-
-
-def test_Geometry():
-    sT(Point(0, 0), 'Point(Integer(0), Integer(0))')
-    sT(Ellipse(Point(0, 0), 5, 1),
-       'Ellipse(Point(Integer(0), Integer(0)), Integer(5), Integer(1))')
-    # TODO more tests
 
 
 def test_Singletons():

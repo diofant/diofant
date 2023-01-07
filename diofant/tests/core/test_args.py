@@ -68,9 +68,6 @@ from diofant.functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                              HyperRep_power1, HyperRep_power2,
                                              HyperRep_sinasin, HyperRep_sqrts1,
                                              HyperRep_sqrts2)
-from diofant.geometry import (Circle, Curve, Ellipse, Line, Point, Polygon,
-                              Ray, RegularPolygon, Segment, Triangle)
-from diofant.geometry.entity import GeometryEntity
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           HankelTransform,
@@ -1537,58 +1534,6 @@ def test_diofant__tensor__tensor__TensMul():
 
 def test_as_coeff_add():
     assert (7, (3*x, 4*x**2)) == (7 + 3*x + 4*x**2).as_coeff_add()
-
-
-def test_diofant__geometry__curve__Curve():
-    assert _test_args(Curve((x, 1), (x, 0, 1)))
-
-
-def test_diofant__geometry__point__Point():
-    assert _test_args(Point(0, 1))
-
-
-def test_diofant__geometry__ellipse__Ellipse():
-    assert _test_args(Ellipse((0, 1), 2, 3))
-
-
-def test_diofant__geometry__ellipse__Circle():
-    assert _test_args(Circle((0, 1), 2))
-
-
-def test_diofant__geometry__line__LinearEntity():
-    pass
-
-
-def test_diofant__geometry__line__Line():
-    assert _test_args(Line((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line__Ray():
-    assert _test_args(Ray((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line__Segment():
-    assert _test_args(Segment((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__polygon__Polygon():
-    assert _test_args(Polygon((0, 1), (2, 3), (4, 5), (6, 7)))
-
-
-def test_diofant__geometry__polygon__RegularPolygon():
-    assert _test_args(RegularPolygon((0, 1), 2, 3, 4))
-
-
-def test_diofant__geometry__polygon__Triangle():
-    assert _test_args(Triangle((0, 1), (2, 3), (4, 5)))
-
-
-def test_diofant__geometry__entity__GeometryEntity():
-    assert _test_args(GeometryEntity(Point(1, 0), 1, [1, 2]))
-
-
-def test_diofant__geometry__entity__GeometrySet():
-    pass
 
 
 def test_diofant__ntheory__factor___totient():

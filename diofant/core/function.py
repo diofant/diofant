@@ -1564,12 +1564,6 @@ def diff(f, *args, **kwargs):
 
     * https://reference.wolfram.com/legacy/v5_2/Built-inFunctions/AlgebraicComputation/Calculus/D.html
 
-    See Also
-    ========
-
-    Derivative
-    diofant.geometry.util.idiff: computes the derivative implicitly
-
     """
     kwargs.setdefault('evaluate', True)
     return Derivative(f, *args, **kwargs)

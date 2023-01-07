@@ -13,13 +13,13 @@ from diofant import (FF, QQ, RR, ZZ, Add, Adjoint, And, Basic, Chi, Ci,
                      Intersection, Interval, Inverse, KroneckerDelta, Lambda,
                      Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul, Nand, Ne,
                      Nor, Not, O, Or, Piecewise, Pow, Product, Range, Rational,
-                     Ray, RealField, Reals, RootOf, RootSum, S, Segment, Shi,
-                     Si, Subs, Sum, Symbol, SymmetricDifference, Trace,
-                     Transpose, Tuple, Union, Xor, atan2, binomial, catalan,
-                     cbrt, ceiling, conjugate, cos, elliptic_e, elliptic_f,
-                     elliptic_k, elliptic_pi, euler, exp, expint, factorial,
-                     factorial2, floor, gamma, grlex, groebner, hyper, ilex,
-                     log, lowergamma, meijerg, oo, pi, pprint, root, sin, sqrt,
+                     RealField, Reals, RootOf, RootSum, S, Shi, Si, Subs, Sum,
+                     Symbol, SymmetricDifference, Trace, Transpose, Tuple,
+                     Union, Xor, atan2, binomial, catalan, cbrt, ceiling,
+                     conjugate, cos, elliptic_e, elliptic_f, elliptic_k,
+                     elliptic_pi, euler, exp, expint, factorial, factorial2,
+                     floor, gamma, grlex, groebner, hyper, ilex, log,
+                     lowergamma, meijerg, oo, pi, pprint, root, sin, sqrt,
                      subfactorial, symbols, tan, uppergamma)
 from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
                          x, y, z)
@@ -4811,13 +4811,6 @@ atan2⎜───────, ╲╱ x ⎟\n\
 """
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
-
-
-def test_pretty_geometry():
-    e = Segment((0, 1), (0, 2))
-    assert pretty(e) == 'Segment(Point(0, 1), Point(0, 2))'
-    e = Ray((1, 1), angle=4.02*pi)
-    assert pretty(e) == 'Ray(Point(1, 1), Point(2, tan(pi/50) + 1))'
 
 
 def test_expint():

@@ -85,7 +85,6 @@ API reference
 -------------
 
 .. autofunction:: diofant.integrals.integrals.integrate
-.. autofunction:: diofant.integrals.integrals.line_integrate
 .. autofunction:: diofant.integrals.deltafunctions.deltaintegrate
 .. autofunction:: diofant.integrals.rationaltools.ratint
 .. autofunction:: diofant.integrals.rationaltools.ratint_logpart

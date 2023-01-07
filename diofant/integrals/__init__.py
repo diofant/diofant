@@ -10,7 +10,7 @@ log(x)
 
 """
 
-from .integrals import Integral, integrate, line_integrate
+from .integrals import Integral, integrate
 from .transforms import (CosineTransform, FourierTransform, HankelTransform,
                          InverseCosineTransform, InverseFourierTransform,
                          InverseHankelTransform, InverseLaplaceTransform,
@@ -23,7 +23,7 @@ from .transforms import (CosineTransform, FourierTransform, HankelTransform,
                          laplace_transform, mellin_transform, sine_transform)
 
 
-__all__ = ('Integral', 'integrate', 'line_integrate', 'CosineTransform',
+__all__ = ('Integral', 'integrate', 'CosineTransform',
            'FourierTransform', 'HankelTransform', 'InverseCosineTransform',
            'InverseFourierTransform', 'InverseHankelTransform',
            'InverseLaplaceTransform', 'InverseMellinTransform',

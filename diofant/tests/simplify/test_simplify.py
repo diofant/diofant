@@ -8,9 +8,9 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      erf, exp, exp_polar, expand, expand_multinomial,
                      expand_power_exp, factor, factorial, gamma, hyper,
                      hypersimp, integrate, ln, log, logcombine, nsimplify, oo,
-                     pi, posify, rad, root, separatevars, sign, signsimp,
-                     simplify, sin, sinh, solve, sqrt, sqrtdenest, sstr,
-                     symbols, tan, trigsimp, true, zoo)
+                     pi, posify, root, separatevars, sign, signsimp, simplify,
+                     sin, sinh, solve, sqrt, sqrtdenest, sstr, symbols, tan,
+                     trigsimp, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
@@ -18,11 +18,6 @@ from diofant.simplify.simplify import clear_coefficients, nthroot
 
 
 __all__ = ()
-
-
-def test_sympyissue_7263():
-    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf(strict=False) -
-               673.447451402970) < 1e-12
 
 
 def test_factorial_simplify():

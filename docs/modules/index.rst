@@ -26,7 +26,6 @@ automatically generated using Diofant's docstrings.
    ntheory
    concrete
    functions/index
-   geometry/index
    integrals
    logic
    domains
