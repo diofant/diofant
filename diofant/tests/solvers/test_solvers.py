@@ -566,6 +566,10 @@ def test_solve_for_exprs():
 
     assert solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
 
+    eq = f(x).diff(x) + f(x).diff(x, x) - f(x).diff(x)/f(x)
+    assert solve(eq, f(x).diff(x, x)) == [{f(x).diff(x, x):
+                                           (-f(x) + 1)*f(x).diff(x)/f(x)}]
+
 
 def test_solve_for_functions_derivatives():
     t = Symbol('t')
