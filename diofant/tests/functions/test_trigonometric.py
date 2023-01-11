@@ -55,6 +55,9 @@ def test_sin():
     assert sin(5*pi/2) == 1
     assert sin(7*pi/2) == -1
 
+    assert sin(2.5*pi) == 1
+    assert sin(2.0*pi) == 0
+
     ne = symbols('ne', integer=True, even=False)
     e = symbols('e', even=True)
     assert sin(pi*ne/2) == (-1)**(ne/2 - Rational(1, 2))
@@ -434,6 +437,8 @@ def test_tan():
     assert tan(5*pi/12) == sqrt(3) + 2
     assert tan(7*pi/12) == -sqrt(3) - 2
     assert tan(11*pi/12) == sqrt(3) - 2
+
+    assert tan(4.02*pi) == tan(0.019999999999999574*pi)
 
     assert tan(pi/24).radsimp() == -2 - sqrt(3) + sqrt(2) + sqrt(6)
     assert tan(5*pi/24).radsimp() == -2 + sqrt(3) - sqrt(2) + sqrt(6)
