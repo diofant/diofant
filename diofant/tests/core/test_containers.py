@@ -170,6 +170,8 @@ def test_Dict():
     assert set(d) == {x, y, z}
     assert set(d.values()) == {0}
 
+    assert list(FiniteSet(*[Dict({x: 1}), Dict({y: 2})]))[0] == Dict({x: 1})
+
 
 def test_eq_and_args():
     # issue sympy/sympy#5788
