@@ -210,6 +210,12 @@ def test_integration():
     assert integrate(sqrt(-x**2 - 4), x) == \
         -2*atan(x/sqrt(-4 - x**2)) + x*sqrt(-4 - x**2)/2
 
+    assert (integrate(exp(-x**2/2)/(Integral(exp(-x**2/2), (x, 0, oo))),
+                      (x, 0, z)) ==
+            exp(-z**2/2)*(-exp(z**2/2)*(-erf(sqrt(2)*z/2) + 1) + exp(z**2/2)))
+    assert integrate(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
+                     (x, -1, 1)) == erf(sqrt(2)/2)
+
 
 def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == 1
