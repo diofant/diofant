@@ -1609,14 +1609,6 @@ class PrettyPrinter(Printer):
         pform = prettyForm(*pform.right(self._print(d.as_boolean())))
         return pform
 
-    def _print_BaseScalarField(self, field):
-        string = field._coord_sys._names[field._index]
-        return self._print(pretty_symbol(string))
-
-    def _print_BaseVectorField(self, field):
-        s = '\N{PARTIAL DIFFERENTIAL}' + '_' + field._coord_sys._names[field._index]
-        return self._print(pretty_symbol(s))
-
     def _print_Tr(self, p):
         # TODO: Handle indices
         pform = self._print(p.args[0])

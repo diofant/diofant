@@ -16,8 +16,6 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core.trace import Tr
-from diofant.diffgeom import Differential, LieDerivative, TensorProduct
-from diofant.diffgeom.rn import R2
 from diofant.geometry import Circle, Point
 from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor.array import ImmutableDenseNDimArray
@@ -756,15 +754,6 @@ def test_SymmetricDifference():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     assert str(K([0, 1])) == 'sqrt(2)'
-
-
-def test_Differential():
-    tp = TensorProduct(R2.dx, R2.dy)
-    assert sstr(LieDerivative(R2.e_x, tp)) == 'LieDerivative(e_x, TensorProduct(dx, dy))'
-
-    g = Function('g')
-    s_field = g(R2.x, R2.y)
-    assert sstr(Differential(s_field)) == 'd(g(x, y))'
 
 
 def test_ImmutableDenseNDimArray():

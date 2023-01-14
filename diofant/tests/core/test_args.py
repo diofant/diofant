@@ -34,12 +34,6 @@ from diofant.core.numbers import (Catalan, ComplexInfinity, EulerGamma, Exp1,
                                   NaN, NegativeInfinity, NegativeOne,
                                   NumberSymbol, One, Pi, Zero)
 from diofant.core.trace import Tr
-from diofant.diffgeom import (BaseCovarDerivativeOp, BaseScalarField,
-                              BaseVectorField, Commutator, CoordSystem,
-                              CovarDerivativeOp, Differential, LieDerivative,
-                              Manifold, Patch)
-from diofant.diffgeom import Point as DiffgeomPoint
-from diofant.diffgeom import TensorProduct, WedgeProduct
 from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                Heaviside, KroneckerDelta, LambertW, LeviCivita,
                                Li, Max, Min, Piecewise, RisingFactorial, Shi,
@@ -1956,77 +1950,6 @@ def test_diofant__geometry__entity__GeometryEntity():
 
 def test_diofant__geometry__entity__GeometrySet():
     pass
-
-
-def test_diofant__diffgeom__diffgeom__Manifold():
-    assert _test_args(Manifold('name', 3))
-
-
-def test_diofant__diffgeom__diffgeom__Patch():
-    assert _test_args(Patch('name', Manifold('name', 3)))
-
-
-def test_diofant__diffgeom__diffgeom__CoordSystem():
-    assert _test_args(CoordSystem('name', Patch('name', Manifold('name', 3))))
-
-
-def test_diofant__diffgeom__diffgeom__Point():
-    assert _test_args(DiffgeomPoint(
-        CoordSystem('name', Patch('name', Manifold('name', 3))), [x, y]))
-
-
-def test_diofant__diffgeom__diffgeom__BaseScalarField():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseScalarField(cs, 0))
-
-
-def test_diofant__diffgeom__diffgeom__BaseVectorField():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseVectorField(cs, 0))
-
-
-def test_diofant__diffgeom__diffgeom__Differential():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(Differential(BaseScalarField(cs, 0)))
-
-
-def test_diofant__diffgeom__diffgeom__Commutator():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    cs1 = CoordSystem('name1', Patch('name', Manifold('name', 3)))
-    v = BaseVectorField(cs, 0)
-    v1 = BaseVectorField(cs1, 0)
-    assert _test_args(Commutator(v, v1))
-
-
-def test_diofant__diffgeom__diffgeom__TensorProduct():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    assert _test_args(TensorProduct(d, d))
-
-
-def test_diofant__diffgeom__diffgeom__WedgeProduct():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    d1 = Differential(BaseScalarField(cs, 1))
-    assert _test_args(WedgeProduct(d, d1))
-
-
-def test_diofant__diffgeom__diffgeom__LieDerivative():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    v = BaseVectorField(cs, 0)
-    assert _test_args(LieDerivative(v, d))
-
-
-def test_diofant__diffgeom__diffgeom__BaseCovarDerivativeOp():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseCovarDerivativeOp(cs, 0, [[[0, ]*3, ]*3, ]*3))
-
-
-def test_diofant__diffgeom__diffgeom__CovarDerivativeOp():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    v = BaseVectorField(cs, 0)
-    _test_args(CovarDerivativeOp(v, [[[0, ]*3, ]*3, ]*3))
 
 
 def test_diofant__ntheory__factor___totient():

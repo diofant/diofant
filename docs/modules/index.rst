@@ -43,4 +43,3 @@ automatically generated using Diofant's docstrings.
    utilities/index
    parsing
    calculus/index
-   diffgeom

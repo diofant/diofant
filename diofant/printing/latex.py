@@ -9,7 +9,7 @@ import typing
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, Integer, Mod, Symbol, oo
+from ..core import Add, Integer, Mod, oo
 from ..core.alphabets import greeks
 from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
@@ -1646,22 +1646,6 @@ class LatexPrinter(Printer):
 
     def _print_InverseCosineTransform(self, expr):
         return r'\mathcal{COS}^{-1}_{%s}\left[%s\right]\left(%s\right)' % (self._print(expr.args[1]), self._print(expr.args[0]), self._print(expr.args[2]))
-
-    def _print_BaseScalarField(self, field):
-        string = field._coord_sys._names[field._index]
-        return r'\boldsymbol{\mathrm{%s}}' % self._print(Symbol(string))
-
-    def _print_BaseVectorField(self, field):
-        string = field._coord_sys._names[field._index]
-        return r'\partial_{%s}' % self._print(Symbol(string))
-
-    def _print_Differential(self, diff):
-        field = diff._form_field
-        if hasattr(field, '_coord_sys'):
-            string = field._coord_sys._names[field._index]
-            return r'\mathrm{d}%s' % self._print(Symbol(string))
-        else:
-            return 'd(%s)' % self._print(field)
 
     def _print_Tr(self, p):
         # Todo: Handle indices

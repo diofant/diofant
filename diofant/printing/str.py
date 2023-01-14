@@ -624,19 +624,6 @@ class StrPrinter(Printer):
     def _print_Zero(self, expr):
         return '0'
 
-    def _print_BaseScalarField(self, field):
-        return field._coord_sys._names[field._index]
-
-    def _print_BaseVectorField(self, field):
-        return f'e_{field._coord_sys._names[field._index]}'
-
-    def _print_Differential(self, diff):
-        field = diff._form_field
-        if hasattr(field, '_coord_sys'):
-            return f'd{field._coord_sys._names[field._index]}'
-        else:
-            return f'd({self._print(field)})'
-
     def _print_Tr(self, expr):
         # TODO : Handle indices
         return f"{'Tr'}({self._print(expr.args[0])})"
