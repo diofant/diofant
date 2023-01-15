@@ -59,6 +59,7 @@ def test_addition():
         (3, 0)))
 
     assert a + b == a.add(b) == Matrix([[2, 4], [6, 1]])
+    pytest.raises(TypeError, lambda: a + object())
 
     # issue sympy/sympy#7201
     assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
