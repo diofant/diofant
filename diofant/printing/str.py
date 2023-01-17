@@ -113,9 +113,6 @@ class StrPrinter(Printer):
     def _print_Dict(self, expr):
         return self._print_dict(expr)
 
-    def _print_RandomDomain(self, d):
-        return 'Domain: ' + self._print(d.as_boolean())
-
     def _print_Dummy(self, expr):
         return '_' + expr.name
 

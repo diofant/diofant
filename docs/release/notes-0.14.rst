@@ -26,6 +26,7 @@ Compatibility breaks
 * Removed ``diofant.calculus.euler`` and ``diofant.calculus.finite_diff`` modules, see :pull:`1271`.
 * Removed ``diofant.vector`` module, see :pull:`1274`.
 * Removed ``diofant.diffgeom`` module, see :pull:`1281`.
+* Removed ``diofant.stats`` module, see :pull:`1276`.
 
 Minor changes
 =============

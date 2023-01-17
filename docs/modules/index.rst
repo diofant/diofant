@@ -37,7 +37,6 @@ automatically generated using Diofant's docstrings.
    plotting
    sets
    simplify/simplify
-   stats
    solvers/index
    tensor/index
    utilities/index

@@ -1604,11 +1604,6 @@ class PrettyPrinter(Printer):
         bot = stringPict(*a.right(' '*b.width()))
         return prettyForm(binding=prettyForm.POW, *bot.below(top))
 
-    def _print_RandomDomain(self, d):
-        pform = self._print('Domain: ')
-        pform = prettyForm(*pform.right(self._print(d.as_boolean())))
-        return pform
-
     def _print_Tr(self, p):
         # TODO: Handle indices
         pform = self._print(p.args[0])

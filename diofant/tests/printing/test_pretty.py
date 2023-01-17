@@ -26,7 +26,6 @@ from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
 from diofant.core.trace import Tr
 from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
-from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
                             MutableDenseNDimArray, MutableSparseNDimArray,
                             tensorproduct)
@@ -4939,19 +4938,6 @@ Pi|3; -|6|\n\
     expr = elliptic_pi(3, 4/x, 6)
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
-
-
-def test_RandomDomain():
-    X = Normal('x1', 0, 1)
-    assert upretty(where(X > 0)) == 'Domain: 0 < x₁ ∧ x₁ < ∞'
-
-    D = Die('d1', 6)
-    assert upretty(where(D > 4)) == 'Domain: d₁ = 5 ∨ d₁ = 6'
-
-    A = Exponential('a', 1)
-    B = Exponential('b', 1)
-    assert upretty(pspace(Tuple(A, B)).domain) == \
-        'Domain: 0 ≤ a ∧ 0 ≤ b ∧ a < ∞ ∧ b < ∞'
 
 
 def test_PrettyPoly():
