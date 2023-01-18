@@ -33,7 +33,6 @@ automatically generated using Diofant's docstrings.
    polys
    printing
    interactive
-   plotting
    sets
    simplify/simplify
    solvers/index

@@ -40,7 +40,6 @@ from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.plotting.plot import Plot
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
 from diofant.printing.latex import LatexPrinter
@@ -237,11 +236,6 @@ def test_matrices():
 
 def test_ntheory():
     for c in (Sieve, Sieve()):
-        check(c)
-
-
-def test_plotting():
-    for c in (Plot, Plot(1, visible=False)):
         check(c)
 
 

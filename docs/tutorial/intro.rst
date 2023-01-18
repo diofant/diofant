@@ -110,7 +110,7 @@ also often called computer algebra systems, or just CASs) such as
 Diofant is the ability to do all sorts of computations symbolically:
 simplify expressions, compute derivatives, integrals, and limits,
 solve equations, work with matrices, and much more.  Diofant includes
-modules for plotting, printing (like 2D pretty printed output of math
+modules for printing (like 2D pretty printed output of math
 formulas, or `\LaTeX`), code generation, combinatorics,
 number theory, logic, and more.  Here is a small sampling of the sort
 of symbolic power Diofant is capable of, to whet your appetite.
