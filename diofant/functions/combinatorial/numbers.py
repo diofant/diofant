@@ -1355,14 +1355,14 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import (multiset_partitions, permutations,
-    ...                                          subsets)
+    >>> import itertools
+    >>> from diofant.utilities.iterables import multiset_partitions
 
     First kind (unsigned by default):
 
     >>> [stirling(6, i, kind=1) for i in range(7)]
     [0, 120, 274, 225, 85, 15, 1]
-    >>> perms = list(permutations(range(4)))
+    >>> perms = list(itertools.permutations(range(4)))
     >>> [sum(Permutation(p).cycles == i for p in perms) for i in range(5)]
     [0, 6, 11, 6, 1]
     >>> [stirling(4, i, kind=1) for i in range(5)]
@@ -1387,7 +1387,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     >>> def delta(p):
     ...     if len(p) == 1:
     ...         return oo
-    ...     return min(abs(i[0] - i[1]) for i in subsets(p, 2))
+    ...     return min(abs(i[0] - i[1]) for i in itertools.combinations(p, 2))
     >>> parts = multiset_partitions(range(5), 3)
     >>> d = 2
     >>> sum(1 for p in parts if all(delta(i) >= d for i in p))

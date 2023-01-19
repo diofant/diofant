@@ -3,8 +3,7 @@ import pytest
 from diofant import (Dummy, I, Integer, Integral, Rational, cbrt, cos, cosh,
                      root, sqrt, sqrtdenest, symbols)
 from diofant.abc import a, b, c, d, t, x, y
-from diofant.simplify.sqrtdenest import _subsets as subsets
-from diofant.simplify.sqrtdenest import unrad
+from diofant.simplify.sqrtdenest import _subsets, unrad
 
 
 __all__ = ()
@@ -165,9 +164,9 @@ def test_sqrtdenest5():
     assert sqrtdenest(x + sqrt(y)) == x + sqrt(y)
 
 
-def test_subsets():
-    assert subsets(1) == [[1]]
-    assert subsets(4) == [
+def test__subsets():
+    assert _subsets(1) == [[1]]
+    assert _subsets(4) == [
         [1, 0, 0, 0], [0, 1, 0, 0], [1, 1, 0, 0], [0, 0, 1, 0], [1, 0, 1, 0],
         [0, 1, 1, 0], [1, 1, 1, 0], [0, 0, 0, 1], [1, 0, 0, 1], [0, 1, 0, 1],
         [1, 1, 0, 1], [0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1]]

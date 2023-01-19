@@ -1,10 +1,11 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking."""
 
+import itertools
+
 from ..core import Add, Dummy, Integer, Mul, symbols
 from ..core.sympify import sympify
 from ..domains import ZZ
 from ..ntheory import nextprime
-from ..utilities import subsets
 from . import polytools, rings
 
 
@@ -72,7 +73,7 @@ def symmetric_poly(n, *gens, **args):
     if not n:
         poly = Integer(1)
     else:
-        poly = Add(*[Mul(*s) for s in subsets(gens, int(n))])
+        poly = Add(*(Mul(*s) for s in itertools.combinations(gens, n)))
 
     if not args.get('polys', False):
         return poly

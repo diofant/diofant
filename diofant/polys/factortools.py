@@ -1,12 +1,12 @@
 """Polynomial factorization routines in characteristic zero."""
 
+import itertools
 import math
 import operator
 
 from ..config import query
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
-from ..utilities import subsets
 from .polyerrors import (CoercionFailedError, DomainError,
                          EvaluationFailedError, ExtraneousFactorsError)
 from .polyutils import _sort_factors
@@ -212,7 +212,7 @@ class _Factor:
         pl = p**l
 
         while 2*s <= len(T):
-            for S in subsets(sorted_T, s):
+            for S in itertools.combinations(sorted_T, s):
                 # lift the constant coefficient of the product `G` of the factors
                 # in the subset `S`; if it is does not divide `fc`, `G` does
                 # not divide the input polynomial

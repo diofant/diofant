@@ -1,3 +1,4 @@
+import itertools
 import random
 import string
 
@@ -8,7 +9,7 @@ from diofant import (EulerGamma, GoldenRatio, I, Integer, Product, Rational,
                      diff, digamma, euler, expand_func, factorial, fibonacci,
                      gamma, genocchi, harmonic, hyper, im, limit, log, lucas,
                      nan, oo, pi, polygamma, re, simplify, sin, sqrt, sstr,
-                     subsets, symbols, trigamma, zeta, zoo)
+                     symbols, trigamma, zeta, zoo)
 from diofant.abc import k, m, n, x
 from diofant.combinatorics.permutations import Permutation
 from diofant.functions.combinatorial.numbers import (_AOP_product,
@@ -16,8 +17,7 @@ from diofant.functions.combinatorial.numbers import (_AOP_product,
                                                      nP, nT, stirling)
 from diofant.utilities.iterables import (multiset_combinations,
                                          multiset_partitions,
-                                         multiset_permutations, partitions,
-                                         permutations)
+                                         multiset_permutations, partitions)
 
 
 __all__ = ()
@@ -429,7 +429,7 @@ def test_nC_nP_nT():
     # above
     assert [stirling(9, i, kind=1) for i in range(11)] == [
         0, 40320, 109584, 118124, 67284, 22449, 4536, 546, 36, 1, 0]
-    perms = list(permutations(range(4)))
+    perms = list(itertools.permutations(range(4)))
     assert [sum(1 for p in perms if Permutation(p).cycles == i)
             for i in range(5)] == [0, 6, 11, 6, 1] == [
         stirling(4, i, kind=1) for i in range(5)]
@@ -477,7 +477,7 @@ def test_nC_nP_nT():
     def delta(p):
         if len(p) == 1:
             return oo
-        return min(abs(i[0] - i[1]) for i in subsets(p, 2))
+        return min(abs(i[0] - i[1]) for i in itertools.combinations(p, 2))
     parts = multiset_partitions(range(5), 3)
     d = 2
     assert (sum(1 for p in parts if all(delta(i) >= d for i in p)) ==

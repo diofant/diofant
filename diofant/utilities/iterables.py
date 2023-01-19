@@ -1,7 +1,6 @@
+import itertools
 import operator
 from collections import defaultdict
-from itertools import (combinations, combinations_with_replacement,
-                       permutations, product)
 
 # this is the logical location of these functions
 from ..core.compatibility import as_int, is_sequence, iterable
@@ -233,12 +232,12 @@ def variations(seq, n, repetition=False):
         seq = tuple(seq)
         if len(seq) < n:
             return
-        yield from permutations(seq, n)
+        yield from itertools.permutations(seq, n)
     else:
         if n == 0:
             yield ()
         else:
-            yield from product(seq, repeat=n)
+            yield from itertools.product(seq, repeat=n)
 
 
 def subsets(seq, k=None, repetition=False):
@@ -280,14 +279,15 @@ def subsets(seq, k=None, repetition=False):
     [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]
 
     """
-    if k is None:
-        for k in range(len(seq) + 1):
-            yield from subsets(seq, k, repetition)
+    if not repetition:
+        meth = itertools.combinations
     else:
-        if not repetition:
-            yield from combinations(seq, k)
-        else:
-            yield from combinations_with_replacement(seq, k)
+        meth = itertools.combinations_with_replacement
+    if k is None:
+        yield from itertools.chain.from_iterable(meth(seq, i)
+                                                 for i in range(len(seq) + 1))
+    else:
+        yield from meth(seq, k)
 
 
 def filter_symbols(iterator, exclude):
@@ -760,7 +760,7 @@ def multiset_permutations(m, size=None, g=None):
         v = v if size is None else (size if size <= v else 0)
         yield [k for i in range(v)]
     elif all(v == 1 for k, v in do):
-        for p in permutations([k for k, v in do], size):
+        for p in itertools.permutations([k for k, v in do], size):
             yield list(p)
     else:
         size = size if size is not None else SUM
@@ -1497,7 +1497,7 @@ def generate_involutions(n):
 
     """
     idx = list(range(n))
-    for p in permutations(idx):
+    for p in itertools.permutations(idx):
         for i in idx:
             if p[p[i]] != i:
                 break
@@ -1729,8 +1729,8 @@ def cantor_product(*args):
             except StopIteration:
                 exhausted[n] = True
             else:
-                yield from product(*(argslist[:n] + [argslist[n][-1:]] +
-                                     argslist[n + 1:]))
+                yield from itertools.product(*(argslist[:n] + [argslist[n][-1:]] +
+                                               argslist[n + 1:]))
 
 
 def permute_signs(t):
@@ -1744,7 +1744,7 @@ def permute_signs(t):
     [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2)]
 
     """
-    for signs in product(*[(1, -1)]*(len(t) - t.count(0))):
+    for signs in itertools.product(*[(1, -1)]*(len(t) - t.count(0))):
         signs = list(signs)
         yield type(t)([i*signs.pop() if i else i for i in t])
 
@@ -1764,7 +1764,7 @@ def signed_permutations(t):
      (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)]
 
     """
-    return (type(t)(i) for j in permutations(t)
+    return (type(t)(i) for j in itertools.permutations(t)
             for i in permute_signs(j))
 
 
