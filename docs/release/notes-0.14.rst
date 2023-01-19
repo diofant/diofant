@@ -118,3 +118,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24386`: sympy.limit yields wrong limit in sigmoidal expression
 * :sympyissue:`24390`: Incorrectly evaluated expression
 * :sympyissue:`24461`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck -- when multiplying two Polys
+* :sympyissue:`24543`: Rational calc value error

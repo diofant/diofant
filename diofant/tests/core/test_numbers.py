@@ -1587,3 +1587,7 @@ def test_comparisons_with_unknown_type():
     assert not bar >= oo
     assert oo >= bar
     assert bar <= oo
+
+
+def test_sympyissue_24543():
+    assert Rational('0.5', '100') == Rational(1, 200)
