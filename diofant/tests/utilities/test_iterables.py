@@ -11,7 +11,7 @@ from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
                      subsets, symbols, topological_sort, true, unflatten,
                      variations)
 from diofant.abc import w, x, y, z
-from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
+from diofant.combinatorics import RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
@@ -19,8 +19,7 @@ from diofant.utilities.enumerative import (factoring_visitor,
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          bracelets, common_prefix,
                                          common_suffix, filter_symbols,
-                                         generate_derangements,
-                                         generate_involutions, minlex,
+                                         generate_derangements, minlex,
                                          multiset, multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
@@ -396,14 +395,6 @@ def test_partitions():
             assert q == RGS_unrank(i, n)
             i += 1
         assert i == RGS_enum(n)
-
-
-def test_involutions():
-    lengths = [1, 2, 4, 10, 26, 76]
-    for n, N in enumerate(lengths):
-        i = list(generate_involutions(n + 1))
-        assert len(i) == N
-        assert len({Permutation(j)**2 for j in i}) == 1
 
 
 def test_derangements():

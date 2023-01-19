@@ -1378,42 +1378,6 @@ def uniq(seq, result=None):
                 yield s
 
 
-def generate_involutions(n):
-    """
-    Generates involutions.
-
-    An involution is a permutation that when multiplied
-    by itself equals the identity permutation. In this
-    implementation the involutions are generated using
-    Fixed Points.
-
-    Alternatively, an involution can be considered as
-    a permutation that does not contain any cycles with
-    a length that is greater than two.
-
-    References
-    ==========
-
-    * https://mathworld.wolfram.com/PermutationInvolution.html
-
-    Examples
-    ========
-
-    >>> list(generate_involutions(3))
-    [(0, 1, 2), (0, 2, 1), (1, 0, 2), (2, 1, 0)]
-    >>> len(list(generate_involutions(4)))
-    10
-
-    """
-    idx = list(range(n))
-    for p in itertools.permutations(idx):
-        for i in idx:
-            if p[p[i]] != i:
-                break
-        else:
-            yield p
-
-
 def generate_derangements(perm):
     """
     Routine to generate unique derangements.
