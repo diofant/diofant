@@ -17,9 +17,9 @@ from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
-                                         binary_partitions, bracelets,
-                                         common_prefix, common_suffix,
-                                         filter_symbols, generate_derangements,
+                                         bracelets, common_prefix,
+                                         common_suffix, filter_symbols,
+                                         generate_derangements,
                                          generate_involutions, minlex,
                                          multiset, multiset_combinations,
                                          multiset_partitions,
@@ -396,16 +396,6 @@ def test_partitions():
             assert q == RGS_unrank(i, n)
             i += 1
         assert i == RGS_enum(n)
-
-
-def test_binary_partitions():
-    assert [i[:] for i in binary_partitions(10)] == [[8, 2], [8, 1, 1],
-                                                     [4, 4, 2], [4, 4, 1, 1], [4, 2, 2, 2], [4, 2, 2, 1, 1],
-                                                     [4, 2, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2],
-                                                     [2, 2, 2, 2, 1, 1], [2, 2, 2, 1, 1, 1, 1], [2, 2, 1, 1, 1, 1, 1, 1],
-                                                     [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-
-    assert len([j[:] for j in binary_partitions(16)]) == 36
 
 
 def test_involutions():
