@@ -485,40 +485,6 @@ def common_suffix(*seqs):
         return seqs[0][i + 1:]
 
 
-def prefixes(seq):
-    """
-    Generate all prefixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(prefixes([1, 2, 3, 4]))
-    [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[:i + 1]
-
-
-def postfixes(seq):
-    """
-    Generate all postfixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(postfixes([1, 2, 3, 4]))
-    [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[n - i - 1:]
-
-
 def topological_sort(graph, key=None):
     r"""
     Topological sort of graph's vertices.

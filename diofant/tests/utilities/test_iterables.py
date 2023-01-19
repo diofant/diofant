@@ -7,9 +7,9 @@ import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
                      cantor_product, capture, default_sort_key, flatten, group,
-                     has_dups, numbered_symbols, ordered, postfixes,
-                     postorder_traversal, prefixes, subsets, symbols,
-                     topological_sort, true, unflatten, variations)
+                     has_dups, numbered_symbols, ordered, postorder_traversal,
+                     subsets, symbols, topological_sort, true, unflatten,
+                     variations)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
@@ -187,24 +187,6 @@ def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
-
-
-def test_prefixes():
-    assert not list(prefixes([]))
-    assert list(prefixes([1])) == [[1]]
-    assert list(prefixes([1, 2])) == [[1], [1, 2]]
-
-    assert list(prefixes([1, 2, 3, 4, 5])) == \
-        [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5]]
-
-
-def test_postfixes():
-    assert not list(postfixes([]))
-    assert list(postfixes([1])) == [[1]]
-    assert list(postfixes([1, 2])) == [[2], [1, 2]]
-
-    assert list(postfixes([1, 2, 3, 4, 5])) == \
-        [[5], [4, 5], [3, 4, 5], [2, 3, 4, 5], [1, 2, 3, 4, 5]]
 
 
 def test_topological_sort():
