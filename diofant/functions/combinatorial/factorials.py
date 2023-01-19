@@ -159,7 +159,6 @@ class subfactorial(CombinatorialFunction):
     ========
 
     diofant.functions.combinatorial.factorials.factorial,
-    diofant.utilities.iterables.generate_derangements,
     diofant.functions.special.gamma_functions.uppergamma
 
     """

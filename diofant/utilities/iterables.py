@@ -1378,40 +1378,6 @@ def uniq(seq, result=None):
                 yield s
 
 
-def generate_derangements(perm):
-    """
-    Routine to generate unique derangements.
-
-    TODO: This will be rewritten to use the
-    ECO operator approach once the permutations
-    branch is in master.
-
-    Examples
-    ========
-
-    >>> list(generate_derangements([0, 1, 2]))
-    [[1, 2, 0], [2, 0, 1]]
-    >>> list(generate_derangements([0, 1, 2, 3]))
-    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
-     [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1],
-     [3, 2, 1, 0]]
-    >>> list(generate_derangements([0, 1, 1]))
-    []
-
-    See Also
-    ========
-
-    diofant.functions.combinatorial.factorials.subfactorial
-
-    """
-    p = multiset_permutations(perm)
-    indices = range(len(perm))
-    p0 = next(p)  # pylint: disable=stop-iteration-return
-    for pi in p:
-        if all(pi[i] != p0[i] for i in indices):
-            yield pi
-
-
 def necklaces(n, k, free=False):
     """
     A routine to generate necklaces that may (free=True) or may not

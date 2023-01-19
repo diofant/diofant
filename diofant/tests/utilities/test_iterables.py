@@ -18,8 +18,7 @@ from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          bracelets, common_prefix,
-                                         common_suffix, filter_symbols,
-                                         generate_derangements, minlex,
+                                         common_suffix, filter_symbols, minlex,
                                          multiset, multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
@@ -395,20 +394,6 @@ def test_partitions():
             assert q == RGS_unrank(i, n)
             i += 1
         assert i == RGS_enum(n)
-
-
-def test_derangements():
-    assert len(list(generate_derangements(list(range(6))))) == 265
-    assert ''.join(''.join(i) for i in generate_derangements('abcde')) == (
-        'badecbaecdbcaedbcdeabceadbdaecbdeacbdecabeacdbedacbedcacabedcadebcaebd'
-        'cdaebcdbeacdeabcdebaceabdcebadcedabcedbadabecdaebcdaecbdcaebdcbeadceab'
-        'dcebadeabcdeacbdebacdebcaeabcdeadbceadcbecabdecbadecdabecdbaedabcedacb'
-        'edbacedbca')
-    assert list(generate_derangements([0, 1, 2, 3])) == [
-        [1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
-        [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1], [3, 2, 1, 0]]
-    assert list(generate_derangements([0, 1, 2, 2])) == [
-        [2, 2, 0, 1], [2, 2, 1, 0]]
 
 
 def test_necklaces():
