@@ -1,6 +1,5 @@
 """Polynomial factorization routines in characteristic zero."""
 
-import functools
 import math
 import operator
 
@@ -786,7 +785,7 @@ class _Factor:
                     S[j] = (s + t).trunc_ground(p)
         else:
             n = len(A)
-            e = functools.reduce(operator.mul, F)
+            e = math.prod(F)
 
             a, A = A[-1], A[:-1]
             B, G = [], []
@@ -1101,7 +1100,7 @@ class _Factor:
             m = s_ring.gens[-1] - a
             M = s_ring.one
 
-            c = functools.reduce(operator.mul, H)
+            c = math.prod(H)
             c = s - c
 
             dj = s.degree(x=w)
@@ -1123,11 +1122,11 @@ class _Factor:
                         h += t*M
                         H[i] = h.trunc_ground(p)
 
-                    h = functools.reduce(operator.mul, H)
+                    h = math.prod(H)
                     h = s - h
                     c = h.trunc_ground(p)
 
-        if functools.reduce(operator.mul, H) != f:
+        if math.prod(H) != f:
             raise ExtraneousFactorsError
         return H
 

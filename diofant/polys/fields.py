@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-import functools
-import operator
+import math
 
 from ..core import Expr, Symbol
 from ..core.sympify import CantSympify, sympify
@@ -140,9 +139,9 @@ class FractionField(Field, CompositeDomain):
             elif 1/expr in mapping:
                 return 1/mapping[1/expr]
             elif expr.is_Add:
-                return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
+                return sum(map(_rebuild, expr.args))
             elif expr.is_Mul:
-                return functools.reduce(operator.mul, list(map(_rebuild, expr.args)))
+                return math.prod(map(_rebuild, expr.args))
             elif expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c != 1:

@@ -1,5 +1,4 @@
-import functools
-import operator
+import math
 import random
 
 from ..config import using
@@ -270,7 +269,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
     lcring = ring.drop(0)
     lcs = []
     for j in range(n):
-        lj = functools.reduce(operator.mul, [lcfactors[i][0]**e[j][i] for i in range(m)], lcring.one)
+        lj = math.prod((lcfactors[i][0]**e[j][i] for i in range(m)), start=lcring.one)
         lcs.append(lj)
 
     zring = qring.clone(domain=domain)
@@ -448,7 +447,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
     H = [t.set_ring(ring_) + li.set_ring(ring_)*x**g.degree() for t, g, li in
          zip(tails, pfactors, lcs)]
 
-    prod = functools.reduce(operator.mul, H)
+    prod = math.prod(H)
     e = (f - prod) % m
 
     P = domain(p)
@@ -480,7 +479,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
 
         H = [h + _subs_ground(s, subs)*P for h, s in zip(H, S)]
         P = P**2
-        prod = functools.reduce(operator.mul, H)
+        prod = math.prod(H)
         e = (f - prod) % m
 
     if e == 0:
@@ -630,7 +629,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                 S[j] = _trunc(s + t*coeff.set_ring(ring), minpoly, p)
     else:
         n = len(A)
-        e = functools.reduce(operator.mul, F)
+        e = math.prod(F)
 
         a, A = A[-1], A[:-1]
         B, G = [], []
@@ -744,7 +743,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
         m = Hring.gens[j] - a
         M = Hring.one
 
-        c = _trunc(s - functools.reduce(operator.mul, H), minpoly, p)
+        c = _trunc(s - math.prod(H), minpoly, p)
 
         dj = s.degree(j)
 
@@ -764,9 +763,9 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
                 for i, (h, t) in enumerate(zip(H, T)):
                     H[i] = _trunc(h + t.set_ring(Hring)*M, minpoly, p)
 
-                c = _trunc(s - functools.reduce(operator.mul, H), minpoly, p)
+                c = _trunc(s - math.prod(H), minpoly, p)
 
-    prod = functools.reduce(operator.mul, H)
+    prod = math.prod(H)
     if _trunc(prod, minpoly, p) == f.trunc_ground(p):
         return H
 

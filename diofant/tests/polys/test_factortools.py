@@ -1,7 +1,6 @@
 """Tests for polynomial factorization routines."""
 
-import functools
-import operator
+import math
 
 import pytest
 
@@ -278,7 +277,7 @@ def test__zz_wang():
 
     assert H == [h_1, h_2, h_3]
     assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
-    assert functools.reduce(operator.mul, factors) == w_1
+    assert math.prod(factors) == w_1
 
     # coverage tests
     f = x**6 + 5*x**4*y - 5*x**2*y**2 - y**3

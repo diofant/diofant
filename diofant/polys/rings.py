@@ -218,9 +218,9 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
             if (generator := mapping.get(expr)) is not None:
                 return generator
             elif expr.is_Add:
-                return functools.reduce(operator.add, map(_rebuild, expr.args))
+                return sum(map(_rebuild, expr.args))
             elif expr.is_Mul:
-                return functools.reduce(operator.mul, map(_rebuild, expr.args))
+                return math.prod(map(_rebuild, expr.args))
             elif expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c > 1:
@@ -549,7 +549,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for monom, coeff in self.items():
             mon = tuple(monom[i] for i in range(self.ring.ngens) if i not in indexes)
-            gc = functools.reduce(operator.mul, [x**n for x, n in zip(gens, (monom[i] for i in indexes))])
+            gc = math.prod((x**n for x, n in zip(gens, (monom[i] for i in indexes))))
             if mon in poly:
                 poly[mon] += gc*coeff
             else:

@@ -2,7 +2,6 @@
 
 import functools
 import math
-import operator
 
 import mpmath
 
@@ -3483,8 +3482,7 @@ def _symbolic_factor_list(expr, opt, method):
                                          method)
 
     if method == 'sqf':
-        factors = [(functools.reduce(operator.mul,
-                                     (f for f, _ in factors if _ == k)), k)
+        factors = [(math.prod((f for f, _ in factors if _ == k)), k)
                    for k in set(dict(factors).values())]
 
     return coeff, factors

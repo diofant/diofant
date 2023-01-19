@@ -1,8 +1,6 @@
 """Test sparse polynomials."""
 
-import functools
 import math
-import operator
 
 import pytest
 
@@ -178,7 +176,7 @@ def test_PolynomialRing_add():
 
     F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert functools.reduce(operator.add, F) == 4*x**2 + 24
+    assert sum(F) == 4*x**2 + 24
 
 
 def test_PolynomialRing_mul():
@@ -186,8 +184,7 @@ def test_PolynomialRing_mul():
 
     F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert functools.reduce(operator.mul, F) == (x**8 + 24*x**6 +
-                                                 206*x**4 + 744*x**2 + 945)
+    assert math.prod(F) == x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
 
 
 def test_PolynomialRing_to_ground():
@@ -1591,7 +1588,7 @@ def test_PolyElement___pow__():
     assert f**3 == f*f*f == x**3 + x**2 + x + 1
     assert f**4 == f*f*f*f == x**4 + 1
     assert f**5 == f*f*f*f*f == x**5 + x**4 + x + 1
-    assert f**8 == functools.reduce(operator.mul, [f]*8) == x**8 + 1
+    assert f**8 == math.prod([f]*8) == x**8 + 1
 
     F9 = FF(3, [2, 2, 1])
     R, x = ring('x', F9)
