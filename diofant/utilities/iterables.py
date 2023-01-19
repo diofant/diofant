@@ -1378,55 +1378,6 @@ def uniq(seq, result=None):
                 yield s
 
 
-def necklaces(n, k, free=False):
-    """
-    A routine to generate necklaces that may (free=True) or may not
-    (free=False) be turned over to be viewed. The "necklaces" returned
-    are comprised of ``n`` integers (beads) with ``k`` different
-    values (colors). Only unique necklaces are returned.
-
-    Examples
-    ========
-
-    >>> def show(s, i):
-    ...     return ''.join(s[j] for j in i)
-
-    The "unrestricted necklace" is sometimes also referred to as a
-    "bracelet" (an object that can be turned over, a sequence that can
-    be reversed) and the term "necklace" is used to imply a sequence
-    that cannot be reversed. So ACB == ABC for a bracelet (rotate and
-    reverse) while the two are different for a necklace since rotation
-    alone cannot make the two sequences the same.
-
-    (mnemonic: Bracelets can be viewed Backwards, but Not Necklaces.)
-
-    >>> B = [show('ABC', i) for i in bracelets(3, 3)]
-    >>> N = [show('ABC', i) for i in necklaces(3, 3)]
-    >>> set(N) - set(B)
-    {'ACB'}
-
-    >>> list(necklaces(4, 2))
-    [(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 1, 1),
-     (0, 1, 0, 1), (0, 1, 1, 1), (1, 1, 1, 1)]
-
-    >>> [show('.o', i) for i in bracelets(4, 2)]
-    ['....', '...o', '..oo', '.o.o', '.ooo', 'oooo']
-
-    References
-    ==========
-
-    https://mathworld.wolfram.com/Necklace.html
-
-    """
-    return uniq(minlex(i, directed=not free) for i in
-                variations(list(range(k)), n, repetition=True))
-
-
-def bracelets(n, k):
-    """Wrapper to necklaces to return a free (unrestricted) necklace."""
-    return necklaces(n, k, free=True)
-
-
 def minlex(seq, directed=True, is_set=False, small=None):
     """
     Return a tuple where the smallest element appears first; if

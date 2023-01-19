@@ -5,7 +5,7 @@ import textwrap
 
 import pytest
 
-from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
+from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
                      cantor_product, capture, default_sort_key, flatten, group,
                      has_dups, numbered_symbols, ordered, postorder_traversal,
                      subsets, symbols, topological_sort, true, unflatten,
@@ -17,11 +17,11 @@ from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
-                                         bracelets, common_prefix,
-                                         common_suffix, filter_symbols, minlex,
-                                         multiset, multiset_combinations,
+                                         common_prefix, common_suffix,
+                                         filter_symbols, minlex, multiset,
+                                         multiset_combinations,
                                          multiset_partitions,
-                                         multiset_permutations, necklaces,
+                                         multiset_permutations,
                                          ordered_partitions, partitions,
                                          permute_signs, rotate_left,
                                          rotate_right, runs, sift,
@@ -394,48 +394,6 @@ def test_partitions():
             assert q == RGS_unrank(i, n)
             i += 1
         assert i == RGS_enum(n)
-
-
-def test_necklaces():
-    def count(n, k, f):
-        return len(list(necklaces(n, k, f)))
-    m = []
-    for i in range(1, 8):
-        m.append((
-            i, count(i, 2, 0), count(i, 2, 1), count(i, 3, 1)))
-    assert Matrix(m) == Matrix([
-        [1,   2,   2,   3],
-        [2,   3,   3,   6],
-        [3,   4,   4,  10],
-        [4,   6,   6,  21],
-        [5,   8,   8,  39],
-        [6,  14,  13,  92],
-        [7,  20,  18, 198]])
-
-
-def test_bracelets():
-    bc = list(bracelets(2, 4))
-    assert Matrix(bc) == Matrix([
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [1, 1],
-        [1, 2],
-        [1, 3],
-        [2, 2],
-        [2, 3],
-        [3, 3]
-    ])
-    bc = list(bracelets(4, 2))
-    assert Matrix(bc) == Matrix([
-        [0, 0, 0, 0],
-        [0, 0, 0, 1],
-        [0, 0, 1, 1],
-        [0, 1, 0, 1],
-        [0, 1, 1, 1],
-        [1, 1, 1, 1]
-    ])
 
 
 def test_unflatten():
