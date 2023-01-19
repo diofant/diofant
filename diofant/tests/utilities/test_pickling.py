@@ -40,10 +40,6 @@ from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.geometry import (Circle, Ellipse, Line, Point, Polygon, Ray,
-                              RegularPolygon, Segment, Triangle)
-from diofant.geometry.entity import GeometryEntity
-from diofant.geometry.line import LinearEntity
 from diofant.plotting.plot import Plot
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
@@ -221,20 +217,6 @@ def test_functions():
         check(c)
     for cls in others:
         check(cls)
-
-
-def test_geometry():
-    p1 = Point(1, 2)
-    p2 = Point(2, 3)
-    p3 = Point(0, 0)
-    p4 = Point(0, 1)
-    for c in (GeometryEntity, GeometryEntity(), Point, p1, Circle,
-              Circle(p1, 2), Ellipse, Ellipse(p1, 3, 4), Line, Line(p1, p2),
-              LinearEntity, LinearEntity(p1, p2), Ray, Ray(p1, p2), Segment,
-              Segment(p1, p2), Polygon, Polygon(p1, p2, p3, p4),
-              RegularPolygon, RegularPolygon(p1, 4, 5), Triangle,
-              Triangle(p1, p2, p3)):
-        check(c, check_attr=False)
 
 
 def test_integrals():
@@ -466,8 +448,6 @@ def test_concrete():
 
 
 def test_sympyissue_7457():
-    pickle.loads(pickle.dumps(Point(1.1, 2.1).evalf()))  # not raises
-
     a = Float('1.2')
     b = pickle.loads(pickle.dumps(a))
     b.evalf(strict=False)  # not raises

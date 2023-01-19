@@ -27,6 +27,7 @@ Compatibility breaks
 * Removed ``diofant.vector`` module, see :pull:`1274`.
 * Removed ``diofant.diffgeom`` module, see :pull:`1281`.
 * Removed ``diofant.stats`` module, see :pull:`1276`.
+* Removed ``diofant.geometry`` module and ``line_integrate`` function, see :pull:`1283`.
 
 Minor changes
 =============

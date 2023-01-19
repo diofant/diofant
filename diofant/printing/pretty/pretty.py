@@ -933,10 +933,6 @@ class PrettyPrinter(Printer):
 
         return pform
 
-    def _print_GeometryEntity(self, expr):
-        # GeometryEntity is based on Tuple but should not print like a Tuple
-        return self.emptyPrinter(expr)
-
     def _print_Lambda(self, e):
         vars, expr = e.args
         if self._use_unicode:

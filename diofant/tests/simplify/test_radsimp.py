@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Polygon,
-                     Rational, RegularPolygon, Symbol, Wild, collect,
-                     collect_const, cos, denom, diff, exp, factor, fraction,
-                     log, nan, radsimp, rcollect, root, sin, sqrt, symbols)
+from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Rational,
+                     Symbol, Wild, collect, collect_const, cos, diff, exp,
+                     factor, fraction, log, nan, radsimp, rcollect, root, sin,
+                     sqrt, symbols)
 from diofant.abc import a, b, c, d, t, x, y, z
 from diofant.core.mul import _unevaluated_Mul as UMul
 from diofant.simplify.radsimp import collect_sqrt, fraction_expand
@@ -394,9 +394,3 @@ def test_sympyissue_5615():
     aA, Re, D = symbols('aA Re D')
     e = ((D**3*a + b*aA**3)/Re).expand()
     assert collect(e, [aA**3/Re, a]) == e
-
-
-def test_sympyissue_5933():
-    x = Polygon(*RegularPolygon((0, 0), 1, 5).vertices).centroid.x
-    assert abs(denom(x).evalf()) > 1e-12
-    assert abs(denom(radsimp(x))) > 1e-12  # in case simplify didn't handle it
