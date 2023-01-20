@@ -241,18 +241,18 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
+        """Return ``True`` if two domains are equivalent."""
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
         return self
 
     def poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`."""
+        """Return a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`."""
+        """Return a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get('order', lex))

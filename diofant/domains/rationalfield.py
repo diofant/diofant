@@ -18,7 +18,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     has_assoc_Ring = True
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
+        r"""Return an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 

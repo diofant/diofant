@@ -13,7 +13,7 @@ class CommutativeRing(Domain):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
+        """Return a ring associated with ``self``."""
         return self
 
     def exquo(self, a, b):
@@ -35,7 +35,7 @@ class CommutativeRing(Domain):
         return divmod(a, b)
 
     def invert(self, a, b):
-        """Returns inversion of ``a mod b``."""
+        """Return inversion of ``a mod b``."""
         s, h = self.half_gcdex(a, b)
 
         if h == 1:
@@ -49,7 +49,7 @@ class CommutativeRing(Domain):
         return s, h
 
     def cofactors(self, a, b):
-        """Returns GCD and cofactors of ``a`` and ``b``."""
+        """Return GCD and cofactors of ``a`` and ``b``."""
         gcd, cfa, cfb = self.gcd(a, b), self.zero, self.zero
         if gcd:
             cfa = self.quo(a, gcd)
@@ -57,7 +57,7 @@ class CommutativeRing(Domain):
         return gcd, cfa, cfb
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
+        """Return LCM of ``a`` and ``b``."""
         return abs(a*b)//self.gcd(a, b)
 
     @property
@@ -67,5 +67,5 @@ class CommutativeRing(Domain):
         raise NotImplementedError
 
     def is_normal(self, a):
-        """Returns True if ``a`` is unit normal."""
+        """Return True if ``a`` is unit normal."""
         return a >= 0
