@@ -1,3 +1,5 @@
+"""Implementation of quotient ring elements."""
+
 import numbers
 
 from ..polys.polyerrors import CoercionFailedError
