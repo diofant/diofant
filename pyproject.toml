@@ -39,11 +39,10 @@ Download = 'https://github.com/diofant/diofant/releases/'
 [project.optional-dependencies]
 exports = ['numpy>=1.19', 'scipy>=1.6', 'cython']
 gmpy = ['gmpy2>=2.1.0']
-plot = ['matplotlib>=3.5.0']
 interactive = ['ipykernel']
 docs = ['sphinx>=4', 'sphinxcontrib-bibtex>=2.1', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1']
-tests = ['pytest>=6', 'hypothesis', 'pytest-timeout', 'pexpect']
+tests = ['pytest>=6', 'hypothesis', 'pytest-timeout', 'pexpect', 'matplotlib']
 develop = ['diofant[tests]', 'flake518', 'flake8-docstrings>=1.3',
             'pep8-naming', 'flake8-comprehensions', 'flake8-isort>=4.1',
             'flake8-quotes>=3', 'flake8-sfs', 'pytest-xdist>=1.22',
@@ -156,7 +155,7 @@ show_missing = true
 [tool.mypy]
 follow_imports = 'silent'
 [[tool.mypy.overrides]]
-module = ['IPython.*', 'gmpy2', 'matplotlib', 'mpmath.*', 'pexpect',
+module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect',
           'scipy.*', 'traitlets.*']
 ignore_missing_imports = true
 [tool.flake8]

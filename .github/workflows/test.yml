@@ -36,7 +36,7 @@ jobs:
       run: |
         pip install -U pip setuptools wheel
         pip install -U git+https://github.com/zheller/flake8-quotes
-        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        pip install -U .[interactive,develop,gmpy,exports,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
     - name: Linting with flake8 and pylint

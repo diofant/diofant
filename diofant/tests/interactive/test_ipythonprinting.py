@@ -158,8 +158,6 @@ def test_ipython_printing(monkeypatch):
     assert text == 'QQ<sqrt(2)>'
     assert latex == r'\begin{equation}QQ<sqrt(2)>\end{equation}'
 
-    # test_matplotlib_bad_latex
-
     # Initialize and setup IPython session
     app.run_cell('init_printing()')
 

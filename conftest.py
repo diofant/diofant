@@ -8,14 +8,6 @@ import pytest
 import diofant
 
 
-try:
-    import matplotlib
-    matplotlib.rc('figure', max_open_warning=0)
-    del matplotlib
-except ImportError:
-    collect_ignore_glob = ['diofant/plotting/*.py']
-
-
 def pytest_report_header(config):
     return f"""\nDiofant version: {diofant.__version__}
 cache: {diofant.core.cache.USE_CACHE}
@@ -41,15 +33,6 @@ def _file_clear_cache():
 @pytest.fixture(autouse=True, scope='session')
 def _set_displayhook():
     sys.__displayhook__ = sys.displayhook  # https://bugs.python.org/26092
-
-
-@pytest.fixture(autouse=True, scope='session')
-def _enable_mpl_agg_backend():
-    try:
-        import matplotlib
-        matplotlib.use('Agg')
-    except ImportError:
-        pass
 
 
 @pytest.fixture(autouse=True)

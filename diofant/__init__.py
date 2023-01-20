@@ -102,9 +102,6 @@ from .ntheory import (Sieve, binomial_coefficients, binomial_coefficients_list,
                       primepi, primerange, primitive_root, primorial,
                       quadratic_residues, randprime, sieve, sqrt_mod,
                       sqrt_mod_iter, square_factor, totient, trailing)
-from .plotting import (plot, plot3d, plot3d_parametric_line,
-                       plot3d_parametric_surface, plot_backends, plot_implicit,
-                       plot_parametric)
 from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailedError,
                     ComputationFailedError, DomainError, EvaluationFailedError,
                     ExactQuotientFailedError, ExtraneousFactorsError,
@@ -291,11 +288,10 @@ __all__ = (
     'RGS_enum', 'RGS_rank', 'RGS_unrank', 'RubikGroup', 'Subset',
     'SymmetricGroup', 'alternating', 'cube', 'cyclic', 'dihedral',
     'dodecahedron', 'icosahedron', 'octahedron', 'symmetric', 'tetrahedron',
-    'plot', 'plot3d', 'plot3d_parametric_line', 'plot3d_parametric_surface',
-    'plot_backends', 'plot_implicit', 'plot_parametric', 'StrPrinter', 'ccode',
-    'dotprint', 'fcode', 'latex', 'mathematica_code', 'mathml', 'octave_code',
-    'pprint', 'pprint_use_unicode', 'pretty', 'pretty_print', 'python', 'srepr',
-    'sstr', 'sstrrepr', 'init_printing', 'ExtendedReals', 'IntegerModRing')
+    'StrPrinter', 'ccode', 'dotprint', 'fcode', 'latex', 'mathematica_code',
+    'mathml', 'octave_code', 'pprint', 'pprint_use_unicode', 'pretty',
+    'pretty_print', 'python', 'srepr', 'sstr', 'sstrrepr', 'init_printing',
+    'ExtendedReals', 'IntegerModRing')
 
 __version__ = pkg_resources.get_distribution(__name__).version
 del pkg_resources
