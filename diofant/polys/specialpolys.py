@@ -121,7 +121,7 @@ def interpolating_poly(n, x, X='x', Y='y'):
     return Add(*[coeff*y for coeff, y in zip(coeffs, Y)])
 
 
-class _test_polys:
+class _TestPolys:
     def fateman_poly_F_1(self):
         """Fateman's GCD benchmark: trivial GCD."""
         gens = self.gens
