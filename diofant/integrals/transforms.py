@@ -775,7 +775,7 @@ class InverseMellinTransform(IntegralTransform):
 
     def _compute_transform(self, f, x, s, **hints):
         from ..utilities import postorder_traversal
-        global _allowed
+        global _allowed  # pylint: disable=global-statement
         if _allowed is None:
             from ..functions import (cos, cosh, cot, coth, exp, factorial,
                                      gamma, rf, sin, sinh, tan, tanh)

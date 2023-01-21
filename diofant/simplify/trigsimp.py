@@ -736,7 +736,7 @@ _trigpat = None
 
 
 def _trigpats():
-    global _trigpat
+    global _trigpat  # pylint: disable=global-statement
     a, b, c = symbols('a b c', cls=Wild)
     d = Wild('d', commutative=False)
 
