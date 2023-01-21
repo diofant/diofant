@@ -16,4 +16,5 @@ class DomainElement(abc.ABC, DefaultPrinting):
     @property
     @abc.abstractmethod
     def parent(self):
+        """Get the domain of the element."""
         raise NotImplementedError

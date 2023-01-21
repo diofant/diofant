@@ -245,6 +245,7 @@ class Domain(DefaultPrinting, abc.ABC):
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
+        """Get an associated exact domain."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
