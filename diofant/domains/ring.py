@@ -64,7 +64,6 @@ class CommutativeRing(Domain):
     @abc.abstractmethod
     def characteristic(self):
         """Return the characteristic of this ring."""
-        raise NotImplementedError
 
     def is_normal(self, a):
         """Return True if ``a`` is unit normal."""

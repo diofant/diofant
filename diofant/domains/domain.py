@@ -48,12 +48,10 @@ class Domain(DefaultPrinting, abc.ABC):
     @abc.abstractmethod
     def from_expr(self, expr):
         """Convert Diofant's expression ``expr`` to ``dtype``."""
-        raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
         """Convert domain ``element`` to Diofant expression."""
-        raise NotImplementedError
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain."""

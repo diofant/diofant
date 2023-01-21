@@ -65,12 +65,10 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     @abc.abstractmethod
     def finite_field(self, p):
         """Return a finite field."""
-        raise NotImplementedError
 
     @abc.abstractmethod
     def finite_ring(self, n):
         """Return a finite ring."""
-        raise NotImplementedError
 
 
 class PythonIntegerRing(IntegerRing):
