@@ -316,7 +316,7 @@ def filter_symbols(iterator, exclude):
             yield s
 
 
-def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumptions):
+def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
     """
     Generate an infinite stream of Symbols consisting of a prefix and
     increasing subscripts provided that they do not occur in `exclude`.
@@ -350,7 +350,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
     while True:
         name = f'{prefix}{start}'
-        s = cls(name, *args, **assumptions)
+        s = cls(name, **assumptions)
         if s not in exclude:
             yield s
         start += 1

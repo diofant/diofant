@@ -120,7 +120,6 @@ disable = ['invalid-name',
            'redefined-builtin',
            'undefined-loop-variable',
            'cell-var-from-loop',
-           'keyword-arg-before-vararg',
            'import-outside-toplevel',
            'arguments-out-of-order',
            'consider-using-f-string']
