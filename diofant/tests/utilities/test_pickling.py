@@ -55,8 +55,7 @@ __all__ = ()
 
 # XXX we need this to initialize singleton registry properly
 half = Rational(1, 2)
-ø = S.EmptySet
-ℕ = S.Naturals0
+empty = S.EmptySet
 Id = Lambda(x, x)
 
 excluded_attrs = {'_assumptions', '_hash', '__dict__', 'is_evaluated'}
