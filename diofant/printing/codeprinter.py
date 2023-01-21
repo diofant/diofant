@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-import typing
-
 from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -86,7 +82,7 @@ class CodePrinter(StrPrinter):
         'not': '!',
     }
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'error_on_reserved': False,

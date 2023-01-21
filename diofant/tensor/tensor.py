@@ -29,11 +29,8 @@ If there is a (anti)symmetric metric, the indices can be raised and
 lowered when the tensor is put in canonical form.
 """
 
-from __future__ import annotations
-
+import collections
 import functools
-import typing
-from collections import defaultdict
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
                                         get_symmetric_group_sgs, riemann_bsgs)
@@ -576,7 +573,7 @@ class TIDS(CantSympify):
         for t in components:
             vpos.append(pos)
             pos += t.rank
-        cdt = defaultdict(int)
+        cdt = collections.defaultdict(int)
         # if the free indices have names with dummy_fmt, start with an
         # index higher than those for the dummy indices
         # to avoid name collisions
@@ -750,8 +747,8 @@ class _TensorDataLazyEvaluator(CantSympify):
 
     """
 
-    _substitutions_dict: dict[typing.Any, typing.Any] = {}
-    _substitutions_dict_tensmul: dict[typing.Any, typing.Any] = {}
+    _substitutions_dict: dict[object, object] = {}
+    _substitutions_dict_tensmul: dict[object, object] = {}
 
     def __getitem__(self, key):
         dat = self._get(key)

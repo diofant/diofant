@@ -9,9 +9,9 @@ the separate 'factorials' module.
 
 from __future__ import annotations
 
+import collections
 import math
 import numbers
-import typing
 
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
@@ -588,7 +588,7 @@ class harmonic(Function):
 
     # Generate one memoized Harmonic number-generating function for each
     # order and store it in a dictionary
-    _functions: dict[Integer, typing.Callable[[int], Rational]] = {}
+    _functions: dict[Integer, collections.abc.Callable[[int], Rational]] = {}
 
     @classmethod
     def eval(cls, n, m=None):
@@ -1164,8 +1164,6 @@ def _AOP_product(n):
     * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
 
     """
-    from collections import defaultdict
-
     n = list(n)
     ord = sum(n)
     need = (ord + 2)//2
@@ -1185,7 +1183,7 @@ def _AOP_product(n):
         rv = rv + rev
     else:
         rv[-1:] = rev
-    d = defaultdict(int)
+    d = collections.defaultdict(int)
     for i, ri in enumerate(rv):
         d[i] = ri
     return d

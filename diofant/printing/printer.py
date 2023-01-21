@@ -67,10 +67,6 @@ Some more information how the single concepts work and who should use which:
     not defined in the Printer subclass this will be the same as str(expr).
 """
 
-from __future__ import annotations
-
-import typing
-
 
 class Printer:
     """Generic printer
@@ -132,9 +128,9 @@ class Printer:
 
     """
 
-    _global_settings: dict[str, typing.Any] = {}
+    _global_settings: dict[str, object] = {}
 
-    _default_settings: dict[str, typing.Any] = {}
+    _default_settings: dict[str, object] = {}
 
     emptyPrinter = str
     printmethod: str | None = None

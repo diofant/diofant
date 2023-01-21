@@ -9,10 +9,7 @@ in `diofant.utilities.codegen`.  The `codegen` module can be used to generate
 complete source code files.
 """
 
-from __future__ import annotations
-
 import re
-import typing
 
 from ..core import I, Integer, Mul, Pow, Rational, oo, pi
 from ..core.mul import _keep_coeff
@@ -61,7 +58,7 @@ class OctaveCodePrinter(CodePrinter):
         'not': '~',
     }
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'precision': 16,
