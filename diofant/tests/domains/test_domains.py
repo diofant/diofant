@@ -29,9 +29,6 @@ def test_Domain_interface():
     assert RR(1).parent is RR
     assert CC(1).parent is CC
 
-    assert RR.has_default_precision
-    assert CC.has_default_precision
-
     RR3 = RealField(prec=53, dps=3)
     assert str(RR3(1.7611107002)) == '1.76'
 

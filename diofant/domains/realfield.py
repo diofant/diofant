@@ -22,12 +22,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     is_Exact = False
     is_Numerical = True
 
-    _default_precision = 53
-
-    @property
-    def has_default_precision(self):
-        return self.precision == self._default_precision
-
     @property
     def precision(self):
         return self._context.prec
@@ -40,7 +34,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def tolerance(self):
         return self._context.tolerance
 
-    def __new__(cls, prec=_default_precision, dps=None, tol=None):
+    def __new__(cls, prec=53, dps=None, tol=None):
         context = MPContext(prec, dps, tol)
 
         obj = super().__new__(cls)
