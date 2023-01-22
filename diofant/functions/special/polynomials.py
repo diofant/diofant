@@ -119,13 +119,12 @@ class jacobi(OrthogonalPolynomial):
         if a == b:
             if a == -Rational(1, 2):
                 return RisingFactorial(Rational(1, 2), n) / factorial(n) * chebyshevt(n, x)
-            elif a == 0:
+            if a == 0:
                 return legendre(n, x)
-            elif a == Rational(1, 2):
+            if a == Rational(1, 2):
                 return RisingFactorial(Rational(3, 2), n) / factorial(n + 1) * chebyshevu(n, x)
-            else:
-                return RisingFactorial(a + 1, n) / RisingFactorial(2*a + 1, n) * gegenbauer(n, a + Rational(1, 2), x)
-        elif b == -a:
+            return RisingFactorial(a + 1, n) / RisingFactorial(2*a + 1, n) * gegenbauer(n, a + Rational(1, 2), x)
+        if b == -a:
             # P^{a, -a}_n(x)
             return gamma(n + a + 1) / gamma(n + 1) * (1 + x)**(a/2) / (1 - x)**(a/2) * assoc_legendre(n, -a, x)
 
@@ -140,7 +139,7 @@ class jacobi(OrthogonalPolynomial):
                         hyper([-b - n, -n], [a + 1], -1))
             if x == 1:
                 return RisingFactorial(a + 1, n) / factorial(n)
-            elif x == oo:
+            if x == oo:
                 if n.is_positive:
                     # Make sure a+b+2*n \notin Z
                     if (a + b + 2*n).is_integer:
@@ -163,7 +162,7 @@ class jacobi(OrthogonalPolynomial):
             f2 = ((a + b + 2*k + 1) * RisingFactorial(b + k + 1, n - k) /
                   ((n - k) * RisingFactorial(a + b + k + 1, n - k)))
             return Sum(f1 * (jacobi(n, a, b, x) + f2*jacobi(k, a, b, x)), (k, 0, n - 1))
-        elif argindex == 3:
+        if argindex == 3:
             # Diff wrt b
             n, a, b, x = self.args
             k = Dummy('k')
@@ -171,12 +170,11 @@ class jacobi(OrthogonalPolynomial):
             f2 = (-1)**(n - k) * ((a + b + 2*k + 1) * RisingFactorial(a + k + 1, n - k) /
                                   ((n - k) * RisingFactorial(a + b + k + 1, n - k)))
             return Sum(f1 * (jacobi(n, a, b, x) + f2*jacobi(k, a, b, x)), (k, 0, n - 1))
-        elif argindex == 4:
+        if argindex == 4:
             # Diff wrt x
             n, a, b, x = self.args
             return (a + b + n + 1) * jacobi(n - 1, a + 1, b + 1, x) / 2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         n, a, b, x = self.args
@@ -317,9 +315,9 @@ class gegenbauer(OrthogonalPolynomial):
         # Some special values for fixed a
         if a == Rational(1, 2):
             return legendre(n, x)
-        elif a == 1:
+        if a == 1:
             return chebyshevu(n, x)
-        elif a == -1:
+        if a == -1:
             return Integer(0)
 
         if not n.is_Number:
@@ -327,8 +325,7 @@ class gegenbauer(OrthogonalPolynomial):
             if x == -1:
                 if (re(a) - Rational(1, 2)).is_positive:
                     return zoo
-                else:
-                    return
+                return
 
             # Symbolic result C^a_n(x)
             # C^a_n(-x)  --->  (-1)**n * C^a_n(x)
@@ -340,7 +337,7 @@ class gegenbauer(OrthogonalPolynomial):
                         (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)))
             if x == 1:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
-            elif x == oo:
+            if x == oo:
                 if n.is_positive:
                     return RisingFactorial(a, n) * oo
         else:
@@ -362,12 +359,11 @@ class gegenbauer(OrthogonalPolynomial):
                 2 / (k + n + 2*a)
             kern = factor1*gegenbauer(k, a, x) + factor2*gegenbauer(n, a, x)
             return Sum(kern, (k, 0, n - 1))
-        elif argindex == 3:
+        if argindex == 3:
             # Diff wrt x
             n, a, x = self.args
             return 2*a*gegenbauer(n - 1, a + 1, x)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         n, a, x = self.args
@@ -457,23 +453,22 @@ class chebyshevt(OrthogonalPolynomial):
                 return cos(pi*n/2)
             if x == 1:
                 return Integer(1)
-            elif x == oo:
+            if x == oo:
                 return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 # T_{-n}(x) == T_n(x)
                 return cls._eval_at_order(-n, x)
-            else:
-                return cls._eval_at_order(n, x)
+            return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return n * chebyshevu(n - 1, x)
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
 
 class chebyshevu(OrthogonalPolynomial):
@@ -555,7 +550,7 @@ class chebyshevu(OrthogonalPolynomial):
                 return cos(pi*n/2)
             if x == 1:
                 return 1 + n
-            elif x == oo:
+            if x == oo:
                 return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -563,18 +558,16 @@ class chebyshevu(OrthogonalPolynomial):
                 # U_{-n}(x)  --->  -U_{n-2}(x)
                 if n == -1:
                     return Integer(0)
-                else:
-                    return -cls._eval_at_order(-n - 2, x)
-            else:
-                return cls._eval_at_order(n, x)
+                return -cls._eval_at_order(-n - 2, x)
+            return cls._eval_at_order(n, x)
 
     def fdiff(self, argindex=2):
         if argindex == 2:
             # Diff wrt x
             n, x = self.args
             return ((n + 1) * chebyshevt(n + 1, x) - x * chebyshevu(n, x)) / (x**2 - 1)
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
 
 class chebyshevt_root(Function):
@@ -721,9 +714,9 @@ class legendre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == 0:
                 return sqrt(pi)/(gamma((1 - n)/2)*gamma(Integer(1) + n/2))
-            elif x == 1:
+            if x == 1:
                 return Integer(1)
-            elif x == oo:
+            if x == oo:
                 return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -738,8 +731,8 @@ class legendre(OrthogonalPolynomial):
             # Find better formula, this is unsuitable for x = 1
             n, x = self.args
             return n/(x**2 - 1)*(x*legendre(n, x) - legendre(n - 1, x))
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
 
 class assoc_legendre(Function):
@@ -823,8 +816,8 @@ class assoc_legendre(Function):
             # Find better formula, this is unsuitable for x = 1
             n, m, x = self.args
             return 1/(x**2 - 1)*(x*n*assoc_legendre(n, m, x) - (m + n)*assoc_legendre(n - 1, m, x))
-        else:  # wrt n, m
-            raise ArgumentIndexError(self, argindex)
+        # wrt n, m
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         n, m, x = self.args
@@ -894,7 +887,7 @@ class hermite(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == 0:
                 return 2**n * sqrt(pi) / gamma((1 - n)/2)
-            elif x == oo:
+            if x == oo:
                 return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -908,8 +901,8 @@ class hermite(OrthogonalPolynomial):
             # Diff wrt x
             n, x = self.args
             return 2*n*hermite(n - 1, x)
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
 ############################################################################
 # Laguerre polynomials
@@ -983,9 +976,9 @@ class laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == 0:
                 return Integer(1)
-            elif x == -oo:
+            if x == -oo:
                 return oo
-            elif x == oo:
+            if x == oo:
                 return (-1)**n * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -999,8 +992,8 @@ class laguerre(OrthogonalPolynomial):
             # Diff wrt x
             n, x = self.args
             return -assoc_laguerre(n - 1, 1, x)
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
 
 class assoc_laguerre(OrthogonalPolynomial):
@@ -1085,9 +1078,9 @@ class assoc_laguerre(OrthogonalPolynomial):
             # We can evaluate for some special values of x
             if x == 0:
                 return binomial(n + alpha, alpha)
-            elif x == oo and n.is_positive:
+            if x == oo and n.is_positive:
                 return (-1)**n * oo
-            elif x == -oo and n.is_positive:
+            if x == -oo and n.is_positive:
                 return oo
         else:
             # n is a given fixed integer, evaluate into polynomial
@@ -1103,12 +1096,12 @@ class assoc_laguerre(OrthogonalPolynomial):
             n, alpha, x = self.args
             k = Dummy('k')
             return Sum(assoc_laguerre(k, alpha, x) / (n - alpha), (k, 0, n - 1))
-        elif argindex == 3:
+        if argindex == 3:
             # Diff wrt x
             n, alpha, x = self.args
             return -assoc_laguerre(n - 1, alpha + 1, x)
-        else:  # wrt n
-            raise ArgumentIndexError(self, argindex)
+        # wrt n
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         n, alpha, x = self.args

@@ -226,7 +226,7 @@ def _modgcd_p(f, g, degbound, contbound):
 
         if (degh := h.degree()) > degbound[0]:
             return
-        elif degh < degbound[0]:
+        if degh < degbound[0]:
             degbound[0] = degh
             raise ModularGCDFailedError
 
@@ -250,7 +250,7 @@ def _modgcd_p(f, g, degbound, contbound):
 
     if (degconth := conth.degree(-1)) > contbound[k-1]:
         return
-    elif degconth < contbound[k-1]:
+    if degconth < contbound[k-1]:
         contbound[k-1] = degconth
         raise ModularGCDFailedError
 
@@ -296,8 +296,7 @@ def _modgcd_p(f, g, degbound, contbound):
                 d += 1
                 continue
             return
-        else:
-            n += 1
+        n += 1
 
         if ha.is_ground:
             return conth

@@ -170,8 +170,7 @@ class UnivarPolyElement(PolyElement):
     def all_coeffs(self):
         if self:
             return [self[(i,)] for i in range(self.degree() + 1)]
-        else:
-            return [self.parent.domain.zero]
+        return [self.parent.domain.zero]
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
@@ -260,9 +259,8 @@ class UnivarPolyElement(PolyElement):
 
             if r.degree() > 0:
                 return
-            else:
-                g[(i,)] = r.LC
-                f, i = q, i + 1
+            g[(i,)] = r.LC
+            f, i = q, i + 1
 
         g._strip_zero()
 

@@ -46,7 +46,7 @@ class Mod(Function):
                 if q == 2:
                     if p.is_even:
                         return Integer(0)
-                    elif p.is_odd:
+                    if p.is_odd:
                         return Integer(1)
 
             # by ratio
@@ -59,7 +59,7 @@ class Mod(Function):
                 rv = p - d*q
                 if (rv*q).is_nonnegative:
                     return rv
-                elif (rv*q).is_nonpositive:
+                if (rv*q).is_nonpositive:
                     return rv + q
 
             # by difference
@@ -67,7 +67,7 @@ class Mod(Function):
             if d.is_negative:
                 if q.is_negative:
                     return d
-                elif q.is_positive:
+                if q.is_positive:
                     return p
 
         rv = doit(p, q)
@@ -132,7 +132,7 @@ class Mod(Function):
         if G.is_Float and G == 1:
             p *= G
             return cls(p, q, evaluate=False)
-        elif G.is_Mul and G.args[0].is_Float and G.args[0] == 1:
+        if G.is_Mul and G.args[0].is_Float and G.args[0] == 1:
             p = G.args[0]*p
             G = Mul._from_args(G.args[1:])
         return G*cls(p, q, evaluate=(p, q) != (pwas, qwas))

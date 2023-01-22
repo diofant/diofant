@@ -761,7 +761,7 @@ class _TensorDataLazyEvaluator(CantSympify):
 
         if dat.ndim == 0:
             return dat[()]
-        elif dat.ndim == 1 and dat.size == 1:
+        if dat.ndim == 1 and dat.size == 1:
             return dat[0]
         return dat
 
@@ -1874,8 +1874,7 @@ class TensorType(Basic):
             raise ValueError('expecting a string')
         if len(names) == 1:
             return TensorHead(names[0], self, comm, matrix_behavior=matrix_behavior)
-        else:
-            return [TensorHead(name, self, comm, matrix_behavior=matrix_behavior) for name in names]
+        return [TensorHead(name, self, comm, matrix_behavior=matrix_behavior) for name in names]
 
 
 def tensorhead(name, typ, sym, comm=0, matrix_behavior=0):
@@ -2445,9 +2444,7 @@ class TensExpr(Basic):
                 for i in range(rows):
                     mat_list[i] = self[i]
             return Matrix(mat_list)
-        else:
-            raise NotImplementedError(
-                'missing multidimensional reduction to matrix.')
+        raise NotImplementedError('missing multidimensional reduction to matrix.')
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -2739,16 +2736,13 @@ class TensAdd(TensExpr):
         if isinstance(other, TensAdd):
             if set(self.args) != set(other.args):
                 return False
-            else:
-                return True
+            return True
         t = self - other
         if not isinstance(t, TensExpr):
             return t == 0
-        else:
-            if isinstance(t, TensMul):
-                return t._coeff == 0
-            else:
-                return all(x._coeff == 0 for x in t.args)
+        if isinstance(t, TensMul):
+            return t._coeff == 0
+        return all(x._coeff == 0 for x in t.args)
 
     def __add__(self, other):
         return TensAdd(self, other)
@@ -3117,8 +3111,7 @@ class Tensor(TensExpr):
         component = self.component
         if component.rank > 0:
             return f"{component.name}({', '.join(indices)})"
-        else:
-            return f'{component.name}'
+        return f'{component.name}'
 
     def equals(self, other):
         if other == 0:
@@ -3646,8 +3639,7 @@ def riemann_cyclic(t2):
     t3 = TensAdd(*a3)
     if not t3:
         return t3
-    else:
-        return canon_bp(t3)
+    return canon_bp(t3)
 
 
 def get_indices(t):

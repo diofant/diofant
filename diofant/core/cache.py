@@ -61,5 +61,4 @@ def cacheit(f, maxsize=None):
 
         CACHE.append(wrapper)
         return wrapper
-    else:
-        return f
+    return f

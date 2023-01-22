@@ -92,8 +92,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     expr = sympify(expr)
     if dict:
         return _separatevars_dict(_separatevars(expr, force), symbols)
-    else:
-        return _separatevars(expr, force)
+    return _separatevars(expr, force)
 
 
 def _separatevars(expr, force):
@@ -1073,7 +1072,7 @@ def besselsimp(expr):
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
                         func=True)).subs({z0: z})))
-            elif nu.is_Integer and nu > 1:
+            if nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
         return repl
@@ -1165,7 +1164,7 @@ def sum_add(self, other, method=0):
                     if i == j:
                         if x2 == y1 + 1:
                             return Sum(self.function, (i, x1, y2))
-                        elif x1 == y2 + 1:
+                        if x1 == y2 + 1:
                             return Sum(self.function, (i, x2, y1))
 
     return Add(self, other)
@@ -1226,7 +1225,7 @@ def product_mul(self, other, method=0):
                     if i == j:
                         if x2 == y1 + 1:
                             return Product(self.function, (i, x1, y2))
-                        elif x1 == y2 + 1:
+                        if x1 == y2 + 1:
                             return Product(self.function, (i, x2, y1))
 
     return Mul(self, other)

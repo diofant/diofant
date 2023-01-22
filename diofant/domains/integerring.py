@@ -34,10 +34,9 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     def from_expr(self, expr):
         if expr.is_Integer:
             return self.dtype(expr.numerator)
-        elif expr.is_Float and int(expr) == expr:
+        if expr.is_Float and int(expr) == expr:
             return self.dtype(expr)
-        else:
-            raise CoercionFailedError(f'expected an integer, got {expr}')
+        raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

@@ -62,11 +62,9 @@ def symmetrize(F, *gens, **args):
 
         if not exc.opt.formal:
             return result
-        else:
-            if iterable:
-                return result, []
-            else:
-                return result + ([],)
+        if iterable:
+            return result, []
+        return result + ([],)
 
     polys, symbols = [], opt.symbols
     gens, dom = opt.gens, opt.domain
@@ -131,11 +129,9 @@ def symmetrize(F, *gens, **args):
 
     if not opt.formal:
         return result
-    else:
-        if iterable:
-            return result, polys
-        else:
-            return result + (polys,)
+    if iterable:
+        return result, polys
+    return result + (polys,)
 
 
 def horner(f, *gens, **args):

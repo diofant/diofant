@@ -57,5 +57,4 @@ class Inverse(MatPow):
     def doit(self, **hints):
         if hints.get('deep', True):
             return self.arg.doit(**hints).inverse()
-        else:
-            return self.arg.inverse()
+        return self.arg.inverse()

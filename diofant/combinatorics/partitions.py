@@ -637,10 +637,9 @@ def RGS_enum(m):
     """
     if m < 1:
         return 0
-    elif m == 1:
+    if m == 1:
         return 1
-    else:
-        return bell(m)
+    return bell(m)
 
 
 def RGS_unrank(rank, m):

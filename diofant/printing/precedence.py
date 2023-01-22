@@ -84,19 +84,17 @@ def precedence_Float(item):
 def precedence_PolyElement(item):
     if item.is_generator:
         return PRECEDENCE['Atom']
-    elif item.is_ground:
+    if item.is_ground:
         return precedence(item[1])
-    elif item.is_term:
+    if item.is_term:
         return PRECEDENCE['Mul']
-    else:
-        return PRECEDENCE['Add']
+    return PRECEDENCE['Add']
 
 
 def precedence_FracElement(item):
     if item.denominator == 1:
         return precedence_PolyElement(item.numerator)
-    else:
-        return PRECEDENCE['Mul']
+    return PRECEDENCE['Mul']
 
 
 #: Sometimes it's not enough to assign a fixed precedence value to a class. Then
@@ -119,6 +117,6 @@ def precedence(item):
         n = i.__name__
         if n in PRECEDENCE_FUNCTIONS:
             return PRECEDENCE_FUNCTIONS[n](item)
-        elif n in PRECEDENCE_VALUES:
+        if n in PRECEDENCE_VALUES:
             return PRECEDENCE_VALUES[n]
     return PRECEDENCE['Atom']

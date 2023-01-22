@@ -61,16 +61,16 @@ class MatPow(MatrixExpr):
             if isinstance(base, MatrixBase):
                 return base.func(Identity(base.shape[0]))
             return Identity(base.shape[0])
-        elif isinstance(base, ZeroMatrix) and exp.is_negative:
+        if isinstance(base, ZeroMatrix) and exp.is_negative:
             raise ValueError('Matrix det == 0; not invertible.')
-        elif isinstance(base, (Identity, ZeroMatrix)):
+        if isinstance(base, (Identity, ZeroMatrix)):
             return base
-        elif isinstance(base, MatrixBase) and exp.is_number:
+        if isinstance(base, MatrixBase) and exp.is_number:
             if exp == 1:
                 return base
             return base**exp
         # Note: just evaluate cases we know, return unevaluated on others.
         # E.g., MatrixSymbol('x', n, m) to power 0 is not an error.
-        elif exp == 1:
+        if exp == 1:
             return base
         return MatPow(base, exp)

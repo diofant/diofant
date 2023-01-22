@@ -197,11 +197,9 @@ def derive_by_array(expr, dx):
         expr = ImmutableDenseNDimArray(expr)
         new_array = [[y.diff(x) for y in expr] for x in dx]
         return type(expr)(new_array, dx.shape + expr.shape)
-    else:
-        if isinstance(dx, array_types):
-            return ImmutableDenseNDimArray([expr.diff(i) for i in dx], dx.shape)
-        else:
-            return diff(expr, dx)
+    if isinstance(dx, array_types):
+        return ImmutableDenseNDimArray([expr.diff(i) for i in dx], dx.shape)
+    return diff(expr, dx)
 
 
 def permutedims(expr, perm):

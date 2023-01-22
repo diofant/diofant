@@ -360,8 +360,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
             replacements.append((sym, new_expr))
             return sym
 
-        else:
-            return new_expr
+        return new_expr
 
     reduced_exprs = []
     for e in exprs:

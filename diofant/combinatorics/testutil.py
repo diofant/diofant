@@ -69,9 +69,9 @@ def _naive_list_centralizer(self, other, af=False):
                 if commutes_with_gens(element):
                     centralizer_list.append(element)
         return centralizer_list
-    elif hasattr(other, 'getitem'):
+    if hasattr(other, 'getitem'):
         return _naive_list_centralizer(self, PermutationGroup(other), af)
-    elif hasattr(other, 'array_form'):
+    if hasattr(other, 'array_form'):
         return _naive_list_centralizer(self, PermutationGroup([other]), af)
 
 

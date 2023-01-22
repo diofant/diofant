@@ -38,10 +38,9 @@ def _nsort(roots, separated=False):
         r = list(roots)[0]
         if r.is_extended_real:
             return [[r], []]
-        elif r.is_real is False and r.is_complex:
+        if r.is_real is False and r.is_complex:
             return [[], [r]]
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
     all_numbers = all(r.is_number for r in roots)
     if not all_numbers:
         raise NotImplementedError
@@ -179,8 +178,7 @@ def _sort_factors(factors, **args):
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)
-    else:
-        return sorted(factors, key=order_no_multiple_key)
+    return sorted(factors, key=order_no_multiple_key)
 
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):

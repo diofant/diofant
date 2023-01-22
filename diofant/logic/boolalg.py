@@ -326,10 +326,9 @@ class And(LatticeOp, BooleanFunction):
         from ..sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
-        else:
-            raise NotImplementedError('Sorry, And.as_set has not yet been'
-                                      ' implemented for multivariate'
-                                      ' expressions')
+        raise NotImplementedError('Sorry, And.as_set has not yet been'
+                                  ' implemented for multivariate'
+                                  ' expressions')
 
 
 class Or(LatticeOp, BooleanFunction):
@@ -394,10 +393,9 @@ class Or(LatticeOp, BooleanFunction):
         from ..sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
-        else:
-            raise NotImplementedError('Sorry, Or.as_set has not yet been'
-                                      ' implemented for multivariate'
-                                      ' expressions')
+        raise NotImplementedError('Sorry, Or.as_set has not yet been'
+                                  ' implemented for multivariate'
+                                  ' expressions')
 
 
 class Not(BooleanFunction):
@@ -480,10 +478,9 @@ class Not(BooleanFunction):
         """
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
-        else:
-            raise NotImplementedError('Sorry, Not.as_set has not yet been'
-                                      ' implemented for mutivariate'
-                                      ' expressions')
+        raise NotImplementedError('Sorry, Not.as_set has not yet been'
+                                  ' implemented for mutivariate'
+                                  ' expressions')
 
 
 class Xor(BooleanFunction):
@@ -563,15 +560,14 @@ class Xor(BooleanFunction):
             argset.remove(b)
         if len(argset) == 0:
             return false
-        elif len(argset) == 1:
+        if len(argset) == 1:
             return argset.pop()
-        elif True in argset:
+        if True in argset:
             argset.remove(True)
             return ~Xor(*argset)
-        else:
-            obj._args = tuple(ordered(argset))
-            obj._argset = frozenset(argset)
-            return obj
+        obj._args = tuple(ordered(argset))
+        obj._argset = frozenset(argset)
+        return obj
 
     @property  # type: ignore[misc]
     @cacheit
@@ -696,12 +692,12 @@ class Implies(BooleanFunction):
                              f'(pairs are required): {args!s}') from exc
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
-        elif A == B:
+        if A == B:
             return true
-        elif A.is_Relational and B.is_Relational:
+        if A.is_Relational and B.is_Relational:
             if A.canonical == B.canonical:
                 return true
-            elif (~A).canonical == B.canonical:
+            if (~A).canonical == B.canonical:
                 return B
         else:
             return Expr.__new__(cls, *args)
@@ -747,7 +743,7 @@ class Equivalent(BooleanFunction):
                 rj, cj = rel[j][:2]
                 if cj == nc:
                     return false
-                elif cj == c:
+                if cj == c:
                     remove.append((r, rj))
                     break
         for a, b in remove:
@@ -806,13 +802,13 @@ class ITE(BooleanFunction):
             raise ValueError('ITE expects exactly 3 arguments') from exc
         if a == true:
             return b
-        elif a == false:
+        if a == false:
             return c
-        elif b == c:
+        if b == c:
             return b
-        elif b == true and c == false:
+        if b == true and c == false:
             return a
-        elif b == false and c == true:
+        if b == false and c == true:
             return ~a
 
     def _eval_derivative(self, x):
@@ -830,10 +826,9 @@ def _distribute(expr, a, b):
             return expr
         rest = b(*(a for a in expr.args if a is not conj))
         return a(*(_distribute(b(c, rest), a, b) for c in conj.args))
-    elif isinstance(expr, a):
+    if isinstance(expr, a):
         return a(*(_distribute(c, a, b) for c in expr.args))
-    else:
-        return expr
+    return expr
 
 
 def to_nnf(expr, simplify=True):
@@ -1183,8 +1178,7 @@ def to_int_repr(clauses, symbols):
     def append_symbol(arg, symbols):
         if isinstance(arg, Not):
             return -symbols[arg.args[0]]
-        else:
-            return symbols[arg]
+        return symbols[arg]
 
     return [{append_symbol(arg, symbols) for arg in Or.make_args(c)}
             for c in clauses]
@@ -1455,7 +1449,5 @@ def simplify_logic(expr, form='cnf', deep=True):
             variables = [v.simplify() for v in variables]
         if form == 'dnf':
             return _SOPform(variables, truthtable)
-        else:
-            return _POSform(variables, truthtable)
-    else:
-        raise ValueError('form can be cnf or dnf only')
+        return _POSform(variables, truthtable)
+    raise ValueError('form can be cnf or dnf only')

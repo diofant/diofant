@@ -50,12 +50,10 @@ class DenseNDimArray(NDimArray):
             array = [self._array[self._parse_index(i)] for i in eindices]
             nshape = [len(el) for i, el in enumerate(sl_factors) if isinstance(index[i], slice)]
             return type(self)(array, nshape)
-        else:
-            if isinstance(index, slice):
-                return self._array[index]
-            else:
-                index = self._parse_index(index)
-                return self._array[index]
+        if isinstance(index, slice):
+            return self._array[index]
+        index = self._parse_index(index)
+        return self._array[index]
 
     @classmethod
     def zeros(cls, *shape):

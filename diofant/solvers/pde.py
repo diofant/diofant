@@ -181,9 +181,8 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         pdedict.update(failed_hints)
         return pdedict
 
-    else:
-        return _helper_simplify(eq, hints['hint'],
-                                hints['func'], hints['order'], hints[hints['hint']], solvefun)
+    return _helper_simplify(eq, hints['hint'],
+                            hints['func'], hints['order'], hints[hints['hint']], solvefun)
 
 
 def _helper_simplify(eq, hint, func, order, match, solvefun):
@@ -212,12 +211,11 @@ def _handle_Integral(expr, func, order, hint):
     if hint.endswith('_Integral'):
         return expr
 
-    elif hint == '1st_linear_constant_coeff':
+    if hint == '1st_linear_constant_coeff':
         expr = simplify(expr.doit())
         return expr.func(expr.lhs.powsimp(), expr.rhs.powsimp())
 
-    else:
-        return expr
+    return expr
 
 
 def classify_pde(eq, func=None, dict=False, **kwargs):
@@ -290,8 +288,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
         if dict:
             matching_hints['default'] = None
             return matching_hints
-        else:
-            return ()
+        return ()
 
     eq = expand(eq)
 
@@ -366,8 +363,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
                 matching_hints['default'] = i
                 break
         return matching_hints
-    else:
-        return tuple(retlist)
+    return tuple(retlist)
 
 
 def checkpdesol(pde, sol, func=None, solve_for_func=True):
@@ -709,9 +705,8 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
 
-    else:
-        raise NotImplementedError('Cannot solve the partial differential '
-                                  'equation due to inability of constantsimp')
+    raise NotImplementedError('Cannot solve the partial differential '
+                              'equation due to inability of constantsimp')
 
 
 def _simplify_variable_coeff(sol, syms, func, funcarg):

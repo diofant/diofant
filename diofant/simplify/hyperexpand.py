@@ -1903,24 +1903,24 @@ def build_hypergeometric_formula(func):
         for k, c in enumerate(res):
             M[n - 1, k] = -c/derivs[n - 1][0, n - 1]/poly.LC()
         return Formula(func, z, None, [], B, C, M)
-    else:
-        # Since there are no `ap`, none of the `bq` can be non-positive
-        # integers.
-        basis = []
-        bq = list(func.bq[:])
-        for i, _ in enumerate(bq):
-            basis += [hyper([], bq, z)]
-            bq[i] += 1
+
+    # Since there are no `ap`, none of the `bq` can be non-positive
+    # integers.
+    basis = []
+    bq = list(func.bq[:])
+    for i, _ in enumerate(bq):
         basis += [hyper([], bq, z)]
-        B = Matrix(basis)
-        n = len(B)
-        C = Matrix([[1] + [0]*(n - 1)])
-        M = zeros(n)
-        M[0, n - 1] = z/Mul(*func.bq)
-        for k in range(1, n):
-            M[k, k - 1] = func.bq[k - 1]
-            M[k, k] = -func.bq[k - 1]
-        return Formula(func, z, None, [], B, C, M)
+        bq[i] += 1
+    basis += [hyper([], bq, z)]
+    B = Matrix(basis)
+    n = len(B)
+    C = Matrix([[1] + [0]*(n - 1)])
+    M = zeros(n)
+    M[0, n - 1] = z/Mul(*func.bq)
+    for k in range(1, n):
+        M[k, k - 1] = func.bq[k - 1]
+        M[k, k] = -func.bq[k - 1]
+    return Formula(func, z, None, [], B, C, M)
 
 
 def hyperexpand_special(ap, bq, z):
@@ -1953,9 +1953,8 @@ def hyperexpand_special(ap, bq, z):
             if b.is_integer and b.is_negative:
                 return 2*cos(pi*b/2)*gamma(-b)*gamma(b - a + 1) \
                     / gamma(-b/2)/gamma(b/2 - a + 1)
-            else:
-                return gamma(b/2 + 1)*gamma(b - a + 1) \
-                    / gamma(b + 1)/gamma(b/2 - a + 1)
+            return gamma(b/2 + 1)*gamma(b - a + 1) \
+                / gamma(b + 1)/gamma(b/2 - a + 1)
     # TODO tons of more formulae
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)
@@ -2439,8 +2438,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
     if min(w1, w2) <= (0, 1, oo):
         if w1 < w2:
             return slater1
-        else:
-            return slater2
+        return slater2
     if max(w1[0], w2[0]) <= 1 and max(w1[1], w2[1]) <= 1:
         return Piecewise((slater1, cond1), (slater2, cond2), (func0(z0), True))
 
@@ -2483,8 +2481,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default', place=None):
         r = _hyperexpand(Hyper_Function(ap, bq), z, rewrite=rewrite)
         if r is None:
             return hyper(ap, bq, z)
-        else:
-            return r
+        return r
 
     def do_meijer(ap, bq, z):
         r = _meijergexpand(G_Function(ap[0], ap[1], bq[0], bq[1]), z,

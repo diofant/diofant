@@ -91,8 +91,7 @@ class Piecewise(Function):
 
         if r is None:
             return Expr.__new__(cls, *newargs, **options)
-        else:
-            return r
+        return r
 
     @classmethod
     def eval(cls, *args):
@@ -194,7 +193,7 @@ class Piecewise(Function):
         mul = 1
         if a == b:
             return Integer(0)
-        elif (a > b) == true:
+        if (a > b) == true:
             a, b, mul = b, a, -1
         elif (a <= b) != true:
             newargs = []
@@ -363,7 +362,7 @@ class Piecewise(Function):
                 int_expr.append([lower, upper, expr])
             if orig_cond == targetcond:
                 return [(lower, upper, None)]
-            elif isinstance(targetcond, Or) and cond in targetcond.args:
+            if isinstance(targetcond, Or) and cond in targetcond.args:
                 or_cond = Or(or_cond, cond)
                 or_intervals.append((lower, upper, None))
                 if or_cond == targetcond:
@@ -562,5 +561,4 @@ def piecewise_fold(expr):
         if len(piecewise_args) > 1:
             return piecewise_fold(Piecewise(*new_args))
         return Piecewise(*new_args)
-    else:
-        return expr.func(*new_args)
+    return expr.func(*new_args)

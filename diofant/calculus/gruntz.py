@@ -94,10 +94,9 @@ def compare(a, b, x):
     c = limitinf(la/lb, x)
     if c.is_zero:
         return -1
-    elif c.is_infinite:
+    if c.is_infinite:
         return 1
-    else:
-        return 0
+    return 0
 
 
 def mrv(e, x):
@@ -115,27 +114,25 @@ def mrv(e, x):
 
     if not e.has(x):
         return set()
-    elif e == x:
+    if e == x:
         return {x}
-    elif e.is_Mul or e.is_Add:
+    if e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
         return _mrv_max(mrv(a, x), mrv(b, x), x)
-    elif e.is_Exp:
+    if e.is_Exp:
         if e.exp == x:
             return {e}
-        elif any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
+        if any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
             return _mrv_max({e}, mrv(e.exp, x), x)
-        else:
-            return mrv(e.exp, x)
-    elif e.is_Pow:
+        return mrv(e.exp, x)
+    if e.is_Pow:
         return mrv(e.base, x)
-    elif isinstance(e, log):
+    if isinstance(e, log):
         return mrv(e.args[0], x)
-    elif e.is_Function and not isinstance(e.func, UndefinedFunction):
+    if e.is_Function and not isinstance(e.func, UndefinedFunction):
         return functools.reduce(lambda a, b: _mrv_max(a, b, x),
                                 [mrv(a, x) for a in e.args])
-    else:
-        raise NotImplementedError(f"Can't calculate the MRV of {e}.")
+    raise NotImplementedError(f"Can't calculate the MRV of {e}.")
 
 
 def _mrv_max(f, g, x):
@@ -164,12 +161,12 @@ def signinf(e, x):
 
     if not e.has(x):
         return sign(e).simplify()
-    elif e == x:
+    if e == x:
         return Integer(1)
-    elif e.is_Mul:
+    if e.is_Mul:
         a, b = e.as_two_terms()
         return signinf(a, x)*signinf(b, x)
-    elif e.is_Pow and signinf(e.base, x) == 1:
+    if e.is_Pow and signinf(e.base, x) == 1:
         return Integer(1)
 
     c0, _ = leadterm(e, x)
@@ -202,12 +199,11 @@ def limitinf(e, x):
     sig = signinf(e0, x)
     if sig == 1:
         return Integer(0)
-    elif sig == -1:
+    if sig == -1:
         return signinf(c0, x)*oo
-    elif sig == 0:
+    if sig == 0:
         return limitinf(c0, x)
-    else:
-        raise NotImplementedError(f'Result depends on the sign of {sig}.')
+    raise NotImplementedError(f'Result depends on the sign of {sig}.')
 
 
 @cacheit

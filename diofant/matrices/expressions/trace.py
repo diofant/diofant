@@ -44,8 +44,7 @@ class Trace(Expr):
             # _eval_trace would go too deep here
             if isinstance(self.arg, MatrixBase):
                 return trace(self.arg)
-            else:
-                return Trace(self.arg)
+            return Trace(self.arg)
 
     def _eval_rewrite_as_Sum(self, arg):
         from ...concrete import Sum

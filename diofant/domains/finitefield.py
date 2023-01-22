@@ -69,10 +69,9 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
     def from_expr(self, expr):
         if expr.is_Integer:
             return self.dtype(self.domain.dtype(int(expr)))
-        elif expr.is_Float and int(expr) == expr:
+        if expr.is_Float and int(expr) == expr:
             return self.dtype(self.domain.dtype(int(expr)))
-        else:
-            raise CoercionFailedError(f'expected an integer, got {expr}')
+        raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))

@@ -53,8 +53,7 @@ class sinh(HyperbolicFunction):
         """Returns the first derivative of this function."""
         if argindex == 1:
             return cosh(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -67,7 +66,7 @@ class sinh(HyperbolicFunction):
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -77,21 +76,16 @@ class sinh(HyperbolicFunction):
 
             if i_coeff is not None:
                 return I * sin(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
-
+            if _coeff_isneg(arg):
+                return -cls(-arg)
             if arg.func == asinh:
                 return arg.args[0]
-
             if arg.func == acosh:
                 x = arg.args[0]
                 return sqrt(x - 1) * sqrt(x + 1)
-
             if arg.func == atanh:
                 x = arg.args[0]
                 return x/sqrt(1 - x**2)
-
             if arg.func == acoth:
                 x = arg.args[0]
                 return 1/(sqrt(x - 1) * sqrt(x + 1))
@@ -102,13 +96,11 @@ class sinh(HyperbolicFunction):
         """Returns the next term in the Taylor series expansion."""
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            if len(previous_terms) >= 2:
-                p = previous_terms[-2]
-                return p * x**2 / (n*(n - 1))
-            else:
-                return x**n / factorial(n)
+        x = sympify(x)
+        if len(previous_terms) >= 2:
+            p = previous_terms[-2]
+            return p * x**2 / (n*(n - 1))
+        return x**n / factorial(n)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -120,8 +112,7 @@ class sinh(HyperbolicFunction):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -167,8 +158,7 @@ class sinh(HyperbolicFunction):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return arg
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_is_extended_real(self):
         if self.args[0].is_extended_real:
@@ -197,8 +187,7 @@ class cosh(HyperbolicFunction):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return sinh(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -207,9 +196,9 @@ class cosh(HyperbolicFunction):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg == 0:
+            if arg == 0:
                 return Integer(1)
-            elif arg.is_negative:
+            if arg.is_negative:
                 return cls(-arg)
         else:
             if arg is zoo:
@@ -219,19 +208,14 @@ class cosh(HyperbolicFunction):
 
             if i_coeff is not None:
                 return cos(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return cls(-arg)
-
+            if _coeff_isneg(arg):
+                return cls(-arg)
             if arg.func == asinh:
                 return sqrt(1 + arg.args[0]**2)
-
             if arg.func == acosh:
                 return arg.args[0]
-
             if arg.func == atanh:
                 return 1/sqrt(1 - arg.args[0]**2)
-
             if arg.func == acoth:
                 x = arg.args[0]
                 return x/(sqrt(x - 1) * sqrt(x + 1))
@@ -241,14 +225,12 @@ class cosh(HyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 1:
             return Integer(0)
-        else:
-            x = sympify(x)
+        x = sympify(x)
 
-            if len(previous_terms) >= 2:
-                p = previous_terms[-2]
-                return p * x**2 / (n*(n - 1))
-            else:
-                return x**n/factorial(n)
+        if len(previous_terms) >= 2:
+            p = previous_terms[-2]
+            return p * x**2 / (n*(n - 1))
+        return x**n/factorial(n)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -259,8 +241,7 @@ class cosh(HyperbolicFunction):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -307,8 +288,7 @@ class cosh(HyperbolicFunction):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return Integer(1)
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_is_extended_real(self):
         if self.args[0].is_extended_real:
@@ -337,8 +317,7 @@ class tanh(HyperbolicFunction):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 1 - tanh(self.args[0])**2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -351,11 +330,11 @@ class tanh(HyperbolicFunction):
         if arg.is_Number:
             if arg is oo:
                 return Integer(1)
-            elif arg == -oo:
+            if arg == -oo:
                 return Integer(-1)
-            elif arg == 0:
+            if arg == 0:
                 return Integer(0)
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -367,21 +346,16 @@ class tanh(HyperbolicFunction):
                 if _coeff_isneg(i_coeff):
                     return -I * tan(-i_coeff)
                 return I * tan(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
-
+            if _coeff_isneg(arg):
+                return -cls(-arg)
             if arg.func == asinh:
                 x = arg.args[0]
                 return x/sqrt(1 + x**2)
-
             if arg.func == acosh:
                 x = arg.args[0]
                 return sqrt(x - 1) * sqrt(x + 1) / x
-
             if arg.func == atanh:
                 return arg.args[0]
-
             if arg.func == acoth:
                 return 1/arg.args[0]
 
@@ -391,15 +365,14 @@ class tanh(HyperbolicFunction):
         from .. import bernoulli
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
+        x = sympify(x)
 
-            a = 2**(n + 1)
+        a = 2**(n + 1)
 
-            B = bernoulli(n + 1)
-            F = factorial(n + 1)
+        B = bernoulli(n + 1)
+        F = factorial(n + 1)
 
-            return a*(a - 1) * B/F * x**n
+        return a*(a - 1) * B/F * x**n
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -410,8 +383,7 @@ class tanh(HyperbolicFunction):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -439,8 +411,7 @@ class tanh(HyperbolicFunction):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return arg
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_is_extended_real(self):
         if self.args[0].is_extended_real:
@@ -462,8 +433,7 @@ class coth(HyperbolicFunction):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return -1/sinh(self.args[0])**2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -476,11 +446,11 @@ class coth(HyperbolicFunction):
         if arg.is_Number:
             if arg is oo:
                 return Integer(1)
-            elif arg == -oo:
+            if arg == -oo:
                 return Integer(-1)
-            elif arg == 0:
+            if arg == 0:
                 return zoo
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -492,21 +462,16 @@ class coth(HyperbolicFunction):
                 if _coeff_isneg(i_coeff):
                     return I * cot(-i_coeff)
                 return -I * cot(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
-
+            if _coeff_isneg(arg):
+                return -cls(-arg)
             if arg.func == asinh:
                 x = arg.args[0]
                 return sqrt(1 + x**2)/x
-
             if arg.func == acosh:
                 x = arg.args[0]
                 return x/(sqrt(x - 1) * sqrt(x + 1))
-
             if arg.func == atanh:
                 return 1/arg.args[0]
-
             if arg.func == acoth:
                 return arg.args[0]
 
@@ -516,15 +481,14 @@ class coth(HyperbolicFunction):
         from .. import bernoulli
         if n == 0:
             return 1 / sympify(x)
-        elif n < 0 or n % 2 == 0:
+        if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
+        x = sympify(x)
 
-            B = bernoulli(n + 1)
-            F = factorial(n + 1)
+        B = bernoulli(n + 1)
+        F = factorial(n + 1)
 
-            return 2**(n + 1) * B/F * x**n
+        return 2**(n + 1) * B/F * x**n
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -535,8 +499,7 @@ class coth(HyperbolicFunction):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -564,8 +527,7 @@ class coth(HyperbolicFunction):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return 1/arg
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
 
 class ReciprocalHyperbolicFunction(HyperbolicFunction):
@@ -581,7 +543,7 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         if arg.could_extract_minus_sign():
             if cls._is_even:
                 return cls(-arg)
-            elif cls._is_odd:
+            if cls._is_odd:
                 return -cls(-arg)
 
         t = cls._reciprocal_of.eval(arg)
@@ -657,8 +619,7 @@ class csch(ReciprocalHyperbolicFunction):
         """Returns the first derivative of this function."""
         if argindex == 1:
             return -coth(self.args[0]) * csch(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @staticmethod
     @cacheit
@@ -667,15 +628,14 @@ class csch(ReciprocalHyperbolicFunction):
         from .. import bernoulli
         if n == 0:
             return 1/sympify(x)
-        elif n < 0 or n % 2 == 0:
+        if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
+        x = sympify(x)
 
-            B = bernoulli(n + 1)
-            F = factorial(n + 1)
+        B = bernoulli(n + 1)
+        F = factorial(n + 1)
 
-            return 2 * (1 - 2**n) * B/F * x**n
+        return 2 * (1 - 2**n) * B/F * x**n
 
     def _eval_rewrite_as_cosh(self, arg):
         return I / cosh(arg + I * pi / 2)
@@ -706,8 +666,7 @@ class sech(ReciprocalHyperbolicFunction):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return - tanh(self.args[0])*sech(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @staticmethod
     @cacheit
@@ -715,9 +674,8 @@ class sech(ReciprocalHyperbolicFunction):
         from ..combinatorial.numbers import euler
         if n < 0 or n % 2 == 1:
             return Integer(0)
-        else:
-            x = sympify(x)
-            return euler(n) / factorial(n) * x**n
+        x = sympify(x)
+        return euler(n) / factorial(n) * x**n
 
     def _eval_rewrite_as_sinh(self, arg):
         return I / sinh(arg + I * pi / 2)
@@ -745,8 +703,7 @@ class asinh(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 1/sqrt(self.args[0]**2 + 1)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -755,11 +712,11 @@ class asinh(Function):
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
-            elif arg == 1:
+            if arg == 1:
                 return log(sqrt(2) + 1)
-            elif arg == -1:
+            if arg == -1:
                 return log(sqrt(2) - 1)
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -769,25 +726,22 @@ class asinh(Function):
 
             if i_coeff is not None:
                 return I * asin(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
+            if _coeff_isneg(arg):
+                return -cls(-arg)
 
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            if len(previous_terms) >= 2 and n > 2:
-                p = previous_terms[-2]
-                return -p * (n - 2)**2/(n*(n - 1)) * x**2
-            else:
-                k = (n - 1) // 2
-                R = RisingFactorial(Rational(1, 2), k)
-                F = factorial(k)
-                return (-1)**k * R / F * x**n / n
+        x = sympify(x)
+        if len(previous_terms) >= 2 and n > 2:
+            p = previous_terms[-2]
+            return -p * (n - 2)**2/(n*(n - 1)) * x**2
+        k = (n - 1) // 2
+        R = RisingFactorial(Rational(1, 2), k)
+        F = factorial(k)
+        return (-1)**k * R / F * x**n / n
 
     def _eval_as_leading_term(self, x):
         from ...calculus import Order
@@ -795,8 +749,7 @@ class asinh(Function):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return arg
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_rewrite_as_log(self, x):
         return log(x + sqrt(x**2 + 1))
@@ -825,19 +778,18 @@ class acosh(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 1/sqrt(self.args[0]**2 - 1)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg == 0:
+            if arg == 0:
                 return pi*I / 2
-            elif arg == 1:
+            if arg == 1:
                 return Integer(0)
-            elif arg == -1:
+            if arg == -1:
                 return pi*I
 
         if arg.is_number:
@@ -877,18 +829,16 @@ class acosh(Function):
     def taylor_term(n, x, *previous_terms):
         if n == 0:
             return pi*I / 2
-        elif n < 0 or n % 2 == 0:
+        if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            if len(previous_terms) >= 2 and n > 2:
-                p = previous_terms[-2]
-                return p * (n - 2)**2/(n*(n - 1)) * x**2
-            else:
-                k = (n - 1) // 2
-                R = RisingFactorial(Rational(1, 2), k)
-                F = factorial(k)
-                return -R / F * I * x**n / n
+        x = sympify(x)
+        if len(previous_terms) >= 2 and n > 2:
+            p = previous_terms[-2]
+            return p * (n - 2)**2/(n*(n - 1)) * x**2
+        k = (n - 1) // 2
+        R = RisingFactorial(Rational(1, 2), k)
+        F = factorial(k)
+        return -R / F * I * x**n / n
 
     def _eval_as_leading_term(self, x):
         from ...calculus import Order
@@ -896,8 +846,7 @@ class acosh(Function):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return I*pi/2
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -911,8 +860,7 @@ class acosh(Function):
         x0 = self.args[0].limit(x, 0)
         if x0 == 1:
             return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
-        else:
-            return super()._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
 
 class atanh(Function):
@@ -933,8 +881,7 @@ class atanh(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 1/(1 - self.args[0]**2)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -943,15 +890,15 @@ class atanh(Function):
         if arg.is_Number:
             if arg == 0:
                 return Integer(0)
-            elif arg == 1:
+            if arg == 1:
                 return oo
-            elif arg == -1:
+            if arg == -1:
                 return -oo
-            elif arg is oo:
+            if arg is oo:
                 return -I * atan(arg)
-            elif arg == -oo:
+            if arg == -oo:
                 return I * atan(-arg)
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -961,18 +908,16 @@ class atanh(Function):
 
             if i_coeff is not None:
                 return I * atan(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
+            if _coeff_isneg(arg):
+                return -cls(-arg)
 
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            return x**n / n
+        x = sympify(x)
+        return x**n / n
 
     def _eval_as_leading_term(self, x):
         from ...calculus import Order
@@ -980,8 +925,7 @@ class atanh(Function):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return arg
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_rewrite_as_log(self, x):
         return (log(1 + x) - log(1 - x))/2
@@ -1003,8 +947,7 @@ class acoth(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 1/(1 - self.args[0]**2)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -1013,13 +956,13 @@ class acoth(Function):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return Integer(0)
-            elif arg == 0:
+            if arg == 0:
                 return pi*I / 2
-            elif arg == 1:
+            if arg == 1:
                 return oo
-            elif arg == -1:
+            if arg == -1:
                 return -oo
-            elif arg.is_negative:
+            if arg.is_negative:
                 return -cls(-arg)
         else:
             if arg is zoo:
@@ -1029,20 +972,18 @@ class acoth(Function):
 
             if i_coeff is not None:
                 return -I * acot(i_coeff)
-            else:
-                if _coeff_isneg(arg):
-                    return -cls(-arg)
+            if _coeff_isneg(arg):
+                return -cls(-arg)
 
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n == 0:
             return -pi*I / 2
-        elif n < 0 or n % 2 == 0:
+        if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            return x**n / n
+        x = sympify(x)
+        return x**n / n
 
     def _eval_as_leading_term(self, x):
         from ...calculus import Order
@@ -1050,8 +991,7 @@ class acoth(Function):
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return -I*pi/2
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def _eval_rewrite_as_log(self, x, **kwargs):
         return (log((x + 1)/x) - log((x - 1)/x))/2

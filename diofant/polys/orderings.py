@@ -232,9 +232,8 @@ def monomial_key(order=None, gens=None):
                 return order([poly.degree(x) for x in gens])
             return _order
         return order
-    else:
-        raise ValueError('monomial ordering specification must be a '
-                         f'string or a callable, got {order}')
+    raise ValueError('monomial ordering specification must be a '
+                     f'string or a callable, got {order}')
 
 
 class _ItemGetter:

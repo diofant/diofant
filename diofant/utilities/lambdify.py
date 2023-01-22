@@ -360,12 +360,11 @@ def _get_namespace(m):
     if isinstance(m, str):
         _import(m)
         return MODULES[m][0]
-    elif isinstance(m, dict):
+    if isinstance(m, dict):
         return m
-    elif hasattr(m, '__dict__'):
+    if hasattr(m, '__dict__'):
         return m.__dict__
-    else:
-        raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
+    raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
 
 
 def lambdastr(args, expr, printer=None, dummify=False):
@@ -409,17 +408,15 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
             return args
-        elif iterable(args):
+        if iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ','.join(str(a) for a in dummies)
-        else:
-            # Sub in dummy variables for functions or symbols
-            if isinstance(args, (Function, Symbol)):
-                dummies = Dummy()
-                dummies_dict.update({args: dummies})
-                return lambdarepr(dummies)
-            else:
-                return lambdarepr(args)
+        # Sub in dummy variables for functions or symbols
+        if isinstance(args, (Function, Symbol)):
+            dummies = Dummy()
+            dummies_dict.update({args: dummies})
+            return lambdarepr(dummies)
+        return lambdarepr(args)
 
     def sub_expr(expr, dummies_dict):
         try:
@@ -513,7 +510,7 @@ def _imp_namespace(expr, namespace=None):
         for arg in expr:
             _imp_namespace(arg, namespace)
         return namespace
-    elif isinstance(expr, dict):
+    if isinstance(expr, dict):
         for key, val in expr.items():
             # functions can be in dictionary keys
             _imp_namespace(key, namespace)

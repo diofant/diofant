@@ -104,7 +104,7 @@ class _Factor:
 
             if n <= 0:
                 return cont, []
-            elif n == 1:
+            if n == 1:
                 return cont, [(g, 1)]
 
             if query('USE_IRREDUCIBLE_IN_FACTOR'):
@@ -282,7 +282,7 @@ class _Factor:
 
         if n <= 0:
             return cont, []
-        elif n == 1:
+        if n == 1:
             return cont, [g]
 
         if query('USE_IRREDUCIBLE_IN_FACTOR'):
@@ -621,14 +621,13 @@ class _Factor:
 
         if tc_f != 1:
             return F
-        else:
-            H = []
+        H = []
 
-            for h in self._cyclotomic_decompose(2*n):
-                if h not in F:
-                    H.append(h)
+        for h in self._cyclotomic_decompose(2*n):
+            if h not in F:
+                H.append(h)
 
-            return H
+        return H
 
     def _cyclotomic_p(self, f, irreducible=False):
         """
@@ -959,9 +958,8 @@ class _Factor:
         except ExtraneousFactorsError as exc:
             if query('EEZ_RESTART_IF_NEEDED'):
                 return self._zz_wang(orig_f, mod + 1)
-            else:
-                raise ExtraneousFactorsError('we need to restart algorithm '
-                                             'with better parameters') from exc
+            raise ExtraneousFactorsError('we need to restart algorithm '
+                                         'with better parameters') from exc
 
         result = []
 
@@ -989,8 +987,7 @@ class _Factor:
 
         if D is not None:
             return c, h, E
-        else:
-            raise EvaluationFailedError('no luck')
+        raise EvaluationFailedError('no luck')
 
     def _zz_wang_non_divisors(self, E, cs, ct):
         """Wang/EEZ: Compute a set of valid divisors."""

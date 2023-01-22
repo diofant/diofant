@@ -108,7 +108,7 @@ def pl_true_int_repr(clause, model={}):
             p = model.get(lit)
         if p is True:
             return True
-        elif p is None:
+        if p is None:
             result = None
     return result
 
@@ -171,6 +171,5 @@ def find_unit_clause(clauses, model):
             p = unbound.pop()
             if p < 0:
                 return -p, False
-            else:
-                return p, True
+            return p, True
     return None, None

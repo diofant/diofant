@@ -56,9 +56,9 @@ def together(expr, deep=False):
     def _together(expr):
         if expr.is_Atom or (expr.is_Function and not deep):
             return expr
-        elif expr.is_Add:
+        if expr.is_Add:
             return gcd_terms(list(map(_together, Add.make_args(expr))))
-        elif expr.is_Pow:
+        if expr.is_Pow:
             base = _together(expr.base)
 
             if deep:
@@ -67,7 +67,6 @@ def together(expr, deep=False):
                 exp = expr.exp
 
             return expr.__class__(base, exp)
-        else:
-            return expr.__class__(*[_together(arg) for arg in expr.args])
+        return expr.__class__(*[_together(arg) for arg in expr.args])
 
     return _together(sympify(expr))

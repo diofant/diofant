@@ -49,38 +49,36 @@ class re(Function):
     def eval(cls, arg):
         if arg is zoo:
             return nan
-        elif arg.is_extended_real:
+        if arg.is_extended_real:
             return arg
-        elif arg.is_imaginary or (I*arg).is_extended_real:
+        if arg.is_imaginary or (I*arg).is_extended_real:
             return Integer(0)
-        elif arg.is_Function and isinstance(arg, conjugate):
+        if arg.is_Function and isinstance(arg, conjugate):
             return re(arg.args[0])
-        else:
+        included, reverted, excluded = [], [], []
+        args = Add.make_args(arg)
+        for term in args:
+            coeff = term.as_coefficient(I)
 
-            included, reverted, excluded = [], [], []
-            args = Add.make_args(arg)
-            for term in args:
-                coeff = term.as_coefficient(I)
-
-                if coeff is not None:
-                    if not coeff.is_extended_real:
-                        reverted.append(coeff)
-                elif not term.has(I) and term.is_extended_real:
-                    excluded.append(term)
+            if coeff is not None:
+                if not coeff.is_extended_real:
+                    reverted.append(coeff)
+            elif not term.has(I) and term.is_extended_real:
+                excluded.append(term)
+            else:
+                # Try to do some advanced expansion.  If
+                # impossible, don't try to do re(arg) again
+                # (because this is what we are trying to do now).
+                real_imag = term.as_real_imag(ignore=arg)
+                if real_imag:
+                    excluded.append(real_imag[0])
                 else:
-                    # Try to do some advanced expansion.  If
-                    # impossible, don't try to do re(arg) again
-                    # (because this is what we are trying to do now).
-                    real_imag = term.as_real_imag(ignore=arg)
-                    if real_imag:
-                        excluded.append(real_imag[0])
-                    else:
-                        included.append(term)
+                    included.append(term)
 
-            if len(args) != len(included):
-                a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
+        if len(args) != len(included):
+            a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
 
-                return cls(a) - im(b) + c
+            return cls(a) - im(b) + c
 
     def as_real_imag(self, deep=True, **hints):
         """Returns the real number with a zero imaginary part."""
@@ -89,7 +87,7 @@ class re(Function):
     def _eval_derivative(self, s):
         if s.is_extended_real or self.args[0].is_extended_real:
             return re(Derivative(self.args[0], s, evaluate=True))
-        elif s.is_imaginary or self.args[0].is_imaginary:
+        if s.is_imaginary or self.args[0].is_imaginary:
             return -I*im(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_rewrite_as_im(self, arg):
@@ -137,37 +135,36 @@ class im(Function):
     def eval(cls, arg):
         if arg is zoo:
             return nan
-        elif arg.is_extended_real:
+        if arg.is_extended_real:
             return Integer(0)
-        elif arg.is_imaginary or (I*arg).is_extended_real:
+        if arg.is_imaginary or (I*arg).is_extended_real:
             return -I * arg
-        elif arg.is_Function and isinstance(arg, conjugate):
+        if arg.is_Function and isinstance(arg, conjugate):
             return -im(arg.args[0])
-        else:
-            included, reverted, excluded = [], [], []
-            args = Add.make_args(arg)
-            for term in args:
-                coeff = term.as_coefficient(I)
+        included, reverted, excluded = [], [], []
+        args = Add.make_args(arg)
+        for term in args:
+            coeff = term.as_coefficient(I)
 
-                if coeff is not None:
-                    if not coeff.is_extended_real:
-                        reverted.append(coeff)
-                    else:
-                        excluded.append(coeff)
-                elif term.has(I) or not term.is_extended_real:
-                    # Try to do some advanced expansion.  If
-                    # impossible, don't try to do im(arg) again
-                    # (because this is what we are trying to do now).
-                    real_imag = term.as_real_imag(ignore=arg)
-                    if real_imag:
-                        excluded.append(real_imag[1])
-                    else:
-                        included.append(term)
+            if coeff is not None:
+                if not coeff.is_extended_real:
+                    reverted.append(coeff)
+                else:
+                    excluded.append(coeff)
+            elif term.has(I) or not term.is_extended_real:
+                # Try to do some advanced expansion.  If
+                # impossible, don't try to do im(arg) again
+                # (because this is what we are trying to do now).
+                real_imag = term.as_real_imag(ignore=arg)
+                if real_imag:
+                    excluded.append(real_imag[1])
+                else:
+                    included.append(term)
 
-            if len(args) != len(included):
-                a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
+        if len(args) != len(included):
+            a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
 
-                return cls(a) + re(b) + c
+            return cls(a) + re(b) + c
 
     def as_real_imag(self, deep=True, **hints):
         """
@@ -185,7 +182,7 @@ class im(Function):
     def _eval_derivative(self, s):
         if s.is_extended_real or self.args[0].is_extended_real:
             return im(Derivative(self.args[0], s, evaluate=True))
-        elif s.is_imaginary or self.args[0].is_imaginary:
+        if s.is_imaginary or self.args[0].is_imaginary:
             return -I*re(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_rewrite_as_re(self, arg):
@@ -288,7 +285,7 @@ class sign(Function):
             from ..special.delta_functions import DiracDelta
             return 2 * Derivative(self.args[0], s, evaluate=True) \
                 * DiracDelta(self.args[0])
-        elif self.args[0].is_imaginary:
+        if self.args[0].is_imaginary:
             from ..special.delta_functions import DiracDelta
             return 2 * Derivative(self.args[0], s, evaluate=True) \
                 * DiracDelta(-I * self.args[0])
@@ -338,8 +335,7 @@ class sign(Function):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
         if direction.is_extended_real:
             return self.func(direction)
-        else:
-            return super()._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
 
 class Abs(Function):
@@ -395,8 +391,7 @@ class Abs(Function):
         """
         if argindex == 1:
             return sign(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -492,7 +487,7 @@ class Abs(Function):
         if self.args[0].is_extended_real and other.is_integer:
             if other.is_even:
                 return self.args[0]**other
-            elif other != -1 and other.is_Integer:
+            if other != -1 and other.is_Integer:
                 return self.args[0]**(other - 1)*self
 
     def _eval_nseries(self, x, n, logx):
@@ -501,8 +496,7 @@ class Abs(Function):
         when, lim = Eq(direction, 0), direction.limit(x, 0)
         if lim.equals(0) is False:
             return s/sign(lim)
-        else:
-            return Piecewise((lim, when), (s/sign(direction), True))
+        return Piecewise((lim, when), (s/sign(direction), True))
 
     def _eval_derivative(self, s):
         if self.args[0].is_extended_real or self.args[0].is_imaginary:
@@ -627,7 +621,7 @@ class conjugate(Function):
     def _eval_derivative(self, s):
         if s.is_extended_real:
             return conjugate(Derivative(self.args[0], s, evaluate=True))
-        elif s.is_imaginary:
+        if s.is_imaginary:
             return -conjugate(Derivative(self.args[0], s, evaluate=True))
 
     def _eval_transpose(self):
@@ -743,10 +737,9 @@ class polar_lift(Function):
         if len(excluded) < len(args):
             if excluded:
                 return Mul(*(included + positive))*polar_lift(Mul(*excluded))
-            elif included:
+            if included:
                 return Mul(*(included + positive))
-            else:
-                return Mul(*positive)*exp_polar(0)
+            return Mul(*positive)*exp_polar(0)
 
     def _eval_evalf(self, prec):
         """Careful! any evalf of polar numbers is flaky."""
@@ -829,10 +822,9 @@ class periodic_argument(Function):
             return
         if period == oo:
             return unbranched
-        else:
-            n = ceiling(unbranched/period - Rational(1, 2))*period
-            assert not n.has(ceiling)
-            return unbranched - n
+        n = ceiling(unbranched/period - Rational(1, 2))*period
+        assert not n.has(ceiling)
+        return unbranched - n
 
     def _eval_is_real(self):
         if self.args[1].is_real and self.args[1].is_positive:
@@ -940,18 +932,18 @@ def _polarify(eq, lift, pause=False):
         return polar_lift(eq)
     if isinstance(eq, (Dummy, Symbol)) and not pause and lift:
         return polar_lift(eq)
-    elif eq.is_Atom:
+    if eq.is_Atom:
         return eq
-    elif eq.is_Add:
+    if eq.is_Add:
         r = eq.func(*[_polarify(arg, lift, pause=True) for arg in eq.args])
         if lift:
             return polar_lift(r)
         return r
-    elif eq.is_Function:
+    if eq.is_Function:
         return eq.func(*[_polarify(arg, lift, pause=False) for arg in eq.args])
-    elif eq.is_Exp:
+    if eq.is_Exp:
         return eq.func(eq.base, _polarify(eq.exp, lift, pause=False))
-    elif isinstance(eq, Integral):
+    if isinstance(eq, Integral):
         # Don't lift the integration variable
         func = _polarify(eq.function, lift, pause=pause)
         limits = []
@@ -960,9 +952,8 @@ def _polarify(eq, lift, pause=False):
             rest = tuple(_polarify(x, lift=lift, pause=pause) for x in limit[1:])
             limits.append((var,) + rest)
         return Integral(*((func,) + tuple(limits)))
-    else:
-        return eq.func(*[_polarify(arg, lift, pause=pause)
-                         if isinstance(arg, Expr) else arg for arg in eq.args])
+    return eq.func(*[_polarify(arg, lift, pause=pause)
+                     if isinstance(arg, Expr) else arg for arg in eq.args])
 
 
 def polarify(eq, subs=True, lift=False):
@@ -1037,9 +1028,9 @@ def _unpolarify(eq, exponents_only, pause=False):
         base = _unpolarify(eq.base, exponents_only,
                            not (expo.is_integer and not pause))
         return base**expo
-    elif eq.is_Exp:
+    if eq.is_Exp:
         return exp(_unpolarify(eq.exp, exponents_only, exponents_only))
-    elif isinstance(eq, ExprCondPair):
+    if isinstance(eq, ExprCondPair):
         return eq.func(_unpolarify(eq.expr, exponents_only, exponents_only),
                        _unpolarify(eq.cond, exponents_only, exponents_only))
 

@@ -113,28 +113,26 @@ def egyptian_fraction(r, algorithm='Greedy'):
 
     if algorithm == 'Greedy':
         return prefix + egypt_greedy(x, y)
-    elif algorithm == 'Graham Jewett':
+    if algorithm == 'Graham Jewett':
         return prefix + egypt_graham_jewett(x, y)
-    elif algorithm == 'Takenouchi':
+    if algorithm == 'Takenouchi':
         return prefix + egypt_takenouchi(x, y)
-    elif algorithm == 'Golomb':
+    if algorithm == 'Golomb':
         return prefix + egypt_golomb(x, y)
-    else:
-        raise ValueError('Entered invalid algorithm')
+    raise ValueError('Entered invalid algorithm')
 
 
 def egypt_greedy(x, y):
     if x == 1:
         return [y]
+    a = (-y) % x
+    b = y*(y//x + 1)
+    c = math.gcd(a, b)
+    if c > 1:
+        num, denom = a//c, b//c
     else:
-        a = (-y) % x
-        b = y*(y//x + 1)
-        c = math.gcd(a, b)
-        if c > 1:
-            num, denom = a//c, b//c
-        else:
-            num, denom = a, b
-        return [y//x + 1] + egypt_greedy(num, denom)
+        num, denom = a, b
+    return [y//x + 1] + egypt_greedy(num, denom)
 
 
 def egypt_graham_jewett(x, y):

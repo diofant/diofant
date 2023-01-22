@@ -58,15 +58,13 @@ def _base_fact(atom):
     """
     if isinstance(atom, Not):
         return atom.arg
-    else:
-        return atom
+    return atom
 
 
 def _as_pair(atom):
     if isinstance(atom, Not):
         return atom.arg, False
-    else:
-        return atom, True
+    return atom, True
 
 # XXX this prepares forward-chaining rules for alpha-network
 
@@ -324,8 +322,7 @@ class Prover:
             return
         if (a, b) in self._rules_seen:
             return
-        else:
-            self._rules_seen.add((a, b))
+        self._rules_seen.add((a, b))
 
         # this is the core of processing
         try:
@@ -502,11 +499,9 @@ class FactKB(dict):
         if k in self and self[k] is not None:
             if self[k] == v:
                 return False
-            else:
-                raise InconsistentAssumptions(self, k, v)
-        else:
-            self[k] = v
-            return True
+            raise InconsistentAssumptions(self, k, v)
+        self[k] = v
+        return True
 
     # *********************************************
     # * This is the workhorse, so keep it *fast*. *

@@ -298,5 +298,4 @@ class ExprWithIntLimits(ExprWithLimits):
                     limits.append(limit)
 
             return type(self)(self.function, *limits)
-        else:
-            raise ReorderError(self, 'could not interchange the two limits specified')
+        raise ReorderError(self, 'could not interchange the two limits specified')

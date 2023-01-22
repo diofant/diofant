@@ -411,8 +411,7 @@ def check_assumptions(expr, **assumptions):
             continue
         if test is not None:
             return False
-        else:
-            result = None
+        result = None
     return result
 
 

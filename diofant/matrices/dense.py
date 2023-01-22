@@ -316,7 +316,7 @@ class DenseMatrix(MatrixBase):
                 return False
             if isinstance(other, Matrix):
                 return self._mat == other._mat
-            elif isinstance(other, MatrixBase):  # pragma: no branch
+            if isinstance(other, MatrixBase):  # pragma: no branch
                 return self._mat == Matrix(other)._mat
         except AttributeError:
             return False
@@ -509,9 +509,9 @@ def _force_mutable(x):
     """Return a matrix as a Matrix, otherwise return x."""
     if getattr(x, 'is_Matrix', False):
         return x.as_mutable()
-    elif isinstance(x, Basic):
+    if isinstance(x, Basic):
         return x
-    elif hasattr(x, '__array__'):
+    if hasattr(x, '__array__'):
         a = x.__array__()
         if len(a.shape) == 0:
             return sympify(a)
@@ -1584,8 +1584,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
                 m[i, j] = m[j, i]
     if percent == 100:
         return m
-    else:
-        z = int(r*c*percent // 100)
-        m._mat[:z] = [Integer(0)]*z
-        prng.shuffle(m._mat)
+    z = int(r*c*percent // 100)
+    m._mat[:z] = [Integer(0)]*z
+    prng.shuffle(m._mat)
     return m

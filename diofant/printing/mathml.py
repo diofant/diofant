@@ -257,16 +257,14 @@ class MathMLPrinter(Printer):
                     mi.appendChild(self.dom.createTextNode(item))
                     mrow.appendChild(mi)
                 return mrow
-            else:
-                mi = self.dom.createElement('mml:mi')
-                mi.appendChild(self.dom.createTextNode(items[0]))
-                return mi
+            mi = self.dom.createElement('mml:mi')
+            mi.appendChild(self.dom.createTextNode(items[0]))
+            return mi
 
         def translate(s):
             if s in greek_unicode:
                 return greek_unicode.get(s)
-            else:
-                return s
+            return s
 
         name, supers, subs = split_super_sub(sym.name)
         name = translate(name)

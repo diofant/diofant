@@ -133,8 +133,7 @@ def _construct_composite(coeffs, opt):
 
             if all_symbols & symbols:
                 return  # there could be algebraic relations between generators
-            else:
-                all_symbols |= symbols
+            all_symbols |= symbols
 
     n = len(gens)
     k = len(polys)//2
@@ -258,7 +257,5 @@ def construct_domain(obj, **args):
     if hasattr(obj, '__iter__'):
         if isinstance(obj, dict):
             return domain, dict(zip(monoms, coeffs))
-        else:
-            return domain, coeffs
-    else:
-        return domain, coeffs[0]
+        return domain, coeffs
+    return domain, coeffs[0]

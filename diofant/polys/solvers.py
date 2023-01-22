@@ -31,9 +31,9 @@ def solve_lin_sys(eqs, ring):
 
     if not pivots:
         return {}
-    elif pivots[-1] == len(ring.gens):
+    if pivots[-1] == len(ring.gens):
         return
-    elif len(pivots) == len(ring.gens):
+    if len(pivots) == len(ring.gens):
         sols = dict(zip(ring.gens, echelon[:, -1]))
     else:
         sols = {}

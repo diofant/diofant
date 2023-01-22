@@ -272,11 +272,10 @@ class Basic:
         """
         if callable(self) and hasattr(self, '__call__'):
             return self(*args)
-        elif self.args:
+        if self.args:
             newargs = [sub.rcall(*args) for sub in self.args]
             return type(self)(*newargs)
-        else:
-            return self
+        return self
 
     @property
     def func(self):
@@ -494,13 +493,12 @@ class Basic:
                 reps[d] = new
             reps[m] = Integer(1)  # get rid of m
             return rv.xreplace(reps)
-        else:
-            rv = self
-            for old, new in sequence:
-                rv = rv._subs(old, new, **kwargs)
-                if not isinstance(rv, Basic):
-                    break
-            return rv
+        rv = self
+        for old, new in sequence:
+            rv = rv._subs(old, new, **kwargs)
+            if not isinstance(rv, Basic):
+                break
+        return rv
 
     @cacheit
     def _subs(self, old, new, **hints):
@@ -669,7 +667,7 @@ class Basic:
         """
         if self in rule:
             return rule[self]
-        elif rule and not self.is_Atom:
+        if rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
@@ -708,17 +706,15 @@ class Basic:
 
         if len(patterns) != 1:
             return any(self.has(pattern) for pattern in patterns)
-        else:
-            pattern = sympify(patterns[0])
-            if isinstance(pattern, UndefinedFunction):
-                return any(pattern in (f, f.func)
-                           for f in self.atoms(Function, UndefinedFunction))
-            elif isinstance(pattern, type):
-                return any(isinstance(arg, pattern)
-                           for arg in preorder_traversal(self))
-            else:
-                match = pattern._has_matcher()
-                return any(match(arg) for arg in preorder_traversal(self))
+        pattern = sympify(patterns[0])
+        if isinstance(pattern, UndefinedFunction):
+            return any(pattern in (f, f.func)
+                       for f in self.atoms(Function, UndefinedFunction))
+        if isinstance(pattern, type):
+            return any(isinstance(arg, pattern)
+                       for arg in preorder_traversal(self))
+        match = pattern._has_matcher()
+        return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()."""
@@ -1057,8 +1053,7 @@ class Basic:
             terms = [term.doit(**hints) if isinstance(term, Basic) else term
                      for term in self.args]
             return self.func(*terms)
-        else:
-            return self
+        return self
 
     def _eval_rewrite(self, pattern, rule, **hints):
         if self.is_Atom:
@@ -1119,25 +1114,22 @@ class Basic:
         """
         if not args:
             return self
+        pattern = args[:-1]
+        if isinstance(args[-1], str):
+            rule = '_eval_rewrite_as_' + args[-1]
         else:
-            pattern = args[:-1]
-            if isinstance(args[-1], str):
-                rule = '_eval_rewrite_as_' + args[-1]
-            else:
-                rule = '_eval_rewrite_as_' + args[-1].__name__
+            rule = '_eval_rewrite_as_' + args[-1].__name__
 
-            if not pattern:
-                return self._eval_rewrite(None, rule, **hints)
-            else:
-                if iterable(pattern[0]):
-                    pattern = pattern[0]
+        if not pattern:
+            return self._eval_rewrite(None, rule, **hints)
+        if iterable(pattern[0]):
+            pattern = pattern[0]
 
-                pattern = [p for p in pattern if self.has(p)]
+        pattern = [p for p in pattern if self.has(p)]
 
-                if pattern:
-                    return self._eval_rewrite(tuple(pattern), rule, **hints)
-                else:
-                    return self
+        if pattern:
+            return self._eval_rewrite(tuple(pattern), rule, **hints)
+        return self
 
 
 class Atom(Basic):

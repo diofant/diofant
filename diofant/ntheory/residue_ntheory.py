@@ -136,10 +136,9 @@ def primitive_root(p):
             g = primitive_root(p1)
             if is_primitive_root(g, p1**2):
                 return g
-            else:
-                for i in range(2, g + p1 + 1):  # pragma: no branch
-                    if math.gcd(i, p) == 1 and is_primitive_root(i, p):
-                        return i
+            for i in range(2, g + p1 + 1):  # pragma: no branch
+                if math.gcd(i, p) == 1 and is_primitive_root(i, p):
+                    return i
 
     return next(_primitive_root_prime_iter(p))
 
@@ -241,16 +240,15 @@ def sqrt_mod(a, p, all_roots=False):
         r = next(it)
         if r > p // 2:
             return p - r
-        elif r < p // 2:
+        if r < p // 2:
             return r
-        else:
-            try:
-                r = next(it)
-                if r > p // 2:
-                    return p - r
-            except StopIteration:
-                pass
-            return r
+        try:
+            r = next(it)
+            if r > p // 2:
+                return p - r
+        except StopIteration:
+            pass
+        return r
     except StopIteration:
         return
 
@@ -451,15 +449,14 @@ def _sqrt_mod1(a, p, n):
                     yield i
                     i += pm1
             return _iter0a()
-        else:
-            pm = p**m
+        pm = p**m
 
-            def _iter0b():
-                i = 0
-                while i < pn:
-                    yield i
-                    i += pm
-            return _iter0b()
+        def _iter0b():
+            i = 0
+            while i < pn:
+                yield i
+                i += pm
+        return _iter0b()
 
     # case gcd(a, p**k) = p**r, r < n
     f = factorint(a)
@@ -500,46 +497,45 @@ def _sqrt_mod1(a, p, n):
                         yield x
                         i += pnm
             return _iter2()
-        else:  # n - r > 2
-            res = _sqrt_mod_prime_power(a1, p, n - r)
-            if res is None:
-                return
-            pnm1 = 1 << (n - m - 1)
-
-            def _iter3():
-                s = set()
-                for r in res:
-                    i = 0
-                    while i < pn:
-                        x = ((r << m) + i) % pn
-                        if x not in s:
-                            s.add(x)
-                            yield x
-                        i += pnm1
-            return _iter3()
-    else:
-        m = r // 2
-        a1 = a // p**r
-        res1 = _sqrt_mod_prime_power(a1, p, n - r)
-        if res1 is None:
+        # n - r > 2
+        res = _sqrt_mod_prime_power(a1, p, n - r)
+        if res is None:
             return
-        pm = p**m
-        pnr = p**(n-r)
-        pnm = p**(n-m)
+        pnm1 = 1 << (n - m - 1)
 
-        def _iter4():
+        def _iter3():
             s = set()
-            pm = p**m
-            for rx in res1:
+            for r in res:
                 i = 0
-                while i < pnm:
-                    x = ((rx + i) % pn)
-                    assert x not in s
-                    s.add(x)
-                    yield x*pm
-                    i += pnr
+                while i < pn:
+                    x = ((r << m) + i) % pn
+                    if x not in s:
+                        s.add(x)
+                        yield x
+                    i += pnm1
+        return _iter3()
+    m = r // 2
+    a1 = a // p**r
+    res1 = _sqrt_mod_prime_power(a1, p, n - r)
+    if res1 is None:
+        return
+    pm = p**m
+    pnr = p**(n-r)
+    pnm = p**(n-m)
 
-        return _iter4()
+    def _iter4():
+        s = set()
+        pm = p**m
+        for rx in res1:
+            i = 0
+            while i < pnm:
+                x = ((rx + i) % pn)
+                assert x not in s
+                s.add(x)
+                yield x*pm
+                i += pnr
+
+    return _iter4()
 
 
 def is_quad_residue(a, p):
@@ -572,8 +568,7 @@ def is_quad_residue(a, p):
         r = sqrt_mod(a, p)
         if r is None:
             return False
-        else:
-            return True
+        return True
 
     return pow(a, (p - 1) // 2, p) == 1
 
@@ -637,15 +632,14 @@ def _is_nthpow_residue_bign_prime_power(a, n, p, k):
             return True
         c = trailing(n)
         return a % pow(2, min(c + 2, k)) == 1
-    else:
-        a %= pow(p, k)
-        if not a:
-            return True
-        mu = multiplicity(p, a)
-        if mu % n:
-            return False
-        pm = pow(p, mu)
-        return _is_nthpow_residue_bign_prime_power(a//pm, n, p, k - mu)
+    a %= pow(p, k)
+    if not a:
+        return True
+    mu = multiplicity(p, a)
+    if mu % n:
+        return False
+    pm = pow(p, mu)
+    return _is_nthpow_residue_bign_prime_power(a//pm, n, p, k - mu)
 
 
 def _nthroot_mod2(s, q, p):
@@ -962,9 +956,9 @@ class mobius(Function):
             raise TypeError('n should be an integer')
         if n.is_prime:
             return Integer(-1)
-        elif n == 1:
+        if n == 1:
             return Integer(1)
-        elif n.is_Integer:
+        if n.is_Integer:
             a = factorint(n)
             if any(i > 1 for i in a.values()):
                 return Integer(0)
@@ -1092,7 +1086,7 @@ def discrete_log(n, a, b, order=None, prime_order=None):
 
     if order < 1000:
         return _discrete_log_trial_mul(n, a, b, order)
-    elif prime_order:
+    if prime_order:
         return _discrete_log_shanks_steps(n, a, b, order)
 
     return _discrete_log_pohlig_hellman(n, a, b, order)

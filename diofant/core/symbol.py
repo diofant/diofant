@@ -592,11 +592,10 @@ def symbols(names, **args):
             return result[0]
 
         return tuple(result)
-    else:
-        for name in names:
-            result.append(symbols(name, **args))
+    for name in names:
+        result.append(symbols(name, **args))
 
-        return type(names)(result)
+    return type(names)(result)
 
 
 def var(names, **args):

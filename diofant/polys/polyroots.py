@@ -51,8 +51,7 @@ def roots_quadratic(f):
     def _simplify(expr):
         if isinstance(dom, CompositeDomain):
             return factor(expr)
-        else:
-            return simplify(expr)
+        return simplify(expr)
 
     if c == 0:
         r0, r1 = Integer(0), -b/a
@@ -123,7 +122,7 @@ def roots_cubic(f, trig=False):
     if p == 0:
         if q == 0:
             return [-aon3]*3
-        elif q.is_nonnegative or q.is_negative:
+        if q.is_nonnegative or q.is_negative:
             u1 = -sign(q)*root(abs(q), 3)
         else:
             if q.could_extract_minus_sign():
@@ -260,7 +259,7 @@ def roots_quartic(f):
 
     if not d:
         return [Integer(0)] + roots([1, a, b, c], multiple=True)
-    elif (c/a)**2 == d:
+    if (c/a)**2 == d:
         x, m = f.gen, c/a
 
         g = (x**2 + a*x + b - 2*m).as_poly(x)
@@ -274,60 +273,60 @@ def roots_quartic(f):
         r2 = roots_quadratic(h2)
 
         return r1 + r2
-    else:
-        a2 = a**2
-        e = b - 3*a2/8
-        f = c + a*(a2/8 - b/2)
-        g = d - a*(a*(3*a2/256 - b/16) + c/4)
-        aon4 = a/4
 
-        if f == 0:
-            y1, y2 = map(sqrt, roots([1, e, g], multiple=True))
-            return [tmp - aon4 for tmp in [-y1, -y2, y1, y2]]
-        if g == 0:
-            y = [Integer(0)] + roots([1, 0, e, f], multiple=True)
-            return [tmp - aon4 for tmp in y]
-        else:
-            # Descartes-Euler method, see [7]
-            sols = _roots_quartic_euler(e, f, g, aon4)
-            if sols:
-                return sols
-            # Ferrari method, see [1, 2]
-            a2 = a**2
-            e = b - 3*a2/8
-            f = c + a*(a2/8 - b/2)
-            g = d - a*(a*(3*a2/256 - b/16) + c/4)
-            p = -e**2/12 - g
-            q = -e**3/108 + e*g/3 - f**2/8
-            TH = Rational(1, 3)
+    a2 = a**2
+    e = b - 3*a2/8
+    f = c + a*(a2/8 - b/2)
+    g = d - a*(a*(3*a2/256 - b/16) + c/4)
+    aon4 = a/4
 
-            def _ans(y):
-                w = sqrt(e + 2*y)
-                arg1 = 3*e + 2*y
-                arg2 = 2*f/w
-                ans = []
-                for s in [-1, 1]:
-                    root = sqrt(-(arg1 + s*arg2))
-                    for t in [-1, 1]:
-                        ans.append((s*w - t*root)/2 - aon4)
-                return ans
+    if f == 0:
+        y1, y2 = map(sqrt, roots([1, e, g], multiple=True))
+        return [tmp - aon4 for tmp in [-y1, -y2, y1, y2]]
+    if g == 0:
+        y = [Integer(0)] + roots([1, 0, e, f], multiple=True)
+        return [tmp - aon4 for tmp in y]
 
-            # p == 0 case
-            y1 = -5*e/6 - q**TH
-            if p.is_zero:
-                return _ans(y1)
+    # Descartes-Euler method, see [7]
+    sols = _roots_quartic_euler(e, f, g, aon4)
+    if sols:
+        return sols
+    # Ferrari method, see [1, 2]
+    a2 = a**2
+    e = b - 3*a2/8
+    f = c + a*(a2/8 - b/2)
+    g = d - a*(a*(3*a2/256 - b/16) + c/4)
+    p = -e**2/12 - g
+    q = -e**3/108 + e*g/3 - f**2/8
+    TH = Rational(1, 3)
 
-            # if p != 0 then u below is not 0
-            root = sqrt(q**2/4 + p**3/27)
-            r = -q/2 + root  # or -q/2 - root
-            u = r**TH  # primary root of solve(x**3 - r, x)
-            y2 = -5*e/6 + u - p/u/3
-            if p.is_nonzero:
-                return _ans(y2)
+    def _ans(y):
+        w = sqrt(e + 2*y)
+        arg1 = 3*e + 2*y
+        arg2 = 2*f/w
+        ans = []
+        for s in [-1, 1]:
+            root = sqrt(-(arg1 + s*arg2))
+            for t in [-1, 1]:
+                ans.append((s*w - t*root)/2 - aon4)
+        return ans
 
-            # sort it out once they know the values of the coefficients
-            return [Piecewise((a1, Eq(p, 0)), (a2, True))
-                    for a1, a2 in zip(_ans(y1), _ans(y2))]
+    # p == 0 case
+    y1 = -5*e/6 - q**TH
+    if p.is_zero:
+        return _ans(y1)
+
+    # if p != 0 then u below is not 0
+    root = sqrt(q**2/4 + p**3/27)
+    r = -q/2 + root  # or -q/2 - root
+    u = r**TH  # primary root of solve(x**3 - r, x)
+    y2 = -5*e/6 + u - p/u/3
+    if p.is_nonzero:
+        return _ans(y2)
+
+    # sort it out once they know the values of the coefficients
+    return [Piecewise((a1, Eq(p, 0)), (a2, True))
+            for a1, a2 in zip(_ans(y1), _ans(y2))]
 
 
 def roots_binomial(f):
@@ -817,8 +816,7 @@ def roots(f, *gens, **flags):
         except GeneratorsNeededError:
             if multiple:
                 return []
-            else:
-                return {}
+            return {}
 
         if f.is_multivariate:
             raise PolynomialError('multivariate polynomials are not supported')
@@ -855,8 +853,7 @@ def roots(f, *gens, **flags):
         if f.length() == 2:
             if f.degree() == 1:
                 return list(map(cancel, roots_linear(f)))
-            else:
-                return roots_binomial(f)
+            return roots_binomial(f)
 
         result = []
 
@@ -967,13 +964,13 @@ def roots(f, *gens, **flags):
 
     if not multiple:
         return result
-    else:
-        zeros = []
 
-        for zero in ordered(result):
-            zeros.extend([zero]*result[zero])
+    zeros = []
 
-        return zeros
+    for zero in ordered(result):
+        zeros.extend([zero]*result[zero])
+
+    return zeros
 
 
 def root_factors(f, *gens, **args):

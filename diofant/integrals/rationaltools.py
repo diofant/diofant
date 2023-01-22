@@ -276,12 +276,11 @@ def log_to_atan(f, g):
 
     if q.is_zero:
         return 2*atan(p.as_expr())
-    else:
-        s, t, h = g.gcdex(-f)
-        u = (f*s + g*t).quo(h)
-        A = 2*atan(u.as_expr())
+    s, t, h = g.gcdex(-f)
+    u = (f*s + g*t).quo(h)
+    A = 2*atan(u.as_expr())
 
-        return A + log_to_atan(s, t)
+    return A + log_to_atan(s, t)
 
 
 def log_to_real(h, q, x, t):

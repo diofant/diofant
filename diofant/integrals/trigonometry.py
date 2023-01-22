@@ -261,10 +261,9 @@ def _sin_pow_integrate(n, x):
         return (Rational(1, n + 1) * cos(x) * sin(x)**(n + 1) +
                 Rational(n + 2, n + 1) * _sin_pow_integrate(n + 2, x))
 
-    else:
-        # n == 0
-        # Recursion break.
-        return x
+    # n == 0
+    # Recursion break.
+    return x
 
 
 def _cos_pow_integrate(n, x):
@@ -296,7 +295,6 @@ def _cos_pow_integrate(n, x):
 
         return (Rational(-1, n + 1) * sin(x) * cos(x)**(n + 1) +
                 Rational(n + 2, n + 1) * _cos_pow_integrate(n + 2, x))
-    else:
-        # n == 0
-        # Recursion Break.
-        return x
+    # n == 0
+    # Recursion Break.
+    return x

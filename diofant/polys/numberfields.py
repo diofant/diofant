@@ -377,7 +377,7 @@ def _minpoly_cos(ex, x):
         if c.numerator == 1:
             if c.denominator == 7:
                 return 8*x**3 - 4*x**2 - 4*x + 1
-            elif c.denominator == 9:
+            if c.denominator == 9:
                 return 8*x**3 - 6*x - 1
         elif c.numerator == 2:
             q = sympify(c.denominator)
@@ -450,8 +450,7 @@ def _minpoly_rootof(ex, x):
     domain = ex.poly.domain
     if domain.is_IntegerRing:
         return ex.poly(x)
-    else:
-        return ex.poly.sqf_norm()[-1](x)
+    return ex.poly.sqf_norm()[-1](x)
 
 
 def _minpoly_compose(ex, x, dom):
@@ -486,8 +485,7 @@ def _minpoly_compose(ex, x, dom):
             ex1 = _separate_sq(ex)
             if ex1 is ex:
                 return ex
-            else:
-                ex = ex1
+            ex = ex1
 
     if ex.is_Add:
         res = _minpoly_add(x, dom, *sorted(ex.args, key=count_ops, reverse=True))
@@ -635,11 +633,11 @@ def minpoly_groebner(ex, x, domain):
         if ex.is_Atom:
             if ex is I:
                 return update_mapping(ex, 2, 1)
-            elif ex is GoldenRatio:
+            if ex is GoldenRatio:
                 return bottom_up_scan(ex.expand(func=True))
-            elif ex.is_Rational:
+            if ex.is_Rational:
                 return ex
-            elif ex.is_Symbol:
+            if ex.is_Symbol:
                 return ex
         elif ex.is_Add or ex.is_Mul:
             return ex.func(*[bottom_up_scan(g) for g in ex.args])
@@ -657,8 +655,7 @@ def minpoly_groebner(ex, x, domain):
         elif isinstance(ex, RootOf) and ex.poly.domain.is_Numerical:
             if ex.poly.domain.is_IntegerRing:
                 return update_mapping(ex, ex.poly)
-            else:
-                return update_mapping(ex, ex.poly.sqf_norm()[-1])
+            return update_mapping(ex, ex.poly.sqf_norm()[-1])
         elif isinstance(ex, conjugate):
             return update_mapping(ex, minimal_polynomial(ex.args[0], domain=domain,
                                                          method='groebner'))
@@ -800,7 +797,7 @@ def field_isomorphism(a, b, **args):
     if a.domain == b.domain:
         if m % n:
             return
-        elif a.domain.is_RationalField:
+        if a.domain.is_RationalField:
             da = a.minpoly.discriminant()
             db = b.minpoly.discriminant()
             k = m // n

@@ -231,7 +231,7 @@ def TR1(rv):
         if isinstance(rv, sec):
             a = rv.args[0]
             return 1/cos(a)
-        elif isinstance(rv, csc):
+        if isinstance(rv, csc):
             a = rv.args[0]
             return 1/sin(a)
         return rv
@@ -258,7 +258,7 @@ def TR2(rv):
         if isinstance(rv, tan):
             a = rv.args[0]
             return sin(a)/cos(a)
-        elif isinstance(rv, cot):
+        if isinstance(rv, cot):
             a = rv.args[0]
             return cos(a)/sin(a)
         return rv
@@ -479,19 +479,19 @@ def _TR56(rv, f, g, h, max, pow):
             return rv
         if rv.exp == 2:
             return h(g(rv.base.args[0])**2)
+
+        if rv.exp == 4:
+            e = 2
+        elif not pow:
+            if rv.exp % 2:
+                return rv
+            e = rv.exp//2
         else:
-            if rv.exp == 4:
-                e = 2
-            elif not pow:
-                if rv.exp % 2:
-                    return rv
-                e = rv.exp//2
-            else:
-                p = perfect_power(rv.exp)
-                if not p:
-                    return rv
-                e = rv.exp//2
-            return h(g(rv.base.args[0])**2)**e
+            p = perfect_power(rv.exp)
+            if not p:
+                return rv
+            e = rv.exp//2
+        return h(g(rv.base.args[0])**2)**e
 
     return bottom_up(rv, _f)
 
@@ -706,12 +706,11 @@ def TR9(rv):
                 if n1 < 0:
                     a, b = b, a
                 return -2*gcd*sin((a + b)/2)*sin((a - b)/2)
-            else:
-                if n1 == n2:
-                    return gcd*n1*2*sin((a + b)/2)*cos((a - b)/2)
-                if n1 < 0:
-                    a, b = b, a
-                return 2*gcd*cos((a + b)/2)*sin((a - b)/2)
+            if n1 == n2:
+                return gcd*n1*2*sin((a + b)/2)*cos((a - b)/2)
+            if n1 < 0:
+                a, b = b, a
+            return 2*gcd*cos((a + b)/2)*sin((a - b)/2)
 
         return process_common_addends(rv, do)  # DON'T sift by free symbols
 
@@ -751,14 +750,11 @@ def TR10(rv, first=True):
                 if f == sin:
                     return sin(a)*TR10(cos(b), first=False) + \
                         cos(a)*TR10(sin(b), first=False)
-                else:
-                    return cos(a)*TR10(cos(b), first=False) - \
-                        sin(a)*TR10(sin(b), first=False)
-            else:
-                if f == sin:
-                    return sin(a)*cos(b) + cos(a)*sin(b)
-                else:
-                    return cos(a)*cos(b) - sin(a)*sin(b)
+                return cos(a)*TR10(cos(b), first=False) - \
+                    sin(a)*TR10(sin(b), first=False)
+            if f == sin:
+                return sin(a)*cos(b) + cos(a)*sin(b)
+            return cos(a)*cos(b) - sin(a)*sin(b)
         return rv
 
     return bottom_up(rv, f)
@@ -835,11 +831,11 @@ def TR10i(rv):
                 if n1 == n2:
                     return gcd*cos(a - b)
                 return gcd*cos(a + b)
-            else:  # cossin, cossin
-                gcd = n1*gcd
-                if n1 == n2:
-                    return gcd*sin(a + b)
-                return gcd*sin(b - a)
+            # cossin, cossin
+            gcd = n1*gcd
+            if n1 == n2:
+                return gcd*sin(a + b)
+            return gcd*sin(b - a)
 
         rv = process_common_addends(
             rv, do, lambda x: tuple(ordered(x.free_symbols)))
@@ -947,11 +943,10 @@ def TR11(rv, base=None):
                 s = sin(base)
                 if f is cos:
                     return (c**2 - s**2)/co
-                else:
-                    return 2*c*s/co
+                return 2*c*s/co
             return rv
 
-        elif not rv.args[0].is_Number:
+        if not rv.args[0].is_Number:
             # make a change if the leading coefficient's numerator is
             # divisible by 2
             c, m = rv.args[0].as_coeff_Mul(rational=True)
@@ -1473,9 +1468,9 @@ def TR111(rv):
 
         if isinstance(rv.base, tan):
             return cot(rv.base.args[0])**-rv.exp
-        elif isinstance(rv.base, sin):
+        if isinstance(rv.base, sin):
             return csc(rv.base.args[0])**-rv.exp
-        elif isinstance(rv.base, cos):
+        if isinstance(rv.base, cos):
             return sec(rv.base.args[0])**-rv.exp
         return rv
 
@@ -1861,7 +1856,7 @@ def trig_split(a, b, two=False):
                 else:
                     return
             return co if co != 1 else None, c, s
-        elif isinstance(a, cos):
+        if isinstance(a, cos):
             c = a
         elif isinstance(a, sin):
             s = a
@@ -1890,35 +1885,34 @@ def trig_split(a, b, two=False):
         if not isinstance(c, s.func):
             return
         return gcd, n1, n2, c.args[0], s.args[0], isinstance(c, cos)
-    else:
-        if not coa and not cob:
-            if (ca and cb and sa and sb):
-                if not isinstance(ca, sa.func) is isinstance(cb, sb.func):
-                    return
-                args = {j.args for j in (ca, sa)}
-                if not all(i.args in args for i in (cb, sb)):
-                    return
-                return gcd, n1, n2, ca.args[0], sa.args[0], isinstance(ca, sa.func)
-        if ca and sa or cb and sb or \
-           two and (ca is None and sa is None or cb is None and sb is None):
-            return
-        c = ca or sa
-        s = cb or sb
-        if c.args != s.args:
-            return
-        if not coa:
-            coa = Integer(1)
-        if not cob:
-            cob = Integer(1)
-        if coa is cob:
-            gcd *= _ROOT2
-            return gcd, n1, n2, c.args[0], pi/4, False
-        elif coa/cob == _ROOT3:
-            gcd *= 2*cob
-            return gcd, n1, n2, c.args[0], pi/3, False
-        elif coa/cob == _invROOT3:
-            gcd *= 2*coa
-            return gcd, n1, n2, c.args[0], pi/6, False
+    if not coa and not cob:
+        if (ca and cb and sa and sb):
+            if not isinstance(ca, sa.func) is isinstance(cb, sb.func):
+                return
+            args = {j.args for j in (ca, sa)}
+            if not all(i.args in args for i in (cb, sb)):
+                return
+            return gcd, n1, n2, ca.args[0], sa.args[0], isinstance(ca, sa.func)
+    if ca and sa or cb and sb or \
+       two and (ca is None and sa is None or cb is None and sb is None):
+        return
+    c = ca or sa
+    s = cb or sb
+    if c.args != s.args:
+        return
+    if not coa:
+        coa = Integer(1)
+    if not cob:
+        cob = Integer(1)
+    if coa is cob:
+        gcd *= _ROOT2
+        return gcd, n1, n2, c.args[0], pi/4, False
+    if coa/cob == _ROOT3:
+        gcd *= 2*cob
+        return gcd, n1, n2, c.args[0], pi/3, False
+    if coa/cob == _invROOT3:
+        gcd *= 2*coa
+        return gcd, n1, n2, c.args[0], pi/6, False
 
 
 def as_f_sign_1(e):
@@ -2002,14 +1996,13 @@ def _osborne(e, d):
         a = a*d if not a.is_Add else Add._from_args([i*d for i in a.args])
         if isinstance(rv, sinh):
             return I*sin(a)
-        elif isinstance(rv, cosh):
+        if isinstance(rv, cosh):
             return cos(a)
-        elif isinstance(rv, tanh):
+        if isinstance(rv, tanh):
             return I*tan(a)
-        elif isinstance(rv, coth):
+        if isinstance(rv, coth):
             return cot(a)/I
-        else:
-            raise NotImplementedError(f'unhandled {rv.func}')
+        raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2037,18 +2030,17 @@ def _osbornei(e, d):
         a = rv.args[0].xreplace({d: Integer(1)})
         if isinstance(rv, sin):
             return sinh(a)/I
-        elif isinstance(rv, cos):
+        if isinstance(rv, cos):
             return cosh(a)
-        elif isinstance(rv, tan):
+        if isinstance(rv, tan):
             return tanh(a)/I
-        elif isinstance(rv, cot):
+        if isinstance(rv, cot):
             return coth(a)*I
-        elif isinstance(rv, sec):
+        if isinstance(rv, sec):
             return 1/cosh(a)
-        elif isinstance(rv, csc):
+        if isinstance(rv, csc):
             return I/sinh(a)
-        else:
-            raise NotImplementedError(f'unhandled {rv.func}')
+        raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 

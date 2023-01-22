@@ -138,7 +138,7 @@ class FCodePrinter(CodePrinter):
                 lines.append(self._print(e))
             lines.append('end if')
             return '\n'.join(lines)
-        elif self._settings['standard'] >= 95:
+        if self._settings['standard'] >= 95:
             # Only supported in F95 and newer:
             # The piecewise was used in an expression, need to do inline
             # operators. This has the downside that inline operators will
@@ -153,11 +153,10 @@ class FCodePrinter(CodePrinter):
                 cond = self._print(c)
                 code = pattern.format(T=expr, F=code, COND=cond)
             return code
-        else:
-            # `merge` is not supported prior to F95
-            raise NotImplementedError('Using Piecewise as an expression using '
-                                      'inline operators is not supported in '
-                                      'standards earlier than Fortran95.')
+        # `merge` is not supported prior to F95
+        raise NotImplementedError('Using Piecewise as an expression using '
+                                  'inline operators is not supported in '
+                                  'standards earlier than Fortran95.')
 
     def _print_MatrixElement(self, expr):
         return f'{expr.parent}({expr.i + 1}, {expr.j + 1})'
@@ -186,10 +185,8 @@ class FCodePrinter(CodePrinter):
                     sign = '+'
 
                 return f'cmplx({self._print(Add(*pure_real))},{self._print(-I * Add(*pure_imaginary))}) {sign} {t}'
-            else:
-                return f'cmplx({self._print(Add(*pure_real))},{self._print(-I * Add(*pure_imaginary))})'
-        else:
-            return CodePrinter._print_Add(self, expr)
+            return f'cmplx({self._print(Add(*pure_real))},{self._print(-I * Add(*pure_imaginary))})'
+        return CodePrinter._print_Add(self, expr)
 
     def _print_Function(self, expr):
         # All constant function args are evaluated as floats
@@ -198,8 +195,7 @@ class FCodePrinter(CodePrinter):
         eval_expr = expr.func(*args)
         if not isinstance(eval_expr, Function):
             return self._print(eval_expr)
-        else:
-            return CodePrinter._print_Function(self, expr.func(*args))
+        return CodePrinter._print_Function(self, expr.func(*args))
 
     def _print_ImaginaryUnit(self, expr):
         # purpose: print complex numbers nicely in Fortran.
@@ -212,24 +208,20 @@ class FCodePrinter(CodePrinter):
         # purpose: print complex numbers nicely in Fortran.
         if expr.is_number and expr.is_imaginary:
             return f'cmplx(0,{self._print(-I * expr)})'
-        else:
-            return CodePrinter._print_Mul(self, expr)
+        return CodePrinter._print_Mul(self, expr)
 
     def _print_Pow(self, expr):
         PREC = precedence(expr)
         if expr.exp == -1:
             return f'1.0/{self.parenthesize(expr.base, PREC)}'
-        elif expr.exp == 0.5:
+        if expr.exp == 0.5:
             if expr.base.is_integer:
                 # Fortan intrinsic sqrt() does not accept integer argument
                 if expr.base.is_Number:
                     return f'sqrt({self._print(expr.base)}.0d0)'
-                else:
-                    return f'sqrt(dble({self._print(expr.base)}))'
-            else:
-                return f'sqrt({self._print(expr.base)})'
-        else:
-            return CodePrinter._print_Pow(self, expr)
+                return f'sqrt(dble({self._print(expr.base)}))'
+            return f'sqrt({self._print(expr.base)})'
+        return CodePrinter._print_Pow(self, expr)
 
     def _print_Rational(self, expr):
         p, q = int(expr.numerator), int(expr.denominator)

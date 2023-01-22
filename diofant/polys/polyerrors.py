@@ -21,8 +21,7 @@ class ExactQuotientFailedError(BasePolynomialError):
 
         if self.domain is None:
             return f'{sstr(self.g)} does not divide {sstr(self.f)}'
-        else:
-            return f'{sstr(self.g)} does not divide {sstr(self.f)} in {sstr(self.domain)}'
+        return f'{sstr(self.g)} does not divide {sstr(self.f)} in {sstr(self.domain)}'
 
 
 class PolynomialDivisionFailedError(BasePolynomialError):
@@ -183,8 +182,7 @@ class PolificationFailedError(PolynomialError):
     def __str__(self):
         if not self.seq:
             return f"can't construct a polynomial from {self.orig}"
-        else:
-            return f"can't construct polynomials from {', '.join(map(str, self.origs))}"
+        return f"can't construct polynomials from {', '.join(map(str, self.origs))}"
 
 
 class OptionError(BasePolynomialError):

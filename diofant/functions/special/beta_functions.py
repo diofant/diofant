@@ -80,10 +80,9 @@ class beta(Function):
         x, y = self.args
         if argindex == 1:
             return beta(x, y)*(digamma(x) - digamma(x + y))
-        elif argindex == 2:
+        if argindex == 2:
             return beta(x, y)*(digamma(y) - digamma(x + y))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, x, y):

@@ -307,8 +307,7 @@ class SATSolver:
                 self.is_unsatisfied = True
                 self._unit_prop_queue = []
                 return False
-            else:
-                self._assign_literal(next_lit)
+            self._assign_literal(next_lit)
 
         return result
 

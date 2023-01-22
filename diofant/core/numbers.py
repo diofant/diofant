@@ -47,15 +47,14 @@ def comp(z1, z2, tol=None):
             a, b = Float(z1), Float(z2)
             return int(abs(a - b)*10**mlib.prec_to_dps(
                 min(a._prec, b._prec)))*2 <= 1
-        elif all(getattr(i, 'is_Number', False) for i in (z1, z2)):
+        if all(getattr(i, 'is_Number', False) for i in (z1, z2)):
             return z1._prec == z2._prec and str(z1) == str(z2)
         raise ValueError('exact comparison requires two Numbers')
     diff = abs(z1 - z2)
     az1 = abs(z1)
     if z2 and az1 > 1:
         return diff/az1 <= tol
-    else:
-        return diff <= tol
+    return diff <= tol
 
 
 def mpf_norm(mpf, prec):
@@ -78,10 +77,9 @@ def mpf_norm(mpf, prec):
         # (see issue sympy/sympy#6639)
         if not bc:
             return mlib.fzero
-        else:
-            # don't change anything; this should already
-            # be a well formed mpf tuple
-            return mpf
+        # don't change anything; this should already
+        # be a well formed mpf tuple
+        return mpf
     rv = mlib.normalize(sign, man, expt, bc, prec, rnd)
     return rv
 
@@ -251,8 +249,7 @@ class Number(AtomicExpr):
             val = sympify(obj)
             if isinstance(val, Number):
                 return val
-            else:
-                raise ValueError(f'String "{obj}" does not denote a Number')
+            raise ValueError(f'String "{obj}" does not denote a Number')
         msg = 'expected str|int|float|Decimal|Number object but got %r'
         raise TypeError(msg % type(obj).__name__)
 
@@ -268,11 +265,10 @@ class Number(AtomicExpr):
             raise ZeroDivisionError('modulo by zero')
         if self.is_Integer and other.is_Integer:
             return Tuple(*divmod(self.numerator, other.numerator))
-        else:
-            rat = self/other
-            w = math.floor(rat)
-            r = self - other*w
-            return Tuple(w, r)
+        rat = self/other
+        w = math.floor(rat)
+        r = self - other*w
+        return Tuple(w, r)
 
     @_sympifyit('other', NotImplemented)
     def __rdivmod__(self, other):
@@ -338,7 +334,7 @@ class Number(AtomicExpr):
         # a -> c*t
         if self.is_Rational or not kwargs.pop('rational', True):
             return self, ()
-        elif self.is_negative:
+        if self.is_negative:
             return Integer(-1), (-self,)
         return Integer(1), (self,)
 
@@ -528,7 +524,7 @@ class Float(Number):
         if dps is None:
             if isinstance(num, Float):
                 return num
-            elif isinstance(num, (str, numbers.Integral)):
+            if isinstance(num, (str, numbers.Integral)):
                 num, dps = _str_to_Decimal_dps(str(num))
             else:
                 dps = 15
@@ -558,7 +554,7 @@ class Float(Number):
         # special cases
         if _mpf_ == mlib.fzero:
             return Integer(0)  # XXX this is different from Float which gives 0.0
-        elif _mpf_ == mlib.fnan:
+        if _mpf_ == mlib.fnan:
             return nan
 
         obj = Expr.__new__(cls)
@@ -659,12 +655,11 @@ class Float(Number):
     def __rmod__(self, other):
         if isinstance(other, Float):
             return other.__mod__(self)
-        elif isinstance(other, Rational):
+        if isinstance(other, Rational):
             # calculate mod with Rationals, *then* round the answer
             return Float(other.__mod__(Rational(self)),
                          mlib.prec_to_dps(self._prec))
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def _eval_power(self, other):
         """
@@ -685,7 +680,7 @@ class Float(Number):
                 prec = self._prec
                 return Float._new(
                     mlib.mpf_pow_int(self._mpf_, other.numerator, prec, rnd), prec)
-            elif isinstance(other, Rational) and \
+            if isinstance(other, Rational) and \
                     other.numerator == 1 and other.denominator % 2 and self.is_negative:
                 return Pow(-1, other, evaluate=False)*(
                     -self)._eval_power(other)
@@ -884,7 +879,7 @@ class Rational(Number):
         if q == 1:
             if isinstance(p, Rational):
                 return p
-            elif isinstance(p, Float):
+            if isinstance(p, Float):
                 with mpmath.workprec(p._prec):
                     p, q = mlib.to_rational(p._mpf_)
 
@@ -896,8 +891,7 @@ class Rational(Number):
         except ZeroDivisionError:
             if p == 0:
                 return nan
-            else:
-                return zoo
+            return zoo
 
         if q == 1:
             return Integer(p)
@@ -946,40 +940,35 @@ class Rational(Number):
         if isinstance(other, Rational):
             n, d = other.numerator, other.denominator
             return Rational(self.numerator*d + self.denominator*n, self.denominator*d)
-        else:
-            return other.__radd__(self)
+        return other.__radd__(self)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Rational):
             n, d = other.numerator, other.denominator
             return Rational(self.numerator*d - self.denominator*n, self.denominator*d)
-        else:
-            return other.__rsub__(self)
+        return other.__rsub__(self)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Rational):
             n, d = other.numerator, other.denominator
             return Rational(self.numerator*n, self.denominator*d)
-        else:
-            return other.__rmul__(self)
+        return other.__rmul__(self)
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Rational):
             n, d = other.numerator, other.denominator
             return Rational(self.numerator*d, self.denominator*n)
-        else:
-            return other.__rtruediv__(self)
+        return other.__rtruediv__(self)
 
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
         if isinstance(other, Rational):
             n = (self.numerator*other.denominator) // (other.numerator*self.denominator)
             return Rational(self.numerator*other.denominator - n*other.numerator*self.denominator, self.denominator*other.denominator)
-        else:
-            return other.__rmod__(self)
+        return other.__rmod__(self)
 
     def _eval_power(self, other):
         if isinstance(other, Number):
@@ -992,8 +981,7 @@ class Rational(Number):
                     return -(Integer(-1)**((other.numerator % other.denominator) /
                                            Integer(other.denominator)) *
                              Rational(self.denominator, -self.numerator)**ne)
-                else:
-                    return Rational(self.denominator, self.numerator)**ne
+                return Rational(self.denominator, self.numerator)**ne
             if other is oo:  # -oo already caught by test for negative
                 if self.numerator > self.denominator:
                     # (3/2)**oo -> oo
@@ -1004,17 +992,17 @@ class Rational(Number):
                 return Integer(0)
             if isinstance(other, Float):
                 return self._eval_evalf(other._prec)**other
-            elif isinstance(other, Integer):
+            if isinstance(other, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
                 return Rational(self.numerator**other.numerator, self.denominator**other.numerator)
-            else:  # Rational
-                if self.numerator != 1:
-                    # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
-                    return Integer(self.numerator)**other*Integer(self.denominator)**(-other)
-                # as the above caught negative self.numerator, now self is positive
-                return Integer(self.denominator)**Rational(
-                    other.numerator*(other.denominator - 1), other.denominator) / \
-                    Integer(self.denominator)**Integer(other.numerator)
+            # Rational
+            if self.numerator != 1:
+                # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
+                return Integer(self.numerator)**other*Integer(self.denominator)**(-other)
+            # as the above caught negative self.numerator, now self is positive
+            return Integer(self.denominator)**Rational(
+                other.numerator*(other.denominator - 1), other.denominator) / \
+                Integer(self.denominator)**Integer(other.numerator)
 
     def _as_mpf_val(self, prec):
         return mlib.from_rational(self.numerator, self.denominator, prec, rnd)
@@ -1102,7 +1090,7 @@ class Rational(Number):
         expr = self
         if isinstance(other, NumberSymbol):
             return other.__ge__(self)
-        elif isinstance(other, Number):
+        if isinstance(other, Number):
             if isinstance(other, Rational):
                 return sympify(bool(self.numerator*other.denominator <= self.denominator*other.numerator),
                                strict=True)
@@ -1218,14 +1206,13 @@ class Integer(Rational):
 
         if i == 0:
             return S.Zero
-        elif i == 1:
+        if i == 1:
             return S.One
-        elif i == -1:
+        if i == -1:
             return S.NegativeOne
-        else:
-            obj = Expr.__new__(cls)
-            obj._numerator = i
-            return obj
+        obj = Expr.__new__(cls)
+        obj._numerator = i
+        return obj
 
     def __getnewargs__(self):
         return self.numerator,
@@ -1292,8 +1279,7 @@ class Integer(Rational):
             if self.is_negative:
                 return -(Integer(-1)**((other.numerator % other.denominator) /
                                        Integer(other.denominator))*Rational(1, -self)**ne)
-            else:
-                return Rational(1, self.numerator)**ne
+            return Rational(1, self.numerator)**ne
         # see if base is a perfect root, sqrt(4) --> 2
         x, xexact = integer_nthroot(abs(self.numerator), other.denominator)
         if xexact:
@@ -1360,8 +1346,7 @@ class Integer(Rational):
     def _eval_is_composite(self):
         if self > 1:
             return fuzzy_not(self.is_prime)
-        else:
-            return False
+        return False
 
     def __floordiv__(self, other):
         return Integer(self.numerator // Integer(other).numerator)
@@ -1496,17 +1481,16 @@ class NegativeOne(IntegerConstant, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if isinstance(other, Float):
                 return Float(-1.0)**other
-            elif other in (oo, -oo):
+            if other in (oo, -oo):
                 return nan
-            elif other is Rational(1, 2):
+            if other is Rational(1, 2):
                 return I
-            else:
-                assert isinstance(other, Rational)
-                if other.denominator == 2:
-                    return I**Integer(other.numerator)
-                i, r = divmod(other.numerator, other.denominator)
-                if i:
-                    return self**i*self**Rational(r, other.denominator)
+            assert isinstance(other, Rational)
+            if other.denominator == 2:
+                return I**Integer(other.numerator)
+            i, r = divmod(other.numerator, other.denominator)
+            if i:
+                return self**i*self**Rational(r, other.denominator)
         if isinstance(other, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
             e2 = 2*other
@@ -1595,10 +1579,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (-oo, nan, Float('-inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 return Float('inf')
-            else:
-                return oo
+            return oo
         return NotImplemented
     __radd__ = __add__
 
@@ -1607,10 +1590,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (oo, nan, Float('inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 return Float('inf')
-            else:
-                return oo
+            return oo
         return NotImplemented
 
     @_sympifyit('other', NotImplemented)
@@ -1624,18 +1606,15 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other is Integer(0) or other is nan:
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 if other == 0:
                     return nan
                 if other > 0:
                     return Float('inf')
-                else:
-                    return Float('-inf')
-            else:
-                if other > 0:
-                    return oo
-                else:
-                    return -oo
+                return Float('-inf')
+            if other > 0:
+                return oo
+            return -oo
         return NotImplemented
     __rmul__ = __mul__
 
@@ -1644,18 +1623,15 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (oo, -oo, nan, Float('inf'), Float('-inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 if other.is_nonnegative:
                     return Float('inf')
-                else:
-                    return Float('-inf')
-            else:
-                if other > 0:
-                    return oo
-                elif other < 0:
-                    return -oo
-                else:
-                    return zoo
+                return Float('-inf')
+            if other > 0:
+                return oo
+            if other < 0:
+                return -oo
+            return zoo
         return NotImplemented
 
     def __neg__(self):
@@ -1689,9 +1665,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
             other_real = re(other)
             if other_real.is_positive:
                 return zoo
-            elif other_real.is_negative:
+            if other_real.is_negative:
                 return Integer(0)
-            elif other_real.is_zero:
+            if other_real.is_zero:
                 return nan
 
     def _as_mpf_val(self, prec):
@@ -1713,9 +1689,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if other.is_extended_real:
             if other.is_finite or other == -oo:
                 return S.false
-            elif other.is_nonpositive:
+            if other.is_nonpositive:
                 return S.false
-            elif other is oo:
+            if other is oo:
                 return S.true
         return Expr.__le__(self, other)
 
@@ -1724,9 +1700,9 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
         if other.is_extended_real:
             if other.is_finite or other == -oo:
                 return S.true
-            elif other.is_nonpositive:
+            if other.is_nonpositive:
                 return S.true
-            elif other == oo:
+            if other == oo:
                 return S.false
         return Expr.__gt__(self, other)
 
@@ -1770,10 +1746,9 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (oo, nan, Float('inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 return Float('-inf')
-            else:
-                return -oo
+            return -oo
         return NotImplemented
     __radd__ = __add__
 
@@ -1782,10 +1757,9 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (-oo, nan, Float('-inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 return Float('-inf')
-            else:
-                return -oo
+            return -oo
         return NotImplemented
 
     @_sympifyit('other', NotImplemented)
@@ -1799,18 +1773,15 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other is Integer(0) or other is nan:
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 if other.is_zero:
                     return nan
-                elif other.is_positive:
-                    return Float('-inf')
-                else:
-                    return Float('inf')
-            else:
                 if other.is_positive:
-                    return -oo
-                else:
-                    return oo
+                    return Float('-inf')
+                return Float('inf')
+            if other.is_positive:
+                return -oo
+            return oo
         return NotImplemented
     __rmul__ = __mul__
 
@@ -1819,18 +1790,15 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if isinstance(other, Number):
             if other in (oo, -oo, nan, Float('-inf'), Float('inf')):
                 return nan
-            elif other.is_Float:
+            if other.is_Float:
                 if other.is_nonnegative:
                     return Float('-inf')
-                else:
-                    return Float('inf')
-            else:
-                if other > 0:
-                    return -oo
-                elif other < 0:
-                    return oo
-                else:
-                    return zoo
+                return Float('inf')
+            if other > 0:
+                return -oo
+            if other < 0:
+                return oo
+            return zoo
         return NotImplemented
 
     def __neg__(self):
@@ -1877,9 +1845,9 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if other.is_extended_real:
             if other.is_finite or other is oo:
                 return S.true
-            elif other.is_nonnegative:
+            if other.is_nonnegative:
                 return S.true
-            elif other == -oo:
+            if other == -oo:
                 return S.false
         return Expr.__lt__(self, other)
 
@@ -1900,9 +1868,9 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
         if other.is_extended_real:
             if other.is_finite or other is oo:
                 return S.false
-            elif other.is_nonnegative:
+            if other.is_nonnegative:
                 return S.false
-            elif other == -oo:
+            if other == -oo:
                 return S.true
         return Expr.__ge__(self, other)
 
@@ -2046,7 +2014,7 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def _eval_power(self, other):
         if other.is_positive:
             return zoo
-        elif other.is_negative:
+        if other.is_negative:
             return Integer(0)
 
 
@@ -2101,16 +2069,14 @@ class NumberSymbol(AtomicExpr):
         r = sympify((-self) < (-other), strict=True)
         if r in (S.true, S.false):
             return r
-        else:
-            return Expr.__gt__(self, other)
+        return Expr.__gt__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __ge__(self, other):
         r = sympify((-self) <= (-other), strict=True)
         if r in (S.true, S.false):
             return r
-        else:
-            return Expr.__ge__(self, other)
+        return Expr.__ge__(self, other)
 
     def __int__(self):
         raise NotImplementedError
@@ -2166,7 +2132,7 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
         if other.is_Number:
             if other is oo:
                 return oo
-            elif other == -oo:
+            if other == -oo:
                 return Integer(0)
         elif isinstance(other, log):
             return other.args[0]
@@ -2180,11 +2146,11 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
                 if (2*coeff).is_integer:
                     if coeff.is_even:
                         return Integer(1)
-                    elif coeff.is_odd:
+                    if coeff.is_odd:
                         return Integer(-1)
-                    elif (coeff + Rational(1, 2)).is_even:
+                    if (coeff + Rational(1, 2)).is_even:
                         return -I
-                    elif (coeff + Rational(1, 2)).is_odd:
+                    if (coeff + Rational(1, 2)).is_odd:
                         return I
 
             # Warning: code in risch.py will be very sensitive to changes
@@ -2286,7 +2252,7 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return Integer(3), Integer(4)
-        elif issubclass(number_cls, Rational):
+        if issubclass(number_cls, Rational):
             return Rational(223, 71), Rational(22, 7)
 
 
@@ -2378,7 +2344,7 @@ class EulerGamma(NumberSymbol, metaclass=SingletonWithManagedProperties):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return Integer(0), Integer(1)
-        elif issubclass(number_cls, Rational):
+        if issubclass(number_cls, Rational):
             return Rational(1, 2), Rational(3, 5)
 
 
@@ -2418,7 +2384,7 @@ class Catalan(NumberSymbol, metaclass=SingletonWithManagedProperties):
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
             return Integer(0), Integer(1)
-        elif issubclass(number_cls, Rational):
+        if issubclass(number_cls, Rational):
             return Rational(9, 10), Integer(1)
 
 

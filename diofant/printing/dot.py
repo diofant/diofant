@@ -73,13 +73,12 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
     """
     if atom(expr):
         return []
-    else:
-        expr_str = repr(expr)
-        arg_strs = [repr(arg) for arg in expr.args]
-        if repeat:
-            expr_str += f'_{pos!s}'
-            arg_strs = [arg_str + f'_{pos + (i,)!s}' for i, arg_str in enumerate(arg_strs)]
-        return [f'"{expr_str}" -> "{arg_str}";' for arg_str in arg_strs]
+    expr_str = repr(expr)
+    arg_strs = [repr(arg) for arg in expr.args]
+    if repeat:
+        expr_str += f'_{pos!s}'
+        arg_strs = [arg_str + f'_{pos + (i,)!s}' for i, arg_str in enumerate(arg_strs)]
+    return [f'"{expr_str}" -> "{arg_str}";' for arg_str in arg_strs]
 
 
 template = \

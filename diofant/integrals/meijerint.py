@@ -282,15 +282,14 @@ def _mytype(f, x):
     """Create a hashable entity describing the type of f."""
     if x not in f.free_symbols:
         return ()
-    elif f.is_Function:
+    if f.is_Function:
         return type(f),
-    else:
-        types = [_mytype(a, x) for a in f.args]
-        res = []
-        for t in types:
-            res += list(t)
-        res.sort(key=default_sort_key)
-        return tuple(res)
+    types = [_mytype(a, x) for a in f.args]
+    res = []
+    for t in types:
+        res += list(t)
+    res.sort(key=default_sort_key)
+    return tuple(res)
 
 
 class _CoeffExpValueError(ValueError):
@@ -321,10 +320,9 @@ def _get_coeff_exp(expr, x):
         if m.base != x:
             raise _CoeffExpValueError('expr not of form a*x**b')
         return c, m.exp
-    elif m == x:
+    if m == x:
         return c, Integer(1)
-    else:
-        raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
+    raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
 
 
 def _exponents(expr, x):
@@ -1679,7 +1677,7 @@ def meijerint_definite(f, x, a, b):
     if a == -oo and b != oo:
         return meijerint_definite(f.subs({x: -x}), x, -b, -a)
 
-    elif a == -oo:
+    if a == -oo:
         # Integrating -oo to oo. We need to find a place to split the integral.
         innermost = _find_splitting_points(f, x)
         for c in sorted(innermost, key=default_sort_key, reverse=True) + [Integer(0)]:

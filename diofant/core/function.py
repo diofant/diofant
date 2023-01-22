@@ -171,8 +171,7 @@ class FunctionClass(ManagedProperties):
     def __repr__(self):
         if issubclass(self, AppliedUndef):
             return f'Function({self.__name__!r})'
-        else:
-            return self.__name__
+        return self.__name__
 
     def __str__(self):
         return self.__name__
@@ -2282,7 +2281,7 @@ def nfloat(expr, n=15, exponent=False):
 
     if rv.is_Number:
         return Float(rv, n)
-    elif rv.is_number:
+    if rv.is_number:
         # evalf doesn't always set the precision
         rv = rv.evalf(n)
         if rv.is_Number:

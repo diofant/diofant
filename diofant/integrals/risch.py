@@ -187,7 +187,7 @@ class DifferentialExtension:
             self._auto_attrs()
 
             return
-        elif f is None or x is None:
+        if f is None or x is None:
             raise ValueError('Either both f and x or a manual extension must '
                              'be given.')
 
@@ -871,8 +871,7 @@ def splitfactor(p, DE, coefficientD=False, z=None):
         q_split = splitfactor(p.exquo(s), DE, coefficientD=coefficientD)
 
         return q_split[0], q_split[1]*s
-    else:
-        return p, One
+    return p, One
 
 
 def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
@@ -1697,9 +1696,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             if not separate_integral:
                 result += i
                 return result
-            else:
-
-                if isinstance(i, NonElementaryIntegral):
-                    return result, i
-                else:
-                    return result, 0
+            if isinstance(i, NonElementaryIntegral):
+                return result, i
+            return result, 0

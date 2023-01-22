@@ -595,13 +595,11 @@ class MultisetPartitionTraverser:
                 assert part[0].v > deficit
                 part[0].v -= deficit
                 return True
-            else:
-                if part[i].v >= deficit:
-                    part[i].v -= deficit
-                    return True
-                else:
-                    deficit -= part[i].v
-                    part[i].v = 0
+            if part[i].v >= deficit:
+                part[i].v -= deficit
+                return True
+            deficit -= part[i].v
+            part[i].v = 0
 
     def decrement_part_range(self, part, lb, ub):
         """Decrements part (a subrange of pstack), if possible, returning

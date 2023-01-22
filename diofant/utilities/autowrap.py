@@ -363,25 +363,22 @@ class CythonCodeWrapper(CodeWrapper):
             ndim = len(arg.dimensions)
             mtype = np_types[t]
             return mat_dec.format(mtype=mtype, ndim=ndim, name=arg.name)
-        else:
-            return f'{t} {arg.name!s}'
+        return f'{t} {arg.name!s}'
 
     def _declare_arg(self, arg):
         proto = self._prototype_arg(arg)
         if arg.dimensions:
             shape = '(' + ','.join(str(i[1] + 1) for i in arg.dimensions) + ')'
             return proto + f' = np.empty({shape})'
-        else:
-            return proto + ' = 0'
+        return proto + ' = 0'
 
     def _call_arg(self, arg):
         if arg.dimensions:
             t = arg.get_datatype('c')
             return f'<{t}*> {arg.name}.data'
-        elif isinstance(arg, ResultBase):
+        if isinstance(arg, ResultBase):
             return f'&{arg.name}'
-        else:
-            return str(arg.name)
+        return str(arg.name)
 
 
 class F2PyCodeWrapper(CodeWrapper):
@@ -865,17 +862,16 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         code_wrapper = UfuncifyCodeWrapper(CCodeGen('ufuncify'), tempdir,
                                            flags, verbose)
         return code_wrapper.wrap_code(routine, helpers=helps)
-    else:
-        # Dummies are used for all added expressions to prevent name clashes
-        # within the original expression.
-        y = IndexedBase(Dummy())
-        m = Dummy(integer=True)
-        i = Idx(Dummy(integer=True), m)
-        f = implemented_function(Dummy().name, Lambda(args, expr))
-        # For each of the args create an indexed version.
-        indexed_args = [IndexedBase(Dummy(str(a))) for a in args]
-        # Order the arguments (out, args, dim)
-        args = [y] + indexed_args + [m]
-        args_with_indices = [a[i] for a in indexed_args]
-        return autowrap(Eq(y[i], f(*args_with_indices)), language, backend,
-                        tempdir, tuple(args), flags, verbose, helpers)
+    # Dummies are used for all added expressions to prevent name clashes
+    # within the original expression.
+    y = IndexedBase(Dummy())
+    m = Dummy(integer=True)
+    i = Idx(Dummy(integer=True), m)
+    f = implemented_function(Dummy().name, Lambda(args, expr))
+    # For each of the args create an indexed version.
+    indexed_args = [IndexedBase(Dummy(str(a))) for a in args]
+    # Order the arguments (out, args, dim)
+    args = [y] + indexed_args + [m]
+    args_with_indices = [a[i] for a in indexed_args]
+    return autowrap(Eq(y[i], f(*args_with_indices)), language, backend,
+                    tempdir, tuple(args), flags, verbose, helpers)

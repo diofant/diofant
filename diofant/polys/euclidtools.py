@@ -16,13 +16,13 @@ class _GCD:
         """Returns GCD of ``f`` and ``g``."""
         if not f and not g:
             return self.zero
-        elif not f:
+        if not f:
             return self._gcd_zero(g)
-        elif not g:
+        if not g:
             return self._gcd_zero(f)
-        elif f.is_term:
+        if f.is_term:
             return self._gcd_term(f, g)
-        elif g.is_term:
+        if g.is_term:
             return self._gcd_term(g, f)
 
         J, (f, g) = self._deflate(f, g)
@@ -43,8 +43,7 @@ class _GCD:
 
         if not domain.is_Field:
             return h*c
-        else:
-            return h.monic()
+        return h.monic()
 
     def _deflate(self, *polys):
         J = [0]*self.ngens
@@ -88,8 +87,7 @@ class _GCD:
     def _gcd_zero(self, f):
         if self.domain.is_Field:
             return f.monic()
-        else:
-            return f if self.is_normal(f) else -f
+        return f if self.is_normal(f) else -f
 
     def _gcd_term(self, f, g):
         domain = self.domain
@@ -110,20 +108,19 @@ class _GCD:
 
         if domain.is_RationalField:
             return self._gcd_QQ(f, g)
-        elif domain.is_IntegerRing:
+        if domain.is_IntegerRing:
             return self._gcd_ZZ(f, g)
-        elif domain.is_AlgebraicField:
+        if domain.is_AlgebraicField:
             return self._gcd_AA(f, g)
-        elif not domain.is_Exact:
+        if not domain.is_Exact:
             exact = domain.get_exact()
             ring = self.clone(domain=exact)
             f, g = map(operator.methodcaller('set_domain', exact), (f, g))
             h = ring._gcd(f, g)
             return h.set_domain(domain)
-        elif domain.is_Field:
+        if domain.is_Field:
             return self._ff_prs_gcd(f, g)
-        else:
-            return self._rr_prs_gcd(f, g)
+        return self._rr_prs_gcd(f, g)
 
     def _gcd_ZZ(self, f, g):
         from .modulargcd import modgcd

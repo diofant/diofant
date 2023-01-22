@@ -46,7 +46,6 @@ class SparseNDimArray(NDimArray):
 
         # `index` is a tuple with one or more slices:
         if isinstance(index, tuple) and any(isinstance(i, slice) for i in index):
-
             def slice_expand(s, dim):
                 if not isinstance(s, slice):
                     return s,
@@ -58,16 +57,14 @@ class SparseNDimArray(NDimArray):
             array = [self._sparse_array.get(self._parse_index(i), Integer(0)) for i in eindices]
             nshape = [len(el) for i, el in enumerate(sl_factors) if isinstance(index[i], slice)]
             return type(self)(array, nshape)
-        else:
-            # `index` is a single slice:
-            if isinstance(index, slice):
-                start, stop, step = index.indices(self._loop_size)
-                retvec = [self._sparse_array.get(ind, Integer(0)) for ind in range(start, stop, step)]
-                return retvec
-            # `index` is a number or a tuple without any slice:
-            else:
-                index = self._parse_index(index)
-                return self._sparse_array.get(index, Integer(0))
+        # `index` is a single slice:
+        if isinstance(index, slice):
+            start, stop, step = index.indices(self._loop_size)
+            retvec = [self._sparse_array.get(ind, Integer(0)) for ind in range(start, stop, step)]
+            return retvec
+        # `index` is a number or a tuple without any slice:
+        index = self._parse_index(index)
+        return self._sparse_array.get(index, Integer(0))
 
     @classmethod
     def zeros(cls, *shape):

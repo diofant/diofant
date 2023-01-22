@@ -497,7 +497,7 @@ def _solve(f, symbol, **flags):
         f_num, sol = solve_linear(f, symbol)
         if symbol not in f_num.free_symbols:
             return []
-        elif f_num.is_Symbol:
+        if f_num.is_Symbol:
             # no need to check but simplify if desired
             if flags.get('simplify', True):
                 sol = simplify(sol)
@@ -984,40 +984,39 @@ def minsolve_linear_system(system, *symbols, **flags):
                     determined[x] = val
             update(determined, s)
         return determined
-    else:
-        # We try to select n variables which we want to be non-zero.
-        # All others will be assumed zero. We try to solve the modified system.
-        # If there is a non-trivial solution, just set the free variables to
-        # one. If we do this for increasing n, trying all combinations of
-        # variables, we will find an optimal solution.
-        # We speed up slightly by starting at one less than the number of
-        # variables the quick method manages.
-        from itertools import combinations
+    # We try to select n variables which we want to be non-zero.
+    # All others will be assumed zero. We try to solve the modified system.
+    # If there is a non-trivial solution, just set the free variables to
+    # one. If we do this for increasing n, trying all combinations of
+    # variables, we will find an optimal solution.
+    # We speed up slightly by starting at one less than the number of
+    # variables the quick method manages.
+    from itertools import combinations
 
-        N = len(symbols)
-        bestsol = minsolve_linear_system(system, *symbols, quick=True)
-        n0 = len([x for x in bestsol.values() if x != 0])
-        for n in range(n0 - 1, 1, -1):
-            thissol = None
-            for nonzeros in combinations(list(range(N)), n):
-                subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T
-                s = solve_linear_system(subm, *[symbols[i] for i in nonzeros])
-                if s and not all(v == 0 for v in s.values()):
-                    subs = [(symbols[v], Integer(1)) for v in nonzeros]
-                    for k, v in s.items():
-                        s[k] = v.subs(subs)
-                    for sym in symbols:
-                        if sym not in s:
-                            if symbols.index(sym) in nonzeros:
-                                s[sym] = Integer(1)
-                            else:
-                                s[sym] = Integer(0)
-                    thissol = s
-                    break
-            if thissol is None:
+    N = len(symbols)
+    bestsol = minsolve_linear_system(system, *symbols, quick=True)
+    n0 = len([x for x in bestsol.values() if x != 0])
+    for n in range(n0 - 1, 1, -1):
+        thissol = None
+        for nonzeros in combinations(list(range(N)), n):
+            subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T
+            s = solve_linear_system(subm, *[symbols[i] for i in nonzeros])
+            if s and not all(v == 0 for v in s.values()):
+                subs = [(symbols[v], Integer(1)) for v in nonzeros]
+                for k, v in s.items():
+                    s[k] = v.subs(subs)
+                for sym in symbols:
+                    if sym not in s:
+                        if symbols.index(sym) in nonzeros:
+                            s[sym] = Integer(1)
+                        else:
+                            s[sym] = Integer(0)
+                thissol = s
                 break
-            bestsol = thissol
-        return bestsol
+        if thissol is None:
+            break
+        bestsol = thissol
+    return bestsol
 
 
 # these are functions that have multiple inverse values per period
@@ -1057,8 +1056,7 @@ def _tsolve(eq, sym, **flags):
         flags['tsolve_saw'] = []
     if eq in flags['tsolve_saw']:
         return
-    else:
-        flags['tsolve_saw'].append(eq)
+    flags['tsolve_saw'].append(eq)
 
     rhs, lhs = _invert(eq, sym)
 
@@ -1076,25 +1074,24 @@ def _tsolve(eq, sym, **flags):
                 if f.count(log) != lhs.count(log):
                     if isinstance(f, log):
                         return _solve(f.args[0] - exp(rhs), sym, **flags)
-                    else:
-                        raise NotImplementedError
+                    raise NotImplementedError
 
         elif lhs.is_Pow:
             if lhs.exp.is_Integer and lhs - rhs != eq:
                 return _solve(lhs - rhs, sym, **flags)
-            elif sym not in lhs.exp.free_symbols:
+            if sym not in lhs.exp.free_symbols:
                 return _solve(lhs.base - rhs**(1/lhs.exp), sym, **flags)
-            elif not rhs and sym in lhs.exp.free_symbols:
+            if not rhs and sym in lhs.exp.free_symbols:
                 # f(x)**g(x) only has solutions where f(x) == 0 and g(x) != 0 at
                 # the same place
                 sol_base = _solve(lhs.base, sym, **flags)
                 return list(ordered(set(sol_base) -
                                     set(_solve(lhs.exp, sym, **flags))))
-            elif (rhs != 0 and
-                  lhs.base.is_positive and
-                  lhs.exp.is_extended_real):
+            if (rhs != 0 and
+                    lhs.base.is_positive and
+                    lhs.exp.is_extended_real):
                 return _solve(lhs.exp*log(lhs.base) - log(rhs), sym, **flags)
-            elif lhs.base == 0 and rhs == 1:
+            if lhs.base == 0 and rhs == 1:
                 return _solve(lhs.exp, sym, **flags)
 
         elif lhs.is_Mul and rhs.is_positive:
@@ -1152,8 +1149,7 @@ def _tsolve(eq, sym, **flags):
                             sol = _solve(p, u, **flags)
                             return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
-                        else:
-                            raise NotImplementedError from exc
+                        raise NotImplementedError from exc
                     except NotImplementedError:
                         pass
                 else:

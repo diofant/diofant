@@ -28,11 +28,10 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     def from_expr(self, expr):
         if expr.is_Rational:
             return self.dtype(expr.numerator, expr.denominator)
-        elif expr.is_Float:
+        if expr.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(expr))
-        else:
-            raise CoercionFailedError(f'expected `Rational` object, got {expr}')
+        raise CoercionFailedError(f'expected `Rational` object, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

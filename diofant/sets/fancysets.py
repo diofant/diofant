@@ -51,9 +51,9 @@ class Naturals(Set, metaclass=Singleton):
     def _contains(self, other):
         if not isinstance(other, Expr):
             return false
-        elif other.is_positive and other.is_integer:
+        if other.is_positive and other.is_integer:
             return true
-        elif other.is_integer is False or other.is_positive is False:
+        if other.is_integer is False or other.is_positive is False:
             return false
 
     def __iter__(self):
@@ -86,9 +86,9 @@ class Naturals0(Naturals):
     def _contains(self, other):
         if not isinstance(other, Expr):
             return false
-        elif other.is_integer and other.is_nonnegative:
+        if other.is_integer and other.is_nonnegative:
             return true
-        elif other.is_integer is False or other.is_nonnegative is False:
+        if other.is_integer is False or other.is_nonnegative is False:
             return false
 
 
@@ -130,16 +130,16 @@ class Integers(Set, metaclass=Singleton):
         from ..functions import ceiling, floor
         if other is Interval(-oo, oo, True, True) or other is S.Reals:
             return self
-        elif other.is_Interval:
+        if other.is_Interval:
             s = Range(ceiling(other.left), floor(other.right) + 1)
             return s.intersection(other)  # take out endpoints if open interval
 
     def _contains(self, other):
         if not isinstance(other, Expr):
             return false
-        elif other.is_integer:
+        if other.is_integer:
             return true
-        elif other.is_integer is False:
+        if other.is_integer is False:
             return false
 
     def __iter__(self):
@@ -189,7 +189,7 @@ class Rationals(Set, metaclass=Singleton):
     def _contains(self, other):
         if other.is_rational:
             return true
-        elif other.is_rational is False:
+        if other.is_rational is False:
             return false
 
     @property
@@ -448,8 +448,7 @@ class Range(Set):
         if (((self.start - other)/self.step).is_integer or
                 ((self.stop - other)/self.step).is_integer):
             return sympify(self.inf <= other <= self.sup, strict=True)
-        else:
-            return false
+        return false
 
     def __iter__(self):
         if self.start == -oo:
@@ -476,10 +475,9 @@ class Range(Set):
     def _last_element(self):
         if self.stop is oo:
             return oo
-        elif self.start == -oo:
+        if self.start == -oo:
             return self.stop - self.step
-        else:
-            return self._ith_element(len(self) - 1)
+        return self._ith_element(len(self) - 1)
 
     @property
     def inf(self):

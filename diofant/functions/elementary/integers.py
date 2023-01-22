@@ -79,10 +79,9 @@ class RoundFunction(Function):
         spart += npart
         if not spart:
             return ipart
-        elif spart.is_imaginary or (I*spart).is_extended_real:
+        if spart.is_imaginary or (I*spart).is_extended_real:
             return ipart + cls(im(spart), evaluate=False)*I
-        else:
-            return ipart + cls(spart, evaluate=False)
+        return ipart + cls(spart, evaluate=False)
 
     def _eval_is_finite(self):
         return self.args[0].is_finite
@@ -136,11 +135,10 @@ class floor(RoundFunction):
         if arg.is_Number:
             if arg.is_Rational:
                 return Integer(arg.numerator // arg.denominator)
-            elif arg.is_Float:
+            if arg.is_Float:
                 return Integer(int(arg.floor()))
-            else:
-                return arg
-        elif isinstance(arg, (floor, ceiling)):
+            return arg
+        if isinstance(arg, (floor, ceiling)):
             return arg
         if arg.is_NumberSymbol:
             return arg.approximation_interval(Integer)[0]
@@ -153,10 +151,8 @@ class floor(RoundFunction):
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
                 return r
-            else:
-                return r - 1
-        else:
-            return r
+            return r - 1
+        return r
 
     def __le__(self, other):
         if self.args[0] == other and other.is_extended_real:
@@ -212,11 +208,10 @@ class ceiling(RoundFunction):
         if arg.is_Number:
             if arg.is_Rational:
                 return -Integer(-arg.numerator // arg.denominator)
-            elif arg.is_Float:
+            if arg.is_Float:
                 return Integer(int(arg.ceiling()))
-            else:
-                return arg
-        elif isinstance(arg, (ceiling, floor)):
+            return arg
+        if isinstance(arg, (ceiling, floor)):
             return arg
         if arg.is_NumberSymbol:
             return arg.approximation_interval(Integer)[1]
@@ -229,10 +224,8 @@ class ceiling(RoundFunction):
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
                 return r + 1
-            else:
-                return r
-        else:
             return r
+        return r
 
     def __lt__(self, other):
         if self.args[0] == other and other.is_extended_real:
