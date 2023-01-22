@@ -7,7 +7,7 @@ import math
 import operator
 
 from ..config import query
-from ..core import Expr, Integer, Symbol, cacheit
+from ..core import Add, Expr, Symbol, cacheit
 from ..core import symbols as _symbols
 from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify, sympify
@@ -292,10 +292,8 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _tes
     def to_expr(self, element):
         symbols = self.symbols
         domain = self.domain
-        return functools.reduce(operator.add,
-                                (domain.to_expr(v)*k.as_expr(*symbols)
-                                 for k, v in element.items()),
-                                Integer(0))
+        return Add(*(domain.to_expr(v)*k.as_expr(*symbols)
+                     for k, v in element.items()))
 
     def _from_PythonFiniteField(self, a, K0):
         if self.domain == K0:
