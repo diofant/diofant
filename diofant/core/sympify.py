@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import collections
+import inspect
 import typing
-from inspect import getmro
 
 import diofant
 
@@ -30,9 +31,9 @@ class SympifyError(ValueError):
                 f'being raised:\n{self.base_exc.__class__.__name__}: {self.base_exc!s}')
 
 
-converter: dict[type[typing.Any],
-                typing.Callable[[typing.Any],
-                                diofant.core.basic.Basic]] = {}  # See sympify docstring.
+converter: dict[type,
+                collections.abc.Callable[[typing.Any],
+                                         diofant.core.basic.Basic]] = {}  # See sympify docstring.
 
 
 class CantSympify:
@@ -249,7 +250,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     try:
         return converter[cls](a)
     except KeyError:
-        for superclass in getmro(cls):
+        for superclass in inspect.getmro(cls):
             try:
                 return converter[superclass](a)
             except KeyError:

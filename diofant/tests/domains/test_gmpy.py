@@ -1,3 +1,5 @@
+"""Tests for gmpy2-based domains."""
+
 import pytest
 
 from diofant import (CC, FF, CoercionFailedError, FF_gmpy, FF_python,

@@ -41,10 +41,6 @@ nitpicky = True
 # Glob-style patterns that should be excluded when looking for sources.
 exclude_patterns = ['README.rst']
 
-# The document name of the "master" document, that is, the document
-# that contains the root toctree directive.
-master_doc = 'index'
-
 # Project information.
 project = 'Diofant'
 copyright = '2006-2022 SymPy Development Team, 2013-2023 Sergey B Kirpichev'

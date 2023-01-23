@@ -1,3 +1,4 @@
+import inspect
 import itertools
 
 from ...core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
@@ -1506,7 +1507,7 @@ class PrettyPrinter(Printer):
         else:
             prefix = 'RR'
 
-        if domain.has_default_precision:
+        if domain.precision == inspect.signature(type(domain)).parameters['prec'].default:
             return prettyForm(prefix)
         else:
             return self._print(pretty_symbol(prefix + '_' + str(domain.precision)))

@@ -24,7 +24,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
 
     @property
     def field(self):
-        """Returns a field associated with ``self``."""
+        """Return a field associated with ``self``."""
         from . import QQ
         return QQ
 
@@ -64,13 +64,11 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
 
     @abc.abstractmethod
     def finite_field(self, p):
-        """Returns a finite field."""
-        raise NotImplementedError
+        """Return a finite field."""
 
     @abc.abstractmethod
     def finite_ring(self, n):
-        """Returns a finite ring."""
-        raise NotImplementedError
+        """Return a finite ring."""
 
 
 class PythonIntegerRing(IntegerRing):

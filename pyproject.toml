@@ -82,6 +82,7 @@ max-nested-blocks = 10
 max-bool-expr = 10
 min-public-methods = 0
 max-public-methods = 110
+max-module-lines = 7300
 [tool.pylint.similarities]
 min-similarity-lines = 10
 [tool.pylint.BASIC]
@@ -91,7 +92,6 @@ disable = ['invalid-name',
            'missing-docstring',
            'unidiomatic-typecheck',
            'bad-mcs-method-argument',
-           'too-many-lines',
            'wrong-import-position',
            'non-iterator-returned',
            'relative-beyond-top-level',
@@ -114,17 +114,14 @@ disable = ['invalid-name',
            'fixme',
            'global-variable-undefined',
            'global-variable-not-assigned',
-           'global-statement',
            'unused-argument',
            'redefined-outer-name',
            'redefined-builtin',
            'undefined-loop-variable',
            'cell-var-from-loop',
-           'keyword-arg-before-vararg',
            'import-outside-toplevel',
            'arguments-out-of-order',
-           'consider-using-f-string',
-           'non-ascii-name']
+           'consider-using-f-string']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

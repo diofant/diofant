@@ -2009,7 +2009,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # *) PFD Duplication (see Kelly Roach's paper)
     # *) In a similar spirit, try_lerchphi() can be generalized considerably.
 
-    global _collection
+    global _collection  # pylint: disable=global-statement
     if _collection is None:
         _collection = FormulaCollection()
 
@@ -2213,7 +2213,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
     can be set to ``0`` or ``zoo`` for the preferred choice.
 
     """
-    global _meijercollection
+    global _meijercollection  # pylint: disable=global-statement
     if _meijercollection is None:
         _meijercollection = MeijerFormulaCollection()
     if rewrite == 'default':

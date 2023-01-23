@@ -155,9 +155,8 @@ from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
                      tensorcontraction, tensorproduct)
 from .utilities import (cantor_product, capture, default_sort_key, filldedent,
                         flatten, group, has_dups, has_variety, lambdify,
-                        numbered_symbols, ordered, postfixes,
-                        postorder_traversal, prefixes, sift, subsets,
-                        topological_sort, unflatten, variations)
+                        numbered_symbols, ordered, postorder_traversal, sift,
+                        subsets, topological_sort, unflatten, variations)
 
 
 __all__ = (
@@ -265,8 +264,8 @@ __all__ = (
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Fraction',
     'cantor_product', 'capture', 'default_sort_key',
     'filldedent', 'flatten', 'group', 'has_dups', 'has_variety', 'lambdify',
-    'numbered_symbols', 'ordered', 'postfixes', 'postorder_traversal',
-    'prefixes', 'sift', 'subsets', 'topological_sort', 'unflatten',
+    'numbered_symbols', 'ordered', 'postorder_traversal',
+    'sift', 'subsets', 'topological_sort', 'unflatten',
     'variations', 'CosineTransform', 'FourierTransform', 'HankelTransform',
     'Integral', 'InverseCosineTransform', 'InverseFourierTransform',
     'InverseHankelTransform', 'InverseLaplaceTransform',

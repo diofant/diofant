@@ -48,12 +48,10 @@ class Domain(DefaultPrinting, abc.ABC):
     @abc.abstractmethod
     def from_expr(self, expr):
         """Convert Diofant's expression ``expr`` to ``dtype``."""
-        raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
         """Convert domain ``element`` to Diofant expression."""
-        raise NotImplementedError
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain."""
@@ -241,18 +239,19 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
+        """Return ``True`` if two domains are equivalent."""
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
+        """Get an associated exact domain."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`."""
+        """Return a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`."""
+        """Return a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get('order', lex))

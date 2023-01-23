@@ -1,10 +1,7 @@
 """A Printer which converts an expression into its LaTeX equivalent."""
 
-from __future__ import annotations
-
 import itertools
 import re
-import typing
 
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
@@ -113,7 +110,7 @@ class LatexPrinter(Printer):
 
     printmethod = '_latex'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'mode': 'plain',
         'itex': False,

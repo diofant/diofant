@@ -17,10 +17,7 @@ Diofant is case sensitive. The implementation below does not care and leaves
 the responsibility for generating properly cased Fortran code to the user.
 """
 
-from __future__ import annotations
-
 import string
-import typing
 
 from ..core import Add, Function, I, N
 from ..logic import true
@@ -54,7 +51,7 @@ class FCodePrinter(CodePrinter):
     printmethod = '_fcode'
     language = 'Fortran'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,

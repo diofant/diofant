@@ -1330,7 +1330,7 @@ def _rewrite_single(f, x, recursive=True):
 
     """
     from ..functions import polarify, unpolarify
-    global _lookup_table
+    global _lookup_table  # pylint: disable=global-statement
     if not _lookup_table:
         _lookup_table = defaultdict(list)
         _create_lookup_table(_lookup_table)

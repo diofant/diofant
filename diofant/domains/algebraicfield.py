@@ -98,7 +98,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
+        r"""Return an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
     def to_expr(self, element):
@@ -212,7 +212,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
 
     @property
     def is_ground(self):
-        """Returns ``True`` if ``self`` is an element of the ground domain."""
+        """Return ``True`` if ``self`` is an element of the ground domain."""
         return self.rep.is_ground
 
     @property
@@ -230,16 +230,16 @@ class ComplexAlgebraicElement(AlgebraicElement):
 
     @property
     def real(self):
-        """Returns real part of ``self``."""
+        """Return real part of ``self``."""
         return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``."""
+        """Return imaginary part of ``self``."""
         return self.domain.domain.convert((self - self.real)/self.parent.unit)
 
     def conjugate(self):
-        """Returns the complex conjugate of ``self``."""
+        """Return the complex conjugate of ``self``."""
         return self.parent.one*self.real - self.parent.unit*self.imag
 
 
@@ -285,10 +285,10 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
     @property
     def real(self):
-        """Returns real part of ``self``."""
+        """Return real part of ``self``."""
         return self
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``."""
+        """Return imaginary part of ``self``."""
         return self.parent.zero

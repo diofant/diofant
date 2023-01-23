@@ -1,7 +1,5 @@
 """Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
 
-from __future__ import annotations
-
 import unicodedata
 
 from ...core.alphabets import greeks
@@ -35,7 +33,7 @@ _use_unicode = False
 
 def pretty_use_unicode(flag=None):
     """Set whether pretty-printer should use unicode by default."""
-    global _use_unicode
+    global _use_unicode  # pylint: disable=global-statement
     if flag is None:
         return _use_unicode
 

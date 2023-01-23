@@ -316,7 +316,7 @@ def filter_symbols(iterator, exclude):
             yield s
 
 
-def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumptions):
+def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
     """
     Generate an infinite stream of Symbols consisting of a prefix and
     increasing subscripts provided that they do not occur in `exclude`.
@@ -350,7 +350,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
     while True:
         name = f'{prefix}{start}'
-        s = cls(name, *args, **assumptions)
+        s = cls(name, **assumptions)
         if s not in exclude:
             yield s
         start += 1
@@ -483,40 +483,6 @@ def common_suffix(*seqs):
         return []
     else:
         return seqs[0][i + 1:]
-
-
-def prefixes(seq):
-    """
-    Generate all prefixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(prefixes([1, 2, 3, 4]))
-    [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[:i + 1]
-
-
-def postfixes(seq):
-    """
-    Generate all postfixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(postfixes([1, 2, 3, 4]))
-    [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[n - i - 1:]
 
 
 def topological_sort(graph, key=None):
@@ -1330,63 +1296,6 @@ def ordered_partitions(n, m=None, sort=True):
                         a[-mi:] = [b]*mi
 
 
-def binary_partitions(n):
-    """
-    Generates the binary partition of n.
-
-    A binary partition consists only of numbers that are
-    powers of two. Each step reduces a 2**(k+1) to 2**k and
-    2**k. Thus 16 is converted to 8 and 8.
-
-    References
-    ==========
-
-    * TAOCP 4, section 7.2.1.5, problem 64
-
-    Examples
-    ========
-
-    >>> for i in binary_partitions(5):
-    ...     print(i)
-    ...
-    [4, 1]
-    [2, 2, 1]
-    [2, 1, 1, 1]
-    [1, 1, 1, 1, 1]
-
-    """
-    from math import ceil, log
-    pow = 2**ceil(log(n, 2))
-    sum = 0
-    partition = []
-    while pow:
-        if sum + pow <= n:
-            partition.append(pow)
-            sum += pow
-        pow >>= 1
-
-    last_num = len(partition) - 1 - (n & 1)
-    while last_num >= 0:
-        yield partition
-        if partition[last_num] == 2:
-            partition[last_num] = 1
-            partition.append(1)
-            last_num -= 1
-            continue
-        partition.append(1)
-        partition[last_num] >>= 1
-        x = partition[last_num + 1] = partition[last_num]
-        last_num += 1
-        while x > 1:
-            if x <= len(partition) - last_num - 1:
-                del partition[-x + 1:]
-                last_num += 1
-                partition[last_num] = x
-            else:
-                x >>= 1
-    yield [1]*n
-
-
 def has_dups(seq):
     """Return True if there are any duplicate elements in ``seq``.
 
@@ -1467,125 +1376,6 @@ def uniq(seq, result=None):
         else:
             for s in uniq(seq, result):
                 yield s
-
-
-def generate_involutions(n):
-    """
-    Generates involutions.
-
-    An involution is a permutation that when multiplied
-    by itself equals the identity permutation. In this
-    implementation the involutions are generated using
-    Fixed Points.
-
-    Alternatively, an involution can be considered as
-    a permutation that does not contain any cycles with
-    a length that is greater than two.
-
-    References
-    ==========
-
-    * https://mathworld.wolfram.com/PermutationInvolution.html
-
-    Examples
-    ========
-
-    >>> list(generate_involutions(3))
-    [(0, 1, 2), (0, 2, 1), (1, 0, 2), (2, 1, 0)]
-    >>> len(list(generate_involutions(4)))
-    10
-
-    """
-    idx = list(range(n))
-    for p in itertools.permutations(idx):
-        for i in idx:
-            if p[p[i]] != i:
-                break
-        else:
-            yield p
-
-
-def generate_derangements(perm):
-    """
-    Routine to generate unique derangements.
-
-    TODO: This will be rewritten to use the
-    ECO operator approach once the permutations
-    branch is in master.
-
-    Examples
-    ========
-
-    >>> list(generate_derangements([0, 1, 2]))
-    [[1, 2, 0], [2, 0, 1]]
-    >>> list(generate_derangements([0, 1, 2, 3]))
-    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
-     [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1],
-     [3, 2, 1, 0]]
-    >>> list(generate_derangements([0, 1, 1]))
-    []
-
-    See Also
-    ========
-
-    diofant.functions.combinatorial.factorials.subfactorial
-
-    """
-    p = multiset_permutations(perm)
-    indices = range(len(perm))
-    p0 = next(p)  # pylint: disable=stop-iteration-return
-    for pi in p:
-        if all(pi[i] != p0[i] for i in indices):
-            yield pi
-
-
-def necklaces(n, k, free=False):
-    """
-    A routine to generate necklaces that may (free=True) or may not
-    (free=False) be turned over to be viewed. The "necklaces" returned
-    are comprised of ``n`` integers (beads) with ``k`` different
-    values (colors). Only unique necklaces are returned.
-
-    Examples
-    ========
-
-    >>> def show(s, i):
-    ...     return ''.join(s[j] for j in i)
-
-    The "unrestricted necklace" is sometimes also referred to as a
-    "bracelet" (an object that can be turned over, a sequence that can
-    be reversed) and the term "necklace" is used to imply a sequence
-    that cannot be reversed. So ACB == ABC for a bracelet (rotate and
-    reverse) while the two are different for a necklace since rotation
-    alone cannot make the two sequences the same.
-
-    (mnemonic: Bracelets can be viewed Backwards, but Not Necklaces.)
-
-    >>> B = [show('ABC', i) for i in bracelets(3, 3)]
-    >>> N = [show('ABC', i) for i in necklaces(3, 3)]
-    >>> set(N) - set(B)
-    {'ACB'}
-
-    >>> list(necklaces(4, 2))
-    [(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 1, 1),
-     (0, 1, 0, 1), (0, 1, 1, 1), (1, 1, 1, 1)]
-
-    >>> [show('.o', i) for i in bracelets(4, 2)]
-    ['....', '...o', '..oo', '.o.o', '.ooo', 'oooo']
-
-    References
-    ==========
-
-    https://mathworld.wolfram.com/Necklace.html
-
-    """
-    return uniq(minlex(i, directed=not free) for i in
-                variations(list(range(k)), n, repetition=True))
-
-
-def bracelets(n, k):
-    """Wrapper to necklaces to return a free (unrestricted) necklace."""
-    return necklaces(n, k, free=True)
 
 
 def minlex(seq, directed=True, is_set=False, small=None):

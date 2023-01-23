@@ -234,16 +234,14 @@ def interpolate(data, x):
     return poly.expand()
 
 
-def viete(f, roots=None, *gens, **args):
+def viete(f, *gens, roots=None, **args):
     """
     Generate Viete's formulas for ``f``.
 
     Examples
     ========
 
-    >>> r1, r2 = symbols('r1:3')
-
-    >>> viete(a*x**2 + b*x + c, [r1, r2], x)
+    >>> viete(a*x**2 + b*x + c, x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]
 
     """

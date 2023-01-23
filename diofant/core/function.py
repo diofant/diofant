@@ -25,8 +25,6 @@ There are three types of functions implemented in Diofant:
 
 """
 
-from __future__ import annotations
-
 import collections
 import inspect
 

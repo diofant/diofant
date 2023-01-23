@@ -728,7 +728,7 @@ class CodeGen:
         if code_lines:
             f.write(code_lines)
 
-    def _printer_method_with_settings(self, method, settings=None, *args, **kwargs):
+    def _printer_method_with_settings(self, method, *args, settings=None, **kwargs):
         settings = settings or {}
         ori = {k: self.printer._settings[k] for k in settings}
         for k, v in settings.items():
@@ -855,8 +855,9 @@ class CCodeGen(CodeGen):
             prefix = f'const {t} '
 
             *_, c_expr = self._printer_method_with_settings(
-                'doprint', {'human': False, 'dereference': dereference},
-                result.expr, assign_to=assign_to)
+                'doprint', result.expr,
+                settings={'human': False, 'dereference': dereference},
+                assign_to=assign_to)
 
             code_lines.append(f'{prefix}{c_expr}\n')
 

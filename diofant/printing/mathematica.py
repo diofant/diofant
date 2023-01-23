@@ -1,11 +1,7 @@
 """Mathematica code printer."""
 
-from __future__ import annotations
-
 import types
-import typing
 
-from ..core import Expr
 from ..sets import Reals
 from .codeprinter import CodePrinter
 from .precedence import precedence
@@ -70,7 +66,7 @@ class MCodePrinter(CodePrinter):
 
     printmethod = '_mcode'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,
@@ -78,8 +74,8 @@ class MCodePrinter(CodePrinter):
         'human': True,
     }
 
-    _number_symbols: set[tuple] = set()
-    _not_supported: set[Expr] = set()
+    _number_symbols = set()
+    _not_supported = set()
 
     def __init__(self, settings={}):
         """Register function mappings supplied by user."""

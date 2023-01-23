@@ -29,6 +29,7 @@ Compatibility breaks
 * Removed ``diofant.stats`` module, see :pull:`1276`.
 * Removed ``diofant.geometry`` module and ``line_integrate`` function, see :pull:`1283`.
 * Removed ``diofant.plotting`` module, see :pull:`1284`.
+* Removed unused ``prefixes`` and ``postfixes`` functions, see :pull:`1282`.
 
 Minor changes
 =============
@@ -120,3 +121,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24390`: Incorrectly evaluated expression
 * :sympyissue:`24461`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck -- when multiplying two Polys
 * :sympyissue:`24543`: Rational calc value error
+* :sympyissue:`6326`: PolynomialRing should not derive from CharacteristicZero

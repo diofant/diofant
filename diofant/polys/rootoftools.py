@@ -800,7 +800,7 @@ class RootSum(Expr):
             q_monom, q_coeff = zip(*q.terms())
 
         coeffs, mapping = symmetrize(p_coeff + q_coeff, formal=True)
-        formulas, values = viete(poly, roots), []
+        formulas, values = viete(poly, roots=roots), []
 
         for (sym, _), (_, val) in zip(mapping, formulas):
             values.append((sym, val))

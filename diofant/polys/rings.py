@@ -25,7 +25,7 @@ from .polyerrors import (CoercionFailedError, ExactQuotientFailedError,
                          PolynomialDivisionFailedError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
-from .specialpolys import _test_polys
+from .specialpolys import _TestPolys
 from .sqfreetools import _SQF
 
 
@@ -72,7 +72,7 @@ def _parse_symbols(symbols):
                           'Symbols or expressions')
 
 
-class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _test_polys):
+class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _TestPolys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True

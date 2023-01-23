@@ -1094,7 +1094,7 @@ evalf_table = None
 
 
 def _create_evalf_table():
-    global evalf_table
+    global evalf_table  # pylint: disable=global-statement
     from ..concrete.products import Product
     from ..concrete.summations import Sum
     from ..functions.combinatorial.numbers import bernoulli

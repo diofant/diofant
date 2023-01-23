@@ -1,9 +1,5 @@
 """Singleton mechanism"""
 
-from __future__ import annotations
-
-import typing
-
 from .assumptions import ManagedProperties
 
 
@@ -123,7 +119,7 @@ class Singleton(type):
 
     """
 
-    _instances: dict[type[typing.Any], typing.Any] = {}
+    _instances: dict[type[object], object] = {}
     'Maps singleton classes to their instances.'
 
     def __new__(cls, *args, **kwargs):
