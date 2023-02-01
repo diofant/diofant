@@ -22,11 +22,10 @@ def _token_splittable(token):
     """
     if '_' in token:
         return False
-    else:
-        try:
-            return not unicodedata.lookup('GREEK SMALL LETTER ' + token)
-        except KeyError:
-            pass
+    try:
+        return not unicodedata.lookup('GREEK SMALL LETTER ' + token)
+    except KeyError:
+        pass
     if len(token) > 1:
         return True
     return False
@@ -817,8 +816,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 new_node.args = self.flatten(new_node.args, sympy_class)
 
             return new_node
-        else:  # pragma: no cover
-            return node
+        return node  # pragma: no cover
 
     def visit_Call(self, node):
         if node.func.id in self.func_map:
@@ -827,5 +825,4 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                             args=node.args,
                             keywords=[ast.keyword(arg='evaluate',
                                                   value=ast.Constant(value=False))])
-        else:
-            return node
+        return node

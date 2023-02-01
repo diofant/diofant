@@ -408,7 +408,7 @@ class AddWithLimits(ExprWithLimits):
             summand = self.func(self.function, self.limits[0:-1]).factor()
             if not summand.has(self.variables[-1]):
                 return self.func(1, [self.limits[-1]])*summand
-            elif isinstance(summand, Mul):
+            if isinstance(summand, Mul):
                 return self.func(summand, self.limits[-1]).factor()
         return self
 
@@ -416,6 +416,6 @@ class AddWithLimits(ExprWithLimits):
         summand = self.function.expand(**hints)
         if summand.is_Add and summand.is_commutative:
             return Add(*[self.func(i, *self.limits) for i in summand.args])
-        elif summand != self.function:
+        if summand != self.function:
             return self.func(summand, *self.limits)
         return self

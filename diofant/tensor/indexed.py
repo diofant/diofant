@@ -340,8 +340,7 @@ class IndexedBase(Expr, NotIterable):
         """
         if self._shape:
             return super().args + (self._shape,)
-        else:
-            return super().args
+        return super().args
 
     def _hashable_content(self):
         return Expr._hashable_content(self) + (self._shape,)
@@ -352,10 +351,9 @@ class IndexedBase(Expr, NotIterable):
             if self.shape and len(self.shape) != len(indices):
                 raise IndexExceptionError('Rank mismatch.')
             return Indexed(self, *indices, **kw_args)
-        else:
-            if self.shape and len(self.shape) != 1:
-                raise IndexExceptionError('Rank mismatch.')
-            return Indexed(self, indices, **kw_args)
+        if self.shape and len(self.shape) != 1:
+            raise IndexExceptionError('Rank mismatch.')
+        return Indexed(self, indices, **kw_args)
 
     @property
     def shape(self):

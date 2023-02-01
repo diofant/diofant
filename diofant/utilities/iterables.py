@@ -45,7 +45,7 @@ def flatten(iterable, levels=None, cls=None):
     if levels is not None:
         if not levels:
             return iterable
-        elif levels > 0:
+        if levels > 0:
             levels -= 1
         else:
             raise ValueError(
@@ -445,7 +445,7 @@ def common_prefix(*seqs):
     """
     if any(not s for s in seqs):
         return []
-    elif len(seqs) == 1:
+    if len(seqs) == 1:
         return seqs[0]
     i = 0
     for i in range(min(len(s) for s in seqs)):
@@ -471,7 +471,7 @@ def common_suffix(*seqs):
     """
     if any(not s for s in seqs):
         return []
-    elif len(seqs) == 1:
+    if len(seqs) == 1:
         return seqs[0]
     i = 0
     for i in range(-1, -min(len(s) for s in seqs) - 1, -1):
@@ -481,8 +481,7 @@ def common_suffix(*seqs):
         i -= 1
     if i == -1:
         return []
-    else:
-        return seqs[0][i + 1:]
+    return seqs[0][i + 1:]
 
 
 def topological_sort(graph, key=None):
@@ -1570,12 +1569,11 @@ def _nodes(e):
 
     if isinstance(e, Basic):
         return e.count(Basic)
-    elif iterable(e):
+    if iterable(e):
         return 1 + sum(_nodes(ei) for ei in e)
-    elif isinstance(e, dict):
+    if isinstance(e, dict):
         return 1 + sum(_nodes(k) + _nodes(v) for k, v in e.items())
-    else:
-        return 1
+    return 1
 
 
 def ordered(seq, keys=None, default=True, warn=False):

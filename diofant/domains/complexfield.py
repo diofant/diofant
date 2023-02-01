@@ -74,8 +74,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
 
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
-        else:
-            raise CoercionFailedError(f'expected complex number, got {expr}')
+        raise CoercionFailedError(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)

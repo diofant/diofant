@@ -240,8 +240,7 @@ def get_default_datatype(expr):
     """Derives an appropriate datatype based on the expression."""
     if expr.is_integer:
         return default_datatypes['int']
-    else:
-        return default_datatypes['float']
+    return default_datatypes['float']
 
 
 class Variable:
@@ -1068,8 +1067,7 @@ class FCodeGen(CodeGen):
         """Returns the closing statements of the fortran routine."""
         if len(routine.results) == 1:
             return ['end function\n']
-        else:
-            return ['end subroutine\n']
+        return ['end subroutine\n']
 
     def get_interface(self, routine):
         """Returns a string for the function interface.

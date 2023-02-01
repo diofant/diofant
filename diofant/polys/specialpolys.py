@@ -42,8 +42,7 @@ def swinnerton_dyer_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return ex
-    else:
-        return polytools.PurePoly(ex, x)
+    return polytools.PurePoly(ex, x)
 
 
 def cyclotomic_poly(n, x=None, **args):
@@ -62,8 +61,7 @@ def cyclotomic_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def symmetric_poly(n, *gens, **args):
@@ -77,8 +75,7 @@ def symmetric_poly(n, *gens, **args):
 
     if not args.get('polys', False):
         return poly
-    else:
-        return poly.as_poly(*gens)
+    return poly.as_poly(*gens)
 
 
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
@@ -88,8 +85,7 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
 
     if not polys:
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def interpolating_poly(n, x, X='x', Y='y'):

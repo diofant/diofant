@@ -88,8 +88,7 @@ class MatMul(MatrixExpr):
         if factor != 1:
             from .trace import trace
             return factor * trace(mmul.doit())
-        else:
-            raise NotImplementedError("Can't simplify any further")
+        raise NotImplementedError("Can't simplify any further")
 
     def _eval_determinant(self):
         from .determinant import Determinant
@@ -214,8 +213,7 @@ def remove_ids(mul):
     result = rm_id(lambda x: x.is_Identity is True)(mmul)
     if result != mmul:
         return newmul(factor, *result.args)  # Recombine and return
-    else:
-        return mul
+    return mul
 
 
 def factor_in_front(mul):

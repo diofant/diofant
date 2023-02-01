@@ -409,14 +409,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if g.exp.is_Rational and g.exp.denominator != 1:
                 if g.exp.numerator > 0:
                     return g.exp.numerator + g.exp.denominator - 1
-                else:
-                    return abs(g.exp.numerator + g.exp.denominator)
-            else:
-                return 1
-        elif not g.is_Atom and g.args:
-            return max(_exponent(h) for h in g.args)
-        else:
+                return abs(g.exp.numerator + g.exp.denominator)
             return 1
+        if not g.is_Atom and g.args:
+            return max(_exponent(h) for h in g.args)
+        return 1
 
     A, B = _exponent(f), a + max(b, c)
 
@@ -535,9 +532,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             antideriv = antideriv.as_independent(x)[1]
 
         return indep*antideriv
-    else:
-        if retries >= 0:
-            result = heurisch(f, x, mappings=mappings, rewrite=rewrite, hints=hints, retries=retries - 1, unnecessary_permutations=unnecessary_permutations)
+    if retries >= 0:
+        result = heurisch(f, x, mappings=mappings, rewrite=rewrite, hints=hints, retries=retries - 1, unnecessary_permutations=unnecessary_permutations)
 
-            if result is not None:
-                return indep*result
+        if result is not None:
+            return indep*result

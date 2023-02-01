@@ -158,12 +158,12 @@ class Ynm(Function):
             n, m, theta, phi = self.args
             return (m * cot(theta) * Ynm(n, m, theta, phi) +
                     sqrt((n - m)*(n + m + 1)) * exp(-I*phi) * Ynm(n, m + 1, theta, phi))
-        elif argindex == 4:
+        if argindex == 4:
             # Diff wrt phi
             n, m, theta, phi = self.args
             return I * m * Ynm(n, m, theta, phi)
-        else:  # diff wrt n, m, etc
-            raise ArgumentIndexError(self, argindex)
+        # diff wrt n, m, etc
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_sin(self, n, m, theta, phi):
         return self.rewrite(cos)
@@ -262,8 +262,8 @@ class Znm(Function):
         if m.is_positive:
             zz = (Ynm(n, m, theta, phi) + Ynm_c(n, m, theta, phi))/sqrt(2)
             return zz
-        elif m.is_zero:
+        if m.is_zero:
             return Ynm(n, m, theta, phi)
-        elif m.is_negative:
+        if m.is_negative:
             zz = (Ynm(n, m, theta, phi) - Ynm_c(n, m, theta, phi))/(sqrt(2)*I)
             return zz

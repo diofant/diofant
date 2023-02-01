@@ -100,16 +100,14 @@ def ode_order(expr, func):
     if isinstance(expr, Derivative):
         if expr.args[0] == func:
             return len(expr.variables)
-        else:
-            order = 0
-            for arg in expr.args[0].args:
-                order = max(order, ode_order(arg, func) + len(expr.variables))
-            return order
-    else:
         order = 0
-        for arg in expr.args:
-            order = max(order, ode_order(arg, func))
+        for arg in expr.args[0].args:
+            order = max(order, ode_order(arg, func) + len(expr.variables))
         return order
+    order = 0
+    for arg in expr.args:
+        order = max(order, ode_order(arg, func))
+    return order
 
 
 def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
@@ -218,7 +216,7 @@ def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
         return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
                         prep=prep, x0=x0, classify=False, order=hints['order'],
                         match=hints[hints['default']], xi=xi, eta=eta, n=terms, type=type)
-    elif hint in ('all', 'all_Integral', 'best'):
+    if hint in ('all', 'all_Integral', 'best'):
         retdict = {}
         gethints = set(hints) - {'order', 'default', 'ordered_hints'}
         if hint == 'all_Integral':
@@ -238,12 +236,11 @@ def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
         retdict['all'] = True
         retdict['eq'] = eq
         return retdict
-    elif hint not in allhints:  # and hint not in ('default', 'ordered_hints'):
+    if hint not in allhints:  # and hint not in ('default', 'ordered_hints'):
         raise ValueError('Hint not recognized: ' + hint)
-    elif hint not in hints:
+    if hint not in hints:
         raise ValueError(string + str(eq) + ' does not match hint ' + hint)
-    else:
-        # Key added to identify the hint needed to solve the equation
-        hints['hint'] = hint
+    # Key added to identify the hint needed to solve the equation
+    hints['hint'] = hint
     hints.update({'func': func, 'eq': eq})
     return hints

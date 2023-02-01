@@ -378,10 +378,9 @@ class SparseMatrixBase(MatrixBase):
         """
         if isinstance(other, SparseMatrixBase):
             return self.add(other)
-        elif isinstance(other, MatrixBase):
+        if isinstance(other, MatrixBase):
             return other._new(other + self)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __neg__(self):
         """Negate all elements of self.
@@ -534,9 +533,8 @@ class SparseMatrixBase(MatrixBase):
             return all((k[1], k[0]) in self._smat and
                        not (self[k] - self[(k[1], k[0])]).simplify()
                        for k in self._smat)
-        else:
-            return all((k[1], k[0]) in self._smat and
-                       self[k] == self[(k[1], k[0])] for k in self._smat)
+        return all((k[1], k[0]) in self._smat and
+                   self[k] == self[(k[1], k[0])] for k in self._smat)
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -1008,8 +1006,7 @@ class SparseMatrixBase(MatrixBase):
                 return False
             if isinstance(other, SparseMatrixBase):
                 return self._smat == other._smat
-            else:
-                return self._smat == MutableSparseMatrix(other)._smat
+            return self._smat == MutableSparseMatrix(other)._smat
         except AttributeError:
             return False
 

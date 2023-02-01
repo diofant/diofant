@@ -124,7 +124,7 @@ def solve_poly_system(eqs, *gens, **args):
         if dim is None:
             return []
 
-        elif dim > 0:
+        if dim > 0:
             max_iset = max(basis.independent_sets, key=len)
             new_gens = [g for g in gens if g not in max_iset]
 

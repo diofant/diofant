@@ -899,7 +899,7 @@ def _simplifyconds(expr, s, a):
             return
         if n.is_positive and (abs(ex1) - abs(a)**n).is_nonpositive:
             return False
-        elif n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
+        if n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
             return True
 
     def replie(x, y):
@@ -1159,9 +1159,8 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True, noconds=True):
         if rel.lts == u:
             k = log(rel.gts)
             return Heaviside(t + k)
-        else:
-            k = log(rel.lts)
-            return Heaviside(-(t + k))
+        k = log(rel.lts)
+        return Heaviside(-(t + k))
     f = f.replace(Heaviside, simp_heaviside)
     f = f.replace(lambda expr: expr.is_Exp,
                   lambda expr: expand_complex(exp(expr.exp)))

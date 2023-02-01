@@ -26,8 +26,7 @@ class StrPrinter(Printer):
     def parenthesize(self, item, level):
         if precedence(item) <= level:
             return f'({self._print(item)})'
-        else:
-            return self._print(item)
+        return self._print(item)
 
     def stringify(self, args, sep, level=0):
         return sep.join([self.parenthesize(item, level) for item in args])
@@ -35,11 +34,10 @@ class StrPrinter(Printer):
     def emptyPrinter(self, expr):
         if isinstance(expr, str):
             return expr
-        elif hasattr(expr, '__str__') and not issubclass(expr.__class__,
-                                                         DefaultPrinting):
+        if hasattr(expr, '__str__') and not issubclass(expr.__class__,
+                                                       DefaultPrinting):
             return str(expr)
-        else:
-            return repr(expr)
+        return repr(expr)
 
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
@@ -145,8 +143,7 @@ class StrPrinter(Printer):
         def _xab_tostr(xab):
             if len(xab) == 1:
                 return self._print(xab[0])
-            else:
-                return self._print((xab[0],) + tuple(xab[1:]))
+            return self._print((xab[0],) + tuple(xab[1:]))
         L = ', '.join([_xab_tostr(l) for l in expr.limits])
         return f'Integral({self._print(expr.function)}, {L})'
 
@@ -170,9 +167,8 @@ class StrPrinter(Printer):
         args, expr = obj.args
         if len(args) == 1:
             return f'Lambda({args.args[0]}, {expr})'
-        else:
-            arg_string = ', '.join(self._print(arg) for arg in args)
-            return f'Lambda(({arg_string}), {expr})'
+        arg_string = ', '.join(self._print(arg) for arg in args)
+        return f'Lambda(({arg_string}), {expr})'
 
     def _print_LatticeOp(self, expr):
         args = sorted(expr.args, key=default_sort_key)
@@ -182,10 +178,9 @@ class StrPrinter(Printer):
         e, z, z0, dir = expr.args
         if dir == -1 or z0 in (oo, -oo):
             return f'Limit({e}, {z}, {z0})'
-        elif dir == Reals:
+        if dir == Reals:
             return f'Limit({e}, {z}, {z0}, dir=Reals)'
-        else:
-            return f'Limit({e}, {z}, {z0}, dir={dir})'
+        return f'Limit({e}, {z}, {z0}, dir={dir})'
 
     def _print_list(self, expr):
         return f"[{self.stringify(expr, ', ')}]"
@@ -254,10 +249,9 @@ class StrPrinter(Printer):
 
         if len(b) == 0:
             return sign + '*'.join(a_str)
-        elif len(b) == 1:
+        if len(b) == 1:
             return sign + '*'.join(a_str) + '/' + b_str[0]
-        else:
-            return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
+        return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
 
     def _print_MatMul(self, expr):
         return '*'.join([self.parenthesize(arg, precedence(expr))
@@ -281,10 +275,8 @@ class StrPrinter(Printer):
         if all(p == 0 for p in expr.point) or not expr.variables:
             if len(expr.variables) <= 1:
                 return f'O({self._print(expr.expr)})'
-            else:
-                return f"O({self.stringify((expr.expr,) + expr.variables, ', ', 0)})"
-        else:
-            return f"O({self.stringify(expr.args, ', ', 0)})"
+            return f"O({self.stringify((expr.expr,) + expr.variables, ', ', 0)})"
+        return f"O({self.stringify(expr.args, ', ', 0)})"
 
     def _print_Cycle(self, expr):
         """We want it to print as Cycle in doctests for which a repr is required.
@@ -311,17 +303,16 @@ class StrPrinter(Printer):
             if not last == 0 and ',' not in s[last:]:
                 s = s[last:] + s[:last]
             return f'Permutation{s}'
-        else:
-            s = expr.support()
-            if not s:
-                if expr.size < 5:
-                    return f'Permutation({expr.array_form!s})'
-                return f'Permutation([], size={expr.size})'
-            trim = str(expr.array_form[:s[-1] + 1]) + f', size={expr.size}'
-            use = full = str(expr.array_form)
-            if len(trim) < len(full):
-                use = trim
-            return f'Permutation({use})'
+        s = expr.support()
+        if not s:
+            if expr.size < 5:
+                return f'Permutation({expr.array_form!s})'
+            return f'Permutation([], size={expr.size})'
+        trim = str(expr.array_form[:s[-1] + 1]) + f', size={expr.size}'
+        use = full = str(expr.array_form)
+        if len(trim) < len(full):
+            use = trim
+        return f'Permutation({use})'
 
     def _print_TensorIndex(self, expr):
         return expr._print()
@@ -351,10 +342,9 @@ class StrPrinter(Printer):
     def _print_FracElement(self, frac):
         if frac.denominator == 1:
             return self._print(frac.numerator)
-        else:
-            numer = self.parenthesize(frac.numerator, PRECEDENCE['Add'])
-            denom = self.parenthesize(frac.denominator, PRECEDENCE['Atom']-1)
-            return numer + '/' + denom
+        numer = self.parenthesize(frac.numerator, PRECEDENCE['Add'])
+        denom = self.parenthesize(frac.denominator, PRECEDENCE['Atom']-1)
+        return numer + '/' + denom
 
     def _print_Poly(self, expr):
         terms, gens = [], expr.gens
@@ -477,8 +467,7 @@ class StrPrinter(Printer):
     def _print_Rational(self, expr):
         if expr.denominator == 1:
             return str(expr.numerator)
-        else:
-            return f'{expr.numerator}/{expr.denominator}'
+        return f'{expr.numerator}/{expr.denominator}'
 
     def _print_Float(self, expr):
         prec = expr._prec
@@ -519,8 +508,7 @@ class StrPrinter(Printer):
         p = self._print_Add(expr.expr, order='lex')
         if expr.free_symbols:
             return f'RootOf({p}, {expr.poly.gen}, {expr.index:d})'
-        else:
-            return f'RootOf({p}, {expr.index:d})'
+        return f'RootOf({p}, {expr.index:d})'
 
     def _print_RootSum(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]
@@ -582,8 +570,7 @@ class StrPrinter(Printer):
     def _print_tuple(self, expr):
         if len(expr) == 1:
             return f'({self._print(expr[0])},)'
-        else:
-            return f"({self.stringify(expr, ', ')})"
+        return f"({self.stringify(expr, ', ')})"
 
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
@@ -592,8 +579,7 @@ class StrPrinter(Printer):
         if expr.gens:
             return '*'.join([f'{gen}**{exp}'
                              for gen, exp in zip(expr.gens, expr)])
-        else:
-            return self._print_tuple(expr)
+        return self._print_tuple(expr)
 
     def _print_Transpose(self, T):
         return f"{self.parenthesize(T.arg, PRECEDENCE['Pow'])}.T"

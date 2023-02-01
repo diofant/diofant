@@ -52,9 +52,8 @@ class BooleanOption(Option):
     def preprocess(cls, option):
         if option in [True, False]:
             return bool(option)
-        else:
-            raise OptionError(f"'{cls.option}' must have a boolean value "
-                              f'assigned, got {option}')
+        raise OptionError(f"'{cls.option}' must have a boolean value "
+                          f'assigned, got {option}')
 
 
 class OptionType(type):
@@ -271,12 +270,11 @@ class Gens(Option, metaclass=OptionType):
 
         if option == (None,):
             return ()
-        elif has_dups(option):
+        if has_dups(option):
             raise GeneratorsError(f'duplicated generators: {option}')
-        elif any(gen.is_commutative is False for gen in option):
+        if any(gen.is_commutative is False for gen in option):
             raise GeneratorsError(f'non-commutative generators: {option}')
-        else:
-            return tuple(option)
+        return tuple(option)
 
 
 class Wrt(Option, metaclass=OptionType):
@@ -290,17 +288,16 @@ class Wrt(Option, metaclass=OptionType):
     def preprocess(cls, option):
         if isinstance(option, Basic):
             return [str(option)]
-        elif isinstance(option, str):
+        if isinstance(option, str):
             option = option.strip()
             if option.endswith(','):
                 raise OptionError('Bad input: missing parameter.')
             if not option:
                 return []
             return list(cls._re_split.split(option))
-        elif hasattr(option, '__getitem__'):
+        if hasattr(option, '__getitem__'):
             return list(map(str, option))
-        else:
-            raise OptionError("invalid argument for 'wrt' option")
+        raise OptionError("invalid argument for 'wrt' option")
 
 
 class Sort(Option, metaclass=OptionType):
@@ -316,10 +313,9 @@ class Sort(Option, metaclass=OptionType):
     def preprocess(cls, option):
         if isinstance(option, str):
             return [gen.strip() for gen in option.split('>')]
-        elif hasattr(option, '__getitem__'):
+        if hasattr(option, '__getitem__'):
             return list(map(str, option))
-        else:
-            raise OptionError("invalid argument for 'sort' option")
+        raise OptionError("invalid argument for 'sort' option")
 
 
 class Order(Option, metaclass=OptionType):
@@ -387,7 +383,7 @@ class Domain(Option, metaclass=OptionType):
         from .. import domains
         if isinstance(option, domains.Domain):
             return option
-        elif isinstance(option, str):
+        if isinstance(option, str):
             if option in ['Z', 'ZZ']:
                 return domains.ZZ
 
@@ -404,8 +400,7 @@ class Domain(Option, metaclass=OptionType):
 
                 if prec is None:
                     return domains.RR
-                else:
-                    return domains.RealField(int(prec))
+                return domains.RealField(int(prec))
 
             r = cls._re_complexfield.match(option)
 
@@ -414,8 +409,7 @@ class Domain(Option, metaclass=OptionType):
 
                 if prec is None:
                     return domains.CC
-                else:
-                    return domains.ComplexField(int(prec))
+                return domains.ComplexField(int(prec))
 
             r = cls._re_finitefield.match(option)
 
@@ -431,8 +425,7 @@ class Domain(Option, metaclass=OptionType):
 
                 if ground in ['Z', 'ZZ']:
                     return domains.ZZ.inject(*gens)
-                else:
-                    return domains.QQ.inject(*gens)
+                return domains.QQ.inject(*gens)
 
             r = cls._re_fraction.match(option)
 
@@ -443,8 +436,7 @@ class Domain(Option, metaclass=OptionType):
 
                 if ground in ['Z', 'ZZ']:
                     return domains.ZZ.inject(*gens).field
-                else:
-                    return domains.QQ.inject(*gens).field
+                return domains.QQ.inject(*gens).field
 
             r = cls._re_algebraic.match(option)
 
@@ -508,18 +500,17 @@ class Extension(Option, metaclass=OptionType):
     def preprocess(cls, option):
         if option == 1:
             return bool(option)
-        elif option == 0:
+        if option == 0:
             return bool(option)
+        if not hasattr(option, '__iter__'):
+            option = {option}
         else:
-            if not hasattr(option, '__iter__'):
-                option = {option}
+            if not option:
+                option = None
             else:
-                if not option:
-                    option = None
-                else:
-                    option = set(option)
+                option = set(option)
 
-            return option
+        return option
 
     @classmethod
     def postprocess(cls, options):
@@ -542,9 +533,7 @@ class Modulus(Option, metaclass=OptionType):
 
         if option.is_Integer and option > 0:
             return int(option)
-        else:
-            raise OptionError(
-                f"'modulus' must a positive integer, got {option}")
+        raise OptionError(f"'modulus' must a positive integer, got {option}")
 
     @classmethod
     def postprocess(cls, options):
@@ -640,8 +629,7 @@ class Gen(Flag, metaclass=OptionType):
     def preprocess(cls, option):
         if isinstance(option, (Basic, int)):
             return option
-        else:
-            raise OptionError("invalid argument for 'gen' option")
+        raise OptionError("invalid argument for 'gen' option")
 
 
 class Symbols(Flag, metaclass=OptionType):
@@ -657,9 +645,8 @@ class Symbols(Flag, metaclass=OptionType):
     def preprocess(cls, option):
         if hasattr(option, '__iter__'):
             return iter(option)
-        else:
-            raise OptionError('expected an iterator or '
-                              f'iterable container, got {option}')
+        raise OptionError('expected an iterator or '
+                          f'iterable container, got {option}')
 
 
 class Method(Flag, metaclass=OptionType):
@@ -671,8 +658,7 @@ class Method(Flag, metaclass=OptionType):
     def preprocess(cls, option):
         if isinstance(option, str):
             return option.lower()
-        else:
-            raise OptionError(f'expected a string, got {option}')
+        raise OptionError(f'expected a string, got {option}')
 
 
 def build_options(gens, args=None):
@@ -682,8 +668,7 @@ def build_options(gens, args=None):
 
     if len(args) != 1 or 'opt' not in args or gens:
         return Options(gens, args)
-    else:
-        return args['opt']
+    return args['opt']
 
 
 def allowed_flags(args, flags):

@@ -431,8 +431,7 @@ def xsym(sym):
 
     if _use_unicode:
         return op[1]
-    else:
-        return op[0]
+    return op[0]
 
 
 # SYMBOLS
@@ -465,11 +464,10 @@ def pretty_atom(atom_name, default=None):
     """Return pretty representation of an atom."""
     if _use_unicode:
         return atoms_table[atom_name]
-    else:
-        if default is not None:
-            return default
+    if default is not None:
+        return default
 
-        raise KeyError('only unicode')  # send it default printer
+    raise KeyError('only unicode')  # send it default printer
 
 
 def pretty_symbol(symb_name):
@@ -521,9 +519,8 @@ def pretty_symbol(symb_name):
         if sups:
             name += '__'+'__'.join([translate(s) for s in sups])
         return name
-    else:
-        sups_result = ' '.join(pretty_sups)
-        subs_result = ' '.join(pretty_subs)
+    sups_result = ' '.join(pretty_sups)
+    subs_result = ' '.join(pretty_subs)
 
     return ''.join([name, sups_result, subs_result])
 
@@ -553,5 +550,4 @@ def annotated(letter):
 
     if _use_unicode:
         return ucode_pics[letter]
-    else:
-        return ascii_pics[letter]
+    return ascii_pics[letter]

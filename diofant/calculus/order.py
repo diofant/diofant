@@ -130,9 +130,8 @@ class Order(Expr):
                     new_vp[v] = p
             if set(expr_vp) == set(new_vp):
                 return expr
-            else:
-                variables = list(new_vp)
-                point = [new_vp[v] for v in variables]
+            variables = list(new_vp)
+            point = [new_vp[v] for v in variables]
 
         if expr is nan:
             return nan
@@ -241,15 +240,13 @@ class Order(Expr):
     def variables(self):
         if self.args[1:]:
             return tuple(x[0] for x in self.args[1:])
-        else:
-            return ()
+        return ()
 
     @property
     def point(self):
         if self.args[1:]:
             return tuple(x[1] for x in self.args[1:])
-        else:
-            return ()
+        return ()
 
     @property
     def free_symbols(self):

@@ -26,8 +26,7 @@ class AssocOp(Expr):
 
         if not options.pop('evaluate', global_evaluate[0]):
             return cls._from_args(args)
-        else:
-            args = [a for a in args if a is not cls.identity]
+        args = [a for a in args if a is not cls.identity]
 
         if len(args) == 0:
             return cls.identity
@@ -46,7 +45,7 @@ class AssocOp(Expr):
         """Create new instance with already-processed args."""
         if len(args) == 0:
             return cls.identity
-        elif len(args) == 1:
+        if len(args) == 1:
             return args[0]
 
         return super().__new__(cls, *args)
@@ -265,12 +264,12 @@ class AssocOp(Expr):
         def is_in(expr):
             if expr == self:
                 return True
-            elif isinstance(expr, cls):
+            if isinstance(expr, cls):
                 _c, _nc = _ncsplit(expr)
                 if (c & _c) == c:
                     if not nc:
                         return True
-                    elif len(nc) <= len(_nc):
+                    if len(nc) <= len(_nc):
                         for i in range(len(_nc) - len(nc)):
                             if _nc[i:i + len(nc)] == nc:
                                 return True
@@ -345,8 +344,7 @@ class AssocOp(Expr):
         """
         if isinstance(expr, cls):
             return expr.args
-        else:
-            return expr,
+        return expr,
 
 
 class ShortCircuitError(Exception):
@@ -397,7 +395,7 @@ class LatticeOp(AssocOp):
                 return sympify(cls.zero)
             if not _args:
                 return sympify(cls.identity)
-            elif len(_args) == 1:
+            if len(_args) == 1:
                 return set(_args).pop()
         else:
             _args = frozenset(args)
@@ -435,8 +433,7 @@ class LatticeOp(AssocOp):
         """
         if isinstance(expr, cls):
             return expr._argset
-        else:
-            return frozenset([expr])
+        return frozenset([expr])
 
     @property  # type: ignore[misc]
     @cacheit

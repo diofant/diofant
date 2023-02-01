@@ -469,8 +469,7 @@ class Factors:
                     factors[factor] = exp*other
 
             return Factors(factors)
-        else:
-            raise ValueError(f'expected non-negative integer, got {other}')
+        raise ValueError(f'expected non-negative integer, got {other}')
 
     def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are
@@ -615,10 +614,9 @@ class Term:
     def pow(self, other):
         if other < 0:
             return self.inv().pow(-other)
-        else:
-            return Term(self.coeff ** other,
-                        self.numer.pow(other),
-                        self.denom.pow(other))
+        return Term(self.coeff ** other,
+                    self.numer.pow(other),
+                    self.denom.pow(other))
 
     def gcd(self, other):
         return Term(self.coeff.gcd(other.coeff),
@@ -633,20 +631,17 @@ class Term:
     def __mul__(self, other):
         if isinstance(other, Term):
             return self.mul(other)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __truediv__(self, other):
         if isinstance(other, Term):
             return self.quo(other)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __pow__(self, other):
         if isinstance(other, numbers.Integral):
             return self.pow(other)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __eq__(self, other):
         return (self.coeff == other.coeff and
@@ -1067,140 +1062,139 @@ def factor_nc(expr):
     expr, rep, nc_symbols = _mask_nc(expr)
     if rep:
         return factor(expr).subs(rep)
-    else:
-        args = [a.args_cnc() for a in Add.make_args(expr)]
-        c = g = l = r = Integer(1)
-        hit = False
-        # find any commutative gcd term
-        for i, a in enumerate(args):
-            if i == 0:
-                c = Mul._from_args(a[0])
-            elif a[0]:
-                c = gcd(c, Mul._from_args(a[0]))
-            else:
-                c = Integer(1)
-        if c != 1:
-            hit = True
-            c, g = c.as_coeff_Mul()
-            if g != 1:
-                for i, (cc, _) in enumerate(args):
-                    cc = list(Mul.make_args(Mul._from_args(list(cc))/g))
-                    args[i][0] = cc
+    args = [a.args_cnc() for a in Add.make_args(expr)]
+    c = g = l = r = Integer(1)
+    hit = False
+    # find any commutative gcd term
+    for i, a in enumerate(args):
+        if i == 0:
+            c = Mul._from_args(a[0])
+        elif a[0]:
+            c = gcd(c, Mul._from_args(a[0]))
+        else:
+            c = Integer(1)
+    if c != 1:
+        hit = True
+        c, g = c.as_coeff_Mul()
+        if g != 1:
             for i, (cc, _) in enumerate(args):
-                cc[0] = cc[0]/c
+                cc = list(Mul.make_args(Mul._from_args(list(cc))/g))
                 args[i][0] = cc
-        # find any noncommutative common prefix
-        for i, a in enumerate(args):
-            if i == 0:
-                n = a[1][:]
-            else:
-                n = common_prefix(n, a[1])
-            if not n:
-                # is there a power that can be extracted?
-                if not args[0][1]:
-                    break
-                b, e = args[0][1][0].as_base_exp()
-                ok = False
-                if e.is_Integer:
-                    for t in args:
-                        if not t[1]:
-                            break
-                        bt, et = t[1][0].as_base_exp()
-                        if et.is_Integer and bt == b:
-                            e = min(e, et)
-                        else:
-                            break
-                    else:
-                        ok = hit = True
-                        l = b**e
-                        il = b**-e
-                        for i, a in enumerate(args):
-                            args[i][1][0] = il*args[i][1][0]
-                        break
+        for i, (cc, _) in enumerate(args):
+            cc[0] = cc[0]/c
+            args[i][0] = cc
+    # find any noncommutative common prefix
+    for i, a in enumerate(args):
+        if i == 0:
+            n = a[1][:]
+        else:
+            n = common_prefix(n, a[1])
+        if not n:
+            # is there a power that can be extracted?
+            if not args[0][1]:
                 break
-        else:
-            hit = True
-            lenn = len(n)
-            l = Mul(*n)
-            for i, a in enumerate(args):
-                args[i][1] = args[i][1][lenn:]
-        # find any noncommutative common suffix
-        for i, a in enumerate(args):
-            if i == 0:
-                n = a[1][:]
-            else:
-                n = common_suffix(n, a[1])
-            if not n:
-                # is there a power that can be extracted?
-                if not args[0][1]:
-                    break
-                b, e = args[0][1][-1].as_base_exp()
-                ok = False
-                if e.is_Integer:
-                    for t in args:
-                        if not t[1]:
-                            break
-                        bt, et = t[1][-1].as_base_exp()
-                        if et.is_Integer and bt == b:
-                            e = min(e, et)
-                        else:
-                            break
-                    else:
-                        ok = hit = True
-                        r = b**e
-                        il = b**-e
-                        for i, a in enumerate(args):
-                            args[i][1][-1] = args[i][1][-1]*il
+            b, e = args[0][1][0].as_base_exp()
+            ok = False
+            if e.is_Integer:
+                for t in args:
+                    if not t[1]:
                         break
-                break
-        else:
-            hit = True
-            lenn = len(n)
-            r = Mul(*n)
-            for i, a in enumerate(args):
-                args[i][1] = a[1][:len(a[1]) - lenn]
-        if hit:
-            mid = Add(*[Mul(*cc)*Mul(*nc) for cc, nc in args])
-        else:
-            mid = expr
-
-        # sort the symbols so the Dummys would appear in the same
-        # order as the original symbols, otherwise you may introduce
-        # a factor of -1, e.g. A**2 - B**2) -- {A:y, B:x} --> y**2 - x**2
-        # and the former factors into two terms, (A - B)*(A + B) while the
-        # latter factors into 3 terms, (-1)*(x - y)*(x + y)
-        rep1 = [(n, Dummy()) for n in sorted(nc_symbols, key=default_sort_key)]
-        unrep1 = [(v, k) for k, v in rep1]
-        unrep1.reverse()
-        new_mid, r2, _ = _mask_nc(mid.subs(rep1))
-        new_mid = powsimp(factor(new_mid))
-
-        new_mid = new_mid.subs(r2).subs(unrep1)
-
-        if new_mid.is_Pow:
-            return _keep_coeff(c, g*l*new_mid*r)
-
-        if new_mid.is_Mul:
-            # XXX TODO there should be a way to inspect what order the terms
-            # must be in and just select the plausible ordering without
-            # checking permutations
-            cfac = []
-            ncfac = []
-            for f in new_mid.args:
-                if f.is_commutative:
-                    cfac.append(f)
+                    bt, et = t[1][0].as_base_exp()
+                    if et.is_Integer and bt == b:
+                        e = min(e, et)
+                    else:
+                        break
                 else:
-                    b, e = f.as_base_exp()
-                    if e.is_Integer:
-                        ncfac.extend([b]*e)
+                    ok = hit = True
+                    l = b**e
+                    il = b**-e
+                    for i, a in enumerate(args):
+                        args[i][1][0] = il*args[i][1][0]
+                    break
+            break
+    else:
+        hit = True
+        lenn = len(n)
+        l = Mul(*n)
+        for i, a in enumerate(args):
+            args[i][1] = args[i][1][lenn:]
+    # find any noncommutative common suffix
+    for i, a in enumerate(args):
+        if i == 0:
+            n = a[1][:]
+        else:
+            n = common_suffix(n, a[1])
+        if not n:
+            # is there a power that can be extracted?
+            if not args[0][1]:
+                break
+            b, e = args[0][1][-1].as_base_exp()
+            ok = False
+            if e.is_Integer:
+                for t in args:
+                    if not t[1]:
+                        break
+                    bt, et = t[1][-1].as_base_exp()
+                    if et.is_Integer and bt == b:
+                        e = min(e, et)
                     else:
-                        ncfac.append(f)
-            pre_mid = g*Mul(*cfac)*l
-            target = _pemexpand(expr/c)
-            for s in variations(ncfac, len(ncfac)):
-                ok = pre_mid*Mul(*s)*r
-                if _pemexpand(ok) == target:
-                    return _keep_coeff(c, ok)
+                        break
+                else:
+                    ok = hit = True
+                    r = b**e
+                    il = b**-e
+                    for i, a in enumerate(args):
+                        args[i][1][-1] = args[i][1][-1]*il
+                    break
+            break
+    else:
+        hit = True
+        lenn = len(n)
+        r = Mul(*n)
+        for i, a in enumerate(args):
+            args[i][1] = a[1][:len(a[1]) - lenn]
+    if hit:
+        mid = Add(*[Mul(*cc)*Mul(*nc) for cc, nc in args])
+    else:
+        mid = expr
 
-        # mid was an Add that didn't factor successfully
-        return _keep_coeff(c, g*l*mid*r)
+    # sort the symbols so the Dummys would appear in the same
+    # order as the original symbols, otherwise you may introduce
+    # a factor of -1, e.g. A**2 - B**2) -- {A:y, B:x} --> y**2 - x**2
+    # and the former factors into two terms, (A - B)*(A + B) while the
+    # latter factors into 3 terms, (-1)*(x - y)*(x + y)
+    rep1 = [(n, Dummy()) for n in sorted(nc_symbols, key=default_sort_key)]
+    unrep1 = [(v, k) for k, v in rep1]
+    unrep1.reverse()
+    new_mid, r2, _ = _mask_nc(mid.subs(rep1))
+    new_mid = powsimp(factor(new_mid))
+
+    new_mid = new_mid.subs(r2).subs(unrep1)
+
+    if new_mid.is_Pow:
+        return _keep_coeff(c, g*l*new_mid*r)
+
+    if new_mid.is_Mul:
+        # XXX TODO there should be a way to inspect what order the terms
+        # must be in and just select the plausible ordering without
+        # checking permutations
+        cfac = []
+        ncfac = []
+        for f in new_mid.args:
+            if f.is_commutative:
+                cfac.append(f)
+            else:
+                b, e = f.as_base_exp()
+                if e.is_Integer:
+                    ncfac.extend([b]*e)
+                else:
+                    ncfac.append(f)
+        pre_mid = g*Mul(*cfac)*l
+        target = _pemexpand(expr/c)
+        for s in variations(ncfac, len(ncfac)):
+            ok = pre_mid*Mul(*s)*r
+            if _pemexpand(ok) == target:
+                return _keep_coeff(c, ok)
+
+    # mid was an Add that didn't factor successfully
+    return _keep_coeff(c, g*l*mid*r)

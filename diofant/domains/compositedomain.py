@@ -18,5 +18,4 @@ class CompositeDomain(Domain):
                 symbols = self.symbols + symbols
 
             return self.__class__(self.domain, symbols, self.order)
-        else:
-            raise GeneratorsError(f'common generators in {self.symbols} and {symbols}')
+        raise GeneratorsError(f'common generators in {self.symbols} and {symbols}')

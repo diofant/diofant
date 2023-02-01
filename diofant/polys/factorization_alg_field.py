@@ -361,7 +361,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
 
     if divisors is None:
         return
-    elif any(omega % d == 0 for d in divisors):
+    if any(omega % d == 0 for d in divisors):
         return
 
     return fA, denoms, divisors
@@ -470,10 +470,9 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
 
         if solution is None:
             return
-        else:
-            solution = {k.set_domain(domain): v.set_domain(domain).trunc_ground(P)
-                        for k, v in solution.items()}
-            assert len(solution) == coeffring.ngens
+        solution = {k.set_domain(domain): v.set_domain(domain).trunc_ground(P)
+                    for k, v in solution.items()}
+        assert len(solution) == coeffring.ngens
 
         subs = list(solution.items())
 
@@ -484,8 +483,6 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
 
     if e == 0:
         return [h.set_ring(ring) for h in H]
-    else:
-        return
 
 
 def _div(f, g, minpoly, p):
@@ -779,8 +776,7 @@ def _sqf_p(f, minpoly, p):
 
     if not f:
         return True
-    else:
-        return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
+    return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
 
 
 def _test_prime(fA, D, minpoly, p, domain):

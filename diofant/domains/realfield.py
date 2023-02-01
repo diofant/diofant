@@ -73,8 +73,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
 
         if number.is_Number:
             return self.dtype(number)
-        else:
-            raise CoercionFailedError(f'expected real number, got {expr}')
+        raise CoercionFailedError(f'expected real number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
@@ -90,8 +89,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def _from_RealField(self, element, base):
         if self == base:
             return element
-        else:
-            return self.dtype(element)
+        return self.dtype(element)
 
     def _from_ComplexField(self, element, base):
         if not element.imag:

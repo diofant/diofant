@@ -163,7 +163,7 @@ class Set(Basic):
         # this behaves as other - self
         if other.is_subset(self):
             return S.EmptySet
-        elif isinstance(other, ProductSet):
+        if isinstance(other, ProductSet):
             # For each set consider it or it's complement
             # We need at least one of the sets to be complemented
             # Consider all 2^n combinations.
@@ -179,7 +179,7 @@ class Set(Basic):
             # Union of all combinations but this one
             return Union(p for p in product_sets if p != other)
 
-        elif isinstance(other, Interval):
+        if isinstance(other, Interval):
             if isinstance(self, (FiniteSet, Interval)):
                 return Intersection(other, self.complement(S.Reals))
 
@@ -291,8 +291,7 @@ class Set(Basic):
         """
         if isinstance(other, Set):
             return self.intersection(other) == self
-        else:
-            raise ValueError(f"Unknown argument '{other}'")
+        raise ValueError(f"Unknown argument '{other}'")
 
     def issubset(self, other):
         """Alias for :meth:`is_subset()`."""
@@ -313,8 +312,7 @@ class Set(Basic):
         """
         if isinstance(other, Set):
             return self != other and self.is_subset(other)
-        else:
-            raise ValueError(f"Unknown argument '{other}'")
+        raise ValueError(f"Unknown argument '{other}'")
 
     def is_superset(self, other):
         """
@@ -331,8 +329,7 @@ class Set(Basic):
         """
         if isinstance(other, Set):
             return other.is_subset(self)
-        else:
-            raise ValueError(f"Unknown argument '{other}'")
+        raise ValueError(f"Unknown argument '{other}'")
 
     def issuperset(self, other):
         """Alias for :meth:`is_superset()`."""
@@ -353,8 +350,7 @@ class Set(Basic):
         """
         if isinstance(other, Set):
             return self != other and self.is_superset(other)
-        else:
-            raise ValueError(f"Unknown argument '{other}'")
+        raise ValueError(f"Unknown argument '{other}'")
 
     def _eval_powerset(self):
         raise NotImplementedError(f'Power set not defined for: {self.func}')
@@ -578,9 +574,8 @@ class ProductSet(Set):
             if isinstance(arg, Set):
                 if arg.is_ProductSet:
                     return sum(map(flatten, arg.args), [])
-                else:
-                    return [arg]
-            elif iterable(arg):
+                return [arg]
+            if iterable(arg):
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         sets = flatten(list(sets))
@@ -668,8 +663,7 @@ class ProductSet(Set):
         from ..utilities.iterables import cantor_product
         if self.is_iterable:
             return cantor_product(*self.sets)
-        else:
-            raise TypeError('Not all constituent sets are iterable')
+        raise TypeError('Not all constituent sets are iterable')
 
     @property
     def measure(self):
@@ -858,7 +852,7 @@ class Interval(Set, EvalfMixin):
             if other.is_right_unbounded and not other.right_open:
                 other = Interval(other.start, other.end, other.left_open, True)
             return other
-        elif Eq(self, S.ExtendedReals) == true:
+        if Eq(self, S.ExtendedReals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -925,16 +919,15 @@ class Interval(Set, EvalfMixin):
             if (end < start or
                     (end == start and (end not in self and end not in other))):
                 return
-            else:
-                start = Min(self.start, other.start)
-                end = Max(self.end, other.end)
+            start = Min(self.start, other.start)
+            end = Max(self.end, other.end)
 
-                left_open = ((self.start != start or self.left_open) and
-                             (other.start != start or other.left_open))
-                right_open = ((self.end != end or self.right_open) and
-                              (other.end != end or other.right_open))
+            left_open = ((self.start != start or self.left_open) and
+                         (other.start != start or other.left_open))
+            right_open = ((self.end != end or self.right_open) and
+                          (other.end != end or other.right_open))
 
-                return Interval(start, end, left_open, right_open)
+            return Interval(start, end, left_open, right_open)
 
         # If I have open end points and these endpoints are contained in other
         if ((self.left_open and other.contains(self.start) is true) or
@@ -1052,12 +1045,11 @@ class Interval(Set, EvalfMixin):
                     right_open = self.left_open
 
             return Interval(start, end, left_open, right_open)
-        else:
-            return imageset(f, Interval(self.start, sing[0],
-                                        self.left_open, True)) + \
-                Union(*[imageset(f, Interval(sing[i], sing[i + 1], True, True))
-                        for i in range(len(sing) - 1)]) + \
-                imageset(f, Interval(sing[-1], self.end, True, self.right_open))
+        return imageset(f, Interval(self.start, sing[0],
+                                    self.left_open, True)) + \
+            Union(*[imageset(f, Interval(sing[i], sing[i + 1], True, True))
+                    for i in range(len(sing) - 1)]) + \
+            imageset(f, Interval(sing[-1], self.end, True, self.right_open))
 
     @property
     def measure(self):
@@ -1154,8 +1146,7 @@ class Union(Set, EvalfMixin):
             if isinstance(arg, Set):
                 if arg.is_Union:
                     return sum(map(flatten, arg.args), [])
-                else:
-                    return [arg]
+                return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
@@ -1215,8 +1206,7 @@ class Union(Set, EvalfMixin):
 
         if len(args) == 1:
             return args.pop()
-        else:
-            return Union(args, evaluate=False)
+        return Union(args, evaluate=False)
 
     def _complement(self, other):
         # DeMorgan's Law
@@ -1319,8 +1309,7 @@ class Union(Set, EvalfMixin):
 
         if all(set.is_iterable for set in self.args):
             return roundrobin(*(iter(arg) for arg in self.args))
-        else:
-            raise TypeError('Not all constituent sets are iterable')
+        raise TypeError('Not all constituent sets are iterable')
 
 
 class Intersection(Set):
@@ -1362,8 +1351,7 @@ class Intersection(Set):
             if isinstance(arg, Set):
                 if arg.is_Intersection:
                     return sum(map(flatten, arg.args), [])
-                else:
-                    return [arg]
+                return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
@@ -1435,8 +1423,7 @@ class Intersection(Set):
                 if len(other_sets) > 0:
                     other = Intersection(other_sets)
                     return Union(Intersection(arg, other) for arg in s.args)
-                else:
-                    return Union(arg for arg in s.args)
+                return Union(arg for arg in s.args)
 
         for s in args:
             if s.is_Complement:
@@ -1467,8 +1454,7 @@ class Intersection(Set):
 
         if len(args) == 1:
             return args.pop()
-        else:
-            return Intersection(args, evaluate=False)
+        return Intersection(args, evaluate=False)
 
     def as_relational(self, symbol):
         """Rewrite an Intersection in terms of equalities and logic operators."""
@@ -1513,8 +1499,7 @@ class Complement(Set, EvalfMixin):
         result = B._complement(A)
         if result is not None:
             return result
-        else:
-            return Complement(A, B, evaluate=False)
+        return Complement(A, B, evaluate=False)
 
     def _contains(self, other):
         A = self.args[0]
@@ -1713,10 +1698,9 @@ class FiniteSet(Set, EvalfMixin):
 
             if syms:
                 return Complement(intervals, FiniteSet(*syms), evaluate=False)
-            else:
-                return intervals
+            return intervals
 
-        elif other.is_FiniteSet:
+        if other.is_FiniteSet:
             common = FiniteSet(*[el for el in other
                                  if self.contains(el) == true])
             self2 = FiniteSet(*[el for el in self
@@ -1767,7 +1751,7 @@ class FiniteSet(Set, EvalfMixin):
                 t = t.simplify()
             if t == true:
                 return t
-            elif t != false:
+            if t != false:
                 r = None
         return r
 
@@ -1871,8 +1855,7 @@ class SymmetricDifference(Set):
         result = B._symmetric_difference(A)
         if result is not None:
             return result
-        else:
-            return SymmetricDifference(A, B, evaluate=False)
+        return SymmetricDifference(A, B, evaluate=False)
 
 
 def imageset(*args):

@@ -65,8 +65,7 @@ def checksol(f, sol, **flags):
         # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
         if f.is_Number:
             return f.is_zero
-        else:
-            return
+        return
 
     illegal = {nan, zoo, oo, -oo}
     if any(sympify(v).atoms() & illegal for k, v in sol.items()):
@@ -125,7 +124,7 @@ def checksol(f, sol, **flags):
             continue
         if val.is_Rational:
             return val == 0
-        elif val.is_nonzero:
+        if val.is_nonzero:
             return False
         if not val.free_symbols:
             return bool(abs(val.evalf(18, strict=False).evalf(12, chop=True)) < 1e-9)

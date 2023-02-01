@@ -74,11 +74,10 @@ def rm_id(isid):
         ids = list(map(isid, arguments(expr)))
         if sum(ids) == 0:           # No identities. Common case
             return expr
-        elif sum(ids) != len(ids):  # there is at least one non-identity
+        if sum(ids) != len(ids):  # there is at least one non-identity
             return term(operator(expr),
                         [arg for arg, x in zip(arguments(expr), ids) if not x])
-        else:
-            return term(operator(expr), [arguments(expr)[0]])
+        return term(operator(expr), [arguments(expr)[0]])
 
     return ident_remove
 
@@ -114,8 +113,7 @@ def glom(key, count, combine):
         newargs = [combine(cnt, mat) for mat, cnt in counts.items()]
         if set(newargs) != set(arguments(expr)):
             return term(operator(expr), newargs)
-        else:
-            return expr
+        return expr
 
     return conglomerate
 
@@ -146,8 +144,7 @@ def unpack(expr):
     """
     if len(arguments(expr)) == 1:
         return arguments(expr)[0]
-    else:
-        return expr
+    return expr
 
 
 def flatten(expr):
@@ -286,8 +283,7 @@ def condition(cond, rule):
     def conditioned_rl(expr):
         if cond(expr):
             return rule(expr)
-        else:
-            return expr
+        return expr
     return conditioned_rl
 
 
@@ -314,9 +310,8 @@ def sall(rule, fns=basic_fns):
     def all_rl(expr):
         if leaf(expr):
             return expr
-        else:
-            args = map(rule, children(expr))
-            return new(op(expr), *args)
+        args = map(rule, children(expr))
+        return new(op(expr), *args)
 
     return all_rl
 
@@ -334,6 +329,5 @@ def null_safe(rule):
         result = rule(expr)
         if result is None:
             return expr
-        else:
-            return result
+        return result
     return null_safe_rl

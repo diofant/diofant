@@ -324,15 +324,14 @@ class MinMaxBase(LatticeOp):
 
         if not args:
             return cls.identity
-        elif len(args) == 1:
+        if len(args) == 1:
             return args.pop()
-        else:
-            # base creation
-            # XXX should _args be made canonical with sorting?
-            _args = frozenset(args)
-            obj = Expr.__new__(cls, _args, **assumptions)
-            obj._argset = _args
-            return obj
+        # base creation
+        # XXX should _args be made canonical with sorting?
+        _args = frozenset(args)
+        obj = Expr.__new__(cls, _args, **assumptions)
+        obj._argset = _args
+        return obj
 
     @classmethod
     def _new_args_filter(cls, arg_sequence):
@@ -536,8 +535,7 @@ class Max(MinMaxBase, Application):
                 return Heaviside(self.args[argindex] - self.args[1 - argindex])
             newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside(self.args[argindex] - Max(*newargs))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from .. import Heaviside
@@ -587,8 +585,7 @@ class Min(MinMaxBase, Application):
                 return Heaviside(self.args[1-argindex] - self.args[argindex])
             newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside(Min(*newargs) - self.args[argindex])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from .. import Heaviside

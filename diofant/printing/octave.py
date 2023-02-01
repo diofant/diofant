@@ -162,13 +162,11 @@ class OctaveCodePrinter(CodePrinter):
 
         if len(b) == 0:
             return sign + multjoin(a, a_str)
-        elif len(b) == 1:
+        if len(b) == 1:
             divsym = '/' if b[0].is_number else './'
             return sign + multjoin(a, a_str) + divsym + b_str[0]
-        else:
-            divsym = '/' if all(bi.is_number for bi in b) else './'
-            return (sign + multjoin(a, a_str) +
-                    divsym + f'({multjoin(b, b_str)})')
+        divsym = '/' if all(bi.is_number for bi in b) else './'
+        return sign + multjoin(a, a_str) + divsym + f'({multjoin(b, b_str)})'
 
     def _print_Pow(self, expr):
         powsymbol = '^' if all(x.is_number for x in expr.args) else '.^'
@@ -209,9 +207,8 @@ class OctaveCodePrinter(CodePrinter):
     def _print_NumberSymbol(self, expr):
         if self._settings['inline']:
             return self._print(expr.evalf(self._settings['precision']))
-        else:
-            # assign to a variable, perhaps more readable for longer program
-            return super()._print_NumberSymbol(expr)
+        # assign to a variable, perhaps more readable for longer program
+        return super()._print_NumberSymbol(expr)
 
     def _print_Assignment(self, expr):
         from ..functions import Piecewise
@@ -236,10 +233,9 @@ class OctaveCodePrinter(CodePrinter):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
             return self._doprint_loops(rhs, lhs)
-        else:
-            lhs_code = self._print(lhs)
-            rhs_code = self._print(rhs)
-            return self._get_statement(f'{lhs_code} = {rhs_code}')
+        lhs_code = self._print(lhs)
+        rhs_code = self._print(rhs)
+        return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Infinity(self, expr):
         return 'inf'
@@ -268,14 +264,14 @@ class OctaveCodePrinter(CodePrinter):
         # Handle zero dimensions:
         if (expr.rows, expr.cols) == (0, 0):
             return '[]'
-        elif expr.rows == 0 or expr.cols == 0:
+        if expr.rows == 0 or expr.cols == 0:
             return f'zeros({expr.rows}, {expr.cols})'
-        elif (expr.rows, expr.cols) == (1, 1):
+        if (expr.rows, expr.cols) == (1, 1):
             # Octave does not distinguish between scalars and 1x1 matrices
             return self._print(expr[0, 0])
-        elif expr.rows == 1:
+        if expr.rows == 1:
             return f"[{expr.table(self, rowstart='', rowend='', colsep=' ')}]"
-        elif expr.cols == 1:
+        if expr.cols == 1:
             # note .table would unnecessarily equispace the rows
             return f"[{'; '.join([self._print(a) for a in expr])}]"
         return '[{}]'.format(expr.table(self, rowstart='', rowend='',  # noqa: SFS201
@@ -305,10 +301,8 @@ class OctaveCodePrinter(CodePrinter):
                     return ':'
                 if l == h:
                     return lstr
-                else:
-                    return lstr + ':' + hstr
-            else:
-                return ':'.join((lstr, self._print(step), hstr))
+                return lstr + ':' + hstr
+            return ':'.join((lstr, self._print(step), hstr))
         return (self._print(expr.parent) + '(' +
                 strslice(expr.rowslice, expr.parent.shape[0]) + ', ' +
                 strslice(expr.colslice, expr.parent.shape[1]) + ')')
@@ -368,8 +362,7 @@ class OctaveCodePrinter(CodePrinter):
     def _print_zeta(self, expr):
         if len(expr.args) == 1:
             return f'zeta({expr.args[0]})'
-        else:
-            return self._print_not_supported(expr)
+        return self._print_not_supported(expr)
 
     def _print_Piecewise(self, expr):
         lines = []
@@ -384,19 +377,18 @@ class OctaveCodePrinter(CodePrinter):
             # Note: current need these outer brackets for 2*pw.  Would be
             # nicer to teach parenthesize() to do this for us when needed!
             return '(' + pw + ')'
-        else:
-            for i, (e, c) in enumerate(expr.args):
-                if i == 0:
-                    lines.append(f'if ({self._print(c)})')
-                elif i == len(expr.args) - 1 and c == true:
-                    lines.append('else')
-                else:
-                    lines.append(f'elseif ({self._print(c)})')
-                code0 = self._print(e)
-                lines.append(code0)
-                if i == len(expr.args) - 1:
-                    lines.append('end')
-            return '\n'.join(lines)
+        for i, (e, c) in enumerate(expr.args):
+            if i == 0:
+                lines.append(f'if ({self._print(c)})')
+            elif i == len(expr.args) - 1 and c == true:
+                lines.append('else')
+            else:
+                lines.append(f'elseif ({self._print(c)})')
+            code0 = self._print(e)
+            lines.append(code0)
+            if i == len(expr.args) - 1:
+                lines.append('end')
+        return '\n'.join(lines)
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""

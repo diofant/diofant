@@ -41,8 +41,7 @@ def jacobi_poly(n, a, b, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _gegenbauer(n, a, K):
@@ -79,8 +78,7 @@ def gegenbauer_poly(n, a, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _chebyshevt(n, K):
@@ -115,8 +113,7 @@ def chebyshevt_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _chebyshevu(n, K):
@@ -148,8 +145,7 @@ def chebyshevu_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _hermite(n, K):
@@ -185,8 +181,7 @@ def hermite_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _legendre(n, K):
@@ -219,8 +214,7 @@ def legendre_poly(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _laguerre(n, alpha, K):
@@ -256,8 +250,7 @@ def laguerre_poly(n, x=None, alpha=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly
 
 
 def _spherical_bessel_fn(n, K):
@@ -326,5 +319,4 @@ def spherical_bessel_fn(n, x=None, **args):
 
     if not args.get('polys', False):
         return poly.as_expr()
-    else:
-        return poly
+    return poly

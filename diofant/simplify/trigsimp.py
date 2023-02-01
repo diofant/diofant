@@ -401,10 +401,10 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
         #              ratsimpmodprime(coeff/denom, list(G), order=order,
         #                              gens=gens, quick=quick, domain=ZZ)
         #              for monom, coeff in num.terms()])
-    else:
-        return ratsimpmodprime(
-            expr, list(G), order=order, gens=freegens+gens,
-            quick=quick, domain=ZZ, polynomial=polynomial).subs(subs)
+
+    return ratsimpmodprime(
+        expr, list(G), order=order, gens=freegens+gens,
+        quick=quick, domain=ZZ, polynomial=polynomial).subs(subs)
 
 
 _trigs = (TrigonometricFunction, HyperbolicFunction)

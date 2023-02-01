@@ -260,7 +260,7 @@ class stringPict:
     def __eq__(self, o):
         if isinstance(o, str):
             return '\n'.join(self.picture) == o
-        elif isinstance(o, stringPict):
+        if isinstance(o, stringPict):
             return o.picture == self.picture
         return False
 
@@ -392,11 +392,11 @@ class prettyForm(stringPict):
             b.baseline = a.prettyFunc.baseline + b.height()
             func = stringPict(*a.prettyFunc.right(b))
             return prettyForm(*func.right(a.prettyArgs))
-        else:
-            #      2    <-- top
-            # (x+y)     <-- bot
-            top = stringPict(*b.left(' '*a.width()))
-            bot = stringPict(*a.right(' '*b.width()))
+
+        #      2    <-- top
+        # (x+y)     <-- bot
+        top = stringPict(*b.left(' '*a.width()))
+        bot = stringPict(*a.right(' '*b.width()))
 
         return prettyForm(binding=prettyForm.POW, *bot.above(top))
 

@@ -51,8 +51,7 @@ class DiracDelta(Function):
             if len(self.args) > 1:
                 k = self.args[1]
             return self.func(self.args[0], k + 1)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg, k=Integer(0)):
@@ -193,8 +192,7 @@ class Heaviside(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return DiracDelta(self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
@@ -203,9 +201,9 @@ class Heaviside(Function):
                              f'Complex part: {im(arg)!r}  found in {arg!r} .')
         if arg.is_negative:
             return Integer(0)
-        elif arg.is_zero:
+        if arg.is_zero:
             return Rational(1, 2)
-        elif arg.is_positive:
+        if arg.is_positive:
             return Integer(1)
 
     def _eval_rewrite_as_Piecewise(self, arg):

@@ -87,8 +87,7 @@ def matrix_of(arg):
 def combine(cnt, mat):
     if cnt == 1:
         return mat
-    else:
-        return cnt * mat
+    return cnt * mat
 
 
 def merge_explicit(matadd):
@@ -110,8 +109,7 @@ def merge_explicit(matadd):
     groups = sift(matadd.args, lambda arg: isinstance(arg, MatrixBase))
     if len(groups[True]) > 1:
         return MatAdd(*(groups[False] + [functools.reduce(operator.add, groups[True])]))
-    else:
-        return matadd
+    return matadd
 
 
 rules = (rm_id(lambda x: x == 0 or isinstance(x, ZeroMatrix)),

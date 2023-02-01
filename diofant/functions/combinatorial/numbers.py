@@ -104,13 +104,11 @@ class fibonacci(Function):
             if sym is None:
                 if n < 0:
                     return (-1)**(n + 1) * fibonacci(-n)
-                else:
-                    return Integer(cls._fib(n))
-            else:
-                if n < 1:
-                    raise ValueError('Fibonacci polynomials are defined '
-                                     'only for positive integer indices.')
-                return cls._fibpoly(n).subs({_sym: sym})
+                return Integer(cls._fib(n))
+            if n < 1:
+                raise ValueError('Fibonacci polynomials are defined '
+                                 'only for positive integer indices.')
+            return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None, **kwargs):
         from .. import sqrt
@@ -274,13 +272,12 @@ class bernoulli(Function):
             if n.is_Integer and n.is_nonnegative:
                 if n == 0:
                     return Integer(1)
-                elif n == 1:
+                if n == 1:
                     if sym is None:
                         return -Rational(1, 2)
-                    else:
-                        return sym - Rational(1, 2)
+                    return sym - Rational(1, 2)
                 # Bernoulli numbers
-                elif sym is None:
+                if sym is None:
                     if n.is_odd:
                         return Integer(0)
                     n = int(n)
@@ -301,14 +298,12 @@ class bernoulli(Function):
                         cls._highest[case] = i
                     return b
                 # Bernoulli polynomials
-                else:
-                    n, result = int(n), []
-                    for k in range(n + 1):
-                        result.append(binomial(n, k)*cls(k)*sym**(n - k))
-                    return Add(*result)
-            else:
-                raise ValueError('Bernoulli numbers are defined only'
-                                 ' for nonnegative integer indices.')
+                n, result = int(n), []
+                for k in range(n + 1):
+                    result.append(binomial(n, k)*cls(k)*sym**(n - k))
+                return Add(*result)
+            raise ValueError('Bernoulli numbers are defined only'
+                             ' for nonnegative integer indices.')
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
@@ -428,7 +423,7 @@ class bell(Function):
         """
         if (n == 0) and (k == 0):
             return Integer(1)
-        elif (n == 0) or (k == 0):
+        if (n == 0) or (k == 0):
             return Integer(0)
         s = Integer(0)
         a = Integer(1)
@@ -443,11 +438,10 @@ class bell(Function):
         if n.is_Integer and n.is_nonnegative:
             if k_sym is None:
                 return Integer(cls._bell(int(n)))
-            elif symbols is None:
+            if symbols is None:
                 return cls._bell_poly(int(n)).subs({_sym: k_sym})
-            else:
-                r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
-                return r
+            r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
+            return r
 
     def _eval_rewrite_as_Sum(self, n, k_sym=None, symbols=None):
         from ...concrete import Sum
@@ -604,9 +598,9 @@ class harmonic(Function):
         if n is oo:
             if m.is_negative:
                 return nan
-            elif (m - 1).is_nonpositive and m.is_nonnegative:
+            if (m - 1).is_nonpositive and m.is_nonnegative:
                 return oo
-            elif (m - 1).is_positive:
+            if (m - 1).is_positive:
                 return zeta(m)
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:
@@ -650,7 +644,7 @@ class harmonic(Function):
                 if off.is_Integer and off.is_positive:
                     result = [1/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
                     return Add(*result)
-                elif off.is_Integer and off.is_negative:
+                if off.is_Integer and off.is_negative:
                     result = [-1/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
                     return Add(*result)
 
@@ -852,8 +846,7 @@ class catalan(Function):
         if n.is_integer and n.is_negative:
             if (n + 1).is_negative:
                 return Integer(0)
-            else:
-                return -Rational(1, 2)
+            return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
         from .. import log, polygamma
@@ -1003,18 +996,17 @@ def _multiset_histogram(n):
         tot = sum(n.values())
         items = sum(1 for k in n if n[k] > 0)
         return _MultisetHistogram([n[k] for k in n if n[k] > 0] + [items, tot])
-    else:
-        n = list(n)
-        s = set(n)
-        if len(s) == len(n):
-            n = [1]*len(n)
-            n.extend([len(n), len(n)])
-            return _MultisetHistogram(n)
-        m = dict(zip(s, range(len(s))))
-        d = dict(zip(range(len(s)), [0]*len(s)))
-        for i in n:
-            d[m[i]] += 1
-        return _multiset_histogram(d)
+    n = list(n)
+    s = set(n)
+    if len(s) == len(n):
+        n = [1]*len(n)
+        n.extend([len(n), len(n)])
+        return _MultisetHistogram(n)
+    m = dict(zip(s, range(len(s))))
+    d = dict(zip(range(len(s)), [0]*len(s)))
+    for i in n:
+        d[m[i]] += 1
+    return _multiset_histogram(d)
 
 
 def nP(n, k=None, replacement=False):
@@ -1090,48 +1082,46 @@ def _nP(n, k=None, replacement=False):
         # assert n >= 0
         if k is None:
             return sum(_nP(n, i, replacement) for i in range(n + 1))
-        elif replacement:
+        if replacement:
             return n**k
-        elif k > n:
+        if k > n:
             return 0
-        elif k == n:
+        if k == n:
             return factorial(k)
-        elif k == 1:
+        if k == 1:
             return n
-        else:
-            # assert k >= 0
-            return _product(n - k + 1, n)
-    elif isinstance(n, _MultisetHistogram):  # pragma: no branch
+        # assert k >= 0
+        return _product(n - k + 1, n)
+    if isinstance(n, _MultisetHistogram):  # pragma: no branch
         if k is None:
             return sum(_nP(n, i, replacement) for i in range(n[_N] + 1))
-        elif replacement:
+        if replacement:
             return n[_ITEMS]**k
-        elif k == n[_N]:
+        if k == n[_N]:
             return factorial(k)/math.prod(factorial(i) for i in n[_M] if i > 1)
-        elif k > n[_N]:
+        if k > n[_N]:
             return 0
-        elif k == 1:
+        if k == 1:
             return n[_ITEMS]
-        else:
-            # assert k >= 0
-            tot = 0
-            n = list(n)
-            for i in range(len(n[_M])):
-                if not n[i]:
-                    continue
-                n[_N] -= 1
-                if n[i] == 1:
-                    n[i] = 0
-                    n[_ITEMS] -= 1
-                    tot += _nP(_MultisetHistogram(n), k - 1)
-                    n[_ITEMS] += 1
-                    n[i] = 1
-                else:
-                    n[i] -= 1
-                    tot += _nP(_MultisetHistogram(n), k - 1)
-                    n[i] += 1
-                n[_N] += 1
-            return tot
+        # assert k >= 0
+        tot = 0
+        n = list(n)
+        for i in range(len(n[_M])):
+            if not n[i]:
+                continue
+            n[_N] -= 1
+            if n[i] == 1:
+                n[i] = 0
+                n[_ITEMS] -= 1
+                tot += _nP(_MultisetHistogram(n), k - 1)
+                n[_ITEMS] += 1
+                n[i] = 1
+            else:
+                n[i] -= 1
+                tot += _nP(_MultisetHistogram(n), k - 1)
+                n[i] += 1
+            n[_N] += 1
+        return tot
 
 
 @cacheit
@@ -1268,16 +1258,15 @@ def nC(n, k=None, replacement=False):
             if not replacement:
                 return math.prod(m + 1 for m in n[_M])
             return sum(nC(n, i, replacement) for i in range(N + 1))
-        elif replacement:
+        if replacement:
             return nC(n[_ITEMS], k, replacement)
         # assert k >= 0
-        elif k in (1, N - 1):
+        if k in (1, N - 1):
             return n[_ITEMS]
-        elif k in (0, N):
+        if k in (0, N):
             return 1
         return _AOP_product(tuple(n[_M]))[k]
-    else:
-        return nC(_multiset_histogram(n), k, replacement)
+    return nC(_multiset_histogram(n), k, replacement)
 
 
 @cacheit
@@ -1291,13 +1280,13 @@ def _stirling1(n, k):
     # some special values
     if n == k:
         return Integer(1)
-    elif k == 1:
+    if k == 1:
         return factorial(n1)
-    elif k == n1:
+    if k == n1:
         return binomial(n, 2)
-    elif k == n - 2:
+    if k == n - 2:
         return (3*n - 1)*binomial(n, 3)/4
-    elif k == n - 3:
+    if k == n - 3:
         return binomial(n, 2)*binomial(n, 4)
 
     # general recurrence
@@ -1315,7 +1304,7 @@ def _stirling2(n, k):
     # some special values
     if k == n1:
         return binomial(n, 2)
-    elif k == 2:
+    if k == 2:
         return 2**n1 - 1
 
     # general recurrence
@@ -1417,16 +1406,15 @@ def stirling(n, k, d=None, kind=2, signed=False):
         # assert k >= d
         # kind is ignored -- only kind=2 is supported
         return _stirling2(n - d + 1, k - d + 1)
-    elif signed:
+    if signed:
         # kind is ignored -- only kind=1 is supported
         return (-1)**(n - k)*_stirling1(n, k)
 
     if kind == 1:
         return _stirling1(n, k)
-    elif kind == 2:
+    if kind == 2:
         return _stirling2(n, k)
-    else:
-        raise ValueError(f'kind must be 1 or 2, not {k}')
+    raise ValueError(f'kind must be 1 or 2, not {k}')
 
 
 @cacheit
@@ -1512,7 +1500,7 @@ def nT(n, k=None):
             u = len(set(n))
             if u == 1:
                 return nT(len(n), k)
-            elif u == len(n):
+            if u == len(n):
                 n = range(u)
             raise TypeError
         except TypeError:

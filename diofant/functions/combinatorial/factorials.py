@@ -74,19 +74,17 @@ class factorial(CombinatorialFunction):
         from .. import gamma, polygamma
         if argindex == 1:
             return gamma(self.args[0] + 1)*polygamma(0, self.args[0] + 1)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, n):
         if n.is_Number:
             if n is oo:
                 return oo
-            elif n.is_Integer:
+            if n.is_Integer:
                 if n.is_negative:
                     return zoo
-                else:
-                    return Integer(math.factorial(n))
+                return Integer(math.factorial(n))
 
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
@@ -168,7 +166,7 @@ class subfactorial(CombinatorialFunction):
     def _eval(cls, n):
         if not n:
             return Integer(1)
-        elif n == 1:
+        if n == 1:
             return Integer(0)
         return (n - 1)*(cls._eval(n - 1) + cls._eval(n - 2))
 
@@ -177,7 +175,7 @@ class subfactorial(CombinatorialFunction):
         if arg.is_Number:
             if arg.is_Integer and arg.is_nonnegative:
                 return cls._eval(arg)
-            elif arg is oo:
+            if arg is oo:
                 return oo
 
     def _eval_is_integer(self):
@@ -245,13 +243,13 @@ class factorial2(CombinatorialFunction):
             if n.is_negative:
                 if n.is_odd:
                     return n * (-1)**((1 - n) / 2) / factorial2(-n)
-                elif n.is_even:
+                if n.is_even:
                     raise ValueError('argument must be nonnegative or odd')
             else:
                 if n.is_even:
                     k = n / 2
                     return 2 ** k * factorial(k)
-                elif n.is_integer:
+                if n.is_integer:
                     return factorial(n) / factorial2(n - 1)
 
     def _eval_is_even(self):
@@ -325,25 +323,20 @@ class RisingFactorial(CombinatorialFunction):
     def eval(cls, x, k):
         if x == 1:
             return factorial(k)
-        elif k.is_Integer:
+        if k.is_Integer:
             if k == 0:
                 return Integer(1)
-            else:
-                if k.is_positive:
-                    if x is oo:
-                        return oo
-                    elif x == -oo:
-                        if k.is_odd:
-                            return -oo
-                        else:
-                            return oo
-                    else:
-                        return functools.reduce(lambda r, i: r*(x + i), range(int(k)), 1)
-                else:
-                    if x in (oo, -oo):
-                        return oo
-                    else:
-                        return 1/functools.reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
+            if k.is_positive:
+                if x is oo:
+                    return oo
+                if x == -oo:
+                    if k.is_odd:
+                        return -oo
+                    return oo
+                return functools.reduce(lambda r, i: r*(x + i), range(int(k)), 1)
+            if x in (oo, -oo):
+                return oo
+            return 1/functools.reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -395,22 +388,17 @@ class FallingFactorial(CombinatorialFunction):
         if k.is_Integer:
             if k == 0:
                 return Integer(1)
-            else:
-                if k.is_positive:
-                    if x is oo:
-                        return oo
-                    elif x == -oo:
-                        if k.is_odd:
-                            return -oo
-                        else:
-                            return oo
-                    else:
-                        return functools.reduce(lambda r, i: r*(x - i), range(int(k)), 1)
-                else:
-                    if x in (oo, -oo):
-                        return oo
-                    else:
-                        return 1/functools.reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
+            if k.is_positive:
+                if x is oo:
+                    return oo
+                if x == -oo:
+                    if k.is_odd:
+                        return -oo
+                    return oo
+                return functools.reduce(lambda r, i: r*(x - i), range(int(k)), 1)
+            if x in (oo, -oo):
+                return oo
+            return 1/functools.reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -504,31 +492,29 @@ class binomial(CombinatorialFunction):
             n, k = self.args
             return binomial(n, k)*(polygamma(0, n + 1) -
                                    polygamma(0, n - k + 1))
-        elif argindex == 2:
+        if argindex == 2:
             # http://functions.wolfram.com/GammaBetaErf/Binomial/20/01/02/
             n, k = self.args
             return binomial(n, k)*(polygamma(0, n - k + 1) -
                                    polygamma(0, k + 1))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, n, k):
         d = n - k
         if d.is_zero or k.is_zero:
             return Integer(1)
-        elif d.is_nonzero:
+        if d.is_nonzero:
             if (k - 1).is_zero:
                 return n
-            elif k.is_negative:
+            if k.is_negative:
                 return Integer(0)
-            elif n.is_integer and n.is_nonnegative and d.is_negative:
+            if n.is_integer and n.is_nonnegative and d.is_negative:
                 return Integer(0)
         if n.is_Integer and k.is_Integer and k > 0:
             if n >= 0:
                 return Integer(math.comb(n, k))
-            else:
-                return Integer((-1)**k*math.comb(abs(n) + k - 1, k))
+            return Integer((-1)**k*math.comb(abs(n) + k - 1, k))
 
     def _eval_expand_func(self, **hints):
         """Function to expand binomial(n,k) when n is positive integer."""
@@ -543,7 +529,7 @@ class binomial(CombinatorialFunction):
         if k.is_Integer:
             if k == 0:
                 return Integer(1)
-            elif k > 0:
+            if k > 0:
                 n = self.args[0]
                 result = n - k + 1
                 for i in range(2, k + 1):

@@ -427,8 +427,7 @@ def critical_pair(f, g, ring):
     # u_first * f_first - u_second * f_second:
     if lbp_cmp(fr, gr) == -1:
         return Sign(gr), vm, g, Sign(fr), um, f
-    else:
-        return Sign(fr), um, f, Sign(gr), vm, g
+    return Sign(fr), um, f, Sign(gr), vm, g
 
 
 def cp_key(c, ring):
@@ -758,8 +757,7 @@ def groebner_gcd(f, g):
 
     if not domain.is_Field:
         return gcd*h
-    else:
-        return h.monic()
+    return h.monic()
 
 
 def matrix_fglm(F, ring, O_to):

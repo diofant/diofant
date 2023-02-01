@@ -63,8 +63,7 @@ def _get_indices_Mul(expr, return_dummies=False):
 
     if return_dummies:
         return inds, symmetry, dummies
-    else:
-        return inds, symmetry
+    return inds, symmetry
 
 
 def _get_indices_Pow(expr):
@@ -207,35 +206,33 @@ def get_indices(expr):
         c = expr.indices
         inds, _ = _remove_repeated(c)
         return inds, {}
-    elif expr is None:
+    if expr is None:
         return set(), {}
-    elif expr.is_Atom:
+    if expr.is_Atom:
         return set(), {}
-    elif isinstance(expr, Idx):
+    if isinstance(expr, Idx):
         return {expr}, {}
 
     # recurse via specialized functions
-    else:
-        if expr.is_Mul:
-            return _get_indices_Mul(expr)
-        elif expr.is_Add:
-            return _get_indices_Add(expr)
-        elif expr.is_Pow:
-            return _get_indices_Pow(expr)
+    if expr.is_Mul:
+        return _get_indices_Mul(expr)
+    if expr.is_Add:
+        return _get_indices_Add(expr)
+    if expr.is_Pow:
+        return _get_indices_Pow(expr)
 
-        elif isinstance(expr, Function):
-            # Support ufunc like behaviour by returning indices from arguments.
-            # Functions do not interpret repeated indices across argumnts
-            # as summation
-            ind0 = set()
-            for arg in expr.args:
-                ind, sym = get_indices(arg)
-                ind0 |= ind
-            return ind0, sym
+    if isinstance(expr, Function):
+        # Support ufunc like behaviour by returning indices from arguments.
+        # Functions do not interpret repeated indices across argumnts
+        # as summation
+        ind0 = set()
+        for arg in expr.args:
+            ind, sym = get_indices(arg)
+            ind0 |= ind
+        return ind0, sym
 
-        else:
-            raise NotImplementedError('No specialized handling of '
-                                      f'type {type(expr)}')
+    raise NotImplementedError('No specialized handling of '
+                              f'type {type(expr)}')
 
 
 def get_contraction_structure(expr):
@@ -338,9 +335,9 @@ def get_contraction_structure(expr):
     if isinstance(expr, Indexed):
         _, key = _remove_repeated(expr.indices)
         return {key or None: {expr}}
-    elif expr.is_Atom:
+    if expr.is_Atom:
         return {None: {expr}}
-    elif expr.is_Mul:
+    if expr.is_Mul:
         *_, key = _get_indices_Mul(expr, return_dummies=True)
         result = {key or None: {expr}}
         # recurse on every factor
@@ -352,7 +349,7 @@ def get_contraction_structure(expr):
         if nested:
             result[expr] = nested
         return result
-    elif expr.is_Pow:
+    if expr.is_Pow:
         # recurse in base and exp separately.  If either has internal
         # contractions we must include ourselves as a key in the returned dict
         b, e = expr.as_base_exp()
@@ -367,7 +364,7 @@ def get_contraction_structure(expr):
         if dicts:
             result[expr] = dicts
         return result
-    elif expr.is_Add:
+    if expr.is_Add:
         # Note: we just collect all terms with identical summation indices, We
         # do nothing to identify equivalent terms here, as this would require
         # substitutions or pattern matching in expressions of unknown
@@ -383,7 +380,7 @@ def get_contraction_structure(expr):
                     result[k] = v
         return result
 
-    elif isinstance(expr, Function):
+    if isinstance(expr, Function):
         # Collect non-trivial contraction structures in each argument
         # We do not report repeated indices in separate arguments as a
         # contraction
@@ -397,6 +394,5 @@ def get_contraction_structure(expr):
             d[expr] = deeplist
         return d
 
-    else:
-        raise NotImplementedError('No specialized handling of '
-                                  f'type {type(expr)}')
+    raise NotImplementedError('No specialized handling of '
+                              f'type {type(expr)}')

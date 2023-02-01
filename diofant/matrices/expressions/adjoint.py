@@ -34,8 +34,7 @@ class Adjoint(MatrixExpr):
         arg = self.arg
         if hints.get('deep', True) and isinstance(arg, Basic):
             return adjoint(arg.doit(**hints))
-        else:
-            return adjoint(self.arg)
+        return adjoint(self.arg)
 
     @property
     def arg(self):

@@ -358,9 +358,8 @@ def prde_no_cancel_b_small(b, Q, n, DE):
         c = eye(m)
         A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
         return H, A
-    else:
-        # TODO: implement this (requires recursive param_rischDE() call)
-        raise NotImplementedError
+    # TODO: implement this (requires recursive param_rischDE() call)
+    raise NotImplementedError
 
 
 def limited_integrate_reduce(fa, fd, G, DE):

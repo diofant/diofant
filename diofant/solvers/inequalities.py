@@ -203,10 +203,9 @@ def solve_poly_inequality(poly, rel):
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
             return [S.ExtendedReals]
-        elif t == false:
+        if t == false:
             return [S.EmptySet]
-        else:
-            raise NotImplementedError(f"Couldn't determine truth value of {t}")
+        raise NotImplementedError(f"Couldn't determine truth value of {t}")
 
     reals, intervals = poly.real_roots(multiple=False), []
 
@@ -557,10 +556,9 @@ def solve_univariate_inequality(expr, gen, relational=True):
         r = simplify(r)
         if r in (true, false):
             return r
-        elif v.is_comparable is False:
+        if v.is_comparable is False:
             return False
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
     start = -oo
     sol_sets = [S.EmptySet]

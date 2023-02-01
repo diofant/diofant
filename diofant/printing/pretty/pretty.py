@@ -41,8 +41,7 @@ class PrettyPrinter(Printer):
     def _use_unicode(self):
         if self._settings['use_unicode']:
             return True
-        else:
-            return pretty_use_unicode()
+        return pretty_use_unicode()
 
     def doprint(self, expr):
         return self._print(expr).render(**self._settings)
@@ -152,8 +151,7 @@ class PrettyPrinter(Printer):
                 pform = prettyForm(*pform.parens())
 
             return prettyForm(*pform.left('\N{NOT SIGN}'))
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def __print_Boolean(self, e, char, sort=True):
         args = e.args
@@ -179,44 +177,37 @@ class PrettyPrinter(Printer):
     def _print_And(self, e):
         if self._use_unicode:
             return self.__print_Boolean(e, '\N{LOGICAL AND}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_Or(self, e):
         if self._use_unicode:
             return self.__print_Boolean(e, '\N{LOGICAL OR}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_Xor(self, e):
         if self._use_unicode:
             return self.__print_Boolean(e, '\N{XOR}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_Nand(self, e):
         if self._use_unicode:
             return self.__print_Boolean(e, '\N{NAND}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_Nor(self, e):
         if self._use_unicode:
             return self.__print_Boolean(e, '\N{NOR}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_Implies(self, e, altchar=None):
         if self._use_unicode:
             return self.__print_Boolean(e, altchar or '\N{RIGHTWARDS ARROW}', sort=False)
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_Equivalent(self, e, altchar=None):
         if self._use_unicode:
             return self.__print_Boolean(e, altchar or '\N{IDENTICAL TO}')
-        else:
-            return self._print_Function(e, sort=True)
+        return self._print_Function(e, sort=True)
 
     def _print_conjugate(self, e):
         pform = self._print(e.args[0])
@@ -233,16 +224,14 @@ class PrettyPrinter(Printer):
             pform = self._print(e.args[0])
             pform = prettyForm(*pform.parens('lfloor', 'rfloor'))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_ceiling(self, e):
         if self._use_unicode:
             pform = self._print(e.args[0])
             pform = prettyForm(*pform.parens('lceil', 'rceil'))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_Derivative(self, deriv):
         if requires_partial(deriv) and self._use_unicode:
@@ -432,17 +421,16 @@ class PrettyPrinter(Printer):
                     lines.append(f"{' ' * i}/{' ' * (w - i)}")
                 lines.append('/' + '_'*(w - 1) + ',')
                 return d, h + more, lines, 0
-            else:
-                w = w + more
-                d = d + more
-                vsum = vobj('sum', 4)
-                lines.append('_'*w)
-                for i in range(d):
-                    lines.append(f"{' ' * i}{vsum[2]}{' ' * (w - i - 1)}")
-                for i in reversed(range(d)):
-                    lines.append(f"{' ' * i}{vsum[4]}{' ' * (w - i - 1)}")
-                lines.append(vsum[8]*w)
-                return d, h + 2*more, lines, more
+            w = w + more
+            d = d + more
+            vsum = vobj('sum', 4)
+            lines.append('_'*w)
+            for i in range(d):
+                lines.append(f"{' ' * i}{vsum[2]}{' ' * (w - i - 1)}")
+            for i in reversed(range(d)):
+                lines.append(f"{' ' * i}{vsum[4]}{' ' * (w - i - 1)}")
+            lines.append(vsum[8]*w)
+            return d, h + 2*more, lines, more
 
         f = expr.function
 
@@ -613,19 +601,18 @@ class PrettyPrinter(Printer):
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
                 Symbol(expr.parent.name + f'_{expr.i:d}{expr.j:d}'))
-        else:
-            prettyFunc = self._print(expr.parent)
-            prettyIndices = self._print_seq((expr.i, expr.j),
-                                            delimiter=', ').parens(left='[',
-                                                                   right=']')[0]
-            pform = prettyForm(binding=prettyForm.FUNC,
-                               *stringPict.next(prettyFunc, prettyIndices))
+        prettyFunc = self._print(expr.parent)
+        prettyIndices = self._print_seq((expr.i, expr.j),
+                                        delimiter=', ').parens(left='[',
+                                                               right=']')[0]
+        pform = prettyForm(binding=prettyForm.FUNC,
+                           *stringPict.next(prettyFunc, prettyIndices))
 
-            # store pform parts so it can be reassembled e.g. when powered
-            pform.prettyFunc = prettyFunc
-            pform.prettyArgs = prettyIndices
+        # store pform parts so it can be reassembled e.g. when powered
+        pform.prettyFunc = prettyFunc
+        pform.prettyArgs = prettyIndices
 
-            return pform
+        return pform
 
     def _print_Transpose(self, expr):
         pform = self._print(expr.arg)
@@ -891,10 +878,9 @@ class PrettyPrinter(Printer):
             diff = p1.width() - p2.width()
             if diff == 0:
                 return p1, p2
-            elif diff > 0:
+            if diff > 0:
                 return p1, prettyForm(*p2.left(' '*diff))
-            else:
-                return prettyForm(*p1.left(' '*-diff)), p2
+            return prettyForm(*p1.left(' '*-diff)), p2
         pp, pm = adjust(pp, pm)
         pq, pn = adjust(pq, pn)
         pu = prettyForm(*pm.right(', ', pn))
@@ -974,8 +960,7 @@ class PrettyPrinter(Printer):
             pform = prettyForm(*pform.parens())
             pform = prettyForm(*pform.left(greek_unicode['Gamma']))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_uppergamma(self, e):
         if self._use_unicode:
@@ -984,8 +969,7 @@ class PrettyPrinter(Printer):
             pform = prettyForm(*pform.parens())
             pform = prettyForm(*pform.left(greek_unicode['Gamma']))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_lowergamma(self, e):
         if self._use_unicode:
@@ -994,8 +978,7 @@ class PrettyPrinter(Printer):
             pform = prettyForm(*pform.parens())
             pform = prettyForm(*pform.left(greek_unicode['gamma']))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_DiracDelta(self, e):
         if self._use_unicode:
@@ -1007,8 +990,7 @@ class PrettyPrinter(Printer):
                 delta = delta**k
             pform = prettyForm(*pform.left(delta))
             return pform
-        else:
-            return self._print_Function(e)
+        return self._print_Function(e)
 
     def _print_expint(self, e):
         from ...core import Function
@@ -1211,10 +1193,9 @@ class PrettyPrinter(Printer):
         # Construct a pretty form
         if len(b) == 0:
             return prettyForm.__mul__(*a)
-        else:
-            if len(a) == 0:
-                a.append(self._print(Integer(1)))
-            return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
+        if len(a) == 0:
+            a.append(self._print(Integer(1)))
+        return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
     # A helper function for _print_Pow to print x**(1/n)
     def _print_nth_root(self, base, expt):
@@ -1276,25 +1257,22 @@ class PrettyPrinter(Printer):
         if q == 1:
             if p < 0:
                 return prettyForm(str(p), binding=prettyForm.NEG)
-            else:
-                return prettyForm(str(p))
-        elif abs(p) >= 10 and abs(q) >= 10:
+            return prettyForm(str(p))
+        if abs(p) >= 10 and abs(q) >= 10:
             # If more than one digit in numer and denom, print larger fraction
             if p < 0:
                 return prettyForm(str(p), binding=prettyForm.NEG)/prettyForm(str(q))
                 # Old printing method:
                 # pform = prettyForm(str(-p))/prettyForm(str(q))
                 # return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
-            else:
-                return prettyForm(str(p))/prettyForm(str(q))
+            return prettyForm(str(p))/prettyForm(str(q))
 
     def _print_Rational(self, expr):
         result = self.__print_numer_denom(expr.numerator, expr.denominator)
 
         if result is not None:
             return result
-        else:
-            return self.emptyPrinter(expr)
+        return self.emptyPrinter(expr)
 
     def _print_ProductSet(self, p):
         prod_char = '\N{MULTIPLICATION SIGN}' if self._use_unicode else 'x'
@@ -1375,8 +1353,7 @@ class PrettyPrinter(Printer):
             el = ' \N{ELEMENT OF} '
             return prettyForm(*stringPict.next(self._print(var),
                                                el, self._print(set)), binding=8)
-        else:
-            return prettyForm(sstr(e))
+        return prettyForm(sstr(e))
 
     def _print_seq(self, seq, left=None, right=None, delimiter=', ',
                    parenthesize=lambda x: False):
@@ -1412,8 +1389,7 @@ class PrettyPrinter(Printer):
 
         if pform is None:
             return prettyForm('')
-        else:
-            return pform
+        return pform
 
     def _print_list(self, l):
         return self._print_seq(l, '[', ']')
@@ -1422,8 +1398,7 @@ class PrettyPrinter(Printer):
         if len(t) == 1:
             ptuple = prettyForm(*stringPict.next(self._print(t[0]), ','))
             return prettyForm(*ptuple.parens('(', ')', ifascii_nougly=True))
-        else:
-            return self._print_seq(t, '(', ')')
+        return self._print_seq(t, '(', ')')
 
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
@@ -1492,14 +1467,12 @@ class PrettyPrinter(Printer):
     def _print_IntegerRing(self, expr):
         if self._use_unicode:
             return prettyForm('\N{DOUBLE-STRUCK CAPITAL Z}')
-        else:
-            return prettyForm('ZZ')
+        return prettyForm('ZZ')
 
     def _print_RationalField(self, expr):
         if self._use_unicode:
             return prettyForm('\N{DOUBLE-STRUCK CAPITAL Q}')
-        else:
-            return prettyForm('QQ')
+        return prettyForm('QQ')
 
     def _print_RealField(self, domain):
         if self._use_unicode:
@@ -1509,8 +1482,7 @@ class PrettyPrinter(Printer):
 
         if domain.precision == inspect.signature(type(domain)).parameters['prec'].default:
             return prettyForm(prefix)
-        else:
-            return self._print(pretty_symbol(prefix + '_' + str(domain.precision)))
+        return self._print(pretty_symbol(prefix + '_' + str(domain.precision)))
 
     def _print_PolynomialRing(self, expr):
         args = list(expr.symbols)

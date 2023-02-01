@@ -148,15 +148,14 @@ def scaled_zero(mag, sign=1):
     """
     if type(mag) is tuple and len(mag) == 4 and iszero(mag, scaled=True):
         return (mag[0][0],) + mag[1:]
-    elif isinstance(mag, numbers.Integral):
+    if isinstance(mag, numbers.Integral):
         if sign not in [-1, 1]:
             raise ValueError('sign must be +/-1')
         rv, p = mpf_shift(fone, mag), -1
         s = 0 if sign == 1 else 1
         rv = ([s],) + rv[1:]
         return rv, p
-    else:
-        raise ValueError('scaled zero expects int or scaled_zero tuple.')
+    raise ValueError('scaled zero expects int or scaled_zero tuple.')
 
 
 def iszero(mpf, scaled=False):
@@ -199,10 +198,9 @@ def get_abs(expr, prec, options):
         re, re_acc, im, im_acc = im, im_acc, re, re_acc
     if im:
         return libmp.mpc_abs((re, im), prec), None, re_acc, None
-    elif re:
+    if re:
         return mpf_abs(re), None, re_acc, None
-    else:
-        return None, None, None, None
+    return None, None, None, None
 
 
 def get_complex_part(expr, no, prec, options):
@@ -235,7 +233,7 @@ def finalize_complex(re, im, prec):
 
     if re == fzero:
         return None, im, None, prec
-    elif im == fzero:
+    if im == fzero:
         return re, None, prec, None
 
     size_re = fastlog(re)
@@ -302,7 +300,7 @@ def add_terms(terms, prec, target_prec):
     terms = [t for t in terms if not iszero(t)]
     if not terms:
         return None, None
-    elif len(terms) == 1:
+    if len(terms) == 1:
         return terms[0]
 
     # see if any argument is NaN or oo and thus warrants a special return
@@ -475,40 +473,38 @@ def evalf_mul(v, prec, options):
         # multiply by i
         if direction & 1:
             return None, v, None, acc
-        else:
-            return v, None, acc, None
+        return v, None, acc, None
+    # initialize with the first term
+    if (man, exp, bc) != start:
+        # there was a real part; give it an imaginary part
+        re, im = (sign, man, exp, bitcount(man)), (0, MPZ(0), 0, 0)
+        i0 = 0
     else:
-        # initialize with the first term
-        if (man, exp, bc) != start:
-            # there was a real part; give it an imaginary part
-            re, im = (sign, man, exp, bitcount(man)), (0, MPZ(0), 0, 0)
-            i0 = 0
-        else:
-            # there is no real part to start (other than the starting 1)
-            wre, wim, wre_acc, wim_acc = complex_factors[0]
-            acc = min(acc,
-                      complex_accuracy((wre, wim, wre_acc, wim_acc)))
-            re = wre
-            im = wim
-            i0 = 1
+        # there is no real part to start (other than the starting 1)
+        wre, wim, wre_acc, wim_acc = complex_factors[0]
+        acc = min(acc,
+                  complex_accuracy((wre, wim, wre_acc, wim_acc)))
+        re = wre
+        im = wim
+        i0 = 1
 
-        for wre, wim, wre_acc, wim_acc in complex_factors[i0:]:
-            # acc is the overall accuracy of the product; we aren't
-            # computing exact accuracies of the product.
-            acc = min(acc,
-                      complex_accuracy((wre, wim, wre_acc, wim_acc)))
+    for wre, wim, wre_acc, wim_acc in complex_factors[i0:]:
+        # acc is the overall accuracy of the product; we aren't
+        # computing exact accuracies of the product.
+        acc = min(acc,
+                  complex_accuracy((wre, wim, wre_acc, wim_acc)))
 
-            use_prec = working_prec
-            A = mpf_mul(re, wre, use_prec)
-            B = mpf_mul(mpf_neg(im), wim, use_prec)
-            C = mpf_mul(re, wim, use_prec)
-            D = mpf_mul(im, wre, use_prec)
-            re = mpf_add(A, B, use_prec)
-            im = mpf_add(C, D, use_prec)
-        # multiply by I
-        if direction & 1:
-            re, im = mpf_neg(im), re
-        return re, im, acc, acc
+        use_prec = working_prec
+        A = mpf_mul(re, wre, use_prec)
+        B = mpf_mul(mpf_neg(im), wim, use_prec)
+        C = mpf_mul(re, wim, use_prec)
+        D = mpf_mul(im, wre, use_prec)
+        re = mpf_add(A, B, use_prec)
+        im = mpf_add(C, D, use_prec)
+    # multiply by I
+    if direction & 1:
+        re, im = mpf_neg(im), re
+    return re, im, acc, acc
 
 
 def evalf_pow(v, prec, options):
@@ -538,12 +534,11 @@ def evalf_pow(v, prec, options):
             case = p % 4
             if case == 0:
                 return z, None, target_prec, None
-            elif case == 1:
+            if case == 1:
                 return None, z, None, target_prec
-            elif case == 2:
+            if case == 2:
                 return mpf_neg(z), None, target_prec, None
-            else:
-                return None, mpf_neg(z), None, target_prec
+            return None, mpf_neg(z), None, target_prec
         # Zero raised to an integer power
         if not re:
             return None, None, None, None
@@ -605,12 +600,11 @@ def evalf_pow(v, prec, options):
         re, im = libmp.mpc_pow_mpf((xre or fzero, xim), yre, target_prec)
         return finalize_complex(re, im, target_prec)
     # negative ** real
-    elif mpf_lt(xre, fzero):
+    if mpf_lt(xre, fzero):
         re, im = libmp.mpc_pow_mpf((xre, fzero), yre, target_prec)
         return finalize_complex(re, im, target_prec)
     # positive ** real
-    else:
-        return mpf_pow(xre, yre, target_prec), None, target_prec, None
+    return mpf_pow(xre, yre, target_prec), None, target_prec, None
 
 
 ############################################################################
@@ -644,10 +638,9 @@ def evalf_trig(v, prec, options):
     if not re:
         if isinstance(v, cos):
             return fone, None, prec, None
-        elif isinstance(v, sin):
+        if isinstance(v, sin):
             return None, None, None, None
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
     # For trigonometric functions, we are interested in the
     # fixed-point (absolute) accuracy of the argument.
     xsize = fastlog(re)
@@ -711,8 +704,7 @@ def evalf_log(expr, prec, options):
 
     if imaginary_term:
         return re, mpf_pi(prec), re_acc, prec
-    else:
-        return re, None, re_acc, None
+    return re, None, re_acc, None
 
 
 def evalf_atan(v, prec, options):
@@ -985,38 +977,37 @@ def hypsum(expr, n, start, prec):
             s += term
             k += 1
         return from_man_exp(s, -prec)
-    else:
-        alt = g < 0
-        if abs(g) < 1:
-            raise ValueError(f'Sum diverges like ({int(abs(1/g))})^n')
-        if p < 1 or (p == 1 and not alt):
-            raise ValueError(f'Sum diverges like n^{int(-p)}')
-        # We have polynomial convergence: use Richardson extrapolation
-        vold = None
-        ndig = prec_to_dps(prec)
-        while True:
-            # Need to use at least quad precision because a lot of cancellation
-            # might occur in the extrapolation process; we check the answer to
-            # make sure that the desired precision has been reached, too.
-            prec2 = 4*prec
-            term0 = (MPZ(term.numerator) << prec2) // term.denominator
+    alt = g < 0
+    if abs(g) < 1:
+        raise ValueError(f'Sum diverges like ({int(abs(1/g))})^n')
+    if p < 1 or (p == 1 and not alt):
+        raise ValueError(f'Sum diverges like n^{int(-p)}')
+    # We have polynomial convergence: use Richardson extrapolation
+    vold = None
+    ndig = prec_to_dps(prec)
+    while True:
+        # Need to use at least quad precision because a lot of cancellation
+        # might occur in the extrapolation process; we check the answer to
+        # make sure that the desired precision has been reached, too.
+        prec2 = 4*prec
+        term0 = (MPZ(term.numerator) << prec2) // term.denominator
 
-            def summand(k, _term=[term0]):
-                if k:
-                    k = int(k)
-                    _term[0] *= MPZ(func1(k - 1))
-                    _term[0] //= MPZ(func2(k - 1))
-                return make_mpf(from_man_exp(_term[0], -prec2))
+        def summand(k, _term=[term0]):
+            if k:
+                k = int(k)
+                _term[0] *= MPZ(func1(k - 1))
+                _term[0] //= MPZ(func2(k - 1))
+            return make_mpf(from_man_exp(_term[0], -prec2))
 
-            with workprec(prec):
-                v = nsum(summand, [0, mpmath_inf], method='richardson')
-            vf = Float(v, ndig)
-            if vold is not None and vold == vf:
-                break
-            prec += prec  # double precision each time
-            vold = vf
+        with workprec(prec):
+            v = nsum(summand, [0, mpmath_inf], method='richardson')
+        vf = Float(v, ndig)
+        if vold is not None and vold == vf:
+            break
+        prec += prec  # double precision each time
+        vold = vf
 
-        return v._mpf_
+    return v._mpf_
 
 
 def evalf_prod(expr, prec, options):
@@ -1078,16 +1069,15 @@ def evalf_symbol(x, prec, options):
         if not val:
             return None, None, None, None
         return val._mpf_, None, prec, None
-    else:
-        if '_cache' not in options:
-            options['_cache'] = {}
-        cache = options['_cache']
-        cached, cached_prec = cache.get(x, (None, MINUS_INF))
-        if cached_prec >= prec:
-            return cached
-        v = evalf(sympify(val), prec, options)
-        cache[x] = (v, prec)
-        return v
+    if '_cache' not in options:
+        options['_cache'] = {}
+    cache = options['_cache']
+    cached, cached_prec = cache.get(x, (None, MINUS_INF))
+    if cached_prec >= prec:
+        return cached
+    v = evalf(sympify(val), prec, options)
+    cache[x] = (v, prec)
+    return v
 
 
 evalf_table = None
@@ -1244,17 +1234,14 @@ class EvalfMixin:
         except PrecisionExhausted:
             if self.is_Float and self._prec >= prec:
                 return Float._new(self._mpf_, prec)
-            else:
-                raise
+            raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
             v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:
                 return self
-            else:
-                # Normalize result
-                return v.subs({_: _.evalf(dps, strict=strict)
-                               for _ in v.atoms(Float)})
+            # Normalize result
+            return v.subs({_: _.evalf(dps, strict=strict) for _ in v.atoms(Float)})
         re, im, re_acc, im_acc = result
         if re:
             p = max(min(prec, re_acc), 1)
@@ -1265,8 +1252,7 @@ class EvalfMixin:
             p = max(min(prec, im_acc), 1)
             im = Float._new(im, p)
             return re + im*I
-        else:
-            return re
+        return re
 
     def _evalf(self, prec):
         """Helper for evalf. Does the same thing but takes binary precision."""
@@ -1289,10 +1275,9 @@ class EvalfMixin:
                 if not re:
                     re = fzero
                 return make_mpc((re, im))
-            elif re:
+            if re:
                 return make_mpf(re)
-            else:
-                return make_mpf(fzero)
+            return make_mpf(fzero)
         except NotImplementedError as exc:
             v = self._eval_evalf(prec)  # pylint: disable=assignment-from-none
             if v is None:

@@ -119,8 +119,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         K0 = self.domain.algebraic_field(c*expr)
         if K0.is_AlgebraicField:
             return self.convert(K0(rep), K0)
-        else:
-            return self.convert(K0(*rep), K0)
+        return self.convert(K0(*rep), K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
@@ -136,7 +135,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     def _from_AlgebraicField(self, a, K0):
         if K0 == self.domain:
             return self([a])
-        elif self == K0.domain and len(a.rep) <= 1:
+        if self == K0.domain and len(a.rep) <= 1:
             return a.rep[1] if a else self.zero
 
         from ..polys import field_isomorphism
@@ -146,10 +145,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         if coeffs is not None:
             if K0.domain == self.domain:
                 return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
-            else:
-                return self.from_expr(K0.to_expr(a))
-        else:
-            raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
+            return self.from_expr(K0.to_expr(a))
+        raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
 
     def _from_ExpressionDomain(self, a, K0):
         return self.from_expr(K0.to_expr(a))

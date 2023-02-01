@@ -226,8 +226,7 @@ class BlockDiagMatrix(BlockMatrix):
         if (isinstance(other, BlockDiagMatrix) and
                 self.colblocksizes == other.rowblocksizes):
             return BlockDiagMatrix(*[a*b for a, b in zip(self.args, other.args)])
-        else:
-            return BlockMatrix._blockmul(self, other)
+        return BlockMatrix._blockmul(self, other)
 
     def _blockadd(self, other):
         if (isinstance(other, BlockDiagMatrix) and
@@ -235,8 +234,7 @@ class BlockDiagMatrix(BlockMatrix):
                 self.rowblocksizes == other.rowblocksizes and
                 self.colblocksizes == other.colblocksizes):
             return BlockDiagMatrix(*[a + b for a, b in zip(self.args, other.args)])
-        else:
-            return BlockMatrix._blockadd(self, other)
+        return BlockMatrix._blockadd(self, other)
 
 
 def block_collapse(expr):
@@ -290,8 +288,7 @@ def bc_matadd(expr):
         block = block._blockadd(b)
     if nonblocks:
         return MatAdd(*nonblocks) + block
-    else:
-        return block
+    return block
 
 
 def bc_block_plus_ident(expr):

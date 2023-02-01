@@ -111,12 +111,12 @@ class Integral(AddWithLimits):
                 z = Eq(xab[1], xab[2])
                 if z == true:
                     return True
-                elif z == false:
+                if z == false:
                     got_false = True
             elif len(xab) == 2 and xab[0] not in free:
                 if xab[1].is_zero:
                     return True
-                elif xab[1].is_nonzero:
+                if xab[1].is_nonzero:
                     got_false = True
             else:
                 free.add(xab[0])
@@ -757,8 +757,7 @@ class Integral(AddWithLimits):
                 if i:
                     # There was a nonelementary integral. Try integrating it.
                     return result + i.doit(risch=False)
-                else:
-                    return result
+                return result
 
         # since Integral(f=g1+g2+...) == Integral(g1) + Integral(g2) + ...
         # we are going to handle Add terms separately,
@@ -1011,7 +1010,7 @@ class Integral(AddWithLimits):
                 x = lower_limit + i*dx
                 result += self.function.subs({sym: x})
             return result*dx
-        elif method not in ('left', 'right', 'midpoint'):
+        if method not in ('left', 'right', 'midpoint'):
             raise NotImplementedError(f'Unknown method {method}')
 
         result = 0
@@ -1183,5 +1182,4 @@ def integrate(*args, **kwargs):
     if isinstance(integral, Integral):
         return integral.doit(deep=False, meijerg=meijerg, conds=conds,
                              risch=risch)
-    else:
-        return integral
+    return integral

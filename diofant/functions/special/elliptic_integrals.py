@@ -49,21 +49,20 @@ class elliptic_k(Function):
     def eval(cls, m):
         if m == 0:
             return pi/2
-        elif m == Rational(1, 2):
+        if m == Rational(1, 2):
             return 8*pi**Rational(3, 2)/gamma(-Rational(1, 4))**2
-        elif m == 1:
+        if m == 1:
             return zoo
-        elif m == -1:
+        if m == -1:
             return gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
-        elif m in (oo, -oo, I*oo, I*-oo, zoo):
+        if m in (oo, -oo, I*oo, I*-oo, zoo):
             return Integer(0)
 
     def fdiff(self, argindex=1):
         m = self.args[0]
         if argindex == 1:
             return (elliptic_e(m) - (1 - m)*elliptic_k(m))/(2*m*(1 - m))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         m = self.args[0]
@@ -118,13 +117,13 @@ class elliptic_f(Function):
         k = 2*z/pi
         if m.is_zero:
             return z
-        elif z.is_zero:
+        if z.is_zero:
             return Integer(0)
-        elif k.is_integer:
+        if k.is_integer:
             return k*elliptic_k(m)
-        elif m in (oo, -oo):
+        if m in (oo, -oo):
             return Integer(0)
-        elif z.could_extract_minus_sign():
+        if z.could_extract_minus_sign():
             return -elliptic_f(-z, m)
 
     def fdiff(self, argindex=1):
@@ -132,11 +131,10 @@ class elliptic_f(Function):
         fm = sqrt(1 - m*sin(z)**2)
         if argindex == 1:
             return 1/fm
-        elif argindex == 2:
+        if argindex == 2:
             return (elliptic_e(z, m)/(2*m*(1 - m)) - elliptic_f(z, m)/(2*m) -
                     sin(2*z)/(4*(1 - m)*fm))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         z, m = self.args
@@ -190,23 +188,23 @@ class elliptic_e(Function):
                 return z
             if z.is_zero:
                 return Integer(0)
-            elif k.is_integer:
+            if k.is_integer:
                 return k*elliptic_e(m)
-            elif m in (oo, -oo):
+            if m in (oo, -oo):
                 return zoo
-            elif z.could_extract_minus_sign():
+            if z.could_extract_minus_sign():
                 return -elliptic_e(-z, m)
         else:
             m = z
             if m.is_zero:
                 return pi/2
-            elif m == 1:
+            if m == 1:
                 return Integer(1)
-            elif m is oo:
+            if m is oo:
                 return I*oo
-            elif m == -oo:
+            if m == -oo:
                 return oo
-            elif m is zoo:
+            if m is zoo:
                 return zoo
 
     def fdiff(self, argindex=1):
@@ -214,16 +212,13 @@ class elliptic_e(Function):
             z, m = self.args
             if argindex == 1:
                 return sqrt(1 - m*sin(z)**2)
-            elif argindex == 2:
+            if argindex == 2:
                 return (elliptic_e(z, m) - elliptic_f(z, m))/(2*m)
-            else:
-                raise ArgumentIndexError(self, argindex)
-        else:
-            m = self.args[0]
-            if argindex == 1:
-                return (elliptic_e(m) - elliptic_k(m))/(2*m)
-            else:
-                raise ArgumentIndexError(self, argindex)
+            raise ArgumentIndexError(self, argindex)
+        m = self.args[0]
+        if argindex == 1:
+            return (elliptic_e(m) - elliptic_k(m))/(2*m)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         if len(self.args) == 2:
@@ -295,37 +290,37 @@ class elliptic_pi(Function):
             k = 2*z/pi
             if n == 0:
                 return elliptic_f(z, m)
-            elif n == 1:
+            if n == 1:
                 return (elliptic_f(z, m) +
                         (sqrt(1 - m*sin(z)**2)*tan(z) -
                          elliptic_e(z, m))/(1 - m))
-            elif k.is_integer:
+            if k.is_integer:
                 return k*elliptic_pi(n, m)
-            elif m == 0:
+            if m == 0:
                 return atanh(sqrt(n - 1)*tan(z))/sqrt(n - 1)
-            elif n == m:
+            if n == m:
                 return (elliptic_f(z, n) - elliptic_pi(1, z, n) +
                         tan(z)/sqrt(1 - n*sin(z)**2))
-            elif n in (oo, -oo):
+            if n in (oo, -oo):
                 return Integer(0)
-            elif m in (oo, -oo):
+            if m in (oo, -oo):
                 return Integer(0)
-            elif z.could_extract_minus_sign():
+            if z.could_extract_minus_sign():
                 return -elliptic_pi(n, -z, m)
         else:
             if n == 0:
                 return elliptic_k(m)
-            elif n == 1:
+            if n == 1:
                 return zoo
-            elif m == 0:
+            if m == 0:
                 return pi/(2*sqrt(1 - n))
-            elif m == 1:
+            if m == 1:
                 return -oo/sign(n - 1)
-            elif n == m:
+            if n == m:
                 return elliptic_e(n)/(1 - n)
-            elif n in (oo, -oo):
+            if n in (oo, -oo):
                 return Integer(0)
-            elif m in (oo, -oo):
+            if m in (oo, -oo):
                 return Integer(0)
 
     def _eval_conjugate(self):
@@ -346,20 +341,17 @@ class elliptic_pi(Function):
                 return (elliptic_e(z, m) + (m - n)*elliptic_f(z, m)/n +
                         (n**2 - m)*elliptic_pi(n, z, m)/n -
                         n*fm*sin(2*z)/(2*fn))/(2*(m - n)*(n - 1))
-            elif argindex == 2:
+            if argindex == 2:
                 return 1/(fm*fn)
-            elif argindex == 3:
+            if argindex == 3:
                 return (elliptic_e(z, m)/(m - 1) +
                         elliptic_pi(n, z, m) -
                         m*sin(2*z)/(2*(m - 1)*fm))/(2*(n - m))
-            else:
-                raise ArgumentIndexError(self, argindex)
-        else:
-            n, m = self.args
-            if argindex == 1:
-                return (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
-                        (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
-            elif argindex == 2:
-                return (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
-            else:
-                raise ArgumentIndexError(self, argindex)
+            raise ArgumentIndexError(self, argindex)
+        n, m = self.args
+        if argindex == 1:
+            return (elliptic_e(m) + (m - n)*elliptic_k(m)/n +
+                    (n**2 - m)*elliptic_pi(n, m)/n)/(2*(m - n)*(n - 1))
+        if argindex == 2:
+            return (elliptic_e(m)/(m - 1) + elliptic_pi(n, m))/(2*(n - m))
+        raise ArgumentIndexError(self, argindex)

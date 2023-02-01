@@ -212,8 +212,7 @@ class Add(AssocOp):
         # we are done
         if noncommutative:
             return [], newseq, None
-        else:
-            return newseq, [], None
+        return newseq, [], None
 
     @classmethod
     def class_key(cls):
@@ -415,13 +414,12 @@ class Add(AssocOp):
         r = _fuzzy_group((a.is_extended_real for a in self.args), quick_exit=True)
         if r is not True:
             return r
-        else:
-            nfin = [_ for _ in self.args if not _.is_finite]
-            if len(nfin) <= 1:
-                return True
-            elif (all(_.is_nonnegative for _ in nfin) or
-                  all(_.is_nonpositive for _ in nfin)):
-                return True
+        nfin = [_ for _ in self.args if not _.is_finite]
+        if len(nfin) <= 1:
+            return True
+        if (all(_.is_nonnegative for _ in nfin) or
+                all(_.is_nonpositive for _ in nfin)):
+            return True
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
@@ -485,7 +483,7 @@ class Add(AssocOp):
         else:
             if not nonpos and nonneg < len(args):
                 return True
-            elif nonpos == len(args):
+            if nonpos == len(args):
                 return False
 
     def _eval_is_negative(self):
@@ -514,7 +512,7 @@ class Add(AssocOp):
         else:
             if not nonneg and nonpos < len(args):
                 return True
-            elif nonneg == len(args):
+            if nonneg == len(args):
                 return False
 
     def _eval_subs(self, old, new):
@@ -652,17 +650,16 @@ class Add(AssocOp):
 
         if not expr.is_Add:
             return expr
-        else:
-            plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
-            rv = factor_terms(plain, fraction=False)
-            rv_simplify = rv.simplify()
-            # if it simplifies to an x-free expression, return that;
-            # tests don't fail if we don't but it seems nicer to do this
-            if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and plain:
-                    return (expr - plain)._eval_as_leading_term(x)
-                return rv_simplify
-            return rv
+        plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
+        rv = factor_terms(plain, fraction=False)
+        rv_simplify = rv.simplify()
+        # if it simplifies to an x-free expression, return that;
+        # tests don't fail if we don't but it seems nicer to do this
+        if x not in rv_simplify.free_symbols:
+            if rv_simplify.is_zero and plain:
+                return (expr - plain)._eval_as_leading_term(x)
+            return rv_simplify
+        return rv
 
     def _eval_adjoint(self):
         return self.func(*[t.adjoint() for t in self.args])

@@ -50,18 +50,16 @@ class Tuple(Basic):
     def __add__(self, other):
         if isinstance(other, Tuple):
             return Tuple(*(self.args + other.args))
-        elif isinstance(other, tuple):
+        if isinstance(other, tuple):
             return Tuple(*(self.args + other))
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __radd__(self, other):
         if isinstance(other, Tuple):
             return Tuple(*(other.args + self.args))
-        elif isinstance(other, tuple):
+        if isinstance(other, tuple):
             return Tuple(*(other + self.args))
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __mul__(self, other):
         try:
@@ -117,10 +115,9 @@ class Tuple(Basic):
 
         if start is None and stop is None:
             return self.args.index(value)
-        elif stop is None:
+        if stop is None:
             return self.args.index(value, start)
-        else:
-            return self.args.index(value, start, stop)
+        return self.args.index(value, start, stop)
 
 
 converter[tuple] = lambda tup: Tuple(*tup)

@@ -188,7 +188,7 @@ def _af_pow(a, n):
         return _af_pow(_af_invert(a), -n)
     if n == 1:
         return a[:]
-    elif n == 2:
+    if n == 2:
         b = [a[i] for i in a]
     elif n == 3:
         b = [a[a[i]] for i in a]
@@ -415,7 +415,7 @@ class Cycle(dict):
                 for c in args[0].cyclic_form:
                     self.update(self(*c))
                 return
-            elif isinstance(args[0], Cycle):
+            if isinstance(args[0], Cycle):
                 for k, v in args[0].items():
                     self[k] = v
                 return
@@ -826,7 +826,7 @@ class Permutation(Basic):
         ok = True
         if not args:  # a
             return _af_new(list(range(size or 0)))
-        elif len(args) > 1:  # c
+        if len(args) > 1:  # c
             return _af_new(Cycle(*args).list(size))
         if len(args) == 1:
             a = args[0]
@@ -1300,9 +1300,7 @@ class Permutation(Basic):
         """
         if int(i) == i:
             return self(i)
-        else:
-            raise NotImplementedError(
-                f'i^p = p(i) when i is an integer, not {i}.')
+        raise NotImplementedError(f'i^p = p(i) when i is an integer, not {i}.')
 
     def __xor__(self, h):
         """Return the conjugate permutation ``~h*self*h``.
@@ -1557,17 +1555,16 @@ class Permutation(Basic):
             i -= 1
         if i == -1:
             return
-        else:
-            j = n - 1
-            while perm[j] < perm[i]:
-                j -= 1
+        j = n - 1
+        while perm[j] < perm[i]:
+            j -= 1
+        perm[j], perm[i] = perm[i], perm[j]
+        i += 1
+        j = n - 1
+        while i < j:
             perm[j], perm[i] = perm[i], perm[j]
             i += 1
-            j = n - 1
-            while i < j:
-                perm[j], perm[i] = perm[i], perm[j]
-                i += 1
-                j -= 1
+            j -= 1
         return _af_new(perm)
 
     @classmethod

@@ -40,8 +40,7 @@ class CommutativeRing(Domain):
 
         if h == 1:
             return s % b
-        else:
-            raise NotInvertibleError('zero divisor')
+        raise NotInvertibleError('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""

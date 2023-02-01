@@ -100,11 +100,11 @@ class MatrixExpr(Expr):
             raise ShapeError(f'Power of non-square matrix {self}')
         if self.is_Identity:
             return self
-        elif other == -1:
+        if other == -1:
             return Inverse(self)
-        elif other == 0:
+        if other == 0:
             return Identity(self.rows)
-        elif other == 1:
+        if other == 1:
             return self
         return MatPow(self, other)
 
@@ -156,9 +156,8 @@ class MatrixExpr(Expr):
     def _eval_simplify(self, ratio, measure):
         if self.is_Atom:
             return self
-        else:
-            return self.__class__(*[simplify(x, ratio=ratio, measure=measure)
-                                    for x in self.args])
+        return self.__class__(*[simplify(x, ratio=ratio, measure=measure)
+                                for x in self.args])
 
     def _eval_adjoint(self):
         from .adjoint import Adjoint
@@ -202,9 +201,8 @@ class MatrixExpr(Expr):
             i, j = sympify(i), sympify(j)
             if self.valid_index(i, j) is not False:
                 return self._entry(i, j)
-            else:
-                raise IndexError(f'Invalid indices ({i}, {j})')
-        elif isinstance(key, (int, Integer)):
+            raise IndexError(f'Invalid indices ({i}, {j})')
+        if isinstance(key, (int, Integer)):
             # row-wise decomposition of matrix
             rows, cols = self.shape
             if not (isinstance(rows, Integer) and isinstance(cols, Integer)):
@@ -215,9 +213,8 @@ class MatrixExpr(Expr):
             j = key % cols
             if self.valid_index(i, j) is not False:
                 return self._entry(i, j)
-            else:
-                raise IndexError(f'Invalid index {key}')
-        elif isinstance(key, (Symbol, Expr)):
+            raise IndexError(f'Invalid index {key}')
+        if isinstance(key, (Symbol, Expr)):
             raise IndexError('Single index only supported for '
                              'non-symbolic indices.')
         raise IndexError(f'Invalid index, wanted {self}[i,j]')
@@ -323,8 +320,7 @@ class MatrixElement(Expr):
     def xreplace(self, rule):
         if self in rule:
             return rule[self]
-        else:
-            return self
+        return self
 
 
 class MatrixSymbol(MatrixExpr, AtomicExpr):
@@ -389,8 +385,7 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
             return type(self)(self.name,
                               *(_.doit(**hints) for _ in self.shape),
                               **self._assumptions._generator)
-        else:
-            return self
+        return self
 
 
 class Identity(MatrixExpr):
@@ -435,8 +430,7 @@ class Identity(MatrixExpr):
     def _entry(self, i, j):
         if i == j:
             return Integer(1)
-        else:
-            return Integer(0)
+        return Integer(0)
 
     def _eval_determinant(self):
         return Integer(1)

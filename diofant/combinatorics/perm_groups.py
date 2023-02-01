@@ -809,10 +809,10 @@ class PermutationGroup(Basic):
                        [rmul(gen, g) for gen in other.generators]
             return self.subgroup_search(prop, base=base,
                                         strong_gens=strong_gens, tests=tests)
-        elif hasattr(other, '__getitem__'):
+        if hasattr(other, '__getitem__'):
             gens = list(other)
             return self.centralizer(PermutationGroup(gens))
-        elif hasattr(other, 'array_form'):
+        if hasattr(other, 'array_form'):
             return self.centralizer(PermutationGroup([other]))
 
     def commutator(self, G, H):
@@ -1008,8 +1008,7 @@ class PermutationGroup(Basic):
         h = _af_rmuln(*a)
         if af:
             return h
-        else:
-            return _af_new(h)
+        return _af_new(h)
 
     @property
     def degree(self):
@@ -1185,10 +1184,9 @@ class PermutationGroup(Basic):
         """
         if method == 'coset':
             return self.generate_schreier_sims(af)
-        elif method == 'dimino':
+        if method == 'dimino':
             return self.generate_dimino(af)
-        else:
-            raise NotImplementedError(f'No generation defined for {method}')
+        raise NotImplementedError(f'No generation defined for {method}')
 
     def generate_dimino(self, af=False):
         """Yield group elements using Dimino's algorithm
@@ -1479,12 +1477,11 @@ class PermutationGroup(Basic):
                 if _check_cycles_alt_sym(perm):
                     return True
             return False
-        else:
-            for i in range(_random_prec['N_eps']):
-                perm = _random_prec[i]
-                if _check_cycles_alt_sym(perm):
-                    return True
-            return False
+        for i in range(_random_prec['N_eps']):
+            perm = _random_prec[i]
+            if _check_cycles_alt_sym(perm):
+                return True
+        return False
 
     @property
     def is_nilpotent(self):
@@ -1521,11 +1518,9 @@ class PermutationGroup(Basic):
                 self._is_solvable = True
                 self._is_nilpotent = True
                 return True
-            else:
-                self._is_nilpotent = False
-                return False
-        else:
-            return self._is_nilpotent
+            self._is_nilpotent = False
+            return False
+        return self._is_nilpotent
 
     def is_normal(self, gr, strict=True):
         """Test if G=self is a normal subgroup of gr.
@@ -1649,11 +1644,9 @@ class PermutationGroup(Basic):
             if all(g == identity for g in gens):
                 self._is_solvable = True
                 return True
-            else:
-                self._is_solvable = False
-                return False
-        else:
-            return self._is_solvable
+            self._is_solvable = False
+            return False
+        return self._is_solvable
 
     def is_subgroup(self, G, strict=True):
         """Return True if all elements of self belong to G.
@@ -2021,9 +2014,9 @@ class PermutationGroup(Basic):
                     if _loop:
                         break
             return Z
-        elif hasattr(other, '__getitem__'):
+        if hasattr(other, '__getitem__'):
             return self.normal_closure(PermutationGroup(other))
-        elif hasattr(other, 'array_form'):
+        if hasattr(other, 'array_form'):
             return self.normal_closure(PermutationGroup([other]))
 
     def orbit(self, alpha, action='tuples'):
@@ -2094,8 +2087,7 @@ class PermutationGroup(Basic):
             k = schreier_vector[beta]
         if a:
             return _af_new(_af_rmuln(*a))
-        else:
-            return _af_new(list(range(self._degree)))
+        return _af_new(list(range(self._degree)))
 
     def orbit_transversal(self, alpha, pairs=False):
         r"""Computes a transversal for the orbit of ``alpha`` as a set.
@@ -2238,11 +2230,10 @@ class PermutationGroup(Basic):
             if not stab_gens:
                 stab_gens = _af_new(list(range(degree)))
             return PermutationGroup(stab_gens)
-        else:
-            gens = self._generators
-            degree = self.degree
-            for x in points:
-                gens = _stabilizer(degree, gens, x)
+        gens = self._generators
+        degree = self.degree
+        for x in points:
+            gens = _stabilizer(degree, gens, x)
         return PermutationGroup(gens)
 
     def make_perm(self, n, seed=None):
@@ -3068,8 +3059,7 @@ class PermutationGroup(Basic):
                 G = G.stabilizer(i)
             self._transitivity_degree = n
             return n
-        else:
-            return self._transitivity_degree
+        return self._transitivity_degree
 
 
 def _orbit(degree, generators, alpha, action='tuples'):
@@ -3120,7 +3110,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
                     orb.append(temp)
                     used[temp] = True
         return set(orb)
-    elif action == 'tuples':
+    if action == 'tuples':
         alpha = tuple(alpha)
         orb = [alpha]
         used = {alpha}
@@ -3131,7 +3121,7 @@ def _orbit(degree, generators, alpha, action='tuples'):
                     orb.append(temp)  # pylint: disable=modified-iterating-list
                     used.add(temp)
         return set(orb)
-    elif action == 'sets':
+    if action == 'sets':
         alpha = frozenset(alpha)
         orb = [alpha]
         used = {alpha}

@@ -1044,10 +1044,9 @@ def tensor_gens(base, gens, list_free_indices, sym=0):
         """Return the BSGS for G.pointwise_stabilizer(free_indices)."""
         if not free_indices:
             return base[:], gens[:]
-        else:
-            H = G.pointwise_stabilizer(free_indices)
-            base, sgs = H.schreier_sims_incremental()
-            return base, sgs
+        H = G.pointwise_stabilizer(free_indices)
+        base, sgs = H.schreier_sims_incremental()
+        return base, sgs
 
     # if not base there is no slot symmetry for the component tensors
     # if list_free_indices.count([]) < 2 there is no commutation symmetry

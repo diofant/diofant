@@ -178,10 +178,9 @@ class lerchphi(Function):
         z, s, a = self.args
         if argindex == 3:
             return -s*lerchphi(z, s + 1, a)
-        elif argindex == 1:
+        if argindex == 1:
             return (lerchphi(z, s - 1, a) - a*lerchphi(z, s, a))/z
-        else:
-            raise ArgumentIndexError
+        raise ArgumentIndexError
 
     def _eval_rewrite_helper(self, z, s, a, target):
         res = self._eval_expand_func()
@@ -273,9 +272,9 @@ class polylog(Function):
         from .. import unpolarify
         if z == 1:
             return zeta(s)
-        elif z == -1:
+        if z == -1:
             return -dirichlet_eta(s)
-        elif z == 0:
+        if z == 0:
             return Integer(0)
 
         # branch handling
@@ -418,16 +417,16 @@ class zeta(Function):
     def eval(cls, z, a=None):
         if a == 1:
             return cls(z)
-        elif a is None:
+        if a is None:
             a = Integer(1)
         if z.is_Number:
             if z is oo:
                 return Integer(1)
-            elif z == 0:
+            if z == 0:
                 return Rational(1, 2) - a
-            elif z == 1:
+            if z == 1:
                 return zoo
-            elif z.is_Integer:
+            if z.is_Integer:
                 if a.is_Integer:
                     if z.is_negative:
                         zeta = (-1)**z * bernoulli(-z + 1)/(-z + 1)
@@ -439,8 +438,7 @@ class zeta(Function):
 
                     if a.is_negative:
                         return zeta + harmonic(abs(a), z)
-                    else:
-                        return zeta - harmonic(a - 1, z)
+                    return zeta - harmonic(a - 1, z)
 
     def _eval_rewrite_as_dirichlet_eta(self, s, a=1):
         if a != 1:
@@ -458,8 +456,7 @@ class zeta(Function):
             s, a = self.args + (1,)
         if argindex == 2:
             return -s*zeta(s + 1, a)
-        else:
-            raise ArgumentIndexError
+        raise ArgumentIndexError
 
     def _eval_rewrite_as_tractable(self, s, a=1, **kwargs):
         if len(self.args) == 1:

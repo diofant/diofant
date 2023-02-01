@@ -122,8 +122,7 @@ def fuzzy_not(v):
     """
     if v is None:
         return v
-    else:
-        return not v
+    return not v
 
 
 def fuzzy_or(args):
@@ -170,8 +169,7 @@ class Logic:
     def __eq__(self, other):
         if not isinstance(other, type(self)):
             return False
-        else:
-            return self.args == other.args
+        return self.args == other.args
 
     def __str__(self):
         return f"{self.__class__.__name__}({', '.join(str(a) for a in self.args)})"
@@ -239,7 +237,7 @@ class AndOr_Base(Logic):
         for a in args:
             if a == cls.op_x_notx:
                 return a
-            elif a == (not cls.op_x_notx):
+            if a == (not cls.op_x_notx):
                 continue    # skip this argument
             bargs.append(a)
 
@@ -251,7 +249,7 @@ class AndOr_Base(Logic):
 
         if len(args) == 1:
             return args.pop()
-        elif len(args) == 0:
+        if len(args) == 0:
             return not cls.op_x_notx
 
         return Logic.__new__(cls, *args)
@@ -321,18 +319,17 @@ class Not(Logic):
         if isinstance(arg, str):
             return Logic.__new__(cls, arg)
 
-        elif isinstance(arg, bool):
+        if isinstance(arg, bool):
             return not arg
-        elif isinstance(arg, Not):
+        if isinstance(arg, Not):
             return arg.args[0]
 
-        elif isinstance(arg, Logic):
+        if isinstance(arg, Logic):
             # XXX this is a hack to expand right from the beginning
             arg = arg._eval_propagate_not()
             return arg
 
-        else:
-            raise ValueError(f'Not: unknown argument {arg!r}')
+        raise ValueError(f'Not: unknown argument {arg!r}')
 
     @property
     def arg(self):

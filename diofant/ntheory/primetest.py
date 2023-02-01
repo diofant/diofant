@@ -83,14 +83,13 @@ def _test(n, base, s, t):
     b = pow(base, t, n)
     if b in (1, n - 1):
         return True
-    else:
-        for _ in range(1, s):
-            b = pow(b, 2, n)
-            if b == n - 1:
-                return True
-            # see I. Niven et al. "An Introduction to Theory of Numbers", page 78
-            if b == 1:
-                return False
+    for _ in range(1, s):
+        b = pow(b, 2, n)
+        if b == n - 1:
+            return True
+        # see I. Niven et al. "An Introduction to Theory of Numbers", page 78
+        if b == 1:
+            return False
     return False
 
 

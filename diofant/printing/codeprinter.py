@@ -321,7 +321,7 @@ class CodePrinter(StrPrinter):
                 conditions.append(c)
             temp = Piecewise(*zip(expressions, conditions))
             return self._print(temp)
-        elif isinstance(lhs, MatrixSymbol):
+        if isinstance(lhs, MatrixSymbol):
             # Here we form an Assignment for each element in the array,
             # printing each one.
             lines = []
@@ -330,15 +330,14 @@ class CodePrinter(StrPrinter):
                 code0 = self._print(temp)
                 lines.append(code0)
             return '\n'.join(lines)
-        elif self._settings['contract'] and (lhs.has(IndexedBase) or
-                                             rhs.has(IndexedBase)):
+        if self._settings['contract'] and (lhs.has(IndexedBase) or
+                                           rhs.has(IndexedBase)):
             # Here we check if there is looping to be done, and if so
             # print the required loops.
             return self._doprint_loops(rhs, lhs)
-        else:
-            lhs_code = self._print(lhs)
-            rhs_code = self._print(rhs)
-            return self._get_statement(f'{lhs_code} = {rhs_code}')
+        lhs_code = self._print(lhs)
+        rhs_code = self._print(rhs)
+        return self._get_statement(f'{lhs_code} = {rhs_code}')
 
     def _print_Symbol(self, expr):
 
@@ -350,8 +349,7 @@ class CodePrinter(StrPrinter):
                        'reserved keyword in this language.')
                 raise ValueError(msg.format(name))
             return name + self._settings['reserved_word_suffix']
-        else:
-            return name
+        return name
 
     def _print_Function(self, expr):
         if expr.func.__name__ in self.known_functions:
@@ -468,10 +466,9 @@ class CodePrinter(StrPrinter):
 
         if len(b) == 0:
             return sign + '*'.join(a_str)
-        elif len(b) == 1:
+        if len(b) == 1:
             return sign + '*'.join(a_str) + '/' + b_str[0]
-        else:
-            return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
+        return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
 
     def _print_not_supported(self, expr):
         self._not_supported.add(expr)

@@ -71,44 +71,38 @@ class Monomial(tuple, DefaultPrinting):
         other = self._get_val(other)
         if other is not None:
             return self.__class__((a + b for a, b in zip(self, other)), self.gens)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __truediv__(self, other):
         """Return self/other."""
         other = self._get_val(other)
         if other is not None:
             return self.__class__((a - b for a, b in zip(self, other)), self.gens)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def divides(self, other):
         """Check if self divides other."""
         other, orig = self._get_val(other), other
         if other is not None:
             return all(a <= b for a, b in zip(self, other))
-        else:
-            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
 
     def __pow__(self, n):
         """Return pow(self, other)."""
         if isinstance(n, int) and n >= 0:
             return self.__class__((a * n for a in self), self.gens)
-        else:
-            raise ValueError(f'A non-negative integer expected, got {n}')
+        raise ValueError(f'A non-negative integer expected, got {n}')
 
     def gcd(self, other):
         """Greatest common divisor of monomials."""
         other, orig = self._get_val(other), other
         if other is not None:
             return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
-        else:
-            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
 
     def lcm(self, other):
         """Least common multiple of monomials."""
         other, orig = self._get_val(other), other
         if other is not None:
             return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
-        else:
-            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')

@@ -39,9 +39,9 @@ def singularities(f, x):
 
     if f.is_number:
         return set()
-    elif f.is_polynomial(x):
+    if f.is_polynomial(x):
         return set()
-    elif f.func in (Add, Mul):
+    if f.func in (Add, Mul):
         guess = guess.union(*[singularities(a, x) for a in f.args])
     elif isinstance(f, Pow):
         if f.exp.is_number and f.exp.is_negative:

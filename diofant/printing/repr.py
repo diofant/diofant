@@ -35,11 +35,10 @@ class ReprPrinter(Printer):
             for o in expr.args:
                 l.append(self._print(o))
             return expr.__class__.__name__ + f"({', '.join(l)})"
-        elif hasattr(expr, '__repr__') and not issubclass(expr.__class__,
-                                                          DefaultPrinting):
+        if hasattr(expr, '__repr__') and not issubclass(expr.__class__,
+                                                        DefaultPrinting):
             return repr(expr)
-        else:
-            return object.__repr__(expr)
+        return object.__repr__(expr)
 
     def _print_Dict(self, expr):
         l = []
@@ -60,8 +59,7 @@ class ReprPrinter(Printer):
     def _print_FunctionClass(self, expr):
         if issubclass(expr, AppliedUndef):
             return f'Function({expr.__name__!r})'
-        else:
-            return expr.__name__
+        return expr.__name__
 
     def _print_RationalConstant(self, expr):
         return f'Rational({expr.numerator}, {expr.denominator})'
@@ -116,9 +114,8 @@ class ReprPrinter(Printer):
         d = expr._assumptions.generator
         if d == {}:
             return f'{expr.__class__.__name__}({self._print(expr.name)})'
-        else:
-            attr = [f'{k}={v}' for k, v in d.items()]
-            return f"{expr.__class__.__name__}({self._print(expr.name)}, {', '.join(attr)})"
+        attr = [f'{k}={v}' for k, v in d.items()]
+        return f"{expr.__class__.__name__}({self._print(expr.name)}, {', '.join(attr)})"
 
     def _print_str(self, expr):
         return repr(expr)
@@ -126,8 +123,7 @@ class ReprPrinter(Printer):
     def _print_tuple(self, expr):
         if len(expr) == 1:
             return f'({self._print(expr[0])},)'
-        else:
-            return f"({self.reprify(expr, ', ')})"
+        return f"({self.reprify(expr, ', ')})"
 
     def _print_WildFunction(self, expr):
         return f"{expr.__class__.__name__}('{expr.name}')"

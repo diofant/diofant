@@ -125,8 +125,7 @@ def minimize_univariate(f, x, dom):
                 m = Min(limit(f, x, s), limit(f, x, s, dir=1))
                 if m == -oo:
                     return -oo, dict({x: s})
-                else:
-                    extr[s] = m
+                extr[s] = m
 
         for p in solve(diff(f, x), x):
             p = p[x]
@@ -209,8 +208,7 @@ def simplex(c, m, b):
 
             if tableau[row, col] <= 0:
                 return 1
-            else:
-                basis[row] = col
+            basis[row] = col
 
             tableau[row, :] /= tableau[row, col]
             for r in range(tableau.rows):

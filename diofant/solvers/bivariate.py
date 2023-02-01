@@ -59,7 +59,7 @@ def _mostfunc(lhs, func, X=None):
                                                  not X.is_Symbol and tmp.has(X))]
     if len(fterms) == 1:
         return fterms[0]
-    elif fterms:
+    if fterms:
         return max(list(ordered(fterms)), key=lambda x: x.count(func))
 
 

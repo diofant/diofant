@@ -651,7 +651,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
             return prde_no_cancel_b_large(b, cQ, n, DE)
         return no_cancel_b_large(b, cQ, n, DE)
 
-    elif (b.is_zero or b.degree(DE.t) < DE.d.degree(DE.t) - 1) and \
+    if (b.is_zero or b.degree(DE.t) < DE.d.degree(DE.t) - 1) and \
             (DE.case == 'base' or DE.d.degree(DE.t) >= 2):
 
         if parametric:
@@ -661,19 +661,18 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
         if isinstance(R, Poly):
             return R
-        else:
-            # XXX: Might k be a field? (pg. 209)
-            h, b0, c0 = R
-            with DecrementLevel(DE):
-                b0, c0 = b0.as_poly(DE.t), c0.as_poly(DE.t)
-                if b0 is None:  # See above comment
-                    raise ValueError('b0 should be a non-Null value')
-                if c0 is None:
-                    raise ValueError('c0 should be a non-Null value')
-                y = solve_poly_rde(b0, c0, n, DE).as_poly(DE.t)
-            return h + y
+        # XXX: Might k be a field? (pg. 209)
+        h, b0, c0 = R
+        with DecrementLevel(DE):
+            b0, c0 = b0.as_poly(DE.t), c0.as_poly(DE.t)
+            if b0 is None:  # See above comment
+                raise ValueError('b0 should be a non-Null value')
+            if c0 is None:
+                raise ValueError('c0 should be a non-Null value')
+            y = solve_poly_rde(b0, c0, n, DE).as_poly(DE.t)
+        return h + y
 
-    elif DE.d.degree(DE.t) >= 2 and b.degree(DE.t) == DE.d.degree(DE.t) - 1 and \
+    if DE.d.degree(DE.t) >= 2 and b.degree(DE.t) == DE.d.degree(DE.t) - 1 and \
             n > -b.as_poly(DE.t).LC()/DE.d.as_poly(DE.t).LC():
 
         # TODO: Is this check necessary, and if so, what should it do if it fails?
@@ -689,35 +688,29 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
         if isinstance(R, Poly):
             return R
-        else:
-            h, m, C = R
-            # XXX: Or should it be rischDE()?
-            y = solve_poly_rde(b, C, m, DE)
-            return h + y
+        h, m, C = R
+        # XXX: Or should it be rischDE()?
+        y = solve_poly_rde(b, C, m, DE)
+        return h + y
 
-    else:
-        # Cancellation
-        if b.is_zero:
-            raise NotImplementedError('Remaining cases for Poly (P)RDE are '
-                                      'not yet implemented (is_deriv_in_field() required).')
-        if DE.case == 'exp':
-            if parametric:
-                raise NotImplementedError('Parametric RDE cancellation '
-                                          'hyperexponential case is not yet implemented.')
-            return cancel_exp(b, cQ, n, DE)
+    # Cancellation
+    if b.is_zero:
+        raise NotImplementedError('Remaining cases for Poly (P)RDE are '
+                                  'not yet implemented (is_deriv_in_field() required).')
+    if DE.case == 'exp':
+        if parametric:
+            raise NotImplementedError('Parametric RDE cancellation '
+                                      'hyperexponential case is not yet implemented.')
+        return cancel_exp(b, cQ, n, DE)
 
-        elif DE.case == 'primitive':
-            if parametric:
-                raise NotImplementedError('Parametric RDE cancellation '
-                                          'primitive case is not yet implemented.')
-            return cancel_primitive(b, cQ, n, DE)
+    if DE.case == 'primitive':
+        if parametric:
+            raise NotImplementedError('Parametric RDE cancellation '
+                                      'primitive case is not yet implemented.')
+        return cancel_primitive(b, cQ, n, DE)
 
-        else:
-            raise NotImplementedError('Other Poly (P)RDE cancellation '
-                                      f'cases are not yet implemented ({DE.case!s}).')
-
-        raise NotImplementedError('Remaining cases for Poly RDE not yet '
-                                  'implemented.')
+    raise NotImplementedError('Other Poly (P)RDE cancellation '
+                              f'cases are not yet implemented ({DE.case!s}).')
 
 
 def rischDE(fa, fd, ga, gd, DE):

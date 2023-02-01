@@ -167,10 +167,9 @@ class MPContext(PythonMPContext):
 
         if not bound2 or not bound1:
             return p, q
-        elif abs(bound2 - number) <= abs(bound1 - number):
+        if abs(bound2 - number) <= abs(bound1 - number):
             return bound2._mpq_
-        else:
-            return bound1._mpq_
+        return bound1._mpq_
 
     def almosteq(self, s, t, rel_eps=None, abs_eps=None):
         t = self.convert(t)
