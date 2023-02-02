@@ -1957,7 +1957,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         negative_self = -self
-        self_has_minus = (self.extract_multiplicatively(-1) is not None)
+        self_has_minus = self.extract_multiplicatively(-1) is not None
         negative_self_has_minus = (
             (negative_self).extract_multiplicatively(-1) is not None)
         if self_has_minus != negative_self_has_minus:

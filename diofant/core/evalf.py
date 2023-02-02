@@ -688,7 +688,7 @@ def evalf_log(expr, prec, options):
         im = mpf_atan2(xim, xre or fzero, prec)
         return re[0], im, re[2], prec
 
-    imaginary_term = (mpf_cmp(xre, fzero) < 0)
+    imaginary_term = mpf_cmp(xre, fzero) < 0
 
     re = mpf_log(mpf_abs(xre), prec, rnd)
     size = fastlog(re)

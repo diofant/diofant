@@ -1503,8 +1503,7 @@ def cantor_product(*args):
         argslist = [[next(a)] for a in args]
     except StopIteration:
         return
-    else:
-        yield tuple(a[0] for a in argslist)
+    yield tuple(a[0] for a in argslist)
 
     nargs = len(args)
     exhausted = [False]*nargs

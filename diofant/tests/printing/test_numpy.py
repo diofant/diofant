@@ -29,16 +29,16 @@ def test_relational():
     e = Unequality(x, 1)
     assert p.doprint(e) == 'not_equal(x, 1)'
 
-    e = (x < 1)
+    e = x < 1
     assert p.doprint(e) == 'less(x, 1)'
 
-    e = (x <= 1)
+    e = x <= 1
     assert p.doprint(e) == 'less_equal(x, 1)'
 
-    e = (x > 1)
+    e = x > 1
     assert p.doprint(e) == 'greater(x, 1)'
 
-    e = (x >= 1)
+    e = x >= 1
     assert p.doprint(e) == 'greater_equal(x, 1)'
 
 

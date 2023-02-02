@@ -90,8 +90,7 @@ def _str_to_Decimal_dps(s):
         num = decimal.Decimal(s)
     except decimal.InvalidOperation as exc:
         raise ValueError(f'string-float not recognized: {s}') from exc
-    else:
-        return num, len(num.as_tuple().digits)
+    return num, len(num.as_tuple().digits)
 
 
 def igcdex(a, b):
@@ -193,7 +192,7 @@ def mod_inverse(a, m):
                 but symbolic expressions can be handled with the
                 similar function,
                 sympy.polys.polytools.invert""")) from exc
-        big = (m > 1)
+        big = m > 1
         if not (big is S.true or big is S.false):
             raise ValueError('m > 1 did not evaluate; '
                              f'try to simplify {m}') from exc

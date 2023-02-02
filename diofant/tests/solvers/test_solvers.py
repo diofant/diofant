@@ -1573,7 +1573,7 @@ def test_unrad1():
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
     assert solve(root(x, 3) + root(x, 5) - 2) == [{x: 1}]
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     ans = [{x: Rational(4, 5)},
            {x: Rational(-1484, 375) + 172564/(140625*cbrt(114*sqrt(12657)/78125 +
                                                           Rational(12459439, 52734375))) +

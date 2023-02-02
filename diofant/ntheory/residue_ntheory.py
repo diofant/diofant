@@ -529,7 +529,7 @@ def _sqrt_mod1(a, p, n):
         for rx in res1:
             i = 0
             while i < pnm:
-                x = ((rx + i) % pn)
+                x = (rx + i) % pn
                 assert x not in s
                 s.add(x)
                 yield x*pm

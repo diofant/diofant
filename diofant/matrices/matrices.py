@@ -3406,7 +3406,7 @@ class MatrixBase(DefaultPrinting):
                 from . import MutableMatrix
                 I = MutableMatrix.eye(self.rows)
                 l = eigenval
-                M = (self-l*I)
+                M = self-l*I
 
                 # We will store the matrices `(self-l*I)^k` for further computations
                 # for convenience only we store `Ms[0]=(sefl-lI)^0=I`

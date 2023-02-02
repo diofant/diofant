@@ -1943,8 +1943,8 @@ def _parametrize_ternary_quadratic(solution, _var, coeff):
     A, B = eq_1.as_independent(r, as_Add=True)
 
     x = A*x_0
-    y = (A*y_0 - _mexpand(B/r*p))
-    z = (A*z_0 - _mexpand(B/r*q))
+    y = A*y_0 - _mexpand(B/r*p)
+    z = A*z_0 - _mexpand(B/r*q)
 
     return x, y, z
 

@@ -624,8 +624,8 @@ def test_sympyissue_5910():
 
 def test_sympyissue_5217():
     s = Symbol('s')
-    z = (1 - 2*x*x)
-    w = (1 + 2*x*x)
+    z = 1 - 2*x*x
+    w = 1 + 2*x*x
     q = 2*x*x*2*y*y
     sub = {2*x*x: s}
     assert w.subs(sub) == 1 + s

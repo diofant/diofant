@@ -167,7 +167,7 @@ def test_trigsimp_issues():
     # nan or the unchanged expression is ok, but not sin(1)
     z = cos(x)**2 + sin(x)**2 - 1
     z1 = tan(x)**2 - 1/cot(x)**2
-    n = (1 + z1/z)
+    n = 1 + z1/z
     assert trigsimp(sin(n)) != sin(1)
     eq = x*(n - 1) - x*n
     assert trigsimp(eq) is nan
@@ -285,8 +285,8 @@ def test_trigsimp_groebner():
     s = sin(x)
     ex = (4*s*c + 12*s + 5*c**3 + 21*c**2 + 23*c + 15)/(
         -s*c**2 + 2*s*c + 15*s + 7*c**3 + 31*c**2 + 37*c + 21)
-    resnum = (5*s - 5*c + 1)
-    resdenom = (8*s - 6*c)
+    resnum = 5*s - 5*c + 1
+    resdenom = 8*s - 6*c
     results = [resnum/resdenom, (-resnum)/(-resdenom)]
     assert trigsimp_groebner(ex) in results
     assert trigsimp_groebner(s/c, hints=[tan]) == tan(x)

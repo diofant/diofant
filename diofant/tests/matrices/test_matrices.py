@@ -873,8 +873,8 @@ def test_eigen():
     a = R(15, 2)
     b = 3*33**R(1, 2)
     c = R(13, 2)
-    d = (R(33, 8) + 3*b/8)
-    e = (R(33, 8) - 3*b/8)
+    d = R(33, 8) + 3*b/8
+    e = R(33, 8) - 3*b/8
 
     def NS(e, n):
         return str(N(e, n))

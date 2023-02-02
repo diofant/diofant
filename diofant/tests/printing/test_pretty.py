@@ -345,7 +345,7 @@ oo\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (x**2)
+    expr = x**2
     ascii_str = \
         """\
  2\n\
@@ -470,7 +470,7 @@ x   \
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (x**2 + x + 1)
+    expr = x**2 + x + 1
     ascii_str_1 = \
         """\
          2\n\
@@ -1170,7 +1170,7 @@ tan (x)\
 
 def test_pretty_functions():
     """Tests for Abs, conjugate, exp, function braces, and factorial."""
-    expr = (2*x + exp(x))
+    expr = 2*x + exp(x)
     ascii_str_1 = \
         """\
        x\n\

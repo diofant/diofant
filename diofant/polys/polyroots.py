@@ -656,8 +656,7 @@ def _integer_basis(poly):
                     div = next(divs)
                 except StopIteration:
                     return
-                else:
-                    break
+                break
         else:
             return div
 

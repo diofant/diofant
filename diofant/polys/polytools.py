@@ -563,8 +563,7 @@ class Poly(Expr):
             except ValueError as exc:
                 raise GeneratorsError(f"{self} doesn't have "
                                       f'{gen} as generator') from exc
-            else:
-                indices.add(index)
+            indices.add(index)
 
         for monom in self.monoms():
             for i, elt in enumerate(monom):
@@ -804,8 +803,7 @@ class Poly(Expr):
                 except ValueError as exc:
                     raise GeneratorsError(f"{self} doesn't have "
                                           f'{gen} as generator') from exc
-                else:
-                    gens[index] = value
+                gens[index] = value
 
         rep = self.rep
         return rep.ring.to_expr(rep).subs(zip(self.gens, gens))

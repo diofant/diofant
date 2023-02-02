@@ -497,8 +497,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             find_non_syms(raw_numer)
         except PolynomialError:
             return
-        else:
-            ground, _ = construct_domain(non_syms, field=True)
+        ground, _ = construct_domain(non_syms, field=True)
 
         coeff_ring = ground.poly_ring(*poly_coeffs)
         ring = coeff_ring.poly_ring(*V)
