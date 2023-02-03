@@ -6,10 +6,10 @@ from diofant import (ZZ, Basic, E, Float, Function, GramSchmidt, I,
                      ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
                      Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
                      Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
-                     capture, casoratian, cos, diag, exp, eye, flatten,
-                     hessian, jordan_cell, matrix_multiply_elementwise, ones,
-                     oo, pi, randMatrix, rot_axis1, rot_axis2, rot_axis3,
-                     simplify, sin, sqrt, sstr, symbols, trigsimp, vandermonde,
+                     casoratian, cos, diag, exp, eye, flatten, hessian,
+                     jordan_cell, matrix_multiply_elementwise, ones, oo, pi,
+                     randMatrix, rot_axis1, rot_axis2, rot_axis3, simplify,
+                     sin, sqrt, sstr, symbols, trigsimp, vandermonde,
                      wronskian, zeros)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.matrices.matrices import MatrixError, mgamma
@@ -2127,11 +2127,11 @@ def test_normalized():
         Matrix([Rational(3, 5), Rational(4, 5)])
 
 
-def test_print_nonzero():
-    assert capture(lambda: eye(3).print_nonzero()) == \
-        '[X  ]\n[ X ]\n[  X]\n'
-    assert capture(lambda: eye(3).print_nonzero('.')) == \
-        '[.  ]\n[ . ]\n[  .]\n'
+def test_print_nonzero(capsys):
+    eye(3).print_nonzero()
+    assert capsys.readouterr().out == '[X  ]\n[ X ]\n[  X]\n'
+    eye(3).print_nonzero('.')
+    assert capsys.readouterr().out == '[.  ]\n[ . ]\n[  .]\n'
 
 
 def test_zeros_eye():

@@ -356,33 +356,6 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
         start += 1
 
 
-def capture(func):
-    r"""Return the printed output of func().
-
-    `func` should be a function without arguments that produces output with
-    print statements.
-
-    >>> def foo():
-    ...     print('hello world!')
-    ...
-    >>> 'hello' in capture(foo)  # foo, not foo()
-    True
-    >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\n-\nx\n'
-
-    """
-    import sys
-    from io import StringIO
-
-    stdout = sys.stdout
-    sys.stdout = file = StringIO()
-    try:
-        func()
-    finally:
-        sys.stdout = stdout
-    return file.getvalue()
-
-
 def sift(seq, keyfunc):
     """
     Sift the sequence, ``seq`` into a dictionary according to keyfunc.

@@ -6,7 +6,7 @@ import textwrap
 import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
-                     cantor_product, capture, default_sort_key, flatten, group,
+                     cantor_product, default_sort_key, flatten, group,
                      has_dups, numbered_symbols, ordered, postorder_traversal,
                      subsets, symbols, topological_sort, true, unflatten,
                      variations)
@@ -296,7 +296,7 @@ def test_multiset_combinations():
     assert list(multiset_combinations('abc', 1)) == [['a'], ['b'], ['c']]
 
 
-def test_multiset_permutations():
+def test_multiset_permutations(capsys):
     ans = ['abby', 'abyb', 'aybb', 'baby', 'bayb', 'bbay', 'bbya', 'byab',
            'byba', 'yabb', 'ybab', 'ybba']
     assert [''.join(i) for i in multiset_permutations('baby')] == ans
@@ -307,12 +307,11 @@ def test_multiset_permutations():
     assert len(list(multiset_permutations('a', 0))) == 1
     assert len(list(multiset_permutations('a', 3))) == 0
 
-    def test():
-        for i in range(1, 7):
-            print(i)
-            for p in multiset_permutations([0, 0, 1, 0, 1], i):
-                print(p)
-    assert capture(test) == textwrap.dedent("""\
+    for i in range(1, 7):
+        print(i)
+        for p in multiset_permutations([0, 0, 1, 0, 1], i):
+            print(p)
+    assert capsys.readouterr().out == textwrap.dedent("""\
         1
         [0]
         [1]

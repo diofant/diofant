@@ -29,7 +29,7 @@ Compatibility breaks
 * Removed ``diofant.stats`` module, see :pull:`1276`.
 * Removed ``diofant.geometry`` module and ``line_integrate`` function, see :pull:`1283`.
 * Removed ``diofant.plotting`` module, see :pull:`1284`.
-* Removed unused ``prefixes`` and ``postfixes`` functions, see :pull:`1282`.
+* Removed unused ``prefixes``, ``postfixes`` and ``capture`` functions, see :pull:`1282` and :pull:`1290`.
 
 Minor changes
 =============
