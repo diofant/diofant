@@ -200,46 +200,6 @@ def postorder_traversal(node, keys=None):
     yield node
 
 
-def variations(seq, n, repetition=False):
-    """Returns a generator of the n-sized variations of ``seq`` (size N).
-    ``repetition`` controls whether items in ``seq`` can appear more than once;
-
-    Examples
-    ========
-
-    variations(seq, n) will return N! / (N - n)! permutations without
-    repetition of seq's elements:
-
-        >>> list(variations([1, 2], 2))
-        [(1, 2), (2, 1)]
-
-    variations(seq, n, True) will return the N**n permutations obtained
-    by allowing repetition of elements:
-
-        >>> list(variations([1, 2], 2, repetition=True))
-        [(1, 1), (1, 2), (2, 1), (2, 2)]
-
-    If you ask for more items than are in the set you get the empty set unless
-    you allow repetitions:
-
-        >>> list(variations([0, 1], 3, repetition=False))
-        []
-        >>> list(variations([0, 1], 3, repetition=True))[:4]
-        [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1)]
-
-    """
-    if not repetition:
-        seq = tuple(seq)
-        if len(seq) < n:
-            return
-        yield from itertools.permutations(seq, n)
-    else:
-        if n == 0:
-            yield ()
-        else:
-            yield from itertools.product(seq, repeat=n)
-
-
 def subsets(seq, k=None, repetition=False):
     """Generates all k-subsets (combinations) from an n-element set, seq.
 

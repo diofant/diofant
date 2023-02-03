@@ -1,9 +1,10 @@
 """Tools for manipulating of large commutative expressions."""
 
+import collections
+import itertools
 import numbers
-from collections import defaultdict
 
-from ..utilities import default_sort_key, ordered, variations
+from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import common_prefix, common_suffix
 from .add import Add
 from .basic import Basic, preorder_traversal
@@ -564,7 +565,8 @@ class Term:
                     'commutative expression expected')
 
             coeff, factors = term.as_coeff_mul()
-            numer, denom = defaultdict(int), defaultdict(int)
+            numer = collections.defaultdict(int)
+            denom = collections.defaultdict(int)
 
             for factor in factors:
                 base, exp = decompose_power(factor)
@@ -1191,7 +1193,7 @@ def factor_nc(expr):
                     ncfac.append(f)
         pre_mid = g*Mul(*cfac)*l
         target = _pemexpand(expr/c)
-        for s in variations(ncfac, len(ncfac)):
+        for s in itertools.permutations(ncfac):
             ok = pre_mid*Mul(*s)*r
             if _pemexpand(ok) == target:
                 return _keep_coeff(c, ok)
