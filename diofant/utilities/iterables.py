@@ -859,7 +859,6 @@ def multiset_partitions(multiset, m=None):
     partitions
     diofant.combinatorics.partitions.Partition
     diofant.combinatorics.partitions.IntegerPartition
-    diofant.functions.combinatorial.numbers.nT
 
     """
     # This function looks at the supplied input and dispatches to
@@ -1024,8 +1023,6 @@ def partitions(n, m=None, k=None, size=False):
     if (n <= 0 or m is not None and m < 1 or
             k is not None and k < 1 or m and k and m*k < n):
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         if size:
             yield 0, {}
         else:
@@ -1172,8 +1169,6 @@ def ordered_partitions(n, m=None, sort=True):
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         yield []
         return
 

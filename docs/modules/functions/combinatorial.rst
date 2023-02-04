@@ -90,26 +90,3 @@ stirling
 --------
 
 .. autofunction:: diofant.functions.combinatorial.numbers.stirling
-
-Enumeration
-===========
-
-Three functions are available. Each of them attempts to efficiently compute
-a given combinatorial quantity for a given set or multiset which can be
-entered as an integer, sequence or multiset (dictionary with
-elements as keys and multiplicities as values). The ``k`` parameter indicates
-the number of elements to pick (or the number of partitions to make). When
-``k`` is None, the sum of the enumeration for all ``k`` (from 0 through the
-number of items represented by ``n``) is returned. A ``replacement`` parameter
-is recognized for combinations and permutations; this indicates that any item
-may appear with multiplicity as high as the number of items in the original
-set.
-
-.. autofunction:: diofant.functions.combinatorial.numbers.nC
-
-.. autofunction:: diofant.functions.combinatorial.numbers.nP
-
-.. autofunction:: diofant.functions.combinatorial.numbers.nT
-
-Note that the integer for ``n`` indicates *identical* items for ``nT`` but
-indicates ``n`` *different* items for ``nC`` and ``nP``.

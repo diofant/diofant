@@ -11,7 +11,6 @@ from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
                      subsets, symbols, topological_sort, true, unflatten)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import RGS_enum, RGS_unrank
-from diofant.functions.combinatorial.numbers import nT
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
@@ -487,8 +486,7 @@ def test_ordered_partitions():
     for i in range(1, 7):
         for j in [None] + list(range(1, i)):
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
-                    sum(1 for p in ordered_partitions(i, j, 0)) ==
-                    nT(i, j))
+                    sum(1 for p in ordered_partitions(i, j, 0)))
 
 
 def test_permute_signs():
