@@ -593,7 +593,7 @@ def test_Infinity():
     assert nan/1 == nan
     assert -oo - 1 == -oo
 
-    e = (I + cos(1)**2 + sin(1)**2 - 1)
+    e = I + cos(1)**2 + sin(1)**2 - 1
     assert oo**e == Pow(oo, e, evaluate=False)
 
     # issue sympy/sympy#10020

@@ -659,17 +659,14 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of '
                                               'integrate') from exc
-                else:
-                    return Eq(f(x, y), solvefun(x) + tsol)
-            else:
-                try:
-                    tsol = integrate(e/b, x)
-                except NotImplementedError as exc:
-                    raise NotImplementedError('Unable to find a solution'
-                                              ' due to inability of '
-                                              'integrate') from exc
-                else:
-                    return Eq(f(x, y), solvefun(y) + tsol)
+                return Eq(f(x, y), solvefun(x) + tsol)
+            try:
+                tsol = integrate(e/b, x)
+            except NotImplementedError as exc:
+                raise NotImplementedError('Unable to find a solution'
+                                          ' due to inability of '
+                                          'integrate') from exc
+            return Eq(f(x, y), solvefun(y) + tsol)
 
     if not c:
         # To deal with cases when c is 0, a simpler method is used.

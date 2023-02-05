@@ -740,7 +740,7 @@ def _check_antecedents_1(g, x, helper=False):
     for a in g.aother:
         tmp += [1 < 1 - re(a)]
 
-    cond_4 = (-re(g.nu) + (q + 1 - p)/2 > q - p)
+    cond_4 = -re(g.nu) + (q + 1 - p)/2 > q - p
 
     # Checking antecedents for 1 function
 
@@ -947,9 +947,9 @@ def _check_antecedents(g1, g2, x):
                                                                  1)*(v - u)) > 0)
     c9 = (abs(phi) - 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
                                                                  1)*(v - u)) > 0)
-    c10 = (abs(arg(sigma)) < bstar*pi)
+    c10 = abs(arg(sigma)) < bstar*pi
     c11 = Eq(abs(arg(sigma)), bstar*pi)
-    c12 = (abs(arg(omega)) < cstar*pi)
+    c12 = abs(arg(omega)) < cstar*pi
     c13 = Eq(abs(arg(omega)), cstar*pi)
 
     # The following condition is *not* implemented as stated on the wolfram
@@ -1011,7 +1011,7 @@ def _check_antecedents(g1, g2, x):
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)
         # the TypeError might be raised here, e.g. if lambda_c is NaN
         if _eval_cond(lambda_c > 0) != false:
-            c15 = (lambda_c > 0)
+            c15 = lambda_c > 0
         else:
             def lambda_s0(c1, c2):
                 return c1*(q - p)*abs(omega)**(1/(q - p))*sin(psi) \

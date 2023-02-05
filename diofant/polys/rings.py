@@ -849,8 +849,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             other = ring.domain_new(other)
         except CoercionFailedError:
             return NotImplemented
-        else:
-            return self.quo_ground(other), self.trunc_ground(other)
+        return self.quo_ground(other), self.trunc_ground(other)
 
     def __mod__(self, other):
         return divmod(self, other)[1]
@@ -870,8 +869,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             other = ring.domain_new(other)
         except CoercionFailedError:
             return NotImplemented
-        else:
-            return self.quo_ground(other)
+        return self.quo_ground(other)
 
     def div(self, fv):
         """Division algorithm for multivariate polynomials.

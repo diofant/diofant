@@ -848,8 +848,7 @@ class RootSum(Expr):
             _roots = self.poly.nroots(n=prec_to_dps(prec))
         except (DomainError, PolynomialError):
             return self
-        else:
-            return Add(*[self.fun(r) for r in _roots])
+        return Add(*[self.fun(r) for r in _roots])
 
     def _eval_derivative(self, x):
         var, expr = self.fun.args

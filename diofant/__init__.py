@@ -153,10 +153,10 @@ from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
                      SparseNDimArray, derive_by_array,
                      get_contraction_structure, get_indices, permutedims,
                      tensorcontraction, tensorproduct)
-from .utilities import (cantor_product, capture, default_sort_key, filldedent,
-                        flatten, group, has_dups, has_variety, lambdify,
+from .utilities import (cantor_product, default_sort_key, filldedent, flatten,
+                        group, has_dups, has_variety, lambdify,
                         numbered_symbols, ordered, postorder_traversal, sift,
-                        subsets, topological_sort, unflatten, variations)
+                        subsets, topological_sort, unflatten)
 
 
 __all__ = (
@@ -262,11 +262,11 @@ __all__ = (
     'jordan_cell', 'list2numpy', 'matrix2numpy', 'matrix_multiply_elementwise',
     'ones', 'randMatrix', 'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray',
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Fraction',
-    'cantor_product', 'capture', 'default_sort_key',
+    'cantor_product', 'default_sort_key',
     'filldedent', 'flatten', 'group', 'has_dups', 'has_variety', 'lambdify',
     'numbered_symbols', 'ordered', 'postorder_traversal',
     'sift', 'subsets', 'topological_sort', 'unflatten',
-    'variations', 'CosineTransform', 'FourierTransform', 'HankelTransform',
+    'CosineTransform', 'FourierTransform', 'HankelTransform',
     'Integral', 'InverseCosineTransform', 'InverseFourierTransform',
     'InverseHankelTransform', 'InverseLaplaceTransform',
     'InverseMellinTransform', 'InverseSineTransform', 'LaplaceTransform',

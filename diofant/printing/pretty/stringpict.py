@@ -241,7 +241,7 @@ class stringPict:
 
         i = 0
         svals = []
-        do_vspacers = (self.height() > 1)
+        do_vspacers = self.height() > 1
         while i < self.width():
             svals.extend([sval[i:i + ncols] for sval in self.picture])
             if do_vspacers:

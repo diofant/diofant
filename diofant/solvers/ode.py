@@ -4930,8 +4930,7 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             raise NotImplementedError('Infinitesimals for the '
                                       'first order ODE could '
                                       'not be found') from exc
-        else:
-            h = sol[0][df]  # Find infinitesimals for one solution
+        h = sol[0][df]  # Find infinitesimals for one solution
 
     y = Dummy('y')
     h = h.subs({func: y})
@@ -5018,11 +5017,10 @@ def ode_lie_group(eq, func, order, match):
             raise NotImplementedError('Unable to solve the differential '
                                       'equation ' + str(eq) +
                                       ' by the lie group method') from exc
-        else:
-            if len(sol) > 1:
-                return [dsolve(df - _[df], func) for _ in sol]
-            y = Dummy('y')
-            h = sol[0][df].subs({func: y})
+        if len(sol) > 1:
+            return [dsolve(df - _[df], func) for _ in sol]
+        y = Dummy('y')
+        h = sol[0][df].subs({func: y})
 
     if xis is not None and etas is not None:
         inf = [{xi(x, f(x)): sympify(xis), eta(x, f(x)): sympify(etas)}]
@@ -5244,8 +5242,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                 raise NotImplementedError('Infinitesimals for the '
                                           'first order ODE could not '
                                           'be found') from exc
-            else:
-                h = sol[0][df]  # Find infinitesimals for one solution
+            h = sol[0][df]  # Find infinitesimals for one solution
         y = Dummy('y')
         h = h.subs({func: y})
 
@@ -5647,7 +5644,7 @@ def lie_heuristic_function_sum(match, comp):
                 if fx:
                     if not check:
                         fx = fx.subs({k: 1})
-                        gy = (gy/k)
+                        gy = gy/k
                     else:
                         raise NotImplementedError
                     if odefac == hinv:  # Inverse ODE
@@ -6651,7 +6648,7 @@ def _linear_2eq_order2_type9(x, y, t, r, eq):
     sol1 = -C1*(b1*k1+d1)*exp(k1*log(t)) - C2*(b1*k2+d1)*exp(k2*log(t)) - \
         C3*(b1*k3+d1)*exp(k3*log(t)) - C4*(b1*k4+d1)*exp(k4*log(t))
 
-    a1_ = (a1-1)
+    a1_ = a1-1
     sol2 = C1*(k1**2+a1_*k1+c1)*exp(k1*log(t)) + C2*(k2**2+a1_*k2+c1)*exp(k2*log(t)) \
         + C3*(k3**2+a1_*k3+c1)*exp(k3*log(t)) + C4*(k4**2+a1_*k4+c1)*exp(k4*log(t))
 

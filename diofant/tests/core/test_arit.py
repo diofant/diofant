@@ -822,7 +822,7 @@ def test_Add_is_negative_positive():
     assert (n + x).is_positive is None
     assert (n + x - k).is_positive is None
 
-    z = (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2)
+    z = -3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2
     assert z.is_zero
     z = sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3)) - sqrt(10 + 6*sqrt(3))
     assert z.is_zero
@@ -1254,7 +1254,7 @@ def test_Mul_is_imaginary_real():
     assert (I*I).is_imaginary is False
     assert (I*I).is_extended_real is True
 
-    e = (p + p*I)
+    e = p + p*I
     j = Symbol('j', integer=True, zero=False)
     assert (e**j).is_extended_real is None
     assert (e**(2*j)).is_extended_real is None

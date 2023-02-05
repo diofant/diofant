@@ -146,7 +146,7 @@ def _import(module):
         namespace[diofantname] = namespace[translation]
 
 
-@doctest_depends_on(modules=('numpy'))
+@doctest_depends_on(modules='numpy')
 def lambdify(args, expr, modules=None, printer=None, use_imps=True,
              dummify=True):
     """

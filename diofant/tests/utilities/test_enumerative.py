@@ -203,3 +203,4 @@ def test_coverage():
     assert not list(m.enum_range([2, 2], 10, 2))
     assert not list(m.enum_large([2, 2], 10))
     assert m.decrement_part_large(m.top_part(), 10) is False
+    assert len(list(m.enum_range([2, 2, 1, 1], 2, 3))) == 38

@@ -476,7 +476,7 @@ def test_to_mpmath():
 
 
 def test_sympyissue_6632():
-    add = (-100000*sqrt(2500000001) + 5000000001)
+    add = -100000*sqrt(2500000001) + 5000000001
     assert add.evalf() == 9.999999998e-11
     assert (add*add).evalf() == 9.999999996e-21
 

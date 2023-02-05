@@ -24,7 +24,7 @@ def test__sqf_p():
 def test_efactor_1():
     R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
-    f = (x**2 + sqrt(2)*y)
+    f = x**2 + sqrt(2)*y
     assert efactor(f) == (1, [(f, 1)])
 
     f1 = x + y

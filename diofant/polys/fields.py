@@ -288,10 +288,8 @@ class FracElement(DomainElement, CantSympify):
                 element = ground_field.convert(element)
             except CoercionFailedError:
                 return 0, None, None
-            else:
-                return -1, element.numerator, element.denominator
-        else:
-            return 1, element, None
+            return -1, element.numerator, element.denominator
+        return 1, element, None
 
     def __add__(self, other):
         """Add rational functions ``self`` and ``other``."""

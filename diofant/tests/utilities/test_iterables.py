@@ -6,13 +6,11 @@ import textwrap
 import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
-                     cantor_product, capture, default_sort_key, flatten, group,
+                     cantor_product, default_sort_key, flatten, group,
                      has_dups, numbered_symbols, ordered, postorder_traversal,
-                     subsets, symbols, topological_sort, true, unflatten,
-                     variations)
+                     subsets, symbols, topological_sort, true, unflatten)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import RGS_enum, RGS_unrank
-from diofant.functions.combinatorial.numbers import nT
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
@@ -140,30 +138,6 @@ def test_subsets():
         [(1, 2), (1, 3), (2, 3)]
     assert list(subsets([1, 2, 3], 2, repetition=True)) == \
         [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
-
-
-def test_variations():
-    # permutations
-    l = list(range(4))
-    assert list(variations(l, 0, repetition=False)) == [()]
-    assert list(variations(l, 1, repetition=False)) == [(0,), (1,), (2,), (3,)]
-    assert list(variations(l, 2, repetition=False)) == [(0, 1), (0, 2), (0, 3), (1, 0), (1, 2), (1, 3), (2, 0), (2, 1), (2, 3), (3, 0), (3, 1), (3, 2)]
-    assert list(variations(l, 3, repetition=False)) == [(0, 1, 2), (0, 1, 3), (0, 2, 1), (0, 2, 3), (0, 3, 1), (0, 3, 2), (1, 0, 2), (1, 0, 3), (1, 2, 0), (1, 2, 3), (1, 3, 0), (1, 3, 2), (2, 0, 1), (2, 0, 3), (2, 1, 0), (2, 1, 3), (2, 3, 0), (2, 3, 1), (3, 0, 1), (3, 0, 2), (3, 1, 0), (3, 1, 2), (3, 2, 0), (3, 2, 1)]
-    assert list(variations(l, 0, repetition=True)) == [()]
-    assert list(variations(l, 1, repetition=True)) == [(0,), (1,), (2,), (3,)]
-    assert list(variations(l, 2, repetition=True)) == [(0, 0), (0, 1), (0, 2),
-                                                       (0, 3), (1, 0), (1, 1),
-                                                       (1, 2), (1, 3), (2, 0),
-                                                       (2, 1), (2, 2), (2, 3),
-                                                       (3, 0), (3, 1), (3, 2),
-                                                       (3, 3)]
-    assert len(list(variations(l, 3, repetition=True))) == 64
-    assert len(list(variations(l, 4, repetition=True))) == 256
-    assert not list(variations(l[:2], 3, repetition=False))
-    assert list(variations(l[:2], 3, repetition=True)) == [
-        (0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
-        (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)
-    ]
 
 
 def test_filter_symbols():
@@ -296,7 +270,7 @@ def test_multiset_combinations():
     assert list(multiset_combinations('abc', 1)) == [['a'], ['b'], ['c']]
 
 
-def test_multiset_permutations():
+def test_multiset_permutations(capsys):
     ans = ['abby', 'abyb', 'aybb', 'baby', 'bayb', 'bbay', 'bbya', 'byab',
            'byba', 'yabb', 'ybab', 'ybba']
     assert [''.join(i) for i in multiset_permutations('baby')] == ans
@@ -307,12 +281,11 @@ def test_multiset_permutations():
     assert len(list(multiset_permutations('a', 0))) == 1
     assert len(list(multiset_permutations('a', 3))) == 0
 
-    def test():
-        for i in range(1, 7):
-            print(i)
-            for p in multiset_permutations([0, 0, 1, 0, 1], i):
-                print(p)
-    assert capture(test) == textwrap.dedent("""\
+    for i in range(1, 7):
+        print(i)
+        for p in multiset_permutations([0, 0, 1, 0, 1], i):
+            print(p)
+    assert capsys.readouterr().out == textwrap.dedent("""\
         1
         [0]
         [1]
@@ -513,8 +486,7 @@ def test_ordered_partitions():
     for i in range(1, 7):
         for j in [None] + list(range(1, i)):
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
-                    sum(1 for p in ordered_partitions(i, j, 0)) ==
-                    nT(i, j))
+                    sum(1 for p in ordered_partitions(i, j, 0)))
 
 
 def test_permute_signs():

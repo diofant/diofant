@@ -1,10 +1,12 @@
+import itertools
+
 import pytest
 
 from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
-                     root, simplify, sin, sinh, sqrt, symbols, tan, variations)
+                     root, simplify, sin, sinh, sqrt, symbols, tan)
 from diofant.abc import A, a, b, c, d, k, l, m, n
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -2139,7 +2141,7 @@ def test_sympyissue_5308():
     assert (constant_renumber(C1*x + C2*y, 'C', 1, 2) ==
             constant_renumber(C1*y + C2*x, 'C', 1, 2) ==
             C1*x + C2*y)
-    for a, b, c in variations([C1, C2, C3], 3):
+    for a, b, c in itertools.permutations([C1, C2, C3]):
         assert constant_renumber(a*(b + x)*(c + y),
                                  'C', 1, 3) == C1*(C2 + x)*(C3 + y)
 

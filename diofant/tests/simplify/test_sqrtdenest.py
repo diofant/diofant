@@ -294,7 +294,7 @@ def test_unrad1():
     # unrad some
     e = root(x + 1, 3) + root(x, 3)
     assert unrad(e) == (2*x + 1, [])
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     assert check(unrad(eq),
                  (15625*x**4 + 173000*x**3 + 355600*x**2 - 817920*x + 331776, []))
     assert check(unrad(root(x, 4) + root(x, 4)**3 - 1),
@@ -317,7 +317,7 @@ def test_unrad1():
 
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     assert check(unrad(eq),
                  ((5*x - 4)*(3125*x**3 + 37100*x**2 + 100800*x - 82944), []))
     # duplicate radical handling

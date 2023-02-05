@@ -200,46 +200,6 @@ def postorder_traversal(node, keys=None):
     yield node
 
 
-def variations(seq, n, repetition=False):
-    """Returns a generator of the n-sized variations of ``seq`` (size N).
-    ``repetition`` controls whether items in ``seq`` can appear more than once;
-
-    Examples
-    ========
-
-    variations(seq, n) will return N! / (N - n)! permutations without
-    repetition of seq's elements:
-
-        >>> list(variations([1, 2], 2))
-        [(1, 2), (2, 1)]
-
-    variations(seq, n, True) will return the N**n permutations obtained
-    by allowing repetition of elements:
-
-        >>> list(variations([1, 2], 2, repetition=True))
-        [(1, 1), (1, 2), (2, 1), (2, 2)]
-
-    If you ask for more items than are in the set you get the empty set unless
-    you allow repetitions:
-
-        >>> list(variations([0, 1], 3, repetition=False))
-        []
-        >>> list(variations([0, 1], 3, repetition=True))[:4]
-        [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1)]
-
-    """
-    if not repetition:
-        seq = tuple(seq)
-        if len(seq) < n:
-            return
-        yield from itertools.permutations(seq, n)
-    else:
-        if n == 0:
-            yield ()
-        else:
-            yield from itertools.product(seq, repeat=n)
-
-
 def subsets(seq, k=None, repetition=False):
     """Generates all k-subsets (combinations) from an n-element set, seq.
 
@@ -354,33 +314,6 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
         if s not in exclude:
             yield s
         start += 1
-
-
-def capture(func):
-    r"""Return the printed output of func().
-
-    `func` should be a function without arguments that produces output with
-    print statements.
-
-    >>> def foo():
-    ...     print('hello world!')
-    ...
-    >>> 'hello' in capture(foo)  # foo, not foo()
-    True
-    >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\n-\nx\n'
-
-    """
-    import sys
-    from io import StringIO
-
-    stdout = sys.stdout
-    sys.stdout = file = StringIO()
-    try:
-        func()
-    finally:
-        sys.stdout = stdout
-    return file.getvalue()
 
 
 def sift(seq, keyfunc):
@@ -926,7 +859,6 @@ def multiset_partitions(multiset, m=None):
     partitions
     diofant.combinatorics.partitions.Partition
     diofant.combinatorics.partitions.IntegerPartition
-    diofant.functions.combinatorial.numbers.nT
 
     """
     # This function looks at the supplied input and dispatches to
@@ -1091,8 +1023,6 @@ def partitions(n, m=None, k=None, size=False):
     if (n <= 0 or m is not None and m < 1 or
             k is not None and k < 1 or m and k and m*k < n):
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         if size:
             yield 0, {}
         else:
@@ -1239,8 +1169,6 @@ def ordered_partitions(n, m=None, sort=True):
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         yield []
         return
 
@@ -1503,8 +1431,7 @@ def cantor_product(*args):
         argslist = [[next(a)] for a in args]
     except StopIteration:
         return
-    else:
-        yield tuple(a[0] for a in argslist)
+    yield tuple(a[0] for a in argslist)
 
     nargs = len(args)
     exhausted = [False]*nargs

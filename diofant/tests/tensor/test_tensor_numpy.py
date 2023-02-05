@@ -198,7 +198,7 @@ def test_valued_tensor_expressions():
     expr3 = expr2 + 3*x3*AB(i0, i1)
     expr4 = expr3 / 2
     assert expr4 * 2 == expr3
-    expr5 = (expr4 * BA(-i1, -i0))
+    expr5 = expr4 * BA(-i1, -i0)
 
     assert expr5.data.expand() == 28*E*x1 + 12*px*x1 + 20*py*x1 + 28*pz*x1 + 136*x2 + 3*x3
 

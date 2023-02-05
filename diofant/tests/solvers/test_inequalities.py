@@ -379,7 +379,7 @@ def test_slow_general_univariate():
 
 def test_sympyissue_8545():
     eq = 1 - x - abs(1 - x)
-    ans = (Integer(1) < x)
+    ans = Integer(1) < x
     assert reduce_piecewise_inequality(eq, '<', x) == ans
     eq = 1 - x - sqrt((1 - x)**2)
     assert reduce_inequalities(eq < 0) == ans
