@@ -122,3 +122,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24461`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck -- when multiplying two Polys
 * :sympyissue:`24543`: Rational calc value error
 * :sympyissue:`6326`: PolynomialRing should not derive from CharacteristicZero
+* :sympyissue:`24684`: Unable to evaluate erfcinv

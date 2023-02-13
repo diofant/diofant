@@ -307,6 +307,9 @@ def test_erfcinv():
 
     pytest.raises(ArgumentIndexError, lambda: erfcinv(x).fdiff(2))
 
+    # issue sympy/sympy#24684
+    assert erfcinv(0.4) == 0.59511608144999484
+
 
 def test_erf2inv():
     assert erf2inv(0, 0) == 0

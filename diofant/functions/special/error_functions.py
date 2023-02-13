@@ -3,7 +3,7 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
-                     cacheit, expand_mul, oo, pi, zoo)
+                     cacheit, evaluate, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
@@ -823,6 +823,11 @@ class erfcinv(Function):
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
+
+    def _eval_evalf(self, prec):
+        with evaluate(False):
+            e = self.rewrite(erfinv)
+        return e.evalf(prec)
 
 
 class erf2inv(Function):
