@@ -10,7 +10,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
                   warn_not_installed=False, warn_old_version=True,
                   module_version_attr='__version__',
                   module_version_attr_call_args=None,
-                  import__kwargs={}, catch=()):
+                  import__kwargs={}):
     """
     Import and return a module if it is installed.
 
@@ -46,9 +46,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
     example, to import a submodule A.B, you must pass a nonempty fromlist option
     to __import__.
 
-    This catches ImportError to determine if the module is not installed.  To
-    catch additional errors, pass them as a tuple to the catch keyword
-    argument.
+    This catches ImportError to determine if the module is not installed.
 
     Examples
     ========
@@ -73,14 +71,8 @@ def import_module(module, min_module_version=None, min_python_version=None,
     To import a submodule, you must pass a nonempty fromlist to
     __import__().  The values do not matter.
 
-    >>> p3 = import_module('mpl_toolkits.mplot3d',
+    >>> p3 = import_module('scipy.optimize',
     ...                    import__kwargs={'fromlist': ['something']})
-
-    matplotlib.pyplot can raise RuntimeError when the display cannot be opened
-
-    >>> matplotlib = import_module('matplotlib',
-    ...                            import__kwargs={'fromlist': ['pyplot']},
-    ...                            catch=(RuntimeError,))
 
     See Also
     ========
