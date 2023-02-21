@@ -170,6 +170,9 @@ def test_basic6():
     assert limit(log(1/x) + 1/sin(x), x, 0) == oo
     assert limit(log(1/x) + 1/x, x, 0) == oo
 
+    # issue diofant/diofant#1262
+    assert limit(I*exp(I*x)*log(exp(I*x)), x, -pi) == -pi
+
 
 def test_sympyissue_3885():
     assert limit(x*y + x*z, z, 2) == x*y + 2*x
