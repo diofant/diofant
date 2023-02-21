@@ -377,6 +377,8 @@ class log(Function):
             log_series += Order(t**n, x)
             # branch handling
             if c.is_negative:
+                if t.is_Order:
+                    return self._eval_nseries(x, n + 1, logx)
                 l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
                 if l.is_finite:
                     log_series += 2*I*pi*l
