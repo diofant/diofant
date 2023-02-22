@@ -695,6 +695,10 @@ class Pow(Expr):
             nc = [Mul(*nc)]
 
         # sift the commutative bases
+        sifted = sift(cargs, lambda x: x.is_extended_real)
+        maybe_real = sifted[True] + sifted[None]
+        other = sifted[False]
+
         def pred(x):
             if x is I:
                 return I
@@ -703,9 +707,10 @@ class Pow(Expr):
                 return True
             if polar is None:
                 return fuzzy_or([x.is_nonnegative, (1/x).is_nonnegative])
-        sifted = sift(cargs, pred)
+
+        sifted = sift(maybe_real, pred)
         nonneg = sifted[True]
-        other = sifted[None]
+        other += sifted[None]
         neg = sifted[False]
         imag = sifted[I]
         if imag:
@@ -1190,9 +1195,13 @@ class Pow(Expr):
             pow_series += Order(t**n, x)
             # branch handling
             if c.is_negative:
+                if t.is_Order:
+                    return self._eval_nseries(x, n + 1, logx)
                 l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
-                assert l.is_finite
-                factor *= exp(2*pi*I*self.exp*l)
+                if l.is_finite:
+                    factor *= exp(2*pi*I*self.exp*l)
+                else:
+                    raise NotImplementedError
         pow_series = expand_mul(factor*pow_series)
         return powsimp(pow_series, deep=True, combine='exp')
 

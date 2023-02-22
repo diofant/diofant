@@ -10,11 +10,11 @@ complex part, because it needs to calculate a limit to return the result.
 import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
-                     Limit, Max, Min, Mul, Pow, Rational, Symbol, acosh, acot,
-                     airyai, airybi, atan, binomial, cbrt, cos, cosh, coth,
-                     digamma, erf, exp, factorial, fibonacci, gamma, li, limit,
-                     log, loggamma, oo, pi, root, sign, sin, sinh, sqrt, tan,
-                     tanh, zeta)
+                     Limit, Max, Min, Mul, Pow, Rational, Symbol, acos, acosh,
+                     acot, airyai, airybi, atan, binomial, cbrt, cos, cosh,
+                     coth, digamma, erf, exp, factorial, fibonacci, gamma, li,
+                     limit, log, loggamma, oo, pi, root, sign, sin, sinh, sqrt,
+                     tan, tanh, zeta)
 from diofant.abc import a, n, y
 from diofant.calculus.gruntz import compare, leadterm, mrv, rewrite, signinf
 
@@ -391,6 +391,9 @@ def test_branch_cuts():
     # Gruntz: p23
     assert limit(atan(2*I - x), x, 0, -1) == I*log(3)/2 - pi/2
     assert limit(atan(2*I - x), x, 0, +1) == I*log(3)/2 + pi/2
+
+    assert limit(acos(2 + I*x), x, 0, -1) == I*log(-sqrt(3) + 2)
+    assert limit(acos(2 + I*x), x, 0, +1) == I*log(+sqrt(3) + 2)
 
 
 def test_aseries_trig():
