@@ -951,6 +951,9 @@ def test_sympyissue_21785():
 
     assert e.doit() == exp(I*pi*floor(arg(-1/(x**2 - 1))/(2*pi)))*I
 
+    assert e.subs({x: 1 + I}).doit() == +I
+    assert e.subs({x: 1 - I}).doit() == -I
+
 
 def test_sympyissue_22220():
     e1 = sqrt(30)*atan(sqrt(30)*tan(x/2)/6)/30
