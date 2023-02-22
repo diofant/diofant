@@ -49,11 +49,13 @@ jobs:
       if: matrix.coverage == false
       env:
         PYTEST_ADDOPTS: --doctest-modules --color yes
+        PYTHONPATH: .
       run: pytest
     - name: Coverage tests
       if: matrix.coverage
       env:
         PYTEST_ADDOPTS: --color yes --cov diofant --cov-append -m "not slow and not xfail and not regression" --ignore docs
+        PYTHONPATH: .
       run: |
         pytest
         pip uninstall -y gmpy2 numpy IPython
