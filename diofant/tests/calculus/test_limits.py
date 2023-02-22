@@ -6,11 +6,12 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
-                     Symbol, acos, acosh, acoth, asin, atan, besselk, binomial,
-                     cbrt, ceiling, cos, cosh, cot, diff, digamma, erf, erfc,
-                     erfi, exp, factorial, false, floor, gamma, integrate,
-                     limit, log, nan, oo, pi, polygamma, root, sign, simplify,
-                     sin, sinh, sqrt, subfactorial, symbols, tan, true)
+                     Symbol, acos, acosh, acoth, arg, asin, atan, besselk,
+                     binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
+                     erf, erfc, erfi, exp, factorial, false, floor, gamma,
+                     integrate, limit, log, nan, oo, pi, polygamma, root, sign,
+                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
+                     true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -946,7 +947,9 @@ def test_sympyissue_21756():
 
 
 def test_sympyissue_21785():
-    assert sqrt((-a**2 + x**2)/(1 - x**2)).limit(a, 1, 1) == I
+    e = Limit(sqrt((-a**2 + x**2)/(1 - x**2)), a, 1, 1)
+
+    assert e.doit() == exp(I*pi*floor(arg(-1/(x**2 - 1))/(2*pi)))*I
 
 
 def test_sympyissue_22220():
