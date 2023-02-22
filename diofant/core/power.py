@@ -1198,8 +1198,10 @@ class Pow(Expr):
                 if t.is_Order:
                     return self._eval_nseries(x, n + 1, logx)
                 l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
-                assert l.is_finite
-                factor *= exp(2*pi*I*self.exp*l)
+                if l.is_finite:
+                    factor *= exp(2*pi*I*self.exp*l)
+                else:
+                    raise NotImplementedError
         pow_series = expand_mul(factor*pow_series)
         return powsimp(pow_series, deep=True, combine='exp')
 
