@@ -572,6 +572,9 @@ class arg(Function):
         x, y = re(self.args[0]), im(self.args[0])
         return atan2(y, x)
 
+    def _eval_rewrite_as_sign(self, arg):
+        return -I*log(sign(arg))
+
 
 class conjugate(Function):
     """Returns the complex conjugate of an argument.

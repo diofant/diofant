@@ -545,6 +545,8 @@ def test_arg():
     e = (p + 1) + I*(p**2 - 1)
     assert arg(e).args[0] == e
 
+    assert arg(x).rewrite(sign) == -I*log(sign(x))
+
 
 def test_arg_rewrite():
     assert arg(1 + I) == atan2(1, 1)
