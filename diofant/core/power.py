@@ -700,8 +700,6 @@ class Pow(Expr):
         other = sifted[False]
 
         def pred(x):
-            if x is I:
-                return I
             polar = x.is_polar
             if polar:
                 return True
@@ -712,29 +710,6 @@ class Pow(Expr):
         nonneg = sifted[True]
         other += sifted[None]
         neg = sifted[False]
-        imag = sifted[I]
-        if imag:
-            i = len(imag) % 4
-            if i == 0:
-                pass
-            elif i == 1:
-                other.append(I)
-            elif i == 2:
-                if neg:
-                    nonn = -neg.pop()
-                    if nonn is not Integer(1):
-                        nonneg.append(nonn)
-                else:
-                    neg.append(Integer(-1))
-            else:
-                if neg:
-                    nonn = -neg.pop()
-                    if nonn is not Integer(1):
-                        nonneg.append(nonn)
-                else:
-                    neg.append(Integer(-1))
-                other.append(I)
-            del imag
 
         # bring out the bases that can be separated from the base
 
