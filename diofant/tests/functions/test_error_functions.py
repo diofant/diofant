@@ -94,7 +94,7 @@ def test_erf_series():
 
 
 def test_erf_evalf():
-    assert abs(erf(Float(2.0)) - 0.995322265) < 1E-8  # XXX
+    assert abs(erf(2.0) - 0.995322265) < 1E-10
 
 
 def test__erfs():
@@ -170,7 +170,7 @@ def test_erfc_series():
 
 
 def test_erfc_evalf():
-    assert abs(erfc(Float(2.0)) - 0.00467773) < 1E-8  # XXX
+    assert abs(erfc(2.0) - 0.004677735) < 1E-10
 
 
 def test_erfi():
@@ -232,7 +232,7 @@ def test_erfi_series():
 
 
 def test_erfi_evalf():
-    assert abs(erfi(Float(2.0)) - 18.5648024145756) < 1E-13  # XXX
+    assert abs(erfi(2.0) - 18.5648024145756) < 1E-13
 
 
 def test_erf2():
@@ -293,7 +293,7 @@ def test_erfinv():
 
 
 def test_erfinv_evalf():
-    assert abs(erfinv(Float(0.2)) - 0.179143454621292) < 1E-13
+    assert abs(erfinv(0.2) - 0.179143454621292) < 1E-13
 
 
 def test_erfcinv():
@@ -391,9 +391,8 @@ def test_ei():
 
     pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
 
-    assert (Ei(exp_polar(I*pi)).evalf() ==
-            Float('-0.21938393439552029', dps=15) +
-            I*Float('3.1415926535897931', dps=15))
+    assert (Ei(exp_polar(I*pi)).evalf() == -0.21938393439552029 +
+            I*3.1415926535897931)
 
 
 def test_expint():
