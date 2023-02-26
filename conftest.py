@@ -1,4 +1,4 @@
-"""Pytest configuration and fixtures for the Diofant."""
+"""Pytest configuration and fixtures for the Diofant test suite."""
 
 import random
 import sys
@@ -9,11 +9,9 @@ import diofant
 
 
 def pytest_report_header(config):
-    return f"""
-Diofant version: {diofant.__version__}
+    return f"""\nDiofant version: {diofant.__version__}
 cache: {diofant.core.cache.USE_CACHE}
-ground types: {diofant.core.compatibility.GROUND_TYPES}
-"""
+ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
 
 
 def pytest_configure(config):
