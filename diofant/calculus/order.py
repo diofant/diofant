@@ -2,7 +2,6 @@ from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, Tuple, cacheit,
                     expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..utilities import default_sort_key
-from ..utilities.iterables import uniq
 
 
 class Order(Expr):
@@ -63,7 +62,7 @@ class Order(Expr):
     >>> O(x**2) in O(x)
     True
 
-    Limit points other then zero and multivariate Big O are also supported:
+    Limit points other then zero are also supported:
 
     >>> O(x) == O(x, (x, 0))
     True
@@ -71,13 +70,6 @@ class Order(Expr):
     O(x**2, (x, oo))
     >>> O(cos(x), (x, pi/2))
     O(x - pi/2, (x, pi/2))
-
-    >>> O(1 + x*y)
-    O(1, x, y)
-    >>> O(1 + x*y, (x, 0), (y, 0))
-    O(1, x, y)
-    >>> O(1 + x*y, (x, oo), (y, oo))
-    O(x*y, (x, oo), (y, oo))
 
     References
     ==========
@@ -111,11 +103,11 @@ class Order(Expr):
                 variables = list(map(sympify, args))
                 point = [Integer(0)]*len(variables)
 
+        if len(variables) > 1:
+            raise TypeError
+
         if not all(isinstance(v, (Dummy, Symbol)) for v in variables):
             raise TypeError(f'Variables are not symbols, got {variables}')
-
-        if len(list(uniq(variables))) != len(variables):
-            raise ValueError(f'Variables are supposed to be unique symbols, got {variables}')
 
         if expr.is_Order:
             expr_vp = dict(expr.args[1:])
@@ -163,14 +155,6 @@ class Order(Expr):
             else:
                 args = tuple(variables)
 
-            if len(variables) > 1:
-                # XXX: better way?  We need this expand() to
-                # workaround e.g: expr = x*(x + y).
-                # (x*(x + y)).as_leading_term(x, y) currently returns
-                # x*y (wrong order term!).  That's why we want to deal with
-                # expand()'ed expr (handled in "if expr.is_Add" branch below).
-                expr = expr.expand()
-
             if expr.is_Add:
                 lst = expr.extract_leading_order(args)
                 expr = Add(*[f.expr for (e, f) in lst])
@@ -182,41 +166,37 @@ class Order(Expr):
                 expr = expand_power_base(expr)
                 expr = expand_log(expr)
 
-                if len(args) == 1:
-                    # The definition of O(f(x)) symbol explicitly stated that
-                    # the argument of f(x) is irrelevant.  That's why we can
-                    # combine some power exponents (only "on top" of the
-                    # expression tree for f(x)), e.g.:
-                    # x**p * (-x)**q -> x**(p+q) for real p, q.
-                    x = args[0]
-                    margs = list(Mul.make_args(
-                        expr.as_independent(x, as_Add=False)[1]))
+                # The definition of O(f(x)) symbol explicitly stated that
+                # the argument of f(x) is irrelevant.  That's why we can
+                # combine some power exponents (only "on top" of the
+                # expression tree for f(x)), e.g.:
+                # x**p * (-x)**q -> x**(p+q) for real p, q.
+                x = args[0]
+                margs = list(Mul.make_args(
+                    expr.as_independent(x, as_Add=False)[1]))
 
-                    for i, t in enumerate(margs):
-                        if t.is_Pow:
-                            b, q = t.base, t.exp
-                            if b in (x, -x) and q.is_extended_real and not q.has(x):
-                                margs[i] = x**q
-                            elif b.is_Pow and not b.exp.has(x):
+                for i, t in enumerate(margs):
+                    if t.is_Pow:
+                        b, q = t.base, t.exp
+                        if b in (x, -x) and q.is_extended_real and not q.has(x):
+                            margs[i] = x**q
+                        elif b.is_Pow and not b.exp.has(x):
+                            b, r = b.base, b.exp
+                            if b in (x, -x) and r.is_extended_real:
+                                margs[i] = x**(r*q)
+                        elif b.is_Mul and b.args[0] == -1:
+                            b = -b
+                            if b.is_Pow and not b.exp.has(x):
                                 b, r = b.base, b.exp
                                 if b in (x, -x) and r.is_extended_real:
                                     margs[i] = x**(r*q)
-                            elif b.is_Mul and b.args[0] == -1:
-                                b = -b
-                                if b.is_Pow and not b.exp.has(x):
-                                    b, r = b.base, b.exp
-                                    if b in (x, -x) and r.is_extended_real:
-                                        margs[i] = x**(r*q)
 
-                    expr = Mul(*margs)
+                expr = Mul(*margs)
 
             expr = expr.subs(rs)
 
         if expr == 0:
             return expr
-
-        if expr.is_Order:
-            expr = expr.expr
 
         if not expr.has(*variables):
             expr = Integer(1)
@@ -321,9 +301,6 @@ class Order(Expr):
                 return all(x in self.args[1:] for x in expr.args[1:])
             if expr.expr.is_Add:
                 return all(self.contains(x) for x in expr.expr.args)
-            if self.expr.is_Add and point == 0:
-                return any(self.func(x, *self.args[1:]).contains(expr)
-                           for x in self.expr.args)
             if self.variables and expr.variables:
                 common_symbols = tuple(s for s in self.variables if s in expr.variables)
             elif self.variables:
@@ -332,7 +309,6 @@ class Order(Expr):
                 common_symbols = expr.variables
             if not common_symbols:
                 return
-            r = None
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')
             for s in common_symbols:
@@ -341,12 +317,7 @@ class Order(Expr):
                     l = l != 0
                 else:
                     l = None
-                if r is None:
-                    r = l
-                else:
-                    if r != l:
-                        return
-            return r
+            return l
         obj = self.func(expr, *self.args[1:])
         return self.contains(obj)
 

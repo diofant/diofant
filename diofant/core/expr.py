@@ -2702,7 +2702,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return t.as_leading_term(x)
 
     @cacheit
-    def as_leading_term(self, *symbols):
+    def as_leading_term(self, x):
         """Returns the leading (nonzero) term of the series expansion of self.
 
         The _eval_as_leading_term routines are used to do this, and they must
@@ -2718,14 +2718,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..simplify import powsimp
-        if len(symbols) > 1:
-            c = self
-            for x in symbols:
-                c = c.as_leading_term(x)
-            return c
-        if not symbols:
-            return self
-        x = sympify(symbols[0])
+        x = sympify(x)
         if not x.is_Symbol:
             raise ValueError(f'expecting a Symbol but got {x}')
         if x not in self.free_symbols:

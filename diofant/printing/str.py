@@ -273,9 +273,7 @@ class StrPrinter(Printer):
 
     def _print_Order(self, expr):
         if all(p == 0 for p in expr.point) or not expr.variables:
-            if len(expr.variables) <= 1:
-                return f'O({self._print(expr.expr)})'
-            return f"O({self.stringify((expr.expr,) + expr.variables, ', ', 0)})"
+            return f'O({self._print(expr.expr)})'
         return f"O({self.stringify(expr.args, ', ', 0)})"
 
     def _print_Cycle(self, expr):

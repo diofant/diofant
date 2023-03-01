@@ -2,8 +2,7 @@ import pytest
 
 from diofant import (Add, Derivative, Function, I, Integer, Integral, O,
                      Rational, Symbol, conjugate, cos, digamma, exp, expand,
-                     factorial, ln, log, nan, oo, pi, sin, sqrt, symbols,
-                     transpose)
+                     factorial, ln, log, nan, oo, pi, sin, sqrt, transpose)
 from diofant.abc import w, x, y, z
 
 
@@ -22,8 +21,6 @@ def test_free_symbols():
     assert O(1).free_symbols == set()
     assert O(x).free_symbols == {x}
     assert O(1, x).free_symbols == {x}
-    assert O(x*y).free_symbols == {x, y}
-    assert O(x, x, y).free_symbols == {x, y}
 
 
 def test_simple_1():
@@ -32,7 +29,6 @@ def test_simple_1():
     assert O(x)*3 == O(x)
     assert -28*O(x) == O(x)
     assert O(O(x)) == O(x)
-    assert O(O(x), y) == O(O(x), x, y)
     assert O(-23) == O(1)
     assert O(exp(x)) == O(1, x)
     assert O(exp(1/x)).expr == exp(1/x)
@@ -41,7 +37,6 @@ def test_simple_1():
     assert O(x**(5*o/3)).expr == x**(5*o/3)
     assert O(x**2 + x + y, x) == O(1, x)
     assert O(x**2 + x + y, y) == O(1, y)
-    pytest.raises(ValueError, lambda: O(exp(x), x, x))
     pytest.raises(TypeError, lambda: O(x, 2 - x))
     pytest.raises(ValueError, lambda: O(x, (x, x**2)))
 
@@ -131,13 +126,6 @@ def test_contains():
     assert not O(exp(1/x)).contains(O(exp(2/x)))
 
     assert O(x).contains(O(y)) is None
-    assert O(x).contains(O(y*x))
-    assert O(y*x).contains(O(x))
-    assert O(y).contains(O(x*y))
-    assert O(x).contains(O(y**2*x))
-
-    assert O(x*y**2).contains(O(x**2*y)) is None
-    assert O(x**2*y).contains(O(x*y**2)) is None
 
     assert O(sin(1/x**2)).contains(O(cos(1/x**2))) is None
     assert O(cos(1/x**2)).contains(O(sin(1/x**2))) is None
@@ -149,6 +137,7 @@ def test_contains():
     assert O(1, x) not in O(1)
     assert O(1) in O(1, x)
     pytest.raises(TypeError, lambda: O(x*y**2) in O(x**2*y))
+    pytest.raises(TypeError, lambda: O(x**y, x) in O(x**z, x))
 
 
 def test_add_1():
@@ -164,50 +153,6 @@ def test_add_1():
 def test_ln_args():
     assert O(log(x)) + O(log(2*x)) == O(log(x))
     assert O(log(x)) + O(log(x**3)) == O(log(x))
-    assert O(log(x*y)) + O(log(x) + log(y)) == O(log(x*y))
-
-
-def test_multivar_0():
-    assert O(x*y).expr == x*y
-    assert O(x*y**2).expr == x*y**2
-    assert O(x*y, x).expr == x
-    assert O(x*y**2, y).expr == y**2
-    assert O(x*y*z).expr == x*y*z
-    assert O(x/y).expr == x/y
-    assert O(x*exp(1/y)).expr == x*exp(1/y)
-    assert O(exp(x)*exp(1/y)).expr == exp(1/y)
-
-
-def test_multivar_0a():
-    assert O(exp(1/x)*exp(1/y)).expr == exp(1/x + 1/y)
-
-
-def test_multivar_1():
-    assert O(x + y).expr == x + y
-    assert O(x + 2*y).expr == x + y
-    assert (O(x + y) + x).expr == (x + y)
-    assert (O(x + y) + x**2) == O(x + y)
-    assert (O(x + y) + 1/x) == 1/x + O(x + y)
-    assert O(x**2 + y*x).expr == x**2 + y*x
-
-
-def test_multivar_2():
-    assert O(x**2*y + y**2*x, x, y).expr == x**2*y + y**2*x
-
-
-def test_multivar_mul_1():
-    assert O(x + y)*x == O(x**2 + y*x, x, y)
-
-
-def test_multivar_3():
-    assert (O(x) + O(y)).args in [
-        (O(x), O(y)),
-        (O(y), O(x))]
-    assert O(x) + O(y) + O(x + y) == O(x + y)
-    assert (O(x**2*y) + O(y**2*x)).args in [
-        (O(x*y**2), O(y*x**2)),
-        (O(y*x**2), O(x*y**2))]
-    assert (O(x**2*y) + O(y*x)) == O(x*y)
 
 
 def test_sympyissue_3468():
@@ -246,7 +191,6 @@ def test_order_leadterm():
 
 def test_order_symbols():
     e = x*y*sin(x)*Integral(x, (x, 1, 2))
-    assert O(e) == O(x**2*y)
     assert O(e, x) == O(x**2)
 
 
@@ -302,16 +246,6 @@ def test_eval():
     assert (O(1)**x).is_Pow
 
 
-def test_sympyissue_4279():
-    a, b = symbols('a b')
-    assert O(a, a, b) + O(1, a, b) == O(1, a, b)
-    assert O(b, a, b) + O(1, a, b) == O(1, a, b)
-    assert O(a + b) + O(1, a, b) == O(1, a, b)
-    assert O(1, a, b) + O(a, a, b) == O(1, a, b)
-    assert O(1, a, b) + O(b, a, b) == O(1, a, b)
-    assert O(1, a, b) + O(a + b) == O(1, a, b)
-
-
 def test_sympyissue_4855():
     assert 1/O(1) != O(1)
     assert 1/O(x) != O(1/x)
@@ -359,8 +293,6 @@ def test_order_at_infinity():
     assert O(3*x, (x, oo)) == O(x, (x, oo))
     assert O(x, (x, oo))*3 == O(x, (x, oo))
     assert -28*O(x, (x, oo)) == O(x, (x, oo))
-    assert O(O(x, (x, oo)), (x, oo)) == O(x, (x, oo))
-    assert O(O(x, (x, oo)), (y, oo)) == O(x, (x, oo), (y, oo))
     assert O(3, (x, oo)) == O(1, (x, oo))
     assert O(x**2 + x + y, (x, oo)) == O(x**2, (x, oo))
     assert O(x**2 + x + y, (y, oo)) == O(y, (y, oo))
@@ -431,8 +363,6 @@ def test_order_subs_limits():
 
     assert O(x**2).subs({x: y - 1}) == O((y - 1)**2, (y, 1))
     assert O(10*x**2, (x, 2)).subs({x: y - 1}) == O(1, (y, 3))
-
-    assert O(x).subs({x: y*z}) == O(y*z, y, z)
 
     assert O(1/x, (x, oo)).subs({x: +I*x}) == O(1/x, (x, -I*oo))
     assert O(1/x, (x, oo)).subs({x: -I*x}) == O(1/x, (x, +I*oo))

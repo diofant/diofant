@@ -1302,8 +1302,6 @@ def test_sec():
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
 
-    assert sec(x).as_leading_term() == sec(x)
-
     assert sec(0).is_finite
     assert sec(x).is_finite is None
     assert sec(pi/2).is_finite is False
@@ -1375,8 +1373,6 @@ def test_csc():
 
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False
-
-    assert csc(x).as_leading_term() == csc(x)
 
     assert csc(0).is_finite is False
     assert csc(x).is_finite is None

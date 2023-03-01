@@ -935,21 +935,14 @@ class PrettyPrinter(Printer):
 
     def _print_Order(self, expr):
         pform = self._print(expr.expr)
-        if ((expr.point and any(p != 0 for p in expr.point)) or
-                len(expr.variables) > 1):
+        if expr.point and any(p != 0 for p in expr.point):
             pform = prettyForm(*pform.right('; '))
-            if len(expr.variables) > 1:
-                pform = prettyForm(*pform.right(self._print(expr.variables)))
-            else:
-                pform = prettyForm(*pform.right(self._print(expr.variables[0])))
+            pform = prettyForm(*pform.right(self._print(expr.variables[0])))
             if self._use_unicode:
                 pform = prettyForm(*pform.right(' \N{RIGHTWARDS ARROW} '))
             else:
                 pform = prettyForm(*pform.right(' -> '))
-            if len(expr.point) > 1:
-                pform = prettyForm(*pform.right(self._print(expr.point)))
-            else:
-                pform = prettyForm(*pform.right(self._print(expr.point[0])))
+            pform = prettyForm(*pform.right(self._print(expr.point[0])))
         pform = prettyForm(*pform.parens())
         pform = prettyForm(*pform.left('O'))
         return pform
