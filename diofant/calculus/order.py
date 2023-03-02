@@ -1,7 +1,5 @@
-from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, Tuple, cacheit,
+from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, cacheit,
                     expand_log, expand_power_base, nan, oo, sympify)
-from ..core.compatibility import is_sequence
-from ..utilities import default_sort_key
 
 
 class Order(Expr):
@@ -18,10 +16,11 @@ class Order(Expr):
 
     expr : Expr
         an expression
-    args : sequence of Symbol's or pairs (Symbol, Expr), optional
-        If only symbols are provided, i.e. no limit point are
-        passed, then the limit point is assumed to be zero.  If no
-        symbols are passed then all symbols in the expression are used.
+    var : Symbol, optional
+        a variable of the expr.  If not privided, the expression is assumed
+        to be univariate and it's variable is used.
+    point : Expr, optional
+        a limit point, default is zero.
 
     Examples
     ========
@@ -29,8 +28,7 @@ class Order(Expr):
     The order of a function can be intuitively thought of representing all
     terms of powers greater than the one specified.  For example, `O(x^3)`
     corresponds to any terms proportional to `x^3, x^4,\ldots` and any
-    higher power.  For a polynomial, this leaves terms proportional
-    to `x^2`, `x` and constants.
+    higher power:
 
     >>> 1 + x + x**2 + x**3 + x**4 + O(x**3)
     1 + x + x**2 + O(x**3)
@@ -40,7 +38,7 @@ class Order(Expr):
     >>> O(x + x**2)
     O(x)
     >>> O(cos(x))
-    O(1)
+    O(1, x)
 
     Some arithmetic operations:
 
@@ -53,10 +51,6 @@ class Order(Expr):
 
     >>> x in O(x)
     True
-    >>> O(1) in O(1, x)
-    True
-    >>> O(1, x) in O(1)
-    False
     >>> O(x) in O(1, x)
     True
     >>> O(x**2) in O(x)
@@ -64,12 +58,12 @@ class Order(Expr):
 
     Limit points other then zero are also supported:
 
-    >>> O(x) == O(x, (x, 0))
+    >>> O(x) == O(x, x, 0)
     True
-    >>> O(x + x**2, (x, oo))
-    O(x**2, (x, oo))
-    >>> O(cos(x), (x, pi/2))
-    O(x - pi/2, (x, pi/2))
+    >>> O(x + x**2, x, oo)
+    O(x**2, x, oo)
+    >>> O(cos(x), x, pi/2)
+    O(x - pi/2, x, pi/2)
 
     References
     ==========
@@ -81,131 +75,95 @@ class Order(Expr):
     is_Order = True
 
     @cacheit
-    def __new__(cls, expr, *args, **kwargs):
+    def __new__(cls, expr, var=None, point=0, **kwargs):
         expr = sympify(expr)
+        point = sympify(point)
 
-        if not args:
+        if not var:
             if expr.is_Order:
-                variables = expr.variables
-                point = expr.point
+                var = expr.var
             else:
-                variables = list(expr.free_symbols)
-                point = [Integer(0)]*len(variables)
-        else:
-            args = list(args if is_sequence(args) else [args])
-            variables, point = [], []
-            if is_sequence(args[0]):
-                for a in args:
-                    v, p = list(map(sympify, a))
-                    variables.append(v)
-                    point.append(p)
-            else:
-                variables = list(map(sympify, args))
-                point = [Integer(0)]*len(variables)
+                free_symbols = expr.free_symbols
+                if len(free_symbols) != 1:
+                    raise ValueError
+                var = free_symbols.pop()
 
-        if len(variables) > 1:
-            raise TypeError
-
-        if not all(isinstance(v, (Dummy, Symbol)) for v in variables):
-            raise TypeError(f'Variables are not symbols, got {variables}')
-
-        if expr.is_Order:
-            expr_vp = dict(expr.args[1:])
-            new_vp = dict(expr_vp)
-            vp = dict(zip(variables, point))
-            for v, p in vp.items():
-                if v in new_vp:
-                    if p != new_vp[v]:
-                        raise NotImplementedError(
-                            'Mixing Order at different points is not supported.')
-                else:
-                    new_vp[v] = p
-            if set(expr_vp) == set(new_vp):
-                return expr
-            variables = list(new_vp)
-            point = [new_vp[v] for v in variables]
+        if not isinstance(var, (Dummy, Symbol)):
+            raise TypeError(f'Variables are not symbols, got {var}')
 
         if expr is nan:
             return nan
 
-        if any(x in p.free_symbols for x in variables for p in point):
+        if expr.is_Order:
+            if point != expr.point:
+                raise NotImplementedError('Mixing Order at different points is not supported.')
+            expr = expr.expr
+
+        if var in point.free_symbols:
             raise ValueError(f'Got {point} as a point.')
 
-        if variables:
-            if any(p != point[0] for p in point):
-                raise NotImplementedError
-            if point[0].as_coefficient(oo):
-                s = {k: 1/Dummy() for k in variables}
-                rs = {1/v: 1/k for k, v in s.items()}
-            elif point[0] != 0:
-                s = {k: Dummy() + point[0] for k in variables}
-                rs = {v - point[0]: k - point[0] for k, v in s.items()}
-            else:
-                s = ()
-                rs = ()
+        if point.as_coefficient(oo):
+            s = {var: 1/Dummy()}
+            rs = {1/v: 1/k for k, v in s.items()}
+        elif point != 0:
+            s = {var: Dummy() + point}
+            rs = {v - point: k - point for k, v in s.items()}
+        else:
+            s = ()
+            rs = ()
 
-            expr = expr.subs(s)
+        expr = expr.subs(s)
 
-            if expr.is_Add:
-                from ..core import expand_multinomial
-                expr = expand_multinomial(expr)
+        if s:
+            x = tuple(rs)[0]
+        else:
+            x = var
 
-            if s:
-                args = tuple(r[0] for r in rs.items())
-            else:
-                args = tuple(variables)
+        if expr.is_Add:
+            lst = expr.extract_leading_order([x])
+            expr = Add(*[f.expr for (e, f) in lst])
 
-            if expr.is_Add:
-                lst = expr.extract_leading_order(args)
-                expr = Add(*[f.expr for (e, f) in lst])
+        elif expr:
+            expr = expr.as_leading_term(x)
+            _, expr = expr.as_independent(x, as_Add=False)
 
-            elif expr:
-                expr = expr.as_leading_term(*args)
-                expr = expr.as_independent(*args, as_Add=False)[1]
+            expr = expand_power_base(expr)
+            expr = expand_log(expr)
 
-                expr = expand_power_base(expr)
-                expr = expand_log(expr)
+            # The definition of O(f(x)) symbol explicitly stated that
+            # the argument of f(x) is irrelevant.  That's why we can
+            # combine some power exponents (only "on top" of the
+            # expression tree for f(x)), e.g.:
+            # x**p * (-x)**q -> x**(p+q) for real p, q.
+            margs = list(Mul.make_args(expr.as_independent(x, as_Add=False)[1]))
 
-                # The definition of O(f(x)) symbol explicitly stated that
-                # the argument of f(x) is irrelevant.  That's why we can
-                # combine some power exponents (only "on top" of the
-                # expression tree for f(x)), e.g.:
-                # x**p * (-x)**q -> x**(p+q) for real p, q.
-                x = args[0]
-                margs = list(Mul.make_args(
-                    expr.as_independent(x, as_Add=False)[1]))
-
-                for i, t in enumerate(margs):
-                    if t.is_Pow:
-                        b, q = t.base, t.exp
-                        if b in (x, -x) and q.is_extended_real and not q.has(x):
-                            margs[i] = x**q
-                        elif b.is_Pow and not b.exp.has(x):
+            for i, t in enumerate(margs):
+                if t.is_Pow:
+                    b, q = t.base, t.exp
+                    if b in (x, -x) and q.is_extended_real and not q.has(x):
+                        margs[i] = x**q
+                    elif b.is_Pow and not b.exp.has(x):
+                        b, r = b.base, b.exp
+                        if b in (x, -x) and r.is_extended_real:
+                            margs[i] = x**(r*q)
+                    elif b.is_Mul and b.args[0] == -1:
+                        b = -b
+                        if b.is_Pow and not b.exp.has(x):
                             b, r = b.base, b.exp
                             if b in (x, -x) and r.is_extended_real:
                                 margs[i] = x**(r*q)
-                        elif b.is_Mul and b.args[0] == -1:
-                            b = -b
-                            if b.is_Pow and not b.exp.has(x):
-                                b, r = b.base, b.exp
-                                if b in (x, -x) and r.is_extended_real:
-                                    margs[i] = x**(r*q)
 
-                expr = Mul(*margs)
+            expr = Mul(*margs)
 
-            expr = expr.subs(rs)
+        expr = expr.subs(rs)
 
         if expr == 0:
             return expr
 
-        if not expr.has(*variables):
+        if not expr.has(var):
             expr = Integer(1)
 
-        # create Order instance:
-        vp = dict(zip(variables, point))
-        variables.sort(key=default_sort_key)
-        point = [vp[v] for v in variables]
-        args = (expr,) + Tuple(*zip(variables, point))
+        args = (expr, var, point)
         obj = Expr.__new__(cls, *args)
         return obj
 
@@ -217,44 +175,30 @@ class Order(Expr):
         return self.args[0]
 
     @property
-    def variables(self):
-        if self.args[1:]:
-            return tuple(x[0] for x in self.args[1:])
-        return ()
+    def var(self):
+        return self.args[1]
 
     @property
     def point(self):
-        if self.args[1:]:
-            return tuple(x[1] for x in self.args[1:])
-        return ()
+        return self.args[2]
 
     @property
     def free_symbols(self):
-        return self.expr.free_symbols | set(self.variables)
+        return self.expr.free_symbols | {self.var}
 
     def _eval_power(self, other):
         if other.is_Number and other.is_nonnegative:
-            return self.func(self.expr**other, *self.args[1:])
-        if other == O(1):
-            return self
+            return self.func(self.expr**other, self.var, self.point)
 
     def as_expr_variables(self, order_symbols):
         if order_symbols is None:
             order_symbols = self.args[1:]
         else:
-            if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
-                    not all(p == self.point[0] for p in self.point)):
-                raise NotImplementedError('Order at points other than 0 '
-                                          f'or oo not supported, got {self.point} as a point.')
-            if order_symbols and order_symbols[0][1] != self.point[0]:
-                raise NotImplementedError(
-                    'Multiplying Order at different points is not supported.')
-            order_symbols = dict(order_symbols)
-            for s, p in dict(self.args[1:]).items():
-                if s not in order_symbols:
-                    order_symbols[s] = p
-            order_symbols = sorted(order_symbols.items(), key=lambda x: default_sort_key(x[0]))
-        return self.expr, tuple(order_symbols)
+            if order_symbols[1] != self.point:
+                raise NotImplementedError('Multiplying Order at different points is not supported.')
+            if order_symbols[0] != self.var:
+                raise NotImplementedError
+        return self.expr, order_symbols
 
     def removeO(self):
         return Integer(0)
@@ -282,41 +226,21 @@ class Order(Expr):
         if expr is nan:
             return False
         if expr.is_Order:
-            if (not all(p == expr.point[0] for p in expr.point) and
-                    not all(p == self.point[0] for p in self.point)):
-                raise NotImplementedError('Order at points other than 0 '
-                                          f'or oo not supported, got {self.point} as a point.')
-            # self and/or expr is O(1):
-            if any(not p for p in [expr.point, self.point]):
-                point = self.point + expr.point
-                if point:
-                    point = point[0]
-                else:
-                    point = Integer(0)
-            else:
-                point = self.point[0]
-
+            if self.point != expr.point:
+                return
             if expr.expr == self.expr:
-                # O(1) + O(1), O(1) + O(1, x), etc.
                 return all(x in self.args[1:] for x in expr.args[1:])
             if expr.expr.is_Add:
                 return all(self.contains(x) for x in expr.expr.args)
-            if self.variables and expr.variables:
-                common_symbols = tuple(s for s in self.variables if s in expr.variables)
-            elif self.variables:
-                common_symbols = self.variables
-            else:
-                common_symbols = expr.variables
-            if not common_symbols:
+            if self.var != expr.var:
                 return
             ratio = self.expr/expr.expr
             ratio = powsimp(ratio, deep=True, combine='exp')
-            for s in common_symbols:
-                l = Limit(ratio, s, point).doit(heuristics=False)
-                if not isinstance(l, Limit):
-                    l = l != 0
-                else:
-                    l = None
+            l = Limit(ratio, self.var, self.point).doit(heuristics=False)
+            if not isinstance(l, Limit):
+                l = l != 0
+            else:
+                l = None
             return l
         obj = self.func(expr, *self.args[1:])
         return self.contains(obj)
@@ -328,47 +252,45 @@ class Order(Expr):
         return result
 
     def _eval_subs(self, old, new):
-        if old in self.variables:
+        if old == self.var:
             newexpr = self.expr.subs({old: new})
-            i = self.variables.index(old)
-            newvars = list(self.variables)
-            newpt = list(self.point)
+            newvar = self.var
+            newpt = self.point
             if new.is_Symbol:
-                newvars[i] = new
+                newvar = new
+                newpt = self.point
             else:
                 syms = new.free_symbols
                 if len(syms) == 1 or old in syms:
                     if old in syms:
-                        var = self.variables[i]
+                        var = self.var
                     else:
                         var = syms.pop()
                     # First, try to substitute self.point in the "new"
                     # expr to see if this is a fixed point.
                     # E.g.  O(y).subs({y: sin(x)})
-                    point = new.subs({var: self.point[i]})
-                    if point != self.point[i]:
+                    point = new.subs({var: self.point})
+                    if point != self.point:
                         from ..solvers import solve
                         d = Dummy()
                         res = solve(old - new.subs({var: d}), d)
-                        point = d.subs(res[0]).limit(old, self.point[i])
-                    newvars[i] = var
-                    newpt[i] = point
-                else:
-                    del newvars[i], newpt[i]
-                    if not syms and new == self.point[i]:
-                        newvars.extend(syms)
-                        newpt.extend([Integer(0)]*len(syms))
-            return Order(newexpr, *zip(newvars, newpt))
+                        point = d.subs(res[0]).limit(old, self.point)
+                    newvar = var
+                    newpt = point
+                if not syms and new == self.point:
+                    newvar = old
+                    newpt = new
+            return Order(newexpr, newvar, newpt)
 
     def _eval_conjugate(self):
         expr = self.expr._eval_conjugate()
         if expr is not None:
-            return self.func(expr, *self.args[1:])
+            return self.func(expr, self.var, self.point)
 
     def _eval_transpose(self):
         expr = self.expr._eval_transpose()
         if expr is not None:
-            return self.func(expr, *self.args[1:])
+            return self.func(expr, self.var, self.point)
 
     def _eval_is_commutative(self):
         return self.expr.is_commutative

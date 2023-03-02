@@ -113,16 +113,16 @@ def test_log3():
 def test_log4():
     assert (log(1 + x).series(x, x0=I*oo) ==
             1/(5*x**5) - 1/(4*x**4) + 1/(3*x**3) - 1/(2*x**2) + 1/x +
-            I*pi/2 + log(-I*x) + O(x**(-6), (x, oo*I)))
+            I*pi/2 + log(-I*x) + O(x**(-6), x, oo*I))
 
 
 def test_x0():
     # issue sympy/sympy#5654
     assert ((1/(x**2 + a**2)**2).series(x, x0=I*a, n=0) ==
-            -I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(1, (x, I*a)))
+            -I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) + O(1, x, I*a))
     assert ((1/(x**2 + a**2)**2).series(x, x0=I*a, n=1) ==
             3/(16*a**4) - I/(4*a**3*(-I*a + x)) - 1/(4*a**2*(-I*a + x)**2) +
-            O(-I*a + x, (x, I*a)))
+            O(-I*a + x, x, I*a))
 
 
 def test_series1():

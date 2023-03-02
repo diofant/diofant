@@ -18,7 +18,6 @@ def test_caching_bug():
 
 
 def test_free_symbols():
-    assert O(1).free_symbols == set()
     assert O(x).free_symbols == {x}
     assert O(1, x).free_symbols == {x}
 
@@ -29,22 +28,18 @@ def test_simple_1():
     assert O(x)*3 == O(x)
     assert -28*O(x) == O(x)
     assert O(O(x)) == O(x)
-    assert O(-23) == O(1)
     assert O(exp(x)) == O(1, x)
     assert O(exp(1/x)).expr == exp(1/x)
     assert O(x*exp(1/x)).expr == x*exp(1/x)
-    assert O(x**(o/3)).expr == x**(o/3)
-    assert O(x**(5*o/3)).expr == x**(5*o/3)
+    assert O(x**(o/3), x).expr == x**(o/3)
+    assert O(x**(5*o/3), x).expr == x**(5*o/3)
     assert O(x**2 + x + y, x) == O(1, x)
     assert O(x**2 + x + y, y) == O(1, y)
     pytest.raises(TypeError, lambda: O(x, 2 - x))
-    pytest.raises(ValueError, lambda: O(x, (x, x**2)))
+    pytest.raises(ValueError, lambda: O(x, x, x**2))
+    pytest.raises(ValueError, lambda: O(x*y))
 
     assert O(x**2).is_commutative
-
-    # issue sympy/sympy#9192
-    assert O(1)*O(1) == O(1)
-    assert O(1)**O(1) == O(1)
 
 
 def test_simple_2():
@@ -75,19 +70,10 @@ def test_simple_5():
 
 def test_simple_6():
     assert O(x) - O(x) == O(x)
-    assert O(x) + O(1) == O(1)
     assert O(x) + O(x**2) == O(x)
-    assert O(1/x) + O(1) == O(1/x)
     assert O(x) + O(exp(1/x)) == O(exp(1/x))
     assert O(x**3) + O(exp(2/x)) == O(exp(2/x))
     assert O(x**-3) + O(exp(2/x)) == O(exp(2/x))
-
-
-def test_simple_7():
-    assert 1 + O(1) == O(1)
-    assert 2 + O(1) == O(1)
-    assert x + O(1) == O(1)
-    assert 1/x + O(1) == 1/x + O(1)
 
 
 def test_simple_8():
@@ -101,17 +87,12 @@ def test_simple_8():
 
 
 def test_as_expr_variables():
-    assert O(x).as_expr_variables(None) == (x, ((x, 0),))
-    assert O(x).as_expr_variables(((x, 0),)) == (x, ((x, 0),))
-    assert O(y).as_expr_variables(((x, 0),)) == (y, ((x, 0), (y, 0)))
-    assert O(y).as_expr_variables(((x, 0), (y, 0))) == (y, ((x, 0), (y, 0)))
+    assert O(x).as_expr_variables(None) == (x, (x, 0))
+    assert O(x).as_expr_variables((x, 0)) == (x, (x, 0))
 
 
 def test_contains():
     assert O(1, x).contains(O(1, x))
-    assert O(1, x).contains(O(1))
-    assert O(1).contains(O(1, x)) is False
-
     assert O(x).contains(O(x))
     assert O(x).contains(O(x**2))
     assert not O(x**2).contains(O(x))
@@ -134,10 +115,9 @@ def test_contains():
     assert O(x**8).contains(x**(q + 7)) is None
     assert O(x**8).contains(x**(q + 8))
 
-    assert O(1, x) not in O(1)
-    assert O(1) in O(1, x)
-    pytest.raises(TypeError, lambda: O(x*y**2) in O(x**2*y))
     pytest.raises(TypeError, lambda: O(x**y, x) in O(x**z, x))
+    assert O(1/x) not in O(x)
+    assert O(x) in O(1/x)
 
 
 def test_add_1():
@@ -195,7 +175,7 @@ def test_order_symbols():
 
 
 def test_nan():
-    assert O(nan) == nan
+    assert O(nan, x) == nan
     assert not O(x).contains(nan)
 
 
@@ -211,15 +191,14 @@ def test_getn():
     assert O(x**2/log(x)**2).getn() == 2
     assert O(x*log(x)).getn() == 1
     pytest.raises(NotImplementedError, (O(x) + O(y)).getn)
-    pytest.raises(NotImplementedError, O(x**y*log(x)**z, (x, 0)).getn)
-    pytest.raises(NotImplementedError, O(x**pi*log(x), (x, 0)).getn)
+    pytest.raises(NotImplementedError, O(x**y*log(x)**z, x, 0).getn)
+    pytest.raises(NotImplementedError, O(x**pi*log(x), x, 0).getn)
 
     f = Function('f')
     pytest.raises(NotImplementedError, O(f(x)).getn)
 
 
 def test_diff():
-    assert O(1).diff(x) == 0
     assert O(1, x).diff(x) == Derivative(O(1, x), x)
     assert O(x**2).diff(x) == Derivative(O(x**2), x)
 
@@ -242,14 +221,16 @@ def test_eval():
     assert O(x).subs({O(x): 1}) == 1
     assert O(x).subs({x: y}) == O(y)
     assert O(x).subs({y: x}) == O(x)
-    assert O(x).subs({x: x + y}) == O(x + y, (x, -y))
-    assert (O(1)**x).is_Pow
+    assert O(x).subs({x: x + y}) == O(x + y, x, -y)
+
+
+def test_pow():
+    assert (1/O(x)).is_Pow
 
 
 def test_sympyissue_4855():
-    assert 1/O(1) != O(1)
     assert 1/O(x) != O(1/x)
-    assert 1/O(x, (x, oo)) != O(1/x, (x, oo))
+    assert 1/O(x, x, oo) != O(1/x, x, oo)
 
     f = Function('f')
     assert 1/O(f(x)) != O(1/x)
@@ -285,91 +266,90 @@ def test_sympyissue_6753():
 
 
 def test_sympyissue_7872():
-    assert O(x**3).subs({x: exp(-x**2)}) == O(exp(-3*x**2), (x, -oo))
+    assert O(x**3).subs({x: exp(-x**2)}) == O(exp(-3*x**2), x, -oo)
 
 
 def test_order_at_infinity():
-    assert O(1 + x, (x, oo)) == O(x, (x, oo))
-    assert O(3*x, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo))*3 == O(x, (x, oo))
-    assert -28*O(x, (x, oo)) == O(x, (x, oo))
-    assert O(3, (x, oo)) == O(1, (x, oo))
-    assert O(x**2 + x + y, (x, oo)) == O(x**2, (x, oo))
-    assert O(x**2 + x + y, (y, oo)) == O(y, (y, oo))
+    assert O(1 + x, x, oo) == O(x, x, oo)
+    assert O(3*x, x, oo) == O(x, x, oo)
+    assert O(x, x, oo)*3 == O(x, x, oo)
+    assert -28*O(x, x, oo) == O(x, x, oo)
+    assert O(3, x, oo) == O(1, x, oo)
+    assert O(x**2 + x + y, x, oo) == O(x**2, x, oo)
+    assert O(x**2 + x + y, y, oo) == O(y, y, oo)
 
-    assert O(2*x, (x, oo))*x == O(x**2, (x, oo))
-    assert O(2*x, (x, oo))/x == O(1, (x, oo))
-    assert O(2*x, (x, oo))*x*exp(1/x) == O(x**2*exp(1/x), (x, oo))
-    assert O(2*x, (x, oo))*x*exp(1/x)/ln(x)**3 == O(x**2*exp(1/x)*ln(x)**-3, (x, oo))
+    assert O(2*x, x, oo)*x == O(x**2, x, oo)
+    assert O(2*x, x, oo)/x == O(1, x, oo)
+    assert O(2*x, x, oo)*x*exp(1/x) == O(x**2*exp(1/x), x, oo)
+    assert O(2*x, x, oo)*x*exp(1/x)/ln(x)**3 == O(x**2*exp(1/x)*ln(x)**-3, x, oo)
 
-    assert O(x, (x, oo)) + 1/x == 1/x + O(x, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + 1 == 1 + O(x, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + x == x + O(x, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + x**2 == x**2 + O(x, (x, oo))
-    assert O(1/x, (x, oo)) + 1/x**2 == 1/x**2 + O(1/x, (x, oo)) == O(1/x, (x, oo))
-    assert O(x, (x, oo)) + exp(1/x) == exp(1/x) + O(x, (x, oo))
+    assert O(x, x, oo) + 1/x == 1/x + O(x, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + 1 == 1 + O(x, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + x == x + O(x, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + x**2 == x**2 + O(x, x, oo)
+    assert O(1/x, x, oo) + 1/x**2 == 1/x**2 + O(1/x, x, oo) == O(1/x, x, oo)
+    assert O(x, x, oo) + exp(1/x) == exp(1/x) + O(x, x, oo)
 
-    assert O(x, (x, oo))**2 == O(x**2, (x, oo))
+    assert O(x, x, oo)**2 == O(x**2, x, oo)
 
-    assert O(x, (x, oo)) + O(x**2, (x, oo)) == O(x**2, (x, oo))
-    assert O(x, (x, oo)) + O(x**-2, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + O(1/x, (x, oo)) == O(x, (x, oo))
+    assert O(x, x, oo) + O(x**2, x, oo) == O(x**2, x, oo)
+    assert O(x, x, oo) + O(x**-2, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + O(1/x, x, oo) == O(x, x, oo)
 
-    assert O(x, (x, oo)) - O(x, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + O(1, (x, oo)) == O(x, (x, oo))
-    assert O(x, (x, oo)) + O(x**2, (x, oo)) == O(x**2, (x, oo))
-    assert O(1/x, (x, oo)) + O(1, (x, oo)) == O(1, (x, oo))
-    assert O(x, (x, oo)) + O(exp(1/x), (x, oo)) == O(x, (x, oo))
-    assert O(x**3, (x, oo)) + O(exp(2/x), (x, oo)) == O(x**3, (x, oo))
-    assert O(x**-3, (x, oo)) + O(exp(2/x), (x, oo)) == O(exp(2/x), (x, oo))
+    assert O(x, x, oo) - O(x, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + O(1, x, oo) == O(x, x, oo)
+    assert O(x, x, oo) + O(x**2, x, oo) == O(x**2, x, oo)
+    assert O(1/x, x, oo) + O(1, x, oo) == O(1, x, oo)
+    assert O(x, x, oo) + O(exp(1/x), x, oo) == O(x, x, oo)
+    assert O(x**3, x, oo) + O(exp(2/x), x, oo) == O(x**3, x, oo)
+    assert O(x**-3, x, oo) + O(exp(2/x), x, oo) == O(exp(2/x), x, oo)
 
     # issue sympy/sympy#7207
-    assert O(exp(x), (x, oo)).expr == O(2*exp(x), (x, oo)).expr == exp(x)
-    assert O(y**x, (x, oo)).expr == O(2*y**x, (x, oo)).expr == y**x
+    assert O(exp(x), x, oo).expr == O(2*exp(x), x, oo).expr == exp(x)
+    assert O(y**x, x, oo).expr == O(2*y**x, x, oo).expr == y**x
 
     # issue sympy/sympy#9917
-    assert O(x*sin(x) + 1, (x, oo)) != O(x*sin(x), (x, oo))
+    assert O(x*sin(x) + 1, x, oo) != O(x*sin(x), x, oo)
 
     # issue sympy/sympy#15539
-    assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
+    assert O(x**-6, x, -oo) == O(x**(-6), x, -oo, evaluate=False)
 
 
 def test_mixing_order_at_zero_and_infinity():
-    assert (O(x, (x, 0)) + O(x, (x, oo))).is_Add
-    assert O(x, (x, 0)) + O(x, (x, oo)) == O(x, (x, oo)) + O(x, (x, 0))
-    assert O(O(x, (x, oo))) == O(x, (x, oo))
+    assert (O(x, x, 0) + O(x, x, oo)).is_Add
+    assert O(x, x, 0) + O(x, x, oo) == O(x, x, oo) + O(x, x, 0)
+    assert O(O(x, x, oo), point=oo) == O(x, x, oo)
 
     # not supported (yet)
-    pytest.raises(NotImplementedError, lambda: O(x, (x, 0))*O(x, (x, oo)))
-    pytest.raises(NotImplementedError, lambda: O(x, (x, oo))*O(x, (x, 0)))
-    pytest.raises(NotImplementedError, lambda: O(O(x, (x, oo)), y))
-    pytest.raises(NotImplementedError, lambda: O(O(x), (x, oo)))
+    pytest.raises(NotImplementedError, lambda: O(x, x, 0)*O(x, x, oo))
+    pytest.raises(NotImplementedError, lambda: O(x, x, oo)*O(x, x, 0))
+    pytest.raises(NotImplementedError, lambda: O(O(x), x, oo))
 
 
 def test_order_at_some_point():
-    assert O(x, (x, 1)) == O(1, (x, 1))
-    assert O(2*x - 2, (x, 1)) == O(x - 1, (x, 1))
-    assert O(-x + 1, (x, 1)) == O(x - 1, (x, 1))
-    assert O(x - 1, (x, 1))**2 == O((x - 1)**2, (x, 1))
-    assert O(x - 2, (x, 2)) - O(x - 2, (x, 2)) == O(x - 2, (x, 2))
+    assert O(x, x, 1) == O(1, x, 1)
+    assert O(2*x - 2, x, 1) == O(x - 1, x, 1)
+    assert O(-x + 1, x, 1) == O(x - 1, x, 1)
+    assert O(x - 1, x, 1)**2 == O((x - 1)**2, x, 1)
+    assert O(x - 2, x, 2) - O(x - 2, x, 2) == O(x - 2, x, 2)
 
 
 def test_order_subs_limits():
     # issue sympy/sympy#3333
-    assert (1 + O(x)).subs({x: 1/x}) == 1 + O(1/x, (x, oo))
+    assert (1 + O(x)).subs({x: 1/x}) == 1 + O(1/x, x, oo)
     assert (1 + O(x)).limit(x, 0) == 1
     # issue sympy/sympy#5769
     assert ((x + O(x**2))/x).limit(x, 0) == 1
 
-    assert O(x**2).subs({x: y - 1}) == O((y - 1)**2, (y, 1))
-    assert O(10*x**2, (x, 2)).subs({x: y - 1}) == O(1, (y, 3))
+    assert O(x**2).subs({x: y - 1}) == O((y - 1)**2, y, 1)
+    assert O(10*x**2, x, 2).subs({x: y - 1}) == O(1, y, 3)
 
-    assert O(1/x, (x, oo)).subs({x: +I*x}) == O(1/x, (x, -I*oo))
-    assert O(1/x, (x, oo)).subs({x: -I*x}) == O(1/x, (x, +I*oo))
+    assert O(1/x, x, oo).subs({x: +I*x}) == O(1/x, x, -I*oo)
+    assert O(1/x, x, oo).subs({x: -I*x}) == O(1/x, x, +I*oo)
 
 
 def test_sympyissue_9351():
-    assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, (x, 10))
+    assert exp(x).series(x, 10, 1) == exp(10) + O(x - 10, x, 10)
 
 
 def test_sympyissue_7599():
@@ -378,6 +358,6 @@ def test_sympyissue_7599():
 
 
 def test_sympyissue_22836():
-    assert O(2**x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))
-    assert O(2**x + factorial(x) + x**x, (x, oo)) == O((1/x)**(-x), (x, oo))
-    assert O(x + factorial(x), (x, oo)) == O(factorial(x), (x, oo))
+    assert O(2**x + factorial(x), x, oo) == O(factorial(x), x, oo)
+    assert O(2**x + factorial(x) + x**x, x, oo) == O((1/x)**(-x), x, oo)
+    assert O(x + factorial(x), x, oo) == O(factorial(x), x, oo)

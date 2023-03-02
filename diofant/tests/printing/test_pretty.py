@@ -191,7 +191,7 @@ Subs(f(x).diff(x)/y, (x, 0), (y, Rational(1, 2)))
 
 ORDER:
 
-O(1)
+O(1, x)
 O(1/x)
 """
 
@@ -2012,14 +2012,14 @@ x ↦ x \
 
 
 def test_pretty_order():
-    expr = O(1)
+    expr = O(1, x)
     ascii_str = \
         """\
-O(1)\
+O(1; x -> 0)\
 """
     ucode_str = \
         """\
-O(1)\
+O(1; x → 0)\
 """
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
@@ -2040,7 +2040,7 @@ O⎜─⎟\n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = O(1, (x, oo))
+    expr = O(1, x, oo)
     ascii_str = \
         """\
 O(1; x -> oo)\
@@ -2052,7 +2052,7 @@ O(1; x → ∞)\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = O(1/x, (x, oo))
+    expr = O(1/x, x, oo)
     ascii_str = \
         """\
  /1         \\\n\
@@ -5184,7 +5184,7 @@ def test_sympyissue_11801():
 
 
 def test_Order():
-    assert upretty(O(1)) == 'O(1)'
+    assert upretty(O(1, x)) == 'O(1; x → 0)'
 
 
 def test_pretty_Mod():

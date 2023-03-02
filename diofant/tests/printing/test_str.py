@@ -245,11 +245,12 @@ def test_NegativeInfinity():
 
 
 def test_Order():
+    assert str(O(1, x)) == 'O(1, x)'
     assert str(O(x)) == 'O(x)'
     assert str(O(x**2)) == 'O(x**2)'
     assert str(O(x, x)) == 'O(x)'
-    assert str(O(x, (x, 0))) == 'O(x)'
-    assert str(O(x, (x, oo))) == 'O(x, (x, oo))'
+    assert str(O(x, x, 0)) == 'O(x)'
+    assert str(O(x, x, oo)) == 'O(x, x, oo)'
 
 
 def test_Permutation_Cycle():

@@ -1105,11 +1105,11 @@ class LatexPrinter(Printer):
 
     def _print_Order(self, expr):
         s = self._print(expr.expr)
-        if expr.point and any(p != 0 for p in expr.point):
+        if expr.point or not expr.expr.has(expr.var):
             s += '; '
-            s += self._print(expr.variables[0])
+            s += self._print(expr.var)
             s += r'\rightarrow{}'
-            s += self._print(expr.point[0])
+            s += self._print(expr.point)
         return r'\mathcal{O}\left(%s\right)' % s
 
     def _print_Symbol(self, expr):

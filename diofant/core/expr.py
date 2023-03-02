@@ -2310,7 +2310,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> cos(x).series(n=4)
         1 - x**2/2 + O(x**4)
         >>> cos(x).series(x, x0=1, n=2)
-        cos(1) - (x - 1)*sin(1) + O((x - 1)**2, (x, 1))
+        cos(1) - (x - 1)*sin(1) + O((x - 1)**2, x, 1)
         >>> e = cos(x + exp(y))
         >>> e.series(y, n=2)
         cos(x + 1) - y*sin(x + 1) + O(y**2)
@@ -2590,9 +2590,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
         >>> e.series(x, oo)
-        E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
+        E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), x, oo))
         >>> e.aseries(x, n=3, hir=True)
-        -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), (x, oo))
+        -E**(-2*x)*sin(1/x)/2 + E**(-x)*cos(1/x) + O(E**(-3*x), x, oo)
 
         >>> e = exp(exp(x)/(1 - 1/x))
         >>> e.aseries(x, bound=3)
@@ -2629,7 +2629,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if x in omega:
             s = self.subs({x: exp(x)}).aseries(x, n, bound, hir).subs({x: log(x)})
             if s.getO():
-                o = Order(1/x**n, (x, oo))
+                o = Order(1/x**n, x, oo)
                 return s + o
             return s
         d = Dummy('d', positive=True)

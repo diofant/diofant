@@ -154,7 +154,7 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
-        if e.has(Order) and (order := e.getO()) and (z, z0) in order.args[1:]:
+        if e.has(Order) and (order := e.getO()) and z == order.var and z0 == order.point:
             order = limit(order.expr, z, z0, dir)
             e = e.removeO() + order
 

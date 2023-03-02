@@ -196,7 +196,7 @@ class Add(AssocOp):
                 if t is not None:
                     newseq2.append(t)
             newseq = newseq2 + order_factors
-            # 1 + O(1) -> O(1)
+            # 1 + O(1, x) -> O(1, x)
             for o in order_factors:
                 if o.contains(coeff):
                     coeff = Integer(0)
@@ -584,7 +584,7 @@ class Add(AssocOp):
         >>> (x + 1 + 1/x**5).extract_leading_order(x)
         ((x**(-5), O(x**(-5))),)
         >>> (1 + x).extract_leading_order(x)
-        ((1, O(1)),)
+        ((1, O(1, x)),)
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
 
@@ -593,7 +593,7 @@ class Add(AssocOp):
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
         point = [0]*len(symbols)
-        seq = [(f, Order(f, *zip(symbols, point))) for f in self.args]
+        seq = [(f, Order(f, *symbols, *point)) for f in self.args]
         for ef, of in seq:
             for e, o in lst:
                 if o.contains(of) and o != of:

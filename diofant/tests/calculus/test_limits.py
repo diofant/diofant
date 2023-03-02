@@ -33,7 +33,7 @@ def test_basic1():
     limit(Sum(1/x, (x, 1, y)) - log(y), y, oo)
     limit(Sum(1/x, (x, 1, y)) - 1/y, y, oo)
     assert limit(nan, x, -oo) == nan
-    assert limit(O(2)*x, x, nan) == nan
+    assert limit(O(2, x)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
     assert limit(1/(x - 1), x, 1) == oo
     assert limit(1/(x - 1), x, 1, dir=1) == -oo
@@ -621,10 +621,10 @@ def test_sympyissue_5415():
 
 
 def test_sympyissue_2865():
-    l1 = limit(O(1/x, (x, oo)), x, 0)
+    l1 = limit(O(1/x, x, oo), x, 0)
     assert l1 != 0
     assert isinstance(l1, Limit)
-    l2 = limit(O(x, (x, oo)), x, 0)
+    l2 = limit(O(x, x, oo), x, 0)
     assert l2 != 0
     assert isinstance(l2, Limit)
 

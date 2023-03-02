@@ -2744,7 +2744,7 @@ def test_2nd_power_series_regular():
     eq = x**2*f(x).diff((x, 2)) - 3*x*f(x).diff(x) + (4*x + 4)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*x**2*(-16*x**3/9 +
                                            4*x**2 - 4*x + 1) + O(x**6))
-    assert dsolve(eq, n=2) == Eq(f(x), O(1))
+    assert dsolve(eq, n=2) == Eq(f(x), O(1, x))
 
     eq = 4*x**2*f(x).diff((x, 2)) - 8*x**2*f(x).diff(x) + (4*x**2 + 1)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*sqrt(x)*(x**4/24 + x**3/6 + x**2/2 +

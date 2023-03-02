@@ -237,7 +237,7 @@ def test_series0():
            (-a + x)**3*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1), (_xi_1, a))/6 +
            (-a + x)**4*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1), (_xi_1, a))/24 +
            (-a + x)**5*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1, _xi_1),
-                            (_xi_1, a))/120 + O((-a + x)**6, (x, a)))
+                            (_xi_1, a))/120 + O((-a + x)**6, x, a))
     assert res == ans1
     ans2 = f(x).series(x, a)
     assert res == ans2

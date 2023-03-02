@@ -92,7 +92,7 @@ def test_gamma_series():
     assert gamma(x).series(x, -1, 3) == \
         -1/(x + 1) + EulerGamma - 1 + (x + 1)*(-1 - pi**2/12 - EulerGamma**2/2 +
                                                EulerGamma) + (x + 1)**2*(-1 - pi**2/12 - EulerGamma**2/2 + EulerGamma**3/6 -
-                                                                         polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, (x, -1))
+                                                                         polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, x, -1)
 
 
 def tn_branch(s, func):
