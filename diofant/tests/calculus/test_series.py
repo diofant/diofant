@@ -60,7 +60,7 @@ def test_simple():
     assert abs(-x).series(x, -oo, n=5, dir=+1) == -x
 
     # issue sympy/sympy#7203
-    assert cos(x).series(x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3, (x, pi))
+    assert cos(x).series(x, pi, 3) == -1 + (x - pi)**2/2 + O((x - pi)**3, x, pi)
 
 
 def test_sympyissue_5223():
@@ -88,7 +88,7 @@ def test_sympyissue_5223():
 
     assert ((sin(x))**y).nseries(x, n=1) == x**y + O(x**(y + 2), x)
 
-    assert sin(1/x).series(x, oo, n=5) == 1/x - 1/(6*x**3) + O(x**(-5), (x, oo))
+    assert sin(1/x).series(x, oo, n=5) == 1/x - 1/(6*x**3) + O(x**(-5), x, oo)
 
     assert exp(x*log(x)).series(n=3) == \
         1 + x*log(x) + x**2*log(x)**2/2 + x**3*log(x)**3/6 + O(x**3)
@@ -196,8 +196,8 @@ def test_sympyissue_9173():
 def test_sympyissue_9549():
     e = (x**2 + x + 1)/(x**3 + x**2)
     r = e.series(x, oo)
-    assert r == x**(-5) - 1/x**4 + x**(-3) + 1/x + O(x**(-6), (x, oo))
-    assert e.series(x, oo, n=8) + O(1/x**6, (x, oo)) == r
+    assert r == x**(-5) - 1/x**4 + x**(-3) + 1/x + O(x**(-6), x, oo)
+    assert e.series(x, oo, n=8) + O(1/x**6, x, oo) == r
 
 
 def test_sympyissue_10761():
@@ -234,18 +234,18 @@ def test_sympyissue_11722():
 
 
 def test_sympyissue_11884():
-    assert O(x).subs({x: x - 1}) + 1 == 1 + O(x - 1, (x, 1))
-    assert cos(x).series(x, x0=1, n=1) == cos(1) + O(x - 1, (x, 1))
+    assert O(x).subs({x: x - 1}) + 1 == 1 + O(x - 1, x, 1)
+    assert cos(x).series(x, x0=1, n=1) == cos(1) + O(x - 1, x, 1)
 
 
 def test_sympyissue_12375():
     s = (x + 1).series(x, 2, 1)
-    assert s == 3 + O(x - 2, (x, 2))
+    assert s == 3 + O(x - 2, x, 2)
     assert s.removeO() == 3
 
 
 def test_sympyissue_12747():
-    assert exp(x).series(x, y, n=1) == exp(y) + O(x - y, (x, y))
+    assert exp(x).series(x, y, n=1) == exp(y) + O(x - y, x, y)
 
 
 def test_sympyissue_14384():
@@ -289,7 +289,7 @@ def test_sympyissue_21245():
             4*sqrt(5)/(-20 - 4*sqrt(5))/5 +
             (x - 1/(1/2 + sqrt(5)/2))*(-96*sqrt(5)/(160*sqrt(5) + 480)/5 -
                                        32/(160*sqrt(5) + 480)) +
-            O((x - sqrt(5)/2 + 1/2)**2, (x, -1/2 + sqrt(5)/2)))
+            O((x - sqrt(5)/2 + 1/2)**2, x, -1/2 + sqrt(5)/2))
 
 
 def test_issue_1139():
@@ -298,7 +298,7 @@ def test_issue_1139():
             sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
             3*I/(4*(1 - I)**3) - 3/(4*(1 - I)**3) +
             5*sqrt(2)*I*(x - sqrt(2)/2 + sqrt(2)*I/2)/(8*(1 - I)**3) +
-            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, (x, sqrt(2)/2 - sqrt(2)*I/2)))
+            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, x, sqrt(2)/2 - sqrt(2)*I/2))
 
 
 def test_sympyissue_22493():
@@ -311,7 +311,7 @@ def test_sympyissue_22493():
 def test_sympyissue_23432():
     e = 1/sqrt(1 - x**2)
     ans = e.series(x, x0=Rational(1, 2), n=1)
-    assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), (x, Rational(1, 2)))
+    assert ans == 2*sqrt(3)/3 + O(x - Rational(1, 2), x, Rational(1, 2))
     assert ans.removeO().evalf() == e.series(x, x0=0.5, n=1).removeO()
 
 

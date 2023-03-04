@@ -575,7 +575,7 @@ def test_acosh_series():
     assert acosh(x).taylor_term(7, x, t5, 0) == - 5*I*x**7/112
     assert (acosh(x).series(x, x0=1, n=2) ==
             sqrt(2)*sqrt(x - 1) - sqrt(2)*sqrt(x - 1)**3/12 +
-            O((x - 1)**2, (x, 1)))
+            O((x - 1)**2, x, 1))
 
 
 # TODO please write more tests -- see issue sympy/sympy#3751

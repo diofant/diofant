@@ -2008,7 +2008,7 @@ def test_X5():
              integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2) ==
             (Integral(h(c*y), (y, 0, x)) + g(b*d) +
              b*(-d + x)*Subs(Derivative(g(y), y), (y, b*d)) +
-             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, (x, d))))
+             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, x, d)))
 
 
 def test_X6():
@@ -2035,7 +2035,7 @@ def test_X8():
     # see issue sympy/sympy#7167
     assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + sqrt(x - 3*pi/2)**3/12 +
-            sqrt(x - 3*pi/2)**7/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            sqrt(x - 3*pi/2)**7/160 + O((x - 3*pi/2)**4, x, 3*pi/2))
 
 
 def test_X9():
@@ -2054,7 +2054,7 @@ def test_X11():
 
 
 def test_X13():
-    assert sqrt(2*x**2 + 1).series(x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
+    assert sqrt(2*x**2 + 1).series(x, x0=oo, n=1) == sqrt(2)*x + O(1/x, x, oo)
 
 
 @pytest.mark.xfail

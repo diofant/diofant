@@ -30,6 +30,7 @@ Compatibility breaks
 * Removed ``diofant.geometry`` module and ``line_integrate`` function, see :pull:`1283`.
 * Removed ``diofant.plotting`` module, see :pull:`1284`.
 * Removed unused ``prefixes``, ``postfixes``, ``capture`` and ``variations`` functions, see :pull:`1282` and :pull:`1290`.
+* Drop support for multivariate :class:`~diofant.calculus.order.Order` notion, see :pull:`1296`.
 
 Minor changes
 =============

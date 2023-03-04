@@ -1432,7 +1432,7 @@ def test_diofant__calculus__limits__Limit():
 
 
 def test_diofant__calculus__order__Order():
-    assert _test_args(Order(1, x, y))
+    assert _test_args(Order(1, x))
 
 
 def test_diofant__simplify__hyperexpand__Hyper_Function():

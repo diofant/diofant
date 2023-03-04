@@ -411,7 +411,7 @@ def test_lambertw():
 
     assert LambertW(x).series(x, n=0) == O(1, x)
     assert LambertW(x, k).series(x, x0=1, n=1) == (LambertW(1, k) +
-                                                   O(x - 1, (x, 1)))
+                                                   O(x - 1, x, 1))
 
 
 def test_sympyissue_5673():

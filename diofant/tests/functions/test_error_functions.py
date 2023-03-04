@@ -451,7 +451,7 @@ def test_expint():
     assert (expint(x, x).series(x, x0=1, n=2) ==
             expint(1, 1) + (x - 1)*(-meijerg(((), (1, 1)),
                                              ((0, 0, 0), ()), 1) - 1/E) +
-            O((x - 1)**2, (x, 1)))
+            O((x - 1)**2, x, 1))
 
     pytest.raises(ArgumentIndexError, lambda: expint(x, y).fdiff(3))
 
@@ -585,7 +585,7 @@ def test_si():
         x + x**3/18 + x**5/600 + x**7/35280 + O(x**9)
     assert Si(sin(x)).series(x, n=7) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
     assert Si(x).series(x, 1, n=3) == \
-        Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, (x, 1))
+        Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, x, 1)
 
     pytest.raises(ArgumentIndexError, lambda: Si(z).fdiff(2))
 
@@ -722,11 +722,11 @@ def test_fresnel():
 
     # issue sympy/sympy#6510
     assert fresnels(z).series(z, oo) == \
-        (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + \
-        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + Rational(1, 2)
+        (-1/(pi**2*z**3) + O(z**(-6), z, oo))*sin(pi*z**2/2) + \
+        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), z, oo))*cos(pi*z**2/2) + Rational(1, 2)
     assert fresnelc(z).series(z, oo) == \
-        (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
-        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + Rational(1, 2)
+        (-1/(pi**2*z**3) + O(z**(-6), z, oo))*cos(pi*z**2/2) + \
+        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), z, oo))*sin(pi*z**2/2) + Rational(1, 2)
     assert fresnels(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 +
                                                     O(z**6))*cos(pi/(2*z**2)) + Rational(1, 2)

@@ -319,7 +319,7 @@ of :meth:`~diofant.core.expr.Expr.series`.
     >>> x + x**3 + x**6 + O(x**4)
          3    ⎛ 4⎞
     x + x  + O⎝x ⎠
-    >>> x*O(1)
+    >>> x*O(1, x)
     O(x)
 
 If you do not want the order term, use the
