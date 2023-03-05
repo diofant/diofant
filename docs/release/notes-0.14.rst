@@ -124,3 +124,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24543`: Rational calc value error
 * :sympyissue:`6326`: PolynomialRing should not derive from CharacteristicZero
 * :sympyissue:`24684`: Unable to evaluate erfcinv
+* :sympyissue:`6822`: Multivariate Order()
