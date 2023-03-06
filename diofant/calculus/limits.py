@@ -1,8 +1,8 @@
-from ..core import Dummy, Expr, Float, PoleError, Rational, nan, oo, sympify
+from ..core import (Add, Dummy, Expr, Float, PoleError, Rational, nan, oo,
+                    sympify)
 from ..core.function import UndefinedFunction
 from ..sets import Reals
 from .gruntz import limitinf
-from .order import Order
 
 
 def limit(expr, z, z0, dir=None):
@@ -154,9 +154,13 @@ class Limit(Expr):
         if not e.has(z):
             return e
 
-        if e.has(Order) and (order := e.getO()) and z == order.var and z0 == order.point:
-            order = limit(order.expr, z, z0, dir)
-            e = e.removeO() + order
+        for t in e.atoms(Add):
+            if (o := t.getO()) and o.var == z and o.point == z0:
+                e = e.xreplace({t: t.removeO()})
+        if e.is_Order and e.var == z and e.point == z0:
+            if limit(e.expr, z, z0, dir):
+                return e
+            return Rational(0)
 
         # Convert to the limit z->oo and use Gruntz algorithm.
         e = e.subs({z: dir*z})
