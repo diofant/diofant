@@ -409,8 +409,7 @@ def test_function__eval_nseries():
         sqrt(2)*x**Rational(3, 2)/12 + O(x**2)
     assert acos(1 + x)._eval_nseries(x, 4, None) == sqrt(2)*I*sqrt(x) - \
         sqrt(2)*I*x**(3/2)/12 + O(x**2)
-    assert loggamma(1/x)._eval_nseries(x, 0, None) == \
-        log(x)/2 - log(x)/x - 1/x + O(1, x)
+    assert loggamma(1/x)._eval_nseries(x, 0, None) == O(1/x) - log(x)/x
     assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:

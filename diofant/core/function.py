@@ -493,7 +493,7 @@ class Function(Application, Expr):
         and possible:
 
         >>> loggamma(1/x)._eval_nseries(x, 0, None)
-        -1/x - log(x)/x + log(x)/2 + O(1, x)
+        -log(x)/x + O(1/x)
 
         """
         from ..calculus import Order
