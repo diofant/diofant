@@ -441,15 +441,13 @@ atoms_table = {
     'Exp1':                    '\N{SCRIPT SMALL E}',
     'Pi':                      '\N{GREEK SMALL LETTER PI}',
     'Infinity':                '\N{INFINITY}',
-    'NegativeInfinity':        '\N{INFINITY}' and ('-' + '\N{INFINITY}'),  # XXX what to do here
+    'NegativeInfinity':        '-\N{INFINITY}',
     # 'ImaginaryUnit':          '\N{GREEK SMALL LETTER IOTA}',
     # 'ImaginaryUnit':          '\N{MATHEMATICAL ITALIC SMALL I}',
     'ImaginaryUnit':           '\N{DOUBLE-STRUCK ITALIC SMALL I}',
     'EmptySet':                '\N{EMPTY SET}',
     'Naturals':                '\N{DOUBLE-STRUCK CAPITAL N}',
-    'Naturals0':               ('\N{DOUBLE-STRUCK CAPITAL N}' and
-                                ('\N{DOUBLE-STRUCK CAPITAL N}' +
-                                 '\N{SUBSCRIPT ZERO}')),
+    'Naturals0':               '\N{DOUBLE-STRUCK CAPITAL N}\N{SUBSCRIPT ZERO}',
     'Integers':                '\N{DOUBLE-STRUCK CAPITAL Z}',
     'Rationals':               '\N{DOUBLE-STRUCK CAPITAL Q}',
     'Reals':                   '\N{DOUBLE-STRUCK CAPITAL R}',
