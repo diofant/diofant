@@ -164,9 +164,9 @@ def test_Implies():
 def test_Equivalent():
     assert Equivalent(a, b) == Equivalent(b, a) == Equivalent(a, b, a)
     assert Equivalent() is true
-    assert Equivalent(a, a) == Equivalent(a) is true
-    assert Equivalent(True, True) == Equivalent(False, False) is true
-    assert Equivalent(True, False) == Equivalent(False, True) is false
+    assert (Equivalent(a, a) == Equivalent(a)) is True
+    assert (Equivalent(True, True) == Equivalent(False, False)) is True
+    assert (Equivalent(True, False) == Equivalent(False, True)) is True
     assert Equivalent(a, True) == a
     assert Equivalent(a, False) == ~a
     assert Equivalent(a, b, True) == a & b

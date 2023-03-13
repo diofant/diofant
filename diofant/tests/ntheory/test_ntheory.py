@@ -557,7 +557,7 @@ def test_residue():
     assert is_quad_residue(207, 251) is True
     assert is_quad_residue(0, 1) is True
     assert is_quad_residue(1, 1) is True
-    assert is_quad_residue(0, 2) == is_quad_residue(1, 2) is True
+    assert (is_quad_residue(0, 2) == is_quad_residue(1, 2)) is True
     assert is_quad_residue(1, 4) is True
     assert is_quad_residue(2, 27) is False
     assert is_quad_residue(13122380800, 13604889600) is True
