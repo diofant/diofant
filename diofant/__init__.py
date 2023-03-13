@@ -1,8 +1,7 @@
 """Diofant is a Python library for symbolic mathematics."""
 
 from fractions import Fraction
-
-import pkg_resources
+from importlib.metadata import version
 
 from .calculus import Limit, O, Order, limit, maximize, minimize, residue
 from .combinatorics import (AbelianGroup, AlternatingGroup, Cycle, CyclicGroup,
@@ -292,5 +291,6 @@ __all__ = (
     'pretty_print', 'python', 'srepr', 'sstr', 'sstrrepr', 'init_printing',
     'ExtendedReals', 'IntegerModRing')
 
-__version__ = pkg_resources.get_distribution(__name__).version
-del pkg_resources
+
+__version__ = version(__name__)
+del version
