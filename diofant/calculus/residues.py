@@ -46,7 +46,7 @@ def residue(expr, x, x0):
         expr = expr.subs({x: x + x0})
     s, n = Order(1, x), 1
     while s.has(Order) and s.getn() <= 0:
-        s = expr.nseries(x, n=n)
+        s = expr.series(x, n=n)
         n *= 2
     s = collect(s.removeO(), x)
     if s.is_Add:

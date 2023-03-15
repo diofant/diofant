@@ -906,7 +906,7 @@ class Integral(AddWithLimits):
             if x in l[1:]:
                 symb = l[0]
                 break
-        terms, order = expr.function.nseries(
+        terms, order = expr.function.series(
             x=symb, n=n, logx=logx).as_coeff_add(Order)
         order = [o.subs({symb: x}) for o in order]
         return integrate(terms, *expr.limits) + Add(*order)*x
