@@ -2406,7 +2406,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             while not target_order.contains(cur_order):
                 s1 = self._eval_nseries(x, n=ndo, logx=logx)
                 ndo += 1
-                cur_order = s1.getO()
+                cur_order = s1.getO() or Integer(0)
 
             if (s1 + target_order).removeO() == s1:
                 target_order = Integer(0)
