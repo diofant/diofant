@@ -1495,3 +1495,17 @@ def test_sympyissue_23707():
                      t) == Piecewise((t, Eq(x, y + 1)),
                                      (-exp(t)/(exp(t*sqrt(x - y))*sqrt(x - y) -
                                                exp(t*sqrt(x - y))), True))
+
+
+def test_sympyissue_24477():
+    r = Symbol('r', positive=True)
+    theta = Symbol('theta')
+
+    expr1 = r*sin(theta) + O(r**4)
+    expr2 = r*expr1
+    expr3 = expr2.expand()
+
+    assert integrate(expr1, (theta, 0, 2*pi)) == O(r**4)
+    assert integrate(expr2, (theta, 0, 2*pi)) != 0
+    assert integrate(expr2, (theta, 0, 2*pi)).doit().expand() == O(r**5)
+    assert integrate(expr3, (theta, 0, 2*pi)) == O(r**5)
