@@ -560,13 +560,13 @@ class Function(Application, Expr):
                     term = term.expand()
                     series += term
                 return series + Order(x**n, x)
-            return e1.nseries(x, n=n, logx=logx)
+            return e1.nseries(x, n, logx)
         arg = self.args[0]
         f_series = order = Integer(0)
         i, terms = 0, []
         while order == 0 or i <= n:
             term = self.taylor_term(i, arg, *terms)
-            term = term.nseries(x, n=n, logx=logx)
+            term = term.nseries(x, n, logx)
             terms.append(term)
             if term:
                 f_series += term
@@ -1221,7 +1221,7 @@ class Derivative(Expr):
             yield self.func(term, *self.variables)
 
     def _eval_nseries(self, x, n, logx):
-        arg = self.expr.nseries(x, n=n, logx=logx)
+        arg = self.expr.nseries(x, n, logx)
         o = arg.getO()
         rv = [self.func(a, *self.variables) for a in Add.make_args(arg.removeO())]
         if o:
@@ -1503,7 +1503,7 @@ class Subs(Expr):
             v = self.variables[self.point.index(x)]
         else:
             v = x
-        arg = self.expr.nseries(v, n=n, logx=logx)
+        arg = self.expr.nseries(v, n, logx)
         rv = Add(*[self.func(a, *zip(self.variables, self.point))
                    for a in Add.make_args(arg.removeO())])
         if o := arg.getO():

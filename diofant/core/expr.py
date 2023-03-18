@@ -2566,7 +2566,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return collect(series.removeO(), x) + order
         p = Dummy('x', positive=True, finite=True)
         e = self.subs({x: p})
-        e = e.nseries(p, n, logx=logx)
+        e = e.nseries(p, n, logx)
         return e.subs({p: x})
 
     def aseries(self, x, n=6, bound=0, hir=False):

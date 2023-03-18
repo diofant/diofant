@@ -361,13 +361,13 @@ class log(Function):
         if not logx:
             logx = log(x)
         arg = self.args[0]
-        arg_series = arg.nseries(x, n=n, logx=logx)
+        arg_series = arg.nseries(x, n, logx)
         while arg_series.is_Order:
             n += 1
-            arg_series = arg.nseries(x, n=n, logx=logx)
+            arg_series = arg.nseries(x, n, logx)
         arg0 = arg_series.as_leading_term(x)
         c, e = arg0.as_coeff_exponent(x)
-        res = term = t = ((arg_series - arg0)/arg0).nseries(x, n=n, logx=logx)
+        res = term = t = ((arg_series - arg0)/arg0).nseries(x, n, logx)
         # series of log(1 + t) in t
         for i in range(1, n):
             term *= -i*t/(i + 1)

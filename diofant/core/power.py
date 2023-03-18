@@ -1122,7 +1122,7 @@ class Pow(Expr):
         from ..functions import arg, exp, floor, log
         from ..simplify import powsimp
         if self.is_Exp:
-            e_series = self.exp.nseries(x, n=n, logx=logx)
+            e_series = self.exp.nseries(x, n, logx)
             if e_series.is_Order:
                 return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
@@ -1133,17 +1133,17 @@ class Pow(Expr):
             # series of exp(e0 + t) in t
             for i in range(1, n):
                 term *= t/i
-                term = term.nseries(x, n=n, logx=logx)
+                term = term.nseries(x, n, logx)
                 exp_series += term
             exp_series += Order(t**n, x)
             return powsimp(exp_series, deep=True, combine='exp')
         if self.exp.has(x):
-            return exp(self.exp*log(self.base)).nseries(x, n=n, logx=logx)
+            return exp(self.exp*log(self.base)).nseries(x, n, logx)
 
-        b_series = self.base.nseries(x, n=n, logx=logx)
+        b_series = self.base.nseries(x, n, logx)
         while b_series.is_Order:
             n += 1
-            b_series = self.base.nseries(x, n=n, logx=logx)
+            b_series = self.base.nseries(x, n, logx)
         b0 = b_series.as_leading_term(x)
         t = expand_mul(expand_multinomial(b_series/b0 - 1).cancel())
         if t.is_Add:
@@ -1163,7 +1163,7 @@ class Pow(Expr):
         # series of (1 + t)**e in t
         for i in range(1, n):
             term *= (self.exp - i + 1)*t/i
-            term = term.nseries(x, n=n, logx=logx)
+            term = term.nseries(x, n, logx)
             pow_series += term
         factor = b0**self.exp
         if t != 0 and not (self.exp.is_Integer and self.exp >= 0 and n > self.exp):

@@ -296,7 +296,7 @@ class Add(AssocOp):
         return self.func(*[a.diff(s) for a in self.args])
 
     def _eval_nseries(self, x, n, logx):
-        terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
+        terms = [t.nseries(x, n, logx) for t in self.args]
         return self.func(*terms)
 
     def _matches_simple(self, expr, repl_dict):
