@@ -505,6 +505,9 @@ def test_asinh():
     assert asinh(+I*(sqrt(5) + 1)/4) == +3*pi*I/10
     assert asinh(-I*(sqrt(5) + 1)/4) == -3*pi*I/10
 
+    assert asinh(x).is_real is None
+    assert asinh(3).is_real is True
+
     pytest.raises(ArgumentIndexError, lambda: asinh(x).fdiff(2))
 
 
@@ -845,3 +848,8 @@ def test_cosh_expansion():
     assert cosh(2*x).expand(trig=True) == cosh(x)**2 + sinh(x)**2
     assert cosh(3*x).expand(trig=True).expand() == \
         3*sinh(x)**2*cosh(x) + cosh(x)**3
+
+
+def test_sympyissue_24928():
+    assert asinh(2) - oo == -oo
+    assert asinh(2) + oo == +oo

@@ -759,6 +759,10 @@ class asinh(Function):
         """Returns the inverse of this function."""
         return sinh
 
+    def _eval_is_real(self):
+        if self.args[0].is_real:
+            return True
+
 
 class acosh(Function):
     """

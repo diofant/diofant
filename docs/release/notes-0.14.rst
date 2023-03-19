@@ -126,3 +126,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24684`: Unable to evaluate erfcinv
 * :sympyissue:`6822`: Multivariate Order()
 * :sympyissue:`24477`: Expand before integrate gives different results with big O
+* :sympyissue:`24928`: simplify(asinh(2)-oo)->0
