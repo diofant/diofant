@@ -31,6 +31,7 @@ Compatibility breaks
 * Removed ``diofant.plotting`` module, see :pull:`1284`.
 * Removed unused ``prefixes``, ``postfixes``, ``capture`` and ``variations`` functions, see :pull:`1282` and :pull:`1290`.
 * Drop support for multivariate :class:`~diofant.calculus.order.Order` notion, see :pull:`1296`.
+* Removed ``Add.extract_leading_order`` method, see :pull:`1292`.
 
 Minor changes
 =============

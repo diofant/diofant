@@ -120,7 +120,7 @@ class Order(Expr):
             x = var
 
         if expr.is_Add:
-            lst = expr.extract_leading_order([x])
+            lst = expr._extract_leading_order([x])
             expr = Add(*[f.expr for (e, f) in lst])
 
         elif expr:

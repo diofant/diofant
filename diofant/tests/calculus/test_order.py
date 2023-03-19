@@ -150,19 +150,19 @@ def test_sympyissue_3468():
 
 
 def test_leading_order():
-    assert (x + 1 + 1/x**5).extract_leading_order(x) == ((1/x**5, O(1/x**5)),)
-    assert (1 + 1/x).extract_leading_order(x) == ((1/x, O(1/x)),)
-    assert (1 + x).extract_leading_order(x) == ((1, O(1, x)),)
-    assert (1 + x**2).extract_leading_order(x) == ((1, O(1, x)),)
-    assert (2 + x**2).extract_leading_order(x) == ((2, O(1, x)),)
-    assert (x + x**2).extract_leading_order(x) == ((x, O(x)),)
+    assert (x + 1 + 1/x**5)._extract_leading_order(x) == ((1/x**5, O(1/x**5)),)
+    assert (1 + 1/x)._extract_leading_order(x) == ((1/x, O(1/x)),)
+    assert (1 + x)._extract_leading_order(x) == ((1, O(1, x)),)
+    assert (1 + x**2)._extract_leading_order(x) == ((1, O(1, x)),)
+    assert (2 + x**2)._extract_leading_order(x) == ((2, O(1, x)),)
+    assert (x + x**2)._extract_leading_order(x) == ((x, O(x)),)
 
 
 def test_leading_order2():
-    assert set((2 + pi + x**2).extract_leading_order(x)) == {(pi, O(1, x)),
-                                                             (2, O(1, x))}
-    assert set((2*x + pi*x + x**2).extract_leading_order(x)) == {(2*x, O(x)),
-                                                                 (x*pi, O(x))}
+    assert set((2 + pi + x**2)._extract_leading_order(x)) == {(pi, O(1, x)),
+                                                              (2, O(1, x))}
+    assert set((2*x + pi*x + x**2)._extract_leading_order(x)) == {(2*x, O(x)),
+                                                                  (x*pi, O(x))}
 
 
 def test_order_leadterm():
