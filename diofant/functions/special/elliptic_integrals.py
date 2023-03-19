@@ -71,7 +71,7 @@ class elliptic_k(Function):
 
     def _eval_nseries(self, x, n, logx):
         from ...simplify import hyperexpand
-        return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
+        return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n, logx))
 
     def _eval_rewrite_as_hyper(self, m):
         return (pi/2)*hyper((Rational(1, 2), Rational(1, 2)), (1,), m)
@@ -233,8 +233,8 @@ class elliptic_e(Function):
     def _eval_nseries(self, x, n, logx):
         from ...simplify import hyperexpand
         if len(self.args) == 1:
-            return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
-        return super()._eval_nseries(x, n=n, logx=logx)
+            return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n, logx))
+        return super()._eval_nseries(x, n, logx)
 
     def _eval_rewrite_as_hyper(self, *args):
         if len(args) == 1:

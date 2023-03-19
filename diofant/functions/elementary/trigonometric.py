@@ -899,8 +899,8 @@ class tan(TrigonometricFunction):
     def _eval_nseries(self, x, n, logx):
         i = self.args[0].limit(x, 0)*2/pi
         if i and i.is_Integer:
-            return self.rewrite(cos)._eval_nseries(x, n=n, logx=logx)
-        return Function._eval_nseries(self, x, n=n, logx=logx)
+            return self.rewrite(cos)._eval_nseries(x, n, logx)
+        return Function._eval_nseries(self, x, n, logx)
 
     def _eval_rewrite_as_Pow(self, arg):
         if isinstance(arg, log):

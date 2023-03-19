@@ -504,4 +504,4 @@ class LambertW(Function):
                 l += Add(*[Integer(-k)**(k - 1)*x**k/factorial(k)
                            for k in range(1, n)])
             return l + o
-        return super()._eval_nseries(x, n=n, logx=logx)
+        return super()._eval_nseries(x, n, logx)
