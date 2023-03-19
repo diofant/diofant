@@ -840,7 +840,7 @@ class loggamma(Function):
 
         return self
 
-    def _eval_nseries(self, x, n, logx=None):
+    def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 == 0:
             f = self._eval_rewrite_as_intractable(*self.args)
