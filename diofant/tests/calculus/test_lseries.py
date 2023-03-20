@@ -40,7 +40,7 @@ def test_simple():
     assert list(x.series(n=None)) == [x]
     assert list(Integer(1).series(x, n=None)) == [1]
     assert not next((x/(x + y)).series(y, n=None)).has(O)
-    assert [t.doit() for t in Derivative(1 + x, x).series(x, n=None)] == [0, 1]
+    assert [t.doit() for t in Derivative(1 + x, x).series(x, n=None)] == [1]
 
     # issue sympy/sympy#5183
     s = (x + 1/x).series(n=None)

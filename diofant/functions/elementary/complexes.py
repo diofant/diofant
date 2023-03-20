@@ -492,7 +492,7 @@ class Abs(Function):
 
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
-        s = self.args[0]._eval_nseries(x, n=n, logx=logx)
+        s = self.args[0]._eval_nseries(x, n, logx)
         when, lim = Eq(direction, 0), direction.limit(x, 0)
         if lim.equals(0) is False:
             return s/sign(lim)

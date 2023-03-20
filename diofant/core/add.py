@@ -575,20 +575,7 @@ class Add(AssocOp):
             return self._new_rawargs(*args)
 
     @cacheit
-    def extract_leading_order(self, symbols):
-        """Returns the leading term and its order.
-
-        Examples
-        ========
-
-        >>> (x + 1 + 1/x**5).extract_leading_order(x)
-        ((x**(-5), O(x**(-5))),)
-        >>> (1 + x).extract_leading_order(x)
-        ((1, O(1, x)),)
-        >>> (x + x**2).extract_leading_order(x)
-        ((x, O(x)),)
-
-        """
+    def _extract_leading_order(self, symbols):
         from ..calculus import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
@@ -650,7 +637,7 @@ class Add(AssocOp):
 
         if not expr.is_Add:
             return expr
-        plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
+        plain = expr.func(*[s for s, _ in expr._extract_leading_order(x)])
         rv = factor_terms(plain, fraction=False)
         rv_simplify = rv.simplify()
         # if it simplifies to an x-free expression, return that;

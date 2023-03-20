@@ -1216,10 +1216,6 @@ class Derivative(Expr):
 
         return Derivative(*(x._subs(old, new) for x in self.args))
 
-    def _eval_lseries(self, x, logx=None):
-        for term in self.expr.series(x, n=None, logx=logx):
-            yield self.func(term, *self.variables)
-
     def _eval_nseries(self, x, n, logx):
         arg = self.expr.nseries(x, n, logx)
         o = arg.getO()
@@ -1498,7 +1494,7 @@ class Subs(Expr):
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
 
-    def _eval_nseries(self, x, n, logx=None):
+    def _eval_nseries(self, x, n, logx):
         if x in self.point:
             v = self.variables[self.point.index(x)]
         else:

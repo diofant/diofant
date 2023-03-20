@@ -2397,14 +2397,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return rv.subs({xpos: x})
 
         if n is not None:  # nseries handling
-            s1 = self._eval_nseries(x, n=n, logx=logx)
+            s1 = self._eval_nseries(x, n, logx)
             cur_order = s1.getO() or Integer(0)
 
             # Now make sure the requested order is returned
             target_order = Order(x**n, x)
             ndo = n + 1
             while not target_order.contains(cur_order):
-                s1 = self._eval_nseries(x, n=ndo, logx=logx)
+                s1 = self._eval_nseries(x, ndo, logx)
                 ndo += 1
                 cur_order = s1.getO() or Integer(0)
 
@@ -2467,7 +2467,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # override this method and implement much more efficient yielding of
         # terms.
         n = 0
-        series = self._eval_nseries(x, n=n, logx=logx)
+        series = self._eval_nseries(x, n, logx)
         if not series.is_Order:
             if series.is_Add:
                 yield series.removeO()
@@ -2477,13 +2477,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         while series.is_Order:
             n += 1
-            series = self._eval_nseries(x, n=n, logx=logx)
+            series = self._eval_nseries(x, n, logx)
         e = series.removeO()
         yield e
         while 1:
             while 1:
                 n += 1
-                series = self._eval_nseries(x, n=n, logx=logx).removeO()
+                series = self._eval_nseries(x, n, logx).removeO()
                 if e != series:
                     break
             yield series - e
@@ -2561,7 +2561,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import collect
         from .symbol import Dummy
         if x.is_positive and x.is_finite:
-            series = self._eval_nseries(x, n=n, logx=logx)
+            series = self._eval_nseries(x, n, logx)
             order = series.getO() or Integer(0)
             return collect(series.removeO(), x) + order
         p = Dummy('x', positive=True, finite=True)
