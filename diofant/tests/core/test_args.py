@@ -85,7 +85,7 @@ from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
 from diofant.sets.fancysets import (ExtendedReals, Integers, Naturals,
                                     Naturals0, Rationals, Reals)
-from diofant.sets.sets import EmptySet, UniversalSet
+from diofant.sets.sets import EmptySet
 from diofant.simplify.hyperexpand import G_Function, Hyper_Function
 from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
@@ -439,10 +439,6 @@ def test_diofant__core__relational__Unequality():
 
 def test_diofant__sets__sets__EmptySet():
     assert _test_args(EmptySet())
-
-
-def test_diofant__sets__sets__UniversalSet():
-    assert _test_args(UniversalSet())
 
 
 def test_diofant__sets__sets__FiniteSet():

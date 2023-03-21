@@ -560,7 +560,7 @@ def test_bool_as_set():
     assert ((x <= 2) & (x >= -2)).as_set() == Interval(-2, 2)
     assert ((x >= 2) | (x <= -2)).as_set() == (Interval(-oo, -2) + Interval(2, oo, False))
     assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
-    assert true.as_set() == S.UniversalSet
+    assert true.as_set() == S.ExtendedReals
     assert false.as_set() == EmptySet()
 
 
