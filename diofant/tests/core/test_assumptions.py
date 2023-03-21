@@ -922,3 +922,9 @@ def test_sympyissue_23086():
     e = 180*acos(Rational(7823207, 7823209))/pi
     assert e.is_zero is False
     assert e.simplify()
+
+
+def test_sympyissue_24948():
+    a = acos(-3*sqrt(10)/10)
+    b = acos(2*sqrt(5)/5)
+    assert (b - a + 3*pi/4).is_positive is None

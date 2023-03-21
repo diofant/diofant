@@ -128,3 +128,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`6822`: Multivariate Order()
 * :sympyissue:`24477`: Expand before integrate gives different results with big O
 * :sympyissue:`24928`: simplify(asinh(2)-oo)->0
+* :sympyissue:`24948`: .is_positive returns None when it should be False
