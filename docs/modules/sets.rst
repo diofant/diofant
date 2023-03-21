@@ -38,9 +38,6 @@ Singleton Sets
 .. autoclass:: EmptySet
    :members:
 
-.. autoclass:: UniversalSet
-   :members:
-
 Special Sets
 ^^^^^^^^^^^^
 

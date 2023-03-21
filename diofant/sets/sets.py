@@ -37,7 +37,6 @@ class Set(Basic):
     is_Union = False
     is_Intersection: bool | None = None
     is_EmptySet: bool | None = None
-    is_UniversalSet: bool | None = None
     is_Complement: bool | None = None
     is_SymmetricDifference: bool | None = None
 
@@ -152,9 +151,6 @@ class Set(Basic):
 
         >>> Interval(0, 1).complement(S.Reals)
         (-oo, 0) U (1, oo)
-
-        >>> Interval(0, 1).complement(S.UniversalSet)
-        UniversalSet() \ [0, 1]
 
         """
         return Complement(universe, self)
@@ -908,8 +904,6 @@ class Interval(Set, EvalfMixin):
         See Set._union for docstring
 
         """
-        if other.is_UniversalSet:
-            return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
             from ..functions import Max, Min
 
@@ -1356,10 +1350,6 @@ class Intersection(Set):
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
-
-        if len(args) == 0:
-            return S.UniversalSet
-
         args = list(ordered(args, Set._infimum_key))
 
         # Reduce sets using known rules
@@ -1522,11 +1512,6 @@ class EmptySet(Set, metaclass=Singleton):
     >>> Interval(1, 2).intersection(S.EmptySet)
     EmptySet()
 
-    See Also
-    ========
-
-    UniversalSet
-
     References
     ==========
 
@@ -1571,59 +1556,6 @@ class EmptySet(Set, metaclass=Singleton):
 
     def _symmetric_difference(self, other):
         return other
-
-
-class UniversalSet(Set, metaclass=Singleton):
-    """
-    Represents the set of all things.
-
-    The universal set is available as a singleton as S.UniversalSet
-
-    Examples
-    ========
-
-    >>> S.UniversalSet
-    UniversalSet()
-
-    >>> Interval(1, 2).intersection(S.UniversalSet)
-    [1, 2]
-
-    See Also
-    ========
-
-    EmptySet
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Universal_set
-
-    """
-
-    is_UniversalSet = True
-
-    def _intersection(self, other):
-        return other
-
-    def _complement(self, other):
-        return S.EmptySet
-
-    def _symmetric_difference(self, other):
-        return other
-
-    @property
-    def measure(self):
-        return oo
-
-    def _contains(self, other):
-        return true
-
-    def as_relational(self, symbol):
-        return true
-
-    @property
-    def boundary(self):
-        return EmptySet()
 
 
 class FiniteSet(Set, EvalfMixin):

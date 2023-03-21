@@ -170,17 +170,8 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
         return hash(True)
 
     def as_set(self):
-        """
-        Rewrite logic operators and relationals in terms of real sets.
-
-        Examples
-        ========
-
-        >>> true.as_set()
-        UniversalSet()
-
-        """
-        return S.UniversalSet
+        """Rewrite logic operators and relationals in terms of real sets."""
+        return S.ExtendedReals
 
 
 class BooleanFalse(BooleanAtom, metaclass=Singleton):
