@@ -6,3 +6,4 @@
 *.yaml  text
 *.cnf   text
 *.bib   text
+.git_archival.txt  export-subst
