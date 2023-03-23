@@ -1195,6 +1195,8 @@ class Derivative(Expr):
         return self.expr.free_symbols
 
     def _eval_subs(self, old, new):
+        from .symbol import Dummy
+
         if old in self.variables and not new._diff_wrt:
             # issue sympy/sympy#4719
             return Subs(self, (old, new))
@@ -1214,7 +1216,24 @@ class Derivative(Expr):
             if _subset(old_vars, self_vars):
                 return Derivative(new, *(self_vars - old_vars).elements())
 
-        return Derivative(*(x._subs(old, new) for x in self.args))
+        args = list(self.args)
+        newargs = [x._subs(old, new) for x in args]
+
+        if newargs[0] != args[0] and not isinstance(old, UndefinedFunction):
+            # Can't change expr by introducing something that is in
+            # the variables if it was already in the expr.
+            # E.g. for Derivative(f(x, g(y)), y), x cannot be replaced with
+            # anything that has y in it; for f(g(x), g(y)).diff(g(y))
+            # g(x) cannot be replaced with anything that has g(y).
+            syms = {vi: Dummy() for vi in self.variables if not vi.is_Symbol}
+            wrt = {syms.get(vi, vi) for vi in self.variables}
+            forbidden = args[0].xreplace(syms).free_symbols & wrt
+            nfree = new.xreplace(syms).free_symbols
+            ofree = old.xreplace(syms).free_symbols
+            if (nfree - ofree) & forbidden:
+                return Subs(self, (old, new))
+
+        return Derivative(*newargs)
 
     def _eval_nseries(self, x, n, logx):
         arg = self.expr.nseries(x, n, logx)
