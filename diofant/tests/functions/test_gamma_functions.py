@@ -399,13 +399,13 @@ def test_loggamma():
     assert loggamma(w).is_extended_real is None
 
     def tN(N, M):
-        assert loggamma(1/x)._eval_nseries(x, N, None).getn() == M
-    tN(0, -1)
-    tN(1, +1)
-    tN(2, +3)
-    tN(3, +3)
-    tN(4, +5)
-    tN(5, +5)
+        assert loggamma(1/x).series(x, n=N).getn() == M
+    tN(-1, -1)
+    tN(1, 1)
+    tN(2, 2)
+    tN(3, 3)
+    tN(4, 4)
+    tN(5, 5)
 
 
 def test_polygamma_expansion():

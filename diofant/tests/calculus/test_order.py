@@ -166,7 +166,7 @@ def test_leading_order2():
 
 
 def test_order_leadterm():
-    assert O(x**2)._eval_as_leading_term(x) == O(x**2)
+    assert O(x**2).as_leading_term(x) == O(x**2)
 
 
 def test_order_symbols():
