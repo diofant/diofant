@@ -129,3 +129,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24477`: Expand before integrate gives different results with big O
 * :sympyissue:`24928`: simplify(asinh(2)-oo)->0
 * :sympyissue:`24948`: .is_positive returns None when it should be False
+* :sympyissue:`24957`: Timeout for dsolve((2x^3+3y)+(3x+y-1)y'=0)

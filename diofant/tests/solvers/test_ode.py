@@ -3047,3 +3047,9 @@ def test_sympyissue_23562():
 def test_sympyissue_23702():
     assert dsolve(f(x).diff(x) - f(x), f(x),
                   init={f(0): f(0)}) == Eq(f(x),  f(0)*exp(x))
+
+
+def test_sympyissue_24957():
+    eq = (2*x**3 + 3*f(x)) + (3*x + f(x) - 1)*f(x).diff(x)
+    assert dsolve(eq) == [Eq(f(x), -3*x - sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1),
+                          Eq(f(x), -3*x + sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1)]
