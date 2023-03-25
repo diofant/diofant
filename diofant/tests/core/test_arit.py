@@ -535,7 +535,6 @@ def test_Mul_is_negative_positive():
     assert (-neg).is_negative is False
     assert (2*neg).is_negative is True
 
-    assert (2*pos)._eval_is_negative() is False
     assert (2*pos).is_negative is False
 
     assert pos.is_negative is False

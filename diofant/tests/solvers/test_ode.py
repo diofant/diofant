@@ -3047,3 +3047,21 @@ def test_sympyissue_23562():
 def test_sympyissue_23702():
     assert dsolve(f(x).diff(x) - f(x), f(x),
                   init={f(0): f(0)}) == Eq(f(x),  f(0)*exp(x))
+
+
+def test_sympyissue_24957():
+    eq = (2*x**3 + 3*f(x)) + (3*x + f(x) - 1)*f(x).diff(x)
+    assert dsolve(eq) == [Eq(f(x), -3*x - sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1),
+                          Eq(f(x), -3*x + sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1)]
+
+
+def test_sympyissue_24955():
+    eq = x**2*f(x).diff(x) - f(x)**2*f(x).diff(x) + 2*x*f(x)
+    assert dsolve(eq) == [Eq(f(x), root(2, 3)*(-x**2/root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3) -
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/2)),
+                          Eq(f(x), root(2, 3)*(2*x**2/((1 + sqrt(3)*I)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)) +
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4 +
+                             root(2, 3)*sqrt(3)*I*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4)),
+                          Eq(f(x), root(2, 3)*(-2*x**2/((-1 + sqrt(3)*I)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)) +
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4 -
+                             root(2, 3)*sqrt(3)*I*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4))]

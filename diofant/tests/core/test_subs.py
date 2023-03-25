@@ -421,7 +421,6 @@ def test_functions_subs():
 
 
 def test_derivative_subs():
-    y = Symbol('y')
     f = Function('f')
     assert Derivative(f(x), x).subs({f(x): y}) != 0
     assert Derivative(f(x), x).subs({f(x): y}).subs({y: f(x)}) == \
@@ -430,6 +429,10 @@ def test_derivative_subs():
     assert cse(Derivative(f(x), x) + f(x))[1][0].has(Derivative)
     assert cse(Derivative(f(x, y), x) +
                Derivative(f(x, y), y))[1][0].has(Derivative)
+    # issue diofant/diofant#1303
+    g = Function('g')
+    d = f(x, y, z).diff(x)
+    assert d.subs({y: g(x, z)}) == Subs(d, (y, g(x, z)))
 
 
 def test_derivative_subs2():

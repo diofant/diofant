@@ -100,9 +100,9 @@ def test_diff_symbols():
     assert diff(f(x, y, z), x, y, (z, 2)) == Derivative(f(x, y, z), x, y, z, z)
     assert diff(f(x, y, z), x, y, (z, 2), evaluate=False) == \
         Derivative(f(x, y, z), x, y, z, z)
-    assert Derivative(f(x, y, z), x, y, z)._eval_derivative(z) == \
+    assert Derivative(f(x, y, z), x, y, z).diff(z) == \
         Derivative(f(x, y, z), x, y, z, z)
-    assert Derivative(Derivative(f(x, y, z), x), y)._eval_derivative(z) == \
+    assert Derivative(Derivative(f(x, y, z), x), y).diff(z) == \
         Derivative(f(x, y, z), x, y, z)
 
 
@@ -398,25 +398,25 @@ def test_function_complex():
 def test_function__eval_nseries():
     n = Symbol('n')
 
-    assert sin(x)._eval_nseries(x, 2, None) == x + O(x**3)
-    assert sin(x + 1)._eval_nseries(x, 2, None) == x*cos(1) + sin(1) + O(x**2)
-    assert sin(pi*(1 - x))._eval_nseries(x, 2, None) == pi*x + O(x**3)
-    assert acos(1 - x**2)._eval_nseries(x, 2, None) == sqrt(2)*x + O(x**2)
-    assert polygamma(n, x + 1)._eval_nseries(x, 2, None) == \
+    assert sin(x).series(x, n=3) == x + O(x**3)
+    assert sin(x + 1).series(x, n=2) == x*cos(1) + sin(1) + O(x**2)
+    assert sin(pi*(1 - x)).series(x, n=3) == pi*x + O(x**3)
+    assert acos(1 - x**2).series(x, n=2) == sqrt(2)*x + O(x**2)
+    assert polygamma(n, x + 1).series(x, n=2) == \
         polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
-    pytest.raises(PoleError, lambda: sin(1/x)._eval_nseries(x, 2, None))
-    assert acos(1 - x)._eval_nseries(x, 4, None) == sqrt(2)*sqrt(x) + \
+    pytest.raises(PoleError, lambda: sin(1/x).series(x, n=2))
+    assert acos(1 - x).series(x, n=2) == sqrt(2)*sqrt(x) + \
         sqrt(2)*x**Rational(3, 2)/12 + O(x**2)
-    assert acos(1 + x)._eval_nseries(x, 4, None) == sqrt(2)*I*sqrt(x) - \
+    assert acos(1 + x).series(x, n=2) == sqrt(2)*I*sqrt(x) - \
         sqrt(2)*I*x**(3/2)/12 + O(x**2)
-    assert loggamma(1/x)._eval_nseries(x, 0, None) == O(1/x) - log(x)/x
+    assert loggamma(1/x).series(x, n=-1) == O(1/x) - log(x)/x
     assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:
-    assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \
+    assert expint(Rational(3, 2), -x).series(x, n=5) == \
         2 - 2*I*sqrt(pi)*sqrt(x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
-    assert sin(sqrt(x))._eval_nseries(x, 6, None) == \
-        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**Rational(7, 2))
+    assert sin(sqrt(x)).series(x, n=3) == \
+        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**3)
 
 
 def test_doit():

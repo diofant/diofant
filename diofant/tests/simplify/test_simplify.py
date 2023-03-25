@@ -117,10 +117,10 @@ def test_simplify_other():
 
 
 def test_simplify_complex():
-    cosAsExp = cos(x)._eval_rewrite_as_exp(x)
-    tanAsExp = tan(x)._eval_rewrite_as_exp(x)
-    assert simplify(cosAsExp*tanAsExp).expand() == (
-        sin(x))._eval_rewrite_as_exp(x).expand()  # issue sympy/sympy#4341
+    cosAsExp = cos(x).rewrite(exp)
+    tanAsExp = tan(x).rewrite(exp)
+    # issue sympy/sympy#4341
+    assert simplify(cosAsExp*tanAsExp).expand() == sin(x).rewrite(exp).expand()
 
 
 def test_simplify_ratio():
