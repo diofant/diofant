@@ -172,11 +172,6 @@ class Piecewise(Function):
 
     def _eval_interval(self, x, a, b):
         """Evaluates the function along the sym in a given interval ab."""
-        # FIXME: Currently complex intervals are not supported.  A possible
-        # replacement algorithm, discussed in issue sympy/sympy#5227, can be found in the
-        # following papers;
-        #     http://portal.acm.org/citation.cfm?id=281649
-        #     http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4127&rep=rep1&type=pdf
         from .complexes import Abs
 
         if x.is_real is None:

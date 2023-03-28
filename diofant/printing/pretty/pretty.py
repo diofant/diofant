@@ -711,7 +711,6 @@ class PrettyPrinter(Printer):
         maxw = [max(P[i, j].width() for i in range(len_args))
                 for j in range(2)]
 
-        # FIXME: Refactor this code and matrix into some tabular environment.
         # drawing result
         D = None
 
@@ -770,7 +769,6 @@ class PrettyPrinter(Printer):
         return prettyForm(*p1.right(sep, p2))
 
     def _print_hyper(self, e):
-        # FIXME refactor Matrix, Piecewise, and this into a tabular environment
         ap = [self._print(a) for a in e.ap]
         bq = [self._print(b) for b in e.bq]
 
@@ -818,8 +816,6 @@ class PrettyPrinter(Printer):
         return D
 
     def _print_meijerg(self, e):
-        # FIXME refactor Matrix, Piecewise, and this into a tabular environment
-
         v = {}
         v[(0, 0)] = [self._print(a) for a in e.an]
         v[(0, 1)] = [self._print(a) for a in e.aother]

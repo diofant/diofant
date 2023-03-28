@@ -202,7 +202,7 @@ class CodePrinter(StrPrinter):
                         # contractions, those must be computed first.
                         # (temporary variables?)
                         raise NotImplementedError(
-                            'FIXME: no support for contractions in factor yet')
+                            'no support for contractions in factor yet')
 
                     # We need the lhs expression as an accumulator for
                     # the loops, i.e
@@ -213,8 +213,7 @@ class CodePrinter(StrPrinter):
                     #
                     # We check if the expression already contains the
                     # lhs, and raise an exception if it does, as that
-                    # syntax is currently undefined.  FIXME: What would be
-                    # a good interpretation?
+                    # syntax is currently undefined.
                     assert assign_to is not None
                     assert not term.has(assign_to)
 

@@ -82,8 +82,7 @@ def _get_indices_Pow(expr):
 
     applied to each element of x (a universal function in numpy terms).  In
     order to allow an interpretation of (1) as a contraction, we need
-    contravariant and covariant Idx subclasses.  (FIXME: this is not yet
-    implemented)
+    contravariant and covariant Idx subclasses.
 
     Expressions in the base or exponent are subject to contraction as usual,
     but an index that is present in the exponent, will not be considered
@@ -106,7 +105,6 @@ def _get_indices_Pow(expr):
 
     inds = binds | einds
 
-    # FIXME: symmetries from power needs to check special cases, else nothing
     symmetries = {}
 
     return inds, symmetries
@@ -123,8 +121,6 @@ def _get_indices_Add(expr):
     But we do not allow expressions like:
 
         x(i)*y(j) - z(j)*z(j)
-
-    FIXME: Add support for Numpy broadcasting
 
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
@@ -143,7 +139,6 @@ def _get_indices_Add(expr):
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
         raise IndexConformanceExceptionError(f'Indices are not consistent: {expr}')
 
-    # FIXME: search for symmetries
     symmetries = {}
 
     return non_scalars[0], symmetries

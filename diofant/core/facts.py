@@ -334,7 +334,6 @@ class Prover:
         # right part first
 
         # a -> b & c    -->  a -> b  ;  a -> c
-        # (?) FIXME this is only correct when b & c != null !
         if isinstance(b, And):
             for barg in b.args:
                 self.process_rule(a, barg)
