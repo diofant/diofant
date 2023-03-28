@@ -1,9 +1,26 @@
 """Tools to assist importing optional external modules."""
 
+import re
 import sys
 import warnings
 
-from packaging.version import parse
+
+_component_re = re.compile(r'(\d+ | [a-z]+ | \.)', re.VERBOSE)
+
+
+def _parse_version(vstring):
+    """Parse a version string to a tuple, e.g. '1.2' -> (1, 2)."""
+    # Simplified from distutils.version.LooseVersion which was
+    # deprecated in Python 3.10.
+    components = []
+    for x in _component_re.split(vstring):
+        if x and x != '.':
+            try:
+                x = int(x)
+            except ValueError:
+                pass
+            components.append(x)
+    return components
 
 
 def import_module(module, min_module_version=None, min_python_version=None,
@@ -101,7 +118,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
         modversion = getattr(mod, module_version_attr)
         if module_version_attr_call_args is not None:
             modversion = modversion(*module_version_attr_call_args)
-        if parse(modversion) < parse(min_module_version):
+        if _parse_version(modversion) < _parse_version(min_module_version):
             if warn_old_version:
                 warnings.warn(f'{module} version is too old to use '
                               f'({min_module_version} or newer required)',
