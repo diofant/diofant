@@ -32,6 +32,13 @@ def test_bare_console():
     assert c.expect_exact('1/2\r\n>>> ') == 0
     assert c.send('x\r\n') == 3
     assert c.expect_exact('x\r\n>>> ') == 0
+    assert c.expect_exact('>>> ') == 0
+    assert c.send('ℕ = 1\r\n') == 9
+    assert c.expect_exact('\r\n>>> ') == 0
+    assert c.send('N = 2\r\n') == 7
+    assert c.expect_exact('\r\n>>> ') == 0
+    assert c.send('ℕ\r\n') == 5
+    assert c.expect_exact('2\r\n>>> ') == 0
 
 
 def test_bare_console_bare_division():
@@ -56,6 +63,18 @@ def test_bare_console_with_auto():
     assert c.expect_exact('a    \r\n─ + 1\r\n2    \r\n>>> ') == 0
 
 
+def test_bare_console_with_unicode_identifiers():
+    c = Console('python -m diofant --no-ipython --unicode-identifiers')
+
+    assert c.expect_exact('>>> ') == 0
+    assert c.send('ℕ = 1\r\n') == 9
+    assert c.expect_exact('\r\n>>> ') == 0
+    assert c.send('N = 2\r\n') == 7
+    assert c.expect_exact('\r\n>>> ') == 0
+    assert c.send('ℕ\r\n') == 5
+    assert c.expect_exact('1\r\n>>> ') == 0
+
+
 def test_bare_console_without_ipython():
     try:
         import IPython
@@ -78,13 +97,20 @@ def test_bare_console_without_ipython():
 def test_ipython_console():
     pytest.importorskip('IPython')
 
-    c = Console("python -m diofant -a --simple-prompt --colors 'NoColor'")
+    c = Console('python -m diofant -a --unicode-identifiers '
+                "--simple-prompt --colors 'NoColor'")
 
     assert c.expect_exact('\r\nIn [1]: ') == 0
     assert c.send('a\r\n') == 3
     assert c.expect_exact('\r\nOut[1]: a\r\n\r\nIn [2]: ') == 0
     assert c.send('1/2\r\n') == 5
     assert c.expect_exact('\r\nOut[2]: 1/2\r\n\r\nIn [3]: ') == 0
+    assert c.send('ℕ = 1\r\n') == 9
+    assert c.expect_exact('\r\nIn [4]: ') == 0
+    assert c.send('N = 2\r\n') == 7
+    assert c.expect_exact('\r\nIn [5]: ') == 0
+    assert c.send('ℕ\r\n') == 5
+    assert c.expect_exact('Out[5]: 1\r\n\r\nIn [6]: ') == 0
 
 
 def test_ipython_console_bare_division_noauto():
@@ -101,3 +127,9 @@ def test_ipython_console_bare_division_noauto():
                     'is not defined\r\n\r\nIn [\\[]3[]]: ') == 0
     assert c.send('x\r\n') == 3
     assert c.expect_exact('\r\nOut[3]: x\r\n\r\nIn [4]: ') == 0
+    assert c.send('ℕ = 1\r\n') == 9
+    assert c.expect_exact('\r\nIn [5]: ') == 0
+    assert c.send('N = 2\r\n') == 7
+    assert c.expect_exact('\r\nIn [6]: ') == 0
+    assert c.send('ℕ\r\n') == 5
+    assert c.expect_exact('Out[6]: 2\r\n\r\nIn [7]: ') == 0

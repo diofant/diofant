@@ -15,7 +15,8 @@ import readline
 import rlcompleter
 
 from diofant.interactive.session import (AutomaticSymbols,
-                                         IntegerDivisionWrapper)
+                                         IntegerDivisionWrapper,
+                                         unicode_identifiers)
 
 
 __all__ = ()
@@ -30,6 +31,9 @@ parser.add_argument('-a', '--auto-symbols',
                     help="Automatically create missing Symbol's",
                     action='store_true')
 parser.add_argument('--no-ipython', help="Don't use IPython",
+                    action='store_true')
+parser.add_argument('--unicode-identifiers',
+                    help='Allow any unicode identifiers',
                     action='store_true')
 
 
@@ -69,20 +73,29 @@ def main():
             shell.run_cell('ip = get_ipython()')
             shell.run_cell('ip.ast_transformers.append(AutomaticSymbols(ip.user_ns))')
             shell.run_cell('del ip')
+        if args.unicode_identifiers:
+            shell.run_cell('from diofant.interactive.session import unicode_identifiers')
+            shell.run_cell('ip = get_ipython()')
+            shell.run_cell('ip.input_transformers_cleanup.append(unicode_identifiers)')
+            shell.run_cell('del ip')
         app.start()
     else:
         ast_transformers = []
+        source_transformers = []
         ns = {}
 
         if not args.no_wrap_division:
             ast_transformers.append(IntegerDivisionWrapper())
         if args.auto_symbols:
             ast_transformers.append(AutomaticSymbols(ns))
+        if args.unicode_identifiers:
+            source_transformers.append(unicode_identifiers)
 
         class DiofantConsole(code.InteractiveConsole):
             """An interactive console with readline support."""
 
-            def __init__(self, ast_transformers=[], **kwargs):
+            def __init__(self, ast_transformers=[],
+                         source_transformers=[], **kwargs):
                 super().__init__(**kwargs)
 
                 readline.set_completer(rlcompleter.Completer(ns).complete)
@@ -92,8 +105,12 @@ def main():
                 readline.read_history_file(history)
                 atexit.register(readline.write_history_file, history)
                 self.ast_transformers = ast_transformers
+                self.source_transformers = source_transformers
 
             def runsource(self, source, filename='<input>', symbol='single'):
+                for t in self.source_transformers:
+                    source = '\n'.join(t(source.splitlines()))
+
                 try:
                     tree = ast.parse(source)
                 except SyntaxError:
@@ -108,7 +125,8 @@ def main():
                 source = ';'.join(source)
                 return super().runsource(source, filename=filename, symbol=symbol)
 
-        c = DiofantConsole(ast_transformers=ast_transformers, locals=ns)
+        c = DiofantConsole(ast_transformers=ast_transformers,
+                           source_transformers=source_transformers, locals=ns)
 
         for l in lines:
             c.push(l)
