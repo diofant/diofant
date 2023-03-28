@@ -2716,9 +2716,6 @@ def _handle_Integral(expr, func, order, hint):
     return sol
 
 
-# FIXME: replace the general solution in the docstring with
-# dsolve(equation, hint='1st_exact_Integral').  You will need to be able
-# to have assumptions on P and Q that dP/dy = dQ/dx.
 def ode_1st_exact(eq, func, order, match):
     r"""
     Solves 1st order exact ordinary differential equations.

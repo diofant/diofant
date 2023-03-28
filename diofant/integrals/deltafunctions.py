@@ -135,7 +135,6 @@ def deltaintegrate(f, x):
     if f.func == DiracDelta:
         h = f.simplify(x)
         if h == f:  # can't simplify the expression
-            # FIXME: the second term tells whether is DeltaDirac or Derivative
             # For integrating derivatives of DiracDelta we need the chain rule
             if f.is_simple(x):
                 if (len(f.args) <= 1 or f.args[1] == 0):

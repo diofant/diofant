@@ -68,8 +68,7 @@ class OctaveCodePrinter(CodePrinter):
         'inline': True,
     }
     # Note: contract is for expressing tensors as loops (if True), or just
-    # assignment (if False).  FIXME: this should be looked a more carefully
-    # for Octave.
+    # assignment (if False).
 
     def __init__(self, settings={}):
         """Initialize self."""
@@ -200,8 +199,6 @@ class OctaveCodePrinter(CodePrinter):
         return 'exp(1)'
 
     def _print_GoldenRatio(self, expr):
-        # FIXME: how to do better, e.g., for octave_code(2*GoldenRatio)?
-        # return self._print((1+sqrt(Integer(5)))/2)
         return '(1+sqrt(5))/2'
 
     def _print_NumberSymbol(self, expr):

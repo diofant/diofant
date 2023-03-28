@@ -1192,9 +1192,6 @@ class OctaveCodeGen(CodeGen):
 
     def routine(self, name, expr, argument_sequence, global_vars=None):
         """Specialized Routine creation for Octave."""
-        # FIXME: this is probably general enough for other high-level
-        # languages, perhaps its the C/Fortran one that is specialized!
-
         if is_sequence(expr) and not isinstance(expr, (MatrixBase, MatrixExpr)):
             if not expr:
                 raise ValueError('No expression given')
