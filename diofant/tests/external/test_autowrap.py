@@ -13,15 +13,15 @@ from diofant.utilities.autowrap import (CodeWrapError, F2PyCodeWrapper,
 
 __all__ = ()
 
-numpy = import_module('numpy', min_module_version='1.6.1')
+numpy = import_module('numpy')
 with_numpy = pytest.mark.skipif(numpy is None,
                                 reason="Couldn't import numpy.")
 
-Cython = import_module('Cython', min_module_version='0.15.1')
+Cython = import_module('Cython')
 with_cython = pytest.mark.skipif(Cython is None,
                                  reason="Couldn't import Cython.")
 
-f2py = import_module('numpy.f2py', import__kwargs={'fromlist': ['f2py']})
+f2py = import_module('numpy.f2py')
 with_f2py = pytest.mark.skipif(f2py is None, reason="Couldn't run f2py.")
 
 f2pyworks = False
