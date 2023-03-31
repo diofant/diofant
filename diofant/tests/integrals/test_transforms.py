@@ -309,7 +309,6 @@ def test_inverse_mellin_transform():
                                            **{'as_meijerg': True, 'needeval': True}))
 
 
-@pytest.mark.slow
 def test_inverse_mellin_transform2():
     IMT = inverse_mellin_transform
 
@@ -320,6 +319,11 @@ def test_inverse_mellin_transform2():
 
     # test expansion of sums
     assert IMT(gamma(s) + gamma(s - 1), s, x, (1, oo)) == (x + 1)*exp(-x)/x
+
+
+@pytest.mark.slow
+def test_inverse_mellin_transform3():
+    IMT = inverse_mellin_transform
 
     # test factorisation of polys
     r = symbols('r', extended_real=True)
