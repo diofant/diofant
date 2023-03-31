@@ -7,7 +7,7 @@ from ..domains.realfield import RealField
 from ..utilities import ordered
 from .polyerrors import GeneratorsNeededError
 from .polyoptions import build_options
-from .polyutils import parallel_dict_from_expr
+from .polyutils import _parallel_dict_from_expr
 
 
 def _construct_simple(coeffs, opt):
@@ -118,7 +118,9 @@ def _construct_composite(coeffs, opt):
         denoms.append(denom)
 
     try:
-        polys, gens = parallel_dict_from_expr(numers + denoms)  # XXX: sorting
+        polys, _opt = _parallel_dict_from_expr(numers + denoms,
+                                               build_options([], {}))  # XXX: sorting
+        gens = _opt.gens
     except GeneratorsNeededError:
         return
 
