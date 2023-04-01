@@ -3,15 +3,15 @@
 import pytest
 
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, ComplexField, GeneratorsError,
-                     I, Integer, OptionError, Options, RealField, Symbol, lex,
-                     sqrt)
+                     I, Integer, OptionError, RealField, Symbol, lex, sqrt)
 from diofant.abc import x, y, z
 from diofant.polys.polyoptions import (All, Auto, BooleanOption, Domain,
                                        Expand, Extension, Field, Formal, Frac,
                                        Gaussian, Gen, Gens, Greedy, Include,
-                                       Method, Modulus, OptionType, Order,
-                                       Polys, Sort, Split, Strict, Symbols,
-                                       Wrt, allowed_flags, set_defaults)
+                                       Method, Modulus, Options, OptionType,
+                                       Order, Polys, Sort, Split, Strict,
+                                       Symbols, Wrt, allowed_flags,
+                                       set_defaults)
 
 
 __all__ = ()

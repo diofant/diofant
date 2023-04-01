@@ -16,21 +16,21 @@ from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      IsomorphismFailedError, Lambda, LambertW, LessThan, Limit,
                      Matrix, Monomial, Mul, MultivariatePolynomialError,
                      NotAlgebraicError, NotInvertibleError, NotReversibleError,
-                     OptionError, Options, Order, Piecewise, Poly,
-                     PolynomialError, PolynomialRing, Pow, Product, PurePoly,
-                     PythonRational, Rational, RefinementFailedError,
-                     Relational, RootOf, RootSum, Sieve, SparseMatrix,
-                     StrictGreaterThan, StrictLessThan, Sum, Symbol,
-                     Unequality, UnificationFailedError,
-                     UnivariatePolynomialError, Wild, WildFunction, acos,
-                     acosh, acot, acoth, arg, asin, asinh, assoc_legendre,
-                     atan, atan2, atanh, bell, bernoulli, binomial, ceiling,
-                     chebyshevt, chebyshevt_root, chebyshevu, chebyshevu_root,
-                     conjugate, cos, cosh, cot, coth, dirichlet_eta, erf, exp,
-                     factorial, ff, fibonacci, floor, gamma, harmonic, hermite,
-                     im, legendre, ln, log, loggamma, lowergamma, lucas, nan,
-                     oo, pi, polygamma, re, rf, sign, sin, sinh, sqrt, tan,
-                     tanh, uppergamma, vectorize, zeta, zoo)
+                     OptionError, Order, Piecewise, Poly, PolynomialError,
+                     PolynomialRing, Pow, Product, PurePoly, PythonRational,
+                     Rational, RefinementFailedError, Relational, RootOf,
+                     RootSum, Sieve, SparseMatrix, StrictGreaterThan,
+                     StrictLessThan, Sum, Symbol, Unequality,
+                     UnificationFailedError, UnivariatePolynomialError, Wild,
+                     WildFunction, acos, acosh, acot, acoth, arg, asin, asinh,
+                     assoc_legendre, atan, atan2, atanh, bell, bernoulli,
+                     binomial, ceiling, chebyshevt, chebyshevt_root,
+                     chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
+                     coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
+                     floor, gamma, harmonic, hermite, im, legendre, ln, log,
+                     loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
+                     rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
+                     vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
@@ -42,6 +42,7 @@ from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
+from diofant.polys.polyoptions import Options
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
 from diofant.printing.pretty.pretty import PrettyPrinter

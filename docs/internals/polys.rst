@@ -331,7 +331,7 @@ Many parts of the polys module are still undocumented, and even where there is
 documentation it is scarce. Please contribute!
 
 .. automodule:: diofant.polys.polyoptions
-    :members:
+    :members: Order
 
 .. automodule:: diofant.polys.polyerrors
     :members:
