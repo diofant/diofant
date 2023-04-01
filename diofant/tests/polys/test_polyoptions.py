@@ -80,6 +80,7 @@ def test_Expand_postprocess():
 
 def test_Gens_preprocess():
     assert not Gens.preprocess((None,))
+    assert Gens.preprocess(x) == (x,)
     assert Gens.preprocess((x, y, z)) == (x, y, z)
 
     a = Symbol('a', commutative=False)

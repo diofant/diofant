@@ -353,7 +353,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
     #      (which is usually a sign of a bug in the way we build the ideal)
     if not gens:
         return expr
-    G = groebner(ideal, order=order, gens=gens, domain=ZZ)
+    G = groebner(ideal, *gens, order=order, domain=ZZ)
 
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:
@@ -361,7 +361,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
     from .ratsimp import ratsimpmodprime
 
     if freegens and pdenom.has_only_gens(*set(gens).intersection(pdenom.gens)):
-        num = Poly(num, gens=gens+freegens).eject(*gens)
+        num = Poly(num, *(gens+freegens)).eject(*gens)
         res = []
         for monom, coeff in num.terms():
             ourgens = set(parallel_poly_from_expr([coeff, denom])[1].gens)

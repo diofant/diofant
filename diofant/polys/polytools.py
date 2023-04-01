@@ -385,7 +385,7 @@ class Poly(Expr):
 
         return dom, per, F, G
 
-    def per(self, rep, gens=None, remove=None):
+    def per(self, rep, *gens, remove=None):
         """
         Create a Poly out of the given representation.
 
@@ -395,11 +395,11 @@ class Poly(Expr):
         >>> a = (x**2 + 1).as_poly()
         >>> R = ZZ.inject(x)
 
-        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), gens=[y])
+        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), y)
         Poly(y + 1, y, domain='ZZ')
 
         """
-        if gens is None:
+        if not gens:
             gens = self.gens
 
         if remove is not None:
@@ -480,7 +480,7 @@ class Poly(Expr):
             except ValueError:
                 pass
 
-        return self.per(rep, gens=rep.ring.symbols)
+        return self.per(rep, *rep.ring.symbols)
 
     def replace(self, x, y=None):
         """
@@ -510,7 +510,7 @@ class Poly(Expr):
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
                 rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
-                return self.per(rep, gens=gens)
+                return self.per(rep, *gens)
 
         raise PolynomialError(f"can't replace {x} with {y} in {self}")
 
@@ -537,7 +537,7 @@ class Poly(Expr):
         new_ring = rep.ring.clone(symbols=gens)
         rep = rep.set_ring(new_ring)
 
-        return self.per(rep, gens=gens)
+        return self.per(rep, *gens)
 
     def has_only_gens(self, *gens):
         """
