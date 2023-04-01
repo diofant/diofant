@@ -5,13 +5,12 @@ import pytest
 from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, ComplexField, GeneratorsError,
                      I, Integer, OptionError, RealField, Symbol, lex, sqrt)
 from diofant.abc import x, y, z
-from diofant.polys.polyoptions import (All, Auto, BooleanOption, Domain,
-                                       Expand, Extension, Field, Formal, Frac,
+from diofant.polys.polyoptions import (Auto, BooleanOption, Domain, Expand,
+                                       Extension, Field, Formal, Frac,
                                        Gaussian, Gen, Gens, Greedy, Include,
                                        Method, Modulus, Options, OptionType,
-                                       Order, Polys, Sort, Split, Strict,
-                                       Symbols, Wrt, allowed_flags,
-                                       set_defaults)
+                                       Order, Polys, Sort, Split, Symbols, Wrt,
+                                       allowed_flags, set_defaults)
 
 
 __all__ = ()
@@ -26,9 +25,8 @@ def test_Options_clone():
     assert opt.args == {'domain': ZZ}
 
     # defaults:
-    assert opt.flags['all'] is False
     assert opt.flags['include'] is False
-    assert opt.options['strict'] is True
+    assert opt.options['expand'] is True
 
     new_opt = opt.clone({'gens': (x, y), 'order': 'lex'})
 
@@ -61,7 +59,6 @@ def test_Options_clone():
     pytest.raises(OptionError, lambda: Options((x,), {'spam': 1}))
     pytest.raises(OptionError, lambda: Options((x,), {'field': True,
                                                       'gaussian': True}))
-    pytest.raises(OptionError, lambda: Options((x,), {'gen': x}, strict=True))
 
 
 def test_Expand_preprocess():
@@ -346,23 +343,6 @@ def test_Modulus_postprocess():
     }
 
 
-def test_Strict_preprocess():
-    assert Strict.preprocess(False) is False
-    assert Strict.preprocess(True) is True
-
-    assert Strict.preprocess(0) is False
-    assert Strict.preprocess(1) is True
-
-    pytest.raises(OptionError, lambda: Strict.preprocess(x))
-
-
-def test_Strict_postprocess():
-    opt = {'strict': True}
-    Strict.postprocess(opt)
-
-    assert opt == {'strict': True}
-
-
 def test_Auto_preprocess():
     assert Auto.preprocess(False) is False
     assert Auto.preprocess(True) is True
@@ -446,23 +426,6 @@ def test_Include_postprocess():
     Include.postprocess(opt)
 
     assert opt == {'include': True}
-
-
-def test_All_preprocess():
-    assert All.preprocess(False) is False
-    assert All.preprocess(True) is True
-
-    assert All.preprocess(0) is False
-    assert All.preprocess(1) is True
-
-    pytest.raises(OptionError, lambda: All.preprocess(x))
-
-
-def test_All_postprocess():
-    opt = {'all': True}
-    All.postprocess(opt)
-
-    assert opt == {'all': True}
 
 
 def test_Gen_preprocess():
