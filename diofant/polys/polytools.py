@@ -26,7 +26,7 @@ from .polyerrors import (CoercionFailedError, ComputationFailedError,
                          MultivariatePolynomialError, PolificationFailedError,
                          PolynomialError, UnificationFailedError)
 from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
-from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
+from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -232,10 +232,6 @@ class Poly(Expr):
         rep = rep.replace(lambda e: e.is_Pow and not e.is_Exp and
                           not e.exp.is_number, expand_power_exp)
         rep = expand_log(rep)
-
-        if not opt.gens:
-            gens = _find_gens([rep], opt)
-            opt = opt.clone({'gens': gens})
 
         if opt.expand is False:
             (rep,), opt = _parallel_dict_from_expr([rep], opt)
