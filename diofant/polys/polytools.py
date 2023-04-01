@@ -25,7 +25,7 @@ from .polyerrors import (CoercionFailedError, ComputationFailedError,
                          DomainError, GeneratorsError, GeneratorsNeededError,
                          MultivariatePolynomialError, PolificationFailedError,
                          PolynomialError, UnificationFailedError)
-from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
+from .polyoptions import allowed_flags, build_options
 from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
@@ -413,8 +413,8 @@ class Poly(Expr):
     def set_domain(self, domain):
         """Set the ground domain of ``self``."""
         opt = build_options(self.gens, {'domain': domain})
-        newrep = self.rep.set_domain(opt.domain)
-        return self.per(newrep)
+        rep = self.rep.set_domain(opt.domain)
+        return self.per(rep)
 
     def set_modulus(self, modulus):
         """
@@ -427,8 +427,9 @@ class Poly(Expr):
         Poly(x**2 + 1, x, modulus=2)
 
         """
-        modulus = Modulus.preprocess(modulus)
-        return self.set_domain(FF(modulus))
+        opt = build_options(self.gens, {'modulus': modulus})
+        rep = self.rep.set_domain(FF(opt.modulus))
+        return self.per(rep)
 
     def get_modulus(self):
         """
@@ -524,7 +525,7 @@ class Poly(Expr):
         Poly(y**2*x + x**2, y, x, domain='ZZ')
 
         """
-        opt = Options((), args)
+        opt = build_options([], args)
 
         if not gens:
             gens = _sort_gens(self.gens, opt=opt)
@@ -689,7 +690,8 @@ class Poly(Expr):
         if order is None:
             order = rep.ring.order
         else:
-            order = Order.preprocess(order)
+            opt = build_options(self.gens, {'order': order})
+            order = opt.order
 
         return [(m, self.domain.to_expr(c))
                 for m, c in sorted(rep.items(),
