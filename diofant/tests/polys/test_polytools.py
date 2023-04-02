@@ -40,68 +40,68 @@ def _epsilon_eq(a, b):
 def test_Poly_from_dict():
     K = FF(3)
 
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+    assert Poly.from_dict({0: 1, 1: 2}, x,
                           domain=K).rep.all_coeffs() == [K(1), K(2)]
-    assert Poly.from_dict({0: 1, 1: 5}, gens=x,
-                          domain=K).rep.all_coeffs() == [K(1), K(2)]
-
-    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
-                          domain=K).rep.all_coeffs() == [K(1), K(2)]
-    assert Poly.from_dict({(0,): 1, (1,): 5}, gens=x,
+    assert Poly.from_dict({0: 1, 1: 5}, x,
                           domain=K).rep.all_coeffs() == [K(1), K(2)]
 
-    assert dict(Poly.from_dict({(0, 0): 1, (1, 1): 2}, gens=(x, y),
+    assert Poly.from_dict({(0,): 1, (1,): 2}, x,
+                          domain=K).rep.all_coeffs() == [K(1), K(2)]
+    assert Poly.from_dict({(0,): 1, (1,): 5}, x,
+                          domain=K).rep.all_coeffs() == [K(1), K(2)]
+
+    assert dict(Poly.from_dict({(0, 0): 1, (1, 1): 2}, x, y,
                                domain=K).rep) == {(0, 0): K(1), (1, 1): K(2)}
 
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x).rep.all_coeffs() == [ZZ(1), ZZ(2)]
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+    assert Poly.from_dict({0: 1, 1: 2}, x).rep.all_coeffs() == [ZZ(1), ZZ(2)]
+    assert Poly.from_dict({0: 1, 1: 2}, x,
                           field=True).rep.all_coeffs() == [QQ(1), QQ(2)]
 
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+    assert Poly.from_dict({0: 1, 1: 2}, x,
                           domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(2)]
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+    assert Poly.from_dict({0: 1, 1: 2}, x,
                           domain=QQ).rep.all_coeffs() == [QQ(1), QQ(2)]
 
     assert Poly.from_dict({(0,): 1, (1,): 2},
-                          gens=x).rep.all_coeffs() == [ZZ(1), ZZ(2)]
-    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+                          x).rep.all_coeffs() == [ZZ(1), ZZ(2)]
+    assert Poly.from_dict({(0,): 1, (1,): 2}, x,
                           field=True).rep.all_coeffs() == [QQ(1), QQ(2)]
 
-    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+    assert Poly.from_dict({(0,): 1, (1,): 2}, x,
                           domain=ZZ).rep.all_coeffs() == [ZZ(1), ZZ(2)]
-    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+    assert Poly.from_dict({(0,): 1, (1,): 2}, x,
                           domain=QQ).rep.all_coeffs() == [QQ(1), QQ(2)]
 
-    assert Poly.from_dict({(1,): sin(y)}, gens=x, composite=False) == \
+    assert Poly.from_dict({(1,): sin(y)}, x, composite=False) == \
         (sin(y)*x).as_poly(x, domain=EX)
-    assert Poly.from_dict({(1,): y}, gens=x, composite=False) == \
+    assert Poly.from_dict({(1,): y}, x, composite=False) == \
         (y*x).as_poly(x, domain=EX)
-    assert Poly.from_dict({(1, 1): 1}, gens=(x, y), composite=False) == \
+    assert Poly.from_dict({(1, 1): 1}, x, y, composite=False) == \
         (x*y).as_poly(x, y, domain=ZZ)
-    assert Poly.from_dict({(1, 0): y}, gens=(x, z), composite=False) == \
+    assert Poly.from_dict({(1, 0): y}, x, z, composite=False) == \
         (y*x).as_poly(x, z, domain=EX)
 
     pytest.raises(GeneratorsError,
-                  lambda: Poly.from_dict({(1,): x, (0,): 1}, gens=(x,)))
+                  lambda: Poly.from_dict({(1,): x, (0,): 1}, x))
 
 
 def test_Poly_from_list():
     K = FF(3)
 
-    assert Poly.from_list([2, 1], gens=x, domain=K).rep.all_coeffs() == [K(2), K(1)]
-    assert Poly.from_list([5, 1], gens=x, domain=K).rep.all_coeffs() == [K(2), K(1)]
+    assert Poly.from_list([2, 1], x, domain=K).rep.all_coeffs() == [K(2), K(1)]
+    assert Poly.from_list([5, 1], x, domain=K).rep.all_coeffs() == [K(2), K(1)]
 
-    assert Poly.from_list([2, 1], gens=x).rep.all_coeffs() == [ZZ(2), ZZ(1)]
-    assert Poly.from_list([2, 1], gens=x, field=True).rep.all_coeffs() == [QQ(2), QQ(1)]
+    assert Poly.from_list([2, 1], x).rep.all_coeffs() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], x, field=True).rep.all_coeffs() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([2, 1], gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
-    assert Poly.from_list([2, 1], gens=x, domain=QQ).rep.all_coeffs() == [QQ(2), QQ(1)]
+    assert Poly.from_list([2, 1], x, domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], x, domain=QQ).rep.all_coeffs() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([0, 1.0], gens=x).rep.all_coeffs() == [RR(0), RR(1.0)]
-    assert Poly.from_list([1.0, 0], gens=x).rep.all_coeffs() == [RR(1.0)]
+    assert Poly.from_list([0, 1.0], x).rep.all_coeffs() == [RR(0), RR(1.0)]
+    assert Poly.from_list([1.0, 0], x).rep.all_coeffs() == [RR(1.0)]
 
-    pytest.raises(MultivariatePolynomialError, lambda: Poly.from_list([[]], gens=(x, y)))
-    pytest.raises(GeneratorsError, lambda: Poly.from_list([x, 1], gens=(x,)))
+    pytest.raises(MultivariatePolynomialError, lambda: Poly.from_list([[]], x, y))
+    pytest.raises(GeneratorsError, lambda: Poly.from_list([x, 1], x))
 
 
 def test_Poly_from_poly():
@@ -116,23 +116,23 @@ def test_Poly_from_poly():
     assert Poly.from_poly(f, domain=ZZ).rep.all_coeffs() == [ZZ(7), ZZ(1)]
     assert Poly.from_poly(f, domain=QQ).rep.all_coeffs() == [QQ(7), QQ(1)]
 
-    assert Poly.from_poly(f, gens=x) == f
-    assert Poly.from_poly(f, gens=x, domain=K).rep.all_coeffs() == [K(1), K(1)]
-    assert Poly.from_poly(f, gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(7), ZZ(1)]
-    assert Poly.from_poly(f, gens=x, domain=QQ).rep.all_coeffs() == [QQ(7), QQ(1)]
+    assert Poly.from_poly(f, x) == f
+    assert Poly.from_poly(f, x, domain=K).rep.all_coeffs() == [K(1), K(1)]
+    assert Poly.from_poly(f, x, domain=ZZ).rep.all_coeffs() == [ZZ(7), ZZ(1)]
+    assert Poly.from_poly(f, x, domain=QQ).rep.all_coeffs() == [QQ(7), QQ(1)]
 
-    assert Poly.from_poly(f, gens=y) == (x + 7).as_poly(y, domain=ZZ.inject(x))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, gens=y, domain=K))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, gens=y, domain=ZZ))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, gens=y, domain=QQ))
+    assert Poly.from_poly(f, y) == (x + 7).as_poly(y, domain=ZZ.inject(x))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, y, domain=K))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, y, domain=ZZ))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(f, y, domain=QQ))
 
-    assert Poly.from_poly(f, gens=(x, y)) == (x + 7).as_poly(x, y, domain=ZZ)
+    assert Poly.from_poly(f, x, y) == (x + 7).as_poly(x, y, domain=ZZ)
     assert Poly.from_poly(
-        f, gens=(x, y), domain=ZZ) == (x + 7).as_poly(x, y, domain=ZZ)
+        f, x, y, domain=ZZ) == (x + 7).as_poly(x, y, domain=ZZ)
     assert Poly.from_poly(
-        f, gens=(x, y), domain=QQ) == (x + 7).as_poly(x, y, domain=QQ)
+        f, x, y, domain=QQ) == (x + 7).as_poly(x, y, domain=QQ)
     assert Poly.from_poly(
-        f, gens=(x, y), modulus=3) == (x + 7).as_poly(x, y, domain=FF(3))
+        f, x, y, modulus=3) == (x + 7).as_poly(x, y, domain=FF(3))
 
     K = FF(2)
 
@@ -141,10 +141,10 @@ def test_Poly_from_poly():
     pytest.raises(CoercionFailedError, lambda: Poly.from_poly(g, domain=QQ))
     assert Poly.from_poly(g, domain=K).rep.all_coeffs() == [K(0), K(1)]
 
-    assert Poly.from_poly(g, gens=x) == g
-    assert Poly.from_poly(g, gens=x, domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(g, gens=x, domain=QQ))
-    assert Poly.from_poly(g, gens=x, domain=K).rep.all_coeffs() == [K(0), K(1)]
+    assert Poly.from_poly(g, x) == g
+    assert Poly.from_poly(g, x, domain=ZZ).rep.all_coeffs() == [ZZ(2), ZZ(1)]
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(g, x, domain=QQ))
+    assert Poly.from_poly(g, x, domain=K).rep.all_coeffs() == [K(0), K(1)]
 
     K = FF(3)
 
@@ -153,43 +153,43 @@ def test_Poly_from_poly():
     assert dict(Poly.from_poly(h, domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
     assert dict(Poly.from_poly(h, domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
-    assert Poly.from_poly(h, gens=x) == (x + y).as_poly(x, domain=ZZ.inject(y))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=x, domain=ZZ))
+    assert Poly.from_poly(h, x) == (x + y).as_poly(x, domain=ZZ.inject(y))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, x, domain=ZZ))
     assert Poly.from_poly(
-        h, gens=x, domain=ZZ.inject(y)) == (x + y).as_poly(x, domain=ZZ.inject(y))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=x, domain=QQ))
+        h, x, domain=ZZ.inject(y)) == (x + y).as_poly(x, domain=ZZ.inject(y))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, x, domain=QQ))
     assert Poly.from_poly(
-        h, gens=x, domain=QQ.inject(y)) == (x + y).as_poly(x, domain=QQ.inject(y))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=x, modulus=3))
+        h, x, domain=QQ.inject(y)) == (x + y).as_poly(x, domain=QQ.inject(y))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, x, modulus=3))
 
-    assert Poly.from_poly(h, gens=y) == (x + y).as_poly(y, domain=ZZ.inject(x))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=y, domain=ZZ))
+    assert Poly.from_poly(h, y) == (x + y).as_poly(y, domain=ZZ.inject(x))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, y, domain=ZZ))
     assert Poly.from_poly(
-        h, gens=y, domain=ZZ.inject(x)) == (x + y).as_poly(y, domain=ZZ.inject(x))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=y, domain=QQ))
+        h, y, domain=ZZ.inject(x)) == (x + y).as_poly(y, domain=ZZ.inject(x))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, y, domain=QQ))
     assert Poly.from_poly(
-        h, gens=y, domain=QQ.inject(x)) == (x + y).as_poly(y, domain=QQ.inject(x))
-    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, gens=y, modulus=3))
+        h, y, domain=QQ.inject(x)) == (x + y).as_poly(y, domain=QQ.inject(x))
+    pytest.raises(CoercionFailedError, lambda: Poly.from_poly(h, y, modulus=3))
 
-    assert Poly.from_poly(h, gens=(x, y)) == h
-    assert dict(Poly.from_poly(h, gens=(x, y),
+    assert Poly.from_poly(h, x, y) == h
+    assert dict(Poly.from_poly(h, x, y,
                                domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
-    assert dict(Poly.from_poly(h, gens=(x, y),
+    assert dict(Poly.from_poly(h, x, y,
                                domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
-    assert dict(Poly.from_poly(h, gens=(x, y),
+    assert dict(Poly.from_poly(h, x, y,
                                domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
-    assert dict(Poly.from_poly(h, gens=(y, x)).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
-    assert dict(Poly.from_poly(h, gens=(y, x),
+    assert dict(Poly.from_poly(h, y, x).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
+    assert dict(Poly.from_poly(h, y, x,
                                domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 1): ZZ(1)}
-    assert dict(Poly.from_poly(h, gens=(y, x),
+    assert dict(Poly.from_poly(h, y, x,
                                domain=QQ).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
-    assert dict(Poly.from_poly(h, gens=(y, x),
+    assert dict(Poly.from_poly(h, y, x,
                                domain=K).rep) == {(1, 0): K(1), (0, 1): K(1)}
 
-    assert dict(Poly.from_poly(h, gens=(x, y),
+    assert dict(Poly.from_poly(h, x, y,
                                field=True).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
-    assert dict(Poly.from_poly(h, gens=(x, y),
+    assert dict(Poly.from_poly(h, x, y,
                                field=True).rep) == {(1, 0): QQ(1), (0, 1): QQ(1)}
 
 

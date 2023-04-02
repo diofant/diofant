@@ -10,7 +10,7 @@ from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = 'Options', 'Order'
+__all__ = 'allowed_flags', 'build_options'
 
 
 class Option:
@@ -102,7 +102,6 @@ class Options(dict):
     * Extension --- option
     * Modulus --- option
     * Symmetric --- boolean option
-    * Strict --- boolean option
 
     **Flags**
 
@@ -111,7 +110,6 @@ class Options(dict):
     * Formal --- boolean flag
     * Polys --- boolean flag
     * Include --- boolean flag
-    * All --- boolean flag
     * Gen --- flag
 
     """
@@ -119,7 +117,7 @@ class Options(dict):
     __order__: list[str] | None = None
     __options__: dict[str, type[Option]] = {}
 
-    def __init__(self, gens, args, flags=None, strict=False):
+    def __init__(self, gens, args, flags=None):
         """Initialize self."""
         dict.__init__(self)
 
@@ -139,11 +137,6 @@ class Options(dict):
                 except KeyError as exc:
                     raise OptionError(f"'{option}' is not a "
                                       'valid option') from exc
-
-                if issubclass(cls, Flag):
-                    if strict and (flags is None or option not in flags):
-                        raise OptionError(f"'{option}' flag is not "
-                                          'allowed in this context')
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -543,16 +536,6 @@ class Modulus(Option, metaclass=OptionType):
             options['domain'] = domains.FF(modulus)
 
 
-class Strict(BooleanOption, metaclass=OptionType):
-    """``strict`` option to polynomial manipulation functions."""
-
-    option = 'strict'
-
-    @classmethod
-    def default(cls):
-        return True
-
-
 class Auto(BooleanOption, Flag, metaclass=OptionType):
     """``auto`` flag to polynomial manipulation functions."""
 
@@ -600,16 +583,6 @@ class Include(BooleanOption, Flag, metaclass=OptionType):
     """``include`` flag to polynomial manipulation functions."""
 
     option = 'include'
-
-    @classmethod
-    def default(cls):
-        return False
-
-
-class All(BooleanOption, Flag, metaclass=OptionType):
-    """``all`` flag to polynomial manipulation functions."""
-
-    option = 'all'
 
     @classmethod
     def default(cls):

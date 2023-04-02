@@ -228,7 +228,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     else:
         raise NotImplementedError('option not available')
 
-    r = resultant(mp1a, mp2, gens=[y, x])
+    r = resultant(mp1a, mp2, y, x)
 
     deg1 = degree(mp1, x)
     deg2 = degree(mp2, y)
@@ -303,7 +303,7 @@ def _minpoly_pow(ex, pw, x, dom):
     y = Dummy(str(x))
     mp = mp.subs({x: y})
     n, d = pw.as_numer_denom()
-    res = resultant(mp, x**d - y**n, gens=[y]).as_poly(x, domain=dom)
+    res = resultant(mp, x**d - y**n, y).as_poly(x, domain=dom)
     _, factors = res.factor_list()
     res = _choose_factor(factors, x, ex**pw, dom)
     return res.as_expr()

@@ -198,7 +198,7 @@ def test_minimal_polynomial_conjugate():
 
 @pytest.mark.parametrize('method', ['groebner', 'compose'])
 def test_minimal_polynomial_rootof(method):
-    e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
+    e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, x, 0)
     assert (minimal_polynomial(e, method=method)(x) ==
             x**8 - 6*x**7 + 11*x**6 - 6*x**5 - 13*x**4 + 12*x**3 - 4*x**2 + 4)
     assert minimal_polynomial(e, method=method,

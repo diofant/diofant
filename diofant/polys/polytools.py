@@ -25,8 +25,8 @@ from .polyerrors import (CoercionFailedError, ComputationFailedError,
                          DomainError, GeneratorsError, GeneratorsNeededError,
                          MultivariatePolynomialError, PolificationFailedError,
                          PolynomialError, UnificationFailedError)
-from .polyoptions import Modulus, Options, Order, allowed_flags, build_options
-from .polyutils import _find_gens, _parallel_dict_from_expr, _sort_gens
+from .polyoptions import allowed_flags, build_options
+from .polyutils import _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -233,10 +233,6 @@ class Poly(Expr):
                           not e.exp.is_number, expand_power_exp)
         rep = expand_log(rep)
 
-        if not opt.gens:
-            gens = _find_gens([rep], opt)
-            opt = opt.clone({'gens': gens})
-
         if opt.expand is False:
             (rep,), opt = _parallel_dict_from_expr([rep], opt)
             return cls._from_dict(rep, opt)
@@ -389,7 +385,7 @@ class Poly(Expr):
 
         return dom, per, F, G
 
-    def per(self, rep, gens=None, remove=None):
+    def per(self, rep, *gens, remove=None):
         """
         Create a Poly out of the given representation.
 
@@ -399,11 +395,11 @@ class Poly(Expr):
         >>> a = (x**2 + 1).as_poly()
         >>> R = ZZ.inject(x)
 
-        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), gens=[y])
+        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), y)
         Poly(y + 1, y, domain='ZZ')
 
         """
-        if gens is None:
+        if not gens:
             gens = self.gens
 
         if remove is not None:
@@ -417,8 +413,8 @@ class Poly(Expr):
     def set_domain(self, domain):
         """Set the ground domain of ``self``."""
         opt = build_options(self.gens, {'domain': domain})
-        newrep = self.rep.set_domain(opt.domain)
-        return self.per(newrep)
+        rep = self.rep.set_domain(opt.domain)
+        return self.per(rep)
 
     def set_modulus(self, modulus):
         """
@@ -431,8 +427,9 @@ class Poly(Expr):
         Poly(x**2 + 1, x, modulus=2)
 
         """
-        modulus = Modulus.preprocess(modulus)
-        return self.set_domain(FF(modulus))
+        opt = build_options(self.gens, {'modulus': modulus})
+        rep = self.rep.set_domain(FF(opt.modulus))
+        return self.per(rep)
 
     def get_modulus(self):
         """
@@ -483,7 +480,7 @@ class Poly(Expr):
             except ValueError:
                 pass
 
-        return self.per(rep, gens=rep.ring.symbols)
+        return self.per(rep, *rep.ring.symbols)
 
     def replace(self, x, y=None):
         """
@@ -513,7 +510,7 @@ class Poly(Expr):
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
                 rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
-                return self.per(rep, gens=gens)
+                return self.per(rep, *gens)
 
         raise PolynomialError(f"can't replace {x} with {y} in {self}")
 
@@ -528,7 +525,7 @@ class Poly(Expr):
         Poly(y**2*x + x**2, y, x, domain='ZZ')
 
         """
-        opt = Options((), args)
+        opt = build_options([], args)
 
         if not gens:
             gens = _sort_gens(self.gens, opt=opt)
@@ -540,7 +537,7 @@ class Poly(Expr):
         new_ring = rep.ring.clone(symbols=gens)
         rep = rep.set_ring(new_ring)
 
-        return self.per(rep, gens=gens)
+        return self.per(rep, *gens)
 
     def has_only_gens(self, *gens):
         """
@@ -693,7 +690,8 @@ class Poly(Expr):
         if order is None:
             order = rep.ring.order
         else:
-            order = Order.preprocess(order)
+            opt = build_options(self.gens, {'order': order})
+            order = opt.order
 
         return [(m, self.domain.to_expr(c))
                 for m, c in sorted(rep.items(),

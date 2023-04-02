@@ -30,12 +30,12 @@ def itermonomials(variables, degree):
 class Monomial(tuple, DefaultPrinting):
     """Class representing a monomial, i.e. a product of powers."""
 
-    def __new__(cls, monom, gens=None):
+    def __new__(cls, monom, gens=()):
         """Create and return the Monomial object."""
         from .polytools import Poly
 
         if not isinstance(monom, collections.abc.Iterable):
-            poly = Poly(monom, gens=gens)
+            poly = Poly(monom, *gens)
             rep = poly.rep
             gens = poly.gens
             if rep and rep.is_monomial:

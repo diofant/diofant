@@ -705,7 +705,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False, noconds=True):
             ress = [p[0] for p in ress]
             res = Add(*ress)
             if not as_meijerg:
-                res = factor(res, gens=res.atoms(Heaviside))
+                res = factor(res, *res.atoms(Heaviside))
             return res.subs({x: x_}), And(*conds)
 
         try:

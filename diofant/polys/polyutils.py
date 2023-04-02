@@ -146,20 +146,15 @@ def _find_gens(exprs, opt):
     for expr in exprs:
         for term in Add.make_args(expr):
             for factor in Mul.make_args(term):
-                try:
-                    if factor.is_Add and opt.expand:
-                        gens |= set(_find_gens([factor], opt))
-                    elif not _is_coeff(factor):
-                        base, exp = decompose_power(factor)
-                        if exp < 0:
-                            base = Pow(base, -1)
+                if not _is_coeff(factor):
+                    base, exp = decompose_power(factor)
+                    if exp < 0:
+                        base = Pow(base, -1)
 
-                        if opt.expand and exp > 1:
-                            gens |= set(_find_gens([base], opt))
-                        else:
-                            gens.add(base)
-                except GeneratorsNeededError:
-                    pass
+                    if opt.expand and exp > 1:
+                        gens |= set(_find_gens([base], opt))
+                    else:
+                        gens.add(base)
 
     if not gens:
         raise GeneratorsNeededError(f'specify generators to give {exprs} a meaning')
@@ -215,12 +210,6 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
     return polys
 
 
-def parallel_dict_from_expr(exprs, **args):
-    """Transform expressions into a multinomial form."""
-    reps, opt = _parallel_dict_from_expr(exprs, build_options(args))
-    return reps, opt.gens
-
-
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form."""
     if any(not expr.is_commutative for expr in exprs):
@@ -232,6 +221,4 @@ def _parallel_dict_from_expr(exprs, opt):
     if not opt.gens:
         opt = opt.clone({'gens': _find_gens(exprs, opt)})
 
-    reps = _parallel_dict_from_expr_if_gens(exprs, opt)
-
-    return reps, opt.clone()
+    return _parallel_dict_from_expr_if_gens(exprs, opt), opt.clone()

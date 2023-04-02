@@ -144,7 +144,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             r = reduced(a * d_hat - b * c_hat, G, *(opt.gens + ng),
                         order=opt.order, polys=True)[1]
 
-            S = Poly(r, gens=opt.gens).coeffs()
+            S = Poly(r, *opt.gens).coeffs()
             Sv = Cs + Ds
             Sm = zeros(len(S), len(Sv) + 1)
             Sm[:, :-1] = Matrix([[a.diff(b) for b in Sv] for a in S])
