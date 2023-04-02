@@ -114,8 +114,8 @@ def _construct_composite(coeffs, opt):
     for coeff in coeffs:
         numer, denom = coeff.as_numer_denom()
 
-        numers.append(numer)
-        denoms.append(denom)
+        numers.append(numer.expand())
+        denoms.append(denom.expand())
 
     try:
         polys, _opt = _parallel_dict_from_expr(numers + denoms,
