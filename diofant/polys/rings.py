@@ -568,6 +568,17 @@ class PolyElement(DomainElement, CantSympify, dict):
     def to_dict(self):
         return dict(self)
 
+    def all_coeffs(self):
+        ring = self.ring
+        if not (ground_gens := ring.gens[1:]):
+            if self:
+                return [self[(i,)] for i in range(self.degree() + 1)]
+            return [self[(0,)]]
+        poly = self.eject(*ground_gens)
+        if poly:
+            return [poly[(i,)].all_coeffs() for i in range(poly.degree() + 1)]
+        return [poly[(0,)].all_coeffs()]
+
     def _str(self, printer, precedence, exp_pattern, mul_symbol):
         if not self:
             return printer._print(self.ring.domain.zero)
