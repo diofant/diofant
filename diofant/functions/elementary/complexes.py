@@ -521,7 +521,7 @@ class Abs(Function):
         return arg/sign(arg)
 
     def _eval_rewrite_as_tractable(self, arg, wrt=None, **kwargs):
-        if wrt is not None and (s := sign(arg.limit(wrt, oo))) in (1, -1):
+        if wrt and (s := sign(arg.limit(wrt, oo))) in (1, -1):
             return s*arg
 
 

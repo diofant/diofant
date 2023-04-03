@@ -136,7 +136,7 @@ class Limit(Expr):
                                 f'at point {z}={z0} seems to be not equal')
             return right
 
-        if (has_Floats := e.has(Float) or z0.has(Float)):
+        if has_Floats := e.has(Float) or z0.has(Float):
             e = e.subs({k: Rational(k) for k in e.atoms(Float)})
             z0 = z0.subs({k: Rational(k) for k in z0.atoms(Float)})
 

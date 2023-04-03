@@ -213,7 +213,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
         mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            if (generator := mapping.get(expr)) is not None:
+            if generator := mapping.get(expr):
                 return generator
             if expr.is_Add:
                 return sum(map(_rebuild, expr.args))
@@ -1073,16 +1073,16 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LM(self):
-        if (expv := self.leading_expv()) is None:
-            return self.ring.zero_monom
-        return expv
+        if expv := self.leading_expv():
+            return expv
+        return self.ring.zero_monom
 
     @property
     def LT(self):
-        if (expv := self.leading_expv()) is None:
-            ring = self.ring
-            return ring.zero_monom, ring.domain.zero
-        return expv, self._get_coeff(expv)
+        if expv := self.leading_expv():
+            return expv, self._get_coeff(expv)
+        ring = self.ring
+        return ring.zero_monom, ring.domain.zero
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
