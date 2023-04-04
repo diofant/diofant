@@ -27,11 +27,11 @@ Compatibility breaks
 * Removed ``diofant.vector`` module, see :pull:`1274`.
 * Removed ``diofant.diffgeom`` module, see :pull:`1281`.
 * Removed ``diofant.stats`` module, see :pull:`1276`.
-* Removed ``diofant.geometry`` module and ``line_integrate`` function, see :pull:`1283`.
+* Removed ``diofant.geometry`` module and ``line_integrate()`` function, see :pull:`1283`.
 * Removed ``diofant.plotting`` module, see :pull:`1284`.
-* Removed unused ``prefixes``, ``postfixes``, ``capture`` and ``variations`` functions, see :pull:`1282` and :pull:`1290`.
+* Removed unused ``prefixes()``, ``postfixes()``, ``capture()`` and ``variations()`` functions, see :pull:`1282` and :pull:`1290`.
 * Drop support for multivariate :class:`~diofant.calculus.order.Order` notion, see :pull:`1296`.
-* Removed ``Add.extract_leading_order`` method, see :pull:`1292`.
+* Removed ``extract_leading_order()`` method of :class:`~diofant.core.add.Add`, see :pull:`1292`.
 * Removed unused ``slice()`` method of the :class:`~diofant.polys.polytools.Poly`, see :pull:`1318`.
 
 Minor changes
