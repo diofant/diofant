@@ -743,7 +743,7 @@ def as_poly_1t(p, t, z):
         # a bug.
         raise PolynomialError(f'{p} is not an element of K[{t}, 1/{t}].')
     d = pd.degree(t)
-    one_t_part = pa.slice(0, d + 1)
+    one_t_part = pa % t**(d + 1)
     r = pd.degree() - pa.degree()
     t_part = pa - one_t_part
     t_part = t_part.to_field().exquo(pd)

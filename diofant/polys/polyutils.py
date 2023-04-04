@@ -215,9 +215,6 @@ def _parallel_dict_from_expr(exprs, opt):
     if any(not expr.is_commutative for expr in exprs):
         raise PolynomialError('non-commutative expressions are not supported')
 
-    if opt.expand is not False:
-        exprs = [expr.expand() for expr in exprs]
-
     if not opt.gens:
         opt = opt.clone({'gens': _find_gens(exprs, opt)})
 

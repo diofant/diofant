@@ -864,22 +864,6 @@ def test_Poly_retract():
     assert Integer(0).as_poly(x, y).retract() == Integer(0).as_poly(x, y)
 
 
-def test_Poly_slice():
-    f = (x**3 + 2*x**2 + 3*x + 4).as_poly()
-
-    assert f.slice(0, 0) == Integer(0).as_poly(x)
-    assert f.slice(0, 1) == Integer(4).as_poly(x)
-    assert f.slice(0, 2) == (3*x + 4).as_poly()
-    assert f.slice(0, 3) == (2*x**2 + 3*x + 4).as_poly()
-    assert f.slice(0, 4) == (x**3 + 2*x**2 + 3*x + 4).as_poly()
-
-    assert f.slice(x, 0, 0) == Integer(0).as_poly(x)
-    assert f.slice(x, 0, 1) == Integer(4).as_poly(x)
-    assert f.slice(x, 0, 2) == (3*x + 4).as_poly()
-    assert f.slice(x, 0, 3) == (2*x**2 + 3*x + 4).as_poly()
-    assert f.slice(x, 0, 4) == (x**3 + 2*x**2 + 3*x + 4).as_poly()
-
-
 def test_Poly_coeffs():
     assert Integer(0).as_poly(x).coeffs() == []
     assert Integer(1).as_poly(x).coeffs() == [1]

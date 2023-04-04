@@ -703,6 +703,18 @@ def test_PolyElement_all_coeffs():
     assert (3*x**2 + 2*x + 1).all_coeffs() == [1, 2, 3]
     assert (7*x**4 + 2*x + 1).all_coeffs() == [1, 2, 0, 0, 7]
 
+    R, x, y = ring('x y', ZZ)
+
+    assert R.zero.all_coeffs() == [[0]]
+    assert (x + y).all_coeffs() == [[0, 1], [1]]
+    assert (x + 2*x*y**2).all_coeffs() == [[0], [1, 0, 2]]
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R.zero.all_coeffs() == [[[0]]]
+    assert (x + y).all_coeffs() == [[[0], [1]], [[1]]]
+    assert (z**2).all_coeffs() == [[[0, 0, 1]]]
+
 
 def test_PolyElement__abs__():
     R, x = ring('x', ZZ)

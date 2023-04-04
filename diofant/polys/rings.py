@@ -65,7 +65,7 @@ def _parse_symbols(symbols):
         if all(isinstance(s, str) for s in symbols):
             return _symbols(symbols)
         if all(isinstance(s, Expr) for s in symbols):
-            return symbols
+            return tuple(symbols)
 
     raise GeneratorsError('expected a string, Symbol or expression '
                           'or a non-empty sequence of strings, '
@@ -82,7 +82,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
     def __new__(cls, domain, symbols, order=lex):
         from .univar import UnivarPolyElement, UnivarPolynomialRing
 
-        symbols = tuple(_parse_symbols(symbols))
+        symbols = _parse_symbols(symbols)
         ngens = len(symbols)
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
@@ -213,7 +213,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
         mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            if (generator := mapping.get(expr)) is not None:
+            if generator := mapping.get(expr):
                 return generator
             if expr.is_Add:
                 return sum(map(_rebuild, expr.args))
@@ -233,19 +233,16 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""
-        try:
-            if isinstance(gen, int) and -self.ngens <= gen < self.ngens:
-                return gen % self.ngens
-            if isinstance(gen, self.dtype):
-                return self.gens.index(gen)
-            if isinstance(gen, str):
-                return self.symbols.index(Symbol(gen))
-            if isinstance(gen, Expr):
-                return self.symbols.index(gen)
-        except ValueError:
-            pass
+        if isinstance(gen, int) and -self.ngens <= gen < self.ngens:
+            return gen % self.ngens
+        if isinstance(gen, self.dtype):
+            return self.gens.index(gen)
+        if isinstance(gen, str):
+            gen = Symbol(gen)
+        if isinstance(gen, Expr):
+            return self.symbols.index(gen)
         raise ValueError('expected a polynomial generator, an integer, '
-                         f'a string, an expression or None, got {gen}')
+                         f'a string or an expression, got {gen}')
 
     def drop(self, *gens):
         """Remove specified generators from this ring."""
@@ -286,9 +283,8 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
 
     def to_expr(self, element):
         symbols = self.symbols
-        domain = self.domain
-        return Add(*(domain.to_expr(v)*k.as_expr(*symbols)
-                     for k, v in element.items()))
+        to_expr = self.domain.to_expr
+        return Add(*(to_expr(element[k])*k.as_expr(*symbols) for k in element))
 
     def _from_PythonFiniteField(self, a, K0):
         if self.domain == K0:
@@ -571,6 +567,17 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def to_dict(self):
         return dict(self)
+
+    def all_coeffs(self):
+        ring = self.ring
+        if not (ground_gens := ring.gens[1:]):
+            if self:
+                return [self[(i,)] for i in range(self.degree() + 1)]
+            return [self[(0,)]]
+        poly = self.eject(*ground_gens)
+        if poly:
+            return [poly[(i,)].all_coeffs() for i in range(poly.degree() + 1)]
+        return [poly[(0,)].all_coeffs()]
 
     def _str(self, printer, precedence, exp_pattern, mul_symbol):
         if not self:
@@ -1073,16 +1080,16 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LM(self):
-        if (expv := self.leading_expv()) is None:
-            return self.ring.zero_monom
-        return expv
+        if expv := self.leading_expv():
+            return expv
+        return self.ring.zero_monom
 
     @property
     def LT(self):
-        if (expv := self.leading_expv()) is None:
-            ring = self.ring
-            return ring.zero_monom, ring.domain.zero
-        return expv, self._get_coeff(expv)
+        if expv := self.leading_expv():
+            return expv, self._get_coeff(expv)
+        ring = self.ring
+        return ring.zero_monom, ring.domain.zero
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
@@ -1325,9 +1332,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         return g
 
     def __call__(self, *values):
-        if 0 < len(values) <= self.ring.ngens:
-            return self.eval(list(zip(self.ring.gens, values)))
-        raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
+        ring = self.ring
+        ngens = ring.ngens
+        if 0 < (nval := len(values)) <= ngens:
+            return self.eval(list(zip(ring.gens, values)))
+        raise ValueError(f'expected at least 1 and at most {ngens} values, got {nval}')
 
     def eval(self, x=0, a=0):
         if isinstance(x, list) and not a:

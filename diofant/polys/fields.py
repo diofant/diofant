@@ -131,7 +131,7 @@ class FractionField(Field, CompositeDomain):
         mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            if (generator := mapping.get(expr)) is not None:
+            if generator := mapping.get(expr):
                 return generator
             if 1/expr in mapping:
                 return 1/mapping[1/expr]

@@ -168,7 +168,7 @@ def test_benchmark_coloring():
          (4, 11), (4, 9), (5, 6), (6, 7), (7, 8), (8, 9), (9, 10), (10, 11),
          (11, 12), (5, 12), (5, 9), (6, 10), (7, 11), (8, 12), (3, 4)]
 
-    R, *V = ring([f'x{v}' for v in V], QQ, lex)
+    R, *V = ring(tuple(f'x{v}' for v in V), QQ, lex)
     E = [(V[i - 1], V[j - 1]) for i, j in E]
 
     x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = V

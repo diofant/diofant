@@ -631,18 +631,6 @@ class Poly(Expr):
                                     extension=not self.domain.is_ExpressionDomain)
         return self.from_dict(rep, *self.gens, domain=dom)
 
-    def slice(self, x, m, n=None):
-        """Take a continuous subsequence of terms of ``self``."""
-        if n is None:
-            j, m, n = 0, x, m
-        else:
-            j = self._gen_to_level(x)
-
-        m, n = int(m), int(n)
-
-        result = self.rep.slice(m, n, j)
-        return self.per(result)
-
     def coeffs(self, order=None):
         """
         Returns all non-zero coefficients from ``self`` in lex order.
