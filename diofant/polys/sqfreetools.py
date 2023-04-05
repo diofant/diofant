@@ -91,7 +91,7 @@ class _SQF:
 
             g = self.zero
             for monom, coeff in f.items():
-                g[(_ // p for _ in monom)] = coeff**m
+                g[tuple(_ // p for _ in monom)] = coeff**m
             f = g
 
         return factors

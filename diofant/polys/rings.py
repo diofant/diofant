@@ -73,7 +73,7 @@ def _parse_symbols(symbols):
 
 
 class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _TestPolys):
-    """A class for representing multivariate polynomial rings."""
+    """Return a multivariate polynomial ring."""
 
     is_PolynomialRing = True
 
@@ -337,34 +337,10 @@ _ring_cache: dict[tuple, PolynomialRing] = {}
 
 
 class PolyElement(DomainElement, CantSympify, dict):
-    """Element of multivariate distributed polynomial ring.
+    """Represent a polynomial in a multivariate polynomial ring.
 
-    Polynomial element is mutable, until the hash is computed, e.g.
-    when the polynomial was added to the :class:`set`.
-
-    If one is interested in preserving a polynomial, and one plans
-    to use inplace operations, one can copy the polynomial first.
-
-    Examples
-    ========
-
-    >>> _, x, y = ring('x y', ZZ)
-
-    >>> p = (x + y)**2
-    >>> p1 = p.copy()
-    >>> p2 = p
-
-    >>> p[(0, 0)] = 3
-    >>> p1
-    x**2 + 2*x*y + y**2
-    >>> p2
-    x**2 + 2*x*y + y**2 + 3
-
-    >>> _ = hash(p)
-    >>> p[(1, 1)] = 2
-    Traceback (most recent call last):
-    ...
-    RuntimeError: ... Polynomial element ... can't be modified ...
+    A polynomial is mutable, until its hash is computed, e.g. for
+    using an instance as a dictionary key.
 
     See Also
     ========
@@ -457,13 +433,57 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not v:
                 del self[k]
 
-    def __setitem__(self, key, item):
+    def __setitem__(self, monom, coeff, /):
+        """Set the coefficient for the given monomial.
+
+        Parameters
+        ==========
+
+        monom : Monomial or PolyElement (with ``is_monomial = True``) or 1
+        coeff : DomainElement
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+
+        >>> p = (x + y)**2
+        >>> p1 = p.copy()
+        >>> p2 = p
+
+        >>> p[x*y] = 0
+        >>> p1
+        x**2 + 2*x*y + y**2
+        >>> p2
+        x**2 + y**2
+
+        >>> _ = hash(p)
+        >>> p[x*y] = 1
+        Traceback (most recent call last):
+        ...
+        RuntimeError: Polynomial x**2 + y**2 can't be modified
+
+        """
         if self._hash is not None:
-            raise RuntimeError(f"Polynomial element {self} can't be"
-                               ' modified anymore.')
-        if not isinstance(key, Monomial):
-            key = Monomial(key)
-        super().__setitem__(key, item)
+            raise RuntimeError(f"polynomial {self} can't be modified")
+
+        ring = self.ring
+
+        if isinstance(monom, Monomial):
+            pass
+        elif isinstance(monom, (tuple, list)):
+            monom = Monomial(monom)
+        elif isinstance(monom, ring.dtype) and monom.is_monomial:
+            monom, = monom
+        elif monom == 1:
+            monom = ring.zero_monom
+        else:
+            raise TypeError(f'monomial expected, got {monom}')
+
+        if coeff:
+            super().__setitem__(monom, coeff)
+        elif monom in self:
+            del self[monom]
 
     def __eq__(self, other):
         """Equality test for polynomials.
@@ -1039,14 +1059,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _get_coeff(self, expv):
         return self.get(expv, self.ring.domain.zero)
 
-    def __getitem__(self, element):
-        """
-        Returns the coefficient that stands next to the given monomial.
+    def __getitem__(self, monom, /):
+        """Return the coefficient for the given monomial.
 
         Parameters
         ==========
 
-        element : PolyElement (with ``is_monomial = True``) or 1
+        monom : Monomial or PolyElement (with ``is_monomial = True``) or 1
 
         Examples
         ========
@@ -1064,15 +1083,15 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
 
-        if isinstance(element, tuple):
-            return self._get_coeff(element)
-        if element == 1:
+        if isinstance(monom, tuple):
+            return self._get_coeff(monom)
+        if monom == 1:
             return self._get_coeff(ring.zero_monom)
-        if isinstance(element, ring.dtype) and element.is_monomial:
-            monom, = element
+        if isinstance(monom, ring.dtype) and monom.is_monomial:
+            monom, = monom
             return self._get_coeff(monom)
 
-        raise ValueError(f'expected a monomial, got {element}')
+        raise TypeError(f'expected a monomial, got {monom}')
 
     @property
     def LC(self):
