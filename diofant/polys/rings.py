@@ -188,7 +188,10 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
         if isinstance(element, dict):
             return self.from_dict(element)
         if isinstance(element, list):
-            return self.from_terms(element)
+            try:
+                return self.from_terms(element)
+            except (TypeError, ValueError):
+                return self.from_list(element)
         if isinstance(element, Expr):
             return self.convert(element)
         return self.ground_new(element)
@@ -207,6 +210,18 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
 
     def from_terms(self, element):
         return self.from_dict(dict(element))
+
+    def from_list(self, element):
+        if self.is_univariate:
+            domain = self.domain
+            if any(isinstance(c, list) for c in element):
+                return self.from_dict({(i,): domain.from_list(c)
+                                       for i, c in enumerate(element)})
+            return self.from_dict({(i,): domain.convert(c)
+                                   for i, c in enumerate(element)})
+        new_ring = self.eject(*self.gens[1:])
+        poly = new_ring.from_list(element)
+        return poly.inject()
 
     def from_expr(self, expr):
         expr = sympify(expr)

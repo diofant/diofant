@@ -335,6 +335,12 @@ def test_PolynomialRing_from_list():
 
     assert R1.from_list(f) == g
 
+    R, x, y, z = ring('x y z', ZZ)
+
+    p = 3*x**2 + y*z**7 - 11
+
+    assert R.from_list(p.all_coeffs()) == p
+
 
 def test_PolyElement_as_expr():
     R, x, y, z = ring('x y z', ZZ)
