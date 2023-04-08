@@ -20,9 +20,9 @@ from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import lex
-from .polyerrors import (CoercionFailedError, ExactQuotientFailedError,
-                         GeneratorsError, GeneratorsNeededError,
-                         PolynomialDivisionFailedError)
+from .polyerrors import (CoercionFailedError, DomainError,
+                         ExactQuotientFailedError, GeneratorsError,
+                         GeneratorsNeededError, PolynomialDivisionFailedError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .specialpolys import _TestPolys
@@ -1563,6 +1563,44 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return self.resultant(other, includePRS=True)[1]
+
+    def half_gcdex(self, other):
+        """
+        Half extended Euclidean algorithm in `F[x]`.
+
+        Returns ``(s, h)`` such that ``h = gcd(self, other)``
+        and ``s*self = h (mod other)``.
+
+        Examples
+        ========
+
+        >>> _, x = ring('x', QQ)
+
+        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
+        >>> g = x**3 + x**2 - 4*x - 4
+
+        >>> f.half_gcdex(g)
+        (-1/5*x + 3/5, x + 1)
+
+        """
+        ring = self.ring
+        domain = ring.domain
+
+        if not domain.is_Field:
+            raise DomainError(f"can't compute half extended GCD over {domain}")
+
+        a, b = ring.one, ring.zero
+        f, g = self, other
+
+        while g:
+            q, r = divmod(f, g)
+            f, g = g, r
+            a, b = b, a - q*b
+
+        a = a.quo_ground(f.LC)
+        f = f.monic()
+
+        return a, f
 
     def gcdex(self, other):
         """

@@ -2,7 +2,7 @@ import random
 
 from ..config import query
 from ..domains import ZZ
-from .polyerrors import CoercionFailedError, DomainError
+from .polyerrors import CoercionFailedError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
 
@@ -158,44 +158,6 @@ class UnivarPolyElement(PolyElement):
 
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
-
-    def half_gcdex(self, other):
-        """
-        Half extended Euclidean algorithm in `F[x]`.
-
-        Returns ``(s, h)`` such that ``h = gcd(self, other)``
-        and ``s*self = h (mod other)``.
-
-        Examples
-        ========
-
-        >>> _, x = ring('x', QQ)
-
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
-
-        >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
-
-        """
-        ring = self.ring
-        domain = ring.domain
-
-        if not domain.is_Field:
-            raise DomainError(f"can't compute half extended GCD over {domain}")
-
-        a, b = ring.one, ring.zero
-        f, g = self, other
-
-        while g:
-            q, r = divmod(f, g)
-            f, g = g, r
-            a, b = b, a - q*b
-
-        a = a.quo_ground(f.LC)
-        f = f.monic()
-
-        return a, f
 
     @property
     def is_cyclotomic(self):
