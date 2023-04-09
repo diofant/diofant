@@ -4,9 +4,9 @@ import pytest
 
 from diofant import (Eq, Float, Function, GeneratorsNeededError, I, Integer,
                      Lambda, MultivariatePolynomialError, PolynomialError, Pow,
-                     PurePoly, Rational, RootOf, RootSum, Symbol, conjugate,
-                     exp, expand_func, false, legendre_poly, log, oo, root,
-                     solve, sqrt, tan, true)
+                     PurePoly, Rational, RootOf, RootSum, Symbol, cbrt,
+                     conjugate, exp, expand_func, false, legendre_poly, log,
+                     oo, root, solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
 
 
@@ -615,3 +615,9 @@ def test_issue_723():
 def test_sympyissue_15413():
     assert (sqrt(2)*x**3 + x).as_poly(x).all_roots() == [0, -I*root(2, -4),
                                                          I*root(2, -4)]
+
+
+@pytest.mark.slow
+def test_sympyissue_22943():
+    r = RootOf(sqrt(2)*x**3 + sqrt(3)*x + cbrt(3), 0)
+    assert r.evalf() == Float('-0.62924946253300906', dps=15)

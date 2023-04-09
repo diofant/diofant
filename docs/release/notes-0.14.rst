@@ -136,3 +136,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24948`: .is_positive returns None when it should be False
 * :sympyissue:`24957`: Timeout for dsolve((2x^3+3y)+(3x+y-1)y'=0)
 * :sympyissue:`24955`: Timeout for dsolve(x^2*y'-y^2*y'+2*x*y=0)
+* :sympyissue:`22943`: RootOf for polynomials with irrational algebraic coefficients
