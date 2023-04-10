@@ -486,6 +486,11 @@ class PrettyPrinter(Printer):
     def _print_Limit(self, l):
         e, z, z0, dir = l.args
 
+        if dir not in [Reals, 1, -1]:
+            e = e.subs({z: z0 - dir*z})
+            z0 = 0
+            dir = -1
+
         E = self._print(e)
         if e.is_Add or e.is_Relational:
             E = prettyForm(*E.parens())

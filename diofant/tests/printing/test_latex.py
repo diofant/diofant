@@ -704,6 +704,8 @@ def test_latex_limits():
     assert latex(Limit(x + x**2, x, 0)) == r'\lim_{x \to 0^+}\left(x^{2} + x\right)'
     assert latex(Limit(x > 0, x, 0)) == r'\lim_{x \to 0^+}\left(x > 0\right)'
 
+    assert latex(Limit(sqrt(-1 + I*x), x, 0, dir=exp(I*pi/3))) == r'\lim_{x \to 0^+} \sqrt{- e^{\frac{i \pi}{3}} i x - 1}'
+
 
 def test_sympyissue_3568():
     beta = Symbol(r'\beta')
