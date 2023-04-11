@@ -2,7 +2,7 @@
 Diofant 0.14
 ============
 
-Not Released Yet
+12 Apr 2023
 
 New features
 ============
@@ -13,12 +13,12 @@ New features
 Major changes
 =============
 
-* Use recursive (former ``poly()`` method, without using :func:`~diofant.core.function.expand`) algorithm of creating polynomials from expressions, see :pull:`1047`.
+* Use recursive (former ``poly()`` function, without using :func:`~diofant.core.function.expand`) algorithm of creating polynomials from expressions, see :pull:`1047`.
 
 Compatibility breaks
 ====================
 
-* Removed support for CPython 3.9, see :pull:`1192`.
+* Removed support for CPython 3.9, see :pull:`1191` and :pull:`1192`.
 * Removed ``to_mpi()`` method of :class:`~diofant.sets.sets.Interval`, see :pull:`1194`.
 * Removed ``poly()`` function, use :meth:`~diofant.core.expr.Expr.as_poly` method to create a :class:`~diofant.polys.polytools.Poly` instance from :class:`~diofant.core.expr.Expr`, see :pull:`1047`.
 * Removed functions ``bool_map()``, ``POSform()`` and ``SOPform()``, see :commit:`04ea41a220` and :commit:`be319badf5`.
@@ -32,6 +32,7 @@ Compatibility breaks
 * Removed unused ``prefixes()``, ``postfixes()``, ``capture()`` and ``variations()`` functions, see :pull:`1282` and :pull:`1290`.
 * Drop support for multivariate :class:`~diofant.calculus.order.Order` notion, see :pull:`1296`.
 * Removed ``extract_leading_order()`` method of :class:`~diofant.core.add.Add`, see :pull:`1292`.
+* Removed ``S.UniversalSet`` singleton object and related class, see :pull:`1308`.
 * Removed unused ``slice()`` method of the :class:`~diofant.polys.polytools.Poly`, see :pull:`1318`.
 
 Minor changes
@@ -39,10 +40,13 @@ Minor changes
 
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`'s over finite fields, see :pull:`1209`.
 * Provide default clause (condition :class:`~diofant.logic.boolalg.BooleanTrue`) for :class:`~diofant.functions.elementary.piecewise.Piecewise`, see :pull:`1215`.
+* Support limits for :class:`~diofant.polys.rootoftools.RootSum`, see :pull:`1268`.
+* Support ``--unicode-identifiers`` module option, which allows using any unicode identifiers in interactive sessions, see :pull:`1314`.
 
 Developer changes
 =================
 
+* Use ``pyproject.toml`` to keep project's metadata, see :pull:`1226`.
 * Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_ and depend on the `flake518 <https://github.com/carstencodes/flake518>`_ instead, see :pull:`1268`.
 
 Issues closed
@@ -132,3 +136,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`24948`: .is_positive returns None when it should be False
 * :sympyissue:`24957`: Timeout for dsolve((2x^3+3y)+(3x+y-1)y'=0)
 * :sympyissue:`24955`: Timeout for dsolve(x^2*y'-y^2*y'+2*x*y=0)
+* :sympyissue:`22943`: RootOf for polynomials with irrational algebraic coefficients

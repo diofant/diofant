@@ -6,9 +6,9 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailedError,
                      ExactQuotientFailedError, GeneratorsError,
-                     GeneratorsNeededError, PolynomialDivisionFailedError,
-                     PolynomialRing, Rational, Symbol, field, grlex, lex, pi,
-                     ring, sin, sqrt, symbols)
+                     GeneratorsNeededError, Monomial,
+                     PolynomialDivisionFailedError, PolynomialRing, Rational,
+                     Symbol, field, grlex, lex, pi, ring, sin, sqrt, symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -335,6 +335,12 @@ def test_PolynomialRing_from_list():
 
     assert R1.from_list(f) == g
 
+    R, x, y, z = ring('x y z', ZZ)
+
+    p = 3*x**2 + y*z**7 - 11
+
+    assert R.from_list(p.all_coeffs()) == p
+
 
 def test_PolyElement_as_expr():
     R, x, y, z = ring('x y z', ZZ)
@@ -576,7 +582,7 @@ def test_PolyElement_coeff():
 
     assert f[1] == 23
 
-    pytest.raises(ValueError, lambda: f[3])
+    pytest.raises(TypeError, lambda: f[3])
 
     assert f[x] == 0
     assert f[y] == 0
@@ -588,10 +594,10 @@ def test_PolyElement_coeff():
     assert f[z**3] == 7
     assert f[(0, 0, 3)] == 7
 
-    pytest.raises(ValueError, lambda: f[3*x**2*y])
-    pytest.raises(ValueError, lambda: f[-x*y*z])
-    pytest.raises(ValueError, lambda: f[7*z**3])
-    pytest.raises(ValueError, lambda: f[x + y])
+    pytest.raises(TypeError, lambda: f[3*x**2*y])
+    pytest.raises(TypeError, lambda: f[-x*y*z])
+    pytest.raises(TypeError, lambda: f[7*z**3])
+    pytest.raises(TypeError, lambda: f[x + y])
 
     f = 2*x + 3*x*y + 4*z + 5
 
@@ -3116,6 +3122,29 @@ def test_PolyElement__setitem__():
     p[(2,)] = 3
 
     assert p == 3*x**2 + x + 1
+
+    p[(1,)] = 0
+
+    assert p == 3*x**2 + 1
+
+    p[(3,)] = 0
+
+    assert p == 3*x**2 + 1
+
+    p[x] = -1
+
+    assert p == 3*x**2 - x + 1
+
+    p[Monomial([1])] = 0
+
+    assert p == 3*x**2 + 1
+
+    p[1] = 0
+
+    assert p == 3*x**2
+
+    with pytest.raises(TypeError):
+        p['spam'] = 0
 
     p_set = {p}
     p_set.pop()

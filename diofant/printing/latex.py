@@ -547,6 +547,11 @@ class LatexPrinter(Printer):
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
 
+        if dir not in [Reals, 1, -1]:
+            e = e.subs({z: z0 - dir*z})
+            z0 = 0
+            dir = -1
+
         tex = r'\lim_{%s \to ' % self._print(z)
         if dir == Reals or z0 in (oo, -oo):
             tex += r'%s}' % self._print(z0)

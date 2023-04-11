@@ -3569,6 +3569,18 @@ x─→1⁺⎝    y⎠\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    expr = Limit(sqrt(-1 + I*x), x, 0, dir=exp(I*pi/3))
+    ucode_str = \
+        """\
+          ________________\n\
+         ╱    ⅈ⋅π         \n\
+        ╱     ───         \n\
+       ╱       3          \n\
+ lim ╲╱    - ℯ   ⋅ⅈ⋅x - 1 \n\
+x─→0⁺                     \
+"""
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_RootOf():
     expr = RootOf(x**5 + 11*x - 2, 0)
