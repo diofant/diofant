@@ -1,8 +1,8 @@
 """Tools and arithmetics for monomials of distributed polynomials."""
 
-import collections
+from collections.abc import Iterable
 
-from ..core import Integer, Mul
+from ..core import Integer, Mul, sympify
 from ..printing.defaults import DefaultPrinting
 
 
@@ -32,14 +32,13 @@ class Monomial(tuple, DefaultPrinting):
 
     def __new__(cls, monom, gens=()):
         """Create and return the Monomial object."""
-        from .polytools import Poly
-
-        if not isinstance(monom, collections.abc.Iterable):
-            poly = Poly(monom, *gens)
+        if not isinstance(monom, Iterable):
+            monom = sympify(monom)
+            poly = monom.as_poly(*gens)
             rep = poly.rep
             gens = poly.gens
             if rep and rep.is_monomial:
-                monom = list(rep)[0]
+                monom, *_ = rep
             else:
                 raise ValueError(f'Expected a monomial got {monom}')
 
@@ -59,33 +58,30 @@ class Monomial(tuple, DefaultPrinting):
 
     def as_expr(self, *gens):
         """Convert a monomial instance to a Diofant expression."""
-        gens = gens or self.gens
-
-        if not gens:
-            raise ValueError(f"Can't convert {self} to an expression without generators")
-
-        return Mul(*[gen**exp for gen, exp in zip(gens, self)])
+        if gens := gens or self.gens:
+            return Mul(*[gen**exp for gen, exp in zip(gens, self)])
+        raise ValueError(f"Can't convert {self} to an expression without generators")
 
     def __mul__(self, other):
         """Return self*other."""
         other = self._get_val(other)
-        if other is not None:
+        if other:
             return self.__class__((a + b for a, b in zip(self, other)), self.gens)
         return NotImplemented
 
     def __truediv__(self, other):
         """Return self/other."""
         other = self._get_val(other)
-        if other is not None:
+        if other:
             return self.__class__((a - b for a, b in zip(self, other)), self.gens)
         return NotImplemented
 
     def divides(self, other):
         """Check if self divides other."""
         other, orig = self._get_val(other), other
-        if other is not None:
+        if other:
             return all(a <= b for a, b in zip(self, other))
-        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
 
     def __pow__(self, n):
         """Return pow(self, other)."""
@@ -96,13 +92,13 @@ class Monomial(tuple, DefaultPrinting):
     def gcd(self, other):
         """Greatest common divisor of monomials."""
         other, orig = self._get_val(other), other
-        if other is not None:
+        if other:
             return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
-        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
 
     def lcm(self, other):
         """Least common multiple of monomials."""
         other, orig = self._get_val(other), other
-        if other is not None:
+        if other:
             return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
-        raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
+        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
