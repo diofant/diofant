@@ -26,15 +26,6 @@ class Monomial(tuple, DefaultPrinting):
 
         return obj
 
-    @classmethod
-    def _get_val(cls, other):
-        if not isinstance(other, cls):
-            try:
-                other = cls(other)
-            except (ValueError, TypeError):
-                return
-        return other
-
     def as_expr(self, *gens):
         """Convert a monomial instance to a Diofant expression."""
         if gens := gens or self.gens:
@@ -43,24 +34,15 @@ class Monomial(tuple, DefaultPrinting):
 
     def __mul__(self, other):
         """Return self*other."""
-        other = self._get_val(other)
-        if other:
-            return self.__class__((a + b for a, b in zip(self, other)), self.gens)
-        return NotImplemented
+        return self.__class__((a + b for a, b in zip(self, other)), self.gens)
 
     def __truediv__(self, other):
         """Return self/other."""
-        other = self._get_val(other)
-        if other:
-            return self.__class__((a - b for a, b in zip(self, other)), self.gens)
-        return NotImplemented
+        return self.__class__((a - b for a, b in zip(self, other)), self.gens)
 
     def divides(self, other):
         """Check if self divides other."""
-        other, orig = self._get_val(other), other
-        if other:
-            return all(a <= b for a, b in zip(self, other))
-        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
+        return all(a <= b for a, b in zip(self, other))
 
     def __pow__(self, n):
         """Return pow(self, other)."""
@@ -70,14 +52,8 @@ class Monomial(tuple, DefaultPrinting):
 
     def gcd(self, other):
         """Greatest common divisor of monomials."""
-        other, orig = self._get_val(other), other
-        if other:
-            return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
-        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
+        return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
 
     def lcm(self, other):
         """Least common multiple of monomials."""
-        other, orig = self._get_val(other), other
-        if other:
-            return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
-        raise TypeError(f'An instance of {self.__class__} expected, got {orig}')
+        return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
