@@ -2,29 +2,8 @@
 
 from collections.abc import Iterable
 
-from ..core import Integer, Mul, sympify
+from ..core import Mul, sympify
 from ..printing.defaults import DefaultPrinting
-
-
-def itermonomials(variables, degree):
-    r"""
-    Generate a set of monomials of the given total degree or less.
-
-    Examples
-    ========
-
-    >>> set(itermonomials([x, y], 2))
-    {1, x, x**2, y, y**2, x*y}
-
-    """
-    if not variables:
-        yield Integer(1)
-    else:
-        x, tail = variables[0], variables[1:]
-
-        for i in range(degree + 1):
-            for m in itermonomials(tail, degree - i):
-                yield m * x**i
 
 
 class Monomial(tuple, DefaultPrinting):

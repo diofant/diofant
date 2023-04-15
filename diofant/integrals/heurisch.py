@@ -11,7 +11,6 @@ from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
-from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
 from ..polys.solvers import solve_lin_sys
 from ..utilities import ordered
@@ -421,7 +420,17 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     if A > 1 and B > 1:
         degree -= 1
 
-    monoms = itermonomials(V, degree)
+    def _itermonomials(variables, degree):
+        if not variables:
+            yield Integer(1)
+        else:
+            x, tail = variables[0], variables[1:]
+
+            for i in range(degree + 1):
+                for m in _itermonomials(tail, degree - i):
+                    yield m * x**i
+
+    monoms = _itermonomials(V, degree)
     poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
     poly_part = Add(*[poly_coeffs[i]*monomial
                       for i, monomial in enumerate(ordered(monoms))])

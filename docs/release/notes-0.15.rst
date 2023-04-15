@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed ``itermonomials()`` function, see :pull:`1321`.
+
 Minor changes
 =============
 
