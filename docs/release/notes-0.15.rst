@@ -1,0 +1,30 @@
+============
+Diofant 0.15
+============
+
+Not Released Yet
+
+New features
+============
+
+Major changes
+=============
+
+Compatibility breaks
+====================
+
+* Removed ``itermonomials()`` function, see :pull:`1321`.
+
+Minor changes
+=============
+
+Developer changes
+=================
+
+Issues closed
+=============
+
+See the `release milestone <https://github.com/diofant/diofant/milestone/9?closed=1>`_
+for complete list of issues and pull requests involved in this release.
+
+These Sympy issues also were addressed:

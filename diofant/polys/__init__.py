@@ -25,7 +25,7 @@ from .polyerrors import (BasePolynomialError,
                          PolificationFailedError, OptionError, FlagError)
 from .numberfields import (minimal_polynomial,
                            primitive_element, field_isomorphism)
-from .monomials import Monomial, itermonomials
+from .monomials import Monomial
 from .orderings import (lex, grlex, grevlex, ilex,
                         igrlex, igrevlex)
 from .rootoftools import RootOf, RootSum
@@ -62,7 +62,7 @@ __all__ = ('Poly', 'PurePoly',
            'GeneratorsNeededError', 'ComputationFailedError', 'UnivariatePolynomialError',
            'MultivariatePolynomialError', 'PolificationFailedError', 'OptionError',
            'FlagError', 'minimal_polynomial', 'primitive_element',
-           'field_isomorphism', 'Monomial', 'itermonomials', 'lex', 'grlex',
+           'field_isomorphism', 'Monomial', 'lex', 'grlex',
            'grevlex', 'ilex', 'igrlex', 'igrevlex', 'RootOf', 'RootSum',
            'roots', 'construct_domain', 'swinnerton_dyer_poly',
            'cyclotomic_poly', 'symmetric_poly', 'random_poly',

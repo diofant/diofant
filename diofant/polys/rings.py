@@ -150,9 +150,6 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
     def __hash__(self):
         return self._hash
 
-    def __eq__(self, other):
-        return self is other
-
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
@@ -737,9 +734,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for t in other.items():
             result = result._iadd_term(t)
         return result
-
-    def __radd__(self, other):
-        return self.__add__(other)
+    __radd__ = __add__
 
     def __sub__(self, other):
         """Subtract polynomial other from self."""
@@ -784,10 +779,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for t in self.items():
             result = result._iadd_poly_term(other, t)
         return result
-
-    def __rmul__(self, other):
-        """Multiply other to self with other in the coefficient domain of self."""
-        return self.__mul__(other)
+    __rmul__ = __mul__
 
     def __pow__(self, n, mod=None):
         """Raise polynomial to power `n`."""

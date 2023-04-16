@@ -124,7 +124,7 @@ def minimize_univariate(f, x, dom):
             if s in dom:
                 m = Min(limit(f, x, s), limit(f, x, s, dir=1))
                 if m == -oo:
-                    return -oo, dict({x: s})
+                    return -oo, {x: s}
                 extr[s] = m
 
         for p in solve(diff(f, x), x):
@@ -142,7 +142,7 @@ def minimize_univariate(f, x, dom):
         for p, fp in sorted(extr.items()):
             if fp < min:
                 point, min = p, fp
-        return min, dict({x: point})
+        return min, {x: point}
 
 
 class InfeasibleProblemError(Exception):
