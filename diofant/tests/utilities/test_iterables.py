@@ -8,7 +8,7 @@ import pytest
 from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
                      cantor_product, default_sort_key, flatten, group,
                      has_dups, numbered_symbols, ordered, postorder_traversal,
-                     subsets, symbols, topological_sort, true, unflatten)
+                     subsets, symbols, true, unflatten)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import RGS_enum, RGS_unrank
 from diofant.functions.elementary.piecewise import ExprCondPair
@@ -159,19 +159,6 @@ def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
-
-
-def test_topological_sort():
-    V = [2, 3, 5, 7, 8, 9, 10, 11]
-    E = [(7, 11), (7, 8), (5, 11),
-         (3, 8), (3, 10), (11, 2),
-         (11, 9), (11, 10), (8, 9)]
-
-    assert topological_sort((V, E)) == [3, 5, 7, 8, 11, 2, 9, 10]
-    assert topological_sort((V, E), key=lambda v: -v) == \
-        [7, 5, 11, 3, 10, 8, 9, 2]
-
-    pytest.raises(ValueError, lambda: topological_sort((V, E + [(10, 7)])))
 
 
 def test_rotate():

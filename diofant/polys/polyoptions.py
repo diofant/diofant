@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import graphlib
 import re
 
 from ..core import Basic, I
 from ..core.sympify import sympify
-from ..utilities import has_dups, numbered_symbols, topological_sort
+from ..utilities import has_dups, numbered_symbols
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
@@ -170,19 +171,20 @@ class Options(dict):
     def _init_dependencies_order(cls):
         """Resolve the order of options' processing."""
         if cls.__order__ is None:
-            vertices, edges = [], set()
+            vertices, edges = [], []
 
             for name, option in cls.__options__.items():
                 vertices.append(name)
 
                 for _name in option.after:
-                    edges.add((_name, name))
+                    edges.append((_name, name))
 
                 for _name in option.before:
-                    edges.add((name, _name))
+                    edges.append((name, _name))
 
+            graph = {v: {_[0] for _ in edges if _[1] == v} for v in vertices}
             try:
-                cls.__order__ = topological_sort((vertices, list(edges)))
+                cls.__order__ = list(graphlib.TopologicalSorter(graph).static_order())
             except ValueError as exc:
                 raise RuntimeError('cycle detected in diofant.polys'
                                    ' options framework') from exc
