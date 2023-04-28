@@ -1,12 +1,9 @@
 """Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
-from __future__ import annotations
-
 import graphlib
 import re
 
-from ..core import Basic, I
-from ..core.sympify import sympify
+from ..core import Basic, I, sympify
 from ..utilities import has_dups, numbered_symbols
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
@@ -115,7 +112,7 @@ class Options(dict):
 
     """
 
-    __order__: list[str] | None = None
+    __order__: list[str] = []
     __options__: dict[str, type[Option]] = {}
 
     def __init__(self, gens, args, flags=None):
@@ -164,13 +161,13 @@ class Options(dict):
                 if self.get(exclude_option) is not None:
                     raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
-        for option in self.__order__:  # pylint: disable=not-an-iterable
+        for option in self.__order__:
             self.__options__[option].postprocess(self)
 
     @classmethod
     def _init_dependencies_order(cls):
         """Resolve the order of options' processing."""
-        if cls.__order__ is None:
+        if not cls.__order__:
             vertices, edges = [], []
 
             for name, option in cls.__options__.items():

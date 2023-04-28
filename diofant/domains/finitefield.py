@@ -133,7 +133,7 @@ class FiniteField(Field, IntegerModRing):
 
         key = cls, order, dom, mod, modulus
 
-        obj = super(IntegerModRing, cls).__new__(cls)  # pylint: disable=bad-super-call
+        obj = super(IntegerModRing, cls).__new__(cls)
 
         obj.domain = dom
         obj.mod = mod
