@@ -155,7 +155,7 @@ from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
 from .utilities import (cantor_product, default_sort_key, filldedent, flatten,
                         group, has_dups, has_variety, lambdify,
                         numbered_symbols, ordered, postorder_traversal, sift,
-                        subsets, topological_sort, unflatten)
+                        subsets, unflatten)
 
 
 __all__ = (
@@ -264,7 +264,7 @@ __all__ = (
     'cantor_product', 'default_sort_key',
     'filldedent', 'flatten', 'group', 'has_dups', 'has_variety', 'lambdify',
     'numbered_symbols', 'ordered', 'postorder_traversal',
-    'sift', 'subsets', 'topological_sort', 'unflatten',
+    'sift', 'subsets', 'unflatten',
     'CosineTransform', 'FourierTransform', 'HankelTransform',
     'Integral', 'InverseCosineTransform', 'InverseFourierTransform',
     'InverseHankelTransform', 'InverseLaplaceTransform',

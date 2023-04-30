@@ -13,7 +13,7 @@ Major changes
 Compatibility breaks
 ====================
 
-* Removed ``itermonomials()`` function, see :pull:`1321`.
+* Removed ``itermonomials()`` and ``topological_sort()`` functions, see :pull:`1321` and :pull:`1322`.
 
 Minor changes
 =============
