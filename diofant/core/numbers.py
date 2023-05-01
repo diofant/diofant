@@ -698,7 +698,7 @@ class Float(Number):
             # coerce to Float at same precision
             o = Float(other)
             ompf = o._as_mpf_val(self._prec)
-            return bool(mlib.mpf_eq(self._mpf_, ompf))
+            return mlib.mpf_eq(self._mpf_, ompf)
         try:
             other = sympify(other, strict=True)
         except SympifyError:
@@ -708,7 +708,7 @@ class Float(Number):
                 return False
             return other.__eq__(self)
         if isinstance(other, Float):
-            return bool(mlib.mpf_eq(self._mpf_, other._mpf_))
+            return mlib.mpf_eq(self._mpf_, other._mpf_)
         if isinstance(other, Number):
             # numbers should compare at the same precision;
             # all _as_mpf_val routines should be sure to abide
@@ -716,7 +716,7 @@ class Float(Number):
             # they don't, the equality test will fail since it compares
             # the mpf tuples
             ompf = other._as_mpf_val(self._prec)
-            return bool(mlib.mpf_eq(self._mpf_, ompf))
+            return mlib.mpf_eq(self._mpf_, ompf)
         return False    # Float != non-Number
 
     @_sympifyit('other', NotImplemented)
@@ -726,8 +726,8 @@ class Float(Number):
         if other.is_comparable:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(bool(mlib.mpf_gt(self._mpf_,
-                                            other._as_mpf_val(self._prec))),
+            return sympify(mlib.mpf_gt(self._mpf_,
+                                       other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__gt__(self, other)
 
@@ -738,8 +738,8 @@ class Float(Number):
         if other.is_comparable:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(bool(mlib.mpf_ge(self._mpf_,
-                                            other._as_mpf_val(self._prec))),
+            return sympify(mlib.mpf_ge(self._mpf_,
+                                       other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__ge__(self, other)
 
@@ -750,8 +750,8 @@ class Float(Number):
         if other.is_extended_real and other.is_number:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(bool(mlib.mpf_lt(self._mpf_,
-                                            other._as_mpf_val(self._prec))),
+            return sympify(mlib.mpf_lt(self._mpf_,
+                                       other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__lt__(self, other)
 
@@ -762,8 +762,8 @@ class Float(Number):
         if other.is_extended_real and other.is_number:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(bool(mlib.mpf_le(self._mpf_,
-                                            other._as_mpf_val(self._prec))),
+            return sympify(mlib.mpf_le(self._mpf_,
+                                       other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__le__(self, other)
 
@@ -1033,11 +1033,10 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.numerator*other.denominator > self.denominator*other.numerator),
+                return sympify(self.numerator*other.denominator > self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(bool(mlib.mpf_gt(self._as_mpf_val(other._prec),
-                                                other._mpf_)),
+                return sympify(mlib.mpf_gt(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1050,11 +1049,10 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.numerator*other.denominator >= self.denominator*other.numerator),
+                return sympify(self.numerator*other.denominator >= self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(bool(mlib.mpf_ge(self._as_mpf_val(other._prec),
-                                                other._mpf_)),
+                return sympify(mlib.mpf_ge(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1067,11 +1065,10 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.numerator*other.denominator < self.denominator*other.numerator),
+                return sympify(self.numerator*other.denominator < self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(bool(mlib.mpf_lt(self._as_mpf_val(other._prec),
-                                                other._mpf_)),
+                return sympify(mlib.mpf_lt(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1084,11 +1081,10 @@ class Rational(Number):
             return other.__ge__(self)
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.numerator*other.denominator <= self.denominator*other.numerator),
+                return sympify(self.numerator*other.denominator <= self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(bool(mlib.mpf_le(self._as_mpf_val(other._prec),
-                                                other._mpf_)),
+                return sympify(mlib.mpf_le(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
