@@ -14,6 +14,7 @@ Compatibility breaks
 ====================
 
 * Removed ``itermonomials()`` and ``topological_sort()`` functions, see :pull:`1321` and :pull:`1322`.
+* Removed ``Float.num`` property, use :func:`mpmath.mpmathify`, see :pull:`1323`.
 
 Minor changes
 =============

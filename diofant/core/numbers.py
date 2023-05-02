@@ -568,11 +568,6 @@ class Float(Number):
         """Compute ceiling of self."""
         return Integer(mlib.to_int(mlib.mpf_ceil(self._mpf_, self._prec)))
 
-    @property
-    def num(self):
-        """Return mpmath representation."""
-        return mpmath.mpf(self._mpf_)
-
     def _as_mpf_val(self, prec):
         return mpf_norm(self._mpf_, prec)
 

@@ -10,6 +10,7 @@ References
 import itertools
 import math
 
+import mpmath
 import pytest
 
 from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
@@ -188,7 +189,7 @@ def test_D2():
 
 
 def test_D3():
-    assert exp(pi*sqrt(163)).evalf(50).num.ae(262537412640768744)
+    assert mpmath.mpmathify(exp(pi*sqrt(163)).evalf(50)).ae(262537412640768744)
 
 
 def test_D4():
