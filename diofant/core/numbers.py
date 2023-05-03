@@ -4,7 +4,7 @@ import math
 import numbers
 
 import mpmath
-import mpmath.libmp as mlib
+from mpmath import libmp
 
 from .cache import cacheit
 from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
@@ -16,7 +16,7 @@ from .singleton import S, SingletonWithManagedProperties
 from .sympify import SympifyError, converter, sympify
 
 
-rnd = mlib.round_nearest
+rnd = libmp.round_nearest
 
 
 def comp(z1, z2, tol=None):
@@ -45,7 +45,7 @@ def comp(z1, z2, tol=None):
     if not tol:
         if tol is None:
             a, b = Float(z1), Float(z2)
-            return int(abs(a - b)*10**mlib.prec_to_dps(
+            return int(abs(a - b)*10**libmp.prec_to_dps(
                 min(a._prec, b._prec)))*2 <= 1
         if all(getattr(i, 'is_Number', False) for i in (z1, z2)):
             return z1._prec == z2._prec and str(z1) == str(z2)
@@ -60,7 +60,7 @@ def comp(z1, z2, tol=None):
 def mpf_norm(mpf, prec):
     """Return the mpf tuple normalized appropriately for the indicated
     precision after doing a check to see if zero should be returned or
-    not when the mantissa is 0. ``mlib.normalize`` always assumes that this
+    not when the mantissa is 0. ``libmp.normalize`` always assumes that this
     is zero, but it may not be since the mantissa for mpf's values "+inf",
     "-inf" and "nan" have a mantissa of zero, too.
 
@@ -76,11 +76,11 @@ def mpf_norm(mpf, prec):
         # it assumes that if man is zero the result is 0
         # (see issue sympy/sympy#6639)
         if not bc:
-            return mlib.fzero
+            return libmp.fzero
         # don't change anything; this should already
         # be a well formed mpf tuple
         return mpf
-    rv = mlib.normalize(sign, man, expt, bc, prec, rnd)
+    rv = libmp.normalize(sign, man, expt, bc, prec, rnd)
     return rv
 
 
@@ -288,7 +288,7 @@ class Number(AtomicExpr):
         return self._as_mpf_val(prec), prec
 
     def __float__(self):
-        return mlib.to_float(self._as_mpf_val(53))
+        return libmp.to_float(self._as_mpf_val(53))
 
     def _eval_conjugate(self):
         return self
@@ -521,19 +521,19 @@ class Float(Number):
             else:
                 dps = 15
 
-        prec = mlib.libmpf.dps_to_prec(dps)
+        prec = libmp.libmpf.dps_to_prec(dps)
 
         if isinstance(num, decimal.Decimal):
-            _mpf_ = mlib.from_Decimal(num, prec, rnd)
+            _mpf_ = libmp.from_Decimal(num, prec, rnd)
         elif isinstance(num, Number):
             _mpf_ = num._as_mpf_val(prec)
         else:
             _mpf_ = mpmath.mpf(num, prec=prec, rounding=rnd)._mpf_
 
         # special cases
-        if _mpf_ == mlib.fzero:
+        if _mpf_ == libmp.fzero:
             pass  # we want a Float
-        elif _mpf_ == mlib.fnan:
+        elif _mpf_ == libmp.fnan:
             return nan
 
         obj = Expr.__new__(cls)
@@ -544,9 +544,9 @@ class Float(Number):
     @classmethod
     def _new(cls, _mpf_, _prec):
         # special cases
-        if _mpf_ == mlib.fzero:
+        if _mpf_ == libmp.fzero:
             return Integer(0)  # XXX this is different from Float which gives 0.0
-        if _mpf_ == mlib.fnan:
+        if _mpf_ == libmp.fnan:
             return nan
 
         obj = Expr.__new__(cls)
@@ -555,18 +555,18 @@ class Float(Number):
         return obj
 
     def __getnewargs__(self):
-        return self._mpf_, mlib.libmpf.prec_to_dps(self._prec)
+        return self._mpf_, libmp.libmpf.prec_to_dps(self._prec)
 
     def _hashable_content(self):
         return self._mpf_, self._prec
 
     def floor(self):
         """Compute floor of self."""
-        return Integer(mlib.to_int(mlib.mpf_floor(self._mpf_, self._prec)))
+        return Integer(libmp.to_int(libmp.mpf_floor(self._mpf_, self._prec)))
 
     def ceiling(self):
         """Compute ceiling of self."""
-        return Integer(mlib.to_int(mlib.mpf_ceil(self._mpf_, self._prec)))
+        return Integer(libmp.to_int(libmp.mpf_ceil(self._mpf_, self._prec)))
 
     def _as_mpf_val(self, prec):
         return mpf_norm(self._mpf_, prec)
@@ -575,28 +575,28 @@ class Float(Number):
         return self._mpf_, max(prec, self._prec)
 
     def _eval_is_finite(self):
-        return self._mpf_ not in (mlib.finf, mlib.fninf)
+        return self._mpf_ not in (libmp.finf, libmp.fninf)
 
     def _eval_is_integer(self):
-        return self._mpf_ == mlib.fzero
+        return self._mpf_ == libmp.fzero
 
     def _eval_is_positive(self):
-        return mlib.mpf_gt(self._mpf_, mlib.fzero)
+        return libmp.mpf_gt(self._mpf_, libmp.fzero)
 
     def _eval_is_zero(self):
-        return self._mpf_ == mlib.fzero
+        return self._mpf_ == libmp.fzero
 
     def __bool__(self):
         return self.is_nonzero
 
     def __neg__(self):
-        return Float._new(mlib.mpf_neg(self._mpf_), self._prec)
+        return Float._new(libmp.mpf_neg(self._mpf_), self._prec)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_add(self._mpf_, rhs, prec, rnd), prec)
+            return Float._new(libmp.mpf_add(self._mpf_, rhs, prec, rnd), prec)
         return Number.__add__(self, other)
     __radd__ = __add__
 
@@ -604,14 +604,14 @@ class Float(Number):
     def __sub__(self, other):
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_sub(self._mpf_, rhs, prec, rnd), prec)
+            return Float._new(libmp.mpf_sub(self._mpf_, rhs, prec, rnd), prec)
         return Number.__sub__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_mul(self._mpf_, rhs, prec, rnd), prec)
+            return Float._new(libmp.mpf_mul(self._mpf_, rhs, prec, rnd), prec)
         return Number.__mul__(self, other)
     __rmul__ = __mul__
 
@@ -619,7 +619,7 @@ class Float(Number):
     def __truediv__(self, other):
         if isinstance(other, Number) and other != 0:
             rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_div(self._mpf_, rhs, prec, rnd), prec)
+            return Float._new(libmp.mpf_div(self._mpf_, rhs, prec, rnd), prec)
         return Number.__truediv__(self, other)
 
     @_sympifyit('other', NotImplemented)
@@ -627,15 +627,15 @@ class Float(Number):
         if isinstance(other, Rational) and other.denominator != 1:
             # calculate mod with Rationals, *then* round the result
             return Float(Rational.__mod__(Rational(self), other),
-                         mlib.prec_to_dps(self._prec))
+                         libmp.prec_to_dps(self._prec))
         if isinstance(other, Float):
             r = self/other
             if r == int(r):
-                prec = max(mlib.prec_to_dps(i) for i in (self._prec, other._prec))
+                prec = max(libmp.prec_to_dps(i) for i in (self._prec, other._prec))
                 return Float(0, prec)
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)
-            return Float._new(mlib.mpf_mod(self._mpf_, rhs, prec, rnd), prec)
+            return Float._new(libmp.mpf_mod(self._mpf_, rhs, prec, rnd), prec)
         return Number.__mod__(self, other)
 
     @_sympifyit('other', NotImplemented)
@@ -645,7 +645,7 @@ class Float(Number):
         if isinstance(other, Rational):
             # calculate mod with Rationals, *then* round the answer
             return Float(other.__mod__(Rational(self)),
-                         mlib.prec_to_dps(self._prec))
+                         libmp.prec_to_dps(self._prec))
         return NotImplemented
 
     def _eval_power(self, other):
@@ -666,7 +666,7 @@ class Float(Number):
             if isinstance(other, Integer):
                 prec = self._prec
                 return Float._new(
-                    mlib.mpf_pow_int(self._mpf_, other.numerator, prec, rnd), prec)
+                    libmp.mpf_pow_int(self._mpf_, other.numerator, prec, rnd), prec)
             if isinstance(other, Rational) and \
                     other.numerator == 1 and other.denominator % 2 and self.is_negative:
                 return Pow(-1, other, evaluate=False)*(
@@ -674,26 +674,26 @@ class Float(Number):
             other, prec = other._as_mpf_op(self._prec)
             mpfself = self._mpf_
             try:
-                y = mlib.mpf_pow(mpfself, other, prec, rnd)
+                y = libmp.mpf_pow(mpfself, other, prec, rnd)
                 return Float._new(y, prec)
-            except mlib.ComplexResult:
-                re, im = mlib.mpc_pow(
-                    (mpfself, mlib.fzero), (other, mlib.fzero), prec, rnd)
+            except libmp.ComplexResult:
+                re, im = libmp.mpc_pow(
+                    (mpfself, libmp.fzero), (other, libmp.fzero), prec, rnd)
                 return Float._new(re, prec) + \
                     Float._new(im, prec)*I
 
     def __abs__(self):
-        return Float._new(mlib.mpf_abs(self._mpf_), self._prec)
+        return Float._new(libmp.mpf_abs(self._mpf_), self._prec)
 
     def __int__(self):
-        return int(mlib.to_int(self._mpf_))  # uses round_fast = round_down
+        return int(libmp.to_int(self._mpf_))  # uses round_fast = round_down
 
     def __eq__(self, other):
         if isinstance(other, float):
             # coerce to Float at same precision
             o = Float(other)
             ompf = o._as_mpf_val(self._prec)
-            return mlib.mpf_eq(self._mpf_, ompf)
+            return libmp.mpf_eq(self._mpf_, ompf)
         try:
             other = sympify(other, strict=True)
         except SympifyError:
@@ -703,7 +703,7 @@ class Float(Number):
                 return False
             return other.__eq__(self)
         if isinstance(other, Float):
-            return mlib.mpf_eq(self._mpf_, other._mpf_)
+            return libmp.mpf_eq(self._mpf_, other._mpf_)
         if isinstance(other, Number):
             # numbers should compare at the same precision;
             # all _as_mpf_val routines should be sure to abide
@@ -711,7 +711,7 @@ class Float(Number):
             # they don't, the equality test will fail since it compares
             # the mpf tuples
             ompf = other._as_mpf_val(self._prec)
-            return mlib.mpf_eq(self._mpf_, ompf)
+            return libmp.mpf_eq(self._mpf_, ompf)
         return False    # Float != non-Number
 
     @_sympifyit('other', NotImplemented)
@@ -721,8 +721,8 @@ class Float(Number):
         if other.is_comparable:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(mlib.mpf_gt(self._mpf_,
-                                       other._as_mpf_val(self._prec)),
+            return sympify(libmp.mpf_gt(self._mpf_,
+                                        other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__gt__(self, other)
 
@@ -733,8 +733,8 @@ class Float(Number):
         if other.is_comparable:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(mlib.mpf_ge(self._mpf_,
-                                       other._as_mpf_val(self._prec)),
+            return sympify(libmp.mpf_ge(self._mpf_,
+                                        other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__ge__(self, other)
 
@@ -745,8 +745,8 @@ class Float(Number):
         if other.is_extended_real and other.is_number:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(mlib.mpf_lt(self._mpf_,
-                                       other._as_mpf_val(self._prec)),
+            return sympify(libmp.mpf_lt(self._mpf_,
+                                        other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__lt__(self, other)
 
@@ -757,8 +757,8 @@ class Float(Number):
         if other.is_extended_real and other.is_number:
             other = other.evalf(strict=False)
         if isinstance(other, Number) and other is not nan:
-            return sympify(mlib.mpf_le(self._mpf_,
-                                       other._as_mpf_val(self._prec)),
+            return sympify(libmp.mpf_le(self._mpf_,
+                                        other._as_mpf_val(self._prec)),
                            strict=True)
         return Expr.__le__(self, other)
 
@@ -868,7 +868,7 @@ class Rational(Number):
                 return p
             if isinstance(p, Float):
                 with mpmath.workprec(p._prec):
-                    p, q = mlib.to_rational(p._mpf_)
+                    p, q = libmp.to_rational(p._mpf_)
 
         try:
             f = fractions.Fraction(p)/fractions.Fraction(q)
@@ -992,10 +992,10 @@ class Rational(Number):
                 Integer(self.denominator)**Integer(other.numerator)
 
     def _as_mpf_val(self, prec):
-        return mlib.from_rational(self.numerator, self.denominator, prec, rnd)
+        return libmp.from_rational(self.numerator, self.denominator, prec, rnd)
 
     def _mpmath_(self, prec, rnd):
-        return mpmath.make_mpf(mlib.from_rational(self.numerator, self.denominator, prec, rnd))
+        return mpmath.make_mpf(libmp.from_rational(self.numerator, self.denominator, prec, rnd))
 
     def __abs__(self):
         return Rational(abs(self.numerator), self.denominator)
@@ -1018,7 +1018,7 @@ class Rational(Number):
                 # so we can just check equivalence of args
                 return self.numerator == other.numerator and self.denominator == other.denominator
             if isinstance(other, Float):
-                return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
+                return libmp.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
 
     @_sympifyit('other', NotImplemented)
@@ -1031,7 +1031,7 @@ class Rational(Number):
                 return sympify(self.numerator*other.denominator > self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(mlib.mpf_gt(self._as_mpf_val(other._prec), other._mpf_),
+                return sympify(libmp.mpf_gt(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1047,7 +1047,7 @@ class Rational(Number):
                 return sympify(self.numerator*other.denominator >= self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(mlib.mpf_ge(self._as_mpf_val(other._prec), other._mpf_),
+                return sympify(libmp.mpf_ge(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1063,7 +1063,7 @@ class Rational(Number):
                 return sympify(self.numerator*other.denominator < self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(mlib.mpf_lt(self._as_mpf_val(other._prec), other._mpf_),
+                return sympify(libmp.mpf_lt(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1079,7 +1079,7 @@ class Rational(Number):
                 return sympify(self.numerator*other.denominator <= self.denominator*other.numerator,
                                strict=True)
             if isinstance(other, Float):
-                return sympify(mlib.mpf_le(self._as_mpf_val(other._prec), other._mpf_),
+                return sympify(libmp.mpf_le(self._as_mpf_val(other._prec), other._mpf_),
                                strict=True)
         elif other.is_number and other.is_extended_real:
             expr, other = Integer(self.numerator), self.denominator*other
@@ -1174,7 +1174,7 @@ class Integer(Rational):
     _denominator = _int_dtype(1)
 
     def _as_mpf_val(self, prec):
-        return mlib.from_int(self.numerator, prec)
+        return libmp.from_int(self.numerator, prec)
 
     def _mpmath_(self, prec, rnd):
         return mpmath.make_mpf(self._as_mpf_val(prec))
@@ -1654,7 +1654,7 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                 return nan
 
     def _as_mpf_val(self, prec):
-        return mlib.finf
+        return libmp.finf
 
     __hash__ = Number.__hash__
 
@@ -1816,7 +1816,7 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
             return Integer(-1)**other*oo**other
 
     def _as_mpf_val(self, prec):
-        return mlib.fninf
+        return libmp.fninf
 
     __hash__ = Number.__hash__
 
@@ -1932,7 +1932,7 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
         return self
 
     def _as_mpf_val(self, prec):
-        return mlib.fnan
+        return libmp.fnan
 
     __hash__ = Number.__hash__
 
