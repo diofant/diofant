@@ -1406,6 +1406,9 @@ class Zero(IntegerConstant, metaclass=SingletonWithManagedProperties):
         if coeff is not Integer(1):  # there is a Number to discard
             return self**terms
 
+    def _as_mpf_val(self, prec):
+        return libmp.fzero
+
 
 class One(IntegerConstant, metaclass=SingletonWithManagedProperties):
     """The number one.
@@ -1429,6 +1432,9 @@ class One(IntegerConstant, metaclass=SingletonWithManagedProperties):
 
     _numerator = _int_dtype(1)
     _denominator = _int_dtype(1)
+
+    def _as_mpf_val(self, prec):
+        return libmp.fone
 
 
 class NegativeOne(IntegerConstant, metaclass=SingletonWithManagedProperties):
@@ -1486,6 +1492,9 @@ class NegativeOne(IntegerConstant, metaclass=SingletonWithManagedProperties):
                 if i.is_even:
                     return self**p.exp
 
+    def _as_mpf_val(self, prec):
+        return libmp.fnone
+
 
 class Half(RationalConstant, metaclass=SingletonWithManagedProperties):
     """The rational number 1/2.
@@ -1509,6 +1518,9 @@ class Half(RationalConstant, metaclass=SingletonWithManagedProperties):
 
     _numerator = _int_dtype(1)
     _denominator = _int_dtype(2)
+
+    def _as_mpf_val(self, prec):
+        return libmp.fhalf
 
 
 class Infinity(Number, metaclass=SingletonWithManagedProperties):
