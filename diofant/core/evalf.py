@@ -430,7 +430,7 @@ def evalf_mul(v, prec, options):
     working_prec = prec + len(args) + 5
 
     # Empty product is 1
-    start = man, exp, bc = MPZ(1), 0, 1
+    start = man, exp, bc = fone[1:]
 
     # First, we multiply all pure real or pure imaginary numbers.
     # direction tells us that the result should be multiplied by
@@ -476,7 +476,7 @@ def evalf_mul(v, prec, options):
     # initialize with the first term
     if (man, exp, bc) != start:
         # there was a real part; give it an imaginary part
-        re, im = (sign, man, exp, bitcount(man)), (0, MPZ(0), 0, 0)
+        re, im = (sign, man, exp, bitcount(man)), fzero
         i0 = 0
     else:
         # there is no real part to start (other than the starting 1)
@@ -756,16 +756,10 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from .numbers import oo
     x = sympify(x)
     if x == 0:
         return mpf(0)
-    if x == oo:
-        return mpf('inf')
-    if x == -oo:
-        return mpf('-inf')
-    # XXX
-    re, im, _, _ = evalf(x, prec, options)
+    re, im, *_ = evalf(x, prec, options)  # XXX
     if im:
         return mpc(re or fzero, im)
     return mpf(re)
