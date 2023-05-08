@@ -383,7 +383,7 @@ class Pow(Expr):
         b, e = self.base, self.exp
 
         if b.is_rational:
-            if b.is_integer is False and e.is_positive:
+            if b.is_noninteger and e.is_positive:
                 return False  # rat**nonneg
         if b.is_integer and e.is_integer:
             if b is Integer(-1):
