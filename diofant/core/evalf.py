@@ -28,10 +28,9 @@ from mpmath import inf as mpmath_inf
 from mpmath import (libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
                     quadts, workprec)
 from mpmath.libmp import bitcount as mpmath_bitcount
-from mpmath.libmp import (fhalf, fnan, fnone, fone, from_int, from_man_exp,
-                          from_rational, fzero, mpf_abs, mpf_add, mpf_atan,
-                          mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_log,
-                          mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
+from mpmath.libmp import (fone, from_man_exp, fzero, mpf_abs, mpf_add,
+                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_exp,
+                          mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
                           mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
                           round_nearest)
 from mpmath.libmp.backend import MPZ
@@ -431,7 +430,7 @@ def evalf_mul(v, prec, options):
     working_prec = prec + len(args) + 5
 
     # Empty product is 1
-    start = man, exp, bc = MPZ(1), 0, 1
+    start = man, exp, bc = fone[1:]
 
     # First, we multiply all pure real or pure imaginary numbers.
     # direction tells us that the result should be multiplied by
@@ -477,7 +476,7 @@ def evalf_mul(v, prec, options):
     # initialize with the first term
     if (man, exp, bc) != start:
         # there was a real part; give it an imaginary part
-        re, im = (sign, man, exp, bitcount(man)), (0, MPZ(0), 0, 0)
+        re, im = (sign, man, exp, bitcount(man)), fzero
         i0 = 0
     else:
         # there is no real part to start (other than the starting 1)
@@ -757,16 +756,10 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from .numbers import oo
     x = sympify(x)
     if x == 0:
         return mpf(0)
-    if x == oo:
-        return mpf('inf')
-    if x == -oo:
-        return mpf('-inf')
-    # XXX
-    re, im, _, _ = evalf(x, prec, options)
+    re, im, *_ = evalf(x, prec, options)  # XXX
     if im:
         return mpc(re or fzero, im)
     return mpf(re)
@@ -1095,26 +1088,15 @@ def _create_evalf_table():
     from ..integrals.integrals import Integral
     from .add import Add
     from .mul import Mul
-    from .numbers import (Exp1, Float, Half, ImaginaryUnit, Integer, NaN,
-                          NegativeOne, One, Pi, Rational, Zero)
+    from .numbers import Float, ImaginaryUnit, Number
     from .power import Pow
     from .symbol import Dummy, Symbol
     evalf_table = {
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
         Float: lambda x, prec, options: (x._mpf_, None, prec if prec <= x._prec else x._prec, None),
-        Rational: lambda x, prec, options: (from_rational(x.numerator, x.denominator, prec),
-                                            None, prec, None),
-        Integer: lambda x, prec, options: (from_int(x.numerator, prec),
-                                           None, prec, None),
-        Zero: lambda x, prec, options: (None, None, prec, None),
-        One: lambda x, prec, options: (fone, None, prec, None),
-        Half: lambda x, prec, options: (fhalf, None, prec, None),
-        Pi: lambda x, prec, options: (mpf_pi(prec), None, prec, None),
-        Exp1: lambda x, prec, options: (mpf_e(prec), None, prec, None),
+        Number: lambda x, prec, options: (x._as_mpf_val(prec), None, prec, None),
         ImaginaryUnit: lambda x, prec, options: (None, fone, None, prec),
-        NegativeOne: lambda x, prec, options: (fnone, None, prec, None),
-        NaN: lambda x, prec, options: (fnan, None, prec, None),
 
         cos: evalf_trig,
         sin: evalf_trig,

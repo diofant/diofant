@@ -583,7 +583,7 @@ class Hyper_Function(Expr):
         """
         for a in self.ap:
             for b in self.bq:
-                if (a - b).is_integer and (a - b).is_negative is False:
+                if (a - b).is_integer and (a - b).is_nonnegative:
                     return False
         for a in self.ap:
             if a == 0:

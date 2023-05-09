@@ -127,7 +127,8 @@ def test_evalf_complex_cancellation():
     assert NS((A + B*I)*(C + D*I), 6) == '6.44710e-6 + 0.892529*I'
     assert NS((A + B*I)*(C + D*I), 10) == '6.447100000e-6 + 0.8925286452*I'
     assert NS((A + B*I)*(
-        C + D*I) - F*I, 5) in ('6.4471e-6 + 0.e-14*I', '6.4471e-6 - 0.e-14*I')
+        C + D*I) - F*I, 5) in ('6.4471e-6 + 0.e-14*I', '6.4471e-6 - 0.e-14*I',
+                               '6.4471e-6 - 0.e-15*I')
 
 
 def test_evalf_logs():

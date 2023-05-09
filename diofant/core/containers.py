@@ -79,9 +79,6 @@ class Tuple(Basic):
     def __hash__(self):
         return hash(self.args)
 
-    def _to_mpmath(self, prec):
-        return tuple(a._to_mpmath(prec) for a in self.args)
-
     def __lt__(self, other):
         return sympify(self.args < other.args)
 
