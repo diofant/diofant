@@ -7,8 +7,8 @@ from diofant import (And, Eq, Equality, FiniteSet, Float, Function, Ge,
                      GreaterThan, Gt, I, Implies, Integer, Interval, Le,
                      LessThan, Lt, Ne, Not, Or, Rational, Rel, Relational,
                      StrictGreaterThan, StrictLessThan, Symbol, Unequality,
-                     Wild, Xor, ceiling, false, floor, nan, oo, pi, simplify,
-                     sqrt, true, zoo)
+                     Wild, Xor, ceiling, exp, false, floor, nan, oo, pi,
+                     simplify, sqrt, true, zoo)
 from diofant.abc import t, w, x, y, z
 from diofant.core.relational import _Inequality as Inequality
 
@@ -664,3 +664,9 @@ def test_sympyissue_8444():
     i = Symbol('i', integer=True)
     assert (i > floor(i)) is false
     assert (i < ceiling(i)) is false
+
+
+def test_sympyissue_25142():
+    x = 1 + exp(2*I*pi/3) + exp(-2*I*pi/3)
+    assert Eq(x, 0).simplify() == true
+    assert x.expand(complex=True) == 0
