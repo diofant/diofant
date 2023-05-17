@@ -988,6 +988,7 @@ def test_sympyissue_4892():
         c*(A*h2*log(c*t)/c + A*t*exp(-z)),
         (A*c*t - A*(-h1)*log(t)*exp(z))*exp(-z),
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
+        -A*(-h2)*log(t) - c*P1*t,
     ]
 
     # Issues relating to issue sympy/sympy#4596 are making the actual result of this hard
@@ -1123,13 +1124,11 @@ def test_sympyissue_6828():
     assert verify_numerically(f, g, tol=1e-12)
 
 
-@pytest.mark.xfail
 def test_integrate_Piecewise_rational_over_reals():
     f = Piecewise(
         (0,                                              t - 478.515625*pi < 0),
         (13.2075145209219*pi/(0.000871222*t + 0.995)**2, t - 478.515625*pi >= 0))
-
-    assert integrate(f, (t, 0, oo)) != 0  # ~20664.5
+    assert integrate(f, (t, 0, oo)) == 20664.553599840892
 
 
 def test_sympyissue_4803():
@@ -1325,7 +1324,7 @@ def test_sympyissue_11877():
 
 def test_sympyissue_17841():
     e = 1/(x**2 + x + I)
-    assert integrate(e.diff(x), x) == e
+    assert integrate(e.diff(x), x).factor(extension=True) == e
 
 
 def test_sympyissue_18384():
@@ -1403,7 +1402,7 @@ def test_sympyissue_21024():
             x/2 - (-1 + E)*(1 + E)*log(2*x + tanh(1))/Mul(4, 1 + E**2,
                                                           evaluate=False))
     assert ((log(x)*log(4*x) + log(3*x + exp(2))).integrate(x) ==
-            x*log(x)**2 + x*log(3*x + E**2) - x + x*(-2*log(2) + 2) +
+            x*log(x)**2 + x*log(3*x + E**2) - x - x*(-2 + 2*log(2)) +
             (-2*x + 2*x*log(2))*log(x) + E**2*log(3*x + E**2)/3)
 
 

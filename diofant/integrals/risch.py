@@ -37,6 +37,7 @@ from ..solvers import solve
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
+from .rationaltools import ratint
 
 
 def integer_powers(exprs):
@@ -1674,11 +1675,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
         elif case == 'primitive':
             ans, i, b = integrate_primitive(fa, fd, DE)
         elif case == 'base':
-            # XXX: We can't call ratint() directly here because it doesn't
-            # handle polynomials correctly.
-            ans = integrate(fa.as_expr()/fd.as_expr(), DE.x, risch=False)
-            b = False
-            i = Integer(0)
+            ans, i, b = ratint((fa, fd), DE.x), Integer(0), False
         else:
             raise NotImplementedError('Only exponential and logarithmic '
                                       'extensions are currently supported.')
