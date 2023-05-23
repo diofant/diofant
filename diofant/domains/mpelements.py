@@ -1,10 +1,11 @@
 """Real and complex elements."""
 
+from fractions import Fraction
+
 from mpmath.ctx_mp_python import PythonMPContext, _constant, _mpc, _mpf
 from mpmath.libmp import (MPZ_ONE, finf, fnan, fninf, fone, from_float,
                           from_int, from_str, fzero, int_types, mpf_mul,
                           round_nearest, to_rational)
-from mpmath.rational import mpq
 
 from .domainelement import DomainElement
 
@@ -161,15 +162,15 @@ class MPContext(PythonMPContext):
 
         k = (self.max_denom - q0)//q1
 
-        number = mpq(p, q)
-        bound1 = mpq(p0 + k*p1, q0 + k*q1)
-        bound2 = mpq(p1, q1)
+        number = Fraction(p, q)
+        bound1 = Fraction(p0 + k*p1, q0 + k*q1)
+        bound2 = Fraction(p1, q1)
 
         if not bound2 or not bound1:
             return p, q
         if abs(bound2 - number) <= abs(bound1 - number):
-            return bound2._mpq_
-        return bound1._mpq_
+            return bound2.as_integer_ratio()
+        return bound1.as_integer_ratio()
 
     def almosteq(self, s, t, rel_eps=None, abs_eps=None):
         t = self.convert(t)
