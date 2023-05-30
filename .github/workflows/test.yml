@@ -10,7 +10,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.11', '3.12']
         coverage: [false]
         include:
           - python-version: '3.11'
@@ -26,6 +26,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
     - name: Install libs
       run: |
         sudo apt update
