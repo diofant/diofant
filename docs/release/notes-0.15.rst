@@ -29,3 +29,5 @@ See the `release milestone <https://github.com/diofant/diofant/milestone/9?close
 for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
+
+* :sympyissue:`25142`: incorrect simplification of a complex relational
