@@ -33,6 +33,7 @@ from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (Poly, PolynomialError, RootSum, cancel, gcd, real_roots,
                      reduced)
+from ..solvers import solve
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
@@ -1433,14 +1434,11 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     qas = qa.as_expr().subs(s)
     qds = qd.as_expr().subs(s)
-    if conds == 'piecewise' and DE.x not in qds.free_symbols:
+    eq = Eq(qds, 0)
+    if conds == 'piecewise' and DE.x not in qds.free_symbols and (s2 := solve(eq)):
         # We have to be careful if the exponent is Integer(0)!
-
-        # XXX: Does qd = 0 always necessarily correspond to the exponential
-        # equaling 1?
-        ret += Piecewise(
-            (integrate((p - i).subs({DE.t: 1}).subs(s), DE.x), Eq(qds, 0)),
-            (qas/qds, True))
+        ret += Piecewise((integrate((p - i).subs(s).subs(s2[0]), DE.x), eq),
+                         (qas/qds, True))
     else:
         ret += qas/qds
 

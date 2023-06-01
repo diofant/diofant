@@ -36,3 +36,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`19813`: logcombine hangs
 * :sympyissue:`22450`: Rational raised to the big power hangs
 * :sympyissue:`25165`: Series expansion not working
+* :sympyissue:`25197`: Simple exponential integral error in an otherwise case

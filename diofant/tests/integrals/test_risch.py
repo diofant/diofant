@@ -3,7 +3,7 @@ import pytest
 
 from diofant import (EX, ZZ, E, Eq, Function, I, Integer, Lambda, Piecewise,
                      Poly, Rational, exp, factor, log, sin, sqrt, symbols, tan)
-from diofant.abc import a, i, nu, t, x, y, z
+from diofant.abc import a, b, i, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
                                      NonElementaryIntegral, as_poly_1t,
                                      canonical_representation, derivation,
@@ -686,3 +686,9 @@ def test_xtothex():
     a = risch_integrate(x**x, x)
     assert a == NonElementaryIntegral(x**x, x)
     assert isinstance(a, NonElementaryIntegral)
+
+
+def test_sympyissue_25197():
+    assert (exp((b - a)*x - b*t).integrate((x, 0, t)).simplify() ==
+            Piecewise((exp(-b*t)*t, Eq(a - b)),
+                      (exp(-b*t)*(-exp(t*(-a + b)) + 1)/(a - b), True)))
