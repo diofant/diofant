@@ -6,6 +6,7 @@ import numbers
 import mpmath
 from mpmath import libmp
 
+from ..config import query
 from .cache import cacheit
 from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
@@ -981,7 +982,7 @@ class Rational(Number):
                 return self._eval_evalf(other._prec)**other
             if isinstance(other, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
-                return Rational(self.numerator**other.numerator, self.denominator**other.numerator)
+                return Integer(self.numerator)**other.numerator / Integer(self.denominator)**other.numerator
             # Rational
             if self.numerator != 1:
                 # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
@@ -1262,10 +1263,14 @@ class Integer(Rational):
             if self.is_negative:
                 return -(Integer(-1)**((other.numerator % other.denominator) /
                                        Integer(other.denominator))*Rational(1, -self)**ne)
+            if self.numerator.bit_length()*ne > query('MAX_INTEGER_NBITS'):
+                return
             return Rational(1, self.numerator)**ne
         # see if base is a perfect root, sqrt(4) --> 2
         x, xexact = integer_nthroot(abs(self.numerator), other.denominator)
         if xexact:
+            if self.numerator.bit_length()*other > query('MAX_INTEGER_NBITS'):
+                return
             # if it's a perfect root we've finished
             result = Integer(x**abs(other.numerator))
             if self.is_negative:

@@ -943,6 +943,16 @@ def test_powers_Integer():
     e = (-1)**n/2 + Rational(5, 2)
     assert (-1)**e == Pow(-1, e, evaluate=False)
 
+    e = Integer(2)**10000000
+    assert e == Pow(2, 10000000, evaluate=False)
+    assert e*e == Pow(2, 20000000, evaluate=False)
+    assert e+e == 2*Pow(2, 10000000, evaluate=False)
+    assert 1/e == Pow(2, -10000000, evaluate=False)
+
+    # issue sympy/sympy#22450
+    assert Rational(13, 10)**6472416997 == Mul(Pow(10, -6472416997, evaluate=False),
+                                               Pow(13, 6472416997, evaluate=False))
+
 
 def test_powers_Rational():
     # check infinity

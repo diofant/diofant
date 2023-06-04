@@ -33,6 +33,8 @@ _default_config = {
     'MINPOLY_METHOD':             'compose',
 
     'KARATSUBA_CUTOFF':           100,
+
+    'MAX_INTEGER_NBITS':          10000000,
 }
 
 _current_config = {}

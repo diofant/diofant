@@ -288,7 +288,11 @@ class Mul(AssocOp):
                         # the exponent is an integer
                         if e.is_Rational:
                             if e.is_Integer:
-                                coeff *= Pow(b, e)  # it is an unevaluated power
+                                c = Pow(b, e)  # it is an unevaluated power
+                                if c.is_Number:
+                                    coeff *= c
+                                else:
+                                    c_powers.append((b, e))
                                 continue
                             if e.is_negative:    # also a sign of an unevaluated power
                                 seq.append(Pow(b, e))
