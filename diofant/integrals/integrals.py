@@ -749,15 +749,26 @@ class Integral(AddWithLimits):
             return poly.integrate().as_expr()
 
         if risch is not False:
+            from ..core.function import AppliedUndef, Derivative
+            ds = {_: Dummy() for _ in (_ for _ in ([*f.atoms(Derivative)] +
+                                                   [*f.atoms(AppliedUndef)])
+                                       if not _.has(x))}
+            rs = {v: k for k, v in ds.items()}
+            f = f.subs(ds)
+
             try:
                 result, i = risch_integrate(f, x, separate_integral=True, conds=conds)
             except NotImplementedError:
                 pass
             else:
+                result = result.subs(rs)
                 if i:
+                    i = i.subs(rs)
                     # There was a nonelementary integral. Try integrating it.
                     return result + i.doit(risch=False)
                 return result
+            finally:
+                f = f.subs(rs)
 
         # since Integral(f=g1+g2+...) == Integral(g1) + Integral(g2) + ...
         # we are going to handle Add terms separately,

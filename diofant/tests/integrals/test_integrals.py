@@ -1483,7 +1483,7 @@ def test_sympyissue_23605():
     srk_p = R*T/(nu-b) - a/(nu**2 + b*nu)
     integrand = p - T*diff(srk_p, T)
     ans = -R*T*log(R**2*T**2*(-R*b**4/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3) - 3*b**3*a.diff(T)/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3)) + R**2*b**3/(2*R**2*b**2 - 2*a.diff(T)**2) + R*b**2/(2*a.diff(T)) + R*b**2*a.diff(T)/(2*R**2*b**2 - 2*a.diff(T)**2) + 2*b*a.diff(T)**2/(2*R**2*b**2 - 2*a.diff(T)**2) + nu) - 2*T*sqrt(-a.diff(T)**2)*atan(a.diff(T)/sqrt(-a.diff(T)**2) + 2*nu*a.diff(T)/(b*sqrt(-a.diff(T)**2)))/b + nu*p
-    assert integrate(integrand, nu) == ans
+    assert (integrate(integrand, nu) - ans).diff(nu).equals(0)
 
 
 def test_sympyissue_23707():
