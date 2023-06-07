@@ -110,8 +110,9 @@ class Add(AssocOp):
                 b, e = o.as_base_exp()
                 if b.is_Number and (e.is_Integer or
                                     (e.is_Rational and e.is_negative)):
-                    seq.append(b**e)
-                    continue
+                    if (p := b**e).is_Number:
+                        seq.append(p)
+                        continue
                 c, s = Integer(1), o
 
             else:

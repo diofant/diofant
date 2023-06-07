@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* New configuration option (``MAX_INTEGER_NBITS``) to control the maximal size of evaluated integers, see :pull:`1327`.
+
 Major changes
 =============
 
@@ -31,3 +33,5 @@ for complete list of issues and pull requests involved in this release.
 These Sympy issues also were addressed:
 
 * :sympyissue:`25142`: incorrect simplification of a complex relational
+* :sympyissue:`19813`: logcombine hangs
+* :sympyissue:`22450`: Rational raised to the big power hangs
