@@ -549,7 +549,7 @@ def minimal_polynomial(ex, method=None, **args):
         of ``ex`` are computed, then the arithmetic operations on them are
         performed using the resultant and factorization.  If ``groebner``,
         a bottom-up algorithm, using Gröbner bases is used.
-        Defaults are determined by :func:`~diofant.config.setup`.
+        Default value is determined by :func:`~diofant.config.setup`.
     domain : Domain, optional
         If no ground domain is given, it will be generated automatically
         from the expression.

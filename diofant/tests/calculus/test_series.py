@@ -321,3 +321,10 @@ def test_sympyissue_24266():
     assert ((exp(-I*pi*(2*x + 1))*gamma(1 + x)).series(x, n=3) ==
             -1 + x*(EulerGamma + 2*I*pi) +
             x**2*(-EulerGamma**2/2 + 23*pi**2/12 - 2*EulerGamma*I*pi) + O(x**3))
+
+
+def test_sympyissue_25165():
+    assert ((1/sqrt((1 - x)**2 + (x - 0.23)**4)).series(x, n=5) ==
+            0.99860372483035464 + 1.020049231899337*x +
+            0.90698826628256113*x**2 + 1.1088110978785586*x**3 +
+            1.175424955960535*x**4 + O(x**5))

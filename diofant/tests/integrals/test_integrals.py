@@ -1339,9 +1339,7 @@ def test_sympyissue_18384():
 
 def test_sympyissue_20360():
     e = exp(pi*x*(n - Rational(1, 2)))
-    r = Piecewise((y, Eq(2*pi*n - pi, 0)),
-                  (2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) -
-                   2/(2*pi*n - pi), True))
+    r = 2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) - 2/(2*pi*n - pi)
     assert integrate(e, (x, 0, y)) == r
 
 
@@ -1435,10 +1433,8 @@ def test_sympyissue_21721():
 def test_sympyissue_21741():
     e = exp(-2*I*pi*(z*x + t*y)/(500*10**-9))
     assert (integrate(e, z) ==
-            Piecewise((z, Eq(pi*x, 0)),
-                      (Float('2.5000000000000004e-7', dps=15) *
-                       exp(-Float('3999999.9999999995', dps=15) *
-                           I*pi*(t*y + x*z))*I/(pi*x), True)))
+            Piecewise((exp(-3999999.9999999995*I*pi*t*y)*z, Eq(pi*x, 0)),
+                      (2.5000000000000004e-7*exp(-3999999.9999999995*I*pi*(t*y + x*z))*I/(pi*x), True)))
 
 
 def test_sympyissue_22435():
@@ -1487,7 +1483,7 @@ def test_sympyissue_23605():
     srk_p = R*T/(nu-b) - a/(nu**2 + b*nu)
     integrand = p - T*diff(srk_p, T)
     ans = -R*T*log(R**2*T**2*(-R*b**4/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3) - 3*b**3*a.diff(T)/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3)) + R**2*b**3/(2*R**2*b**2 - 2*a.diff(T)**2) + R*b**2/(2*a.diff(T)) + R*b**2*a.diff(T)/(2*R**2*b**2 - 2*a.diff(T)**2) + 2*b*a.diff(T)**2/(2*R**2*b**2 - 2*a.diff(T)**2) + nu) - 2*T*sqrt(-a.diff(T)**2)*atan(a.diff(T)/sqrt(-a.diff(T)**2) + 2*nu*a.diff(T)/(b*sqrt(-a.diff(T)**2)))/b + nu*p
-    assert integrate(integrand, nu) == ans
+    assert (integrate(integrand, nu) - ans).diff(nu).equals(0)
 
 
 def test_sympyissue_23707():

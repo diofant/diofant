@@ -716,3 +716,15 @@ def test_sympyissue_19813():
     r = Rational(-4688638433404893,
                  18014398509481984) + log(root(2, 4)*root(-cos(2) + 1, 4))
     assert logcombine(e) == r
+
+
+def test_sympyissue_23399():
+    K = Symbol('K')
+    POWER = Symbol('POWER')
+    A_OUTPUT = Function('A_OUTPUT')
+
+    lhs = A_OUTPUT(t)
+    rhs = -K**POWER
+
+    eq = Eq(lhs, rhs)
+    assert simplify(eq) == Eq(A_OUTPUT(t), -K**POWER)

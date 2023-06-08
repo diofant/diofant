@@ -11,9 +11,9 @@ def groebner(seq, ring, method=None):
     Computes Gröbner basis for a set of polynomials in `K[X]`.
 
     Wrapper around the (default) improved Buchberger and the other algorithms
-    for computing Gröbner bases. The choice of algorithm can be changed via
-    ``method`` argument or :func:`~diofant.config.setup`,
-    where ``method`` can be either ``buchberger`` or ``f5b``.
+    for computing Gröbner bases.  The choice of algorithm can be changed via
+    ``method`` argument, where ``method`` can be either ``buchberger`` or
+    ``f5b``.  Default value is determined by :func:`~diofant.config.setup`.
 
     """
     if method is None:
