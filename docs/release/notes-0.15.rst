@@ -38,3 +38,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25165`: Series expansion not working
 * :sympyissue:`25197`: Simple exponential integral error in an otherwise case
 * :sympyissue:`23399`: Simplifying equation with function seemingly gets stuck
+* :sympyissue:`20427`: Result from clear_denoms() prints like zero poly but behaves wierdly (due to unstripped DMP)

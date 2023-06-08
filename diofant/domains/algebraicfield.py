@@ -37,9 +37,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         minpoly, coeffs, _ = primitive_element(ext, domain=dom)
         ext = sum(c*e for c, e in zip(coeffs, ext))
 
-        if minpoly.degree() < 2:
-            return dom
-
         is_real = ext.is_real
         if is_real is not False:
             ext_root = cls._compute_ext_root(ext, minpoly)
@@ -117,9 +114,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             raise CoercionFailedError(f'{expr} is not an algebraic number') from exc
 
         K0 = self.domain.algebraic_field(c*expr)
-        if K0.is_AlgebraicField:
-            return self.convert(K0(rep), K0)
-        return self.convert(K0(*rep), K0)
+        assert K0.is_AlgebraicField
+        return self.convert(K0(rep), K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
