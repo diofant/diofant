@@ -98,7 +98,7 @@ def test_powsimp():
     assert all(powsimp(e) == e for e in (sqrt(x**a), sqrt(x**2)))
 
     # issue sympy/sympy#8836
-    assert str(powsimp(exp(I*pi/3)*root(-1, 3))) == '(-1)**(2/3)'
+    assert powsimp(exp(I*pi/3)*root(-1, 3)) == root(-1, 3)**2
 
 
 def test_powsimp_negated_base():

@@ -429,9 +429,12 @@ def test_Pow():
     assert str((x + y)**-2) == '(x + y)**(-2)'
     assert str((x + y)**2) == '(x + y)**2'
     assert str((x + y)**(1 + x)) == '(x + y)**(x + 1)'
-    assert str(cbrt(x)) == 'x**(1/3)'
-    assert str(1/cbrt(x)) == 'x**(-1/3)'
-    assert str(sqrt(sqrt(x))) == 'x**(1/4)'
+    assert str(cbrt(x)) == 'root(x, 3)'
+    assert str(1/cbrt(x)) == '1/root(x, 3)'
+    assert str(sqrt(sqrt(x))) == 'root(x, 4)'
+    assert str(x**Rational(3, 2)) == 'sqrt(x)**3'
+    assert str(x**Rational(-5, 2)) == '1/sqrt(x)**5'
+    assert str(x**Rational(3, 4)) == 'root(x, 4)**3'
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue sympy/sympy#2860
@@ -490,7 +493,7 @@ def test_Rational():
     assert str(1/sqrt(Rational(81, 36))**3) == '8/27'
 
     assert str(sqrt(-4)) == str(2*I)
-    assert str(root(2, 10**10)) == '2**(1/10000000000)'
+    assert str(root(2, 10**10)) == 'root(2, 10000000000)'
 
 
 def test_Float():

@@ -92,7 +92,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     >>> _*a  # so Mul doesn't combine them
     x**2*y*sqrt(x*sqrt(y))
     >>> powsimp(_)  # but powsimp will
-    (x*sqrt(y))**(5/2)
+    sqrt(x*sqrt(y))**5
     >>> powsimp(x*y*a)  # but won't when doing so would violate assumptions
     x*y*sqrt(x*sqrt(y))
 

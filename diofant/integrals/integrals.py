@@ -1156,9 +1156,9 @@ def integrate(*args, **kwargs):
     Terms that are independent of x are dropped by indefinite integration:
 
     >>> integrate(sqrt(1 + x), (x, 0, x))
-    2*(x + 1)**(3/2)/3 - 2/3
+    2*sqrt(x + 1)**3/3 - 2/3
     >>> integrate(sqrt(1 + x), x)
-    2*(x + 1)**(3/2)/3
+    2*sqrt(x + 1)**3/3
 
     >>> integrate(x*y)
     Traceback (most recent call last):

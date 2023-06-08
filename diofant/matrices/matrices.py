@@ -1725,7 +1725,7 @@ class MatrixBase(DefaultPrinting):
         >>> trigsimp(v.norm())
         1
         >>> v.norm(10)
-        (sin(x)**10 + cos(x)**10)**(1/10)
+        root(sin(x)**10 + cos(x)**10, 10)
         >>> A = Matrix([[1, 1], [1, 1]])
         >>> A.norm(2)  # Spectral norm (max of |Ax|/|x| under 2-vector-norm)
         2
