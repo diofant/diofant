@@ -316,7 +316,7 @@ def test_nsimplify():
     assert nsimplify(1/.3 + x, rational=True) == Rational(10, 3) + x
     assert nsimplify(log(3).evalf(), rational=True) == Rational(109861228866811,
                                                                 100000000000000)
-    assert nsimplify(Float(0.272198261287950), [pi, log(2)]) == pi*log(2)/8
+    assert nsimplify(0.272198261287950, [pi, log(2)]) == pi*log(2)/8
     assert nsimplify(Float(0.272198261287950).evalf(3), [pi, log(2)]) == \
         -pi/4 - log(2) + Rational(7, 4)
     assert nsimplify(x/7.0) == x/7
@@ -341,7 +341,7 @@ def test_nsimplify():
     assert nsimplify(.2222, tolerance=0) == Rational(1111, 5000)
     assert nsimplify(-.2222, tolerance=0) == -Rational(1111, 5000)
     # issue sympy/sympy#7211, PR sympy/sympy#4112
-    assert nsimplify(Float(2e-8)) == Rational(1, 50000000)
+    assert nsimplify(2e-8) == Rational(1, 50000000)
     # issue sympy/sympy#7322 direct test
     assert nsimplify(1e-42, rational=True) != 0
     # issue sympy/sympy#10336
@@ -638,8 +638,8 @@ def test_sympyissue_9296():
                0.002*sin(q[1] + q[2])*cos(q[2]))
     r = simplify(a + b).replace(lambda x: x.is_Float and abs(x) < 1e-15,
                                 lambda x: 0)
-    assert r == (-Float('0.0045000000000000005', dps=15)*dq[0]*sin(q[1]) -
-                 Float('0.0045000000000000005', dps=15)*dq[1]*sin(q[1]))
+    assert r == (-0.0045000000000000005*dq[0]*sin(q[1]) -
+                 0.0045000000000000005*dq[1]*sin(q[1]))
 
 
 def test_sympyissue_9630():

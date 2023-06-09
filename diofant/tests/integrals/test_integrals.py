@@ -1439,7 +1439,7 @@ def test_sympyissue_21741():
 
 def test_sympyissue_22435():
     e = (y - 2.4)**2*sqrt(y)*0.1875
-    assert integrate(e, (y, 0, 4)) == Float('1.097142857142857', dps=15)
+    assert integrate(e, (y, 0, 4)) == 1.097142857142857
 
 
 def test_sympyissue_22487():

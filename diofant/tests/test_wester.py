@@ -14,7 +14,7 @@ import mpmath
 import pytest
 
 from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
-                     E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
+                     E, EulerGamma, FiniteSet, Function, GoldenRatio,
                      GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
                      LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
                      N, O, Or, Piecewise, Product, Rational, Subs, Sum, Symbol,
@@ -536,7 +536,7 @@ def test_J5():
 
 
 def test_J6():
-    assert besselj(2, 1 + I).evalf() == Float('0.04157988694396212', 15) + Float('0.24739764151330632', 15)*I
+    assert besselj(2, 1 + I).evalf() == 0.04157988694396212 + 0.24739764151330632*I
 
 
 def test_J7():

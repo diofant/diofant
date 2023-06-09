@@ -620,4 +620,4 @@ def test_sympyissue_15413():
 @pytest.mark.slow
 def test_sympyissue_22943():
     r = RootOf(sqrt(2)*x**3 + sqrt(3)*x + cbrt(3), 0)
-    assert r.evalf() == Float('-0.62924946253300906', dps=15)
+    assert r.evalf() == -0.62924946253300906

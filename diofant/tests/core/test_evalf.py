@@ -573,5 +573,4 @@ def test_evalf_abs():
 
 
 def test_sympyissue_19774():
-    assert exp(x/2).evalf() == Float('2.7182818284590451',
-                                     dps=15)**(Float('0.5', dps=15)*x)
+    assert exp(x/2).evalf() == 2.7182818284590451**(0.5*x)

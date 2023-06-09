@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (E, EulerGamma, Float, O, Product, Rational, Symbol,
-                     binomial, exp, expand_func, factorial, factorial2, ff,
-                     gamma, loggamma, nan, oo, pi, polygamma, rf, simplify,
+from diofant import (E, EulerGamma, O, Product, Rational, Symbol, binomial,
+                     exp, expand_func, factorial, factorial2, ff, gamma,
+                     loggamma, nan, oo, pi, polygamma, rf, simplify,
                      subfactorial, symbols, uppergamma, zoo)
 from diofant.abc import x
 from diofant.core.function import ArgumentIndexError
@@ -376,5 +376,5 @@ def test_subfactorial():
 
 
 def test_sympyissue_14822():
-    assert rf(Rational(2, 3), 32).evalf() == Float('+6.0994868747569084e+34', dps=15)
-    assert ff(Rational(2, 3), 32).evalf() == Float('-2.066175896913914e+32', dps=15)
+    assert rf(Rational(2, 3), 32).evalf() == 6.0994868747569084e+34
+    assert ff(Rational(2, 3), 32).evalf() == -2.066175896913914e+32

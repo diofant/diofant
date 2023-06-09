@@ -2,7 +2,7 @@ import itertools
 
 import pytest
 
-from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
+from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
@@ -2823,10 +2823,8 @@ def test_sympyissue_7138():
 
 def test_sympyissue_10379():
     sol = dsolve(f(t).diff(t) - (1 - 51.05*a*f(t)))
-    ans = Eq(f(t), (Float('0.019588638589618023', dps=15) +
-                    Float('0.019588638589618023', dps=15) *
-                    exp(-1.0*a*(-1.0*C1 +
-                                Float('51.049999999999997', dps=15)*t)))/a)
+    ans = Eq(f(t), (0.019588638589618023 +
+                    0.019588638589618023*exp(-a*(-C1 + 51.05*t)))/a)
     assert sol == ans
 
 

@@ -42,8 +42,8 @@ def test_interval_arguments():
 
 def test_interval_evalf():
     assert (Interval(E, pi).evalf() ==
-            Interval(Float('2.7182818284590451', dps=15),
-                     Float('3.1415926535897931', dps=15), false, false))
+            Interval(2.7182818284590451,
+                     3.1415926535897931, false, false))
 
 
 def test_interval_symbolic_end_points():
@@ -129,8 +129,7 @@ def test_union():
     pytest.raises(TypeError, lambda: iter(Union(FiniteSet(1, 2), Interval(0, 1))))
 
     assert (Union(FiniteSet(E), FiniteSet(pi), evaluate=False).evalf() ==
-            FiniteSet(Float('2.7182818284590451', dps=15),
-                      Float('3.1415926535897931', dps=15)))
+            FiniteSet(2.7182818284590451, 3.1415926535897931))
 
 
 def test_difference():
@@ -523,13 +522,13 @@ def test_is_number():
 def test_Interval_is_left_unbounded():
     assert Interval(3, 4).is_left_unbounded is False
     assert Interval(-oo, 3).is_left_unbounded is True
-    assert Interval(Float('-inf'), 3).is_left_unbounded is True
+    assert Interval(-oo.evalf(), 3).is_left_unbounded is True
 
 
 def test_Interval_is_right_unbounded():
     assert Interval(3, 4).is_right_unbounded is False
     assert Interval(3, oo).is_right_unbounded is True
-    assert Interval(3, Float('+inf')).is_right_unbounded is True
+    assert Interval(3, oo.evalf()).is_right_unbounded is True
 
 
 def test_Interval_as_relational():
@@ -634,8 +633,7 @@ def test_finite_basic():
     assert B > AandB
 
     assert (FiniteSet(pi, E).evalf() ==
-            FiniteSet(Float('2.7182818284590451', dps=15),
-                      Float('3.1415926535897931', dps=15)))
+            FiniteSet(2.7182818284590451, 3.1415926535897931))
 
     # issue sympy/sympy#10337
     assert (FiniteSet(2) == 3) is False
