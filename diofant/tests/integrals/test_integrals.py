@@ -1505,3 +1505,8 @@ def test_sympyissue_24477():
     assert integrate(expr2, (theta, 0, 2*pi)) != 0
     assert integrate(expr2, (theta, 0, 2*pi)).doit().expand() == O(r**5)
     assert integrate(expr3, (theta, 0, 2*pi)) == O(r**5)
+
+
+def test_issue_842():
+    assert integrate(sqrt(2*z*(y - x)),
+                     x).equals(2*sqrt(2)*sqrt(z*(-x + y))*(x - y)/3)
