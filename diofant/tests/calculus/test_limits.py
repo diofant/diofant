@@ -1082,7 +1082,7 @@ def test_sympyissue_24386():
     assert limit((x + y)/(exp(z) + 1) - y, z, -oo) == x
 
 
-def test_diofantissue_1155():
+def test_issue_1155():
     assert (limit((x**(x + 1)*(log(x) + 1) + 1)/x, x, 20) ==
             Rational(2097152000000000000000000001, 20) +
             104857600000000000000000000*log(20))

@@ -124,14 +124,17 @@ March 2014 (see :sympyissue:`7235`).  Transfered issue numbers were
 shifted by 3099.  I.e. ``issue 123`` in the git history before
 :commit:`6f68fa1` - does mean issue ``sympy/sympy#3222`` on Github.
 
-Versioning and Release Procedure
-================================
+Versioning
+==========
 
 We use standard `Semantic Versioning`_ numbering scheme, but adopt
 `PEP 440`_ for alpha ("aN" suffix), beta ("bN") and development
 (".devN") releases.
 
-To release a new version, tag latest commit to the master branch
+Release Procedure
+=================
+
+To release a new version, tag the latest commit in the master branch
 and publish this release tag::
 
     git pull

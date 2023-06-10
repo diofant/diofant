@@ -2534,7 +2534,7 @@ def test_nroots():
     assert (0.2*x + 0.1).as_poly().nroots() == [-0.5]
 
     roots = nroots(x**5 + x + 1, n=5)
-    eps = Float('1e-5')
+    eps = 1e-5
 
     assert re(roots[0]).epsilon_eq(-0.75487, eps) is true
     assert im(roots[0]) == 0.0
@@ -2547,7 +2547,7 @@ def test_nroots():
     assert re(roots[4]).epsilon_eq(+0.87743, eps) is true
     assert im(roots[4]).epsilon_eq(+0.74486, eps) is true
 
-    eps = Float('1e-6')
+    eps = 1e-6
 
     assert re(roots[0]).epsilon_eq(-0.75487, eps) is false
     assert im(roots[0]) == 0.0

@@ -779,7 +779,7 @@ class airyai(AiryBase):
     Several special values are known:
 
     >>> airyai(0)
-    3**(1/3)/(3*gamma(2/3))
+    root(3, 3)/(3*gamma(2/3))
     >>> airyai(oo)
     0
     >>> airyai(-oo)
@@ -800,7 +800,7 @@ class airyai(AiryBase):
     Series expansion is also supported:
 
     >>> airyai(z).series(z, 0, 3)
-    3**(5/6)*gamma(1/3)/(6*pi) - 3**(1/6)*z*gamma(2/3)/(2*pi) + O(z**3)
+    root(3, 6)**5*gamma(1/3)/(6*pi) - root(3, 6)*z*gamma(2/3)/(2*pi) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
     on the whole complex plane:
@@ -811,7 +811,7 @@ class airyai(AiryBase):
     Rewrite Ai(z) in terms of hypergeometric functions:
 
     >>> airyai(z).rewrite(hyper)
-    -3**(2/3)*z*hyper((), (4/3,), z**3/9)/(3*gamma(1/3)) + 3**(1/3)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
+    -root(3, 3)**2*z*hyper((), (4/3,), z**3/9)/(3*gamma(1/3)) + root(3, 3)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
     See Also
     ========
@@ -930,7 +930,7 @@ class airybi(AiryBase):
     Several special values are known:
 
     >>> airybi(0)
-    3**(5/6)/(3*gamma(2/3))
+    root(3, 6)**5/(3*gamma(2/3))
     >>> airybi(oo)
     oo
     >>> airybi(-oo)
@@ -951,7 +951,7 @@ class airybi(AiryBase):
     Series expansion is also supported:
 
     >>> airybi(z).series(z, 0, 3)
-    3**(1/3)*gamma(1/3)/(2*pi) + 3**(2/3)*z*gamma(2/3)/(2*pi) + O(z**3)
+    root(3, 3)*gamma(1/3)/(2*pi) + root(3, 3)**2*z*gamma(2/3)/(2*pi) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
     on the whole complex plane:
@@ -962,7 +962,7 @@ class airybi(AiryBase):
     Rewrite Bi(z) in terms of hypergeometric functions:
 
     >>> airybi(z).rewrite(hyper)
-    3**(1/6)*z*hyper((), (4/3,), z**3/9)/gamma(1/3) + 3**(5/6)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
+    root(3, 6)*z*hyper((), (4/3,), z**3/9)/gamma(1/3) + root(3, 6)**5*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
     See Also
     ========
@@ -1132,7 +1132,7 @@ class airyaiprime(AiryBase):
     Several special values are known:
 
     >>> airyaiprime(0)
-    -3**(2/3)/(3*gamma(1/3))
+    -root(3, 3)**2/(3*gamma(1/3))
     >>> airyaiprime(oo)
     0
 
@@ -1151,7 +1151,7 @@ class airyaiprime(AiryBase):
     Series expansion is also supported:
 
     >>> airyaiprime(z).series(z, 0, 3)
-    -3**(2/3)/(3*gamma(1/3)) + 3**(1/3)*z**2/(6*gamma(2/3)) + O(z**3)
+    -root(3, 3)**2/(3*gamma(1/3)) + root(3, 3)*z**2/(6*gamma(2/3)) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
     on the whole complex plane:
@@ -1162,7 +1162,7 @@ class airyaiprime(AiryBase):
     Rewrite Ai'(z) in terms of hypergeometric functions:
 
     >>> airyaiprime(z).rewrite(hyper)
-    3**(1/3)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) - 3**(2/3)*hyper((), (1/3,), z**3/9)/(3*gamma(1/3))
+    root(3, 3)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) - root(3, 3)**2*hyper((), (1/3,), z**3/9)/(3*gamma(1/3))
 
     See Also
     ========
@@ -1271,7 +1271,7 @@ class airybiprime(AiryBase):
     Several special values are known:
 
     >>> airybiprime(0)
-    3**(1/6)/gamma(1/3)
+    root(3, 6)/gamma(1/3)
     >>> airybiprime(oo)
     oo
     >>> airybiprime(-oo)
@@ -1292,7 +1292,7 @@ class airybiprime(AiryBase):
     Series expansion is also supported:
 
     >>> airybiprime(z).series(z, 0, 3)
-    3**(1/6)/gamma(1/3) + 3**(5/6)*z**2/(6*gamma(2/3)) + O(z**3)
+    root(3, 6)/gamma(1/3) + root(3, 6)**5*z**2/(6*gamma(2/3)) + O(z**3)
 
     We can numerically evaluate the Airy function to arbitrary precision
     on the whole complex plane:
@@ -1303,7 +1303,7 @@ class airybiprime(AiryBase):
     Rewrite Bi'(z) in terms of hypergeometric functions:
 
     >>> airybiprime(z).rewrite(hyper)
-    3**(5/6)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) + 3**(1/6)*hyper((), (1/3,), z**3/9)/gamma(1/3)
+    root(3, 6)**5*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) + root(3, 6)*hyper((), (1/3,), z**3/9)/gamma(1/3)
 
     See Also
     ========

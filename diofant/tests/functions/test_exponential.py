@@ -319,7 +319,7 @@ def test_log_expand_complex():
 
 def test_log_apply_evalf():
     value = (log(3)/log(2) - 1).evalf()
-    assert value.epsilon_eq(Float('0.58496250072115618145373'))
+    assert value.epsilon_eq(0.58496250072115618145373)
 
 
 def test_log_expand():
@@ -387,7 +387,7 @@ def test_lambertw():
 
     assert LambertW(sqrt(2)).evalf(30).epsilon_eq(
         Float('0.701338383413663009202120278965', 30), 1e-29)
-    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float('-0.834310366631110'))
+    assert re(LambertW(2, -1)).evalf().epsilon_eq(-0.834310366631110)
 
     assert LambertW(-1).is_extended_real is False  # issue sympy/sympy#5215
     assert LambertW(2, evaluate=False).is_extended_real

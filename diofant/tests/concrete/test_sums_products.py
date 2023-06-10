@@ -1,11 +1,11 @@
 import pytest
 
-from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
-                     Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
-                     Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, ceiling, cos, exp, factorial, floor, gamma,
-                     harmonic, log, lowergamma, nan, oo, pi, product, simplify,
-                     sin, sqrt, summation, symbols, zeta)
+from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Function, I,
+                     Integer, Integral, KroneckerDelta, Le, Mod, Ne, Or,
+                     Piecewise, Product, Rational, Sum, Symbol, binomial,
+                     ceiling, cos, exp, factorial, floor, gamma, harmonic, log,
+                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
+                     summation, symbols, zeta)
 from diofant.abc import a, b, c, d, i, j, k, m, t, u, v, w, x, y, z
 from diofant.concrete.summations import telescopic
 from diofant.tests.core.test_evalf import NS
@@ -231,7 +231,7 @@ def test_geometric_sums():
                                                         (n, -oo, -2))
 
     # issue sympy/sympy#11642:
-    assert summation(0.5**n, (n, 1, oo)) == Float('1.0', dps=15)
+    assert summation(0.5**n, (n, 1, oo)) == 1.0
 
 
 def test_harmonic_sums():

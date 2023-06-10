@@ -1505,7 +1505,7 @@ def sine_transform(f, x, k, **hints):
     Note that for this transform, by default ``noconds=True``.
 
     >>> sine_transform(x*exp(-a*x**2), x, k)
-    sqrt(2)*E**(-k**2/(4*a))*k/(4*a**(3/2))
+    sqrt(2)*E**(-k**2/(4*a))*k/(4*sqrt(a)**3)
     >>> sine_transform(x**(-a), x, k)
     2**(-a + 1/2)*k**(a - 1)*gamma(-a/2 + 1)/gamma(a/2 + 1/2)
 
@@ -1616,7 +1616,7 @@ def cosine_transform(f, x, k, **hints):
     >>> cosine_transform(exp(-a*x), x, k)
     sqrt(2)*a/(sqrt(pi)*(a**2 + k**2))
     >>> cosine_transform(exp(-a*sqrt(x))*cos(a*sqrt(x)), x, k)
-    E**(-a**2/(2*k))*a/(2*k**(3/2))
+    E**(-a**2/(2*k))*a/(2*sqrt(k)**3)
 
     See Also
     ========
@@ -1777,7 +1777,7 @@ def hankel_transform(f, r, k, nu, **hints):
 
     >>> ht = hankel_transform(exp(-a*r), r, k, 0)
     >>> ht
-    a/(k**3*(a**2/k**2 + 1)**(3/2))
+    a/(k**3*sqrt(a**2/k**2 + 1)**3)
 
     >>> inverse_hankel_transform(ht, k, r, 0)
     E**(-a*r)
@@ -1834,7 +1834,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
 
     >>> ht = hankel_transform(exp(-a*r), r, k, 0)
     >>> ht
-    a/(k**3*(a**2/k**2 + 1)**(3/2))
+    a/(k**3*sqrt(a**2/k**2 + 1)**3)
 
     >>> inverse_hankel_transform(ht, k, r, 0)
     E**(-a*r)

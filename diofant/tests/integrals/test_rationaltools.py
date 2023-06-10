@@ -1,5 +1,5 @@
-from diofant import (EX, Float, I, Integer, Lambda, Poly, Rational, RootSum,
-                     atan, integrate, log, simplify, sqrt, symbols)
+from diofant import (EX, I, Integer, Lambda, Poly, Rational, RootSum, atan,
+                     integrate, log, simplify, sqrt, symbols)
 from diofant.abc import a, b, t, u, x
 from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
 
@@ -159,4 +159,4 @@ def test_log_to_atan():
 
 def test_sympyissue_13460():
     assert integrate(1/(-28*x**3 - 46*x**2 - 25*x - 10),
-                     [x, 2, 3]).evalf() == Float('-0.0013230197536986538', dps=15)
+                     [x, 2, 3]).evalf() == -0.0013230197536986538

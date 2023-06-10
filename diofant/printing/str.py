@@ -441,6 +441,18 @@ class StrPrinter(Printer):
             # The parenthesized exp should be '(Rational(a, b))' so strip
             # parens, but just check to be sure.
             return f'{self.parenthesize(expr.base, PREC)}**{e[1:-1]}'
+        if (self.printmethod == '_diofantstr' and expr.is_commutative and
+                expr.exp.is_Rational and not expr.exp.is_Integer and not rational):
+            exp = expr.exp.numerator
+            prefix = ''
+            if exp < 0:
+                exp = -exp
+                prefix = '1/'
+            if exp != 1:
+                if expr.exp.denominator == 2:
+                    return f'{prefix}sqrt({expr.base})**{exp}'
+                return f'{prefix}root({expr.base}, {expr.exp.denominator})**{exp}'
+            return f'{prefix}root({expr.base}, {expr.exp.denominator})'
         return f'{self.parenthesize(expr.base, PREC)}**{e}'
 
     def _print_Mod(self, expr):

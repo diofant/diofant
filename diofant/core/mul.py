@@ -114,13 +114,13 @@ class Mul(AssocOp):
 
                 >>> a = sqrt(x*sqrt(y))
                 >>> a**3
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
                 >>> Mul(a, a, a)
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
                 >>> a*a*a
                 x*sqrt(y)*sqrt(x*sqrt(y))
                 >>> _.subs({a.base: z}).subs({z: a.base})
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
 
               -  If more than two terms are being multiplied then all the
                  previous terms will be re-processed for each new argument.

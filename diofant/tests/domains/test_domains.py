@@ -798,6 +798,11 @@ def test_RealField_from_expr():
     pytest.raises(CoercionFailedError, lambda: RR.convert(x))
 
 
+def test_RationalField_from_expr():
+    assert QQ.convert(((sqrt(2) + 1)**2 - 2*sqrt(2))/4) == QQ.dtype(3, 4)
+    pytest.raises(CoercionFailedError, lambda: QQ.convert(sqrt(2)))
+
+
 def test_AlgebraicElement():
     A = QQ.algebraic_field(I)
 
@@ -1244,3 +1249,18 @@ def test_issue_1008():
 
     assert A.unit.denominator == 1
     assert e.denominator == 2
+
+
+def test_issue_1094():
+    e = (-117968192370600*root(18, 3)/(217603955769048*root(24201 + 253*sqrt(9165), 3) +
+                                       2273005839412*sqrt(9165)*root(24201 + 253*sqrt(9165), 3)) -
+         15720318185*root(2, 3)**2*root(3, 3)*root(24201 + 253*sqrt(9165), 3)**2 /
+         (217603955769048*root(24201 + 253*sqrt(9165), 3) +
+          2273005839412*sqrt(9165)*root(24201 + 253*sqrt(9165), 3)) +
+         15720318185*root(12, 3)*root(24201 + 253*sqrt(9165), 3)**2 /
+         (217603955769048*root(24201 + 253*sqrt(9165), 3) +
+          2273005839412*sqrt(9165)*root(24201 + 253*sqrt(9165), 3)) +
+         117968192370600*root(2, 3)*root(3, 3)**2 /
+         (217603955769048*root(24201 + 253*sqrt(9165), 3) +
+          2273005839412*sqrt(9165)*root(24201 + 253*sqrt(9165), 3)))
+    assert e.as_poly(x, domain=QQ) == Integer(0).as_poly(x, domain=QQ)

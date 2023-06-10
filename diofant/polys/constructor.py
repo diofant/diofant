@@ -94,7 +94,10 @@ def _construct_algebraic(coeffs, opt):
         ground_exts = list(ordered(set().union(*[_.as_real_imag() for _ in exts])))
         domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
-    H = [domain.from_expr(e).rep for e in exts]
+    if domain.is_RationalField:
+        H = [domain.from_expr(e) for e in exts]
+    else:
+        H = [domain.from_expr(e).rep for e in exts]
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
