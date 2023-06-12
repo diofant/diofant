@@ -8,6 +8,7 @@ New features
 ============
 
 * New configuration option (``MAX_INTEGER_NBITS``) to control the maximal size of evaluated integers, see :pull:`1327`.
+* Added :func:`~diofant.polys.polytools.eliminate` to eliminate symbols from the equations, see :pull:`1331`.
 
 Major changes
 =============
@@ -39,3 +40,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25197`: Simple exponential integral error in an otherwise case
 * :sympyissue:`23399`: Simplifying equation with function seemingly gets stuck
 * :sympyissue:`20427`: Result from clear_denoms() prints like zero poly but behaves wierdly (due to unstripped DMP)
+* :sympyissue:`2720` eliminate()

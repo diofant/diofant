@@ -8,7 +8,7 @@ from .polytools import (Poly, PurePoly,
                         lcm, terms_gcd, trunc, monic, content,
                         primitive, compose, decompose,
                         sqf_norm, sqf_part, sqf_list, sqf, factor_list,
-                        factor, count_roots, real_roots, nroots,
+                        factor, count_roots, real_roots, nroots, eliminate,
                         cancel, reduced, groebner, GroebnerBasis)
 from .polyfuncs import symmetrize, horner, interpolate, viete
 from .rationaltools import together
@@ -43,7 +43,7 @@ from .fields import FractionField, field
 from .univar import UnivarPolynomialRing
 
 
-__all__ = ('Poly', 'PurePoly',
+__all__ = ('Poly', 'PurePoly', 'eliminate',
            'parallel_poly_from_expr', 'degree', 'LC',
            'LM', 'LT', 'div', 'rem', 'quo', 'exquo', 'half_gcdex',
            'gcdex', 'invert', 'subresultants', 'resultant', 'discriminant',
