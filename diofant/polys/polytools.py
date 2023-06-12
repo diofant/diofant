@@ -20,7 +20,7 @@ from .constructor import construct_domain
 from .groebnertools import groebner as _groebner
 from .groebnertools import matrix_fglm
 from .monomials import Monomial
-from .orderings import monomial_key
+from .orderings import build_product_order, lex, monomial_key
 from .polyerrors import (CoercionFailedError, ComputationFailedError,
                          DomainError, GeneratorsError, GeneratorsNeededError,
                          MultivariatePolynomialError, PolificationFailedError,
@@ -39,7 +39,7 @@ __all__ = ('Poly', 'PurePoly', 'parallel_poly_from_expr',
            'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
-           'real_roots', 'nroots',
+           'real_roots', 'nroots', 'eliminate',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis')
 
 
@@ -3997,6 +3997,51 @@ def groebner(F, *gens, **args):
 
     """
     return GroebnerBasis(F, *gens, **args)
+
+
+def eliminate(F, G, *gens, **args):
+    """
+    Eliminate the symbols ``G`` from the polynomials ``F``.
+
+    Parameters
+    ==========
+
+    F : iterable of Expr's
+        The system of polynomials to eliminate variables from.
+    G : iterable of Symbol's
+        Symbols to be eliminated.
+
+    Returns
+    =======
+
+    list
+        Equations, which are equivalent to the ``F``, but
+        do not contain symbols ``G``.
+
+    Examples
+    ========
+
+    >>> eliminate([x + y + z, y - z], [y])
+    [x + 2*z]
+    >>> eliminate([x + y + z, y - z, x - y], [y, z])
+    [x]
+    >>> eliminate([x**2 + y + z - 1, x + y**2 + z - 1, x + y + z**2 - 1], [z])
+    [x**2 - x - y**2 + y, 2*x*y**2 + y**4 - y**2, y**6 - 4*y**4 + 4*y**3 - y**2]
+
+    """
+    try:
+        polys, opt = parallel_poly_from_expr(F, *gens, **args)
+    except PolificationFailedError as exc:
+        raise ComputationFailedError('groebner', len(F), exc) from exc
+
+    order = build_product_order([(lex, *G), (lex, *opt.gens)], opt.gens)
+    basis = groebner(polys, *opt.gens, order=order)
+    r = [_ for _ in basis.exprs if not _.has(*G)]
+
+    if opt.polys:
+        r = [_.as_poly(*opt.gens) for _ in r]
+
+    return r
 
 
 class GroebnerBasis(Basic):

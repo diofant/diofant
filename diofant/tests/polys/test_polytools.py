@@ -15,7 +15,7 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailedError,
                      Rational, RealField, RootOf, Sum, Symbol, Tuple,
                      UnificationFailedError, cancel, cofactors, compose,
                      content, cos, count_roots, decompose, degree, diff,
-                     discriminant, div, exp, expand, exquo, factor,
+                     discriminant, div, eliminate, exp, expand, exquo, factor,
                      factor_list, false, gcd, gcdex, grevlex, grlex, groebner,
                      half_gcdex, im, invert, lcm, lex, log, monic, nroots, oo,
                      parallel_poly_from_expr, pi, primitive, quo, re,
@@ -2742,6 +2742,26 @@ def test_reduced():
 
     assert reduced(1, [1], x) == ([1], 0)
     pytest.raises(ComputationFailedError, lambda: reduced(1, [1]))
+
+
+def test_eliminate():
+    assert eliminate([x + y + z, y - z], [y]) == [x + 2*z]
+    assert eliminate([x + y + z, y - z], [y],
+                     polys=True) == [(x + 2*z).as_poly(x, y, z)]
+    assert eliminate([x + y + z, y - z, x - y], [y, z]) == [x]
+    assert eliminate([x - 2 - y, y - z], [y]) == [x - z - 2]
+    assert eliminate([x**2 + y + z - 1, x + y**2 + z - 1,
+                      x + y + z**2 - 1], [z]) == [x**2 - x - y**2 + y,
+                                                  2*x*y**2 + y**4 - y**2,
+                                                  y**6 - 4*y**4 + 4*y**3 - y**2]
+    assert eliminate([x**2 + y**2 + z**2 - 1, x - y + z - 2,
+                      x**3 - y**2 - z - 1],
+                     [y, z]) == [4*x**6 + 4*x**5 + 8*x**4 - 28*x**3 +
+                                 4*x**2 - 18*x + 27]
+    assert eliminate([x*y - z**2 - z, x**2 + x - y*z, x*z - y**2 - y],
+                     [z]) == [x**2 + x*y + x + y**2 + y]
+    assert eliminate([x**2 - 1, (x - 1)*y, (x + 1)*z], [z]) == [x**2 - 1, x*y - y]
+    pytest.raises(ComputationFailedError, lambda: eliminate([1], [x]))
 
 
 def test_groebner():
