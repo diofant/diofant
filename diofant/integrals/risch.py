@@ -37,6 +37,7 @@ from ..solvers import solve
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
+from .rationaltools import ratint
 
 
 def integer_powers(exprs):
@@ -433,17 +434,9 @@ class DifferentialExtension:
 
             if A is not None:
                 ans, u, n, const = A
-                # if n is 1 or -1, it's algebraic, but we can handle it
-                if n == -1:
-                    # This probably will never happen, because
-                    # Rational.as_numer_denom() returns the negative term in
-                    # the numerator.  But in case that changes, reduce it to
-                    # n == 1.
-                    n = 1
-                    u **= -1
-                    const *= -1
-                    ans = [(i, -j) for i, j in ans]
+                assert n > 0
 
+                # if n is 1 it's algebraic, but we can handle it
                 if n == 1:
                     # Example: exp(x + x**2) over QQ(x, exp(x), exp(x**2))
                     self.newf = self.newf.xreplace({exp(arg): exp(const)*Mul(*[
@@ -1026,8 +1019,6 @@ def laurent_series(a, d, F, n, DE):
     A/D at all the zeros of F.
 
     """
-    if F.degree() == 0:
-        return 0
     Z = _symbols('z', n)
     Z.insert(0, z)
     delta_a = Poly(0, DE.t)
@@ -1674,11 +1665,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
         elif case == 'primitive':
             ans, i, b = integrate_primitive(fa, fd, DE)
         elif case == 'base':
-            # XXX: We can't call ratint() directly here because it doesn't
-            # handle polynomials correctly.
-            ans = integrate(fa.as_expr()/fd.as_expr(), DE.x, risch=False)
-            b = False
-            i = Integer(0)
+            ans, i, b = ratint((fa, fd), DE.x), Integer(0), False
         else:
             raise NotImplementedError('Only exponential and logarithmic '
                                       'extensions are currently supported.')

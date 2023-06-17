@@ -41,3 +41,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23399`: Simplifying equation with function seemingly gets stuck
 * :sympyissue:`20427`: Result from clear_denoms() prints like zero poly but behaves wierdly (due to unstripped DMP)
 * :sympyissue:`2720` eliminate()
+* :sympyissue:`16951`: integrate(sqrt(2*m*(E - x)), x)
