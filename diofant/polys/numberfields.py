@@ -785,8 +785,10 @@ def field_isomorphism_factor(a, b):
 
 def field_isomorphism(a, b, **args):
     """Construct an isomorphism between two number fields."""
-    if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
-        raise ValueError(f'Arguments should be algebraic fields, got {a} and {b}')
+    if not (all(isinstance(_, AlgebraicField) for _ in (a, b)) and
+            a.domain == b.domain):
+        raise ValueError('Arguments should be absolute algebraic fields,'
+                         f' got {a} and {b}')
 
     if a == b:
         return a.unit.rep.all_coeffs()

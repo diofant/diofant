@@ -556,6 +556,13 @@ def test_field_isomorphism():
 
     pytest.raises(ValueError, lambda: field_isomorphism(1, 2))
 
+    a = QQ.algebraic_field(sqrt(2))
+    d = QQ.algebraic_field(sqrt(2) + sqrt(3))
+    a2 = a.algebraic_field(I)
+    d2 = d.algebraic_field(I)
+
+    pytest.raises(ValueError, lambda: field_isomorphism(a2, d2))
+
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
