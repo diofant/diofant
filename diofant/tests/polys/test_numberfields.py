@@ -632,7 +632,7 @@ def test_minpoly_domain():
 
     assert minimal_polynomial(sqrt(2), domain=F) == PurePoly(x - sqrt(2), x, domain=F)
     assert minimal_polynomial(sqrt(8), domain=F)(x) == x - 2*sqrt(2)
-    assert minimal_polynomial(sqrt(Rational(3, 2)), domain=F)(x) == 2*x**2 - 3
+    assert minimal_polynomial(sqrt(Rational(3, 2)), domain=F)(x) == x**2 - Rational(3, 2)
 
     pytest.raises(NotAlgebraicError, lambda: minimal_polynomial(y, domain=QQ))
 
@@ -642,7 +642,7 @@ def test_minpoly_domain():
     assert minimal_polynomial(I, domain=F)(x) == x - I
 
     F = QQ.algebraic_field(sqrt(3)*I)
-    assert minimal_polynomial(exp(I*pi/3), domain=F)(x) == 2*x - sqrt(3)*I - 1
+    assert minimal_polynomial(exp(I*pi/3), domain=F)(x) == x - (sqrt(3)*I + 1)/2
 
 
 def test_sympyissue_11553():
