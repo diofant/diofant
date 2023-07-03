@@ -182,7 +182,7 @@ class RealAlgebraicField(ComplexAlgebraicField):
 class AlgebraicElement(QuotientRingElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field."""
 
-    def __init__(self, rep):  # pylint: disable=super-init-not-called
+    def __init__(self, rep):
         """Initialize self."""
         dom = self.domain
 
@@ -195,7 +195,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
                 rep = [dom.domain.convert(_) for _ in rep]
             rep = dom.from_list(rep)
 
-        self.rep = rep % self.mod
+        super().__init__(rep)
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
