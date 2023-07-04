@@ -524,27 +524,26 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def drop(self, gen):
+    def drop(self, *gens):
         ring = self.ring
-        i = ring.index(gen)
+        indexes = sorted((ring.index(gen) for gen in gens), reverse=True)
+        new_ring = ring.drop(*indexes)
 
-        if ring.is_univariate:
+        if new_ring == ring.domain:
             if self.is_ground:
                 return self[1]
-            raise ValueError(f"can't drop {gen}")
-        symbols = list(ring.symbols)
-        del symbols[i]
-        ring = ring.clone(symbols=symbols)
+            raise ValueError(f"can't drop {gens}")
 
-        poly = ring.zero
+        poly = new_ring.zero
 
         for k, v in self.items():
-            if k[i] == 0:
-                K = list(k)
-                del K[i]
-                poly[K] = v
-            else:
-                raise ValueError(f"can't drop {gen}")
+            K = list(k)
+            for i in indexes:
+                if k[i] == 0:
+                    del K[i]
+                else:
+                    raise ValueError(f"can't drop {gens}")
+            poly[K] = v
 
         return poly
 
