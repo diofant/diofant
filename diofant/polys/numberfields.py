@@ -713,12 +713,12 @@ def primitive_element(extension, **args):
         *H, g = groebner(F + [f], *(Y + [x]), domain=domain)
 
         for i, (h, y) in enumerate(zip(H, Y)):
-            H[i] = (y - h).eject(*Y).retract(field=True)
-            if not (H[i].domain.is_RationalField or H[i].domain.is_AlgebraicField):
+            try:
+                H[i] = (y - h).drop(*Y)
+            except ValueError:
                 break  # G is not a triangular set
-            H[i] = H[i].set_domain(domain)
         else:
-            g = g.eject(*Y).set_domain(domain)
+            g = g.drop(*Y)
             break
     else:
         if len(F) == 1:
