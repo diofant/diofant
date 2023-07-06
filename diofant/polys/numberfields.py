@@ -702,7 +702,9 @@ def primitive_element(extension, **args):
     extension = list(uniq(extension))
 
     x = Dummy('x')
-    domain = args.get('domain', QQ)
+    symbols = set().union(*(e.free_symbols for e in extension))
+    domain = args.get('domain', QQ.inject(*symbols).field if symbols else QQ)
+
     F = [minimal_polynomial(e, domain=domain) for e in extension]
     Y = [p.gen for p in F]
 
