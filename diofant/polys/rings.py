@@ -511,15 +511,16 @@ class PolyElement(DomainElement, CantSympify, dict):
         True
 
         """
+        ring = self.ring
         if not other:
             return not self
-        if isinstance(other, self.ring.dtype):
+        if isinstance(other, ring.dtype):
             return dict.__eq__(self, other)
-        if isinstance(other, self.ring.field.dtype):
+        if isinstance(other, ring.field.dtype):
             return other.__eq__(self)
         if len(self) > 1:
             return False
-        return self.get(self.ring.zero_monom) == other
+        return self[ring.zero_monom] == other
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -994,13 +995,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         If self is a generator -- then just return the sum of the two.
 
         """
-        ring = self.ring
-        domain = ring.domain
         p1 = self
         if p1.is_generator:
             p1 = p1.copy()
         monom, coeff = term
-        coeff += p1.get(monom, domain.zero)
+        coeff += p1[monom]
         if coeff:
             p1[monom] = coeff
         elif monom in p1:

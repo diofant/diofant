@@ -446,13 +446,13 @@ class _GCD:
             else:
                 def _crt(r, R):
                     return domain(crt([P, p], map(domain.convert, [r, R]),
-                                  check=False, symmetric=True)[0])
+                                      check=False, symmetric=True)[0])
 
                 if new_ring.is_PolynomialRing:
                     r_new = new_ring.zero
 
                     for monom in r | R:
-                        r_new[monom] = _crt(r.get(monom, 0), R.get(monom, 0))
+                        r_new[monom] = _crt(r[monom], R[monom])
                     r = r_new
                 else:
                     r = _crt(r, R)
