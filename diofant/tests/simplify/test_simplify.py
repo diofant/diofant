@@ -728,3 +728,9 @@ def test_sympyissue_23399():
 
     eq = Eq(lhs, rhs)
     assert simplify(eq) == Eq(A_OUTPUT(t), -K**POWER)
+
+
+def test_sympyissue_25341():
+    eq = Eq((2*sqrt(x)/(x + 1)**2 - 1/(sqrt(x)*(x + 1)) -
+             1/(4*sqrt(x)**3))/(x + 1))
+    eq.simplify()

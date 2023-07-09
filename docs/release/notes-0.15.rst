@@ -42,3 +42,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20427`: Result from clear_denoms() prints like zero poly but behaves wierdly (due to unstripped DMP)
 * :sympyissue:`2720` eliminate()
 * :sympyissue:`16951`: integrate(sqrt(2*m*(E - x)), x)
+* :sympyissue:`25341`: CoercionFailed on eq: 2*sqrt(x)/(x + 1)**2 - 1/(sqrt(x)*(x + 1)) - 1/(4*x**(3/2)))/(x + 1) = 0
