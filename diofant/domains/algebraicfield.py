@@ -129,20 +129,18 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             return self.from_expr(K0.to_expr(a))
 
     def _from_AlgebraicField(self, a, K0):
+        from ..polys import field_isomorphism
+
         if K0 == self.domain:
             return self([a])
         if self == K0.domain and len(a.rep) <= 1:
             return a.rep[1] if a else self.zero
 
-        from ..polys import field_isomorphism
-
-        coeffs = field_isomorphism(K0, self)
-
-        if coeffs is not None:
-            if K0.domain == self.domain:
+        if K0.domain == self.domain:
+            if (coeffs := field_isomorphism(K0, self)) is not None:
                 return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
-            return self.from_expr(K0.to_expr(a))
-        raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
+            raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
+        return self.from_expr(K0.to_expr(a))
 
     def _from_ExpressionDomain(self, a, K0):
         return self.from_expr(K0.to_expr(a))
@@ -184,7 +182,7 @@ class RealAlgebraicField(ComplexAlgebraicField):
 class AlgebraicElement(QuotientRingElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field."""
 
-    def __init__(self, rep):  # pylint: disable=super-init-not-called
+    def __init__(self, rep):
         """Initialize self."""
         dom = self.domain
 
@@ -197,7 +195,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
                 rep = [dom.domain.convert(_) for _ in rep]
             rep = dom.from_list(rep)
 
-        self.rep = rep % self.mod
+        super().__init__(rep)
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""

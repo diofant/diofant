@@ -9,7 +9,7 @@ from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      GeneratorsError, GeneratorsNeededError, I, Integer,
                      NotInvertibleError, PythonRational, QQ_python, Rational,
                      RealField, RootOf, UnificationFailedError, ZZ_python,
-                     field, im, oo, re, ring, root, roots, sin, sqrt)
+                     cbrt, field, im, oo, re, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -1264,3 +1264,7 @@ def test_issue_1094():
          (217603955769048*root(24201 + 253*sqrt(9165), 3) +
           2273005839412*sqrt(9165)*root(24201 + 253*sqrt(9165), 3)))
     assert e.as_poly(x, domain=QQ) == Integer(0).as_poly(x, domain=QQ)
+
+
+def test_issue_1243():
+    assert sqrt(2) in QQ.algebraic_field((100000*(sqrt(2) + cbrt(3))).expand())

@@ -21,7 +21,7 @@ from ..utilities import lambdify, numbered_symbols, sift
 from ..utilities.iterables import uniq
 from .orthopolys import chebyshevt_poly
 from .polyerrors import NotAlgebraicError
-from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
+from .polytools import (Poly, PurePoly, degree, groebner, lcm,
                         parallel_poly_from_expr, resultant)
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
@@ -30,19 +30,21 @@ from .specialpolys import cyclotomic_poly
 __all__ = 'minimal_polynomial', 'primitive_element', 'field_isomorphism'
 
 
-def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
+def _choose_factor(factors, v, prec=200, bound=5):
     """
     Return a factor having root ``v``
     It is assumed that one of the factors has root ``v``.
 
     """
-    if isinstance(factors[0], tuple):
-        factors = [f[0] for f in factors]
+    factors = [f[0] for f in factors]
+    f = factors[0]
+    x = f.gens[0]
+    dom = f.domain
     if len(factors) == 1:
-        return factors[0]
+        return f
 
     points = {x: v}
-    symbols = dom.symbols if hasattr(dom, 'symbols') else []
+    symbols = getattr(dom, 'symbols', [])
     t = QQ(1, 10)
 
     for n in range(bound**len(symbols)):
@@ -150,7 +152,7 @@ def _minimal_polynomial_sq(p, n, x):
     ========
 
     >>> q = 1 + sqrt(2) + sqrt(3)
-    >>> _minimal_polynomial_sq(q, 3, x)
+    >>> _minimal_polynomial_sq(q, 3, x).as_expr()
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
 
     """
@@ -171,9 +173,10 @@ def _minimal_polynomial_sq(p, n, x):
 
     # by construction `p` has root `pn`
     # the minimal polynomial is the factor vanishing in x = pn
-    factors = factor_list(p)[1]
+    p = p.as_poly()
+    factors = p.factor_list()[1]
 
-    return _choose_factor(factors, x, pn)
+    return _choose_factor(factors, pn)
 
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
@@ -238,8 +241,8 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
         return r
 
     r = r.as_poly(x, domain=dom)
-    _, factors = r.factor_list()
-    res = _choose_factor(factors, x, op(ex1, ex2), dom)
+    factors = r.factor_list()[1]
+    res = _choose_factor(factors, op(ex1, ex2))
     return res.as_expr()
 
 
@@ -304,8 +307,8 @@ def _minpoly_pow(ex, pw, x, dom):
     mp = mp.subs({x: y})
     n, d = pw.as_numer_denom()
     res = resultant(mp, x**d - y**n, y).as_poly(x, domain=dom)
-    _, factors = res.factor_list()
-    res = _choose_factor(factors, x, ex**pw, dom)
+    factors = res.factor_list()[1]
+    res = _choose_factor(factors, ex**pw)
     return res.as_expr()
 
 
@@ -356,8 +359,9 @@ def _minpoly_sin(ex, x):
             a = chebyshevt_poly(n, polys=True).all_coeffs()
             a = [x**(n - i)*a[n - i] for i in range(n + 1)]
             r = Add(*a)
-            _, factors = factor_list(r)
-            res = _choose_factor(factors, x, ex)
+            r = r.as_poly()
+            factors = r.factor_list()[1]
+            res = _choose_factor(factors, ex)
             return res
 
         expr = sqrt((1 - cos(2*c*pi))/2)
@@ -390,8 +394,9 @@ def _minpoly_cos(ex, x):
         a = chebyshevt_poly(n, polys=True).all_coeffs()
         a = [x**(n - i)*a[n - i] for i in range(n + 1)]
         r = Add(*a) - (-1)**c.numerator
-        _, factors = factor_list(r)
-        return _choose_factor(factors, x, ex)
+        r = r.as_poly()
+        factors = r.factor_list()[1]
+        return _choose_factor(factors, ex)
 
     raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
@@ -409,8 +414,9 @@ def _minpoly_tan(ex, x):
             a = -(a*(n - k - 1)*(n - k)) // ((k + 1)*(k + 2))
 
         r = Add(*terms)
-        _, factors = factor_list(r)
-        return _choose_factor(factors, x, ex)
+        r = r.as_poly()
+        factors = r.factor_list()[1]
+        return _choose_factor(factors, ex)
 
     raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
@@ -440,8 +446,8 @@ def _minpoly_exp(ex, x):
                 return s
 
         # x**(2*q) = product(factors)
-        factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
-        return _choose_factor(factors, x, ex)
+        factors = [(cyclotomic_poly(i, x, polys=True), 1) for i in divisors(2*q)]
+        return _choose_factor(factors, ex)
     raise NotAlgebraicError(f"{ex} doesn't seem to be an algebraic element")
 
 
@@ -588,8 +594,9 @@ def minimal_polynomial(ex, method=None, **args):
                       QQ.inject(*ex.free_symbols).field if ex.free_symbols else QQ)
 
     result = _minpoly(ex, x, domain)
-    _, factors = factor_list(result, x, domain=domain)
-    result = _choose_factor(factors, x, ex, dom=domain)
+    result = result.as_poly(x, domain=domain)
+    factors = result.factor_list()[1]
+    result = _choose_factor(factors, ex)
     result = result.primitive()[1]
 
     return PurePoly(result, x, domain=domain)
@@ -719,9 +726,9 @@ def primitive_element(extension, **args):
         else:  # pragma: no cover
             raise RuntimeError('run out of coefficient configurations')
 
-    _, factors = factor_list(g, domain=domain)
+    factors = g.factor_list()[1]
     t = sum(c*e for c, e in zip(coeffs, extension))
-    g = _choose_factor(factors, x, t, dom=domain)
+    g = _choose_factor(factors, t)
 
     H = [h.rem(g).rep.all_coeffs() for h in H]
 
@@ -773,7 +780,7 @@ def field_isomorphism_pslq(a, b):
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization."""
     p = a.minpoly.set_domain(b)
-    _, factors = p.factor_list()
+    factors = p.factor_list()[1]
 
     for f, _ in factors:
         if f.degree() == 1:
@@ -785,8 +792,10 @@ def field_isomorphism_factor(a, b):
 
 def field_isomorphism(a, b, **args):
     """Construct an isomorphism between two number fields."""
-    if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
-        raise ValueError(f'Arguments should be algebraic fields, got {a} and {b}')
+    if not (all(isinstance(_, AlgebraicField) for _ in (a, b)) and
+            a.domain == b.domain):
+        raise ValueError('Arguments should be absolute algebraic fields,'
+                         f' got {a} and {b}')
 
     if a == b:
         return a.unit.rep.all_coeffs()
