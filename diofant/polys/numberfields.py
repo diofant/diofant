@@ -803,17 +803,16 @@ def field_isomorphism(a, b, **args):
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
-    if a.domain == b.domain:
-        if m % n:
-            return
-        if a.domain.is_RationalField:
-            da = a.minpoly.discriminant()
-            db = b.minpoly.discriminant()
-            k = m // n
+    if m % n:
+        return
+    if a.domain.is_RationalField:
+        da = a.minpoly.discriminant()
+        db = b.minpoly.discriminant()
+        k = m // n
 
-            for p, q in factorint(da).items():
-                if q % 2 and db % (p**k):
-                    return
+        for p, q in factorint(da).items():
+            if q % 2 and db % (p**k):
+                return
 
     if args.get('fast', True):
         try:
