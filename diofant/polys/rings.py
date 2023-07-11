@@ -1061,9 +1061,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self:
             return self.ring.leading_expv(self, order=order)
 
-    def _get_coeff(self, expv):
-        return self.get(expv, self.ring.domain.zero)
-
     def __getitem__(self, monom, /):
         """Return the coefficient for the given monomial.
 
@@ -1089,18 +1086,18 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
 
         if isinstance(monom, tuple):
-            return self._get_coeff(monom)
+            return self.get(monom, ring.domain.zero)
         if monom == 1:
-            return self._get_coeff(ring.zero_monom)
+            return self.get(ring.zero_monom, ring.domain.zero)
         if isinstance(monom, ring.dtype) and monom.is_monomial:
             monom, = monom
-            return self._get_coeff(monom)
+            return self.get(monom, ring.domain.zero)
 
         raise TypeError(f'expected a monomial, got {monom}')
 
     @property
     def LC(self):
-        return self._get_coeff(self.leading_expv())
+        return self.get(self.leading_expv(), self.ring.domain.zero)
 
     @property
     def LM(self):
@@ -1110,10 +1107,11 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LT(self):
-        if expv := self.leading_expv():
-            return expv, self._get_coeff(expv)
         ring = self.ring
-        return ring.zero_monom, ring.domain.zero
+        domain_zero = ring.domain.zero
+        if expv := self.leading_expv():
+            return expv, self.get(expv, domain_zero)
+        return ring.zero_monom, domain_zero
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
