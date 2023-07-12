@@ -1488,16 +1488,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         n = df - dg + 1
         lc_g = g.LC
 
-        while True:
+        while dr >= dg:
             lc_r = r.LC
             n -= 1
 
             r *= lc_g
             r -= g*x**(dr - dg)*lc_r
             dr = r.degree()
-
-            if dr < dg:
-                break
 
         r *= lc_g**n
 
