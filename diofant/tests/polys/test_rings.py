@@ -1095,8 +1095,8 @@ def test_PolyElement___mul__():
     p1 = 1 + 2*x - 3*x**2 + x**5
     p2 = 1 - x + 5*x**2 + x**3
 
-    assert p1**25 * p2**25 == (p1*p2)**25
-    assert p1**25 * p2**20 == p1**5 * (p1*p2)**20
+    assert p1**30 * p2**30 == (p1*p2)**30
+    assert p1**35 * p2**30 == p1**5 * (p1*p2)**30
 
     R, x = ring('x', QQ)
 

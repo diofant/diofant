@@ -1156,9 +1156,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self
         return self.exquo_ground(self.LC)
 
-    def mul_monom(self, m):
-        return self.__class__({monom*m: self[monom] for monom in self})
-
     def quo_ground(self, x):
         domain = self.ring.domain
 

@@ -302,9 +302,9 @@ class UnivarPolyElement(PolyElement):
             other = ring.convert(other)
         except CoercionFailedError:
             return NotImplemented
-        if max(self.degree(), other.degree()) > query('KARATSUBA_CUTOFF'):
-            return self._mul_karatsuba(other)
-        return super().__mul__(other)
+        if other.is_term or min(self.degree(), other.degree()) < query('KARATSUBA_CUTOFF'):
+            return super().__mul__(other)
+        return self._mul_karatsuba(other)
 
     def _mul_karatsuba(self, other):
         """
@@ -338,4 +338,4 @@ class UnivarPolyElement(PolyElement):
         mid = (fl + fh)*(gl + gh)
         mid -= (lo + hi)
 
-        return lo + mid.mul_monom((n2,)) + hi.mul_monom((2*n2,))
+        return lo + mid*ring.term_new((n2,), 1) + hi*ring.term_new((2*n2,), 1)
