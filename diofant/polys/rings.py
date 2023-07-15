@@ -847,20 +847,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Square of a polynomial."""
         ring = self.ring
         p = ring.zero
-        get = p.get
         keys = list(self)
-        zero = ring.domain.zero
         for i, k1 in enumerate(keys):
             pk = self[k1]
             for j in range(i):
                 k2 = keys[j]
                 exp = k1*k2
-                p[exp] = get(exp, zero) + pk*self[k2]
+                p[exp] += pk*self[k2]
         p += p
-        get = p.get
         for k, v in self.items():
             k2 = k**2
-            p[k2] = get(k2, zero) + v**2
+            p[k2] += v**2
         p._strip_zero()
         return p
 
@@ -1107,11 +1104,10 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LT(self):
-        ring = self.ring
-        domain_zero = ring.domain.zero
         if expv := self.leading_expv():
-            return expv, self.get(expv, domain_zero)
-        return ring.zero_monom, domain_zero
+            return expv, self[expv]
+        ring = self.ring
+        return ring.zero_monom, ring.domain.zero
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
