@@ -1,5 +1,6 @@
 """Useful utilities for higher level polynomial classes."""
 
+import collections
 import re
 
 from ..core import Add, Mul, Pow
@@ -183,7 +184,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
     polys = []
 
     for expr in exprs:
-        poly = {}
+        poly = collections.defaultdict(int)
 
         for term in Add.make_args(expr):
             coeff, monom = [], zero_monom.copy()
@@ -203,7 +204,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                 coeff.append(factor)
 
             monom = tuple(monom)
-            poly[monom] = Mul(*coeff) + poly.get(monom, 0)
+            poly[monom] += Mul(*coeff)
 
         polys.append(poly)
 

@@ -428,10 +428,8 @@ class _GCD:
         r, p, P = new_ring.zero, domain.one, domain.one
 
         while P <= B:
-            while True:
-                p = domain(nextprime(p))
-                if a % p and b % p:
-                    break
+            while (p := nextprime(p)) and not a % p or not b % p:
+                pass
 
             p_domain = domain.finite_field(p)
             F, G = map(operator.methodcaller('set_domain', p_domain), (f, g))
@@ -446,13 +444,13 @@ class _GCD:
             else:
                 def _crt(r, R):
                     return domain(crt([P, p], map(domain.convert, [r, R]),
-                                  check=False, symmetric=True)[0])
+                                      check=False, symmetric=True)[0])
 
                 if new_ring.is_PolynomialRing:
                     r_new = new_ring.zero
 
                     for monom in r | R:
-                        r_new[monom] = _crt(r.get(monom, 0), R.get(monom, 0))
+                        r_new[monom] = _crt(r[monom], R[monom])
                     r = r_new
                 else:
                     r = _crt(r, R)
@@ -492,12 +490,7 @@ class _GCD:
         domain_elts = iter(range(domain.order))
 
         while D.degree() <= B:
-            while True:
-                try:
-                    a = next(domain_elts)
-                except StopIteration as exc:
-                    raise HomomorphismFailedError('no luck') from exc
-
+            for a in domain_elts:
                 F = f.eval(x=1, a=a)
 
                 if F.degree() == n:
@@ -505,6 +498,8 @@ class _GCD:
 
                     if G.degree() == m:
                         break
+            else:
+                raise HomomorphismFailedError('no luck')
 
             R = self.drop(1)._modular_resultant(F, G)
             e = r.eval(x=0, a=a)

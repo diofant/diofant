@@ -511,40 +511,40 @@ class PolyElement(DomainElement, CantSympify, dict):
         True
 
         """
+        ring = self.ring
         if not other:
             return not self
-        if isinstance(other, self.ring.dtype):
+        if isinstance(other, ring.dtype):
             return dict.__eq__(self, other)
-        if isinstance(other, self.ring.field.dtype):
+        if isinstance(other, ring.field.dtype):
             return other.__eq__(self)
         if len(self) > 1:
             return False
-        return self.get(self.ring.zero_monom) == other
+        return self[ring.zero_monom] == other
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def drop(self, gen):
+    def drop(self, *gens):
         ring = self.ring
-        i = ring.index(gen)
+        indexes = sorted((ring.index(gen) for gen in gens), reverse=True)
+        new_ring = ring.drop(*indexes)
 
-        if ring.is_univariate:
+        if new_ring == ring.domain:
             if self.is_ground:
                 return self[1]
-            raise ValueError(f"can't drop {gen}")
-        symbols = list(ring.symbols)
-        del symbols[i]
-        ring = ring.clone(symbols=symbols)
+            raise ValueError(f"can't drop {gens}")
 
-        poly = ring.zero
+        poly = new_ring.zero
 
         for k, v in self.items():
-            if k[i] == 0:
-                K = list(k)
-                del K[i]
-                poly[K] = v
-            else:
-                raise ValueError(f"can't drop {gen}")
+            K = list(k)
+            for i in indexes:
+                if k[i] == 0:
+                    del K[i]
+                else:
+                    raise ValueError(f"can't drop {gens}")
+            poly[K] = v
 
         return poly
 
@@ -995,13 +995,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         If self is a generator -- then just return the sum of the two.
 
         """
-        ring = self.ring
-        domain = ring.domain
         p1 = self
         if p1.is_generator:
             p1 = p1.copy()
         monom, coeff = term
-        coeff += p1.get(monom, domain.zero)
+        coeff += p1[monom]
         if coeff:
             p1[monom] = coeff
         elif monom in p1:
@@ -1063,9 +1061,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self:
             return self.ring.leading_expv(self, order=order)
 
-    def _get_coeff(self, expv):
-        return self.get(expv, self.ring.domain.zero)
-
     def __getitem__(self, monom, /):
         """Return the coefficient for the given monomial.
 
@@ -1091,18 +1086,18 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
 
         if isinstance(monom, tuple):
-            return self._get_coeff(monom)
+            return self.get(monom, ring.domain.zero)
         if monom == 1:
-            return self._get_coeff(ring.zero_monom)
+            return self.get(ring.zero_monom, ring.domain.zero)
         if isinstance(monom, ring.dtype) and monom.is_monomial:
             monom, = monom
-            return self._get_coeff(monom)
+            return self.get(monom, ring.domain.zero)
 
         raise TypeError(f'expected a monomial, got {monom}')
 
     @property
     def LC(self):
-        return self._get_coeff(self.leading_expv())
+        return self.get(self.leading_expv(), self.ring.domain.zero)
 
     @property
     def LM(self):
@@ -1112,10 +1107,11 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LT(self):
-        if expv := self.leading_expv():
-            return expv, self._get_coeff(expv)
         ring = self.ring
-        return ring.zero_monom, ring.domain.zero
+        domain_zero = ring.domain.zero
+        if expv := self.leading_expv():
+            return expv, self.get(expv, domain_zero)
+        return ring.zero_monom, domain_zero
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
@@ -1492,16 +1488,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         n = df - dg + 1
         lc_g = g.LC
 
-        while True:
+        while dr >= dg:
             lc_r = r.LC
             n -= 1
 
             r *= lc_g
             r -= g*x**(dr - dg)*lc_r
             dr = r.degree()
-
-            if dr < dg:
-                break
 
         r *= lc_g**n
 

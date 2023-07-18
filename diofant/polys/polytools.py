@@ -837,6 +837,27 @@ class Poly(Expr):
 
         return self.new(result, *result.ring.symbols)
 
+    def drop(self, *gens):
+        """
+        Drop selected generators, if possible.
+
+        Examples
+        ========
+
+        >>> f = (x + 1).as_poly(x, y)
+
+        >>> f.drop(y)
+        Poly(x + 1, x, domain='ZZ')
+        >>> f.drop(x)
+        Traceback (most recent call last):
+        ...
+        ValueError: can't drop (Symbol('x'),)
+
+        """
+        result = self.rep.copy()
+        result = result.drop(*gens)
+        return self.new(result, *result.ring.symbols)
+
     def terms_gcd(self):
         """
         Remove GCD of terms from the polynomial ``self``.
