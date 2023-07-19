@@ -409,14 +409,12 @@ def critical_pair(f, g, ring):
     an already existing object in memory.
 
     """
-    domain = ring.domain
+    ltf = Polyn(f).leading_term()
+    ltg = Polyn(g).leading_term()
+    lt = ltf.lcm(ltg)
 
-    ltf = Polyn(f).LT
-    ltg = Polyn(g).LT
-    lt = ring.from_terms([(Monomial(ltf[0]).lcm(ltg[0]), domain.one)])
-
-    um = lt.quo_term(ltf).LT
-    vm = lt.quo_term(ltg).LT
+    [um] = (lt // ltf).leading_term().items()
+    [vm] = (lt // ltg).leading_term().items()
 
     # The full information is not needed (now), so only the product
     # with the leading term is considered:
@@ -506,7 +504,7 @@ def f5_reduce(f, B):
 
         for h in B:
             if Polyn(h) and Polyn(h).LM.divides(Polyn(f).LM):
-                t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
+                [t] = (Polyn(f).leading_term() // Polyn(h).leading_term()).items()
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
                     # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):

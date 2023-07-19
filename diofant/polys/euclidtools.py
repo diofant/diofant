@@ -92,7 +92,7 @@ class _GCD:
     def _gcd_term(self, f, g):
         domain = self.domain
         ground_gcd = domain.gcd
-        _mgcd, _cgcd = f.LT
+        [(_mgcd, _cgcd)] = f.items()
         if domain.is_Field:
             for mg, cg in g.items():
                 _mgcd = _mgcd.gcd(mg)

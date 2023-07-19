@@ -964,7 +964,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 lt = p.leading_term()
                 term = lt.quo_term((expvs[i], fv[i][expvs[i]]))
                 if term:
-                    expv1, c = term.LT
+                    [(expv1, c)] = term.items()
                     qv[i] = qv[i]._iadd_term((expv1, c))
                     p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1

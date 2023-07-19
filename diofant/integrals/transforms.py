@@ -585,7 +585,7 @@ def _rewrite_gamma(f, s, a, b):
                 # We completely factor the poly. For this we need the roots.
                 # Now roots() only works in some cases (low degree), and RootOf
                 # only works without parameters. So try both...
-                coeff = p.LT()[1]
+                coeff = p.LC()
                 rs = roots(p, s)
                 if len(rs) != p.degree():
                     rs = RootOf.all_roots(p)

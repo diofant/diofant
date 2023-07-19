@@ -1802,7 +1802,7 @@ def try_lerchphi(func):
             p = Poly(numer, t)
             if not p.is_term:
                 raise TypeError('p should be a term')
-            ((b,), a) = p.LT()
+            [((b,), a)] = p.terms()
             monomials += [(a/denom, b)]
             continue
         if numer.has(t):
