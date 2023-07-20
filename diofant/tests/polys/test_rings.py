@@ -1387,14 +1387,9 @@ def test_PolyElement___floordiv__truediv__():
     pytest.raises(ExactQuotientFailedError, lambda: f.exquo(g))
 
     pytest.raises(ZeroDivisionError, lambda: f.quo_ground(0))
-    pytest.raises(ZeroDivisionError, lambda: f.quo_term(((1, 1), 0)))
     pytest.raises(ZeroDivisionError, lambda: f.exquo_ground(0))
 
     assert R.zero.exquo_ground(2) == 0
-
-    assert R.zero.quo_term(((1, 0), 1)) == 0
-    assert g.quo_term((R.zero_monom, 2)) == x - y
-    assert f.quo_term(((1, 0), 2)) == x/2
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -1446,43 +1441,6 @@ def test_PolyElement___floordiv__truediv__():
     pytest.raises(TypeError, lambda: divmod(u, sqrt(2)))
     pytest.raises(TypeError, lambda: u % sqrt(2))
     pytest.raises(TypeError, lambda: u // sqrt(2))
-
-
-def test_PolyElement_quo_term():
-    R, x = ring('x', ZZ)
-
-    assert R(0).quo_term(((3,), ZZ(1))) == 0
-    assert (x**3).quo_term(((3,), ZZ(1))) == 1
-
-    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
-
-    assert R(0).quo_term(((5,), ZZ(1))) == 0
-
-    assert f.quo_term(((1,), ZZ(1))) == x**3 + 2*x**2 + 3*x + 4
-    assert f.quo_term(((3,), ZZ(1))) == x + 2
-    assert f.quo_term(((5,), ZZ(1))) == 0
-
-    f = x**4 + x**2
-
-    assert f.quo_term(((2,), ZZ(1))) == x**2 + 1
-
-    f += 2
-
-    assert f.quo_term(((2,), ZZ(1))) == x**2 + 1
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    f = x**3*y**4*z
-
-    assert f.quo_term(((1, 2, 0), 1)) == x**2*y**2*z
-    assert f.quo_term(((1, 2, 2), 1)) == 0
-
-    R, x, y, z = ring('x y z', QQ)
-
-    f = x**3*y**4*z
-
-    assert f.quo_term(((1, 2, 0), 1)) == x**2*y**2*z
-    assert f.quo_term(((1, 2, 2), 1)) == 0
 
 
 def test_PolyElement_mul_term():

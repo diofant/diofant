@@ -328,9 +328,10 @@ class UnivarPolyElement(PolyElement):
 
         fl = self.slice(0, n2)
         gl = other.slice(0, n2)
+        s = ring.term_new((n2,), domain.one)
 
-        fh = self.slice(n2, n).quo_term(((n2,), domain.one))
-        gh = other.slice(n2, n).quo_term(((n2,), domain.one))
+        fh = self.slice(n2, n) // s
+        gh = other.slice(n2, n) // s
 
         lo = fl*gl
         hi = fh*gh
@@ -338,4 +339,4 @@ class UnivarPolyElement(PolyElement):
         mid = (fl + fh)*(gl + gh)
         mid -= (lo + hi)
 
-        return lo + mid*ring.term_new((n2,), 1) + hi*ring.term_new((2*n2,), 1)
+        return lo + mid*s + hi*s**2

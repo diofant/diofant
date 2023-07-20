@@ -945,6 +945,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
+        domain = ring.domain
         order = ring.order
         if any(not f for f in fv):
             raise ZeroDivisionError('polynomial division')
@@ -962,9 +963,11 @@ class PolyElement(DomainElement, CantSympify, dict):
             divoccurred = 0
             while i < s and divoccurred == 0:
                 lt = p.leading_term()
-                term = lt.quo_term((expvs[i], fv[i][expvs[i]]))
-                if term:
-                    [(expv1, c)] = term.items()
+                [(expv1, c)] = lt.items()
+                expv1 /= expvs[i]
+                ci = fv[i][expvs[i]]
+                if all(_ >= 0 for _ in expv1) and (domain.is_Field or not c % ci):
+                    c = domain.quo(c, ci)
                     qv[i] = qv[i]._iadd_term((expv1, c))
                     p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1
@@ -1173,28 +1176,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         p = self.__class__({monom: domain.exquo(self[monom], x) for monom in self})
         p._strip_zero()
-        return p
-
-    def quo_term(self, term):
-        monom, coeff = term
-
-        if not coeff:
-            raise ZeroDivisionError('polynomial division')
-        if not self:
-            return self.ring.zero
-
-        ring = self.ring
-        domain = ring.domain
-        p = ring.zero
-
-        for tm, tc in self.items():
-            if monom != self.ring.zero_monom:
-                tm /= monom
-            if any(_ < 0 for _ in tm):
-                continue
-            if domain.is_Field or not tc % coeff:
-                p[tm] = domain.quo(tc, coeff)
-
         return p
 
     def trunc_ground(self, p):
