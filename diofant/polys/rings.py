@@ -141,7 +141,7 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
 
     def leading_expv(self, f, order=None):
         order = self.order if order is None else OrderOpt.preprocess(order)
-        return Monomial(max(f, key=order))
+        return Monomial(max(f, key=order, default=self.zero_monom))
 
     @property
     def characteristic(self):
@@ -847,20 +847,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Square of a polynomial."""
         ring = self.ring
         p = ring.zero
-        get = p.get
         keys = list(self)
-        zero = ring.domain.zero
         for i, k1 in enumerate(keys):
             pk = self[k1]
             for j in range(i):
                 k2 = keys[j]
                 exp = k1*k2
-                p[exp] = get(exp, zero) + pk*self[k2]
+                p[exp] += pk*self[k2]
         p += p
-        get = p.get
         for k, v in self.items():
             k2 = k**2
-            p[k2] = get(k2, zero) + v**2
+            p[k2] += v**2
         p._strip_zero()
         return p
 
@@ -948,6 +945,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
+        domain = ring.domain
         order = ring.order
         if any(not f for f in fv):
             raise ZeroDivisionError('polynomial division')
@@ -959,15 +957,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         qv = [ring.zero for i in range(s)]
         p = self.copy()
         r = ring.zero
-        expvs = [fx.leading_expv() for fx in fv]
+        expvs = [fx.LM for fx in fv]
         while p:
             i = 0
             divoccurred = 0
             while i < s and divoccurred == 0:
                 lt = p.leading_term()
-                term = lt.quo_term((expvs[i], fv[i][expvs[i]]))
-                if term:
-                    expv1, c = term.LT
+                [(expv1, c)] = lt.items()
+                expv1 /= expvs[i]
+                ci = fv[i][expvs[i]]
+                if all(_ >= 0 for _ in expv1) and (domain.is_Field or not c % ci):
+                    c = domain.quo(c, ci)
                     qv[i] = qv[i]._iadd_term((expv1, c))
                     p = p._iadd_poly_term(fv[i], (expv1, -c))
                     divoccurred = 1
@@ -976,7 +976,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 else:
                     i += 1
             if not divoccurred:
-                expv = p.leading_expv()
+                expv = p.LM
                 r = r._iadd_term((expv, p[expv]))
                 del p[expv]
         r._hash = None
@@ -1058,8 +1058,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         (4, 0, 0)
 
         """
-        if self:
-            return self.ring.leading_expv(self, order=order)
+        return self.ring.leading_expv(self, order=order)
 
     def __getitem__(self, monom, /):
         """Return the coefficient for the given monomial.
@@ -1097,21 +1096,16 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     @property
     def LC(self):
-        return self.get(self.leading_expv(), self.ring.domain.zero)
+        return self[self.LM]
 
     @property
     def LM(self):
-        if expv := self.leading_expv():
-            return expv
-        return self.ring.zero_monom
+        return self.ring.leading_expv(self)
 
     @property
     def LT(self):
-        ring = self.ring
-        domain_zero = ring.domain.zero
-        if expv := self.leading_expv():
-            return expv, self.get(expv, domain_zero)
-        return ring.zero_monom, domain_zero
+        expv = self.LM
+        return expv, self[expv]
 
     def leading_term(self, order=None):
         """Leading term as a polynomial element.
@@ -1124,10 +1118,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         3*x*y
 
         """
-        p = self.ring.zero
-        if expv := self.leading_expv(order=order):
-            p[expv] = self[expv]
-        return p
+        ring = self.ring
+        expv = ring.leading_expv(self, order=order)
+        return ring.term_new(expv, self[expv])
 
     def content(self):
         """Returns GCD of polynomial's coefficients."""
@@ -1156,9 +1149,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self
         return self.exquo_ground(self.LC)
 
-    def mul_monom(self, m):
-        return self.__class__({monom*m: self[monom] for monom in self})
-
     def quo_ground(self, x):
         domain = self.ring.domain
 
@@ -1186,28 +1176,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         p = self.__class__({monom: domain.exquo(self[monom], x) for monom in self})
         p._strip_zero()
-        return p
-
-    def quo_term(self, term):
-        monom, coeff = term
-
-        if not coeff:
-            raise ZeroDivisionError('polynomial division')
-        if not self:
-            return self.ring.zero
-
-        ring = self.ring
-        domain = ring.domain
-        p = ring.zero
-
-        for tm, tc in self.items():
-            if monom != self.ring.zero_monom:
-                tm /= monom
-            if any(_ < 0 for _ in tm):
-                continue
-            if domain.is_Field or not tc % coeff:
-                p[tm] = domain.quo(tc, coeff)
-
         return p
 
     def trunc_ground(self, p):
