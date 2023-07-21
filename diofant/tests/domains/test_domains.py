@@ -532,7 +532,7 @@ def test_Domain_convert():
     F3 = FF(3)
     assert F3.convert(Float(2.0)) == F3.dtype(2)
     assert F3.convert(PythonRational(2, 1)) == F3.dtype(2)
-    pytest.raises(CoercionFailedError, lambda: F3.convert(PythonRational(1, 2)))
+    assert F3.convert(PythonRational(1, 2)) == F3.dtype(2)
     assert F3.convert(2.0) == F3.dtype(2)
     pytest.raises(CoercionFailedError, lambda: F3.convert(2.1))
 
@@ -1268,3 +1268,8 @@ def test_issue_1094():
 
 def test_issue_1243():
     assert sqrt(2) in QQ.algebraic_field((100000*(sqrt(2) + cbrt(3))).expand())
+
+
+def test_sympyissue_20327():
+    F7 = FF(7)
+    assert (2*x/3).as_poly(x, domain=F7) == (3*x).as_poly(x, domain=F7)

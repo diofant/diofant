@@ -67,10 +67,14 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
         return DiofantInteger(int(element))
 
     def from_expr(self, expr):
-        if expr.is_Integer:
-            return self.dtype(self.domain.dtype(int(expr)))
+        dtype = self.dtype
+        domain = self.domain
+        if expr.is_Rational:
+            numerator = domain.dtype(int(expr.numerator))
+            denominator = domain.dtype(int(expr.denominator))
+            return dtype(numerator)/dtype(denominator)
         if expr.is_Float and int(expr) == expr:
-            return self.dtype(self.domain.dtype(int(expr)))
+            return dtype(domain.dtype(int(expr)))
         raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
@@ -82,8 +86,12 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
     _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0=None):
-        if a.denominator == 1:
-            return self.convert(a.numerator)
+        dtype = self.dtype
+        domain = self.domain
+        characteristic = self.characteristic
+        numerator = domain.convert(a.numerator, K0) % characteristic
+        denominator = domain.convert(a.denominator, K0) % characteristic
+        return dtype(numerator)/dtype(denominator)
     _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
