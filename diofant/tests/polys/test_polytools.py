@@ -23,6 +23,7 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailedError,
                      sqf_list, sqf_norm, sqf_part, sqrt, subresultants,
                      symbols, sympify, tan, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
+from diofant.config import using
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
 
@@ -3341,3 +3342,10 @@ def test_sympyissue_24461():
                                                2076*z**3 + 1320*z**2 +
                                                528*z + 96)*y**2 +
                    x**4/(z**2 + 3*z + 2)*y).as_poly(y)
+
+
+def test_sympyissue_25406():
+    f, g = x**3, x + 1
+    for v in [True, False]:
+        with using(use_collins_resultant=v):
+            assert resultant(f, g) == -resultant(g, f) == 1
