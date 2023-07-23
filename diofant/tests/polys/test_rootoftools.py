@@ -341,6 +341,16 @@ def test_RootOf_evalf_caching_bug():
     assert a == b
 
 
+def test_RootOf_refine():
+    r0 = RootOf(x**3 - x + 1, 0)
+    r0.refine()
+    assert r0.interval.as_tuple() == (Rational(-4, 3), -1)
+    r1 = RootOf(x**3 - x + 1, 1)
+    r1.refine()
+    assert r1.interval.as_tuple() == ((Rational(1, 2), Rational(-3, 4)),
+                                      (1, Rational(-1, 2)))
+
+
 def test_RootOf_real_roots():
     assert (x**5 + x + 1).as_poly().real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
     assert (x**5 + x + 1).as_poly().real_roots(radicals=False) == [RootOf(x**3 - x**2 + 1, 0)]

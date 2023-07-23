@@ -21,7 +21,7 @@ def test_convert():
 
     assert F3.convert(gmpy.mpz(2)) == F3.dtype(2)
     assert F3.convert(gmpy.mpq(2, 1)) == F3.dtype(2)
-    pytest.raises(CoercionFailedError, lambda: F3.convert(gmpy.mpq(1, 2)))
+    assert F3.convert(gmpy.mpq(1, 2)) == F3.dtype(2)
 
     assert ZZ_gmpy.convert(F3_python(1)) == ZZ_gmpy.dtype(1)
     assert ZZ_gmpy.convert(F3_gmpy(1)) == ZZ_gmpy.dtype(1)
