@@ -123,7 +123,7 @@ class RootOf(Expr):
         coeff, poly = preprocess_roots(poly)
 
         if poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField:
-            root = cls._indexed_root(poly, index)
+            root = cls._indexed_root(poly, index, lazy=True)
         else:
             root = poly, index
 
@@ -403,9 +403,11 @@ class RootOf(Expr):
         return complexes
 
     @classmethod
-    def _indexed_root(cls, poly, index):
+    def _indexed_root(cls, poly, index, lazy=False):
         """Get a root of a composite polynomial by index."""
         _, factors = poly.factor_list()
+        if lazy and len(factors) == 1 and factors[0][1] == 1:
+            return factors[0][0], index
 
         reals = cls._get_reals(factors)
         reals_count = cls._count_roots(reals)
@@ -527,17 +529,25 @@ class RootOf(Expr):
     def interval(self):
         """Return isolation interval for the root."""
         if self.is_real:
+            if self.poly not in _reals_cache:
+                self._indexed_root(self.poly, self.index)
             return _reals_cache[self.poly][self.index]
         reals_count = self.poly.count_roots()
+        if self.poly not in _complexes_cache:
+            self._indexed_root(self.poly, self.index)
         return _complexes_cache[self.poly][self.index - reals_count]
 
     def refine(self):
         """Refine isolation interval for the root."""
         if self.is_real:
+            if self.poly not in _reals_cache:
+                self._indexed_root(self.poly, self.index)
             root = _reals_cache[self.poly][self.index]
             _reals_cache[self.poly][self.index] = root.refine()
         else:
             reals_count = self.poly.count_roots()
+            if self.poly not in _complexes_cache:
+                self._indexed_root(self.poly, self.index)
             root = _complexes_cache[self.poly][self.index - reals_count]
             _complexes_cache[self.poly][self.index - reals_count] = root.refine()
 
