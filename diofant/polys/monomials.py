@@ -21,7 +21,7 @@ class Monomial(tuple, DefaultPrinting):
             else:
                 raise ValueError(f'Expected a monomial got {monom}')
 
-        obj = super().__new__(cls, map(int, monom))
+        obj = super().__new__(cls, monom)
         obj.gens = gens
 
         return obj
