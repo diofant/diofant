@@ -728,9 +728,10 @@ def test_Mul_is_algebraic():
 
 def test_Pow_is_algebraic():
     e = Symbol('e', algebraic=True)
+    nn = Symbol('nn', nonnegative=True)
 
-    assert Pow(1, e, evaluate=False).is_algebraic
-    assert Pow(0, e, evaluate=False).is_algebraic
+    assert Pow(1, y, evaluate=False).is_algebraic
+    assert Pow(0, nn, evaluate=False).is_algebraic
 
     a = Symbol('a', algebraic=True)
     an = Symbol('an', algebraic=True, nonzero=True)
