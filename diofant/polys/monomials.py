@@ -1,8 +1,10 @@
 """Tools and arithmetics for monomials of distributed polynomials."""
 
 from collections.abc import Iterable
+from math import prod
+from operator import add, sub
 
-from ..core import Mul, sympify
+from ..core import sympify
 from ..printing.defaults import DefaultPrinting
 
 
@@ -29,16 +31,16 @@ class Monomial(tuple, DefaultPrinting):
     def as_expr(self, *gens):
         """Convert a monomial instance to a Diofant expression."""
         if gens := gens or self.gens:
-            return Mul(*[gen**exp for gen, exp in zip(gens, self)])
+            return prod(map(pow, gens, self))
         raise ValueError(f"Can't convert {self} to an expression without generators")
 
     def __mul__(self, other):
         """Return self*other."""
-        return self.__class__((a + b for a, b in zip(self, other)), self.gens)
+        return self.__class__(map(add, self, other), self.gens)
 
     def __truediv__(self, other):
         """Return self/other."""
-        return self.__class__((a - b for a, b in zip(self, other)), self.gens)
+        return self.__class__(map(sub, self, other), self.gens)
 
     def divides(self, other):
         """Check if self divides other."""
@@ -52,8 +54,8 @@ class Monomial(tuple, DefaultPrinting):
 
     def gcd(self, other):
         """Greatest common divisor of monomials."""
-        return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
+        return self.__class__(map(min, self, other), self.gens)
 
     def lcm(self, other):
         """Least common multiple of monomials."""
-        return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
+        return self.__class__(map(max, self, other), self.gens)
