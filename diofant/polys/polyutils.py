@@ -194,7 +194,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                 if exp < 0:
                     exp, base = -exp, Pow(base, -1)
                 try:
-                    monom[indices[base]] += exp
+                    monom[indices[base]] += int(exp)
                     continue
                 except KeyError as exc:
                     if factor.free_symbols & set(opt.gens):

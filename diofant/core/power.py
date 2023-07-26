@@ -995,7 +995,9 @@ class Pow(Expr):
     def _eval_is_algebraic(self):
         b, e = self.base, self.exp
 
-        if b.is_zero or (b - 1).is_zero:
+        if b.is_zero and e.is_nonnegative:
+            return True
+        if (b - 1).is_zero:
             return True
         if b is E:
             s = self.doit()
