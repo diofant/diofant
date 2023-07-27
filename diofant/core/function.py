@@ -498,12 +498,12 @@ class Function(Application, Expr):
         """
         from ..calculus import Order
         from ..sets.sets import FiniteSet
+        from .numbers import oo, zoo
         from .symbol import Dummy
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
-        if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
-            from .numbers import oo, zoo
-
+        if any(isinstance(t, Expr) and (t.is_infinite or
+                                        t.has(oo, -oo, zoo, nan)) for t in args0):
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -545,7 +545,7 @@ class Function(Application, Expr):
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
                 term = e.subs({x: 0})
-                if term.is_finite is False:
+                if term.is_infinite:
                     raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)

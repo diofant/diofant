@@ -175,7 +175,7 @@ def test_nan():
     assert nan.is_nonnegative is None
     assert nan.is_even is False
     assert nan.is_odd is False
-    assert nan.is_finite is False
+    assert nan.is_finite is None
     assert nan.is_infinite is None
     assert nan.is_comparable is False
     assert nan.is_prime is False
@@ -778,13 +778,13 @@ def test_Mul_is_infinite():
     nzf = Dummy(finite=True, zero=False)
     assert (x*f).is_finite is None
     assert (x*i).is_finite is None
-    assert (f*i).is_finite is False
+    assert (f*i).is_finite is None
     assert (x*f*i).is_finite is None
-    assert (z*i).is_finite is False
+    assert (z*i).is_finite is None
     assert (nzf*i).is_finite is False
     assert (z*f).is_finite is True
     assert Mul(0, f, evaluate=False).is_finite is True
-    assert Mul(0, i, evaluate=False).is_finite is False
+    assert Mul(0, i, evaluate=False).is_finite is None
 
     assert (x*f).is_infinite is None
     assert (x*i).is_infinite is None

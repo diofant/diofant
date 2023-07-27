@@ -303,7 +303,7 @@ class Integral(AddWithLimits):
         def _calc_limit_1(F, a, dir):
             """Replace d with a."""
             wok = F.subs({d: a})
-            if wok is nan or wok.is_finite is False and a.is_finite:
+            if wok is nan or wok.is_infinite and a.is_finite:
                 return limit(F, d, a, dir)
             return wok
 

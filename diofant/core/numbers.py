@@ -1926,8 +1926,8 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
 
     is_commutative = True
     is_comparable = False
-    is_finite = False
     is_number = True
+    is_complex = False
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
