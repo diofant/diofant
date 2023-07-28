@@ -15,13 +15,12 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      coth, digamma, erf, exp, factorial, fibonacci, gamma, li,
                      limit, log, loggamma, oo, pi, root, sign, sin, sinh, sqrt,
                      tan, tanh, zeta)
-from diofant.abc import a, n, y
+from diofant.abc import a, n, x, y
 from diofant.calculus.gruntz import compare, leadterm, mrv, rewrite, signinf
 
 
 __all__ = ()
 
-x = Symbol('x', real=True, positive=True)
 m = Symbol('m', real=True, positive=True)
 
 
@@ -247,6 +246,8 @@ def test_mrv():
 
 
 def test_rewrite():
+    x = Symbol('x', real=True, positive=True)
+
     assert rewrite(Integer(1), x, m) == (1, None)
 
     e = exp(x)
