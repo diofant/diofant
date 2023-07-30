@@ -1187,7 +1187,7 @@ class InverseLaplaceTransform(IntegralTransform):
     _none_sentinel = Dummy('None')
     _c = Dummy('c')
 
-    def __new__(cls, F, s, x, plane, **opts):
+    def __new__(cls, F, s, x, plane=None, **opts):
         if plane is None:
             plane = InverseLaplaceTransform._none_sentinel
         return IntegralTransform.__new__(cls, F, s, x, plane, **opts)
