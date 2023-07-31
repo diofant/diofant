@@ -204,6 +204,11 @@ class MCodePrinter(CodePrinter):
     def _print_Dummy(self, expr):
         return f'{expr.name}{expr.dummy_index}'
 
+    def _print_LaplaceTransform(self, expr):
+        return (f'Hold[LaplaceTransform[{expr.function}, '
+                f'{expr.function_variable}, {expr.transform_variable}, '
+                'GenerateConditions->True]]')
+
 
 def mathematica_code(expr, **settings):
     r"""Converts an expr to a string of the Wolfram Mathematica code

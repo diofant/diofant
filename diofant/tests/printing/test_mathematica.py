@@ -3,17 +3,17 @@
 import pytest
 
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
-                     Function, Gt, Heaviside, Integer, Integral, Lambda, Le,
-                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
-                     Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
-                     Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
-                     atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
-                     cot, coth, csch, erf, erfc, erfi, exp, factorial,
-                     factorial2, false, fibonacci, floor, gamma, hyper, im,
-                     log, loggamma, mathematica_code, meijerg, oo, pi,
-                     polygamma, polylog, re, rf, sech, sign, sin, sinh,
-                     symbols, tan, tanh, true, uppergamma, zeta)
-from diofant.abc import x, y, z
+                     Function, Gt, Heaviside, Integer, Integral, Lambda,
+                     LaplaceTransform, Le, Limit, Matrix, Max, Min, Ne, Or,
+                     Piecewise, Poly, Rational, Reals, RootOf, RootSum,
+                     SparseMatrix, Sum, Tuple, acos, acosh, acot, acoth, arg,
+                     asin, asinh, atan, atan2, atanh, binomial, ceiling,
+                     conjugate, cos, cosh, cot, coth, csch, erf, erfc, erfi,
+                     exp, factorial, factorial2, false, fibonacci, floor,
+                     gamma, hyper, im, log, loggamma, mathematica_code,
+                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
+                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
+from diofant.abc import s, t, x, y, z
 
 
 __all__ = ()
@@ -180,6 +180,10 @@ def test_Integral():
                                      (y, -oo, oo))) == \
         'Hold[Integrate[E^(-x^2 - y^2), {x, -Infinity, Infinity}, ' \
         '{y, -Infinity, Infinity}]]'
+
+
+def test_IntegralTransform():
+    assert mathematica_code(LaplaceTransform(t, t, s)) == 'Hold[LaplaceTransform[t, t, s, GenerateConditions->True]]'
 
 
 def test_Sum():
