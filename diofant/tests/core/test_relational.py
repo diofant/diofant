@@ -9,7 +9,7 @@ from diofant import (And, Eq, Equality, FiniteSet, Float, Function, Ge,
                      StrictGreaterThan, StrictLessThan, Symbol, Unequality,
                      Wild, Xor, ceiling, exp, false, floor, nan, oo, pi,
                      simplify, sqrt, true, zoo)
-from diofant.abc import t, w, x, y, z
+from diofant.abc import a, b, c, t, w, x, y, z
 from diofant.core.relational import _Inequality as Inequality
 
 
@@ -670,3 +670,8 @@ def test_sympyissue_25142():
     x = 1 + exp(2*I*pi/3) + exp(-2*I*pi/3)
     assert Eq(x, 0).simplify() == true
     assert x.expand(complex=True) == 0
+
+
+def test_sympyissue_25451():
+    e = Or(And(a, c), Eq(a, b))
+    assert e != And(a, c)

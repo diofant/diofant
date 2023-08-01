@@ -45,3 +45,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25341`: CoercionFailed on eq: 2*sqrt(x)/(x + 1)**2 - 1/(sqrt(x)*(x + 1)) - 1/(4*x**(3/2)))/(x + 1) = 0
 * :sympyissue:`20327`: Finite Field coercion fails from Rational type
 * :sympyissue:`25406`: Resultant of Polynomials Returns Wrong Output
+* :sympyissue:`25451`: Incorrect simplification when mixing basic logical operators and equality
