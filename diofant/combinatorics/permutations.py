@@ -1281,7 +1281,7 @@ class Permutation(Basic):
         Permutation([0, 1, 2, 3])
 
         """
-        if type(n) == Perm:
+        if type(n) is Perm:
             raise NotImplementedError(
                 'p**p is not defined; do you mean p^p (conjugate)?')
         n = int(n)

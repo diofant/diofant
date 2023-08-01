@@ -1147,7 +1147,7 @@ def sum_add(self, other, method=0):
     """Helper function for Sum simplification."""
     from ..concrete import Sum
 
-    if type(self) == type(other):
+    if type(self) is type(other):
         if method == 0:
             if self.limits == other.limits:
                 return Sum(self.function + other.function, *self.limits)
@@ -1208,7 +1208,7 @@ def product_mul(self, other, method=0):
     """Helper function for Product simplification."""
     from ..concrete import Product
 
-    if type(self) == type(other):
+    if type(self) is type(other):
         if method == 0:
             if self.limits == other.limits:
                 return Product(self.function * other.function, *self.limits)

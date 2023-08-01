@@ -176,7 +176,7 @@ def test_roots_quartic():
     # it's ok if the solution is not Piecewise, but the tests below should pass
     eq = (y*x**4 + x**3 - x + z).as_poly(x)
     ans = roots_quartic(eq)
-    assert all(type(i) == Piecewise for i in ans)
+    assert all(type(i) is Piecewise for i in ans)
     reps = ({y: -Rational(1, 3), z: -Rational(1, 4)},  # 4 real
             {y: -Rational(1, 3), z: -Rational(1, 2)},  # 2 real
             {y: -Rational(1, 3), z: -2})  # 0 real

@@ -83,7 +83,7 @@ def test_mod():
     a = Integer(7)
     b = Integer(4)
 
-    assert type(a % b) == Integer
+    assert type(a % b) is Integer
     assert a % b == 3
     assert Integer(1) % Rational(2, 3) == Rational(1, 3)
     assert Rational(7, 5) % Integer(1) == Rational(2, 5)

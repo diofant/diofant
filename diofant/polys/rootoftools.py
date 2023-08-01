@@ -648,7 +648,7 @@ class RootOf(Expr):
         # the expression to zero *and* it should be in the interval of the
         # RootOf instance. It must also be a number that agrees with the
         # is_real value of the RootOf instance.
-        if type(self) == type(other):
+        if type(self) is type(other):
             return sympify(self == other)
         if not (other.is_number and not other.has(AppliedUndef)):
             return false
