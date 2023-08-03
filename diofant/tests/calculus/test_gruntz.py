@@ -398,6 +398,8 @@ def test_branch_cuts():
 
     assert limit(arg(I*x), x, 0, -1) == +pi/2
     assert limit(arg(I*x), x, 0, +1) == -pi/2
+    assert limit(arg(-I*x - 1), x, 0, -1) == -pi
+    assert limit(arg(-I*x - 1), x, 0, +1) == +pi
 
 
 def test_aseries_trig():

@@ -550,6 +550,7 @@ def test_arg():
     assert arg(x).series(x) == 0
     assert arg(+I*x + x**2).series(x) == +pi/2 - x + x**3/3 - x**5/5 + O(x**6)
     assert arg(-I*x + x**2).series(x) == -pi/2 + x - x**3/3 + x**5/5 + O(x**6)
+    assert arg(I + log(x)).series(x) == pi
 
 
 def test_arg_rewrite():

@@ -575,6 +575,10 @@ class arg(Function):
     def _eval_rewrite_as_sign(self, arg):
         return -I*log(sign(arg))
 
+    def _eval_nseries(self, x, n, logx):
+        c, _ = self.args[0].as_leading_term(x).as_coeff_exponent(x)
+        return self.func(c.limit(x, 0))
+
 
 class conjugate(Function):
     """Returns the complex conjugate of an argument.
