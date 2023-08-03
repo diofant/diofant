@@ -204,8 +204,8 @@ class MCodePrinter(CodePrinter):
     def _print_Dummy(self, expr):
         return f'{expr.name}{expr.dummy_index}'
 
-    def _print_LaplaceTransform(self, expr):
-        return (f'Hold[LaplaceTransform[{expr.function}, '
+    def _print_IntegralTransform(self, expr):
+        return (f'Hold[{expr.func}[{expr.function}, '
                 f'{expr.function_variable}, {expr.transform_variable}, '
                 'GenerateConditions->True]]')
 

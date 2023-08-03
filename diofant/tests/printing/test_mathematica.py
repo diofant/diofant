@@ -3,16 +3,17 @@
 import pytest
 
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
-                     Function, Gt, Heaviside, Integer, Integral, Lambda,
-                     LaplaceTransform, Le, Limit, Matrix, Max, Min, Ne, Or,
-                     Piecewise, Poly, Rational, Reals, RootOf, RootSum,
-                     SparseMatrix, Sum, Tuple, acos, acosh, acot, acoth, arg,
-                     asin, asinh, atan, atan2, atanh, binomial, ceiling,
-                     conjugate, cos, cosh, cot, coth, csch, erf, erfc, erfi,
-                     exp, factorial, factorial2, false, fibonacci, floor,
-                     gamma, hyper, im, log, loggamma, mathematica_code,
-                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
-                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
+                     Function, Gt, Heaviside, Integer, Integral,
+                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
+                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
+                     Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
+                     Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
+                     atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
+                     cot, coth, csch, erf, erfc, erfi, exp, factorial,
+                     factorial2, false, fibonacci, floor, gamma, hyper, im,
+                     log, loggamma, mathematica_code, meijerg, oo, pi,
+                     polygamma, polylog, re, rf, sech, sign, sin, sinh,
+                     symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import s, t, x, y, z
 
 
@@ -184,6 +185,7 @@ def test_Integral():
 
 def test_IntegralTransform():
     assert mathematica_code(LaplaceTransform(t, t, s)) == 'Hold[LaplaceTransform[t, t, s, GenerateConditions->True]]'
+    assert mathematica_code(InverseLaplaceTransform(1/s, s, t)) == 'Hold[InverseLaplaceTransform[1/s, s, t, GenerateConditions->True]]'
 
 
 def test_Sum():
