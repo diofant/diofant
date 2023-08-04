@@ -84,7 +84,7 @@ _assume_rules = FactRules([
 
     'imaginary      ->  ~extended_real | zero',
 
-    'infinite       ->  ~finite',
+    'infinite       ==  ~finite',
     'noninteger     ==  real & ~integer',
     'nonzero        ==  ~zero',
 

@@ -546,7 +546,7 @@ class Mul(AssocOp):
         elif coeff is S.Zero:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
-            if any(c.is_finite is False for c in c_part):
+            if any(c.is_infinite for c in c_part):
                 return [nan], [], order_symbols
             return [coeff], [], order_symbols
 
@@ -941,15 +941,14 @@ class Mul(AssocOp):
         return _fuzzy_group(a.is_commutative for a in self.args)
 
     def _eval_is_finite(self):
-        return _fuzzy_group(a.is_finite for a in self.args)
+        if any(a.is_infinite for a in self.args):
+            if all(a.is_nonzero for a in self.args):
+                return False
+        else:
+            return _fuzzy_group(a.is_finite for a in self.args)
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
-
-    def _eval_is_infinite(self):
-        if any(a.is_infinite for a in self.args):
-            if not any(not a.is_nonzero for a in self.args):
-                return True
 
     def _eval_is_rational(self):
         r = _fuzzy_group((a.is_rational for a in self.args), quick_exit=True)

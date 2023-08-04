@@ -1,4 +1,4 @@
-from ..core import (Add, Dummy, Expr, Float, PoleError, Rational, nan, oo,
+from ..core import (Add, Dummy, Expr, Float, Mul, PoleError, Rational, nan, oo,
                     sympify)
 from ..core.function import UndefinedFunction
 from ..sets import Reals
@@ -38,7 +38,7 @@ def heuristics(e, z, z0, dir):
         r = []
         for a in e.args:
             l = limit(a, z, z0, dir)
-            if (l.has(oo) and (l.func not in (sin, cos) and
+            if (l.has(oo) and (l.func not in (sin, cos, Mul) and
                                l.is_finite is None)) or isinstance(l, Limit):
                 return
             r.append(l)

@@ -74,8 +74,7 @@ class Add(AssocOp):
 
             # 3 or NaN
             if o.is_Number:
-                if (o is nan or coeff is zoo and
-                        o.is_finite is False):
+                if o is nan or coeff is zoo and o.is_infinite:
                     # we know for sure the result will be nan
                     return [nan], [], None
                 if coeff.is_Number:
@@ -86,7 +85,7 @@ class Add(AssocOp):
                 continue
 
             if o is zoo:
-                if coeff.is_finite is False:
+                if coeff.is_infinite:
                     # we know for sure the result will be nan
                     return [nan], [], None
                 coeff = zoo

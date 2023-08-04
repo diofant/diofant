@@ -367,7 +367,7 @@ def test_Add_Mul_is_finite():
     z = Symbol('z', real=True)
 
     assert y.is_finite is True
-    assert (x*y).is_finite is False
+    assert (x*y).is_finite is None
     assert (1024*y).is_finite is True
     assert (y*exp(x)).is_finite is not True
     assert (y*z).is_finite is True
