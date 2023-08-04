@@ -892,7 +892,7 @@ def test_smoothness_and_smoothness_p():
 def test_visual_factorint():
     assert factorint(1, visual=1) == 1
     forty2 = factorint(42, visual=True)
-    assert type(forty2) == Mul
+    assert type(forty2) is Mul
     assert str(forty2) == '2**1*3**1*7**1'
     assert factorint(1, visual=True) is Integer(1)
     no = {'evaluate': False}

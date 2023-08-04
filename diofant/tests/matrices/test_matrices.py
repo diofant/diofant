@@ -2145,11 +2145,11 @@ def test_zeros_eye():
         m = cls.eye(2)
         assert i == m  # but m == i will fail if m is immutable
         assert i == eye(2, cls=cls)
-        assert type(m) == cls
+        assert type(m) is cls
         m = cls.zeros(2)
         assert z == m
         assert z == zeros(2, cls=cls)
-        assert type(m) == cls
+        assert type(m) is cls
 
 
 def test_vandermonde():
@@ -2392,7 +2392,7 @@ def test_cross():
 
     def test(M, ans):
         assert ans == M
-        assert type(M) == cls
+        assert type(M) is cls
     for cls in classes:
         A = cls(a)
         B = cls(b)

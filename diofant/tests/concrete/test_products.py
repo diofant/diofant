@@ -259,10 +259,14 @@ def test_simplify():
     assert simplify(Product(x*y, (x, n, m), (y, a, k)) *
                     Product(y, (x, n, m), (y, a, k))) == \
         Product(x*y**2, (x, n, m), (y, a, k))
+    assert simplify(Product(x, (x, n, m), (y, a, k)) *
+                    Product(x, (x, n, a))) == Product(x, (x, n, m), (y, a, k)) * Product(x, (x, n, a))
     assert simplify(3 * y * Product(x, (x, n, m)) * Product(x, (x, m + 1, a))) \
         == 3 * y * Product(x, (x, n, a))
     assert simplify(Product(x, (x, k + 1, a)) * Product(x, (x, n, k))) == \
         Product(x, (x, n, a))
+    assert simplify(Product(1, (x, k, oo)) * Product(1, (y, n, oo))) == \
+        Product(1, (x, k, oo)) * Product(1, (y, n, oo))
     assert simplify(Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))) == \
         Product(x, (x, k + 1, a)) * Product(x + 1, (x, n, k))
     assert simplify(Product(x, (t, a, b)) * Product(y, (t, a, b)) *

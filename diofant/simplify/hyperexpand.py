@@ -1856,7 +1856,7 @@ def try_lerchphi(func):
     for n, b in enumerate([Integer(1)] + list(deriv)):
         trans[b] = n
     basis = [expand_func(b) for (b, _) in sorted(trans.items(),
-                                                 key=lambda x:x[1])]
+                                                 key=lambda x: x[1])]
     B = Matrix(basis)
     C = Matrix([[0]*len(B)])
     for b, c in coeffs.items():

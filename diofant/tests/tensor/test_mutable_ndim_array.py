@@ -251,8 +251,8 @@ def test_arithmetic():
     assert f1[0, 0] == f1[0, 1] == f1[0, 2] == f1[1, 0] == f1[1, 1] == \
         f1[1, 2] == f1[2, 0] == f1[2, 1] == f1[2, 2] == Rational(3, 5)
 
-    assert type(a) == type(b) == type(c1) == type(c2) == type(d1) == type(d2) \
-        == type(e1) == type(e2) == type(e3) == type(f1)
+    assert type(a) is type(b) is type(c1) is type(c2) is type(d1) is type(d2) \
+        is type(e1) is type(e2) is type(e3) is type(f1)
 
     c = MutableDenseNDimArray([3 for i in range(16)], (4, 4))
 

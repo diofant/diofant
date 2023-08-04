@@ -688,6 +688,10 @@ def test_sympyissue_6274():
 def test_simplify():
     assert simplify(Sum(x*y, (x, n, m), (y, a, k)) +
                     Sum(y, (x, n, m), (y, a, k))) == Sum(x*y + y, (x, n, m), (y, a, k))
+    assert simplify(Sum(x, (x, n, m), (y, a, k)) +
+                    Sum(x, (x, n, m))) == Sum(x, (x, n, m), (y, a, k)) + Sum(x, (x, n, m))
+    assert simplify(Sum(1, (x, n, oo)) + Sum(1, (y, m, a))) == \
+        Sum(1, (x, n, oo)) + Sum(1, (y, m, a))
     assert simplify(Sum(x, (x, n, m)) + Sum(x, (x, m + 1, a))) == \
         Sum(x, (x, n, a))
     assert simplify(Sum(x, (x, k + 1, a)) + Sum(x, (x, n, k))) == \

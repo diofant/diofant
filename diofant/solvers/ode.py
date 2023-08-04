@@ -4334,7 +4334,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     chareq, symbol = Integer(0), Dummy('x')
 
     for i in r:
-        if type(i) == str or i < 0:
+        if type(i) is str or i < 0:
             pass
         else:
             chareq += r[i]*symbol**i

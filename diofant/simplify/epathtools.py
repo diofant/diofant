@@ -190,7 +190,7 @@ class EPath:
             args = list(args)
 
             if span is not None:
-                if type(span) == slice:
+                if type(span) is slice:
                     indices = range(*span.indices(len(args)))
                 else:
                     indices = [span]
@@ -254,7 +254,7 @@ class EPath:
                     return
 
                 if span is not None:
-                    if type(span) == slice:
+                    if type(span) is slice:
                         args = args[span]
                     else:
                         try:

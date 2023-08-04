@@ -1147,25 +1147,25 @@ def sum_add(self, other, method=0):
     """Helper function for Sum simplification."""
     from ..concrete import Sum
 
-    if type(self) == type(other):
-        if method == 0:
-            if self.limits == other.limits:
-                return Sum(self.function + other.function, *self.limits)
-        elif method == 1:
-            if simplify(self.function - other.function) == 0:
-                if len(self.limits) == len(other.limits) == 1:
-                    i = self.limits[0][0]
-                    x1 = self.limits[0][1]
-                    y1 = self.limits[0][2]
-                    j = other.limits[0][0]
-                    x2 = other.limits[0][1]
-                    y2 = other.limits[0][2]
+    assert type(self) is type(other) is Sum
 
-                    if i == j:
-                        if x2 == y1 + 1:
-                            return Sum(self.function, (i, x1, y2))
-                        if x1 == y2 + 1:
-                            return Sum(self.function, (i, x2, y1))
+    if method == 0:
+        if self.limits == other.limits:
+            return Sum(self.function + other.function, *self.limits)
+    elif method == 1:
+        if simplify(self.function - other.function) == 0:
+            if len(self.limits) == len(other.limits) == 1:
+                i = self.limits[0][0]
+                x1 = self.limits[0][1]
+                y1 = self.limits[0][2]
+                j = other.limits[0][0]
+                x2 = other.limits[0][1]
+                y2 = other.limits[0][2]
+
+                if i == j and x2 == y1 + 1:
+                    return Sum(self.function, (i, x1, y2))
+    else:
+        raise NotImplementedError
 
     return Add(self, other)
 
@@ -1208,25 +1208,25 @@ def product_mul(self, other, method=0):
     """Helper function for Product simplification."""
     from ..concrete import Product
 
-    if type(self) == type(other):
-        if method == 0:
-            if self.limits == other.limits:
-                return Product(self.function * other.function, *self.limits)
-        elif method == 1:
-            if simplify(self.function - other.function) == 0:
-                if len(self.limits) == len(other.limits) == 1:
-                    i = self.limits[0][0]
-                    x1 = self.limits[0][1]
-                    y1 = self.limits[0][2]
-                    j = other.limits[0][0]
-                    x2 = other.limits[0][1]
-                    y2 = other.limits[0][2]
+    assert type(self) is type(other) is Product
 
-                    if i == j:
-                        if x2 == y1 + 1:
-                            return Product(self.function, (i, x1, y2))
-                        if x1 == y2 + 1:
-                            return Product(self.function, (i, x2, y1))
+    if method == 0:
+        if self.limits == other.limits:
+            return Product(self.function * other.function, *self.limits)
+    elif method == 1:
+        if simplify(self.function - other.function) == 0:
+            if len(self.limits) == len(other.limits) == 1:
+                i = self.limits[0][0]
+                x1 = self.limits[0][1]
+                y1 = self.limits[0][2]
+                j = other.limits[0][0]
+                x2 = other.limits[0][1]
+                y2 = other.limits[0][2]
+
+                if i == j and x2 == y1 + 1:
+                    return Product(self.function, (i, x1, y2))
+    else:
+        raise NotImplementedError
 
     return Mul(self, other)
 
