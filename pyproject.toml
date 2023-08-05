@@ -62,6 +62,7 @@ version = {attr = 'setuptools_scm.get_version'}
 [tool.isort]
 lines_after_imports = 2
 skip = ['diofant/core/expr.py',
+        'diofant/core/function.py',
         'diofant/__init__.py',
         'diofant/core/__init__.py',
         'diofant/polys/__init__.py']
