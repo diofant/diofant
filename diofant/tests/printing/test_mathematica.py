@@ -5,7 +5,7 @@ import pytest
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral,
                      InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
-                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
+                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly, Product,
                      Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
                      Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
                      atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
@@ -195,6 +195,10 @@ def test_Sum():
                                 (y, -oo, oo))) == \
         'Hold[Sum[E^(-x^2 - y^2), {x, -Infinity, Infinity}, ' \
         '{y, -Infinity, Infinity}]]'
+
+
+def test_Product():
+    assert mathematica_code(Product((x**3 - 1)/(x**3 + 1), (x, 2, oo))) == 'Hold[Product[(x^3 - 1)/(x^3 + 1), {x, 2, Infinity}]]'
 
 
 def test_Matrix():
