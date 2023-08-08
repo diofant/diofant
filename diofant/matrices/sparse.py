@@ -68,11 +68,12 @@ class SparseMatrixBase(MatrixBase):
                         self._smat[(i, j)] = value
 
     def __getitem__(self, key):
-
         if isinstance(key, tuple):
             i, j = key
             try:
                 i, j = self.key2ij(key)
+                if isinstance(i, slice) or isinstance(j, slice):
+                    raise TypeError
                 return self._smat.get((i, j), Integer(0))
             except (TypeError, IndexError) as exc:
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
