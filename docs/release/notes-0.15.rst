@@ -46,3 +46,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`20327`: Finite Field coercion fails from Rational type
 * :sympyissue:`25406`: Resultant of Polynomials Returns Wrong Output
 * :sympyissue:`25451`: Incorrect simplification when mixing basic logical operators and equality
+* :sympyissue:`25496`: Privileging expr.__class__ over expr.func for reconstruction
