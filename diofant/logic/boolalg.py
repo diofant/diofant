@@ -151,8 +151,8 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     true
     >>> ~true
     false
-    >>> ~True
-    -2
+    >>> not True
+    False
     >>> Or(True, False)
     true
 
@@ -414,19 +414,8 @@ class Not(BooleanFunction):
     >>> ~((x | y) & (~x | ~y))
     ~((x | y) & (~x | ~y))
 
-    Notes
-    =====
-
-    The ``~`` operator is provided as a convenience, but note that its use
-    here is different from its normal use in Python, which is bitwise
-    not. In particular, ``~a`` and ``Not(a)`` will be different if ``a`` is
-    an integer. Furthermore, since bools in Python subclass from ``int``,
-    ``~True`` is the same as ``~1`` which is ``-2``, which has a boolean
-    value of True.  To avoid this issue, use the Diofant boolean types
-    ``true`` and ``false``.
-
-    >>> ~True
-    -2
+    >>> not True
+    False
     >>> ~true
     false
 
@@ -536,7 +525,7 @@ class Xor(BooleanFunction):
             for j in range(i + 1, len(rel)):
                 rj, cj = rel[j][:2]
                 if cj == nc:
-                    odd = ~odd
+                    odd = not odd
                     break
                 if cj == c:
                     break
