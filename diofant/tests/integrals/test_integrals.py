@@ -1509,3 +1509,10 @@ def test_sympyissue_24477():
 def test_issue_842():
     assert integrate(sqrt(2*z*(y - x)),
                      x).equals(2*sqrt(2)*sqrt(z*(-x + y))*(x - y)/3)
+
+
+def test_sympyissue_25521():
+    e = k/(s*(k + s**2 + 2*s))
+    r = integrate(e, s)
+    assert not r.has(Integral)
+    assert r.diff(s).simplify() == e
