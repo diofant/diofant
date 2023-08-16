@@ -48,3 +48,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25451`: Incorrect simplification when mixing basic logical operators and equality
 * :sympyissue:`25496`: Privileging expr.__class__ over expr.func for reconstruction
 * :sympyissue:`25521`: integrate raises HeuristicGCDFailed
+* :sympyissue:`25520`: RecursionError in inverse_laplace_transform
