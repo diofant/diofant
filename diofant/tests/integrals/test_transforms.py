@@ -757,3 +757,13 @@ def test_sympyissue_21202():
                      (pi*meijerg(((Rational(1, 2),), (0, 0)), ((0, Rational(1, 2)),
                                  (0,)), s**2/4)/2, True)), 2, Ne(s**2/4, 1))
     assert laplace_transform(cosh(2*x), x, s) == res
+
+
+@pytest.mark.slow
+def test_sympyissue_25520():
+    res = inverse_laplace_transform(1/(s**4 - 4*s**3 + 5*s**2 - 2*s + 1), s, t)
+    assert res == (8*sqrt(3)*exp(t)*(sqrt(3)*exp(sqrt(3)*t/2)*sin(t/2) -
+                                     exp(sqrt(3)*t/2)*cos(t/2) +
+                                     sqrt(3)*exp(-sqrt(3)*t/2)*sin(t/2) +
+                                     exp(-sqrt(3)*t/2)*cos(t/2)) *
+                   Heaviside(t)/(3*(-sqrt(3) + I)**2*(sqrt(3) + I)**2))
