@@ -132,8 +132,7 @@ norecursedirs = ['build', '.eggs', '.git']
 timeout = 1000
 xfail_strict = true
 filterwarnings = ['ignore::UserWarning',
-                  'error::DeprecationWarning',
-                  'ignore:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning']
+                  'error::DeprecationWarning']
 [tool.coverage.run]
 branch = true
 omit = ['conftest.py',
