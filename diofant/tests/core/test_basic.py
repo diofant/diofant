@@ -1,11 +1,13 @@
 """This tests the basic submodule with (ideally) no reference to subclasses."""
 
 import collections
+import typing
 
 import pytest
 
-from diofant import (Add, Atom, Basic, Function, I, Integral, Lambda, cos,
-                     default_sort_key, exp, gamma, preorder_traversal, sin)
+from diofant import (Add, Atom, Basic, Function, I, Integral, Lambda, Symbol,
+                     cos, default_sort_key, exp, gamma, preorder_traversal,
+                     sin)
 from diofant.abc import w, x, y, z
 from diofant.core.singleton import S
 from diofant.core.singleton import SingletonWithManagedProperties as Singleton
@@ -18,6 +20,7 @@ b1 = Basic()
 b2 = Basic(b1)
 b3 = Basic(b2)
 b21 = Basic(b2, b1)
+T = typing.TypeVar('T')
 
 
 def test_structure():
@@ -215,3 +218,13 @@ def test_is_evaluated():
     e = Add(x, x, evaluate=False)
     assert e.is_evaluated is False
     assert e.doit().is_evaluated is True
+
+
+def test_sympyissue_25399():
+    class A(Symbol, typing.Generic[T]):
+        pass
+
+    class B(A[T]):
+        pass
+
+    B('x')
