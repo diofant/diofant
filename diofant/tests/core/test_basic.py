@@ -5,9 +5,8 @@ import typing
 
 import pytest
 
-from diofant import (Add, Atom, Basic, Function, I, Integral, Lambda, Symbol,
-                     cos, default_sort_key, exp, gamma, preorder_traversal,
-                     sin)
+from diofant import (Add, Atom, Basic, Function, I, Integral, Symbol, cos,
+                     default_sort_key, exp, gamma, preorder_traversal, sin)
 from diofant.abc import w, x, y, z
 from diofant.core.singleton import S
 from diofant.core.singleton import SingletonWithManagedProperties as Singleton
@@ -175,18 +174,6 @@ def test_call():
 
     pytest.raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
     pytest.raises(TypeError, lambda: sin(x)(1))
-
-    # No effect as there are no callables
-    assert sin(x).rcall(1) == sin(x)
-    assert (1 + sin(x)).rcall(1) == 1 + sin(x)
-
-    # Effect in the pressence of callables
-    l = Lambda(x, 2*x)
-    assert (l + x).rcall(y) == 2*y + x
-    assert (x**l).rcall(2) == x**4
-    # TODO UndefinedFunction does not subclass Expr
-    # f = Function('f')
-    # assert (2*f)(x) == 2*f(x)
 
 
 def test_literal_evalf_is_number_is_zero_is_comparable():
