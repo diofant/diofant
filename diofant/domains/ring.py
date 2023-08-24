@@ -57,7 +57,10 @@ class CommutativeRing(Domain):
 
     def lcm(self, a, b):
         """Return LCM of ``a`` and ``b``."""
-        return abs(a*b)//self.gcd(a, b)
+        try:
+            return abs(a*b)//self.gcd(a, b)
+        except ZeroDivisionError:
+            return self.zero
 
     @property
     @abc.abstractmethod
