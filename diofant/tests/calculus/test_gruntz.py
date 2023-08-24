@@ -11,17 +11,16 @@ import pytest
 
 from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      Limit, Max, Min, Mul, Pow, Rational, Symbol, acos, acosh,
-                     acot, airyai, airybi, atan, binomial, cbrt, cos, cosh,
-                     coth, digamma, erf, exp, factorial, fibonacci, gamma, li,
-                     limit, log, loggamma, oo, pi, root, sign, sin, sinh, sqrt,
-                     tan, tanh, zeta)
-from diofant.abc import a, n, y
+                     acot, airyai, airybi, arg, atan, binomial, cbrt, cos,
+                     cosh, coth, digamma, erf, exp, factorial, fibonacci,
+                     gamma, li, limit, log, loggamma, oo, pi, root, sign, sin,
+                     sinh, sqrt, tan, tanh, zeta)
+from diofant.abc import a, n, x, y
 from diofant.calculus.gruntz import compare, leadterm, mrv, rewrite, signinf
 
 
 __all__ = ()
 
-x = Symbol('x', real=True, positive=True)
 m = Symbol('m', real=True, positive=True)
 
 
@@ -247,6 +246,8 @@ def test_mrv():
 
 
 def test_rewrite():
+    x = Symbol('x', real=True, positive=True)
+
     assert rewrite(Integer(1), x, m) == (1, None)
 
     e = exp(x)
@@ -394,6 +395,9 @@ def test_branch_cuts():
 
     assert limit(acos(2 + I*x), x, 0, -1) == I*log(-sqrt(3) + 2)
     assert limit(acos(2 + I*x), x, 0, +1) == I*log(+sqrt(3) + 2)
+
+    assert limit(arg(I*x), x, 0, -1) == +pi/2
+    assert limit(arg(I*x), x, 0, +1) == -pi/2
 
 
 def test_aseries_trig():

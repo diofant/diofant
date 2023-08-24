@@ -547,6 +547,10 @@ def test_arg():
 
     assert arg(x).rewrite(sign) == -I*log(sign(x))
 
+    assert arg(x).series(x) == 0
+    assert arg(+I*x + x**2).series(x) == +pi/2 - x + x**3/3 - x**5/5 + O(x**6)
+    assert arg(-I*x + x**2).series(x) == -pi/2 + x - x**3/3 + x**5/5 + O(x**6)
+
 
 def test_arg_rewrite():
     assert arg(1 + I) == atan2(1, 1)

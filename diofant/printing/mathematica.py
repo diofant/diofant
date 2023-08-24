@@ -165,7 +165,8 @@ class MCodePrinter(CodePrinter):
         return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 
     def _print_Sum(self, expr):
-        return 'Hold[Sum[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
+        return f'Hold[{expr.__class__.__name__}[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
+    _print_Product = _print_Sum
 
     def _print_MatrixBase(self, expr):
         return self.doprint(expr.tolist())
@@ -203,6 +204,11 @@ class MCodePrinter(CodePrinter):
 
     def _print_Dummy(self, expr):
         return f'{expr.name}{expr.dummy_index}'
+
+    def _print_IntegralTransform(self, expr):
+        return (f'Hold[{expr.func}[{expr.function}, '
+                f'{expr.function_variable}, {expr.transform_variable}, '
+                'GenerateConditions->True]]')
 
 
 def mathematica_code(expr, **settings):

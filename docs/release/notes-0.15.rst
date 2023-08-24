@@ -18,6 +18,7 @@ Compatibility breaks
 
 * Removed ``itermonomials()`` and ``topological_sort()`` functions, see :pull:`1321` and :pull:`1322`.
 * Removed ``Float.num`` property, use :func:`mpmath.mpmathify`, see :pull:`1323`.
+* Removed support for CPython 3.10, see :pull:`1344`.
 
 Minor changes
 =============
@@ -46,3 +47,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`20327`: Finite Field coercion fails from Rational type
 * :sympyissue:`25406`: Resultant of Polynomials Returns Wrong Output
 * :sympyissue:`25451`: Incorrect simplification when mixing basic logical operators and equality
+* :sympyissue:`25496`: Privileging expr.__class__ over expr.func for reconstruction
+* :sympyissue:`25521`: integrate raises HeuristicGCDFailed
+* :sympyissue:`25520`: RecursionError in inverse_laplace_transform

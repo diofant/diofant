@@ -3,8 +3,9 @@
 import pytest
 
 from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
-                     Function, Gt, Heaviside, Integer, Integral, Lambda, Le,
-                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly,
+                     Function, Gt, Heaviside, Integer, Integral,
+                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
+                     Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly, Product,
                      Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
                      Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
                      atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
@@ -13,7 +14,7 @@ from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      log, loggamma, mathematica_code, meijerg, oo, pi,
                      polygamma, polylog, re, rf, sech, sign, sin, sinh,
                      symbols, tan, tanh, true, uppergamma, zeta)
-from diofant.abc import x, y, z
+from diofant.abc import s, t, x, y, z
 
 
 __all__ = ()
@@ -182,6 +183,11 @@ def test_Integral():
         '{y, -Infinity, Infinity}]]'
 
 
+def test_IntegralTransform():
+    assert mathematica_code(LaplaceTransform(t, t, s)) == 'Hold[LaplaceTransform[t, t, s, GenerateConditions->True]]'
+    assert mathematica_code(InverseLaplaceTransform(1/s, s, t)) == 'Hold[InverseLaplaceTransform[1/s, s, t, GenerateConditions->True]]'
+
+
 def test_Sum():
     assert mathematica_code(Sum(sin(x), (x, 0, 10))) == 'Hold[Sum[Sin[x], {x, 0, 10}]]'
     assert mathematica_code(Sum(exp(-x**2 - y**2),
@@ -189,6 +195,10 @@ def test_Sum():
                                 (y, -oo, oo))) == \
         'Hold[Sum[E^(-x^2 - y^2), {x, -Infinity, Infinity}, ' \
         '{y, -Infinity, Infinity}]]'
+
+
+def test_Product():
+    assert mathematica_code(Product((x**3 - 1)/(x**3 + 1), (x, 2, oo))) == 'Hold[Product[(x^3 - 1)/(x^3 + 1), {x, 2, Infinity}]]'
 
 
 def test_Matrix():

@@ -11,7 +11,7 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
 
     def visit_BinOp(self, node):
         def is_integer(x):
-            if isinstance(x, ast.Num) and isinstance(x.n, int):
+            if isinstance(x, ast.Constant) and isinstance(x.value, int):
                 return True
             if isinstance(x, ast.UnaryOp) and isinstance(x.op, (ast.USub,
                                                                 ast.UAdd)):
@@ -53,7 +53,7 @@ class AutomaticSymbols(ast.NodeTransformer):
             assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
                                 value=ast.Call(func=ast.Name(id='Symbol',
                                                              ctx=ast.Load()),
-                                               args=[ast.Str(s=v)], keywords=[],
+                                               args=[ast.Constant(v)], keywords=[],
                                                starargs=None, kwargs=None))
             node.body.insert(0, assign)
 
@@ -72,9 +72,9 @@ class FloatRationalizer(ast.NodeTransformer):
     """Wraps all floats in a call to :class:`~fractions.Fraction`."""
 
     def visit_Constant(self, node):
-        if isinstance(node.n, float):
+        if isinstance(node.value, float):
             return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
-                            args=[ast.Str(s=repr(node.n))], keywords=[],
+                            args=[ast.Constant(repr(node.value))], keywords=[],
                             starargs=None, kwargs=None)
         return node
 

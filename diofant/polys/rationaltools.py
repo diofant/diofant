@@ -1,7 +1,6 @@
 """Tools for manipulation of rational expressions."""
 
-from ..core import Add, gcd_terms
-from ..core.sympify import sympify
+from ..core import Add, gcd_terms, sympify
 
 
 def together(expr, deep=False):
@@ -66,7 +65,7 @@ def together(expr, deep=False):
             else:
                 exp = expr.exp
 
-            return expr.__class__(base, exp)
-        return expr.__class__(*[_together(arg) for arg in expr.args])
+            return expr.func(base, exp)
+        return expr.func(*[_together(arg) for arg in expr.args])
 
     return _together(sympify(expr))
