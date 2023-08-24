@@ -52,3 +52,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25521`: integrate raises HeuristicGCDFailed
 * :sympyissue:`25520`: RecursionError in inverse_laplace_transform
 * :sympyissue:`25399`: Cannot use typing.Generic[T] with Symbol
+* :sympyissue:`25582`: Incorrect limit for atan
