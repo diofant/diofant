@@ -3355,3 +3355,11 @@ def test_sympyissue_25406():
     for v in [True, False]:
         with using(use_collins_resultant=v):
             assert resultant(f, g) == -resultant(g, f) == 1
+
+
+def test_sympyissue_25592():
+    assert factor_list(x - x*sqrt(5),
+                       extension=sqrt(5)) == (1, [(1 - sqrt(5), 1), (x, 1)])
+    assert factor((36 + 2*sqrt(301))*(x**2 - 301),
+                  extension=sqrt(301)) == 2*((sqrt(301) + 18) *
+                                             (x - sqrt(301))*(x + sqrt(301)))
