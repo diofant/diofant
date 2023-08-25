@@ -1845,6 +1845,12 @@ def test_lcm():
     assert lcm(1, 2) == 2
     assert functools.reduce(lcm, [4, 6, 8]) == 24
 
+    # issue sympy/sympy#25581
+    assert lcm(0, 0) == 0
+
+    f, g = [Integer(0).as_poly(x, domain=QQ)]*2
+    assert lcm(f, g) == 0
+
 
 def test_gcd():
     f, g = x**3 - 1, x**2 - 1

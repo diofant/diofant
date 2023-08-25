@@ -862,6 +862,7 @@ def test_PolyElement_lcm():
 
     R, x = ring('x', ZZ)
 
+    assert R(0).lcm(R(0)) == 0
     assert R(2).lcm(R(6)) == 6
 
     assert (2*x**3).lcm(6*x) == 6*x**3

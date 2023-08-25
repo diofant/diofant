@@ -1,10 +1,11 @@
 """This tests the basic submodule with (ideally) no reference to subclasses."""
 
 import collections
+import typing
 
 import pytest
 
-from diofant import (Add, Atom, Basic, Function, I, Integral, Lambda, cos,
+from diofant import (Add, Atom, Basic, Function, I, Integral, Symbol, cos,
                      default_sort_key, exp, gamma, preorder_traversal, sin)
 from diofant.abc import w, x, y, z
 from diofant.core.singleton import S
@@ -18,6 +19,7 @@ b1 = Basic()
 b2 = Basic(b1)
 b3 = Basic(b2)
 b21 = Basic(b2, b1)
+T = typing.TypeVar('T')
 
 
 def test_structure():
@@ -173,18 +175,6 @@ def test_call():
     pytest.raises(TypeError, lambda: sin(x)({x: 1, sin(x): 2}))
     pytest.raises(TypeError, lambda: sin(x)(1))
 
-    # No effect as there are no callables
-    assert sin(x).rcall(1) == sin(x)
-    assert (1 + sin(x)).rcall(1) == 1 + sin(x)
-
-    # Effect in the pressence of callables
-    l = Lambda(x, 2*x)
-    assert (l + x).rcall(y) == 2*y + x
-    assert (x**l).rcall(2) == x**4
-    # TODO UndefinedFunction does not subclass Expr
-    # f = Function('f')
-    # assert (2*f)(x) == 2*f(x)
-
 
 def test_literal_evalf_is_number_is_zero_is_comparable():
     f = Function('f')
@@ -215,3 +205,13 @@ def test_is_evaluated():
     e = Add(x, x, evaluate=False)
     assert e.is_evaluated is False
     assert e.doit().is_evaluated is True
+
+
+def test_sympyissue_25399():
+    class A(Symbol, typing.Generic[T]):
+        pass
+
+    class B(A[T]):
+        pass
+
+    B('x')

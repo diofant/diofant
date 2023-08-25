@@ -575,9 +575,11 @@ def test_Domain_convert():
 def test_arithmetics():
     assert ZZ.rem(ZZ(2), ZZ(3)) == 2
     assert ZZ.div(ZZ(2), ZZ(3)) == (0, 2)
+    assert ZZ.lcm(ZZ(0), ZZ(0)) == 0
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
     assert QQ.lcm(QQ(2, 3), QQ(4, 9)) == QQ(4, 3)
+    assert QQ.lcm(QQ(0), QQ(0)) == QQ(0)
 
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2

@@ -58,4 +58,7 @@ class Field(CommutativeRing):
         return self.convert(p, ring)/q
 
     def lcm(self, a, b):
-        return (a*b)/self.gcd(a, b)
+        try:
+            return (a*b)/self.gcd(a, b)
+        except ZeroDivisionError:
+            return self.zero

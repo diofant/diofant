@@ -39,7 +39,10 @@ class _GCD:
             gc, g = g.primitive()
             c = domain.lcm(fc, gc)
 
-        h = (f*g)//f.gcd(g)
+        try:
+            h = (f*g)//f.gcd(g)
+        except ZeroDivisionError:
+            return self.zero
 
         if not domain.is_Field:
             return h*c
