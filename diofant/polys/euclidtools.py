@@ -211,7 +211,12 @@ class _GCD:
                 2*min(f_norm // abs(f.LC),
                       g_norm // abs(g.LC)) + 4)
 
-        cofactors = domain.cofactors if self.is_univariate else self.drop(0).cofactors
+        if self.is_univariate:
+            cofactors = domain.cofactors
+        else:
+            def cofactors(f, g):
+                h = self.drop(0)._zz_heu_gcd(f, g)
+                return h, f // h, g // h
 
         for _ in range(query('HEU_GCD_MAX')):
             ff = f.eval(x0, x)
