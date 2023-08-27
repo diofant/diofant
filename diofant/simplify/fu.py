@@ -669,7 +669,7 @@ def TR9(rv):
             if not rv.is_Add:
                 return rv
 
-            args = list(ordered(rv.args))
+            args = list(rv.args)
             if len(args) != 2:
                 hit = False
                 for i, ai in enumerate(args):
@@ -740,10 +740,7 @@ def TR10(rv, first=True):
         f = rv.func
         arg = rv.args[0]
         if arg.is_Add:
-            if first:
-                args = list(ordered(arg.args))
-            else:
-                args = list(arg.args)
+            args = list(arg.args)
             a = args.pop()
             b = Add._from_args(args)
             if b.is_Add:
@@ -795,7 +792,7 @@ def TR10i(rv):
             if not rv.is_Add:
                 return rv
 
-            args = list(ordered(rv.args))
+            args = list(rv.args)
             if len(args) != 2:
                 hit = False
                 for i, ai in enumerate(args):
@@ -980,10 +977,7 @@ def TR12(rv, first=True):
 
         arg = rv.args[0]
         if arg.is_Add:
-            if first:
-                args = list(ordered(arg.args))
-            else:
-                args = list(arg.args)
+            args = list(arg.args)
             a = args.pop()
             b = Add._from_args(args)
             if b.is_Add:
@@ -1138,7 +1132,7 @@ def TR13(rv):
 
         # XXX handle products of powers? or let power-reducing handle it?
         args = {tan: [], cot: [], None: []}
-        for a in ordered(Mul.make_args(rv)):
+        for a in Mul.make_args(rv):
             if a.func in (tan, cot):
                 args[a.func].append(a.args[0])
             else:
