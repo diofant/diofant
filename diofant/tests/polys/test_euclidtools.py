@@ -1050,7 +1050,6 @@ def test_sympyissue_21460():
     assert r == 1
 
 
-@pytest.mark.slow
 def test_sympyissue_23479():
     xs = ' '.join(f'x{i}' for i in range(13))
     _, x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = ring(xs, ZZ)

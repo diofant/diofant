@@ -413,3 +413,10 @@ def test_Piecewise():
     # trigsimp tries not to touch non-trig containing args
     assert trigsimp(Piecewise((e1, e3 < e2), (e3, True))) == \
         Piecewise((e1, e3 < s2), (e3, True))
+
+
+def test_sympyissue_25590():
+    A = Symbol('A', commutative=False)
+    B = Symbol('B', commutative=False)
+    expr = 2*cos(x)*sin(x)*B*A + cos(x)**2
+    assert expr.simplify() == sin(2*x)*B*A + cos(2*x)/2 + Rational(1, 2)

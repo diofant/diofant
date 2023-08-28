@@ -53,3 +53,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`25520`: RecursionError in inverse_laplace_transform
 * :sympyissue:`25399`: Cannot use typing.Generic[T] with Symbol
 * :sympyissue:`25582`: Incorrect limit for atan
+* :sympyissue:`25592`: factor_list sometimes generates PolificationFailed errors with algebraic extensions
+* :sympyissue:`25590`: simplify produces wrong answer with non-commuting symbols
+* :sympyissue:`25572`: simplify reorders noncommutative factors
