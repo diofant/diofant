@@ -56,3 +56,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25592`: factor_list sometimes generates PolificationFailed errors with algebraic extensions
 * :sympyissue:`25590`: simplify produces wrong answer with non-commuting symbols
 * :sympyissue:`25572`: simplify reorders noncommutative factors
+* :sympyissue:`25603`: Simplifying And boolean operation removes a condition
