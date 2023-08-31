@@ -256,27 +256,6 @@ class Basic:
         """
         return set().union(*[a.free_symbols for a in self.args])
 
-    def rcall(self, *args):
-        """Apply on the argument recursively through the expression tree.
-
-        This method is used to simulate a common abuse of notation for
-        operators. For instance in Diofant the the following will not work:
-
-        ``(x+Lambda(y, 2*y))(z) == x+2*z``,
-
-        however you can use
-
-        >>> (x + Lambda(y, 2*y)).rcall(z)
-        x + 2*z
-
-        """
-        if callable(self) and hasattr(self, '__call__'):
-            return self(*args)
-        if self.args:
-            newargs = [sub.rcall(*args) for sub in self.args]
-            return type(self)(*newargs)
-        return self
-
     @property
     def func(self):
         """The top-level function in an expression.

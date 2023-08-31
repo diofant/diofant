@@ -1086,3 +1086,7 @@ def test_issue_1155():
     assert (limit((x**(x + 1)*(log(x) + 1) + 1)/x, x, 20) ==
             Rational(2097152000000000000000000001, 20) +
             104857600000000000000000000*log(20))
+
+
+def test_sympyissue_25582():
+    assert limit(atan(exp(x)), x, oo) == pi/2

@@ -1845,6 +1845,12 @@ def test_lcm():
     assert lcm(1, 2) == 2
     assert functools.reduce(lcm, [4, 6, 8]) == 24
 
+    # issue sympy/sympy#25581
+    assert lcm(0, 0) == 0
+
+    f, g = [Integer(0).as_poly(x, domain=QQ)]*2
+    assert lcm(f, g) == 0
+
 
 def test_gcd():
     f, g = x**3 - 1, x**2 - 1
@@ -3349,3 +3355,11 @@ def test_sympyissue_25406():
     for v in [True, False]:
         with using(use_collins_resultant=v):
             assert resultant(f, g) == -resultant(g, f) == 1
+
+
+def test_sympyissue_25592():
+    assert factor_list(x - x*sqrt(5),
+                       extension=sqrt(5)) == (1, [(1 - sqrt(5), 1), (x, 1)])
+    assert factor((36 + 2*sqrt(301))*(x**2 - 301),
+                  extension=sqrt(301)) == 2*((sqrt(301) + 18) *
+                                             (x - sqrt(301))*(x + sqrt(301)))
