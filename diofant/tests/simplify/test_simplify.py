@@ -734,3 +734,8 @@ def test_sympyissue_25341():
     eq = Eq((2*sqrt(x)/(x + 1)**2 - 1/(sqrt(x)*(x + 1)) -
              1/(4*sqrt(x)**3))/(x + 1))
     eq.simplify()
+
+
+def test_sympyissue_25603():
+    e = Piecewise((log(x), (x <= 5) & (x > 3)), (x, True))
+    assert e.simplify() == e

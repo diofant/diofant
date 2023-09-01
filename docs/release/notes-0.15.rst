@@ -19,6 +19,7 @@ Compatibility breaks
 * Removed ``itermonomials()`` and ``topological_sort()`` functions, see :pull:`1321` and :pull:`1322`.
 * Removed ``Float.num`` property, use :func:`mpmath.mpmathify`, see :pull:`1323`.
 * Removed support for CPython 3.10, see :pull:`1344`.
+* Removed ``rcall()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`1346`.
 
 Minor changes
 =============
@@ -50,3 +51,9 @@ These Sympy issues also were addressed:
 * :sympyissue:`25496`: Privileging expr.__class__ over expr.func for reconstruction
 * :sympyissue:`25521`: integrate raises HeuristicGCDFailed
 * :sympyissue:`25520`: RecursionError in inverse_laplace_transform
+* :sympyissue:`25399`: Cannot use typing.Generic[T] with Symbol
+* :sympyissue:`25582`: Incorrect limit for atan
+* :sympyissue:`25592`: factor_list sometimes generates PolificationFailed errors with algebraic extensions
+* :sympyissue:`25590`: simplify produces wrong answer with non-commuting symbols
+* :sympyissue:`25572`: simplify reorders noncommutative factors
+* :sympyissue:`25603`: Simplifying And boolean operation removes a condition

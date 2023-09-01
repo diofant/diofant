@@ -1857,14 +1857,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> ((x + 1)*(x + 2*y + 1) + 3).extract_additively(x + 1)
         (x + 1)*(x + 2*y) + 3
 
-        Sometimes auto-expansion will return a less simplified result
-        than desired; gcd_terms might be used in such cases:
-
-        >>> (4*x*(y + 1) + y).extract_additively(x)
-        4*x*(y + 1) + x*(4*y + 3) - x*(4*y + 4) + y
-        >>> gcd_terms(_)
-        x*(4*y + 3) + y
-
         See Also
         ========
 
@@ -1873,6 +1865,18 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coefficient
 
         """
+        def _corem(eq, c):
+            # return co, diff from co*c + diff
+            co = []
+            non = []
+            for i in Add.make_args(eq):
+                ci = i.coeff(c)
+                if not ci:
+                    non.append(i)
+                else:
+                    co.append(ci)
+            return Add(*co), Add(*non)
+
         c = sympify(c)
         if self is nan:
             return
@@ -1922,10 +1926,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return xa + xa2
 
         # whole term as a term factor
-        co = self.coeff(c)
+        co, diff = _corem(self, c)
         xa0 = (co.extract_additively(1) or 0)*c
         if xa0:
-            diff = self - co*c
             return (xa0 + (diff.extract_additively(c) or diff)) or None
         # term-wise
         coeffs = []
