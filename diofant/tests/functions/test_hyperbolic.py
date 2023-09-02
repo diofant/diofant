@@ -524,10 +524,6 @@ def test_asinh_series():
 
 
 def test_acosh():
-    # TODO please write more tests  -- see issue sympy/sympy#3751
-    # From http://functions.wolfram.com/ElementaryFunctions/ArcCosh/03/01/
-    # at specific points
-
     assert acosh(-x) == acosh(-x)
 
     assert acosh(1) == 0
@@ -581,12 +577,7 @@ def test_acosh_series():
             O((x - 1)**2, x, 1))
 
 
-# TODO please write more tests -- see issue sympy/sympy#3751
 def test_atanh():
-    # TODO please write more tests  -- see issue sympy/sympy#3751
-    # From http://functions.wolfram.com/ElementaryFunctions/ArcTanh/03/01/
-    # at specific points
-
     # at specific points
     assert atanh(0) == 0
     assert atanh(I) == I*pi/4
@@ -640,10 +631,6 @@ def test_atanh_series():
 
 
 def test_acoth():
-    # TODO please write more tests  -- see issue sympy/sympy#3751
-    # From http://functions.wolfram.com/ElementaryFunctions/ArcCoth/03/01/
-    # at specific points
-
     # at specific points
     assert acoth(0) == I*pi/2
     assert acoth(I) == -I*pi/4
