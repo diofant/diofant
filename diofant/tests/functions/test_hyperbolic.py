@@ -621,6 +621,13 @@ def test_atanh():
 
     pytest.raises(ArgumentIndexError, lambda: atanh(x).fdiff(2))
 
+    assert atanh(1, evaluate=False).is_extended_real
+    assert atanh(Rational(1, 2)).is_real
+    assert atanh(-2, evaluate=False).is_real is False
+    assert atanh(1, evaluate=False).is_infinite
+    assert atanh(x).is_finite is None
+    assert atanh(x).is_extended_real is None
+
 
 def test_atanh_rewrite():
     assert atanh(x).rewrite(log) == (log(1 + x) - log(1 - x))/2
@@ -670,6 +677,13 @@ def test_acoth():
     assert acoth(I*(sqrt(3) - 2)) == 5*pi*I/12
 
     pytest.raises(ArgumentIndexError, lambda: acoth(x).fdiff(2))
+
+    assert acoth(1, evaluate=False).is_extended_real
+    assert acoth(Rational(1, 2)).is_real is False
+    assert acoth(-2, evaluate=False).is_real
+    assert acoth(1, evaluate=False).is_infinite
+    assert acoth(x).is_finite is None
+    assert acoth(x).is_extended_real is None
 
 
 def test_acoth_rewrite():

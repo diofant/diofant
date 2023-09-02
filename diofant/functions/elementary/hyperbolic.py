@@ -939,6 +939,19 @@ class atanh(Function):
         """Returns the inverse of this function."""
         return tanh
 
+    def _eval_is_extended_real(self):
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return (abs(arg) - 1).is_nonpositive
+
+    def _eval_is_finite(self):
+        arg = self.args[0]
+        diff = abs(arg) - 1
+        if diff.is_zero:
+            return False
+        if diff.is_nonzero:
+            return arg.is_finite
+
 
 class acoth(Function):
     """
@@ -1004,3 +1017,16 @@ class acoth(Function):
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
         return coth
+
+    def _eval_is_extended_real(self):
+        arg = self.args[0]
+        if arg.is_extended_real:
+            return (abs(arg) - 1).is_nonnegative
+
+    def _eval_is_finite(self):
+        arg = self.args[0]
+        diff = abs(arg) - 1
+        if diff.is_zero:
+            return False
+        if diff.is_nonzero:
+            return arg.is_finite
