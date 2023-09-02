@@ -57,3 +57,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25590`: simplify produces wrong answer with non-commuting symbols
 * :sympyissue:`25572`: simplify reorders noncommutative factors
 * :sympyissue:`25603`: Simplifying And boolean operation removes a condition
+* :sympyissue:`25612`: Lack of is_real attribute for Mul class

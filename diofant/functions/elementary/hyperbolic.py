@@ -951,6 +951,7 @@ class atanh(Function):
             return False
         if diff.is_nonzero:
             return arg.is_finite
+    _eval_is_complex = _eval_is_finite
 
 
 class acoth(Function):
@@ -1030,3 +1031,4 @@ class acoth(Function):
             return False
         if diff.is_nonzero:
             return arg.is_finite
+    _eval_is_complex = _eval_is_finite

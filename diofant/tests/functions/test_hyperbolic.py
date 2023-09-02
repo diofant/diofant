@@ -624,6 +624,7 @@ def test_atanh():
     assert atanh(1, evaluate=False).is_extended_real
     assert atanh(Rational(1, 2)).is_real
     assert atanh(-2, evaluate=False).is_real is False
+    assert atanh(-2).is_real is False  # issue sympy/sympy#25612
     assert atanh(1, evaluate=False).is_infinite
     assert atanh(x).is_finite is None
     assert atanh(x).is_extended_real is None
@@ -679,8 +680,9 @@ def test_acoth():
     pytest.raises(ArgumentIndexError, lambda: acoth(x).fdiff(2))
 
     assert acoth(1, evaluate=False).is_extended_real
-    assert acoth(Rational(1, 2)).is_real is False
+    assert acoth(Rational(1, 2)).is_real is False  # issue sympy/sympy#25612
     assert acoth(-2, evaluate=False).is_real
+    assert acoth(-2).is_real
     assert acoth(1, evaluate=False).is_infinite
     assert acoth(x).is_finite is None
     assert acoth(x).is_extended_real is None
