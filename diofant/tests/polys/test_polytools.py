@@ -3363,3 +3363,9 @@ def test_sympyissue_25592():
     assert factor((36 + 2*sqrt(301))*(x**2 - 301),
                   extension=sqrt(301)) == 2*((sqrt(301) + 18) *
                                              (x - sqrt(301))*(x + sqrt(301)))
+
+
+def test_sympyissue_25624():
+    assert lcm(-1, 1) == 1
+    assert lcm(Integer(-1).as_poly(x),
+               Integer(+1).as_poly(x)) == Integer(1).as_poly(x)
