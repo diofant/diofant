@@ -59,3 +59,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25603`: Simplifying And boolean operation removes a condition
 * :sympyissue:`25612`: Lack of is_real attribute for Mul class
 * :sympyissue:`25624`: lcm(-1,1) and lcm(Poly(-1,x), Poly(1,x)) gives different output
+* :sympyissue:`25627`: solve does not take positive=True into account

@@ -420,3 +420,8 @@ def test_sympyissue_20902():
             (Rational(-5, 3) < x) & (x < Integer(-1)))
     assert (reduce_inequalities(eq.subs({y: 3*x + 2}).diff(x) > 0) ==
             (Integer(-1) < x) & (x < Rational(-1, 3)))
+
+
+def test_sympyissue_25627():
+    assert reduce_inequalities([(50/(x+1) > 1),
+                                (x > 0)]) == (Integer(0) < x) & (x < 49)
