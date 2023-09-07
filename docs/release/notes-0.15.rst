@@ -57,3 +57,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`25590`: simplify produces wrong answer with non-commuting symbols
 * :sympyissue:`25572`: simplify reorders noncommutative factors
 * :sympyissue:`25603`: Simplifying And boolean operation removes a condition
+* :sympyissue:`25612`: Lack of is_real attribute for Mul class
+* :sympyissue:`25624`: lcm(-1,1) and lcm(Poly(-1,x), Poly(1,x)) gives different output
