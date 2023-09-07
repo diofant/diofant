@@ -20,6 +20,7 @@ Compatibility breaks
 * Removed ``Float.num`` property, use :func:`mpmath.mpmathify`, see :pull:`1323`.
 * Removed support for CPython 3.10, see :pull:`1344`.
 * Removed ``rcall()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`1346`.
+* Removed ``method`` argument of :func:`~diofant.functions.special.bessel.jn_zeros`, see :pull:`1352`.
 
 Minor changes
 =============
