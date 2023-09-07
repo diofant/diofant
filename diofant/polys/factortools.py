@@ -421,9 +421,6 @@ class _Factor:
         cont, f = f.primitive()
 
         if domain.is_FiniteField:
-            if self.is_multivariate:
-                raise NotImplementedError('multivariate polynomials over finite fields')
-
             coeff = f.LC
             f = f.monic()
 
@@ -1617,6 +1614,9 @@ class _Factor:
         * :cite:`Gathen1999modern`, chapter 14
 
         """
+        if self.is_multivariate:
+            raise NotImplementedError('multivariate polynomials over finite fields')
+
         _factor_methods = {
             'berlekamp': self._gf_berlekamp,  # ``p`` : small
             'zassenhaus': self._gf_zassenhaus,  # ``p`` : medium
