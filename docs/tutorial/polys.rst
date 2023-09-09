@@ -110,13 +110,17 @@ The lcm is connected with the gcd and one can be computed using the other
 Square-free factorization
 =========================
 
-The square-free factorization of a univariate polynomial is the product of all
-factors (not necessarily irreducible) of degree 1, 2 etc
+The square-free factorization of a polynomial is a factorization into powers
+of square-free polynomials (i.e. not divisible by any square of a
+non-constant polynomial)
 
     >>> sqf(2*x**2 + 5*x**3 + 4*x**4 + x**5)
                     2
             ⎛ 2    ⎞
     (x + 2)⋅⎝x  + x⎠
+    >>> sqf(x**5*y**5 + 1, modulus=5)
+             5
+    (x⋅y + 1)
 
 Factorization
 =============

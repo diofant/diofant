@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 
 import pytest
@@ -188,6 +189,7 @@ def test_ufuncify_f95_numpy():
 
 
 @with_f2py
+@pytest.mark.skipif(sys.version_info >= (3, 12), reason='different stderr')
 def test_autowrap_verbose(capsys):
     f = autowrap((((a + b)/c)**5).expand(), backend='f2py', verbose=True)
 
