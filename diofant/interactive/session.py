@@ -23,16 +23,15 @@ class IntegerDivisionWrapper(ast.NodeTransformer):
                 return is_integer(x.left) and is_integer(x.right)
             return False
 
-        if (isinstance(node.op, ast.Div) and
-                all(is_integer(_) for _ in [node.left, node.right])):
-            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
-                            args=[node.left, node.right], keywords=[],
-                            starargs=None, kwargs=None)
+        if isinstance(node.op, ast.Div) and all(map(is_integer,
+                                                    [node.left, node.right])):
+            return ast.Call(ast.Name('Fraction', ast.Load()),
+                            [node.left, node.right], [])
         return self.generic_visit(node)
 
 
 class AutomaticSymbols(ast.NodeTransformer):
-    """Add missing :class:`~diofant.core.symbol.Symbol` definitions automatically."""
+    """Add missing :class:`~diofant.core.symbol.Symbol` definitions."""
 
     def __init__(self, ns={}):
         """Initialize self."""
@@ -50,14 +49,12 @@ class AutomaticSymbols(ast.NodeTransformer):
             if v in ignored_names:
                 continue
 
-            assign = ast.Assign(targets=[ast.Name(id=v, ctx=ast.Store())],
-                                value=ast.Call(func=ast.Name(id='Symbol',
-                                                             ctx=ast.Load()),
-                                               args=[ast.Constant(v)], keywords=[],
-                                               starargs=None, kwargs=None))
+            assign = ast.Assign([ast.Name(v, ast.Store())],
+                                ast.Call(ast.Name('Symbol', ast.Load()),
+                                         [ast.Constant(v)], []))
             node.body.insert(0, assign)
 
-        newnode = ast.Module(body=node.body, type_ignores=[])
+        newnode = ast.Module(node.body, [])
         ast.copy_location(newnode, node)
         ast.fix_missing_locations(newnode)
         return newnode
@@ -73,9 +70,8 @@ class FloatRationalizer(ast.NodeTransformer):
 
     def visit_Constant(self, node):
         if isinstance(node.value, float):
-            return ast.Call(func=ast.Name(id='Fraction', ctx=ast.Load()),
-                            args=[ast.Constant(repr(node.value))], keywords=[],
-                            starargs=None, kwargs=None)
+            return ast.Call(ast.Name('Fraction', ast.Load()),
+                            [ast.Constant(repr(node.value))], [])
         return node
 
     def visit_Call(self, node):
