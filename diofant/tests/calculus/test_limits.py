@@ -1090,3 +1090,9 @@ def test_issue_1155():
 
 def test_sympyissue_25582():
     assert limit(atan(exp(x)), x, oo) == pi/2
+
+
+def test_sympyissue_25681():
+    e = x/abs(sqrt(x**2 - 1))
+    assert limit(e, x, 1, dir=Reals) == oo
+    assert limit(e, x, -1, dir=Reals) == -oo
