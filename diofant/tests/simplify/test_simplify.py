@@ -292,6 +292,11 @@ def test_hypersimp():
     assert hypersimp(2**(I*k) * 2**k, k) == 2**(1 + I)
 
 
+def test_sympyissue_25679():
+    g = binomial(n, k)/2**n - binomial(n - 1, k)/2**(n - 1)
+    assert hypersimp(g, k) == -((k - n)*(2*k - n + 2))/((k + 1)*(2*k - n))
+
+
 def test_nsimplify():
     assert nsimplify(0) == 0
     assert nsimplify(-1) == -1

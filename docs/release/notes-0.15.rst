@@ -63,3 +63,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25627`: solve does not take positive=True into account
 * :sympyissue:`25681`: Issues with limits while using abs function
 * :sympyissue:`25682`: Branches for series expansions involving the abs function is not handled correctly
+* :sympyissue:`25679`: hypersimp does not work correctly
