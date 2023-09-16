@@ -62,3 +62,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25624`: lcm(-1,1) and lcm(Poly(-1,x), Poly(1,x)) gives different output
 * :sympyissue:`25627`: solve does not take positive=True into account
 * :sympyissue:`25681`: Issues with limits while using abs function
+* :sympyissue:`25682`: Branches for series expansions involving the abs function is not handled correctly
