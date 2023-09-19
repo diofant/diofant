@@ -64,3 +64,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25681`: Issues with limits while using abs function
 * :sympyissue:`25682`: Branches for series expansions involving the abs function is not handled correctly
 * :sympyissue:`25679`: hypersimp does not work correctly
+* :sympyissue:`25698`: n=6000002; int(n*(log(n) + log(log(n)))) takes more than 200 s to compute on sympy.live.org
