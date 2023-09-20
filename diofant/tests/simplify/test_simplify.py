@@ -744,3 +744,8 @@ def test_sympyissue_25341():
 def test_sympyissue_25603():
     e = Piecewise((log(x), (x <= 5) & (x > 3)), (x, True))
     assert e.simplify() == e
+
+
+def test_sympyissue_25701():
+    e = Eq(2*sign(x + 3)/(5*root(abs(x + 3), 5)**3))
+    e.simplify()
