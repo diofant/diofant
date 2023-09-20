@@ -61,3 +61,8 @@ These Sympy issues also were addressed:
 * :sympyissue:`25612`: Lack of is_real attribute for Mul class
 * :sympyissue:`25624`: lcm(-1,1) and lcm(Poly(-1,x), Poly(1,x)) gives different output
 * :sympyissue:`25627`: solve does not take positive=True into account
+* :sympyissue:`25681`: Issues with limits while using abs function
+* :sympyissue:`25682`: Branches for series expansions involving the abs function is not handled correctly
+* :sympyissue:`25679`: hypersimp does not work correctly
+* :sympyissue:`25698`: n=6000002; int(n*(log(n) + log(log(n)))) takes more than 200 s to compute on sympy.live.org
+* :sympyissue:`25701`: TypeError on Eq(2*sign(x + 3)/(5*Abs(x + 3)**(3/5)), 0)

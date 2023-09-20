@@ -1719,3 +1719,9 @@ def test_sympyissue_21334():
 def test_sympyissue_22583():
     f = Function('f')
     assert (1/f(x) + 1).is_polynomial(f(x)) is False
+
+
+@pytest.mark.timeout(30)
+def test_sympyissue_25698():
+    n = 6000002
+    assert int(n*(log(n) + log(log(n)))) == 110130080
