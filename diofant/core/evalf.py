@@ -9,7 +9,7 @@ represent the mantissa (man) in binary notation, e.g.
 
 >>> sign, man, exp, bc = 0, 5, 1, 3
 >>> n = [1, -1][sign]*man*2**exp
->>> n, bitcount(man)
+>>> n, man.bit_length()
 (10, 3)
 
 A temporary result is a tuple (re, im, re_acc, im_acc) where
@@ -27,7 +27,6 @@ import numbers
 from mpmath import inf as mpmath_inf
 from mpmath import (libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
                     quadts, workprec)
-from mpmath.libmp import bitcount as mpmath_bitcount
 from mpmath.libmp import (fone, from_man_exp, fzero, mpf_abs, mpf_add,
                           mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_exp,
                           mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
@@ -44,10 +43,6 @@ from .sympify import sympify
 
 LG10 = math.log(10, 2)
 rnd = round_nearest
-
-
-def bitcount(n):
-    return mpmath_bitcount(int(n))
 
 
 # Used in a few places as placeholder values to denote exponents and
@@ -91,7 +86,7 @@ def fastlog(x):
     ========
 
     >>> s, m, e = 0, 5, 1
-    >>> bc = bitcount(m)
+    >>> bc = m.bit_length()
     >>> n = [1, -1][s]*m*2**e
     >>> n, (log(n)/log(2)).evalf(2), fastlog((s, m, e, bc))
     (10, 3.3, 4)
@@ -328,7 +323,7 @@ def add_terms(terms, prec, target_prec):
             # first: quick test
             if ((delta > working_prec) and
                 ((not sum_man) or
-                 delta - bitcount(abs(sum_man)) > working_prec)):
+                 delta - sum_man.bit_length() > working_prec)):
                 sum_man = man
                 sum_exp = exp
             else:
@@ -349,7 +344,7 @@ def add_terms(terms, prec, target_prec):
         sum_man = -sum_man
     else:
         sum_sign = 0
-    sum_bc = bitcount(sum_man)
+    sum_bc = sum_man.bit_length()
     sum_accuracy = sum_exp + sum_bc - absolute_error
     r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
                   rnd), sum_accuracy
@@ -468,7 +463,7 @@ def evalf_mul(v, prec, options):
         acc = min(acc, w_acc)
     sign = (direction & 2) >> 1
     if not complex_factors:
-        v = normalize(sign, man, exp, bitcount(man), prec, rnd)
+        v = normalize(sign, man, exp, man.bit_length(), prec, rnd)
         # multiply by i
         if direction & 1:
             return None, v, None, acc
@@ -476,7 +471,7 @@ def evalf_mul(v, prec, options):
     # initialize with the first term
     if (man, exp, bc) != start:
         # there was a real part; give it an imaginary part
-        re, im = (sign, man, exp, bitcount(man)), fzero
+        re, im = (sign, man, exp, man.bit_length()), fzero
         i0 = 0
     else:
         # there is no real part to start (other than the starting 1)
