@@ -3369,3 +3369,14 @@ def test_sympyissue_25624():
     assert lcm(-1, 1) == 1
     assert lcm(Integer(-1).as_poly(x),
                Integer(+1).as_poly(x)) == Integer(1).as_poly(x)
+
+
+def test_sympyissue_25723():
+    assert gcd(-32425*(x - 35541),
+               -32425*(x - 35541)*(2*x + 1)) == 32425*x - 1152416925
+    assert gcd((x - 35541), (x - 35541)*(2*x + 1)) == x - 35541
+
+    for i in [4850, 4851]:
+        assert gcd(x - i, (x - i)*(2*x + 1)) == x - i
+
+    assert gcd(x - i, (x - i)*(2*x - 1)) == x - i
