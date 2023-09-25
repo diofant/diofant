@@ -1,6 +1,6 @@
 import pytest
 from mpmath import inf, mpc, ninf
-from mpmath.libmp.libmpf import from_float
+from mpmath.libmp import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,

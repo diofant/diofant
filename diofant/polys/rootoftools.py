@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from mpmath import findroot, mpc, mpf, workprec
-from mpmath.libmp.libmpf import prec_to_dps
+from mpmath.libmp import prec_to_dps
 
 from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational,
                     cacheit, symbols)

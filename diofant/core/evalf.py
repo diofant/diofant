@@ -24,18 +24,14 @@ if the corresponding complex part is None.
 import math
 import numbers
 
-from mpmath import inf as mpmath_inf
-from mpmath import (libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
-                    quadts, workprec)
-from mpmath.libmp import (fone, from_man_exp, fzero, mpf_abs, mpf_add,
-                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_exp,
+from mpmath import (inf, libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum,
+                    quadosc, quadts, workprec)
+from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
+                          from_man_exp, fzero, mpf_abs, mpf_add, mpf_atan,
+                          mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos, mpf_exp,
                           mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
                           mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
-                          round_nearest)
-from mpmath.libmp.backend import MPZ
-from mpmath.libmp.gammazeta import mpf_bernoulli
-from mpmath.libmp.libmpc import _infs_nan
-from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
+                          prec_to_dps, round_nearest)
 
 from .compatibility import is_sequence
 from .sympify import sympify
@@ -48,8 +44,8 @@ rnd = round_nearest
 # Used in a few places as placeholder values to denote exponents and
 # precision levels, e.g. of exact numbers. Must be careful to avoid
 # passing these to mpmath functions or returning them in final results.
-INF = float(mpmath_inf)
-MINUS_INF = float(-mpmath_inf)
+INF = float(inf)
+MINUS_INF = float(-inf)
 
 # ~= 100 digits. Real men set this to INF.
 DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
@@ -245,9 +241,9 @@ def chop_parts(value, prec):
     """Chop off tiny real or complex parts."""
     re, im, re_acc, im_acc = value
     # chop based on absolute value
-    if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
+    if re and re not in (finf, fninf, fnan) and (fastlog(re) < -prec + 4):
         re, re_acc = None, None
-    if im and im not in _infs_nan and (fastlog(im) < -prec + 4):
+    if im and im not in (finf, fninf, fnan) and (fastlog(im) < -prec + 4):
         im, im_acc = None, None
     return re, im, re_acc, im_acc
 
@@ -932,7 +928,7 @@ def hypsum(expr, n, start, prec):
     from ..utilities import lambdify
     from .numbers import Float
 
-    if prec == float('inf'):
+    if prec == INF:
         raise NotImplementedError('does not support inf prec')
 
     if start:
@@ -988,7 +984,7 @@ def hypsum(expr, n, start, prec):
             return make_mpf(from_man_exp(_term[0], -prec2))
 
         with workprec(prec):
-            v = nsum(summand, [0, mpmath_inf], method='richardson')
+            v = nsum(summand, [0, inf], method='richardson')
         vf = Float(v, ndig)
         if vold is not None and vold == vf:
             break

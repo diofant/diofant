@@ -2,7 +2,7 @@ import functools
 import random
 from collections import defaultdict
 
-from mpmath.libmp.libintmath import ifac
+from mpmath.libmp import ifac
 
 from ..core import Basic, Tuple, sympify
 from ..core.compatibility import as_int, is_sequence
