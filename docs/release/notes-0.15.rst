@@ -25,6 +25,8 @@ Compatibility breaks
 Minor changes
 =============
 
+* Support CPython 3.12, see :pull:`1325`.
+
 Developer changes
 =================
 
