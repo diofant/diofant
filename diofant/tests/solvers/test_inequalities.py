@@ -425,3 +425,8 @@ def test_sympyissue_20902():
 def test_sympyissue_25627():
     assert reduce_inequalities([(50/(x+1) > 1),
                                 (x > 0)]) == (Integer(0) < x) & (x < 49)
+
+
+def test_sympyissue_25738():
+    assert reduce_inequalities(3 < abs(x)) == (Integer(3) < x) | (x < -3)
+    assert reduce_inequalities(pi < abs(x)) == (pi < x) | (x < -pi)
