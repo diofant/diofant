@@ -1,4 +1,4 @@
-from mpmath.libmp.libmpf import prec_to_dps
+from mpmath.libmp import prec_to_dps
 
 from ...core import (Add, Function, Ge, Gt, I, Integer, Le, Lt,
                      PrecisionExhausted)

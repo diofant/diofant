@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 import mpmath
+from mpmath.libmp import prec_to_dps
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, expand_func, expand_log,
@@ -782,9 +783,8 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     # lower tolerances set, so use them to pick the largest tolerance if None
     # was given
     if tolerance is None:
-        tolerance = 10**-min([15] +
-                             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
-                              for n in expr.atoms(Float)])
+        tolerance = 10**-min([15] + [prec_to_dps(n._prec)
+                                     for n in expr.atoms(Float)])
     # XXX should prec be set independent of tolerance or should it be computed
     # from tolerance?
     prec = 30

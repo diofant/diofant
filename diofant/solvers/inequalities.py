@@ -355,10 +355,10 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
 
     """
     exact = True
-    eqs = []
-    solution = S.ExtendedReals if exprs else S.EmptySet
+    solution = S.EmptySet
     for _exprs in exprs:
-        _eqs = []
+        eqs = []
+        sol = S.ExtendedReals if _exprs else S.EmptySet
 
         for expr in _exprs:
             if isinstance(expr, tuple):
@@ -386,15 +386,14 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             if not (domain.is_IntegerRing or domain.is_RationalField):
                 expr = numer/denom
                 expr = Relational(expr, 0, rel)
-                solution &= solve_univariate_inequality(expr, gen, relational=False)
+                sol &= solve_univariate_inequality(expr, gen, relational=False)
             else:
-                _eqs.append(((numer, denom), rel))
+                eqs.append(((numer, denom), rel))
 
-        if _eqs:
-            eqs.append(_eqs)
+        if eqs:
+            sol &= solve_rational_inequalities([eqs])
 
-    if eqs:
-        solution &= solve_rational_inequalities(eqs)
+        solution |= sol
 
     if not exact:
         solution = solution.evalf()

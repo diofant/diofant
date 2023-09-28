@@ -1,9 +1,8 @@
 import math
 
-from mpmath.libmp import (bitcount, fhalf, fone, from_int, from_man_exp,
-                          from_rational, fzero, mpf_add, mpf_cos,
-                          mpf_cosh_sinh, mpf_div, mpf_mul, mpf_pi, mpf_sqrt,
-                          mpf_sub, pi_fixed, to_int)
+from mpmath.libmp import (fhalf, fone, from_int, from_man_exp, from_rational,
+                          fzero, mpf_add, mpf_cos, mpf_cosh_sinh, mpf_div,
+                          mpf_mul, mpf_pi, mpf_sqrt, mpf_sub, pi_fixed, to_int)
 
 
 __all__ = 'npartitions',
@@ -91,5 +90,5 @@ def npartitions(n):
         s = mpf_add(s, mpf_mul(a, d), prec)
         # On average, the terms decrease rapidly in magnitude. Dynamically
         # reducing the precision greatly improves performance.
-        p = bitcount(abs(to_int(d))) + 50
+        p = to_int(d).bit_length() + 50
     return int(to_int(mpf_add(s, fhalf, prec)))

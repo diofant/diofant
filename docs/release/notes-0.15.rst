@@ -68,3 +68,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`25679`: hypersimp does not work correctly
 * :sympyissue:`25698`: n=6000002; int(n*(log(n) + log(log(n)))) takes more than 200 s to compute on sympy.live.org
 * :sympyissue:`25701`: TypeError on Eq(2*sign(x + 3)/(5*Abs(x + 3)**(3/5)), 0)
+* :sympyissue:`25723`: GCD missing polynomial factor
+* :sympyissue:`25738`: Incorrect result of reduce_inequalities involving pi and abs

@@ -1,5 +1,5 @@
 from mpmath import besseljzero, mp, workprec
-from mpmath.libmp.libmpf import dps_to_prec
+from mpmath.libmp import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
                      cacheit, nan, oo, pi, zoo)
