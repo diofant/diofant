@@ -70,3 +70,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25701`: TypeError on Eq(2*sign(x + 3)/(5*Abs(x + 3)**(3/5)), 0)
 * :sympyissue:`25723`: GCD missing polynomial factor
 * :sympyissue:`25738`: Incorrect result of reduce_inequalities involving pi and abs
+* :sympyissue:`25697`: can not reduce log inequalities
