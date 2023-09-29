@@ -1809,8 +1809,8 @@ def imageset(*args):
     >>> imageset(lambda x: 2*x, Interval(0, 2))
     [0, 4]
 
-    >>> imageset(Lambda(x, sin(x)), Interval(-2, 1))
-    ImageSet(Lambda(x, sin(x)), [-2, 1])
+    >>> imageset(Lambda(x, sin(x)), Interval(-1, 2))
+    [-sin(1), 1]
 
     See Also
     ========

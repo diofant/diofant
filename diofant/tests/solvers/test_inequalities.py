@@ -365,12 +365,16 @@ def test_solve_univariate_inequality():
     # when the domain is EX (e.g. when 2 is replaced with sqrt(2))
     assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x)
     den = ((x - 1)*(x - 2)).expand()
-    assert isolve((x - 1)/den <= 0, x) == (x < 1) | ((Integer(1) < x) & (x < 2))
+    assert isolve((x - 1)/den <= 0, x) == (x < 2)
 
     assert isolve(x > oo, x) is false
 
     # issue sympy/sympy#10268
-    assert reduce_inequalities(log(x) < 300) == (-oo < x) & (x < E**300)
+    assert reduce_inequalities(log(x) < 300) == (Integer(0) < x) & (x < E**300)
+
+
+def test_sympyissue_25697():
+    assert reduce_inequalities(log(x, 3) <= 2) == (Integer(0) < x) & (x <= 9)
 
 
 def test_slow_general_univariate():

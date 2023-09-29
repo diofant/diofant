@@ -3,7 +3,7 @@
 import collections
 import itertools
 
-from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
+from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, nan, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise, sign
@@ -533,21 +533,20 @@ def solve_univariate_inequality(expr, gen, relational=True):
     [-oo, -2] U [2, oo]
 
     """
+    from ..calculus import singularities
     from ..simplify import simplify
-    from .solvers import denoms, solve
+    from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    solns = solve(e, gen)
-    singularities = []
-    for d in denoms(e):
-        singularities.extend(solve(d, gen))
-    solns = [s[gen] for s in solns]
-    singularities = [s[gen] for s in singularities]
+    solns = {s[gen] for s in solve(e, gen)}
+    singularities = singularities(e, gen)
 
     include_x = expr.func(0, 0)
 
     def valid(x):
         v = e.subs({gen: x})
+        if v is nan:
+            v = e.limit(gen, x)
         try:
             r = expr.func(v, 0)
         except TypeError:
@@ -561,7 +560,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     start = -oo
     sol_sets = [S.EmptySet]
-    reals = _nsort(set(solns + singularities), separated=True)[0]
+    reals = _nsort(solns | singularities, separated=True)[0]
     for x in reals:
         end = x
 
