@@ -1,7 +1,6 @@
 """A Printer for generating readable representation of most diofant classes."""
 
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps
+from mpmath.libmp import prec_to_dps, to_str
 
 from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
@@ -495,7 +494,7 @@ class StrPrinter(Printer):
             strip = self._print_level > 1
         else:
             raise NotImplementedError
-        rv = mlib.to_str(expr._mpf_, dps, strip_zeros=strip)
+        rv = to_str(expr._mpf_, dps, strip_zeros=strip)
         if rv.startswith('-.0'):
             rv = '-0.' + rv[3:]
         elif rv.startswith('.0'):

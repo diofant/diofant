@@ -522,7 +522,7 @@ class Float(Number):
             else:
                 dps = 15
 
-        prec = libmp.libmpf.dps_to_prec(dps)
+        prec = libmp.dps_to_prec(dps)
 
         if isinstance(num, decimal.Decimal):
             _mpf_ = libmp.from_Decimal(num, prec, rnd)
@@ -556,7 +556,7 @@ class Float(Number):
         return obj
 
     def __getnewargs__(self):
-        return self._mpf_, libmp.libmpf.prec_to_dps(self._prec)
+        return self._mpf_, libmp.prec_to_dps(self._prec)
 
     def _hashable_content(self):
         return self._mpf_, self._prec

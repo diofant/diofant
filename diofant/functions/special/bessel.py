@@ -1,5 +1,5 @@
 from mpmath import besseljzero, mp, workprec
-from mpmath.libmp.libmpf import dps_to_prec
+from mpmath.libmp import dps_to_prec
 
 from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
                      cacheit, nan, oo, pi, zoo)
@@ -658,20 +658,11 @@ class yn(SphericalBesselBase):
                (fn(-n - 1, z) * sin(z) + (-1)**(-n) * fn(n, z) * cos(z))
 
 
-def jn_zeros(n, k, method='diofant', dps=15):
+def jn_zeros(n, k, dps=15):
     """
     Zeros of the spherical Bessel function of the first kind.
 
     This returns an array of zeros of jn up to the k-th zero.
-
-    * method = "diofant": uses mpmath's function ``besseljzero``
-    * method = "scipy": uses :func:`scipy.special.spherical_jn`.
-      and :func:`scipy.optimize.newton` to find all
-      roots, which is faster than computing the zeros using a general
-      numerical solver, but it requires SciPy and only works with low
-      precision floating point numbers.  [The function used with
-      method="diofant" is a recent addition to mpmath, before that a general
-      solver was used.]
 
     Examples
     ========
@@ -685,39 +676,10 @@ def jn_zeros(n, k, method='diofant', dps=15):
     jn, yn, besselj, besselk, bessely
 
     """
-    from math import pi
-
-    if method == 'diofant':
-        prec = dps_to_prec(dps)
-        return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
-                                              int(l)), prec)
-                for l in range(1, k + 1)]
-    if method == 'scipy':
-        from scipy.optimize import newton
-        from scipy.special import spherical_jn
-
-        def f(x):
-            return spherical_jn(n, x)
-    else:
-        raise NotImplementedError('Unknown method.')
-
-    def solver(f, x):
-        if method == 'scipy':
-            root = newton(f, x)
-        else:
-            raise NotImplementedError('Unknown method.')
-        return root
-
-    # we need to approximate the position of the first root:
-    root = n + pi
-    # determine the first root exactly:
-    root = solver(f, root)
-    roots = [root]
-    for _ in range(k - 1):
-        # estimate the position of the next root using the last root + pi:
-        root = solver(f, root + pi)
-        roots.append(root)
-    return roots
+    prec = dps_to_prec(dps)
+    return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
+                                          int(l)), prec)
+            for l in range(1, k + 1)]
 
 
 class AiryBase(Function):

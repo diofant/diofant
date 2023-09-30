@@ -3,7 +3,7 @@
 import collections
 import itertools
 
-from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
+from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, nan, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise, sign
@@ -355,10 +355,10 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
 
     """
     exact = True
-    eqs = []
-    solution = S.ExtendedReals if exprs else S.EmptySet
+    solution = S.EmptySet
     for _exprs in exprs:
-        _eqs = []
+        eqs = []
+        sol = S.ExtendedReals if _exprs else S.EmptySet
 
         for expr in _exprs:
             if isinstance(expr, tuple):
@@ -386,15 +386,14 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             if not (domain.is_IntegerRing or domain.is_RationalField):
                 expr = numer/denom
                 expr = Relational(expr, 0, rel)
-                solution &= solve_univariate_inequality(expr, gen, relational=False)
+                sol &= solve_univariate_inequality(expr, gen, relational=False)
             else:
-                _eqs.append(((numer, denom), rel))
+                eqs.append(((numer, denom), rel))
 
-        if _eqs:
-            eqs.append(_eqs)
+        if eqs:
+            sol &= solve_rational_inequalities([eqs])
 
-    if eqs:
-        solution &= solve_rational_inequalities(eqs)
+        solution |= sol
 
     if not exact:
         solution = solution.evalf()
@@ -534,21 +533,20 @@ def solve_univariate_inequality(expr, gen, relational=True):
     [-oo, -2] U [2, oo]
 
     """
+    from ..calculus import singularities
     from ..simplify import simplify
-    from .solvers import denoms, solve
+    from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    solns = solve(e, gen)
-    singularities = []
-    for d in denoms(e):
-        singularities.extend(solve(d, gen))
-    solns = [s[gen] for s in solns]
-    singularities = [s[gen] for s in singularities]
+    solns = {s[gen] for s in solve(e, gen)}
+    singularities = singularities(e, gen)
 
     include_x = expr.func(0, 0)
 
     def valid(x):
         v = e.subs({gen: x})
+        if v is nan:
+            v = e.limit(gen, x)
         try:
             r = expr.func(v, 0)
         except TypeError:
@@ -562,7 +560,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
 
     start = -oo
     sol_sets = [S.EmptySet]
-    reals = _nsort(set(solns + singularities), separated=True)[0]
+    reals = _nsort(solns | singularities, separated=True)[0]
     for x in reals:
         end = x
 

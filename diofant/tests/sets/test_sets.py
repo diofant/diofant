@@ -780,7 +780,7 @@ def test_image_interval():
             ImageSet(Lambda(x, a*x), Interval(0, 1)))
 
     assert (imageset(Lambda(x, sin(cos(x))), Interval(0, 1)) ==
-            ImageSet(Lambda(x, sin(cos(x))), Interval(0, 1)))
+            Interval(sin(cos(1)), sin(1)))
 
     assert imageset(x, -(x - 2)*(x + 2),
                     Interval(-3, 4)) == Interval(-12, 4)

@@ -9,7 +9,7 @@ represent the mantissa (man) in binary notation, e.g.
 
 >>> sign, man, exp, bc = 0, 5, 1, 3
 >>> n = [1, -1][sign]*man*2**exp
->>> n, bitcount(man)
+>>> n, man.bit_length()
 (10, 3)
 
 A temporary result is a tuple (re, im, re_acc, im_acc) where
@@ -24,19 +24,14 @@ if the corresponding complex part is None.
 import math
 import numbers
 
-from mpmath import inf as mpmath_inf
-from mpmath import (libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
-                    quadts, workprec)
-from mpmath.libmp import bitcount as mpmath_bitcount
-from mpmath.libmp import (fone, from_man_exp, fzero, mpf_abs, mpf_add,
-                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_exp,
+from mpmath import (inf, libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum,
+                    quadosc, quadts, workprec)
+from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
+                          from_man_exp, fzero, mpf_abs, mpf_add, mpf_atan,
+                          mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos, mpf_exp,
                           mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
                           mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
-                          round_nearest)
-from mpmath.libmp.backend import MPZ
-from mpmath.libmp.gammazeta import mpf_bernoulli
-from mpmath.libmp.libmpc import _infs_nan
-from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
+                          prec_to_dps, round_nearest)
 
 from .compatibility import is_sequence
 from .sympify import sympify
@@ -46,15 +41,11 @@ LG10 = math.log(10, 2)
 rnd = round_nearest
 
 
-def bitcount(n):
-    return mpmath_bitcount(int(n))
-
-
 # Used in a few places as placeholder values to denote exponents and
 # precision levels, e.g. of exact numbers. Must be careful to avoid
 # passing these to mpmath functions or returning them in final results.
-INF = float(mpmath_inf)
-MINUS_INF = float(-mpmath_inf)
+INF = float(inf)
+MINUS_INF = float(-inf)
 
 # ~= 100 digits. Real men set this to INF.
 DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
@@ -91,7 +82,7 @@ def fastlog(x):
     ========
 
     >>> s, m, e = 0, 5, 1
-    >>> bc = bitcount(m)
+    >>> bc = m.bit_length()
     >>> n = [1, -1][s]*m*2**e
     >>> n, (log(n)/log(2)).evalf(2), fastlog((s, m, e, bc))
     (10, 3.3, 4)
@@ -250,9 +241,9 @@ def chop_parts(value, prec):
     """Chop off tiny real or complex parts."""
     re, im, re_acc, im_acc = value
     # chop based on absolute value
-    if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
+    if re and re not in (finf, fninf, fnan) and (fastlog(re) < -prec + 4):
         re, re_acc = None, None
-    if im and im not in _infs_nan and (fastlog(im) < -prec + 4):
+    if im and im not in (finf, fninf, fnan) and (fastlog(im) < -prec + 4):
         im, im_acc = None, None
     return re, im, re_acc, im_acc
 
@@ -328,7 +319,7 @@ def add_terms(terms, prec, target_prec):
             # first: quick test
             if ((delta > working_prec) and
                 ((not sum_man) or
-                 delta - bitcount(abs(sum_man)) > working_prec)):
+                 delta - sum_man.bit_length() > working_prec)):
                 sum_man = man
                 sum_exp = exp
             else:
@@ -349,7 +340,7 @@ def add_terms(terms, prec, target_prec):
         sum_man = -sum_man
     else:
         sum_sign = 0
-    sum_bc = bitcount(sum_man)
+    sum_bc = sum_man.bit_length()
     sum_accuracy = sum_exp + sum_bc - absolute_error
     r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
                   rnd), sum_accuracy
@@ -468,7 +459,7 @@ def evalf_mul(v, prec, options):
         acc = min(acc, w_acc)
     sign = (direction & 2) >> 1
     if not complex_factors:
-        v = normalize(sign, man, exp, bitcount(man), prec, rnd)
+        v = normalize(sign, man, exp, man.bit_length(), prec, rnd)
         # multiply by i
         if direction & 1:
             return None, v, None, acc
@@ -476,7 +467,7 @@ def evalf_mul(v, prec, options):
     # initialize with the first term
     if (man, exp, bc) != start:
         # there was a real part; give it an imaginary part
-        re, im = (sign, man, exp, bitcount(man)), fzero
+        re, im = (sign, man, exp, man.bit_length()), fzero
         i0 = 0
     else:
         # there is no real part to start (other than the starting 1)
@@ -937,7 +928,7 @@ def hypsum(expr, n, start, prec):
     from ..utilities import lambdify
     from .numbers import Float
 
-    if prec == float('inf'):
+    if prec == INF:
         raise NotImplementedError('does not support inf prec')
 
     if start:
@@ -993,7 +984,7 @@ def hypsum(expr, n, start, prec):
             return make_mpf(from_man_exp(_term[0], -prec2))
 
         with workprec(prec):
-            v = nsum(summand, [0, mpmath_inf], method='richardson')
+            v = nsum(summand, [0, inf], method='richardson')
         vf = Float(v, ndig)
         if vold is not None and vold == vf:
             break

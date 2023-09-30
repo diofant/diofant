@@ -6,8 +6,7 @@ builtin repr, except for optional arguments) that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps, repr_dps
+from mpmath.libmp import prec_to_dps, repr_dps, to_str
 
 from ..core.function import AppliedUndef
 from ..utilities import default_sort_key
@@ -107,7 +106,7 @@ class ReprPrinter(Printer):
 
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
-        r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
+        r = to_str(expr._mpf_, repr_dps(expr._prec))
         return f"{expr.__class__.__name__}('{r}', dps={dps:d})"
 
     def _print_BaseSymbol(self, expr):

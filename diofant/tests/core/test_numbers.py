@@ -3,7 +3,6 @@ import fractions
 
 import mpmath
 import pytest
-from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
@@ -1415,8 +1414,8 @@ def test_approximation_interval():
 def test_sympyissue_6640():
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
-    assert Float(finf).is_nonzero is True
-    assert Float(fninf).is_nonzero is True
+    assert Float(mpmath.mpf('inf')._mpf_).is_nonzero is True
+    assert Float(mpmath.mpf('-inf')._mpf_).is_nonzero is True
     assert bool(Float(0)) is False
 
 

@@ -6,7 +6,6 @@ import random
 
 from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
 from ..core.compatibility import as_int
-from ..core.evalf import bitcount
 from ..core.sympify import sympify
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
@@ -165,7 +164,7 @@ def trailing(n):
         return small_trailing[low_byte]
 
     # 2**m is quick for z up through 2**30
-    z = bitcount(n) - 1
+    z = n.bit_length() - 1
     if n == 1 << z:
         return z
 

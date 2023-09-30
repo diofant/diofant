@@ -1,4 +1,4 @@
-from diofant import exp, log, sign
+from diofant import exp, log, sign, sin
 from diofant.abc import x
 from diofant.calculus.singularities import singularities
 
@@ -20,3 +20,5 @@ def test_singularities_non_rational():
     assert singularities(log((x - 2)**2), x) == {2}
     assert singularities(exp(1/x) + log(x + 1), x) == {-1, 0}
     assert singularities(exp(1/log(x + 1)), x) == {0}
+    assert singularities(sin(x), x) == set()
+    assert singularities(abs(x), x) == set()

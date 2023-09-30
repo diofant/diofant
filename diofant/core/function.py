@@ -29,7 +29,7 @@ import collections
 import inspect
 
 import mpmath
-import mpmath.libmp as mlib
+from mpmath.libmp import prec_to_dps
 
 from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import uniq
@@ -363,7 +363,7 @@ class Function(Application, Expr):
         pr = max(cls._should_evalf(a) for a in result.args)
         pr2 = min(cls._should_evalf(a) for a in result.args)
         if pr2 > 0:
-            return result.evalf(mlib.libmpf.prec_to_dps(pr), strict=False)
+            return result.evalf(prec_to_dps(pr), strict=False)
         return result
 
     @classmethod
@@ -1172,7 +1172,7 @@ class Derivative(Expr):
 
         def eval(x):
             f0 = self.expr.subs({z: Expr._from_mpmath(x, prec=mpmath.mp.prec)})
-            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec), strict=False)
+            f0 = f0.evalf(prec_to_dps(mpmath.mp.prec), strict=False)
             return f0._to_mpmath(mpmath.mp.prec)
         return Expr._from_mpmath(mpmath.diff(eval,
                                              z0._to_mpmath(mpmath.mp.prec)),

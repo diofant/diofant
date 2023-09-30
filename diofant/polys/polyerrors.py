@@ -149,7 +149,8 @@ class ComputationFailedError(BasePolynomialError):
         self.exc = exc
 
     def __str__(self):
-        return f'{self.func}({", ".join(map(str, self.exc.exprs[:self.nargs]))}) failed without generators'
+        sargs = ', '.join(map(str, self.exc.exprs[:self.nargs]))
+        return f'{self.func}({sargs}) failed without generators'
 
 
 class UnivariatePolynomialError(PolynomialError):
