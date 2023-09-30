@@ -12,7 +12,7 @@ jobs:
       - uses: manics/action-binderbadge@v2.0.0
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          environmentRepo: gh/diofant/mybinder-env/HEAD
+          environmentRepo: gh/diofant/mybinder-env/main
           updateDescription: true
           urlpath: docs/demo/index.ipynb
           persistentLink: false
