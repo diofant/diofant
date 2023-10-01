@@ -3666,13 +3666,13 @@ GroebnerBasis([], x, y, domain=ℤ, order=lex)\
 
     ascii_str = \
         """\
-             /[ 2                 2              ]                              \\\n\
-GroebnerBasis\\[x  - x - 3*y + 1, y  - 2*x + y - 1], x, y, domain=ZZ, order=grlex/\
+             /[ 2                        2        ]                              \\\n\
+GroebnerBasis\\[x  - x - 3*y + 1, -2*x + y  + y - 1], x, y, domain=ZZ, order=grlex/\
 """
     ucode_str = \
         """\
-             ⎛⎡ 2                 2              ⎤                             ⎞\n\
-GroebnerBasis⎝⎣x  - x - 3⋅y + 1, y  - 2⋅x + y - 1⎦, x, y, domain=ℤ, order=grlex⎠\
+             ⎛⎡ 2                        2        ⎤                             ⎞\n\
+GroebnerBasis⎝⎣x  - x - 3⋅y + 1, -2⋅x + y  + y - 1⎦, x, y, domain=ℤ, order=grlex⎠\
 """
 
     assert pretty(expr) == ascii_str
