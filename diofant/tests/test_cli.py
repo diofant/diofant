@@ -133,3 +133,10 @@ def test_ipython_console_bare_division_noauto():
     assert c.expect_exact('\r\nIn [6]: ') == 0
     assert c.send('ℕ\r\n') == 5
     assert c.expect_exact('Out[6]: 2\r\n\r\nIn [7]: ') == 0
+
+
+def test_diofant_version():
+    c = Console('python -m diofant --version')
+
+    assert c.expect(pexpect.EOF) == 0
+    assert c.before.startswith('0.')
