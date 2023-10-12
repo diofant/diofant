@@ -636,7 +636,7 @@ def test_fresnel():
     assert fresnels(+oo) == Rational(+1, 2)
     assert fresnels(-oo) == Rational(-1, 2)
 
-    assert fresnels(z) == fresnels(z)
+    assert fresnels(z) == fresnels(z, evaluate=False)
     assert fresnels(-z) == -fresnels(z)
     assert fresnels(I*z) == -I*fresnels(z)
     assert fresnels(-I*z) == I*fresnels(z)
@@ -693,7 +693,7 @@ def test_fresnel():
     assert fresnelc(+oo) == Rational(+1, 2)
     assert fresnelc(-oo) == Rational(-1, 2)
 
-    assert fresnelc(z) == fresnelc(z)
+    assert fresnelc(z) == fresnelc(z, evaluate=False)
     assert fresnelc(-z) == -fresnelc(z)
     assert fresnelc(I*z) == I*fresnelc(z)
     assert fresnelc(-I*z) == -I*fresnelc(z)

@@ -85,7 +85,7 @@ def test_wrappers():
 
 
 def test_Eq():
-    assert Eq(x**2, 0) == Eq(x**2, 0)
+    assert Eq(x**2, 0) == Eq(x**2, 0, evaluate=False)
     assert Eq(x**2, 0) != Eq(x**2, 1)
 
     assert Eq(x) == Eq(x, 0)

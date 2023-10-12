@@ -532,7 +532,7 @@ class StrPrinter(Printer):
     def _print_GroebnerBasis(self, basis):
         cls = basis.__class__.__name__
 
-        exprs = [self._print_Add(arg, order=basis.order)
+        exprs = [self._print_Add(arg, order='lex')
                  for arg in basis.exprs]
         exprs = f"[{', '.join(exprs)}]"
 

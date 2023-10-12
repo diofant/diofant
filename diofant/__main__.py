@@ -13,7 +13,9 @@ import code
 import os
 import readline
 import rlcompleter
+import sys
 
+from diofant import __version__
 from diofant.interactive.session import (AutomaticSymbols,
                                          IntegerDivisionWrapper,
                                          unicode_identifiers)
@@ -35,10 +37,17 @@ parser.add_argument('--no-ipython', help="Don't use IPython",
 parser.add_argument('--unicode-identifiers',
                     help='Allow any unicode identifiers',
                     action='store_true')
+parser.add_argument('-V', '--version',
+                    help='Print the Diofant version and exit',
+                    action='store_true')
 
 
 def main():
     args, ipython_args = parser.parse_known_args()
+
+    if args.version:
+        print(__version__)
+        sys.exit(0)
 
     lines = ['from diofant import *',
              'init_printing()',
