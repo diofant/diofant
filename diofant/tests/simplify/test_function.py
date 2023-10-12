@@ -31,8 +31,8 @@ def test_has():
 
 
 def test_eq():
-    assert Hyper_Function([1], []) == Hyper_Function([1], [])
-    assert (Hyper_Function([1], []) != Hyper_Function([1], [])) is False
+    assert Hyper_Function([1], []) == Hyper_Function([1], [], evaluate=False)
+    assert (Hyper_Function([1], []) != Hyper_Function([1], [], evaluate=False)) is False
     assert Hyper_Function([1], []) != Hyper_Function([2], [])
     assert Hyper_Function([1], []) != Hyper_Function([1, 2], [])
     assert Hyper_Function([1], []) != Hyper_Function([1], [2])

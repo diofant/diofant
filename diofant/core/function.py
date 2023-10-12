@@ -1276,7 +1276,7 @@ class Lambda(Expr):
 
     is_Function = True
 
-    def __new__(cls, variables, expr):
+    def __new__(cls, variables, expr, **kwargs):
         from ..sets.sets import FiniteSet
         v = list(variables) if iterable(variables) else [variables]
         for i in v:

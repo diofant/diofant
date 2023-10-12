@@ -1,4 +1,4 @@
-from diofant import (I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
+from diofant import (Abs, I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
                      coth, exp, expand_complex, im, oo, pi, re, root, sign,
                      sin, sinh, sqrt, symbols, tan, tanh)
 from diofant.abc import x, y, z
@@ -41,7 +41,7 @@ def test_conjugate():
 def test_abs1():
     a = Symbol('a', extended_real=True)
     b = Symbol('b', extended_real=True)
-    assert abs(a) == abs(a)
+    assert abs(a) == Abs(a, evaluate=False)
     assert abs(-a) == abs(a)
     assert abs(a + I*b) == sqrt(a**2 + b**2)
 
