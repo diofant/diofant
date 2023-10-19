@@ -261,9 +261,6 @@ class Number(AtomicExpr):
     def __float__(self):
         return to_float(self._as_mpf_val(53))
 
-    def _eval_conjugate(self):
-        return self
-
     def _eval_subs(self, old, new):
         if old == -self:
             return -new
@@ -278,19 +275,6 @@ class Number(AtomicExpr):
     def sort_key(self, order=None):
         """Return a sort key."""
         return self.class_key(), (0, ()), (), self
-
-    __hash__ = AtomicExpr.__hash__
-
-    def is_constant(self, *wrt, **flags):
-        """Return True if self is constant.
-
-        See Also
-        ========
-
-        diofant.core.expr.Expr.is_constant
-
-        """
-        return True
 
     def as_coeff_mul(self, *deps, **kwargs):
         """Return the tuple (c, args) where self is written as a Mul.
