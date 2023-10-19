@@ -533,21 +533,12 @@ class Float(Number):
         else:
             _mpf_ = mpmath.mpf(num, prec=prec, rounding=rnd)._mpf_
 
-        # special cases
-        if _mpf_ == fzero:
-            pass  # we want a Float
-        elif _mpf_ == fnan:
-            return nan
-
-        obj = Expr.__new__(cls)
-        obj._mpf_ = _mpf_
-        obj._prec = prec
-        return obj
+        return Float._new(_mpf_, prec, zero=False)
 
     @classmethod
-    def _new(cls, _mpf_, _prec):
+    def _new(cls, _mpf_, _prec, zero=True):
         # special cases
-        if _mpf_ == fzero:
+        if zero and _mpf_ == fzero:
             return Integer(0)  # XXX this is different from Float which gives 0.0
         if _mpf_ == fnan:
             return nan
