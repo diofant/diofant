@@ -64,33 +64,6 @@ def comp(z1, z2, tol=None):
     return diff <= tol
 
 
-def mpf_norm(mpf, prec):
-    """Return the mpf tuple normalized appropriately for the indicated
-    precision after doing a check to see if zero should be returned or
-    not when the mantissa is 0. ``mpmath.libmp.normalize`` always assumes that this
-    is zero, but it may not be since the mantissa for mpf's values "+inf",
-    "-inf" and "nan" have a mantissa of zero, too.
-
-    Note: this is not intended to validate a given mpf tuple, so sending
-    mpf tuples that were not created by mpmath may produce bad results. This
-    is only a wrapper to ``mpmath.libmp.normalize`` which provides the check
-    for non-zero mpfs that have a 0 for the mantissa.
-
-    """
-    sign, man, expt, bc = mpf
-    if not man:
-        # hack for normalize which does not do this;
-        # it assumes that if man is zero the result is 0
-        # (see issue sympy/sympy#6639)
-        if not bc:
-            return fzero
-        # don't change anything; this should already
-        # be a well formed mpf tuple
-        return mpf
-    rv = mpmath.mpf((sign, man, expt, bc), prec=prec, rounding=rnd)
-    return rv._mpf_
-
-
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
@@ -544,7 +517,7 @@ class Float(Number):
             return nan
 
         obj = Expr.__new__(cls)
-        obj._mpf_ = mpf_norm(_mpf_, _prec)
+        obj._mpf_ = mpmath.mpf(_mpf_, prec=_prec, rounding=rnd)._mpf_
         obj._prec = _prec
         return obj
 
@@ -563,7 +536,7 @@ class Float(Number):
         return Integer(to_int(mpf_ceil(self._mpf_, self._prec)))
 
     def _as_mpf_val(self, prec):
-        return mpf_norm(self._mpf_, prec)
+        return mpmath.mpf(self._mpf_, prec=prec, rounding=rnd)._mpf_
 
     def _as_mpf_op(self, prec):
         return self._mpf_, max(prec, self._prec)
