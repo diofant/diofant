@@ -526,10 +526,10 @@ class Float(Number):
 
         prec = dps_to_prec(dps)
 
-        if isinstance(num, decimal.Decimal):
-            _mpf_ = from_Decimal(num, prec, rnd)
-        elif isinstance(num, Number):
+        if isinstance(num, Number):
             _mpf_ = num._as_mpf_val(prec)
+        elif isinstance(num, decimal.Decimal):
+            _mpf_ = from_Decimal(num, prec, rnd)
         else:
             _mpf_ = mpmath.mpf(num, prec=prec, rounding=rnd)._mpf_
 
