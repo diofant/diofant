@@ -91,15 +91,6 @@ def mpf_norm(mpf, prec):
     return rv._mpf_
 
 
-def _str_to_Decimal_dps(s):
-    """Convert a string to pair of a Decimal instance and its precision."""
-    try:
-        num = decimal.Decimal(s)
-    except decimal.InvalidOperation as exc:
-        raise ValueError(f'string-float not recognized: {s}') from exc
-    return num, len(num.as_tuple().digits)
-
-
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
@@ -524,7 +515,12 @@ class Float(Number):
             if isinstance(num, Float):
                 return num
             if isinstance(num, (str, numbers.Integral)):
-                num, dps = _str_to_Decimal_dps(str(num))
+                s = str(num)
+                try:
+                    num = decimal.Decimal(s)
+                except decimal.InvalidOperation as exc:
+                    raise ValueError(f'string-float not recognized: {num}') from exc
+                dps = len(num.as_tuple().digits)
             else:
                 dps = 15
 
