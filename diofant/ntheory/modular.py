@@ -1,4 +1,3 @@
-import functools
 import math
 
 import mpmath
@@ -215,7 +214,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         a1, m1 = c1
         a2, m2 = c2
         a, b, c = m1, a2 - a1, m2
-        g = functools.reduce(math.gcd, [a, b, c])
+        g = math.gcd(a, b, c)
         a, b, c = (i//g for i in [a, b, c])
         if a != 1:
             inv_a, _, g = igcdex(a, c)

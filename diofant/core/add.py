@@ -709,11 +709,11 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = functools.reduce(math.gcd, [t[0] for t in terms], 0)
-            dlcm = functools.reduce(math.lcm, [t[1] for t in terms], 1)
+            ngcd = math.gcd(*(t[0] for t in terms))
+            dlcm = math.lcm(*(t[1] for t in terms))
         else:
-            ngcd = functools.reduce(math.gcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = functools.reduce(math.lcm, [t[1] for t in terms if t[1]], 1)
+            ngcd = math.gcd(*(t[0] for t in terms if t[1]))
+            dlcm = math.lcm(*(t[1] for t in terms if t[1]))
 
         if ngcd == dlcm == 1:
             return Integer(1), self
@@ -797,7 +797,7 @@ class Add(AssocOp):
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = functools.reduce(math.gcd, [r[q] for r in rads], 0)
+                    g = math.gcd(*(r[q] for r in rads))
                     if g != 1:
                         G.append(root(g, q))
                 if G:

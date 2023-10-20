@@ -291,7 +291,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
             # from this list.
             fns = [x[1] for x in val]
             val = [x[0] for x in val]
-            gcd = functools.reduce(math.gcd, val)
+            gcd = math.gcd(*val)
             terms = [(fn, v/gcd) for (fn, v) in zip(fns, val)]
             fs = set(funcs + fns)
             for c, s, t in ([cos, sin, tan], [cosh, sinh, tanh]):

@@ -728,7 +728,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # anyway, even if the result might potentially be wrong.
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
-        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for i in u])
+        n = math.lcm(*(i.as_numer_denom()[1] for i in u))
         u *= Integer(n)
         terms = [DE.T[i] for i in DE.E_K] + DE.L_args
         ans = list(zip(terms, u))
@@ -831,7 +831,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
-        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
+        n = math.lcm(*(i.as_numer_denom()[1] for _, i in residueterms))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
         return Integer(n), u
 
@@ -847,8 +847,8 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
                          f"'base', 'auto'}}, not {case}")
 
-    common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1]
-                                               for i in [j for _, j in residueterms]] + [n], Integer(1))
+    common_denom = math.lcm(*([i.as_numer_denom()[1]
+                               for i in [j for _, j in residueterms]] + [n]))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

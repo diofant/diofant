@@ -877,7 +877,7 @@ def _diop_quadratic(var, coeff, t):
                     sol.add(tuple(s))
 
             else:
-                L = math.lcm(*[_.denominator for _ in P[:4] + Q[:2]])
+                L = math.lcm(*(_.denominator for _ in P[:4] + Q[:2]))
 
                 k = 1
 

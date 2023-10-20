@@ -24,7 +24,6 @@ will return the fraction (fa, fd). Other variable names probably come
 from the names used in Bronstein's book.
 """
 
-import functools
 import math
 
 from ..abc import z
@@ -93,8 +92,7 @@ def integer_powers(exprs):
 
     newterms = {}
     for term, val in terms.items():
-        common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
-                                                   val])
+        common_denom = math.lcm(*(i.as_numer_denom()[1] for _, i in val))
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in val]
         newterms[newterm] = newmults
