@@ -1,7 +1,5 @@
 import math
 
-import mpmath
-
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from .primetest import isprime
@@ -308,20 +306,18 @@ def integer_rational_reconstruction(c, m, domain):
     * :cite:`Wang1981partial`
 
     """
-    if c < 0:
+    while c < 0:
         c += m
 
     r0, s0 = m, domain.zero
     r1, s1 = c, domain.one
 
-    bound = mpmath.sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
-
-    while r1 >= bound:
+    while r1 > 0 and 2*r1**2 >= m:
         quo = r0 // r1
         r0, r1 = r1, r0 - quo*r1
         s0, s1 = s1, s0 - quo*s1
 
-    if abs(s1) >= bound:
+    if 2*s1**2 >= m:
         return
 
     if s1 < 0:
