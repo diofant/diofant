@@ -4,6 +4,7 @@ import functools
 import math
 
 import mpmath
+from mpmath.libmp import NoConvergence
 
 from ..core import (Add, Basic, Expr, Integer, Mul, Tuple, expand_log,
                     expand_power_exp, oo, preorder_traversal)
@@ -2000,10 +2001,9 @@ class Poly(Expr):
             # so we make sure this convention holds here, too.
             roots = list(map(sympify,
                              sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
-        except mpmath.libmp.NoConvergence as exc:
-            raise mpmath.libmp.NoConvergence('convergence to root failed; try '
-                                             f'n < {n} or maxsteps > '
-                                             f'{maxsteps}') from exc
+        except NoConvergence as exc:
+            raise NoConvergence(f'convergence to root failed; try n < {n}'
+                                f' or maxsteps > {maxsteps}') from exc
         finally:
             mpmath.mp.dps = dps
 

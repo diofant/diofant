@@ -1,6 +1,6 @@
 import math
 
-from mpmath.libmp import sqrtrem as mpmath_sqrtrem
+from mpmath.libmp import sqrtrem
 
 from ..logic import true
 from ..utilities import sift
@@ -41,7 +41,7 @@ def integer_nthroot(y, n):
     if n == 1:
         return y, True
     if n == 2:
-        x, rem = mpmath_sqrtrem(y)
+        x, rem = sqrtrem(y)
         return int(x), not rem
     if n > y:
         return 1, False
