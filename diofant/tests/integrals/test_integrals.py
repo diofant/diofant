@@ -1526,3 +1526,7 @@ def test_sympyissue_25521():
     r = integrate(e, s)
     assert not r.has(Integral)
     assert r.diff(s).simplify() == e
+
+
+def test_sympyissue_25806():
+    assert integrate(5/(x*(x - 5)), (x, y, oo)) == log(y) - log(y - 5)

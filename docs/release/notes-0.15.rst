@@ -71,3 +71,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25723`: GCD missing polynomial factor
 * :sympyissue:`25738`: Incorrect result of reduce_inequalities involving pi and abs
 * :sympyissue:`25697`: can not reduce log inequalities
+* :sympyissue:`25806`: Integrate a simple function
