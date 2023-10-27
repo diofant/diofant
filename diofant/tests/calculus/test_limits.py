@@ -1096,3 +1096,7 @@ def test_sympyissue_25681():
     e = x/abs(sqrt(x**2 - 1))
     assert limit(e, x, 1, dir=Reals) == oo
     assert limit(e, x, -1, dir=Reals) == -oo
+
+
+def test_sympyissue_25833():
+    assert limit(atan(log(2**x)/log(2*x)), x, oo) == pi/2
