@@ -73,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25697`: can not reduce log inequalities
 * :sympyissue:`25806`: Integrate a simple function
 * :sympyissue:`25833`: Limit at infinity of arctan(expression that goes to infinity) erroneously gives NaN or it doesn't compute.
+* :sympyissue:`25882`: IndexError when run classify_ode
