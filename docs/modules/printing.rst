@@ -293,8 +293,6 @@ This module generates readable representations of Diofant expressions.
 
 .. autofunction:: sstr
 
-.. autofunction:: sstrrepr
-
 Implementation - Helper Classes/Functions
 -----------------------------------------
 

@@ -24,7 +24,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('import diofant')
     app.run_cell('from diofant import Float, Fraction, Symbol, QQ, '
                  'factorial, sqrt, init_printing, pretty, '
-                 'Matrix, sstrrepr')
+                 'Matrix')
 
     # Test IntegerDivisionWrapper
 

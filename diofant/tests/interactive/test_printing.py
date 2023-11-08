@@ -32,3 +32,7 @@ def test_init_printing(capsys):
         """\
  2    2        \n\
 x  + y  + x + y\n"""
+
+    init_printing(pretty_print=False, no_global=True)
+    sys.displayhook(['a', 'b'])
+    assert capsys.readouterr().out == "['a', 'b']\n"

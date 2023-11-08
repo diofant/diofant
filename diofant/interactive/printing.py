@@ -3,8 +3,13 @@ import fractions
 import os
 import sys
 
-from ..printing import latex, pretty, sstrrepr
+from ..printing import StrPrinter, latex, pretty
 from ..printing.printer import Printer
+
+
+class _StrReprPrinter(StrPrinter):
+    def _print_str(self, expr):
+        return repr(expr)
 
 
 def _init_python_printing(stringify_func):
@@ -99,6 +104,9 @@ def init_printing(no_global=False, pretty_print=None, **settings):
         unicode_term = True
     if settings.get('use_unicode') is None:
         settings['use_unicode'] = bool(unicode_term)
+
+    def sstrrepr(expr, **kwargs):
+        return _StrReprPrinter().doprint(expr)
 
     if ip:
         stringify_func = pretty if pretty_print is not False else sstrrepr
