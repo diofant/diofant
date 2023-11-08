@@ -1061,7 +1061,10 @@ def test_sympyissue_24127():
 
 
 def test_sympyissue_24210():
-    assert limit(exp(x)/((1 + 1/x)**(x**2)), x, oo) == sqrt(E)
+    # also sympy/sympy#25885
+    expr = exp(x)/((1 + 1/x)**(x**2))
+    assert limit(expr, x, oo) == sqrt(E)
+    assert limit(1/expr, x, oo) == 1/sqrt(E)
 
 
 def test_sympyissue_24225():
