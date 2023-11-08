@@ -1530,3 +1530,13 @@ def test_sympyissue_25521():
 
 def test_sympyissue_25806():
     assert integrate(5/(x*(x - 5)), (x, y, oo)) == log(y) - log(y - 5)
+
+
+def test_sympyissue_25886():
+    expr = (1 - x)*exp(0.937098661j*x)
+    res = (-exp(0.93709866100000005*I*y)*(1.0671234968289001*I*y -
+                                          1.1387525574843396 -
+                                          1.0671234968289001*I) -
+           1.1387525574843396*exp(0.93709866100000005*I))
+
+    assert integrate(expr, (x, y, 1)) == res
