@@ -11,11 +11,7 @@ def _init_python_printing(stringify_func):
     """Setup printing in Python interactive session."""
 
     def _displayhook(arg):
-        """Python's pretty-printer display hook.
-
-        This function was adapted from PEP 217.
-
-        """
+        """Python's pretty-printer display hook."""
         if arg is not None:
             builtins._ = None
             if isinstance(arg, str):
