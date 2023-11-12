@@ -77,3 +77,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25882`: IndexError when run classify_ode
 * :sympyissue:`25885`: Wrong result for a limit
 * :sympyissue:`25886`: CeortionError in integrate()
+* :sympyissue:`25896`: ratint(e,x).diff().equals(e) is not always True (terms lost)
