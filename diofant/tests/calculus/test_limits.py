@@ -1061,7 +1061,10 @@ def test_sympyissue_24127():
 
 
 def test_sympyissue_24210():
-    assert limit(exp(x)/((1 + 1/x)**(x**2)), x, oo) == sqrt(E)
+    # also sympy/sympy#25885
+    expr = exp(x)/((1 + 1/x)**(x**2))
+    assert limit(expr, x, oo) == sqrt(E)
+    assert limit(1/expr, x, oo) == 1/sqrt(E)
 
 
 def test_sympyissue_24225():
@@ -1096,3 +1099,7 @@ def test_sympyissue_25681():
     e = x/abs(sqrt(x**2 - 1))
     assert limit(e, x, 1, dir=Reals) == oo
     assert limit(e, x, -1, dir=Reals) == -oo
+
+
+def test_sympyissue_25833():
+    assert limit(atan(log(2**x)/log(2*x)), x, oo) == pi/2

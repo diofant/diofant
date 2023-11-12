@@ -21,6 +21,7 @@ Compatibility breaks
 * Removed support for CPython 3.10, see :pull:`1344`.
 * Removed ``rcall()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`1346`.
 * Removed ``method`` argument of :func:`~diofant.functions.special.bessel.jn_zeros`, see :pull:`1352`.
+* Removed ``sstrrepr()`` function, see :pull:`1362`.
 
 Minor changes
 =============
@@ -71,3 +72,8 @@ These Sympy issues also were addressed:
 * :sympyissue:`25723`: GCD missing polynomial factor
 * :sympyissue:`25738`: Incorrect result of reduce_inequalities involving pi and abs
 * :sympyissue:`25697`: can not reduce log inequalities
+* :sympyissue:`25806`: Integrate a simple function
+* :sympyissue:`25833`: Limit at infinity of arctan(expression that goes to infinity) erroneously gives NaN or it doesn't compute.
+* :sympyissue:`25882`: IndexError when run classify_ode
+* :sympyissue:`25885`: Wrong result for a limit
+* :sympyissue:`25886`: CeortionError in integrate()
