@@ -79,3 +79,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25886`: CeortionError in integrate()
 * :sympyissue:`25896`: ratint(e,x).diff().equals(e) is not always True (terms lost)
 * :sympyissue:`25899`: surprising error message with Poly('a-a')
+* :sympyissue:`23843`: Asymptotic series for atan/acot functions shifted to their branch cuts gives wrong answer

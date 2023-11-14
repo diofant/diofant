@@ -983,6 +983,10 @@ def test_acot_rewrite():
     assert acot(x).rewrite(acsc) == x*(-acsc(sqrt((x**2 + 1)/x**2)) + pi/2)*sqrt(x**(-2))
 
 
+def test_acot_series():
+    assert acot(x).series(x) == pi/2 - x + x**3/3 - x**5/5 + O(x**6)
+
+
 def test_attributes():
     assert sin(x).args == (x,)
 
