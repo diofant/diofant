@@ -9,9 +9,9 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Symbol, acos, acosh, acoth, arg, asin, atan, besselk,
                      binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
                      erf, erfc, erfi, exp, factorial, false, floor, gamma,
-                     integrate, limit, log, nan, oo, pi, polygamma, root, sign,
-                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
-                     true)
+                     integrate, limit, log, lowergamma, nan, oo, pi, polygamma,
+                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
+                     symbols, tan, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -478,6 +478,15 @@ def test_factorial():
     assert limit(f, x, -oo) == factorial(-oo)
     assert (limit(f, x, x**2) - factorial(x**2)).simplify() == 0
     assert (limit(f, x, -x**2) - factorial(-x**2)).simplify() == 0
+
+
+def test_lowergamma_at_origin():
+    assert limit(lowergamma(a, x), a, 0) == oo
+    assert limit(lowergamma(a, x), a, 0, dir=1) == -oo
+    assert limit(lowergamma(I*a, x), a, 0) == -oo*I
+    assert limit(lowergamma(I*a, x), a, 0, dir=1) == oo*I
+    assert limit(lowergamma(a, 1), a, 0) == oo
+    assert limit(x*lowergamma(x, 1)/gamma(x + 1), x, 0) == 1
 
 
 def test_sympyissue_6560():
