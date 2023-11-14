@@ -2,8 +2,8 @@
 
 import unicodedata
 
-from ...core.alphabets import greeks
-from ..conventions import split_super_sub
+from ..core.alphabets import greeks
+from .conventions import split_super_sub
 
 
 # first, setup unicodedate environment

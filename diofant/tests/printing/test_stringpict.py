@@ -1,6 +1,6 @@
 from diofant import cos, pretty, sin
 from diofant.abc import x
-from diofant.printing.pretty.pretty import PrettyPrinter
+from diofant.printing.pretty import PrettyPrinter
 
 
 __all__ = ()

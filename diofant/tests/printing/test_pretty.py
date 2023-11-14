@@ -24,8 +24,8 @@ from diofant import (FF, QQ, RR, ZZ, Add, Adjoint, And, Basic, Chi, Ci,
 from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
                          x, y, z)
 from diofant.core.trace import Tr
-from diofant.printing.pretty import pretty as xpretty
-from diofant.printing.pretty.pretty_symbology import U, xobj
+from diofant.printing import pretty as xpretty
+from diofant.printing.pretty_symbology import U, xobj
 from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
                             MutableDenseNDimArray, MutableSparseNDimArray,
                             tensorproduct)
