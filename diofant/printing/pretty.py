@@ -1,17 +1,17 @@
 import inspect
 import itertools
 
-from ...core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
-from ...core.function import _coeff_isneg
-from ...logic import true
-from ...sets import Reals
-from ...utilities import default_sort_key, group
-from ..conventions import requires_partial
-from ..printer import Printer
-from ..str import sstr
+from ..core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
+from ..core.function import _coeff_isneg
+from ..logic import true
+from ..sets import Reals
+from ..utilities import default_sort_key, group
+from .conventions import requires_partial
 from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
                                pretty_symbol, pretty_use_unicode, vobj, xobj,
                                xsym)
+from .printer import Printer
+from .str import sstr
 from .stringpict import prettyForm, stringPict
 
 
@@ -138,7 +138,7 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_Not(self, e):
-        from ...logic import Equivalent, Implies
+        from ..logic import Equivalent, Implies
         if self._use_unicode:
             arg = e.args[0]
             pform = self._print(arg)
@@ -601,7 +601,7 @@ class PrettyPrinter(Printer):
         return D
 
     def _print_MatrixElement(self, expr):
-        from ...matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
@@ -621,7 +621,7 @@ class PrettyPrinter(Printer):
 
     def _print_Transpose(self, expr):
         pform = self._print(expr.arg)
-        from ...matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(expr.arg, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**(prettyForm('T'))
@@ -633,7 +633,7 @@ class PrettyPrinter(Printer):
             dag = prettyForm('\N{DAGGER}')
         else:
             dag = prettyForm('+')
-        from ...matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(expr.arg, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**dag
@@ -644,7 +644,7 @@ class PrettyPrinter(Printer):
 
     def _print_MatMul(self, expr):
         args = list(expr.args)
-        from ...matrices import HadamardProduct, MatAdd
+        from ..matrices import HadamardProduct, MatAdd
         for i, a in enumerate(args):
             if (isinstance(a, (Add, MatAdd, HadamardProduct))
                     and len(expr.args) > 1):
@@ -656,7 +656,7 @@ class PrettyPrinter(Printer):
 
     def _print_MatPow(self, expr):
         pform = self._print(expr.base)
-        from ...matrices import MatrixSymbol
+        from ..matrices import MatrixSymbol
         if not isinstance(expr.base, MatrixSymbol):
             pform = prettyForm(*pform.parens())
         pform = pform**(self._print(expr.exp))
@@ -665,7 +665,7 @@ class PrettyPrinter(Printer):
     _print_MatrixSymbol = _print_Symbol
 
     def _print_NDimArray(self, expr):
-        from ...matrices import ImmutableMatrix
+        from ..matrices import ImmutableMatrix
 
         if expr.rank() == 0:
             return self._print(expr[()])
@@ -987,7 +987,7 @@ class PrettyPrinter(Printer):
         return self._print_Function(e)
 
     def _print_expint(self, e):
-        from ...core import Function
+        from ..core import Function
         if e.args[0].is_Integer and self._use_unicode:
             return self._print_Function(Function(f'E_{e.args[0]}')(e.args[1]))
         return self._print_Function(e)
@@ -1162,9 +1162,9 @@ class PrettyPrinter(Printer):
             else:
                 a.append(item)
 
-        from ...concrete import Product, Sum
-        from ...functions import Piecewise
-        from ...integrals import Integral
+        from ..concrete import Product, Sum
+        from ..functions import Piecewise
+        from ..integrals import Integral
 
         # Convert to pretty forms. Add parens to Add instances if there
         # is more than one term in the numer/denom
@@ -1230,8 +1230,8 @@ class PrettyPrinter(Printer):
         return s
 
     def _print_Pow(self, power):
-        from ...calculus import Limit
-        from ...simplify import fraction
+        from ..calculus import Limit
+        from ..simplify import fraction
         b, e = power.as_base_exp()
         if power.is_commutative and not e.is_Float:
             if e == -1:

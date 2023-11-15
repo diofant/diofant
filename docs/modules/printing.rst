@@ -27,10 +27,10 @@ The main class responsible for printing is ``Printer`` (see also its
 PrettyPrinter Class
 -------------------
 
-The pretty printing subsystem is implemented in ``diofant.printing.pretty.pretty``
+The pretty printing subsystem is implemented in ``diofant.printing.pretty``
 by the ``PrettyPrinter`` class deriving from ``Printer``. It relies on
-the modules ``diofant.printing.pretty.stringPict``, and
-``diofant.printing.pretty.pretty_symbology`` for rendering nice-looking
+the modules ``diofant.printing.stringPict``, and
+``diofant.printing.pretty_symbology`` for rendering nice-looking
 formulas.
 
 The module ``stringPict`` provides a base class ``stringPict`` and a derived
@@ -41,7 +41,7 @@ The module ``pretty_symbology`` provides primitives to construct 2D shapes
 (hline, vline, etc) together with a technique to use unicode automatically
 when possible.
 
-.. automodule:: diofant.printing.pretty.pretty
+.. automodule:: diofant.printing.pretty
    :members:
 
 CCodePrinter
@@ -323,7 +323,7 @@ Precedence
 Pretty-Printing Implementation Helpers
 --------------------------------------
 
-.. module:: diofant.printing.pretty.pretty_symbology
+.. module:: diofant.printing.pretty_symbology
 
 .. autofunction:: U
 .. autofunction:: pretty_use_unicode
@@ -348,7 +348,7 @@ The following functions are for rendering atoms and symbols.
 .. autofunction:: pretty_symbol
 .. autofunction:: annotated
 
-.. automodule:: diofant.printing.pretty.stringpict
+.. automodule:: diofant.printing.stringpict
 
 .. autoclass:: stringPict
    :members:

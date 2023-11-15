@@ -342,6 +342,7 @@ def log_to_real(h, q, x, t):
         C = c.subs({u: r_u}).as_poly(v, extension=False)
         if not C:
             C = d.subs({u: r_u}).as_poly(v, extension=False)
+            d = Integer(0)
 
         R_v_all = roots(C)
         if sum(R_v_all.values()) < C.degree():

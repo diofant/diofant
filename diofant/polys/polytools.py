@@ -60,7 +60,7 @@ class Poly(Expr):
             if isinstance(rep, dict):
                 return cls._from_dict(rep, opt)
             return cls._from_list(list(rep), opt)
-        rep = sympify(rep)
+        rep = sympify(rep, evaluate=False)
 
         if rep.is_Poly:
             return cls._from_poly(rep, opt)

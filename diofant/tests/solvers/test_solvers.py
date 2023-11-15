@@ -6,8 +6,8 @@ from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
                      Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, ordered, pi, posify, re, real_root, root, sec,
-                     sech, simplify, sin, sinh, solve, sqrt, sstr, symbols,
-                     tan, tanh)
+                     sech, simplify, sin, sinh, solve, sqrt, symbols, tan,
+                     tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -513,8 +513,9 @@ def test_solve_transcendental():
 
     # issue sympy/sympy#7602
     a, b = symbols('a, b', extended_real=True, negative=False)
-    assert sstr(solve(Eq(a, 0.5 - cos(pi*b)/2), b)) == \
-        '[{b: -0.318309886183791*acos(-2.0*a + 1.0) + 2.0}, {b: 0.318309886183791*acos(-2.0*a + 1.0)}]'
+    assert solve(Eq(a, 0.5 - cos(pi*b)/2), b,
+                 rational=True) == [{b: acos(-2*a + 1)/pi},
+                                    {b: -acos(-2*a + 1)/pi + 2}]
 
     expr = root(x, 3) - root(x, 5)
     expr1 = root(x, 3, 1) - root(x, 5, 1)

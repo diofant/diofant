@@ -64,7 +64,7 @@ built internally.
 =================
 
 A two-dimensional (2D) textual representation of the expression can be
-obtained with :func:`~diofant.printing.pretty.pretty.pretty`.
+obtained with :func:`~diofant.printing.pretty.pretty`.
 
     >>> pretty(expr)
     '⌠           \n⎮     ___   \n⎮    ╱ 1    \n⎮   ╱  ─  dx\n⎮ ╲╱   x    \n⌡           '
@@ -93,7 +93,7 @@ You can pass ``use_unicode=False`` to use ASCII symbols.
       |
      /
 
-:func:`~diofant.printing.pretty.pretty.pprint` prints the output to
+:func:`~diofant.printing.pretty.pprint` prints the output to
 the screen.
 
     >>> pprint(expr)

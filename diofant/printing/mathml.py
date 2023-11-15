@@ -3,7 +3,7 @@
 from ..core import Mul
 from ..core.function import _coeff_isneg
 from .conventions import requires_partial, split_super_sub
-from .pretty.pretty_symbology import greek_unicode
+from .pretty_symbology import greek_unicode
 from .printer import Printer
 
 

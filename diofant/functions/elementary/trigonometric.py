@@ -1852,8 +1852,11 @@ class atan(InverseTrigonometricFunction):
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
     def _eval_aseries(self, n, args0, x, logx):
-        if args0[0] == oo:
-            return (pi/2 - atan(1/self.args[0]))._eval_nseries(x, n, logx)
+        from .complexes import sign
+
+        if args0[0] in (oo, -oo):
+            return (sign(args0[0])*pi/2 -
+                    atan(1/self.args[0]))._eval_nseries(x, n, logx)
         return super()._eval_aseries(n, args0, x, logx)
 
     def inverse(self, argindex=1):
@@ -1989,8 +1992,8 @@ class acot(InverseTrigonometricFunction):
         return self.args[0].is_extended_real
 
     def _eval_aseries(self, n, args0, x, logx):
-        if args0[0] == oo:
-            return (pi/2 - acot(1/self.args[0]))._eval_nseries(x, n, logx)
+        if args0[0] in (oo, -oo):
+            return atan(1/self.args[0])._eval_nseries(x, n, logx)
         return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_rewrite_as_log(self, x, **kwargs):

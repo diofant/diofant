@@ -2372,9 +2372,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def __abs__(self):
         return Integer(1)
 
-    def _eval_evalf(self, prec):
-        return self
-
     def _eval_conjugate(self):
         return -I
 

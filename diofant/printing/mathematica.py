@@ -4,7 +4,7 @@ import types
 
 from ..sets import Reals
 from .codeprinter import CodePrinter
-from .precedence import precedence
+from .precedence import PRECEDENCE, precedence
 from .str import StrPrinter
 
 
@@ -132,6 +132,9 @@ class MCodePrinter(CodePrinter):
                 return f"{mfunc}[{self.stringify(expr.args, ', ')}]"
         return fname + f"[{self.stringify(expr.args, ', ')}]"
     _print_MinMaxBase = _print_Function
+
+    def _print_lowergamma(self, expr):
+        return f"{self.parenthesize(expr.rewrite('uppergamma'), PRECEDENCE['Add'])}"
 
     def _print_atan2(self, expr):
         return f"ArcTan[{', '.join(map(self.doprint, reversed(expr.args)))}]"

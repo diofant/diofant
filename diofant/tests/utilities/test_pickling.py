@@ -45,10 +45,10 @@ from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
 from diofant.polys.polyoptions import Options
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
-from diofant.printing.pretty.pretty import PrettyPrinter
-from diofant.printing.pretty.stringpict import prettyForm, stringPict
+from diofant.printing.pretty import PrettyPrinter
 from diofant.printing.printer import Printer
 from diofant.printing.python import PythonPrinter
+from diofant.printing.stringpict import prettyForm, stringPict
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
 

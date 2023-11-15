@@ -94,7 +94,7 @@ class stringPict:
         Examples
         ========
 
-        >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
+        >>> from diofant.printing.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict('10').right(' + ', stringPict('1\r-\r2', 1))[0])
              1
@@ -157,7 +157,7 @@ class stringPict:
         Examples
         ========
 
-        >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
+        >>> from diofant.printing.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict('x+3').below(stringPict.LINE, '3')[0])
         x+3
