@@ -1352,24 +1352,24 @@ def hessian(f, varlist, constraints=[]):
     >>> f = Function('f')(x, y)
     >>> g1 = Function('g')(x, y)
     >>> g2 = x**2 + 3*y
-    >>> pprint(hessian(f, (x, y), [g1, g2]), use_unicode=False)
-    [                   d               d            ]
-    [     0        0    --(g(x, y))     --(g(x, y))  ]
-    [                   dx              dy           ]
-    [                                                ]
-    [     0        0        2*x              3       ]
-    [                                                ]
-    [                     2               2          ]
-    [d                   d               d           ]
-    [--(g(x, y))  2*x   ---(f(x, y))   -----(f(x, y))]
-    [dx                   2            dy dx         ]
-    [                   dx                           ]
-    [                                                ]
-    [                     2               2          ]
-    [d                   d               d           ]
-    [--(g(x, y))   3   -----(f(x, y))   ---(f(x, y)) ]
-    [dy                dy dx              2          ]
-    [                                   dy           ]
+    >>> pprint(hessian(f, (x, y), [g1, g2]))
+    ⎡                   ∂               ∂            ⎤
+    ⎢     0        0    ──(g(x, y))     ──(g(x, y))  ⎥
+    ⎢                   ∂x              ∂y           ⎥
+    ⎢                                                ⎥
+    ⎢     0        0        2⋅x              3       ⎥
+    ⎢                                                ⎥
+    ⎢                     2               2          ⎥
+    ⎢∂                   ∂               ∂           ⎥
+    ⎢──(g(x, y))  2⋅x   ───(f(x, y))   ─────(f(x, y))⎥
+    ⎢∂x                   2            ∂y ∂x         ⎥
+    ⎢                   ∂x                           ⎥
+    ⎢                                                ⎥
+    ⎢                     2               2          ⎥
+    ⎢∂                   ∂               ∂           ⎥
+    ⎢──(g(x, y))   3   ─────(f(x, y))   ───(f(x, y)) ⎥
+    ⎢∂y                ∂y ∂x              2          ⎥
+    ⎣                                   ∂y           ⎦
 
     References
     ==========

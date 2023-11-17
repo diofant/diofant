@@ -1942,27 +1942,24 @@ def odesimp(eq, func, order, constants, hint):
     >>> eq = dsolve(x*f(x).diff(x) - f(x) - x*sin(f(x)/x), f(x),
     ...             hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral',
     ...             simplify=False)
-    >>> pprint(eq, wrap_line=False, use_unicode=False)
-                            x
-                           ----
-                           f(x)
-                             /
-                            |
-                            |   /        1   \
-                            |  -|u2 + -------|
-                            |   |        /1 \|
-                            |   |     sin|--||
-                            |   \        \u2//
-    log(f(x)) = log(C1) +   |  ---------------- d(u2)
-                            |          2
-                            |        u2
-                            |
-                           /
+    >>> pprint(eq, wrap_line=False)
+                           x
+                          ────
+                          f(x)
+                           ⌠
+                           ⎮    ⎛        1   ⎞
+                           ⎮   -⎜u₂ + ───────⎟
+                           ⎮    ⎜        ⎛1 ⎞⎟
+                           ⎮    ⎜     sin⎜──⎟⎟
+                           ⎮    ⎝        ⎝u₂⎠⎠
+    log(f(x)) = log(C₁) +  ⎮   ──────────────── d(u₂)
+                           ⎮           2
+                           ⎮         u₂
+                           ⌡
 
     >>> pprint(odesimp(eq, f(x), 1, {C1},
-    ...                hint='1st_homogeneous_coeff_subs_indep_div_dep'),
-    ...        use_unicode=False)
-    f(x) = 2*x*atan(C1*x)
+    ...                hint='1st_homogeneous_coeff_subs_indep_div_dep'))
+    f(x) = 2⋅x⋅atan(C₁⋅x)
 
     """
     x = func.args[0]
@@ -2625,12 +2622,12 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     C0 + 2*C1 + C2
     >>> constant_renumber(C0 + 2*C1 + C2, 'C', 0, 1)
     C1 + 3*C2
-    >>> pprint(C2 + C1*x + C3*x**2, use_unicode=False)
+    >>> pprint(C2 + C1*x + C3*x**2)
                     2
-    C1*x + C2 + C3*x
-    >>> pprint(constant_renumber(C2 + C1*x + C3*x**2, 'C', 1, 3), use_unicode=False)
+    C₁⋅x + C₂ + C₃⋅x
+    >>> pprint(constant_renumber(C2 + C1*x + C3*x**2, 'C', 1, 3))
                     2
-    C1 + C2*x + C3*x
+    C₁ + C₂⋅x + C₃⋅x
 
     """
     if type(expr) in (set, list, tuple):
@@ -2734,14 +2731,12 @@ def ode_1st_exact(eq, func, order, match):
         >>> x0, y0, C1 = symbols('x0 y0 C1')
         >>> P, Q, F = map(Function, ['P', 'Q', 'F'])
         >>> pprint(Eq(Eq(F(x, y), Integral(P(t, y), (t, x0, x)) +
-        ...              Integral(Q(x0, t), (t, y0, y))), C1), use_unicode=False)
-                    x                y
-                    /                /
-                   |                |
-        F(x, y) =  |  P(t, y) dt +  |  Q(x0, t) dt = C1
-                   |                |
-                  /                /
-                  x0               y0
+        ...              Integral(Q(x0, t), (t, y0, y))), C1))
+                  x               y
+                  ⌠               ⌠
+        F(x, y) = ⎮  P(t, y) dt + ⎮  Q(x₀, t) dt = C₁
+                  ⌡               ⌡
+                  x₀              y₀
 
     Where the first partials of `P` and `Q` exist and are continuous in a
     simply connected region.
@@ -2798,14 +2793,13 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     ========
 
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
-    ...               hint='1st_homogeneous_coeff_best', simplify=False),
-    ...        use_unicode=False)
-                             /    2    \
-                             | 3*x     |
-                          log|----- + 1|
-                             | 2       |
-                             \f (x)    /
-    log(f(x)) = log(C1) - --------------
+    ...               hint='1st_homogeneous_coeff_best', simplify=False))
+                             ⎛    2    ⎞
+                             ⎜ 3⋅x     ⎟
+                          log⎜───── + 1⎟
+                             ⎜ 2       ⎟
+                             ⎝f (x)    ⎠
+    log(f(x)) = log(C₁) - ──────────────
                                 3
 
     References
@@ -2862,23 +2856,20 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     Q(x, f(x)) f'(x) = 0`, then the general solution is::
 
         >>> genform = g(f(x)/x) + h(f(x)/x)*f(x).diff(x)
-        >>> pprint(genform, use_unicode=False)
-         /f(x)\    /f(x)\ d
-        g|----| + h|----|*--(f(x))
-         \ x  /    \ x  / dx
+        >>> pprint(genform)
+         ⎛f(x)⎞    ⎛f(x)⎞ d
+        g⎜────⎟ + h⎜────⎟⋅──(f(x))
+         ⎝ x  ⎠    ⎝ x  ⎠ dx
         >>> pprint(dsolve(genform, f(x),
-        ...               hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'),
-        ...        use_unicode=False)
-                       f(x)
-                       ----
-                        x
-                         /
-                        |
-                        |       -h(u1)
-        log(x) = C1 +   |  ---------------- d(u1)
-                        |  u1*h(u1) + g(u1)
-                        |
-                       /
+        ...               hint='1st_homogeneous_coeff_subs_dep_div_indep_Integral'))
+                      f(x)
+                      ────
+                       x
+                       ⌠
+                       ⎮       -h(u₁)
+        log(x) = C₁ +  ⎮   ──────────────── d(u₁)
+                       ⎮   u₁⋅h(u₁) + g(u₁)
+                       ⌡
 
     Where `u_1 h(u_1) + g(u_1) \ne 0` and `x \ne 0`.
 
@@ -2893,13 +2884,13 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
 
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ...               hint='1st_homogeneous_coeff_subs_dep_div_indep',
-    ...               simplify=False), use_unicode=False)
-                          /          3   \
-                          |3*f(x)   f (x)|
-                       log|------ + -----|
-                          |  x         3 |
-                          \           x  /
-    log(x) = log(C1) - -------------------
+    ...               simplify=False))
+                          ⎛          3   ⎞
+                          ⎜3⋅f(x)   f (x)⎟
+                       log⎜────── + ─────⎟
+                          ⎜  x         3 ⎟
+                          ⎝           x  ⎠
+    log(x) = log(C₁) - ───────────────────
                                 3
 
     References
@@ -2950,25 +2941,22 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     Q(x, f(x)) f'(x) = 0`, then the general solution is:
 
     >>> genform = g(x/f(x)) + h(x/f(x))*f(x).diff(x)
-    >>> pprint(genform, use_unicode=False)
-     / x  \    / x  \ d
-    g|----| + h|----|*--(f(x))
-     \f(x)/    \f(x)/ dx
+    >>> pprint(genform)
+     ⎛ x  ⎞    ⎛ x  ⎞ d
+    g⎜────⎟ + h⎜────⎟⋅──(f(x))
+     ⎝f(x)⎠    ⎝f(x)⎠ dx
     >>> pprint(dsolve(genform, f(x),
-    ...               hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'),
-    ...        use_unicode=False)
-              x
-             ----
-             f(x)
-               /
-              |
-              |      -g(u2)
-              |  ---------------- d(u2)
-              |  u2*g(u2) + h(u2)
-              |
-             /
+    ...               hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral'))
+             x
+            ────
+            f(x)
+             ⌠
+             ⎮       -g(u₂)
+             ⎮   ──────────────── d(u₂)
+             ⎮   u₂⋅g(u₂) + h(u₂)
+             ⌡
     <BLANKLINE>
-    f(x) = E                           *C1
+    f(x) = ℯ                           ⋅C₁
 
     Where `u_2 g(u_2) + h(u_2) \ne 0` and `f(x) \ne 0`.
 
@@ -2983,13 +2971,13 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
 
     >>> pprint(dsolve(2*x*f(x) + (x**2 + f(x)**2)*f(x).diff(x), f(x),
     ...               hint='1st_homogeneous_coeff_subs_indep_div_dep',
-    ...               simplify=False), use_unicode=False)
-                             /    2    \
-                             | 3*x     |
-                          log|----- + 1|
-                             | 2       |
-                             \f (x)    /
-    log(f(x)) = log(C1) - --------------
+    ...               simplify=False))
+                             ⎛    2    ⎞
+                             ⎜ 3⋅x     ⎟
+                          log⎜───── + 1⎟
+                             ⎜ 2       ⎟
+                             ⎝f (x)    ⎠
+    log(f(x)) = log(C₁) - ──────────────
                                 3
 
     References
@@ -3115,28 +3103,24 @@ def ode_1st_linear(eq, func, order, match):
 
         >>> P, Q = map(Function, ['P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x))
-        >>> pprint(genform, use_unicode=False)
+        >>> pprint(genform)
                     d
-        P(x)*f(x) + --(f(x)) = Q(x)
+        P(x)⋅f(x) + ──(f(x)) = Q(x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='1st_linear_Integral'), use_unicode=False)
-                            /       /                   \
-                            |      |                    |
-                   /        |      |    /               |
-                  |         |      |   |                |
-                - | P(x) dx |      |   | P(x) dx        |
-                  |         |      |   |                |
-                 /          |      |  /                 |
-        f(x) = E           *|C1 +  | E          *Q(x) dx|
-                            |      |                    |
-                            \     /                     /
+        >>> pprint(dsolve(genform, f(x), hint='1st_linear_Integral'))
+                           ⎛     ⌠                   ⎞
+                 ⌠         ⎜     ⎮  ⌠                ⎟
+                -⎮ P(x) dx ⎜     ⎮  ⎮ P(x) dx        ⎟
+                 ⌡         ⎜     ⎮  ⌡                ⎟
+        f(x) = ℯ          ⋅⎜C₁ + ⎮ ℯ         ⋅Q(x) dx⎟
+                           ⎝     ⌡                   ⎠
 
     Examples
     ========
 
     >>> pprint(dsolve(Eq(x*diff(f(x), x) - f(x), x**2*sin(x)),
-    ...               f(x), '1st_linear'), use_unicode=False)
-    f(x) = x*(C1 - cos(x))
+    ...               f(x), '1st_linear'))
+    f(x) = x⋅(C₁ - cos(x))
 
     References
     ==========
@@ -3169,51 +3153,43 @@ def ode_Bernoulli(eq, func, order, match):
 
         >>> P, Q = map(Function, ['P', 'Q'])
         >>> genform = Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)**n)
-        >>> pprint(genform, use_unicode=False)
+        >>> pprint(genform)
                     d                n
-        P(x)*f(x) + --(f(x)) = Q(x)*f (x)
+        P(x)⋅f(x) + ──(f(x)) = Q(x)⋅f (x)
                     dx
-        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'),
-        ...        use_unicode=False, wrap_line=False)
-                                                                                        1
-                                                                                      ------
-                                                                                      -n + 1
-               /                      /               /                             \\
-               |                      |              |                              ||
-               |             /        |              |              /               ||
-               |            |         |              |             |                ||
-               | -(-n + 1)* | P(x) dx |              |   (-n + 1)* | P(x) dx        ||
-               |            |         |              |             |                ||
-               |           /          |              |            /                 ||
-        f(x) = |E                    *|C1 + (n - 1)* | -E                   *Q(x) dx||
-               |                      |              |                              ||
-               \                      \             /                               //
+        >>> pprint(dsolve(genform, f(x), hint='Bernoulli_Integral'), wrap_line=False)
+                                                                                     1
+                                                                                   ──────
+                                                                                   -n + 1
+               ⎛                     ⎛             ⌠                             ⎞⎞
+               ⎜           ⌠         ⎜             ⎮            ⌠                ⎟⎟
+               ⎜ -(-n + 1)⋅⎮ P(x) dx ⎜             ⎮   (-n + 1)⋅⎮ P(x) dx        ⎟⎟
+               ⎜           ⌡         ⎜             ⎮            ⌡                ⎟⎟
+        f(x) = ⎜ℯ                   ⋅⎜C₁ + (n - 1)⋅⎮ -ℯ                  ⋅Q(x) dx⎟⎟
+               ⎝                     ⎝             ⌡                             ⎠⎠
 
     Note that the equation is separable when `n = 1` (see the docstring of
     :py:meth:`~diofant.solvers.ode.ode_separable`).
 
     >>> pprint(dsolve(Eq(f(x).diff(x) + P(x)*f(x), Q(x)*f(x)), f(x),
-    ...               hint='separable_Integral'), use_unicode=False)
-     f(x)
-       /
-      |                /
-      |  1            |
-      |  - dy = C1 +  | (-P(x) + Q(x)) dx
-      |  y            |
-      |              /
-     /
-
+    ...               hint='separable_Integral'))
+    f(x)
+     ⌠
+     ⎮   1           ⌠
+     ⎮   ─ dy = C₁ + ⎮ (-P(x) + Q(x)) dx
+     ⎮   y           ⌡
+     ⌡
 
     Examples
     ========
 
     >>> pprint(dsolve(Eq(x*f(x).diff(x) + f(x), log(x)*f(x)**2),
-    ...               f(x), hint='Bernoulli'), use_unicode=False)
+    ...               f(x), hint='Bernoulli'))
                     1
-    f(x) = -------------------
-             /     log(x)   1\
-           x*|C1 + ------ + -|
-             \       x      x/
+    f(x) = ───────────────────
+             ⎛     log(x)   1⎞
+           x⋅⎜C₁ + ────── + ─⎟
+             ⎝       x      x⎠
 
     References
     ==========
@@ -3246,14 +3222,14 @@ def ode_Riccati_special_minus2(eq, func, order, match):
 
     >>> genform = a*f(x).diff(x) - (b*f(x)**2 + c*f(x)/x + d/x**2)
     >>> sol = dsolve(genform, f(x))
-    >>> pprint(sol, wrap_line=False, use_unicode=False)
-            /                                 /        __________________       \\
-            |           __________________    |       /                2        ||
-            |          /                2     |     \/  4*b*d - (a + c)  *log(x)||
-           -|a + c - \/  4*b*d - (a + c)  *tan|C1 + ----------------------------||
-            \                                 \                 2*a             //
-    f(x) = ------------------------------------------------------------------------
-                                            2*b*x
+    >>> pprint(sol, wrap_line=False)
+            ⎛                                 ⎛        __________________       ⎞⎞
+            ⎜           __________________    ⎜       ╱                2        ⎟⎟
+            ⎜          ╱                2     ⎜     ╲╱  4⋅b⋅d - (a + c)  ⋅log(x)⎟⎟
+           -⎜a + c - ╲╱  4⋅b⋅d - (a + c)  ⋅tan⎜C₁ + ────────────────────────────⎟⎟
+            ⎝                                 ⎝                 2⋅a             ⎠⎠
+    f(x) = ────────────────────────────────────────────────────────────────────────
+                                            2⋅b⋅x
 
     References
     ==========
@@ -3286,34 +3262,28 @@ def ode_Liouville(eq, func, order, match):
 
         >>> genform = Eq(diff(f(x), x, x) + g(f(x))*diff(f(x), x)**2 +
         ...              h(x)*diff(f(x), x), 0)
-        >>> pprint(genform, use_unicode=False)
-                          2                    2
-                /d       \         d          d
-        g(f(x))*|--(f(x))|  + h(x)*--(f(x)) + ---(f(x)) = 0
-                \dx      /         dx           2
+        >>> pprint(genform)
+                          2                     2
+                ⎛d       ⎞         d           d
+        g(f(x))⋅⎜──(f(x))⎟  + h(x)⋅──(f(x)) + ───(f(x)) = 0
+                ⎝dx      ⎠         dx           2
                                               dx
-        >>> pprint(dsolve(genform, f(x), hint='Liouville_Integral'), use_unicode=False)
-                                      f(x)
-                  /                     /
-                 |                     |
-                 |     /               |     /
-                 |    |                |    |
-                 |  - | h(x) dx        |    | g(y) dy
-                 |    |                |    |
-                 |   /                 |   /
-        C1 + C2* | E            dx +   |  E           dy = 0
-                 |                     |
-                /                     /
-        <BLANKLINE>
+        >>> pprint(dsolve(genform, f(x), hint='Liouville_Integral'))
+                                   f(x)
+                ⌠                   ⌠
+                ⎮   ⌠               ⎮    ⌠
+                ⎮  -⎮ h(x) dx       ⎮    ⎮ g(y) dy
+                ⎮   ⌡               ⎮    ⌡
+        C₁ + C₂⋅⎮ ℯ           dx +  ⎮   ℯ          dy = 0
+                ⌡                   ⌡
 
     Examples
     ========
 
     >>> pprint(dsolve(diff(f(x), x, x) + diff(f(x), x)**2/f(x) +
-    ...               diff(f(x), x)/x, f(x), hint='Liouville'),
-    ...        use_unicode=False)
-               ________________           ________________
-    [f(x) = -\/ C1 + C2*log(x) , f(x) = \/ C1 + C2*log(x) ]
+    ...               diff(f(x), x)/x, f(x), hint='Liouville'))
+    ⎡          ________________           ________________⎤
+    ⎣f(x) = -╲╱ C₁ + C₂⋅log(x) , f(x) = ╲╱ C₁ + C₂⋅log(x) ⎦
 
     References
     ==========
@@ -3356,11 +3326,11 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     ========
 
     >>> eq = f(x).diff((x, 2)) + f(x)
-    >>> pprint(dsolve(eq, hint='2nd_power_series_ordinary'), use_unicode=False)
-              / 4    2    \        /   2    \
-              |x    x     |        |  x     |    / 6\
-    f(x) = C2*|-- - -- + 1| + C1*x*|- -- + 1| + O\x /
-              \24   2     /        \  6     /
+    >>> pprint(dsolve(eq, hint='2nd_power_series_ordinary'))
+              ⎛ 4    2    ⎞        ⎛   2    ⎞
+              ⎜x    x     ⎟        ⎜  x     ⎟    ⎛ 6⎞
+    f(x) = C₂⋅⎜── - ── + 1⎟ + C₁⋅x⋅⎜- ── + 1⎟ + O⎝x ⎠
+              ⎝24   2     ⎠        ⎝  6     ⎠
 
     References
     ==========
@@ -3504,19 +3474,17 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     roots, the denominator becomes zero. So if the numerator is not equal to zero,
     a second series solution exists.
 
-
     Examples
     ========
 
     >>> eq = x*(f(x).diff((x, 2))) + 2*(f(x).diff(x)) + x*f(x)
-    >>> pprint(dsolve(eq), use_unicode=False)
-                                  /    6    4    2    \
-                                  |   x    x    x     |
-              /  4    2    \   C1*|- --- + -- - -- + 1|
-              | x    x     |      \  720   24   2     /    / 6\
-    f(x) = C2*|--- - -- + 1| + ------------------------ + O\x /
-              \120   6     /              x
-
+    >>> pprint(dsolve(eq))
+                                  ⎛    6    4    2    ⎞
+                                  ⎜   x    x    x     ⎟
+              ⎛  4    2    ⎞   C₁⋅⎜- ─── + ── - ── + 1⎟
+              ⎜ x    x     ⎟      ⎝  720   24   2     ⎠    ⎛ 6⎞
+    f(x) = C₂⋅⎜─── - ── + 1⎟ + ──────────────────────── + O⎝x ⎠
+              ⎝120   6     ⎠              x
 
     References
     ==========
@@ -3717,10 +3685,9 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
 
     >>> eq = f(x).diff((x, 2))*x**2 - 4*f(x).diff(x)*x + 6*f(x)
     >>> pprint(dsolve(eq, f(x),
-    ...               hint='nth_linear_euler_eq_homogeneous'),
-    ...        use_unicode=False)
+    ...               hint='nth_linear_euler_eq_homogeneous'))
             2
-    f(x) = x *(C1 + C2*x)
+    f(x) = x ⋅(C₁ + C₂⋅x)
 
     References
     ==========
@@ -3945,22 +3912,22 @@ def ode_almost_linear(eq, func, order, match):
 
         >>> k, l = map(Function, ['k', 'l'])
         >>> genform = Eq(f(x)*(l(y).diff(y)) + k(x)*l(y) + g(x), 0)
-        >>> pprint(genform, use_unicode=False)
+        >>> pprint(genform)
              d
-        f(x)*--(l(y)) + g(x) + k(x)*l(y) = 0
+        f(x)⋅──(l(y)) + g(x) + k(x)⋅l(y) = 0
              dy
-        >>> pprint(dsolve(genform, hint='almost_linear'), use_unicode=False)
-                         /     //   -y*g(x)                  \\
-                         |     ||   --------     for k(x) = 0||
-                -y*k(x)  |     ||     f(x)                   ||
-                -------- |     ||                            ||
-                  f(x)   |     ||  y*k(x)                    ||
-        l(y) = E        *|C1 + |<  ------                    ||
-                         |     ||   f(x)                     ||
-                         |     ||-E      *g(x)               ||
-                         |     ||--------------   otherwise  ||
-                         |     ||     k(x)                   ||
-                         \     \\                            //
+        >>> pprint(dsolve(genform, hint='almost_linear'))
+                         ⎛     ⎛⎧   -y⋅g(x)                  ⎞⎞
+                         ⎜     ⎜⎪   ────────     for k(x) = 0⎟⎟
+                -y⋅k(x)  ⎜     ⎜⎪     f(x)                   ⎟⎟
+                ──────── ⎜     ⎜⎪                            ⎟⎟
+                  f(x)   ⎜     ⎜⎪  y⋅k(x)                    ⎟⎟
+        l(y) = ℯ        ⋅⎜C₁ + ⎜⎨  ──────                    ⎟⎟
+                         ⎜     ⎜⎪   f(x)                     ⎟⎟
+                         ⎜     ⎜⎪-ℯ      ⋅g(x)               ⎟⎟
+                         ⎜     ⎜⎪──────────────   otherwise  ⎟⎟
+                         ⎜     ⎜⎪     k(x)                   ⎟⎟
+                         ⎝     ⎝⎩                            ⎠⎠
 
     See Also
     ========
@@ -3973,9 +3940,9 @@ def ode_almost_linear(eq, func, order, match):
     >>> eq = x*d + x*f(x) + 1
     >>> dsolve(eq, f(x), hint='almost_linear')
     Eq(f(x), E**(-x)*(C1 - Ei(x)))
-    >>> pprint(dsolve(eq, f(x), hint='almost_linear'), use_unicode=False)
-            -x
-    f(x) = E  *(C1 - Ei(x))
+    >>> pprint(dsolve(eq, f(x), hint='almost_linear'))
+                -x
+    f(x) = ℯ  ⋅(C₁ - Ei(x))
 
     References
     ==========
@@ -4102,11 +4069,10 @@ def ode_linear_coefficients(eq, func, order, match):
     >>> eq = (x + f(x) + 1)*f(x).diff(x) + (f(x) - 6*x + 1)
     >>> dsolve(eq, hint='linear_coefficients')
     [Eq(f(x), -x - sqrt(C1 + 7*x**2) - 1), Eq(f(x), -x + sqrt(C1 + 7*x**2) - 1)]
-    >>> pprint(dsolve(eq, hint='linear_coefficients'), use_unicode=False)
-                      ___________                     ___________
-                   /         2                     /         2
-    [f(x) = -x - \/  C1 + 7*x   - 1, f(x) = -x + \/  C1 + 7*x   - 1]
-
+    >>> pprint(dsolve(eq, hint='linear_coefficients'))
+    ⎡               ___________                     ___________    ⎤
+    ⎢              ╱         2                     ╱         2     ⎥
+    ⎣f(x) = -x - ╲╱  C₁ + 7⋅x   - 1, f(x) = -x + ╲╱  C₁ + 7⋅x   - 1⎦
 
     References
     ==========
@@ -4133,21 +4099,19 @@ def ode_separable_reduced(eq, func, order, match):
     The general solution is:
 
         >>> genform = f(x).diff(x) + (f(x)/x)*g(x**n*f(x))
-        >>> pprint(genform, use_unicode=False)
-                         / n     \
-        d          f(x)*g\x *f(x)/
-        --(f(x)) + ---------------
+        >>> pprint(genform)
+                         ⎛ n     ⎞
+        d          f(x)⋅g⎝x ⋅f(x)⎠
+        ──(f(x)) + ───────────────
         dx                x
-        >>> pprint(dsolve(genform, hint='separable_reduced'), use_unicode=False)
+        >>> pprint(dsolve(genform, hint='separable_reduced'))
          n
-        x *f(x)
-          /
-         |
-         |         1
-         |    ------------ dy = C1 + log(x)
-         |    y*(n - g(y))
-         |
-         /
+        x ⋅f(x)
+           ⌠
+           ⎮         1
+           ⎮    ──────────── dy = C₁ + log(x)
+           ⎮    y⋅(n - g(y))
+           ⌡
 
     See Also
     ========
@@ -4159,12 +4123,12 @@ def ode_separable_reduced(eq, func, order, match):
     >>> eq = (x - x**2*f(x))*f(x).diff(x) - f(x)
     >>> dsolve(eq, hint='separable_reduced')
     [Eq(f(x), (-sqrt(C1*x**2 + 1) + 1)/x), Eq(f(x), (sqrt(C1*x**2 + 1) + 1)/x)]
-    >>> pprint(dsolve(eq, hint='separable_reduced'), use_unicode=False)
-                 ___________                ___________
-                /     2                    /     2
-            - \/  C1*x  + 1  + 1         \/  C1*x  + 1  + 1
-    [f(x) = --------------------, f(x) = ------------------]
-                     x                           x
+    >>> pprint(dsolve(eq, hint='separable_reduced'))
+    ⎡            ___________                ___________    ⎤
+    ⎢           ╱     2                    ╱     2         ⎥
+    ⎢       - ╲╱  C₁⋅x  + 1  + 1         ╲╱  C₁⋅x  + 1  + 1⎥
+    ⎢f(x) = ────────────────────, f(x) = ──────────────────⎥
+    ⎣                x                           x         ⎦
 
     References
     ==========
@@ -4208,12 +4172,11 @@ def ode_1st_power_series(eq, func, order, match):
     ========
 
     >>> eq = exp(x)*(f(x).diff(x)) - f(x)
-    >>> pprint(dsolve(eq, hint='1st_power_series'), use_unicode=False)
+    >>> pprint(dsolve(eq, hint='1st_power_series'))
                            3       4       5
-                       C1*x    C1*x    C1*x     / 6\
-    f(x) = C1 + C1*x - ----- + ----- + ----- + O\x /
+                       C₁⋅x    C₁⋅x    C₁⋅x     ⎛ 6⎞
+    f(x) = C₁ + C₁⋅x - ───── + ───── + ───── + O⎝x ⎠
                          6       24      60
-
 
     References
     ==========
@@ -4313,10 +4276,9 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
     >>> pprint(dsolve(f(x).diff((x, 4)) + 2*f(x).diff((x, 3)) -
     ...               2*f(x).diff((x, 2)) - 6*f(x).diff(x) + 5*f(x), f(x),
-    ...               hint='nth_linear_constant_coeff_homogeneous'),
-    ...        use_unicode=False)
-            x                -2*x
-    f(x) = E *(C3 + C4*x) + E    *(C1*sin(x) + C2*cos(x))
+    ...               hint='nth_linear_constant_coeff_homogeneous'))
+            x                -2⋅x
+    f(x) = ℯ ⋅(C₃ + C₄⋅x) + ℯ    ⋅(C₁⋅sin(x) + C₂⋅cos(x))
 
     References
     ==========
@@ -4430,12 +4392,11 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
 
     >>> pprint(dsolve(f(x).diff((x, 2)) + 2*f(x).diff(x) + f(x) -
     ...               4*exp(-x)*x**2 + cos(2*x), f(x),
-    ...               hint='nth_linear_constant_coeff_undetermined_coefficients'),
-    ...        use_unicode=False)
-                                           /             4\
-             4*sin(2*x)   3*cos(2*x)    -x |            x |
-    f(x) = - ---------- + ---------- + E  *|C1 + C2*x + --|
-                 25           25           \            3 /
+    ...               hint='nth_linear_constant_coeff_undetermined_coefficients'))
+                                           ⎛             4⎞
+             4⋅sin(2⋅x)   3⋅cos(2⋅x)    -x ⎜            x ⎟
+    f(x) = - ────────── + ────────── + ℯ  ⋅⎜C₁ + C₂⋅x + ──⎟
+                 25           25           ⎝            3 ⎠
 
     References
     ==========
@@ -4736,12 +4697,11 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
 
     >>> pprint(dsolve(f(x).diff((x, 3)) - 3*f(x).diff((x, 2)) +
     ...        3*f(x).diff(x) - f(x) - exp(x)*log(x), f(x),
-    ...        hint='nth_linear_constant_coeff_variation_of_parameters'),
-    ...        use_unicode=False)
-              /                     3                \
-            x |                2   x *(6*log(x) - 11)|
-    f(x) = E *|C1 + C2*x + C3*x  + ------------------|
-              \                            36        /
+    ...        hint='nth_linear_constant_coeff_variation_of_parameters'))
+              ⎛                     3                ⎞
+            x ⎜                2   x ⋅(6⋅log(x) - 11)⎟
+    f(x) = ℯ ⋅⎜C₁ + C₂⋅x + C₃⋅x  + ──────────────────⎟
+              ⎝                            36        ⎠
 
     References
     ==========
@@ -4831,29 +4791,26 @@ def ode_separable(eq, func, order, match):
 
         >>> a, b, c, d = map(Function, ['a', 'b', 'c', 'd'])
         >>> genform = Eq(a(x)*b(f(x))*f(x).diff(x), c(x)*d(f(x)))
-        >>> pprint(genform, use_unicode=False)
+        >>> pprint(genform)
                      d
-        a(x)*b(f(x))*--(f(x)) = c(x)*d(f(x))
+        a(x)⋅b(f(x))⋅──(f(x)) = c(x)⋅d(f(x))
                      dx
-        >>> pprint(dsolve(genform, f(x),
-        ...               hint='separable_Integral'), use_unicode=False)
-             f(x)
-           /                  /
-          |                  |
-          |  b(y)            | c(x)
-          |  ---- dy = C1 +  | ---- dx
-          |  d(y)            | a(x)
-          |                  |
-         /                  /
+        >>> pprint(dsolve(genform, f(x), hint='separable_Integral'))
+        f(x)
+         ⌠                  ⌠
+         ⎮   b(y)           ⎮ c(x)
+         ⎮   ──── dy = C₁ + ⎮ ──── dx
+         ⎮   d(y)           ⎮ a(x)
+         ⌡                  ⌡
 
     Examples
     ========
 
     >>> pprint(dsolve(Eq(f(x)*f(x).diff(x) + x, 3*x*f(x)**2), f(x),
-    ...               hint='separable', simplify=False), use_unicode=False)
-       /   2       \         2
-    log\3*f (x) - 1/        x
-    ---------------- = C1 + --
+    ...               hint='separable', simplify=False))
+       ⎛   2       ⎞         2
+    log⎝3⋅f (x) - 1⎠        x
+    ──────────────── = C₁ + ──
            6                2
 
     References
@@ -4981,11 +4938,11 @@ def ode_lie_group(eq, func, order, match):
     ========
 
     >>> pprint(dsolve(f(x).diff(x) + 2*x*f(x) - x*exp(-x**2), f(x),
-    ...               hint='lie_group'), use_unicode=False)
-              2 /      2\
-            -x  |     x |
-    f(x) = E   *|C1 + --|
-                \     2 /
+    ...               hint='lie_group'))
+              2 ⎛      2⎞
+            -x  ⎜     x ⎟
+    f(x) = ℯ   ⋅⎜C₁ + ──⎟
+                ⎝     2 ⎠
 
     References
     ==========
@@ -5174,14 +5131,15 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         >>> xi = xi(x, y)
         >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h -
         ...              (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
-        >>> pprint(genform, use_unicode=False)
-                    d              2       d                      /d               d
-        - eta(x, y)*--(h(x, y)) - h (x, y)*--(xi(x, y)) + h(x, y)*|--(eta(x, y)) - --(
-                    dy                     dy                     \dy              dx
+        >>> pprint(genform)
+                  ∂              2       ∂                     ⎛∂             ∂
+        - η(x, y)⋅──(h(x, y)) - h (x, y)⋅──(ξ(x, y)) + h(x, y)⋅⎜──(η(x, y)) - ──(ξ(x,
+                  ∂y                     ∂y                    ⎝∂y            ∂x
         <BLANKLINE>
-                 \            d             d
-        xi(x, y))| - xi(x, y)*--(h(x, y)) + --(eta(x, y)) = 0
-                 /            dx            dx
+           ⎞           ∂             ∂
+        y))⎟ - ξ(x, y)⋅──(h(x, y)) + ──(η(x, y)) = 0
+           ⎠           ∂x            ∂x
+
 
     Solving the above mentioned PDE is not trivial, and can be solved only by
     making intelligent assumptions for `\xi` and `\eta` (heuristics). Once an

@@ -13,7 +13,7 @@ printing options available in Diofant.  The most common ones are
 
 - `Str`_
 - `Repr`_
-- `2D Pretty Printer`_ (Unicode or ASCII)
+- `2D Pretty Printer`_
 - `LaTeX`_
 - `Dot`_
 
@@ -75,23 +75,6 @@ obtained with :func:`~diofant.printing.pretty.pretty`.
     ⎮   ╱  ─  dx
     ⎮ ╲╱   x
     ⌡
-
-.. note::
-
-    Unicode pretty-printing is enabled by default in the `IPython`_
-    terminal frontend.
-
-You can pass ``use_unicode=False`` to use ASCII symbols.
-
-    >>> print(pretty(expr, use_unicode=False))
-       /
-      |
-      |     ___
-      |    / 1
-      |   /  -  dx
-      | \/   x
-      |
-     /
 
 :func:`~diofant.printing.pretty.pprint` prints the output to
 the screen.

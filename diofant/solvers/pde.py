@@ -449,28 +449,28 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*ux + b*uy + c*u
-        >>> pprint(genform, use_unicode=False)
-          d               d
-        a*--(f(x, y)) + b*--(f(x, y)) + c*f(x, y)
-          dx              dy
+        >>> pprint(genform)
+          ∂               ∂
+        a⋅──(f(x, y)) + b⋅──(f(x, y)) + c⋅f(x, y)
+          ∂x              ∂y
 
-        >>> pprint(pdsolve(genform), use_unicode=False)
-                   -c*(a*x + b*y)
-                   ---------------
+        >>> pprint(pdsolve(genform))
+                   -c⋅(a⋅x + b⋅y)
+                   ───────────────
                         2    2
                        a  + b
-        f(x, y) = E               *F(-a*y + b*x)
+        f(x, y) = ℯ               ⋅F(-a⋅y + b⋅x)
 
     Examples
     ========
 
     >>> pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y))
     Eq(f(x, y), E**(-x/2 - y/2)*F(x - y))
-    >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)), use_unicode=False)
+    >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)))
                  x   y
-               - - - -
+               - ─ - ─
                  2   2
-    f(x, y) = E       *F(x - y)
+    f(x, y) = ℯ       ⋅F(x - y)
 
     References
     ==========
@@ -512,45 +512,40 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*u + b*ux + c*uy - G(x, y)
-        >>> pprint(genform, use_unicode=False)
-                  d               d
-        a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
-                  dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'),
-        ...        use_unicode=False)
-                  /         /          b*x + c*y
-                  |         |              /
-                  |         |             |
-                  |         |             |        a*xi
-                  |         |             |      -------
-                  |         |             |       2    2
-                  |         |             |      b  + c   /b*xi + c*eta  -b*eta + c*xi
-                  |         |             |     E       *G|------------, -------------
-                  |         |             |               |   2    2         2    2
-                  |  -a*xi  |             |               \  b  + c         b  + c
-                  | ------- |             |
-                  |  2    2 |            /
-                  | b  + c  |
-        f(x, y) = |E       *|F(eta) + ------------------------------------------------
-                  |         |                                  2    2
-                  \         \                                 b  + c
+        >>> pprint(genform)
+                      ∂               ∂
+        a⋅f(x, y) + b⋅──(f(x, y)) + c⋅──(f(x, y)) - G(x, y)
+                      ∂x              ∂y
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'))
+                  ⎛         ⎛       b⋅x + c⋅y                                     ⎞⎞│
+                  ⎜         ⎜           ⌠                                         ⎟⎟│
+                  ⎜         ⎜           ⎮        a⋅ξ                              ⎟⎟│
+                  ⎜         ⎜           ⎮      ───────                            ⎟⎟│
+                  ⎜         ⎜           ⎮       2    2                            ⎟⎟│
+                  ⎜         ⎜           ⎮      b  + c   ⎛b⋅ξ + c⋅η  -b⋅η + c⋅ξ⎞   ⎟⎟│
+                  ⎜         ⎜           ⎮     ℯ       ⋅G⎜─────────, ──────────⎟ dξ⎟⎟│
+                  ⎜  -a⋅ξ   ⎜           ⎮               ⎜  2    2     2    2  ⎟   ⎟⎟│
+                  ⎜ ─────── ⎜           ⎮               ⎝ b  + c     b  + c   ⎠   ⎟⎟│
+                  ⎜  2    2 ⎜           ⌡                                         ⎟⎟│
+                  ⎜ b  + c  ⎜                                                     ⎟⎟│
+        f(x, y) = ⎜ℯ       ⋅⎜F(η) + ──────────────────────────────────────────────⎟⎟│
+                  ⎜         ⎜                           2    2                    ⎟⎟│
+                  ⎝         ⎝                          b  + c                     ⎠⎠│η
         <BLANKLINE>
-               \\|
-               |||
-               |||
-               |||
-               |||
-               |||
-        \      |||
-        | d(xi)|||
-        |      |||
-        /      |||
-               |||
-               |||
-               |||
-        -------|||
-               |||
-               //|eta=-b*y + c*x, xi=b*x + c*y
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        =-b⋅y + c⋅x, ξ=b⋅x + c⋅y
 
     Examples
     ========
@@ -617,10 +612,10 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a(x, y)*u + b(x, y)*ux + c(x, y)*uy - G(x, y)
-        >>> pprint(genform, use_unicode=False)
-                                             d                     d
-        -G(x, y) + a(x, y)*f(x, y) + b(x, y)*--(f(x, y)) + c(x, y)*--(f(x, y))
-                                             dx                    dy
+        >>> pprint(genform)
+                                             ∂                     ∂
+        -G(x, y) + a(x, y)⋅f(x, y) + b(x, y)⋅──(f(x, y)) + c(x, y)⋅──(f(x, y))
+                                             ∂x                    ∂y
 
     Examples
     ========

@@ -829,9 +829,9 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If ``visual`` is set to ``True``, then it will return a visual
     factorization of the integer.  For example:
 
-    >>> pprint(factorint(4200, visual=True), use_unicode=False)
+    >>> pprint(factorint(4200, visual=True))
      3  1  2  1
-    2 *3 *5 *7
+    2 ⋅3 ⋅5 ⋅7
 
     Note that this is achieved by using the evaluate=False flag in Mul
     and Pow. If you do other manipulations with an expression where
@@ -846,14 +846,14 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     >>> regular = factorint(1764)
     >>> regular
     {2: 2, 3: 2, 7: 2}
-    >>> pprint(factorint(regular), use_unicode=False)
+    >>> pprint(factorint(regular))
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
 
     >>> visual = factorint(1764, visual=True)
-    >>> pprint(visual, use_unicode=False)
+    >>> pprint(visual)
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
     >>> print(factorint(visual))
     {2: 2, 3: 2, 7: 2}
 

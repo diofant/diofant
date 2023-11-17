@@ -119,13 +119,12 @@ class hyper(TupleParametersBase):
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
 
-    There is also pretty printing (it looks better using unicode):
+    There is also pretty printing:
 
-    >>> pprint(hyper((1, 2, 3), [3, 4], x), use_unicode=False)
-      _
-     |_  /1, 2, 3 |  \
-     |   |        | x|
-    3  2 \  3, 4  |  /
+    >>> pprint(hyper((1, 2, 3), [3, 4], x))
+     ┌─  ⎛1, 2, 3 │  ⎞
+     ├─  ⎜        │ x⎟
+    3╵ 2 ⎝  3, 4  │  ⎠
 
     The parameters must always be iterables, even if they are vectors of
     length one or zero:
@@ -359,17 +358,17 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
-     __1, 2 /1, 2  a, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x))
+    ╭─╮1, 2 ⎛1, 2  a, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     or as two nested vectors:
 
-    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x), use_unicode=False)
-     __1, 2 /1, 2  3, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x))
+    ╭─╮1, 2 ⎛1, 2  3, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     As with the hypergeometric function, the parameters may be passed as
     arbitrary iterables. Vectors of length zero and one also have to be
@@ -380,10 +379,10 @@ class meijerg(TupleParametersBase):
     All the subvectors of parameters are available:
 
     >>> g = meijerg([1], [2], [3], [4], x)
-    >>> pprint(g, use_unicode=False)
-     __1, 1 /1  2 |  \
-    /__     |     | x|
-    \_|2, 2 \3  4 |  /
+    >>> pprint(g)
+    ╭─╮1, 1 ⎛1  2 │  ⎞
+    │╶┐     ⎜     │ x⎟
+    ╰─╯2, 2 ⎝3  4 │  ⎠
     >>> g.an
     (1,)
     >>> g.ap
