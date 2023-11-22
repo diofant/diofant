@@ -83,9 +83,6 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     ╲╱ 5
     >>> theta
     θ
-    >>> init_printing(pretty_print=True, use_unicode=False, no_global=True)
-    >>> theta
-    theta
     >>> init_printing(pretty_print=True, order='grevlex', no_global=True)
     >>> y + x + y**2 + x**2
      2    2

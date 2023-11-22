@@ -145,24 +145,24 @@ def merge_explicit(matmul):
     >>> B = Matrix([[1, 1], [1, 1]])
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatMul(A, B, C)
-    >>> pprint(X, use_unicode=False)
-      [1  1] [1  2]
-    A*[    ]*[    ]
-      [1  1] [3  4]
-    >>> pprint(merge_explicit(X), use_unicode=False)
-      [4  6]
-    A*[    ]
-      [4  6]
+    >>> pprint(X)
+      ⎡1  1⎤ ⎡1  2⎤
+    A⋅⎢    ⎥⋅⎢    ⎥
+      ⎣1  1⎦ ⎣3  4⎦
+    >>> pprint(merge_explicit(X))
+      ⎡4  6⎤
+    A⋅⎢    ⎥
+      ⎣4  6⎦
 
     >>> X = MatMul(B, A, C)
-    >>> pprint(X, use_unicode=False)
-    [1  1]   [1  2]
-    [    ]*A*[    ]
-    [1  1]   [3  4]
-    >>> pprint(merge_explicit(X), use_unicode=False)
-    [1  1]   [1  2]
-    [    ]*A*[    ]
-    [1  1]   [3  4]
+    >>> pprint(X)
+    ⎡1  1⎤   ⎡1  2⎤
+    ⎢    ⎥⋅A⋅⎢    ⎥
+    ⎣1  1⎦   ⎣3  4⎦
+    >>> pprint(merge_explicit(X))
+    ⎡1  1⎤   ⎡1  2⎤
+    ⎢    ⎥⋅A⋅⎢    ⎥
+    ⎣1  1⎦   ⎣3  4⎦
 
     """
     if not any(isinstance(arg, MatrixBase) for arg in matmul.args):
