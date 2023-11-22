@@ -22,6 +22,7 @@ Compatibility breaks
 * Removed ``rcall()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`1346`.
 * Removed ``method`` argument of :func:`~diofant.functions.special.bessel.jn_zeros`, see :pull:`1352`.
 * Removed ``sstrrepr()`` function, see :pull:`1362`.
+* Removed support for ASCII pretty-printing and ``pprint_use_unicode()`` function, see :pull:`1369`.
 
 Minor changes
 =============

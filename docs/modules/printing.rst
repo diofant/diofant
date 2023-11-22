@@ -38,8 +38,7 @@ class ``prettyForm`` that ease the creation and manipulation of formulas
 that span across multiple lines.
 
 The module ``pretty_symbology`` provides primitives to construct 2D shapes
-(hline, vline, etc) together with a technique to use unicode automatically
-when possible.
+(hline, vline, etc).
 
 .. automodule:: diofant.printing.pretty
    :members:
@@ -326,7 +325,6 @@ Pretty-Printing Implementation Helpers
 .. module:: diofant.printing.pretty_symbology
 
 .. autofunction:: U
-.. autofunction:: pretty_use_unicode
 
 The following two functions return the Unicode version of the inputted Greek
 letter.

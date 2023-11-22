@@ -122,7 +122,7 @@ of symbolic power Diofant is capable of, to whet your appetite.
 
       >>> from diofant import *
       >>> a, b, c, d, t, x, y, z = symbols('a:d t x:z')
-      >>> init_printing(pretty_print=True, use_unicode=True)
+      >>> init_printing(pretty_print=True)
 
    Last one will make all further examples pretty print with unicode
    characters.

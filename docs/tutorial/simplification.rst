@@ -3,7 +3,7 @@
 ================
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 The generic way to do *nontrivial* simplifications of expressions is
 calling :func:`~diofant.simplify.simplify.simplify` function.

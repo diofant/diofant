@@ -8,15 +8,10 @@ from ..sets import Reals
 from ..utilities import default_sort_key, group
 from .conventions import requires_partial
 from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
-                               pretty_symbol, pretty_use_unicode, vobj, xobj,
-                               xsym)
+                               pretty_symbol, vobj, xobj, xsym)
 from .printer import Printer
 from .str import sstr
 from .stringpict import prettyForm, stringPict
-
-
-# rename for usage from outside
-pprint_use_unicode = pretty_use_unicode
 
 
 class PrettyPrinter(Printer):
@@ -27,7 +22,6 @@ class PrettyPrinter(Printer):
     _default_settings = {
         'order': None,
         'full_prec': 'auto',
-        'use_unicode': None,
         'wrap_line': True,
         'num_columns': None,
     }
@@ -36,12 +30,6 @@ class PrettyPrinter(Printer):
         """Initialize self."""
         Printer.__init__(self, settings)
         self.emptyPrinter = lambda x: prettyForm(str(x))
-
-    @property
-    def _use_unicode(self):
-        if self._settings['use_unicode']:
-            return True
-        return pretty_use_unicode()
 
     def doprint(self, expr):
         return self._print(expr).render(**self._settings)
@@ -139,19 +127,17 @@ class PrettyPrinter(Printer):
 
     def _print_Not(self, e):
         from ..logic import Equivalent, Implies
-        if self._use_unicode:
-            arg = e.args[0]
-            pform = self._print(arg)
-            if isinstance(arg, Equivalent):
-                return self._print_Equivalent(arg, altchar='\N{NOT IDENTICAL TO}')
-            if isinstance(arg, Implies):
-                return self._print_Implies(arg, altchar='\N{RIGHTWARDS ARROW WITH STROKE}')
+        arg = e.args[0]
+        pform = self._print(arg)
+        if isinstance(arg, Equivalent):
+            return self._print_Equivalent(arg, altchar='\N{NOT IDENTICAL TO}')
+        if isinstance(arg, Implies):
+            return self._print_Implies(arg, altchar='\N{RIGHTWARDS ARROW WITH STROKE}')
 
-            if arg.is_Boolean and not arg.is_Not:
-                pform = prettyForm(*pform.parens())
+        if arg.is_Boolean and not arg.is_Not:
+            pform = prettyForm(*pform.parens())
 
-            return prettyForm(*pform.left('\N{NOT SIGN}'))
-        return self._print_Function(e)
+        return prettyForm(*pform.left('\N{NOT SIGN}'))
 
     def __print_Boolean(self, e, char, sort=True):
         args = e.args
@@ -175,39 +161,25 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_And(self, e):
-        if self._use_unicode:
-            return self.__print_Boolean(e, '\N{LOGICAL AND}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, '\N{LOGICAL AND}')
 
     def _print_Or(self, e):
-        if self._use_unicode:
-            return self.__print_Boolean(e, '\N{LOGICAL OR}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, '\N{LOGICAL OR}')
 
     def _print_Xor(self, e):
-        if self._use_unicode:
-            return self.__print_Boolean(e, '\N{XOR}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, '\N{XOR}')
 
     def _print_Nand(self, e):
-        if self._use_unicode:
-            return self.__print_Boolean(e, '\N{NAND}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, '\N{NAND}')
 
     def _print_Nor(self, e):
-        if self._use_unicode:
-            return self.__print_Boolean(e, '\N{NOR}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, '\N{NOR}')
 
     def _print_Implies(self, e, altchar=None):
-        if self._use_unicode:
-            return self.__print_Boolean(e, altchar or '\N{RIGHTWARDS ARROW}', sort=False)
-        return self._print_Function(e)
+        return self.__print_Boolean(e, altchar or '\N{RIGHTWARDS ARROW}', sort=False)
 
     def _print_Equivalent(self, e, altchar=None):
-        if self._use_unicode:
-            return self.__print_Boolean(e, altchar or '\N{IDENTICAL TO}')
-        return self._print_Function(e, sort=True)
+        return self.__print_Boolean(e, altchar or '\N{IDENTICAL TO}')
 
     def _print_conjugate(self, e):
         pform = self._print(e.args[0])
@@ -220,21 +192,17 @@ class PrettyPrinter(Printer):
     _print_Determinant = _print_Abs
 
     def _print_floor(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.parens('lfloor', 'rfloor'))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.parens('lfloor', 'rfloor'))
+        return pform
 
     def _print_ceiling(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.parens('lceil', 'rceil'))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.parens('lceil', 'rceil'))
+        return pform
 
     def _print_Derivative(self, deriv):
-        if requires_partial(deriv) and self._use_unicode:
+        if requires_partial(deriv):
             deriv_symbol = '\N{PARTIAL DIFFERENTIAL}'
         else:
             deriv_symbol = r'd'
@@ -298,11 +266,6 @@ class PrettyPrinter(Printer):
             h = arg.height()
             H = h + 2
 
-            # XXX hack!
-            ascii_mode = not self._use_unicode
-            if ascii_mode:
-                H += 2
-
             vint = vobj('int', H)
 
             # Construct the pretty form with the integral sign and the argument
@@ -320,20 +283,10 @@ class PrettyPrinter(Printer):
                     prettyA = self._print(lim[1])
                     prettyB = self._print(lim[2])
 
-                if ascii_mode:  # XXX hack
-                    # Add spacing so that endpoint can more easily be
-                    # identified with the correct integral sign
-                    spc = max(1, 3 - prettyB.width())
-                    prettyB = prettyForm(*prettyB.left(' ' * spc))
-
-                    spc = max(1, 4 - prettyA.width())
-                    prettyA = prettyForm(*prettyA.right(' ' * spc))
-
                 pform = prettyForm(*pform.above(prettyB))
                 pform = prettyForm(*pform.below(prettyA))
 
-            if not ascii_mode:  # XXX hack
-                pform = prettyForm(*pform.right(' '))
+            pform = prettyForm(*pform.right(' '))
 
             if firstterm:
                 s = pform   # first term
@@ -353,10 +306,9 @@ class PrettyPrinter(Printer):
         corner_chr = xobj('_', 1)
         vertical_chr = xobj('|', 1)
 
-        if self._use_unicode:
-            # use unicode corners
-            horizontal_chr = xobj('-', 1)
-            corner_chr = '\N{BOX DRAWINGS LIGHT DOWN AND HORIZONTAL}'
+        # use unicode corners
+        horizontal_chr = xobj('-', 1)
+        corner_chr = '\N{BOX DRAWINGS LIGHT DOWN AND HORIZONTAL}'
 
         func_height = pretty_func.height()
 
@@ -401,26 +353,13 @@ class PrettyPrinter(Printer):
         return pretty_func
 
     def _print_Sum(self, expr):
-        ascii_mode = not self._use_unicode
-
-        def asum(hrequired, lower, upper, use_ascii):
+        def asum(hrequired, lower, upper):
             h = max(hrequired, 2)
             d = h//2
             w = d + 1
             more = hrequired % 2
 
             lines = []
-            if use_ascii:
-                lines.append('_'*w + ' ')
-                lines.append(f"\\{' '*(w - 1)}`")
-                for i in range(1, d):
-                    lines.append(f"{' ' * i}\\{' ' * (w - i)}")
-                if more:
-                    lines.append(f"{' ' * d}){' ' * (w - d)}")
-                for i in reversed(range(1, d)):
-                    lines.append(f"{' ' * i}/{' ' * (w - i)}")
-                lines.append('/' + '_'*(w - 1) + ',')
-                return d, h + more, lines, 0
             w = w + more
             d = d + more
             vsum = vobj('sum', 4)
@@ -456,7 +395,7 @@ class PrettyPrinter(Printer):
 
             # Create sum sign based on the height of the argument
             d, h, slines, adjustment = asum(
-                H, prettyLower.width(), prettyUpper.width(), ascii_mode)
+                H, prettyLower.width(), prettyUpper.width())
             prettySign = stringPict('')
             prettySign = prettyForm(*prettySign.stack(*slines))
 
@@ -497,19 +436,13 @@ class PrettyPrinter(Printer):
         Lim = prettyForm('lim')
 
         LimArg = self._print(z)
-        if self._use_unicode:
-            LimArg = prettyForm(*LimArg.right('\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{RIGHTWARDS ARROW}'))
-        else:
-            LimArg = prettyForm(*LimArg.right('->'))
+        LimArg = prettyForm(*LimArg.right('\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{RIGHTWARDS ARROW}'))
         LimArg = prettyForm(*LimArg.right(self._print(z0)))
 
         if dir == Reals or z0 in (oo, -oo):
             dir = ''
         elif dir in [1, -1]:
-            if self._use_unicode:
-                dir = '\N{SUPERSCRIPT PLUS SIGN}' if dir == -1 else '\N{SUPERSCRIPT MINUS}'
-            else:
-                dir = '+' if dir == -1 else '-'
+            dir = '\N{SUPERSCRIPT PLUS SIGN}' if dir == -1 else '\N{SUPERSCRIPT MINUS}'
         else:
             raise NotImplementedError
 
@@ -629,10 +562,7 @@ class PrettyPrinter(Printer):
 
     def _print_Adjoint(self, expr):
         pform = self._print(expr.arg)
-        if self._use_unicode:
-            dag = prettyForm('\N{DAGGER}')
-        else:
-            dag = prettyForm('+')
+        dag = prettyForm('\N{DAGGER}')
         from ..matrices import MatrixSymbol
         if not isinstance(expr.arg, MatrixSymbol):
             pform = prettyForm(*pform.parens())
@@ -900,13 +830,10 @@ class PrettyPrinter(Printer):
 
         return D
 
-    def _print_Function(self, e, sort=False):
+    def _print_Function(self, e):
         # XXX works only for applied functions
         func = e.func
         args = e.args
-        if sort:
-            args = sorted(args, key=default_sort_key)
-
         func_name = func.__name__
 
         prettyFunc = self._print(Symbol(func_name))
@@ -923,10 +850,7 @@ class PrettyPrinter(Printer):
 
     def _print_Lambda(self, e):
         vars, expr = e.args
-        if self._use_unicode:
-            arrow = ' \N{RIGHTWARDS ARROW FROM BAR} '
-        else:
-            arrow = ' -> '
+        arrow = ' \N{RIGHTWARDS ARROW FROM BAR} '
         if len(vars) == 1:
             var_form = self._print(vars[0])
         else:
@@ -939,56 +863,45 @@ class PrettyPrinter(Printer):
         if expr.point or not expr.expr.has(expr.var):
             pform = prettyForm(*pform.right('; '))
             pform = prettyForm(*pform.right(self._print(expr.var)))
-            if self._use_unicode:
-                pform = prettyForm(*pform.right(' \N{RIGHTWARDS ARROW} '))
-            else:
-                pform = prettyForm(*pform.right(' -> '))
+            pform = prettyForm(*pform.right(' \N{RIGHTWARDS ARROW} '))
             pform = prettyForm(*pform.right(self._print(expr.point)))
         pform = prettyForm(*pform.parens())
         pform = prettyForm(*pform.left('O'))
         return pform
 
     def _print_gamma(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.parens())
-            pform = prettyForm(*pform.left(greek_unicode['Gamma']))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.parens())
+        pform = prettyForm(*pform.left(greek_unicode['Gamma']))
+        return pform
 
     def _print_uppergamma(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.right(', ', self._print(e.args[1])))
-            pform = prettyForm(*pform.parens())
-            pform = prettyForm(*pform.left(greek_unicode['Gamma']))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.right(', ', self._print(e.args[1])))
+        pform = prettyForm(*pform.parens())
+        pform = prettyForm(*pform.left(greek_unicode['Gamma']))
+        return pform
 
     def _print_lowergamma(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.right(', ', self._print(e.args[1])))
-            pform = prettyForm(*pform.parens())
-            pform = prettyForm(*pform.left(greek_unicode['gamma']))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.right(', ', self._print(e.args[1])))
+        pform = prettyForm(*pform.parens())
+        pform = prettyForm(*pform.left(greek_unicode['gamma']))
+        return pform
 
     def _print_DiracDelta(self, e):
-        if self._use_unicode:
-            pform = self._print(e.args[0])
-            pform = prettyForm(*pform.parens())
-            delta = self._print(greek_unicode['delta'])
-            if len(e.args) > 1 and e.args[1] != 0:
-                k = prettyForm(*self._print(e.args[1]).parens())
-                delta = delta**k
-            pform = prettyForm(*pform.left(delta))
-            return pform
-        return self._print_Function(e)
+        pform = self._print(e.args[0])
+        pform = prettyForm(*pform.parens())
+        delta = self._print(greek_unicode['delta'])
+        if len(e.args) > 1 and e.args[1] != 0:
+            k = prettyForm(*self._print(e.args[1]).parens())
+            delta = delta**k
+        pform = prettyForm(*pform.left(delta))
+        return pform
 
     def _print_expint(self, e):
         from ..core import Function
-        if e.args[0].is_Integer and self._use_unicode:
+        if e.args[0].is_Integer:
             return self._print_Function(Function(f'E_{e.args[0]}')(e.args[1]))
         return self._print_Function(e)
 
@@ -1033,7 +946,7 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_elliptic_pi(self, e):
-        name = greek_unicode['Pi'] if self._use_unicode else 'Pi'
+        name = greek_unicode['Pi']
         pforma0 = self._print(e.args[0])
         pforma1 = self._print(e.args[1])
         if len(e.args) == 2:
@@ -1057,14 +970,10 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_GoldenRatio(self, expr):
-        if self._use_unicode:
-            return prettyForm(pretty_symbol('phi'))
-        return self._print(Symbol('GoldenRatio'))
+        return prettyForm(pretty_symbol('phi'))
 
     def _print_EulerGamma(self, expr):
-        if self._use_unicode:
-            return prettyForm(pretty_symbol('gamma'))
-        return self._print(Symbol('EulerGamma'))
+        return prettyForm(pretty_symbol('gamma'))
 
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
@@ -1269,7 +1178,7 @@ class PrettyPrinter(Printer):
         return self.emptyPrinter(expr)
 
     def _print_ProductSet(self, p):
-        prod_char = '\N{MULTIPLICATION SIGN}' if self._use_unicode else 'x'
+        prod_char = '\N{MULTIPLICATION SIGN}'
         return self._print_seq(p.sets, None, None, f' {prod_char} ',
                                parenthesize=lambda set: set.is_Union or
                                set.is_Intersection or set.is_ProductSet)
@@ -1282,7 +1191,7 @@ class PrettyPrinter(Printer):
         return self._print_seq(sorted(l, key=default_sort_key), '{', '}')
 
     def _print_Range(self, s):
-        dots = '\N{HORIZONTAL ELLIPSIS}' if self._use_unicode else '...'
+        dots = '\N{HORIZONTAL ELLIPSIS}'
 
         if (s.start, s.stop) == (-oo, oo):
             printset = s.start, dots, -s.step, 0, s.step, dots, s.stop
@@ -1326,9 +1235,6 @@ class PrettyPrinter(Printer):
                                set.is_Intersection or set.is_Complement)
 
     def _print_SymmetricDifference(self, u):
-        if not self._use_unicode:
-            raise NotImplementedError('ASCII pretty printing of SymmetricDifference is not implemented')
-
         sym_delimeter = f" {pretty_atom('SymmetricDifference')} "
 
         return self._print_seq(u.args, None, None, sym_delimeter)
@@ -1343,11 +1249,9 @@ class PrettyPrinter(Printer):
 
     def _print_Contains(self, e):
         var, set = e.args
-        if self._use_unicode:
-            el = ' \N{ELEMENT OF} '
-            return prettyForm(*stringPict.next(self._print(var),
-                                               el, self._print(set)), binding=8)
-        return prettyForm(sstr(e))
+        el = ' \N{ELEMENT OF} '
+        return prettyForm(*stringPict.next(self._print(var),
+                                           el, self._print(set)), binding=8)
 
     def _print_seq(self, seq, left=None, right=None, delimiter=', ',
                    parenthesize=lambda x: False):
@@ -1451,28 +1355,17 @@ class PrettyPrinter(Printer):
         return pform
 
     def _print_FiniteField(self, expr):
-        if self._use_unicode:
-            form = '\N{MATHEMATICAL DOUBLE-STRUCK CAPITAL F}_%d'
-        else:
-            form = 'GF(%d)'
-
+        form = '\N{MATHEMATICAL DOUBLE-STRUCK CAPITAL F}_%d'
         return prettyForm(pretty_symbol(form % expr.order))
 
     def _print_IntegerRing(self, expr):
-        if self._use_unicode:
-            return prettyForm('\N{DOUBLE-STRUCK CAPITAL Z}')
-        return prettyForm('ZZ')
+        return prettyForm('\N{DOUBLE-STRUCK CAPITAL Z}')
 
     def _print_RationalField(self, expr):
-        if self._use_unicode:
-            return prettyForm('\N{DOUBLE-STRUCK CAPITAL Q}')
-        return prettyForm('QQ')
+        return prettyForm('\N{DOUBLE-STRUCK CAPITAL Q}')
 
     def _print_RealField(self, domain):
-        if self._use_unicode:
-            prefix = '\N{DOUBLE-STRUCK CAPITAL R}'
-        else:
-            prefix = 'RR'
+        prefix = '\N{DOUBLE-STRUCK CAPITAL R}'
 
         if domain.precision == inspect.signature(type(domain)).parameters['prec'].default:
             return prettyForm(prefix)
@@ -1557,10 +1450,7 @@ class PrettyPrinter(Printer):
         pform = self._print(e.args[0])
         pform = prettyForm(*pform.right(prettyForm(',')))
         pform = prettyForm(*pform.right(self._print(e.args[1])))
-        if self._use_unicode:
-            a = stringPict(pretty_symbol('delta'))
-        else:
-            a = stringPict('d')
+        a = stringPict(pretty_symbol('delta'))
         b = pform
         top = stringPict(*b.left(' '*a.width()))
         bot = stringPict(*a.right(' '*b.width()))
@@ -1581,15 +1471,7 @@ def pretty(expr, **settings):
 
     """
     pp = PrettyPrinter(settings)
-
-    # XXX: this is an ugly hack, but at least it works
-    use_unicode = pp._settings['use_unicode']
-    uflag = pretty_use_unicode(use_unicode)
-
-    try:
-        return pp.doprint(expr)
-    finally:
-        pretty_use_unicode(uflag)
+    return pp.doprint(expr)
 
 
 def pretty_print(expr, **settings):
@@ -1608,9 +1490,6 @@ def pretty_print(expr, **settings):
     num_columns : int or None, optional
         number of columns before line breaking (default to None which reads
         the terminal width), useful when using Diofant without terminal.
-    use_unicode : bool or None, optional
-        use unicode characters, such as the Greek letter pi instead of
-        the string pi.
     full_prec : bool or string, optional
         use full precision. Default to "auto"
     order : bool or string, optional
