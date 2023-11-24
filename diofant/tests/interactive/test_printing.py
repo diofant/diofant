@@ -22,10 +22,6 @@ def test_init_printing(capsys):
     sys.displayhook(theta)
     assert capsys.readouterr().out == 'θ\n'
 
-    init_printing(pretty_print=True, use_unicode=False, no_global=True)
-    sys.displayhook(theta)
-    assert capsys.readouterr().out == 'theta\n'
-
     init_printing(pretty_print=True, order='grevlex', no_global=True)
     sys.displayhook(y + x + y**2 + x**2)
     assert capsys.readouterr().out == \

@@ -5,7 +5,7 @@
 ==========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 As we have already seen, Diofant can pretty print its output using
 Unicode characters.  This is a short introduction to the most common

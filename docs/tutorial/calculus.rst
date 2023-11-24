@@ -3,7 +3,7 @@
 ==========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 This section covers how to do basic calculus tasks such as derivatives,
 integrals, limits, and series expansions in Diofant.

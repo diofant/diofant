@@ -1,15 +1,9 @@
 import builtins
 import fractions
-import os
 import sys
 
 from ..printing import StrPrinter, latex, pretty
 from ..printing.printer import Printer
-
-
-class _StrReprPrinter(StrPrinter):
-    def _print_str(self, expr):
-        return repr(expr)
 
 
 def _init_python_printing(stringify_func):
@@ -94,29 +88,24 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     except NameError:
         ip = None
 
-    # guess unicode support
-    unicode_term = False
-    TERM = os.environ.get('TERM', '')
-    if TERM != '' and not TERM.endswith('linux'):
-        unicode_term = True
-    if settings.get('use_unicode') is None:
-        settings['use_unicode'] = bool(unicode_term)
+    if pretty_print is None:
+        pretty_print = ip is not None
+
+    class _StrReprPrinter(StrPrinter):
+        def _print_str(self, expr):
+            return repr(expr)
 
     def sstrrepr(expr, **kwargs):
         return _StrReprPrinter().doprint(expr)
 
-    if ip:
-        stringify_func = pretty if pretty_print is not False else sstrrepr
-    else:
-        stringify_func = sstrrepr if not pretty_print else pretty
+    _stringify_func = pretty if pretty_print else sstrrepr
 
     if no_global:
-        _stringify_func = stringify_func
-
-        def stringify_func(expr):  # pylint: disable=function-redefined
+        def stringify_func(expr):
             return _stringify_func(expr, **settings)
     else:
         Printer.set_global_settings(**settings)
+        stringify_func = _stringify_func
 
     if ip:
         _init_ipython_printing(ip, stringify_func)
