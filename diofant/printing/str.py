@@ -617,6 +617,14 @@ class StrPrinter(Printer):
     def _print_Domain(self, expr):
         return expr.rep
 
+    def _print_Indexed(self, expr):
+        indices = list(map(self.doprint, expr.indices))
+        return f"{self.doprint(expr.base)}[{', '.join(indices)}]"
+
+    def _print_IndexedBase(self, expr):
+        return self.doprint(expr.label)
+    _print_Idx = _print_IndexedBase
+
 
 def sstr(expr, **settings):
     """Returns the expression as a string.

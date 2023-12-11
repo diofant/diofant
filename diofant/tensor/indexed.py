@@ -254,10 +254,6 @@ class Indexed(Expr):
                 ranges.append(None)
         return ranges
 
-    def _diofantstr(self, p):
-        indices = list(map(p.doprint, self.indices))
-        return f"{p.doprint(self.base)}[{', '.join(indices)}]"
-
 
 class IndexedBase(Expr, NotIterable):
     """Represent the base or stem of an indexed object
@@ -392,9 +388,6 @@ class IndexedBase(Expr, NotIterable):
 
         """
         return self.args[0]
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)
 
 
 class Idx(Expr):
@@ -559,6 +552,3 @@ class Idx(Expr):
             return self.args[1][1]
         except IndexError:
             return
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)
