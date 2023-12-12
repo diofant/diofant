@@ -8,7 +8,7 @@ import typing
 
 import diofant
 
-from .compatibility import NotIterable, iterable
+from .compatibility import iterable
 from .evaluate import global_evaluate
 
 
@@ -253,7 +253,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except AttributeError:
         pass
 
-    if not iterable(a, exclude=(dict, NotIterable)):
+    if not iterable(a, exclude=(dict,)):
         for coerce in (float, int):
             try:
                 return sympify(coerce(a))
