@@ -538,8 +538,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
     from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    solns = {s[gen] for s in solve(e, gen)}
-    singularities = singularities(e, gen)
+    if gen.is_extended_real is None:
+        gen_r = Dummy(gen.name, extended_real=True)
+        e_r = e.subs({gen: gen_r})
+    else:
+        gen_r = gen
+        e_r = e
+    solns = {s[gen_r] for s in solve(e_r, gen_r)}
+    singularities = singularities(e_r, gen_r)
 
     include_x = expr.func(0, 0)
 

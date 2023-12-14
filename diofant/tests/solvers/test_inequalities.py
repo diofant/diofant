@@ -434,3 +434,8 @@ def test_sympyissue_25627():
 def test_sympyissue_25738():
     assert reduce_inequalities(3 < abs(x)) == (Integer(3) < x) | (x < -3)
     assert reduce_inequalities(pi < abs(x)) == (pi < x) | (x < -pi)
+
+
+def test_sympyissue_25983():
+    assert reduce_inequalities(pi/abs(x) <= 1) == (pi <= x) | (x <= -pi)
+    assert (pi/abs(x) <= 1).as_set() == Interval(-oo, -pi) | Interval(pi, oo)
