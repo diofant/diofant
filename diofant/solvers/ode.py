@@ -234,7 +234,7 @@ from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, zoo)
-from ..core.compatibility import is_sequence, iterable
+from ..core.compatibility import iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
@@ -252,6 +252,7 @@ from ..simplify.radsimp import collect, collect_const
 from ..simplify.simplify import logcombine, posify, separatevars, simplify
 from ..simplify.trigsimp import trigsimp
 from ..utilities import default_sort_key, numbered_symbols, ordered, sift
+from ..utilities.iterables import is_sequence
 from .deutils import _desolve, _preprocess, ode_order
 from .pde import pdsolve
 from .solvers import solve

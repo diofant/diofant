@@ -9,13 +9,13 @@ import operator
 from ..config import query
 from ..core import Add, Expr, Symbol, cacheit
 from ..core import symbols as _symbols
-from ..core.compatibility import is_sequence
 from ..core.sympify import CantSympify, sympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.ring import CommutativeRing
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
+from ..utilities.iterables import is_sequence
 from .euclidtools import _GCD
 from .factortools import _Factor
 from .monomials import Monomial

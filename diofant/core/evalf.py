@@ -34,7 +34,7 @@ from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
                           mpf_pow, mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt,
                           normalize, prec_to_dps, round_nearest)
 
-from .compatibility import is_sequence
+from ..utilities.iterables import is_sequence
 from .sympify import sympify
 
 

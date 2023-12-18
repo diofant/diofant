@@ -3,8 +3,8 @@ import functools
 import math
 
 from ..utilities import default_sort_key
+from ..utilities.iterables import is_sequence
 from .cache import cacheit
-from .compatibility import is_sequence
 from .logic import _fuzzy_group
 from .numbers import Integer, nan, oo, zoo
 from .operations import AssocOp

@@ -6,9 +6,10 @@ lambda functions which can be used to calculate numerical values very fast.
 import inspect
 import textwrap
 
-from ..core.compatibility import is_sequence, iterable
+from ..core.compatibility import iterable
 from ..external import import_module
 from .decorator import doctest_depends_on
+from .iterables import is_sequence
 
 
 # XXX make pylint & flake8 happy

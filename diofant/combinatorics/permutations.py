@@ -5,10 +5,10 @@ from collections import defaultdict
 from mpmath.libmp import ifac
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..polys import lcm
 from ..utilities import flatten, has_dups, has_variety
-from ..utilities.iterables import minlex, runs
+from ..utilities.iterables import is_sequence, minlex, runs
 
 
 def _af_rmul(a, b):

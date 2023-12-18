@@ -5,8 +5,9 @@ import pytest
 from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, Rational, Tuple,
                      false, sympify, true)
 from diofant.abc import p, q, r, s, x, y, z
-from diofant.core.compatibility import is_sequence, iterable
+from diofant.core.compatibility import iterable
 from diofant.core.containers import tuple_wrapper
+from diofant.utilities.iterables import is_sequence
 
 
 __all__ = ()

@@ -1,7 +1,7 @@
 from ..core import Integer, Lt, diff, nan, oo, sympify
-from ..core.compatibility import is_sequence
 from ..sets import Interval
 from ..utilities import ordered
+from ..utilities.iterables import is_sequence
 from .singularities import singularities
 
 

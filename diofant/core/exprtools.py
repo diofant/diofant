@@ -5,10 +5,10 @@ import itertools
 import numbers
 
 from ..utilities import default_sort_key, ordered
-from ..utilities.iterables import common_prefix, common_suffix
+from ..utilities.iterables import common_prefix, common_suffix, is_sequence
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import is_sequence, iterable
+from .compatibility import iterable
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpressionError
 from .expr import Expr
