@@ -8,8 +8,9 @@ They are supposed to work seamlessly within the Diofant framework.
 
 from collections.abc import Mapping
 
+from ..utilities.iterables import is_iterable
 from .basic import Basic
-from .compatibility import as_int, iterable
+from .compatibility import as_int
 from .sympify import converter, sympify
 
 
@@ -182,7 +183,7 @@ class Dict(Basic):
     def __new__(cls, *args):
         if len(args) == 1 and isinstance(args[0], (dict, Dict)):
             items = [Tuple(k, v) for k, v in args[0].items()]
-        elif iterable(args) and all(len(arg) == 2 for arg in args):
+        elif is_iterable(args) and all(len(arg) == 2 for arg in args):
             items = [Tuple(k, v) for k, v in args]
         else:
             raise TypeError('Pass Dict args as Dict((k1, v1), ...) or Dict({k1: v1, ...})')

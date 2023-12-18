@@ -39,13 +39,13 @@ from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
                     expand_trig, symbols)
-from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
 from ..polys import lcm
 from ..simplify.radsimp import collect
 from ..simplify.simplify import simplify
 from ..utilities import filldedent, has_dups
+from ..utilities.iterables import is_sequence
 from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
 

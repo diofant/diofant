@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Derivative, E, EulerGamma, Function, I, Integer, Integral,
-                     O, Rational, Subs, Symbol, acot, atan, cos, exp, gamma,
-                     limit, log, oo, pi, sin, sqrt, symbols)
+                     O, PoleError, Rational, Reals, Subs, Symbol, acot, atan,
+                     cos, exp, gamma, limit, log, oo, pi, sin, sqrt, symbols)
 from diofant.abc import h, x, y, z
 
 
@@ -352,3 +352,14 @@ def test_sympyissue_23843():
     assert (acot(x + I).series(x, -oo) ==
             16/(5*x**5) + 2*I/x**4 - 4/(3*x**3) - I/x**2 +
             1/x + O(x**(-6), x, -oo))
+
+
+def test_sympyissue_25991():
+    e = sqrt(x**2 - x)
+    assert e.series(x, n=2) == I*sqrt(x) - I*sqrt(x)**3/2 + O(x**2)
+    assert e.series(x, n=2, dir=1) == sqrt(-x) + sqrt(-x)**3/2 + O(x**2)
+
+    e = 1/sqrt(-x)
+    assert e.limit(x, 0) == -I*oo
+    assert e.limit(x, 0, dir=1) == oo
+    pytest.raises(PoleError, lambda: e.limit(x, 0, dir=Reals))

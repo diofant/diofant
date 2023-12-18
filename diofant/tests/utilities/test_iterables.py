@@ -16,8 +16,8 @@ from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          common_prefix, common_suffix,
-                                         filter_symbols, minlex, multiset,
-                                         multiset_combinations,
+                                         filter_symbols, is_iterable, minlex,
+                                         multiset, multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations,
                                          ordered_partitions, partitions,
@@ -489,3 +489,9 @@ def test_signed_permutations():
              (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
              (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
              (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)])
+
+
+def test_is_iterable():
+    assert is_iterable(0) is False
+    assert is_iterable(1) is False
+    assert is_iterable(None) is False

@@ -3,7 +3,7 @@ import math
 from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
                     integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import floor, sign, sqrt
@@ -13,6 +13,7 @@ from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
 from ..polys import GeneratorsNeededError, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
+from ..utilities.iterables import is_sequence
 from .solvers import solve
 
 

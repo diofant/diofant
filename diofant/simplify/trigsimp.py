@@ -5,7 +5,6 @@ from collections import defaultdict
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, Rational, Wild, cacheit, count_ops, expand,
                     expand_mul, factor_terms, symbols)
-from ..core.compatibility import iterable
 from ..core.function import _mexpand
 from ..core.strategies import greedy, identity
 from ..core.sympify import sympify
@@ -16,6 +15,7 @@ from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr
 from ..polys.polyerrors import PolificationFailedError
 from ..polys.polytools import groebner
+from ..utilities.iterables import is_iterable
 from .cse_main import cse
 
 
@@ -201,7 +201,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
                 n = e
             elif isinstance(e, FunctionClass):
                 funcs.append(e)
-            elif iterable(e):
+            elif is_iterable(e):
                 iterables.append((e[0], e[1:]))
                 # XXX sin(x+2y)?
                 # Note: we go through polys so e.g.

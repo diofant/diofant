@@ -6,13 +6,13 @@ import functools
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
                     Rational, Symbol, Wild, oo)
-from ..core.compatibility import iterable
 from ..core.sympify import sympify
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, lcm, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
 from ..utilities import default_sort_key, numbered_symbols
+from ..utilities.iterables import is_iterable
 from .ode import constantsimp
 from .solvers import solve
 
@@ -620,7 +620,7 @@ def rsolve(f, *y, init={}, simplify=True):
     diofant.solvers.solvers.solve : solving algebraic equations
 
     """
-    if not iterable(f):
+    if not is_iterable(f):
         f = [f]
 
     f = [_.lhs - _.rhs if isinstance(_, Equality) else _ for _ in f]

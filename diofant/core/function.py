@@ -32,12 +32,12 @@ import mpmath
 from mpmath.libmp import prec_to_dps
 
 from ..utilities import default_sort_key, ordered
-from ..utilities.iterables import uniq
+from ..utilities.iterables import is_iterable, is_sequence, uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import as_int, is_sequence, iterable
+from .compatibility import as_int
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted
@@ -1278,7 +1278,7 @@ class Lambda(Expr):
 
     def __new__(cls, variables, expr, **kwargs):
         from ..sets.sets import FiniteSet
-        v = list(variables) if iterable(variables) else [variables]
+        v = list(variables) if is_iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
                 raise TypeError(f'variable is not a symbol: {i}')
@@ -2163,7 +2163,7 @@ def count_ops(expr, visual=False):
     if type(expr) is dict:
         ops = [count_ops(k, visual=visual) +
                count_ops(v, visual=visual) for k, v in expr.items()]
-    elif iterable(expr):
+    elif is_iterable(expr):
         ops = [count_ops(i, visual=visual) for i in expr]
     elif isinstance(expr, Expr):
 
@@ -2287,7 +2287,7 @@ def nfloat(expr, n=15, exponent=False):
     from .power import Pow
     from .symbol import Dummy
 
-    if iterable(expr, exclude=(str,)):
+    if is_iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):
             return type(expr)([(k, nfloat(v, n, exponent)) for k, v in
                                list(expr.items())])
