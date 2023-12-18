@@ -1,7 +1,7 @@
 """Definitions of monomial orderings."""
 
 from ..core import Symbol, Tuple
-from ..core.compatibility import iterable
+from ..utilities.iterables import is_iterable
 
 
 __all__ = ('lex', 'grlex', 'grevlex', 'ilex', 'igrlex', 'igrevlex',
@@ -154,7 +154,7 @@ class InverseOrder(MonomialOrder):
 
     def __call__(self, monomial):
         def inv(l):
-            if iterable(l):
+            if is_iterable(l):
                 return tuple(inv(x) for x in l)
             return -l
         return inv(self.O(monomial))

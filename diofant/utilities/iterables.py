@@ -3,7 +3,7 @@ import operator
 from collections import defaultdict
 
 # this is the logical location of these functions
-from ..core.compatibility import as_int, iterable
+from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
 
@@ -194,7 +194,7 @@ def postorder_traversal(node, keys=None):
                 args = ordered(args)
         for arg in args:
             yield from postorder_traversal(arg, keys)
-    elif iterable(node):
+    elif is_iterable(node):
         for item in node:
             yield from postorder_traversal(item, keys)
     yield node
@@ -1384,7 +1384,7 @@ def _nodes(e):
 
     if isinstance(e, Basic):
         return e.count(Basic)
-    if iterable(e):
+    if is_iterable(e):
         return 1 + sum(_nodes(ei) for ei in e)
     if isinstance(e, dict):
         return 1 + sum(_nodes(k) + _nodes(v) for k, v in e.items())
@@ -1610,7 +1610,7 @@ def default_sort_key(item, order=None):
     if isinstance(item, Basic):
         return item.sort_key(order=order)
 
-    if iterable(item, exclude=(str,)):
+    if is_iterable(item, exclude=(str,)):
         if isinstance(item, dict):
             args = item.items()
             unordered = True
@@ -1648,6 +1648,63 @@ def default_sort_key(item, order=None):
             ), args, Integer(1).sort_key(), Integer(1)
 
 
+class NotIterable:
+    """
+    Use this as mixin when creating a class which is not supposed to return
+    true when is_iterable() is called on its instances. I.e. avoid infinite loop
+    when calling e.g. list() on the instance
+
+    """
+
+
+def is_iterable(i, exclude=(str, dict, NotIterable)):
+    """
+    Return a boolean indicating whether ``i`` is Diofant iterable.
+    True also indicates that the iterator is finite, i.e. you e.g.
+    call list(...) on the instance.
+
+    When Diofant is working with iterables, it is almost always assuming
+    that the iterable is not a string or a mapping, so those are excluded
+    by default. If you want a pure Python definition, make exclude=None. To
+    exclude multiple items, pass them as a tuple.
+
+    See Also
+    ========
+
+    is_sequence
+
+    Examples
+    ========
+
+    >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
+    >>> for i in things:
+    ...     print(f'{is_iterable(i)} {type(i)}')
+    True <... 'list'>
+    True <... 'tuple'>
+    True <... 'set'>
+    True <class 'diofant.core.containers.Tuple'>
+    True <... 'generator'>
+    False <... 'dict'>
+    False <... 'str'>
+    False <... 'int'>
+
+    >>> is_iterable({}, exclude=None)
+    True
+    >>> is_iterable({}, exclude=str)
+    True
+    >>> is_iterable('no', exclude=str)
+    False
+
+    """
+    try:
+        iter(i)
+    except TypeError:
+        return False
+    if exclude:
+        return not isinstance(i, exclude)
+    return True
+
+
 def is_sequence(i, include=None):
     """
     Return a boolean indicating whether ``i`` is a sequence in the Diofant
@@ -1663,7 +1720,7 @@ def is_sequence(i, include=None):
     See Also
     ========
 
-    diofant.core.compatibility.iterable
+    is_iterable
 
     Examples
     ========
@@ -1685,6 +1742,6 @@ def is_sequence(i, include=None):
 
     """
     return (hasattr(i, '__getitem__') and
-            iterable(i) or
+            is_iterable(i) or
             bool(include) and
             isinstance(i, include))

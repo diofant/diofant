@@ -8,7 +8,6 @@ from mpmath.libmp import NoConvergence
 
 from ..core import (Add, Basic, Expr, Integer, Mul, Tuple, expand_log,
                     expand_power_exp, oo, preorder_traversal)
-from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -17,6 +16,7 @@ from ..domains import FF, QQ, ZZ
 from ..domains.compositedomain import CompositeDomain
 from ..logic.boolalg import BooleanAtom
 from ..utilities import default_sort_key, group, sift
+from ..utilities.iterables import is_iterable
 from .constructor import construct_domain
 from .groebnertools import groebner as _groebner
 from .groebnertools import matrix_fglm
@@ -56,7 +56,7 @@ class Poly(Expr):
         """Create a new polynomial instance out of something useful."""
         opt = build_options(gens, args)
 
-        if iterable(rep, exclude=str):
+        if is_iterable(rep, exclude=str):
             if isinstance(rep, dict):
                 return cls._from_dict(rep, opt)
             return cls._from_list(list(rep), opt)
@@ -4144,7 +4144,7 @@ class GroebnerBasis(Basic):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self._basis == other._basis and self._options == other._options
-        if iterable(other):
+        if is_iterable(other):
             return self.polys == list(other) or self.exprs == list(other)
         return False
 

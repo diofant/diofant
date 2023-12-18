@@ -2,7 +2,7 @@ import pytest
 
 from diofant import default_sort_key, nan, oo, ordered, zoo
 from diofant.abc import x
-from diofant.core.compatibility import as_int, iterable
+from diofant.core.compatibility import as_int
 
 
 __all__ = ()
@@ -21,12 +21,6 @@ def test_as_int():
     pytest.raises(ValueError, lambda: as_int(oo))
     pytest.raises(ValueError, lambda: as_int(-oo))
     pytest.raises(ValueError, lambda: as_int(zoo))
-
-
-def test_iterable():
-    assert iterable(0) is False
-    assert iterable(1) is False
-    assert iterable(None) is False
 
 
 def test_ordered():

@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols)
-from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
@@ -10,6 +9,7 @@ from ..core.sympify import sympify
 from ..functions import log, sqrt
 from ..polys import gcd
 from ..utilities import default_sort_key, ordered
+from ..utilities.iterables import is_iterable
 from .sqrtdenest import sqrtdenest
 
 
@@ -318,7 +318,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
                 expr.base, syms, func, True, exact, distribute_order_term)
             return Pow(b, expr.exp)
 
-    if iterable(syms):
+    if is_iterable(syms):
         syms = [expand_power_base(i, deep=False) for i in syms]
     else:
         syms = [expand_power_base(syms, deep=False)]

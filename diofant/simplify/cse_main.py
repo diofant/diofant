@@ -3,11 +3,10 @@
 import graphlib
 
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms
-from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
 from ..core.sympify import sympify
 from ..utilities import numbered_symbols, ordered, sift
-from ..utilities.iterables import filter_symbols
+from ..utilities.iterables import filter_symbols, is_iterable
 from . import cse_opts
 
 
@@ -174,7 +173,7 @@ def opt_cse(exprs, order='canonical'):
         if expr.is_Atom or expr.is_Order:
             return
 
-        if iterable(expr):
+        if is_iterable(expr):
             list(map(_find_opts, expr))
             return
 
@@ -288,7 +287,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
         if expr.is_Atom or expr.is_Order:
             return
 
-        if iterable(expr):
+        if is_iterable(expr):
             args = expr
 
         else:
@@ -321,7 +320,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
         if not expr.args:
             return expr
 
-        if iterable(expr):
+        if is_iterable(expr):
             new_args = [_rebuild(arg) for arg in expr]
             return expr.func(*new_args)
 

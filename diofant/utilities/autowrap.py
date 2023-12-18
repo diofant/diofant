@@ -67,12 +67,12 @@ from string import Template
 from subprocess import STDOUT, CalledProcessError, check_output
 
 from ..core import Dummy, Eq, Lambda, Symbol, cacheit
-from ..core.compatibility import iterable
 from ..tensor import Idx, IndexedBase
 from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
                       InputArgument, OutputArgument, Result, ResultBase,
                       get_code_generator, make_routine)
 from .decorator import doctest_depends_on
+from .iterables import is_iterable
 from .lambdify import implemented_function
 
 
@@ -485,7 +485,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         language = _infer_language(backend)
 
     flags = flags if flags else ()
-    args = list(args) if iterable(args, exclude=set) else args
+    args = list(args) if is_iterable(args, exclude=set) else args
 
     code_generator = get_code_generator(language, 'autowrap')
     CodeWrapperClass = _get_code_wrapper_class(backend)

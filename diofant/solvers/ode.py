@@ -234,7 +234,6 @@ from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, zoo)
-from ..core.compatibility import iterable
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
@@ -252,7 +251,7 @@ from ..simplify.radsimp import collect, collect_const
 from ..simplify.simplify import logcombine, posify, separatevars, simplify
 from ..simplify.trigsimp import trigsimp
 from ..utilities import default_sort_key, numbered_symbols, ordered, sift
-from ..utilities.iterables import is_sequence
+from ..utilities.iterables import is_iterable, is_sequence
 from .deutils import _desolve, _preprocess, ode_order
 from .pde import pdsolve
 from .solvers import solve
@@ -359,7 +358,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
     """
     if isinstance(eq, Expr):
         eq = [eq]
-    elif not iterable(eq):
+    elif not is_iterable(eq):
         raise ValueError(f'Expected Expr or iterable but got {eq}')
 
     atom_set = set().union(*[i.free_symbols for i in eq])
@@ -554,7 +553,7 @@ def dsolve(eq, func=None, hint='default', simplify=True,
     {Eq(f(t), -E**C1/(E**C1*C2 - cos(t))), Eq(g(t), -1/(C1 - cos(t)))}
 
     """
-    if iterable(eq):
+    if is_iterable(eq):
         match = classify_sysode(eq, func)
         eq = match['eq']
         order = match['order']
@@ -664,7 +663,7 @@ def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
         if isinstance(rv, Expr):
             solved_constants = solve_init([rv], [r['func']], cons(rv), init)
             rv = rv.subs(solved_constants)
-        elif iterable(rv):
+        elif is_iterable(rv):
             rv1 = []
             for s in rv:
                 solved_constants = solve_init([s], [r['func']], cons(s), init)
@@ -1392,7 +1391,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     # Sympify equations and convert iterables of equations into
     # a list of equations
     def _sympify(eq):
-        return list(map(sympify, eq if iterable(eq) else [eq]))
+        return list(map(sympify, eq if is_iterable(eq) else [eq]))
 
     eq, funcs = (_sympify(w) for w in [eq, funcs])
     for i, fi in enumerate(eq):
@@ -1875,7 +1874,7 @@ def checksysodesol(eqs, sols, func=None):
 
     """
     def _sympify(eq):
-        return list(map(sympify, eq if iterable(eq) else [eq]))
+        return list(map(sympify, eq if is_iterable(eq) else [eq]))
     eqs = _sympify(eqs)
     for i, e in enumerate(eqs):
         if isinstance(e, Equality):
@@ -2341,7 +2340,7 @@ def ode_sol_simplicity(sol, func, trysolving=True):
     # See the docstring for the coercion rules.  We check easier (faster)
     # things here first, to save time.
 
-    if iterable(sol):
+    if is_iterable(sol):
         # See if there are Integrals
         for i in sol:
             if ode_sol_simplicity(i, func, trysolving=trysolving) == oo:
