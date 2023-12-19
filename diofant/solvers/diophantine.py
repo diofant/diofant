@@ -141,7 +141,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
         if d.free_symbols:
             dsol = diophantine(d)
             good = diophantine(n) - dsol
-            return {s for s in good if _mexpand(d.subs(zip(var, s)))}
+            return {s for s in good if _mexpand(d.subs(dict(zip(var, s))))}
         eq = n
         eq = factor_terms(eq)
         assert not eq.is_number
@@ -194,7 +194,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
 
     null = tuple([0]*len(var))
     # if there is no solution, return trivial solution
-    if not sols and eq.subs(zip(var, null)) == 0:
+    if not sols and eq.subs(dict.fromkeys(var, 0)) == 0:
         sols.add(null)
 
     return {sympify(i) for i in sols}
