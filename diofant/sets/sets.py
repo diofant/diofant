@@ -1,5 +1,6 @@
 """Generic set theory interfaces."""
 
+import collections
 import itertools
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
@@ -1141,7 +1142,7 @@ class Union(Set, EvalfMixin):
                 if arg.is_Union:
                     return sum(map(flatten, arg.args), [])
                 return [arg]
-            if is_iterable(arg):  # and not isinstance(arg, Set) (implicit)
+            if isinstance(arg, collections.abc.Iterable):
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
