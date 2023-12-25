@@ -243,28 +243,38 @@ def test__dict_from_expr_no_gens():
     assert _parallel_dict_from_expr([x], opt) == ([{(1,): 1}], build_options([x], {}))
     assert _parallel_dict_from_expr([y], opt) == ([{(1,): 1}], build_options([y], {}))
 
+    opt = build_options([], {'extension': False})
     assert _parallel_dict_from_expr([sqrt(2)],
-                                    extension=False) == ([{(1,): 1}], (sqrt(2),))
-    pytest.raises(GeneratorsNeeded,
-                  lambda: _parallel_dict_from_expr([sqrt(2)], greedy=False))
+                                    opt) == ([{(1,): 1}],
+                                             build_options([sqrt(2)],
+                                                           {'extension': False}))
+    opt = build_options([], {'greedy': False})
+    pytest.raises(GeneratorsNeededError,
+                  lambda: _parallel_dict_from_expr([sqrt(2)], opt))
 
+    opt = build_options([], {'domain': ZZ.inject(x)})
     assert _parallel_dict_from_expr([x*y],
-                                    domain=ZZ.inject(x)) == ([{(1,): x}], (y,))
-    assert parallel_dict_from_expr([x*y],
-                                   domain=ZZ.inject(y)) == ([{(1,): y}], (x,))
+                                    opt) == ([{(1,): x}], build_options([y], {'domain': ZZ.inject(x)}))
+    opt = build_options([], {'domain': ZZ.inject(y)})
+    assert _parallel_dict_from_expr([x*y],
+                                    opt) == ([{(1,): y}],
+                                             build_options([x], {'domain': ZZ.inject(y)}))
 
+    opt = build_options([], {'extension': False})
     assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
-                                    extension=False) == ([{(1, 1, 1, 1): 3}],
-                                                         (x, y, pi, sqrt(2)))
-    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y]) == ([{(1, 1, 1):
-                                                              3*sqrt(2)}],
-                                                            (x, y, pi))
+                                    opt) == ([{(1, 1, 1, 1): 3}],
+                                             build_options([x, y, pi, sqrt(2)], {'extension': False}))
+    opt = build_options([], {})
+    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y], opt) == ([{(1, 1, 1):
+                                                                   3*sqrt(2)}],
+                                                                 build_options([x, y, pi], {}))
 
     assert _parallel_dict_from_expr([x*y], opt) == ([{(1, 1): 1}], build_options([x, y], {}))
     assert _parallel_dict_from_expr([x + y], opt) == ([{(1, 0): 1, (0, 1): 1}],
                                                       build_options([x, y], {}))
 
-    assert _parallel_dict_from_expr([sqrt(2)], opt) == ([{(1,): 1}], build_options([sqrt(2)], {}))
+    pytest.raises(GeneratorsNeededError,
+                  lambda: _parallel_dict_from_expr([sqrt(2)], opt))
 
     f = cos(x)*sin(x) + cos(x)*sin(y) + cos(y)*sin(x) + cos(y)*sin(y)
 
@@ -282,14 +292,10 @@ def test__dict_from_expr_no_gens():
     opt = build_options([], {'domain': ZZ.inject(y)})
     assert _parallel_dict_from_expr([x*y], opt) == ([{(1,): y}], build_options([x], {'domain': ZZ.inject(y)}))
 
-    opt = build_options([], {'extension': None})
-    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
-                                    opt) == ([{(1, 1, 1, 1): 3}],
-                                             build_options([x, y, pi, sqrt(2)], {'extension': None}))
-    opt = build_options([], {'extension': True})
+    opt = build_options([], {})
     assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
                                     opt) == ([{(1, 1, 1): 3*sqrt(2)}],
-                                             build_options([x, y, pi], {'extension': True}))
+                                             build_options([x, y, pi], {}))
 
 
 def test__parallel_dict_from_expr_if_gens():
