@@ -153,8 +153,7 @@ class MpmathPrinter(LambdaPrinter):
     def _print_RootOf(self, expr):
         if expr.is_real:
             return f"findroot(lambda {self._print(expr.poly.gen)}: {self._print(expr.expr)}, {self._print(expr.interval.as_tuple())}, method='bisection')"
-        else:
-            return f"findroot(lambda {self._print(expr.poly.gen)}: {self._print(expr.expr)}, mpc{self._print(expr.interval.center)}, method='secant')"
+        return f"findroot(lambda {self._print(expr.poly.gen)}: {self._print(expr.expr)}, mpc{self._print(expr.interval.center)}, method='secant')"
 
     def _print_Sum(self, expr):
         return 'nsum(lambda {}: {}, {})'.format(','.join([self._print(v) for v in expr.variables]),  # noqa: SFS201
@@ -182,28 +181,21 @@ class MpmathPrinter(LambdaPrinter):
             if d == 1:
                 if n >= 0:
                     return f'{self._print(expr.base)}**{n}'
-                else:
-                    return f'power({self._print(expr.base)}, {n})'
-            else:
-                if n >= 2:
-                    return f'root({self._print(expr.base)}, {d})**{n}'
-                elif n == 1:
-                    return f'root({self._print(expr.base)}, {d})'
-                else:
-                    return f'power(root({self._print(expr.base)}, {d}), {n})'
-        else:
-            return super()._print_Pow(expr)
+                return f'power({self._print(expr.base)}, {n})'
+            if n >= 2:
+                return f'root({self._print(expr.base)}, {d})**{n}'
+            if n == 1:
+                return f'root({self._print(expr.base)}, {d})'
+            return f'power(root({self._print(expr.base)}, {d}), {n})'
+        return super()._print_Pow(expr)
 
     def _print_Rational(self, expr):
         n, d = expr.numerator, expr.denominator
         if d == 1:
             return f'{n}'
-        else:
-            return f'{n}*power({d}, -1)'
+        return f'{n}*power({d}, -1)'
 
 
 def lambdarepr(expr, **settings):
-    """
-    Returns a string usable for lambdifying.
-    """
+    """Returns a string usable for lambdifying."""
     return LambdaPrinter(settings).doprint(expr)

@@ -1,3 +1,0 @@
-"""
-Tests for diffgeom package.
-"""

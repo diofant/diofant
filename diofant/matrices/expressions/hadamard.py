@@ -27,8 +27,7 @@ def hadamard_product(*matrices):
     validate(*matrices)
     if len(matrices) == 1:
         return matrices[0]
-    else:
-        return HadamardProduct(*matrices).doit()
+    return HadamardProduct(*matrices).doit()
 
 
 class HadamardProduct(MatrixExpr):

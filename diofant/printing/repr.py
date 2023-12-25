@@ -6,12 +6,7 @@ builtin repr, except for optional arguments) that returns a string so that the
 relation eval(srepr(expr))=expr holds in an appropriate environment.
 """
 
-from __future__ import annotations
-
-import typing
-
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps, repr_dps
+from mpmath.libmp import prec_to_dps, repr_dps, to_str
 
 from ..core.function import AppliedUndef
 from ..utilities import default_sort_key
@@ -24,30 +19,25 @@ class ReprPrinter(Printer):
 
     printmethod = '_diofantrepr'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None
     }
 
     def reprify(self, args, sep):
-        """
-        Prints each item in `args` and joins them with `sep`.
-        """
+        """Prints each item in `args` and joins them with `sep`."""
         return sep.join([self.doprint(item) for item in args])
 
     def emptyPrinter(self, expr):
-        """
-        The fallback printer.
-        """
+        """The fallback printer."""
         if hasattr(expr, 'args') and hasattr(expr.args, '__iter__'):
             l = []
             for o in expr.args:
                 l.append(self._print(o))
             return expr.__class__.__name__ + f"({', '.join(l)})"
-        elif hasattr(expr, '__repr__') and not issubclass(expr.__class__,
-                                                          DefaultPrinting):
+        if hasattr(expr, '__repr__') and not issubclass(expr.__class__,
+                                                        DefaultPrinting):
             return repr(expr)
-        else:
-            return object.__repr__(expr)
+        return object.__repr__(expr)
 
     def _print_Dict(self, expr):
         l = []
@@ -68,8 +58,7 @@ class ReprPrinter(Printer):
     def _print_FunctionClass(self, expr):
         if issubclass(expr, AppliedUndef):
             return f'Function({expr.__name__!r})'
-        else:
-            return expr.__name__
+        return expr.__name__
 
     def _print_RationalConstant(self, expr):
         return f'Rational({expr.numerator}, {expr.denominator})'
@@ -117,16 +106,15 @@ class ReprPrinter(Printer):
 
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)
-        r = mlib.to_str(expr._mpf_, repr_dps(expr._prec))
+        r = to_str(expr._mpf_, repr_dps(expr._prec))
         return f"{expr.__class__.__name__}('{r}', dps={dps:d})"
 
     def _print_BaseSymbol(self, expr):
         d = expr._assumptions.generator
         if d == {}:
             return f'{expr.__class__.__name__}({self._print(expr.name)})'
-        else:
-            attr = [f'{k}={v}' for k, v in d.items()]
-            return f"{expr.__class__.__name__}({self._print(expr.name)}, {', '.join(attr)})"
+        attr = [f'{k}={v}' for k, v in d.items()]
+        return f"{expr.__class__.__name__}({self._print(expr.name)}, {', '.join(attr)})"
 
     def _print_str(self, expr):
         return repr(expr)
@@ -134,8 +122,7 @@ class ReprPrinter(Printer):
     def _print_tuple(self, expr):
         if len(expr) == 1:
             return f'({self._print(expr[0])},)'
-        else:
-            return f"({self.reprify(expr, ', ')})"
+        return f"({self.reprify(expr, ', ')})"
 
     def _print_WildFunction(self, expr):
         return f"{expr.__class__.__name__}('{expr.name}')"

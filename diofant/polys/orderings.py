@@ -1,7 +1,7 @@
 """Definitions of monomial orderings."""
 
 from ..core import Symbol, Tuple
-from ..core.compatibility import iterable
+from ..utilities.iterables import is_iterable
 
 
 __all__ = ('lex', 'grlex', 'grevlex', 'ilex', 'igrlex', 'igrevlex',
@@ -154,7 +154,7 @@ class InverseOrder(MonomialOrder):
 
     def __call__(self, monomial):
         def inv(l):
-            if iterable(l):
+            if is_iterable(l):
                 return tuple(inv(x) for x in l)
             return -l
         return inv(self.O(monomial))
@@ -232,9 +232,8 @@ def monomial_key(order=None, gens=None):
                 return order([poly.degree(x) for x in gens])
             return _order
         return order
-    else:
-        raise ValueError('monomial ordering specification must be a '
-                         f'string or a callable, got {order}')
+    raise ValueError('monomial ordering specification must be a '
+                     f'string or a callable, got {order}')
 
 
 class _ItemGetter:

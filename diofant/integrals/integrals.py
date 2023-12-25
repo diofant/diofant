@@ -1,13 +1,12 @@
+from ..calculus import Order, limit
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
                     diff, nan, oo)
-from ..core.compatibility import is_sequence
 from ..core.sympify import sympify
-from ..functions import Piecewise, log, piecewise_fold, sqrt
+from ..functions import Piecewise, log, piecewise_fold
 from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
-from ..series import Order, limit
 from ..simplify.fu import sincos_to_sum
 from ..utilities import filldedent
 from .meijerint import meijerint_definite, meijerint_indefinite
@@ -112,12 +111,12 @@ class Integral(AddWithLimits):
                 z = Eq(xab[1], xab[2])
                 if z == true:
                     return True
-                elif z == false:
+                if z == false:
                     got_false = True
             elif len(xab) == 2 and xab[0] not in free:
                 if xab[1].is_zero:
                     return True
-                elif xab[1].is_nonzero:
+                if xab[1].is_nonzero:
                     got_false = True
             else:
                 free.add(xab[0])
@@ -304,7 +303,7 @@ class Integral(AddWithLimits):
         def _calc_limit_1(F, a, dir):
             """Replace d with a."""
             wok = F.subs({d: a})
-            if wok is nan or wok.is_finite is False and a.is_finite:
+            if wok is nan or wok.is_infinite and a.is_finite:
                 return limit(F, d, a, dir)
             return wok
 
@@ -750,16 +749,26 @@ class Integral(AddWithLimits):
             return poly.integrate().as_expr()
 
         if risch is not False:
+            from ..core.function import AppliedUndef, Derivative
+            ds = {_: Dummy() for _ in (_ for _ in ([*f.atoms(Derivative)] +
+                                                   [*f.atoms(AppliedUndef)])
+                                       if not _.has(x))}
+            rs = {v: k for k, v in ds.items()}
+            f = f.subs(ds)
+
             try:
                 result, i = risch_integrate(f, x, separate_integral=True, conds=conds)
             except NotImplementedError:
                 pass
             else:
+                result = result.subs(rs)
                 if i:
+                    i = i.subs(rs)
                     # There was a nonelementary integral. Try integrating it.
                     return result + i.doit(risch=False)
-                else:
-                    return result
+                return result
+            finally:
+                f = f.subs(rs)
 
         # since Integral(f=g1+g2+...) == Integral(g1) + Integral(g2) + ...
         # we are going to handle Add terms separately,
@@ -908,7 +917,7 @@ class Integral(AddWithLimits):
             if x in l[1:]:
                 symb = l[0]
                 break
-        terms, order = expr.function.nseries(
+        terms, order = expr.function.series(
             x=symb, n=n, logx=logx).as_coeff_add(Order)
         order = [o.subs({symb: x}) for o in order]
         return integrate(terms, *expr.limits) + Add(*order)*x
@@ -1012,7 +1021,7 @@ class Integral(AddWithLimits):
                 x = lower_limit + i*dx
                 result += self.function.subs({sym: x})
             return result*dx
-        elif method not in ('left', 'right', 'midpoint'):
+        if method not in ('left', 'right', 'midpoint'):
             raise NotImplementedError(f'Unknown method {method}')
 
         result = 0
@@ -1147,9 +1156,9 @@ def integrate(*args, **kwargs):
     Terms that are independent of x are dropped by indefinite integration:
 
     >>> integrate(sqrt(1 + x), (x, 0, x))
-    2*(x + 1)**(3/2)/3 - 2/3
+    2*sqrt(x + 1)**3/3 - 2/3
     >>> integrate(sqrt(1 + x), x)
-    2*(x + 1)**(3/2)/3
+    2*sqrt(x + 1)**3/3
 
     >>> integrate(x*y)
     Traceback (most recent call last):
@@ -1184,55 +1193,4 @@ def integrate(*args, **kwargs):
     if isinstance(integral, Integral):
         return integral.doit(deep=False, meijerg=meijerg, conds=conds,
                              risch=risch)
-    else:
-        return integral
-
-
-def line_integrate(field, curve, vars):
-    """line_integrate(field, Curve, variables)
-
-    Compute the line integral.
-
-    Examples
-    ========
-
-    >>> C = Curve([E**t + 1, E**t - 1], (t, 0, ln(2)))
-    >>> line_integrate(x + y, C, [x, y])
-    3*sqrt(2)
-
-    See Also
-    ========
-
-    diofant.integrals.integrals.integrate
-    diofant.integrals.integrals.Integral
-
-    """
-    from ..geometry import Curve
-    F = sympify(field)
-    if not F:
-        raise ValueError(
-            'Expecting function specifying field as first argument.')
-    if not isinstance(curve, Curve):
-        raise ValueError('Expecting Curve entity as second argument.')
-    if not is_sequence(vars):
-        raise ValueError('Expecting ordered iterable for variables.')
-    if len(curve.functions) != len(vars):
-        raise ValueError('Field variable size does not match curve dimension.')
-
-    if curve.parameter in vars:
-        raise ValueError('Curve parameter clashes with field parameters.')
-
-    # Calculate derivatives for line parameter functions
-    # F(r) -> F(r(t)) and finally F(r(t)*r'(t))
-    Ft = F
-    dldt = 0
-    for i, var in enumerate(vars):
-        _f = curve.functions[i]
-        _dn = diff(_f, curve.parameter)
-        # ...arc length
-        dldt = dldt + (_dn * _dn)
-        Ft = Ft.subs({var: _f})
-    Ft = Ft * sqrt(dldt)
-
-    integral = Integral(Ft, curve.limits).doit(deep=False)
     return integral

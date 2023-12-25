@@ -1,9 +1,8 @@
 import builtins
 import fractions
-import os
 import sys
 
-from ..printing import latex, pretty, sstrrepr
+from ..printing import StrPrinter, latex, pretty
 from ..printing.printer import Printer
 
 
@@ -11,11 +10,7 @@ def _init_python_printing(stringify_func):
     """Setup printing in Python interactive session."""
 
     def _displayhook(arg):
-        """Python's pretty-printer display hook.
-
-        This function was adapted from PEP 217.
-
-        """
+        """Python's pretty-printer display hook."""
         if arg is not None:
             builtins._ = None
             if isinstance(arg, str):
@@ -82,9 +77,6 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     ╲╱ 5
     >>> theta
     θ
-    >>> init_printing(pretty_print=True, use_unicode=False, no_global=True)
-    >>> theta
-    theta
     >>> init_printing(pretty_print=True, order='grevlex', no_global=True)
     >>> y + x + y**2 + x**2
      2    2
@@ -96,26 +88,24 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     except NameError:
         ip = None
 
-    # guess unicode support
-    unicode_term = False
-    TERM = os.environ.get('TERM', '')
-    if TERM != '' and not TERM.endswith('linux'):
-        unicode_term = True
-    if settings.get('use_unicode') is None:
-        settings['use_unicode'] = bool(unicode_term)
+    if pretty_print is None:
+        pretty_print = ip is not None
 
-    if ip:
-        stringify_func = pretty if pretty_print is not False else sstrrepr
-    else:
-        stringify_func = sstrrepr if not pretty_print else pretty
+    class _StrReprPrinter(StrPrinter):
+        def _print_str(self, expr):
+            return repr(expr)
+
+    def sstrrepr(expr, **kwargs):
+        return _StrReprPrinter().doprint(expr)
+
+    _stringify_func = pretty if pretty_print else sstrrepr
 
     if no_global:
-        _stringify_func = stringify_func
-
-        def stringify_func(expr):  # pylint: disable=function-redefined
+        def stringify_func(expr):
             return _stringify_func(expr, **settings)
     else:
         Printer.set_global_settings(**settings)
+        stringify_func = _stringify_func
 
     if ip:
         _init_ipython_printing(ip, stringify_func)

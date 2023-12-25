@@ -101,12 +101,11 @@ See the appropriate docstrings for a detailed explanation of the output.
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from ..core import Dummy, Expr, Symbol, Tuple, oo
-from ..core.compatibility import NotIterable, is_sequence
-from ..core.sympify import sympify
+from ..core import Dummy, Expr, Symbol, Tuple, oo, sympify
+from ..utilities.iterables import NotIterable, is_sequence
 
 
-class IndexException(Exception):
+class IndexExceptionError(Exception):
     """Generic index error."""
 
 
@@ -133,7 +132,7 @@ class Indexed(Expr):
         from .array.ndim_array import NDimArray
 
         if not args:
-            raise IndexException('Indexed needs at least one index.')
+            raise IndexExceptionError('Indexed needs at least one index.')
         if isinstance(base, (str, Symbol)):
             base = IndexedBase(base)
         elif not hasattr(base, '__getitem__') and not isinstance(base, IndexedBase):
@@ -221,10 +220,10 @@ class Indexed(Expr):
         try:
             return Tuple(*[i.upper - i.lower + 1 for i in self.indices])
         except AttributeError as exc:
-            raise IndexException(filldedent(f"""
+            raise IndexExceptionError(filldedent(f"""
                 Range is not defined for all indices in: {self}""")) from exc
         except TypeError as exc:
-            raise IndexException(filldedent(f"""
+            raise IndexExceptionError(filldedent(f"""
                 Shape cannot be inferred from Idx with
                 undefined range: {self}""")) from exc
 
@@ -253,10 +252,6 @@ class Indexed(Expr):
             except AttributeError:
                 ranges.append(None)
         return ranges
-
-    def _diofantstr(self, p):
-        indices = list(map(p.doprint, self.indices))
-        return f"{p.doprint(self.base)}[{', '.join(indices)}]"
 
 
 class IndexedBase(Expr, NotIterable):
@@ -340,8 +335,7 @@ class IndexedBase(Expr, NotIterable):
         """
         if self._shape:
             return super().args + (self._shape,)
-        else:
-            return super().args
+        return super().args
 
     def _hashable_content(self):
         return Expr._hashable_content(self) + (self._shape,)
@@ -350,12 +344,11 @@ class IndexedBase(Expr, NotIterable):
         if is_sequence(indices):
             # Special case needed because M[*my_tuple] is a syntax error.
             if self.shape and len(self.shape) != len(indices):
-                raise IndexException('Rank mismatch.')
+                raise IndexExceptionError('Rank mismatch.')
             return Indexed(self, *indices, **kw_args)
-        else:
-            if self.shape and len(self.shape) != 1:
-                raise IndexException('Rank mismatch.')
-            return Indexed(self, indices, **kw_args)
+        if self.shape and len(self.shape) != 1:
+            raise IndexExceptionError('Rank mismatch.')
+        return Indexed(self, indices, **kw_args)
 
     @property
     def shape(self):
@@ -394,9 +387,6 @@ class IndexedBase(Expr, NotIterable):
 
         """
         return self.args[0]
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)
 
 
 class Idx(Expr):
@@ -561,6 +551,3 @@ class Idx(Expr):
             return self.args[1][1]
         except IndexError:
             return
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)

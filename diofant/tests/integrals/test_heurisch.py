@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Add, Derivative, E, Ei, Eq, Function, I, Integral,
-                     LambertW, Piecewise, Rational, Sum, Symbol, acos, asin,
-                     asinh, besselj, cos, cosh, diff, erf, erfi, exp, li, log,
-                     pi, ratsimp, root, simplify, sin, sinh, sqrt, tan)
+from diofant import (Derivative, E, Ei, Eq, Function, I, Integral, LambertW,
+                     Piecewise, Rational, Sum, Symbol, acos, asin, asinh,
+                     besselj, cos, cosh, diff, erf, erfi, exp, li, log, pi,
+                     ratsimp, root, simplify, sin, sinh, sqrt, tan)
 from diofant.abc import nu, x, y, z
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
@@ -217,19 +217,10 @@ def test_sympyissue_3609():
 
 
 def test_pmint_rat():
-    # TODO: heurisch() is off by a constant: -3/4. Possibly different permutation
-    # would give the optimal result?
-
-    def drop_const(expr, x):
-        if expr.is_Add:
-            return Add(*[arg for arg in expr.args if arg.has(x)])
-        else:
-            return expr
-
     f = (x**7 - 24*x**4 - 4*x**2 + 8*x - 8)/(x**8 + 6*x**6 + 12*x**4 + 8*x**2)
     g = (4 + 8*x**2 + 6*x + 3*x**3)/(x**5 + 4*x**3 + 4*x) + log(x)
 
-    assert drop_const(ratsimp(heurisch(f, x)), x) == g
+    assert ratsimp(heurisch(f, x)) == g
 
 
 def test_pmint_trig():

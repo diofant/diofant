@@ -26,7 +26,6 @@ automatically generated using Diofant's docstrings.
    ntheory
    concrete
    functions/index
-   geometry/index
    integrals
    logic
    domains
@@ -34,15 +33,10 @@ automatically generated using Diofant's docstrings.
    polys
    printing
    interactive
-   plotting
-   series
    sets
    simplify/simplify
-   stats
    solvers/index
    tensor/index
    utilities/index
    parsing
    calculus/index
-   diffgeom
-   vector/index

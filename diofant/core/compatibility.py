@@ -10,110 +10,6 @@ import typing
 from ..external import import_module
 
 
-# These are in here because telling if something is an iterable just by calling
-# hasattr(obj, "__iter__") behaves differently in Python 2 and Python 3.  In
-# particular, hasattr(str, "__iter__") is False in Python 2 and True in Python 3.
-# I think putting them here also makes it easier to use them in the core.
-
-class NotIterable:
-    """
-    Use this as mixin when creating a class which is not supposed to return
-    true when iterable() is called on its instances. I.e. avoid infinite loop
-    when calling e.g. list() on the instance
-
-    """
-
-
-def iterable(i, exclude=(str, dict, NotIterable)):
-    """
-    Return a boolean indicating whether ``i`` is Diofant iterable.
-    True also indicates that the iterator is finite, i.e. you e.g.
-    call list(...) on the instance.
-
-    When Diofant is working with iterables, it is almost always assuming
-    that the iterable is not a string or a mapping, so those are excluded
-    by default. If you want a pure Python definition, make exclude=None. To
-    exclude multiple items, pass them as a tuple.
-
-    See Also
-    ========
-
-    is_sequence
-
-    Examples
-    ========
-
-    >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
-    >>> for i in things:
-    ...     print(f'{iterable(i)} {type(i)}')
-    True <... 'list'>
-    True <... 'tuple'>
-    True <... 'set'>
-    True <class 'diofant.core.containers.Tuple'>
-    True <... 'generator'>
-    False <... 'dict'>
-    False <... 'str'>
-    False <... 'int'>
-
-    >>> iterable({}, exclude=None)
-    True
-    >>> iterable({}, exclude=str)
-    True
-    >>> iterable('no', exclude=str)
-    False
-
-    """
-    try:
-        iter(i)
-    except TypeError:
-        return False
-    if exclude:
-        return not isinstance(i, exclude)
-    return True
-
-
-def is_sequence(i, include=None):
-    """
-    Return a boolean indicating whether ``i`` is a sequence in the Diofant
-    sense. If anything that fails the test below should be included as
-    being a sequence for your application, set 'include' to that object's
-    type; multiple types should be passed as a tuple of types.
-
-    Note: although generators can generate a sequence, they often need special
-    handling to make sure their elements are captured before the generator is
-    exhausted, so these are not included by default in the definition of a
-    sequence.
-
-    See Also
-    ========
-
-    iterable
-
-    Examples
-    ========
-
-    >>> from types import GeneratorType
-    >>> is_sequence([])
-    True
-    >>> is_sequence(set())
-    False
-    >>> is_sequence('abc')
-    False
-    >>> is_sequence('abc', include=str)
-    True
-    >>> generator = (c for c in 'abc')
-    >>> is_sequence(generator)
-    False
-    >>> is_sequence(generator, include=(str, GeneratorType))
-    True
-
-    """
-    return (hasattr(i, '__getitem__') and
-            iterable(i) or
-            bool(include) and
-            isinstance(i, include))
-
-
 def as_int(n):
     """
     Convert the argument to a builtin integer.
@@ -150,9 +46,7 @@ def as_int(n):
 
 GROUND_TYPES: str = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 
-gmpy: typing.Any = import_module('gmpy2', min_module_version='2.1.0b5',
-                                 module_version_attr='version',
-                                 module_version_attr_call_args=())
+gmpy: typing.Any = import_module('gmpy2')
 if gmpy:
     HAS_GMPY = 2
 else:

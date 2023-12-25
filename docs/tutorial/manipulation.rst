@@ -3,7 +3,7 @@
 ==================
 
 ..
-   >>> init_printing(pretty_print=True, use_unicode=True)
+   >>> init_printing(pretty_print=True)
 
 Most generic interface to represent a mathematical expression in Diofant is a
 tree.  Let us take the expression

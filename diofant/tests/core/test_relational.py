@@ -7,9 +7,9 @@ from diofant import (And, Eq, Equality, FiniteSet, Float, Function, Ge,
                      GreaterThan, Gt, I, Implies, Integer, Interval, Le,
                      LessThan, Lt, Ne, Not, Or, Rational, Rel, Relational,
                      StrictGreaterThan, StrictLessThan, Symbol, Unequality,
-                     Wild, Xor, ceiling, false, floor, nan, oo, pi, simplify,
-                     sqrt, true, zoo)
-from diofant.abc import t, w, x, y, z
+                     Wild, Xor, ceiling, exp, false, floor, nan, oo, pi,
+                     simplify, sqrt, true, zoo)
+from diofant.abc import a, b, c, t, w, x, y, z
 from diofant.core.relational import _Inequality as Inequality
 
 
@@ -85,7 +85,7 @@ def test_wrappers():
 
 
 def test_Eq():
-    assert Eq(x**2, 0) == Eq(x**2, 0)
+    assert Eq(x**2, 0) == Eq(x**2, 0, evaluate=False)
     assert Eq(x**2, 0) != Eq(x**2, 1)
 
     assert Eq(x) == Eq(x, 0)
@@ -148,8 +148,8 @@ def test_bool():
     pytest.raises(TypeError, lambda: Ge(I, 2))
     pytest.raises(TypeError, lambda: Lt(I, 2))
     pytest.raises(TypeError, lambda: Le(I, 2))
-    a = Float('.000000000000000000001')
-    b = Float('.0000000000000000000001')
+    a = 0.000000000000000000001
+    b = 0.0000000000000000000001
     assert Eq(pi + a, pi + b) is false
 
 
@@ -664,3 +664,14 @@ def test_sympyissue_8444():
     i = Symbol('i', integer=True)
     assert (i > floor(i)) is false
     assert (i < ceiling(i)) is false
+
+
+def test_sympyissue_25142():
+    x = 1 + exp(2*I*pi/3) + exp(-2*I*pi/3)
+    assert Eq(x, 0).simplify() == true
+    assert x.expand(complex=True) == 0
+
+
+def test_sympyissue_25451():
+    e = Or(And(a, c), Eq(a, b))
+    assert e != And(a, c)

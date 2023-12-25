@@ -49,11 +49,10 @@ def satisfiable(expr, algorithm='dpll2', all_models=False):
     if algorithm == 'dpll':
         from .algorithms.dpll import dpll_satisfiable
         return dpll_satisfiable(expr)
-    elif algorithm == 'dpll2':
+    if algorithm == 'dpll2':
         from .algorithms.dpll2 import dpll_satisfiable
         return dpll_satisfiable(expr, all_models)
-    else:
-        raise NotImplementedError
+    raise NotImplementedError
 
 
 def valid(expr):
@@ -177,6 +176,7 @@ class KB:
     """Base class for all knowledge bases."""
 
     def __init__(self, sentence=None):
+        """Initialize self."""
         self.clauses_ = set()
         if sentence:
             self.tell(sentence)

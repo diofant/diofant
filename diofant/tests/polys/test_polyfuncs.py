@@ -2,8 +2,8 @@
 
 import pytest
 
-from diofant import (ComputationFailed, MultivariatePolynomialError, horner,
-                     interpolate, symbols, symmetrize, viete)
+from diofant import (ComputationFailedError, MultivariatePolynomialError,
+                     horner, interpolate, symbols, symmetrize, viete)
 from diofant.abc import a, b, c, d, e, x, y, z
 
 
@@ -81,11 +81,11 @@ def test_viete():
     r1, r2 = symbols('r1, r2')
 
     ans = [(r1 + r2, -b/a), (r1*r2, c/a)]
-    assert viete(a*x**2 + b*x + c, [r1, r2], x) == ans
-    assert viete(a*x**2 + b*x + c, None, x) == ans
+    assert viete(a*x**2 + b*x + c, x, roots=[r1, r2]) == ans
+    assert viete(a*x**2 + b*x + c, x) == ans
 
-    pytest.raises(ValueError, lambda: viete(1, [], x))
-    pytest.raises(ValueError, lambda: viete(x**2 + 1, [r1]))
+    pytest.raises(ValueError, lambda: viete(1, x, roots=[]))
+    pytest.raises(ValueError, lambda: viete(x**2 + 1, roots=[r1]))
 
-    pytest.raises(MultivariatePolynomialError, lambda: viete(x + y, [r1]))
-    pytest.raises(ComputationFailed, lambda: viete(1))
+    pytest.raises(MultivariatePolynomialError, lambda: viete(x + y, roots=[r1]))
+    pytest.raises(ComputationFailedError, lambda: viete(1))

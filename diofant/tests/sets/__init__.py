@@ -1,3 +1,1 @@
-"""
-Tests for set theory.
-"""
+"""Tests for set theory."""

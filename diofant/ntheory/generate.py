@@ -1,7 +1,4 @@
-"""
-Generating and counting primes.
-
-"""
+"""Generating and counting primes."""
 
 import array
 import bisect
@@ -161,8 +158,7 @@ class Sieve:
         b = bisect.bisect(self._list, n)
         if self._list[b - 1] == test:
             return b, b
-        else:
-            return b, b + 1
+        return b, b + 1
 
     def __contains__(self, n):
         try:
@@ -180,10 +176,9 @@ class Sieve:
         if isinstance(n, slice):
             self.extend_to_no(n.stop)
             return self._list[n.start - 1:n.stop - 1:n.step]
-        else:
-            n = as_int(n)
-            self.extend_to_no(n)
-            return self._list[n - 1]
+        n = as_int(n)
+        self.extend_to_no(n)
+        return self._list[n - 1]
 
 
 # Generate a global object for repeated use in trial division etc
@@ -243,8 +238,7 @@ def primepi(n):
     n = int(n)
     if n < 2:
         return 0
-    else:
-        return sieve.search(n)[0]
+    return sieve.search(n)[0]
 
 
 def nextprime(n, ith=1):

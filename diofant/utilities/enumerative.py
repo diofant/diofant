@@ -104,6 +104,7 @@ class PartComponent:
     """
 
     def __init__(self):
+        """Initialize self."""
         # Component number
         self.c = 0
 
@@ -392,6 +393,7 @@ class MultisetPartitionTraverser:
     """
 
     def __init__(self):
+        """Initialize self."""
         # TRACING variables.  These are useful for gathering
         # statistics on the algorithm itself, but have no particular
         # benefit to a user of the code.
@@ -593,13 +595,11 @@ class MultisetPartitionTraverser:
                 assert part[0].v > deficit
                 part[0].v -= deficit
                 return True
-            else:
-                if part[i].v >= deficit:
-                    part[i].v -= deficit
-                    return True
-                else:
-                    deficit -= part[i].v
-                    part[i].v = 0
+            if part[i].v >= deficit:
+                part[i].v -= deficit
+                return True
+            deficit -= part[i].v
+            part[i].v = 0
 
     def decrement_part_range(self, part, lb, ub):
         """Decrements part (a subrange of pstack), if possible, returning
@@ -684,9 +684,7 @@ class MultisetPartitionTraverser:
         return False
 
     def top_part(self):
-        """Return current top part on the stack, as a slice of pstack.
-
-        """
+        """Return current top part on the stack, as a slice of pstack."""
         return self.pstack[self.f[self.lpart]:self.f[self.lpart + 1]]
 
     # Same interface and functionality as multiset_partitions_taocp(),

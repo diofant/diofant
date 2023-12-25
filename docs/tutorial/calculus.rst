@@ -3,7 +3,7 @@
 ==========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 This section covers how to do basic calculus tasks such as derivatives,
 integrals, limits, and series expansions in Diofant.
@@ -241,7 +241,7 @@ Limits
 ======
 
 Diofant can compute symbolic limits with the
-:func:`~diofant.series.limits.limit` function.  To compute a directional limit
+:func:`~diofant.calculus.limits.limit` function.  To compute a directional limit
 
 .. math::
 
@@ -252,7 +252,7 @@ do
     >>> limit(sin(x)/x, x, 0)
     1
 
-:func:`~diofant.series.limits.limit` should be used instead of
+:func:`~diofant.calculus.limits.limit` should be used instead of
 :meth:`~diofant.core.basic.Basic.subs` whenever the point of evaluation is a
 singularity.  Even though Diofant has objects to represent `\infty`, using them
 for evaluation is not reliable because they do not keep track of things like
@@ -267,9 +267,9 @@ rate of growth.  Also, things like `\infty - \infty` and
 
 Like :class:`~diofant.core.function.Derivative` and
 :class:`~diofant.integrals.integrals.Integral`,
-:func:`~diofant.series.limits.limit` has an unevaluated counterpart,
-:class:`~diofant.series.limits.Limit`.  To evaluate it, use
-:meth:`~diofant.series.limits.Limit.doit`.
+:func:`~diofant.calculus.limits.limit` has an unevaluated counterpart,
+:class:`~diofant.calculus.limits.Limit`.  To evaluate it, use
+:meth:`~diofant.calculus.limits.Limit.doit`.
 
     >>> Limit((cos(x) - 1)/x, x, 0)
          cos(x) - 1
@@ -279,7 +279,7 @@ Like :class:`~diofant.core.function.Derivative` and
     0
 
 To change side, pass ``'-'`` as a third argument to
-:func:`~diofant.series.limits.limit`.  For example, to compute
+:func:`~diofant.calculus.limits.limit`.  For example, to compute
 
 .. math::
 
@@ -310,7 +310,7 @@ Diofant can compute asymptotic series expansions of functions around a point.
     1 + x + ── + O⎝x ⎠
             2
 
-The `O\left (x^4\right )` term, an instance of :class:`~diofant.series.order.O`
+The `O\left (x^4\right )` term, an instance of :class:`~diofant.calculus.order.O`
 at the end represents the Landau order term at `x=0` (not to be confused with
 big O notation used in computer science, which generally represents the Landau
 order term at `x=\infty`).  Order terms can be created and manipulated outside
@@ -319,7 +319,7 @@ of :meth:`~diofant.core.expr.Expr.series`.
     >>> x + x**3 + x**6 + O(x**4)
          3    ⎛ 4⎞
     x + x  + O⎝x ⎠
-    >>> x*O(1)
+    >>> x*O(1, x)
     O(x)
 
 If you do not want the order term, use the
@@ -331,7 +331,7 @@ If you do not want the order term, use the
     ── + x + 1
     2
 
-The :class:`~diofant.series.order.O` notation supports arbitrary limit points:
+The :class:`~diofant.calculus.order.O` notation supports arbitrary limit points:
 
     >>> exp(x - 1).series(x, x0=1)
            2          3          4          5

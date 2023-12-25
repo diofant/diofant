@@ -5,5 +5,5 @@ class BaseCoreError(Exception):
     """Base class for core related exceptions."""
 
 
-class NonCommutativeExpression(BaseCoreError):
+class NonCommutativeExpressionError(BaseCoreError):
     """Raised when expression didn't have commutative property."""

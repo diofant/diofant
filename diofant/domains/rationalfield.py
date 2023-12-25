@@ -1,6 +1,6 @@
 """Implementation of :class:`RationalField` class."""
 
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .groundtypes import DiofantRational, GMPYRational, PythonRational
@@ -18,7 +18,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     has_assoc_Ring = True
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
+        r"""Return an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
@@ -28,11 +28,17 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     def from_expr(self, expr):
         if expr.is_Rational:
             return self.dtype(expr.numerator, expr.denominator)
-        elif expr.is_Float:
+        if expr.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(expr))
-        else:
-            raise CoercionFailed(f'expected `Rational` object, got {expr}')
+        if expr.is_algebraic:
+            from ..polys import primitive_element
+            try:
+                _, _, [[rep]] = primitive_element([expr], domain=self)
+                return self.dtype(rep.numerator, rep.denominator)
+            except ValueError:
+                pass
+        raise CoercionFailedError(f'expected `Rational` object, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

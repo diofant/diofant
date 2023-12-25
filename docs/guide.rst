@@ -28,7 +28,7 @@ When opening a new issue, please take the following steps:
 
 3. Try to include a minimal code example that demonstrates the problem.
 
-4. Include any relevant details of your local setup (Python
+4. Include any relevant details of your local setup (Diofant version, Python
    version, installed libraries).
 
 .. note::
@@ -55,13 +55,9 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 4. Please conform to `PEP 8`_ and `PEP 257`_; run::
 
-       flake8
+       flake518
 
-   to check formatting and::
-
-       flake8-rst
-
-   if your change affects doctests.
+   to check formatting.
 
 5. PR should include tests:
 
@@ -128,14 +124,17 @@ March 2014 (see :sympyissue:`7235`).  Transfered issue numbers were
 shifted by 3099.  I.e. ``issue 123`` in the git history before
 :commit:`6f68fa1` - does mean issue ``sympy/sympy#3222`` on Github.
 
-Versioning and Release Procedure
-================================
+Versioning
+==========
 
 We use standard `Semantic Versioning`_ numbering scheme, but adopt
 `PEP 440`_ for alpha ("aN" suffix), beta ("bN") and development
 (".devN") releases.
 
-To release a new version, tag latest commit to the master branch
+Release Procedure
+=================
+
+To release a new version, tag the latest commit in the master branch
 and publish this release tag::
 
     git pull
@@ -149,6 +148,5 @@ and publish this release tag::
 .. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
 .. _PEP 8: https://www.python.org/dev/peps/pep-0008/
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
-.. _flake8: http://flake8.rtfd.io/
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
 .. _mention closed issues: https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue

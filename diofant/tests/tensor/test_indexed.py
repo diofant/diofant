@@ -3,8 +3,8 @@ import pytest
 from diofant import (Basic, Dict, Idx, Indexed, IndexedBase, Symbol, Tuple, oo,
                      symbols)
 from diofant.abc import a, b, c, x
-from diofant.core.compatibility import iterable
-from diofant.tensor.indexed import IndexException
+from diofant.tensor.indexed import IndexExceptionError
+from diofant.utilities.iterables import is_iterable
 
 
 __all__ = ()
@@ -117,13 +117,13 @@ def test_IndexedBase_shape():
     assert a[i, j] == b[i, j].subs({n: m})
     assert b.func(b.label, shape=b.shape) == b
     assert b[i, j].func(*b[i, j].args) == b[i, j]
-    pytest.raises(IndexException, lambda: b[i])
-    pytest.raises(IndexException, lambda: b[i, i, j])
+    pytest.raises(IndexExceptionError, lambda: b[i])
+    pytest.raises(IndexExceptionError, lambda: b[i, i, j])
 
     F = IndexedBase('F', shape=m)
     assert F.shape == Tuple(m)
     assert F[i].subs({i: j}) == F[j]
-    pytest.raises(IndexException, lambda: F[i, j])
+    pytest.raises(IndexExceptionError, lambda: F[i, j])
 
 
 def test_Indexed_constructor():
@@ -132,7 +132,7 @@ def test_Indexed_constructor():
     assert A == Indexed(Symbol('A'), i, j)
     assert A == Indexed(IndexedBase('A'), i, j)
     pytest.raises(TypeError, lambda: Indexed(A, i, j))
-    pytest.raises(IndexException, lambda: Indexed('A'))
+    pytest.raises(IndexExceptionError, lambda: Indexed('A'))
 
 
 def test_Indexed_func_args():
@@ -156,13 +156,13 @@ def test_Indexed_properties():
     assert A.indices == (i, j)
     assert A.base == IndexedBase('A')
     assert A.ranges == [None, None]
-    pytest.raises(IndexException, lambda: A.shape)
+    pytest.raises(IndexExceptionError, lambda: A.shape)
 
     n, m = symbols('n m', integer=True)
     assert Indexed('A', Idx(
         i, m), Idx(j, n)).ranges == [Tuple(0, m - 1), Tuple(0, n - 1)]
     assert Indexed('A', Idx(i, m), Idx(j, n)).shape == Tuple(m, n)
-    pytest.raises(IndexException, lambda: Indexed('A', Idx(i, m), Idx(j)).shape)
+    pytest.raises(IndexExceptionError, lambda: Indexed('A', Idx(i, m), Idx(j)).shape)
 
 
 def test_Indexed_shape_precedence():
@@ -189,7 +189,7 @@ def test_complex_indices():
 def test_not_interable():
     i, j = symbols('i j', integer=True)
     A = Indexed('A', i, i + j)
-    assert not iterable(A)
+    assert not is_iterable(A)
 
 
 def test_Indexed_coeff():

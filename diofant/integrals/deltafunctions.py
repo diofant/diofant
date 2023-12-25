@@ -135,14 +135,12 @@ def deltaintegrate(f, x):
     if f.func == DiracDelta:
         h = f.simplify(x)
         if h == f:  # can't simplify the expression
-            # FIXME: the second term tells whether is DeltaDirac or Derivative
             # For integrating derivatives of DiracDelta we need the chain rule
             if f.is_simple(x):
                 if (len(f.args) <= 1 or f.args[1] == 0):
                     return Heaviside(f.args[0])
-                else:
-                    return (DiracDelta(f.args[0], f.args[1] - 1) /
-                            f.args[0].as_poly().LC())
+                return (DiracDelta(f.args[0], f.args[1] - 1) /
+                        f.args[0].as_poly().LC())
         else:  # let's try to integrate the simplified expression
             fh = integrate(h, x)
             return fh

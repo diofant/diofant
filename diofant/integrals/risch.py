@@ -24,7 +24,6 @@ will return the fraction (fa, fd). Other variable names probably come
 from the names used in Bronstein's book.
 """
 
-import functools
 import math
 
 from ..abc import z
@@ -33,9 +32,11 @@ from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
                          coth, exp, log, sin, sinh, tan, tanh)
 from ..polys import (Poly, PolynomialError, RootSum, cancel, gcd, real_roots,
                      reduced)
+from ..solvers import solve
 from ..utilities import default_sort_key, numbered_symbols, ordered
 from .heurisch import _symbols
 from .integrals import Integral, integrate
+from .rationaltools import ratint
 
 
 def integer_powers(exprs):
@@ -91,8 +92,7 @@ def integer_powers(exprs):
 
     newterms = {}
     for term, val in terms.items():
-        common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
-                                                   val])
+        common_denom = math.lcm(*(i.as_numer_denom()[1] for _, i in val))
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in val]
         newterms[newterm] = newmults
@@ -187,7 +187,7 @@ class DifferentialExtension:
             self._auto_attrs()
 
             return
-        elif f is None or x is None:
+        if f is None or x is None:
             raise ValueError('Either both f and x or a manual extension must '
                              'be given.')
 
@@ -432,17 +432,9 @@ class DifferentialExtension:
 
             if A is not None:
                 ans, u, n, const = A
-                # if n is 1 or -1, it's algebraic, but we can handle it
-                if n == -1:
-                    # This probably will never happen, because
-                    # Rational.as_numer_denom() returns the negative term in
-                    # the numerator.  But in case that changes, reduce it to
-                    # n == 1.
-                    n = 1
-                    u **= -1
-                    const *= -1
-                    ans = [(i, -j) for i, j in ans]
+                assert n > 0
 
+                # if n is 1 it's algebraic, but we can handle it
                 if n == 1:
                     # Example: exp(x + x**2) over QQ(x, exp(x), exp(x**2))
                     self.newf = self.newf.xreplace({exp(arg): exp(const)*Mul(*[
@@ -643,6 +635,7 @@ class DecrementLevel:
     """A context manager for decrementing the level of a DifferentialExtension."""
 
     def __init__(self, DE):
+        """Initialize self."""
         self.DE = DE
 
     def __enter__(self):
@@ -652,7 +645,7 @@ class DecrementLevel:
         self.DE.increment_level()
 
 
-class NonElementaryIntegralException(Exception):
+class NonElementaryIntegralExceptionError(Exception):
     """
     Exception used by subroutines within the Risch algorithm to indicate to one
     another that the function being integrated does not have an elementary
@@ -742,7 +735,7 @@ def as_poly_1t(p, t, z):
         # a bug.
         raise PolynomialError(f'{p} is not an element of K[{t}, 1/{t}].')
     d = pd.degree(t)
-    one_t_part = pa.slice(0, d + 1)
+    one_t_part = pa % t**(d + 1)
     r = pd.degree() - pa.degree()
     t_part = pa - one_t_part
     t_part = t_part.to_field().exquo(pd)
@@ -870,8 +863,7 @@ def splitfactor(p, DE, coefficientD=False, z=None):
         q_split = splitfactor(p.exquo(s), DE, coefficientD=coefficientD)
 
         return q_split[0], q_split[1]*s
-    else:
-        return p, One
+    return p, One
 
 
 def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
@@ -1025,8 +1017,6 @@ def laurent_series(a, d, F, n, DE):
     A/D at all the zeros of F.
 
     """
-    if F.degree() == 0:
-        return 0
     Z = _symbols('z', n)
     Z.insert(0, z)
     delta_a = Poly(0, DE.t)
@@ -1224,10 +1214,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
 
 def residue_reduce_to_basic(H, DE, z):
-    """
-    Converts the tuple returned by residue_reduce() into a Basic expression.
-
-    """
+    """Converts the tuple returned by residue_reduce() into a Basic expression."""
     # TODO: check what Lambda does with RootOf
     i = Dummy('i')
     s = list(zip(reversed(DE.T), reversed([f(DE.x) for f in DE.Tfuncs])))
@@ -1284,7 +1271,7 @@ def integrate_primitive_polynomial(p, DE):
                 (ba, bd), c = limited_integrate(aa, ad, [(Dta, Dtb)], DE)
                 if len(c) != 1:
                     raise ValueError('Length of c should  be 1')
-            except NonElementaryIntegralException:
+            except NonElementaryIntegralExceptionError:
                 return q, p, False
 
         m = p.degree(DE.t)
@@ -1360,7 +1347,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
     b = True
 
     if p.is_zero:
-        return(qa, qd, b)
+        return qa, qd, b
 
     with DecrementLevel(DE):
         for i in range(-p.degree(z), p.degree(t1) + 1):
@@ -1383,7 +1370,7 @@ def integrate_hyperexponential_polynomial(p, DE, z):
             try:
                 va, vd = rischDE(iDta, iDtd, Poly(aa, DE.t), Poly(ad, DE.t), DE)
                 va, vd = frac_in((va, vd), t1)
-            except NonElementaryIntegralException:
+            except NonElementaryIntegralExceptionError:
                 b = False
             else:
                 qa = qa*vd + va*Poly(t1**i)*qd
@@ -1436,14 +1423,11 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     qas = qa.as_expr().subs(s)
     qds = qd.as_expr().subs(s)
-    if conds == 'piecewise' and DE.x not in qds.free_symbols:
+    eq = Eq(qds, 0)
+    if conds == 'piecewise' and DE.x not in qds.free_symbols and (s2 := solve(eq)):
         # We have to be careful if the exponent is Integer(0)!
-
-        # XXX: Does qd = 0 always necessarily correspond to the exponential
-        # equaling 1?
-        ret += Piecewise(
-            (integrate((p - i).subs({DE.t: 1}).subs(s), DE.x), Eq(qds, 0)),
-            (qas/qds, True))
+        ret += Piecewise((integrate((p - i).subs(s).subs(s2[0]), DE.x), eq),
+                         (qas/qds, True))
     else:
         ret += qas/qds
 
@@ -1596,14 +1580,12 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     First, we try integrating exp(-x**2). Except for a constant factor of
     2/sqrt(pi), this is the famous error function.
 
-    >>> pprint(risch_integrate(exp(-x**2), x), use_unicode=False)
-      /
-     |
-     |    2
-     |  -x
-     | E    dx
-     |
-    /
+    >>> pprint(risch_integrate(exp(-x**2), x))
+    ⌠
+    ⎮    2
+    ⎮  -x
+    ⎮ ℯ    dx
+    ⌡
 
     The unevaluated Integral in the result means that risch_integrate() has
     proven that exp(-x**2) does not have an elementary anti-derivative.
@@ -1613,14 +1595,12 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     For example,
 
     >>> pprint(risch_integrate((2*log(x)**2 - log(x) - x**2)/(log(x)**3 -
-    ...                        x**2*log(x)), x), use_unicode=False)
-                                             /
-                                            |
-      log(-x + log(x))   log(x + log(x))    |   1
-    - ---------------- + --------------- +  | ------ dx
-             2                  2           | log(x)
-                                            |
-                                           /
+    ...                        x**2*log(x)), x))
+                                           ⌠
+      log(-x + log(x))   log(x + log(x))   ⎮   1
+    - ──────────────── + ─────────────── + ⎮ ────── dx
+             2                  2          ⎮ log(x)
+                                           ⌡
 
     This means that it has proven that the integral of 1/log(x) is
     nonelementary.  This function is also known as the logarithmic integral,
@@ -1631,33 +1611,27 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     nested exponentials and logarithms, as well as exponentials with bases
     other than E.
 
-    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x), use_unicode=False)
-     / x\
-     \E /
-    E
-    >>> pprint(risch_integrate(exp(exp(x)), x), use_unicode=False)
-      /
-     |
-     |  / x\
-     |  \E /
-     | E     dx
-     |
-    /
-
-    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x), use_unicode=False)
+    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x))
+     ⎛ x⎞
+     ⎝ℯ ⎠
+    ℯ
+    >>> pprint(risch_integrate(exp(exp(x)), x))
+    ⌠
+    ⎮  ⎛ x⎞
+    ⎮  ⎝ℯ ⎠
+    ⎮ ℯ     dx
+    ⌡
+    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x))
        x
-    x*x
-    >>> pprint(risch_integrate(x**x, x), use_unicode=False)
-      /
-     |
-     |  x
-     | x  dx
-     |
-    /
-
-    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x), use_unicode=False)
+    x⋅x
+    >>> pprint(risch_integrate(x**x, x))
+    ⌠
+    ⎮  x
+    ⎮ x  dx
+    ⌡
+    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x))
          1
-    -----------
+    ───────────
     log(log(x))
 
     """
@@ -1679,11 +1653,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
         elif case == 'primitive':
             ans, i, b = integrate_primitive(fa, fd, DE)
         elif case == 'base':
-            # XXX: We can't call ratint() directly here because it doesn't
-            # handle polynomials correctly.
-            ans = integrate(fa.as_expr()/fd.as_expr(), DE.x, risch=False)
-            b = False
-            i = Integer(0)
+            ans, i, b = ratint((fa, fd), DE.x), Integer(0), False
         else:
             raise NotImplementedError('Only exponential and logarithmic '
                                       'extensions are currently supported.')
@@ -1699,9 +1669,6 @@ def risch_integrate(f, x, extension=None, handle_first='log',
             if not separate_integral:
                 result += i
                 return result
-            else:
-
-                if isinstance(i, NonElementaryIntegral):
-                    return result, i
-                else:
-                    return result, 0
+            if isinstance(i, NonElementaryIntegral):
+                return result, i
+            return result, 0

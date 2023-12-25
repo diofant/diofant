@@ -1,11 +1,12 @@
 """Tools for doing common subexpression elimination."""
 
+import graphlib
+
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms
-from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
 from ..core.sympify import sympify
-from ..utilities import numbered_symbols, ordered, sift, topological_sort
-from ..utilities.iterables import filter_symbols
+from ..utilities import numbered_symbols, ordered, sift
+from ..utilities.iterables import filter_symbols, is_iterable
 from . import cse_opts
 
 
@@ -53,7 +54,8 @@ def reps_toposort(r):
         for c2, (_, v2) in enumerate(r):
             if k1 in v2.free_symbols:
                 E.append((c1, c2))
-    return [r[i] for i in topological_sort((range(len(r)), E))]
+    graph = {v: {_[0] for _ in E if _[1] == v} for v in range(len(r))}
+    return [r[i] for i in graphlib.TopologicalSorter(graph).static_order()]
 
 
 def cse_separate(r, e):
@@ -66,10 +68,10 @@ def cse_separate(r, e):
     >>> x0, x1 = symbols('x:2')
     >>> eq = (x + 1 + exp((x + 1)/(y + 1)) + cos(y + 1))
     >>> cse([eq, Eq(x, z + 1), z - 2],
-    ...     postprocess=cse_separate) in [[[(x0, y + 1), (x, z + 1),
+    ...     postprocess=cse_separate) in [[[(x, z + 1), (x0, y + 1),
     ...                                     (x1, x + 1)],
     ...                                    [x1 + exp(x1/x0) + cos(x0), z - 2]],
-    ...                                   [[(x1, y + 1), (x, z + 1),
+    ...                                   [[(x, z + 1), (x1, y + 1),
     ...                                     (x0, x + 1)],
     ...                                    [x0 + exp(x0/x1) + cos(x1), z - 2]]]
     ...
@@ -171,7 +173,7 @@ def opt_cse(exprs, order='canonical'):
         if expr.is_Atom or expr.is_Order:
             return
 
-        if iterable(expr):
+        if is_iterable(expr):
             list(map(_find_opts, expr))
             return
 
@@ -285,7 +287,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
         if expr.is_Atom or expr.is_Order:
             return
 
-        if iterable(expr):
+        if is_iterable(expr):
             args = expr
 
         else:
@@ -318,7 +320,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
         if not expr.args:
             return expr
 
-        if iterable(expr):
+        if is_iterable(expr):
             new_args = [_rebuild(arg) for arg in expr]
             return expr.func(*new_args)
 
@@ -360,8 +362,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
             replacements.append((sym, new_expr))
             return sym
 
-        else:
-            return new_expr
+        return new_expr
 
     reduced_exprs = []
     for e in exprs:

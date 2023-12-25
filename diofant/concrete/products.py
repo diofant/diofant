@@ -84,13 +84,11 @@ class Product(ExprWithIntLimits):
             g = self._eval_product(f, (i, a, b))
             if g in (None, nan):
                 return self.func(powsimp(f), *self.limits[index:])
-            else:
-                f = g
+            f = g
 
         if hints.get('deep', True):
             return f.doit(**hints)
-        else:
-            return powsimp(f)
+        return powsimp(f)
 
     def _eval_adjoint(self):
         if self.is_commutative:
@@ -121,7 +119,7 @@ class Product(ExprWithIntLimits):
         if dif.is_Integer:
             return Mul(*[term.subs({k: a + i}) for i in range(dif + 1)])
 
-        elif term.is_polynomial(k):
+        if term.is_polynomial(k):
             poly = term.as_poly(k)
 
             A = B = Q = Integer(1)
@@ -174,7 +172,7 @@ class Product(ExprWithIntLimits):
                 s = summation(term.exp, (k, a, n))
 
                 return term.base**s
-            elif not term.exp.has(k):
+            if not term.exp.has(k):
                 p = self._eval_product(term.base, (k, a, n))
 
                 if p is not None:
@@ -303,5 +301,4 @@ def product(*args, **kwargs):
 
     if isinstance(prod, Product):
         return prod.doit(deep=False)
-    else:
-        return prod
+    return prod

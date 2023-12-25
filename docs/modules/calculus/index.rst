@@ -4,14 +4,17 @@ Calculus
 
 .. automodule:: diofant.calculus
 
-.. automodule:: diofant.calculus.euler
+.. automodule:: diofant.calculus.singularities
     :members:
 
-.. automodule:: diofant.calculus.singularities
+.. automodule:: diofant.calculus.limits
     :members:
 
 .. automodule:: diofant.calculus.optimization
     :members:
 
-.. automodule:: diofant.calculus.finite_diff
+.. automodule:: diofant.calculus.order
+    :members:
+
+.. automodule:: diofant.calculus.residues
     :members:

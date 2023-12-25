@@ -1,10 +1,12 @@
+import itertools
+
 import pytest
 
-from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
+from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
-                     root, simplify, sin, sinh, sqrt, symbols, tan, variations)
+                     root, simplify, sin, sinh, sqrt, symbols, tan)
 from diofant.abc import A, a, b, c, d, k, l, m, n
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -2139,7 +2141,7 @@ def test_sympyissue_5308():
     assert (constant_renumber(C1*x + C2*y, 'C', 1, 2) ==
             constant_renumber(C1*y + C2*x, 'C', 1, 2) ==
             C1*x + C2*y)
-    for a, b, c in variations([C1, C2, C3], 3):
+    for a, b, c in itertools.permutations([C1, C2, C3]):
         assert constant_renumber(a*(b + x)*(c + y),
                                  'C', 1, 3) == C1*(C2 + x)*(C3 + y)
 
@@ -2742,7 +2744,7 @@ def test_2nd_power_series_regular():
     eq = x**2*f(x).diff((x, 2)) - 3*x*f(x).diff(x) + (4*x + 4)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*x**2*(-16*x**3/9 +
                                            4*x**2 - 4*x + 1) + O(x**6))
-    assert dsolve(eq, n=2) == Eq(f(x), O(1))
+    assert dsolve(eq, n=2) == Eq(f(x), O(1, x))
 
     eq = 4*x**2*f(x).diff((x, 2)) - 8*x**2*f(x).diff(x) + (4*x**2 + 1)*f(x)
     assert dsolve(eq) == Eq(f(x), C1*sqrt(x)*(x**4/24 + x**3/6 + x**2/2 +
@@ -2821,10 +2823,8 @@ def test_sympyissue_7138():
 
 def test_sympyissue_10379():
     sol = dsolve(f(t).diff(t) - (1 - 51.05*a*f(t)))
-    ans = Eq(f(t), (Float('0.019588638589618023', dps=15) +
-                    Float('0.019588638589618023', dps=15) *
-                    exp(-1.0*a*(-1.0*C1 +
-                                Float('51.049999999999997', dps=15)*t)))/a)
+    ans = Eq(f(t), (0.019588638589618023 +
+                    0.019588638589618023*exp(-a*(-C1 + 51.05*t)))/a)
     assert sol == ans
 
 
@@ -3045,3 +3045,26 @@ def test_sympyissue_23562():
 def test_sympyissue_23702():
     assert dsolve(f(x).diff(x) - f(x), f(x),
                   init={f(0): f(0)}) == Eq(f(x),  f(0)*exp(x))
+
+
+def test_sympyissue_24957():
+    eq = (2*x**3 + 3*f(x)) + (3*x + f(x) - 1)*f(x).diff(x)
+    assert dsolve(eq) == [Eq(f(x), -3*x - sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1),
+                          Eq(f(x), -3*x + sqrt(C1 - x**4 + 9*x**2 - 6*x) + 1)]
+
+
+def test_sympyissue_24955():
+    eq = x**2*f(x).diff(x) - f(x)**2*f(x).diff(x) + 2*x*f(x)
+    assert dsolve(eq) == [Eq(f(x), root(2, 3)*(-x**2/root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3) -
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/2)),
+                          Eq(f(x), root(2, 3)*(2*x**2/((1 + sqrt(3)*I)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)) +
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4 +
+                             root(2, 3)*sqrt(3)*I*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4)),
+                          Eq(f(x), root(2, 3)*(-2*x**2/((-1 + sqrt(3)*I)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)) +
+                             root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4 -
+                             root(2, 3)*sqrt(3)*I*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4))]
+
+
+def test_sympyissue_25882():
+    eq = (x - 1)*f(x).diff((x, 2)) - f(x).diff(x)
+    assert classify_ode(eq, f(x)) == ('2nd_power_series_ordinary',)

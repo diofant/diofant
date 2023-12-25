@@ -92,7 +92,7 @@ def test_gamma_series():
     assert gamma(x).series(x, -1, 3) == \
         -1/(x + 1) + EulerGamma - 1 + (x + 1)*(-1 - pi**2/12 - EulerGamma**2/2 +
                                                EulerGamma) + (x + 1)**2*(-1 - pi**2/12 - EulerGamma**2/2 + EulerGamma**3/6 -
-                                                                         polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, (x, -1))
+                                                                         polygamma(2, 1)/6 + EulerGamma*pi**2/12 + EulerGamma) + O((x + 1)**3, x, -1)
 
 
 def tn_branch(s, func):
@@ -399,12 +399,12 @@ def test_loggamma():
     assert loggamma(w).is_extended_real is None
 
     def tN(N, M):
-        assert loggamma(1/x)._eval_nseries(x, n=N).getn() == M
-    tN(0, 0)
+        assert loggamma(1/x).series(x, n=N).getn() == M
+    tN(-1, -1)
     tN(1, 1)
-    tN(2, 3)
+    tN(2, 2)
     tN(3, 3)
-    tN(4, 5)
+    tN(4, 4)
     tN(5, 5)
 
 

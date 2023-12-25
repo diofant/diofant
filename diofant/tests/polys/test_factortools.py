@@ -1,12 +1,11 @@
 """Tests for polynomial factorization routines."""
 
-import functools
-import operator
+import math
 
 import pytest
 
-from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
-                     nextprime, pi, ring, sin, sqrt)
+from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactorsError,
+                     I, nextprime, pi, ring, sin, sqrt)
 from diofant.config import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -278,7 +277,7 @@ def test__zz_wang():
 
     assert H == [h_1, h_2, h_3]
     assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
-    assert functools.reduce(operator.mul, factors) == w_1
+    assert math.prod(factors) == w_1
 
     # coverage tests
     f = x**6 + 5*x**4*y - 5*x**2*y**2 - y**3
@@ -297,7 +296,7 @@ def test__zz_wang():
     assert R._zz_wang(f, seed=random_sequence) == [f]
 
     with using(eez_restart_if_needed=False):
-        pytest.raises(ExtraneousFactors,
+        pytest.raises(ExtraneousFactorsError,
                       lambda: R._zz_wang(f, seed=random_sequence))
 
 

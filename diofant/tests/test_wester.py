@@ -10,10 +10,11 @@ References
 import itertools
 import math
 
+import mpmath
 import pytest
 
 from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
-                     E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
+                     E, EulerGamma, FiniteSet, Function, GoldenRatio,
                      GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
                      LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
                      N, O, Or, Piecewise, Product, Rational, Subs, Sum, Symbol,
@@ -188,7 +189,7 @@ def test_D2():
 
 
 def test_D3():
-    assert exp(pi*sqrt(163)).evalf(50).num.ae(262537412640768744)
+    assert mpmath.mpmathify(exp(pi*sqrt(163)).evalf(50)).ae(262537412640768744)
 
 
 def test_D4():
@@ -535,7 +536,7 @@ def test_J5():
 
 
 def test_J6():
-    assert besselj(2, 1 + I).evalf() == Float('0.04157988694396212', 15) + Float('0.24739764151330632', 15)*I
+    assert besselj(2, 1 + I).evalf() == 0.04157988694396212 + 0.24739764151330632*I
 
 
 def test_J7():
@@ -2008,7 +2009,7 @@ def test_X5():
              integrate(h(c*y), (y, 0, x))).series(x, x0=d, n=2) ==
             (Integral(h(c*y), (y, 0, x)) + g(b*d) +
              b*(-d + x)*Subs(Derivative(g(y), y), (y, b*d)) +
-             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, (x, d))))
+             a*Subs(Derivative(f(y), y), (y, a*x)) + O((-d + x)**2, x, d)))
 
 
 def test_X6():
@@ -2035,7 +2036,7 @@ def test_X8():
     # see issue sympy/sympy#7167
     assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + sqrt(x - 3*pi/2)**3/12 +
-            sqrt(x - 3*pi/2)**7/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            sqrt(x - 3*pi/2)**7/160 + O((x - 3*pi/2)**4, x, 3*pi/2))
 
 
 def test_X9():
@@ -2054,7 +2055,7 @@ def test_X11():
 
 
 def test_X13():
-    assert sqrt(2*x**2 + 1).series(x, x0=oo, n=1) == sqrt(2)*x + O(1/x, (x, oo))
+    assert sqrt(2*x**2 + 1).series(x, x0=oo, n=1) == sqrt(2)*x + O(1/x, x, oo)
 
 
 @pytest.mark.xfail

@@ -1,7 +1,8 @@
-from diofant import (EX, Float, I, Integer, Lambda, Poly, Rational, RootSum,
-                     atan, integrate, log, simplify, sqrt, symbols)
+from diofant import (EX, I, Integer, Lambda, Poly, Rational, RootSum, atan,
+                     integrate, log, simplify, sqrt, symbols)
 from diofant.abc import a, b, t, u, x
-from diofant.integrals.rationaltools import log_to_atan, ratint, ratint_logpart
+from diofant.integrals.rationaltools import (log_to_atan, log_to_real, ratint,
+                                             ratint_logpart)
 
 
 __all__ = ()
@@ -116,6 +117,10 @@ def test_ratint():
                                   46656/117649)))
     assert ratint(1/(x**7 - x + 1), x) == ans
 
+    # issue sympy/sympy#25896
+    assert ratint((2*x + 1)/(x**2 + 1) + 1/x,
+                  x) == log(x) + log(x**2 + 1) + atan(x)
+
 
 def test_ratint_logpart():
     assert ratint_logpart(x, x**2 - 9, x, t) == \
@@ -159,4 +164,24 @@ def test_log_to_atan():
 
 def test_sympyissue_13460():
     assert integrate(1/(-28*x**3 - 46*x**2 - 25*x - 10),
-                     [x, 2, 3]).evalf() == Float('-0.0013230197536986538', dps=15)
+                     [x, 2, 3]).evalf() == -0.0013230197536986538
+
+
+def test_issue_1363():
+    assert log_to_real((x + 2*t - 2).as_poly(x),
+                       (4*t**3 - 12*t**2 + 13*t - 5).as_poly(t),
+                       x, t) == log(x) + log(x**2 + 1) + atan(x)
+
+    # examples from sympy/sympy#25896
+    bad = [(3*x**2 + x + 1)/(x**3 + x),
+           (4*x + 7)/(3*(x**2 + 4*x + 6)) + 2/(3*x),
+           (8*x - 7)/(3*(2*x**2 - 4*x + 3)) + 2/(3*x),
+           -4*(x + 1)/(2*x**2 - 4*x + 3) - 1/x,
+           (2*x + 1)/(x**2 + 4*x + 6) + 1/x]
+    good = [(-x**2 + 3*x + 6)/(6*x**3 + 3*x**2 + 2*x),
+            (2*x**2 - x + 3)/(-5*x**3 - 4*x**2 + 6*x),
+            (2*x**2 - x + 3)/(-x**3 - 4*x**2 - 6*x),
+            (2*x**2 - x + 3)/(6*x**3 + 3*x**2 + 2*x),
+            (2*x**2 + 6*x + 2)/(-5*x**3 - 4*x**2 + 6*x)]
+
+    assert all(ratint(e, x).diff(x).equals(e) for e in bad + good)

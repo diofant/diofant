@@ -1,6 +1,4 @@
-"""
-Package for handling logical expressions.
-"""
+"""Package for handling logical expressions."""
 
 from .boolalg import (ITE, And, Equivalent, Implies, Nand, Nor, Not, Or, Xor,
                       false, simplify_logic, to_cnf, to_dnf, to_nnf, true)

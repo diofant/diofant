@@ -1,6 +1,5 @@
 """Hypergeometric and Meijer G-functions."""
 
-import functools
 import math
 
 import mpmath
@@ -18,6 +17,9 @@ class TupleArg(Tuple):
     def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
         return self.func(*[_.limit(x, xlim, dir) for _ in self.args])
+
+    def _to_mpmath(self, prec):
+        return tuple(arg._to_mpmath(prec) for arg in self)
 
 
 # TODO should __new__ accept **options?
@@ -117,13 +119,12 @@ class hyper(TupleParametersBase):
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
 
-    There is also pretty printing (it looks better using unicode):
+    There is also pretty printing:
 
-    >>> pprint(hyper((1, 2, 3), [3, 4], x), use_unicode=False)
-      _
-     |_  /1, 2, 3 |  \
-     |   |        | x|
-    3  2 \  3, 4  |  /
+    >>> pprint(hyper((1, 2, 3), [3, 4], x))
+     ┌─  ⎛1, 2, 3 │  ⎞
+     ├─  ⎜        │ x⎟
+    3╵ 2 ⎝  3, 4  │  ⎠
 
     The parameters must always be iterables, even if they are vectors of
     length one or zero:
@@ -280,10 +281,9 @@ class hyper(TupleParametersBase):
                 return oo
         if len(self.ap) == len(self.bq) + 1:
             return Integer(1)
-        elif len(self.ap) <= len(self.bq):
+        if len(self.ap) <= len(self.bq):
             return oo
-        else:
-            return Integer(0)
+        return Integer(0)
 
     @property
     def convergence_statement(self):
@@ -306,14 +306,6 @@ class hyper(TupleParametersBase):
     def _eval_simplify(self, ratio, measure):
         from ...simplify import hyperexpand
         return hyperexpand(self)
-
-    def _eval_evalf(self, prec):
-        z = self.argument._to_mpmath(prec)
-        ap = [a._to_mpmath(prec) for a in self.ap]
-        bp = [b._to_mpmath(prec) for b in self.bq]
-        with mpmath.workprec(prec):
-            res = mpmath.hyper(ap, bp, z, eliminate=False)
-        return Expr._from_mpmath(res, prec)
 
 
 class meijerg(TupleParametersBase):
@@ -366,17 +358,17 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
-     __1, 2 /1, 2  a, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x))
+    ╭─╮1, 2 ⎛1, 2  a, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     or as two nested vectors:
 
-    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x), use_unicode=False)
-     __1, 2 /1, 2  3, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x))
+    ╭─╮1, 2 ⎛1, 2  3, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     As with the hypergeometric function, the parameters may be passed as
     arbitrary iterables. Vectors of length zero and one also have to be
@@ -387,10 +379,10 @@ class meijerg(TupleParametersBase):
     All the subvectors of parameters are available:
 
     >>> g = meijerg([1], [2], [3], [4], x)
-    >>> pprint(g, use_unicode=False)
-     __1, 1 /1  2 |  \
-    /__     |     | x|
-    \_|2, 2 \3  4 |  /
+    >>> pprint(g)
+    ╭─╮1, 1 ⎛1  2 │  ⎞
+    │╶┐     ⎜     │ x⎟
+    ╰─╯2, 2 ⎝3  4 │  ⎠
     >>> g.an
     (1,)
     >>> g.ap
@@ -469,13 +461,12 @@ class meijerg(TupleParametersBase):
             a[0] -= 1
             G = meijerg(a, self.aother, self.bm, self.bother, self.argument)
             return 1/self.argument * ((self.an[0] - 1)*self + G)
-        elif len(self.bm) >= 1:
+        if len(self.bm) >= 1:
             b = list(self.bm)
             b[0] += 1
             G = meijerg(self.an, self.aother, b, self.bother, self.argument)
             return 1/self.argument * (self.bm[0]*self - G)
-        else:
-            return Integer(0)
+        return Integer(0)
 
     def _diff_wrt_parameter(self, idx):
         # Differentiation wrt a parameter can only be done in very special
@@ -586,7 +577,7 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return functools.reduce(math.lcm, (x.denominator for x in l), 1)
+            return math.lcm(*(x.denominator for x in l))
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)
@@ -594,10 +585,9 @@ class meijerg(TupleParametersBase):
             if oo in (beta, alpha):
                 return oo
             return 2*pi*math.lcm(alpha, beta)
-        elif p < q:
+        if p < q:
             return 2*pi*beta
-        else:
-            return 2*pi*alpha
+        return 2*pi*alpha
 
     def _eval_expand_func(self, **hints):
         from ...simplify import hyperexpand
@@ -624,8 +614,9 @@ class meijerg(TupleParametersBase):
         znum = znum**(Integer(1)/n)*exp(I*branch / n)
 
         # Convert all args to mpf or mpc
-        [z, r, ap, bq] = [arg._to_mpmath(prec)
-                          for arg in [znum, 1/n, self.args[0], self.args[1]]]
+        [z, r, ap, bq] = [znum._to_mpmath(prec), (1/n)._to_mpmath(prec),
+                          [[_._to_mpmath(prec) for _ in a] for a in self.args[0]],
+                          [[_._to_mpmath(prec) for _ in b] for b in self.args[1]]]
 
         with mpmath.workprec(prec):
             v = mpmath.meijerg(ap, bq, z, r)
@@ -853,14 +844,12 @@ class HyperRep_atanh(HyperRep):
     def _expr_big(self, x, n):
         if n.is_even:
             return (acoth(sqrt(x)) + I*pi/2)/sqrt(x)
-        else:
-            return (acoth(sqrt(x)) - I*pi/2)/sqrt(x)
+        return (acoth(sqrt(x)) - I*pi/2)/sqrt(x)
 
     def _expr_big_minus(self, x, n):
         if n.is_even:
             return atan(sqrt(x))/sqrt(x)
-        else:
-            return (atan(sqrt(x)) - pi)/sqrt(x)
+        return (atan(sqrt(x)) - pi)/sqrt(x)
 
 
 class HyperRep_asin1(HyperRep):
@@ -924,17 +913,15 @@ class HyperRep_sqrts1(HyperRep):
         if n.is_even:
             return ((sqrt(z) + 1)**(2*a)*exp(2*pi*I*n*a) +
                     (sqrt(z) - 1)**(2*a)*exp(2*pi*I*(n - 1)*a))/2
-        else:
-            n -= 1
-            return ((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n + 1)) +
-                    (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))/2
+        n -= 1
+        return ((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n + 1)) +
+                (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))/2
 
     @classmethod
     def _expr_big_minus(cls, a, z, n):
         if n.is_even:
             return (1 + z)**a*exp(2*pi*I*n*a)*cos(2*a*atan(sqrt(z)))
-        else:
-            return (1 + z)**a*exp(2*pi*I*n*a)*cos(2*a*atan(sqrt(z)) - 2*pi*a)
+        return (1 + z)**a*exp(2*pi*I*n*a)*cos(2*a*atan(sqrt(z)) - 2*pi*a)
 
 
 class HyperRep_sqrts2(HyperRep):
@@ -957,17 +944,15 @@ class HyperRep_sqrts2(HyperRep):
         if n.is_even:
             return sqrt(z)/2*((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n - 1)) -
                               (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))
-        else:
-            n -= 1
-            return sqrt(z)/2*((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n + 1)) -
-                              (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))
+        n -= 1
+        return sqrt(z)/2*((sqrt(z) - 1)**(2*a)*exp(2*pi*I*a*(n + 1)) -
+                          (sqrt(z) + 1)**(2*a)*exp(2*pi*I*a*n))
 
     def _expr_big_minus(self, a, z, n):
         if n.is_even:
             return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z)*sin(2*a*atan(sqrt(z)))
-        else:
-            return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z) \
-                * sin(2*a*atan(sqrt(z)) - 2*pi*a)
+        return (1 + z)**a*exp(2*pi*I*n*a)*sqrt(z) \
+            * sin(2*a*atan(sqrt(z)) - 2*pi*a)
 
 
 class HyperRep_log2(HyperRep):
@@ -985,14 +970,12 @@ class HyperRep_log2(HyperRep):
     def _expr_big(cls, x, n):
         if n.is_even:
             return (n - Rational(1, 2))*pi*I + log(sqrt(x)/2) + I*asin(1/sqrt(x))
-        else:
-            return (n - Rational(1, 2))*pi*I + log(sqrt(x)/2) - I*asin(1/sqrt(x))
+        return (n - Rational(1, 2))*pi*I + log(sqrt(x)/2) - I*asin(1/sqrt(x))
 
     def _expr_big_minus(self, x, n):
         if n.is_even:
             return pi*I*n + log(sqrt(1 + x)/2 + Rational(1, 2))
-        else:
-            return pi*I*n + log(sqrt(1 + x)/2 - Rational(1, 2))
+        return pi*I*n + log(sqrt(1 + x)/2 - Rational(1, 2))
 
 
 class HyperRep_cosasin(HyperRep):

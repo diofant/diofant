@@ -55,6 +55,9 @@ def test_sin():
     assert sin(5*pi/2) == 1
     assert sin(7*pi/2) == -1
 
+    assert sin(2.5*pi) == 1
+    assert sin(2.0*pi) == 0
+
     ne = symbols('ne', integer=True, even=False)
     e = symbols('e', even=True)
     assert sin(pi*ne/2) == (-1)**(ne/2 - Rational(1, 2))
@@ -434,6 +437,8 @@ def test_tan():
     assert tan(5*pi/12) == sqrt(3) + 2
     assert tan(7*pi/12) == -sqrt(3) - 2
     assert tan(11*pi/12) == sqrt(3) - 2
+
+    assert tan(4.02*pi) == tan(0.019999999999999574*pi)
 
     assert tan(pi/24).radsimp() == -2 - sqrt(3) + sqrt(2) + sqrt(6)
     assert tan(5*pi/24).radsimp() == -2 + sqrt(3) - sqrt(2) + sqrt(6)
@@ -978,6 +983,10 @@ def test_acot_rewrite():
     assert acot(x).rewrite(acsc) == x*(-acsc(sqrt((x**2 + 1)/x**2)) + pi/2)*sqrt(x**(-2))
 
 
+def test_acot_series():
+    assert acot(x).series(x) == pi/2 - x + x**3/3 - x**5/5 + O(x**6)
+
+
 def test_attributes():
     assert sin(x).args == (x,)
 
@@ -1046,9 +1055,9 @@ def test_atan2_expansion():
     assert cancel(atan(y/x).series(y, 0, 5) - atan2(y, x).series(y, 0, 5)
                   + atan2(0, x) - atan(0)) == O(y**5)
     assert cancel(atan(y/x).series(x, 1, 4) - atan2(y, x).series(x, 1, 4)
-                  + atan2(y, 1) - atan(y)) == O((x - 1)**4, (x, 1))
+                  + atan2(y, 1) - atan(y)) == O((x - 1)**4, x, 1)
     assert cancel(atan((y + x)/x).series(x, 1, 3) - atan2(y + x, x).series(x, 1, 3)
-                  + atan2(1 + y, 1) - atan(1 + y)) == O((x - 1)**3, (x, 1))
+                  + atan2(1 + y, 1) - atan(1 + y)) == O((x - 1)**3, x, 1)
     assert Matrix([atan2(y, x)]).jacobian([y, x]) == \
         Matrix([[x/(y**2 + x**2), -y/(y**2 + x**2)]])
 
@@ -1297,8 +1306,6 @@ def test_sec():
     assert sec(a).is_algebraic is None
     assert sec(na).is_algebraic is False
 
-    assert sec(x).as_leading_term() == sec(x)
-
     assert sec(0).is_finite
     assert sec(x).is_finite is None
     assert sec(pi/2).is_finite is False
@@ -1311,7 +1318,7 @@ def test_sec():
     # https://github.com/sympy/sympy/issues/7167
     assert (sqrt(sec(x)).series(x, x0=pi*3/2, n=4) ==
             1/sqrt(x - 3*pi/2) + (x - 3*pi/2)**Rational(3, 2)/12 +
-            (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, (x, 3*pi/2)))
+            (x - 3*pi/2)**Rational(7, 2)/160 + O((x - 3*pi/2)**4, x, 3*pi/2))
 
     assert sec(x).diff(x) == tan(x)*sec(x)
 
@@ -1371,14 +1378,12 @@ def test_csc():
     assert csc(a).is_algebraic is None
     assert csc(na).is_algebraic is False
 
-    assert csc(x).as_leading_term() == csc(x)
-
     assert csc(0).is_finite is False
     assert csc(x).is_finite is None
     assert csc(pi/2).is_finite
 
     assert csc(x).series(x, x0=pi/2, n=6) == \
-        1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, (x, pi/2))
+        1 + (x - pi/2)**2/2 + 5*(x - pi/2)**4/24 + O((x - pi/2)**6, x, pi/2)
     assert csc(x).series(x, x0=0, n=6) == \
         1/x + x/6 + 7*x**3/360 + 31*x**5/15120 + O(x**6)
 
@@ -1453,3 +1458,9 @@ def test_sympyissue_8653():
     assert sin(n).is_irrational is None
     assert cos(n).is_irrational is None
     assert tan(n).is_irrational is None
+
+
+def test_sympyissue_24390():
+    expr = sin(acos((98 - 14*cos(pi**2/2160))/(14*sqrt(50 - 14*cos(pi**2/2160)))))
+    assert expr != 0
+    assert expr.evalf() == 0.00076153935374937783

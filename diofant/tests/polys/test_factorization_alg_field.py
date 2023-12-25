@@ -24,7 +24,7 @@ def test__sqf_p():
 def test_efactor_1():
     R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
-    f = (x**2 + sqrt(2)*y)
+    f = x**2 + sqrt(2)*y
     assert efactor(f) == (1, [(f, 1)])
 
     f1 = x + y
@@ -95,7 +95,7 @@ def test_efactor_1():
     f = x**4 + y**4
 
     assert f1*f2*f3*f4 == f
-    assert efactor(f) == (1, [(f1, 1), (f2, 1), (f3, 1), (f4, 1)])
+    assert efactor(f) == (1, [(f3, 1), (f2, 1), (f4, 1), (f1, 1)])
 
     R, x, y, z = ring('x y z', QQ.algebraic_field(root(2, 5)))
 
@@ -124,7 +124,7 @@ def test_efactor_1():
     f2 = x**2 - 2*a*x - (a**3 + a**2 + a + 1)*z**2 + a**2*y + 12*a**3
     f = f1*f2
 
-    assert efactor(f) == (1, [(f1, 1), (f2, 1)])
+    assert efactor(f) == (1, [(f2, 1), (f1, 1)])
 
     R, x, y = ring('x y', QQ.algebraic_field(root(1, 5, 3)))
     A = R.domain
@@ -174,7 +174,7 @@ def test_efactor_wang():
     f4 = x**2 - 2*a*x - (a**3 + a**2 + a + 1)*z**2 + a**2*y + 12*a**3
     f = f1*f2*f3*f4
 
-    assert efactor(f) == (1, [(f1, 1), (f2, 1), (f3, 1), (f4, 1)])
+    assert efactor(f) == (1, [(f2, 1), (f1, 1), (f4, 1), (f3, 1)])
 
 
 @pytest.mark.timeout(60)

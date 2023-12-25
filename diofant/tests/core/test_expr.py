@@ -237,7 +237,7 @@ def test_series0():
            (-a + x)**3*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1), (_xi_1, a))/6 +
            (-a + x)**4*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1), (_xi_1, a))/24 +
            (-a + x)**5*Subs(Derivative(f(_xi_1), _xi_1, _xi_1, _xi_1, _xi_1, _xi_1),
-                            (_xi_1, a))/120 + O((-a + x)**6, (x, a)))
+                            (_xi_1, a))/120 + O((-a + x)**6, x, a))
     assert res == ans1
     ans2 = f(x).series(x, a)
     assert res == ans2
@@ -330,7 +330,7 @@ def test_atoms():
 
     # issue sympy/sympy#6132
     f = Function('f')
-    e = (f(x) + sin(x) + 2)
+    e = f(x) + sin(x) + 2
     assert e.atoms(AppliedUndef) == {f(x)}
     assert e.atoms(AppliedUndef, Function) == {f(x), sin(x)}
     assert e.atoms(Function) == {f(x), sin(x)}
@@ -661,7 +661,7 @@ def test_replace():
 
 
 def test_find():
-    expr = (x + y + 2 + sin(3*x))
+    expr = x + y + 2 + sin(3*x)
 
     assert expr.find(lambda u: u.is_Integer) == {2: 1, 3: 1}
     assert expr.find(lambda u: u.is_Symbol) == {x: 2, y: 1}
@@ -679,7 +679,7 @@ def test_find():
 
 
 def test_count():
-    expr = (x + y + 2 + sin(3*x))
+    expr = x + y + 2 + sin(3*x)
 
     assert expr.count(lambda u: u.is_Integer) == 2
     assert expr.count(lambda u: u.is_Symbol) == 3
@@ -991,6 +991,9 @@ def test_extractions():
         x + y + (x + 1)*(x + y) + 3
     assert ((y + 1)*(x + 2*y + 1) + 3).extract_additively(y + 1) == \
         (x + 2*y)*(y + 1) + 3
+    assert (-x - x*I).extract_additively(-x) == -I*x
+    # extraction does not leave artificats, now
+    assert (4*x*(y + 1) + y).extract_additively(x) == x*(4*y + 3) + y
 
     n = Symbol('n', integer=True)
     assert (Integer(-3)).could_extract_minus_sign() is True
@@ -1716,3 +1719,9 @@ def test_sympyissue_21334():
 def test_sympyissue_22583():
     f = Function('f')
     assert (1/f(x) + 1).is_polynomial(f(x)) is False
+
+
+@pytest.mark.timeout(30)
+def test_sympyissue_25698():
+    n = 6000002
+    assert int(n*(log(n) + log(log(n)))) == 110130080

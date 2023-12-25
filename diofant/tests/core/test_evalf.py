@@ -1,6 +1,6 @@
 import pytest
 from mpmath import inf, mpc, ninf
-from mpmath.libmp.libmpf import from_float
+from mpmath.libmp import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,
@@ -127,7 +127,8 @@ def test_evalf_complex_cancellation():
     assert NS((A + B*I)*(C + D*I), 6) == '6.44710e-6 + 0.892529*I'
     assert NS((A + B*I)*(C + D*I), 10) == '6.447100000e-6 + 0.8925286452*I'
     assert NS((A + B*I)*(
-        C + D*I) - F*I, 5) in ('6.4471e-6 + 0.e-14*I', '6.4471e-6 - 0.e-14*I')
+        C + D*I) - F*I, 5) in ('6.4471e-6 + 0.e-14*I', '6.4471e-6 - 0.e-14*I',
+                               '6.4471e-6 - 0.e-15*I')
 
 
 def test_evalf_logs():
@@ -476,7 +477,7 @@ def test_to_mpmath():
 
 
 def test_sympyissue_6632():
-    add = (-100000*sqrt(2500000001) + 5000000001)
+    add = -100000*sqrt(2500000001) + 5000000001
     assert add.evalf() == 9.999999998e-11
     assert (add*add).evalf() == 9.999999996e-21
 
@@ -572,5 +573,4 @@ def test_evalf_abs():
 
 
 def test_sympyissue_19774():
-    assert exp(x/2).evalf() == Float('2.7182818284590451',
-                                     dps=15)**(Float('0.5', dps=15)*x)
+    assert exp(x/2).evalf() == 2.7182818284590451**(0.5*x)

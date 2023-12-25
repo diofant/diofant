@@ -1,3 +1,1 @@
-"""
-Tests for various simplifications.
-"""
+"""Tests for various simplifications."""

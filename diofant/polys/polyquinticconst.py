@@ -20,6 +20,7 @@ class PolyQuintic:
     """Special functions for solvable quintics"""
 
     def __init__(self, poly):
+        """Initialize self."""
         _, _, self.p, self.q, self.r, self.s = reversed(poly.all_coeffs())
         self.zeta1 = Rational(-1, 4) + (sqrt(5)/4) + I*sqrt((sqrt(5)/8) + Rational(5, 8))
         self.zeta2 = (-sqrt(5)/4) - Rational(1, 4) + I*sqrt((-sqrt(5)/8) + Rational(5, 8))

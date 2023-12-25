@@ -6,6 +6,7 @@ class ReorderError(NotImplementedError):
     """Exception raised when trying to reorder dependent limits."""
 
     def __init__(self, expr, msg):
+        """Initialize self."""
         super().__init__(f'{expr} could not be reordered: {msg}.')
 
 
@@ -13,6 +14,7 @@ class ExprWithIntLimits(ExprWithLimits):
     """Represents an expression with integer limits."""
 
     def __init__(self, function, *symbols, **assumptions):
+        """Initialize self."""
         if not all(all(abs(_) == oo or (_.is_integer is not False)
                        for _ in l[1:]) for l in self.limits):
             raise ValueError('Limits must be integers or ±oo.')
@@ -296,5 +298,4 @@ class ExprWithIntLimits(ExprWithLimits):
                     limits.append(limit)
 
             return type(self)(self.function, *limits)
-        else:
-            raise ReorderError(self, 'could not interchange the two limits specified')
+        raise ReorderError(self, 'could not interchange the two limits specified')

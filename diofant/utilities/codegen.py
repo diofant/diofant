@@ -82,13 +82,13 @@ from io import StringIO
 
 from .. import __version__ as diofant_version
 from ..core import Dummy, Equality, Expr, Function, Integer, Symbol, Tuple
-from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
 from ..printing.ccode import CCodePrinter, ccode
 from ..printing.fcode import FCodePrinter, fcode
 from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
+from .iterables import is_sequence
 
 
 __all__ = (
@@ -223,6 +223,7 @@ class DataType:
     """Holds strings for a certain datatype in different languages."""
 
     def __init__(self, cname, fname, pyname, octname):
+        """Initialize self."""
         self.cname = cname
         self.fname = fname
         self.pyname = pyname
@@ -239,8 +240,7 @@ def get_default_datatype(expr):
     """Derives an appropriate datatype based on the expression."""
     if expr.is_integer:
         return default_datatypes['int']
-    else:
-        return default_datatypes['float']
+    return default_datatypes['float']
 
 
 class Variable:
@@ -333,6 +333,7 @@ class ResultBase:
     """
 
     def __init__(self, expr, result_var):
+        """Initialize self."""
         self.expr = expr
         self.result_var = result_var
 
@@ -381,6 +382,7 @@ class InOutArgument(Argument, ResultBase):
     """InOutArgument are never initialized in the routine."""
 
     def __init__(self, name, result_var, expr, datatype=None, dimensions=None, precision=None):
+        """Initialize self."""
         if not datatype:
             datatype = get_default_datatype(expr)
         Argument.__init__(self, name, datatype, dimensions, precision)
@@ -725,7 +727,7 @@ class CodeGen:
         if code_lines:
             f.write(code_lines)
 
-    def _printer_method_with_settings(self, method, settings=None, *args, **kwargs):
+    def _printer_method_with_settings(self, method, *args, settings=None, **kwargs):
         settings = settings or {}
         ori = {k: self.printer._settings[k] for k in settings}
         for k, v in settings.items():
@@ -767,6 +769,7 @@ class CCodeGen(CodeGen):
 
     def __init__(self, project='project', printer=None,
                  preprocessor_statements=None, cse=False):
+        """Initialize self."""
         super().__init__(project=project, cse=cse)
         self.printer = printer or CCodePrinter()
 
@@ -851,8 +854,9 @@ class CCodeGen(CodeGen):
             prefix = f'const {t} '
 
             *_, c_expr = self._printer_method_with_settings(
-                'doprint', {'human': False, 'dereference': dereference},
-                result.expr, assign_to=assign_to)
+                'doprint', result.expr,
+                settings={'human': False, 'dereference': dereference},
+                assign_to=assign_to)
 
             code_lines.append(f'{prefix}{c_expr}\n')
 
@@ -968,6 +972,7 @@ class FCodeGen(CodeGen):
     interface_extension = 'h'
 
     def __init__(self, project='project'):
+        """Initialize self."""
         CodeGen.__init__(self, project)
 
     def _get_symbol(self, s):
@@ -1062,8 +1067,7 @@ class FCodeGen(CodeGen):
         """Returns the closing statements of the fortran routine."""
         if len(routine.results) == 1:
             return ['end function\n']
-        else:
-            return ['end subroutine\n']
+        return ['end subroutine\n']
 
     def get_interface(self, routine):
         """Returns a string for the function interface.
@@ -1188,9 +1192,6 @@ class OctaveCodeGen(CodeGen):
 
     def routine(self, name, expr, argument_sequence, global_vars=None):
         """Specialized Routine creation for Octave."""
-        # FIXME: this is probably general enough for other high-level
-        # languages, perhaps its the C/Fortran one that is specialized!
-
         if is_sequence(expr) and not isinstance(expr, (MatrixBase, MatrixExpr)):
             if not expr:
                 raise ValueError('No expression given')

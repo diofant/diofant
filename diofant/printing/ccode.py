@@ -9,10 +9,6 @@ diofant.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
 """
 
-from __future__ import annotations
-
-import typing
-
 from ..core import Integer
 from ..logic import true
 from .codeprinter import Assignment, CodePrinter
@@ -88,7 +84,7 @@ class CCodePrinter(CodePrinter):
     printmethod = '_ccode'
     language = 'C'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,
@@ -101,6 +97,7 @@ class CCodePrinter(CodePrinter):
     }
 
     def __init__(self, settings={}):
+        """Initialize self."""
         CodePrinter.__init__(self, settings)
         self.known_functions = dict(known_functions)
         userfuncs = settings.get('user_functions', {})
@@ -146,10 +143,9 @@ class CCodePrinter(CodePrinter):
         PREC = precedence(expr)
         if expr.exp == -1:
             return f'1.0/{self.parenthesize(expr.base, PREC)}'
-        elif expr.exp == 0.5:
+        if expr.exp == 0.5:
             return f'sqrt({self._print(expr.base)})'
-        else:
-            return f'pow({self._print(expr.base)}, {self._print(expr.exp)})'
+        return f'pow({self._print(expr.base)}, {self._print(expr.exp)})'
 
     def _print_Rational(self, expr):
         p, q = int(expr.numerator), int(expr.denominator)
@@ -194,15 +190,14 @@ class CCodePrinter(CodePrinter):
                 lines.append(code0)
                 lines.append('}')
             return '\n'.join(lines)
-        else:
-            # The piecewise was used in an expression, need to do inline
-            # operators. This has the downside that inline operators will
-            # not work for statements that span multiple lines (Matrix or
-            # Indexed expressions).
-            ecpairs = [f'(({self._print(c)}) ? (\n{self._print(e)}\n)\n'
-                       for e, c in expr.args[:-1]]
-            last_line = f': (\n{self._print(expr.args[-1].expr)}\n)'
-            return ': '.join(ecpairs) + last_line + ' '.join([')'*len(ecpairs)])
+        # The piecewise was used in an expression, need to do inline
+        # operators. This has the downside that inline operators will
+        # not work for statements that span multiple lines (Matrix or
+        # Indexed expressions).
+        ecpairs = [f'(({self._print(c)}) ? (\n{self._print(e)}\n)\n'
+                   for e, c in expr.args[:-1]]
+        last_line = f': (\n{self._print(expr.args[-1].expr)}\n)'
+        return ': '.join(ecpairs) + last_line + ' '.join([')'*len(ecpairs)])
 
     def _print_ITE(self, expr):
         from ..functions import Piecewise
@@ -218,8 +213,7 @@ class CCodePrinter(CodePrinter):
 
         if expr in self._dereference:
             return f'(*{name})'
-        else:
-            return name
+        return name
 
     def _print_sign(self, func):
         e = self._print(func.args[0])

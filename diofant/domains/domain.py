@@ -6,7 +6,7 @@ import inspect
 from ..core import Expr
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
-from ..polys.polyerrors import CoercionFailed, UnificationFailed
+from ..polys.polyerrors import CoercionFailedError, UnificationFailedError
 from ..polys.polyutils import _unify_gens
 from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
@@ -48,12 +48,10 @@ class Domain(DefaultPrinting, abc.ABC):
     @abc.abstractmethod
     def from_expr(self, expr):
         """Convert Diofant's expression ``expr`` to ``dtype``."""
-        raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
         """Convert domain ``element`` to Diofant expression."""
-        raise NotImplementedError
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain."""
@@ -68,8 +66,8 @@ class Domain(DefaultPrinting, abc.ABC):
                 if result is not None:
                     return result
 
-        raise CoercionFailed(f"can't convert {element} of type {type(element)} "
-                             f'from {base} to {self}')
+        raise CoercionFailedError(f"can't convert {element} of type {type(element)} "
+                                  f'from {base} to {self}')
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``."""
@@ -119,14 +117,14 @@ class Domain(DefaultPrinting, abc.ABC):
             except (TypeError, ValueError):
                 pass
 
-        raise CoercionFailed(f"can't convert {element} of type {type(element)} to {self}")
+        raise CoercionFailedError(f"can't convert {element} of type {type(element)} to {self}")
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain."""
         try:
             self.convert(a)
             return True
-        except CoercionFailed:
+        except CoercionFailedError:
             return False
 
     def _from_PolynomialRing(self, a, K0):
@@ -158,8 +156,8 @@ class Domain(DefaultPrinting, abc.ABC):
         if symbols:
             if any(isinstance(d, CompositeDomain) and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
-                raise UnificationFailed(f"Can't unify {self} with {K1}, "
-                                        f'given {symbols} generators')
+                raise UnificationFailedError(f"Can't unify {self} with {K1}, "
+                                             f'given {symbols} generators')
 
             return self.unify(K1)
 
@@ -223,9 +221,9 @@ class Domain(DefaultPrinting, abc.ABC):
 
         if self.is_AlgebraicField and K1.is_AlgebraicField:
             return self.__class__(self.domain.unify(K1.domain), *_unify_gens(self.gens, K1.gens))
-        elif self.is_AlgebraicField:
+        if self.is_AlgebraicField:
             return self
-        elif K1.is_AlgebraicField:
+        if K1.is_AlgebraicField:
             return K1
 
         if self.is_RationalField:
@@ -241,18 +239,19 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
+        """Return ``True`` if two domains are equivalent."""
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
+        """Get an associated exact domain."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`."""
+        """Return a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`."""
+        """Return a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get('order', lex))

@@ -282,15 +282,14 @@ def _mytype(f, x):
     """Create a hashable entity describing the type of f."""
     if x not in f.free_symbols:
         return ()
-    elif f.is_Function:
+    if f.is_Function:
         return type(f),
-    else:
-        types = [_mytype(a, x) for a in f.args]
-        res = []
-        for t in types:
-            res += list(t)
-        res.sort(key=default_sort_key)
-        return tuple(res)
+    types = [_mytype(a, x) for a in f.args]
+    res = []
+    for t in types:
+        res += list(t)
+    res.sort(key=default_sort_key)
+    return tuple(res)
 
 
 class _CoeffExpValueError(ValueError):
@@ -321,10 +320,9 @@ def _get_coeff_exp(expr, x):
         if m.base != x:
             raise _CoeffExpValueError('expr not of form a*x**b')
         return c, m.exp
-    elif m == x:
+    if m == x:
         return c, Integer(1)
-    else:
-        raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
+    raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
 
 
 def _exponents(expr, x):
@@ -742,7 +740,7 @@ def _check_antecedents_1(g, x, helper=False):
     for a in g.aother:
         tmp += [1 < 1 - re(a)]
 
-    cond_4 = (-re(g.nu) + (q + 1 - p)/2 > q - p)
+    cond_4 = -re(g.nu) + (q + 1 - p)/2 > q - p
 
     # Checking antecedents for 1 function
 
@@ -949,9 +947,9 @@ def _check_antecedents(g1, g2, x):
                                                                  1)*(v - u)) > 0)
     c9 = (abs(phi) - 2*re((rho - 1)*(q - p) + (v - u)*(q - p) + (mu -
                                                                  1)*(v - u)) > 0)
-    c10 = (abs(arg(sigma)) < bstar*pi)
+    c10 = abs(arg(sigma)) < bstar*pi
     c11 = Eq(abs(arg(sigma)), bstar*pi)
-    c12 = (abs(arg(omega)) < cstar*pi)
+    c12 = abs(arg(omega)) < cstar*pi
     c13 = Eq(abs(arg(omega)), cstar*pi)
 
     # The following condition is *not* implemented as stated on the wolfram
@@ -1013,7 +1011,7 @@ def _check_antecedents(g1, g2, x):
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)
         # the TypeError might be raised here, e.g. if lambda_c is NaN
         if _eval_cond(lambda_c > 0) != false:
-            c15 = (lambda_c > 0)
+            c15 = lambda_c > 0
         else:
             def lambda_s0(c1, c2):
                 return c1*(q - p)*abs(omega)**(1/(q - p))*sin(psi) \
@@ -1330,7 +1328,7 @@ def _rewrite_single(f, x, recursive=True):
 
     """
     from ..functions import polarify, unpolarify
-    global _lookup_table
+    global _lookup_table  # pylint: disable=global-statement
     if not _lookup_table:
         _lookup_table = defaultdict(list)
         _create_lookup_table(_lookup_table)
@@ -1679,7 +1677,7 @@ def meijerint_definite(f, x, a, b):
     if a == -oo and b != oo:
         return meijerint_definite(f.subs({x: -x}), x, -b, -a)
 
-    elif a == -oo:
+    if a == -oo:
         # Integrating -oo to oo. We need to find a place to split the integral.
         innermost = _find_splitting_points(f, x)
         for c in sorted(innermost, key=default_sort_key, reverse=True) + [Integer(0)]:

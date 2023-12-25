@@ -3,16 +3,16 @@
 import collections
 import itertools
 
-from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, oo
-from ..core.compatibility import iterable
+from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, nan, oo
 from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise, sign
 from ..logic import And, Or, false, true
 from ..matrices import Matrix, diag
-from ..polys import PolificationFailed, Poly, parallel_poly_from_expr
+from ..polys import PolificationFailedError, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent, ordered
+from ..utilities.iterables import is_iterable
 
 
 __all__ = 'reduce_inequalities',
@@ -203,10 +203,9 @@ def solve_poly_inequality(poly, rel):
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
             return [S.ExtendedReals]
-        elif t == false:
+        if t == false:
             return [S.EmptySet]
-        else:
-            raise NotImplementedError(f"Couldn't determine truth value of {t}")
+        raise NotImplementedError(f"Couldn't determine truth value of {t}")
 
     reals, intervals = poly.real_roots(multiple=False), []
 
@@ -356,10 +355,10 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
 
     """
     exact = True
-    eqs = []
-    solution = S.ExtendedReals if exprs else S.EmptySet
+    solution = S.EmptySet
     for _exprs in exprs:
-        _eqs = []
+        eqs = []
+        sol = S.ExtendedReals if _exprs else S.EmptySet
 
         for expr in _exprs:
             if isinstance(expr, tuple):
@@ -387,15 +386,14 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
             if not (domain.is_IntegerRing or domain.is_RationalField):
                 expr = numer/denom
                 expr = Relational(expr, 0, rel)
-                solution &= solve_univariate_inequality(expr, gen, relational=False)
+                sol &= solve_univariate_inequality(expr, gen, relational=False)
             else:
-                _eqs.append(((numer, denom), rel))
+                eqs.append(((numer, denom), rel))
 
-        if _eqs:
-            eqs.append(_eqs)
+        if eqs:
+            sol &= solve_rational_inequalities([eqs])
 
-    if eqs:
-        solution &= solve_rational_inequalities(eqs)
+        solution |= sol
 
     if not exact:
         solution = solution.evalf()
@@ -535,21 +533,26 @@ def solve_univariate_inequality(expr, gen, relational=True):
     [-oo, -2] U [2, oo]
 
     """
+    from ..calculus import singularities
     from ..simplify import simplify
-    from .solvers import denoms, solve
+    from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    solns = solve(e, gen)
-    singularities = []
-    for d in denoms(e):
-        singularities.extend(solve(d, gen))
-    solns = [s[gen] for s in solns]
-    singularities = [s[gen] for s in singularities]
+    if gen.is_extended_real is None:
+        gen_r = Dummy(gen.name, extended_real=True)
+        e_r = e.subs({gen: gen_r})
+    else:
+        gen_r = gen
+        e_r = e
+    solns = {s[gen_r] for s in solve(e_r, gen_r)}
+    singularities = singularities(e_r, gen_r)
 
     include_x = expr.func(0, 0)
 
     def valid(x):
         v = e.subs({gen: x})
+        if v is nan:
+            v = e.limit(gen, x)
         try:
             r = expr.func(v, 0)
         except TypeError:
@@ -557,14 +560,13 @@ def solve_univariate_inequality(expr, gen, relational=True):
         r = simplify(r)
         if r in (true, false):
             return r
-        elif v.is_comparable is False:
+        if v.is_comparable is False:
             return False
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
     start = -oo
     sol_sets = [S.EmptySet]
-    reals = _nsort(set(solns + singularities), separated=True)[0]
+    reals = _nsort(solns | singularities, separated=True)[0]
     for x in reals:
         end = x
 
@@ -607,7 +609,7 @@ def _reduce_inequalities(inequalities, symbols):
     if len(symbols) > 1:
         try:
             return solve_linear_inequalities(inequalities, *symbols)
-        except (PolificationFailed, ValueError):
+        except (PolificationFailedError, ValueError):
             pass
 
     rat_part = collections.defaultdict(list)
@@ -679,7 +681,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     diofant.solvers.solvers.solve : solve algebraic equations
 
     """
-    if not iterable(inequalities):
+    if not is_iterable(inequalities):
         inequalities = [inequalities]
 
     # prefilter
@@ -699,7 +701,7 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     gens = set().union(*[i.free_symbols for i in inequalities])
 
-    if not iterable(symbols):
+    if not is_iterable(symbols):
         symbols = [symbols]
     symbols = ordered(set(symbols) or gens)
 

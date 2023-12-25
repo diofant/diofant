@@ -122,31 +122,28 @@ class Tr(Expr):
 
         if isinstance(expr, Matrix):
             return expr.trace()
-        elif hasattr(expr, 'trace') and callable(expr.trace):
+        if hasattr(expr, 'trace') and callable(expr.trace):
             # for any objects that have trace() defined e.g numpy
             return expr.trace()
-        elif isinstance(expr, Add):
+        if isinstance(expr, Add):
             return Add(*[Tr(arg, indices) for arg in expr.args])
-        elif isinstance(expr, Mul):
+        if isinstance(expr, Mul):
             c_part, nc_part = expr.args_cnc()
             if len(nc_part) == 0:
                 return Mul(*c_part)
-            else:
-                obj = Expr.__new__(cls, Mul(*nc_part), indices)
-                # this check is needed to prevent cached instances
-                # being returned even if len(c_part)==0
-                return Mul(*c_part)*obj if len(c_part) > 0 else obj
-        elif isinstance(expr, Pow):
+            obj = Expr.__new__(cls, Mul(*nc_part), indices)
+            # this check is needed to prevent cached instances
+            # being returned even if len(c_part)==0
+            return Mul(*c_part)*obj if len(c_part) > 0 else obj
+        if isinstance(expr, Pow):
             if (_is_scalar(expr.args[0]) and
                     _is_scalar(expr.args[1])):
                 return expr
-            else:
-                return Expr.__new__(cls, expr, indices)
-        else:
-            if _is_scalar(expr):
-                return expr
-
             return Expr.__new__(cls, expr, indices)
+        if _is_scalar(expr):
+            return expr
+
+        return Expr.__new__(cls, expr, indices)
 
     @property
     def is_number(self):

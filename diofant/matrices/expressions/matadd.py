@@ -87,8 +87,7 @@ def matrix_of(arg):
 def combine(cnt, mat):
     if cnt == 1:
         return mat
-    else:
-        return cnt * mat
+    return cnt * mat
 
 
 def merge_explicit(matadd):
@@ -98,20 +97,19 @@ def merge_explicit(matadd):
     >>> B = eye(2)
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatAdd(A, B, C)
-    >>> pprint(X, use_unicode=False)
-        [1  0]   [1  2]
-    A + [    ] + [    ]
-        [0  1]   [3  4]
-    >>> pprint(merge_explicit(X), use_unicode=False)
-        [2  2]
-    A + [    ]
-        [3  5]
+    >>> pprint(X)
+        ⎡1  0⎤   ⎡1  2⎤
+    A + ⎢    ⎥ + ⎢    ⎥
+        ⎣0  1⎦   ⎣3  4⎦
+    >>> pprint(merge_explicit(X))
+        ⎡2  2⎤
+    A + ⎢    ⎥
+        ⎣3  5⎦
     """
     groups = sift(matadd.args, lambda arg: isinstance(arg, MatrixBase))
     if len(groups[True]) > 1:
         return MatAdd(*(groups[False] + [functools.reduce(operator.add, groups[True])]))
-    else:
-        return matadd
+    return matadd
 
 
 rules = (rm_id(lambda x: x == 0 or isinstance(x, ZeroMatrix)),

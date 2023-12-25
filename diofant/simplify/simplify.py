@@ -1,12 +1,13 @@
 from collections import defaultdict
 
 import mpmath
+from mpmath.libmp import prec_to_dps
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, expand_func, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp,
                     factor_terms, oo, pi)
-from ..core.compatibility import as_int, iterable
+from ..core.compatibility import as_int
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
@@ -19,6 +20,7 @@ from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
 from ..utilities import has_variety, ordered
+from ..utilities.iterables import is_iterable
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre
 from .powsimp import powsimp
@@ -92,8 +94,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     expr = sympify(expr)
     if dict:
         return _separatevars_dict(_separatevars(expr, force), symbols)
-    else:
-        return _separatevars(expr, force)
+    return _separatevars(expr, force)
 
 
 def _separatevars(expr, force):
@@ -315,7 +316,7 @@ def posify(eq):
 
     """
     eq = sympify(eq)
-    if iterable(eq):
+    if is_iterable(eq):
         f = type(eq)
         eq = list(eq)
         syms = set()
@@ -783,9 +784,8 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     # lower tolerances set, so use them to pick the largest tolerance if None
     # was given
     if tolerance is None:
-        tolerance = 10**-min([15] +
-                             [mpmath.libmp.libmpf.prec_to_dps(n._prec)
-                              for n in expr.atoms(Float)])
+        tolerance = 10**-min([15] + [prec_to_dps(n._prec)
+                                     for n in expr.atoms(Float)])
     # XXX should prec be set independent of tolerance or should it be computed
     # from tolerance?
     prec = 30
@@ -826,7 +826,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             expr = sympify(newexpr)
             if x and not expr:  # don't let x become 0
                 raise ValueError
-            if expr.is_finite is False and xv not in [mpmath.inf, mpmath.ninf]:
+            if expr.is_infinite and xv not in [mpmath.inf, mpmath.ninf]:
                 raise ValueError
             return expr
         finally:
@@ -1073,7 +1073,7 @@ def besselsimp(expr):
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
                         func=True)).subs({z0: z})))
-            elif nu.is_Integer and nu > 1:
+            if nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
         return repl
@@ -1148,25 +1148,25 @@ def sum_add(self, other, method=0):
     """Helper function for Sum simplification."""
     from ..concrete import Sum
 
-    if type(self) == type(other):
-        if method == 0:
-            if self.limits == other.limits:
-                return Sum(self.function + other.function, *self.limits)
-        elif method == 1:
-            if simplify(self.function - other.function) == 0:
-                if len(self.limits) == len(other.limits) == 1:
-                    i = self.limits[0][0]
-                    x1 = self.limits[0][1]
-                    y1 = self.limits[0][2]
-                    j = other.limits[0][0]
-                    x2 = other.limits[0][1]
-                    y2 = other.limits[0][2]
+    assert type(self) is type(other) is Sum
 
-                    if i == j:
-                        if x2 == y1 + 1:
-                            return Sum(self.function, (i, x1, y2))
-                        elif x1 == y2 + 1:
-                            return Sum(self.function, (i, x2, y1))
+    if method == 0:
+        if self.limits == other.limits:
+            return Sum(self.function + other.function, *self.limits)
+    elif method == 1:
+        if simplify(self.function - other.function) == 0:
+            if len(self.limits) == len(other.limits) == 1:
+                i = self.limits[0][0]
+                x1 = self.limits[0][1]
+                y1 = self.limits[0][2]
+                j = other.limits[0][0]
+                x2 = other.limits[0][1]
+                y2 = other.limits[0][2]
+
+                if i == j and x2 == y1 + 1:
+                    return Sum(self.function, (i, x1, y2))
+    else:
+        raise NotImplementedError
 
     return Add(self, other)
 
@@ -1209,25 +1209,25 @@ def product_mul(self, other, method=0):
     """Helper function for Product simplification."""
     from ..concrete import Product
 
-    if type(self) == type(other):
-        if method == 0:
-            if self.limits == other.limits:
-                return Product(self.function * other.function, *self.limits)
-        elif method == 1:
-            if simplify(self.function - other.function) == 0:
-                if len(self.limits) == len(other.limits) == 1:
-                    i = self.limits[0][0]
-                    x1 = self.limits[0][1]
-                    y1 = self.limits[0][2]
-                    j = other.limits[0][0]
-                    x2 = other.limits[0][1]
-                    y2 = other.limits[0][2]
+    assert type(self) is type(other) is Product
 
-                    if i == j:
-                        if x2 == y1 + 1:
-                            return Product(self.function, (i, x1, y2))
-                        elif x1 == y2 + 1:
-                            return Product(self.function, (i, x2, y1))
+    if method == 0:
+        if self.limits == other.limits:
+            return Product(self.function * other.function, *self.limits)
+    elif method == 1:
+        if simplify(self.function - other.function) == 0:
+            if len(self.limits) == len(other.limits) == 1:
+                i = self.limits[0][0]
+                x1 = self.limits[0][1]
+                y1 = self.limits[0][2]
+                j = other.limits[0][0]
+                x2 = other.limits[0][1]
+                y2 = other.limits[0][2]
+
+                if i == j and x2 == y1 + 1:
+                    return Product(self.function, (i, x1, y2))
+    else:
+        raise NotImplementedError
 
     return Mul(self, other)
 

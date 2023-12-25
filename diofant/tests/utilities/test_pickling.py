@@ -4,25 +4,27 @@ import warnings
 
 import pytest
 
-from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
-                     Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
-                     Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
-                     ExtraneousFactors, FlagError, Float, FractionField,
+from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
+                     CoercionFailedError, Derivative, DiracDelta, DomainError,
+                     Dummy, E, Eijk, Equality, EulerGamma,
+                     EvaluationFailedError, ExpressionDomain,
+                     ExtraneousFactorsError, FlagError, Float, FractionField,
                      Function, FunctionClass, GeneratorsError,
-                     GeneratorsNeeded, GoldenRatio, GreaterThan, GroebnerBasis,
-                     Heaviside, HeuristicGCDFailed, HomomorphismFailed, I,
-                     Integer, Integral, Interval, IsomorphismFailed, Lambda,
-                     LambertW, LessThan, Limit, Matrix, Monomial, Mul,
-                     MultivariatePolynomialError, NotAlgebraic, NotInvertible,
-                     NotReversible, OptionError, Options, Order, Piecewise,
-                     Poly, PolynomialError, PolynomialRing, Pow, Product,
-                     PurePoly, PythonRational, Rational, RefinementFailed,
-                     Relational, RootOf, RootSum, Sieve, SparseMatrix,
-                     StrictGreaterThan, StrictLessThan, Sum, Symbol,
-                     Unequality, UnificationFailed, UnivariatePolynomialError,
-                     Wild, WildFunction, acos, acosh, acot, acoth, arg, asin,
-                     asinh, assoc_legendre, atan, atan2, atanh, bell,
-                     bernoulli, binomial, ceiling, chebyshevt, chebyshevt_root,
+                     GeneratorsNeededError, GoldenRatio, GreaterThan,
+                     GroebnerBasis, Heaviside, HeuristicGCDFailedError,
+                     HomomorphismFailedError, I, Integer, Integral, Interval,
+                     IsomorphismFailedError, Lambda, LambertW, LessThan, Limit,
+                     Matrix, Monomial, Mul, MultivariatePolynomialError,
+                     NotAlgebraicError, NotInvertibleError, NotReversibleError,
+                     OptionError, Order, Piecewise, Poly, PolynomialError,
+                     PolynomialRing, Pow, Product, PurePoly, PythonRational,
+                     Rational, RefinementFailedError, Relational, RootOf,
+                     RootSum, Sieve, SparseMatrix, StrictGreaterThan,
+                     StrictLessThan, Sum, Symbol, Unequality,
+                     UnificationFailedError, UnivariatePolynomialError, Wild,
+                     WildFunction, acos, acosh, acot, acoth, arg, asin, asinh,
+                     assoc_legendre, atan, atan2, atanh, bell, bernoulli,
+                     binomial, ceiling, chebyshevt, chebyshevt_root,
                      chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
                      floor, gamma, harmonic, hermite, im, legendre, ln, log,
@@ -38,19 +40,15 @@ from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.geometry import (Circle, Ellipse, Line, Point, Polygon, Ray,
-                              RegularPolygon, Segment, Triangle)
-from diofant.geometry.entity import GeometryEntity
-from diofant.geometry.line import LinearEntity
-from diofant.plotting.plot import Plot
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
+from diofant.polys.polyoptions import Options
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
-from diofant.printing.pretty.pretty import PrettyPrinter
-from diofant.printing.pretty.stringpict import prettyForm, stringPict
+from diofant.printing.pretty import PrettyPrinter
 from diofant.printing.printer import Printer
 from diofant.printing.python import PythonPrinter
+from diofant.printing.stringpict import prettyForm, stringPict
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
 
@@ -58,8 +56,7 @@ __all__ = ()
 
 # XXX we need this to initialize singleton registry properly
 half = Rational(1, 2)
-ø = S.EmptySet
-ℕ = S.Naturals0
+empty = S.EmptySet
 Id = Lambda(x, x)
 
 excluded_attrs = {'_assumptions', '_hash', '__dict__', 'is_evaluated'}
@@ -221,20 +218,6 @@ def test_functions():
         check(cls)
 
 
-def test_geometry():
-    p1 = Point(1, 2)
-    p2 = Point(2, 3)
-    p3 = Point(0, 0)
-    p4 = Point(0, 1)
-    for c in (GeometryEntity, GeometryEntity(), Point, p1, Circle,
-              Circle(p1, 2), Ellipse, Ellipse(p1, 3, 4), Line, Line(p1, p2),
-              LinearEntity, LinearEntity(p1, p2), Ray, Ray(p1, p2), Segment,
-              Segment(p1, p2), Polygon, Polygon(p1, p2, p3, p4),
-              RegularPolygon, RegularPolygon(p1, 4, 5), Triangle,
-              Triangle(p1, p2, p3)):
-        check(c, check_attr=False)
-
-
 def test_integrals():
     for c in (Integral, Integral(x)):
         check(c)
@@ -253,11 +236,6 @@ def test_matrices():
 
 def test_ntheory():
     for c in (Sieve, Sieve()):
-        check(c)
-
-
-def test_plotting():
-    for c in (Plot, Plot(1, visible=False)):
         check(c)
 
 
@@ -390,32 +368,32 @@ def test_pickling_polys_monomials():
 
 def test_pickling_polys_errors():
     # TODO: TypeError: __init__() takes at least 3 arguments (1 given)
-    # for c in (ExactQuotientFailed, ExactQuotientFailed(x, 3*x, ZZ)):
+    # for c in (ExactQuotientFailedError, ExactQuotientFailedError(x, 3*x, ZZ)):
     #    check(c)
 
     # TODO: TypeError: can't pickle instancemethod objects
-    # for c in (OperationNotSupported, OperationNotSupported(Poly(x), Poly.gcd)):
+    # for c in (OperationNotSupportedError, OperationNotSupportedError(Poly(x), Poly.gcd)):
     #    check(c)
 
-    for c in (HeuristicGCDFailed, HeuristicGCDFailed(),
-              HomomorphismFailed, HomomorphismFailed(),
-              IsomorphismFailed, IsomorphismFailed(),
-              ExtraneousFactors, ExtraneousFactors(),
-              EvaluationFailed, EvaluationFailed(),
-              RefinementFailed, RefinementFailed(),
-              CoercionFailed, CoercionFailed(),
-              NotInvertible, NotInvertible(),
-              NotReversible, NotReversible(),
-              NotAlgebraic, NotAlgebraic(),
+    for c in (HeuristicGCDFailedError, HeuristicGCDFailedError(),
+              HomomorphismFailedError, HomomorphismFailedError(),
+              IsomorphismFailedError, IsomorphismFailedError(),
+              ExtraneousFactorsError, ExtraneousFactorsError(),
+              EvaluationFailedError, EvaluationFailedError(),
+              RefinementFailedError, RefinementFailedError(),
+              CoercionFailedError, CoercionFailedError(),
+              NotInvertibleError, NotInvertibleError(),
+              NotReversibleError, NotReversibleError(),
+              NotAlgebraicError, NotAlgebraicError(),
               DomainError, DomainError(),
               PolynomialError, PolynomialError(),
-              UnificationFailed, UnificationFailed(),
+              UnificationFailedError, UnificationFailedError(),
               GeneratorsError, GeneratorsError(),
-              GeneratorsNeeded, GeneratorsNeeded()):
+              GeneratorsNeededError, GeneratorsNeededError()):
         check(c)
 
     # TODO: PicklingError: Can't pickle <function <lambda> at 0x38578c0>: it's not found as __main__.<lambda>
-    # for c in (ComputationFailed, ComputationFailed(lambda t: t, 3, None)):
+    # for c in (ComputationFailedError, ComputationFailedError(lambda t: t, 3, None)):
     #    check(c)
 
     for c in (UnivariatePolynomialError, UnivariatePolynomialError(),
@@ -423,7 +401,7 @@ def test_pickling_polys_errors():
         check(c)
 
     # TODO: TypeError: __init__() takes at least 3 arguments (1 given)
-    # for c in (PolificationFailed, PolificationFailed({}, x, x, False)):
+    # for c in (PolificationFailedError, PolificationFailedError({}, x, x, False)):
     #    check(c)
 
     for c in (OptionError, OptionError(), FlagError, FlagError()):
@@ -464,8 +442,6 @@ def test_concrete():
 
 
 def test_sympyissue_7457():
-    pickle.loads(pickle.dumps(Point(1.1, 2.1).evalf()))  # not raises
-
     a = Float('1.2')
     b = pickle.loads(pickle.dumps(a))
     b.evalf(strict=False)  # not raises

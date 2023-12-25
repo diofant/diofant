@@ -8,9 +8,9 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      erf, exp, exp_polar, expand, expand_multinomial,
                      expand_power_exp, factor, factorial, gamma, hyper,
                      hypersimp, integrate, ln, log, logcombine, nsimplify, oo,
-                     pi, posify, rad, root, separatevars, sign, signsimp,
-                     simplify, sin, sinh, solve, sqrt, sqrtdenest, sstr,
-                     symbols, tan, trigsimp, true, zoo)
+                     pi, posify, root, separatevars, sign, signsimp, simplify,
+                     sin, sinh, solve, sqrt, sqrtdenest, sstr, symbols, tan,
+                     trigsimp, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
@@ -18,11 +18,6 @@ from diofant.simplify.simplify import clear_coefficients, nthroot
 
 
 __all__ = ()
-
-
-def test_sympyissue_7263():
-    assert abs((simplify(30.8**2 - 82.5**2 * sin(rad(11.6))**2)).evalf(strict=False) -
-               673.447451402970) < 1e-12
 
 
 def test_factorial_simplify():
@@ -122,10 +117,10 @@ def test_simplify_other():
 
 
 def test_simplify_complex():
-    cosAsExp = cos(x)._eval_rewrite_as_exp(x)
-    tanAsExp = tan(x)._eval_rewrite_as_exp(x)
-    assert simplify(cosAsExp*tanAsExp).expand() == (
-        sin(x))._eval_rewrite_as_exp(x).expand()  # issue sympy/sympy#4341
+    cosAsExp = cos(x).rewrite(exp)
+    tanAsExp = tan(x).rewrite(exp)
+    # issue sympy/sympy#4341
+    assert simplify(cosAsExp*tanAsExp).expand() == sin(x).rewrite(exp).expand()
 
 
 def test_simplify_ratio():
@@ -297,6 +292,11 @@ def test_hypersimp():
     assert hypersimp(2**(I*k) * 2**k, k) == 2**(1 + I)
 
 
+def test_sympyissue_25679():
+    g = binomial(n, k)/2**n - binomial(n - 1, k)/2**(n - 1)
+    assert hypersimp(g, k) == -((k - n)*(2*k - n + 2))/((k + 1)*(2*k - n))
+
+
 def test_nsimplify():
     assert nsimplify(0) == 0
     assert nsimplify(-1) == -1
@@ -321,7 +321,7 @@ def test_nsimplify():
     assert nsimplify(1/.3 + x, rational=True) == Rational(10, 3) + x
     assert nsimplify(log(3).evalf(), rational=True) == Rational(109861228866811,
                                                                 100000000000000)
-    assert nsimplify(Float(0.272198261287950), [pi, log(2)]) == pi*log(2)/8
+    assert nsimplify(0.272198261287950, [pi, log(2)]) == pi*log(2)/8
     assert nsimplify(Float(0.272198261287950).evalf(3), [pi, log(2)]) == \
         -pi/4 - log(2) + Rational(7, 4)
     assert nsimplify(x/7.0) == x/7
@@ -346,7 +346,7 @@ def test_nsimplify():
     assert nsimplify(.2222, tolerance=0) == Rational(1111, 5000)
     assert nsimplify(-.2222, tolerance=0) == -Rational(1111, 5000)
     # issue sympy/sympy#7211, PR sympy/sympy#4112
-    assert nsimplify(Float(2e-8)) == Rational(1, 50000000)
+    assert nsimplify(2e-8) == Rational(1, 50000000)
     # issue sympy/sympy#7322 direct test
     assert nsimplify(1e-42, rational=True) != 0
     # issue sympy/sympy#10336
@@ -643,8 +643,8 @@ def test_sympyissue_9296():
                0.002*sin(q[1] + q[2])*cos(q[2]))
     r = simplify(a + b).replace(lambda x: x.is_Float and abs(x) < 1e-15,
                                 lambda x: 0)
-    assert r == (-Float('0.0045000000000000005', dps=15)*dq[0]*sin(q[1]) -
-                 Float('0.0045000000000000005', dps=15)*dq[1]*sin(q[1]))
+    assert r == (-0.0045000000000000005*dq[0]*sin(q[1]) -
+                 0.0045000000000000005*dq[1]*sin(q[1]))
 
 
 def test_sympyissue_9630():
@@ -712,3 +712,40 @@ def test_sympyissue_21641():
                      2441406250000000000) ==
             -65712362363534280139543*log(50)/2441406250000000000 +
             65712362363534280139543*log(49)/2441406250000000000)
+
+
+@pytest.mark.timeout(10)
+def test_sympyissue_19813():
+    e = (-4688638433404893 + 4503599627370496*log(1 - cos(2)) +
+         4503599627370496*log(2))/18014398509481984
+    r = Rational(-4688638433404893,
+                 18014398509481984) + log(root(2, 4)*root(-cos(2) + 1, 4))
+    assert logcombine(e) == r
+
+
+def test_sympyissue_23399():
+    K = Symbol('K')
+    POWER = Symbol('POWER')
+    A_OUTPUT = Function('A_OUTPUT')
+
+    lhs = A_OUTPUT(t)
+    rhs = -K**POWER
+
+    eq = Eq(lhs, rhs)
+    assert simplify(eq) == Eq(A_OUTPUT(t), -K**POWER)
+
+
+def test_sympyissue_25341():
+    eq = Eq((2*sqrt(x)/(x + 1)**2 - 1/(sqrt(x)*(x + 1)) -
+             1/(4*sqrt(x)**3))/(x + 1))
+    eq.simplify()
+
+
+def test_sympyissue_25603():
+    e = Piecewise((log(x), (x <= 5) & (x > 3)), (x, True))
+    assert e.simplify() == e
+
+
+def test_sympyissue_25701():
+    e = Eq(2*sign(x + 3)/(5*root(abs(x + 3), 5)**3))
+    e.simplify()

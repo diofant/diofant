@@ -8,18 +8,14 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
                      I, Integer, Integral, Interval, Lambda, Limit, Matrix,
                      MatrixSymbol, Mul, Ne, O, Poly, Pow, Rational, Reals, Rel,
                      RootOf, RootSum, S, SparseMatrix, StrPrinter, Sum, Symbol,
-                     SymmetricDifference, Tuple, Wild, WildFunction, Xor,
-                     ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
-                     false, field, grlex, groebner, nan, oo, pi, ring, root,
-                     sin, sqrt, sstr, sstrrepr, subfactorial, summation,
-                     symbols, true, zeta, zoo)
+                     SymmetricDifference, Wild, WildFunction, Xor, ZeroMatrix,
+                     cbrt, cos, exp, factor, factorial, factorial2, false,
+                     field, grlex, groebner, nan, oo, pi, ring, root, sin,
+                     sqrt, sstr, subfactorial, summation, symbols, true, zeta,
+                     zoo)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core.trace import Tr
-from diofant.diffgeom import Differential, LieDerivative, TensorProduct
-from diofant.diffgeom.rn import R2
-from diofant.geometry import Circle, Point
-from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor.array import ImmutableDenseNDimArray
 
 
@@ -129,11 +125,6 @@ def test_Function():
     assert str(f) == 'f'
     assert str(fx) == 'f(x)'
     assert str(w) == 'w_'
-
-
-def test_Geometry():
-    assert sstr(Point(0, 0)) == 'Point(0, 0)'
-    assert sstr(Circle(Point(0, 0), 3)) == 'Circle(Point(0, 0), 3)'
 
 
 def test_GoldenRatio():
@@ -254,15 +245,12 @@ def test_NegativeInfinity():
 
 
 def test_Order():
+    assert str(O(1, x)) == 'O(1, x)'
     assert str(O(x)) == 'O(x)'
     assert str(O(x**2)) == 'O(x**2)'
-    assert str(O(x*y)) == 'O(x*y, x, y)'
     assert str(O(x, x)) == 'O(x)'
-    assert str(O(x, (x, 0))) == 'O(x)'
-    assert str(O(x, (x, oo))) == 'O(x, (x, oo))'
-    assert str(O(x, x, y)) == 'O(x, x, y)'
-    assert str(O(x, x, y)) == 'O(x, x, y)'
-    assert str(O(x, (x, oo), (y, oo))) == 'O(x, (x, oo), (y, oo))'
+    assert str(O(x, x, 0)) == 'O(x)'
+    assert str(O(x, x, oo)) == 'O(x, x, oo)'
 
 
 def test_Permutation_Cycle():
@@ -441,9 +429,12 @@ def test_Pow():
     assert str((x + y)**-2) == '(x + y)**(-2)'
     assert str((x + y)**2) == '(x + y)**2'
     assert str((x + y)**(1 + x)) == '(x + y)**(x + 1)'
-    assert str(cbrt(x)) == 'x**(1/3)'
-    assert str(1/cbrt(x)) == 'x**(-1/3)'
-    assert str(sqrt(sqrt(x))) == 'x**(1/4)'
+    assert str(cbrt(x)) == 'root(x, 3)'
+    assert str(1/cbrt(x)) == '1/root(x, 3)'
+    assert str(sqrt(sqrt(x))) == 'root(x, 4)'
+    assert str(x**Rational(3, 2)) == 'sqrt(x)**3'
+    assert str(x**Rational(-5, 2)) == '1/sqrt(x)**5'
+    assert str(x**Rational(3, 4)) == 'root(x, 4)**3'
     # not the same as x**-1
     assert str(x**-1.0) == 'x**(-1.0)'
     # see issue sympy/sympy#2860
@@ -502,7 +493,7 @@ def test_Rational():
     assert str(1/sqrt(Rational(81, 36))**3) == '8/27'
 
     assert str(sqrt(-4)) == str(2*I)
-    assert str(root(2, 10**10)) == '2**(1/10000000000)'
+    assert str(root(2, 10**10)) == 'root(2, 10000000000)'
 
 
 def test_Float():
@@ -516,7 +507,7 @@ def test_Float():
     assert str(pi.evalf(1 + 64)) == ('3.141592653589793238462643383279'
                                      '5028841971693993751058209749445923')
     assert str(pi.round(-1)) == '0.'
-    assert str((pi**400 - (pi**400).round(1)).evalf(2, strict=False)) == '-0.e+9'
+    assert str((pi**400 - (pi**400).round(1)).evalf(2, strict=False)) == '-0.e+7'
     assert str(Float(+oo)) == 'inf'
     assert str(Float(-oo)) == '-inf'
 
@@ -550,7 +541,7 @@ def test_GroebnerBasis():
     F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
 
     assert str(groebner(F, order='grlex')) == \
-        "GroebnerBasis([x**2 - x - 3*y + 1, y**2 - 2*x + y - 1], x, y, domain='ZZ', order='grlex')"
+        "GroebnerBasis([x**2 - x - 3*y + 1, -2*x + y**2 + y - 1], x, y, domain='ZZ', order='grlex')"
     assert str(groebner(F, order='lex')) == \
         "GroebnerBasis([2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7], x, y, domain='ZZ', order='lex')"
 
@@ -627,15 +618,6 @@ def test_sympyissue_4021():
     assert str(e) == 'Integral(x, x) + 1'
 
 
-def test_sstrrepr():
-    assert sstr('abc') == 'abc'
-    assert sstrrepr('abc') == "'abc'"
-
-    e = ['a', 'b', 'c', x]
-    assert sstr(e) == '[a, b, c, x]'
-    assert sstrrepr(e) == "['a', 'b', 'c', x]"
-
-
 def test_infinity():
     assert sstr(oo*I) == 'oo*I'
 
@@ -677,18 +659,6 @@ def test_empty_printer():
 
 def test_settings():
     pytest.raises(TypeError, lambda: sstr(Integer(4), method='garbage'))
-
-
-def test_RandomDomain():
-    X = Normal('x1', 0, 1)
-    assert str(where(X > 0)) == 'Domain: (0 < x1) & (x1 < oo)'
-
-    D = Die('d1', 6)
-    assert str(where(D > 4)) == 'Domain: Eq(d1, 5) | Eq(d1, 6)'
-
-    A = Exponential('a', 1)
-    B = Exponential('b', 1)
-    assert str(pspace(Tuple(A, B)).domain) == 'Domain: (0 <= a) & (0 <= b) & (a < oo) & (b < oo)'
 
 
 def test_FiniteSet():
@@ -756,15 +726,6 @@ def test_SymmetricDifference():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     assert str(K([0, 1])) == 'sqrt(2)'
-
-
-def test_Differential():
-    tp = TensorProduct(R2.dx, R2.dy)
-    assert sstr(LieDerivative(R2.e_x, tp)) == 'LieDerivative(e_x, TensorProduct(dx, dy))'
-
-    g = Function('g')
-    s_field = g(R2.x, R2.y)
-    assert sstr(Differential(s_field)) == 'd(g(x, y))'
 
 
 def test_ImmutableDenseNDimArray():

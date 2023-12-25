@@ -1,6 +1,4 @@
-"""
-Integer factorization
-"""
+"""Integer factorization."""
 
 import math
 import numbers
@@ -8,7 +6,6 @@ import random
 
 from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
 from ..core.compatibility import as_int
-from ..core.evalf import bitcount
 from ..core.sympify import sympify
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
@@ -121,7 +118,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
         if visual is not True and visual is not False:
             return d
         return smoothness_p(d, visual=False)
-    elif type(n) is not tuple:
+    if type(n) is not tuple:
         facs = factorint(n, visual=False)
 
     if power:
@@ -167,7 +164,7 @@ def trailing(n):
         return small_trailing[low_byte]
 
     # 2**m is quick for z up through 2**30
-    z = bitcount(n) - 1
+    z = n.bit_length() - 1
     if n == 1 << z:
         return z
 
@@ -203,14 +200,13 @@ def multiplicity(p, n):
                 if n.numerator == 1:
                     return -multiplicity(p.numerator, n.denominator)
                 return Integer(0)
-            elif p.numerator == 1:
+            if p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
-            else:
-                like = min(multiplicity(p.numerator, n.numerator),
-                           multiplicity(p.denominator, n.denominator))
-                cross = min(multiplicity(p.denominator, n.numerator),
-                            multiplicity(p.numerator, n.denominator))
-                return like - cross
+            like = min(multiplicity(p.numerator, n.numerator),
+                       multiplicity(p.denominator, n.denominator))
+            cross = min(multiplicity(p.denominator, n.numerator),
+                        multiplicity(p.numerator, n.denominator))
+            return like - cross
         raise ValueError('expecting ints or fractions, '
                          f'got {p} and {n}') from exc
 
@@ -311,25 +307,23 @@ def perfect_power(n, candidates=None, big=True, factor=True):
                     m = perfect_power(n, candidates=primefactors(e), big=big)
                     if m is False:
                         return False
-                    else:
-                        r, m = m
-                        # adjust the two exponents so the bases can
-                        # be combined
-                        g = math.gcd(m, e)
-                        if g == 1:
-                            return False
-                        m //= g
-                        e //= g
-                        r, e = r**m*afactor**e, g
+                    r, m = m
+                    # adjust the two exponents so the bases can
+                    # be combined
+                    g = math.gcd(m, e)
+                    if g == 1:
+                        return False
+                    m //= g
+                    e //= g
+                    r, e = r**m*afactor**e, g
                 if not big:
                     e0 = primefactors(e)
                     if len(e0) > 1 or e0[0] != e:
                         e0 = e0[0]
                         r, e = r**(e//e0), e0
                 return r, e
-            else:
-                # get the next factor ready for the next pass through the loop
-                afactor = nextprime(afactor)
+            # get the next factor ready for the next pass through the loop
+            afactor = nextprime(afactor)
 
         # Weed out downright impossible candidates
         if logn/e < 40:
@@ -835,9 +829,9 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If ``visual`` is set to ``True``, then it will return a visual
     factorization of the integer.  For example:
 
-    >>> pprint(factorint(4200, visual=True), use_unicode=False)
+    >>> pprint(factorint(4200, visual=True))
      3  1  2  1
-    2 *3 *5 *7
+    2 ⋅3 ⋅5 ⋅7
 
     Note that this is achieved by using the evaluate=False flag in Mul
     and Pow. If you do other manipulations with an expression where
@@ -852,14 +846,14 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     >>> regular = factorint(1764)
     >>> regular
     {2: 2, 3: 2, 7: 2}
-    >>> pprint(factorint(regular), use_unicode=False)
+    >>> pprint(factorint(regular))
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
 
     >>> visual = factorint(1764, visual=True)
-    >>> pprint(visual, use_unicode=False)
+    >>> pprint(visual)
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
     >>> print(factorint(visual))
     {2: 2, 3: 2, 7: 2}
 
@@ -956,7 +950,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         args.extend([Pow(*i, evaluate=False)
                      for i in sorted(factordict.items())])
         return Mul(*args, evaluate=False)
-    elif isinstance(n, (Mul, dict)):
+    if isinstance(n, (Mul, dict)):
         return factordict
 
     assert use_trial or use_rho or use_pm1
@@ -977,7 +971,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         if n == 1:
             return {}
         return {n: 1}
-    elif n < 10:
+    if n < 10:
         # doing this we are assured of getting a limit > 2
         # when we have to compute it later
         return [{0: 1}, {}, {2: 1}, {3: 1}, {2: 2}, {5: 1},
@@ -1031,43 +1025,43 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
 
         factors[int(n)] = 1
         return factors
-    else:
-        # Before quitting (or continuing on)...
 
-        # ...do a Fermat test since it's so easy and we need the
-        # square root anyway. Finding 2 factors is easy if they are
-        # "close enough." This is the big root equivalent of dividing by
-        # 2, 3, 5.
-        sqrt_n = integer_nthroot(n, 2)[0]
-        a = sqrt_n + 1
-        a2 = a**2
-        b2 = a2 - n
-        for _ in range(3):
-            b, fermat = integer_nthroot(b2, 2)
-            if fermat:
-                break
-            b2 += 2*a + 1  # equiv to (a+1)**2 - n
-            a += 1
+    # Before quitting (or continuing on)...
+
+    # ...do a Fermat test since it's so easy and we need the
+    # square root anyway. Finding 2 factors is easy if they are
+    # "close enough." This is the big root equivalent of dividing by
+    # 2, 3, 5.
+    sqrt_n = integer_nthroot(n, 2)[0]
+    a = sqrt_n + 1
+    a2 = a**2
+    b2 = a2 - n
+    for _ in range(3):
+        b, fermat = integer_nthroot(b2, 2)
         if fermat:
-            if verbose:
-                print(fermat_msg)
-            if limit:
-                limit -= 1
-            for r in [a - b, a + b]:
-                facs = factorint(r, limit=limit, use_trial=use_trial,
-                                 use_rho=use_rho, use_pm1=use_pm1,
-                                 verbose=verbose)
-                factors.update(facs)
-            if verbose:
-                print(complete_msg)
-            return factors
+            break
+        b2 += 2*a + 1  # equiv to (a+1)**2 - n
+        a += 1
+    if fermat:
+        if verbose:
+            print(fermat_msg)
+        if limit:
+            limit -= 1
+        for r in [a - b, a + b]:
+            facs = factorint(r, limit=limit, use_trial=use_trial,
+                             use_rho=use_rho, use_pm1=use_pm1,
+                             verbose=verbose)
+            factors.update(facs)
+        if verbose:
+            print(complete_msg)
+        return factors
 
-        # ...see if factorization can be terminated
-        if _check_termination(factors, n, limit, use_trial,
-                              use_rho, use_pm1, verbose):
-            if verbose:
-                print(complete_msg)
-            return factors
+    # ...see if factorization can be terminated
+    if _check_termination(factors, n, limit, use_trial,
+                          use_rho, use_pm1, verbose):
+        if verbose:
+            print(complete_msg)
+        return factors
 
     # these are the limits for trial division which will
     # be attempted in parallel with pollard methods
@@ -1191,15 +1185,14 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
 
     if not visual:
         return dict(f)
+    if -1 in f:
+        f.pop(-1)
+        args = [Integer(-1)]
     else:
-        if -1 in f:
-            f.pop(-1)
-            args = [Integer(-1)]
-        else:
-            args = []
-        args.extend([Pow(*i, evaluate=False)
-                     for i in sorted(f.items())])
-        return Mul(*args, evaluate=False)
+        args = []
+    args.extend([Pow(*i, evaluate=False)
+                 for i in sorted(f.items())])
+    return Mul(*args, evaluate=False)
 
 
 def primefactors(n, limit=None, verbose=False):
@@ -1331,7 +1324,7 @@ def divisor_count(n, modulus=1):
     """
     if not modulus:
         return 0
-    elif modulus != 1:
+    if modulus != 1:
         n, r = divmod(n, modulus)
         if r:
             return 0

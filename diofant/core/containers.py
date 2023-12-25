@@ -8,8 +8,9 @@ They are supposed to work seamlessly within the Diofant framework.
 
 from collections.abc import Mapping
 
+from ..utilities.iterables import is_iterable
 from .basic import Basic
-from .compatibility import as_int, iterable
+from .compatibility import as_int
 from .sympify import converter, sympify
 
 
@@ -50,18 +51,16 @@ class Tuple(Basic):
     def __add__(self, other):
         if isinstance(other, Tuple):
             return Tuple(*(self.args + other.args))
-        elif isinstance(other, tuple):
+        if isinstance(other, tuple):
             return Tuple(*(self.args + other))
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __radd__(self, other):
         if isinstance(other, Tuple):
             return Tuple(*(other.args + self.args))
-        elif isinstance(other, tuple):
+        if isinstance(other, tuple):
             return Tuple(*(other + self.args))
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __mul__(self, other):
         try:
@@ -80,9 +79,6 @@ class Tuple(Basic):
 
     def __hash__(self):
         return hash(self.args)
-
-    def _to_mpmath(self, prec):
-        return tuple(a._to_mpmath(prec) for a in self.args)
 
     def __lt__(self, other):
         return sympify(self.args < other.args)
@@ -117,10 +113,9 @@ class Tuple(Basic):
 
         if start is None and stop is None:
             return self.args.index(value)
-        elif stop is None:
+        if stop is None:
             return self.args.index(value, start)
-        else:
-            return self.args.index(value, start, stop)
+        return self.args.index(value, start, stop)
 
 
 converter[tuple] = lambda tup: Tuple(*tup)
@@ -188,7 +183,7 @@ class Dict(Basic):
     def __new__(cls, *args):
         if len(args) == 1 and isinstance(args[0], (dict, Dict)):
             items = [Tuple(k, v) for k, v in args[0].items()]
-        elif iterable(args) and all(len(arg) == 2 for arg in args):
+        elif is_iterable(args) and all(len(arg) == 2 for arg in args):
             items = [Tuple(k, v) for k, v in args]
         else:
             raise TypeError('Pass Dict args as Dict((k1, v1), ...) or Dict({k1: v1, ...})')

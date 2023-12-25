@@ -21,13 +21,12 @@ class AssocOp(Expr):
 
     @cacheit
     def __new__(cls, *args, **options):
-        from ..series import Order
+        from ..calculus import Order
         args = [sympify(a, strict=True) for a in args]
 
         if not options.pop('evaluate', global_evaluate[0]):
             return cls._from_args(args)
-        else:
-            args = [a for a in args if a is not cls.identity]
+        args = [a for a in args if a is not cls.identity]
 
         if len(args) == 0:
             return cls.identity
@@ -46,7 +45,7 @@ class AssocOp(Expr):
         """Create new instance with already-processed args."""
         if len(args) == 0:
             return cls.identity
-        elif len(args) == 1:
+        if len(args) == 1:
             return args[0]
 
         return super().__new__(cls, *args)
@@ -265,12 +264,12 @@ class AssocOp(Expr):
         def is_in(expr):
             if expr == self:
                 return True
-            elif isinstance(expr, cls):
+            if isinstance(expr, cls):
                 _c, _nc = _ncsplit(expr)
                 if (c & _c) == c:
                     if not nc:
                         return True
-                    elif len(nc) <= len(_nc):
+                    if len(nc) <= len(_nc):
                         for i in range(len(_nc) - len(nc)):
                             if _nc[i:i + len(nc)] == nc:
                                 return True
@@ -304,7 +303,9 @@ class AssocOp(Expr):
                 # here, we have a number so we just call to _evalf with prec;
                 # prec is not the same as n, it is the binary precision so
                 # that's why we don't call to evalf.
-                x = x._evalf(prec) if x is not self.identity else self.identity
+                if ((isinstance(self, Mul) and abs(x) != self.identity) or
+                        (isinstance(self, Add) and x != self.identity)):
+                    x = x._evalf(prec)
                 args = []
                 for a in self.func.make_args(tail):
                     # here we call to _eval_evalf since we don't know what we
@@ -345,11 +346,10 @@ class AssocOp(Expr):
         """
         if isinstance(expr, cls):
             return expr.args
-        else:
-            return expr,
+        return expr,
 
 
-class ShortCircuit(Exception):
+class ShortCircuitError(Exception):
     """Helper exception to detect absorbing element among arguments."""
 
 
@@ -393,11 +393,11 @@ class LatticeOp(AssocOp):
         if options.pop('evaluate', global_evaluate[0]):
             try:
                 _args = frozenset(cls._new_args_filter(args))
-            except ShortCircuit:
+            except ShortCircuitError:
                 return sympify(cls.zero)
             if not _args:
                 return sympify(cls.identity)
-            elif len(_args) == 1:
+            if len(_args) == 1:
                 return set(_args).pop()
         else:
             _args = frozenset(args)
@@ -412,7 +412,7 @@ class LatticeOp(AssocOp):
         ncls = call_cls or cls
         for arg in arg_sequence:
             if arg == ncls.zero:
-                raise ShortCircuit(arg)
+                raise ShortCircuitError(arg)
             if arg == ncls.identity:
                 continue
             if arg.func == ncls:
@@ -435,8 +435,7 @@ class LatticeOp(AssocOp):
         """
         if isinstance(expr, cls):
             return expr._argset
-        else:
-            return frozenset([expr])
+        return frozenset([expr])
 
     @property  # type: ignore[misc]
     @cacheit

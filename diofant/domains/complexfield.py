@@ -5,7 +5,7 @@ from __future__ import annotations
 import mpmath
 
 from ..core import Float, I
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -22,12 +22,6 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
     is_Exact = False
     is_Numerical = True
 
-    _default_precision = 53
-
-    @property
-    def has_default_precision(self):
-        return self.precision == self._default_precision
-
     @property
     def precision(self):
         return self._context.prec
@@ -40,7 +34,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
     def tolerance(self):
         return self._context.tolerance
 
-    def __new__(cls, prec=_default_precision, dps=None, tol=None):
+    def __new__(cls, prec=53, dps=None, tol=None):
         context = MPContext(prec, dps, tol)
 
         obj = super().__new__(cls)
@@ -80,8 +74,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
 
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
-        else:
-            raise CoercionFailed(f'expected complex number, got {expr}')
+        raise CoercionFailedError(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)

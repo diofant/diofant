@@ -69,7 +69,7 @@ class SATSolver:
 
     def __init__(self, clauses, variables, var_settings, symbols=None,
                  heuristic='vsids', clause_learning='none', INTERVAL=500):
-
+        """Initialize self."""
         self.var_settings = var_settings
         self.heuristic = heuristic
         self.is_unsatisfied = False
@@ -307,8 +307,7 @@ class SATSolver:
                 self.is_unsatisfied = True
                 self._unit_prop_queue = []
                 return False
-            else:
-                self._assign_literal(next_lit)
+            self._assign_literal(next_lit)
 
         return result
 
@@ -395,6 +394,7 @@ class Level:
     """
 
     def __init__(self, decision, flipped=False):
+        """Initialize self."""
         self.decision = decision
         self.var_settings = set()
         self.flipped = flipped

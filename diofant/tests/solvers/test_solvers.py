@@ -6,8 +6,8 @@ from diofant import (Derivative, E, Eq, Float, Function, I, Indexed,
                      Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
                      erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
                      nfloat, ordered, pi, posify, re, real_root, root, sec,
-                     sech, simplify, sin, sinh, solve, sqrt, sstr, symbols,
-                     tan, tanh)
+                     sech, simplify, sin, sinh, solve, sqrt, symbols, tan,
+                     tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -500,7 +500,7 @@ def test_solve_transcendental():
     # make sure that the right variables is picked up in tsolve
     pytest.raises(NotImplementedError, lambda: solve((exp(x) + 1)**x - 2))
 
-    # shouldn't generate a GeneratorsNeeded error in _tsolve when the NaN is generated
+    # shouldn't generate a GeneratorsNeededError error in _tsolve when the NaN is generated
     # for eq_down. Actual answers, as determined numerically are approx. +/- 0.83
     pytest.raises(NotImplementedError, lambda:
                   solve(sinh(x)*sinh(sinh(x)) + cosh(x)*cosh(sinh(x)) - 3))
@@ -513,8 +513,9 @@ def test_solve_transcendental():
 
     # issue sympy/sympy#7602
     a, b = symbols('a, b', extended_real=True, negative=False)
-    assert sstr(solve(Eq(a, 0.5 - cos(pi*b)/2), b)) == \
-        '[{b: -0.318309886183791*acos(-2.0*a + 1.0) + 2.0}, {b: 0.318309886183791*acos(-2.0*a + 1.0)}]'
+    assert solve(Eq(a, 0.5 - cos(pi*b)/2), b,
+                 rational=True) == [{b: acos(-2*a + 1)/pi},
+                                    {b: -acos(-2*a + 1)/pi + 2}]
 
     expr = root(x, 3) - root(x, 5)
     expr1 = root(x, 3, 1) - root(x, 5, 1)
@@ -565,6 +566,10 @@ def test_solve_for_exprs():
             for _ in solve((x - y + 1).subs({-1: z}), 1)] == [-x + y]
 
     assert solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
+
+    eq = f(x).diff(x) + f(x).diff(x, x) - f(x).diff(x)/f(x)
+    assert solve(eq, f(x).diff(x, x)) == [{f(x).diff(x, x):
+                                           (-f(x) + 1)*f(x).diff(x)/f(x)}]
 
 
 def test_solve_for_functions_derivatives():
@@ -1569,7 +1574,7 @@ def test_unrad1():
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
     assert solve(root(x, 3) + root(x, 5) - 2) == [{x: 1}]
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     ans = [{x: Rational(4, 5)},
            {x: Rational(-1484, 375) + 172564/(140625*cbrt(114*sqrt(12657)/78125 +
                                                           Rational(12459439, 52734375))) +
@@ -1695,12 +1700,12 @@ def test_sympyissue_21905():
     f = 0.07*x*y + 10.0/y + 30.0/x
     eqs = [f.diff(x), f.diff(y)]
     assert (solve(eqs) ==
-            [{x: Float('10.873803730028921', dps=15),
-              y: Float('3.624601243342974', dps=15)},
-             {x: Float('-5.4369018650144607', dps=15) - Float('9.4169902659710321', dps=15)*I,
-              y: Float('-1.812300621671487', dps=15) - Float('3.1389967553236771', dps=15)*I},
-             {x: Float('-5.4369018650144607', dps=15) + Float('9.4169902659710321', dps=15)*I,
-              y: Float('-1.812300621671487', dps=15) + Float('3.1389967553236771', dps=15)*I}])
+            [{x: 10.873803730028921,
+              y: 3.624601243342974},
+             {x: -5.4369018650144607 - 9.4169902659710321*I,
+              y: -1.812300621671487 - 3.1389967553236771*I},
+             {x: -5.4369018650144607 + 9.4169902659710321*I,
+              y: -1.812300621671487 + 3.1389967553236771*I}])
 
 
 def test_sympyissue_21984():
@@ -1711,18 +1716,18 @@ def test_sympyissue_21984():
 
     eqs = [(H*A/HA) - ka, H*OH - kw, A + OH - H, HA + A - C0]
 
-    res = [{H: Float('-100000.0000000001', dps=15),
-            OH: Float('-9.9999999999999901e-20', dps=15),
-            HA: Float('100000.0000000002', dps=15),
-            A: Float('-100000.0000000001', dps=15)},
-           {H: Float('1.0005409447144861e-7', dps=15),
-            OH: Float('9.9954094471448725e-8', dps=15),
-            HA: Float('1.0005409447134852e-22', dps=15),
-            A: Float('9.9999999999899941e-11', dps=15)},
-           {H: Float('-9.7518697933531939e-8', dps=15),
-            OH: Float('-9.7618697933532039e-8', dps=15),
-            HA: Float('-9.7518697933631848e-23', dps=15),
-            A: Float('1.0000000000009752e-10', dps=15)}]
+    res = [{H: -100000.0000000001,
+            OH: -9.9999999999999901e-20,
+            HA: 100000.0000000002,
+            A: -100000.0000000001},
+           {H: 1.007365152585555e-7,
+            OH: 1.0063651525855559e-7,
+            HA: 1.007365152584554e-22,
+            A: 9.9999999999899979e-11},
+           {H: -1.2078695558127681e-7,
+            OH: -1.2088695558127693e-7,
+            HA: -1.2078695558137669e-22,
+            A: 1.0000000000012001e-10}]
     assert solve(eqs, [H, OH, HA, A]) == res
 
 
@@ -1749,8 +1754,8 @@ def test_sympyissue_22248():
     c = 15
     y = y0 + (m/c)*(v0 + ((m*g)/c))*(1 - exp(- (c/m)*x)) - ((m*g)/c)*x
 
-    assert solve(y) == [{x: Float('-1.4164130909148258', dps=15)},
-                        {x: Float('11.61083847106101', dps=15)}]
+    assert solve(y) == [{x: -1.4164130909148258},
+                        {x: 11.61083847106101}]
 
 
 def test_sympyissue_22837():

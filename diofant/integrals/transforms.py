@@ -37,6 +37,7 @@ class IntegralTransformError(NotImplementedError):
     """
 
     def __init__(self, transform, function, msg):
+        """Initialize self."""
         super().__init__(f'{transform} Transform could not be computed: {msg}.')
         self.function = function
 
@@ -500,14 +501,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
-    s_multiplier = common_coefficient/functools.reduce(math.lcm, [Integer(x.denominator)
-                                                                  for x in s_multipliers], Integer(1))
+    s_multiplier = common_coefficient/math.lcm(*(Integer(x.denominator)
+                                                 for x in s_multipliers))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * functools.reduce(math.gcd, [Integer(x.numerator) for x in s_multipliers])
+                * math.gcd(*(Integer(x.numerator) for x in s_multipliers))
 
     fac = Integer(1)
     f = f.subs({s: s/s_multiplier})
@@ -584,7 +585,7 @@ def _rewrite_gamma(f, s, a, b):
                 # We completely factor the poly. For this we need the roots.
                 # Now roots() only works in some cases (low degree), and RootOf
                 # only works without parameters. So try both...
-                coeff = p.LT()[1]
+                coeff = p.LC()
                 rs = roots(p, s)
                 if len(rs) != p.degree():
                     rs = RootOf.all_roots(p)
@@ -704,7 +705,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False, noconds=True):
             ress = [p[0] for p in ress]
             res = Add(*ress)
             if not as_meijerg:
-                res = factor(res, gens=res.atoms(Heaviside))
+                res = factor(res, *res.atoms(Heaviside))
             return res.subs({x: x_}), And(*conds)
 
         try:
@@ -774,7 +775,7 @@ class InverseMellinTransform(IntegralTransform):
 
     def _compute_transform(self, f, x, s, **hints):
         from ..utilities import postorder_traversal
-        global _allowed
+        global _allowed  # pylint: disable=global-statement
         if _allowed is None:
             from ..functions import (cos, cosh, cot, coth, exp, factorial,
                                      gamma, rf, sin, sinh, tan, tanh)
@@ -898,7 +899,7 @@ def _simplifyconds(expr, s, a):
             return
         if n.is_positive and (abs(ex1) - abs(a)**n).is_nonpositive:
             return False
-        elif n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
+        if n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
             return True
 
     def replie(x, y):
@@ -1158,9 +1159,8 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True, noconds=True):
         if rel.lts == u:
             k = log(rel.gts)
             return Heaviside(t + k)
-        else:
-            k = log(rel.lts)
-            return Heaviside(-(t + k))
+        k = log(rel.lts)
+        return Heaviside(-(t + k))
     f = f.replace(Heaviside, simp_heaviside)
     f = f.replace(lambda expr: expr.is_Exp,
                   lambda expr: expand_complex(exp(expr.exp)))
@@ -1187,7 +1187,7 @@ class InverseLaplaceTransform(IntegralTransform):
     _none_sentinel = Dummy('None')
     _c = Dummy('c')
 
-    def __new__(cls, F, s, x, plane, **opts):
+    def __new__(cls, F, s, x, plane=None, **opts):
         if plane is None:
             plane = InverseLaplaceTransform._none_sentinel
         return IntegralTransform.__new__(cls, F, s, x, plane, **opts)
@@ -1505,7 +1505,7 @@ def sine_transform(f, x, k, **hints):
     Note that for this transform, by default ``noconds=True``.
 
     >>> sine_transform(x*exp(-a*x**2), x, k)
-    sqrt(2)*E**(-k**2/(4*a))*k/(4*a**(3/2))
+    sqrt(2)*E**(-k**2/(4*a))*k/(4*sqrt(a)**3)
     >>> sine_transform(x**(-a), x, k)
     2**(-a + 1/2)*k**(a - 1)*gamma(-a/2 + 1)/gamma(a/2 + 1/2)
 
@@ -1616,7 +1616,7 @@ def cosine_transform(f, x, k, **hints):
     >>> cosine_transform(exp(-a*x), x, k)
     sqrt(2)*a/(sqrt(pi)*(a**2 + k**2))
     >>> cosine_transform(exp(-a*sqrt(x))*cos(a*sqrt(x)), x, k)
-    E**(-a**2/(2*k))*a/(2*k**(3/2))
+    E**(-a**2/(2*k))*a/(2*sqrt(k)**3)
 
     See Also
     ========
@@ -1777,7 +1777,7 @@ def hankel_transform(f, r, k, nu, **hints):
 
     >>> ht = hankel_transform(exp(-a*r), r, k, 0)
     >>> ht
-    a/(k**3*(a**2/k**2 + 1)**(3/2))
+    a/(k**3*sqrt(a**2/k**2 + 1)**3)
 
     >>> inverse_hankel_transform(ht, k, r, 0)
     E**(-a*r)
@@ -1834,7 +1834,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
 
     >>> ht = hankel_transform(exp(-a*r), r, k, 0)
     >>> ht
-    a/(k**3*(a**2/k**2 + 1)**(3/2))
+    a/(k**3*sqrt(a**2/k**2 + 1)**3)
 
     >>> inverse_hankel_transform(ht, k, r, 0)
     E**(-a*r)

@@ -26,7 +26,8 @@ warnings.simplefilter('error', UserWarning)
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram']
+              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram',
+              'sphinxcontrib.jquery']
 
 napoleon_google_docstring = False
 napoleon_use_param = False
@@ -41,13 +42,9 @@ nitpicky = True
 # Glob-style patterns that should be excluded when looking for sources.
 exclude_patterns = ['README.rst']
 
-# The document name of the "master" document, that is, the document
-# that contains the root toctree directive.
-master_doc = 'index'
-
 # Project information.
 project = 'Diofant'
-copyright = '2006-2022 SymPy Development Team, 2013-2022 Sergey B Kirpichev'
+copyright = '2006-2022 SymPy Development Team, 2013-2023 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -95,7 +92,7 @@ graphviz_output_format = 'svg'
 # should be linked to in this documentation.
 intersphinx_mapping = {'python': ('https://docs.python.org/3/', None),
                        'numpy': ('https://numpy.org/doc/stable/', None),
-                       'scipy': ('https://docs.scipy.org/doc/scipy/', None)}
+                       'mpmath': ('https://mpmath.org/doc/current/', None)}
 
 # Dictionary of external sites, mapping unique short alias names to a
 # base URL and a prefix.

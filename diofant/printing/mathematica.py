@@ -1,16 +1,10 @@
-"""
-Mathematica code printer
-"""
-
-from __future__ import annotations
+"""Mathematica code printer."""
 
 import types
-import typing
 
-from ..core import Expr
 from ..sets import Reals
 from .codeprinter import CodePrinter
-from .precedence import precedence
+from .precedence import PRECEDENCE, precedence
 from .str import StrPrinter
 
 
@@ -58,6 +52,9 @@ known_functions = {
     'polylog': [(lambda x, y: True, 'PolyLog')],
     'loggamma': [(lambda x: True, 'LogGamma')],
     'uppergamma': [(lambda s, x: True, 'Gamma')],
+    'floor': [(lambda x: True, 'Floor')],
+    'ceiling': [(lambda x: True, 'Ceiling')],
+    'arg': [(lambda x: True, 'Arg')],
 }
 
 
@@ -69,7 +66,7 @@ class MCodePrinter(CodePrinter):
 
     printmethod = '_mcode'
 
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
         'precision': 15,
@@ -77,8 +74,8 @@ class MCodePrinter(CodePrinter):
         'human': True,
     }
 
-    _number_symbols: set[tuple] = set()
-    _not_supported: set[Expr] = set()
+    _number_symbols = set()
+    _not_supported = set()
 
     def __init__(self, settings={}):
         """Register function mappings supplied by user."""
@@ -136,6 +133,9 @@ class MCodePrinter(CodePrinter):
         return fname + f"[{self.stringify(expr.args, ', ')}]"
     _print_MinMaxBase = _print_Function
 
+    def _print_lowergamma(self, expr):
+        return f"{self.parenthesize(expr.rewrite('uppergamma'), PRECEDENCE['Add'])}"
+
     def _print_atan2(self, expr):
         return f"ArcTan[{', '.join(map(self.doprint, reversed(expr.args)))}]"
 
@@ -168,7 +168,8 @@ class MCodePrinter(CodePrinter):
         return f'Hold[Limit[{e}, {x} -> {x0}, Direction -> {direction}]]'
 
     def _print_Sum(self, expr):
-        return 'Hold[Sum[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
+        return f'Hold[{expr.__class__.__name__}[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
+    _print_Product = _print_Sum
 
     def _print_MatrixBase(self, expr):
         return self.doprint(expr.tolist())
@@ -206,6 +207,11 @@ class MCodePrinter(CodePrinter):
 
     def _print_Dummy(self, expr):
         return f'{expr.name}{expr.dummy_index}'
+
+    def _print_IntegralTransform(self, expr):
+        return (f'Hold[{expr.func}[{expr.function}, '
+                f'{expr.function_variable}, {expr.transform_variable}, '
+                'GenerateConditions->True]]')
 
 
 def mathematica_code(expr, **settings):

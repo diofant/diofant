@@ -1,3 +1,1 @@
-"""
-Tests for matrices.
-"""
+"""Tests for matrices."""

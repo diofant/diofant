@@ -1,3 +1,1 @@
-"""
-Package for elementary functions.
-"""
+"""Package for elementary functions."""

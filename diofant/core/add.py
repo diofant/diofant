@@ -3,8 +3,8 @@ import functools
 import math
 
 from ..utilities import default_sort_key
+from ..utilities.iterables import is_sequence
 from .cache import cacheit
-from .compatibility import is_sequence
 from .logic import _fuzzy_group
 from .numbers import Integer, nan, oo, zoo
 from .operations import AssocOp
@@ -33,7 +33,7 @@ class Add(AssocOp):
         diofant.core.mul.Mul.flatten
 
         """
-        from ..series.order import Order
+        from ..calculus import Order
         from .mul import Mul
 
         rv = None
@@ -74,8 +74,7 @@ class Add(AssocOp):
 
             # 3 or NaN
             if o.is_Number:
-                if (o is nan or coeff is zoo and
-                        o.is_finite is False):
+                if o is nan or coeff is zoo and o.is_infinite:
                     # we know for sure the result will be nan
                     return [nan], [], None
                 if coeff.is_Number:
@@ -86,7 +85,7 @@ class Add(AssocOp):
                 continue
 
             if o is zoo:
-                if coeff.is_finite is False:
+                if coeff.is_infinite:
                     # we know for sure the result will be nan
                     return [nan], [], None
                 coeff = zoo
@@ -110,8 +109,9 @@ class Add(AssocOp):
                 b, e = o.as_base_exp()
                 if b.is_Number and (e.is_Integer or
                                     (e.is_Rational and e.is_negative)):
-                    seq.append(b**e)
-                    continue
+                    if (p := b**e).is_Number:
+                        seq.append(p)
+                        continue
                 c, s = Integer(1), o
 
             else:
@@ -196,7 +196,7 @@ class Add(AssocOp):
                 if t is not None:
                     newseq2.append(t)
             newseq = newseq2 + order_factors
-            # 1 + O(1) -> O(1)
+            # 1 + O(1, x) -> O(1, x)
             for o in order_factors:
                 if o.contains(coeff):
                     coeff = Integer(0)
@@ -212,8 +212,7 @@ class Add(AssocOp):
         # we are done
         if noncommutative:
             return [], newseq, None
-        else:
-            return newseq, [], None
+        return newseq, [], None
 
     @classmethod
     def class_key(cls):
@@ -297,7 +296,7 @@ class Add(AssocOp):
         return self.func(*[a.diff(s) for a in self.args])
 
     def _eval_nseries(self, x, n, logx):
-        terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
+        terms = [t.nseries(x, n, logx) for t in self.args]
         return self.func(*terms)
 
     def _matches_simple(self, expr, repl_dict):
@@ -415,13 +414,12 @@ class Add(AssocOp):
         r = _fuzzy_group((a.is_extended_real for a in self.args), quick_exit=True)
         if r is not True:
             return r
-        else:
-            nfin = [_ for _ in self.args if not _.is_finite]
-            if len(nfin) <= 1:
-                return True
-            elif (all(_.is_nonnegative for _ in nfin) or
-                  all(_.is_nonpositive for _ in nfin)):
-                return True
+        nfin = [_ for _ in self.args if not _.is_finite]
+        if len(nfin) <= 1:
+            return True
+        if (all(_.is_nonnegative for _ in nfin) or
+                all(_.is_nonpositive for _ in nfin)):
+            return True
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
@@ -485,7 +483,7 @@ class Add(AssocOp):
         else:
             if not nonpos and nonneg < len(args):
                 return True
-            elif nonpos == len(args):
+            if nonpos == len(args):
                 return False
 
     def _eval_is_negative(self):
@@ -514,7 +512,7 @@ class Add(AssocOp):
         else:
             if not nonneg and nonpos < len(args):
                 return True
-            elif nonneg == len(args):
+            if nonneg == len(args):
                 return False
 
     def _eval_subs(self, old, new):
@@ -577,25 +575,12 @@ class Add(AssocOp):
             return self._new_rawargs(*args)
 
     @cacheit
-    def extract_leading_order(self, symbols):
-        """Returns the leading term and its order.
-
-        Examples
-        ========
-
-        >>> (x + 1 + 1/x**5).extract_leading_order(x)
-        ((x**(-5), O(x**(-5))),)
-        >>> (1 + x).extract_leading_order(x)
-        ((1, O(1)),)
-        >>> (x + x**2).extract_leading_order(x)
-        ((x, O(x)),)
-
-        """
-        from ..series import Order
+    def _extract_leading_order(self, symbols):
+        from ..calculus import Order
         lst = []
         symbols = list(symbols if is_sequence(symbols) else [symbols])
         point = [0]*len(symbols)
-        seq = [(f, Order(f, *zip(symbols, point))) for f in self.args]
+        seq = [(f, Order(f, *symbols, *point)) for f in self.args]
         for ef, of in seq:
             for e, o in lst:
                 if o.contains(of) and o != of:
@@ -635,7 +620,7 @@ class Add(AssocOp):
         return self.func(*re_part), self.func(*im_part)
 
     def _eval_as_leading_term(self, x):
-        from ..series import Order
+        from ..calculus import Order
         from . import factor_terms
 
         by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)
@@ -652,17 +637,16 @@ class Add(AssocOp):
 
         if not expr.is_Add:
             return expr
-        else:
-            plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
-            rv = factor_terms(plain, fraction=False)
-            rv_simplify = rv.simplify()
-            # if it simplifies to an x-free expression, return that;
-            # tests don't fail if we don't but it seems nicer to do this
-            if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and plain:
-                    return (expr - plain)._eval_as_leading_term(x)
-                return rv_simplify
-            return rv
+        plain = expr.func(*[s for s, _ in expr._extract_leading_order(x)])
+        rv = factor_terms(plain, fraction=False)
+        rv_simplify = rv.simplify()
+        # if it simplifies to an x-free expression, return that;
+        # tests don't fail if we don't but it seems nicer to do this
+        if x not in rv_simplify.free_symbols:
+            if rv_simplify.is_zero and plain:
+                return (expr - plain)._eval_as_leading_term(x)
+            return rv_simplify
+        return rv
 
     def _eval_adjoint(self):
         return self.func(*[t.adjoint() for t in self.args])
@@ -725,11 +709,11 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = functools.reduce(math.gcd, [t[0] for t in terms], 0)
-            dlcm = functools.reduce(math.lcm, [t[1] for t in terms], 1)
+            ngcd = math.gcd(*(t[0] for t in terms))
+            dlcm = math.lcm(*(t[1] for t in terms))
         else:
-            ngcd = functools.reduce(math.gcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = functools.reduce(math.lcm, [t[1] for t in terms if t[1]], 1)
+            ngcd = math.gcd(*(t[0] for t in terms if t[1]))
+            dlcm = math.lcm(*(t[1] for t in terms if t[1]))
 
         if ngcd == dlcm == 1:
             return Integer(1), self
@@ -813,7 +797,7 @@ class Add(AssocOp):
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = functools.reduce(math.gcd, [r[q] for r in rads], 0)
+                    g = math.gcd(*(r[q] for r in rads))
                     if g != 1:
                         G.append(root(g, q))
                 if G:

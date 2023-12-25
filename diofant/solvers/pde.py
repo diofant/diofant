@@ -39,13 +39,13 @@ from itertools import combinations_with_replacement
 
 from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
                     expand_trig, symbols)
-from ..core.compatibility import is_sequence
 from ..functions import exp
 from ..integrals import Integral
 from ..polys import lcm
 from ..simplify.radsimp import collect
 from ..simplify.simplify import simplify
 from ..utilities import filldedent, has_dups
+from ..utilities.iterables import is_sequence
 from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
 
@@ -181,9 +181,8 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
         pdedict.update(failed_hints)
         return pdedict
 
-    else:
-        return _helper_simplify(eq, hints['hint'],
-                                hints['func'], hints['order'], hints[hints['hint']], solvefun)
+    return _helper_simplify(eq, hints['hint'],
+                            hints['func'], hints['order'], hints[hints['hint']], solvefun)
 
 
 def _helper_simplify(eq, hint, func, order, match, solvefun):
@@ -212,12 +211,11 @@ def _handle_Integral(expr, func, order, hint):
     if hint.endswith('_Integral'):
         return expr
 
-    elif hint == '1st_linear_constant_coeff':
+    if hint == '1st_linear_constant_coeff':
         expr = simplify(expr.doit())
         return expr.func(expr.lhs.powsimp(), expr.rhs.powsimp())
 
-    else:
-        return expr
+    return expr
 
 
 def classify_pde(eq, func=None, dict=False, **kwargs):
@@ -290,8 +288,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
         if dict:
             matching_hints['default'] = None
             return matching_hints
-        else:
-            return ()
+        return ()
 
     eq = expand(eq)
 
@@ -366,8 +363,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
                 matching_hints['default'] = i
                 break
         return matching_hints
-    else:
-        return tuple(retlist)
+    return tuple(retlist)
 
 
 def checkpdesol(pde, sol, func=None, solve_for_func=True):
@@ -453,28 +449,28 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*ux + b*uy + c*u
-        >>> pprint(genform, use_unicode=False)
-          d               d
-        a*--(f(x, y)) + b*--(f(x, y)) + c*f(x, y)
-          dx              dy
+        >>> pprint(genform)
+          ∂               ∂
+        a⋅──(f(x, y)) + b⋅──(f(x, y)) + c⋅f(x, y)
+          ∂x              ∂y
 
-        >>> pprint(pdsolve(genform), use_unicode=False)
-                   -c*(a*x + b*y)
-                   ---------------
+        >>> pprint(pdsolve(genform))
+                   -c⋅(a⋅x + b⋅y)
+                   ───────────────
                         2    2
                        a  + b
-        f(x, y) = E               *F(-a*y + b*x)
+        f(x, y) = ℯ               ⋅F(-a⋅y + b⋅x)
 
     Examples
     ========
 
     >>> pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y))
     Eq(f(x, y), E**(-x/2 - y/2)*F(x - y))
-    >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)), use_unicode=False)
+    >>> pprint(pdsolve(f(x, y) + f(x, y).diff(x) + f(x, y).diff(y)))
                  x   y
-               - - - -
+               - ─ - ─
                  2   2
-    f(x, y) = E       *F(x - y)
+    f(x, y) = ℯ       ⋅F(x - y)
 
     References
     ==========
@@ -516,45 +512,40 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a*u + b*ux + c*uy - G(x, y)
-        >>> pprint(genform, use_unicode=False)
-                  d               d
-        a*f(x, y) + b*--(f(x, y)) + c*--(f(x, y)) - G(x, y)
-                  dx              dy
-        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'),
-        ...        use_unicode=False)
-                  /         /          b*x + c*y
-                  |         |              /
-                  |         |             |
-                  |         |             |        a*xi
-                  |         |             |      -------
-                  |         |             |       2    2
-                  |         |             |      b  + c   /b*xi + c*eta  -b*eta + c*xi
-                  |         |             |     E       *G|------------, -------------
-                  |         |             |               |   2    2         2    2
-                  |  -a*xi  |             |               \  b  + c         b  + c
-                  | ------- |             |
-                  |  2    2 |            /
-                  | b  + c  |
-        f(x, y) = |E       *|F(eta) + ------------------------------------------------
-                  |         |                                  2    2
-                  \         \                                 b  + c
+        >>> pprint(genform)
+                      ∂               ∂
+        a⋅f(x, y) + b⋅──(f(x, y)) + c⋅──(f(x, y)) - G(x, y)
+                      ∂x              ∂y
+        >>> pprint(pdsolve(genform, hint='1st_linear_constant_coeff_Integral'))
+                  ⎛         ⎛       b⋅x + c⋅y                                     ⎞⎞│
+                  ⎜         ⎜           ⌠                                         ⎟⎟│
+                  ⎜         ⎜           ⎮        a⋅ξ                              ⎟⎟│
+                  ⎜         ⎜           ⎮      ───────                            ⎟⎟│
+                  ⎜         ⎜           ⎮       2    2                            ⎟⎟│
+                  ⎜         ⎜           ⎮      b  + c   ⎛b⋅ξ + c⋅η  -b⋅η + c⋅ξ⎞   ⎟⎟│
+                  ⎜         ⎜           ⎮     ℯ       ⋅G⎜─────────, ──────────⎟ dξ⎟⎟│
+                  ⎜  -a⋅ξ   ⎜           ⎮               ⎜  2    2     2    2  ⎟   ⎟⎟│
+                  ⎜ ─────── ⎜           ⎮               ⎝ b  + c     b  + c   ⎠   ⎟⎟│
+                  ⎜  2    2 ⎜           ⌡                                         ⎟⎟│
+                  ⎜ b  + c  ⎜                                                     ⎟⎟│
+        f(x, y) = ⎜ℯ       ⋅⎜F(η) + ──────────────────────────────────────────────⎟⎟│
+                  ⎜         ⎜                           2    2                    ⎟⎟│
+                  ⎝         ⎝                          b  + c                     ⎠⎠│η
         <BLANKLINE>
-               \\|
-               |||
-               |||
-               |||
-               |||
-               |||
-        \      |||
-        | d(xi)|||
-        |      |||
-        /      |||
-               |||
-               |||
-               |||
-        -------|||
-               |||
-               //|eta=-b*y + c*x, xi=b*x + c*y
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        <BLANKLINE>
+        =-b⋅y + c⋅x, ξ=b⋅x + c⋅y
 
     Examples
     ========
@@ -621,10 +612,10 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
         >>> genform = a(x, y)*u + b(x, y)*ux + c(x, y)*uy - G(x, y)
-        >>> pprint(genform, use_unicode=False)
-                                             d                     d
-        -G(x, y) + a(x, y)*f(x, y) + b(x, y)*--(f(x, y)) + c(x, y)*--(f(x, y))
-                                             dx                    dy
+        >>> pprint(genform)
+                                             ∂                     ∂
+        -G(x, y) + a(x, y)⋅f(x, y) + b(x, y)⋅──(f(x, y)) + c(x, y)⋅──(f(x, y))
+                                             ∂x                    ∂y
 
     Examples
     ========
@@ -663,17 +654,14 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
                     raise NotImplementedError('Unable to find a solution'
                                               ' due to inability of '
                                               'integrate') from exc
-                else:
-                    return Eq(f(x, y), solvefun(x) + tsol)
-            else:
-                try:
-                    tsol = integrate(e/b, x)
-                except NotImplementedError as exc:
-                    raise NotImplementedError('Unable to find a solution'
-                                              ' due to inability of '
-                                              'integrate') from exc
-                else:
-                    return Eq(f(x, y), solvefun(y) + tsol)
+                return Eq(f(x, y), solvefun(x) + tsol)
+            try:
+                tsol = integrate(e/b, x)
+            except NotImplementedError as exc:
+                raise NotImplementedError('Unable to find a solution'
+                                          ' due to inability of '
+                                          'integrate') from exc
+            return Eq(f(x, y), solvefun(y) + tsol)
 
     if not c:
         # To deal with cases when c is 0, a simpler method is used.
@@ -709,16 +697,12 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
 
-    else:
-        raise NotImplementedError('Cannot solve the partial differential '
-                                  'equation due to inability of constantsimp')
+    raise NotImplementedError('Cannot solve the partial differential '
+                              'equation due to inability of constantsimp')
 
 
 def _simplify_variable_coeff(sol, syms, func, funcarg):
-    r"""
-    Helper function to replace constants by functions in 1st_linear_variable_coeff
-
-    """
+    """Helper function to replace constants by functions in 1st_linear_variable_coeff."""
     eta = Symbol('eta')
     if len(syms) == 1:
         sym = syms.pop()

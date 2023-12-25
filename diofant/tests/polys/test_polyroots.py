@@ -2,6 +2,7 @@
 
 import itertools
 
+import hypothesis
 import mpmath
 import pytest
 
@@ -175,7 +176,7 @@ def test_roots_quartic():
     # it's ok if the solution is not Piecewise, but the tests below should pass
     eq = (y*x**4 + x**3 - x + z).as_poly(x)
     ans = roots_quartic(eq)
-    assert all(type(i) == Piecewise for i in ans)
+    assert all(type(i) is Piecewise for i in ans)
     reps = ({y: -Rational(1, 3), z: -Rational(1, 4)},  # 4 real
             {y: -Rational(1, 3), z: -Rational(1, 2)},  # 2 real
             {y: -Rational(1, 3), z: -2})  # 0 real
@@ -719,3 +720,19 @@ def test_sympyissue_21263():
     assert r == {-root(y, 3) - 1: 1,
                  -root(y, 3)*(-Rational(1, 2) - sqrt(3)*I/2) - 1: 1,
                  -root(y, 3)*(-Rational(1, 2) + sqrt(3)*I/2) - 1: 1}
+
+
+@pytest.mark.timeout(2)
+def test_sympyissue_20913():
+    i = 9671406556917067856609794
+    assert (x + i).as_poly().real_roots() == [-i]
+
+
+@pytest.mark.slow
+@hypothesis.given(hypothesis.strategies.lists(hypothesis.strategies.integers(),
+                                              max_size=5))
+@hypothesis.settings(max_examples=1000, deadline=None)
+def test_real_roots_sorted(l):
+    p = sum((c*x**n for n, c in enumerate(l)), start=Integer(0)).as_poly(x)
+    roots = p.real_roots()
+    assert sorted(roots) == roots

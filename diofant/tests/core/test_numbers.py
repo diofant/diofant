@@ -3,7 +3,6 @@ import fractions
 
 import mpmath
 import pytest
-from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
@@ -12,7 +11,7 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.abc import x
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.numbers import igcdex
 
 
 __all__ = ()
@@ -83,7 +82,7 @@ def test_mod():
     a = Integer(7)
     b = Integer(4)
 
-    assert type(a % b) == Integer
+    assert type(a % b) is Integer
     assert a % b == 3
     assert Integer(1) % Rational(2, 3) == Rational(1, 3)
     assert Rational(7, 5) % Integer(1) == Rational(2, 5)
@@ -185,9 +184,7 @@ def _strictly_equal(a, b):
 
 
 def _test_rational_new(cls):
-    """
-    Tests that are common between Integer and Rational.
-    """
+    """Tests that are common between Integer and Rational."""
     for a, b in ((0, Integer(0)), (1, Integer(1)), (-1, Integer(-1)),
                  # These look odd, but are similar to int():
                  ('1', Integer(1)), ('-1', Integer(-1))):
@@ -595,7 +592,7 @@ def test_Infinity():
     assert nan/1 == nan
     assert -oo - 1 == -oo
 
-    e = (I + cos(1)**2 + sin(1)**2 - 1)
+    e = I + cos(1)**2 + sin(1)**2 - 1
     assert oo**e == Pow(oo, e, evaluate=False)
 
     # issue sympy/sympy#10020
@@ -944,6 +941,16 @@ def test_powers_Integer():
     n = Symbol('n', integer=True)
     e = (-1)**n/2 + Rational(5, 2)
     assert (-1)**e == Pow(-1, e, evaluate=False)
+
+    e = Integer(2)**10000000
+    assert e == Pow(2, 10000000, evaluate=False)
+    assert e*e == Pow(2, 20000000, evaluate=False)
+    assert e+e == 2*Pow(2, 10000000, evaluate=False)
+    assert 1/e == Pow(2, -10000000, evaluate=False)
+
+    # issue sympy/sympy#22450
+    assert Rational(13, 10)**6472416997 == Mul(Pow(10, -6472416997, evaluate=False),
+                                               Pow(13, 6472416997, evaluate=False))
 
 
 def test_powers_Rational():
@@ -1407,8 +1414,8 @@ def test_approximation_interval():
 def test_sympyissue_6640():
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
-    assert Float(finf).is_nonzero is True
-    assert Float(fninf).is_nonzero is True
+    assert Float(mpmath.mpf('inf')._mpf_).is_nonzero is True
+    assert Float(mpmath.mpf('-inf')._mpf_).is_nonzero is True
     assert bool(Float(0)) is False
 
 
@@ -1417,11 +1424,6 @@ def test_sympyissue_6349():
     assert Float('23e3')._prec == 10
     assert Float('23000')._prec == 20
     assert Float('-23000')._prec == 20
-
-
-def test_mpf_norm():
-    assert mpf_norm((1, 0, 1, 0), 10) == mpmath.mpf('0')._mpf_
-    assert Float._new((1, 0, 1, 0), 10)._mpf_ == mpmath.mpf('0')._mpf_
 
 
 def test_latex():
@@ -1589,3 +1591,7 @@ def test_comparisons_with_unknown_type():
     assert not bar >= oo
     assert oo >= bar
     assert bar <= oo
+
+
+def test_sympyissue_24543():
+    assert Rational('0.5', '100') == Rational(1, 200)

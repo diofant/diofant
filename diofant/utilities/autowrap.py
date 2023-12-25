@@ -59,8 +59,6 @@ When is this module NOT the best approach?
 
 """
 
-_doctest_depends_on = {'exe': ('f2py', 'gfortran', 'gcc'), 'modules': ('numpy',)}
-
 import os
 import shutil
 import sys
@@ -69,13 +67,16 @@ from string import Template
 from subprocess import STDOUT, CalledProcessError, check_output
 
 from ..core import Dummy, Eq, Lambda, Symbol, cacheit
-from ..core.compatibility import iterable
 from ..tensor import Idx, IndexedBase
 from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
                       InputArgument, OutputArgument, Result, ResultBase,
                       get_code_generator, make_routine)
 from .decorator import doctest_depends_on
+from .iterables import is_iterable
 from .lambdify import implemented_function
+
+
+_doctest_depends_on = {'exe': ('f2py', 'gfortran', 'gcc'), 'modules': ('numpy',)}
 
 
 class CodeWrapError(Exception):
@@ -225,6 +226,7 @@ class CythonCodeWrapper(CodeWrapper):
         '{body}')
 
     def __init__(self, *args, **kwargs):
+        """Initialize self."""
         super().__init__(*args, **kwargs)
         self._need_numpy = False
 
@@ -361,25 +363,22 @@ class CythonCodeWrapper(CodeWrapper):
             ndim = len(arg.dimensions)
             mtype = np_types[t]
             return mat_dec.format(mtype=mtype, ndim=ndim, name=arg.name)
-        else:
-            return f'{t} {arg.name!s}'
+        return f'{t} {arg.name!s}'
 
     def _declare_arg(self, arg):
         proto = self._prototype_arg(arg)
         if arg.dimensions:
             shape = '(' + ','.join(str(i[1] + 1) for i in arg.dimensions) + ')'
             return proto + f' = np.empty({shape})'
-        else:
-            return proto + ' = 0'
+        return proto + ' = 0'
 
     def _call_arg(self, arg):
         if arg.dimensions:
             t = arg.get_datatype('c')
             return f'<{t}*> {arg.name}.data'
-        elif isinstance(arg, ResultBase):
+        if isinstance(arg, ResultBase):
             return f'&{arg.name}'
-        else:
-            return str(arg.name)
+        return str(arg.name)
 
 
 class F2PyCodeWrapper(CodeWrapper):
@@ -486,7 +485,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         language = _infer_language(backend)
 
     flags = flags if flags else ()
-    args = list(args) if iterable(args, exclude=set) else args
+    args = list(args) if is_iterable(args, exclude=set) else args
 
     code_generator = get_code_generator(language, 'autowrap')
     CodeWrapperClass = _get_code_wrapper_class(backend)
@@ -621,21 +620,13 @@ ufunc${ind} = PyUFunc_FromFuncAndData(${funcname}_funcs, ${funcname}_data, ${fun
     PyDict_SetItemString(d, "${funcname}", ufunc${ind});
     Py_DECREF(ufunc${ind});""")
 
-_ufunc_setup = Template("""\
-def configuration(parent_package='', top_path=None):
-    import numpy
-    from numpy.distutils.misc_util import Configuration
-
-    config = Configuration('',
-                           parent_package,
-                           top_path)
-    config.add_extension('${module}', sources=['${module}.c', '${filename}.c'])
-
-    return config
+_ufunc_setup = Template("""from setuptools import Extension, setup
+from numpy import get_include
 
 if __name__ == "__main__":
-    from numpy.distutils.core import setup
-    setup(configuration=configuration)""")
+    setup(ext_modules=[Extension('${module}',
+                                 sources=['${module}.c', '${filename}.c'],
+                                 include_dirs=[get_include()])])""")
 
 
 class UfuncifyCodeWrapper(CodeWrapper):
@@ -871,17 +862,16 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         code_wrapper = UfuncifyCodeWrapper(CCodeGen('ufuncify'), tempdir,
                                            flags, verbose)
         return code_wrapper.wrap_code(routine, helpers=helps)
-    else:
-        # Dummies are used for all added expressions to prevent name clashes
-        # within the original expression.
-        y = IndexedBase(Dummy())
-        m = Dummy(integer=True)
-        i = Idx(Dummy(integer=True), m)
-        f = implemented_function(Dummy().name, Lambda(args, expr))
-        # For each of the args create an indexed version.
-        indexed_args = [IndexedBase(Dummy(str(a))) for a in args]
-        # Order the arguments (out, args, dim)
-        args = [y] + indexed_args + [m]
-        args_with_indices = [a[i] for a in indexed_args]
-        return autowrap(Eq(y[i], f(*args_with_indices)), language, backend,
-                        tempdir, tuple(args), flags, verbose, helpers)
+    # Dummies are used for all added expressions to prevent name clashes
+    # within the original expression.
+    y = IndexedBase(Dummy())
+    m = Dummy(integer=True)
+    i = Idx(Dummy(integer=True), m)
+    f = implemented_function(Dummy().name, Lambda(args, expr))
+    # For each of the args create an indexed version.
+    indexed_args = [IndexedBase(Dummy(str(a))) for a in args]
+    # Order the arguments (out, args, dim)
+    args = [y] + indexed_args + [m]
+    args_with_indices = [a[i] for a in indexed_args]
+    return autowrap(Eq(y[i], f(*args_with_indices)), language, backend,
+                    tempdir, tuple(args), flags, verbose, helpers)

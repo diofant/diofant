@@ -1,8 +1,9 @@
 from collections import defaultdict
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import as_int, iterable
+from ..core.compatibility import as_int
 from ..utilities import flatten
+from ..utilities.iterables import is_iterable
 
 
 class Prufer(Basic):
@@ -351,15 +352,15 @@ class Prufer(Basic):
         """
         newargs = []
         for a in args:
-            if iterable(a):
-                newargs.append(Tuple(*[Tuple(*_) if iterable(_)
+            if is_iterable(a):
+                newargs.append(Tuple(*[Tuple(*_) if is_iterable(_)
                                        else sympify(_) for _ in a]))
             else:
                 newargs.append(sympify(a))
         args = newargs
         ret_obj = Basic.__new__(cls, *args, **kw_args)
         args = [list(args[0])]
-        if args[0] and iterable(args[0][0]):
+        if args[0] and is_iterable(args[0][0]):
             if not args[0][0]:
                 raise ValueError(
                     'Prufer expects at least one edge in the tree.')

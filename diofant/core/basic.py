@@ -5,8 +5,8 @@ from collections.abc import Mapping
 from itertools import zip_longest
 
 from ..utilities import ordered
+from ..utilities.iterables import is_iterable
 from .cache import cacheit
-from .compatibility import iterable
 from .decorators import _sympifyit
 from .evaluate import evaluate
 from .sympify import SympifyError, sympify
@@ -110,9 +110,9 @@ class Basic:
         [1/2, -I, I]
 
         >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
-        [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
+        [x, 1/x, x**(-2), x**2, sqrt(x), root(x, 4), sqrt(x)**3]
         >>> sorted(_, key=lambda x: x.sort_key())
-        [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
+        [x**(-2), 1/x, root(x, 4), sqrt(x), x, sqrt(x)**3, x**2]
 
         """
         from .numbers import Integer
@@ -144,7 +144,7 @@ class Basic:
         if self is other:
             return True
 
-        if type(self) != type(other):
+        if type(self) != type(other):  # noqa: E721
             return False
 
         return self._hashable_content() == other._hashable_content()
@@ -255,28 +255,6 @@ class Basic:
 
         """
         return set().union(*[a.free_symbols for a in self.args])
-
-    def rcall(self, *args):
-        """Apply on the argument recursively through the expression tree.
-
-        This method is used to simulate a common abuse of notation for
-        operators. For instance in Diofant the the following will not work:
-
-        ``(x+Lambda(y, 2*y))(z) == x+2*z``,
-
-        however you can use
-
-        >>> (x + Lambda(y, 2*y)).rcall(z)
-        x + 2*z
-
-        """
-        if callable(self) and hasattr(self, '__call__'):
-            return self(*args)
-        elif self.args:
-            newargs = [sub.rcall(*args) for sub in self.args]
-            return type(self)(*newargs)
-        else:
-            return self
 
     @property
     def func(self):
@@ -452,7 +430,7 @@ class Basic:
             elif isinstance(sequence, Mapping):
                 unordered = True
                 sequence = sequence.items()
-            elif not iterable(sequence):
+            elif not is_iterable(sequence):
                 raise ValueError('Expected a mapping or iterable '
                                  'of (old, new) tuples.')
             sequence = list(sequence)
@@ -494,13 +472,12 @@ class Basic:
                 reps[d] = new
             reps[m] = Integer(1)  # get rid of m
             return rv.xreplace(reps)
-        else:
-            rv = self
-            for old, new in sequence:
-                rv = rv._subs(old, new, **kwargs)
-                if not isinstance(rv, Basic):
-                    break
-            return rv
+        rv = self
+        for old, new in sequence:
+            rv = rv._subs(old, new, **kwargs)
+            if not isinstance(rv, Basic):
+                break
+        return rv
 
     @cacheit
     def _subs(self, old, new, **hints):
@@ -669,7 +646,7 @@ class Basic:
         """
         if self in rule:
             return rule[self]
-        elif rule and not self.is_Atom:
+        if rule and not self.is_Atom:
             args = tuple(a.xreplace(rule) for a in self.args)
             if not _aresame(args, self.args):
                 return self.func(*args)
@@ -708,17 +685,15 @@ class Basic:
 
         if len(patterns) != 1:
             return any(self.has(pattern) for pattern in patterns)
-        else:
-            pattern = sympify(patterns[0])
-            if isinstance(pattern, UndefinedFunction):
-                return any(pattern in (f, f.func)
-                           for f in self.atoms(Function, UndefinedFunction))
-            elif isinstance(pattern, type):
-                return any(isinstance(arg, pattern)
-                           for arg in preorder_traversal(self))
-            else:
-                match = pattern._has_matcher()
-                return any(match(arg) for arg in preorder_traversal(self))
+        pattern = sympify(patterns[0])
+        if isinstance(pattern, UndefinedFunction):
+            return any(pattern in (f, f.func)
+                       for f in self.atoms(Function, UndefinedFunction))
+        if isinstance(pattern, type):
+            return any(isinstance(arg, pattern)
+                       for arg in preorder_traversal(self))
+        match = pattern._has_matcher()
+        return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
         """Helper for .has()."""
@@ -1057,8 +1032,7 @@ class Basic:
             terms = [term.doit(**hints) if isinstance(term, Basic) else term
                      for term in self.args]
             return self.func(*terms)
-        else:
-            return self
+        return self
 
     def _eval_rewrite(self, pattern, rule, **hints):
         if self.is_Atom:
@@ -1119,25 +1093,22 @@ class Basic:
         """
         if not args:
             return self
+        pattern = args[:-1]
+        if isinstance(args[-1], str):
+            rule = '_eval_rewrite_as_' + args[-1]
         else:
-            pattern = args[:-1]
-            if isinstance(args[-1], str):
-                rule = '_eval_rewrite_as_' + args[-1]
-            else:
-                rule = '_eval_rewrite_as_' + args[-1].__name__
+            rule = '_eval_rewrite_as_' + args[-1].__name__
 
-            if not pattern:
-                return self._eval_rewrite(None, rule, **hints)
-            else:
-                if iterable(pattern[0]):
-                    pattern = pattern[0]
+        if not pattern:
+            return self._eval_rewrite(None, rule, **hints)
+        if is_iterable(pattern[0]):
+            pattern = pattern[0]
 
-                pattern = [p for p in pattern if self.has(p)]
+        pattern = [p for p in pattern if self.has(p)]
 
-                if pattern:
-                    return self._eval_rewrite(tuple(pattern), rule, **hints)
-                else:
-                    return self
+        if pattern:
+            return self._eval_rewrite(tuple(pattern), rule, **hints)
+        return self
 
 
 class Atom(Basic):
@@ -1206,7 +1177,7 @@ def _aresame(a, b):
     from .function import AppliedUndef
     from .function import UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
-        if i != j or type(i) != type(j):
+        if i != j or type(i) is not type(j):
             if (isinstance(i, (UndefFunc, AppliedUndef)) and
                     isinstance(j, (UndefFunc, AppliedUndef))):
                 if i.class_key() != j.class_key():
@@ -1258,6 +1229,7 @@ class preorder_traversal:
     """
 
     def __init__(self, node, keys=None):
+        """Initialize self."""
         self._skip_flag = False
         self._pt = self._preorder_traversal(node, keys)
 
@@ -1272,7 +1244,7 @@ class preorder_traversal:
                 args = ordered(args)
             for arg in args:
                 yield from self._preorder_traversal(arg, keys)
-        elif iterable(node):
+        elif is_iterable(node):
             for item in node:
                 yield from self._preorder_traversal(item, keys)
 

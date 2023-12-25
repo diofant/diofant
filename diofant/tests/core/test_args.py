@@ -23,9 +23,9 @@ from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
                      RootSum, S, Set, StrictGreaterThan, StrictLessThan, Subs,
                      Subset, Sum, Symbol, SymmetricDifference, Trace,
                      Transpose, Tuple, Unequality, Union, Wild, WildFunction,
-                     Xor, ZeroMatrix, divisor_sigma, false, mobius, oo, sin,
+                     Xor, ZeroMatrix, divisor_sigma, false, mobius, sin,
                      symbols, totient, true)
-from diofant.abc import a, b, c, w, x, y, z
+from diofant.abc import a, b, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
 from diofant.concrete.expr_with_limits import AddWithLimits, ExprWithLimits
 from diofant.core.function import Application, AppliedUndef
@@ -34,12 +34,6 @@ from diofant.core.numbers import (Catalan, ComplexInfinity, EulerGamma, Exp1,
                                   NaN, NegativeInfinity, NegativeOne,
                                   NumberSymbol, One, Pi, Zero)
 from diofant.core.trace import Tr
-from diofant.diffgeom import (BaseCovarDerivativeOp, BaseScalarField,
-                              BaseVectorField, Commutator, CoordSystem,
-                              CovarDerivativeOp, Differential, LieDerivative,
-                              Manifold, Patch)
-from diofant.diffgeom import Point as DiffgeomPoint
-from diofant.diffgeom import TensorProduct, WedgeProduct
 from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                Heaviside, KroneckerDelta, LambertW, LeviCivita,
                                Li, Max, Min, Piecewise, RisingFactorial, Shi,
@@ -74,9 +68,6 @@ from diofant.functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                              HyperRep_power1, HyperRep_power2,
                                              HyperRep_sinasin, HyperRep_sqrts1,
                                              HyperRep_sqrts2)
-from diofant.geometry import (Circle, Curve, Ellipse, Line, Point, Polygon,
-                              Ray, RegularPolygon, Segment, Triangle)
-from diofant.geometry.entity import GeometryEntity
 from diofant.integrals.risch import NonElementaryIntegral
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           HankelTransform,
@@ -94,65 +85,13 @@ from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
 from diofant.sets.fancysets import (ExtendedReals, Integers, Naturals,
                                     Naturals0, Rationals, Reals)
-from diofant.sets.sets import EmptySet, UniversalSet
+from diofant.sets.sets import EmptySet
 from diofant.simplify.hyperexpand import G_Function, Hyper_Function
-from diofant.stats.crv import (ConditionalContinuousDomain,
-                               ContinuousDistributionHandmade,
-                               ContinuousDomain, ContinuousPSpace,
-                               ProductContinuousDomain,
-                               ProductContinuousPSpace, SingleContinuousDomain,
-                               SingleContinuousPSpace)
-from diofant.stats.crv_types import (ArcsinDistribution, BeniniDistribution,
-                                     BetaDistribution, BetaPrimeDistribution,
-                                     CauchyDistribution, ChiDistribution,
-                                     ChiNoncentralDistribution,
-                                     ChiSquaredDistribution, DagumDistribution,
-                                     ExponentialDistribution,
-                                     FDistributionDistribution,
-                                     FisherZDistribution, FrechetDistribution,
-                                     GammaDistribution,
-                                     GammaInverseDistribution,
-                                     KumaraswamyDistribution,
-                                     LaplaceDistribution, LogisticDistribution,
-                                     LogNormalDistribution,
-                                     MaxwellDistribution, NakagamiDistribution,
-                                     Normal, NormalDistribution,
-                                     ParetoDistribution,
-                                     QuadraticUDistribution,
-                                     RaisedCosineDistribution,
-                                     RayleighDistribution,
-                                     StudentTDistribution,
-                                     TriangularDistribution,
-                                     UniformDistribution,
-                                     UniformSumDistribution,
-                                     VonMisesDistribution, WeibullDistribution,
-                                     WignerSemicircleDistribution)
-from diofant.stats.drv import SingleDiscreteDomain, SingleDiscretePSpace
-from diofant.stats.drv_types import GeometricDistribution, PoissonDistribution
-from diofant.stats.frv import (ConditionalFiniteDomain, FiniteDomain,
-                               FinitePSpace, ProductFiniteDomain,
-                               ProductFinitePSpace, SingleFiniteDomain,
-                               SingleFinitePSpace)
-from diofant.stats.frv_types import (BernoulliDistribution,
-                                     BinomialDistribution, DieDistribution,
-                                     DiscreteUniformDistribution,
-                                     FiniteDistributionHandmade,
-                                     HypergeometricDistribution,
-                                     RademacherDistribution)
-from diofant.stats.rv import (ConditionalDomain, Density, ProductDomain,
-                              ProductPSpace, PSpace, RandomDomain,
-                              RandomSymbol, SingleDomain)
 from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
                                    TensorIndexType, TensorSymmetry, TensorType,
                                    get_symmetric_group_sgs, tensor_indices)
 from diofant.utilities.exceptions import DiofantDeprecationWarning
-from diofant.vector import (AxisOrienter, BaseDyadic, BaseScalar, BaseVector,
-                            BodyOrienter, CoordSysCartesian, Del, DyadicAdd,
-                            DyadicMul, DyadicZero)
-from diofant.vector import Point as VPoint
-from diofant.vector import (QuaternionOrienter, SpaceOrienter, VectorAdd,
-                            VectorMul, VectorZero)
 
 
 __all__ = ()
@@ -502,10 +441,6 @@ def test_diofant__sets__sets__EmptySet():
     assert _test_args(EmptySet())
 
 
-def test_diofant__sets__sets__UniversalSet():
-    assert _test_args(UniversalSet())
-
-
 def test_diofant__sets__sets__FiniteSet():
     assert _test_args(FiniteSet(x, y, z))
 
@@ -540,7 +475,6 @@ def test_diofant__sets__sets__SymmetricDifference():
 
 
 def test_diofant__core__trace__Tr():
-    a, b = symbols('a b')
     assert _test_args(Tr(a + b))
 
 
@@ -579,321 +513,6 @@ def test_diofant__sets__fancysets__Range():
 
 def test_diofant__sets__contains__Contains():
     assert _test_args(Contains(x, Range(0, 10, 2)))
-
-
-# STATS
-
-
-nd = NormalDistribution(0, 1)
-die = DieDistribution(6)
-
-
-def test_diofant__stats__crv__ContinuousDomain():
-    assert _test_args(ContinuousDomain({x}, Interval(-oo, oo)))
-
-
-def test_diofant__stats__crv__SingleContinuousDomain():
-    assert _test_args(SingleContinuousDomain(x, Interval(-oo, oo)))
-
-
-def test_diofant__stats__crv__ProductContinuousDomain():
-    D = SingleContinuousDomain(x, Interval(-oo, oo))
-    E = SingleContinuousDomain(y, Interval(0, oo))
-    assert _test_args(ProductContinuousDomain(D, E))
-
-
-def test_diofant__stats__crv__ConditionalContinuousDomain():
-    D = SingleContinuousDomain(x, Interval(-oo, oo))
-    assert _test_args(ConditionalContinuousDomain(D, x > 0))
-
-
-def test_diofant__stats__crv__ContinuousPSpace():
-    D = SingleContinuousDomain(x, Interval(-oo, oo))
-    assert _test_args(ContinuousPSpace(D, nd))
-
-
-def test_diofant__stats__crv__SingleContinuousPSpace():
-    assert _test_args(SingleContinuousPSpace(x, nd))
-
-
-def test_diofant__stats__crv__ProductContinuousPSpace():
-    A = SingleContinuousPSpace(x, nd)
-    B = SingleContinuousPSpace(y, nd)
-    assert _test_args(ProductContinuousPSpace(A, B))
-
-
-def test_diofant__stats__crv__SingleContinuousDistribution():
-    pass
-
-
-def test_diofant__stats__drv__SingleDiscreteDomain():
-    assert _test_args(SingleDiscreteDomain(x, S.Naturals))
-
-
-def test_diofant__stats__drv__SingleDiscretePSpace():
-    assert _test_args(SingleDiscretePSpace(x, PoissonDistribution(1)))
-
-
-def test_diofant__stats__drv__SingleDiscreteDistribution():
-    pass
-
-
-def test_diofant__stats__rv__RandomDomain():
-    assert _test_args(RandomDomain(FiniteSet(x), FiniteSet(1, 2, 3)))
-
-
-def test_diofant__stats__rv__SingleDomain():
-    assert _test_args(SingleDomain(x, FiniteSet(1, 2, 3)))
-
-
-def test_diofant__stats__rv__ConditionalDomain():
-    D = RandomDomain(FiniteSet(x), FiniteSet(1, 2))
-    assert _test_args(ConditionalDomain(D, x > 1))
-
-
-def test_diofant__stats__rv__PSpace():
-    D = RandomDomain(FiniteSet(x), FiniteSet(1, 2, 3, 4, 5, 6))
-    assert _test_args(PSpace(D, die))
-
-
-def test_diofant__stats__rv__SinglePSpace():
-    pass
-
-
-def test_diofant__stats__rv__RandomSymbol():
-    A = SingleContinuousPSpace(x, nd)
-    assert _test_args(RandomSymbol(A, x))
-
-
-def test_diofant__stats__rv__ProductPSpace():
-    A = SingleContinuousPSpace(x, nd)
-    B = SingleContinuousPSpace(y, nd)
-    assert _test_args(ProductPSpace(A, B))
-
-
-def test_diofant__stats__rv__ProductDomain():
-    D = SingleDomain(x, Interval(-oo, oo))
-    E = SingleDomain(y, Interval(0, oo))
-    assert _test_args(ProductDomain(D, E))
-
-
-def test_diofant__stats__frv_types__DiscreteUniformDistribution():
-    assert _test_args(DiscreteUniformDistribution(Tuple(*range(6))))
-
-
-def test_diofant__stats__frv_types__DieDistribution():
-    assert _test_args(DieDistribution(6))
-
-
-def test_diofant__stats__frv_types__BernoulliDistribution():
-    assert _test_args(BernoulliDistribution(Rational(1, 2), 0, 1))
-
-
-def test_diofant__stats__frv_types__BinomialDistribution():
-    assert _test_args(BinomialDistribution(5, Rational(1, 2), 1, 0))
-
-
-def test_diofant__stats__frv_types__HypergeometricDistribution():
-    assert _test_args(HypergeometricDistribution(10, 5, 3))
-
-
-def test_diofant__stats__frv_types__RademacherDistribution():
-    assert _test_args(RademacherDistribution())
-
-
-def test_diofant__stats__frv__FiniteDomain():
-    assert _test_args(FiniteDomain({(x, 1), (x, 2)}))  # x can be 1 or 2
-
-
-def test_diofant__stats__frv__SingleFiniteDomain():
-    assert _test_args(SingleFiniteDomain(x, {1, 2}))  # x can be 1 or 2
-
-
-def test_diofant__stats__frv__ProductFiniteDomain():
-    xd = SingleFiniteDomain(x, {1, 2})
-    yd = SingleFiniteDomain(y, {1, 2})
-    assert _test_args(ProductFiniteDomain(xd, yd))
-
-
-def test_diofant__stats__frv__ConditionalFiniteDomain():
-    xd = SingleFiniteDomain(x, {1, 2})
-    assert _test_args(ConditionalFiniteDomain(xd, x > 1))
-
-
-def test_diofant__stats__frv__FinitePSpace():
-    xd = SingleFiniteDomain(x, {1, 2})
-    assert _test_args(FinitePSpace(xd, {(x, 1): Rational(1, 2), (x, 2): Rational(1, 2)}))
-
-
-def test_diofant__stats__frv__SingleFinitePSpace():
-    assert _test_args(SingleFinitePSpace(Symbol('x'), die))
-
-
-def test_diofant__stats__frv__ProductFinitePSpace():
-    xp = SingleFinitePSpace(Symbol('x'), die)
-    yp = SingleFinitePSpace(Symbol('y'), die)
-    assert _test_args(ProductFinitePSpace(xp, yp))
-
-
-def test_diofant__stats__frv__SingleFiniteDistribution():
-    pass
-
-
-def test_diofant__stats__crv__ContinuousDistribution():
-    pass
-
-
-def test_diofant__stats__frv_types__FiniteDistributionHandmade():
-    assert _test_args(FiniteDistributionHandmade({1: 1}))
-
-
-def test_diofant__stats__crv__ContinuousDistributionHandmade():
-    assert _test_args(ContinuousDistributionHandmade(Symbol('x'),
-                                                     Interval(0, 2)))
-
-
-def test_diofant__stats__rv__Density():
-    assert _test_args(Density(Normal('x', 0, 1)))
-
-
-def test_diofant__stats__crv_types__ArcsinDistribution():
-    assert _test_args(ArcsinDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__BeniniDistribution():
-    assert _test_args(BeniniDistribution(1, 1, 1))
-
-
-def test_diofant__stats__crv_types__BetaDistribution():
-    assert _test_args(BetaDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__BetaPrimeDistribution():
-    assert _test_args(BetaPrimeDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__CauchyDistribution():
-    assert _test_args(CauchyDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__ChiDistribution():
-    assert _test_args(ChiDistribution(1))
-
-
-def test_diofant__stats__crv_types__ChiNoncentralDistribution():
-    assert _test_args(ChiNoncentralDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__ChiSquaredDistribution():
-    assert _test_args(ChiSquaredDistribution(1))
-
-
-def test_diofant__stats__crv_types__DagumDistribution():
-    assert _test_args(DagumDistribution(1, 1, 1))
-
-
-def test_diofant__stats__crv_types__ExponentialDistribution():
-    assert _test_args(ExponentialDistribution(1))
-
-
-def test_diofant__stats__crv_types__FDistributionDistribution():
-    assert _test_args(FDistributionDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__FisherZDistribution():
-    assert _test_args(FisherZDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__FrechetDistribution():
-    assert _test_args(FrechetDistribution(1, 1, 1))
-
-
-def test_diofant__stats__crv_types__GammaInverseDistribution():
-    assert _test_args(GammaInverseDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__GammaDistribution():
-    assert _test_args(GammaDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__KumaraswamyDistribution():
-    assert _test_args(KumaraswamyDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__LaplaceDistribution():
-    assert _test_args(LaplaceDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__LogisticDistribution():
-    assert _test_args(LogisticDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__LogNormalDistribution():
-    assert _test_args(LogNormalDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__MaxwellDistribution():
-    assert _test_args(MaxwellDistribution(1))
-
-
-def test_diofant__stats__crv_types__NakagamiDistribution():
-    assert _test_args(NakagamiDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__NormalDistribution():
-    assert _test_args(NormalDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__ParetoDistribution():
-    assert _test_args(ParetoDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__QuadraticUDistribution():
-    assert _test_args(QuadraticUDistribution(1, 2))
-
-
-def test_diofant__stats__crv_types__RaisedCosineDistribution():
-    assert _test_args(RaisedCosineDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__RayleighDistribution():
-    assert _test_args(RayleighDistribution(1))
-
-
-def test_diofant__stats__crv_types__StudentTDistribution():
-    assert _test_args(StudentTDistribution(1))
-
-
-def test_diofant__stats__crv_types__TriangularDistribution():
-    assert _test_args(TriangularDistribution(-1, 0, 1))
-
-
-def test_diofant__stats__crv_types__UniformDistribution():
-    assert _test_args(UniformDistribution(0, 1))
-
-
-def test_diofant__stats__crv_types__UniformSumDistribution():
-    assert _test_args(UniformSumDistribution(1))
-
-
-def test_diofant__stats__crv_types__VonMisesDistribution():
-    assert _test_args(VonMisesDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__WeibullDistribution():
-    assert _test_args(WeibullDistribution(1, 1))
-
-
-def test_diofant__stats__crv_types__WignerSemicircleDistribution():
-    assert _test_args(WignerSemicircleDistribution(1))
-
-
-def test_diofant__stats__drv_types__PoissonDistribution():
-    assert _test_args(PoissonDistribution(1))
-
-
-def test_diofant__stats__drv_types__GeometricDistribution():
-    assert _test_args(GeometricDistribution(.5))
 
 
 def test_diofant__core__symbol__BaseSymbol():
@@ -1804,12 +1423,12 @@ def test_diofant__polys__rootoftools__RootSum():
     assert _test_args(RootSum(x**3 + x + 1, sin))
 
 
-def test_diofant__series__limits__Limit():
+def test_diofant__calculus__limits__Limit():
     assert _test_args(Limit(x, x, 0, dir=1))
 
 
-def test_diofant__series__order__Order():
-    assert _test_args(Order(1, x, y))
+def test_diofant__calculus__order__Order():
+    assert _test_args(Order(1, x))
 
 
 def test_diofant__simplify__hyperexpand__Hyper_Function():
@@ -1913,129 +1532,6 @@ def test_as_coeff_add():
     assert (7, (3*x, 4*x**2)) == (7 + 3*x + 4*x**2).as_coeff_add()
 
 
-def test_diofant__geometry__curve__Curve():
-    assert _test_args(Curve((x, 1), (x, 0, 1)))
-
-
-def test_diofant__geometry__point__Point():
-    assert _test_args(Point(0, 1))
-
-
-def test_diofant__geometry__ellipse__Ellipse():
-    assert _test_args(Ellipse((0, 1), 2, 3))
-
-
-def test_diofant__geometry__ellipse__Circle():
-    assert _test_args(Circle((0, 1), 2))
-
-
-def test_diofant__geometry__line__LinearEntity():
-    pass
-
-
-def test_diofant__geometry__line__Line():
-    assert _test_args(Line((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line__Ray():
-    assert _test_args(Ray((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__line__Segment():
-    assert _test_args(Segment((0, 1), (2, 3)))
-
-
-def test_diofant__geometry__polygon__Polygon():
-    assert _test_args(Polygon((0, 1), (2, 3), (4, 5), (6, 7)))
-
-
-def test_diofant__geometry__polygon__RegularPolygon():
-    assert _test_args(RegularPolygon((0, 1), 2, 3, 4))
-
-
-def test_diofant__geometry__polygon__Triangle():
-    assert _test_args(Triangle((0, 1), (2, 3), (4, 5)))
-
-
-def test_diofant__geometry__entity__GeometryEntity():
-    assert _test_args(GeometryEntity(Point(1, 0), 1, [1, 2]))
-
-
-def test_diofant__geometry__entity__GeometrySet():
-    pass
-
-
-def test_diofant__diffgeom__diffgeom__Manifold():
-    assert _test_args(Manifold('name', 3))
-
-
-def test_diofant__diffgeom__diffgeom__Patch():
-    assert _test_args(Patch('name', Manifold('name', 3)))
-
-
-def test_diofant__diffgeom__diffgeom__CoordSystem():
-    assert _test_args(CoordSystem('name', Patch('name', Manifold('name', 3))))
-
-
-def test_diofant__diffgeom__diffgeom__Point():
-    assert _test_args(DiffgeomPoint(
-        CoordSystem('name', Patch('name', Manifold('name', 3))), [x, y]))
-
-
-def test_diofant__diffgeom__diffgeom__BaseScalarField():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseScalarField(cs, 0))
-
-
-def test_diofant__diffgeom__diffgeom__BaseVectorField():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseVectorField(cs, 0))
-
-
-def test_diofant__diffgeom__diffgeom__Differential():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(Differential(BaseScalarField(cs, 0)))
-
-
-def test_diofant__diffgeom__diffgeom__Commutator():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    cs1 = CoordSystem('name1', Patch('name', Manifold('name', 3)))
-    v = BaseVectorField(cs, 0)
-    v1 = BaseVectorField(cs1, 0)
-    assert _test_args(Commutator(v, v1))
-
-
-def test_diofant__diffgeom__diffgeom__TensorProduct():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    assert _test_args(TensorProduct(d, d))
-
-
-def test_diofant__diffgeom__diffgeom__WedgeProduct():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    d1 = Differential(BaseScalarField(cs, 1))
-    assert _test_args(WedgeProduct(d, d1))
-
-
-def test_diofant__diffgeom__diffgeom__LieDerivative():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    d = Differential(BaseScalarField(cs, 0))
-    v = BaseVectorField(cs, 0)
-    assert _test_args(LieDerivative(v, d))
-
-
-def test_diofant__diffgeom__diffgeom__BaseCovarDerivativeOp():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    assert _test_args(BaseCovarDerivativeOp(cs, 0, [[[0, ]*3, ]*3, ]*3))
-
-
-def test_diofant__diffgeom__diffgeom__CovarDerivativeOp():
-    cs = CoordSystem('name', Patch('name', Manifold('name', 3)))
-    v = BaseVectorField(cs, 0)
-    _test_args(CovarDerivativeOp(v, [[[0, ]*3, ]*3, ]*3))
-
-
 def test_diofant__ntheory__factor___totient():
     k = symbols('k', integer=True)
     t = totient(k)
@@ -2055,133 +1551,3 @@ def test_diofant__ntheory__residue_ntheory__mobius():
 
 def test_diofant__printing__codeprinter__Assignment():
     assert _test_args(Assignment(x, y))
-
-
-def test_diofant__vector__coordsysrect__CoordSysCartesian():
-    assert _test_args(CoordSysCartesian('C'))
-
-
-def test_diofant__vector__point__Point():
-    assert _test_args(VPoint('P'))
-
-
-def test_diofant__vector__basisdependent__BasisDependent():
-    # from diofant.vector.basisdependent import BasisDependent
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentMul():
-    # from diofant.vector.basisdependent import BasisDependentMul
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentAdd():
-    # from diofant.vector.basisdependent import BasisDependentAdd
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__basisdependent__BasisDependentZero():
-    # from diofant.vector.basisdependent import BasisDependentZero
-    pass
-    # These classes have been created to maintain an OOP hierarchy
-    # for Vectors and Dyadics. Are NOT meant to be initialized
-
-
-def test_diofant__vector__vector__BaseVector():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseVector('Ci', 0, C, ' ', ' '))
-
-
-def test_diofant__vector__vector__VectorAdd():
-    C = CoordSysCartesian('C')
-    v1 = a*C.i + b*C.j + c*C.k
-    v2 = x*C.i + y*C.j + z*C.k
-    assert _test_args(VectorAdd(v1, v2))
-    assert _test_args(VectorMul(x, v1))
-
-
-def test_diofant__vector__vector__VectorMul():
-    C = CoordSysCartesian('C')
-    assert _test_args(VectorMul(a, C.i))
-
-
-def test_diofant__vector__vector__VectorZero():
-    assert _test_args(VectorZero())
-
-
-def test_diofant__vector__vector__Vector():
-    # from diofant.vector.vector import Vector
-    # Vector is never to be initialized using args
-    pass
-
-
-def test_diofant__vector__dyadic__Dyadic():
-    # from diofant.vector.dyadic import Dyadic
-    # Dyadic is never to be initialized using args
-    pass
-
-
-def test_diofant__vector__dyadic__BaseDyadic():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseDyadic(C.i, C.j))
-
-
-def test_diofant__vector__dyadic__DyadicMul():
-    C = CoordSysCartesian('C')
-    assert _test_args(DyadicMul(3, BaseDyadic(C.i, C.j)))
-
-
-def test_diofant__vector__dyadic__DyadicAdd():
-    C = CoordSysCartesian('C')
-    assert _test_args(2 * DyadicAdd(BaseDyadic(C.i, C.i),
-                                    BaseDyadic(C.i, C.j)))
-
-
-def test_diofant__vector__dyadic__DyadicZero():
-    assert _test_args(DyadicZero())
-
-
-def test_diofant__vector__deloperator__Del():
-    C = CoordSysCartesian('C')
-    assert _test_args(Del(C))
-
-
-def test_diofant__vector__orienters__Orienter():
-    # from diofant.vector.orienters import Orienter
-    pass
-    # Not to be initialized
-
-
-def test_diofant__vector__orienters__ThreeAngleOrienter():
-    # from diofant.vector.orienters import ThreeAngleOrienter
-    pass
-    # Not to be initialized
-
-
-def test_diofant__vector__orienters__AxisOrienter():
-    C = CoordSysCartesian('C')
-    assert _test_args(AxisOrienter(x, C.i))
-
-
-def test_diofant__vector__orienters__BodyOrienter():
-    assert _test_args(BodyOrienter(x, y, z, '123'))
-
-
-def test_diofant__vector__orienters__SpaceOrienter():
-    assert _test_args(SpaceOrienter(x, y, z, '123'))
-
-
-def test_diofant__vector__orienters__QuaternionOrienter():
-    a, b, c, d = symbols('a b c d')
-    assert _test_args(QuaternionOrienter(a, b, c, d))
-
-
-def test_diofant__vector__scalar__BaseScalar():
-    C = CoordSysCartesian('C')
-    assert _test_args(BaseScalar('Cx', 0, C, ' ', ' '))

@@ -7,7 +7,7 @@ import random
 
 from ..core import Dummy, integer_digits
 from ..ntheory import factorint, is_primitive_root, isprime
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing, ZZ_python
@@ -67,12 +67,15 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
         return DiofantInteger(int(element))
 
     def from_expr(self, expr):
-        if expr.is_Integer:
-            return self.dtype(self.domain.dtype(int(expr)))
-        elif expr.is_Float and int(expr) == expr:
-            return self.dtype(self.domain.dtype(int(expr)))
-        else:
-            raise CoercionFailed(f'expected an integer, got {expr}')
+        dtype = self.dtype
+        domain = self.domain
+        if expr.is_Rational:
+            numerator = domain.dtype(int(expr.numerator))
+            denominator = domain.dtype(int(expr.denominator))
+            return dtype(numerator)/dtype(denominator)
+        if expr.is_Float and int(expr) == expr:
+            return dtype(domain.dtype(int(expr)))
+        raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
@@ -83,8 +86,12 @@ class IntegerModRing(CommutativeRing, SimpleDomain):
     _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0=None):
-        if a.denominator == 1:
-            return self.convert(a.numerator)
+        dtype = self.dtype
+        domain = self.domain
+        characteristic = self.characteristic
+        numerator = domain.convert(a.numerator, K0) % characteristic
+        denominator = domain.convert(a.denominator, K0) % characteristic
+        return dtype(numerator)/dtype(denominator)
     _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
@@ -134,7 +141,7 @@ class FiniteField(Field, IntegerModRing):
 
         key = cls, order, dom, mod, modulus
 
-        obj = super(IntegerModRing, cls).__new__(cls)  # pylint: disable=bad-super-call
+        obj = super(IntegerModRing, cls).__new__(cls)
 
         obj.domain = dom
         obj.mod = mod
@@ -224,6 +231,7 @@ class GaloisFieldElement(ModularInteger):
     """A class representing a Galois field element."""
 
     def __init__(self, rep):
+        """Initialize self."""
         if isinstance(rep, numbers.Integral):
             rep = list(reversed(integer_digits(rep % self.parent.order, self.parent.mod)))
 

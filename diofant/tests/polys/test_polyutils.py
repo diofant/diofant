@@ -2,12 +2,13 @@
 
 import pytest
 
-from diofant import (ZZ, GeneratorsNeeded, I, Integer, Integral, Mul,
+from diofant import (ZZ, GeneratorsNeededError, I, Integer, Integral, Mul,
                      PolynomialError, Rational, cos, erf, exp, factor,
                      integrate, pi, sin, sqrt, symbols)
 from diofant.abc import p, q, t, x, y, z
-from diofant.polys.polyutils import (_nsort, _sort_factors, _sort_gens,
-                                     _unify_gens, parallel_dict_from_expr)
+from diofant.polys.polyoptions import build_options
+from diofant.polys.polyutils import (_nsort, _parallel_dict_from_expr,
+                                     _sort_factors, _sort_gens, _unify_gens)
 
 
 __all__ = ()
@@ -176,134 +177,149 @@ def test__sort_factors():
 
 
 def test__dict_from_expr_if_gens():
-    assert parallel_dict_from_expr([Integer(17)],
-                                   gens=(x,)) == ([{(0,): 17}], (x,))
-    assert parallel_dict_from_expr([Integer(17)],
-                                   gens=(x, y)) == ([{(0, 0): 17}], (x, y))
-    assert parallel_dict_from_expr([Integer(17)],
-                                   gens=(x, y, z)) == ([{(0, 0, 0): 17}],
-                                                       (x, y, z))
+    opt = build_options([x], {})
+    assert _parallel_dict_from_expr([Integer(17)],
+                                    opt) == ([{(0,): 17}], opt)
+    assert _parallel_dict_from_expr([Integer(-17)],
+                                    opt) == ([{(0,): -17}], opt)
+    assert _parallel_dict_from_expr([17*x], opt) == ([{(1,): 17}], opt)
+    assert _parallel_dict_from_expr([17*x**7], opt) == ([{(7,): 17}], opt)
+    assert _parallel_dict_from_expr([x + 2*y + 3*z],
+                                    opt) == ([{(1,): 1,
+                                               (0,): 2*y + 3*z}], opt)
+    assert _parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
+                                    opt) == ([{(1,): y + 2*z,
+                                               (0,): 3*y*z}], opt)
+    assert _parallel_dict_from_expr([2**y*x],
+                                    opt) == ([{(1,): 2**y}], opt)
 
-    assert parallel_dict_from_expr([Integer(-17)],
-                                   gens=(x,)) == ([{(0,): -17}], (x,))
-    assert parallel_dict_from_expr([Integer(-17)],
-                                   gens=(x, y)) == ([{(0, 0): -17}], (x, y))
-    assert parallel_dict_from_expr([Integer(-17)],
-                                   gens=(x, y, z)) == ([{(0, 0, 0): -17}],
-                                                       (x, y, z))
-
-    assert parallel_dict_from_expr([17*x], gens=(x,)) == ([{(1,): 17}], (x,))
-    assert parallel_dict_from_expr([17*x],
-                                   gens=(x, y)) == ([{(1, 0): 17}], (x, y))
-    assert parallel_dict_from_expr([17*x],
-                                   gens=(x, y, z)) == ([{(1, 0, 0): 17}],
-                                                       (x, y, z))
-
-    assert parallel_dict_from_expr([17*x**7], gens=(x,)) == ([{(7,): 17}], (x,))
-    assert parallel_dict_from_expr([17*x**7*y],
-                                   gens=(x, y)) == ([{(7, 1): 17}], (x, y))
-    assert parallel_dict_from_expr([17*x**7*y*z**12],
-                                   gens=(x, y, z)) == ([{(7, 1, 12): 17}],
-                                                       (x, y, z))
-
-    assert parallel_dict_from_expr([x + 2*y + 3*z],
-                                   gens=(x,)) == ([{(1,): 1,
-                                                    (0,): 2*y + 3*z}], (x,))
-    assert parallel_dict_from_expr([x + 2*y + 3*z],
-                                   gens=(x, y)) == ([{(1, 0): 1, (0, 1): 2,
-                                                      (0, 0): 3*z}], (x, y))
-    assert parallel_dict_from_expr([x + 2*y + 3*z],
-                                   gens=(x, y, z)) == ([{(1, 0, 0): 1,
-                                                         (0, 1, 0): 2,
-                                                         (0, 0, 1): 3}],
-                                                       (x, y, z))
-
-    assert parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
-                                   gens=(x,)) == ([{(1,): y + 2*z,
-                                                    (0,): 3*y*z}], (x,))
-    assert parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
-                                   gens=(x, y)) == ([{(1, 1): 1, (1, 0): 2*z,
-                                                      (0, 1): 3*z}], (x, y))
-    assert parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
-                                   gens=(x, y, z)) == ([{(1, 1, 0): 1,
-                                                         (1, 0, 1): 2,
-                                                         (0, 1, 1): 3}],
-                                                       (x, y, z))
-
-    assert parallel_dict_from_expr([2**y*x],
-                                   gens=(x,)) == ([{(1,): 2**y}], (x,))
-    assert parallel_dict_from_expr([Integral(x, (x, 1, 2)) +
-                                    x]) == ([{(0, 1): 1, (1, 0): 1}],
-                                            (x, Integral(x, (x, 1, 2))))
-
+    opt = build_options([x, y], {})
+    assert _parallel_dict_from_expr([Integer(17)],
+                                    opt) == ([{(0, 0): 17}], opt)
+    assert _parallel_dict_from_expr([Integer(-17)],
+                                    opt) == ([{(0, 0): -17}], opt)
+    assert _parallel_dict_from_expr([17*x],
+                                    opt) == ([{(1, 0): 17}], opt)
+    assert _parallel_dict_from_expr([17*x**7*y],
+                                    opt) == ([{(7, 1): 17}], opt)
+    assert _parallel_dict_from_expr([x + 2*y + 3*z],
+                                    opt) == ([{(1, 0): 1, (0, 1): 2,
+                                               (0, 0): 3*z}], opt)
+    assert _parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
+                                    opt) == ([{(1, 1): 1, (1, 0): 2*z,
+                                               (0, 1): 3*z}], opt)
     pytest.raises(PolynomialError,
-                  lambda: parallel_dict_from_expr([2**y*x], gens=(x, y)))
+                  lambda: _parallel_dict_from_expr([2**y*x], opt))
+
+    opt = build_options([x, y, z], {})
+    assert _parallel_dict_from_expr([Integer(17)],
+                                    opt) == ([{(0, 0, 0): 17}], opt)
+    assert _parallel_dict_from_expr([Integer(-17)],
+                                    opt) == ([{(0, 0, 0): -17}], opt)
+    assert _parallel_dict_from_expr([17*x],
+                                    opt) == ([{(1, 0, 0): 17}], opt)
+    assert _parallel_dict_from_expr([17*x**7*y*z**12],
+                                    opt) == ([{(7, 1, 12): 17}], opt)
+    assert _parallel_dict_from_expr([x + 2*y + 3*z],
+                                    opt) == ([{(1, 0, 0): 1,
+                                               (0, 1, 0): 2,
+                                               (0, 0, 1): 3}], opt)
+    assert _parallel_dict_from_expr([x*y + 2*x*z + 3*y*z],
+                                    opt) == ([{(1, 1, 0): 1,
+                                               (1, 0, 1): 2,
+                                               (0, 1, 1): 3}], opt)
+
+    opt = build_options([], {})
+    assert _parallel_dict_from_expr([Integral(x, (x, 1, 2)) +
+                                     x], opt) == ([{(0, 1): 1, (1, 0): 1}],
+                                                  build_options([x, Integral(x, (x, 1, 2))], {}))
 
 
 def test__dict_from_expr_no_gens():
+    opt = build_options([], {})
+    pytest.raises(GeneratorsNeededError,
+                  lambda: _parallel_dict_from_expr([Integer(17)], opt))
+
+    assert _parallel_dict_from_expr([x], opt) == ([{(1,): 1}], build_options([x], {}))
+    assert _parallel_dict_from_expr([y], opt) == ([{(1,): 1}], build_options([y], {}))
+
+    assert _parallel_dict_from_expr([sqrt(2)],
+                                    extension=False) == ([{(1,): 1}], (sqrt(2),))
     pytest.raises(GeneratorsNeeded,
-                  lambda: parallel_dict_from_expr([Integer(17)]))
+                  lambda: _parallel_dict_from_expr([sqrt(2)], greedy=False))
 
-    assert parallel_dict_from_expr([x]) == ([{(1,): 1}], (x,))
-    assert parallel_dict_from_expr([y]) == ([{(1,): 1}], (y,))
-
-    assert parallel_dict_from_expr([x*y]) == ([{(1, 1): 1}], (x, y))
-    assert parallel_dict_from_expr([x + y]) == ([{(1, 0): 1, (0, 1): 1}],
-                                                (x, y))
-
-    assert parallel_dict_from_expr([sqrt(2)],
-                                   extension=False) == ([{(1,): 1}], (sqrt(2),))
-    pytest.raises(GeneratorsNeeded,
-                  lambda: parallel_dict_from_expr([sqrt(2)], greedy=False))
-
-    assert parallel_dict_from_expr([x*y],
-                                   domain=ZZ.inject(x)) == ([{(1,): x}], (y,))
+    assert _parallel_dict_from_expr([x*y],
+                                    domain=ZZ.inject(x)) == ([{(1,): x}], (y,))
     assert parallel_dict_from_expr([x*y],
                                    domain=ZZ.inject(y)) == ([{(1,): y}], (x,))
 
-    assert parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
-                                   extension=False) == ([{(1, 1, 1, 1): 3}],
-                                                        (x, y, pi, sqrt(2)))
-    assert parallel_dict_from_expr([3*sqrt(2)*pi*x*y]) == ([{(1, 1, 1):
-                                                             3*sqrt(2)}],
-                                                           (x, y, pi))
+    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
+                                    extension=False) == ([{(1, 1, 1, 1): 3}],
+                                                         (x, y, pi, sqrt(2)))
+    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y]) == ([{(1, 1, 1):
+                                                              3*sqrt(2)}],
+                                                            (x, y, pi))
+
+    assert _parallel_dict_from_expr([x*y], opt) == ([{(1, 1): 1}], build_options([x, y], {}))
+    assert _parallel_dict_from_expr([x + y], opt) == ([{(1, 0): 1, (0, 1): 1}],
+                                                      build_options([x, y], {}))
+
+    assert _parallel_dict_from_expr([sqrt(2)], opt) == ([{(1,): 1}], build_options([sqrt(2)], {}))
 
     f = cos(x)*sin(x) + cos(x)*sin(y) + cos(y)*sin(x) + cos(y)*sin(y)
 
-    assert parallel_dict_from_expr([f]) == ([{(0, 1, 0, 1): 1, (0, 1, 1, 0): 1,
-                                              (1, 0, 0, 1): 1,
-                                              (1, 0, 1, 0): 1}],
-                                            (cos(x), cos(y), sin(x), sin(y)))
+    assert _parallel_dict_from_expr([f], opt) == ([{(0, 1, 0, 1): 1, (0, 1, 1, 0): 1,
+                                                    (1, 0, 0, 1): 1,
+                                                    (1, 0, 1, 0): 1}],
+                                                  build_options([cos(x), cos(y), sin(x), sin(y)], {}))
+
+    opt = build_options([], {'greedy': False})
+    pytest.raises(GeneratorsNeededError,
+                  lambda: _parallel_dict_from_expr([sqrt(2)], opt))
+
+    opt = build_options([], {'domain': ZZ.inject(x)})
+    assert _parallel_dict_from_expr([x*y], opt) == ([{(1,): x}], build_options([y], {'domain': ZZ.inject(x)}))
+    opt = build_options([], {'domain': ZZ.inject(y)})
+    assert _parallel_dict_from_expr([x*y], opt) == ([{(1,): y}], build_options([x], {'domain': ZZ.inject(y)}))
+
+    opt = build_options([], {'extension': None})
+    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
+                                    opt) == ([{(1, 1, 1, 1): 3}],
+                                             build_options([x, y, pi, sqrt(2)], {'extension': None}))
+    opt = build_options([], {'extension': True})
+    assert _parallel_dict_from_expr([3*sqrt(2)*pi*x*y],
+                                    opt) == ([{(1, 1, 1): 3*sqrt(2)}],
+                                             build_options([x, y, pi], {'extension': True}))
 
 
 def test__parallel_dict_from_expr_if_gens():
-    assert parallel_dict_from_expr([x + 2*y + 3*z, Integer(7)], gens=(x,)) == \
-        ([{(1,): 1, (0,): 2*y + 3*z}, {(0,): 7}], (x,))
-    assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),), gens=(x,)) == \
-        ([{(3,): 1}], (x,))
+    opt = build_options([x], {})
+    assert _parallel_dict_from_expr([x + 2*y + 3*z, Integer(7)], opt) == \
+        ([{(1,): 1, (0,): 2*y + 3*z}, {(0,): 7}], opt)
+    assert _parallel_dict_from_expr([Mul(x, x**2, evaluate=False)], opt) == \
+        ([{(3,): 1}], opt)
 
-    pytest.raises(PolynomialError, lambda: parallel_dict_from_expr((A*x,), gens=(x,)))
+    pytest.raises(PolynomialError, lambda: _parallel_dict_from_expr([A*x], opt))
 
 
 def test__parallel_dict_from_expr_no_gens():
-    assert parallel_dict_from_expr([x*y, Integer(3)]) == \
-        ([{(1, 1): 1}, {(0, 0): 3}], (x, y))
-    assert parallel_dict_from_expr([x*y, 2*z, Integer(3)]) == \
-        ([{(1, 1, 0): 1}, {(0, 0, 1): 2}, {(0, 0, 0): 3}], (x, y, z))
-    assert parallel_dict_from_expr((Mul(x, x**2, evaluate=False),)) == \
-        ([{(3,): 1}], (x,))
+    opt = build_options([], {})
+    assert _parallel_dict_from_expr([Mul(x, x**2, evaluate=False)], opt) == \
+        ([{(3,): 1}], build_options([x], {}))
+    assert _parallel_dict_from_expr([x*y, Integer(3)], opt) == \
+        ([{(1, 1): 1}, {(0, 0): 3}], build_options([x, y], {}))
+    assert _parallel_dict_from_expr([x*y, 2*z, Integer(3)], opt) == \
+        ([{(1, 1, 0): 1}, {(0, 0, 1): 2}, {(0, 0, 0): 3}], build_options([x, y, z], {}))
 
 
-def test_parallel_dict_from_expr():
-    assert parallel_dict_from_expr([x - 1, x**2 - 2]) == ([{(0,): -1, (1,): 1},
-                                                           {(0,): -2,
-                                                            (2,): 1}], (x,))
-    pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
+def test__parallel_dict_from_expr():
+    opt = build_options([], {})
+    assert _parallel_dict_from_expr([x - 1, x**2 - 2], opt) == ([{(0,): -1, (1,): 1},
+                                                                {(0,): -2,
+                                                                 (2,): 1}], build_options([x], {}))
+    assert _parallel_dict_from_expr([x - 1], opt) == ([{(0,): -1, (1,): 1}], build_options([x], {}))
 
-
-def test_dict_from_expr():
-    assert parallel_dict_from_expr([x - 1]) == ([{(0,): -1, (1,): 1}], (x,))
-    pytest.raises(PolynomialError, lambda: parallel_dict_from_expr([A*B - B*A]))
+    pytest.raises(PolynomialError, lambda: _parallel_dict_from_expr([A*B - B*A], opt))
 
 
 def test_sympyissue_7383():

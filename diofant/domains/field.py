@@ -14,7 +14,7 @@ class Field(CommutativeRing):
 
     @property
     def field(self):
-        """Returns a field associated with ``self``."""
+        """Return a field associated with ``self``."""
         return self
 
     def exquo(self, a, b):
@@ -35,7 +35,7 @@ class Field(CommutativeRing):
 
     def gcd(self, a, b):
         """
-        Returns GCD of ``a`` and ``b``.
+        Return GCD of ``a`` and ``b``.
 
         This definition of GCD over fields allows to clear denominators
         in `primitive()`.
@@ -58,4 +58,7 @@ class Field(CommutativeRing):
         return self.convert(p, ring)/q
 
     def lcm(self, a, b):
-        return (a*b)/self.gcd(a, b)
+        try:
+            return (a*b)/self.gcd(a, b)
+        except ZeroDivisionError:
+            return self.zero

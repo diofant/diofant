@@ -1,12 +1,7 @@
 from ..core import Integer, Lt, diff, nan, oo, sympify
-from ..core.compatibility import is_sequence
-from ..functions import Min
-from ..matrices import eye, zeros
-from ..series import limit
 from ..sets import Interval
-from ..solvers import reduce_inequalities, solve
-from ..solvers.inequalities import canonicalize_inequalities
 from ..utilities import ordered
+from ..utilities.iterables import is_sequence
 from .singularities import singularities
 
 
@@ -33,6 +28,9 @@ def minimize(f, *v):
     maximize
 
     """
+    from ..solvers import reduce_inequalities
+    from ..solvers.inequalities import canonicalize_inequalities
+
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
     constraints = {c for c in f if c.is_Relational}
@@ -107,6 +105,10 @@ def maximize(f, *v):
 
 
 def minimize_univariate(f, x, dom):
+    from ..functions import Min
+    from ..solvers import solve
+    from .limits import limit
+
     extr = {}
 
     if dom.is_Union:
@@ -122,9 +124,8 @@ def minimize_univariate(f, x, dom):
             if s in dom:
                 m = Min(limit(f, x, s), limit(f, x, s, dir=1))
                 if m == -oo:
-                    return -oo, dict({x: s})
-                else:
-                    extr[s] = m
+                    return -oo, {x: s}
+                extr[s] = m
 
         for p in solve(diff(f, x), x):
             p = p[x]
@@ -141,10 +142,10 @@ def minimize_univariate(f, x, dom):
         for p, fp in sorted(extr.items()):
             if fp < min:
                 point, min = p, fp
-        return min, dict({x: point})
+        return min, {x: point}
 
 
-class InfeasibleProblem(Exception):
+class InfeasibleProblemError(Exception):
     pass
 
 
@@ -168,6 +169,8 @@ def simplex(c, m, b):
       Programming and Game Theory, Third edition, 2008, Ch. 3.
 
     """
+    from ..matrices import eye, zeros
+
     rows, cols = len(b), len(c)
 
     if len(m) != rows or any(len(_) != cols for _ in m):
@@ -205,8 +208,7 @@ def simplex(c, m, b):
 
             if tableau[row, col] <= 0:
                 return 1
-            else:
-                basis[row] = col
+            basis[row] = col
 
             tableau[row, :] /= tableau[row, col]
             for r in range(tableau.rows):
@@ -235,7 +237,7 @@ def simplex(c, m, b):
         assert status == 0
 
         if tableau[-1, -1].is_nonzero:
-            raise InfeasibleProblem
+            raise InfeasibleProblemError
 
         del tableau[-1, :]
         for i in range(nneg):

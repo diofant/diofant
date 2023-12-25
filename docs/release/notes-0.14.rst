@@ -2,7 +2,7 @@
 Diofant 0.14
 ============
 
-Not Released Yet
+12 Apr 2023
 
 New features
 ============
@@ -13,25 +13,41 @@ New features
 Major changes
 =============
 
-* Use recursive (former ``poly()`` method, without using :func:`~diofant.core.function.expand`) algorithm of creating polynomials from expressions, see :pull:`1047`.
+* Use recursive (former ``poly()`` function, without using :func:`~diofant.core.function.expand`) algorithm of creating polynomials from expressions, see :pull:`1047`.
 
 Compatibility breaks
 ====================
 
-* Removed support for CPython 3.9, see :pull:`1192`.
+* Removed support for CPython 3.9, see :pull:`1191` and :pull:`1192`.
 * Removed ``to_mpi()`` method of :class:`~diofant.sets.sets.Interval`, see :pull:`1194`.
 * Removed ``poly()`` function, use :meth:`~diofant.core.expr.Expr.as_poly` method to create a :class:`~diofant.polys.polytools.Poly` instance from :class:`~diofant.core.expr.Expr`, see :pull:`1047`.
 * Removed functions ``bool_map()``, ``POSform()`` and ``SOPform()``, see :commit:`04ea41a220` and :commit:`be319badf5`.
-* Changed semantics of the ``dir`` kwarg for the :class:`~diofant.series.limits.Limit`, now '+' is -1, '-' is 1 and 'real' is :class:`~diofant.sets.fancysets.Reals`, see :pull:`1234` and :pull:`1235`.
+* Changed semantics of the ``dir`` kwarg for the :class:`~diofant.calculus.limits.Limit`, now '+' is -1, '-' is 1 and 'real' is :class:`~diofant.sets.fancysets.Reals`, see :pull:`1234` and :pull:`1235`.
+* Removed ``diofant.calculus.euler`` and ``diofant.calculus.finite_diff`` modules, see :pull:`1271`.
+* Removed ``diofant.vector`` module, see :pull:`1274`.
+* Removed ``diofant.diffgeom`` module, see :pull:`1281`.
+* Removed ``diofant.stats`` module, see :pull:`1276`.
+* Removed ``diofant.geometry`` module and ``line_integrate()`` function, see :pull:`1283`.
+* Removed ``diofant.plotting`` module, see :pull:`1284`.
+* Removed unused ``prefixes()``, ``postfixes()``, ``capture()`` and ``variations()`` functions, see :pull:`1282` and :pull:`1290`.
+* Drop support for multivariate :class:`~diofant.calculus.order.Order` notion, see :pull:`1296`.
+* Removed ``extract_leading_order()`` method of :class:`~diofant.core.add.Add`, see :pull:`1292`.
+* Removed ``S.UniversalSet`` singleton object and related class, see :pull:`1308`.
+* Removed unused ``slice()`` method of the :class:`~diofant.polys.polytools.Poly`, see :pull:`1318`.
 
 Minor changes
 =============
 
 * Support unevaluated :class:`~diofant.polys.rootoftools.RootOf`'s over finite fields, see :pull:`1209`.
 * Provide default clause (condition :class:`~diofant.logic.boolalg.BooleanTrue`) for :class:`~diofant.functions.elementary.piecewise.Piecewise`, see :pull:`1215`.
+* Support limits for :class:`~diofant.polys.rootoftools.RootSum`, see :pull:`1268`.
+* Support ``--unicode-identifiers`` module option, which allows using any unicode identifiers in interactive sessions, see :pull:`1314`.
 
 Developer changes
 =================
+
+* Use ``pyproject.toml`` to keep project's metadata, see :pull:`1226`.
+* Drop dependency on the `flake8-rst <https://github.com/flake8-docs/flake8-rst>`_ and depend on the `flake518 <https://github.com/carstencodes/flake518>`_ instead, see :pull:`1268`.
 
 Issues closed
 =============
@@ -103,3 +119,21 @@ These Sympy issues also were addressed:
 * :sympyissue:`24210`: Error on limits regarding terms like (1+u)^v.
 * :sympyissue:`24225`: Multivariable limit should be undefined, but gives unity.
 * :sympyissue:`24266`: Changed behaviour of series() involving exp, I
+* :sympyissue:`24331`: Limit of log(z) as z goes to 0 with z complex returns '-oo' instead of 'zoo'
+* :sympyissue:`23766`: Factor hangs on exponential functions with base e
+* :sympyissue:`24360`: Remove usage of numpy.distutils in autowrap module
+* :sympyissue:`24346`: factor with extension=True fails for rational expression
+* :sympyissue:`20913`: Poly(x + 9671406556917067856609794, x).real_roots() is slow
+* :sympyissue:`24386`: sympy.limit yields wrong limit in sigmoidal expression
+* :sympyissue:`24390`: Incorrectly evaluated expression
+* :sympyissue:`24461`: sympy.polys.polyerrors.HeuristicGCDFailed: no luck -- when multiplying two Polys
+* :sympyissue:`24543`: Rational calc value error
+* :sympyissue:`6326`: PolynomialRing should not derive from CharacteristicZero
+* :sympyissue:`24684`: Unable to evaluate erfcinv
+* :sympyissue:`6822`: Multivariate Order()
+* :sympyissue:`24477`: Expand before integrate gives different results with big O
+* :sympyissue:`24928`: simplify(asinh(2)-oo)->0
+* :sympyissue:`24948`: .is_positive returns None when it should be False
+* :sympyissue:`24957`: Timeout for dsolve((2x^3+3y)+(3x+y-1)y'=0)
+* :sympyissue:`24955`: Timeout for dsolve(x^2*y'-y^2*y'+2*x*y=0)
+* :sympyissue:`22943`: RootOf for polynomials with irrational algebraic coefficients

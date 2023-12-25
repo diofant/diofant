@@ -27,6 +27,8 @@ def test_construct_domain():
     assert construct_domain([x, sqrt(x)]) == (EX, [EX(x), EX(sqrt(x))])
     assert construct_domain([x, sqrt(x), sqrt(y)]) == (EX, [EX(x), EX(sqrt(x)), EX(sqrt(y))])
 
+    assert construct_domain([((sqrt(2) + 1)**2 - 2*sqrt(2))/4]) == (QQ, [QQ(3, 4)])
+
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==

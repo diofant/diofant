@@ -164,9 +164,9 @@ def test_Implies():
 def test_Equivalent():
     assert Equivalent(a, b) == Equivalent(b, a) == Equivalent(a, b, a)
     assert Equivalent() is true
-    assert Equivalent(a, a) == Equivalent(a) is true
-    assert Equivalent(True, True) == Equivalent(False, False) is true
-    assert Equivalent(True, False) == Equivalent(False, True) is false
+    assert (Equivalent(a, a) == Equivalent(a)) is True
+    assert (Equivalent(True, True) == Equivalent(False, False)) is True
+    assert (Equivalent(True, False) == Equivalent(False, True)) is True
     assert Equivalent(a, True) == a
     assert Equivalent(a, False) == ~a
     assert Equivalent(a, b, True) == a & b
@@ -560,7 +560,7 @@ def test_bool_as_set():
     assert ((x <= 2) & (x >= -2)).as_set() == Interval(-2, 2)
     assert ((x >= 2) | (x <= -2)).as_set() == (Interval(-oo, -2) + Interval(2, oo, False))
     assert Not(x > 2, evaluate=False).as_set() == Interval(-oo, 2, True)
-    assert true.as_set() == S.UniversalSet
+    assert true.as_set() == S.ExtendedReals
     assert false.as_set() == EmptySet()
 
 

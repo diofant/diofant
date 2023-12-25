@@ -4,29 +4,11 @@ import functools
 
 import pytest
 
-from diofant import Monomial, itermonomials
+from diofant import Monomial
 from diofant.abc import a, b, c, x, y, z
 
 
 __all__ = ()
-
-
-def test_monomials():
-    assert set(itermonomials([], 0)) == {1}
-    assert set(itermonomials([], 1)) == {1}
-    assert set(itermonomials([], 2)) == {1}
-    assert set(itermonomials([], 3)) == {1}
-
-    assert set(itermonomials([x], 0)) == {1}
-    assert set(itermonomials([x], 1)) == {1, x}
-    assert set(itermonomials([x], 2)) == {1, x, x**2}
-    assert set(itermonomials([x], 3)) == {1, x, x**2, x**3}
-
-    assert set(itermonomials([x, y], 0)) == {1}
-    assert set(itermonomials([x, y], 1)) == {1, x, y}
-    assert set(itermonomials([x, y], 2)) == {1, x, y, x**2, y**2, x*y}
-    assert set(itermonomials([x, y], 3)) == {1, x, y, x**2, x**3, y**2,
-                                             y**3, x*y, x*y**2, y*x**2}
 
 
 def test_monomial_ops():

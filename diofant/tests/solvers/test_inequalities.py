@@ -365,12 +365,16 @@ def test_solve_univariate_inequality():
     # when the domain is EX (e.g. when 2 is replaced with sqrt(2))
     assert isolve(1/(x - 2) > 0, x) == (Integer(2) < x)
     den = ((x - 1)*(x - 2)).expand()
-    assert isolve((x - 1)/den <= 0, x) == (x < 1) | ((Integer(1) < x) & (x < 2))
+    assert isolve((x - 1)/den <= 0, x) == (x < 2)
 
     assert isolve(x > oo, x) is false
 
     # issue sympy/sympy#10268
-    assert reduce_inequalities(log(x) < 300) == (-oo < x) & (x < E**300)
+    assert reduce_inequalities(log(x) < 300) == (Integer(0) < x) & (x < E**300)
+
+
+def test_sympyissue_25697():
+    assert reduce_inequalities(log(x, 3) <= 2) == (Integer(0) < x) & (x <= 9)
 
 
 def test_slow_general_univariate():
@@ -379,7 +383,7 @@ def test_slow_general_univariate():
 
 def test_sympyissue_8545():
     eq = 1 - x - abs(1 - x)
-    ans = (Integer(1) < x)
+    ans = Integer(1) < x
     assert reduce_piecewise_inequality(eq, '<', x) == ans
     eq = 1 - x - sqrt((1 - x)**2)
     assert reduce_inequalities(eq < 0) == ans
@@ -420,3 +424,18 @@ def test_sympyissue_20902():
             (Rational(-5, 3) < x) & (x < Integer(-1)))
     assert (reduce_inequalities(eq.subs({y: 3*x + 2}).diff(x) > 0) ==
             (Integer(-1) < x) & (x < Rational(-1, 3)))
+
+
+def test_sympyissue_25627():
+    assert reduce_inequalities([(50/(x+1) > 1),
+                                (x > 0)]) == (Integer(0) < x) & (x < 49)
+
+
+def test_sympyissue_25738():
+    assert reduce_inequalities(3 < abs(x)) == (Integer(3) < x) | (x < -3)
+    assert reduce_inequalities(pi < abs(x)) == (pi < x) | (x < -pi)
+
+
+def test_sympyissue_25983():
+    assert reduce_inequalities(pi/abs(x) <= 1) == (pi <= x) | (x <= -pi)
+    assert (pi/abs(x) <= 1).as_set() == Interval(-oo, -pi) | Interval(pi, oo)

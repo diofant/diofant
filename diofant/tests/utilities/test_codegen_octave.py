@@ -341,7 +341,7 @@ def test_m_matrix_output_autoname():
 
 
 def test_m_matrix_output_autoname_2():
-    e1 = (x + y)
+    e1 = x + y
     e2 = Matrix([[2*x, 2*y, 2*z]])
     e3 = Matrix([[x], [y], [z]])
     e4 = Matrix([[x, y], [z, 16]])

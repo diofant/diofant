@@ -25,21 +25,19 @@ There are three types of functions implemented in Diofant:
 
 """
 
-from __future__ import annotations
-
 import collections
 import inspect
 
 import mpmath
-import mpmath.libmp as mlib
+from mpmath.libmp import prec_to_dps
 
 from ..utilities import default_sort_key, ordered
-from ..utilities.iterables import uniq
+from ..utilities.iterables import is_iterable, is_sequence, uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import as_int, is_sequence, iterable
+from .compatibility import as_int
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted
@@ -95,6 +93,7 @@ class FunctionClass(ManagedProperties):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize self."""
         assert hasattr(self, 'eval')
         evalargspec = inspect.getfullargspec(self.eval)
         if evalargspec.varargs:
@@ -172,8 +171,7 @@ class FunctionClass(ManagedProperties):
     def __repr__(self):
         if issubclass(self, AppliedUndef):
             return f'Function({self.__name__!r})'
-        else:
-            return self.__name__
+        return self.__name__
 
     def __str__(self):
         return self.__name__
@@ -365,7 +363,7 @@ class Function(Application, Expr):
         pr = max(cls._should_evalf(a) for a in result.args)
         pr2 = min(cls._should_evalf(a) for a in result.args)
         if pr2 > 0:
-            return result.evalf(mlib.libmpf.prec_to_dps(pr), strict=False)
+            return result.evalf(prec_to_dps(pr), strict=False)
         return result
 
     @classmethod
@@ -495,17 +493,17 @@ class Function(Application, Expr):
         and possible:
 
         >>> loggamma(1/x)._eval_nseries(x, 0, None)
-        -1/x - log(x)/x + log(x)/2 + O(1)
+        -log(x)/x + O(1/x)
 
         """
-        from ..series import Order
+        from ..calculus import Order
         from ..sets.sets import FiniteSet
+        from .numbers import oo, zoo
         from .symbol import Dummy
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
-        if any(isinstance(t, Expr) and t.is_finite is False for t in args0):
-            from .numbers import oo, zoo
-
+        if any(isinstance(t, Expr) and (t.is_infinite or
+                                        t.has(oo, -oo, zoo, nan)) for t in args0):
             # XXX could use t.as_leading_term(x) here but it's a little
             # slower
             a = [t.compute_leading_term(x, logx=logx) for t in args]
@@ -547,7 +545,7 @@ class Function(Application, Expr):
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
                 term = e.subs({x: 0})
-                if term.is_finite is False:
+                if term.is_infinite:
                     raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)
@@ -562,13 +560,13 @@ class Function(Application, Expr):
                     term = term.expand()
                     series += term
                 return series + Order(x**n, x)
-            return e1.nseries(x, n=n, logx=logx)
+            return e1.nseries(x, n, logx)
         arg = self.args[0]
         f_series = order = Integer(0)
         i, terms = 0, []
         while order == 0 or i <= n:
             term = self.taylor_term(i, arg, *terms)
-            term = term.nseries(x, n=n, logx=logx)
+            term = term.nseries(x, n, logx)
             terms.append(term)
             if term:
                 f_series += term
@@ -608,7 +606,7 @@ class Function(Application, Expr):
         See, for example, cos._eval_as_leading_term.
 
         """
-        from ..series import Order
+        from ..calculus import Order
         args = [a.as_leading_term(x) for a in self.args]
         o = Order(1, x)
         if any(x in a.free_symbols and o.contains(a) for a in args):
@@ -710,6 +708,7 @@ class WildFunction(Function, AtomicExpr):
     """
 
     def __init__(self, name, **assumptions):
+        """Initialize self."""
         from ..sets.sets import FiniteSet, Set
         self.name = name
         nargs = assumptions.pop('nargs', S.Naturals0)
@@ -1167,7 +1166,7 @@ class Derivative(Expr):
 
         def eval(x):
             f0 = self.expr.subs({z: Expr._from_mpmath(x, prec=mpmath.mp.prec)})
-            f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec), strict=False)
+            f0 = f0.evalf(prec_to_dps(mpmath.mp.prec), strict=False)
             return f0._to_mpmath(mpmath.mp.prec)
         return Expr._from_mpmath(mpmath.diff(eval,
                                              z0._to_mpmath(mpmath.mp.prec)),
@@ -1196,6 +1195,8 @@ class Derivative(Expr):
         return self.expr.free_symbols
 
     def _eval_subs(self, old, new):
+        from .symbol import Dummy
+
         if old in self.variables and not new._diff_wrt:
             # issue sympy/sympy#4719
             return Subs(self, (old, new))
@@ -1215,14 +1216,27 @@ class Derivative(Expr):
             if _subset(old_vars, self_vars):
                 return Derivative(new, *(self_vars - old_vars).elements())
 
-        return Derivative(*(x._subs(old, new) for x in self.args))
+        args = list(self.args)
+        newargs = [x._subs(old, new) for x in args]
 
-    def _eval_lseries(self, x, logx=None):
-        for term in self.expr.series(x, n=None, logx=logx):
-            yield self.func(term, *self.variables)
+        if newargs[0] != args[0] and not isinstance(old, UndefinedFunction):
+            # Can't change expr by introducing something that is in
+            # the variables if it was already in the expr.
+            # E.g. for Derivative(f(x, g(y)), y), x cannot be replaced with
+            # anything that has y in it; for f(g(x), g(y)).diff(g(y))
+            # g(x) cannot be replaced with anything that has g(y).
+            syms = {vi: Dummy() for vi in self.variables if not vi.is_Symbol}
+            wrt = {syms.get(vi, vi) for vi in self.variables}
+            forbidden = args[0].xreplace(syms).free_symbols & wrt
+            nfree = new.xreplace(syms).free_symbols
+            ofree = old.xreplace(syms).free_symbols
+            if (nfree - ofree) & forbidden:
+                return Subs(self, (old, new))
+
+        return Derivative(*newargs)
 
     def _eval_nseries(self, x, n, logx):
-        arg = self.expr.nseries(x, n=n, logx=logx)
+        arg = self.expr.nseries(x, n, logx)
         o = arg.getO()
         rv = [self.func(a, *self.variables) for a in Add.make_args(arg.removeO())]
         if o:
@@ -1262,9 +1276,9 @@ class Lambda(Expr):
 
     is_Function = True
 
-    def __new__(cls, variables, expr):
+    def __new__(cls, variables, expr, **kwargs):
         from ..sets.sets import FiniteSet
-        v = list(variables) if iterable(variables) else [variables]
+        v = list(variables) if is_iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
                 raise TypeError(f'variable is not a symbol: {i}')
@@ -1499,12 +1513,12 @@ class Subs(Expr):
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
 
-    def _eval_nseries(self, x, n, logx=None):
+    def _eval_nseries(self, x, n, logx):
         if x in self.point:
             v = self.variables[self.point.index(x)]
         else:
             v = x
-        arg = self.expr.nseries(v, n=n, logx=logx)
+        arg = self.expr.nseries(v, n, logx)
         rv = Add(*[self.func(a, *zip(self.variables, self.point))
                    for a in Add.make_args(arg.removeO())])
         if o := arg.getO():
@@ -1561,12 +1575,6 @@ def diff(f, *args, **kwargs):
     ==========
 
     * https://reference.wolfram.com/legacy/v5_2/Built-inFunctions/AlgebraicComputation/Calculus/D.html
-
-    See Also
-    ========
-
-    Derivative
-    diofant.geometry.util.idiff: computes the derivative implicitly
 
     """
     kwargs.setdefault('evaluate', True)
@@ -2155,7 +2163,7 @@ def count_ops(expr, visual=False):
     if type(expr) is dict:
         ops = [count_ops(k, visual=visual) +
                count_ops(v, visual=visual) for k, v in expr.items()]
-    elif iterable(expr):
+    elif is_iterable(expr):
         ops = [count_ops(i, visual=visual) for i in expr]
     elif isinstance(expr, Expr):
 
@@ -2279,7 +2287,7 @@ def nfloat(expr, n=15, exponent=False):
     from .power import Pow
     from .symbol import Dummy
 
-    if iterable(expr, exclude=(str,)):
+    if is_iterable(expr, exclude=(str,)):
         if isinstance(expr, (dict, Dict)):
             return type(expr)([(k, nfloat(v, n, exponent)) for k, v in
                                list(expr.items())])
@@ -2288,7 +2296,7 @@ def nfloat(expr, n=15, exponent=False):
 
     if rv.is_Number:
         return Float(rv, n)
-    elif rv.is_number:
+    if rv.is_number:
         # evalf doesn't always set the precision
         rv = rv.evalf(n)
         if rv.is_Number:

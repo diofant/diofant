@@ -5,7 +5,7 @@ import math
 import operator
 
 from ..core import Dummy, I
-from .polyerrors import DomainError, RefinementFailed
+from .polyerrors import DomainError, RefinementFailedError
 
 
 def _mobius_from_interval(I, field):
@@ -46,8 +46,7 @@ def _disjoint_p(M, N, strict=False):
 
     if not strict:
         return a2*d1 >= c2*b1 or b2*c1 <= d2*a1
-    else:
-        return a2*d1 > c2*b1 or b2*c1 < d2*a1
+    return a2*d1 > c2*b1 or b2*c1 < d2*a1
 
 
 OO = 'OO'  # Origin of (re, im) coordinate system
@@ -281,13 +280,10 @@ def _classify_point(re, im):
     if not re:
         if im > 0:
             return A2
-        else:
-            return A4
-    else:
-        if re > 0:
-            return A1
-        else:
-            return A3
+        return A4
+    if re > 0:
+        return A1
+    return A3
 
 
 def _intervals_to_quadrants(intervals, f1, f2, s, t):
@@ -304,19 +300,17 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
             if len(intervals) == 1:
                 if f2.eval(0, t) > 0:
                     return [OO, A2]
-                else:
-                    return [OO, A4]
+                return [OO, A4]
+            (a, _), _, _ = intervals[1]
+
+            if f2.eval(0, (s + a)/2) > 0:
+                Q.extend([OO, A2])
+                f2_sgn = +1
             else:
-                (a, _), _, _ = intervals[1]
+                Q.extend([OO, A4])
+                f2_sgn = -1
 
-                if f2.eval(0, (s + a)/2) > 0:
-                    Q.extend([OO, A2])
-                    f2_sgn = +1
-                else:
-                    Q.extend([OO, A4])
-                    f2_sgn = -1
-
-                intervals = intervals[1:]
+            intervals = intervals[1:]
         else:
             if f2.eval(0, s) > 0:
                 Q.append(A2)
@@ -346,19 +340,17 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
             if len(intervals) == 1:
                 if f1.eval(0, t) > 0:
                     return [OO, A1]
-                else:
-                    return [OO, A3]
+                return [OO, A3]
+            (a, _), _, _ = intervals[1]
+
+            if f1.eval(0, (s + a)/2) > 0:
+                Q.extend([OO, A1])
+                f1_sgn = +1
             else:
-                (a, _), _, _ = intervals[1]
+                Q.extend([OO, A3])
+                f1_sgn = -1
 
-                if f1.eval(0, (s + a)/2) > 0:
-                    Q.extend([OO, A1])
-                    f1_sgn = +1
-                else:
-                    Q.extend([OO, A3])
-                    f1_sgn = -1
-
-                intervals = intervals[1:]
+            intervals = intervals[1:]
         else:
             if f1.eval(0, s) > 0:
                 Q.append(A1)
@@ -787,8 +779,7 @@ def _rectangle_small_p(a, b, eps):
 
     if eps is not None:
         return s - u < eps and t - v < eps
-    else:
-        return True
+    return True
 
 
 class RealInterval:
@@ -834,10 +825,9 @@ class RealInterval:
             if a*d < b*c:
                 return a/c
             return b/d
-        else:
-            if a*d > b*c:
-                return -a/c
-            return -b/d
+        if a*d > b*c:
+            return -a/c
+        return -b/d
 
     @property
     def b(self):
@@ -901,8 +891,7 @@ class ComplexInterval:
         """Return ``y`` coordinate of south-western corner."""
         if not self.conj:
             return +self.a[1]
-        else:
-            return -self.b[1]
+        return -self.b[1]
 
     @property
     def bx(self):
@@ -914,8 +903,7 @@ class ComplexInterval:
         """Return ``y`` coordinate of north-eastern corner."""
         if not self.conj:
             return +self.b[1]
-        else:
-            return -self.a[1]
+        return -self.a[1]
 
     @property
     def center(self):
@@ -987,9 +975,8 @@ class ComplexInterval:
                                          (i.conj and _[0][1] < i.by)) and l < i.bx]) != 1:
                     return False
             return True
-        else:
-            return all(_get_rectangle(i.f1, i.f2, (l, i.ay), (r, i.by))[0] == 1
-                       for i in (self, other))
+        return all(_get_rectangle(i.f1, i.f2, (l, i.ay), (r, i.by))[0] == 1
+                   for i in (self, other))
 
     def refine(self, vertical=False):
         """Perform one step of complex root refinement algorithm."""
@@ -1202,7 +1189,7 @@ class _FindRoot:
         f = self._transform(f, a*x + b, c*x + d)
 
         if self._sign_variations(f) != 1:
-            raise RefinementFailed(f'there should be exactly one root in ({s}, {t}) interval')
+            raise RefinementFailedError(f'there should be exactly one root in ({s}, {t}) interval')
 
         return self._inner_refine_real_root(f, (a, b, c, d), eps=eps, steps=steps, disjoint=disjoint)
 
@@ -1350,12 +1337,10 @@ class _FindRoot:
             if (inf is None or u >= inf) and (sup is None or v <= sup):
                 if not mobius:
                     return u, v
-                else:
-                    return f, M
-            elif (sup is not None and u > sup) or (inf is not None and v < inf):
+                return f, M
+            if (sup is not None and u > sup) or (inf is not None and v < inf):
                 return
-            else:
-                f, M = self._step_refine_real_root(f, M)
+            f, M = self._step_refine_real_root(f, M)
 
     def _inner_isolate_positive_roots(self, f, eps=None, inf=None, sup=None, mobius=False):
         """Iteratively compute disjoint positive root isolation intervals."""
@@ -1450,8 +1435,7 @@ class _FindRoot:
         B = 2*max(abs(domain.to_expr(c)/lc) for c in f.values())
         if not domain.is_AlgebraicField:
             return domain.convert(B)
-        else:
-            return domain.domain(int(100*B) + 1)/domain.domain(100)
+        return domain.domain(int(100*B) + 1)/domain.domain(100)
 
     def _isolate_zero(self, f, inf, sup, sqf=False):
         """Handle special case of CF algorithm when ``f`` is homogeneous."""
@@ -1462,8 +1446,7 @@ class _FindRoot:
             if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
                 if not sqf:
                     return [((domain.zero, domain.zero), j)], f
-                else:
-                    return [(domain.zero, domain.zero)], f
+                return [(domain.zero, domain.zero)], f
 
         return [], f
 
@@ -1521,10 +1504,9 @@ class _FindRoot:
         if len(factors) == 1:
             (f, k), = factors
             return [(r, k) for r in new_ring._isolate_real_roots_sqf(f, eps, inf, sup)]
-        else:
-            I_zero, f = new_ring._isolate_zero(f, inf, sup)
-            I_neg, I_pos = new_ring._real_isolate_and_disjoin(factors, eps, inf, sup)
-            return sorted(I_neg + I_zero + I_pos)
+        I_zero, f = new_ring._isolate_zero(f, inf, sup)
+        I_neg, I_pos = new_ring._real_isolate_and_disjoin(factors, eps, inf, sup)
+        return sorted(I_neg + I_zero + I_pos)
 
     def _real_isolate_and_disjoin(self, factors, eps=None, inf=None, sup=None, strict=False, basis=False):
         """Isolate real roots of a list of polynomials and disjoin intervals."""
@@ -1674,8 +1656,7 @@ class _FindRoot:
             complex_part = [((a, b), k) for (a, b) in complex_part]
 
             return real_part, complex_part
-        else:
-            raise NotImplementedError('only trivial square-free polynomials are supported')
+        raise NotImplementedError('only trivial square-free polynomials are supported')
 
     def _real_imag(self, f, _y=Dummy('y')):
         """

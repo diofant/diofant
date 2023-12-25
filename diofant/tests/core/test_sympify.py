@@ -10,7 +10,6 @@ from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
-from diofant.geometry import Line, Point
 from diofant.utilities.decorator import conserve_mpmath_dps
 
 
@@ -414,15 +413,6 @@ def test_sympyissue_4988():
 
     exp2 = sympify('C', vars)
     assert exp2 == C  # Make sure it did not get mixed up with diofant.C
-
-
-def test_geometry():
-    p = sympify(Point(0, 1))
-    assert p == Point(0, 1)
-    assert isinstance(p, Point)
-    L = sympify(Line(p, (1, 0)))
-    assert L == Line((0, 1), (1, 0))
-    assert isinstance(L, Line)
 
 
 def test_sympyissue_6540():

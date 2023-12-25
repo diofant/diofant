@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-import functools
-import operator
+import math
 
 from ..core import Expr, Symbol
 from ..core.sympify import CantSympify, sympify
@@ -11,7 +10,7 @@ from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
 from .orderings import lex
-from .polyerrors import CoercionFailed, GeneratorsError
+from .polyerrors import CoercionFailedError, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
@@ -94,7 +93,7 @@ class FractionField(Field, CompositeDomain):
     def ground_new(self, element):
         try:
             return self(self.ring.ground_new(element))
-        except CoercionFailed as exc:
+        except CoercionFailedError as exc:
             domain = self.domain
 
             if not domain.is_Field and hasattr(domain, 'field'):
@@ -104,30 +103,27 @@ class FractionField(Field, CompositeDomain):
                 numer = ring.ground_new(element.numerator)
                 denom = ring.ground_new(element.denominator)
                 return self.raw_new(numer, denom)
-            else:
-                raise NotImplementedError from exc
+            raise NotImplementedError from exc
 
     def __call__(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
-            else:
-                raise NotImplementedError('conversion')
-        elif isinstance(element, PolyElement):
+            raise NotImplementedError('conversion')
+        if isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
             numer = numer.set_ring(self.ring)
             denom = self.ring.ground_new(denom)
             return self.raw_new(numer, denom)
-        elif isinstance(element, tuple) and len(element) == 2:
+        if isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.__call__, element))
             numer, denom = numer.cancel(denom)
             return self.raw_new(numer, denom)
-        elif isinstance(element, str):
+        if isinstance(element, str):
             raise NotImplementedError('parsing')
-        elif isinstance(element, Expr):
+        if isinstance(element, Expr):
             return self.convert(element)
-        else:
-            return self.ground_new(element)
+        return self.ground_new(element)
 
     def from_expr(self, expr):
         expr = sympify(expr)
@@ -135,15 +131,15 @@ class FractionField(Field, CompositeDomain):
         mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
-            if (generator := mapping.get(expr)) is not None:
+            if generator := mapping.get(expr):
                 return generator
-            elif 1/expr in mapping:
+            if 1/expr in mapping:
                 return 1/mapping[1/expr]
-            elif expr.is_Add:
-                return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
-            elif expr.is_Mul:
-                return functools.reduce(operator.mul, list(map(_rebuild, expr.args)))
-            elif expr.is_Pow:
+            if expr.is_Add:
+                return sum(map(_rebuild, expr.args))
+            if expr.is_Mul:
+                return math.prod(map(_rebuild, expr.args))
+            if expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c != 1:
                     return _rebuild(expr.base**a)**int(c)
@@ -157,7 +153,7 @@ class FractionField(Field, CompositeDomain):
 
         try:
             return _rebuild(expr)
-        except CoercionFailed as exc:
+        except CoercionFailedError as exc:
             raise ValueError('expected an expression convertible to a '
                              f'rational function in {self}, '
                              f'got {expr}') from exc
@@ -180,13 +176,13 @@ class FractionField(Field, CompositeDomain):
     def _from_PolynomialRing(self, a, K0):
         try:
             return self(a)
-        except (CoercionFailed, GeneratorsError):
+        except (CoercionFailedError, GeneratorsError):
             return
 
     def _from_FractionField(self, a, K0):
         try:
             return a.set_field(self)
-        except (CoercionFailed, GeneratorsError):
+        except (CoercionFailedError, GeneratorsError):
             return
 
     @property
@@ -211,6 +207,7 @@ class FracElement(DomainElement, CantSympify):
     """
 
     def __init__(self, numer, denom=None):
+        """Initialize self."""
         if denom is None:
             denom = self.field.ring.one
         elif not denom:
@@ -259,17 +256,15 @@ class FracElement(DomainElement, CantSympify):
     def set_field(self, new_field):
         if self.field == new_field:
             return self
-        else:
-            new_ring = new_field.ring
-            numer = self.numerator.set_ring(new_ring)
-            denom = self.denominator.set_ring(new_ring)
-            return new_field((numer, denom))
+        new_ring = new_field.ring
+        numer = self.numerator.set_ring(new_ring)
+        denom = self.denominator.set_ring(new_ring)
+        return new_field((numer, denom))
 
     def __eq__(self, other):
         if isinstance(other, self.field.dtype):
             return self.numerator == other.numerator and self.denominator == other.denominator
-        else:
-            return self.numerator == other and self.denominator == 1
+        return self.numerator == other and self.denominator == 1
 
     def __bool__(self):
         return bool(self.numerator)
@@ -286,17 +281,15 @@ class FracElement(DomainElement, CantSympify):
 
         try:
             element = domain.convert(element)
-        except CoercionFailed:
+        except CoercionFailedError:
             ground_field = domain.field
 
             try:
                 element = ground_field.convert(element)
-            except CoercionFailed:
+            except CoercionFailedError:
                 return 0, None, None
-            else:
-                return -1, element.numerator, element.denominator
-        else:
-            return 1, element, None
+            return -1, element.numerator, element.denominator
+        return 1, element, None
 
     def __add__(self, other):
         """Add rational functions ``self`` and ``other``."""
@@ -304,29 +297,27 @@ class FracElement(DomainElement, CantSympify):
 
         if not other:
             return self
-        elif not self:
+        if not self:
             return other
-        elif isinstance(other, field.dtype):
+        if isinstance(other, field.dtype):
             if self.denominator == other.denominator:
                 return self.new(self.numerator + other.numerator, self.denominator)
-            else:
-                return self.new(self.numerator*other.denominator + self.denominator*other.numerator,
-                                self.denominator*other.denominator)
-        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numerator*other.denominator + self.denominator*other.numerator,
+                            self.denominator*other.denominator)
+        if isinstance(other, field.ring.dtype):
             return self.new(self.numerator + self.denominator*other, self.denominator)
-        else:
-            if isinstance(other, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
-                    pass
-                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
-                    return other.__radd__(self)
-                else:
-                    return NotImplemented
-            elif isinstance(other, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
-                    pass
-                else:
-                    return other.__radd__(self)
+        if isinstance(other, FracElement):
+            if isinstance(field.domain, FractionField) and field.domain.field == other.field:
+                pass
+            elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                return other.__radd__(self)
+            else:
+                return NotImplemented
+        elif isinstance(other, PolyElement):
+            if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
+                pass
+            else:
+                return other.__radd__(self)
 
         return self.__radd__(other)
 
@@ -335,11 +326,10 @@ class FracElement(DomainElement, CantSympify):
 
         if op == 1:
             return self.new(self.numerator + self.denominator*other_numer, self.denominator)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(self.numerator*other_denom + self.denominator*other_numer,
-                            self.denominator*other_denom)
+        return self.new(self.numerator*other_denom + self.denominator*other_numer,
+                        self.denominator*other_denom)
 
     def __sub__(self, other):
         """Subtract rational functions ``self`` and ``other``."""
@@ -347,50 +337,46 @@ class FracElement(DomainElement, CantSympify):
 
         if not other:
             return self
-        elif not self:
+        if not self:
             return -other
-        elif isinstance(other, field.dtype):
+        if isinstance(other, field.dtype):
             if self.denominator == other.denominator:
                 return self.new(self.numerator - other.numerator, self.denominator)
-            else:
-                return self.new(self.numerator*other.denominator - self.denominator*other.numerator,
-                                self.denominator*other.denominator)
-        elif isinstance(other, field.ring.dtype):
+            return self.new(self.numerator*other.denominator - self.denominator*other.numerator,
+                            self.denominator*other.denominator)
+        if isinstance(other, field.ring.dtype):
             return self.new(self.numerator - self.denominator*other, self.denominator)
-        else:
-            if isinstance(other, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
-                    pass
-                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
-                    return other.__rsub__(self)
-                else:
-                    return NotImplemented
-            elif isinstance(other, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
-                    pass
-                else:
-                    return other.__rsub__(self)
+        if isinstance(other, FracElement):
+            if isinstance(field.domain, FractionField) and field.domain.field == other.field:
+                pass
+            elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                return other.__rsub__(self)
+            else:
+                return NotImplemented
+        if isinstance(other, PolyElement):
+            if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
+                pass
+            else:
+                return other.__rsub__(self)
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
             return self.new(self.numerator - self.denominator*other_numer, self.denominator)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(self.numerator*other_denom - self.denominator*other_numer,
-                            self.denominator*other_denom)
+        return self.new(self.numerator*other_denom - self.denominator*other_numer,
+                        self.denominator*other_denom)
 
     def __rsub__(self, other):
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
             return self.new(-self.numerator + self.denominator*other_numer, self.denominator)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(-self.numerator*other_denom + self.denominator*other_numer,
-                            self.denominator*other_denom)
+        return self.new(-self.numerator*other_denom + self.denominator*other_numer,
+                        self.denominator*other_denom)
 
     def __mul__(self, other):
         """Multiply rational functions ``self`` and ``other``."""
@@ -398,23 +384,22 @@ class FracElement(DomainElement, CantSympify):
 
         if not self or not other:
             return field.zero
-        elif isinstance(other, field.dtype):
+        if isinstance(other, field.dtype):
             return self.new(self.numerator*other.numerator, self.denominator*other.denominator)
-        elif isinstance(other, field.ring.dtype):
+        if isinstance(other, field.ring.dtype):
             return self.new(self.numerator*other, self.denominator)
-        else:
-            if isinstance(other, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
-                    pass
-                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
-                    return other.__rmul__(self)
-                else:
-                    return NotImplemented
-            elif isinstance(other, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
-                    pass
-                else:
-                    return other.__rmul__(self)
+        if isinstance(other, FracElement):
+            if isinstance(field.domain, FractionField) and field.domain.field == other.field:
+                pass
+            elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                return other.__rmul__(self)
+            else:
+                return NotImplemented
+        elif isinstance(other, PolyElement):
+            if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
+                pass
+            else:
+                return other.__rmul__(self)
 
         return self.__rmul__(other)
 
@@ -423,10 +408,9 @@ class FracElement(DomainElement, CantSympify):
 
         if op == 1:
             return self.new(self.numerator*other_numer, self.denominator)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(self.numerator*other_numer, self.denominator*other_denom)
+        return self.new(self.numerator*other_numer, self.denominator*other_denom)
 
     def __truediv__(self, other):
         """Computes quotient of fractions ``self`` and ``other``."""
@@ -436,30 +420,28 @@ class FracElement(DomainElement, CantSympify):
             raise ZeroDivisionError
         if isinstance(other, field.dtype):
             return self.new(self.numerator*other.denominator, self.denominator*other.numerator)
-        elif isinstance(other, field.ring.dtype):
+        if isinstance(other, field.ring.dtype):
             return self.new(self.numerator, self.denominator*other)
-        else:
-            if isinstance(other, FracElement):
-                if isinstance(field.domain, FractionField) and field.domain.field == other.field:
-                    pass
-                elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
-                    return other.__rtruediv__(self)
-                else:
-                    return NotImplemented
-            elif isinstance(other, PolyElement):
-                if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
-                    pass
-                else:
-                    return NotImplemented
+        if isinstance(other, FracElement):
+            if isinstance(field.domain, FractionField) and field.domain.field == other.field:
+                pass
+            elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
+                return other.__rtruediv__(self)
+            else:
+                return NotImplemented
+        elif isinstance(other, PolyElement):
+            if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
+                pass
+            else:
+                return NotImplemented
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
             return self.new(self.numerator, self.denominator*other_numer)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(self.numerator*other_denom, self.denominator*other_numer)
+        return self.new(self.numerator*other_denom, self.denominator*other_numer)
 
     def __rtruediv__(self, other):
         if not self:
@@ -471,19 +453,17 @@ class FracElement(DomainElement, CantSympify):
 
         if op == 1:
             return self.new(self.denominator*other_numer, self.numerator)
-        elif not op:
+        if not op:
             return NotImplemented
-        else:
-            return self.new(self.denominator*other_numer, self.numerator*other_denom)
+        return self.new(self.denominator*other_numer, self.numerator*other_denom)
 
     def __pow__(self, n):
         """Raise ``self`` to a non-negative power ``n``."""
         if n >= 0:
             return self.raw_new(self.numerator**n, self.denominator**n)
-        elif not self:
+        if not self:
             raise ZeroDivisionError
-        else:
-            return self.raw_new(self.denominator**-n, self.numerator**-n)
+        return self.raw_new(self.denominator**-n, self.numerator**-n)
 
     def diff(self, x):
         """Computes partial derivative in ``x``.
@@ -503,8 +483,7 @@ class FracElement(DomainElement, CantSympify):
     def __call__(self, *values):
         if 0 < len(values) <= self.field.ngens:
             return self.eval(list(zip(self.field.gens, values)))
-        else:
-            raise ValueError(f'expected at least 1 and at most {self.field.ngens} values, got {len(values)}')
+        raise ValueError(f'expected at least 1 and at most {self.field.ngens} values, got {len(values)}')
 
     def eval(self, x, a=None):
         if isinstance(x, list) and a is None:

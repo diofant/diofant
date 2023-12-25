@@ -5,8 +5,8 @@ import pytest
 from diofant import (Basic, Dict, FiniteSet, Integer, Matrix, Rational, Tuple,
                      false, sympify, true)
 from diofant.abc import p, q, r, s, x, y, z
-from diofant.core.compatibility import is_sequence, iterable
 from diofant.core.containers import tuple_wrapper
+from diofant.utilities.iterables import is_iterable, is_sequence
 
 
 __all__ = ()
@@ -112,15 +112,15 @@ def test_tuple_wrapper():
     assert wrap_tuples_and_return(1, (p, 2), 3) == (1, Tuple(p, 2), 3)
 
 
-def test_iterable_is_sequence():
+def test_is_iterable_is_sequence():
     ordered = [[], (), Tuple(), Matrix([[]])]
     unordered = [set()]
     not_diofant_iterable = [{}, '']
     assert all(is_sequence(i) for i in ordered)
     assert all(not is_sequence(i) for i in unordered)
-    assert all(iterable(i) for i in ordered + unordered)
-    assert all(not iterable(i) for i in not_diofant_iterable)
-    assert all(iterable(i, exclude=None) for i in not_diofant_iterable)
+    assert all(is_iterable(i) for i in ordered + unordered)
+    assert all(not is_iterable(i) for i in not_diofant_iterable)
+    assert all(is_iterable(i, exclude=None) for i in not_diofant_iterable)
 
 
 def test_Dict():
@@ -169,6 +169,8 @@ def test_Dict():
     assert len(d) == 3
     assert set(d) == {x, y, z}
     assert set(d.values()) == {0}
+
+    assert list(FiniteSet(*[Dict({x: 1}), Dict({y: 2})]))[0] == Dict({x: 1})
 
 
 def test_eq_and_args():

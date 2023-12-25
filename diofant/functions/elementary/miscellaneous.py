@@ -3,7 +3,7 @@ from ...core import (Add, Dummy, Equality, Expr, Integer, Lambda, Mul, Pow,
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
-from ...core.operations import LatticeOp, ShortCircuit
+from ...core.operations import LatticeOp, ShortCircuitError
 from ...core.rules import Transform
 from ...core.singleton import SingletonWithManagedProperties as Singleton
 from ...core.sympify import sympify
@@ -110,7 +110,7 @@ def cbrt(arg, **kwargs):
     ========
 
     >>> cbrt(x)
-    x**(1/3)
+    root(x, 3)
 
     >>> cbrt(x)**3
     x
@@ -118,7 +118,7 @@ def cbrt(arg, **kwargs):
     Note that cbrt(x**3) does not simplify to x.
 
     >>> cbrt(x**3)
-    (x**3)**(1/3)
+    root(x**3, 3)
 
     This is because the two are not equal to each other in general.
     For example, consider `x == -1`:
@@ -160,18 +160,18 @@ def root(arg, n, k=0, **kwargs):
     sqrt(x)
 
     >>> root(x, 3)
-    x**(1/3)
+    root(x, 3)
 
     >>> root(x, n)
     x**(1/n)
 
     >>> root(x, -Rational(2, 3))
-    x**(-3/2)
+    1/sqrt(x)**3
 
     To get the k-th n-th root, specify k:
 
     >>> root(-2, 3, 2)
-    -(-1)**(2/3)*2**(1/3)
+    -root(-1, 3)**2*root(2, 3)
 
     To get all n n-th roots you can use the RootOf function.
     The following examples show the roots of unity for n
@@ -193,7 +193,7 @@ def root(arg, n, k=0, **kwargs):
     come back as -2:
 
     >>> root(-8, 3)
-    2*(-1)**(1/3)
+    2*root(-1, 3)
 
     The real_root function can be used to either make the principle
     result real (or simply to return the real root directly):
@@ -245,7 +245,7 @@ def real_root(arg, n=None):
     >>> real_root(-8, 3)
     -2
     >>> root(-8, 3)
-    2*(-1)**(1/3)
+    2*root(-1, 3)
     >>> real_root(_)
     -2
 
@@ -253,9 +253,9 @@ def real_root(arg, n=None):
     result will not be real (so use with caution):
 
     >>> root(-8, 3, 2)
-    -2*(-1)**(2/3)
+    -2*root(-1, 3)**2
     >>> real_root(_)
-    -2*(-1)**(2/3)
+    -2*root(-1, 3)**2
 
 
     See Also
@@ -312,7 +312,7 @@ class MinMaxBase(LatticeOp):
         # also reshape Max(a, Max(b, c)) to Max(a, b, c)
         try:
             _args = frozenset(cls._new_args_filter(args))
-        except ShortCircuit:
+        except ShortCircuitError:
             return cls.zero
 
         # second filter
@@ -324,15 +324,14 @@ class MinMaxBase(LatticeOp):
 
         if not args:
             return cls.identity
-        elif len(args) == 1:
+        if len(args) == 1:
             return args.pop()
-        else:
-            # base creation
-            # XXX should _args be made canonical with sorting?
-            _args = frozenset(args)
-            obj = Expr.__new__(cls, _args, **assumptions)
-            obj._argset = _args
-            return obj
+        # base creation
+        # XXX should _args be made canonical with sorting?
+        _args = frozenset(args)
+        obj = Expr.__new__(cls, _args, **assumptions)
+        obj._argset = _args
+        return obj
 
     @classmethod
     def _new_args_filter(cls, arg_sequence):
@@ -351,7 +350,7 @@ class MinMaxBase(LatticeOp):
                 raise ValueError(f"The argument '{arg}' is not comparable.")
 
             if arg == cls.zero:
-                raise ShortCircuit(arg)
+                raise ShortCircuitError(arg)
             if arg == cls.identity:
                 continue
             if arg.func == cls:
@@ -536,8 +535,7 @@ class Max(MinMaxBase, Application):
                 return Heaviside(self.args[argindex] - self.args[1 - argindex])
             newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside(self.args[argindex] - Max(*newargs))
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from .. import Heaviside
@@ -587,8 +585,7 @@ class Min(MinMaxBase, Application):
                 return Heaviside(self.args[1-argindex] - self.args[argindex])
             newargs = tuple(self.args[i] for i in range(n) if i != argindex)
             return Heaviside(Min(*newargs) - self.args[argindex])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Heaviside(self, *args):
         from .. import Heaviside

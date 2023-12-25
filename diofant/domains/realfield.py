@@ -5,7 +5,7 @@ from __future__ import annotations
 import mpmath
 
 from ..core import Float
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .mpelements import MPContext
@@ -22,12 +22,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     is_Exact = False
     is_Numerical = True
 
-    _default_precision = 53
-
-    @property
-    def has_default_precision(self):
-        return self.precision == self._default_precision
-
     @property
     def precision(self):
         return self._context.prec
@@ -40,7 +34,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def tolerance(self):
         return self._context.tolerance
 
-    def __new__(cls, prec=_default_precision, dps=None, tol=None):
+    def __new__(cls, prec=53, dps=None, tol=None):
         context = MPContext(prec, dps, tol)
 
         obj = super().__new__(cls)
@@ -79,8 +73,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
 
         if number.is_Number:
             return self.dtype(number)
-        else:
-            raise CoercionFailed(f'expected real number, got {expr}')
+        raise CoercionFailedError(f'expected real number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
@@ -96,8 +89,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def _from_RealField(self, element, base):
         if self == base:
             return element
-        else:
-            return self.dtype(element)
+        return self.dtype(element)
 
     def _from_ComplexField(self, element, base):
         if not element.imag:

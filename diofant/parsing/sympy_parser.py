@@ -22,11 +22,10 @@ def _token_splittable(token):
     """
     if '_' in token:
         return False
-    else:
-        try:
-            return not unicodedata.lookup('GREEK SMALL LETTER ' + token)
-        except KeyError:
-            pass
+    try:
+        return not unicodedata.lookup('GREEK SMALL LETTER ' + token)
+    except KeyError:
+        pass
     if len(token) > 1:
         return True
     return False
@@ -55,6 +54,7 @@ class AppliedFunction:
     """
 
     def __init__(self, function, args, exponent=[]):
+        """Initialize self."""
         self.function = function
         self.args = args
         self.exponent = exponent
@@ -255,7 +255,7 @@ def _implicit_application(tokens, local_dict, global_dict):
                 # or if there's already a parenthesis (if parenthesis, still
                 # stop skipping tokens)
                 if not (nextTok[0] == OP and nextTok[1] == '*'):
-                    if not(nextTok[0] == OP and nextTok[1] == '('):
+                    if not (nextTok[0] == OP and nextTok[1] == '('):
                         result.append((OP, '('))
                         appendParen += 1
                     exponentSkip = False
@@ -753,10 +753,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 
 
 def evaluateFalse(s):
-    """
-    Replaces operators with the Diofant equivalent and sets evaluate=False.
-
-    """
+    """Replaces operators with the Diofant equivalent and sets evaluate=False."""
     node = ast.parse(s)
     node = EvaluateFalseTransformer().visit(node)
     # node is a Module, we want an Expression
@@ -800,7 +797,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
             elif isinstance(node.op, ast.Div):
                 right = ast.Call(
                     func=ast.Name(id='Pow', ctx=ast.Load()),
-                    args=[right, ast.UnaryOp(op=ast.USub(), operand=ast.Num(1))],
+                    args=[right, ast.UnaryOp(op=ast.USub(), operand=ast.Constant(1))],
                     keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
                     starargs=None,
                     kwargs=None
@@ -819,8 +816,7 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 new_node.args = self.flatten(new_node.args, sympy_class)
 
             return new_node
-        else:  # pragma: no cover
-            return node
+        return node  # pragma: no cover
 
     def visit_Call(self, node):
         if node.func.id in self.func_map:
@@ -829,5 +825,4 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                             args=node.args,
                             keywords=[ast.keyword(arg='evaluate',
                                                   value=ast.Constant(value=False))])
-        else:
-            return node
+        return node

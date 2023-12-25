@@ -1,6 +1,6 @@
+import itertools
+
 from ..core import symbols
-from ..matrices import Matrix
-from ..utilities import variations
 from ..utilities.iterables import rotate_left
 from .permutations import Permutation
 
@@ -18,7 +18,7 @@ def symmetric(n):
      Permutation(0, 1, 2), Permutation(0, 2, 1), Permutation(0, 2)]
 
     """
-    for perm in variations(list(range(n)), n):
+    for perm in itertools.permutations(range(n)):
         yield Permutation(perm)
 
 
@@ -57,7 +57,7 @@ def alternating(n):
     [Permutation(2), Permutation(0, 1, 2), Permutation(0, 2, 1)]
 
     """
-    for perm in variations(list(range(n)), n):
+    for perm in itertools.permutations(range(n)):
         p = Permutation(perm)
         if p.is_even:
             yield p
@@ -131,6 +131,8 @@ def rubik(n):
     slices from the front.
 
     """
+    from ..matrices import Matrix
+
     if n < 2:
         raise ValueError('dimension of cube must be > 1')
 

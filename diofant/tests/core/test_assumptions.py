@@ -175,7 +175,7 @@ def test_nan():
     assert nan.is_nonnegative is None
     assert nan.is_even is False
     assert nan.is_odd is False
-    assert nan.is_finite is False
+    assert nan.is_finite is None
     assert nan.is_infinite is None
     assert nan.is_comparable is False
     assert nan.is_prime is False
@@ -728,9 +728,10 @@ def test_Mul_is_algebraic():
 
 def test_Pow_is_algebraic():
     e = Symbol('e', algebraic=True)
+    nn = Symbol('nn', nonnegative=True)
 
-    assert Pow(1, e, evaluate=False).is_algebraic
-    assert Pow(0, e, evaluate=False).is_algebraic
+    assert Pow(1, y, evaluate=False).is_algebraic
+    assert Pow(0, nn, evaluate=False).is_algebraic
 
     a = Symbol('a', algebraic=True)
     an = Symbol('an', algebraic=True, nonzero=True)
@@ -777,13 +778,13 @@ def test_Mul_is_infinite():
     nzf = Dummy(finite=True, zero=False)
     assert (x*f).is_finite is None
     assert (x*i).is_finite is None
-    assert (f*i).is_finite is False
+    assert (f*i).is_finite is None
     assert (x*f*i).is_finite is None
-    assert (z*i).is_finite is False
+    assert (z*i).is_finite is None
     assert (nzf*i).is_finite is False
     assert (z*f).is_finite is True
     assert Mul(0, f, evaluate=False).is_finite is True
-    assert Mul(0, i, evaluate=False).is_finite is False
+    assert Mul(0, i, evaluate=False).is_finite is None
 
     assert (x*f).is_infinite is None
     assert (x*i).is_infinite is None
@@ -922,3 +923,9 @@ def test_sympyissue_23086():
     e = 180*acos(Rational(7823207, 7823209))/pi
     assert e.is_zero is False
     assert e.simplify()
+
+
+def test_sympyissue_24948():
+    a = acos(-3*sqrt(10)/10)
+    b = acos(2*sqrt(5)/5)
+    assert (b - a + 3*pi/4).is_positive is None

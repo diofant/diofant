@@ -91,8 +91,7 @@ class Piecewise(Function):
 
         if r is None:
             return Expr.__new__(cls, *newargs, **options)
-        else:
-            return r
+        return r
 
     @classmethod
     def eval(cls, *args):
@@ -173,11 +172,6 @@ class Piecewise(Function):
 
     def _eval_interval(self, x, a, b):
         """Evaluates the function along the sym in a given interval ab."""
-        # FIXME: Currently complex intervals are not supported.  A possible
-        # replacement algorithm, discussed in issue sympy/sympy#5227, can be found in the
-        # following papers;
-        #     http://portal.acm.org/citation.cfm?id=281649
-        #     http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.4127&rep=rep1&type=pdf
         from .complexes import Abs
 
         if x.is_real is None:
@@ -194,7 +188,7 @@ class Piecewise(Function):
         mul = 1
         if a == b:
             return Integer(0)
-        elif (a > b) == true:
+        if (a > b) == true:
             a, b, mul = b, a, -1
         elif (a <= b) != true:
             newargs = []
@@ -363,7 +357,7 @@ class Piecewise(Function):
                 int_expr.append([lower, upper, expr])
             if orig_cond == targetcond:
                 return [(lower, upper, None)]
-            elif isinstance(targetcond, Or) and cond in targetcond.args:
+            if isinstance(targetcond, Or) and cond in targetcond.args:
                 or_cond = Or(or_cond, cond)
                 or_intervals.append((lower, upper, None))
                 if or_cond == targetcond:
@@ -562,5 +556,4 @@ def piecewise_fold(expr):
         if len(piecewise_args) > 1:
             return piecewise_fold(Piecewise(*new_args))
         return Piecewise(*new_args)
-    else:
-        return expr.func(*new_args)
+    return expr.func(*new_args)

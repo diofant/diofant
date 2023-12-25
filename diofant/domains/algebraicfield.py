@@ -6,7 +6,8 @@ import functools
 
 from ..core import I, cacheit
 from ..core.sympify import CantSympify, sympify
-from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
+from ..polys.polyerrors import (CoercionFailedError, DomainError,
+                                NotAlgebraicError)
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .quotientring import QuotientRingElement
@@ -35,9 +36,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         minpoly, coeffs, _ = primitive_element(ext, domain=dom)
         ext = sum(c*e for c, e in zip(coeffs, ext))
-
-        if minpoly.degree() < 2:
-            return dom
 
         is_real = ext.is_real
         if is_real is not False:
@@ -97,12 +95,12 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
+        r"""Return an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
     def to_expr(self, element):
         rep = element.rep
-        return rep.ring.to_expr(rep)
+        return rep.ring.to_expr(rep).expand()
 
     def from_expr(self, expr):
         from ..polys import primitive_element
@@ -112,14 +110,12 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         try:
             _, (c,), (rep,) = primitive_element([expr], domain=self.domain)
-        except NotAlgebraic as exc:
-            raise CoercionFailed(f'{expr} is not an algebraic number') from exc
+        except NotAlgebraicError as exc:
+            raise CoercionFailedError(f'{expr} is not an algebraic number') from exc
 
         K0 = self.domain.algebraic_field(c*expr)
-        if K0.is_AlgebraicField:
-            return self.convert(K0(rep), K0)
-        else:
-            return self.convert(K0(*rep), K0)
+        assert K0.is_AlgebraicField
+        return self.convert(K0(rep), K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
@@ -133,22 +129,18 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             return self.from_expr(K0.to_expr(a))
 
     def _from_AlgebraicField(self, a, K0):
-        if K0 == self.domain:
-            return self([a])
-        elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep[1] if a else self.zero
-
         from ..polys import field_isomorphism
 
-        coeffs = field_isomorphism(K0, self)
+        if K0 == self.domain:
+            return self([a])
+        if self == K0.domain and len(a.rep) <= 1:
+            return a.rep[1] if a else self.zero
 
-        if coeffs is not None:
-            if K0.domain == self.domain:
+        if K0.domain == self.domain:
+            if (coeffs := field_isomorphism(K0, self)) is not None:
                 return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
-            else:
-                return self.from_expr(K0.to_expr(a))
-        else:
-            raise CoercionFailed(f'{K0} is not in a subfield of {self}')
+            raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
+        return self.from_expr(K0.to_expr(a))
 
     def _from_ExpressionDomain(self, a, K0):
         return self.from_expr(K0.to_expr(a))
@@ -190,7 +182,8 @@ class RealAlgebraicField(ComplexAlgebraicField):
 class AlgebraicElement(QuotientRingElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field."""
 
-    def __init__(self, rep):  # pylint: disable=super-init-not-called
+    def __init__(self, rep):
+        """Initialize self."""
         dom = self.domain
 
         if isinstance(rep, dict):
@@ -202,7 +195,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
                 rep = [dom.domain.convert(_) for _ in rep]
             rep = dom.from_list(rep)
 
-        self.rep = rep % self.mod
+        super().__init__(rep)
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
@@ -210,7 +203,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
 
     @property
     def is_ground(self):
-        """Returns ``True`` if ``self`` is an element of the ground domain."""
+        """Return ``True`` if ``self`` is an element of the ground domain."""
         return self.rep.is_ground
 
     @property
@@ -228,16 +221,16 @@ class ComplexAlgebraicElement(AlgebraicElement):
 
     @property
     def real(self):
-        """Returns real part of ``self``."""
+        """Return real part of ``self``."""
         return self.domain.domain.convert(self.rep[1]) if self else self.domain.domain.zero
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``."""
+        """Return imaginary part of ``self``."""
         return self.domain.domain.convert((self - self.real)/self.parent.unit)
 
     def conjugate(self):
-        """Returns the complex conjugate of ``self``."""
+        """Return the complex conjugate of ``self``."""
         return self.parent.one*self.real - self.parent.unit*self.imag
 
 
@@ -252,7 +245,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
     def __lt__(self, other):
         try:
             other = self.parent.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
 
         coeff, root = self.parent._ext_root
@@ -283,10 +276,10 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
     @property
     def real(self):
-        """Returns real part of ``self``."""
+        """Return real part of ``self``."""
         return self
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``."""
+        """Return imaginary part of ``self``."""
         return self.parent.zero

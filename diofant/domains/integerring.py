@@ -2,7 +2,7 @@
 
 import abc
 
-from ..polys.polyerrors import CoercionFailed
+from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
                           gmpy_factorial, gmpy_gcd, gmpy_gcdex, gmpy_sqrt,
@@ -24,7 +24,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
 
     @property
     def field(self):
-        """Returns a field associated with ``self``."""
+        """Return a field associated with ``self``."""
         from . import QQ
         return QQ
 
@@ -34,10 +34,9 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
     def from_expr(self, expr):
         if expr.is_Integer:
             return self.dtype(expr.numerator)
-        elif expr.is_Float and int(expr) == expr:
+        if expr.is_Float and int(expr) == expr:
             return self.dtype(expr)
-        else:
-            raise CoercionFailed(f'expected an integer, got {expr}')
+        raise CoercionFailedError(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
@@ -64,13 +63,11 @@ class IntegerRing(CharacteristicZero, SimpleDomain, CommutativeRing):
 
     @abc.abstractmethod
     def finite_field(self, p):
-        """Returns a finite field."""
-        raise NotImplementedError
+        """Return a finite field."""
 
     @abc.abstractmethod
     def finite_ring(self, n):
-        """Returns a finite ring."""
-        raise NotImplementedError
+        """Return a finite ring."""
 
 
 class PythonIntegerRing(IntegerRing):

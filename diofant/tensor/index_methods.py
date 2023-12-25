@@ -16,7 +16,7 @@ from ..core import Function
 from .indexed import Idx, Indexed
 
 
-class IndexConformanceException(Exception):
+class IndexConformanceExceptionError(Exception):
     """Raised if indexes are not consistent."""
 
 
@@ -63,8 +63,7 @@ def _get_indices_Mul(expr, return_dummies=False):
 
     if return_dummies:
         return inds, symmetry, dummies
-    else:
-        return inds, symmetry
+    return inds, symmetry
 
 
 def _get_indices_Pow(expr):
@@ -83,8 +82,7 @@ def _get_indices_Pow(expr):
 
     applied to each element of x (a universal function in numpy terms).  In
     order to allow an interpretation of (1) as a contraction, we need
-    contravariant and covariant Idx subclasses.  (FIXME: this is not yet
-    implemented)
+    contravariant and covariant Idx subclasses.
 
     Expressions in the base or exponent are subject to contraction as usual,
     but an index that is present in the exponent, will not be considered
@@ -107,7 +105,6 @@ def _get_indices_Pow(expr):
 
     inds = binds | einds
 
-    # FIXME: symmetries from power needs to check special cases, else nothing
     symmetries = {}
 
     return inds, symmetries
@@ -125,8 +122,6 @@ def _get_indices_Add(expr):
 
         x(i)*y(j) - z(j)*z(j)
 
-    FIXME: Add support for Numpy broadcasting
-
     >>> i, j, k = map(Idx, ['i', 'j', 'k'])
     >>> x = IndexedBase('x')
     >>> y = IndexedBase('y')
@@ -142,9 +137,8 @@ def _get_indices_Add(expr):
         return set(), {}
 
     if not all(x == non_scalars[0] for x in non_scalars[1:]):
-        raise IndexConformanceException(f'Indices are not consistent: {expr}')
+        raise IndexConformanceExceptionError(f'Indices are not consistent: {expr}')
 
-    # FIXME: search for symmetries
     symmetries = {}
 
     return non_scalars[0], symmetries
@@ -170,19 +164,19 @@ def get_indices(expr):
     (set(), {})
 
     In the case of many terms, the terms are required to have identical
-    outer indices.  Else an IndexConformanceException is raised.
+    outer indices.  Else an IndexConformanceExceptionError is raised.
 
     >>> get_indices(x[i] + A[i, j]*y[j])
     ({i}, {})
 
     :Exceptions:
 
-    An IndexConformanceException means that the terms are not compatible, e.g.
+    An IndexConformanceExceptionError means that the terms are not compatible, e.g.
 
     >>> get_indices(x[i] + y[j])
     Traceback (most recent call last):
     ...
-    IndexConformanceException: Indices are not consistent: x(i) + y(j)
+    IndexConformanceExceptionError: Indices are not consistent: x(i) + y(j)
 
     .. warning::
        The concept of *outer* indices applies recursively, starting on the deepest
@@ -207,35 +201,33 @@ def get_indices(expr):
         c = expr.indices
         inds, _ = _remove_repeated(c)
         return inds, {}
-    elif expr is None:
+    if expr is None:
         return set(), {}
-    elif expr.is_Atom:
+    if expr.is_Atom:
         return set(), {}
-    elif isinstance(expr, Idx):
+    if isinstance(expr, Idx):
         return {expr}, {}
 
     # recurse via specialized functions
-    else:
-        if expr.is_Mul:
-            return _get_indices_Mul(expr)
-        elif expr.is_Add:
-            return _get_indices_Add(expr)
-        elif expr.is_Pow:
-            return _get_indices_Pow(expr)
+    if expr.is_Mul:
+        return _get_indices_Mul(expr)
+    if expr.is_Add:
+        return _get_indices_Add(expr)
+    if expr.is_Pow:
+        return _get_indices_Pow(expr)
 
-        elif isinstance(expr, Function):
-            # Support ufunc like behaviour by returning indices from arguments.
-            # Functions do not interpret repeated indices across argumnts
-            # as summation
-            ind0 = set()
-            for arg in expr.args:
-                ind, sym = get_indices(arg)
-                ind0 |= ind
-            return ind0, sym
+    if isinstance(expr, Function):
+        # Support ufunc like behaviour by returning indices from arguments.
+        # Functions do not interpret repeated indices across argumnts
+        # as summation
+        ind0 = set()
+        for arg in expr.args:
+            ind, sym = get_indices(arg)
+            ind0 |= ind
+        return ind0, sym
 
-        else:
-            raise NotImplementedError('No specialized handling of '
-                                      f'type {type(expr)}')
+    raise NotImplementedError('No specialized handling of '
+                              f'type {type(expr)}')
 
 
 def get_contraction_structure(expr):
@@ -338,9 +330,9 @@ def get_contraction_structure(expr):
     if isinstance(expr, Indexed):
         _, key = _remove_repeated(expr.indices)
         return {key or None: {expr}}
-    elif expr.is_Atom:
+    if expr.is_Atom:
         return {None: {expr}}
-    elif expr.is_Mul:
+    if expr.is_Mul:
         *_, key = _get_indices_Mul(expr, return_dummies=True)
         result = {key or None: {expr}}
         # recurse on every factor
@@ -352,7 +344,7 @@ def get_contraction_structure(expr):
         if nested:
             result[expr] = nested
         return result
-    elif expr.is_Pow:
+    if expr.is_Pow:
         # recurse in base and exp separately.  If either has internal
         # contractions we must include ourselves as a key in the returned dict
         b, e = expr.as_base_exp()
@@ -367,7 +359,7 @@ def get_contraction_structure(expr):
         if dicts:
             result[expr] = dicts
         return result
-    elif expr.is_Add:
+    if expr.is_Add:
         # Note: we just collect all terms with identical summation indices, We
         # do nothing to identify equivalent terms here, as this would require
         # substitutions or pattern matching in expressions of unknown
@@ -383,7 +375,7 @@ def get_contraction_structure(expr):
                     result[k] = v
         return result
 
-    elif isinstance(expr, Function):
+    if isinstance(expr, Function):
         # Collect non-trivial contraction structures in each argument
         # We do not report repeated indices in separate arguments as a
         # contraction
@@ -397,6 +389,5 @@ def get_contraction_structure(expr):
             d[expr] = deeplist
         return d
 
-    else:
-        raise NotImplementedError('No specialized handling of '
-                                  f'type {type(expr)}')
+    raise NotImplementedError('No specialized handling of '
+                              f'type {type(expr)}')

@@ -15,6 +15,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
         """A class for elements of :class:`ExpressionDomain`."""
 
         def __init__(self, ex):
+            """Initialize self."""
             if not isinstance(ex, self.__class__):
                 self.ex = sympify(ex)
             else:
@@ -57,8 +58,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
             if other is not None:
                 return self.simplify(self.ex + other.ex)
-            else:
-                return NotImplemented
+            return NotImplemented
 
         def __radd__(self, other):
             return self.simplify(self.__class__(other).ex + self.ex)
@@ -68,8 +68,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
             if other is not None:
                 return self.simplify(self.ex - other.ex)
-            else:
-                return NotImplemented
+            return NotImplemented
 
         def __rsub__(self, other):
             return self.simplify(self.__class__(other).ex - self.ex)
@@ -79,8 +78,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
             if other is not None:
                 return self.simplify(self.ex*other.ex)
-            else:
-                return NotImplemented
+            return NotImplemented
 
         def __rmul__(self, other):
             return self.simplify(self.__class__(other).ex*self.ex)
@@ -90,16 +88,14 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
             if n is not None:
                 return self.simplify(self.ex**n.ex)
-            else:
-                return NotImplemented
+            return NotImplemented
 
         def __truediv__(self, other):
             other = self._to_ex(other)
 
             if other is not None:
                 return self.simplify(self.ex/other.ex)
-            else:
-                return NotImplemented
+            return NotImplemented
 
         def __rtruediv__(self, other):
             return self.simplify(self.__class__(other).ex/self.ex)

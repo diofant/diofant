@@ -151,7 +151,7 @@ class KroneckerDelta(Function):
         diff = i - j
         if diff.is_zero:
             return Integer(1)
-        elif diff.is_nonzero:
+        if diff.is_nonzero:
             return Integer(0)
 
         if i._assumptions.get('below_fermi') and \
@@ -359,8 +359,7 @@ class KroneckerDelta(Function):
         """
         if self._get_preferred_index():
             return self.args[1]
-        else:
-            return self.args[0]
+        return self.args[0]
 
     @property
     def killable_index(self):
@@ -394,8 +393,7 @@ class KroneckerDelta(Function):
         """
         if self._get_preferred_index():
             return self.args[0]
-        else:
-            return self.args[1]
+        return self.args[1]
 
     def _get_preferred_index(self):
         """
@@ -408,15 +406,12 @@ class KroneckerDelta(Function):
         if not self.is_above_fermi:
             if self.args[0]._assumptions.get('below_fermi'):
                 return 0
-            else:
-                return 1
-        elif not self.is_below_fermi:
+            return 1
+        if not self.is_below_fermi:
             if self.args[0]._assumptions.get('above_fermi'):
                 return 0
-            else:
-                return 1
-        else:
-            return 0
+            return 1
+        return 0
 
     @staticmethod
     def _latex_no_arg(printer):

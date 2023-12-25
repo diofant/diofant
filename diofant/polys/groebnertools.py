@@ -11,9 +11,9 @@ def groebner(seq, ring, method=None):
     Computes Gröbner basis for a set of polynomials in `K[X]`.
 
     Wrapper around the (default) improved Buchberger and the other algorithms
-    for computing Gröbner bases. The choice of algorithm can be changed via
-    ``method`` argument or :func:`~diofant.config.setup`,
-    where ``method`` can be either ``buchberger`` or ``f5b``.
+    for computing Gröbner bases.  The choice of algorithm can be changed via
+    ``method`` argument, where ``method`` can be either ``buchberger`` or
+    ``f5b``.  Default value is determined by :func:`~diofant.config.setup`.
 
     """
     if method is None:
@@ -409,14 +409,12 @@ def critical_pair(f, g, ring):
     an already existing object in memory.
 
     """
-    domain = ring.domain
+    ltf = Polyn(f).leading_term()
+    ltg = Polyn(g).leading_term()
+    lt = ltf.lcm(ltg)
 
-    ltf = Polyn(f).LT
-    ltg = Polyn(g).LT
-    lt = ring.from_terms([(Monomial(ltf[0]).lcm(ltg[0]), domain.one)])
-
-    um = lt.quo_term(ltf).LT
-    vm = lt.quo_term(ltg).LT
+    [um] = (lt // ltf).leading_term().items()
+    [vm] = (lt // ltg).leading_term().items()
 
     # The full information is not needed (now), so only the product
     # with the leading term is considered:
@@ -427,8 +425,7 @@ def critical_pair(f, g, ring):
     # u_first * f_first - u_second * f_second:
     if lbp_cmp(fr, gr) == -1:
         return Sign(gr), vm, g, Sign(fr), um, f
-    else:
-        return Sign(fr), um, f, Sign(gr), vm, g
+    return Sign(fr), um, f, Sign(gr), vm, g
 
 
 def cp_key(c, ring):
@@ -507,7 +504,7 @@ def f5_reduce(f, B):
 
         for h in B:
             if Polyn(h) and Polyn(h).LM.divides(Polyn(f).LM):
-                t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
+                [t] = (Polyn(f).leading_term() // Polyn(h).leading_term()).items()
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
                     # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
@@ -758,8 +755,7 @@ def groebner_gcd(f, g):
 
     if not domain.is_Field:
         return gcd*h
-    else:
-        return h.monic()
+    return h.monic()
 
 
 def matrix_fglm(F, ring, O_to):

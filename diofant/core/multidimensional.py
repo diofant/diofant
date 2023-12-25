@@ -40,10 +40,7 @@ def apply_on_element(f, args, kwargs, n):
 
 
 def iter_copy(structure):
-    """
-    Returns a copy of an iterable object (also copying all embedded iterables).
-
-    """
+    """Returns a copy of an iterable object (also copying all embedded iterables)."""
     l = []
     for i in structure:
         if hasattr(i, '__iter__'):
@@ -54,10 +51,7 @@ def iter_copy(structure):
 
 
 def structure_copy(structure):
-    """
-    Returns a copy of the given structure (numpy-array, list, iterable, ..).
-
-    """
+    """Returns a copy of the given structure (numpy-array, list, iterable, ..)."""
     if hasattr(structure, 'copy'):
         return structure.copy()
     return iter_copy(structure)

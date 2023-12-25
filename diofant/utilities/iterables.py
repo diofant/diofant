@@ -1,10 +1,9 @@
+import itertools
 import operator
 from collections import defaultdict
-from itertools import (combinations, combinations_with_replacement,
-                       permutations, product)
 
 # this is the logical location of these functions
-from ..core.compatibility import as_int, is_sequence, iterable
+from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
 
@@ -46,7 +45,7 @@ def flatten(iterable, levels=None, cls=None):
     if levels is not None:
         if not levels:
             return iterable
-        elif levels > 0:
+        if levels > 0:
             levels -= 1
         else:
             raise ValueError(
@@ -195,50 +194,10 @@ def postorder_traversal(node, keys=None):
                 args = ordered(args)
         for arg in args:
             yield from postorder_traversal(arg, keys)
-    elif iterable(node):
+    elif is_iterable(node):
         for item in node:
             yield from postorder_traversal(item, keys)
     yield node
-
-
-def variations(seq, n, repetition=False):
-    """Returns a generator of the n-sized variations of ``seq`` (size N).
-    ``repetition`` controls whether items in ``seq`` can appear more than once;
-
-    Examples
-    ========
-
-    variations(seq, n) will return N! / (N - n)! permutations without
-    repetition of seq's elements:
-
-        >>> list(variations([1, 2], 2))
-        [(1, 2), (2, 1)]
-
-    variations(seq, n, True) will return the N**n permutations obtained
-    by allowing repetition of elements:
-
-        >>> list(variations([1, 2], 2, repetition=True))
-        [(1, 1), (1, 2), (2, 1), (2, 2)]
-
-    If you ask for more items than are in the set you get the empty set unless
-    you allow repetitions:
-
-        >>> list(variations([0, 1], 3, repetition=False))
-        []
-        >>> list(variations([0, 1], 3, repetition=True))[:4]
-        [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1)]
-
-    """
-    if not repetition:
-        seq = tuple(seq)
-        if len(seq) < n:
-            return
-        yield from permutations(seq, n)
-    else:
-        if n == 0:
-            yield ()
-        else:
-            yield from product(seq, repeat=n)
 
 
 def subsets(seq, k=None, repetition=False):
@@ -280,14 +239,15 @@ def subsets(seq, k=None, repetition=False):
     [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]
 
     """
-    if k is None:
-        for k in range(len(seq) + 1):
-            yield from subsets(seq, k, repetition)
+    if not repetition:
+        meth = itertools.combinations
     else:
-        if not repetition:
-            yield from combinations(seq, k)
-        else:
-            yield from combinations_with_replacement(seq, k)
+        meth = itertools.combinations_with_replacement
+    if k is None:
+        yield from itertools.chain.from_iterable(meth(seq, i)
+                                                 for i in range(len(seq) + 1))
+    else:
+        yield from meth(seq, k)
 
 
 def filter_symbols(iterator, exclude):
@@ -316,7 +276,7 @@ def filter_symbols(iterator, exclude):
             yield s
 
 
-def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumptions):
+def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
     """
     Generate an infinite stream of Symbols consisting of a prefix and
     increasing subscripts provided that they do not occur in `exclude`.
@@ -350,37 +310,10 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
     while True:
         name = f'{prefix}{start}'
-        s = cls(name, *args, **assumptions)
+        s = cls(name, **assumptions)
         if s not in exclude:
             yield s
         start += 1
-
-
-def capture(func):
-    r"""Return the printed output of func().
-
-    `func` should be a function without arguments that produces output with
-    print statements.
-
-    >>> def foo():
-    ...     print('hello world!')
-    ...
-    >>> 'hello' in capture(foo)  # foo, not foo()
-    True
-    >>> capture(lambda: pprint(2/x, use_unicode=False))
-    '2\n-\nx\n'
-
-    """
-    import sys
-    from io import StringIO
-
-    stdout = sys.stdout
-    sys.stdout = file = StringIO()
-    try:
-        func()
-    finally:
-        sys.stdout = stdout
-    return file.getvalue()
 
 
 def sift(seq, keyfunc):
@@ -445,7 +378,7 @@ def common_prefix(*seqs):
     """
     if any(not s for s in seqs):
         return []
-    elif len(seqs) == 1:
+    if len(seqs) == 1:
         return seqs[0]
     i = 0
     for i in range(min(len(s) for s in seqs)):
@@ -471,7 +404,7 @@ def common_suffix(*seqs):
     """
     if any(not s for s in seqs):
         return []
-    elif len(seqs) == 1:
+    if len(seqs) == 1:
         return seqs[0]
     i = 0
     for i in range(-1, -min(len(s) for s in seqs) - 1, -1):
@@ -481,154 +414,7 @@ def common_suffix(*seqs):
         i -= 1
     if i == -1:
         return []
-    else:
-        return seqs[0][i + 1:]
-
-
-def prefixes(seq):
-    """
-    Generate all prefixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(prefixes([1, 2, 3, 4]))
-    [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[:i + 1]
-
-
-def postfixes(seq):
-    """
-    Generate all postfixes of a sequence.
-
-    Examples
-    ========
-
-    >>> list(postfixes([1, 2, 3, 4]))
-    [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
-
-    """
-    n = len(seq)
-
-    for i in range(n):
-        yield seq[n - i - 1:]
-
-
-def topological_sort(graph, key=None):
-    r"""
-    Topological sort of graph's vertices.
-
-    Parameters
-    ==========
-
-    ``graph`` : ``tuple[list, list[tuple[T, T]]``
-        A tuple consisting of a list of vertices and a list of edges of
-        a graph to be sorted topologically.
-
-    ``key`` : ``callable[T]`` (optional)
-        Ordering key for vertices on the same level. By default the natural
-        (e.g. lexicographic) ordering is used (in this case the base type
-        must implement ordering relations).
-
-    Examples
-    ========
-
-    Consider a graph::
-
-        +---+     +---+     +---+
-        | 7 |\    | 5 |     | 3 |
-        +---+ \   +---+     +---+
-          |   _\___/ ____   _/ |
-          |  /  \___/    \ /   |
-          V  V           V V   |
-         +----+         +---+  |
-         | 11 |         | 8 |  |
-         +----+         +---+  |
-          | | \____   ___/ _   |
-          | \      \ /    / \  |
-          V  \     V V   /  V  V
-        +---+ \   +---+ |  +----+
-        | 2 |  |  | 9 | |  | 10 |
-        +---+  |  +---+ |  +----+
-               \________/
-
-    where vertices are integers. This graph can be encoded using
-    elementary Python's data structures as follows::
-
-        >>> V = [2, 3, 5, 7, 8, 9, 10, 11]
-        >>> E = [(7, 11), (7, 8), (5, 11), (3, 8), (3, 10),
-        ...      (11, 2), (11, 9), (11, 10), (8, 9)]
-
-    To compute a topological sort for graph ``(V, E)`` issue::
-
-        >>> topological_sort((V, E))
-        [3, 5, 7, 8, 11, 2, 9, 10]
-
-    If specific tie breaking approach is needed, use ``key`` parameter::
-
-        >>> topological_sort((V, E), key=lambda v: -v)
-        [7, 5, 11, 3, 10, 8, 9, 2]
-
-    Only acyclic graphs can be sorted. If the input graph has a cycle,
-    then ValueError will be raised::
-
-        >>> topological_sort((V, E + [(10, 7)]))
-        Traceback (most recent call last):
-        ...
-        ValueError: cycle detected
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Topological_sorting
-
-    """
-    V, E = graph
-
-    L = []
-    S = set(V)
-    E = list(E)
-
-    for v, u in E:
-        S.discard(u)
-
-    if key is None:
-        def key(value):
-            return value
-
-    S = sorted(S, key=key, reverse=True)
-
-    while S:
-        node = S.pop()
-        L.append(node)
-
-        for u, v in list(E):
-            if u == node:
-                E.remove((u, v))
-
-                for _u, _v in E:
-                    if v == _v:
-                        break
-                else:
-                    kv = key(v)
-
-                    for i, s in enumerate(S):
-                        ks = key(s)
-
-                        if kv > ks:
-                            S.insert(i, v)
-                            break
-                    else:
-                        S.append(v)
-
-    if E:
-        raise ValueError('cycle detected')
-    return L
+    return seqs[0][i + 1:]
 
 
 def rotate_left(x, y):
@@ -760,7 +546,7 @@ def multiset_permutations(m, size=None, g=None):
         v = v if size is None else (size if size <= v else 0)
         yield [k for i in range(v)]
     elif all(v == 1 for k, v in do):
-        for p in permutations([k for k, v in do], size):
+        for p in itertools.permutations([k for k, v in do], size):
             yield list(p)
     else:
         size = size if size is not None else SUM
@@ -961,7 +747,6 @@ def multiset_partitions(multiset, m=None):
     partitions
     diofant.combinatorics.partitions.Partition
     diofant.combinatorics.partitions.IntegerPartition
-    diofant.functions.combinatorial.numbers.nT
 
     """
     # This function looks at the supplied input and dispatches to
@@ -1126,8 +911,6 @@ def partitions(n, m=None, k=None, size=False):
     if (n <= 0 or m is not None and m < 1 or
             k is not None and k < 1 or m and k and m*k < n):
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         if size:
             yield 0, {}
         else:
@@ -1274,8 +1057,6 @@ def ordered_partitions(n, m=None, sort=True):
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs
-        # and returning {} to represent it is consistent with
-        # the counting convention, e.g. nT(0) == 1.
         yield []
         return
 
@@ -1328,63 +1109,6 @@ def ordered_partitions(n, m=None, sort=True):
                         a[-mi:] = [i + b for i in ax]
                         yield a
                         a[-mi:] = [b]*mi
-
-
-def binary_partitions(n):
-    """
-    Generates the binary partition of n.
-
-    A binary partition consists only of numbers that are
-    powers of two. Each step reduces a 2**(k+1) to 2**k and
-    2**k. Thus 16 is converted to 8 and 8.
-
-    References
-    ==========
-
-    * TAOCP 4, section 7.2.1.5, problem 64
-
-    Examples
-    ========
-
-    >>> for i in binary_partitions(5):
-    ...     print(i)
-    ...
-    [4, 1]
-    [2, 2, 1]
-    [2, 1, 1, 1]
-    [1, 1, 1, 1, 1]
-
-    """
-    from math import ceil, log
-    pow = 2**ceil(log(n, 2))
-    sum = 0
-    partition = []
-    while pow:
-        if sum + pow <= n:
-            partition.append(pow)
-            sum += pow
-        pow >>= 1
-
-    last_num = len(partition) - 1 - (n & 1)
-    while last_num >= 0:
-        yield partition
-        if partition[last_num] == 2:
-            partition[last_num] = 1
-            partition.append(1)
-            last_num -= 1
-            continue
-        partition.append(1)
-        partition[last_num] >>= 1
-        x = partition[last_num + 1] = partition[last_num]
-        last_num += 1
-        while x > 1:
-            if x <= len(partition) - last_num - 1:
-                del partition[-x + 1:]
-                last_num += 1
-                partition[last_num] = x
-            else:
-                x >>= 1
-    yield [1]*n
 
 
 def has_dups(seq):
@@ -1467,125 +1191,6 @@ def uniq(seq, result=None):
         else:
             for s in uniq(seq, result):
                 yield s
-
-
-def generate_involutions(n):
-    """
-    Generates involutions.
-
-    An involution is a permutation that when multiplied
-    by itself equals the identity permutation. In this
-    implementation the involutions are generated using
-    Fixed Points.
-
-    Alternatively, an involution can be considered as
-    a permutation that does not contain any cycles with
-    a length that is greater than two.
-
-    References
-    ==========
-
-    * https://mathworld.wolfram.com/PermutationInvolution.html
-
-    Examples
-    ========
-
-    >>> list(generate_involutions(3))
-    [(0, 1, 2), (0, 2, 1), (1, 0, 2), (2, 1, 0)]
-    >>> len(list(generate_involutions(4)))
-    10
-
-    """
-    idx = list(range(n))
-    for p in permutations(idx):
-        for i in idx:
-            if p[p[i]] != i:
-                break
-        else:
-            yield p
-
-
-def generate_derangements(perm):
-    """
-    Routine to generate unique derangements.
-
-    TODO: This will be rewritten to use the
-    ECO operator approach once the permutations
-    branch is in master.
-
-    Examples
-    ========
-
-    >>> list(generate_derangements([0, 1, 2]))
-    [[1, 2, 0], [2, 0, 1]]
-    >>> list(generate_derangements([0, 1, 2, 3]))
-    [[1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
-     [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1],
-     [3, 2, 1, 0]]
-    >>> list(generate_derangements([0, 1, 1]))
-    []
-
-    See Also
-    ========
-
-    diofant.functions.combinatorial.factorials.subfactorial
-
-    """
-    p = multiset_permutations(perm)
-    indices = range(len(perm))
-    p0 = next(p)  # pylint: disable=stop-iteration-return
-    for pi in p:
-        if all(pi[i] != p0[i] for i in indices):
-            yield pi
-
-
-def necklaces(n, k, free=False):
-    """
-    A routine to generate necklaces that may (free=True) or may not
-    (free=False) be turned over to be viewed. The "necklaces" returned
-    are comprised of ``n`` integers (beads) with ``k`` different
-    values (colors). Only unique necklaces are returned.
-
-    Examples
-    ========
-
-    >>> def show(s, i):
-    ...     return ''.join(s[j] for j in i)
-
-    The "unrestricted necklace" is sometimes also referred to as a
-    "bracelet" (an object that can be turned over, a sequence that can
-    be reversed) and the term "necklace" is used to imply a sequence
-    that cannot be reversed. So ACB == ABC for a bracelet (rotate and
-    reverse) while the two are different for a necklace since rotation
-    alone cannot make the two sequences the same.
-
-    (mnemonic: Bracelets can be viewed Backwards, but Not Necklaces.)
-
-    >>> B = [show('ABC', i) for i in bracelets(3, 3)]
-    >>> N = [show('ABC', i) for i in necklaces(3, 3)]
-    >>> set(N) - set(B)
-    {'ACB'}
-
-    >>> list(necklaces(4, 2))
-    [(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 1, 1),
-     (0, 1, 0, 1), (0, 1, 1, 1), (1, 1, 1, 1)]
-
-    >>> [show('.o', i) for i in bracelets(4, 2)]
-    ['....', '...o', '..oo', '.o.o', '.ooo', 'oooo']
-
-    References
-    ==========
-
-    https://mathworld.wolfram.com/Necklace.html
-
-    """
-    return uniq(minlex(i, directed=not free) for i in
-                variations(list(range(k)), n, repetition=True))
-
-
-def bracelets(n, k):
-    """Wrapper to necklaces to return a free (unrestricted) necklace."""
-    return necklaces(n, k, free=True)
 
 
 def minlex(seq, directed=True, is_set=False, small=None):
@@ -1714,8 +1319,7 @@ def cantor_product(*args):
         argslist = [[next(a)] for a in args]
     except StopIteration:
         return
-    else:
-        yield tuple(a[0] for a in argslist)
+    yield tuple(a[0] for a in argslist)
 
     nargs = len(args)
     exhausted = [False]*nargs
@@ -1729,8 +1333,8 @@ def cantor_product(*args):
             except StopIteration:
                 exhausted[n] = True
             else:
-                yield from product(*(argslist[:n] + [argslist[n][-1:]] +
-                                     argslist[n + 1:]))
+                yield from itertools.product(*(argslist[:n] + [argslist[n][-1:]] +
+                                               argslist[n + 1:]))
 
 
 def permute_signs(t):
@@ -1744,7 +1348,7 @@ def permute_signs(t):
     [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2)]
 
     """
-    for signs in product(*[(1, -1)]*(len(t) - t.count(0))):
+    for signs in itertools.product(*[(1, -1)]*(len(t) - t.count(0))):
         signs = list(signs)
         yield type(t)([i*signs.pop() if i else i for i in t])
 
@@ -1764,7 +1368,7 @@ def signed_permutations(t):
      (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)]
 
     """
-    return (type(t)(i) for j in permutations(t)
+    return (type(t)(i) for j in itertools.permutations(t)
             for i in permute_signs(j))
 
 
@@ -1780,12 +1384,11 @@ def _nodes(e):
 
     if isinstance(e, Basic):
         return e.count(Basic)
-    elif iterable(e):
+    if is_iterable(e):
         return 1 + sum(_nodes(ei) for ei in e)
-    elif isinstance(e, dict):
+    if isinstance(e, dict):
         return 1 + sum(_nodes(k) + _nodes(v) for k, v in e.items())
-    else:
-        return 1
+    return 1
 
 
 def ordered(seq, keys=None, default=True, warn=False):
@@ -2007,7 +1610,7 @@ def default_sort_key(item, order=None):
     if isinstance(item, Basic):
         return item.sort_key(order=order)
 
-    if iterable(item, exclude=(str,)):
+    if is_iterable(item, exclude=(str,)):
         if isinstance(item, dict):
             args = item.items()
             unordered = True
@@ -2043,3 +1646,102 @@ def default_sort_key(item, order=None):
 
     return (cls_index, 0, item.__class__.__name__
             ), args, Integer(1).sort_key(), Integer(1)
+
+
+class NotIterable:
+    """
+    Use this as mixin when creating a class which is not supposed to return
+    true when is_iterable() is called on its instances. I.e. avoid infinite loop
+    when calling e.g. list() on the instance
+
+    """
+
+
+def is_iterable(i, exclude=(str, dict, NotIterable)):
+    """
+    Return a boolean indicating whether ``i`` is Diofant iterable.
+    True also indicates that the iterator is finite, i.e. you e.g.
+    call list(...) on the instance.
+
+    When Diofant is working with iterables, it is almost always assuming
+    that the iterable is not a string or a mapping, so those are excluded
+    by default. If you want a pure Python definition, make exclude=None. To
+    exclude multiple items, pass them as a tuple.
+
+    See Also
+    ========
+
+    is_sequence
+
+    Examples
+    ========
+
+    >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
+    >>> for i in things:
+    ...     print(f'{is_iterable(i)} {type(i)}')
+    True <... 'list'>
+    True <... 'tuple'>
+    True <... 'set'>
+    True <class 'diofant.core.containers.Tuple'>
+    True <... 'generator'>
+    False <... 'dict'>
+    False <... 'str'>
+    False <... 'int'>
+
+    >>> is_iterable({}, exclude=None)
+    True
+    >>> is_iterable({}, exclude=str)
+    True
+    >>> is_iterable('no', exclude=str)
+    False
+
+    """
+    try:
+        iter(i)
+    except TypeError:
+        return False
+    if exclude:
+        return not isinstance(i, exclude)
+    return True
+
+
+def is_sequence(i, include=None):
+    """
+    Return a boolean indicating whether ``i`` is a sequence in the Diofant
+    sense. If anything that fails the test below should be included as
+    being a sequence for your application, set 'include' to that object's
+    type; multiple types should be passed as a tuple of types.
+
+    Note: although generators can generate a sequence, they often need special
+    handling to make sure their elements are captured before the generator is
+    exhausted, so these are not included by default in the definition of a
+    sequence.
+
+    See Also
+    ========
+
+    is_iterable
+
+    Examples
+    ========
+
+    >>> from types import GeneratorType
+    >>> is_sequence([])
+    True
+    >>> is_sequence(set())
+    False
+    >>> is_sequence('abc')
+    False
+    >>> is_sequence('abc', include=str)
+    True
+    >>> generator = (c for c in 'abc')
+    >>> is_sequence(generator)
+    False
+    >>> is_sequence(generator, include=(str, GeneratorType))
+    True
+
+    """
+    return (hasattr(i, '__getitem__') and
+            is_iterable(i) or
+            bool(include) and
+            isinstance(i, include))

@@ -141,7 +141,7 @@ def multinomial_coefficients_iterator(m, n, _tuple=tuple):
     if m < 2*n or n == 1:
         mc = multinomial_coefficients(m, n)
         for k, v in mc.items():
-            yield(k, v)
+            yield k, v
     else:
         mc = multinomial_coefficients(n, n)
         mc1 = {}

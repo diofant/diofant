@@ -3,15 +3,12 @@ This module provides convenient functions to transform diofant expressions to
 lambda functions which can be used to calculate numerical values very fast.
 """
 
-from __future__ import annotations
-
 import inspect
 import textwrap
-import typing
 
-from ..core.compatibility import is_sequence, iterable
 from ..external import import_module
 from .decorator import doctest_depends_on
+from .iterables import is_iterable, is_sequence
 
 
 # XXX make pylint & flake8 happy
@@ -19,19 +16,19 @@ import_module  # pylint: disable=pointless-statement
 
 
 # These are the namespaces the lambda functions will use.
-MATH: dict[str, typing.Any] = {}
-MPMATH: dict[str, typing.Any] = {}
-NUMPY: dict[str, typing.Any] = {}
-DIOFANT: dict[str, typing.Any] = {}
+MATH: dict[str, object] = {}
+MPMATH: dict[str, object] = {}
+NUMPY: dict[str, object] = {}
+DIOFANT: dict[str, object] = {}
 
 # Default namespaces, letting us define translations that can't be defined
 # by simple variable maps, like I => 1j
 # These are separate from the names above because the above names are modified
 # throughout this file, whereas these should remain unmodified.
-MATH_DEFAULT: dict[str, typing.Any] = {}
-MPMATH_DEFAULT: dict[str, typing.Any] = {}
-NUMPY_DEFAULT: dict[str, typing.Any] = {'I': 1j}
-DIOFANT_DEFAULT: dict[str, typing.Any] = {}
+MATH_DEFAULT: dict[str, object] = {}
+MPMATH_DEFAULT: dict[str, object] = {}
+NUMPY_DEFAULT: dict[str, object] = {'I': 1j}
+DIOFANT_DEFAULT: dict[str, object] = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {
@@ -149,7 +146,7 @@ def _import(module):
         namespace[diofantname] = namespace[translation]
 
 
-@doctest_depends_on(modules=('numpy'))
+@doctest_depends_on(modules='numpy')
 def lambdify(args, expr, modules=None, printer=None, use_imps=True,
              dummify=True):
     """
@@ -318,7 +315,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         printer = MpmathPrinter
 
     # Get the names of the args, for creating a docstring
-    if not iterable(args):
+    if not is_iterable(args):
         args = args,
     names = []
     for n, var in enumerate(args):
@@ -363,12 +360,11 @@ def _get_namespace(m):
     if isinstance(m, str):
         _import(m)
         return MODULES[m][0]
-    elif isinstance(m, dict):
+    if isinstance(m, dict):
         return m
-    elif hasattr(m, '__dict__'):
+    if hasattr(m, '__dict__'):
         return m.__dict__
-    else:
-        raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
+    raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
 
 
 def lambdastr(args, expr, printer=None, dummify=False):
@@ -412,17 +408,15 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
             return args
-        elif iterable(args):
+        if is_iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ','.join(str(a) for a in dummies)
-        else:
-            # Sub in dummy variables for functions or symbols
-            if isinstance(args, (Function, Symbol)):
-                dummies = Dummy()
-                dummies_dict.update({args: dummies})
-                return lambdarepr(dummies)
-            else:
-                return lambdarepr(args)
+        # Sub in dummy variables for functions or symbols
+        if isinstance(args, (Function, Symbol)):
+            dummies = Dummy()
+            dummies_dict.update({args: dummies})
+            return lambdarepr(dummies)
+        return lambdarepr(args)
 
     def sub_expr(expr, dummies_dict):
         try:
@@ -440,7 +434,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     # Transform args
     def isiter(l):
-        return iterable(l, exclude=(str,))
+        return is_iterable(l, exclude=(str,))
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
@@ -458,7 +452,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     if dummify:
         args = sub_args(args, dummies_dict)
     else:
-        if iterable(args):
+        if is_iterable(args):
             args = ','.join(str(a) for a in args)
 
     # Transform expr
@@ -516,7 +510,7 @@ def _imp_namespace(expr, namespace=None):
         for arg in expr:
             _imp_namespace(arg, namespace)
         return namespace
-    elif isinstance(expr, dict):
+    if isinstance(expr, dict):
         for key, val in expr.items():
             # functions can be in dictionary keys
             _imp_namespace(key, namespace)

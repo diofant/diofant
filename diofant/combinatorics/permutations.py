@@ -2,14 +2,13 @@ import functools
 import random
 from collections import defaultdict
 
-from mpmath.libmp.libintmath import ifac
+from mpmath.libmp import ifac
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import as_int, is_sequence
-from ..matrices import zeros
+from ..core.compatibility import as_int
 from ..polys import lcm
 from ..utilities import flatten, has_dups, has_variety
-from ..utilities.iterables import minlex, runs
+from ..utilities.iterables import is_sequence, minlex, runs
 
 
 def _af_rmul(a, b):
@@ -189,7 +188,7 @@ def _af_pow(a, n):
         return _af_pow(_af_invert(a), -n)
     if n == 1:
         return a[:]
-    elif n == 2:
+    if n == 2:
         b = [a[i] for i in a]
     elif n == 3:
         b = [a[a[i]] for i in a]
@@ -416,7 +415,7 @@ class Cycle(dict):
                 for c in args[0].cyclic_form:
                     self.update(self(*c))
                 return
-            elif isinstance(args[0], Cycle):
+            if isinstance(args[0], Cycle):
                 for k, v in args[0].items():
                     self[k] = v
                 return
@@ -827,7 +826,7 @@ class Permutation(Basic):
         ok = True
         if not args:  # a
             return _af_new(list(range(size or 0)))
-        elif len(args) > 1:  # c
+        if len(args) > 1:  # c
             return _af_new(Cycle(*args).list(size))
         if len(args) == 1:
             a = args[0]
@@ -1178,10 +1177,7 @@ class Permutation(Basic):
         return rv
 
     def mul_inv(self, other):
-        """
-        other*~self, self and other have _array_form
-
-        """
+        """other*~self, self and other have _array_form."""
         a = _af_invert(self._array_form)
         b = other._array_form
         return _af_new(_af_rmul(a, b))
@@ -1285,7 +1281,7 @@ class Permutation(Basic):
         Permutation([0, 1, 2, 3])
 
         """
-        if type(n) == Perm:
+        if type(n) is Perm:
             raise NotImplementedError(
                 'p**p is not defined; do you mean p^p (conjugate)?')
         n = int(n)
@@ -1304,9 +1300,7 @@ class Permutation(Basic):
         """
         if int(i) == i:
             return self(i)
-        else:
-            raise NotImplementedError(
-                f'i^p = p(i) when i is an integer, not {i}.')
+        raise NotImplementedError(f'i^p = p(i) when i is an integer, not {i}.')
 
     def __xor__(self, h):
         """Return the conjugate permutation ``~h*self*h``.
@@ -1561,17 +1555,16 @@ class Permutation(Basic):
             i -= 1
         if i == -1:
             return
-        else:
-            j = n - 1
-            while perm[j] < perm[i]:
-                j -= 1
+        j = n - 1
+        while perm[j] < perm[i]:
+            j -= 1
+        perm[j], perm[i] = perm[i], perm[j]
+        i += 1
+        j = n - 1
+        while i < j:
             perm[j], perm[i] = perm[i], perm[j]
             i += 1
-            j = n - 1
-            while i < j:
-                perm[j], perm[i] = perm[i], perm[j]
-                i += 1
-                j -= 1
+            j -= 1
         return _af_new(perm)
 
     @classmethod
@@ -2447,6 +2440,8 @@ class Permutation(Basic):
         get_precedence_distance, get_adjacency_matrix, get_adjacency_distance
 
         """
+        from ..matrices import zeros
+
         m = zeros(self.size)
         perm = self.array_form
         for i in range(m.rows):
@@ -2526,6 +2521,8 @@ class Permutation(Basic):
         get_precedence_matrix, get_precedence_distance, get_adjacency_distance
 
         """
+        from ..matrices import zeros
+
         m = zeros(self.size)
         perm = self.array_form
         for i in range(self.size - 1):

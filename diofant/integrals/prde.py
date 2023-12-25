@@ -23,9 +23,10 @@ from ..matrices import Matrix, eye, zeros
 from ..polys import Poly, cancel, lcm, sqf_list
 from ..solvers import solve
 from .rde import order_at, order_at_oo, solve_poly_rde, spde
-from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
-                    frac_in, gcdex_diophantine, recognize_log_derivative,
-                    residue_reduce, residue_reduce_derivation, splitfactor)
+from .risch import (DecrementLevel, NonElementaryIntegralExceptionError,
+                    derivation, frac_in, gcdex_diophantine,
+                    recognize_log_derivative, residue_reduce,
+                    residue_reduce_derivation, splitfactor)
 
 
 def prde_normal_denom(fa, fd, G, DE):
@@ -357,9 +358,8 @@ def prde_no_cancel_b_small(b, Q, n, DE):
         c = eye(m)
         A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
         return H, A
-    else:
-        # TODO: implement this (requires recursive param_rischDE() call)
-        raise NotImplementedError
+    # TODO: implement this (requires recursive param_rischDE() call)
+    raise NotImplementedError
 
 
 def limited_integrate_reduce(fa, fd, G, DE):
@@ -409,9 +409,7 @@ def limited_integrate_reduce(fa, fd, G, DE):
 
 
 def limited_integrate(fa, fd, G, DE):
-    """
-    Solves the limited integration problem:  f = Dv + Sum(ci*wi, (i, 1, n))
-    """
+    """Solves the limited integration problem:  f = Dv + Sum(ci*wi, (i, 1, n))."""
     fa, fd = fa*Poly(1/fd.LC(), DE.t), fd.monic()
     A, B, h, N, g, V = limited_integrate_reduce(fa, fd, G, DE)
     V = [g] + V
@@ -426,11 +424,11 @@ def limited_integrate(fa, fd, G, DE):
         raise NotImplementedError('param_rischDE() is required to solve this '
                                   'integral.')
     if len(l) == 0:
-        raise NonElementaryIntegralException
+        raise NonElementaryIntegralExceptionError
     if len(l) == 1:
         # The c1 == 1.  In this case, we can assume a normal Risch DE
         if l[0][0].is_zero:
-            raise NonElementaryIntegralException
+            raise NonElementaryIntegralExceptionError
         l[0] *= 1/l[0][0]
         C = sum(Poly(i, DE.t)*q for (i, q) in zip(l[0], Q))
         # Custom version of rischDE() that uses the already computed
@@ -730,7 +728,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # anyway, even if the result might potentially be wrong.
             raise NotImplementedError('Cannot work with non-rational '
                                       'coefficients in this case.')
-        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for i in u])
+        n = math.lcm(*(i.as_numer_denom()[1] for i in u))
         u *= Integer(n)
         terms = [DE.T[i] for i in DE.E_K] + DE.L_args
         ans = list(zip(terms, u))
@@ -833,7 +831,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
             return
         # Note: if residueterms = [], returns (1, 1)
         # f had better be 0 in that case.
-        n = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
+        n = math.lcm(*(i.as_numer_denom()[1] for _, i in residueterms))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
         return Integer(n), u
 
@@ -849,8 +847,8 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
                          f"'base', 'auto'}}, not {case}")
 
-    common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1]
-                                               for i in [j for _, j in residueterms]] + [n], Integer(1))
+    common_denom = math.lcm(*([i.as_numer_denom()[1]
+                               for i in [j for _, j in residueterms]] + [n]))
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division

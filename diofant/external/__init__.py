@@ -7,10 +7,8 @@ For example
 
 >>> numpy = import_module('numpy')
 
-If the resulting library is not installed, or if the installed version
-is less than a given minimum version, the function will return None.
-Otherwise, it will return the library. See the docstring of
-import_module() for more information.
+If the resulting library is not installed, the function will return None.
+Otherwise, it will return the library.
 """
 
 from .importtools import import_module

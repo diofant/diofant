@@ -9,9 +9,7 @@ the separate 'factorials' module.
 
 from __future__ import annotations
 
-import math
-import numbers
-import typing
+import collections
 
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
@@ -104,13 +102,11 @@ class fibonacci(Function):
             if sym is None:
                 if n < 0:
                     return (-1)**(n + 1) * fibonacci(-n)
-                else:
-                    return Integer(cls._fib(n))
-            else:
-                if n < 1:
-                    raise ValueError('Fibonacci polynomials are defined '
-                                     'only for positive integer indices.')
-                return cls._fibpoly(n).subs({_sym: sym})
+                return Integer(cls._fib(n))
+            if n < 1:
+                raise ValueError('Fibonacci polynomials are defined '
+                                 'only for positive integer indices.')
+            return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None, **kwargs):
         from .. import sqrt
@@ -274,13 +270,12 @@ class bernoulli(Function):
             if n.is_Integer and n.is_nonnegative:
                 if n == 0:
                     return Integer(1)
-                elif n == 1:
+                if n == 1:
                     if sym is None:
                         return -Rational(1, 2)
-                    else:
-                        return sym - Rational(1, 2)
+                    return sym - Rational(1, 2)
                 # Bernoulli numbers
-                elif sym is None:
+                if sym is None:
                     if n.is_odd:
                         return Integer(0)
                     n = int(n)
@@ -301,14 +296,12 @@ class bernoulli(Function):
                         cls._highest[case] = i
                     return b
                 # Bernoulli polynomials
-                else:
-                    n, result = int(n), []
-                    for k in range(n + 1):
-                        result.append(binomial(n, k)*cls(k)*sym**(n - k))
-                    return Add(*result)
-            else:
-                raise ValueError('Bernoulli numbers are defined only'
-                                 ' for nonnegative integer indices.')
+                n, result = int(n), []
+                for k in range(n + 1):
+                    result.append(binomial(n, k)*cls(k)*sym**(n - k))
+                return Add(*result)
+            raise ValueError('Bernoulli numbers are defined only'
+                             ' for nonnegative integer indices.')
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
@@ -428,7 +421,7 @@ class bell(Function):
         """
         if (n == 0) and (k == 0):
             return Integer(1)
-        elif (n == 0) or (k == 0):
+        if (n == 0) or (k == 0):
             return Integer(0)
         s = Integer(0)
         a = Integer(1)
@@ -443,11 +436,10 @@ class bell(Function):
         if n.is_Integer and n.is_nonnegative:
             if k_sym is None:
                 return Integer(cls._bell(int(n)))
-            elif symbols is None:
+            if symbols is None:
                 return cls._bell_poly(int(n)).subs({_sym: k_sym})
-            else:
-                r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
-                return r
+            r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
+            return r
 
     def _eval_rewrite_as_Sum(self, n, k_sym=None, symbols=None):
         from ...concrete import Sum
@@ -588,7 +580,7 @@ class harmonic(Function):
 
     # Generate one memoized Harmonic number-generating function for each
     # order and store it in a dictionary
-    _functions: dict[Integer, typing.Callable[[int], Rational]] = {}
+    _functions: dict[Integer, collections.abc.Callable[[int], Rational]] = {}
 
     @classmethod
     def eval(cls, n, m=None):
@@ -604,9 +596,9 @@ class harmonic(Function):
         if n is oo:
             if m.is_negative:
                 return nan
-            elif (m - 1).is_nonpositive and m.is_nonnegative:
+            if (m - 1).is_nonpositive and m.is_nonnegative:
                 return oo
-            elif (m - 1).is_positive:
+            if (m - 1).is_positive:
                 return zeta(m)
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:
@@ -650,7 +642,7 @@ class harmonic(Function):
                 if off.is_Integer and off.is_positive:
                     result = [1/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
                     return Add(*result)
-                elif off.is_Integer and off.is_negative:
+                if off.is_Integer and off.is_negative:
                     result = [-1/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
                     return Add(*result)
 
@@ -852,8 +844,7 @@ class catalan(Function):
         if n.is_integer and n.is_negative:
             if (n + 1).is_negative:
                 return Integer(0)
-            else:
-                return -Rational(1, 2)
+            return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
         from .. import log, polygamma
@@ -972,316 +963,6 @@ class genocchi(Function):
                 return True
 
 
-#######################################################################
-###
-# Functions for enumerating partitions, permutations and combinations
-###
-#######################################################################
-
-
-class _MultisetHistogram(tuple):
-    pass
-
-
-_N = -1
-_ITEMS = -2
-_M = slice(None, _ITEMS)
-
-
-def _multiset_histogram(n):
-    """Return tuple used in permutation and combination counting. Input
-    is a dictionary giving items with counts as values or a sequence of
-    items (which need not be sorted).
-
-    The data is stored in a class deriving from tuple so it is easily
-    recognized and so it can be converted easily to a list.
-
-    """
-    if type(n) is dict:  # item: count
-        if not all(isinstance(v, int) and v >= 0 for v in n.values()):
-            raise ValueError
-        tot = sum(n.values())
-        items = sum(1 for k in n if n[k] > 0)
-        return _MultisetHistogram([n[k] for k in n if n[k] > 0] + [items, tot])
-    else:
-        n = list(n)
-        s = set(n)
-        if len(s) == len(n):
-            n = [1]*len(n)
-            n.extend([len(n), len(n)])
-            return _MultisetHistogram(n)
-        m = dict(zip(s, range(len(s))))
-        d = dict(zip(range(len(s)), [0]*len(s)))
-        for i in n:
-            d[m[i]] += 1
-        return _multiset_histogram(d)
-
-
-def nP(n, k=None, replacement=False):
-    """Return the number of permutations of ``n`` items taken ``k`` at a time.
-
-    Possible values for ``n``::
-        integer - set of length ``n``
-        sequence - converted to a multiset internally
-        multiset - {element: multiplicity}
-
-    If ``k`` is None then the total of all permutations of length 0
-    through the number of items represented by ``n`` will be returned.
-
-    If ``replacement`` is True then a given item can appear more than once
-    in the ``k`` items. (For example, for 'ab' permutations of 2 would
-    include 'aa', 'ab', 'ba' and 'bb'.) The multiplicity of elements in
-    ``n`` is ignored when ``replacement`` is True but the total number
-    of elements is considered since no element can appear more times than
-    the number of elements in ``n``.
-
-    Examples
-    ========
-
-    >>> from diofant.utilities.iterables import multiset, multiset_permutations
-
-    >>> nP(3, 2)
-    6
-    >>> nP('abc', 2) == nP(multiset('abc'), 2) == 6
-    True
-    >>> nP('aab', 2)
-    3
-    >>> nP([1, 2, 2], 2)
-    3
-    >>> [nP(3, i) for i in range(4)]
-    [1, 3, 6, 6]
-    >>> nP(3) == sum(_)
-    True
-
-    When ``replacement`` is True, each item can have multiplicity
-    equal to the length represented by ``n``:
-
-    >>> nP('aabc', replacement=True)
-    121
-    >>> [len(list(multiset_permutations('aaaabbbbcccc', i))) for i in range(5)]
-    [1, 3, 9, 27, 81]
-    >>> sum(_)
-    121
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Permutation
-
-    See Also
-    ========
-    diofant.utilities.iterables.multiset_permutations
-
-    """
-    try:
-        n = as_int(n)
-    except ValueError:
-        return Integer(_nP(_multiset_histogram(n), k, replacement))
-    return Integer(_nP(n, k, replacement))
-
-
-@cacheit
-def _nP(n, k=None, replacement=False):
-    from .factorials import factorial
-
-    if k == 0:
-        return 1
-    if isinstance(n, numbers.Integral):  # n different items
-        # assert n >= 0
-        if k is None:
-            return sum(_nP(n, i, replacement) for i in range(n + 1))
-        elif replacement:
-            return n**k
-        elif k > n:
-            return 0
-        elif k == n:
-            return factorial(k)
-        elif k == 1:
-            return n
-        else:
-            # assert k >= 0
-            return _product(n - k + 1, n)
-    elif isinstance(n, _MultisetHistogram):  # pragma: no branch
-        if k is None:
-            return sum(_nP(n, i, replacement) for i in range(n[_N] + 1))
-        elif replacement:
-            return n[_ITEMS]**k
-        elif k == n[_N]:
-            return factorial(k)/math.prod(factorial(i) for i in n[_M] if i > 1)
-        elif k > n[_N]:
-            return 0
-        elif k == 1:
-            return n[_ITEMS]
-        else:
-            # assert k >= 0
-            tot = 0
-            n = list(n)
-            for i in range(len(n[_M])):
-                if not n[i]:
-                    continue
-                n[_N] -= 1
-                if n[i] == 1:
-                    n[i] = 0
-                    n[_ITEMS] -= 1
-                    tot += _nP(_MultisetHistogram(n), k - 1)
-                    n[_ITEMS] += 1
-                    n[i] = 1
-                else:
-                    n[i] -= 1
-                    tot += _nP(_MultisetHistogram(n), k - 1)
-                    n[i] += 1
-                n[_N] += 1
-            return tot
-
-
-@cacheit
-def _AOP_product(n):
-    """For n = (m1, m2, .., mk) return the coefficients of the polynomial,
-    prod(sum(x**i for i in range(nj + 1)) for nj in n); i.e. the coefficients
-    of the product of AOPs (all-one polynomials) or order given in n.  The
-    resulting coefficient corresponding to x**r is the number of r-length
-    combinations of sum(n) elements with multiplicities given in n.
-    The coefficients are given as a default dictionary (so if a query is made
-    for a key that is not present, 0 will be returned).
-
-    Examples
-    ========
-
-    >>> n = (2, 2, 3)  # e.g. aabbccc
-    >>> prod = ((x**2 + x + 1)*(x**2 + x + 1)*(x**3 + x**2 + x + 1)).expand()
-    >>> c = _AOP_product(n)
-    >>> dict(c)
-    {0: 1, 1: 3, 2: 6, 3: 8, 4: 8, 5: 6, 6: 3, 7: 1}
-    >>> [c[i] for i in range(8)] == [prod.coeff(x, i) for i in range(8)]
-    True
-
-    The generating poly used here is the same as that listed in [1]_,
-    but in a refactored form.
-
-    References
-    ==========
-
-    * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
-
-    """
-    from collections import defaultdict
-
-    n = list(n)
-    ord = sum(n)
-    need = (ord + 2)//2
-    rv = [1]*(n.pop() + 1)
-    rv.extend([0]*(need - len(rv)))
-    rv = rv[:need]
-    while n:
-        ni = n.pop()
-        N = ni + 1
-        was = rv[:]
-        for i in range(1, min(N, len(rv))):
-            rv[i] += rv[i - 1]
-        for i in range(N, need):
-            rv[i] += rv[i - 1] - was[i - N]
-    rev = list(reversed(rv))
-    if ord % 2:
-        rv = rv + rev
-    else:
-        rv[-1:] = rev
-    d = defaultdict(int)
-    for i, ri in enumerate(rv):
-        d[i] = ri
-    return d
-
-
-def nC(n, k=None, replacement=False):
-    """Return the number of combinations of ``n`` items taken ``k`` at a time.
-
-    Possible values for ``n``::
-        integer - set of length ``n``
-        sequence - converted to a multiset internally
-        multiset - {element: multiplicity}
-
-    If ``k`` is None then the total of all combinations of length 0
-    through the number of items represented in ``n`` will be returned.
-
-    If ``replacement`` is True then a given item can appear more than once
-    in the ``k`` items. (For example, for 'ab' sets of 2 would include 'aa',
-    'ab', and 'bb'.) The multiplicity of elements in ``n`` is ignored when
-    ``replacement`` is True but the total number of elements is considered
-    since no element can appear more times than the number of elements in
-    ``n``.
-
-    Examples
-    ========
-
-    >>> from diofant.utilities.iterables import multiset_combinations
-    >>> nC(3, 2)
-    3
-    >>> nC('abc', 2)
-    3
-    >>> nC('aab', 2)
-    2
-
-    When ``replacement`` is True, each item can have multiplicity
-    equal to the length represented by ``n``:
-
-    >>> nC('aabc', replacement=True)
-    35
-    >>> [len(list(multiset_combinations('aaaabbbbcccc', i))) for i in range(5)]
-    [1, 3, 6, 10, 15]
-    >>> sum(_)
-    35
-
-    If there are ``k`` items with multiplicities ``m_1, m_2, ..., m_k``
-    then the total of all combinations of length 0 through ``k`` is the
-    product, ``(m_1 + 1)*(m_2 + 1)*...*(m_k + 1)``. When the multiplicity
-    of each item is 1 (i.e., k unique items) then there are 2**k
-    combinations. For example, if there are 4 unique items, the total number
-    of combinations is 16:
-
-    >>> sum(nC(4, i) for i in range(5))
-    16
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Combination
-    * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
-
-    See Also
-    ========
-
-    diofant.utilities.iterables.multiset_combinations
-
-    """
-    from .factorials import binomial
-
-    if isinstance(n, numbers.Integral):
-        if k is None:
-            if not replacement:
-                return 2**n
-            return sum(nC(n, i, replacement) for i in range(n + 1))
-        if k < 0:
-            raise ValueError('k cannot be negative')
-        if replacement:
-            return binomial(n + k - 1, k)
-        return binomial(n, k)
-    if isinstance(n, _MultisetHistogram):
-        N = n[_N]
-        if k is None:
-            if not replacement:
-                return math.prod(m + 1 for m in n[_M])
-            return sum(nC(n, i, replacement) for i in range(N + 1))
-        elif replacement:
-            return nC(n[_ITEMS], k, replacement)
-        # assert k >= 0
-        elif k in (1, N - 1):
-            return n[_ITEMS]
-        elif k in (0, N):
-            return 1
-        return _AOP_product(tuple(n[_M]))[k]
-    else:
-        return nC(_multiset_histogram(n), k, replacement)
-
-
 @cacheit
 def _stirling1(n, k):
     if n == k == 0:
@@ -1293,13 +974,13 @@ def _stirling1(n, k):
     # some special values
     if n == k:
         return Integer(1)
-    elif k == 1:
+    if k == 1:
         return factorial(n1)
-    elif k == n1:
+    if k == n1:
         return binomial(n, 2)
-    elif k == n - 2:
+    if k == n - 2:
         return (3*n - 1)*binomial(n, 3)/4
-    elif k == n - 3:
+    if k == n - 3:
         return binomial(n, 2)*binomial(n, 4)
 
     # general recurrence
@@ -1317,7 +998,7 @@ def _stirling2(n, k):
     # some special values
     if k == n1:
         return binomial(n, 2)
-    elif k == 2:
+    if k == 2:
         return 2**n1 - 1
 
     # general recurrence
@@ -1355,14 +1036,14 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import (multiset_partitions, permutations,
-    ...                                          subsets)
+    >>> import itertools
+    >>> from diofant.utilities.iterables import multiset_partitions
 
     First kind (unsigned by default):
 
     >>> [stirling(6, i, kind=1) for i in range(7)]
     [0, 120, 274, 225, 85, 15, 1]
-    >>> perms = list(permutations(range(4)))
+    >>> perms = list(itertools.permutations(range(4)))
     >>> [sum(Permutation(p).cycles == i for p in perms) for i in range(5)]
     [0, 6, 11, 6, 1]
     >>> [stirling(4, i, kind=1) for i in range(5)]
@@ -1387,7 +1068,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     >>> def delta(p):
     ...     if len(p) == 1:
     ...         return oo
-    ...     return min(abs(i[0] - i[1]) for i in subsets(p, 2))
+    ...     return min(abs(i[0] - i[1]) for i in itertools.combinations(p, 2))
     >>> parts = multiset_partitions(range(5), 3)
     >>> d = 2
     >>> sum(1 for p in parts if all(delta(i) >= d for i in p))
@@ -1419,130 +1100,12 @@ def stirling(n, k, d=None, kind=2, signed=False):
         # assert k >= d
         # kind is ignored -- only kind=2 is supported
         return _stirling2(n - d + 1, k - d + 1)
-    elif signed:
+    if signed:
         # kind is ignored -- only kind=1 is supported
         return (-1)**(n - k)*_stirling1(n, k)
 
     if kind == 1:
         return _stirling1(n, k)
-    elif kind == 2:
+    if kind == 2:
         return _stirling2(n, k)
-    else:
-        raise ValueError(f'kind must be 1 or 2, not {k}')
-
-
-@cacheit
-def _nT(n, k):
-    """Return the partitions of ``n`` items into ``k`` parts. This
-    is used by ``nT`` for the case when ``n`` is an integer.
-
-    """
-    if k == 0:
-        return 1 if k == n else 0
-    return sum(_nT(n - k, j) for j in range(min(k, n - k) + 1))
-
-
-def nT(n, k=None):
-    """Return the number of ``k``-sized partitions of ``n`` items.
-
-    Possible values for ``n``::
-        integer - ``n`` identical items
-        sequence - converted to a multiset internally
-        multiset - {element: multiplicity}
-
-    Note: the convention for ``nT`` is different than that of ``nC`` and
-    ``nP`` in that
-    here an integer indicates ``n`` *identical* items instead of a set of
-    length ``n``; this is in keeping with the ``partitions`` function which
-    treats its integer-``n`` input like a list of ``n`` 1s. One can use
-    ``range(n)`` for ``n`` to indicate ``n`` distinct items.
-
-    If ``k`` is None then the total number of ways to partition the elements
-    represented in ``n`` will be returned.
-
-    Examples
-    ========
-
-    Partitions of the given multiset:
-
-    >>> [nT('aabbc', i) for i in range(1, 7)]
-    [1, 8, 11, 5, 1, 0]
-    >>> nT('aabbc') == sum(_)
-    True
-
-    >>> [nT('mississippi', i) for i in range(1, 12)]
-    [1, 74, 609, 1521, 1768, 1224, 579, 197, 50, 9, 1]
-
-    Partitions when all items are identical:
-
-    >>> [nT(5, i) for i in range(1, 6)]
-    [1, 2, 2, 1, 1]
-    >>> nT('1'*5) == sum(_)
-    True
-
-    When all items are different:
-
-    >>> [nT(range(5), i) for i in range(1, 6)]
-    [1, 15, 25, 10, 1]
-    >>> nT(range(5)) == sum(_)
-    True
-
-    References
-    ==========
-
-    * http://teaching.csse.uwa.edu.au/units/CITS7209/partition.pdf
-
-    See Also
-    ========
-
-    diofant.utilities.iterables.partitions
-    diofant.utilities.iterables.multiset_partitions
-
-    """
-    from ...utilities.enumerative import MultisetPartitionTraverser
-
-    if isinstance(n, numbers.Integral):
-        # assert n >= 0
-        # all the same
-        if k is None:
-            return sum(_nT(n, k) for k in range(1, n + 1))
-        return _nT(n, k)
-    if not isinstance(n, _MultisetHistogram):
-        try:
-            # if n contains hashable items there is some
-            # quick handling that can be done
-            u = len(set(n))
-            if u == 1:
-                return nT(len(n), k)
-            elif u == len(n):
-                n = range(u)
-            raise TypeError
-        except TypeError:
-            n = _multiset_histogram(n)
-    N = n[_N]
-    if k is None and N == 1:
-        return 1
-    if k in (1, N):
-        return 1
-    if k == 2 or N == 2 and k is None:
-        m, r = divmod(N, 2)
-        rv = sum(nC(n, i) for i in range(1, m + 1))
-        if not r:
-            rv -= nC(n, m)//2
-        if k is None:
-            rv += 1  # for k == 1
-        return rv
-    if N == n[_ITEMS]:
-        # all distinct
-        if k is None:
-            return bell(N)
-        return stirling(N, k)
-    m = MultisetPartitionTraverser()
-    if k is None:
-        return m.count_partitions(n[_M])
-    # MultisetPartitionTraverser does not have a range-limited count
-    # method, so need to enumerate and count
-    tot = 0
-    for _ in m.enum_range(n[_M], k-1, k):
-        tot += 1
-    return tot
+    raise ValueError(f'kind must be 1 or 2, not {k}')

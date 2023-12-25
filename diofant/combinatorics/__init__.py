@@ -1,6 +1,4 @@
-"""
-Combinatorics package.
-"""
+"""Combinatorics package."""
 
 from .generators import alternating, cyclic, dihedral, symmetric
 from .graycode import GrayCode

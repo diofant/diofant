@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import collections
+import inspect
 import typing
-from inspect import getmro
 
 import diofant
 
-from .compatibility import iterable
+from ..utilities.iterables import is_iterable
 from .evaluate import global_evaluate
 
 
@@ -15,6 +16,7 @@ class SympifyError(ValueError):
     """Generic sympification error."""
 
     def __init__(self, expr, base_exc=None):
+        """Initialize self."""
         super().__init__()
         self.expr = expr
         self.base_exc = base_exc
@@ -29,9 +31,9 @@ class SympifyError(ValueError):
                 f'being raised:\n{self.base_exc.__class__.__name__}: {self.base_exc!s}')
 
 
-converter: dict[type[typing.Any],
-                typing.Callable[[typing.Any],
-                                diofant.core.basic.Basic]] = {}  # See sympify docstring.
+converter: dict[type,
+                collections.abc.Callable[[typing.Any],
+                                         diofant.core.basic.Basic]] = {}  # See sympify docstring.
 
 
 class CantSympify:
@@ -102,13 +104,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     The sympification happens with access to everything that is loaded
     by ``from diofant import *``; anything used in a string that is not
     defined by that import will be converted to a symbol. In the following,
-    the ``bitcount`` function is treated as a symbol and the ``O`` is
-    interpreted as the Order object (used with series) and it raises
+    the ``O`` is interpreted as the Order object (used with series) and it raises
     an error when used improperly:
 
-    >>> s = 'bitcount(42)'
-    >>> sympify(s)
-    bitcount(42)
     >>> sympify('O(x)')
     O(x)
     >>> sympify('O + 1')
@@ -116,18 +114,11 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...
     TypeError: unbound method...
 
-    In order to have ``bitcount`` be recognized it can be imported into a
-    namespace dictionary and passed as locals:
-
-    >>> ns = {}
-    >>> exec('from diofant.core.evalf import bitcount', ns)
-    >>> sympify(s, locals=ns)
-    6
-
     In order to have the ``O`` interpreted as a Symbol, identify it as such
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
+    >>> ns = {}
     >>> ns['O'] = Symbol('O')  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
     >>> ns.update({O: Symbol('O')})  # method 3
@@ -248,7 +239,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     try:
         return converter[cls](a)
     except KeyError:
-        for superclass in getmro(cls):
+        for superclass in inspect.getmro(cls):
             try:
                 return converter[superclass](a)
             except KeyError:
@@ -262,7 +253,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     except AttributeError:
         pass
 
-    if not isinstance(a, str):
+    if not is_iterable(a, exclude=(dict,)):
         for coerce in (float, int):
             try:
                 return sympify(coerce(a))
@@ -272,7 +263,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     if strict:
         raise SympifyError(a)
 
-    if iterable(a):
+    if is_iterable(a):
         return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
                                 rational=rational) for x in a])
     if isinstance(a, dict):

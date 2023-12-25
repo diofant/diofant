@@ -3,8 +3,7 @@ import pytest
 from diofant import (Dummy, I, Integer, Integral, Rational, cbrt, cos, cosh,
                      root, sqrt, sqrtdenest, symbols)
 from diofant.abc import a, b, c, d, t, x, y
-from diofant.simplify.sqrtdenest import _subsets as subsets
-from diofant.simplify.sqrtdenest import unrad
+from diofant.simplify.sqrtdenest import _subsets, unrad
 
 
 __all__ = ()
@@ -165,9 +164,9 @@ def test_sqrtdenest5():
     assert sqrtdenest(x + sqrt(y)) == x + sqrt(y)
 
 
-def test_subsets():
-    assert subsets(1) == [[1]]
-    assert subsets(4) == [
+def test__subsets():
+    assert _subsets(1) == [[1]]
+    assert _subsets(4) == [
         [1, 0, 0, 0], [0, 1, 0, 0], [1, 1, 0, 0], [0, 0, 1, 0], [1, 0, 1, 0],
         [0, 1, 1, 0], [1, 1, 1, 0], [0, 0, 0, 1], [1, 0, 0, 1], [0, 1, 0, 1],
         [1, 1, 0, 1], [0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 1, 1, 1]]
@@ -295,7 +294,7 @@ def test_unrad1():
     # unrad some
     e = root(x + 1, 3) + root(x, 3)
     assert unrad(e) == (2*x + 1, [])
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     assert check(unrad(eq),
                  (15625*x**4 + 173000*x**3 + 355600*x**2 - 817920*x + 331776, []))
     assert check(unrad(root(x, 4) + root(x, 4)**3 - 1),
@@ -318,7 +317,7 @@ def test_unrad1():
 
     # the simplify flag should be reset to False for unrad results;
     # if it's not then this next test will take a long time
-    eq = (sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5)
+    eq = sqrt(x) + sqrt(x + 1) + sqrt(1 - x) - 6*sqrt(5)/5
     assert check(unrad(eq),
                  ((5*x - 4)*(3125*x**3 + 37100*x**2 + 100800*x - 82944), []))
     # duplicate radical handling

@@ -5,8 +5,8 @@ from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
                      LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
                      asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
-                     expand_func, expand_mul, factor, floor, fresnels, gamma,
-                     im, integrate, log, lowergamma, meijerg, nan, oo, pi,
+                     expand_func, expand_mul, floor, fresnels, gamma, im,
+                     integrate, log, lowergamma, meijerg, nan, oo, pi,
                      polar_lift, polygamma, re, sign, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
@@ -210,6 +210,12 @@ def test_integration():
     assert integrate(sqrt(-x**2 - 4), x) == \
         -2*atan(x/sqrt(-4 - x**2)) + x*sqrt(-4 - x**2)/2
 
+    assert (integrate(exp(-x**2/2)/(Integral(exp(-x**2/2), (x, 0, oo))),
+                      (x, 0, z)) ==
+            exp(-z**2/2)*(-exp(z**2/2)*(-erf(sqrt(2)*z/2) + 1) + exp(z**2/2)))
+    assert integrate(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
+                     (x, -1, 1)) == erf(sqrt(2)/2)
+
 
 def test_multiple_integration():
     assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == 1
@@ -223,7 +229,7 @@ def test_multiple_integration():
 
     # issue sympy/sympy#5167
     assert Integral(f(x), (x, 1, 2), (w, 1, x), (z, 1, y)).doit() == \
-        y*(x - 1)*Integral(f(x), (x, 1, 2)) - (x - 1)*Integral(f(x), (x, 1, 2))
+        y*Integral(1, (w, 1, x))*Integral(f(x), (x, 1, 2)) - Integral(1, (w, 1, x))*Integral(f(x), (x, 1, 2))
 
     # issue sympy/sympy#14782
     assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) == -pi/8
@@ -982,6 +988,7 @@ def test_sympyissue_4892():
         c*(A*h2*log(c*t)/c + A*t*exp(-z)),
         (A*c*t - A*(-h1)*log(t)*exp(z))*exp(-z),
         (A*c*t - A*(-h2)*log(t)*exp(z))*exp(-z),
+        -A*(-h2)*log(t) - c*P1*t,
     ]
 
     # Issues relating to issue sympy/sympy#4596 are making the actual result of this hard
@@ -993,7 +1000,9 @@ def test_sympyissue_4892():
     # 8*cos(y)**2)/(2*(3 - cos(y)))) + x**2*sin(y)/2 + 2*x*cos(y)
 
     expr = (sin(y)*x**3 + 2*cos(y)*x**2 + 12)/(x**2 + 2)
-    assert trigsimp(factor(integrate(expr, x).diff(x) - expr)) == 0
+    res = integrate(expr, x)
+    assert not res.has(Integral)
+    assert trigsimp(res.diff(x) - expr) == 0
 
 
 def test_integrate_series():
@@ -1113,17 +1122,17 @@ def test_risch_option():
 
 def test_sympyissue_6828():
     f = 1/(1.08*x**2 - 4.3)
-    g = integrate(f, x).diff(x)
+    r = integrate(f, x)
+    g = r.diff(x)
+    assert not r.has(Integral)
     assert verify_numerically(f, g, tol=1e-12)
 
 
-@pytest.mark.xfail
 def test_integrate_Piecewise_rational_over_reals():
     f = Piecewise(
         (0,                                              t - 478.515625*pi < 0),
         (13.2075145209219*pi/(0.000871222*t + 0.995)**2, t - 478.515625*pi >= 0))
-
-    assert integrate(f, (t, 0, oo)) != 0  # ~20664.5
+    assert integrate(f, (t, 0, oo)) == 20664.553599840892
 
 
 def test_sympyissue_4803():
@@ -1319,7 +1328,7 @@ def test_sympyissue_11877():
 
 def test_sympyissue_17841():
     e = 1/(x**2 + x + I)
-    assert integrate(e.diff(x), x) == e
+    assert integrate(e.diff(x), x).factor(extension=True) == e
 
 
 def test_sympyissue_18384():
@@ -1333,9 +1342,7 @@ def test_sympyissue_18384():
 
 def test_sympyissue_20360():
     e = exp(pi*x*(n - Rational(1, 2)))
-    r = Piecewise((y, Eq(2*pi*n - pi, 0)),
-                  (2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) -
-                   2/(2*pi*n - pi), True))
+    r = 2*exp(pi*y*(n - Rational(1, 2)))/(2*pi*n - pi) - 2/(2*pi*n - pi)
     assert integrate(e, (x, 0, y)) == r
 
 
@@ -1348,9 +1355,13 @@ def test_sympyissue_21034():
     f1 = x*(-x**4/asin(5)**4 - x*sinh(x + log(asin(5))) + 5)
     f2 = (x + cosh(cos(4)))/(x*(x + 1/(12*x)))
 
-    assert (f1.integrate(x).diff(x) - f1).simplify() == 0
-    assert (f2.integrate(x).diff(x) -
-            f2).simplify().rewrite(exp).simplify() == 0
+    r1 = f1.integrate(x)
+    r2 = f2.integrate(x)
+
+    assert not r1.has(Integral)
+    assert (r1.diff(x) - f1).simplify() == 0
+    assert not r2.has(Integral)
+    assert (r2.diff(x) - f2).simplify().rewrite(exp).simplify() == 0
 
 
 def test_sympyissue_21041():
@@ -1399,7 +1410,7 @@ def test_sympyissue_21024():
             x/2 - (-1 + E)*(1 + E)*log(2*x + tanh(1))/Mul(4, 1 + E**2,
                                                           evaluate=False))
     assert ((log(x)*log(4*x) + log(3*x + exp(2))).integrate(x) ==
-            x*log(x)**2 + x*log(3*x + E**2) - x + x*(-2*log(2) + 2) +
+            x*log(x)**2 + x*log(3*x + E**2) - x - x*(-2 + 2*log(2)) +
             (-2*x + 2*x*log(2))*log(x) + E**2*log(3*x + E**2)/3)
 
 
@@ -1429,15 +1440,13 @@ def test_sympyissue_21721():
 def test_sympyissue_21741():
     e = exp(-2*I*pi*(z*x + t*y)/(500*10**-9))
     assert (integrate(e, z) ==
-            Piecewise((z, Eq(pi*x, 0)),
-                      (Float('2.5000000000000004e-7', dps=15) *
-                       exp(-Float('3999999.9999999995', dps=15) *
-                           I*pi*(t*y + x*z))*I/(pi*x), True)))
+            Piecewise((exp(-3999999.9999999995*I*pi*t*y)*z, Eq(pi*x, 0)),
+                      (2.5000000000000004e-7*exp(-3999999.9999999995*I*pi*(t*y + x*z))*I/(pi*x), True)))
 
 
 def test_sympyissue_22435():
     e = (y - 2.4)**2*sqrt(y)*0.1875
-    assert integrate(e, (y, 0, 4)) == Float('1.097142857142857', dps=15)
+    assert integrate(e, (y, 0, 4)) == 1.097142857142857
 
 
 def test_sympyissue_22487():
@@ -1481,7 +1490,9 @@ def test_sympyissue_23605():
     srk_p = R*T/(nu-b) - a/(nu**2 + b*nu)
     integrand = p - T*diff(srk_p, T)
     ans = -R*T*log(R**2*T**2*(-R*b**4/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3) - 3*b**3*a.diff(T)/(2*R**2*T**2*b**2*a.diff(T) - 2*T**2*a.diff(T)**3)) + R**2*b**3/(2*R**2*b**2 - 2*a.diff(T)**2) + R*b**2/(2*a.diff(T)) + R*b**2*a.diff(T)/(2*R**2*b**2 - 2*a.diff(T)**2) + 2*b*a.diff(T)**2/(2*R**2*b**2 - 2*a.diff(T)**2) + nu) - 2*T*sqrt(-a.diff(T)**2)*atan(a.diff(T)/sqrt(-a.diff(T)**2) + 2*nu*a.diff(T)/(b*sqrt(-a.diff(T)**2)))/b + nu*p
-    assert integrate(integrand, nu) == ans
+    res = integrate(integrand, nu)
+    assert not res.has(Integral)
+    assert (res - ans).diff(nu).equals(0)
 
 
 def test_sympyissue_23707():
@@ -1489,3 +1500,43 @@ def test_sympyissue_23707():
                      t) == Piecewise((t, Eq(x, y + 1)),
                                      (-exp(t)/(exp(t*sqrt(x - y))*sqrt(x - y) -
                                                exp(t*sqrt(x - y))), True))
+
+
+def test_sympyissue_24477():
+    r = Symbol('r', positive=True)
+    theta = Symbol('theta')
+
+    expr1 = r*sin(theta) + O(r**4)
+    expr2 = r*expr1
+    expr3 = expr2.expand()
+
+    assert integrate(expr1, (theta, 0, 2*pi)) == O(r**4)
+    assert integrate(expr2, (theta, 0, 2*pi)) != 0
+    assert integrate(expr2, (theta, 0, 2*pi)).doit().expand() == O(r**5)
+    assert integrate(expr3, (theta, 0, 2*pi)) == O(r**5)
+
+
+def test_issue_842():
+    assert integrate(sqrt(2*z*(y - x)),
+                     x).equals(2*sqrt(2)*sqrt(z*(-x + y))*(x - y)/3)
+
+
+def test_sympyissue_25521():
+    e = k/(s*(k + s**2 + 2*s))
+    r = integrate(e, s)
+    assert not r.has(Integral)
+    assert r.diff(s).simplify() == e
+
+
+def test_sympyissue_25806():
+    assert integrate(5/(x*(x - 5)), (x, y, oo)) == log(y) - log(y - 5)
+
+
+def test_sympyissue_25886():
+    expr = (1 - x)*exp(0.937098661j*x)
+    res = (-exp(0.93709866100000005*I*y)*(1.0671234968289001*I*y -
+                                          1.1387525574843396 -
+                                          1.0671234968289001*I) -
+           1.1387525574843396*exp(0.93709866100000005*I))
+
+    assert integrate(expr, (x, y, 1)) == res

@@ -114,13 +114,13 @@ class Mul(AssocOp):
 
                 >>> a = sqrt(x*sqrt(y))
                 >>> a**3
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
                 >>> Mul(a, a, a)
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
                 >>> a*a*a
                 x*sqrt(y)*sqrt(x*sqrt(y))
                 >>> _.subs({a.base: z}).subs({z: a.base})
-                (x*sqrt(y))**(3/2)
+                sqrt(x*sqrt(y))**3
 
               -  If more than two terms are being multiplied then all the
                  previous terms will be re-processed for each new argument.
@@ -156,7 +156,7 @@ class Mul(AssocOp):
             sensitive.
 
         """
-        from ..series.order import Order
+        from ..calculus import Order
         from .numbers import I, Rational, nan, oo, zoo
         from .power import Pow
 
@@ -288,7 +288,11 @@ class Mul(AssocOp):
                         # the exponent is an integer
                         if e.is_Rational:
                             if e.is_Integer:
-                                coeff *= Pow(b, e)  # it is an unevaluated power
+                                c = Pow(b, e)  # it is an unevaluated power
+                                if c.is_Number:
+                                    coeff *= c
+                                else:
+                                    c_powers.append((b, e))
                                 continue
                             if e.is_negative:    # also a sign of an unevaluated power
                                 seq.append(Pow(b, e))
@@ -542,7 +546,7 @@ class Mul(AssocOp):
         elif coeff is S.Zero:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
-            if any(c.is_finite is False for c in c_part):
+            if any(c.is_infinite for c in c_part):
                 return [nan], [], order_symbols
             return [coeff], [], order_symbols
 
@@ -593,20 +597,6 @@ class Mul(AssocOp):
         """Nice order of classes."""
         return 4, 0, cls.__name__
 
-    def _eval_evalf(self, prec):
-        c, m = self.as_coeff_Mul()
-        if c is S.NegativeOne:
-            if m.is_Mul:
-                rv = -AssocOp._eval_evalf(m, prec)
-            else:
-                mnew = m._eval_evalf(prec)
-                if mnew is not None:
-                    m = mnew
-                rv = -m
-        else:
-            rv = AssocOp._eval_evalf(self, prec)
-        return rv
-
     @cacheit
     def as_two_terms(self):
         """Return head and tail of self.
@@ -629,8 +619,7 @@ class Mul(AssocOp):
 
         if len(args) == 2:
             return args
-        else:
-            return args[0], self._new_rawargs(*args[1:])
+        return args[0], self._new_rawargs(*args[1:])
 
     @cacheit
     def as_coeff_mul(self, *deps, **kwargs):
@@ -656,7 +645,7 @@ class Mul(AssocOp):
         if args[0].is_Number:
             if not rational or args[0].is_Rational:
                 return args[0], args[1:]
-            elif args[0].is_negative:
+            if args[0].is_negative:
                 return S.NegativeOne, (-args[0],) + args[1:]
         return S.One, args
 
@@ -668,9 +657,8 @@ class Mul(AssocOp):
             if not rational or coeff.is_Rational:
                 if len(args) == 1:
                     return coeff, args[0]
-                else:
-                    return coeff, self._new_rawargs(*args)
-            elif coeff.is_negative:
+                return coeff, self._new_rawargs(*args)
+            if coeff.is_negative:
                 return S.NegativeOne, self._new_rawargs(*((-coeff,) + args))
         return S.One, self
 
@@ -723,17 +711,15 @@ class Mul(AssocOp):
             if m == 1:
                 if imco is S.Zero:
                     return reco, S.Zero
-                else:
-                    return S.Zero, reco*imco
+                return S.Zero, reco*imco
             if imco is S.Zero:
                 return r, i
             return -imco*i, imco*r
         addre, addim = expand_mul(addterms, deep=False).as_real_imag()
         if imco is S.Zero:
             return r*addre - i*addim, i*addre + r*addim
-        else:
-            r, i = -imco*i, imco*r
-            return r*addre - i*addim, r*addim + i*addre
+        r, i = -imco*i, imco*r
+        return r*addre - i*addim, r*addim + i*addre
 
     @staticmethod
     def _expandsums(sums):
@@ -781,16 +767,15 @@ class Mul(AssocOp):
 
         if not rewrite:
             return expr
-        else:
-            plain = self.func(*plain)
-            terms = self.func._expandsums(sums)
-            args = []
-            for term in terms:
-                t = self.func(plain, term)
-                if t.is_Mul and any(a.is_Add for a in t.args):
-                    t = t._eval_expand_mul()
-                args.append(t)
-            return Add(*args)
+        plain = self.func(*plain)
+        terms = self.func._expandsums(sums)
+        args = []
+        for term in terms:
+            t = self.func(plain, term)
+            if t.is_Mul and any(a.is_Add for a in t.args):
+                t = t._eval_expand_mul()
+            args.append(t)
+        return Add(*args)
 
     @cacheit
     def _eval_derivative(self, s):
@@ -822,7 +807,7 @@ class Mul(AssocOp):
         expr = sympify(expr)
         if self.is_commutative and expr.is_commutative:
             return AssocOp._matches_commutative(self, expr, repl_dict)
-        elif self.is_commutative is not expr.is_commutative:
+        if self.is_commutative is not expr.is_commutative:
             return
         c1, nc1 = self.args_cnc()
         c2, nc2 = expr.args_cnc()
@@ -942,28 +927,27 @@ class Mul(AssocOp):
         return _fuzzy_group(a.is_commutative for a in self.args)
 
     def _eval_is_finite(self):
-        return _fuzzy_group(a.is_finite for a in self.args)
+        if any(a.is_infinite for a in self.args):
+            if all(a.is_nonzero for a in self.args):
+                return False
+        else:
+            return _fuzzy_group(a.is_finite for a in self.args)
 
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
-
-    def _eval_is_infinite(self):
-        if any(a.is_infinite for a in self.args):
-            if not any(not a.is_nonzero for a in self.args):
-                return True
 
     def _eval_is_rational(self):
         r = _fuzzy_group((a.is_rational for a in self.args), quick_exit=True)
         if r:
             return r
-        elif r is False:
+        if r is False:
             return self.is_zero
 
     def _eval_is_algebraic(self):
         r = _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
         if r:
             return r
-        elif r is False:
+        if r is False:
             return self.is_zero
 
     def _eval_is_zero(self):
@@ -980,7 +964,7 @@ class Mul(AssocOp):
             n, d = self.as_numer_denom()
             if d is S.One:
                 return True
-            elif d == 2:
+            if d == 2:
                 return n.is_even
         else:
             return is_rational
@@ -997,7 +981,7 @@ class Mul(AssocOp):
         for t in self.args:
             if t.is_finite and not t.is_complex:
                 return t.is_complex
-            elif t.is_imaginary or t.is_extended_real:
+            if t.is_imaginary or t.is_extended_real:
                 if t.is_imaginary:
                     real = not real
                 elif not t.is_real:
@@ -1036,8 +1020,7 @@ class Mul(AssocOp):
         if obj.is_Mul:
             return fuzzy_and([obj._eval_is_extended_real(),
                               obj._eval_is_finite()])
-        else:
-            return obj.is_real
+        return obj.is_real
 
     def _eval_is_irrational(self):
         for t in self.args:
@@ -1047,7 +1030,7 @@ class Mul(AssocOp):
                        for x in self.args if x != t):
                     return True
                 return
-            elif a is None:
+            if a is None:
                 return
         return False
 
@@ -1075,8 +1058,7 @@ class Mul(AssocOp):
             elif t.is_zero:
                 if self.is_finite:
                     return False
-                else:
-                    return
+                return
             elif t.is_nonpositive:
                 sign = -sign
                 saw_NON = True
@@ -1093,8 +1075,7 @@ class Mul(AssocOp):
         obj = -self
         if obj.is_Mul:
             return obj._eval_is_positive()
-        else:
-            return obj.is_positive
+        return obj.is_positive
 
     def _eval_is_odd(self):
         is_integer = self.is_integer
@@ -1104,16 +1085,15 @@ class Mul(AssocOp):
             for i, t in enumerate(self.args):
                 if not t.is_integer:
                     return
-                elif t.is_even or any((a + t).is_odd
-                                      for a in self.args[i + 1:]):
+                if t.is_even or any((a + t).is_odd
+                                    for a in self.args[i + 1:]):
                     r = False
                 elif r is False:
                     pass
                 elif r and t.is_odd is None:
                     r = None
             return r
-        else:
-            return is_integer
+        return is_integer
 
     def _eval_subs(self, old, new):
         from ..functions.elementary.complexes import sign
@@ -1382,7 +1362,7 @@ class Mul(AssocOp):
 
     def _eval_nseries(self, x, n, logx):
         from ..simplify import powsimp
-        terms = [t.nseries(x, n=n, logx=logx) for t in self.args]
+        terms = [t.nseries(x, n, logx) for t in self.args]
         return powsimp(self.func(*terms).expand(power_base=False, power_exp=False,
                                                 mul=False).expand(deep=False),
                        combine='exp', deep=True)
@@ -1479,9 +1459,9 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
             return coeff*factors
     if coeff is S.One:
         return factors
-    elif coeff is S.NegativeOne and not sign:
+    if coeff is S.NegativeOne and not sign:
         return -factors
-    elif factors.is_Add:
+    if factors.is_Add:
         if not clear and coeff.is_Rational and coeff.denominator != 1:
             q = Integer(coeff.denominator)
             for i in factors.args:
@@ -1490,7 +1470,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
                 if r == int(r):
                     return coeff*factors
         return Mul._from_args((coeff, factors))
-    elif factors.is_Mul:
+    if factors.is_Mul:
         margs = list(factors.args)
         if margs[0].is_Number:
             margs[0] *= coeff
@@ -1499,8 +1479,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
         else:
             margs.insert(0, coeff)
         return Mul._from_args(margs)
-    else:
-        return coeff*factors
+    return coeff*factors
 
 
 def expand_2arg(e):

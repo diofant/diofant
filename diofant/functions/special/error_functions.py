@@ -3,7 +3,7 @@ of incomplete gamma functions. It should probably be renamed.
 """
 
 from ...core import (Add, EulerGamma, Function, I, Integer, Pow, Rational,
-                     cacheit, expand_mul, oo, pi, zoo)
+                     cacheit, evaluate, expand_mul, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ...core.sympify import sympify
 from ..combinatorial.factorials import factorial
@@ -96,8 +96,7 @@ class erf(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 2*exp(-self.args[0]**2)/sqrt(pi)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -108,9 +107,9 @@ class erf(Function):
         if arg.is_Number:
             if arg is oo:
                 return Integer(1)
-            elif arg == -oo:
+            if arg == -oo:
                 return Integer(-1)
-            elif arg == 0:
+            if arg == 0:
                 return Integer(0)
 
         if isinstance(arg, erfinv):
@@ -133,13 +132,11 @@ class erf(Function):
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            k = floor(Rational(n - 1, 2))
-            if len(previous_terms) >= 2:
-                return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
-            else:
-                return 2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
+        x = sympify(x)
+        k = floor(Rational(n - 1, 2))
+        if len(previous_terms) >= 2:
+            return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
+        return 2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -148,7 +145,7 @@ class erf(Function):
         arg = self.args[0]
         if arg.is_extended_real:
             return True
-        elif arg.is_imaginary and arg.is_nonzero:
+        if arg.is_imaginary and arg.is_nonzero:
             return False
 
     def _eval_rewrite_as_uppergamma(self, z):
@@ -184,21 +181,19 @@ class erf(Function):
         return -I*erfi(I*z)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return 2*x/sqrt(pi)
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -286,8 +281,7 @@ class erfc(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return -2*exp(-self.args[0]**2)/sqrt(pi)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -298,7 +292,7 @@ class erfc(Function):
         if arg.is_Number:
             if arg is oo:
                 return Integer(0)
-            elif arg == 0:
+            if arg == 0:
                 return Integer(1)
 
         if isinstance(arg, erfinv):
@@ -321,15 +315,13 @@ class erfc(Function):
     def taylor_term(n, x, *previous_terms):
         if n == 0:
             return Integer(1)
-        elif n < 0 or n % 2 == 0:
+        if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            k = floor(Rational(n - 1, 2))
-            if len(previous_terms) >= 2:
-                return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
-            else:
-                return -2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
+        x = sympify(x)
+        k = floor(Rational(n - 1, 2))
+        if len(previous_terms) >= 2:
+            return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
+        return -2*(-1)**k * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -338,7 +330,7 @@ class erfc(Function):
         arg = self.args[0]
         if arg.is_extended_real:
             return True
-        elif arg.is_imaginary and arg.is_nonzero:
+        if arg.is_imaginary and arg.is_nonzero:
             return False
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
@@ -372,21 +364,19 @@ class erfc(Function):
         return 1 - sqrt(z**2)/z + z*expint(Rational(1, 2), z**2)/sqrt(pi)
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
             return Integer(1)
-        else:
-            return self.func(arg)
+        return self.func(arg)
 
     def as_real_imag(self, deep=True, **hints):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -471,15 +461,14 @@ class erfi(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return 2*exp(self.args[0]**2)/sqrt(pi)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, z):
         if z.is_Number:
             if z == 0:
                 return Integer(0)
-            elif z is oo:
+            if z is oo:
                 return oo
 
         # Try to pull out factors of -1
@@ -501,13 +490,11 @@ class erfi(Function):
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            k = floor(Rational(n - 1, 2))
-            if len(previous_terms) >= 2:
-                return previous_terms[-2] * x**2 * (n - 2)/(n*k)
-            else:
-                return 2 * x**n/(n*factorial(k)*sqrt(pi))
+        x = sympify(x)
+        k = floor(Rational(n - 1, 2))
+        if len(previous_terms) >= 2:
+            return previous_terms[-2] * x**2 * (n - 2)/(n*k)
+        return 2 * x**n/(n*factorial(k)*sqrt(pi))
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -516,7 +503,7 @@ class erfi(Function):
         arg = self.args[0]
         if arg.is_extended_real:
             return True
-        elif arg.is_imaginary and arg.is_nonzero:
+        if arg.is_imaginary and arg.is_nonzero:
             return False
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
@@ -554,8 +541,7 @@ class erfi(Function):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -635,10 +621,9 @@ class erf2(Function):
         x, y = self.args
         if argindex == 1:
             return -2*exp(-x**2)/sqrt(pi)
-        elif argindex == 2:
+        if argindex == 2:
             return 2*exp(-y**2)/sqrt(pi)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, x, y):
@@ -647,7 +632,7 @@ class erf2(Function):
         O = Integer(0)
         if x == y:
             return Integer(0)
-        elif (x is I or x is N or x is O) or (y is I or y is N or y is O):
+        if (x is I or x is N or x is O) or (y is I or y is N or y is O):
             return erf(y) - erf(x)
 
         if isinstance(y, erf2inv) and y.args[0] == x:
@@ -656,9 +641,9 @@ class erf2(Function):
         # Try to pull out -1 factor
         sign_x = x.could_extract_minus_sign()
         sign_y = y.could_extract_minus_sign()
-        if (sign_x and sign_y):
+        if sign_x and sign_y:
             return -cls(-x, -y)
-        elif (sign_x or sign_y):
+        if sign_x or sign_y:
             return erf(y)-erf(x)
 
     def _eval_conjugate(self):
@@ -669,7 +654,7 @@ class erf2(Function):
         if y.is_extended_real:
             if x.is_extended_real:
                 return True
-            elif x.is_imaginary and x.is_nonzero:
+            if x.is_imaginary and x.is_nonzero:
                 return False
 
     def _eval_rewrite_as_erf(self, x, y):
@@ -751,8 +736,7 @@ class erfinv(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return sqrt(pi)*exp(self.func(self.args[0])**2)/2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -762,9 +746,9 @@ class erfinv(Function):
     def eval(cls, z):
         if z == -1:
             return -oo
-        elif z == 0:
+        if z == 0:
             return Integer(0)
-        elif z == 1:
+        if z == 1:
             return oo
 
         if isinstance(z, erf) and z.args[0].is_extended_real:
@@ -822,8 +806,7 @@ class erfcinv(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return -sqrt(pi)*exp(self.func(self.args[0])**2)/2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         """Returns the inverse of this function."""
@@ -833,13 +816,18 @@ class erfcinv(Function):
     def eval(cls, z):
         if z == 0:
             return oo
-        elif z == 1:
+        if z == 1:
             return Integer(0)
-        elif z == 2:
+        if z == 2:
             return -oo
 
     def _eval_rewrite_as_erfinv(self, z):
         return erfinv(1-z)
+
+    def _eval_evalf(self, prec):
+        with evaluate(False):
+            e = self.rewrite(erfinv)
+        return e.evalf(prec)
 
 
 class erf2inv(Function):
@@ -893,26 +881,25 @@ class erf2inv(Function):
         x, y = self.args
         if argindex == 1:
             return exp(self.func(x, y)**2-x**2)
-        elif argindex == 2:
+        if argindex == 2:
             return sqrt(pi)*exp(self.func(x, y)**2)/2
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, x, y):
         if x == 0 and y == 0:
             return Integer(0)
-        elif x == 0 and y == 1:
+        if x == 0 and y == 1:
             return oo
-        elif x == 1 and y == 0:
+        if x == 1 and y == 0:
             return Integer(1)
-        elif x == 0:
+        if x == 0:
             return erfinv(y)
-        elif x is oo:
+        if x is oo:
             return erfcinv(-y)
-        elif y == 0:
+        if y == 0:
             return x
-        elif y is oo:
+        if y is oo:
             return erfinv(x)
 
 
@@ -1024,9 +1011,9 @@ class Ei(Function):
     def eval(cls, z):
         if z == 0:
             return -oo
-        elif z is oo:
+        if z is oo:
             return oo
-        elif z == -oo:
+        if z == -oo:
             return Integer(0)
 
         if not z.is_polar and z.is_negative:
@@ -1041,8 +1028,7 @@ class Ei(Function):
         arg = unpolarify(self.args[0])
         if argindex == 1:
             return exp(arg)/arg
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
         if (self.args[0]/polar_lift(-1)).is_positive:
@@ -1207,10 +1193,9 @@ class expint(Function):
         nu, z = self.args
         if argindex == 1:
             return -z**(nu - 1)*meijerg([], [1, 1], [0, 0, 1 - nu], [], z)
-        elif argindex == 2:
+        if argindex == 2:
             return -expint(nu - 1, z)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_uppergamma(self, nu, z):
         from .gamma_functions import uppergamma
@@ -1220,14 +1205,13 @@ class expint(Function):
         from .. import exp, exp_polar, factorial, unpolarify
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
-        elif nu.is_Integer and nu > 1:
+        if nu.is_Integer and nu > 1:
             # DLMF, 8.19.7
             x = -unpolarify(z)
             return x**(nu - 1)/factorial(nu - 1)*E1(z).rewrite(Ei) + \
                 exp(x)/factorial(nu - 1) * \
                 Add(*[factorial(nu - k - 2)*x**k for k in range(nu - 1)])
-        else:
-            return self
+        return self
 
     def _eval_expand_func(self, **hints):
         return self.rewrite(Ei).rewrite(expint, **hints)
@@ -1358,17 +1342,16 @@ class li(Function):
     def eval(cls, z):
         if z == 0:
             return Integer(0)
-        elif z == 1:
+        if z == 1:
             return -oo
-        elif z is oo:
+        if z is oo:
             return oo
 
     def fdiff(self, argindex=1):
         arg = self.args[0]
         if argindex == 1:
             return 1/log(arg)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_conjugate(self):
         z = self.args[0]
@@ -1470,15 +1453,14 @@ class Li(Function):
     def eval(cls, z):
         if z is oo:
             return oo
-        elif z == 2:
+        if z == 2:
             return Integer(0)
 
     def fdiff(self, argindex=1):
         arg = self.args[0]
         if argindex == 1:
             return 1/log(arg)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
         return self.rewrite(li).evalf(prec)
@@ -1501,9 +1483,9 @@ class TrigonometricIntegral(Function):
     def eval(cls, z):
         if z == 0:
             return cls._atzero
-        elif z is oo:
+        if z is oo:
             return cls._atinf()
-        elif z == -oo:
+        if z == -oo:
             return cls._atneginf()
 
         nz = z.as_coefficient(polar_lift(I))
@@ -1530,8 +1512,7 @@ class TrigonometricIntegral(Function):
         arg = unpolarify(self.args[0])
         if argindex == 1:
             return self._trigfunc(arg)/arg
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_Ei(self, z):
         return self._eval_rewrite_as_expint(z).rewrite(Ei)
@@ -1896,9 +1877,8 @@ class Chi(TrigonometricIntegral):
         if exp:
             return (r'\operatorname{Chi}^{%s}{\left (%s \right )}'  # noqa: SFS101
                     % (printer._print(exp), printer._print(self.args[0])))
-        else:
-            return (r'\operatorname{Chi}{\left (%s \right )}'  # noqa: SFS101
-                    % printer._print(self.args[0]))
+        return (r'\operatorname{Chi}{\left (%s \right )}'  # noqa: SFS101
+                % printer._print(self.args[0]))
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -1948,8 +1928,7 @@ class FresnelIntegral(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return self._trigfunc(pi*self.args[0]**2/2)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
         if self.args[0].is_extended_real:
@@ -1963,8 +1942,7 @@ class FresnelIntegral(Function):
             if deep:
                 hints['complex'] = False
                 return self.expand(deep, **hints), Integer(0)
-            else:
-                return self, Integer(0)
+            return self, Integer(0)
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -2071,13 +2049,11 @@ class fresnels(FresnelIntegral):
     def taylor_term(n, x, *previous_terms):
         if n < 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            if len(previous_terms) >= 1:
-                p = previous_terms[-1]
-                return (-pi**2*x**4*(4*n - 1)/(8*n*(2*n + 1)*(4*n + 3))) * p
-            else:
-                return x**3 * (-x**4)**n * (Integer(2)**(-2*n - 1)*pi**(2*n + 1)) / ((4*n + 3)*factorial(2*n + 1))
+        x = sympify(x)
+        if len(previous_terms) >= 1:
+            p = previous_terms[-1]
+            return (-pi**2*x**4*(4*n - 1)/(8*n*(2*n + 1)*(4*n + 3))) * p
+        return x**3 * (-x**4)**n * (Integer(2)**(-2*n - 1)*pi**(2*n + 1)) / ((4*n + 3)*factorial(2*n + 1))
 
     def _eval_rewrite_as_erf(self, z):
         return (1 + I)/4 * (erf((1 + I)/2*sqrt(pi)*z) - I*erf((1 - I)/2*sqrt(pi)*z))
@@ -2090,7 +2066,7 @@ class fresnels(FresnelIntegral):
                 * meijerg([], [1], [Rational(3, 4)], [Rational(1, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2199,13 +2175,11 @@ class fresnelc(FresnelIntegral):
     def taylor_term(n, x, *previous_terms):
         if n < 0:
             return Integer(0)
-        else:
-            x = sympify(x)
-            if len(previous_terms) >= 1:
-                p = previous_terms[-1]
-                return (-pi**2*x**4*(4*n - 3)/(8*n*(2*n - 1)*(4*n + 1))) * p
-            else:
-                return x * (-x**4)**n * (Integer(2)**(-2*n)*pi**(2*n)) / ((4*n + 1)*factorial(2*n))
+        x = sympify(x)
+        if len(previous_terms) >= 1:
+            p = previous_terms[-1]
+            return (-pi**2*x**4*(4*n - 3)/(8*n*(2*n - 1)*(4*n + 1))) * p
+        return x * (-x**4)**n * (Integer(2)**(-2*n)*pi**(2*n)) / ((4*n + 1)*factorial(2*n))
 
     def _eval_rewrite_as_erf(self, z):
         return (1 - I)/4 * (erf((1 + I)/2*sqrt(pi)*z) + I*erf((1 - I)/2*sqrt(pi)*z))
@@ -2218,7 +2192,7 @@ class fresnelc(FresnelIntegral):
                 * meijerg([], [1], [Rational(1, 4)], [Rational(3, 4), 0], -pi**2*z**4/16))
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2260,7 +2234,7 @@ class _erfs(Function):
             return Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         point = args0[0]
 
         # Expansion at oo
@@ -2279,8 +2253,7 @@ class _erfs(Function):
         if argindex == 1:
             z = self.args[0]
             return -2/sqrt(pi) + 2*z*_erfs(z)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_intractable(self, z):
         return (1 - erf(z))*exp(z**2)
@@ -2297,7 +2270,7 @@ class _eis(Function):
     """
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[0] != oo:
             return super()._eval_aseries(n, args0, x, logx)
 
@@ -2311,8 +2284,7 @@ class _eis(Function):
         if argindex == 1:
             z = self.args[0]
             return 1/z - _eis(z)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_rewrite_as_intractable(self, z):
         return exp(-z)*Ei(z)

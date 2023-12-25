@@ -6,7 +6,7 @@ import operator
 from ..config import query
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
+from .polyerrors import HeuristicGCDFailedError, HomomorphismFailedError
 
 
 class _GCD:
@@ -16,13 +16,13 @@ class _GCD:
         """Returns GCD of ``f`` and ``g``."""
         if not f and not g:
             return self.zero
-        elif not f:
+        if not f:
             return self._gcd_zero(g)
-        elif not g:
+        if not g:
             return self._gcd_zero(f)
-        elif f.is_term:
+        if f.is_term:
             return self._gcd_term(f, g)
-        elif g.is_term:
+        if g.is_term:
             return self._gcd_term(g, f)
 
         J, (f, g) = self._deflate(f, g)
@@ -39,12 +39,14 @@ class _GCD:
             gc, g = g.primitive()
             c = domain.lcm(fc, gc)
 
-        h = (f*g)//f.gcd(g)
+        try:
+            h = (f*g)//f.gcd(g)
+        except ZeroDivisionError:
+            return self.zero
 
         if not domain.is_Field:
             return h*c
-        else:
-            return h.monic()
+        return h.monic()
 
     def _deflate(self, *polys):
         J = [0]*self.ngens
@@ -88,13 +90,12 @@ class _GCD:
     def _gcd_zero(self, f):
         if self.domain.is_Field:
             return f.monic()
-        else:
-            return f if self.is_normal(f) else -f
+        return f if self.is_normal(f) else -f
 
     def _gcd_term(self, f, g):
         domain = self.domain
         ground_gcd = domain.gcd
-        _mgcd, _cgcd = f.LT
+        [(_mgcd, _cgcd)] = f.items()
         if domain.is_Field:
             for mg, cg in g.items():
                 _mgcd = _mgcd.gcd(mg)
@@ -110,20 +111,19 @@ class _GCD:
 
         if domain.is_RationalField:
             return self._gcd_QQ(f, g)
-        elif domain.is_IntegerRing:
+        if domain.is_IntegerRing:
             return self._gcd_ZZ(f, g)
-        elif domain.is_AlgebraicField:
+        if domain.is_AlgebraicField:
             return self._gcd_AA(f, g)
-        elif not domain.is_Exact:
+        if not domain.is_Exact:
             exact = domain.get_exact()
             ring = self.clone(domain=exact)
             f, g = map(operator.methodcaller('set_domain', exact), (f, g))
             h = ring._gcd(f, g)
             return h.set_domain(domain)
-        elif domain.is_Field:
+        if domain.is_Field:
             return self._ff_prs_gcd(f, g)
-        else:
-            return self._rr_prs_gcd(f, g)
+        return self._rr_prs_gcd(f, g)
 
     def _gcd_ZZ(self, f, g):
         from .modulargcd import modgcd
@@ -131,7 +131,7 @@ class _GCD:
         if query('USE_HEU_GCD'):
             try:
                 return self._zz_heu_gcd(f, g)
-            except HeuristicGCDFailed:
+            except HeuristicGCDFailedError:
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
@@ -211,7 +211,12 @@ class _GCD:
                 2*min(f_norm // abs(f.LC),
                       g_norm // abs(g.LC)) + 4)
 
-        cofactors = domain.cofactors if self.is_univariate else self.drop(0).cofactors
+        if self.is_univariate:
+            cofactors = domain.cofactors
+        else:
+            def cofactors(f, g):
+                h = self.drop(0)._zz_heu_gcd(f, g)
+                return h, f // h, g // h
 
         for _ in range(query('HEU_GCD_MAX')):
             ff = f.eval(x0, x)
@@ -241,7 +246,7 @@ class _GCD:
 
             x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
 
-        raise HeuristicGCDFailed('no luck')
+        raise HeuristicGCDFailedError('no luck')
 
     def _gcd_interpolate(self, h, x):
         """Interpolate polynomial GCD from integer GCD."""
@@ -431,17 +436,15 @@ class _GCD:
         r, p, P = new_ring.zero, domain.one, domain.one
 
         while P <= B:
-            while True:
-                p = domain(nextprime(p))
-                if a % p and b % p:
-                    break
+            while (p := nextprime(p)) and not a % p or not b % p:
+                pass
 
             p_domain = domain.finite_field(p)
             F, G = map(operator.methodcaller('set_domain', p_domain), (f, g))
 
             try:
                 R = self.clone(domain=p_domain)._modular_resultant(F, G)
-            except HomomorphismFailed:
+            except HomomorphismFailedError:
                 continue
 
             if P == 1:
@@ -449,13 +452,13 @@ class _GCD:
             else:
                 def _crt(r, R):
                     return domain(crt([P, p], map(domain.convert, [r, R]),
-                                  check=False, symmetric=True)[0])
+                                      check=False, symmetric=True)[0])
 
                 if new_ring.is_PolynomialRing:
                     r_new = new_ring.zero
 
                     for monom in r | R:
-                        r_new[monom] = _crt(r.get(monom, 0), R.get(monom, 0))
+                        r_new[monom] = _crt(r[monom], R[monom])
                     r = r_new
                 else:
                     r = _crt(r, R)
@@ -495,12 +498,7 @@ class _GCD:
         domain_elts = iter(range(domain.order))
 
         while D.degree() <= B:
-            while True:
-                try:
-                    a = next(domain_elts)
-                except StopIteration as exc:
-                    raise HomomorphismFailed('no luck') from exc
-
+            for a in domain_elts:
                 F = f.eval(x=1, a=a)
 
                 if F.degree() == n:
@@ -508,6 +506,8 @@ class _GCD:
 
                     if G.degree() == m:
                         break
+            else:
+                raise HomomorphismFailedError('no luck')
 
             R = self.drop(1)._modular_resultant(F, G)
             e = r.eval(x=0, a=a)

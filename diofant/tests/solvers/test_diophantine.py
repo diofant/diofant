@@ -676,9 +676,7 @@ def test_power_representation():
 
 
 def test_assumptions():
-    """
-    Test whether diophantine respects the assumptions.
-    """
+    """Test whether diophantine respects the assumptions."""
     # Test case taken from the below so question regarding assumptions in diophantine module
     # https://stackoverflow.com/questions/23301941/how-can-i-declare-natural-symbols-with-sympy
     m, n = symbols('m n', integer=True, positive=True)
@@ -752,8 +750,8 @@ def test_diopcoverage():
                        Integer(2), x) == (None, None)
 
     assert _nint_or_floor(16, 10) == 2
-    assert _odd(1) == (not _even(1)) is True
-    assert _odd(0) == (not _even(0)) is False
+    assert (_odd(1) == (not _even(1))) is True
+    assert (_odd(0) == (not _even(0))) is True
     assert _remove_gcd(2, 4, 6) == (1, 2, 3)
     assert sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11) == (11, 1, 5)
 

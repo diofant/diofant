@@ -1,8 +1,8 @@
 from itertools import combinations_with_replacement
 
 from ..core import Add, Dummy, Rational, symbols
-from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
-                     reduced)
+from ..polys import (ComputationFailedError, Poly, cancel,
+                     parallel_poly_from_expr, reduced)
 from ..polys.monomials import Monomial
 
 
@@ -20,7 +20,7 @@ def ratsimp(expr):
     f, g = cancel(expr, extension=False).as_numer_denom()
     try:
         Q, r = reduced(f, [g], field=True, expand=False)
-    except ComputationFailed:
+    except ComputationFailedError:
         return f/g
 
     return Add(*Q) + cancel(r/g)
@@ -144,7 +144,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             r = reduced(a * d_hat - b * c_hat, G, *(opt.gens + ng),
                         order=opt.order, polys=True)[1]
 
-            S = Poly(r, gens=opt.gens).coeffs()
+            S = Poly(r, *opt.gens).coeffs()
             Sv = Cs + Ds
             Sm = zeros(len(S), len(Sv) + 1)
             Sm[:, :-1] = Matrix([[a.diff(b) for b in Sv] for a in S])

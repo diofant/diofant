@@ -89,20 +89,18 @@ class gamma(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return self.func(self.args[0])*polygamma(0, self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
             if arg is oo:
                 return oo
-            elif arg.is_Integer:
+            if arg.is_Integer:
                 if arg.is_positive:
                     return factorial(arg - 1)
-                else:
-                    return zoo
-            elif arg.is_Rational:
+                return zoo
+            if arg.is_Rational:
                 if arg.denominator == 2:
                     n = abs(arg.numerator) // arg.denominator
 
@@ -121,8 +119,7 @@ class gamma(Function):
 
                     if arg.is_positive:
                         return coeff*sqrt(pi) / 2**n
-                    else:
-                        return 2**n*sqrt(pi) / coeff
+                    return 2**n*sqrt(pi) / coeff
 
         if arg.is_integer and arg.is_nonpositive:
             return zoo
@@ -159,7 +156,7 @@ class gamma(Function):
         x = self.args[0]
         if x.is_positive:
             return True
-        elif x.is_noninteger:
+        if x.is_noninteger:
             return floor(x).is_even
 
     def _eval_rewrite_as_tractable(self, z, **kwargs):
@@ -179,8 +176,7 @@ class gamma(Function):
         aa = printer._print(self.args[0])
         if exp:
             return f'\\Gamma^{{{printer._print(exp)}}}{{\\left({aa} \\right)}}'
-        else:
-            return f'\\Gamma{{\\left({aa} \\right)}}'
+        return f'\\Gamma{{\\left({aa} \\right)}}'
 
     @staticmethod
     def _latex_no_arg(printer):
@@ -247,13 +243,12 @@ class lowergamma(Function):
         if argindex == 2:
             a, z = self.args
             return exp(-unpolarify(z))*z**(a - 1)
-        elif argindex == 1:
+        if argindex == 1:
             a, z = self.args
             return gamma(a)*digamma(a) - log(z)*uppergamma(a, z) \
                 - meijerg([], [1, 1], [0, 0, a], [], z)
 
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     @classmethod
     def eval(cls, a, x):
@@ -289,15 +284,14 @@ class lowergamma(Function):
             # TODO this should be non-recursive
             if a == 1:
                 return 1 - exp(-x)
-            elif a == Rational(1, 2):
+            if a == Rational(1, 2):
                 return sqrt(pi)*erf(sqrt(x))
-            elif a.is_Integer or (2*a).is_Integer:
+            if a.is_Integer or (2*a).is_Integer:
                 b = a - 1
                 if b.is_positive:
                     return b*cls(b, x) - x**b * exp(-x)
-                elif a == 0:
+                if a == 0:
                     return zoo
-
                 if not a.is_Integer:
                     return (cls(a + 1, x) + x**a * exp(-x))/a
 
@@ -396,11 +390,10 @@ class uppergamma(Function):
         if argindex == 2:
             a, z = self.args
             return -exp(-unpolarify(z))*z**(a - 1)
-        elif argindex == 1:
+        if argindex == 1:
             a, z = self.args
             return uppergamma(a, z)*log(z) + meijerg([], [1, 1], [0, 0, a], [], z)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_evalf(self, prec):
         a = self.args[0]._to_mpmath(prec)
@@ -416,7 +409,7 @@ class uppergamma(Function):
         if z.is_Number:
             if z is oo:
                 return Integer(0)
-            elif z == 0:
+            if z == 0:
                 # TODO: Holds only for Re(a) > 0:
                 return gamma(a)
 
@@ -437,16 +430,15 @@ class uppergamma(Function):
             # TODO this should be non-recursive
             if a == 1:
                 return exp(-z)
-            elif a == Rational(1, 2):
+            if a == Rational(1, 2):
                 return sqrt(pi)*(1 - erf(sqrt(z)))  # TODO could use erfc...
-            elif a.is_Integer or (2*a).is_Integer:
+            if a.is_Integer or (2*a).is_Integer:
                 b = a - 1
                 if b.is_positive:
                     return b*cls(b, z) + z**b * exp(-z)
-                elif b.is_Integer:
+                if b.is_Integer:
                     return expint(-b, z)*unpolarify(z)**(b + 1)
-                else:
-                    return (cls(a + 1, z) - z**a * exp(-z))/a
+                return (cls(a + 1, z) - z**a * exp(-z))/a
 
     def _eval_conjugate(self):
         z = self.args[1]
@@ -557,10 +549,9 @@ class polygamma(Function):
 
     def fdiff(self, argindex=2):
         if argindex == 2:
-            n, z = self.args[:2]
+            n, z = self.args
             return polygamma(n + 1, z)
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_is_positive(self):
         if self.args[0].is_positive and self.args[1].is_positive:
@@ -568,12 +559,11 @@ class polygamma(Function):
                 return True
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
             return super()._eval_aseries(n, args0, x, logx)
-        z = self.args[1]
-        N = self.args[0]
+        N, z = self.args
 
         if N == 0:
             # digamma function series
@@ -588,25 +578,24 @@ class polygamma(Function):
                 r -= Add(*l)
                 o = Order(1/z**(2*m), x)
             return r._eval_nseries(x, n, logx) + o
-        else:
-            # proper polygamma function
-            # Abramowitz & Stegun, p. 260, 6.4.10
-            # We return terms to order higher than O(x**n) on purpose
-            # -- otherwise we would not be able to return any terms for
-            #    quite a long time!
-            fac = gamma(N)
-            e0 = fac + N*fac/(2*z)
-            m = ceiling((n + 1)//2)
-            for k in range(1, m):
-                fac = fac*(2*k + N - 1)*(2*k + N - 2) / ((2*k)*(2*k - 1))
-                e0 += bernoulli(2*k)*fac/z**(2*k)
-            o = Order(1/z**(2*m), x)
-            if n == 0:
-                o = Order(1/z, x)
-            elif n == 1:
-                o = Order(1/z**2, x)
-            r = e0 + o
-            return (-1 * (-1/z)**N * r)._eval_nseries(x, n, logx)
+        # proper polygamma function
+        # Abramowitz & Stegun, p. 260, 6.4.10
+        # We return terms to order higher than O(x**n) on purpose
+        # -- otherwise we would not be able to return any terms for
+        #    quite a long time!
+        fac = gamma(N)
+        e0 = fac + N*fac/(2*z)
+        m = ceiling((n + 1)//2)
+        for k in range(1, m):
+            fac = fac*(2*k + N - 1)*(2*k + N - 2) / ((2*k)*(2*k - 1))
+            e0 += bernoulli(2*k)*fac/z**(2*k)
+        o = Order(1/z**(2*m), x)
+        if n == 0:
+            o = Order(1/z, x)
+        elif n == 1:
+            o = Order(1/z**2, x)
+        r = e0 + o
+        return (-1 * (-1/z)**N * r)._eval_nseries(x, n, logx)
 
     @classmethod
     def eval(cls, n, z):
@@ -620,22 +609,19 @@ class polygamma(Function):
 
             if n == -1:
                 return loggamma(z)
-            else:
-                if z.is_Number:
-                    if z is oo:
-                        if n.is_Number:
-                            if n == 0:
-                                return oo
-                            else:
-                                return Integer(0)
-                    elif z.is_Integer:
-                        if z.is_nonpositive:
-                            return zoo
-                        else:
-                            if n == 0:
-                                return -EulerGamma + harmonic(z - 1, 1)
-                            elif n.is_odd:
-                                return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
+            if z.is_Number:
+                if z is oo:
+                    if n.is_Number:
+                        if n == 0:
+                            return oo
+                        return Integer(0)
+                elif z.is_Integer:
+                    if z.is_nonpositive:
+                        return zoo
+                    if n == 0:
+                        return -EulerGamma + harmonic(z - 1, 1)
+                    if n.is_odd:
+                        return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
 
         if n == 0:
             if z.is_Rational:
@@ -687,8 +673,7 @@ class polygamma(Function):
                             for i in range(int(coeff))]
                     if n == 0:
                         return Add(*tail)/coeff + log(coeff)
-                    else:
-                        return Add(*tail)/coeff**(n + 1)
+                    return Add(*tail)/coeff**(n + 1)
                 z *= coeff
 
         return polygamma(n, z)
@@ -696,24 +681,21 @@ class polygamma(Function):
     def _eval_rewrite_as_zeta(self, n, z):
         if (n - 1).is_nonnegative:
             return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
-        else:
-            return self
+        return self
 
     def _eval_rewrite_as_harmonic(self, n, z):
         if n.is_integer:
             if n == 0:
                 return harmonic(z - 1) - EulerGamma
-            else:
-                return (-1)**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
+            return (-1)**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 
     def _eval_as_leading_term(self, x):
-        from ...series import Order
+        from ...calculus import Order
         n, z = (a.as_leading_term(x) for a in self.args)
         o = Order(z, x)
         if n == 0 and o.contains(1/x):
             return o.getn() * log(x)
-        else:
-            return self.func(n, z)
+        return self.func(n, z)
 
 
 class loggamma(Function):
@@ -823,7 +805,7 @@ class loggamma(Function):
         if z.is_integer:
             if z.is_nonpositive:
                 return oo
-            elif z.is_positive:
+            if z.is_positive:
                 return log(gamma(z))
         elif z.is_rational:
             p, q = z.as_numer_denom()
@@ -833,7 +815,7 @@ class loggamma(Function):
 
         if z is oo:
             return oo
-        elif abs(z) is oo:
+        if abs(z) is oo:
             return zoo
 
     def _eval_expand_func(self, **hints):
@@ -852,12 +834,12 @@ class loggamma(Function):
             k = Dummy('k')
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
-            elif n.is_negative:
+            if n.is_negative:
                 return loggamma(p / q) - n*log(q) + pi*I*n - Sum(log(k*q - p), (k, 1, -n))
 
         return self
 
-    def _eval_nseries(self, x, n, logx=None):
+    def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 == 0:
             f = self._eval_rewrite_as_intractable(*self.args)
@@ -865,7 +847,7 @@ class loggamma(Function):
         return super()._eval_nseries(x, n, logx)
 
     def _eval_aseries(self, n, args0, x, logx):
-        from ...series import Order
+        from ...calculus import Order
         if args0[0] != oo:
             return super()._eval_aseries(n, args0, x, logx)
         z = self.args[0]
@@ -895,8 +877,7 @@ class loggamma(Function):
     def fdiff(self, argindex=1):
         if argindex == 1:
             return polygamma(0, self.args[0])
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
 
 def digamma(x):

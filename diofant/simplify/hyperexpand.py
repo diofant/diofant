@@ -78,7 +78,6 @@ from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_sqrts2, hyper, meijerg)
 from ..polys import Poly, cancel
 from ..printing import sstr
-from ..series import residue
 from ..utilities import default_sort_key, sift
 from .powsimp import powdenest
 from .simplify import simplify
@@ -474,7 +473,7 @@ def make_simp(z):
 class Hyper_Function(Expr):
     """A generalized hypergeometric function."""
 
-    def __new__(cls, ap, bq):
+    def __new__(cls, ap, bq, **kwargs):
         obj = super().__new__(cls)
         obj.ap = Tuple(*list(map(expand, ap)))
         obj.bq = Tuple(*list(map(expand, bq)))
@@ -584,7 +583,7 @@ class Hyper_Function(Expr):
         """
         for a in self.ap:
             for b in self.bq:
-                if (a - b).is_integer and (a - b).is_negative is False:
+                if (a - b).is_integer and (a - b).is_nonnegative:
                     return False
         for a in self.ap:
             if a == 0:
@@ -700,6 +699,7 @@ class Formula:
         self.M = m.row_insert(n, -Matrix([l])/poly.LC())
 
     def __init__(self, func, z, res, symbols, B=None, C=None, M=None):
+        """Initialize self."""
         z = sympify(z)
         res = sympify(res)
         symbols = [x for x in sympify(symbols) if func.has(x)]
@@ -861,6 +861,7 @@ class MeijerFormula:
     """
 
     def __init__(self, an, ap, bm, bq, z, symbols, B, C, M, matcher):
+        """Initialize self."""
         an, ap, bm, bq = (Tuple(*list(map(expand, w))) for w in [an, ap, bm, bq])
         self.func = G_Function(an, ap, bm, bq)
         self.z = z
@@ -895,6 +896,7 @@ class MeijerFormulaCollection:
     """This class holds a collection of meijer g formulae."""
 
     def __init__(self):
+        """Initialize self."""
         formulae = []
         add_meijerg_formulae(formulae)
         self.formulae = defaultdict(list)
@@ -961,6 +963,7 @@ class MultOperator(Operator):
     """Simply multiply by a "constant"."""
 
     def __init__(self, p):
+        """Initialize self."""
         self._poly = Poly(p, _x)
 
 
@@ -968,6 +971,7 @@ class ShiftA(Operator):
     """Increment an upper index."""
 
     def __init__(self, ai):
+        """Initialize self."""
         ai = sympify(ai)
         if ai == 0:
             raise ValueError('Cannot increment zero upper index.')
@@ -981,6 +985,7 @@ class ShiftB(Operator):
     """Decrement a lower index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         if bi == 1:
             raise ValueError('Cannot decrement unit lower index.')
@@ -994,7 +999,10 @@ class UnShiftA(Operator):
     """Decrement an upper index."""
 
     def __init__(self, ap, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1035,7 +1043,10 @@ class UnShiftB(Operator):
     """Increment a lower index."""
 
     def __init__(self, ap, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1076,6 +1087,7 @@ class MeijerShiftA(Operator):
     """Increment an upper b index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(bi - _x, _x)
 
@@ -1087,6 +1099,7 @@ class MeijerShiftB(Operator):
     """Decrement an upper a index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(1 - bi + _x, _x)
 
@@ -1098,6 +1111,7 @@ class MeijerShiftC(Operator):
     """Increment a lower b index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(-bi + _x, _x)
 
@@ -1109,6 +1123,7 @@ class MeijerShiftD(Operator):
     """Decrement a lower a index."""
 
     def __init__(self, bi):
+        """Initialize self."""
         bi = sympify(bi)
         self._poly = Poly(bi - 1 - _x, _x)
 
@@ -1120,7 +1135,10 @@ class MeijerUnShiftA(Operator):
     """Decrement an upper b index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1167,7 +1185,10 @@ class MeijerUnShiftB(Operator):
     """Increment an upper a index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1220,7 +1241,10 @@ class MeijerUnShiftC(Operator):
     #     again.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1270,7 +1294,10 @@ class MeijerUnShiftD(Operator):
     #     See comment at MeijerUnShiftC.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """Note: i counts from zero!"""
+        """Initialize self.
+
+        Note: i counts from zero!
+        """
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1775,7 +1802,7 @@ def try_lerchphi(func):
             p = Poly(numer, t)
             if not p.is_term:
                 raise TypeError('p should be a term')
-            ((b,), a) = p.LT()
+            [((b,), a)] = p.terms()
             monomials += [(a/denom, b)]
             continue
         if numer.has(t):
@@ -1829,7 +1856,7 @@ def try_lerchphi(func):
     for n, b in enumerate([Integer(1)] + list(deriv)):
         trans[b] = n
     basis = [expand_func(b) for (b, _) in sorted(trans.items(),
-                                                 key=lambda x:x[1])]
+                                                 key=lambda x: x[1])]
     B = Matrix(basis)
     C = Matrix([[0]*len(B)])
     for b, c in coeffs.items():
@@ -1842,10 +1869,7 @@ def try_lerchphi(func):
 
 
 def build_hypergeometric_formula(func):
-    """
-    Create a formula object representing the hypergeometric function ``func``.
-
-    """
+    """Create a formula object representing the hypergeometric function ``func``."""
     # We know that no `ap` are negative integers, otherwise "detect poly"
     # would have kicked in. However, `ap` could be empty. In this case we can
     # use a different basis.
@@ -1879,24 +1903,24 @@ def build_hypergeometric_formula(func):
         for k, c in enumerate(res):
             M[n - 1, k] = -c/derivs[n - 1][0, n - 1]/poly.LC()
         return Formula(func, z, None, [], B, C, M)
-    else:
-        # Since there are no `ap`, none of the `bq` can be non-positive
-        # integers.
-        basis = []
-        bq = list(func.bq[:])
-        for i, _ in enumerate(bq):
-            basis += [hyper([], bq, z)]
-            bq[i] += 1
+
+    # Since there are no `ap`, none of the `bq` can be non-positive
+    # integers.
+    basis = []
+    bq = list(func.bq[:])
+    for i, _ in enumerate(bq):
         basis += [hyper([], bq, z)]
-        B = Matrix(basis)
-        n = len(B)
-        C = Matrix([[1] + [0]*(n - 1)])
-        M = zeros(n)
-        M[0, n - 1] = z/Mul(*func.bq)
-        for k in range(1, n):
-            M[k, k - 1] = func.bq[k - 1]
-            M[k, k] = -func.bq[k - 1]
-        return Formula(func, z, None, [], B, C, M)
+        bq[i] += 1
+    basis += [hyper([], bq, z)]
+    B = Matrix(basis)
+    n = len(B)
+    C = Matrix([[1] + [0]*(n - 1)])
+    M = zeros(n)
+    M[0, n - 1] = z/Mul(*func.bq)
+    for k in range(1, n):
+        M[k, k - 1] = func.bq[k - 1]
+        M[k, k] = -func.bq[k - 1]
+    return Formula(func, z, None, [], B, C, M)
 
 
 def hyperexpand_special(ap, bq, z):
@@ -1929,9 +1953,8 @@ def hyperexpand_special(ap, bq, z):
             if b.is_integer and b.is_negative:
                 return 2*cos(pi*b/2)*gamma(-b)*gamma(b - a + 1) \
                     / gamma(-b/2)/gamma(b/2 - a + 1)
-            else:
-                return gamma(b/2 + 1)*gamma(b - a + 1) \
-                    / gamma(b + 1)/gamma(b/2 - a + 1)
+            return gamma(b/2 + 1)*gamma(b - a + 1) \
+                / gamma(b + 1)/gamma(b/2 - a + 1)
     # TODO tons of more formulae
     #      investigate what algorithms exist
     return hyper(ap, bq, z_)
@@ -1985,7 +2008,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     # *) PFD Duplication (see Kelly Roach's paper)
     # *) In a similar spirit, try_lerchphi() can be generalized considerably.
 
-    global _collection
+    global _collection  # pylint: disable=global-statement
     if _collection is None:
         _collection = FormulaCollection()
 
@@ -2189,7 +2212,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
     can be set to ``0`` or ``zoo`` for the preferred choice.
 
     """
-    global _meijercollection
+    global _meijercollection  # pylint: disable=global-statement
     if _meijercollection is None:
         _meijercollection = MeijerFormulaCollection()
     if rewrite == 'default':
@@ -2240,6 +2263,8 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
         return True
 
     def do_slater(an, bm, ap, bq, z, zfinal):
+        from ..calculus import residue
+
         # zfinal is the value that will eventually be substituted for z.
         # We pass it to _hyperexpand to improve performance.
         func = G_Function(an, bm, ap, bq)
@@ -2413,8 +2438,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
     if min(w1, w2) <= (0, 1, oo):
         if w1 < w2:
             return slater1
-        else:
-            return slater2
+        return slater2
     if max(w1[0], w2[0]) <= 1 and max(w1[1], w2[1]) <= 1:
         return Piecewise((slater1, cond1), (slater2, cond2), (func0(z0), True))
 
@@ -2457,8 +2481,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default', place=None):
         r = _hyperexpand(Hyper_Function(ap, bq), z, rewrite=rewrite)
         if r is None:
             return hyper(ap, bq, z)
-        else:
-            return r
+        return r
 
     def do_meijer(ap, bq, z):
         r = _meijergexpand(G_Function(ap[0], ap[1], bq[0], bq[1]), z,

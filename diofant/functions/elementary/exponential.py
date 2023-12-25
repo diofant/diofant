@@ -1,4 +1,4 @@
-from mpmath.libmp.libmpf import prec_to_dps
+from mpmath.libmp import prec_to_dps
 
 from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
                      oo, pi, zoo)
@@ -79,7 +79,7 @@ class exp_polar(Function):
         if arg.is_infinite:
             if arg.is_positive:
                 return False
-            elif arg.is_negative:
+            if arg.is_negative:
                 return True
         if arg.is_finite:
             return True
@@ -87,7 +87,7 @@ class exp_polar(Function):
     def _eval_is_rational(self):
         if self.exp == 0:
             return True
-        elif self.exp.is_rational and self.exp.is_nonzero:
+        if self.exp.is_rational and self.exp.is_nonzero:
             return False
 
     def _eval_is_zero(self):
@@ -167,8 +167,7 @@ class log(Function):
         """Returns the first derivative of the function."""
         if argindex == 1:
             return 1/self.args[0]
-        else:
-            raise ArgumentIndexError(self, argindex)
+        raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
         r"""Returns `e^x`, the inverse function of `\log(x)`."""
@@ -182,8 +181,7 @@ class log(Function):
             if base == 1:
                 if arg == 1:
                     return nan
-                else:
-                    return zoo
+                return zoo
             try:
                 # handle extraction of powers of the base now
                 # or else expand_log in Mul would have to handle this
@@ -192,41 +190,38 @@ class log(Function):
                     den = base**n
                     if den.is_Integer:
                         return n + log(arg // den) / log(base)
-                    else:
-                        return n + log(arg / den) / log(base)
+                    return n + log(arg / den) / log(base)
             except ValueError:
                 pass
             if base is not E:
                 if arg.is_Float:
                     dps = prec_to_dps(arg._prec + 4)
                     return cls(arg)/cls(base).evalf(dps)
-                else:
-                    return cls(arg)/cls(base)
-            else:
-                return cls(arg)
+                return cls(arg)/cls(base)
+            return cls(arg)
 
         if arg.is_Number:
             if arg == 0:
                 return zoo
-            elif arg == 1:
+            if arg == 1:
                 return Integer(0)
-            elif arg in (oo, -oo):
+            if arg in (oo, -oo):
                 return oo
-            elif arg.is_Rational:
+            if arg.is_Rational:
                 if arg.denominator != 1:
                     return cls(arg.numerator) - cls(arg.denominator)
 
         if arg.is_Exp and arg.exp.is_extended_real:
             return arg.exp
-        elif isinstance(arg, exp_polar):
+        if isinstance(arg, exp_polar):
             return unpolarify(arg.exp)
 
         if arg.is_number:
             if arg.is_negative:
                 return pi * I + cls(-arg)
-            elif arg is zoo:
+            if arg is zoo:
                 return zoo
-            elif arg is E:
+            if arg is E:
                 return Integer(1)
 
         # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
@@ -236,11 +231,10 @@ class log(Function):
             if coeff is not None:
                 if coeff in (oo, -oo):
                     return oo
-                elif coeff.is_Rational:
+                if coeff.is_Rational:
                     if coeff.is_nonnegative:
                         return +pi*I/2 + cls(+coeff)
-                    else:
-                        return -pi*I/2 + cls(-coeff)
+                    return -pi*I/2 + cls(-coeff)
 
     def _eval_expand_log(self, deep=True, **hints):
         from ...concrete import Product, Sum
@@ -279,8 +273,7 @@ class log(Function):
                 a = self.func(b)
                 if isinstance(a, log):
                     return unpolarify(e) * a._eval_expand_log(**hints)
-                else:
-                    return unpolarify(e) * a
+                return unpolarify(e) * a
         elif isinstance(arg, Product):
             if arg.function.is_positive:
                 return Sum(log(arg.function), *arg.limits)
@@ -322,8 +315,7 @@ class log(Function):
         if hints.get('log', False):  # Expand the log
             hints['complex'] = False
             return log(abs).expand(deep, **hints), arg
-        else:
-            return log(abs), arg
+        return log(abs), arg
 
     def _eval_is_rational(self):
         s = self.func(*self.args)
@@ -348,7 +340,7 @@ class log(Function):
         arg = self.args[0]
         if arg.is_zero:
             return False
-        elif arg.is_nonzero:
+        if arg.is_nonzero:
             return arg.is_finite
 
     def _eval_is_complex(self):
@@ -363,34 +355,35 @@ class log(Function):
         return (self.args[0] - 1).is_zero
 
     def _eval_nseries(self, x, n, logx):
-        from ...series import Order
-        from .complexes import arg
+        from ...calculus import Order
+        from .complexes import arg as argument
         from .integers import floor
         if not logx:
             logx = log(x)
-        arg_series = self.args[0].nseries(x, n=n, logx=logx)
+        arg = self.args[0]
+        arg_series = arg.nseries(x, n, logx)
         while arg_series.is_Order:
             n += 1
-            arg_series = self.args[0].nseries(x, n=n, logx=logx)
+            arg_series = arg.nseries(x, n, logx)
         arg0 = arg_series.as_leading_term(x)
         c, e = arg0.as_coeff_exponent(x)
-        t = (arg_series/arg0 - 1).cancel().nseries(x, n=n, logx=logx)
+        res = term = t = ((arg_series - arg0)/arg0).nseries(x, n, logx)
         # series of log(1 + t) in t
-        log_series = term = t
         for i in range(1, n):
             term *= -i*t/(i + 1)
-            term = term.nseries(x, n=n, logx=logx)
-            log_series += term
-        if t != 0:
-            log_series += Order(t**n, x)
-            # branch handling
-            if c.is_negative:
-                l = floor(arg(t.removeO()*c)/(2*pi)).limit(x, 0)
-                if l.is_finite:
-                    log_series += 2*I*pi*l
-                else:
-                    raise NotImplementedError
-        return log_series + log(c) + e*logx
+            term = term.series(x, n=n, logx=logx)
+            res += term
+        res += Order(t**n, x)
+        # branch handling
+        if c.is_negative:
+            if t.is_Order:
+                return self._eval_nseries(x, n + 1, logx)
+            l = 2*pi*I*floor(argument(t*c)/2/pi).limit(x, 0)
+            if l.is_finite:
+                res += l
+            else:
+                raise NotImplementedError
+        return res + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)
@@ -436,7 +429,7 @@ class LambertW(Function):
     def eval(cls, x, k=None):
         if k == 0:
             return cls(x)
-        elif k is None:
+        if k is None:
             k = Integer(0)
 
         if k == 0:
@@ -457,9 +450,9 @@ class LambertW(Function):
         if k == -1:
             if x == -pi/2:
                 return -I*pi/2
-            elif x == -1/E:
+            if x == -1/E:
                 return Integer(-1)
-            elif x == -2*exp(-2):
+            if x == -2*exp(-2):
                 return -Integer(2)
 
     def fdiff(self, argindex=1):
@@ -469,14 +462,11 @@ class LambertW(Function):
         if len(self.args) == 1:
             if argindex == 1:
                 return LambertW(x)/(x*(1 + LambertW(x)))
-            else:
-                raise ArgumentIndexError(self, argindex)
-        else:
-            k = self.args[1]
-            if argindex == 1:
-                return LambertW(x, k)/(x*(1 + LambertW(x, k)))
-            else:
-                raise ArgumentIndexError(self, argindex)
+            raise ArgumentIndexError(self, argindex)
+        k = self.args[1]
+        if argindex == 1:
+            return LambertW(x, k)/(x*(1 + LambertW(x, k)))
+        raise ArgumentIndexError(self, argindex)
 
     def _eval_is_extended_real(self):
         x = self.args[0]
@@ -487,12 +477,12 @@ class LambertW(Function):
         if k.is_zero:
             if (x + 1/E).is_positive:
                 return True
-            elif (x + 1/E).is_nonpositive:
+            if (x + 1/E).is_nonpositive:
                 return False
         elif (k + 1).is_zero:
             if x.is_negative and (x + 1/E).is_nonnegative:
                 return True
-            elif x.is_nonpositive or (x + 1/E).is_positive:
+            if x.is_nonpositive or (x + 1/E).is_positive:
                 return False
 
     def _eval_is_algebraic(self):
@@ -505,7 +495,7 @@ class LambertW(Function):
 
     def _eval_nseries(self, x, n, logx):
         if len(self.args) == 1:
-            from ...series import Order
+            from ...calculus import Order
             from .. import factorial
             x = self.args[0]
             o = Order(x**n, x)
@@ -514,4 +504,4 @@ class LambertW(Function):
                 l += Add(*[Integer(-k)**(k - 1)*x**k/factorial(k)
                            for k in range(1, n)])
             return l + o
-        return super()._eval_nseries(x, n=n, logx=logx)
+        return super()._eval_nseries(x, n, logx)

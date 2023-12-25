@@ -3,7 +3,7 @@
 ==========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 To make a matrix in Diofant, use the
 :class:`~diofant.matrices.Matrix` object.  A matrix is
@@ -251,7 +251,7 @@ To compute the determinant of a matrix, use
     ⎢2  -1  3⎥
     ⎢        ⎥
     ⎣4  3   2⎦
-    >>> det(_)
+    >>> _.det()
     -1
 
 To put a matrix into reduced row echelon form, use method

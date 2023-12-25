@@ -33,6 +33,8 @@ _default_config = {
     'MINPOLY_METHOD':             'compose',
 
     'KARATSUBA_CUTOFF':           100,
+
+    'MAX_INTEGER_NBITS':          10000000,
 }
 
 _current_config = {}
@@ -52,11 +54,13 @@ def using(**kwargs):
 def setup(key, value=None):
     """Assign a value to (or reset) a configuration item."""
     key = key.upper()
+    default = _default_config[key]
 
-    if value is not None:
+    if value is None:
+        value = default
+
+    if type(value) is type(default):
         _current_config[key] = value
-    else:
-        _current_config[key] = _default_config[key]
 
 
 def query(key):
@@ -65,19 +69,14 @@ def query(key):
 
 
 def configure():
-    """Initialized configuration of polys module."""
-    for key, default in _default_config.items():
-        _current_config[key] = default
-
-        value = os.getenv('DIOFANT_' + key)
-        if value is not None:
+    """Initialize configuration."""
+    for key in _default_config:
+        if (value := os.getenv('DIOFANT_' + key)) is not None:
             try:
                 value = ast.literal_eval(value)
             except (SyntaxError, ValueError):
-                pass
-            else:
-                if type(value) is type(default):
-                    _current_config[key] = value
+                value = None
+        setup(key, value)
 
 
 configure()

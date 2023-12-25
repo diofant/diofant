@@ -100,9 +100,9 @@ def test_diff_symbols():
     assert diff(f(x, y, z), x, y, (z, 2)) == Derivative(f(x, y, z), x, y, z, z)
     assert diff(f(x, y, z), x, y, (z, 2), evaluate=False) == \
         Derivative(f(x, y, z), x, y, z, z)
-    assert Derivative(f(x, y, z), x, y, z)._eval_derivative(z) == \
+    assert Derivative(f(x, y, z), x, y, z).diff(z) == \
         Derivative(f(x, y, z), x, y, z, z)
-    assert Derivative(Derivative(f(x, y, z), x), y)._eval_derivative(z) == \
+    assert Derivative(Derivative(f(x, y, z), x), y).diff(z) == \
         Derivative(f(x, y, z), x, y, z)
 
 
@@ -153,7 +153,7 @@ def test_Lambda():
     assert e(x) == x**2
     assert e(y) == y**2
 
-    assert Lambda(x, x**2) == Lambda(x, x**2)
+    assert Lambda(x, x**2) == Lambda(x, x**2, evaluate=False)
     assert Lambda(x, x**2) == Lambda(y, y**2)
     assert Lambda(x, x**2) != Lambda(y, y**2 + 1)
     assert Lambda((x, y), x**y) == Lambda((y, x), y**x)
@@ -277,8 +277,8 @@ def test_function_comparable():
     assert sin(x).is_comparable is False
     assert cos(x).is_comparable is False
 
-    assert sin(Float('0.1')).is_comparable is True
-    assert cos(Float('0.1')).is_comparable is True
+    assert sin(0.1).is_comparable is True
+    assert cos(0.1).is_comparable is True
 
     assert sin(E).is_comparable is True
     assert cos(E).is_comparable is True
@@ -341,18 +341,18 @@ def test_suppressed_evaluation():
 def test_function_evalf():
     def eq(a, b, eps):
         return abs(a - b) < eps
-    assert eq(sin(1).evalf(15), Float('0.841470984807897'), 1e-13)
+    assert eq(sin(1).evalf(15), 0.841470984807897, 1e-13)
     assert eq(
         sin(2).evalf(25), Float('0.9092974268256816953960199', 25), 1e-23)
     assert eq(sin(1 + I).evalf(
-        15), Float('1.29845758141598') + Float('0.634963914784736')*I, 1e-13)
-    assert eq(exp(1 + I).evalf(15), Float(
-        '1.46869393991588') + Float('2.28735528717884239')*I, 1e-13)
-    assert eq(exp(-0.5 + 1.5*I).evalf(15, strict=False), Float(
-        '0.0429042815937374') + Float('0.605011292285002')*I, 1e-13)
+        15), 1.29845758141598 + 0.634963914784736*I, 1e-13)
+    assert eq(exp(1 + I).evalf(15),
+              1.46869393991588 + 2.28735528717884239*I, 1e-13)
+    assert eq(exp(-0.5 + 1.5*I).evalf(15, strict=False),
+              0.0429042815937374 + 0.605011292285002*I, 1e-13)
     assert eq(log(pi + sqrt(2)*I).evalf(
-        15), Float('1.23699044022052') + Float('0.422985442737893')*I, 1e-13)
-    assert eq(cos(100).evalf(15), Float('0.86231887228768'), 1e-13)
+        15), 1.23699044022052 + 0.422985442737893*I, 1e-13)
+    assert eq(cos(100).evalf(15), 0.86231887228768, 1e-13)
 
 
 def test_extensibility_eval():
@@ -398,26 +398,25 @@ def test_function_complex():
 def test_function__eval_nseries():
     n = Symbol('n')
 
-    assert sin(x)._eval_nseries(x, 2, None) == x + O(x**3)
-    assert sin(x + 1)._eval_nseries(x, 2, None) == x*cos(1) + sin(1) + O(x**2)
-    assert sin(pi*(1 - x))._eval_nseries(x, 2, None) == pi*x + O(x**3)
-    assert acos(1 - x**2)._eval_nseries(x, 2, None) == sqrt(2)*x + O(x**2)
-    assert polygamma(n, x + 1)._eval_nseries(x, 2, None) == \
+    assert sin(x).series(x, n=3) == x + O(x**3)
+    assert sin(x + 1).series(x, n=2) == x*cos(1) + sin(1) + O(x**2)
+    assert sin(pi*(1 - x)).series(x, n=3) == pi*x + O(x**3)
+    assert acos(1 - x**2).series(x, n=2) == sqrt(2)*x + O(x**2)
+    assert polygamma(n, x + 1).series(x, n=2) == \
         polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
-    pytest.raises(PoleError, lambda: sin(1/x)._eval_nseries(x, 2, None))
-    assert acos(1 - x)._eval_nseries(x, 4, None) == sqrt(2)*sqrt(x) + \
+    pytest.raises(PoleError, lambda: sin(1/x).series(x, n=2))
+    assert acos(1 - x).series(x, n=2) == sqrt(2)*sqrt(x) + \
         sqrt(2)*x**Rational(3, 2)/12 + O(x**2)
-    assert acos(1 + x)._eval_nseries(x, 4, None) == sqrt(2)*I*sqrt(x) - \
-        sqrt(2)*I*x**(3/2)/12 + O(x**2)  # XXX: wrong, branch cuts
-    assert loggamma(1/x)._eval_nseries(x, 0, None) == \
-        log(x)/2 - log(x)/x - 1/x + O(1, x)
+    assert acos(1 + x).series(x, n=2) == sqrt(2)*I*sqrt(x) - \
+        sqrt(2)*I*x**(3/2)/12 + O(x**2)
+    assert loggamma(1/x).series(x, n=-1) == O(1/x) - log(x)/x
     assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:
-    assert expint(Rational(3, 2), -x)._eval_nseries(x, 8, None) == \
+    assert expint(Rational(3, 2), -x).series(x, n=5) == \
         2 - 2*I*sqrt(pi)*sqrt(x) - 2*x - x**2/3 - x**3/15 - x**4/84 + O(x**5)
-    assert sin(sqrt(x))._eval_nseries(x, 6, None) == \
-        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**Rational(7, 2))
+    assert sin(sqrt(x)).series(x, n=3) == \
+        sqrt(x) - x**Rational(3, 2)/6 + x**Rational(5, 2)/120 + O(x**3)
 
 
 def test_doit():

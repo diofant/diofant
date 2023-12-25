@@ -1,6 +1,4 @@
-"""
-This module implements sums and products containing the Kronecker Delta function.
-"""
+"""This module implements sums and products containing the Kronecker Delta function."""
 
 from ..core import Add, Dummy, Integer, Mul, cacheit
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
@@ -126,7 +124,7 @@ def _remove_multiple_delta(expr):
     solns = solve(eqs)
     if len(solns) == 0:
         return Integer(0)
-    elif len(solns) == 1:
+    if len(solns) == 1:
         for key in solns[0]:
             newargs.append(KroneckerDelta(key, solns[0][key]))
         expr2 = expr.func(*newargs)

@@ -1,13 +1,6 @@
-"""
-A Printer for generating readable representation of most diofant classes.
-"""
+"""A Printer for generating readable representation of most diofant classes."""
 
-from __future__ import annotations
-
-import typing
-
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps
+from mpmath.libmp import prec_to_dps, to_str
 
 from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
@@ -22,7 +15,7 @@ class StrPrinter(Printer):
     """Str printer."""
 
     printmethod = '_diofantstr'
-    _default_settings: dict[str, typing.Any] = {
+    _default_settings = {
         'order': None,
         'full_prec': 'auto',
     }
@@ -32,8 +25,7 @@ class StrPrinter(Printer):
     def parenthesize(self, item, level):
         if precedence(item) <= level:
             return f'({self._print(item)})'
-        else:
-            return self._print(item)
+        return self._print(item)
 
     def stringify(self, args, sep, level=0):
         return sep.join([self.parenthesize(item, level) for item in args])
@@ -41,11 +33,10 @@ class StrPrinter(Printer):
     def emptyPrinter(self, expr):
         if isinstance(expr, str):
             return expr
-        elif hasattr(expr, '__str__') and not issubclass(expr.__class__,
-                                                         DefaultPrinting):
+        if hasattr(expr, '__str__') and not issubclass(expr.__class__,
+                                                       DefaultPrinting):
             return str(expr)
-        else:
-            return repr(expr)
+        return repr(expr)
 
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
@@ -115,9 +106,6 @@ class StrPrinter(Printer):
     def _print_Dict(self, expr):
         return self._print_dict(expr)
 
-    def _print_RandomDomain(self, d):
-        return 'Domain: ' + self._print(d.as_boolean())
-
     def _print_Dummy(self, expr):
         return '_' + expr.name
 
@@ -141,10 +129,6 @@ class StrPrinter(Printer):
     def _print_Function(self, expr):
         return expr.func.__name__ + f"({self.stringify(expr.args, ', ')})"
 
-    def _print_GeometryEntity(self, expr):
-        # GeometryEntity is special -- it's base is tuple
-        return str(expr)
-
     def _print_GoldenRatio(self, expr):
         return 'GoldenRatio'
 
@@ -158,8 +142,7 @@ class StrPrinter(Printer):
         def _xab_tostr(xab):
             if len(xab) == 1:
                 return self._print(xab[0])
-            else:
-                return self._print((xab[0],) + tuple(xab[1:]))
+            return self._print((xab[0],) + tuple(xab[1:]))
         L = ', '.join([_xab_tostr(l) for l in expr.limits])
         return f'Integral({self._print(expr.function)}, {L})'
 
@@ -183,9 +166,8 @@ class StrPrinter(Printer):
         args, expr = obj.args
         if len(args) == 1:
             return f'Lambda({args.args[0]}, {expr})'
-        else:
-            arg_string = ', '.join(self._print(arg) for arg in args)
-            return f'Lambda(({arg_string}), {expr})'
+        arg_string = ', '.join(self._print(arg) for arg in args)
+        return f'Lambda(({arg_string}), {expr})'
 
     def _print_LatticeOp(self, expr):
         args = sorted(expr.args, key=default_sort_key)
@@ -195,10 +177,9 @@ class StrPrinter(Printer):
         e, z, z0, dir = expr.args
         if dir == -1 or z0 in (oo, -oo):
             return f'Limit({e}, {z}, {z0})'
-        elif dir == Reals:
+        if dir == Reals:
             return f'Limit({e}, {z}, {z0}, dir=Reals)'
-        else:
-            return f'Limit({e}, {z}, {z0}, dir={dir})'
+        return f'Limit({e}, {z}, {z0}, dir={dir})'
 
     def _print_list(self, expr):
         return f"[{self.stringify(expr, ', ')}]"
@@ -267,10 +248,9 @@ class StrPrinter(Printer):
 
         if len(b) == 0:
             return sign + '*'.join(a_str)
-        elif len(b) == 1:
+        if len(b) == 1:
             return sign + '*'.join(a_str) + '/' + b_str[0]
-        else:
-            return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
+        return sign + '*'.join(a_str) + f"/({'*'.join(b_str)})"
 
     def _print_MatMul(self, expr):
         return '*'.join([self.parenthesize(arg, precedence(expr))
@@ -291,13 +271,11 @@ class StrPrinter(Printer):
         return '-oo'
 
     def _print_Order(self, expr):
-        if all(p == 0 for p in expr.point) or not expr.variables:
-            if len(expr.variables) <= 1:
+        if expr.point == 0:
+            if expr.expr.has(expr.var):
                 return f'O({self._print(expr.expr)})'
-            else:
-                return f"O({self.stringify((expr.expr,) + expr.variables, ', ', 0)})"
-        else:
-            return f"O({self.stringify(expr.args, ', ', 0)})"
+            return f'O({self._print(expr.expr)}, {self._print(expr.var)})'
+        return f"O({self.stringify(expr.args, ', ', 0)})"
 
     def _print_Cycle(self, expr):
         """We want it to print as Cycle in doctests for which a repr is required.
@@ -324,17 +302,16 @@ class StrPrinter(Printer):
             if not last == 0 and ',' not in s[last:]:
                 s = s[last:] + s[:last]
             return f'Permutation{s}'
-        else:
-            s = expr.support()
-            if not s:
-                if expr.size < 5:
-                    return f'Permutation({expr.array_form!s})'
-                return f'Permutation([], size={expr.size})'
-            trim = str(expr.array_form[:s[-1] + 1]) + f', size={expr.size}'
-            use = full = str(expr.array_form)
-            if len(trim) < len(full):
-                use = trim
-            return f'Permutation({use})'
+        s = expr.support()
+        if not s:
+            if expr.size < 5:
+                return f'Permutation({expr.array_form!s})'
+            return f'Permutation([], size={expr.size})'
+        trim = str(expr.array_form[:s[-1] + 1]) + f', size={expr.size}'
+        use = full = str(expr.array_form)
+        if len(trim) < len(full):
+            use = trim
+        return f'Permutation({use})'
 
     def _print_TensorIndex(self, expr):
         return expr._print()
@@ -364,10 +341,9 @@ class StrPrinter(Printer):
     def _print_FracElement(self, frac):
         if frac.denominator == 1:
             return self._print(frac.numerator)
-        else:
-            numer = self.parenthesize(frac.numerator, PRECEDENCE['Add'])
-            denom = self.parenthesize(frac.denominator, PRECEDENCE['Atom']-1)
-            return numer + '/' + denom
+        numer = self.parenthesize(frac.numerator, PRECEDENCE['Add'])
+        denom = self.parenthesize(frac.denominator, PRECEDENCE['Atom']-1)
+        return numer + '/' + denom
 
     def _print_Poly(self, expr):
         terms, gens = [], expr.gens
@@ -464,6 +440,18 @@ class StrPrinter(Printer):
             # The parenthesized exp should be '(Rational(a, b))' so strip
             # parens, but just check to be sure.
             return f'{self.parenthesize(expr.base, PREC)}**{e[1:-1]}'
+        if (self.printmethod == '_diofantstr' and expr.is_commutative and
+                expr.exp.is_Rational and not expr.exp.is_Integer and not rational):
+            exp = expr.exp.numerator
+            prefix = ''
+            if exp < 0:
+                exp = -exp
+                prefix = '1/'
+            if exp != 1:
+                if expr.exp.denominator == 2:
+                    return f'{prefix}sqrt({expr.base})**{exp}'
+                return f'{prefix}root({expr.base}, {expr.exp.denominator})**{exp}'
+            return f'{prefix}root({expr.base}, {expr.exp.denominator})'
         return f'{self.parenthesize(expr.base, PREC)}**{e}'
 
     def _print_Mod(self, expr):
@@ -490,8 +478,7 @@ class StrPrinter(Printer):
     def _print_Rational(self, expr):
         if expr.denominator == 1:
             return str(expr.numerator)
-        else:
-            return f'{expr.numerator}/{expr.denominator}'
+        return f'{expr.numerator}/{expr.denominator}'
 
     def _print_Float(self, expr):
         prec = expr._prec
@@ -507,7 +494,7 @@ class StrPrinter(Printer):
             strip = self._print_level > 1
         else:
             raise NotImplementedError
-        rv = mlib.to_str(expr._mpf_, dps, strip_zeros=strip)
+        rv = to_str(expr._mpf_, dps, strip_zeros=strip)
         if rv.startswith('-.0'):
             rv = '-0.' + rv[3:]
         elif rv.startswith('.0'):
@@ -532,8 +519,7 @@ class StrPrinter(Printer):
         p = self._print_Add(expr.expr, order='lex')
         if expr.free_symbols:
             return f'RootOf({p}, {expr.poly.gen}, {expr.index:d})'
-        else:
-            return f'RootOf({p}, {expr.index:d})'
+        return f'RootOf({p}, {expr.index:d})'
 
     def _print_RootSum(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]
@@ -546,7 +532,7 @@ class StrPrinter(Printer):
     def _print_GroebnerBasis(self, basis):
         cls = basis.__class__.__name__
 
-        exprs = [self._print_Add(arg, order=basis.order)
+        exprs = [self._print_Add(arg, order='lex')
                  for arg in basis.exprs]
         exprs = f"[{', '.join(exprs)}]"
 
@@ -595,8 +581,7 @@ class StrPrinter(Printer):
     def _print_tuple(self, expr):
         if len(expr) == 1:
             return f'({self._print(expr[0])},)'
-        else:
-            return f"({self.stringify(expr, ', ')})"
+        return f"({self.stringify(expr, ', ')})"
 
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
@@ -605,8 +590,7 @@ class StrPrinter(Printer):
         if expr.gens:
             return '*'.join([f'{gen}**{exp}'
                              for gen, exp in zip(expr.gens, expr)])
-        else:
-            return self._print_tuple(expr)
+        return self._print_tuple(expr)
 
     def _print_Transpose(self, T):
         return f"{self.parenthesize(T.arg, PRECEDENCE['Pow'])}.T"
@@ -626,25 +610,20 @@ class StrPrinter(Printer):
     def _print_Zero(self, expr):
         return '0'
 
-    def _print_BaseScalarField(self, field):
-        return field._coord_sys._names[field._index]
-
-    def _print_BaseVectorField(self, field):
-        return f'e_{field._coord_sys._names[field._index]}'
-
-    def _print_Differential(self, diff):
-        field = diff._form_field
-        if hasattr(field, '_coord_sys'):
-            return f'd{field._coord_sys._names[field._index]}'
-        else:
-            return f'd({self._print(field)})'
-
     def _print_Tr(self, expr):
         # TODO : Handle indices
         return f"{'Tr'}({self._print(expr.args[0])})"
 
     def _print_Domain(self, expr):
         return expr.rep
+
+    def _print_Indexed(self, expr):
+        indices = list(map(self.doprint, expr.indices))
+        return f"{self.doprint(expr.base)}[{', '.join(indices)}]"
+
+    def _print_IndexedBase(self, expr):
+        return self.doprint(expr.label)
+    _print_Idx = _print_IndexedBase
 
 
 def sstr(expr, **settings):
@@ -661,27 +640,6 @@ def sstr(expr, **settings):
 
     """
     p = StrPrinter(settings)
-    s = p.doprint(expr)
-
-    return s
-
-
-class StrReprPrinter(StrPrinter):
-    """(internal) -- see sstrrepr"""
-
-    def _print_str(self, expr):
-        return repr(expr)
-
-
-def sstrrepr(expr, **settings):
-    """Return expr in mixed str/repr form.
-
-    i.e. strings are returned in repr form with quotes, and everything else
-    is returned in str form.
-
-    This function could be useful for hooking into sys.displayhook
-    """
-    p = StrReprPrinter(settings)
     s = p.doprint(expr)
 
     return s

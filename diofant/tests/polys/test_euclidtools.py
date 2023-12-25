@@ -2,7 +2,8 @@
 
 import pytest
 
-from diofant import CC, FF, QQ, RR, ZZ, I, NotInvertible, field, ring, sqrt
+from diofant import (CC, FF, QQ, RR, ZZ, I, NotInvertibleError, field, ring,
+                     sqrt)
 from diofant.config import using
 from diofant.polys.specialpolys import f_polys
 
@@ -62,7 +63,7 @@ def test_dup_invert():
     assert R.invert(2*x, x**2 - 16) == x/32
     assert R.invert(x**2 - 1, 2*x - 1) == QQ(-4, 3)
 
-    pytest.raises(NotInvertible, lambda: R.invert(x**2 - 1, x - 1))
+    pytest.raises(NotInvertibleError, lambda: R.invert(x**2 - 1, x - 1))
 
 
 def test_dmp_prem():
@@ -861,6 +862,7 @@ def test_PolyElement_lcm():
 
     R, x = ring('x', ZZ)
 
+    assert R(0).lcm(R(0)) == 0
     assert R(2).lcm(R(6)) == 6
 
     assert (2*x**3).lcm(6*x) == 6*x**3
@@ -1048,7 +1050,6 @@ def test_sympyissue_21460():
     assert r == 1
 
 
-@pytest.mark.slow
 def test_sympyissue_23479():
     xs = ' '.join(f'x{i}' for i in range(13))
     _, x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12 = ring(xs, ZZ)

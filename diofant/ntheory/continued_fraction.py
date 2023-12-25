@@ -158,8 +158,7 @@ def continued_fraction_reduce(cf):
         solns.sort()
         pure = solns[-1]
         return a.subs({x: pure}).radsimp()
-    else:
-        return a
+    return a
 
 
 def continued_fraction_iterator(x):

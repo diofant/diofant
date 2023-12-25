@@ -1,8 +1,5 @@
 from ..core import Add, Mul, PoleError, Pow, sympify
-from ..functions import log, sign
-from ..series import Limit
 from ..sets import Reals
-from ..solvers import solve
 
 
 def singularities(f, x):
@@ -31,36 +28,39 @@ def singularities(f, x):
     * https://en.wikipedia.org/wiki/Mathematical_singularity
 
     """
+    from ..functions import Abs, cos, log, sign, sin
+    from ..solvers import solve
+    from .limits import limit
+
     f, x = sympify(f), sympify(x)
-    guess, res = set(), set()
 
     assert x.is_Symbol
 
     if f.is_number:
         return set()
-    elif f.is_polynomial(x):
+    if f.is_polynomial(x):
         return set()
-    elif f.func in (Add, Mul):
-        guess = guess.union(*[singularities(a, x) for a in f.args])
+    if f.func in (Add, Mul):
+        res = set().union(*[singularities(a, x) for a in f.args])
     elif isinstance(f, Pow):
         if f.exp.is_number and f.exp.is_negative:
-            guess = {s[x] for s in solve(f.base, x) if s[x].is_real}
+            res = {s[x] for s in solve(f.base, x) if s[x].is_real}
         else:
-            guess |= singularities(log(f.base)*f.exp, x)
+            res = singularities(log(f.base)*f.exp, x)
     elif f.func in (log, sign) and len(f.args) == 1:
-        guess |= singularities(f.args[0], x)
-        guess |= {s[x] for s in solve(f.args[0], x) if s[x].is_real}
+        res = singularities(f.args[0], x)
+        res |= {s[x] for s in solve(f.args[0], x) if s[x].is_real}
+    elif f.func in (Abs, sin, cos):
+        res = singularities(f.args[0], x)
     else:
         raise NotImplementedError
 
-    for s in guess:
-        l = Limit(f, x, s, dir=Reals)
+    for s in res.copy():
         try:
-            r = l.doit()
-            if r.is_infinite:
-                raise PoleError
-            raise NotImplementedError
+            l = limit(f, x, s, dir=Reals)
+            if l.is_finite:
+                res.remove(s)
         except PoleError:
-            res.add(s)
+            pass
 
     return res

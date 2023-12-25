@@ -5,9 +5,9 @@ from ..core.sympify import sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from ..utilities import ordered
-from .polyerrors import GeneratorsNeeded
+from .polyerrors import GeneratorsNeededError
 from .polyoptions import build_options
-from .polyutils import parallel_dict_from_expr
+from .polyutils import _parallel_dict_from_expr
 
 
 def _construct_simple(coeffs, opt):
@@ -94,7 +94,10 @@ def _construct_algebraic(coeffs, opt):
         ground_exts = list(ordered(set().union(*[_.as_real_imag() for _ in exts])))
         domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
-    H = [domain.from_expr(e).rep for e in exts]
+    if domain.is_RationalField:
+        H = [domain.from_expr(e) for e in exts]
+    else:
+        H = [domain.from_expr(e).rep for e in exts]
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
@@ -114,12 +117,14 @@ def _construct_composite(coeffs, opt):
     for coeff in coeffs:
         numer, denom = coeff.as_numer_denom()
 
-        numers.append(numer)
-        denoms.append(denom)
+        numers.append(numer.expand())
+        denoms.append(denom.expand())
 
     try:
-        polys, gens = parallel_dict_from_expr(numers + denoms)  # XXX: sorting
-    except GeneratorsNeeded:
+        polys, _opt = _parallel_dict_from_expr(numers + denoms,
+                                               build_options([], {}))  # XXX: sorting
+        gens = _opt.gens
+    except GeneratorsNeededError:
         return
 
     if opt.composite is None:
@@ -133,8 +138,7 @@ def _construct_composite(coeffs, opt):
 
             if all_symbols & symbols:
                 return  # there could be algebraic relations between generators
-            else:
-                all_symbols |= symbols
+            all_symbols |= symbols
 
     n = len(gens)
     k = len(polys)//2
@@ -262,7 +266,5 @@ def construct_domain(obj, **args):
     if hasattr(obj, '__iter__'):
         if isinstance(obj, dict):
             return domain, dict(zip(monoms, coeffs))
-        else:
-            return domain, coeffs
-    else:
-        return domain, coeffs[0]
+        return domain, coeffs
+    return domain, coeffs[0]

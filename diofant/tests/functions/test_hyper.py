@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Derivative, Dummy, Float, I, O, Piecewise, Rational,
+from diofant import (Derivative, Dummy, I, O, Piecewise, Rational,
                      RisingFactorial, Sum, Tuple, besseli, cos, exp, exp_polar,
                      expand_func, factorial, false, gamma, hyper, limit, log,
                      meijerg, oo, pi, polar_lift, sqrt, symbols)
@@ -348,7 +348,7 @@ def test_limits():
 
 
 def test_evalf():
-    assert hyper((-1, 1), (-1,), 1).evalf() == Float('2.0')
+    assert hyper((-1, 1), (-1,), 1).evalf() == 2.0
 
     e = meijerg([], [], [], [], (exp_polar(-I*pi))*cos(exp_polar(-I*pi)))
     assert e.evalf() == e

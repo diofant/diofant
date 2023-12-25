@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (E, EulerGamma, Float, O, Product, Rational, Symbol,
-                     binomial, exp, expand_func, factorial, factorial2, ff,
-                     gamma, loggamma, nan, oo, pi, polygamma, rf, simplify,
-                     subfactorial, symbols, uppergamma, zoo)
-from diofant.abc import x
+from diofant import (E, EulerGamma, O, Product, Rational, Symbol, binomial,
+                     exp, expand_func, factorial, factorial2, ff, gamma,
+                     loggamma, nan, oo, pi, polygamma, rf, simplify,
+                     subfactorial, uppergamma, zoo)
+from diofant.abc import x, y
 from diofant.core.function import ArgumentIndexError
 
 
@@ -12,11 +12,9 @@ __all__ = ()
 
 
 def test_rf_eval_apply():
-    x, y = symbols('x,y')
-
     assert rf(nan, y) == nan
 
-    assert rf(x, y) == rf(x, y)
+    assert rf(x, y) == rf(x, y, evaluate=False)
 
     assert rf(oo, 0) == 1
     assert rf(-oo, 0) == 1
@@ -52,11 +50,9 @@ def test_rf_eval_apply():
 
 
 def test_ff_eval_apply():
-    x, y = symbols('x,y')
-
     assert ff(nan, y) == nan
 
-    assert ff(x, y) == ff(x, y)
+    assert ff(x, y) == ff(x, y, evaluate=False)
 
     assert ff(oo, 0) == 1
     assert ff(-oo, 0) == 1
@@ -89,7 +85,6 @@ def test_ff_eval_apply():
 
 
 def test_factorial():
-    x = Symbol('x')
     n = Symbol('n', integer=True)
     k = Symbol('k', integer=True, nonnegative=True)
     r = Symbol('r', integer=False)
@@ -337,7 +332,6 @@ def test_subfactorial():
     assert isinstance(subfactorial(Rational(1, 2)), subfactorial)
     assert subfactorial(nan) == nan
 
-    x = Symbol('x')
     assert subfactorial(x).rewrite(uppergamma) == uppergamma(x + 1, -1)/E
 
     tt = Symbol('tt', integer=True, nonnegative=True)
@@ -376,5 +370,5 @@ def test_subfactorial():
 
 
 def test_sympyissue_14822():
-    assert rf(Rational(2, 3), 32).evalf() == Float('+6.0994868747569084e+34', dps=15)
-    assert ff(Rational(2, 3), 32).evalf() == Float('-2.066175896913914e+32', dps=15)
+    assert rf(Rational(2, 3), 32).evalf() == 6.0994868747569084e+34
+    assert ff(Rational(2, 3), 32).evalf() == -2.066175896913914e+32

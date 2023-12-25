@@ -1,11 +1,12 @@
 """Useful utilities for higher level polynomial classes."""
 
+import collections
 import re
 
 from ..core import Add, Mul, Pow
 from ..core.exprtools import decompose_power
 from ..utilities import default_sort_key
-from .polyerrors import GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeededError, PolynomialError
 from .polyoptions import build_options
 
 
@@ -38,10 +39,9 @@ def _nsort(roots, separated=False):
         r = list(roots)[0]
         if r.is_extended_real:
             return [[r], []]
-        elif r.is_real is False and r.is_complex:
+        if r.is_real is False and r.is_complex:
             return [[], [r]]
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
     all_numbers = all(r.is_number for r in roots)
     if not all_numbers:
         raise NotImplementedError
@@ -147,23 +147,18 @@ def _find_gens(exprs, opt):
     for expr in exprs:
         for term in Add.make_args(expr):
             for factor in Mul.make_args(term):
-                try:
-                    if factor.is_Add and opt.expand:
-                        gens |= set(_find_gens([factor], opt))
-                    elif not _is_coeff(factor):
-                        base, exp = decompose_power(factor)
-                        if exp < 0:
-                            base = Pow(base, -1)
+                if not _is_coeff(factor):
+                    base, exp = decompose_power(factor)
+                    if exp < 0:
+                        base = Pow(base, -1)
 
-                        if opt.expand and exp > 1:
-                            gens |= set(_find_gens([base], opt))
-                        else:
-                            gens.add(base)
-                except GeneratorsNeeded:
-                    pass
+                    if opt.expand and exp > 1:
+                        gens |= set(_find_gens([base], opt))
+                    else:
+                        gens.add(base)
 
     if not gens:
-        raise GeneratorsNeeded(f'specify generators to give {exprs} a meaning')
+        raise GeneratorsNeededError(f'specify generators to give {exprs} a meaning')
 
     return _sort_gens(gens, opt=opt)
 
@@ -179,8 +174,7 @@ def _sort_factors(factors, **args):
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)
-    else:
-        return sorted(factors, key=order_no_multiple_key)
+    return sorted(factors, key=order_no_multiple_key)
 
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):
@@ -190,7 +184,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
     polys = []
 
     for expr in exprs:
-        poly = {}
+        poly = collections.defaultdict(int)
 
         for term in Add.make_args(expr):
             coeff, monom = [], zero_monom.copy()
@@ -200,7 +194,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                 if exp < 0:
                     exp, base = -exp, Pow(base, -1)
                 try:
-                    monom[indices[base]] += exp
+                    monom[indices[base]] += int(exp)
                     continue
                 except KeyError as exc:
                     if factor.free_symbols & set(opt.gens):
@@ -210,17 +204,11 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                 coeff.append(factor)
 
             monom = tuple(monom)
-            poly[monom] = Mul(*coeff) + poly.get(monom, 0)
+            poly[monom] += Mul(*coeff)
 
         polys.append(poly)
 
     return polys
-
-
-def parallel_dict_from_expr(exprs, **args):
-    """Transform expressions into a multinomial form."""
-    reps, opt = _parallel_dict_from_expr(exprs, build_options(args))
-    return reps, opt.gens
 
 
 def _parallel_dict_from_expr(exprs, opt):
@@ -228,12 +216,7 @@ def _parallel_dict_from_expr(exprs, opt):
     if any(not expr.is_commutative for expr in exprs):
         raise PolynomialError('non-commutative expressions are not supported')
 
-    if opt.expand is not False:
-        exprs = [expr.expand() for expr in exprs]
-
     if not opt.gens:
         opt = opt.clone({'gens': _find_gens(exprs, opt)})
 
-    reps = _parallel_dict_from_expr_if_gens(exprs, opt)
-
-    return reps, opt.clone()
+    return _parallel_dict_from_expr_if_gens(exprs, opt), opt.clone()

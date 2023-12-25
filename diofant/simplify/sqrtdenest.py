@@ -33,12 +33,11 @@ def sqrt_depth(p):
     """
     if p.is_Atom:
         return 0
-    elif p.is_Add or p.is_Mul:
+    if p.is_Add or p.is_Mul:
         return max((sqrt_depth(x) for x in p.args), key=default_sort_key)
-    elif is_sqrt(p):
+    if is_sqrt(p):
         return sqrt_depth(p.base) + 1
-    else:
-        return 0
+    return 0
 
 
 def is_algebraic(p):
@@ -56,14 +55,13 @@ def is_algebraic(p):
     """
     if p.is_Rational:
         return True
-    elif p.is_Atom:
+    if p.is_Atom:
         return False
-    elif is_sqrt(p) or p.is_Pow and p.exp.is_Integer:
+    if is_sqrt(p) or p.is_Pow and p.exp.is_Integer:
         return is_algebraic(p.base)
-    elif p.is_Add or p.is_Mul:
+    if p.is_Add or p.is_Mul:
         return all(is_algebraic(x) for x in p.args)
-    else:
-        return False
+    return False
 
 
 def _subsets(n):
@@ -223,9 +221,8 @@ def _sqrtdenest0(expr):
                         pass
                 expr = sqrt(_mexpand(Add(*[_sqrtdenest0(x) for x in args])))
             return _sqrtdenest1(expr)
-        else:
-            n, d = map(_sqrtdenest0, (n, d))
-            return n/d
+        n, d = map(_sqrtdenest0, (n, d))
+        return n/d
     if isinstance(expr, Expr):
         args = expr.args
         if args:
@@ -535,63 +532,57 @@ def _denester(nested, av0, h, max_depth_level):
                 return sqp, f  # got a perfect square so return its square root.
         # Otherwise, return the radicand from the previous invocation.
         return sqrt(nested[-1]), [0]*len(nested)
+    R = None
+    if av0[0] is not None:
+        values = [av0[:2]]
+        R = av0[2]
+        nested2 = [av0[3], R]
+        av0[0] = None
     else:
-        R = None
-        if av0[0] is not None:
-            values = [av0[:2]]
-            R = av0[2]
-            nested2 = [av0[3], R]
-            av0[0] = None
-        else:
-            values = list(filter(None, (_sqrt_match(expr) for expr in nested)))
-            for v in values:
-                if v[2]:  # Since if b=0, r is not defined
-                    if R is not None:
-                        if R != v[2]:
-                            av0[1] = None
-                            return None, None
-                    else:
-                        R = v[2]
-            if R is None:
-                # return the radicand from the previous invocation
-                return sqrt(nested[-1]), [0]*len(nested)
-            nested2 = [_mexpand(v[0]**2) -
-                       _mexpand(R*v[1]**2) for v in values] + [R]
-        d, f = _denester(nested2, av0, h + 1, max_depth_level)
-        if not f:
+        values = list(filter(None, (_sqrt_match(expr) for expr in nested)))
+        for v in values:
+            if v[2]:  # Since if b=0, r is not defined
+                if R is not None:
+                    if R != v[2]:
+                        av0[1] = None
+                        return None, None
+                else:
+                    R = v[2]
+        if R is None:
+            # return the radicand from the previous invocation
+            return sqrt(nested[-1]), [0]*len(nested)
+        nested2 = [_mexpand(v[0]**2) -
+                   _mexpand(R*v[1]**2) for v in values] + [R]
+    d, f = _denester(nested2, av0, h + 1, max_depth_level)
+    if not f:
+        return None, None
+    if not any(f[i] for i in range(len(nested))):
+        v = values[-1]
+        return sqrt(v[0] + _mexpand(v[1]*d)), f
+    p = Mul(*[nested[i] for i in range(len(nested)) if f[i]])
+    v = _sqrt_match(p)
+    if 1 in f and f.index(1) < len(nested) - 1 and f[len(nested) - 1]:
+        v[0] = -v[0]
+        v[1] = -v[1]
+    if not f[len(nested)]:  # Solution denests with square roots
+        vad = _mexpand(v[0] + d)
+        if vad <= 0:
+            # return the radicand from the previous invocation.
+            return sqrt(nested[-1]), [0]*len(nested)
+        assert sqrt_depth(vad) <= sqrt_depth(R) + 1
+        sqvad = _sqrtdenest1(sqrt(vad), denester=False)
+        if not sqrt_depth(sqvad) <= sqrt_depth(R) + 1:
+            av0[1] = None
             return None, None
-        if not any(f[i] for i in range(len(nested))):
-            v = values[-1]
-            return sqrt(v[0] + _mexpand(v[1]*d)), f
-        else:
-            p = Mul(*[nested[i] for i in range(len(nested)) if f[i]])
-            v = _sqrt_match(p)
-            if 1 in f and f.index(1) < len(nested) - 1 and f[len(nested) - 1]:
-                v[0] = -v[0]
-                v[1] = -v[1]
-            if not f[len(nested)]:  # Solution denests with square roots
-                vad = _mexpand(v[0] + d)
-                if vad <= 0:
-                    # return the radicand from the previous invocation.
-                    return sqrt(nested[-1]), [0]*len(nested)
-                if not(sqrt_depth(vad) <= sqrt_depth(R) + 1 or
-                       (vad**2).is_Number):
-                    av0[1] = None
-                    return None, None
-
-                sqvad = _sqrtdenest1(sqrt(vad), denester=False)
-                if not sqrt_depth(sqvad) <= sqrt_depth(R) + 1:
-                    av0[1] = None
-                    return None, None
-                sqvad1 = radsimp(1/sqvad)
-                res = _mexpand(sqvad/sqrt(2) + (v[1]*sqrt(R)*sqvad1/sqrt(2)))
-                return res, f
-            else:  # Solution requires a fourth root
-                s2 = _mexpand(v[1]*R) + d
-                if s2 <= 0:
-                    return sqrt(nested[-1]), [0]*len(nested)
-                FR, s = root(_mexpand(R), 4), sqrt(s2)
-                return _mexpand(s/(sqrt(2)*FR) + v[0]*FR/(sqrt(2)*s)), f
+        sqvad1 = radsimp(1/sqvad)
+        res = _mexpand(sqvad/sqrt(2) + (v[1]*sqrt(R)*sqvad1/sqrt(2)))
+        return res, f
+    # Solution requires a fourth root
+    s2 = _mexpand(v[1]*R) + d
+    if s2 <= 0:
+        return sqrt(nested[-1]), [0]*len(nested)
+    FR, s = root(_mexpand(R), 4), sqrt(s2)
+    return _mexpand(s/(sqrt(2)*FR) + v[0]*FR/(sqrt(2)*s)), f
 
 
 def unrad(eq, *syms, **flags):

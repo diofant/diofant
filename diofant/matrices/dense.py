@@ -2,7 +2,7 @@ import itertools
 import random
 
 from ..core import Basic, Expr, Integer, Symbol, count_ops
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.decorators import call_highest_priority
 from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
@@ -10,6 +10,7 @@ from ..logic import true
 from ..simplify import simplify as _simplify
 from ..utilities import filldedent, numbered_symbols
 from ..utilities.decorator import doctest_depends_on
+from ..utilities.iterables import is_sequence
 from .matrices import MatrixBase, ShapeError, a2idx, classof
 
 
@@ -316,7 +317,7 @@ class DenseMatrix(MatrixBase):
                 return False
             if isinstance(other, Matrix):
                 return self._mat == other._mat
-            elif isinstance(other, MatrixBase):  # pragma: no branch
+            if isinstance(other, MatrixBase):  # pragma: no branch
                 return self._mat == Matrix(other)._mat
         except AttributeError:
             return False
@@ -509,9 +510,9 @@ def _force_mutable(x):
     """Return a matrix as a Matrix, otherwise return x."""
     if getattr(x, 'is_Matrix', False):
         return x.as_mutable()
-    elif isinstance(x, Basic):
+    if isinstance(x, Basic):
         return x
-    elif hasattr(x, '__array__'):
+    if hasattr(x, '__array__'):
         a = x.__array__()
         if len(a.shape) == 0:
             return sympify(a)
@@ -1352,24 +1353,24 @@ def hessian(f, varlist, constraints=[]):
     >>> f = Function('f')(x, y)
     >>> g1 = Function('g')(x, y)
     >>> g2 = x**2 + 3*y
-    >>> pprint(hessian(f, (x, y), [g1, g2]), use_unicode=False)
-    [                   d               d            ]
-    [     0        0    --(g(x, y))     --(g(x, y))  ]
-    [                   dx              dy           ]
-    [                                                ]
-    [     0        0        2*x              3       ]
-    [                                                ]
-    [                     2               2          ]
-    [d                   d               d           ]
-    [--(g(x, y))  2*x   ---(f(x, y))   -----(f(x, y))]
-    [dx                   2            dy dx         ]
-    [                   dx                           ]
-    [                                                ]
-    [                     2               2          ]
-    [d                   d               d           ]
-    [--(g(x, y))   3   -----(f(x, y))   ---(f(x, y)) ]
-    [dy                dy dx              2          ]
-    [                                   dy           ]
+    >>> pprint(hessian(f, (x, y), [g1, g2]))
+    ⎡                   ∂               ∂            ⎤
+    ⎢     0        0    ──(g(x, y))     ──(g(x, y))  ⎥
+    ⎢                   ∂x              ∂y           ⎥
+    ⎢                                                ⎥
+    ⎢     0        0        2⋅x              3       ⎥
+    ⎢                                                ⎥
+    ⎢                     2               2          ⎥
+    ⎢∂                   ∂               ∂           ⎥
+    ⎢──(g(x, y))  2⋅x   ───(f(x, y))   ─────(f(x, y))⎥
+    ⎢∂x                   2            ∂y ∂x         ⎥
+    ⎢                   ∂x                           ⎥
+    ⎢                                                ⎥
+    ⎢                     2               2          ⎥
+    ⎢∂                   ∂               ∂           ⎥
+    ⎢──(g(x, y))   3   ─────(f(x, y))   ───(f(x, y)) ⎥
+    ⎢∂y                ∂y ∂x              2          ⎥
+    ⎣                                   ∂y           ⎦
 
     References
     ==========
@@ -1584,8 +1585,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
                 m[i, j] = m[j, i]
     if percent == 100:
         return m
-    else:
-        z = int(r*c*percent // 100)
-        m._mat[:z] = [Integer(0)]*z
-        prng.shuffle(m._mat)
+    z = int(r*c*percent // 100)
+    m._mat[:z] = [Integer(0)]*z
+    prng.shuffle(m._mat)
     return m

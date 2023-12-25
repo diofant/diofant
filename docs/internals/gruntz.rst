@@ -1,2 +1,2 @@
-.. automodule:: diofant.series.gruntz
+.. automodule:: diofant.calculus.gruntz
    :members:

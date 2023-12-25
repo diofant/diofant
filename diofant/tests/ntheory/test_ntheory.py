@@ -47,7 +47,6 @@ from diofant.ntheory.residue_ntheory import (_discrete_log_pohlig_hellman,
                                              _discrete_log_shanks_steps,
                                              _discrete_log_trial_mul,
                                              _primitive_root_prime_iter)
-from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
 
 
@@ -293,7 +292,7 @@ def test_factorint_invariant(x):
     assert Mul(*[v**p for v, p in factorint(x).items()]) == x
 
 
-def test_factorint():
+def test_factorint(capsys):
     assert primefactors(123456) == [2, 3, 643]
     assert primefactors(10000000001, limit=300) == [101]
     assert factorint(0) == {0: 1}
@@ -355,36 +354,52 @@ def test_factorint():
     # "close" and have a trivial factorization
     a = nextprime(2**2**8)  # 78 digits
     b = nextprime(a + 2**2**4)
-    assert 'Fermat' in capture(lambda: factorint(a*b, verbose=1))
+    factorint(a*b, verbose=1)
+    assert 'Fermat' in capsys.readouterr().out
 
     pytest.raises(ValueError, lambda: pollard_rho(4))
     pytest.raises(ValueError, lambda: pollard_pm1(3))
     pytest.raises(ValueError, lambda: pollard_pm1(10, B=2))
     # verbose coverage
     n = nextprime(2**16)*nextprime(2**17)*nextprime(1901)
-    assert 'with primes' in capture(lambda: factorint(n, verbose=1))
-    capture(lambda: factorint(nextprime(2**16)*1012, verbose=1))
+    factorint(n, verbose=1)
+    assert 'with primes' in capsys.readouterr().out
+    factorint(nextprime(2**16)*1012, verbose=1)
+    assert 'with ints' in capsys.readouterr().out
 
     n = nextprime(2**17)
-    capture(lambda: factorint(n**3, verbose=1))  # perfect power termination
-    capture(lambda: factorint(2*n, verbose=1))  # factoring complete msg
+    # perfect power termination
+    factorint(n**3, verbose=1)
+    assert ('Check for termination\n\t'
+            '131101 ** 1\nFactorization is '
+            'complete.\n') in capsys.readouterr().out
+    # factoring complete msg
+    factorint(2*n, verbose=1)
+    assert ('Trial division with ints [2 ... 32768] and '
+            'fail_max=600\n\t2 ** 1\nFactorization '
+            'is complete.\n') in capsys.readouterr().out
 
     # exceed 1st
     n = nextprime(2**17)
     n *= nextprime(n)
-    assert '1000' in capture(lambda: factorint(n, limit=1000, verbose=1))
+    factorint(n, limit=1000, verbose=1)
+    assert '1000' in capsys.readouterr().out
     n *= nextprime(n)
     assert len(factorint(n)) == 3
     assert len(factorint(n, limit=p1)) == 3
     n *= nextprime(2*n)
     # exceed 2nd
-    assert '2001' in capture(lambda: factorint(n, limit=2000, verbose=1))
-    assert capture(
-        lambda: factorint(n, limit=4000, verbose=1)).count('Pollard') == 2
+    factorint(n, limit=2000, verbose=1)
+    assert '2001' in capsys.readouterr().out
+    factorint(n, limit=4000, verbose=1)
+    assert capsys.readouterr().out.count('Pollard') == 2
     # non-prime pm1 result
     n = nextprime(8069)
     n *= nextprime(2*n)*nextprime(2*n, 2)
-    capture(lambda: factorint(n, verbose=1))  # non-prime pm1 result
+    # non-prime pm1 result
+    factorint(n, verbose=1)
+    assert ("Pollard's p-1 with smoothness "
+            'bound 1805 and seed 3610') in capsys.readouterr().out
     # factor fermat composite
     p1 = nextprime(2**17)
     p2 = nextprime(2*p1)
@@ -542,7 +557,7 @@ def test_residue():
     assert is_quad_residue(207, 251) is True
     assert is_quad_residue(0, 1) is True
     assert is_quad_residue(1, 1) is True
-    assert is_quad_residue(0, 2) == is_quad_residue(1, 2) is True
+    assert (is_quad_residue(0, 2) == is_quad_residue(1, 2)) is True
     assert is_quad_residue(1, 4) is True
     assert is_quad_residue(2, 27) is False
     assert is_quad_residue(13122380800, 13604889600) is True
@@ -877,7 +892,7 @@ def test_smoothness_and_smoothness_p():
 def test_visual_factorint():
     assert factorint(1, visual=1) == 1
     forty2 = factorint(42, visual=True)
-    assert type(forty2) == Mul
+    assert type(forty2) is Mul
     assert str(forty2) == '2**1*3**1*7**1'
     assert factorint(1, visual=True) is Integer(1)
     no = {'evaluate': False}
@@ -942,9 +957,10 @@ def test_modular():
 
     assert integer_rational_reconstruction(ZZ(2), 3, ZZ) == QQ(-1)
     assert integer_rational_reconstruction(ZZ(21), 33, ZZ) == QQ(-1)
-    assert integer_rational_reconstruction(ZZ(-21), 17, ZZ) == QQ(-4)
     assert integer_rational_reconstruction(ZZ(17), 333, ZZ) is None
     assert integer_rational_reconstruction(ZZ(49), 335, ZZ) == QQ(8, 7)
+    assert integer_rational_reconstruction(ZZ(-9), 17, ZZ) == QQ(-1, 2)
+    assert integer_rational_reconstruction(ZZ(-9 - 11*17), 17, ZZ) == QQ(-1, 2)
 
 
 def test_search():

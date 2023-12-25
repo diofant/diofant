@@ -6,13 +6,13 @@ import functools
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
                     Rational, Symbol, Wild, oo)
-from ..core.compatibility import iterable
 from ..core.sympify import sympify
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, lcm, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
 from ..utilities import default_sort_key, numbered_symbols
+from ..utilities.iterables import is_iterable
 from .ode import constantsimp
 from .solvers import solve
 
@@ -133,8 +133,7 @@ def rsolve_poly(coeffs, f, n):
     if N < 0:
         if homogeneous:
             return Integer(0), []
-        else:
-            return
+        return
 
     if N <= r:
         C = []
@@ -358,32 +357,32 @@ def rsolve_ratio(coeffs, f, n):
 
     if not nni_roots:
         return rsolve_poly(coeffs, f, n)
-    else:
-        C, numers = Integer(1), [Integer(0)] * (r + 1)
 
-        for i in range(max(nni_roots), -1, -1):
-            d = gcd(A, B.subs({n: n + i}), n)
+    C, numers = Integer(1), [Integer(0)] * (r + 1)
 
-            A = quo(A, d, n)
-            B = quo(B, d.subs({n: n - i}), n)
+    for i in range(max(nni_roots), -1, -1):
+        d = gcd(A, B.subs({n: n + i}), n)
 
-            C *= Mul(*[d.subs({n: n - j}) for j in range(i + 1)])
+        A = quo(A, d, n)
+        B = quo(B, d.subs({n: n - i}), n)
 
-        denoms = [C.subs({n: n + i}) for i in range(r + 1)]
+        C *= Mul(*[d.subs({n: n - j}) for j in range(i + 1)])
 
-        for i in range(r + 1):
-            g = gcd(coeffs[i], denoms[i], n)
+    denoms = [C.subs({n: n + i}) for i in range(r + 1)]
 
-            numers[i] = quo(coeffs[i], g, n)
-            denoms[i] = quo(denoms[i], g, n)
+    for i in range(r + 1):
+        g = gcd(coeffs[i], denoms[i], n)
 
-        for i in range(r + 1):
-            numers[i] *= Mul(*(denoms[:i] + denoms[i + 1:]))
+        numers[i] = quo(coeffs[i], g, n)
+        denoms[i] = quo(denoms[i], g, n)
 
-        result = rsolve_poly(numers, f * Mul(*denoms), n)
+    for i in range(r + 1):
+        numers[i] *= Mul(*(denoms[:i] + denoms[i + 1:]))
 
-        if result is not None:
-            return (result[0] / C).simplify(), result[1]
+    result = rsolve_poly(numers, f * Mul(*denoms), n)
+
+    if result is not None:
+        return (result[0] / C).simplify(), result[1]
 
 
 def rsolve_hyper(coeffs, f, n):
@@ -621,7 +620,7 @@ def rsolve(f, *y, init={}, simplify=True):
     diofant.solvers.solvers.solve : solving algebraic equations
 
     """
-    if not iterable(f):
+    if not is_iterable(f):
         f = [f]
 
     f = [_.lhs - _.rhs if isinstance(_, Equality) else _ for _ in f]
@@ -707,8 +706,7 @@ def rsolve(f, *y, init={}, simplify=True):
 
         if not result:
             return
-        else:
-            solution = solution.subs(result[0])
+        solution = solution.subs(result[0])
 
     if simplify:
         solution = solution.expand(log=True, mul=False)

@@ -44,7 +44,7 @@ def test_expand():
 
 def test_sqrt():
     # issue sympy/sympy#7638
-    e = (1 + I/5)
+    e = 1 + I/5
     assert sqrt(e**5) == e**Rational(5, 2)
     assert sqrt(e**6) == e**3
     r = symbols('r', extended_real=True)
@@ -192,7 +192,7 @@ def test_sympyissue_4362():
 
     assert ((1/(1 + x/3))**-1).as_numer_denom() == (3 + x, 3)
     notp = Symbol('notp', positive=False)  # not positive does not imply real
-    b = ((1 + x/notp)**-2)
+    b = (1 + x/notp)**-2
     assert (b**(-y)).as_numer_denom() == (1, b**y)
     assert (b**-1).as_numer_denom() == ((notp + x)**2, notp**2)
     nonp = Symbol('nonp', nonpositive=True)

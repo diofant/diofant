@@ -1,5 +1,9 @@
 *       text=auto
 *.py    diff=python text
 *.rst   text
-*.cfg   text
+*.toml  text
 *.yml   text
+*.yaml  text
+*.cnf   text
+*.bib   text
+.git_archival.txt  export-subst

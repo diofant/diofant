@@ -1,6 +1,4 @@
-"""
-Replacement rules.
-"""
+"""Replacement rules."""
 
 
 class Transform:
@@ -45,6 +43,7 @@ class Transform:
     """
 
     def __init__(self, transform, filter=lambda x: True):
+        """Initialize self."""
         self._transform = transform
         self._filter = filter
 
@@ -54,11 +53,9 @@ class Transform:
     def __getitem__(self, key):
         if self._filter(key):
             return self._transform(key)
-        else:
-            raise KeyError(key)
+        raise KeyError(key)
 
     def get(self, item, default=None):
         if item in self:
             return self[item]
-        else:
-            return default
+        return default

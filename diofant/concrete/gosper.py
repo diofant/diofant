@@ -1,10 +1,10 @@
 """Gosper's algorithm for hypergeometric summation."""
 
 from ..core import Dummy, Integer, symbols
-from ..core.compatibility import is_sequence
 from ..polys import parallel_poly_from_expr
 from ..simplify import hypersimp
 from ..solvers import solve
+from ..utilities.iterables import is_sequence
 
 
 def gosper_normal(f, g, n):

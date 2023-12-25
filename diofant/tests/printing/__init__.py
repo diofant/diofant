@@ -1,3 +1,1 @@
-"""
-Printing tests.
-"""
+"""Printing tests."""

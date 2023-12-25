@@ -71,8 +71,7 @@ def apart(f, x=None, full=False, **options):
 
     if f.is_Atom:
         return f
-    else:
-        P, Q = f.as_numer_denom()
+    P, Q = f.as_numer_denom()
 
     _options = options.copy()
     options = set_defaults(options, extension=True)
@@ -88,9 +87,8 @@ def apart(f, x=None, full=False, **options):
             if c:
                 c = apart(f.func._from_args(c), x=x, full=full, **_options)
                 return c*nc
-            else:
-                return nc
-        elif f.is_Add:
+            return nc
+        if f.is_Add:
             c = []
             nc = []
             for i in f.args:
@@ -99,14 +97,13 @@ def apart(f, x=None, full=False, **options):
                 else:
                     nc.append(apart(i, x=x, full=full, **_options))
             return apart(f.func(*c), x=x, full=full, **_options) + f.func(*nc)
-        else:
-            reps = []
-            pot = preorder_traversal(f)
-            next(pot)
-            for e in pot:
-                reps.append((e, apart(e, x=x, full=full, **_options)))
-                pot.skip()  # this was handled successfully
-            return f.xreplace(dict(reps))
+        reps = []
+        pot = preorder_traversal(f)
+        next(pot)
+        for e in pot:
+            reps.append((e, apart(e, x=x, full=full, **_options)))
+            pot.skip()  # this was handled successfully
+        return f.xreplace(dict(reps))
 
     if P.is_multivariate:
         fc = f.cancel()
@@ -307,8 +304,7 @@ def apart_list(f, x=None, dummies=None, **options):
 
     if f.is_Atom:
         return f
-    else:
-        P, Q = f.as_numer_denom()
+    P, Q = f.as_numer_denom()
 
     options = set_defaults(options, extension=True)
     (P, Q), _ = parallel_poly_from_expr((P, Q), x, **options)

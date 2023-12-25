@@ -6,10 +6,10 @@ from diofant import (ZZ, Basic, E, Float, Function, GramSchmidt, I,
                      ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
                      Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
                      Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
-                     capture, casoratian, cos, diag, exp, eye, flatten,
-                     hessian, jordan_cell, matrix_multiply_elementwise, ones,
-                     oo, pi, randMatrix, rot_axis1, rot_axis2, rot_axis3,
-                     simplify, sin, sqrt, sstr, symbols, trigsimp, vandermonde,
+                     casoratian, cos, diag, exp, eye, flatten, hessian,
+                     jordan_cell, matrix_multiply_elementwise, ones, oo, pi,
+                     randMatrix, rot_axis1, rot_axis2, rot_axis3, simplify,
+                     sin, sqrt, sstr, symbols, trigsimp, vandermonde,
                      wronskian, zeros)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.matrices.matrices import MatrixError, mgamma
@@ -59,6 +59,7 @@ def test_addition():
         (3, 0)))
 
     assert a + b == a.add(b) == Matrix([[2, 4], [6, 1]])
+    pytest.raises(TypeError, lambda: a + object())
 
     # issue sympy/sympy#7201
     assert ones(0, 1) + ones(0, 1) == Matrix(0, 1, [])
@@ -499,9 +500,9 @@ def test_applyfunc():
                 [1./2, 0, 1./2],
                 [1./4, 0, 3./4]])
     e = (p**x).applyfunc(lambda i: i.limit(x, oo))
-    assert e == Matrix([[Float('0.36363636363636359', dps=15),
-                         Float('0.090909090909090898', dps=15),
-                         Float('0.54545454545454541', dps=15)]]*3)
+    assert e == Matrix([[0.36363636363636359,
+                         0.090909090909090898,
+                         0.54545454545454541]]*3)
 
 
 def test_expand():
@@ -872,8 +873,8 @@ def test_eigen():
     a = R(15, 2)
     b = 3*33**R(1, 2)
     c = R(13, 2)
-    d = (R(33, 8) + 3*b/8)
-    e = (R(33, 8) - 3*b/8)
+    d = R(33, 8) + 3*b/8
+    e = R(33, 8) - 3*b/8
 
     def NS(e, n):
         return str(N(e, n))
@@ -2126,11 +2127,11 @@ def test_normalized():
         Matrix([Rational(3, 5), Rational(4, 5)])
 
 
-def test_print_nonzero():
-    assert capture(lambda: eye(3).print_nonzero()) == \
-        '[X  ]\n[ X ]\n[  X]\n'
-    assert capture(lambda: eye(3).print_nonzero('.')) == \
-        '[.  ]\n[ . ]\n[  .]\n'
+def test_print_nonzero(capsys):
+    eye(3).print_nonzero()
+    assert capsys.readouterr().out == '[X  ]\n[ X ]\n[  X]\n'
+    eye(3).print_nonzero('.')
+    assert capsys.readouterr().out == '[.  ]\n[ . ]\n[  .]\n'
 
 
 def test_zeros_eye():
@@ -2144,11 +2145,11 @@ def test_zeros_eye():
         m = cls.eye(2)
         assert i == m  # but m == i will fail if m is immutable
         assert i == eye(2, cls=cls)
-        assert type(m) == cls
+        assert type(m) is cls
         m = cls.zeros(2)
         assert z == m
         assert z == zeros(2, cls=cls)
-        assert type(m) == cls
+        assert type(m) is cls
 
 
 def test_vandermonde():
@@ -2391,7 +2392,7 @@ def test_cross():
 
     def test(M, ans):
         assert ans == M
-        assert type(M) == cls
+        assert type(M) is cls
     for cls in classes:
         A = cls(a)
         B = cls(b)

@@ -2,24 +2,13 @@ import random
 
 from ..config import query
 from ..domains import ZZ
-from .polyerrors import CoercionFailed, DomainError
+from .polyerrors import CoercionFailedError
 from .rings import PolyElement, PolynomialRing
 from .rootisolation import _FindRoot
 
 
 class UnivarPolynomialRing(PolynomialRing, _FindRoot):
     """A class for representing univariate polynomial rings."""
-
-    def __call__(self, element):
-        if isinstance(element, list):
-            try:
-                return self.from_terms(element)
-            except (TypeError, ValueError):
-                return self.from_list(element)
-        return super().__call__(element)
-
-    def from_list(self, element):
-        return self.from_dict({(i,): c for i, c in enumerate(element)})
 
     def _random(self, n, a, b, percent=None):
         domain = self.domain
@@ -167,52 +156,8 @@ class UnivarPolynomialRing(PolynomialRing, _FindRoot):
 class UnivarPolyElement(PolyElement):
     """Element of univariate distributed polynomial ring."""
 
-    def all_coeffs(self):
-        if self:
-            return [self[(i,)] for i in range(self.degree() + 1)]
-        else:
-            return [self.parent.domain.zero]
-
     def shift(self, a):
         return self.compose(0, self.ring.gens[0] + a)
-
-    def half_gcdex(self, other):
-        """
-        Half extended Euclidean algorithm in `F[x]`.
-
-        Returns ``(s, h)`` such that ``h = gcd(self, other)``
-        and ``s*self = h (mod other)``.
-
-        Examples
-        ========
-
-        >>> _, x = ring('x', QQ)
-
-        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-        >>> g = x**3 + x**2 - 4*x - 4
-
-        >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
-
-        """
-        ring = self.ring
-        domain = ring.domain
-
-        if not domain.is_Field:
-            raise DomainError(f"can't compute half extended GCD over {domain}")
-
-        a, b = ring.one, ring.zero
-        f, g = self, other
-
-        while g:
-            q, r = divmod(f, g)
-            f, g = g, r
-            a, b = b, a - q*b
-
-        a = a.quo_ground(f.LC)
-        f = f.monic()
-
-        return a, f
 
     @property
     def is_cyclotomic(self):
@@ -260,9 +205,8 @@ class UnivarPolyElement(PolyElement):
 
             if r.degree() > 0:
                 return
-            else:
-                g[(i,)] = r.LC
-                f, i = q, i + 1
+            g[(i,)] = r.LC
+            f, i = q, i + 1
 
         g._strip_zero()
 
@@ -356,11 +300,11 @@ class UnivarPolyElement(PolyElement):
         ring = self.ring
         try:
             other = ring.convert(other)
-        except CoercionFailed:
+        except CoercionFailedError:
             return NotImplemented
-        if max(self.degree(), other.degree()) > query('KARATSUBA_CUTOFF'):
-            return self._mul_karatsuba(other)
-        return super().__mul__(other)
+        if other.is_term or min(self.degree(), other.degree()) < query('KARATSUBA_CUTOFF'):
+            return super().__mul__(other)
+        return self._mul_karatsuba(other)
 
     def _mul_karatsuba(self, other):
         """
@@ -384,9 +328,10 @@ class UnivarPolyElement(PolyElement):
 
         fl = self.slice(0, n2)
         gl = other.slice(0, n2)
+        s = ring.term_new((n2,), domain.one)
 
-        fh = self.slice(n2, n).quo_term(((n2,), domain.one))
-        gh = other.slice(n2, n).quo_term(((n2,), domain.one))
+        fh = self.slice(n2, n) // s
+        gh = other.slice(n2, n) // s
 
         lo = fl*gl
         hi = fh*gh
@@ -394,4 +339,4 @@ class UnivarPolyElement(PolyElement):
         mid = (fl + fh)*(gl + gh)
         mid -= (lo + hi)
 
-        return lo + mid.mul_monom((n2,)) + hi.mul_monom((2*n2,))
+        return lo + mid*s + hi*s**2

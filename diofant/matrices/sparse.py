@@ -2,11 +2,11 @@ import collections
 import copy
 
 from ..core import Dict, Expr, Integer
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
 from ..logic import true
-from ..utilities.iterables import uniq
+from ..utilities.iterables import is_sequence, uniq
 from .matrices import MatrixBase, ShapeError, a2idx
 
 
@@ -14,6 +14,7 @@ class SparseMatrixBase(MatrixBase):
     """A sparse matrix base class."""
 
     def __init__(self, *args):
+        """Initialize self."""
         from . import Matrix
 
         if len(args) == 1 and isinstance(args[0], SparseMatrixBase):
@@ -67,11 +68,12 @@ class SparseMatrixBase(MatrixBase):
                         self._smat[(i, j)] = value
 
     def __getitem__(self, key):
-
         if isinstance(key, tuple):
             i, j = key
             try:
                 i, j = self.key2ij(key)
+                if isinstance(i, slice) or isinstance(j, slice):
+                    raise TypeError
                 return self._smat.get((i, j), Integer(0))
             except (TypeError, IndexError) as exc:
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
@@ -377,10 +379,9 @@ class SparseMatrixBase(MatrixBase):
         """
         if isinstance(other, SparseMatrixBase):
             return self.add(other)
-        elif isinstance(other, MatrixBase):
+        if isinstance(other, MatrixBase):
             return other._new(other + self)
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __neg__(self):
         """Negate all elements of self.
@@ -533,9 +534,8 @@ class SparseMatrixBase(MatrixBase):
             return all((k[1], k[0]) in self._smat and
                        not (self[k] - self[(k[1], k[0])]).simplify()
                        for k in self._smat)
-        else:
-            return all((k[1], k[0]) in self._smat and
-                       self[k] == self[(k[1], k[0])] for k in self._smat)
+        return all((k[1], k[0]) in self._smat and
+                   self[k] == self[(k[1], k[0])] for k in self._smat)
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -715,8 +715,7 @@ class SparseMatrixBase(MatrixBase):
         return C
 
     def _LDL_sparse(self):
-        """Algorithm for numeric LDL factization, exploiting sparse structure.
-        """
+        """Algorithm for numeric LDL factization, exploiting sparse structure."""
         Lrowstruc = self.row_structure_symbolic_cholesky()
         L = self.eye(self.rows)
         D = self.zeros(self.rows, self.cols)
@@ -1008,8 +1007,7 @@ class SparseMatrixBase(MatrixBase):
                 return False
             if isinstance(other, SparseMatrixBase):
                 return self._smat == other._smat
-            else:
-                return self._smat == MutableSparseMatrix(other)._smat
+            return self._smat == MutableSparseMatrix(other)._smat
         except AttributeError:
             return False
 

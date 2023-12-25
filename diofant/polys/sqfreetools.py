@@ -43,8 +43,7 @@ class _SQF:
 
         if domain.is_FiniteField:
             return coeff, self._gf_sqf_list(f)
-        else:
-            return coeff, self._rr_yun0_sqf_list(f)
+        return coeff, self._rr_yun0_sqf_list(f)
 
     def _gf_sqf_list(self, f):
         """
@@ -92,7 +91,7 @@ class _SQF:
 
             g = self.zero
             for monom, coeff in f.items():
-                g[(_ // p for _ in monom)] = coeff**m
+                g[tuple(_ // p for _ in monom)] = coeff**m
             f = g
 
         return factors
@@ -149,13 +148,12 @@ class _SQF:
         """
         if f.is_ground:
             return True
-        else:
-            g = f
-            for x in self.gens:
-                g = self.gcd(g, f.diff(x))
-                if g.is_ground:
-                    return True
-            return False
+        g = f
+        for x in self.gens:
+            g = self.gcd(g, f.diff(x))
+            if g.is_ground:
+                return True
+        return False
 
     def sqf_part(self, f):
         """
@@ -189,8 +187,7 @@ class _SQF:
 
         if domain.is_Field:
             return sqf.monic()
-        else:
-            return sqf.primitive()[1]
+        return sqf.primitive()[1]
 
     def sqf_norm(self, f):
         """
@@ -224,6 +221,5 @@ class _SQF:
 
             if r.is_squarefree:
                 return s, f, r
-            else:
-                f = f.compose({x: x - domain.unit for x in self.gens})
-                s += 1
+            f = f.compose({x: x - domain.unit for x in self.gens})
+            s += 1

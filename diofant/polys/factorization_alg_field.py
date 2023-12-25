@@ -1,5 +1,4 @@
-import functools
-import operator
+import math
 import random
 
 from ..config import using
@@ -9,7 +8,7 @@ from ..integrals.heurisch import _symbols
 from ..ntheory import nextprime
 from .modulargcd import (_euclidean_algorithm, _gf_gcdex, _minpoly_from_dense,
                          _trunc)
-from .polyerrors import NotInvertible, UnluckyLeadingCoefficient
+from .polyerrors import NotInvertibleError, UnluckyLeadingCoefficientError
 from .polyutils import _sort_factors
 from .rings import PolynomialRing
 from .solvers import solve_lin_sys
@@ -270,7 +269,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
     lcring = ring.drop(0)
     lcs = []
     for j in range(n):
-        lj = functools.reduce(operator.mul, [lcfactors[i][0]**e[j][i] for i in range(m)], lcring.one)
+        lj = math.prod((lcfactors[i][0]**e[j][i] for i in range(m)), start=lcring.one)
         lcs.append(lj)
 
     zring = qring.clone(domain=domain)
@@ -356,13 +355,13 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
         denoms.append(_denominator(_alpha_to_z(lA**(-1), qring)))
 
     if any(denoms.count(denom) > 1 for denom in denoms):
-        raise UnluckyLeadingCoefficient
+        raise UnluckyLeadingCoefficientError
 
     divisors = _distinct_prime_divisors(denoms, ring.domain)
 
     if divisors is None:
         return
-    elif any(omega % d == 0 for d in divisors):
+    if any(omega % d == 0 for d in divisors):
         return
 
     return fA, denoms, divisors
@@ -448,7 +447,7 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
     H = [t.set_ring(ring_) + li.set_ring(ring_)*x**g.degree() for t, g, li in
          zip(tails, pfactors, lcs)]
 
-    prod = functools.reduce(operator.mul, H)
+    prod = math.prod(H)
     e = (f - prod) % m
 
     P = domain(p)
@@ -466,27 +465,24 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
             solution = solve_lin_sys([_.set_domain(P_domain)
                                       for _ in poly.values()],
                                      coeffring.clone(domain=P_domain))
-        except NotInvertible:
+        except NotInvertibleError:
             return
 
         if solution is None:
             return
-        else:
-            solution = {k.set_domain(domain): v.set_domain(domain).trunc_ground(P)
-                        for k, v in solution.items()}
-            assert len(solution) == coeffring.ngens
+        solution = {k.set_domain(domain): v.set_domain(domain).trunc_ground(P)
+                    for k, v in solution.items()}
+        assert len(solution) == coeffring.ngens
 
         subs = list(solution.items())
 
         H = [h + _subs_ground(s, subs)*P for h, s in zip(H, S)]
         P = P**2
-        prod = functools.reduce(operator.mul, H)
+        prod = math.prod(H)
         e = (f - prod) % m
 
     if e == 0:
         return [h.set_ring(ring) for h in H]
-    else:
-        return
 
 
 def _div(f, g, minpoly, p):
@@ -614,10 +610,7 @@ def _diophantine_univariate(F, m, minpoly, p):
 
 
 def _diophantine(F, c, A, d, minpoly, p):
-    r"""
-    Solve multivariate Diophantine equations over `\mathbb Z_p[z]/(\mu(z))`.
-
-    """
+    r"""Solve multivariate Diophantine equations over `\mathbb Z_p[z]/(\mu(z))`."""
     ring = c.ring
 
     if not A:
@@ -633,7 +626,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                 S[j] = _trunc(s + t*coeff.set_ring(ring), minpoly, p)
     else:
         n = len(A)
-        e = functools.reduce(operator.mul, F)
+        e = math.prod(F)
 
         a, A = A[-1], A[:-1]
         B, G = [], []
@@ -747,7 +740,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
         m = Hring.gens[j] - a
         M = Hring.one
 
-        c = _trunc(s - functools.reduce(operator.mul, H), minpoly, p)
+        c = _trunc(s - math.prod(H), minpoly, p)
 
         dj = s.degree(j)
 
@@ -767,18 +760,15 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
                 for i, (h, t) in enumerate(zip(H, T)):
                     H[i] = _trunc(h + t.set_ring(Hring)*M, minpoly, p)
 
-                c = _trunc(s - functools.reduce(operator.mul, H), minpoly, p)
+                c = _trunc(s - math.prod(H), minpoly, p)
 
-    prod = functools.reduce(operator.mul, H)
+    prod = math.prod(H)
     if _trunc(prod, minpoly, p) == f.trunc_ground(p):
         return H
 
 
 def _sqf_p(f, minpoly, p):
-    r"""
-    Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`.
-
-    """
+    r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
     lcinv, *_ = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
 
@@ -786,8 +776,7 @@ def _sqf_p(f, minpoly, p):
 
     if not f:
         return True
-    else:
-        return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
+    return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
 
 
 def _test_prime(fA, D, minpoly, p, domain):
@@ -879,7 +868,7 @@ def _factor(f, save):
 
             try:
                 result = _test_evaluation_points(f_, gamma_, lcfactors, A, D)
-            except UnluckyLeadingCoefficient:
+            except UnluckyLeadingCoefficientError:
                 # TODO: check interval
                 C = [random.randint(1, 3*(N + 1)) for _ in range(n - 1)]
                 gens = zring.gens

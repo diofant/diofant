@@ -6,7 +6,7 @@ from ..matrices import Matrix, zeros
 class RawMatrix(Matrix):
     """Dummy class with overriden sympify() helper."""
 
-    _sympify = staticmethod(lambda x: x)
+    _sympify = staticmethod(lambda x: x)  # type: ignore[misc,arg-type] # see e.g. python/mypy#13818
 
 
 def eqs_to_matrix(eqs, ring):
@@ -31,9 +31,9 @@ def solve_lin_sys(eqs, ring):
 
     if not pivots:
         return {}
-    elif pivots[-1] == len(ring.gens):
+    if pivots[-1] == len(ring.gens):
         return
-    elif len(pivots) == len(ring.gens):
+    if len(pivots) == len(ring.gens):
         sols = dict(zip(ring.gens, echelon[:, -1]))
     else:
         sols = {}

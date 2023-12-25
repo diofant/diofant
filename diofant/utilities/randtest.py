@@ -4,8 +4,9 @@ import random
 from random import uniform
 
 from ..core import I, Symbol, Tuple, comp
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..simplify import nsimplify
+from .iterables import is_sequence
 
 
 def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):
@@ -92,9 +93,9 @@ def _randrange(seed=None):
     """
     if seed is None:
         return random.randrange
-    elif isinstance(seed, int):
+    if isinstance(seed, int):
         return random.Random(seed).randrange
-    elif is_sequence(seed):
+    if is_sequence(seed):
         seed = list(seed)  # make a copy
         seed.reverse()
 
@@ -111,11 +112,9 @@ def _randrange(seed=None):
                 raise ValueError('_randrange sequence was too short') from exc
             if a <= x < b:
                 return x
-            else:
-                return give(a, b, seq)
+            return give(a, b, seq)
         return give
-    else:
-        raise ValueError('_randrange got an unexpected seed')
+    raise ValueError('_randrange got an unexpected seed')
 
 
 def _randint(seed=None):
@@ -141,9 +140,9 @@ def _randint(seed=None):
     """
     if seed is None:
         return random.randint
-    elif isinstance(seed, int):
+    if isinstance(seed, int):
         return random.Random(seed).randint
-    elif is_sequence(seed):
+    if is_sequence(seed):
         seed = list(seed)  # make a copy
         seed.reverse()
 
@@ -158,8 +157,6 @@ def _randint(seed=None):
                 raise ValueError('_randint sequence was too short') from exc
             if a <= x <= b:
                 return x
-            else:
-                return give(a, b, seq)
+            return give(a, b, seq)
         return give
-    else:
-        raise ValueError('_randint got an unexpected seed')
+    raise ValueError('_randint got an unexpected seed')

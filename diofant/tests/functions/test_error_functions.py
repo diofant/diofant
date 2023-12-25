@@ -94,7 +94,7 @@ def test_erf_series():
 
 
 def test_erf_evalf():
-    assert abs(erf(Float(2.0)) - 0.995322265) < 1E-8  # XXX
+    assert abs(erf(2.0) - 0.995322265) < 1E-10
 
 
 def test__erfs():
@@ -170,7 +170,7 @@ def test_erfc_series():
 
 
 def test_erfc_evalf():
-    assert abs(erfc(Float(2.0)) - 0.00467773) < 1E-8  # XXX
+    assert abs(erfc(2.0) - 0.004677735) < 1E-10
 
 
 def test_erfi():
@@ -232,7 +232,7 @@ def test_erfi_series():
 
 
 def test_erfi_evalf():
-    assert abs(erfi(Float(2.0)) - 18.5648024145756) < 1E-13  # XXX
+    assert abs(erfi(2.0) - 18.5648024145756) < 1E-13
 
 
 def test_erf2():
@@ -293,7 +293,7 @@ def test_erfinv():
 
 
 def test_erfinv_evalf():
-    assert abs(erfinv(Float(0.2)) - 0.179143454621292) < 1E-13
+    assert abs(erfinv(0.2) - 0.179143454621292) < 1E-13
 
 
 def test_erfcinv():
@@ -306,6 +306,9 @@ def test_erfcinv():
     assert erfcinv(z).rewrite('erfinv') == erfinv(1-z)
 
     pytest.raises(ArgumentIndexError, lambda: erfcinv(x).fdiff(2))
+
+    # issue sympy/sympy#24684
+    assert erfcinv(0.4) == 0.59511608144999484
 
 
 def test_erf2inv():
@@ -388,9 +391,8 @@ def test_ei():
 
     pytest.raises(ArgumentIndexError, lambda: Ei(x).fdiff(2))
 
-    assert (Ei(exp_polar(I*pi)).evalf() ==
-            Float('-0.21938393439552029', dps=15) +
-            I*Float('3.1415926535897931', dps=15))
+    assert (Ei(exp_polar(I*pi)).evalf() == -0.21938393439552029 +
+            I*3.1415926535897931)
 
 
 def test_expint():
@@ -448,7 +450,7 @@ def test_expint():
     assert (expint(x, x).series(x, x0=1, n=2) ==
             expint(1, 1) + (x - 1)*(-meijerg(((), (1, 1)),
                                              ((0, 0, 0), ()), 1) - 1/E) +
-            O((x - 1)**2, (x, 1)))
+            O((x - 1)**2, x, 1))
 
     pytest.raises(ArgumentIndexError, lambda: expint(x, y).fdiff(3))
 
@@ -582,7 +584,7 @@ def test_si():
         x + x**3/18 + x**5/600 + x**7/35280 + O(x**9)
     assert Si(sin(x)).series(x, n=7) == x - 2*x**3/9 + 17*x**5/450 + O(x**7)
     assert Si(x).series(x, 1, n=3) == \
-        Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, (x, 1))
+        Si(1) + (x - 1)*sin(1) + (x - 1)**2*(-sin(1)/2 + cos(1)/2) + O((x - 1)**3, x, 1)
 
     pytest.raises(ArgumentIndexError, lambda: Si(z).fdiff(2))
 
@@ -634,7 +636,7 @@ def test_fresnel():
     assert fresnels(+oo) == Rational(+1, 2)
     assert fresnels(-oo) == Rational(-1, 2)
 
-    assert fresnels(z) == fresnels(z)
+    assert fresnels(z) == fresnels(z, evaluate=False)
     assert fresnels(-z) == -fresnels(z)
     assert fresnels(I*z) == -I*fresnels(z)
     assert fresnels(-I*z) == I*fresnels(z)
@@ -691,7 +693,7 @@ def test_fresnel():
     assert fresnelc(+oo) == Rational(+1, 2)
     assert fresnelc(-oo) == Rational(-1, 2)
 
-    assert fresnelc(z) == fresnelc(z)
+    assert fresnelc(z) == fresnelc(z, evaluate=False)
     assert fresnelc(-z) == -fresnelc(z)
     assert fresnelc(I*z) == I*fresnelc(z)
     assert fresnelc(-I*z) == -I*fresnelc(z)
@@ -719,11 +721,11 @@ def test_fresnel():
 
     # issue sympy/sympy#6510
     assert fresnels(z).series(z, oo) == \
-        (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + \
-        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + Rational(1, 2)
+        (-1/(pi**2*z**3) + O(z**(-6), z, oo))*sin(pi*z**2/2) + \
+        (3/(pi**3*z**5) - 1/(pi*z) + O(z**(-6), z, oo))*cos(pi*z**2/2) + Rational(1, 2)
     assert fresnelc(z).series(z, oo) == \
-        (-1/(pi**2*z**3) + O(z**(-6), (z, oo)))*cos(pi*z**2/2) + \
-        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), (z, oo)))*sin(pi*z**2/2) + Rational(1, 2)
+        (-1/(pi**2*z**3) + O(z**(-6), z, oo))*cos(pi*z**2/2) + \
+        (-3/(pi**3*z**5) + 1/(pi*z) + O(z**(-6), z, oo))*sin(pi*z**2/2) + Rational(1, 2)
     assert fresnels(1/z).series(z) == \
         (-z**3/pi**2 + O(z**6))*sin(pi/(2*z**2)) + (-z/pi + 3*z**5/pi**3 +
                                                     O(z**6))*cos(pi/(2*z**2)) + Rational(1, 2)

@@ -3,7 +3,7 @@ import pytest
 
 from diofant import (EX, ZZ, E, Eq, Function, I, Integer, Lambda, Piecewise,
                      Poly, Rational, exp, factor, log, sin, sqrt, symbols, tan)
-from diofant.abc import a, i, nu, t, x, y, z
+from diofant.abc import a, b, i, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
                                      NonElementaryIntegral, as_poly_1t,
                                      canonical_representation, derivation,
@@ -599,7 +599,7 @@ def test_DifferentialExtension_Rothstein():
 
 
 def test_DecrementLevel():
-    class TestingException(Exception):
+    class TestingExceptionError(Exception):
         """Dummy Exception class for testing."""
 
     DE = DifferentialExtension(x*log(exp(x) + 1), x, dummy=False)
@@ -633,8 +633,8 @@ def test_DecrementLevel():
     # Test that __exit__ is called after an exception correctly
     try:
         with DecrementLevel(DE):
-            raise TestingException
-    except TestingException:
+            raise TestingExceptionError
+    except TestingExceptionError:
         pass
     else:
         raise AssertionError('Did not raise.')
@@ -686,3 +686,9 @@ def test_xtothex():
     a = risch_integrate(x**x, x)
     assert a == NonElementaryIntegral(x**x, x)
     assert isinstance(a, NonElementaryIntegral)
+
+
+def test_sympyissue_25197():
+    assert (exp((b - a)*x - b*t).integrate((x, 0, t)).simplify() ==
+            Piecewise((exp(-b*t)*t, Eq(a - b)),
+                      (exp(-b*t)*(-exp(t*(-a + b)) + 1)/(a - b), True)))

@@ -92,7 +92,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     >>> _*a  # so Mul doesn't combine them
     x**2*y*sqrt(x*sqrt(y))
     >>> powsimp(_)  # but powsimp will
-    (x*sqrt(y))**(5/2)
+    sqrt(x*sqrt(y))**5
     >>> powsimp(x*y*a)  # but won't when doing so would violate assumptions
     x*y*sqrt(x*sqrt(y))
 
@@ -233,16 +233,13 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             if e is not None:  # coming from c_powers or from below
                 if e.is_Integer:
                     return (b, Integer(1)), e
-                elif e.is_Rational:
+                if e.is_Rational:
                     return (b, Integer(e.denominator)), Integer(e.numerator)
-                else:
-                    c, m = e.as_coeff_Mul(rational=True)
-                    if c != 1 and b.is_positive:
-                        return (b**m, Integer(c.denominator)), Integer(c.numerator)
-                    else:
-                        return (b**e, Integer(1)), Integer(1)
-            else:
-                return bkey(*b.as_base_exp())
+                c, m = e.as_coeff_Mul(rational=True)
+                if c != 1 and b.is_positive:
+                    return (b**m, Integer(c.denominator)), Integer(c.numerator)
+                return (b**e, Integer(1)), Integer(1)
+            return bkey(*b.as_base_exp())
 
         def update(b):
             """Decide what to do with base, b. If its exponent is now an
@@ -359,11 +356,10 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         newexpr = expr.func(*(newexpr + [Pow(b, e) for b, e in c_powers.items()]))
         if combine == 'exp':
             return expr.func(newexpr, expr.func(*nc_part))
-        else:
-            return recurse(expr.func(*nc_part), combine='base') * \
-                recurse(newexpr, combine='base')
+        return recurse(expr.func(*nc_part), combine='base') * \
+            recurse(newexpr, combine='base')
 
-    elif combine == 'base':
+    if combine == 'base':
 
         # Build c_powers and nc_part.  These must both be lists not
         # dicts because exp's are not combined.
@@ -471,8 +467,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         # we're done
         return expr.func(*(c_part + nc_part))
 
-    else:
-        raise ValueError("combine must be one of ('all', 'exp', 'base').")
+    raise ValueError("combine must be one of ('all', 'exp', 'base').")
 
 
 def powdenest(eq, force=False, polar=False):
@@ -624,7 +619,7 @@ def _denest_pow(eq):
             nonpolars.append(bb)
     if len(polars) == 1 and not polars[0][0].is_Mul:
         return Pow(polars[0][0], polars[0][1]*e)*powdenest(Mul(*nonpolars)**e)
-    elif polars:
+    if polars:
         return Mul(*[powdenest(bb**(ee*e)) for (bb, ee) in polars]) \
             * powdenest(Mul(*nonpolars)**e)
 

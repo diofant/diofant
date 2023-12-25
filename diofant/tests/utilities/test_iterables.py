@@ -5,28 +5,24 @@ import textwrap
 
 import pytest
 
-from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
-                     cantor_product, capture, default_sort_key, flatten, group,
-                     has_dups, numbered_symbols, ordered, postfixes,
-                     postorder_traversal, prefixes, subsets, symbols,
-                     topological_sort, true, unflatten, variations)
+from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
+                     cantor_product, default_sort_key, flatten, group,
+                     has_dups, numbered_symbols, ordered, postorder_traversal,
+                     subsets, symbols, true, unflatten)
 from diofant.abc import w, x, y, z
-from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
-from diofant.functions.combinatorial.numbers import nT
+from diofant.combinatorics import RGS_enum, RGS_unrank
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
-                                         binary_partitions, bracelets,
                                          common_prefix, common_suffix,
-                                         filter_symbols, generate_derangements,
-                                         generate_involutions, minlex,
+                                         filter_symbols, is_iterable, minlex,
                                          multiset, multiset_combinations,
                                          multiset_partitions,
-                                         multiset_permutations, necklaces,
+                                         multiset_permutations,
                                          ordered_partitions, partitions,
-                                         permutations, permute_signs,
-                                         rotate_left, rotate_right, runs, sift,
+                                         permute_signs, rotate_left,
+                                         rotate_right, runs, sift,
                                          signed_permutations, uniq)
 
 
@@ -144,30 +140,6 @@ def test_subsets():
         [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
 
 
-def test_variations():
-    # permutations
-    l = list(range(4))
-    assert list(variations(l, 0, repetition=False)) == [()]
-    assert list(variations(l, 1, repetition=False)) == [(0,), (1,), (2,), (3,)]
-    assert list(variations(l, 2, repetition=False)) == [(0, 1), (0, 2), (0, 3), (1, 0), (1, 2), (1, 3), (2, 0), (2, 1), (2, 3), (3, 0), (3, 1), (3, 2)]
-    assert list(variations(l, 3, repetition=False)) == [(0, 1, 2), (0, 1, 3), (0, 2, 1), (0, 2, 3), (0, 3, 1), (0, 3, 2), (1, 0, 2), (1, 0, 3), (1, 2, 0), (1, 2, 3), (1, 3, 0), (1, 3, 2), (2, 0, 1), (2, 0, 3), (2, 1, 0), (2, 1, 3), (2, 3, 0), (2, 3, 1), (3, 0, 1), (3, 0, 2), (3, 1, 0), (3, 1, 2), (3, 2, 0), (3, 2, 1)]
-    assert list(variations(l, 0, repetition=True)) == [()]
-    assert list(variations(l, 1, repetition=True)) == [(0,), (1,), (2,), (3,)]
-    assert list(variations(l, 2, repetition=True)) == [(0, 0), (0, 1), (0, 2),
-                                                       (0, 3), (1, 0), (1, 1),
-                                                       (1, 2), (1, 3), (2, 0),
-                                                       (2, 1), (2, 2), (2, 3),
-                                                       (3, 0), (3, 1), (3, 2),
-                                                       (3, 3)]
-    assert len(list(variations(l, 3, repetition=True))) == 64
-    assert len(list(variations(l, 4, repetition=True))) == 256
-    assert not list(variations(l[:2], 3, repetition=False))
-    assert list(variations(l[:2], 3, repetition=True)) == [
-        (0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1),
-        (1, 0, 0), (1, 0, 1), (1, 1, 0), (1, 1, 1)
-    ]
-
-
 def test_filter_symbols():
     s = numbered_symbols()
     filtered = filter_symbols(s, symbols('x0 x2 x3'))
@@ -187,37 +159,6 @@ def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
-
-
-def test_prefixes():
-    assert not list(prefixes([]))
-    assert list(prefixes([1])) == [[1]]
-    assert list(prefixes([1, 2])) == [[1], [1, 2]]
-
-    assert list(prefixes([1, 2, 3, 4, 5])) == \
-        [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5]]
-
-
-def test_postfixes():
-    assert not list(postfixes([]))
-    assert list(postfixes([1])) == [[1]]
-    assert list(postfixes([1, 2])) == [[2], [1, 2]]
-
-    assert list(postfixes([1, 2, 3, 4, 5])) == \
-        [[5], [4, 5], [3, 4, 5], [2, 3, 4, 5], [1, 2, 3, 4, 5]]
-
-
-def test_topological_sort():
-    V = [2, 3, 5, 7, 8, 9, 10, 11]
-    E = [(7, 11), (7, 8), (5, 11),
-         (3, 8), (3, 10), (11, 2),
-         (11, 9), (11, 10), (8, 9)]
-
-    assert topological_sort((V, E)) == [3, 5, 7, 8, 11, 2, 9, 10]
-    assert topological_sort((V, E), key=lambda v: -v) == \
-        [7, 5, 11, 3, 10, 8, 9, 2]
-
-    pytest.raises(ValueError, lambda: topological_sort((V, E + [(10, 7)])))
 
 
 def test_rotate():
@@ -316,7 +257,7 @@ def test_multiset_combinations():
     assert list(multiset_combinations('abc', 1)) == [['a'], ['b'], ['c']]
 
 
-def test_multiset_permutations():
+def test_multiset_permutations(capsys):
     ans = ['abby', 'abyb', 'aybb', 'baby', 'bayb', 'bbay', 'bbya', 'byab',
            'byba', 'yabb', 'ybab', 'ybba']
     assert [''.join(i) for i in multiset_permutations('baby')] == ans
@@ -327,12 +268,11 @@ def test_multiset_permutations():
     assert len(list(multiset_permutations('a', 0))) == 1
     assert len(list(multiset_permutations('a', 3))) == 0
 
-    def test():
-        for i in range(1, 7):
-            print(i)
-            for p in multiset_permutations([0, 0, 1, 0, 1], i):
-                print(p)
-    assert capture(test) == textwrap.dedent("""\
+    for i in range(1, 7):
+        print(i)
+        for p in multiset_permutations([0, 0, 1, 0, 1], i):
+            print(p)
+    assert capsys.readouterr().out == textwrap.dedent("""\
         1
         [0]
         [1]
@@ -416,80 +356,6 @@ def test_partitions():
         assert i == RGS_enum(n)
 
 
-def test_binary_partitions():
-    assert [i[:] for i in binary_partitions(10)] == [[8, 2], [8, 1, 1],
-                                                     [4, 4, 2], [4, 4, 1, 1], [4, 2, 2, 2], [4, 2, 2, 1, 1],
-                                                     [4, 2, 1, 1, 1, 1], [4, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2],
-                                                     [2, 2, 2, 2, 1, 1], [2, 2, 2, 1, 1, 1, 1], [2, 2, 1, 1, 1, 1, 1, 1],
-                                                     [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
-
-    assert len([j[:] for j in binary_partitions(16)]) == 36
-
-
-def test_involutions():
-    lengths = [1, 2, 4, 10, 26, 76]
-    for n, N in enumerate(lengths):
-        i = list(generate_involutions(n + 1))
-        assert len(i) == N
-        assert len({Permutation(j)**2 for j in i}) == 1
-
-
-def test_derangements():
-    assert len(list(generate_derangements(list(range(6))))) == 265
-    assert ''.join(''.join(i) for i in generate_derangements('abcde')) == (
-        'badecbaecdbcaedbcdeabceadbdaecbdeacbdecabeacdbedacbedcacabedcadebcaebd'
-        'cdaebcdbeacdeabcdebaceabdcebadcedabcedbadabecdaebcdaecbdcaebdcbeadceab'
-        'dcebadeabcdeacbdebacdebcaeabcdeadbceadcbecabdecbadecdabecdbaedabcedacb'
-        'edbacedbca')
-    assert list(generate_derangements([0, 1, 2, 3])) == [
-        [1, 0, 3, 2], [1, 2, 3, 0], [1, 3, 0, 2], [2, 0, 3, 1],
-        [2, 3, 0, 1], [2, 3, 1, 0], [3, 0, 1, 2], [3, 2, 0, 1], [3, 2, 1, 0]]
-    assert list(generate_derangements([0, 1, 2, 2])) == [
-        [2, 2, 0, 1], [2, 2, 1, 0]]
-
-
-def test_necklaces():
-    def count(n, k, f):
-        return len(list(necklaces(n, k, f)))
-    m = []
-    for i in range(1, 8):
-        m.append((
-            i, count(i, 2, 0), count(i, 2, 1), count(i, 3, 1)))
-    assert Matrix(m) == Matrix([
-        [1,   2,   2,   3],
-        [2,   3,   3,   6],
-        [3,   4,   4,  10],
-        [4,   6,   6,  21],
-        [5,   8,   8,  39],
-        [6,  14,  13,  92],
-        [7,  20,  18, 198]])
-
-
-def test_bracelets():
-    bc = list(bracelets(2, 4))
-    assert Matrix(bc) == Matrix([
-        [0, 0],
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [1, 1],
-        [1, 2],
-        [1, 3],
-        [2, 2],
-        [2, 3],
-        [3, 3]
-    ])
-    bc = list(bracelets(4, 2))
-    assert Matrix(bc) == Matrix([
-        [0, 0, 0, 0],
-        [0, 0, 0, 1],
-        [0, 0, 1, 1],
-        [0, 1, 0, 1],
-        [0, 1, 1, 1],
-        [1, 1, 1, 1]
-    ])
-
-
 def test_unflatten():
     r = list(range(10))
     assert unflatten(r) == list(zip(r[::2], r[1::2]))
@@ -520,6 +386,7 @@ def test_minlex():
     assert minlex((1, 0, 2)) == (0, 2, 1)
     assert minlex((1, 0, 2), directed=False) == (0, 1, 2)
     assert minlex('aba') == 'aab'
+    assert minlex((0,), directed=False) == (0,)
 
 
 def test_ordered():
@@ -553,7 +420,7 @@ def test_uniq():
     assert list(uniq('a')) == ['a']
     assert list(uniq('ababc')) == list('abc')
     assert list(uniq([[1], [2, 1], [1]])) == [[1], [2, 1]]
-    assert list(uniq(permutations(i for i in [[1], 2, 2]))) == \
+    assert list(uniq(itertools.permutations(i for i in [[1], 2, 2]))) == \
         [([1], 2, 2), (2, [1], 2), (2, 2, [1])]
     assert list(uniq([2, 3, 2, 4, [2], [1], [2], [3], [1]])) == \
         [2, 3, 4, [2], [1], [3]]
@@ -607,8 +474,7 @@ def test_ordered_partitions():
     for i in range(1, 7):
         for j in [None] + list(range(1, i)):
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
-                    sum(1 for p in ordered_partitions(i, j, 0)) ==
-                    nT(i, j))
+                    sum(1 for p in ordered_partitions(i, j, 0)))
 
 
 def test_permute_signs():
@@ -623,3 +489,9 @@ def test_signed_permutations():
              (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
              (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
              (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)])
+
+
+def test_is_iterable():
+    assert is_iterable(0) is False
+    assert is_iterable(1) is False
+    assert is_iterable(None) is False

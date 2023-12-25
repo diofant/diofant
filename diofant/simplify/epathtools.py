@@ -121,10 +121,9 @@ class EPath:
         """Sort ``expr.args`` using printing order."""
         if expr.is_Add:
             return expr.as_ordered_terms()
-        elif expr.is_Mul:
+        if expr.is_Mul:
             return expr.as_ordered_factors()
-        else:
-            return expr.args
+        return expr.args
 
     def _hasattrs(self, expr, attrs):
         """Check if ``expr`` has any of ``attrs``."""
@@ -175,43 +174,41 @@ class EPath:
         def _apply(path, expr, func):
             if not path:
                 return func(expr)
-            else:
-                selector, path = path[0], path[1:]
-                attrs, types, span = selector
+            selector, path = path[0], path[1:]
+            attrs, types, span = selector
 
-                if isinstance(expr, Basic):
-                    if not expr.is_Atom:
-                        args, basic = self._get_ordered_args(expr), True
-                    else:
-                        return expr
-                elif hasattr(expr, '__iter__'):
-                    args, basic = expr, False
+            if isinstance(expr, Basic):
+                if not expr.is_Atom:
+                    args, basic = self._get_ordered_args(expr), True
                 else:
                     return expr
+            elif hasattr(expr, '__iter__'):
+                args, basic = expr, False
+            else:
+                return expr
 
-                args = list(args)
+            args = list(args)
 
-                if span is not None:
-                    if type(span) == slice:
-                        indices = range(*span.indices(len(args)))
-                    else:
-                        indices = [span]
+            if span is not None:
+                if type(span) is slice:
+                    indices = range(*span.indices(len(args)))
                 else:
-                    indices = range(len(args))
+                    indices = [span]
+            else:
+                indices = range(len(args))
 
-                for i in indices:
-                    try:
-                        arg = args[i]
-                    except IndexError:
-                        continue
+            for i in indices:
+                try:
+                    arg = args[i]
+                except IndexError:
+                    continue
 
-                    if self._has(arg, attrs, types):
-                        args[i] = _apply(path, arg, func)
+                if self._has(arg, attrs, types):
+                    args[i] = _apply(path, arg, func)
 
-                if basic:
-                    return expr.func(*args)
-                else:
-                    return expr.__class__(args)
+            if basic:
+                return expr.func(*args)
+            return expr.__class__(args)
 
         _args, _kwargs = args or (), kwargs or {}
 
@@ -257,7 +254,7 @@ class EPath:
                     return
 
                 if span is not None:
-                    if type(span) == slice:
+                    if type(span) is slice:
                         args = args[span]
                     else:
                         try:
@@ -340,5 +337,4 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
         return _epath
     if func is None:
         return _epath.select(expr)
-    else:
-        return _epath.apply(expr, func, args, kwargs)
+    return _epath.apply(expr, func, args, kwargs)

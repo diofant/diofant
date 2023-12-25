@@ -6,7 +6,7 @@ from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
 from .orderings import build_product_order
-from .polyerrors import ModularGCDFailed
+from .polyerrors import ModularGCDFailedError
 
 
 def _chinese_remainder_reconstruction(hp, hq, p, q):
@@ -226,9 +226,9 @@ def _modgcd_p(f, g, degbound, contbound):
 
         if (degh := h.degree()) > degbound[0]:
             return
-        elif degh < degbound[0]:
+        if degh < degbound[0]:
             degbound[0] = degh
-            raise ModularGCDFailed
+            raise ModularGCDFailedError
 
         return h
 
@@ -250,9 +250,9 @@ def _modgcd_p(f, g, degbound, contbound):
 
     if (degconth := conth.degree(-1)) > contbound[k-1]:
         return
-    elif degconth < contbound[k-1]:
+    if degconth < contbound[k-1]:
         contbound[k-1] = degconth
-        raise ModularGCDFailed
+        raise ModularGCDFailedError
 
     delta = yring.gcd(yf.LC, yg.LC)
 
@@ -296,8 +296,7 @@ def _modgcd_p(f, g, degbound, contbound):
                 d += 1
                 continue
             return
-        else:
-            n += 1
+        n += 1
 
         if ha.is_ground:
             return conth
@@ -313,7 +312,7 @@ def _modgcd_p(f, g, degbound, contbound):
 
             if (degyh := h.degree(-1)) < degbound[k-1]:
                 degbound[k-1] = degyh
-                raise ModularGCDFailed
+                raise ModularGCDFailedError
 
             return h
 
@@ -405,7 +404,7 @@ def modgcd(f, g):
         try:
             # monic GCD of fp, gp in Z_p[x_0, ..., x_{k-2}, y]
             hp = _modgcd_p(fp, gp, degbound, contbound)
-        except ModularGCDFailed:
+        except ModularGCDFailedError:
             m = 1
             continue
 

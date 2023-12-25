@@ -82,6 +82,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     """
 
     def __init__(self, function, *symbols, **assumptions):
+        """Initialize self."""
         super().__init__(function, *symbols, **assumptions)
         if any(len(l) != 3 or None in l for l in self.limits):
             raise ValueError('Sum requires values for lower and upper bounds.')
@@ -107,8 +108,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             if newf is None:
                 if f == self.function:
                     return self
-                else:
-                    return self.func(f, *self.limits[n:])
+                return self.func(f, *self.limits[n:])
             f = newf
 
         if hints.get('deep', True):
@@ -147,8 +147,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             if limit[0] not in df.free_symbols:
                 rv = rv.doit()
             return rv
-        else:
-            raise NotImplementedError('Lower and upper bound expected.')
+        raise NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):
         from ..simplify.simplify import sum_simplify
@@ -492,7 +491,7 @@ def telescopic(L, R, limits):
 
     if s.is_negative:
         return telescopic_direct(R, L, abs(s), (i, a, b))
-    elif s.is_positive:
+    if s.is_positive:
         return telescopic_direct(L, R, s, (i, a, b))
 
 
@@ -592,11 +591,10 @@ def eval_sum_symbolic(f, limits):
                    (a == -oo and b is not oo):
                     return oo
                 return ((bernoulli(n + 1, b + 1) - bernoulli(n + 1, a))/(n + 1)).expand()
-            elif a.is_Integer and a >= 1:
+            if a.is_Integer and a >= 1:
                 if n == -1:
                     return harmonic(b) - harmonic(a - 1)
-                else:
-                    return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
+                return harmonic(b, abs(n)) - harmonic(a - 1, abs(n))
 
     if not (a.has(oo, -oo) or b.has(oo, -oo)):
         # Geometric terms
@@ -712,6 +710,5 @@ def eval_sum_hyper(f, i_a_b):
                 f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:
                     return oo
-                else:
-                    return
+                return
             return Piecewise(res, (old_sum, True))

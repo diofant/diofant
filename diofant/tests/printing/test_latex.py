@@ -33,14 +33,10 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
 from diofant.abc import a, b, mu, t, tau, w, x, y, z
 from diofant.combinatorics.permutations import Cycle, Permutation
 from diofant.core.trace import Tr
-from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
-                              TensorProduct, metric_to_Christoffel_2nd)
-from diofant.diffgeom.rn import R2, R2_r
 from diofant.parsing.sympy_parser import parse_expr
 from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
                                     other_symbols, tex_greek_dictionary,
                                     translate)
-from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
                             MutableDenseNDimArray, MutableSparseNDimArray,
                             tensorproduct)
@@ -333,13 +329,11 @@ def test_latex_functions():
     assert latex(gamma(x)**3) == r'\Gamma^{3}{\left(x \right)}'
     w = Wild('w')
     assert latex(gamma(w)) == r'\Gamma{\left(w \right)}'
+    assert latex(Order(1, x)) == r'\mathcal{O}\left(1; x\rightarrow{}0\right)'
     assert latex(Order(x)) == r'\mathcal{O}\left(x\right)'
     assert latex(Order(x, x)) == r'\mathcal{O}\left(x\right)'
-    assert latex(Order(x, (x, 0))) == r'\mathcal{O}\left(x\right)'
-    assert latex(Order(x, (x, oo))) == r'\mathcal{O}\left(x; x\rightarrow{}\infty\right)'
-    assert latex(Order(x, x, y)) == r'\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)'
-    assert latex(Order(x, x, y)) == r'\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( 0, \quad 0\right )\right)'
-    assert latex(Order(x, (x, oo), (y, oo))) == r'\mathcal{O}\left(x; \left ( x, \quad y\right )\rightarrow{}\left ( \infty, \quad \infty\right )\right)'
+    assert latex(Order(x, x, 0)) == r'\mathcal{O}\left(x\right)'
+    assert latex(Order(x, x, oo)) == r'\mathcal{O}\left(x; x\rightarrow{}\infty\right)'
     assert latex(lowergamma(x, y)) == r'\gamma\left(x, y\right)'
     assert latex(lowergamma(x, y)**3) == r'\gamma^{3}\left(x, y\right)'
     assert latex(uppergamma(x, y)) == r'\Gamma\left(x, y\right)'
@@ -709,6 +703,8 @@ def test_latex_limits():
 
     assert latex(Limit(x + x**2, x, 0)) == r'\lim_{x \to 0^+}\left(x^{2} + x\right)'
     assert latex(Limit(x > 0, x, 0)) == r'\lim_{x \to 0^+}\left(x > 0\right)'
+
+    assert latex(Limit(sqrt(-1 + I*x), x, 0, dir=exp(I*pi/3))) == r'\lim_{x \to 0^+} \sqrt{- e^{\frac{i \pi}{3}} i x - 1}'
 
 
 def test_sympyissue_3568():
@@ -1107,20 +1103,6 @@ def test_latex_MatrixSlice():
         r'X\left[5, :5:2\right]'
 
 
-def test_latex_RandomDomain():
-    X = Normal('x1', 0, 1)
-    assert latex(where(X > 0)) == r'Domain: 0 < x_{1} \wedge x_{1} < \infty'
-
-    D = Die('d1', 6)
-    assert latex(where(D > 4)) == r'Domain: d_{1} = 5 \vee d_{1} = 6'
-
-    A = Exponential('a', 1)
-    B = Exponential('b', 1)
-    assert latex(
-        pspace(Tuple(A, B)).domain) == \
-        r'Domain: 0 \leq a \wedge 0 \leq b \wedge a < \infty \wedge b < \infty'
-
-
 def test_PrettyPoly():
     R = QQ.inject(x, y)
     F = R.field
@@ -1449,29 +1431,6 @@ def test_sympyissue_8409():
 
 def test_sympyissue_2934():
     assert latex(Symbol(r'\frac{a_1}{b_1}')) == '\\frac{a_1}{b_1}'
-
-
-def test_diffgeom():
-    assert latex(R2) == r'\mathbb{R}^{2}'
-    r2 = Manifold('r', 2)
-    assert latex(r2) == r'\mathrm{r}'
-    foo = Manifold('Foo', 2)
-    assert latex(foo) == r'\mathrm{Foo}'
-    R2_origin = Patch('origin', R2)
-    assert latex(R2_origin) == r'\mathrm{origin}_{\mathbb{R}^{2}}'
-    assert latex(R2_r) == r'\mathrm{rectangular}^{\mathrm{origin}}_{\mathbb{R}^{2}}'
-    tp1 = TensorProduct(R2.dx, R2.dy)
-    assert latex(tp1) == r'\mathrm{d}x\otimes\mathrm{d}y'
-    ch = metric_to_Christoffel_2nd(TensorProduct(R2.dx, R2.dx) +
-                                   TensorProduct(R2.dy, R2.dy))
-    cvd = CovarDerivativeOp(R2.x*R2.e_x, ch)
-    assert latex(cvd) == r'\mathbb{\nabla}_{\boldsymbol{\mathrm{x}} \partial_{x}}'
-
-    g = Function('g')
-    s_field = g(R2.x, R2.y)
-    dg = Differential(s_field)
-    assert latex(dg) == r'd(g{\left (\boldsymbol{\mathrm{x}},' \
-                        r'\boldsymbol{\mathrm{y}} \right )})'
 
 
 def test_sympyissue_20491():

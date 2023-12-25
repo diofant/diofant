@@ -11,7 +11,6 @@ from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
-from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
 from ..polys.solvers import solve_lin_sys
 from ..utilities import ordered
@@ -409,14 +408,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if g.exp.is_Rational and g.exp.denominator != 1:
                 if g.exp.numerator > 0:
                     return g.exp.numerator + g.exp.denominator - 1
-                else:
-                    return abs(g.exp.numerator + g.exp.denominator)
-            else:
-                return 1
-        elif not g.is_Atom and g.args:
-            return max(_exponent(h) for h in g.args)
-        else:
+                return abs(g.exp.numerator + g.exp.denominator)
             return 1
+        if not g.is_Atom and g.args:
+            return max(_exponent(h) for h in g.args)
+        return 1
 
     A, B = _exponent(f), a + max(b, c)
 
@@ -424,7 +420,17 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     if A > 1 and B > 1:
         degree -= 1
 
-    monoms = itermonomials(V, degree)
+    def _itermonomials(variables, degree):
+        if not variables:
+            yield Integer(1)
+        else:
+            x, tail = variables[0], variables[1:]
+
+            for i in range(degree + 1):
+                for m in _itermonomials(tail, degree - i):
+                    yield m * x**i
+
+    monoms = _itermonomials(V, degree)
     poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
     poly_part = Add(*[poly_coeffs[i]*monomial
                       for i, monomial in enumerate(ordered(monoms))])
@@ -500,8 +506,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             find_non_syms(raw_numer)
         except PolynomialError:
             return
-        else:
-            ground, _ = construct_domain(non_syms, field=True)
+        ground, _ = construct_domain(non_syms, field=True)
 
         coeff_ring = ground.poly_ring(*poly_coeffs)
         ring = coeff_ring.poly_ring(*V)
@@ -535,9 +540,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             antideriv = antideriv.as_independent(x)[1]
 
         return indep*antideriv
-    else:
-        if retries >= 0:
-            result = heurisch(f, x, mappings=mappings, rewrite=rewrite, hints=hints, retries=retries - 1, unnecessary_permutations=unnecessary_permutations)
+    if retries >= 0:
+        result = heurisch(f, x, mappings=mappings, rewrite=rewrite, hints=hints, retries=retries - 1, unnecessary_permutations=unnecessary_permutations)
 
-            if result is not None:
-                return indep*result
+        if result is not None:
+            return indep*result

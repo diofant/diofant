@@ -88,8 +88,7 @@ class MatMul(MatrixExpr):
         if factor != 1:
             from .trace import trace
             return factor * trace(mmul.doit())
-        else:
-            raise NotImplementedError("Can't simplify any further")
+        raise NotImplementedError("Can't simplify any further")
 
     def _eval_determinant(self):
         from .determinant import Determinant
@@ -146,24 +145,24 @@ def merge_explicit(matmul):
     >>> B = Matrix([[1, 1], [1, 1]])
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatMul(A, B, C)
-    >>> pprint(X, use_unicode=False)
-      [1  1] [1  2]
-    A*[    ]*[    ]
-      [1  1] [3  4]
-    >>> pprint(merge_explicit(X), use_unicode=False)
-      [4  6]
-    A*[    ]
-      [4  6]
+    >>> pprint(X)
+      ⎡1  1⎤ ⎡1  2⎤
+    A⋅⎢    ⎥⋅⎢    ⎥
+      ⎣1  1⎦ ⎣3  4⎦
+    >>> pprint(merge_explicit(X))
+      ⎡4  6⎤
+    A⋅⎢    ⎥
+      ⎣4  6⎦
 
     >>> X = MatMul(B, A, C)
-    >>> pprint(X, use_unicode=False)
-    [1  1]   [1  2]
-    [    ]*A*[    ]
-    [1  1]   [3  4]
-    >>> pprint(merge_explicit(X), use_unicode=False)
-    [1  1]   [1  2]
-    [    ]*A*[    ]
-    [1  1]   [3  4]
+    >>> pprint(X)
+    ⎡1  1⎤   ⎡1  2⎤
+    ⎢    ⎥⋅A⋅⎢    ⎥
+    ⎣1  1⎦   ⎣3  4⎦
+    >>> pprint(merge_explicit(X))
+    ⎡1  1⎤   ⎡1  2⎤
+    ⎢    ⎥⋅A⋅⎢    ⎥
+    ⎣1  1⎦   ⎣3  4⎦
 
     """
     if not any(isinstance(arg, MatrixBase) for arg in matmul.args):
@@ -214,8 +213,7 @@ def remove_ids(mul):
     result = rm_id(lambda x: x.is_Identity is True)(mmul)
     if result != mmul:
         return newmul(factor, *result.args)  # Recombine and return
-    else:
-        return mul
+    return mul
 
 
 def factor_in_front(mul):

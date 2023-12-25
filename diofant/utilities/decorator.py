@@ -40,6 +40,7 @@ class no_attrs_in_subclass:
     """
 
     def __init__(self, cls, f):
+        """Initialize self."""
         self.cls = cls
         self.f = f
 

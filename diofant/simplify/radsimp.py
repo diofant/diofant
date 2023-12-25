@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols)
-from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
@@ -10,6 +9,7 @@ from ..core.sympify import sympify
 from ..functions import log, sqrt
 from ..polys import gcd
 from ..utilities import default_sort_key, ordered
+from ..utilities.iterables import is_iterable
 from .sqrtdenest import sqrtdenest
 
 
@@ -313,12 +313,12 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
             return expr.func(*[
                 collect(term, syms, func, True, exact, distribute_order_term)
                 for term in expr.args])
-        elif expr.is_Pow:
+        if expr.is_Pow:
             b = collect(
                 expr.base, syms, func, True, exact, distribute_order_term)
             return Pow(b, expr.exp)
 
-    if iterable(syms):
+    if is_iterable(syms):
         syms = [expand_power_base(i, deep=False) for i in syms]
     else:
         syms = [expand_power_base(syms, deep=False)]
@@ -380,8 +380,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     if evaluate:
         return Add(*[key*val for key, val in collected.items()])
-    else:
-        return collected
+    return collected
 
 
 def rcollect(expr, *vars):
@@ -403,13 +402,11 @@ def rcollect(expr, *vars):
     """
     if expr.is_Atom or not expr.has(*vars):
         return expr
-    else:
-        expr = expr.__class__(*[rcollect(arg, *vars) for arg in expr.args])
+    expr = expr.__class__(*[rcollect(arg, *vars) for arg in expr.args])
 
-        if expr.is_Add:
-            return collect(expr, vars)
-        else:
-            return expr
+    if expr.is_Add:
+        return collect(expr, vars)
+    return expr
 
 
 def collect_sqrt(expr, evaluate=True):
@@ -623,21 +620,19 @@ def radsimp(expr, symbolic=True, max_terms=4):
     >>> r2 = sqrt(2)
     >>> r5 = sqrt(5)
     >>> ans = radsimp(1/(y*r2 + x*r2 + a*r5 + b*r5))
-    >>> pprint(ans, use_unicode=False)
+    >>> pprint(ans)
         ___       ___       ___       ___
-      \/ 5 *a + \/ 5 *b - \/ 2 *x - \/ 2 *y
-    ------------------------------------------
+      ╲╱ 5 ⋅a + ╲╱ 5 ⋅b - ╲╱ 2 ⋅x - ╲╱ 2 ⋅y
+    ──────────────────────────────────────────
        2               2      2              2
-    5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
-
+    5⋅a  + 10⋅a⋅b + 5⋅b  - 2⋅x  - 4⋅x⋅y - 2⋅y
     >>> n, d = fraction(ans)
-    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True),
-    ...        use_unicode=False)
+    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True))
             ___             ___
-          \/ 5 *(a + b) - \/ 2 *(x + y)
-    ------------------------------------------
+          ╲╱ 5 ⋅(a + b) - ╲╱ 2 ⋅(x + y)
+    ──────────────────────────────────────────
        2               2      2              2
-    5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
+    5⋅a  + 10⋅a⋅b + 5⋅b  - 2⋅x  - 4⋅x⋅y - 2⋅y
 
     If radicals in the denominator cannot be removed or there is no denominator,
     the original expression will be returned.
@@ -677,7 +672,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
             return (
                 (sqrt(A)*a + sqrt(B)*b - sqrt(C)*c)*(2*sqrt(A)*sqrt(B)*a*b - A*a**2 -
                                                      B*b**2 + C*c**2)).xreplace(reps)
-        elif len(rterms) == 4:
+        if len(rterms) == 4:
             reps = dict(zip([A, a, B, b, C, c, D, d], [j for i in rterms for j in i]))
             return ((sqrt(A)*a + sqrt(B)*b - sqrt(C)*c - sqrt(D)*d)*(2*sqrt(A)*sqrt(B)*a*b
                                                                      - A*a**2 - B*b**2 - 2*sqrt(C)*sqrt(D)*c*d + C*c**2 +
@@ -685,10 +680,9 @@ def radsimp(expr, symbolic=True, max_terms=4):
                                                                               2*A*B*a**2*b**2 - 2*A*C*a**2*c**2 - 2*A*D*a**2*d**2 + B**2*b**4 -
                                                                               2*B*C*b**2*c**2 - 2*B*D*b**2*d**2 + C**2*c**4 - 2*C*D*c**2*d**2 +
                                                                               D**2*d**4)).xreplace(reps)
-        elif len(rterms) == 1:
+        if len(rterms) == 1:
             return sqrt(rterms[0][0])
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
     def ispow2(d, log2=False):
         if not d.is_Pow:
@@ -718,12 +712,12 @@ def radsimp(expr, symbolic=True, max_terms=4):
 
         if expr.is_Atom or (d.is_Atom and n.is_Atom):
             return expr
-        elif not n.is_Atom:
+        if not n.is_Atom:
             n = n.func(*[handle(a) for a in n.args])
             return _unevaluated_Mul(n, handle(1/d))
-        elif n != 1:
+        if n != 1:
             return _unevaluated_Mul(n, handle(1/d))
-        elif d.is_Mul:
+        if d.is_Mul:
             return _unevaluated_Mul(*[handle(1/d) for d in d.args])
 
         # By this step, expr is 1/d, and d is not a mul.

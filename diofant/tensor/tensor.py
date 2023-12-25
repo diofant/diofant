@@ -29,11 +29,8 @@ If there is a (anti)symmetric metric, the indices can be raised and
 lowered when the tensor is put in canonical form.
 """
 
-from __future__ import annotations
-
+import collections
 import functools
-import typing
-from collections import defaultdict
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
                                         get_symmetric_group_sgs, riemann_bsgs)
@@ -100,6 +97,7 @@ class TIDS(CantSympify):
     """
 
     def __init__(self, components, free, dum):
+        """Initialize self."""
         self.components = components
         self.free = free
         self.dum = dum
@@ -564,10 +562,7 @@ class TIDS(CantSympify):
         return TIDS(components, free, dum)
 
     def get_indices(self):
-        """
-        Get a list of indices, creating new tensor indices to complete dummy indices.
-
-        """
+        """Get a list of indices, creating new tensor indices to complete dummy indices."""
         components = self.components
         free = self.free
         dum = self.dum
@@ -578,7 +573,7 @@ class TIDS(CantSympify):
         for t in components:
             vpos.append(pos)
             pos += t.rank
-        cdt = defaultdict(int)
+        cdt = collections.defaultdict(int)
         # if the free indices have names with dummy_fmt, start with an
         # index higher than those for the dummy indices
         # to avoid name collisions
@@ -752,8 +747,8 @@ class _TensorDataLazyEvaluator(CantSympify):
 
     """
 
-    _substitutions_dict: dict[typing.Any, typing.Any] = {}
-    _substitutions_dict_tensmul: dict[typing.Any, typing.Any] = {}
+    _substitutions_dict: dict[object, object] = {}
+    _substitutions_dict_tensmul: dict[object, object] = {}
 
     def __getitem__(self, key):
         dat = self._get(key)
@@ -766,7 +761,7 @@ class _TensorDataLazyEvaluator(CantSympify):
 
         if dat.ndim == 0:
             return dat[()]
-        elif dat.ndim == 1 and dat.size == 1:
+        if dat.ndim == 1 and dat.size == 1:
             return dat[0]
         return dat
 
@@ -1879,8 +1874,7 @@ class TensorType(Basic):
             raise ValueError('expecting a string')
         if len(names) == 1:
             return TensorHead(names[0], self, comm, matrix_behavior=matrix_behavior)
-        else:
-            return [TensorHead(name, self, comm, matrix_behavior=matrix_behavior) for name in names]
+        return [TensorHead(name, self, comm, matrix_behavior=matrix_behavior) for name in names]
 
 
 def tensorhead(name, typ, sym, comm=0, matrix_behavior=0):
@@ -2450,9 +2444,7 @@ class TensExpr(Basic):
                 for i in range(rows):
                     mat_list[i] = self[i]
             return Matrix(mat_list)
-        else:
-            raise NotImplementedError(
-                'missing multidimensional reduction to matrix.')
+        raise NotImplementedError('missing multidimensional reduction to matrix.')
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -2744,16 +2736,13 @@ class TensAdd(TensExpr):
         if isinstance(other, TensAdd):
             if set(self.args) != set(other.args):
                 return False
-            else:
-                return True
+            return True
         t = self - other
         if not isinstance(t, TensExpr):
             return t == 0
-        else:
-            if isinstance(t, TensMul):
-                return t._coeff == 0
-            else:
-                return all(x._coeff == 0 for x in t.args)
+        if isinstance(t, TensMul):
+            return t._coeff == 0
+        return all(x._coeff == 0 for x in t.args)
 
     def __add__(self, other):
         return TensAdd(self, other)
@@ -3122,8 +3111,7 @@ class Tensor(TensExpr):
         component = self.component
         if component.rank > 0:
             return f"{component.name}({', '.join(indices)})"
-        else:
-            return f'{component.name}'
+        return f'{component.name}'
 
     def equals(self, other):
         if other == 0:
@@ -3651,8 +3639,7 @@ def riemann_cyclic(t2):
     t3 = TensAdd(*a3)
     if not t3:
         return t3
-    else:
-        return canon_bp(t3)
+    return canon_bp(t3)
 
 
 def get_indices(t):

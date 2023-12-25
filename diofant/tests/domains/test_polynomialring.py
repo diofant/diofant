@@ -2,7 +2,8 @@
 
 import pytest
 
-from diofant import FF, QQ, ZZ, CoercionFailed, GeneratorsNeeded, sqrt
+from diofant import (FF, QQ, ZZ, CoercionFailedError, GeneratorsNeededError,
+                     sqrt)
 from diofant.abc import x, y
 from diofant.polys.orderings import build_product_order
 
@@ -66,17 +67,17 @@ def test_conversion():
 
     assert L.convert(x) == L.convert(G.convert(x), G)
     assert G.convert(x) == G.convert(L.convert(x), L)
-    pytest.raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
+    pytest.raises(CoercionFailedError, lambda: G.convert(L.convert(1/(1 + x)), L))
 
     R = ALG.inject(x, y)
     assert R.convert(ALG(1), ALG) == R(1)
-    pytest.raises(CoercionFailed,
+    pytest.raises(CoercionFailedError,
                   lambda: R.convert(ALG(1), QQ.algebraic_field(sqrt(2))))
 
     R = R.drop(y)
-    pytest.raises(CoercionFailed, lambda: R.convert(G(y), R))
+    pytest.raises(CoercionFailedError, lambda: R.convert(G(y), R))
 
-    pytest.raises(CoercionFailed, lambda: R.convert(FF(8)(2)))
+    pytest.raises(CoercionFailedError, lambda: R.convert(FF(8)(2)))
 
 
 def test_units():
@@ -97,8 +98,8 @@ def test_units():
 
 
 def test_poly_frac():
-    pytest.raises(GeneratorsNeeded, QQ.inject)
-    pytest.raises(GeneratorsNeeded, lambda: QQ.inject().field)
+    pytest.raises(GeneratorsNeededError, QQ.inject)
+    pytest.raises(GeneratorsNeededError, lambda: QQ.inject().field)
 
 
 def test_methods():

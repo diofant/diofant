@@ -148,10 +148,10 @@ def test_log_values():
     assert log(E) == 1
     assert log(-E).expand() == 1 + I*pi
 
-    assert log(pi) == log(pi)
+    assert log(pi) == log(pi, evaluate=False)
     assert log(-pi).expand() == log(pi) + I*pi
 
-    assert log(17) == log(17)
+    assert log(17) == log(17, evaluate=False)
     assert log(-17) == log(17) + I*pi
 
     assert log(I) == I*pi/2
@@ -319,7 +319,7 @@ def test_log_expand_complex():
 
 def test_log_apply_evalf():
     value = (log(3)/log(2) - 1).evalf()
-    assert value.epsilon_eq(Float('0.58496250072115618145373'))
+    assert value.epsilon_eq(0.58496250072115618145373)
 
 
 def test_log_expand():
@@ -387,7 +387,7 @@ def test_lambertw():
 
     assert LambertW(sqrt(2)).evalf(30).epsilon_eq(
         Float('0.701338383413663009202120278965', 30), 1e-29)
-    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float('-0.834310366631110'))
+    assert re(LambertW(2, -1)).evalf().epsilon_eq(-0.834310366631110)
 
     assert LambertW(-1).is_extended_real is False  # issue sympy/sympy#5215
     assert LambertW(2, evaluate=False).is_extended_real
@@ -411,7 +411,7 @@ def test_lambertw():
 
     assert LambertW(x).series(x, n=0) == O(1, x)
     assert LambertW(x, k).series(x, x0=1, n=1) == (LambertW(1, k) +
-                                                   O(x - 1, (x, 1)))
+                                                   O(x - 1, x, 1))
 
 
 def test_sympyissue_5673():

@@ -58,15 +58,13 @@ def _base_fact(atom):
     """
     if isinstance(atom, Not):
         return atom.arg
-    else:
-        return atom
+    return atom
 
 
 def _as_pair(atom):
     if isinstance(atom, Not):
         return atom.arg, False
-    else:
-        return atom, True
+    return atom, True
 
 # XXX this prepares forward-chaining rules for alpha-network
 
@@ -259,7 +257,7 @@ def rules_2prereq(rules):
 ################
 
 
-class TautologyDetected(Exception):
+class TautologyDetectedError(Exception):
     """(internal) Prover uses it for reporting detected tautology."""
 
 
@@ -295,6 +293,7 @@ class Prover:
     """
 
     def __init__(self):
+        """Initialize self."""
         self.proved_rules = []
         self._rules_seen = set()
 
@@ -323,20 +322,18 @@ class Prover:
             return
         if (a, b) in self._rules_seen:
             return
-        else:
-            self._rules_seen.add((a, b))
+        self._rules_seen.add((a, b))
 
         # this is the core of processing
         try:
             self._process_rule(a, b)
-        except TautologyDetected:
+        except TautologyDetectedError:
             pass
 
     def _process_rule(self, a, b):
         # right part first
 
         # a -> b & c    -->  a -> b  ;  a -> c
-        # (?) FIXME this is only correct when b & c != null !
         if isinstance(b, And):
             for barg in b.args:
                 self.process_rule(a, barg)
@@ -349,7 +346,7 @@ class Prover:
             if not isinstance(a, Logic):    # Atom
                 # tautology:  a -> a|c|...
                 if a in b.args:
-                    raise TautologyDetected(a, b, 'a -> a|c|...')
+                    raise TautologyDetectedError(a, b, 'a -> a|c|...')
             self.process_rule(And(*[Not(barg) for barg in b.args]), Not(a))
 
             for bidx, barg in enumerate(b.args):
@@ -362,13 +359,13 @@ class Prover:
         #                    (this will be the basis of beta-network)
         elif isinstance(a, And):
             if b in a.args:
-                raise TautologyDetected(a, b, 'a & b -> a')
+                raise TautologyDetectedError(a, b, 'a & b -> a')
             self.proved_rules.append((a, b))
             # XXX NOTE at present we ignore  ~c -> ~a | ~b
 
         elif isinstance(a, Or):
             if b in a.args:
-                raise TautologyDetected(a, b, 'a | b -> a')
+                raise TautologyDetectedError(a, b, 'a | b -> a')
             for aarg in a.args:
                 self.process_rule(aarg, b)
 
@@ -480,16 +477,14 @@ class InconsistentAssumptions(ValueError):
 
 
 class FactKB(dict):
-    """
-    A simple propositional knowledge base relying on compiled inference rules.
-
-    """
+    """A simple propositional knowledge base relying on compiled inference rules."""
 
     def __str__(self):
         items = ',\n'.join(f'\t{i[0]}: {i[1]}' for i in sorted(self.items()))
         return f'{{\n{items}}}'
 
     def __init__(self, rules):
+        """Initialize self."""
         super().__init__()
         self.rules = rules
 
@@ -503,11 +498,9 @@ class FactKB(dict):
         if k in self and self[k] is not None:
             if self[k] == v:
                 return False
-            else:
-                raise InconsistentAssumptions(self, k, v)
-        else:
-            self[k] = v
-            return True
+            raise InconsistentAssumptions(self, k, v)
+        self[k] = v
+        return True
 
     # *********************************************
     # * This is the workhorse, so keep it *fast*. *

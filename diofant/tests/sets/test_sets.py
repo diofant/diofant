@@ -42,8 +42,8 @@ def test_interval_arguments():
 
 def test_interval_evalf():
     assert (Interval(E, pi).evalf() ==
-            Interval(Float('2.7182818284590451', dps=15),
-                     Float('3.1415926535897931', dps=15), false, false))
+            Interval(2.7182818284590451,
+                     3.1415926535897931, false, false))
 
 
 def test_interval_symbolic_end_points():
@@ -129,8 +129,7 @@ def test_union():
     pytest.raises(TypeError, lambda: iter(Union(FiniteSet(1, 2), Interval(0, 1))))
 
     assert (Union(FiniteSet(E), FiniteSet(pi), evaluate=False).evalf() ==
-            FiniteSet(Float('2.7182818284590451', dps=15),
-                      Float('3.1415926535897931', dps=15)))
+            FiniteSet(2.7182818284590451, 3.1415926535897931))
 
 
 def test_difference():
@@ -165,8 +164,8 @@ def test_Complement():
     assert -1 in Complement(S.Reals, S.Naturals, evaluate=False)
     assert 1 not in Complement(S.Reals, S.Naturals, evaluate=False)
 
-    assert Complement(S.Integers, S.UniversalSet) == EmptySet()
-    assert S.UniversalSet.complement(S.Integers) == EmptySet()
+    assert Complement(S.Integers, S.Reals) == EmptySet()
+    assert S.Reals.complement(S.Integers) == EmptySet()
 
     assert (0 not in S.Reals.intersection(S.Integers - FiniteSet(0)))
 
@@ -188,10 +187,8 @@ def test_complement():
     assert Interval(0, 1, True, True).complement(S.Reals) == \
         Union(Interval(-oo, 0, True, False), Interval(1, oo, False, True))
 
-    assert S.UniversalSet.complement(S.EmptySet) == S.EmptySet
-    assert S.UniversalSet.complement(S.Reals) == S.EmptySet
-    assert S.UniversalSet.complement(S.UniversalSet) == S.EmptySet
-
+    assert S.Reals.complement(S.EmptySet) == S.EmptySet
+    assert S.Reals.complement(S.Reals) == S.EmptySet
     assert S.EmptySet.complement(S.Reals) == S.Reals
 
     assert Union(Interval(0, 1), Interval(2, 3)).complement(S.Reals) == \
@@ -228,8 +225,6 @@ def test_complement():
 
 def test_intersection():
     pytest.raises(TypeError, lambda: Intersection(1))
-
-    assert Intersection() == S.UniversalSet
 
     assert Interval(0, 2).intersection(Interval(1, 2)) == Interval(1, 2)
     assert Interval(0, 2).intersection(Interval(1, 2, True)) == \
@@ -527,13 +522,13 @@ def test_is_number():
 def test_Interval_is_left_unbounded():
     assert Interval(3, 4).is_left_unbounded is False
     assert Interval(-oo, 3).is_left_unbounded is True
-    assert Interval(Float('-inf'), 3).is_left_unbounded is True
+    assert Interval(-oo.evalf(), 3).is_left_unbounded is True
 
 
 def test_Interval_is_right_unbounded():
     assert Interval(3, 4).is_right_unbounded is False
     assert Interval(3, oo).is_right_unbounded is True
-    assert Interval(3, Float('+inf')).is_right_unbounded is True
+    assert Interval(3, oo.evalf()).is_right_unbounded is True
 
 
 def test_Interval_as_relational():
@@ -589,7 +584,7 @@ def test_Intersection_as_relational():
 
 def test_EmptySet():
     assert S.EmptySet.as_relational(x) is false
-    assert S.EmptySet.intersection(S.UniversalSet) == S.EmptySet
+    assert S.EmptySet.intersection(S.Reals) == S.EmptySet
     assert S.EmptySet.boundary == S.EmptySet
     assert Interval(0, 1).symmetric_difference(S.EmptySet) == Interval(0, 1)
     assert Interval(1, 2).intersection(S.EmptySet) == S.EmptySet
@@ -638,8 +633,7 @@ def test_finite_basic():
     assert B > AandB
 
     assert (FiniteSet(pi, E).evalf() ==
-            FiniteSet(Float('2.7182818284590451', dps=15),
-                      Float('3.1415926535897931', dps=15)))
+            FiniteSet(2.7182818284590451, 3.1415926535897931))
 
     # issue sympy/sympy#10337
     assert (FiniteSet(2) == 3) is False
@@ -741,19 +735,6 @@ def test_supinf():
     assert FiniteSet('Ham', 'Eggs').sup == Max('Ham', 'Eggs')
 
 
-def test_universalset():
-    U = S.UniversalSet
-    assert U.as_relational(x) is true
-    assert U.union(Interval(2, 4)) == U
-
-    assert U.intersection(Interval(2, 4)) == Interval(2, 4)
-    assert U.measure == oo
-    assert U.boundary == S.EmptySet
-    assert U.contains(0) is true
-    assert Interval(0, 1).symmetric_difference(U) == Interval(0, 1)
-    assert U.complement(U) == S.EmptySet
-
-
 def test_Union_of_ProductSets_shares():
     line = Interval(0, 2)
     points = FiniteSet(0, 1, 2)
@@ -799,7 +780,7 @@ def test_image_interval():
             ImageSet(Lambda(x, a*x), Interval(0, 1)))
 
     assert (imageset(Lambda(x, sin(cos(x))), Interval(0, 1)) ==
-            ImageSet(Lambda(x, sin(cos(x))), Interval(0, 1)))
+            Interval(sin(cos(1)), sin(1)))
 
     assert imageset(x, -(x - 2)*(x + 2),
                     Interval(-3, 4)) == Interval(-12, 4)
@@ -1013,25 +994,18 @@ def test_sympyissue_9808():
             Complement(FiniteSet(1), FiniteSet(y), evaluate=False))
 
 
-def test_sympyissue_9447():
+def test_sympyissue_10305():
     a = Interval(0, 1) + Interval(2, 3)
-    assert (Complement(S.UniversalSet, a) ==
-            Complement(S.UniversalSet,
-                       Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
-    # issue sympy/sympy#10305:
     assert (Complement(S.Naturals, a) ==
             Complement(S.Naturals,
                        Union(Interval(0, 1), Interval(2, 3)), evaluate=False))
 
 
 def test_sympyissue_2799():
-    U = S.UniversalSet
     a = Symbol('a', real=True)
     inf_interval = Interval(a, oo)
     R = S.Reals
 
-    assert U + inf_interval == inf_interval + U
-    assert U + R == R + U
     assert R + inf_interval == inf_interval + R
 
 

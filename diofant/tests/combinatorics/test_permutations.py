@@ -144,7 +144,6 @@ def test_Permutation():
 
     assert rmul(~p, p).is_Identity
     assert (~p)**13 == Permutation([5, 2, 0, 4, 6, 1, 3])
-    assert ~(r**2).is_Identity
     assert p.max() == 6
     assert p.min() == 0
 
@@ -265,7 +264,8 @@ def test_ranking():
         tj.append(b)
         a = a.next_lex()
         b = b.next_trotterjohnson()
-    assert a == b is None
+    assert a is None
+    assert b is None
     assert {tuple(a) for a in l} == {tuple(a) for a in tj}
 
     p = Permutation([2, 5, 1, 6, 3, 0, 4])

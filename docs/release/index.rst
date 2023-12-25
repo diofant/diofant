@@ -14,5 +14,5 @@ development work they do here in a user friendly format.
 
    sympy
    notes-0.[89]*
-   notes-0.1[0-3]*
-   Diofant 0.14 (Not Released Yet) <notes-0.14>
+   notes-0.1[0-4]*
+   Diofant 0.15 (Not Released Yet) <notes-0.15>

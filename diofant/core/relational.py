@@ -177,14 +177,13 @@ class Relational(Boolean, Expr, EvalfMixin):
                 if know is False:
                     if isinstance(r, Eq):
                         return False
-                    elif isinstance(r, Ne):
+                    if isinstance(r, Ne):
                         return True
 
         r = r.canonical
         if measure(r) < ratio*measure(self):
             return r
-        else:
-            return self
+        return self
 
     def __bool__(self):
         raise TypeError('cannot determine truth value of Relational')
@@ -290,7 +289,7 @@ class Equality(Relational):
             # If expressions have the same structure, they must be equal.
             if lhs == rhs:
                 return true
-            elif all(isinstance(i, BooleanAtom) for i in (rhs, lhs)):
+            if all(isinstance(i, BooleanAtom) for i in (rhs, lhs)):
                 return false  # equal args already evaluated
 
             # If appropriate, check if the difference evaluates.  Detect

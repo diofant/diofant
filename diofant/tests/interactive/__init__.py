@@ -1,3 +1,1 @@
-"""
-Tests for interactive sessions.
-"""
+"""Tests for interactive sessions."""

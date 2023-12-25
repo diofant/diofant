@@ -5,7 +5,7 @@ from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, oo, symbols)
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and
 from ..core.sympify import sympify
 from ..functions import Max, Min, exp, factorial, sqrt
@@ -14,6 +14,7 @@ from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
 from ..utilities import default_sort_key, flatten
+from ..utilities.iterables import is_sequence
 
 
 def _iszero(x):
@@ -100,15 +101,15 @@ class MatrixBase(DefaultPrinting):
                 return args[0].rows, args[0].cols, flatten(args[0].tolist())
 
             # Matrix(Matrix(...))
-            elif isinstance(args[0], MatrixBase):
+            if isinstance(args[0], MatrixBase):
                 return args[0].rows, args[0].cols, args[0]._mat
 
             # Matrix(MatrixSymbol('X', 2, 2))
-            elif isinstance(args[0], Basic) and args[0].is_Matrix:
+            if isinstance(args[0], Basic) and args[0].is_Matrix:
                 return args[0].rows, args[0].cols, args[0].as_explicit()._mat
 
             # Matrix(numpy.ones((2, 2)))
-            elif hasattr(args[0], '__array__'):
+            if hasattr(args[0], '__array__'):
                 # NumPy array or matrix or some other object that implements
                 # __array__. So let's first use this method to get a
                 # numpy.array() and then make a python list out of it.
@@ -117,18 +118,16 @@ class MatrixBase(DefaultPrinting):
                     rows, cols = arr.shape[0], arr.shape[1]
                     flat_list = [cls._sympify(i) for i in arr.ravel()]
                     return rows, cols, flat_list
-                elif len(arr.shape) == 1:
+                if len(arr.shape) == 1:
                     rows, cols = arr.shape[0], 1
                     flat_list = [Integer(0)]*rows
                     for i, a in enumerate(arr):
                         flat_list[i] = cls._sympify(a)
                     return rows, cols, flat_list
-                else:
-                    raise NotImplementedError(
-                        'Diofant supports just 1D and 2D matrices')
+                raise NotImplementedError('Diofant supports just 1D and 2D matrices')
 
             # Matrix([1, 2, 3]) or Matrix([[1, 2], [3, 4]])
-            elif is_sequence(args[0]):
+            if is_sequence(args[0]):
                 in_mat = []
                 ncol = set()
                 for row in args[0]:
@@ -487,9 +486,7 @@ class MatrixBase(DefaultPrinting):
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
                                       functools.reduce(lambda k, l: k + l,
                                                        [a_ik * b_kj for a_ik, b_kj in zip(alst[i], blst[j])]))
-        else:
-            return self._new(self.rows, self.cols,
-                             [i*other for i in self._mat])
+        return self._new(self.rows, self.cols, [i*other for i in self._mat])
 
     def __rmul__(self, a):
         if getattr(a, 'is_Matrix', False):
@@ -517,7 +514,7 @@ class MatrixBase(DefaultPrinting):
                 s *= s
                 n //= 2
             return self._new(a)
-        elif isinstance(num, Expr):
+        if isinstance(num, Expr):
 
             def jordan_cell_power(jc, n):
                 N = jc.shape[0]
@@ -535,9 +532,8 @@ class MatrixBase(DefaultPrinting):
             for j in jordan_cells:
                 jordan_cell_power(j, num)
             return self._new(P*diag(*jordan_cells)*P.inv())
-        else:
-            raise TypeError(
-                'Only Diofant expressions or int objects are supported as exponent for matrices')
+        raise TypeError(
+            'Only Diofant expressions or int objects are supported as exponent for matrices')
 
     def __add__(self, other):
         """Return self + other, raising ShapeError if shapes don't match."""
@@ -1042,10 +1038,9 @@ class MatrixBase(DefaultPrinting):
                 raise TypeError('key must be a sequence of length 2')
             return [a2idx(i, n) if not isinstance(i, slice) else i
                     for i, n in zip(key, self.shape)]
-        elif isinstance(key, slice):
+        if isinstance(key, slice):
             return key.indices(len(self))[:2]
-        else:
-            return divmod(a2idx(key, len(self)), self.cols)
+        return divmod(a2idx(key, len(self)), self.cols)
 
     def evalf(self, dps=15, **options):
         """Apply evalf() to each element of self."""
@@ -1417,8 +1412,7 @@ class MatrixBase(DefaultPrinting):
         """
         if (i + j) % 2 == 0:
             return self.minorEntry(i, j, method)
-        else:
-            return -1*self.minorEntry(i, j, method)
+        return -1*self.minorEntry(i, j, method)
 
     def jacobian(self, X):
         """Calculates the Jacobian matrix (derivative of a vectorial function).
@@ -1658,8 +1652,7 @@ class MatrixBase(DefaultPrinting):
                 if len(b) != self.cols and len(b) != self.rows:
                     raise ShapeError('Dimensions incorrect for dot product.')
                 return self.dot(Matrix(b))
-            else:
-                raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}')
+            raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}')
 
         mat = self
         if mat.cols == b.rows:
@@ -1672,10 +1665,9 @@ class MatrixBase(DefaultPrinting):
             return prod
         if mat.cols == b.cols:
             return mat.dot(b.T)
-        elif mat.rows == b.rows:
+        if mat.rows == b.rows:
             return mat.T.dot(b)
-        else:
-            raise ShapeError('Dimensions incorrect for dot product.')
+        raise ShapeError('Dimensions incorrect for dot product.')
 
     def multiply_elementwise(self, b):
         """Return the Hadamard product (elementwise product) of A and B
@@ -1734,7 +1726,7 @@ class MatrixBase(DefaultPrinting):
         >>> trigsimp(v.norm())
         1
         >>> v.norm(10)
-        (sin(x)**10 + cos(x)**10)**(1/10)
+        root(sin(x)**10 + cos(x)**10, 10)
         >>> A = Matrix([[1, 1], [1, 1]])
         >>> A.norm(2)  # Spectral norm (max of |Ax|/|x| under 2-vector-norm)
         2
@@ -1759,13 +1751,13 @@ class MatrixBase(DefaultPrinting):
             if ord == 2 or ord is None:  # Common case sqrt(<x, x>)
                 return sqrt(Add(*(abs(i)**2 for i in vals)))
 
-            elif ord == 1:  # sum(abs(x))
+            if ord == 1:  # sum(abs(x))
                 return Add(*(abs(i) for i in vals))
 
-            elif ord == oo:  # max(abs(x))
+            if ord == oo:  # max(abs(x))
                 return Max(*[abs(i) for i in vals])
 
-            elif ord == -oo:  # min(abs(x))
+            if ord == -oo:  # min(abs(x))
                 return Min(*[abs(i) for i in vals])
 
             # Otherwise generalize the 2-norm, Sum(x_i**ord)**(1/ord)
@@ -1773,22 +1765,20 @@ class MatrixBase(DefaultPrinting):
             return Pow(Add(*(abs(i)**ord for i in vals)), Integer(1) / ord)
 
         # Matrix Norms
-        else:
-            if ord == 2:  # Spectral Norm
-                # Maximum singular value
-                return Max(*self.singular_values())
+        if ord == 2:  # Spectral Norm
+            # Maximum singular value
+            return Max(*self.singular_values())
 
-            elif ord == -2:
-                # Minimum singular value
-                return Min(*self.singular_values())
+        if ord == -2:
+            # Minimum singular value
+            return Min(*self.singular_values())
 
-            elif (ord is None or isinstance(ord, str) and ord.lower() in
-                    ['f', 'fro', 'frobenius', 'vector']):
-                # Reshape as vector and send back to norm function
-                return self.vec().norm(ord=2)
+        if (ord is None or isinstance(ord, str) and ord.lower() in
+                ['f', 'fro', 'frobenius', 'vector']):
+            # Reshape as vector and send back to norm function
+            return self.vec().norm(ord=2)
 
-            else:
-                raise NotImplementedError('Matrix Norms under development')
+        raise NotImplementedError('Matrix Norms under development')
 
     def normalized(self):
         """Return the normalized version of ``self``.
@@ -2253,8 +2243,7 @@ class MatrixBase(DefaultPrinting):
             delta = self - self.transpose()
             delta.simplify()
             return delta.equals(self.zeros(self.rows, self.cols))
-        else:
-            return self == self.transpose()
+        return self == self.transpose()
 
     def is_anti_symmetric(self, simplify=True):
         """Check if matrix M is an antisymmetric matrix,
@@ -2334,12 +2323,11 @@ class MatrixBase(DefaultPrinting):
                     if not simpfunc(diff).is_zero:
                         return False
             return True
-        else:
-            for i in range(n):
-                for j in range(i, n):
-                    if self[i, j] != -self[j, i]:
-                        return False
-            return True
+        for i in range(n):
+            for j in range(i, n):
+                if self[i, j] != -self[j, i]:
+                    return False
+        return True
 
     def is_diagonal(self):
         """Check if matrix is diagonal,
@@ -2413,12 +2401,11 @@ class MatrixBase(DefaultPrinting):
             return Integer(1)
         if method == 'bareiss':
             return self.det_bareiss()
-        elif method == 'berkowitz':
+        if method == 'berkowitz':
             return self.berkowitz_det()
-        elif method == 'det_LU':
+        if method == 'det_LU':
             return self.det_LU_decomposition()
-        else:
-            raise ValueError(f"Determinant method '{method}' unrecognized")
+        raise ValueError(f"Determinant method '{method}' unrecognized")
 
     def det_bareiss(self):
         """Compute matrix determinant using Bareiss' fraction-free
@@ -3420,7 +3407,7 @@ class MatrixBase(DefaultPrinting):
                 from . import MutableMatrix
                 I = MutableMatrix.eye(self.rows)
                 l = eigenval
-                M = (self-l*I)
+                M = self-l*I
 
                 # We will store the matrices `(self-l*I)^k` for further computations
                 # for convenience only we store `Ms[0]=(sefl-lI)^0=I`
@@ -3573,8 +3560,7 @@ class MatrixBase(DefaultPrinting):
         J = type(self)(J)
         if calc_transformation:
             return J, P
-        else:
-            return J
+        return J
 
     def jordan_cells(self, calc_transformation=True):
         r"""Return a list of Jordan cells of current matrix.
@@ -3639,8 +3625,7 @@ class MatrixBase(DefaultPrinting):
             for j in range(n):
                 P[:, j] = Pcols_new[j]
             return Jcells, type(self)(P)
-        else:
-            return Jcells
+        return Jcells
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -3827,7 +3812,7 @@ class MatrixBase(DefaultPrinting):
 
         if pos == 0:
             return mti.col_join(self)
-        elif pos < 0:
+        if pos < 0:
             pos = self.rows + pos
         if pos < 0:
             pos = 0
@@ -3872,7 +3857,7 @@ class MatrixBase(DefaultPrinting):
 
         if pos == 0:
             return mti.row_join(self)
-        elif pos < 0:
+        if pos < 0:
             pos = self.cols + pos
         if pos < 0:
             pos = 0
@@ -3947,8 +3932,7 @@ class MatrixBase(DefaultPrinting):
             return AH
         if self.rows >= self.cols:
             return (AH * A).inv() * AH
-        else:
-            return AH * (A * AH).inv()
+        return AH * (A * AH).inv()
 
     def pinv_solve(self, B, arbitrary_matrix=None):
         """Solve Ax = B using the Moore-Penrose pseudoinverse.
@@ -4053,8 +4037,7 @@ def classof(A, B):
     try:
         if A._class_priority > B._class_priority:
             return A.__class__
-        else:
-            return B.__class__
+        return B.__class__
     except AttributeError:
         pass
     raise TypeError(f'Incompatible classes {A.__class__}, {B.__class__}')

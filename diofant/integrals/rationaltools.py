@@ -276,12 +276,11 @@ def log_to_atan(f, g):
 
     if q.is_zero:
         return 2*atan(p.as_expr())
-    else:
-        s, t, h = g.gcdex(-f)
-        u = (f*s + g*t).quo(h)
-        A = 2*atan(u.as_expr())
+    s, t, h = g.gcdex(-f)
+    u = (f*s + g*t).quo(h)
+    A = 2*atan(u.as_expr())
 
-        return A + log_to_atan(s, t)
+    return A + log_to_atan(s, t)
 
 
 def log_to_real(h, q, x, t):
@@ -308,6 +307,11 @@ def log_to_real(h, q, x, t):
     ========
 
     log_to_atan
+
+    References
+    ==========
+
+    * :cite:`Bronstein2005integration`, p. 69
 
     """
     u, v = symbols('u,v', cls=Dummy)
@@ -336,6 +340,9 @@ def log_to_real(h, q, x, t):
 
     for r_u in R_u:
         C = c.subs({u: r_u}).as_poly(v, extension=False)
+        if not C:
+            C = d.subs({u: r_u}).as_poly(v, extension=False)
+            d = Integer(0)
 
         R_v_all = roots(C)
         if sum(R_v_all.values()) < C.degree():

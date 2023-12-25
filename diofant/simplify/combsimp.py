@@ -84,16 +84,6 @@ def combsimp(expr):
             rewrite = True
             n = _n
 
-        # this sort of binomial has already been removed by
-        # rising factorials but is left here in case the order
-        # of rule application is changed
-        if k.is_Add:
-            ck, _k = k.as_coeff_Add()
-            if _k and ck.is_Integer and ck:
-                coeff *= _rf(n - ck - _k + 1, ck)/_rf(_k + 1, ck)
-                rewrite = True
-                k = _k
-
         if rewrite:
             return coeff*binomial(n, k)
 
@@ -186,10 +176,8 @@ def combsimp(expr):
             if e.is_Integer:
                 if isinstance(b, gamma):
                     return True, [b.args[0]]*e
-                else:
-                    return False, [b]*e
-            else:
-                return False, [p]
+                return False, [b]*e
+            return False, [p]
 
         newargs = list(ordered(expr.args))
         while newargs:
@@ -476,26 +464,24 @@ class _rf(Function):
                     result *= a + i
 
                 return result
-            elif n < 0:
-                for i in range(1, -n + 1):
-                    result *= a - i
+            for i in range(1, -n + 1):
+                result *= a - i
 
-                return 1/result
-        else:
-            if b.is_Add:
-                c, _b = b.as_coeff_Add()
+            return 1/result
+        if b.is_Add:
+            c, _b = b.as_coeff_Add()
 
-                if c.is_Integer:
-                    if c > 0:
-                        return _rf(a, _b)*_rf(a + _b, c)
-                    elif c < 0:
-                        return _rf(a, _b)/_rf(a + _b + c, -c)
+            if c.is_Integer:
+                if c > 0:
+                    return _rf(a, _b)*_rf(a + _b, c)
+                if c < 0:
+                    return _rf(a, _b)/_rf(a + _b + c, -c)
 
-            if a.is_Add:
-                c, _a = a.as_coeff_Add()
+        if a.is_Add:
+            c, _a = a.as_coeff_Add()
 
-                if c.is_Integer:
-                    if c > 0:
-                        return _rf(_a, b)*_rf(_a + b, c)/_rf(_a, c)
-                    elif c < 0:
-                        return _rf(_a, b)*_rf(_a + c, -c)/_rf(_a + b + c, -c)
+            if c.is_Integer:
+                if c > 0:
+                    return _rf(_a, b)*_rf(_a + b, c)/_rf(_a, c)
+                if c < 0:
+                    return _rf(_a, b)*_rf(_a + c, -c)/_rf(_a + b + c, -c)

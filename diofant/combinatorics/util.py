@@ -287,8 +287,7 @@ def _orbits_transversals_from_bsgs(base, strong_gens_distr,
             basic_orbits[i] = list(transversals[i])
     if transversals_only:
         return transversals
-    else:
-        return basic_orbits, transversals
+    return basic_orbits, transversals
 
 
 def _remove_gens(base, strong_gens, basic_orbits=None, strong_gens_distr=None):
@@ -489,9 +488,8 @@ def _strong_gens_from_distr(strong_gens_distr):
     """
     if len(strong_gens_distr) == 1:
         return strong_gens_distr[0][:]
-    else:
-        result = strong_gens_distr[0]
-        for gen in strong_gens_distr[1]:
-            if gen not in result:
-                result.append(gen)
-        return result
+    result = strong_gens_distr[0]
+    for gen in strong_gens_distr[1]:
+        if gen not in result:
+            result.append(gen)
+    return result

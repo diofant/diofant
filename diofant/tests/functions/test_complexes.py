@@ -40,7 +40,7 @@ def test_re():
     assert re(-E) == -E
 
     x = Symbol('x')
-    assert re(x) == re(x)
+    assert re(x) == re(x, evaluate=False)
     assert re(x*I) == -im(x)
     assert re(r*I) == 0
     assert re(r) == r
@@ -48,7 +48,7 @@ def test_re():
     assert re(i) == 0
 
     y = Symbol('y')
-    assert re(x + y) == re(x + y)
+    assert re(x + y) == re(x) + re(y)
     assert re(x + r) == re(x) + r
 
     assert re(re(x)) == re(x)
@@ -116,15 +116,15 @@ def test_im():
     assert im(-E*I) == -E
 
     x = Symbol('x')
-    assert im(x) == im(x)
+    assert im(x) == im(x, evaluate=False)
     assert im(x*I) == re(x)
     assert im(r*I) == r
     assert im(r) == 0
     assert im(i*I) == 0
     assert im(i) == -I * i
 
-    y = Symbol('x')
-    assert im(x + y) == im(x + y)
+    y = Symbol('y')
+    assert im(x + y) == im(x) + im(y)
     assert im(x + r) == im(x)
     assert im(x + r*I) == im(x) + r
 
@@ -544,6 +544,12 @@ def test_arg():
     # keep it simple -- let the user do more advanced cancellation
     e = (p + 1) + I*(p**2 - 1)
     assert arg(e).args[0] == e
+
+    assert arg(x).rewrite(sign) == -I*log(sign(x))
+
+    assert arg(x).series(x) == 0
+    assert arg(+I*x + x**2).series(x) == +pi/2 - x + x**3/3 - x**5/5 + O(x**6)
+    assert arg(-I*x + x**2).series(x) == -pi/2 + x - x**3/3 + x**5/5 + O(x**6)
 
 
 def test_arg_rewrite():

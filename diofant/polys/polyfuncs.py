@@ -4,8 +4,8 @@ import itertools
 
 from ..core import Add, Integer, Mul
 from ..utilities import numbered_symbols
-from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
-                         PolificationFailed)
+from .polyerrors import (ComputationFailedError, MultivariatePolynomialError,
+                         PolificationFailedError)
 from .polyoptions import allowed_flags
 from .polytools import Poly, parallel_poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
@@ -50,7 +50,7 @@ def symmetrize(F, *gens, **args):
 
     try:
         F, opt = parallel_poly_from_expr(F, *gens, **args)
-    except PolificationFailed as exc:
+    except PolificationFailedError as exc:
         result = []
 
         for expr in exc.exprs:
@@ -62,11 +62,9 @@ def symmetrize(F, *gens, **args):
 
         if not exc.opt.formal:
             return result
-        else:
-            if iterable:
-                return result, []
-            else:
-                return result + ([],)
+        if iterable:
+            return result, []
+        return result + ([],)
 
     polys, symbols = [], opt.symbols
     gens, dom = opt.gens, opt.domain
@@ -131,11 +129,9 @@ def symmetrize(F, *gens, **args):
 
     if not opt.formal:
         return result
-    else:
-        if iterable:
-            return result, polys
-        else:
-            return result + (polys,)
+    if iterable:
+        return result, polys
+    return result + (polys,)
 
 
 def horner(f, *gens, **args):
@@ -174,7 +170,7 @@ def horner(f, *gens, **args):
 
     try:
         (F,), _ = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
+    except PolificationFailedError as exc:
         return exc.exprs[0]
 
     form, gen = Integer(0), F.gen
@@ -234,16 +230,14 @@ def interpolate(data, x):
     return poly.expand()
 
 
-def viete(f, roots=None, *gens, **args):
+def viete(f, *gens, roots=None, **args):
     """
     Generate Viete's formulas for ``f``.
 
     Examples
     ========
 
-    >>> r1, r2 = symbols('r1:3')
-
-    >>> viete(a*x**2 + b*x + c, [r1, r2], x)
+    >>> viete(a*x**2 + b*x + c, x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]
 
     """
@@ -251,8 +245,8 @@ def viete(f, roots=None, *gens, **args):
 
     try:
         (f,), _ = parallel_poly_from_expr((f,), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('viete', 1, exc) from exc
+    except PolificationFailedError as exc:
+        raise ComputationFailedError('viete', 1, exc) from exc
 
     if f.is_multivariate:
         raise MultivariatePolynomialError('multivariate polynomials are'

@@ -10,43 +10,39 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: ['3.10', '3.11']
+        python-version: ['3.11', '3.12']
         coverage: [false]
         include:
-          - python-version: '3.10'
+          - python-version: '3.11'
             coverage: true
     runs-on: ubuntu-latest
     env:
       TERM: xterm
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
     - name: Install libs
       run: |
         sudo apt update
-        if [[ ${{matrix.python-version}} != "3.10" ]]
-        then
-          sudo apt install libmpc-dev libmpfr-dev libgmp-dev
-        fi
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
         sudo apt install libatlas-base-dev liblapack-dev gfortran
     - name: Install dependencies
       run: |
         pip install -U pip setuptools wheel
-        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+        pip install -U .[interactive,develop,gmpy,exports,docs]
     - name: Install ~/.python_history
       run: touch ~/.python_history
-    - name: Linting with flake8, flake8-rst and pylint
+    - name: Linting with flake8 and pylint
       if: ${{ ! github.event_name.schedule }}
       run: |
-        flake8-rst
-        flake8
+        flake518
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant
@@ -73,6 +69,7 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         files: ./coverage.xml
+        fail_ci_if_error: true
     - name: Get version
       id: release
       run: |
