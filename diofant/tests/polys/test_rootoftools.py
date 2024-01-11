@@ -239,6 +239,11 @@ def test_RootOf_conjugate():
     assert r4.evalf() == -r5.evalf()
 
 
+def test_RootOf_as_real_imag():
+    r1, r2 = RootOf(x**3 + x + 3, 1), RootOf(x**3 + x + 3, 2)
+    assert r1.as_real_imag() == (r1/2 + r2/2, -I*(-r2 + r1)/2)
+
+
 def test_RootOf_subs():
     assert RootOf(x**3 + x + 1, 0).subs({x: y}) == RootOf(y**3 + y + 1, 0)
     eq = -x + RootOf(y**3 - x**3 + 3*x**2, y, 0) + 1

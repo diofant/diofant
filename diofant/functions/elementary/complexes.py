@@ -73,7 +73,11 @@ class re(Function):
                 if real_imag:
                     excluded.append(real_imag[0])
                 else:
-                    included.append(term)
+                    rterm = term + term.conjugate()
+                    if rterm.has(conjugate, exp_polar):
+                        included.append(term)
+                    else:
+                        excluded.append(rterm/2)
 
         if len(args) != len(included):
             a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
@@ -159,7 +163,11 @@ class im(Function):
                 if real_imag:
                     excluded.append(real_imag[1])
                 else:
-                    included.append(term)
+                    iterm = term - term.conjugate()
+                    if iterm.has(conjugate, exp_polar):
+                        included.append(term)
+                    else:
+                        excluded.append(iterm/(2*I))
 
         if len(args) != len(included):
             a, b, c = (Add(*xs) for xs in [included, reverted, excluded])
