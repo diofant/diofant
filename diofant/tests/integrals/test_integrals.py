@@ -1,10 +1,10 @@
 import pytest
 
 from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
-                     Expr, Float, Function, I, Integral, Interval, Lambda,
-                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
-                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
-                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+                     Expr, Float, Function, Heaviside, I, Integral, Interval,
+                     Lambda, LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise,
+                     Poly, Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg,
+                     asin, asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
                      expand_func, expand_mul, floor, fresnels, gamma, im,
                      integrate, log, lowergamma, meijerg, nan, oo, pi,
                      polar_lift, polygamma, re, sign, simplify, sin, sinh,
@@ -1540,3 +1540,7 @@ def test_sympyissue_25886():
            1.1387525574843396*exp(0.93709866100000005*I))
 
     assert integrate(expr, (x, y, 1)) == res
+
+
+def test_sympyissue_26071():
+    assert integrate((0.5 - t)*Heaviside(t - 0.5), (t, 0, 0.5)) == 0
