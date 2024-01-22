@@ -84,3 +84,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25965`: ceiling(CRootOf()) not implemented, leads to exception in Range
 * :sympyissue:`25983`: Incorrect result of reduce_inequalities
 * :sympyissue:`25991`: Inconsistencies in as_leading_term, Series Expansion, and Limit Computations for Expressions Involving Square Roots
+* :sympyissue:`26071`: Definite integral error
