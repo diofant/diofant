@@ -86,3 +86,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25991`: Inconsistencies in as_leading_term, Series Expansion, and Limit Computations for Expressions Involving Square Roots
 * :sympyissue:`26071`: Definite integral error
 * :sympyissue:`26119`: Lambdify crashes on empty tuple
+* :sympyissue:`26178`: Wrong result of sqf_list for PolyElement with excluded symbols
