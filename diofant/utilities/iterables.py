@@ -1,6 +1,6 @@
+import collections
 import itertools
 import operator
-from collections import defaultdict
 
 # this is the logical location of these functions
 from ..core.compatibility import as_int
@@ -139,7 +139,7 @@ def multiset(seq):
     group
 
     """
-    rv = defaultdict(int)
+    rv = collections.defaultdict(int)
     for s in seq:
         rv[s] += 1
     return dict(rv)
@@ -357,7 +357,7 @@ def sift(seq, keyfunc):
     ordered
 
     """
-    m = defaultdict(list)
+    m = collections.defaultdict(list)
     for i in seq:
         m[keyfunc(i)].append(i)
     return m
@@ -1458,7 +1458,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     of candidates is small relative to the number of items being processed.
 
     """
-    d = defaultdict(list)
+    d = collections.defaultdict(list)
     if keys:
         if not isinstance(keys, (list, tuple)):
             keys = [keys]
