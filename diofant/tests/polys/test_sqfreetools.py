@@ -336,3 +336,10 @@ def test_issue_714():
 
     assert f.is_squarefree
     assert ((x - y)*f).is_squarefree is False
+
+
+def test_sympyissue_26178():
+    _, x, y, z = ring('x y z', QQ)
+
+    for f in (x**2 - 2*y**2 + 1, x**2 - 2*z**2 + 1, y**2 - 2*z**2 + 1):
+        assert f.sqf_list() == (1, [(f, 1)])

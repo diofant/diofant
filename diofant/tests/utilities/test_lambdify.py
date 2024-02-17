@@ -10,7 +10,7 @@ from diofant import (ITE, And, Float, Function, I, Integral, Lambda, Matrix,
                      lambdify, oo, pi, sin, sqrt, symbols, true)
 from diofant.abc import t, w, x, y, z
 from diofant.external import import_module
-from diofant.printing.lambdarepr import LambdaPrinter
+from diofant.printing.lambdarepr import LambdaPrinter, NumPyPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
                                         NUMPY_TRANSLATIONS, _get_namespace,
@@ -586,3 +586,8 @@ def test_sympyissue_12092():
 def test_sympyissue_23224():
     f = lambdify([], (1,))
     assert f() == (1,)
+
+
+def test_sympyissue_26119():
+    f = lambdify((x,), ((), (x,)), printer=NumPyPrinter)
+    assert f(1) == ((), (1,))
