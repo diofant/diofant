@@ -6,7 +6,7 @@ This file assumes knowledge of Basic and little else.
 import functools
 
 from ..utilities.iterables import sift
-from .basic import Atom, Basic
+from .basic import Atom
 
 
 __all__ = ('arguments', 'operator', 'term', 'rm_id',
@@ -297,30 +297,17 @@ def exhaust(rule):
     return exhaustive_rl
 
 
-basic_fns = {'op': type,
-             'new': Basic.__new__,
-             'leaf': lambda x: not isinstance(x, Basic) or x.is_Atom,
-             'children': lambda x: x.args}
-
-
-def sall(rule, fns=basic_fns):
-    """Strategic all - apply rule to args."""
-    op, new, children, leaf = map(fns.get, ('op', 'new', 'children', 'leaf'))
-
-    def all_rl(expr):
-        if leaf(expr):
-            return expr
-        args = map(rule, children(expr))
-        return new(op(expr), *args)
-
-    return all_rl
-
-
-def bottom_up(rule, fns=basic_fns):
+def bottom_up(rule):
     """Apply a rule down a tree running it on the bottom nodes first."""
-    def rec(expr):
-        return sall(bottom_up(rule, fns), fns)(expr)
-    return chain(rec, rule)
+    def rec_rl(expr):
+        args = arguments(expr)
+        rl = bottom_up(rule)
+        args = tuple(map(rl, args))
+        if args != arguments(expr):
+            op = operator(expr)
+            return term(op, args)
+        return expr
+    return chain(rec_rl, rule)
 
 
 def null_safe(rule):
