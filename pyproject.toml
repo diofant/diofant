@@ -1,7 +1,6 @@
 [build-system]
 requires = ['setuptools>=61', 'setuptools_scm[toml]>=6.0']
 build-backend = 'setuptools.build_meta'
-
 [project]
 name = 'Diofant'
 description = 'Computer algebra system (CAS) in Python'
@@ -25,7 +24,7 @@ classifiers = ['Development Status :: 4 - Beta',
                'Programming Language :: Python :: 3.12',
                'Programming Language :: Python :: Implementation :: CPython']
 requires-python = '>=3.11'
-dependencies = ['mpmath>=1.3']
+dependencies = ['mpmath>=1.4.0a0']
 dynamic = ['version']
 [project.readme]
 file = 'docs/README.rst'
