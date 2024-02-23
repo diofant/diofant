@@ -945,9 +945,6 @@ class Rational(Number):
     def _as_mpf_val(self, prec):
         return from_rational(self.numerator, self.denominator, prec, rnd)
 
-    def _mpmath_(self, prec, rnd):
-        return mpmath.make_mpf(from_rational(self.numerator, self.denominator, prec, rnd))
-
     def __abs__(self):
         return Rational(abs(self.numerator), self.denominator)
 

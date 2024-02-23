@@ -1217,8 +1217,6 @@ def test_conversion_to_mpmath():
     assert mpmath.mpmathify(Rational(1, 2)) == mpmath.mpf(0.5)
     assert mpmath.mpmathify(Float('1.23', 15)) == mpmath.mpf('1.23')
 
-    assert mpmath.mpf(Rational(1, 3)) == mpmath.mpf('0.33333333333333331')
-
 
 def test_relational():
     # real
