@@ -5,12 +5,12 @@ import numbers
 
 import mpmath
 from mpmath.libmp import (ComplexResult, dps_to_prec, fhalf, finf, fnan, fninf,
-                          fnone, fone, from_Decimal, from_int, from_rational,
-                          fzero, mpc_pow, mpf_abs, mpf_add, mpf_ceil, mpf_div,
-                          mpf_eq, mpf_floor, mpf_ge, mpf_gt, mpf_le, mpf_lt,
-                          mpf_mod, mpf_mul, mpf_neg, mpf_pow, mpf_pow_int,
-                          mpf_sub, prec_to_dps, round_nearest, to_float,
-                          to_int, to_rational)
+                          fnone, fone, from_int, from_rational, fzero, mpc_pow,
+                          mpf_abs, mpf_add, mpf_ceil, mpf_div, mpf_eq,
+                          mpf_floor, mpf_ge, mpf_gt, mpf_le, mpf_lt, mpf_mod,
+                          mpf_mul, mpf_neg, mpf_pow, mpf_pow_int, mpf_sub,
+                          prec_to_dps, round_nearest, to_float, to_int,
+                          to_rational)
 
 from ..config import query
 from .cache import cacheit
@@ -485,8 +485,6 @@ class Float(Number):
 
         if isinstance(num, Number):
             _mpf_ = num._as_mpf_val(prec)
-        elif isinstance(num, decimal.Decimal):
-            _mpf_ = from_Decimal(num, prec, rnd)
         else:
             _mpf_ = mpmath.mpf(num, prec=prec, rounding=rnd)._mpf_
 
