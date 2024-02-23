@@ -762,7 +762,7 @@ def field_isomorphism_pslq(a, b):
 
     a, b = a.ext, b.ext
 
-    for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
+    for n in mpmath.libmp.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
             A, B = lambdify((), [a, b], 'mpmath')()
             basis = [B**i for i in range(m)] + [A]
