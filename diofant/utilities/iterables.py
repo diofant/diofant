@@ -1186,11 +1186,9 @@ def uniq(seq, result=None):
             yield s
             result.append(s)
         if hasattr(seq, '__getitem__'):
-            for s in uniq(seq[i + 1:], result):  # pylint: disable=used-before-assignment
-                yield s
+            yield from uniq(seq[i + 1:], result)  # pylint: disable=used-before-assignment
         else:
-            for s in uniq(seq, result):
-                yield s
+            yield from uniq(seq, result)
 
 
 def minlex(seq, directed=True, is_set=False, small=None):
@@ -1249,16 +1247,14 @@ def minlex(seq, directed=True, is_set=False, small=None):
             best = seq
             for i in range(count):
                 seq = rotate_left(seq, seq.index(small, count != 1))
-                if seq < best:
-                    best = seq
+                best = min(best, seq)
                 # it's cheaper to rotate now rather than search
                 # again for these in reversed order so we test
                 # the reverse now
                 if not directed:
                     seq = rotate_left(seq, 1)
                     seq = list(reversed(seq))
-                    if seq < best:
-                        best = seq
+                    best = min(best, seq)
                     seq = list(reversed(seq))
                     seq = rotate_right(seq, 1)
     # common return

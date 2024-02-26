@@ -101,9 +101,7 @@ def rsolve_poly(coeffs, f, n):
     for i in range(1, r + 1):
         if terms[i][1] > d:
             d = terms[i][1]
-
-        if terms[i][1] - i > b:
-            b = terms[i][1] - i
+        b = max(b, terms[i][1] - i)
 
     d, b = int(d), int(b)
 
