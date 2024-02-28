@@ -1050,7 +1050,7 @@ def evalf_sum(expr, prec, options):
 
 def evalf_symbol(x, prec, options):
     val = options['subs'][x]
-    if isinstance(val, mpf):
+    if isinstance(val, type(mpf())):
         if not val:
             return None, None, None, None
         return val._mpf_, None, prec, None

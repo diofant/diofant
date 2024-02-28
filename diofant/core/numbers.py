@@ -213,7 +213,7 @@ class Number(AtomicExpr):
             return Integer(obj)
         if isinstance(obj, tuple) and len(obj) == 2:
             return Rational(*obj)
-        if isinstance(obj, (float, mpmath.mpf, decimal.Decimal)):
+        if isinstance(obj, (float, type(mpmath.mpf()), decimal.Decimal)):
             return Float(obj)
         if isinstance(obj, str):
             val = sympify(obj)
