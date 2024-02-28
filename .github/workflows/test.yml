@@ -37,6 +37,8 @@ jobs:
       run: |
         pip install -U pip setuptools wheel
         pip install -U .[interactive,develop,gmpy,exports,docs]
+        # test mpmath with simple mpf
+        pip install -U git+https://github.com/skirpichev/mpmath.git@simple-mpf
     - name: Install ~/.python_history
       run: touch ~/.python_history
     - name: Linting with flake8 and pylint
