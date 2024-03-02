@@ -98,3 +98,32 @@ def unicode_identifiers(lines):
             result.append((toknum, tokval))
         new_lines.append(tokenize.untokenize(result).decode())
     return new_lines
+
+
+class _WrapFloats(ast.NodeTransformer):
+    def __init__(self, lines):
+        super().__init__()
+        self.lines = lines
+
+    def visit_Constant(self, node):
+        if isinstance(node.value, float):
+            line = self.lines[node.lineno - 1]
+            value = line[node.col_offset:node.end_col_offset]
+            return ast.Call(ast.Name('Float', ast.Load()),
+                            [ast.Constant(value)], [])
+        return node
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == 'Float':
+            return node
+        return self.generic_visit(node)
+
+
+def wrap_float_literals(lines):
+    """Wraps all float literals with :class:`~diofant.core.numbers.Float`."""
+    source = '\n'.join(lines)
+    tree = ast.parse(source)
+    tree = _WrapFloats(lines).visit(tree)
+    ast.fix_missing_locations(tree)
+    source = ast.unparse(tree)
+    return source.split('\n')
