@@ -88,3 +88,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26119`: Lambdify crashes on empty tuple
 * :sympyissue:`26178`: Wrong result of sqf_list for PolyElement with excluded symbols
 * :sympyissue:`26250`: Incorrect limit involving elliptic functions
+* :sympyissue:`25786`: Wrong result for a simple integral
