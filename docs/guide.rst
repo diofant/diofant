@@ -28,7 +28,7 @@ When opening a new issue, please take the following steps:
 
 3. Try to include a minimal code example that demonstrates the problem.
 
-4. Include any relevant details of your local setup (Python
+4. Include any relevant details of your local setup (Diofant version, Python
    version, installed libraries).
 
 .. note::

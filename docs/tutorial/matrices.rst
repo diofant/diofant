@@ -3,7 +3,7 @@
 ==========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 To make a matrix in Diofant, use the
 :class:`~diofant.matrices.Matrix` object.  A matrix is

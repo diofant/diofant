@@ -549,7 +549,7 @@ class polygamma(Function):
 
     def fdiff(self, argindex=2):
         if argindex == 2:
-            n, z = self.args[:2]
+            n, z = self.args
             return polygamma(n + 1, z)
         raise ArgumentIndexError(self, argindex)
 
@@ -563,8 +563,7 @@ class polygamma(Function):
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
             return super()._eval_aseries(n, args0, x, logx)
-        z = self.args[1]
-        N = self.args[0]
+        N, z = self.args
 
         if N == 0:
             # digamma function series

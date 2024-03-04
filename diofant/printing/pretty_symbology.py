@@ -1,9 +1,9 @@
-"""Symbolic primitives + unicode/ASCII abstraction for pretty.py"""
+"""Symbolic primitives + unicode abstraction for pretty.py"""
 
 import unicodedata
 
-from ...core.alphabets import greeks
-from ..conventions import split_super_sub
+from ..core.alphabets import greeks
+from .conventions import split_super_sub
 
 
 # first, setup unicodedate environment
@@ -26,20 +26,6 @@ def U(name):
 
 __all__ = ('greek_unicode', 'sub', 'sup', 'xsym', 'vobj', 'hobj',
            'pretty_symbol', 'annotated')
-
-
-_use_unicode = False
-
-
-def pretty_use_unicode(flag=None):
-    """Set whether pretty-printer should use unicode by default."""
-    global _use_unicode  # pylint: disable=global-statement
-    if flag is None:
-        return _use_unicode
-
-    use_unicode_prev = _use_unicode
-    _use_unicode = flag
-    return use_unicode_prev
 
 
 # GREEK
@@ -252,37 +238,6 @@ _xobj_unicode = {
     '\\':   '\N{BOX DRAWINGS LIGHT DIAGONAL UPPER LEFT TO LOWER RIGHT}',
 }
 
-_xobj_ascii = {
-    # vertical symbols
-    #       ((ext, top, bot, mid), c1)
-    '(':    (('|', '/', '\\'), '('),
-    ')':    (('|', '\\', '/'), ')'),
-
-    # XXX this looks ugly
-    #   '[': (('|', '-', '-'), '['),
-    #   ']': (('|', '-', '-'), ']'),
-    # XXX not so ugly :(
-    '[':    (('[', '[', '['), '['),
-    ']':    ((']', ']', ']'), ']'),
-
-    '{':    (('|', '/', '\\', '<'), '{'),
-    '}':    (('|', '\\', '/', '>'), '}'),
-    '|':    '|',
-
-    '<':    (('|', '/', '\\'), '<'),
-    '>':    (('|', '\\', '/'), '>'),
-
-    'int':  (' | ', '  /', '/  '),
-
-    # horizontal objects
-    '-':    '-',
-    '_':    '_',
-
-    # diagonal objects '\' & '/' ?
-    '/':    '/',
-    '\\':   '\\',
-}
-
 
 def xobj(symb, length):
     """Construct spatial object of given length.
@@ -293,10 +248,7 @@ def xobj(symb, length):
         raise ValueError('Length should be greater than 0')
 
     # TODO robustify when no unicodedat available
-    if _use_unicode:
-        _xobj = _xobj_unicode
-    else:
-        _xobj = _xobj_ascii
+    _xobj = _xobj_unicode
 
     vinfo = _xobj[symb]
 
@@ -305,11 +257,8 @@ def xobj(symb, length):
     if not isinstance(vinfo, tuple):        # 1 entry
         ext = vinfo
     else:
-        if isinstance(vinfo[0], tuple):     # (vlong), c1
-            vlong = vinfo[0]
-            c1 = vinfo[1]
-        else:                               # (vlong), c1
-            vlong = vinfo
+        vlong = vinfo[0]
+        c1 = vinfo[1]
 
         ext = vlong[0]
 
@@ -429,9 +378,7 @@ def xsym(sym):
     """Get symbology for a 'character'."""
     op = _xsym[sym]
 
-    if _use_unicode:
-        return op[1]
-    return op[0]
+    return op[1]
 
 
 # SYMBOLS
@@ -460,12 +407,7 @@ atoms_table = {
 
 def pretty_atom(atom_name, default=None):
     """Return pretty representation of an atom."""
-    if _use_unicode:
-        return atoms_table[atom_name]
-    if default is not None:
-        return default
-
-    raise KeyError('only unicode')  # send it default printer
+    return atoms_table[atom_name]
 
 
 def pretty_symbol(symb_name):
@@ -473,9 +415,6 @@ def pretty_symbol(symb_name):
     # let's split symb_name into symbol + index
     # UC: beta1
     # UC: f_beta
-
-    if not _use_unicode:
-        return symb_name
 
     name, sups, subs = split_super_sub(symb_name)
 
@@ -541,11 +480,5 @@ def annotated(letter):
               '\N{BOX DRAWINGS LIGHT VERTICAL}\N{BOX DRAWINGS LIGHT RIGHT}\N{BOX DRAWINGS LIGHT DOWN AND LEFT}\n'
               '\N{BOX DRAWINGS LIGHT ARC UP AND RIGHT}\N{BOX DRAWINGS LIGHT HORIZONTAL}\N{BOX DRAWINGS LIGHT ARC UP AND LEFT}')
     }
-    ascii_pics = {
-        'F': (3, 0, 3, 0, ' _\n|_\n|\n'),
-        'G': (3, 0, 3, 1, ' __\n/__\n\\_|')
-    }
 
-    if _use_unicode:
-        return ucode_pics[letter]
-    return ascii_pics[letter]
+    return ucode_pics[letter]

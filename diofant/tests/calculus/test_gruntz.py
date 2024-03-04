@@ -51,11 +51,9 @@ def test_gruntz_evaluation():
     assert limit(x/log(x**(log(x**(log(2)/log(x))))), x, oo) == oo
     assert limit(exp(exp(2*log(x**5 + x)*log(log(x)))) /
                  exp(exp(10*log(x)*log(log(x)))), x, oo) == oo
-    assert limit(exp(exp(Rational(5, 2)*x**(-Rational(5, 7)) +
-                         Rational(21, 8)*x**Rational(6, 11) + 2*x**(-8) +
-                         Rational(54, 17)*x**Rational(49, 45)))**8 /
-                 log(log(-log(Rational(4, 3) *
-                     x**(-Rational(5, 14)))))**Rational(7, 6), x, oo) == oo
+    assert limit(exp(8*exp(54*root(x, 45)**49/17 + 21*root(x, 11)**6/8 +
+                           2/x**8 + 5/(2*root(x, 7)**5))) /
+                 root(log(log(-log(4/(3*root(x, 14)**5)))), 6)**7, x, oo) == oo
     assert limit((exp(4*x*exp(-x)/(1/exp(x) + 1/exp(2*x**2/(x + 1)))) -
                   exp(x))/exp(x)**4, x, oo) == 1
     assert limit(exp(x*exp(-x)/(exp(-x) +
@@ -83,8 +81,8 @@ def test_gruntz_eval_special():
     assert limit(exp(exp(x))*(exp(sin(1/x + exp(-exp(x)))) -
                               exp(sin(1/x))), x, oo) == 1
     assert limit(exp(x)*(gamma(x + exp(-x)) - gamma(x)), x, oo) == oo
-    assert limit(exp(exp(digamma(digamma(x))))/x, x, oo) == exp(-Rational(1, 2))
-    assert limit(exp(exp(digamma(log(x))))/x, x, oo) == exp(-Rational(1, 2))
+    assert limit(exp(exp(digamma(digamma(x))))/x, x, oo) == 1/sqrt(E)
+    assert limit(exp(exp(digamma(log(x))))/x, x, oo) == 1/sqrt(E)
     assert limit(digamma(digamma(digamma(x))), x, oo) == oo
     assert limit(loggamma(loggamma(x)), x, oo) == oo
     assert limit(((gamma(x + 1/gamma(x)) - gamma(x))/log(x) - cos(1/x)) *
@@ -368,12 +366,9 @@ def test_intractable():
     assert limit(acosh(1 + 1/x)*sqrt(x), x, oo) == sqrt(2)
 
     # issue sympy/sympy#10804
-    assert limit(2*airyai(x)*root(x, 4) *
-                 exp(2*x**Rational(3, 2)/3), x, oo) == 1/sqrt(pi)
-    assert limit(airybi(x)*root(x, 4) *
-                 exp(-2*x**Rational(3, 2)/3), x, oo) == 1/sqrt(pi)
-    assert limit(airyai(1/x), x, oo) == (3**Rational(5, 6) *
-                                         gamma(Rational(1, 3))/(6*pi))
+    assert limit(2*exp(2*sqrt(x)**3/3)*root(x, 4)*airyai(x), x, oo) == 1/sqrt(pi)
+    assert limit(exp(-2*sqrt(x)**3/3)*root(x, 4)*airybi(x), x, oo) == 1/sqrt(pi)
+    assert limit(airyai(1/x), x, oo) == root(3, 6)**5*gamma(Rational(1, 3))/(6*pi)
     assert limit(airybi(1/x), x, oo) == cbrt(3)*gamma(Rational(1, 3))/(2*pi)
     assert limit(airyai(2 + 1/x), x, oo) == airyai(2)
     assert limit(airybi(2 + 1/x), x, oo) == airybi(2)

@@ -10,7 +10,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.11', '3.12']
         coverage: [false]
         include:
           - python-version: '3.11'
@@ -23,9 +23,10 @@ jobs:
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
     - name: Install libs
       run: |
         sudo apt update
@@ -66,10 +67,11 @@ jobs:
         coverage xml
     - name: Upload coverage data
       if: matrix.coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./coverage.xml
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Get version
       id: release
       run: |
@@ -89,7 +91,7 @@ jobs:
     - name: Make packages
       run: python -m build
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: matrix.coverage
       with:
         path: |

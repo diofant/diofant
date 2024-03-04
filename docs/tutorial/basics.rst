@@ -3,7 +3,7 @@
 ========
 
 ..
-   >>> init_printing(pretty_print=True, use_unicode=True)
+   >>> init_printing(pretty_print=True)
 
 Here we discuss some of the most basic aspects of expression
 manipulation in Diofant.

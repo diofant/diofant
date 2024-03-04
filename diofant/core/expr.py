@@ -29,7 +29,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     """
 
-    def __new__(cls, *args):
+    def __new__(cls, *args, **kwargs):
         obj = Basic.__new__(cls, *args)
         obj._assumptions = cls.default_assumptions
         return obj

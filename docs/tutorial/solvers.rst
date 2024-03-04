@@ -3,7 +3,7 @@
 =========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 This section covers equations solving.
 
@@ -70,7 +70,7 @@ We can call ``f(x)``, and it will represent an unknown function application.
       >>> a, b, c, d, t, x, y, z = symbols('a:d t x:z')
       >>> k, m, n = symbols('k m n', integer=True)
       >>> f, g, h = symbols('f:h', cls=Function)
-      >>> init_printing(pretty_print=True, use_unicode=True)
+      >>> init_printing(pretty_print=True)
 
 As for algebraic equations, the output is a list of :class:`dict`'s
 

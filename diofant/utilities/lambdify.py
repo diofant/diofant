@@ -6,9 +6,9 @@ lambda functions which can be used to calculate numerical values very fast.
 import inspect
 import textwrap
 
-from ..core.compatibility import is_sequence, iterable
 from ..external import import_module
 from .decorator import doctest_depends_on
+from .iterables import is_iterable, is_sequence
 
 
 # XXX make pylint & flake8 happy
@@ -315,7 +315,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         printer = MpmathPrinter
 
     # Get the names of the args, for creating a docstring
-    if not iterable(args):
+    if not is_iterable(args):
         args = args,
     names = []
     for n, var in enumerate(args):
@@ -408,7 +408,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
             return args
-        if iterable(args):
+        if is_iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ','.join(str(a) for a in dummies)
         # Sub in dummy variables for functions or symbols
@@ -434,7 +434,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     # Transform args
     def isiter(l):
-        return iterable(l, exclude=(str,))
+        return is_iterable(l, exclude=(str,))
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
@@ -452,7 +452,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     if dummify:
         args = sub_args(args, dummies_dict)
     else:
-        if iterable(args):
+        if is_iterable(args):
             args = ','.join(str(a) for a in args)
 
     # Transform expr

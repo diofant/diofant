@@ -3,8 +3,7 @@
 import itertools
 import re
 
-import mpmath.libmp as mlib
-from mpmath.libmp import prec_to_dps
+from mpmath.libmp import prec_to_dps, to_str
 
 from ..core import Add, Integer, Mod, oo
 from ..core.alphabets import greeks
@@ -274,7 +273,7 @@ class LatexPrinter(Printer):
     def _print_Float(self, expr):
         # Based off of that in StrPrinter
         dps = prec_to_dps(expr._prec)
-        str_real = mlib.to_str(expr._mpf_, dps, strip_zeros=True)
+        str_real = to_str(expr._mpf_, dps, strip_zeros=True)
 
         # Must always have a mul symbol (as 2.5 10^{20} just looks odd)
         # thus we use the number separator

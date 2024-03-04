@@ -1,8 +1,8 @@
 import pytest
 
 from diofant import (Derivative, E, EulerGamma, Function, I, Integer, Integral,
-                     O, Rational, Subs, Symbol, cos, exp, gamma, log, oo, pi,
-                     sin, sqrt, symbols)
+                     O, PoleError, Rational, Reals, Subs, Symbol, acot, atan,
+                     cos, exp, gamma, limit, log, oo, pi, sin, sqrt, symbols)
 from diofant.abc import h, x, y, z
 
 
@@ -334,3 +334,32 @@ def test_sympyissue_25682():
     e = 1/abs(sqrt(1 - (-1 + 1/x)**2))
     assert e.series(x, n=3, dir=-1) == +x + x**2 + O(x**3)
     assert e.series(x, n=3, dir=+1) == -x - x**2 + O(x**3)
+
+
+def test_sympyissue_23843():
+    assert (atan(x - I).series(x, oo) ==
+            atan(x - I).rewrite(log).series(x, oo) ==
+            -16/(5*x**5) + 2*I/x**4 + 4/(3*x**3) - I/x**2 - 1/x +
+            pi/2 + O(x**(-6), x, oo))
+    assert limit(atan(x - I), x, oo) == pi/2
+    assert (acot(x - I).series(x, oo) ==
+            16/(5*x**5) - 2*I/x**4 - 4/(3*x**3) + I/x**2 + 1/x +
+            O(x**(-6), x, oo))
+    assert limit(acot(x - I), x, oo) == 0
+    assert (atan(x + I).series(x, -oo) ==
+            -16/(5*x**5) - 2*I/x**4 + 4/(3*x**3) + I/x**2 - 1/x -
+            pi/2 + O(x**(-6), x, -oo))
+    assert (acot(x + I).series(x, -oo) ==
+            16/(5*x**5) + 2*I/x**4 - 4/(3*x**3) - I/x**2 +
+            1/x + O(x**(-6), x, -oo))
+
+
+def test_sympyissue_25991():
+    e = sqrt(x**2 - x)
+    assert e.series(x, n=2) == I*sqrt(x) - I*sqrt(x)**3/2 + O(x**2)
+    assert e.series(x, n=2, dir=1) == sqrt(-x) + sqrt(-x)**3/2 + O(x**2)
+
+    e = 1/sqrt(-x)
+    assert e.limit(x, 0) == -I*oo
+    assert e.limit(x, 0, dir=1) == oo
+    pytest.raises(PoleError, lambda: e.limit(x, 0, dir=Reals))

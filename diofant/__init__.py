@@ -132,8 +132,7 @@ from .polys import (LC, LM, LT, BasePolynomialError, CoercionFailedError,
                     terms_gcd, together, trunc, viete)
 from .printing import (StrPrinter, ccode, dotprint, fcode, latex,
                        mathematica_code, mathml, octave_code, pprint,
-                       pprint_use_unicode, pretty, pretty_print, python, srepr,
-                       sstr, sstrrepr)
+                       pretty, pretty_print, python, srepr, sstr)
 from .sets import (Complement, Contains, EmptySet, ExtendedReals, FiniteSet,
                    ImageSet, Integers, Intersection, Interval, Naturals,
                    Naturals0, ProductSet, Range, Rationals, Reals, Set,
@@ -287,8 +286,8 @@ __all__ = (
     'SymmetricGroup', 'alternating', 'cube', 'cyclic', 'dihedral',
     'dodecahedron', 'icosahedron', 'octahedron', 'symmetric', 'tetrahedron',
     'StrPrinter', 'ccode', 'dotprint', 'fcode', 'latex', 'mathematica_code',
-    'mathml', 'octave_code', 'pprint', 'pprint_use_unicode', 'pretty',
-    'pretty_print', 'python', 'srepr', 'sstr', 'sstrrepr', 'init_printing',
+    'mathml', 'octave_code', 'pprint', 'pretty',
+    'pretty_print', 'python', 'srepr', 'sstr', 'init_printing',
     'ExtendedReals', 'IntegerModRing')
 
 

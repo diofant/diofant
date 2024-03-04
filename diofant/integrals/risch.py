@@ -24,7 +24,6 @@ will return the fraction (fa, fd). Other variable names probably come
 from the names used in Bronstein's book.
 """
 
-import functools
 import math
 
 from ..abc import z
@@ -93,8 +92,7 @@ def integer_powers(exprs):
 
     newterms = {}
     for term, val in terms.items():
-        common_denom = functools.reduce(math.lcm, [i.as_numer_denom()[1] for _, i in
-                                                   val])
+        common_denom = math.lcm(*(i.as_numer_denom()[1] for _, i in val))
         newterm = term/common_denom
         newmults = [(i, j*common_denom) for i, j in val]
         newterms[newterm] = newmults
@@ -1582,14 +1580,12 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     First, we try integrating exp(-x**2). Except for a constant factor of
     2/sqrt(pi), this is the famous error function.
 
-    >>> pprint(risch_integrate(exp(-x**2), x), use_unicode=False)
-      /
-     |
-     |    2
-     |  -x
-     | E    dx
-     |
-    /
+    >>> pprint(risch_integrate(exp(-x**2), x))
+    ⌠
+    ⎮    2
+    ⎮  -x
+    ⎮ ℯ    dx
+    ⌡
 
     The unevaluated Integral in the result means that risch_integrate() has
     proven that exp(-x**2) does not have an elementary anti-derivative.
@@ -1599,14 +1595,12 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     For example,
 
     >>> pprint(risch_integrate((2*log(x)**2 - log(x) - x**2)/(log(x)**3 -
-    ...                        x**2*log(x)), x), use_unicode=False)
-                                             /
-                                            |
-      log(-x + log(x))   log(x + log(x))    |   1
-    - ---------------- + --------------- +  | ------ dx
-             2                  2           | log(x)
-                                            |
-                                           /
+    ...                        x**2*log(x)), x))
+                                           ⌠
+      log(-x + log(x))   log(x + log(x))   ⎮   1
+    - ──────────────── + ─────────────── + ⎮ ────── dx
+             2                  2          ⎮ log(x)
+                                           ⌡
 
     This means that it has proven that the integral of 1/log(x) is
     nonelementary.  This function is also known as the logarithmic integral,
@@ -1617,33 +1611,27 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     nested exponentials and logarithms, as well as exponentials with bases
     other than E.
 
-    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x), use_unicode=False)
-     / x\
-     \E /
-    E
-    >>> pprint(risch_integrate(exp(exp(x)), x), use_unicode=False)
-      /
-     |
-     |  / x\
-     |  \E /
-     | E     dx
-     |
-    /
-
-    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x), use_unicode=False)
+    >>> pprint(risch_integrate(exp(x)*exp(exp(x)), x))
+     ⎛ x⎞
+     ⎝ℯ ⎠
+    ℯ
+    >>> pprint(risch_integrate(exp(exp(x)), x))
+    ⌠
+    ⎮  ⎛ x⎞
+    ⎮  ⎝ℯ ⎠
+    ⎮ ℯ     dx
+    ⌡
+    >>> pprint(risch_integrate(x*x**x*log(x) + x**x + x*x**x, x))
        x
-    x*x
-    >>> pprint(risch_integrate(x**x, x), use_unicode=False)
-      /
-     |
-     |  x
-     | x  dx
-     |
-    /
-
-    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x), use_unicode=False)
+    x⋅x
+    >>> pprint(risch_integrate(x**x, x))
+    ⌠
+    ⎮  x
+    ⎮ x  dx
+    ⌡
+    >>> pprint(risch_integrate(-1/(x*log(x)*log(log(x))**2), x))
          1
-    -----------
+    ───────────
     log(log(x))
 
     """

@@ -3,7 +3,7 @@ import operator
 from collections import defaultdict
 
 # this is the logical location of these functions
-from ..core.compatibility import as_int, is_sequence, iterable
+from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
 
@@ -194,7 +194,7 @@ def postorder_traversal(node, keys=None):
                 args = ordered(args)
         for arg in args:
             yield from postorder_traversal(arg, keys)
-    elif iterable(node):
+    elif is_iterable(node):
         for item in node:
             yield from postorder_traversal(item, keys)
     yield node
@@ -1186,11 +1186,9 @@ def uniq(seq, result=None):
             yield s
             result.append(s)
         if hasattr(seq, '__getitem__'):
-            for s in uniq(seq[i + 1:], result):  # pylint: disable=used-before-assignment
-                yield s
+            yield from uniq(seq[i + 1:], result)  # pylint: disable=used-before-assignment
         else:
-            for s in uniq(seq, result):
-                yield s
+            yield from uniq(seq, result)
 
 
 def minlex(seq, directed=True, is_set=False, small=None):
@@ -1249,16 +1247,14 @@ def minlex(seq, directed=True, is_set=False, small=None):
             best = seq
             for i in range(count):
                 seq = rotate_left(seq, seq.index(small, count != 1))
-                if seq < best:
-                    best = seq
+                best = min(best, seq)
                 # it's cheaper to rotate now rather than search
                 # again for these in reversed order so we test
                 # the reverse now
                 if not directed:
                     seq = rotate_left(seq, 1)
                     seq = list(reversed(seq))
-                    if seq < best:
-                        best = seq
+                    best = min(best, seq)
                     seq = list(reversed(seq))
                     seq = rotate_right(seq, 1)
     # common return
@@ -1384,7 +1380,7 @@ def _nodes(e):
 
     if isinstance(e, Basic):
         return e.count(Basic)
-    if iterable(e):
+    if is_iterable(e):
         return 1 + sum(_nodes(ei) for ei in e)
     if isinstance(e, dict):
         return 1 + sum(_nodes(k) + _nodes(v) for k, v in e.items())
@@ -1610,7 +1606,7 @@ def default_sort_key(item, order=None):
     if isinstance(item, Basic):
         return item.sort_key(order=order)
 
-    if iterable(item, exclude=(str,)):
+    if is_iterable(item, exclude=(str,)):
         if isinstance(item, dict):
             args = item.items()
             unordered = True
@@ -1646,3 +1642,102 @@ def default_sort_key(item, order=None):
 
     return (cls_index, 0, item.__class__.__name__
             ), args, Integer(1).sort_key(), Integer(1)
+
+
+class NotIterable:
+    """
+    Use this as mixin when creating a class which is not supposed to return
+    true when is_iterable() is called on its instances. I.e. avoid infinite loop
+    when calling e.g. list() on the instance
+
+    """
+
+
+def is_iterable(i, exclude=(str, dict, NotIterable)):
+    """
+    Return a boolean indicating whether ``i`` is Diofant iterable.
+    True also indicates that the iterator is finite, i.e. you e.g.
+    call list(...) on the instance.
+
+    When Diofant is working with iterables, it is almost always assuming
+    that the iterable is not a string or a mapping, so those are excluded
+    by default. If you want a pure Python definition, make exclude=None. To
+    exclude multiple items, pass them as a tuple.
+
+    See Also
+    ========
+
+    is_sequence
+
+    Examples
+    ========
+
+    >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
+    >>> for i in things:
+    ...     print(f'{is_iterable(i)} {type(i)}')
+    True <... 'list'>
+    True <... 'tuple'>
+    True <... 'set'>
+    True <class 'diofant.core.containers.Tuple'>
+    True <... 'generator'>
+    False <... 'dict'>
+    False <... 'str'>
+    False <... 'int'>
+
+    >>> is_iterable({}, exclude=None)
+    True
+    >>> is_iterable({}, exclude=str)
+    True
+    >>> is_iterable('no', exclude=str)
+    False
+
+    """
+    try:
+        iter(i)
+    except TypeError:
+        return False
+    if exclude:
+        return not isinstance(i, exclude)
+    return True
+
+
+def is_sequence(i, include=None):
+    """
+    Return a boolean indicating whether ``i`` is a sequence in the Diofant
+    sense. If anything that fails the test below should be included as
+    being a sequence for your application, set 'include' to that object's
+    type; multiple types should be passed as a tuple of types.
+
+    Note: although generators can generate a sequence, they often need special
+    handling to make sure their elements are captured before the generator is
+    exhausted, so these are not included by default in the definition of a
+    sequence.
+
+    See Also
+    ========
+
+    is_iterable
+
+    Examples
+    ========
+
+    >>> from types import GeneratorType
+    >>> is_sequence([])
+    True
+    >>> is_sequence(set())
+    False
+    >>> is_sequence('abc')
+    False
+    >>> is_sequence('abc', include=str)
+    True
+    >>> generator = (c for c in 'abc')
+    >>> is_sequence(generator)
+    False
+    >>> is_sequence(generator, include=(str, GeneratorType))
+    True
+
+    """
+    return (hasattr(i, '__getitem__') and
+            is_iterable(i) or
+            bool(include) and
+            isinstance(i, include))

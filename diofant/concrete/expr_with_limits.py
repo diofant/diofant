@@ -1,8 +1,8 @@
 from ..core import Add, Dummy, Equality, Expr, Mul, Symbol, Tuple, nan, sympify
-from ..core.compatibility import is_sequence
 from ..functions import piecewise_fold
 from ..sets.sets import Interval
 from ..utilities import flatten, sift
+from ..utilities.iterables import is_sequence
 
 
 def _process_limits(*symbols):

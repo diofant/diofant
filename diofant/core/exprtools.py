@@ -5,10 +5,10 @@ import itertools
 import numbers
 
 from ..utilities import default_sort_key, ordered
-from ..utilities.iterables import common_prefix, common_suffix
+from ..utilities.iterables import (common_prefix, common_suffix, is_iterable,
+                                   is_sequence)
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import is_sequence, iterable
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpressionError
 from .expr import Expr
@@ -875,16 +875,14 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
 
     """
     def do(expr):
-        is_iterable = iterable(expr)
-
-        if not isinstance(expr, Basic) and is_iterable:
+        if not isinstance(expr, Basic) and is_iterable(expr):
             return type(expr)([do(i) for i in expr])
 
         if expr.is_Atom:
             return expr
 
         if expr.is_Pow or expr.is_Function or \
-                is_iterable or not hasattr(expr, 'args_cnc'):
+                is_iterable(expr) or not hasattr(expr, 'args_cnc'):
             args = expr.args
             newargs = tuple(do(i) for i in args)
             if newargs == args:

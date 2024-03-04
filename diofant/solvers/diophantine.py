@@ -3,7 +3,7 @@ import math
 from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
                     integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import floor, sign, sqrt
@@ -13,6 +13,7 @@ from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
 from ..polys import GeneratorsNeededError, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
+from ..utilities.iterables import is_sequence
 from .solvers import solve
 
 
@@ -877,7 +878,7 @@ def _diop_quadratic(var, coeff, t):
                     sol.add(tuple(s))
 
             else:
-                L = math.lcm(*[_.denominator for _ in P[:4] + Q[:2]])
+                L = math.lcm(*(_.denominator for _ in P[:4] + Q[:2]))
 
                 k = 1
 
@@ -2861,8 +2862,7 @@ def power_representation(n, p, k, zeros=False):
         return
 
     if p == 1:
-        for t in partition(n, k, zeros=zeros):
-            yield t
+        yield from partition(n, k, zeros=zeros)
         return
 
     if p == 2:

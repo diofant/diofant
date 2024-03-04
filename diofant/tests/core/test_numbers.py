@@ -3,7 +3,6 @@ import fractions
 
 import mpmath
 import pytest
-from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
@@ -12,7 +11,7 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.abc import x
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.numbers import igcdex
 
 
 __all__ = ()
@@ -1218,8 +1217,6 @@ def test_conversion_to_mpmath():
     assert mpmath.mpmathify(Rational(1, 2)) == mpmath.mpf(0.5)
     assert mpmath.mpmathify(Float('1.23', 15)) == mpmath.mpf('1.23')
 
-    assert mpmath.mpf(Rational(1, 3)) == mpmath.mpf('0.33333333333333331')
-
 
 def test_relational():
     # real
@@ -1415,8 +1412,8 @@ def test_approximation_interval():
 def test_sympyissue_6640():
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
-    assert Float(finf).is_nonzero is True
-    assert Float(fninf).is_nonzero is True
+    assert Float(mpmath.mpf('inf')._mpf_).is_nonzero is True
+    assert Float(mpmath.mpf('-inf')._mpf_).is_nonzero is True
     assert bool(Float(0)) is False
 
 
@@ -1425,11 +1422,6 @@ def test_sympyissue_6349():
     assert Float('23e3')._prec == 10
     assert Float('23000')._prec == 20
     assert Float('-23000')._prec == 20
-
-
-def test_mpf_norm():
-    assert mpf_norm((1, 0, 1, 0), 10) == mpmath.mpf('0')._mpf_
-    assert Float._new((1, 0, 1, 0), 10)._mpf_ == mpmath.mpf('0')._mpf_
 
 
 def test_latex():

@@ -16,7 +16,7 @@ TODO:
 
 import shutil
 
-from .pretty_symbology import hobj, pretty_use_unicode, vobj, xsym
+from .pretty_symbology import hobj, vobj, xsym
 
 
 class stringPict:
@@ -94,8 +94,6 @@ class stringPict:
         Examples
         ========
 
-        >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
-        >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict('10').right(' + ', stringPict('1\r-\r2', 1))[0])
              1
         10 + -
@@ -157,11 +155,9 @@ class stringPict:
         Examples
         ========
 
-        >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
-        >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict('x+3').below(stringPict.LINE, '3')[0])
         x+3
-        ---
+        ───
          3
 
         """
@@ -186,11 +182,6 @@ class stringPict:
         """
         h = self.height()
         b = self.baseline
-
-        # XXX this is a hack -- ascii parens are ugly!
-        if ifascii_nougly and not pretty_use_unicode():
-            h = 1
-            b = 0
 
         res = self
 
@@ -298,11 +289,10 @@ class prettyForm(stringPict):
 
     ATOM, FUNC, DIV, POW, MUL, ADD, NEG, OPEN = range(8)
 
-    def __init__(self, s, baseline=0, binding=0, unicode=None):
+    def __init__(self, s, baseline=0, binding=0):
         """Initialize from stringPict and binding power."""
         stringPict.__init__(self, s, baseline)
         self.binding = binding
-        self.unicode = unicode or s
 
     # Note: code to handle subtraction is in _print_Add
 
@@ -365,8 +355,7 @@ class prettyForm(stringPict):
             # This test was failing to catch a prettyForm.__mul__(prettyForm("-1", 0, 6)) being negative
             bin = prettyForm.NEG
             right = result[1]
-            if right.picture[right.baseline][0] == '-':
-                result[0] = '- '
+            assert right.picture[right.baseline][0] != '-'
         else:
             bin = prettyForm.MUL
         return prettyForm(binding=bin, *stringPict.next(*result))

@@ -957,9 +957,10 @@ def test_modular():
 
     assert integer_rational_reconstruction(ZZ(2), 3, ZZ) == QQ(-1)
     assert integer_rational_reconstruction(ZZ(21), 33, ZZ) == QQ(-1)
-    assert integer_rational_reconstruction(ZZ(-21), 17, ZZ) == QQ(-4)
     assert integer_rational_reconstruction(ZZ(17), 333, ZZ) is None
     assert integer_rational_reconstruction(ZZ(49), 335, ZZ) == QQ(8, 7)
+    assert integer_rational_reconstruction(ZZ(-9), 17, ZZ) == QQ(-1, 2)
+    assert integer_rational_reconstruction(ZZ(-9 - 11*17), 17, ZZ) == QQ(-1, 2)
 
 
 def test_search():

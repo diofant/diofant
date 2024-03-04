@@ -6,7 +6,6 @@ import random
 
 from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
 from ..core.compatibility import as_int
-from ..core.evalf import bitcount
 from ..core.sympify import sympify
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
@@ -165,7 +164,7 @@ def trailing(n):
         return small_trailing[low_byte]
 
     # 2**m is quick for z up through 2**30
-    z = bitcount(n) - 1
+    z = n.bit_length() - 1
     if n == 1 << z:
         return z
 
@@ -830,9 +829,9 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If ``visual`` is set to ``True``, then it will return a visual
     factorization of the integer.  For example:
 
-    >>> pprint(factorint(4200, visual=True), use_unicode=False)
+    >>> pprint(factorint(4200, visual=True))
      3  1  2  1
-    2 *3 *5 *7
+    2 ⋅3 ⋅5 ⋅7
 
     Note that this is achieved by using the evaluate=False flag in Mul
     and Pow. If you do other manipulations with an expression where
@@ -847,14 +846,14 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     >>> regular = factorint(1764)
     >>> regular
     {2: 2, 3: 2, 7: 2}
-    >>> pprint(factorint(regular), use_unicode=False)
+    >>> pprint(factorint(regular))
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
 
     >>> visual = factorint(1764, visual=True)
-    >>> pprint(visual, use_unicode=False)
+    >>> pprint(visual)
      2  2  2
-    2 *3 *7
+    2 ⋅3 ⋅7
     >>> print(factorint(visual))
     {2: 2, 3: 2, 7: 2}
 
@@ -1075,8 +1074,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     while 1:
 
         high_ = high
-        if limit < high_:
-            high_ = limit
+        high_ = min(high_, limit)
 
         # Trial division
         if use_trial:

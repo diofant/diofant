@@ -5,8 +5,8 @@ from collections.abc import Mapping
 from itertools import zip_longest
 
 from ..utilities import ordered
+from ..utilities.iterables import is_iterable
 from .cache import cacheit
-from .compatibility import iterable
 from .decorators import _sympifyit
 from .evaluate import evaluate
 from .sympify import SympifyError, sympify
@@ -430,7 +430,7 @@ class Basic:
             elif isinstance(sequence, Mapping):
                 unordered = True
                 sequence = sequence.items()
-            elif not iterable(sequence):
+            elif not is_iterable(sequence):
                 raise ValueError('Expected a mapping or iterable '
                                  'of (old, new) tuples.')
             sequence = list(sequence)
@@ -1101,7 +1101,7 @@ class Basic:
 
         if not pattern:
             return self._eval_rewrite(None, rule, **hints)
-        if iterable(pattern[0]):
+        if is_iterable(pattern[0]):
             pattern = pattern[0]
 
         pattern = [p for p in pattern if self.has(p)]
@@ -1244,7 +1244,7 @@ class preorder_traversal:
                 args = ordered(args)
             for arg in args:
                 yield from self._preorder_traversal(arg, keys)
-        elif iterable(node):
+        elif is_iterable(node):
             for item in node:
                 yield from self._preorder_traversal(item, keys)
 

@@ -224,6 +224,9 @@ def test_Poly_from_expr():
     assert dict(Poly.from_expr(x + 5, x, y, domain=ZZ).rep) == {(1, 0): ZZ(1), (0, 0): ZZ(5)}
     assert dict(Poly.from_expr(y + 5, x, y, domain=ZZ).rep) == {(0, 1): ZZ(1), (0, 0): ZZ(5)}
 
+    # issue sympy/sympy#25899
+    assert Poly('x-x') == Integer(0).as_poly(x)
+
 
 def test_Poly__new__():
     pytest.raises(GeneratorsError, lambda: Poly(x + 1, x, x))
@@ -3369,3 +3372,14 @@ def test_sympyissue_25624():
     assert lcm(-1, 1) == 1
     assert lcm(Integer(-1).as_poly(x),
                Integer(+1).as_poly(x)) == Integer(1).as_poly(x)
+
+
+def test_sympyissue_25723():
+    assert gcd(-32425*(x - 35541),
+               -32425*(x - 35541)*(2*x + 1)) == 32425*x - 1152416925
+    assert gcd((x - 35541), (x - 35541)*(2*x + 1)) == x - 35541
+
+    for i in [4850, 4851]:
+        assert gcd(x - i, (x - i)*(2*x + 1)) == x - i
+
+    assert gcd(x - i, (x - i)*(2*x - 1)) == x - i

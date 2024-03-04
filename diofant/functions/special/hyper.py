@@ -1,6 +1,5 @@
 """Hypergeometric and Meijer G-functions."""
 
-import functools
 import math
 
 import mpmath
@@ -18,6 +17,9 @@ class TupleArg(Tuple):
     def limit(self, x, xlim, dir=-1):
         """Compute limit x->xlim."""
         return self.func(*[_.limit(x, xlim, dir) for _ in self.args])
+
+    def _to_mpmath(self, prec):
+        return tuple(arg._to_mpmath(prec) for arg in self)
 
 
 # TODO should __new__ accept **options?
@@ -117,13 +119,12 @@ class hyper(TupleParametersBase):
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
 
-    There is also pretty printing (it looks better using unicode):
+    There is also pretty printing:
 
-    >>> pprint(hyper((1, 2, 3), [3, 4], x), use_unicode=False)
-      _
-     |_  /1, 2, 3 |  \
-     |   |        | x|
-    3  2 \  3, 4  |  /
+    >>> pprint(hyper((1, 2, 3), [3, 4], x))
+     ┌─  ⎛1, 2, 3 │  ⎞
+     ├─  ⎜        │ x⎟
+    3╵ 2 ⎝  3, 4  │  ⎠
 
     The parameters must always be iterables, even if they are vectors of
     length one or zero:
@@ -306,14 +307,6 @@ class hyper(TupleParametersBase):
         from ...simplify import hyperexpand
         return hyperexpand(self)
 
-    def _eval_evalf(self, prec):
-        z = self.argument._to_mpmath(prec)
-        ap = [a._to_mpmath(prec) for a in self.ap]
-        bp = [b._to_mpmath(prec) for b in self.bq]
-        with mpmath.workprec(prec):
-            res = mpmath.hyper(ap, bp, z, eliminate=False)
-        return Expr._from_mpmath(res, prec)
-
 
 class meijerg(TupleParametersBase):
     r"""
@@ -365,17 +358,17 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
-     __1, 2 /1, 2  a, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg([1, 2], [a, 4], [5], [], x))
+    ╭─╮1, 2 ⎛1, 2  a, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     or as two nested vectors:
 
-    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x), use_unicode=False)
-     __1, 2 /1, 2  3, 4 |  \
-    /__     |           | x|
-    \_|4, 1 \ 5         |  /
+    >>> pprint(meijerg(([1, 2], [3, 4]), ([5], []), x))
+    ╭─╮1, 2 ⎛1, 2  3, 4 │  ⎞
+    │╶┐     ⎜           │ x⎟
+    ╰─╯4, 1 ⎝ 5         │  ⎠
 
     As with the hypergeometric function, the parameters may be passed as
     arbitrary iterables. Vectors of length zero and one also have to be
@@ -386,10 +379,10 @@ class meijerg(TupleParametersBase):
     All the subvectors of parameters are available:
 
     >>> g = meijerg([1], [2], [3], [4], x)
-    >>> pprint(g, use_unicode=False)
-     __1, 1 /1  2 |  \
-    /__     |     | x|
-    \_|2, 2 \3  4 |  /
+    >>> pprint(g)
+    ╭─╮1, 1 ⎛1  2 │  ⎞
+    │╶┐     ⎜     │ x⎟
+    ╰─╯2, 2 ⎝3  4 │  ⎠
     >>> g.an
     (1,)
     >>> g.ap
@@ -584,7 +577,7 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return functools.reduce(math.lcm, (x.denominator for x in l), 1)
+            return math.lcm(*(x.denominator for x in l))
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)

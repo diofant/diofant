@@ -1,6 +1,6 @@
 from diofant import cos, pretty, sin
 from diofant.abc import x
-from diofant.printing.pretty.pretty import PrettyPrinter
+from diofant.printing.pretty import PrettyPrinter
 
 
 __all__ = ()
@@ -19,8 +19,7 @@ x - ── + ─── + O⎝x\n\
  ⎠\n\
   \
 """
-    assert pretty(sin(x).series(x), num_columns=20,
-                  use_unicode=True) == ustr
+    assert pretty(sin(x).series(x), num_columns=20) == ustr
 
 
 def test_stringpict():

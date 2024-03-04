@@ -13,10 +13,13 @@ import code
 import os
 import readline
 import rlcompleter
+import sys
 
+from diofant import __version__
 from diofant.interactive.session import (AutomaticSymbols,
                                          IntegerDivisionWrapper,
-                                         unicode_identifiers)
+                                         unicode_identifiers,
+                                         wrap_float_literals)
 
 
 __all__ = ()
@@ -35,10 +38,19 @@ parser.add_argument('--no-ipython', help="Don't use IPython",
 parser.add_argument('--unicode-identifiers',
                     help='Allow any unicode identifiers',
                     action='store_true')
+parser.add_argument('--wrap-floats', help='Wrap float literals with Float',
+                    action='store_true')
+parser.add_argument('-V', '--version',
+                    help='Print the Diofant version and exit',
+                    action='store_true')
 
 
 def main():
     args, ipython_args = parser.parse_known_args()
+
+    if args.version:
+        print(__version__)
+        sys.exit(0)
 
     lines = ['from diofant import *',
              'init_printing()',
@@ -78,6 +90,11 @@ def main():
             shell.run_cell('ip = get_ipython()')
             shell.run_cell('ip.input_transformers_cleanup.append(unicode_identifiers)')
             shell.run_cell('del ip')
+        if args.wrap_floats:
+            shell.run_cell('from diofant.interactive.session import wrap_float_literals')
+            shell.run_cell('ip = get_ipython()')
+            shell.run_cell('ip.input_transformers_cleanup.append(wrap_float_literals)')
+            shell.run_cell('del ip')
         app.start()
     else:
         ast_transformers = []
@@ -90,6 +107,8 @@ def main():
             ast_transformers.append(AutomaticSymbols(ns))
         if args.unicode_identifiers:
             source_transformers.append(unicode_identifiers)
+        if args.wrap_floats:
+            source_transformers.append(wrap_float_literals)
 
         class DiofantConsole(code.InteractiveConsole):
             """An interactive console with readline support."""

@@ -5,8 +5,8 @@ import pytest
 from diofant import (Eq, Float, Function, GeneratorsNeededError, I, Integer,
                      Lambda, MultivariatePolynomialError, PolynomialError, Pow,
                      PurePoly, Rational, RootOf, RootSum, Symbol, cbrt,
-                     conjugate, exp, expand_func, false, legendre_poly, log,
-                     oo, root, solve, sqrt, tan, true)
+                     ceiling, conjugate, exp, expand_func, false,
+                     legendre_poly, log, oo, root, solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
 
 
@@ -631,3 +631,8 @@ def test_sympyissue_15413():
 def test_sympyissue_22943():
     r = RootOf(sqrt(2)*x**3 + sqrt(3)*x + cbrt(3), 0)
     assert r.evalf() == -0.62924946253300906
+
+
+def test_sympyissue_25965():
+    r = RootOf(x**5 - x**2 + 1, 0)
+    assert ceiling(r) == 0

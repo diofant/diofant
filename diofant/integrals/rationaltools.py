@@ -308,6 +308,11 @@ def log_to_real(h, q, x, t):
 
     log_to_atan
 
+    References
+    ==========
+
+    * :cite:`Bronstein2005integration`, p. 69
+
     """
     u, v = symbols('u,v', cls=Dummy)
 
@@ -335,6 +340,9 @@ def log_to_real(h, q, x, t):
 
     for r_u in R_u:
         C = c.subs({u: r_u}).as_poly(v, extension=False)
+        if not C:
+            C = d.subs({u: r_u}).as_poly(v, extension=False)
+            d = Integer(0)
 
         R_v_all = roots(C)
         if sum(R_v_all.values()) < C.degree():
