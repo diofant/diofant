@@ -1544,3 +1544,8 @@ def test_sympyissue_25886():
 
 def test_sympyissue_26071():
     assert integrate((0.5 - t)*Heaviside(t - 0.5), (t, 0, 0.5)) == 0
+
+
+def test_sympyissue_25786():
+    assert integrate(exp(-0.8*x**2),
+                     (x, -3, -0.2)) == 0.44728859099449181*sqrt(pi)
