@@ -1122,9 +1122,6 @@ class Integer(Rational):
     def _as_mpf_val(self, prec):
         return from_int(self.numerator, prec)
 
-    def _mpmath_(self, prec, rnd):
-        return mpmath.make_mpf(self._as_mpf_val(prec))
-
     @cacheit
     def __new__(cls, i):  # pylint: disable=signature-differs
         try:
