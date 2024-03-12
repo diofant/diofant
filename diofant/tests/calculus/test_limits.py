@@ -1118,3 +1118,9 @@ def test_sympyissue_26250():
     e = hyper((-Rational(1, 2), Rational(1, 2)), (1,), 4*x/(x + 1))
     assert e.series().simplify() == (1 - x + x**2/4 - 3*x**3/4 -
                                      15*x**4/64 - 93*x**5/64 + O(x**6))
+
+
+def test_sympyissue_26313():
+    e = Piecewise((x**2, x <= 2), (5*x - 7, x > 2))
+    assert limit(e, x, 2) == 3
+    assert limit(e, x, 2, dir=1) == 4

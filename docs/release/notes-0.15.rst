@@ -90,3 +90,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26250`: Incorrect limit involving elliptic functions
 * :sympyissue:`25786`: Wrong result for a simple integral
 * :sympyissue:`26343`: TypeError: Invalid NaN Comparison using dsolve for ODE with ics={v(0) : 0}
+* :sympyissue:`26313`: Error result for limit of a piecewise
