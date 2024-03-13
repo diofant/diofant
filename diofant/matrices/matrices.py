@@ -411,7 +411,7 @@ class MatrixBase(DefaultPrinting):
             raise AttributeError
         return self.H*mgamma(0)
 
-    def __array__(self):
+    def __array__(self, dtype=None, copy=None):
         from .dense import matrix2numpy
         return matrix2numpy(self)
 
