@@ -1483,7 +1483,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
 
 
 def expand_2arg(e):
-    from ..simplify.simplify import bottom_up
+    from .strategies import bottom_up
 
     def do(e):
         if e.is_Mul:
@@ -1492,4 +1492,4 @@ def expand_2arg(e):
                 return Add(*[c*ri for ri in r.args], evaluate=False)
         return e
 
-    return bottom_up(e, do)
+    return bottom_up(do)(e)
