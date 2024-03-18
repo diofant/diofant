@@ -16,8 +16,8 @@ from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          common_prefix, common_suffix,
-                                         filter_symbols, is_iterable, minlex,
-                                         multiset, multiset_combinations,
+                                         is_iterable, minlex, multiset,
+                                         multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations,
                                          ordered_partitions, partitions,
@@ -138,14 +138,6 @@ def test_subsets():
         [(1, 2), (1, 3), (2, 3)]
     assert list(subsets([1, 2, 3], 2, repetition=True)) == \
         [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
-
-
-def test_filter_symbols():
-    s = numbered_symbols()
-    filtered = filter_symbols(s, symbols('x0 x2 x3'))
-    assert list(itertools.islice(filtered, 3)) == list(symbols('x1 x4 x5'))
-
-    assert set(filter_symbols((), set())) == set()
 
 
 def test_numbered_symbols():
