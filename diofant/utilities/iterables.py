@@ -2,7 +2,6 @@ import collections
 import itertools
 import operator
 
-# this is the logical location of these functions
 from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
