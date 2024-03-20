@@ -152,7 +152,7 @@ from .tensor import (Array, DenseNDimArray, Idx, ImmutableDenseNDimArray,
                      get_contraction_structure, get_indices, permutedims,
                      tensorcontraction, tensorproduct)
 from .utilities import (cantor_product, default_sort_key, filldedent, flatten,
-                        group, has_dups, has_variety, lambdify,
+                        group, has_dups, lambdify,
                         numbered_symbols, ordered, postorder_traversal, sift,
                         subsets, unflatten)
 
@@ -261,7 +261,7 @@ __all__ = (
     'ones', 'randMatrix', 'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray',
     'trace', 'vandermonde', 'wronskian', 'zeros', 'Fraction',
     'cantor_product', 'default_sort_key',
-    'filldedent', 'flatten', 'group', 'has_dups', 'has_variety', 'lambdify',
+    'filldedent', 'flatten', 'group', 'has_dups', 'lambdify',
     'numbered_symbols', 'ordered', 'postorder_traversal',
     'sift', 'subsets', 'unflatten',
     'CosineTransform', 'FourierTransform', 'HankelTransform',

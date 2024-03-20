@@ -7,7 +7,7 @@ from mpmath.libmp import ifac
 from ..core import Basic, Tuple, sympify
 from ..core.compatibility import as_int
 from ..polys import lcm
-from ..utilities import flatten, has_dups, has_variety
+from ..utilities import flatten, has_dups
 from ..utilities.iterables import is_sequence, minlex, runs
 
 
@@ -838,7 +838,7 @@ class Permutation(Basic):
                 return _af_new(a.list(size))
             if not is_sequence(a):  # b
                 return _af_new(list(range(a + 1)))
-            if has_variety(is_sequence(ai) for ai in a):
+            if len({is_sequence(ai) for ai in a}) > 1:
                 ok = False
         else:
             ok = False

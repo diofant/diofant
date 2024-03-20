@@ -5,7 +5,6 @@ from random import choice, randrange
 from ..core import Basic
 from ..functions import factorial
 from ..ntheory import sieve
-from ..utilities import has_variety
 from ..utilities.iterables import is_sequence, uniq
 from ..utilities.randtest import _randrange
 from .permutations import (Cycle, Permutation, _af_commutes_with, _af_invert,
@@ -125,7 +124,7 @@ class PermutationGroup(Basic):
             args = list(args[0] if is_sequence(args[0]) else args)
         if any(isinstance(a, Cycle) for a in args):
             args = [Permutation(a) for a in args]
-        if has_variety(a.size for a in args):
+        if len({a.size for a in args}) > 1:
             degree = kwargs.pop('degree', None)
             if degree is None:
                 degree = max(a.size for a in args)

@@ -3,13 +3,13 @@ Diofant.
 """
 
 from .iterables import (cantor_product, default_sort_key, flatten, group,
-                        has_dups, has_variety, numbered_symbols, ordered,
+                        has_dups, numbered_symbols, ordered,
                         postorder_traversal, sift, subsets, unflatten)
 from .lambdify import lambdify
 from .misc import filldedent
 
 
 __all__ = ('cantor_product', 'default_sort_key', 'flatten',
-           'group', 'has_dups', 'has_variety', 'numbered_symbols',
+           'group', 'has_dups', 'numbered_symbols',
            'ordered', 'postorder_traversal', 'sift', 'subsets',
            'unflatten', 'lambdify', 'filldedent')

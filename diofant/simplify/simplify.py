@@ -20,7 +20,7 @@ from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
-from ..utilities import has_variety, ordered
+from ..utilities import ordered
 from ..utilities.iterables import is_iterable
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre
@@ -609,11 +609,9 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     # See also https://github.com/sympy/sympy/pull/185.
 
     def shorter(*choices):
-        """Return the choice that has the fewest ops. In case of a tie,
-        the expression listed first is selected.
-
-        """
-        if not has_variety(choices):
+        # Return the choice that has the fewest ops.  In case of a tie, the
+        # expression listed first is selected.
+        if len(set(choices)) == 1:
             return choices[0]
         return min(choices, key=measure)
 
