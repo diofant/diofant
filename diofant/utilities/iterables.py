@@ -1084,28 +1084,6 @@ def ordered_partitions(n, m=None, sort=True):
                         a[-mi:] = [b]*mi
 
 
-def has_dups(seq):
-    """Return True if there are any duplicate elements in ``seq``.
-
-    Examples
-    ========
-
-    >>> has_dups((1, 2, 1))
-    True
-    >>> has_dups(range(3))
-    False
-    >>> all(has_dups(c) is False for c in (set(), Set(), {}, Dict()))
-    True
-
-    """
-    from ..core import Dict
-    from ..sets import Set
-    if isinstance(seq, (dict, set, Dict, Set)):
-        return False
-    uniq = set()
-    return any(True for s in seq if s in uniq or uniq.add(s))
-
-
 def uniq(seq, result=None):
     """
     Yield unique elements from ``seq`` as an iterator. The second

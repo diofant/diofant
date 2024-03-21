@@ -44,7 +44,7 @@ from ..integrals import Integral
 from ..polys import lcm
 from ..simplify.radsimp import collect
 from ..simplify.simplify import simplify
-from ..utilities import filldedent, has_dups
+from ..utilities import filldedent
 from ..utilities.iterables import is_sequence
 from .deutils import _desolve, _preprocess, ode_order
 from .solvers import solve
@@ -779,7 +779,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     if len(subs_args) != len(orig_args):
         raise ValueError('Variable counts do not match')
     # Check for duplicate arguments like  [X(x), u(x, y)]
-    if has_dups(subs_args):
+    if len(set(subs_args)) < len(subs_args):
         raise ValueError('Duplicate substitution arguments detected')
     # Check whether the variables match
     if set(orig_args) != set(subs_args):

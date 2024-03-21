@@ -4,7 +4,7 @@ import graphlib
 import re
 
 from ..core import Basic, I, sympify
-from ..utilities import has_dups, numbered_symbols
+from ..utilities import numbered_symbols
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
@@ -262,7 +262,7 @@ class Gens(Option, metaclass=OptionType):
 
         if option == (None,):
             return ()
-        if has_dups(option):
+        if len(set(option)) < len(option):
             raise GeneratorsError(f'duplicated generators: {option}')
         if any(gen.is_commutative is False for gen in option):
             raise GeneratorsError(f'non-commutative generators: {option}')

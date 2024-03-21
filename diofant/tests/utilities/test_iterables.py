@@ -7,8 +7,8 @@ import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
                      cantor_product, default_sort_key, flatten, group,
-                     has_dups, numbered_symbols, ordered, postorder_traversal,
-                     subsets, symbols, true, unflatten)
+                     numbered_symbols, ordered, postorder_traversal, subsets,
+                     symbols, true, unflatten)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import RGS_enum, RGS_unrank
 from diofant.functions.elementary.piecewise import ExprCondPair
@@ -416,12 +416,6 @@ def test_uniq():
         [([1], 2, 2), (2, [1], 2), (2, 2, [1])]
     assert list(uniq([2, 3, 2, 4, [2], [1], [2], [3], [1]])) == \
         [2, 3, 4, [2], [1], [3]]
-
-
-def test_has_dups():
-    assert has_dups(set()) is False
-    assert has_dups(list(range(3))) is False
-    assert has_dups([1, 2, 1]) is True
 
 
 def test__partition():

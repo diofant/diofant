@@ -1,7 +1,7 @@
 import math
 
 from ...core import Function, Integer
-from ...utilities import default_sort_key, has_dups
+from ...utilities import default_sort_key
 
 
 ###############################################################################
@@ -70,7 +70,7 @@ class LeviCivita(Function):
     def eval(cls, *args):
         if all(isinstance(a, (int, Integer)) for a in args):
             return eval_levicivita(*args)
-        if has_dups(args):
+        if len(set(args)) < len(args):
             return Integer(0)
 
     def doit(self, **hints):
