@@ -199,10 +199,14 @@ class Poly(Expr):
                     if factors:
                         factor = Mul(*factors)
 
-                        if factor.is_Number:
-                            product *= factor
-                        else:
+                        try:
                             (factor,), _opt = _parallel_dict_from_expr([factor], opt)
+                        except GeneratorsNeededError:
+                            if factor.is_number:
+                                product *= factor
+                            else:
+                                raise
+                        else:
                             factor = cls._from_dict(factor, _opt)
                             product *= factor
 
