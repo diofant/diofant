@@ -1074,8 +1074,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     while 1:
 
         high_ = high
-        if limit < high_:
-            high_ = limit
+        high_ = min(high_, limit)
 
         # Trial division
         if use_trial:

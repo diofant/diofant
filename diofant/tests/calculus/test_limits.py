@@ -8,10 +8,10 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
                      Symbol, acos, acosh, acoth, arg, asin, atan, besselk,
                      binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
-                     erf, erfc, erfi, exp, factorial, false, floor, gamma,
-                     integrate, limit, log, lowergamma, nan, oo, pi, polygamma,
-                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
-                     symbols, tan, true)
+                     elliptic_e, elliptic_k, erf, erfc, erfi, exp, factorial,
+                     false, floor, gamma, hyper, integrate, limit, log,
+                     lowergamma, nan, oo, pi, polygamma, root, sign, simplify,
+                     sin, sinh, sqrt, subfactorial, symbols, tan, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1098,3 +1098,29 @@ def test_sympyissue_25681():
 
 def test_sympyissue_25833():
     assert limit(atan(log(2**x)/log(2*x)), x, oo) == pi/2
+
+
+def test_sympyissue_26250():
+    e = ((1 - 3*x**2)*elliptic_e(4*x/(x**2 + 2*x + 1))**2/2 -
+         (x**2 - 2*x + 1)*elliptic_e(4*x/(x**2 + 2*x + 1)) *
+         elliptic_k(4*x/(x**2 + 2*x + 1))/2)/(pi**2*x**8 - 2*pi**2*x**7 -
+                                              pi**2*x**6 + 4*pi**2*x**5 -
+                                              pi**2*x**4 - 2*pi**2*x**3 +
+                                              pi**2*x**2)
+    assert limit(e, x, 0) == Rational(-1, 8)
+
+    t = 4*x/(x + 1)
+    e = ((x + 1)*elliptic_e(t) + (x - 1)*elliptic_k(t))/x**2
+    assert e.limit(x, 0) == -pi/2
+    assert elliptic_e(t).series() == (pi/2 - pi*x/2 + pi*x**2/8 - 3*pi*x**3/8 -
+                                      15*pi*x**4/128 - 93*pi*x**5/128 + O(x**6))
+
+    e = hyper((-Rational(1, 2), Rational(1, 2)), (1,), 4*x/(x + 1))
+    assert e.series().simplify() == (1 - x + x**2/4 - 3*x**3/4 -
+                                     15*x**4/64 - 93*x**5/64 + O(x**6))
+
+
+def test_sympyissue_26313():
+    e = Piecewise((x**2, x <= 2), (5*x - 7, x > 2))
+    assert limit(e, x, 2) == 3
+    assert limit(e, x, 2, dir=1) == 4

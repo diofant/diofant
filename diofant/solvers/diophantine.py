@@ -2862,8 +2862,7 @@ def power_representation(n, p, k, zeros=False):
         return
 
     if p == 1:
-        for t in partition(n, k, zeros=zeros):
-            yield t
+        yield from partition(n, k, zeros=zeros)
         return
 
     if p == 2:
