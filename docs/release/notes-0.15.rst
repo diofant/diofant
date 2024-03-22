@@ -23,6 +23,8 @@ Compatibility breaks
 * Removed ``method`` argument of :func:`~diofant.functions.special.bessel.jn_zeros`, see :pull:`1352`.
 * Removed ``sstrrepr()`` function, see :pull:`1362`.
 * Removed support for ASCII pretty-printing and ``pprint_use_unicode()`` function, see :pull:`1369`.
+* Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
+* Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
 
 Minor changes
 =============

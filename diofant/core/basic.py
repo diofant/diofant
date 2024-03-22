@@ -810,7 +810,7 @@ class Basic:
                   using matching rules
 
         """
-        from ..simplify.simplify import bottom_up
+        from .strategies import bottom_up
 
         try:
             query = sympify(query)
@@ -889,7 +889,7 @@ class Basic:
                     expr = new
             return expr
 
-        return bottom_up(self, rec_replace, atoms=True)
+        return bottom_up(rec_replace)(self)
 
     def find(self, query):
         """Find all subexpressions matching a query."""

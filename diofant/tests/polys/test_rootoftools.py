@@ -342,13 +342,13 @@ def test_RootOf_evalf_caching_bug():
 
 
 def test_RootOf_refine():
-    r0 = RootOf(x**3 - x + 1, 0)
+    r0 = RootOf(x**3 - x + 123, 0)
     r0.refine()
-    assert r0.interval.as_tuple() == (Rational(-4, 3), -1)
-    r1 = RootOf(x**3 - x + 1, 1)
+    assert r0.interval.as_tuple() == (Rational(-51, 10), Integer(-5))
+    r1 = RootOf(x**3 - x + 123, 1)
     r1.refine()
-    assert r1.interval.as_tuple() == ((Rational(1, 2), Rational(-3, 4)),
-                                      (1, Rational(-1, 2)))
+    assert r1.interval.as_tuple() == ((Rational(123, 64), Rational(-615, 128)),
+                                      (Rational(123, 32), Rational(-123, 32)))
 
 
 def test_RootOf_real_roots():

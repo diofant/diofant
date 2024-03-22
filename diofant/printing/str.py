@@ -313,21 +313,6 @@ class StrPrinter(Printer):
             use = trim
         return f'Permutation({use})'
 
-    def _print_TensorIndex(self, expr):
-        return expr._print()
-
-    def _print_TensorHead(self, expr):
-        return expr._print()
-
-    def _print_Tensor(self, expr):
-        return expr._print()
-
-    def _print_TensMul(self, expr):
-        return expr._print()
-
-    def _print_TensAdd(self, expr):
-        return expr._print()
-
     def _print_PermutationGroup(self, expr):
         p = [f'    {a!s}' for a in expr.args]
         return 'PermutationGroup([\n{}])'.format(',\n'.join(p))  # noqa: SFS201

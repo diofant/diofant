@@ -14,4 +14,3 @@ Tensors
     array
     indexed
     index_methods
-    tensor
