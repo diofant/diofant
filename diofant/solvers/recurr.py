@@ -481,7 +481,7 @@ def rsolve_hyper(coeffs, f, n):
             if R is not None:
                 R, syms = R
                 if syms:
-                    R = R.subs(zip(syms, [0] * len(syms)))
+                    R = R.subs(dict.fromkeys(syms, 0))
 
             if R:
                 inhomogeneous[i] *= R

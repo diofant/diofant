@@ -7,8 +7,8 @@ import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Piecewise, Tuple,
                      cantor_product, default_sort_key, flatten, group,
-                     has_dups, numbered_symbols, ordered, postorder_traversal,
-                     subsets, symbols, true, unflatten)
+                     numbered_symbols, ordered, postorder_traversal, subsets,
+                     symbols, true, unflatten)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import RGS_enum, RGS_unrank
 from diofant.functions.elementary.piecewise import ExprCondPair
@@ -16,8 +16,8 @@ from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          common_prefix, common_suffix,
-                                         filter_symbols, is_iterable, minlex,
-                                         multiset, multiset_combinations,
+                                         is_iterable, minlex, multiset,
+                                         multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations,
                                          ordered_partitions, partitions,
@@ -138,14 +138,6 @@ def test_subsets():
         [(1, 2), (1, 3), (2, 3)]
     assert list(subsets([1, 2, 3], 2, repetition=True)) == \
         [(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
-
-
-def test_filter_symbols():
-    s = numbered_symbols()
-    filtered = filter_symbols(s, symbols('x0 x2 x3'))
-    assert list(itertools.islice(filtered, 3)) == list(symbols('x1 x4 x5'))
-
-    assert set(filter_symbols((), set())) == set()
 
 
 def test_numbered_symbols():
@@ -424,12 +416,6 @@ def test_uniq():
         [([1], 2, 2), (2, [1], 2), (2, 2, [1])]
     assert list(uniq([2, 3, 2, 4, [2], [1], [2], [3], [1]])) == \
         [2, 3, 4, [2], [1], [3]]
-
-
-def test_has_dups():
-    assert has_dups(set()) is False
-    assert has_dups(list(range(3))) is False
-    assert has_dups([1, 2, 1]) is True
 
 
 def test__partition():

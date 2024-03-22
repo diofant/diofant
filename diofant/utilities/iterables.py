@@ -1,8 +1,7 @@
+import collections
 import itertools
 import operator
-from collections import defaultdict
 
-# this is the logical location of these functions
 from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
@@ -139,7 +138,7 @@ def multiset(seq):
     group
 
     """
-    rv = defaultdict(int)
+    rv = collections.defaultdict(int)
     for s in seq:
         rv[s] += 1
     return dict(rv)
@@ -250,32 +249,6 @@ def subsets(seq, k=None, repetition=False):
         yield from meth(seq, k)
 
 
-def filter_symbols(iterator, exclude):
-    """
-    Only yield elements from `iterator` that do not occur in `exclude`.
-
-    Parameters
-    ==========
-
-    iterator : iterable
-    iterator to take elements from
-
-    exclude : iterable
-    elements to exclude
-
-    Returns
-    =======
-
-    iterator : iterator
-    filtered iterator
-
-    """
-    exclude = set(exclude)
-    for s in iterator:
-        if s not in exclude:
-            yield s
-
-
 def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], **assumptions):
     """
     Generate an infinite stream of Symbols consisting of a prefix and
@@ -357,7 +330,7 @@ def sift(seq, keyfunc):
     ordered
 
     """
-    m = defaultdict(list)
+    m = collections.defaultdict(list)
     for i in seq:
         m[keyfunc(i)].append(i)
     return m
@@ -778,7 +751,7 @@ def multiset_partitions(multiset, m=None):
     if len(multiset) == 1 and type(multiset) is str:
         multiset = [multiset]
 
-    if not has_variety(multiset):
+    if len(set(multiset)) == 1:
         # Only one component, repeated n times.  The resulting
         # partitions correspond to partitions of integer n.
         n = len(multiset)
@@ -1111,49 +1084,6 @@ def ordered_partitions(n, m=None, sort=True):
                         a[-mi:] = [b]*mi
 
 
-def has_dups(seq):
-    """Return True if there are any duplicate elements in ``seq``.
-
-    Examples
-    ========
-
-    >>> has_dups((1, 2, 1))
-    True
-    >>> has_dups(range(3))
-    False
-    >>> all(has_dups(c) is False for c in (set(), Set(), {}, Dict()))
-    True
-
-    """
-    from ..core import Dict
-    from ..sets import Set
-    if isinstance(seq, (dict, set, Dict, Set)):
-        return False
-    uniq = set()
-    return any(True for s in seq if s in uniq or uniq.add(s))
-
-
-def has_variety(seq):
-    """Return True if there are any different elements in ``seq``.
-
-    Examples
-    ========
-
-    >>> has_variety((1, 2, 1))
-    True
-    >>> has_variety((1, 1, 1))
-    False
-
-    """
-    for i, s in enumerate(seq):
-        if i == 0:
-            sentinel = s
-        else:
-            if s != sentinel:
-                return True
-    return False
-
-
 def uniq(seq, result=None):
     """
     Yield unique elements from ``seq`` as an iterator. The second
@@ -1458,7 +1388,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     of candidates is small relative to the number of items being processed.
 
     """
-    d = defaultdict(list)
+    d = collections.defaultdict(list)
     if keys:
         if not isinstance(keys, (list, tuple)):
             keys = [keys]

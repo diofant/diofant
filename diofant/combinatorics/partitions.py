@@ -5,7 +5,7 @@ from ..core.compatibility import as_int
 from ..functions import bell
 from ..matrices import zeros
 from ..sets import FiniteSet
-from ..utilities import default_sort_key, flatten, group, has_dups
+from ..utilities import default_sort_key, flatten, group
 
 
 class Partition(FiniteSet):
@@ -54,7 +54,7 @@ class Partition(FiniteSet):
         # sort so we have a canonical reference for RGS
         partition = sorted(sum(list(map(list, partition)), []),
                            key=default_sort_key)
-        if has_dups(partition):
+        if len(set(partition)) < len(partition):
             raise ValueError('Partition contained duplicated elements.')
 
         obj = FiniteSet.__new__(cls, *[FiniteSet(*x) for x in args])

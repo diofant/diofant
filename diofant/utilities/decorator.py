@@ -1,7 +1,5 @@
 """Useful utility decorators."""
 
-import inspect
-
 
 def conserve_mpmath_dps(func):
     """After the function finishes, resets the value of mpmath.mp.dps to
@@ -58,10 +56,5 @@ def doctest_depends_on(exe=None, modules=None, disable_viewers=None):
     def depends_on_deco(fn):
         fn._doctest_depends_on = {'exe': exe, 'modules': modules,
                                   'disable_viewers': disable_viewers}
-
-        # once we drop py2.5 support and use class decorators this evaluates
-        # to True
-        if inspect.isclass(fn):
-            fn._doctest_depdends_on = no_attrs_in_subclass(fn, fn._doctest_depends_on)
         return fn
     return depends_on_deco

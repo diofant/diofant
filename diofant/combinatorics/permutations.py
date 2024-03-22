@@ -7,7 +7,7 @@ from mpmath.libmp import ifac
 from ..core import Basic, Tuple, sympify
 from ..core.compatibility import as_int
 from ..polys import lcm
-from ..utilities import flatten, has_dups, has_variety
+from ..utilities import flatten
 from ..utilities.iterables import is_sequence, minlex, runs
 
 
@@ -422,7 +422,7 @@ class Cycle(dict):
         args = [as_int(a) for a in args]
         if any(i < 0 for i in args):
             raise ValueError('negative integers are not allowed in a cycle.')
-        if has_dups(args):
+        if len(set(args)) < len(args):
             raise ValueError('All elements must be unique in a cycle.')
         for i in range(-len(args), 0):
             self[args[i]] = args[i + 1]
@@ -838,7 +838,7 @@ class Permutation(Basic):
                 return _af_new(a.list(size))
             if not is_sequence(a):  # b
                 return _af_new(list(range(a + 1)))
-            if has_variety(is_sequence(ai) for ai in a):
+            if len({is_sequence(ai) for ai in a}) > 1:
                 ok = False
         else:
             ok = False
@@ -862,7 +862,7 @@ class Permutation(Basic):
         # counting starts from 1.
 
         temp = flatten(args)
-        if has_dups(temp):
+        if len(set(temp)) < len(temp):
             if is_cycle:
                 raise ValueError('there were repeated elements; to resolve '
                                  f"cycles use Cycle{''.join([str(tuple(c)) for c in args])}.")
