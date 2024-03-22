@@ -133,3 +133,32 @@ def test_ipython_console_bare_division_noauto():
     assert c.expect_exact('\r\nIn [6]: ') == 0
     assert c.send('ℕ\r\n') == 5
     assert c.expect_exact('Out[6]: 2\r\n\r\nIn [7]: ') == 0
+
+
+def test_ipython_console_wrap_floats():
+    pytest.importorskip('IPython')
+
+    c = Console('python -m diofant --simple-prompt '
+                "--wrap-floats --colors 'NoColor'")
+
+    assert c.expect_exact('\r\nIn [1]: ') == 0
+    assert c.send('repr(10.9)\r\n') == 12
+    assert c.expect_exact("\r\nOut[1]: \"Float('10.9004', dps=3)\"\r\n\r\nIn [2]: ") == 0
+
+
+def test_bare_console_wrap_floats():
+    c = Console('python -m diofant --simple-prompt --no-ipython '
+                "--wrap-floats --colors 'NoColor'")
+
+    assert c.expect_exact('>>> ') == 0
+    assert c.send('repr(10.9)\r\n') == 12
+    assert c.expect_exact("\"Float('10.9004', dps=3)\"\r\n>>> ") == 0
+    assert c.send('Float(1.) + 1\r\n') == 15
+    assert c.expect_exact('2.00000000000000\r\n>>> ') == 0
+
+
+def test_diofant_version():
+    c = Console('python -m diofant --version')
+
+    assert c.expect(pexpect.EOF) == 0
+    assert c.before.startswith('0.')

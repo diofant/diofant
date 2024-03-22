@@ -1,7 +1,4 @@
-import functools
 import math
-
-import mpmath
 
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
@@ -215,7 +212,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         a1, m1 = c1
         a2, m2 = c2
         a, b, c = m1, a2 - a1, m2
-        g = functools.reduce(math.gcd, [a, b, c])
+        g = math.gcd(a, b, c)
         a, b, c = (i//g for i in [a, b, c])
         if a != 1:
             inv_a, _, g = igcdex(a, c)
@@ -309,20 +306,18 @@ def integer_rational_reconstruction(c, m, domain):
     * :cite:`Wang1981partial`
 
     """
-    if c < 0:
+    while c < 0:
         c += m
 
     r0, s0 = m, domain.zero
     r1, s1 = c, domain.one
 
-    bound = mpmath.sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
-
-    while r1 >= bound:
+    while r1 > 0 and 2*r1**2 >= m:
         quo = r0 // r1
         r0, r1 = r1, r0 - quo*r1
         s0, s1 = s1, s0 - quo*s1
 
-    if abs(s1) >= bound:
+    if 2*s1**2 >= m:
         return
 
     if s1 < 0:

@@ -4,7 +4,6 @@ import collections
 import itertools
 
 from ..core import Dummy, Eq, Ge, Gt, Integer, Le, Lt, Ne, S, Symbol, nan, oo
-from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Max, Min, Piecewise, sign
 from ..logic import And, Or, false, true
@@ -13,6 +12,7 @@ from ..polys import PolificationFailedError, Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
 from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent, ordered
+from ..utilities.iterables import is_iterable
 
 
 __all__ = 'reduce_inequalities',
@@ -538,8 +538,14 @@ def solve_univariate_inequality(expr, gen, relational=True):
     from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    solns = {s[gen] for s in solve(e, gen)}
-    singularities = singularities(e, gen)
+    if gen.is_extended_real is None:
+        gen_r = Dummy(gen.name, extended_real=True)
+        e_r = e.subs({gen: gen_r})
+    else:
+        gen_r = gen
+        e_r = e
+    solns = {s[gen_r] for s in solve(e_r, gen_r)}
+    singularities = singularities(e_r, gen_r)
 
     include_x = expr.func(0, 0)
 
@@ -675,7 +681,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     diofant.solvers.solvers.solve : solve algebraic equations
 
     """
-    if not iterable(inequalities):
+    if not is_iterable(inequalities):
         inequalities = [inequalities]
 
     # prefilter
@@ -695,7 +701,7 @@ def reduce_inequalities(inequalities, symbols=[]):
 
     gens = set().union(*[i.free_symbols for i in inequalities])
 
-    if not iterable(symbols):
+    if not is_iterable(symbols):
         symbols = [symbols]
     symbols = ordered(set(symbols) or gens)
 

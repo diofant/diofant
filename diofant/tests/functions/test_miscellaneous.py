@@ -35,8 +35,8 @@ def test_Min():
     assert Min(-oo, oo) == -oo
     assert Min(oo, -oo) == -oo
     assert Min(n, n) == n
-    assert Min(n, np) == Min(n, np)
-    assert Min(np, n) == Min(np, n)
+    assert Min(n, np) == Min(n, np, evaluate=False)
+    assert Min(np, n) == Min(np, n, evaluate=False)
     assert Min(n, 0) == n
     assert Min(0, n) == n
     assert Min(n, nn) == n
@@ -62,8 +62,8 @@ def test_Min():
     assert Min(0, oo) == 0
     assert Min(oo, 0) == 0
     assert Min(nn, nn) == nn
-    assert Min(nn, p) == Min(nn, p)
-    assert Min(p, nn) == Min(p, nn)
+    assert Min(nn, p) == Min(nn, p, evaluate=False)
+    assert Min(p, nn) == Min(p, nn, evaluate=False)
     assert Min(nn, oo) == nn
     assert Min(oo, nn) == nn
     assert Min(p, p) == p

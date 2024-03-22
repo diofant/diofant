@@ -5,7 +5,7 @@ from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, oo, symbols)
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and
 from ..core.sympify import sympify
 from ..functions import Max, Min, exp, factorial, sqrt
@@ -14,6 +14,7 @@ from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
 from ..utilities import default_sort_key, flatten
+from ..utilities.iterables import is_sequence
 
 
 def _iszero(x):
@@ -410,7 +411,7 @@ class MatrixBase(DefaultPrinting):
             raise AttributeError
         return self.H*mgamma(0)
 
-    def __array__(self):
+    def __array__(self, dtype=None, copy=None):
         from .dense import matrix2numpy
         return matrix2numpy(self)
 

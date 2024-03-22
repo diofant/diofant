@@ -27,10 +27,10 @@ The main class responsible for printing is ``Printer`` (see also its
 PrettyPrinter Class
 -------------------
 
-The pretty printing subsystem is implemented in ``diofant.printing.pretty.pretty``
+The pretty printing subsystem is implemented in ``diofant.printing.pretty``
 by the ``PrettyPrinter`` class deriving from ``Printer``. It relies on
-the modules ``diofant.printing.pretty.stringPict``, and
-``diofant.printing.pretty.pretty_symbology`` for rendering nice-looking
+the modules ``diofant.printing.stringPict``, and
+``diofant.printing.pretty_symbology`` for rendering nice-looking
 formulas.
 
 The module ``stringPict`` provides a base class ``stringPict`` and a derived
@@ -38,10 +38,9 @@ class ``prettyForm`` that ease the creation and manipulation of formulas
 that span across multiple lines.
 
 The module ``pretty_symbology`` provides primitives to construct 2D shapes
-(hline, vline, etc) together with a technique to use unicode automatically
-when possible.
+(hline, vline, etc).
 
-.. automodule:: diofant.printing.pretty.pretty
+.. automodule:: diofant.printing.pretty
    :members:
 
 CCodePrinter
@@ -293,8 +292,6 @@ This module generates readable representations of Diofant expressions.
 
 .. autofunction:: sstr
 
-.. autofunction:: sstrrepr
-
 Implementation - Helper Classes/Functions
 -----------------------------------------
 
@@ -325,10 +322,9 @@ Precedence
 Pretty-Printing Implementation Helpers
 --------------------------------------
 
-.. module:: diofant.printing.pretty.pretty_symbology
+.. module:: diofant.printing.pretty_symbology
 
 .. autofunction:: U
-.. autofunction:: pretty_use_unicode
 
 The following two functions return the Unicode version of the inputted Greek
 letter.
@@ -350,7 +346,7 @@ The following functions are for rendering atoms and symbols.
 .. autofunction:: pretty_symbol
 .. autofunction:: annotated
 
-.. automodule:: diofant.printing.pretty.stringpict
+.. automodule:: diofant.printing.stringpict
 
 .. autoclass:: stringPict
    :members:

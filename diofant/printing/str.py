@@ -532,7 +532,7 @@ class StrPrinter(Printer):
     def _print_GroebnerBasis(self, basis):
         cls = basis.__class__.__name__
 
-        exprs = [self._print_Add(arg, order=basis.order)
+        exprs = [self._print_Add(arg, order='lex')
                  for arg in basis.exprs]
         exprs = f"[{', '.join(exprs)}]"
 
@@ -629,6 +629,14 @@ class StrPrinter(Printer):
     def _print_Quantifier(self, expr):
         return f"{expr.func}(({', '.join(self._print(v) for v in expr.vars)}), {expr.expr})"
 
+    def _print_Indexed(self, expr):
+        indices = list(map(self.doprint, expr.indices))
+        return f"{self.doprint(expr.base)}[{', '.join(indices)}]"
+
+    def _print_IndexedBase(self, expr):
+        return self.doprint(expr.label)
+    _print_Idx = _print_IndexedBase
+
 
 def sstr(expr, **settings):
     """Returns the expression as a string.
@@ -644,27 +652,6 @@ def sstr(expr, **settings):
 
     """
     p = StrPrinter(settings)
-    s = p.doprint(expr)
-
-    return s
-
-
-class StrReprPrinter(StrPrinter):
-    """(internal) -- see sstrrepr"""
-
-    def _print_str(self, expr):
-        return repr(expr)
-
-
-def sstrrepr(expr, **settings):
-    """Return expr in mixed str/repr form.
-
-    i.e. strings are returned in repr form with quotes, and everything else
-    is returned in str form.
-
-    This function could be useful for hooking into sys.displayhook
-    """
-    p = StrReprPrinter(settings)
     s = p.doprint(expr)
 
     return s

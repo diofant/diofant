@@ -3063,3 +3063,21 @@ def test_sympyissue_24955():
                           Eq(f(x), root(2, 3)*(-2*x**2/((-1 + sqrt(3)*I)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)) +
                              root(2, 3)*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4 -
                              root(2, 3)*sqrt(3)*I*root(3*C1 + sqrt(9*C1**2 - 4*x**6), 3)/4))]
+
+
+def test_sympyissue_25882():
+    eq = (x - 1)*f(x).diff((x, 2)) - f(x).diff(x)
+    assert classify_ode(eq, f(x)) == ('2nd_power_series_ordinary',)
+
+
+def test_sympyissue_26343():
+    m, g, c = symbols('m g c')
+
+    eq = Eq(m*f(t).diff(t), m*g - c*f(t)**2)
+    sol = Eq(f(t), sqrt(g)*sqrt(m)*(-exp(2*C1*sqrt(c)*sqrt(g)/sqrt(m)) /
+                                    (exp(2*C1*sqrt(c)*sqrt(g)/sqrt(m)) -
+                                     exp(2*sqrt(c)*sqrt(g)*t/sqrt(m))) -
+                                    1/(-1 + exp(-2*sqrt(c)*sqrt(g) *
+                                                (-C1 + t)/sqrt(m))))/sqrt(c))
+
+    assert dsolve(eq, f(t), ics={f(0): 0}) == sol

@@ -11,8 +11,8 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan,
                      SymmetricDifference, Wild, WildFunction, Xor, ZeroMatrix,
                      cbrt, cos, exp, factor, factorial, factorial2, false,
                      field, grlex, groebner, nan, oo, pi, ring, root, sin,
-                     sqrt, sstr, sstrrepr, subfactorial, summation, symbols,
-                     true, zeta, zoo)
+                     sqrt, sstr, subfactorial, summation, symbols, true, zeta,
+                     zoo)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core.trace import Tr
@@ -541,7 +541,7 @@ def test_GroebnerBasis():
     F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
 
     assert str(groebner(F, order='grlex')) == \
-        "GroebnerBasis([x**2 - x - 3*y + 1, y**2 - 2*x + y - 1], x, y, domain='ZZ', order='grlex')"
+        "GroebnerBasis([x**2 - x - 3*y + 1, -2*x + y**2 + y - 1], x, y, domain='ZZ', order='grlex')"
     assert str(groebner(F, order='lex')) == \
         "GroebnerBasis([2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7], x, y, domain='ZZ', order='lex')"
 
@@ -616,15 +616,6 @@ def test_sympyissue_3103():
 def test_sympyissue_4021():
     e = Integral(x, x) + 1
     assert str(e) == 'Integral(x, x) + 1'
-
-
-def test_sstrrepr():
-    assert sstr('abc') == 'abc'
-    assert sstrrepr('abc') == "'abc'"
-
-    e = ['a', 'b', 'c', x]
-    assert sstr(e) == '[a, b, c, x]'
-    assert sstrrepr(e) == "['a', 'b', 'c', x]"
 
 
 def test_infinity():

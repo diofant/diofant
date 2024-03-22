@@ -24,16 +24,17 @@ if the corresponding complex part is None.
 import math
 import numbers
 
-from mpmath import (inf, libmp, make_mpc, make_mpf, mp, mpc, mpf, nsum,
-                    quadosc, quadts, workprec)
+from mpmath import (inf, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
+                    quadts, workprec)
 from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
-                          from_man_exp, fzero, mpf_abs, mpf_add, mpf_atan,
-                          mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos, mpf_exp,
-                          mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
-                          mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt, normalize,
-                          prec_to_dps, round_nearest)
+                          from_man_exp, fzero, mpc_abs, mpc_exp, mpc_pow,
+                          mpc_pow_int, mpc_pow_mpf, mpc_sqrt, mpf_abs, mpf_add,
+                          mpf_atan, mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos,
+                          mpf_exp, mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi,
+                          mpf_pow, mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt,
+                          normalize, prec_to_dps, round_nearest)
 
-from .compatibility import is_sequence
+from ..utilities.iterables import is_sequence
 from .sympify import sympify
 
 
@@ -187,7 +188,7 @@ def get_abs(expr, prec, options):
     if not re:
         re, re_acc, im, im_acc = im, im_acc, re, re_acc
     if im:
-        return libmp.mpc_abs((re, im), prec), None, re_acc, None
+        return mpc_abs((re, im), prec), None, re_acc, None
     if re:
         return mpf_abs(re), None, re_acc, None
     return None, None, None, None
@@ -533,7 +534,7 @@ def evalf_pow(v, prec, options):
         if not re:
             return None, None, None, None
         # General complex number to arbitrary integer power
-        re, im = libmp.mpc_pow_int((re, im), p, prec)
+        re, im = mpc_pow_int((re, im), p, prec)
         # Assumes full accuracy in input
         return finalize_complex(re, im, target_prec)
 
@@ -542,7 +543,7 @@ def evalf_pow(v, prec, options):
         xre, xim, _, _ = evalf(base, prec + 5, options)
         # General complex square root
         if xim:
-            re, im = libmp.mpc_sqrt((xre or fzero, xim), prec)
+            re, im = mpc_sqrt((xre or fzero, xim), prec)
             return finalize_complex(re, im, prec)
         if not xre:
             return None, None, None, None
@@ -570,7 +571,7 @@ def evalf_pow(v, prec, options):
     # Pure exponential function; no need to evalf the base
     if base is E:
         if yim:
-            re, im = libmp.mpc_exp((yre or fzero, yim), prec)
+            re, im = mpc_exp((yre or fzero, yim), prec)
             return finalize_complex(re, im, target_prec)
         return mpf_exp(yre, target_prec), None, target_prec, None
 
@@ -581,17 +582,17 @@ def evalf_pow(v, prec, options):
 
     # (real ** complex) or (complex ** complex)
     if yim:
-        re, im = libmp.mpc_pow(
+        re, im = mpc_pow(
             (xre or fzero, xim or fzero), (yre or fzero, yim),
             target_prec)
         return finalize_complex(re, im, target_prec)
     # complex ** real
     if xim:
-        re, im = libmp.mpc_pow_mpf((xre or fzero, xim), yre, target_prec)
+        re, im = mpc_pow_mpf((xre or fzero, xim), yre, target_prec)
         return finalize_complex(re, im, target_prec)
     # negative ** real
     if mpf_lt(xre, fzero):
-        re, im = libmp.mpc_pow_mpf((xre, fzero), yre, target_prec)
+        re, im = mpc_pow_mpf((xre, fzero), yre, target_prec)
         return finalize_complex(re, im, target_prec)
     # positive ** real
     return mpf_pow(xre, yre, target_prec), None, target_prec, None

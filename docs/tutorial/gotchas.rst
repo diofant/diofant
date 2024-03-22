@@ -3,7 +3,7 @@
 =========
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 Lets recall again, that Diofant is nothing more than a Python library,
 like :mod:`numpy` or even the Python standard library module

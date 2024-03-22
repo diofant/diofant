@@ -101,9 +101,8 @@ See the appropriate docstrings for a detailed explanation of the output.
 #      - Idx with stepsize != 1
 #      - Idx with step determined by function call
 
-from ..core import Dummy, Expr, Symbol, Tuple, oo
-from ..core.compatibility import NotIterable, is_sequence
-from ..core.sympify import sympify
+from ..core import Dummy, Expr, Symbol, Tuple, oo, sympify
+from ..utilities.iterables import NotIterable, is_sequence
 
 
 class IndexExceptionError(Exception):
@@ -254,10 +253,6 @@ class Indexed(Expr):
                 ranges.append(None)
         return ranges
 
-    def _diofantstr(self, p):
-        indices = list(map(p.doprint, self.indices))
-        return f"{p.doprint(self.base)}[{', '.join(indices)}]"
-
 
 class IndexedBase(Expr, NotIterable):
     """Represent the base or stem of an indexed object
@@ -392,9 +387,6 @@ class IndexedBase(Expr, NotIterable):
 
         """
         return self.args[0]
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)
 
 
 class Idx(Expr):
@@ -559,6 +551,3 @@ class Idx(Expr):
             return self.args[1][1]
         except IndexError:
             return
-
-    def _diofantstr(self, p):
-        return p.doprint(self.label)

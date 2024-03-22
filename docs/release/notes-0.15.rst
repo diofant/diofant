@@ -21,6 +21,8 @@ Compatibility breaks
 * Removed support for CPython 3.10, see :pull:`1344`.
 * Removed ``rcall()`` method of :class:`~diofant.core.basic.Basic`, see :pull:`1346`.
 * Removed ``method`` argument of :func:`~diofant.functions.special.bessel.jn_zeros`, see :pull:`1352`.
+* Removed ``sstrrepr()`` function, see :pull:`1362`.
+* Removed support for ASCII pretty-printing and ``pprint_use_unicode()`` function, see :pull:`1369`.
 
 Minor changes
 =============
@@ -71,3 +73,21 @@ These Sympy issues also were addressed:
 * :sympyissue:`25723`: GCD missing polynomial factor
 * :sympyissue:`25738`: Incorrect result of reduce_inequalities involving pi and abs
 * :sympyissue:`25697`: can not reduce log inequalities
+* :sympyissue:`25806`: Integrate a simple function
+* :sympyissue:`25833`: Limit at infinity of arctan(expression that goes to infinity) erroneously gives NaN or it doesn't compute.
+* :sympyissue:`25882`: IndexError when run classify_ode
+* :sympyissue:`25885`: Wrong result for a limit
+* :sympyissue:`25886`: CeortionError in integrate()
+* :sympyissue:`25896`: ratint(e,x).diff().equals(e) is not always True (terms lost)
+* :sympyissue:`25899`: surprising error message with Poly('a-a')
+* :sympyissue:`23843`: Asymptotic series for atan/acot functions shifted to their branch cuts gives wrong answer
+* :sympyissue:`25965`: ceiling(CRootOf()) not implemented, leads to exception in Range
+* :sympyissue:`25983`: Incorrect result of reduce_inequalities
+* :sympyissue:`25991`: Inconsistencies in as_leading_term, Series Expansion, and Limit Computations for Expressions Involving Square Roots
+* :sympyissue:`26071`: Definite integral error
+* :sympyissue:`26119`: Lambdify crashes on empty tuple
+* :sympyissue:`26178`: Wrong result of sqf_list for PolyElement with excluded symbols
+* :sympyissue:`26250`: Incorrect limit involving elliptic functions
+* :sympyissue:`25786`: Wrong result for a simple integral
+* :sympyissue:`26343`: TypeError: Invalid NaN Comparison using dsolve for ODE with ics={v(0) : 0}
+* :sympyissue:`26313`: Error result for limit of a piecewise

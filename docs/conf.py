@@ -44,7 +44,7 @@ exclude_patterns = ['README.rst']
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2022 SymPy Development Team, 2013-2023 Sergey B Kirpichev'
+copyright = '2006-2022 SymPy Development Team, 2013-2024 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 

@@ -23,16 +23,16 @@ def test_sinh():
 
     assert sinh(0) == 0
 
-    assert sinh(1) == sinh(1)
+    assert sinh(1) == sinh(1, evaluate=False)
     assert sinh(-1) == -sinh(1)
 
-    assert sinh(x) == sinh(x)
+    assert sinh(x) == sinh(x, evaluate=False)
     assert sinh(-x) == -sinh(x)
 
-    assert sinh(pi) == sinh(pi)
+    assert sinh(pi) == sinh(pi, evaluate=False)
     assert sinh(-pi) == -sinh(pi)
 
-    assert sinh(2**1024 * E) == sinh(2**1024 * E)
+    assert sinh(2**1024 * E) == sinh(2**1024 * E, evaluate=False)
     assert sinh(-2**1024 * E) == -sinh(2**1024 * E)
 
     assert sinh(pi*I) == 0
@@ -63,7 +63,7 @@ def test_sinh():
     assert sinh(pi*I/105) == sin(pi/105)*I
     assert sinh(-pi*I/105) == -sin(pi/105)*I
 
-    assert sinh(2 + 3*I) == sinh(2 + 3*I)
+    assert sinh(2 + 3*I) == sinh(2 + 3*I, evaluate=False)
 
     assert sinh(x*I) == sin(x)*I
 
@@ -109,16 +109,16 @@ def test_cosh():
 
     assert cosh(0) == 1
 
-    assert cosh(1) == cosh(1)
+    assert cosh(1) == cosh(1, evaluate=False)
     assert cosh(-1) == cosh(1)
 
-    assert cosh(x) == cosh(x)
+    assert cosh(x) == cosh(x, evaluate=False)
     assert cosh(-x) == cosh(x)
 
     assert cosh(pi*I) == cos(pi)
     assert cosh(-pi*I) == cos(pi)
 
-    assert cosh(2**1024 * E) == cosh(2**1024 * E)
+    assert cosh(2**1024 * E) == cosh(2**1024 * E, evaluate=False)
     assert cosh(-2**1024 * E) == cosh(2**1024 * E)
 
     assert cosh(pi*I/2) == 0
@@ -147,14 +147,14 @@ def test_cosh():
     assert cosh(pi*I/105) == cos(pi/105)
     assert cosh(-pi*I/105) == cos(pi/105)
 
-    assert cosh(2 + 3*I) == cosh(2 + 3*I)
+    assert cosh(2 + 3*I) == cosh(2 + 3*I, evaluate=False)
 
     assert cosh(x*I) == cos(x)
 
     assert cosh(k*pi*I) == cos(k*pi)
     assert cosh(17*k*pi*I) == cos(17*k*pi)
 
-    assert cosh(k*pi) == cosh(k*pi)
+    assert cosh(k*pi) == cosh(k*pi, evaluate=False)
 
     r = Symbol('r', extended_real=True)
     assert cosh(r).is_extended_real
@@ -193,16 +193,16 @@ def test_tanh():
 
     assert tanh(0) == 0
 
-    assert tanh(1) == tanh(1)
+    assert tanh(1) == tanh(1, evaluate=False)
     assert tanh(-1) == -tanh(1)
 
-    assert tanh(x) == tanh(x)
+    assert tanh(x) == tanh(x, evaluate=False)
     assert tanh(-x) == -tanh(x)
 
-    assert tanh(pi) == tanh(pi)
+    assert tanh(pi) == tanh(pi, evaluate=False)
     assert tanh(-pi) == -tanh(pi)
 
-    assert tanh(2**1024 * E) == tanh(2**1024 * E)
+    assert tanh(2**1024 * E) == tanh(2**1024 * E, evaluate=False)
     assert tanh(-2**1024 * E) == -tanh(2**1024 * E)
 
     assert tanh(pi*I) == 0
@@ -212,10 +212,10 @@ def test_tanh():
     assert tanh(-3*10**73*pi*I) == 0
     assert tanh(7*10**103*pi*I) == 0
 
-    assert tanh(pi*I/2) == tanh(pi*I/2)
+    assert tanh(pi*I/2) == zoo
     assert tanh(-pi*I/2) == -tanh(pi*I/2)
-    assert tanh(5*pi*I/2) == tanh(5*pi*I/2)
-    assert tanh(7*pi*I/2) == tanh(7*pi*I/2)
+    assert tanh(5*pi*I/2) == zoo
+    assert tanh(7*pi*I/2) == zoo
 
     assert tanh(pi*I/3) == sqrt(3)*I
     assert tanh(-2*pi*I/3) == sqrt(3)*I
@@ -233,7 +233,7 @@ def test_tanh():
     assert tanh(pi*I/105) == tan(pi/105)*I
     assert tanh(-pi*I/105) == -tan(pi/105)*I
 
-    assert tanh(2 + 3*I) == tanh(2 + 3*I)
+    assert tanh(2 + 3*I) == tanh(2 + 3*I, evaluate=False)
 
     assert tanh(x*I) == tan(x)*I
 
@@ -273,18 +273,17 @@ def test_coth():
     assert coth(oo) == 1
     assert coth(-oo) == -1
 
-    assert coth(0) == coth(0)
     assert coth(0) == zoo
-    assert coth(1) == coth(1)
+    assert coth(1) == coth(1, evaluate=False)
     assert coth(-1) == -coth(1)
 
-    assert coth(x) == coth(x)
+    assert coth(x) == coth(x, evaluate=False)
     assert coth(-x) == -coth(x)
 
     assert coth(pi*I) == -I*cot(pi)
     assert coth(-pi*I) == cot(pi)*I
 
-    assert coth(2**1024 * E) == coth(2**1024 * E)
+    assert coth(2**1024 * E) == coth(2**1024 * E, evaluate=False)
     assert coth(-2**1024 * E) == -coth(2**1024 * E)
 
     assert coth(pi*I) == -I*cot(pi)
@@ -315,7 +314,7 @@ def test_coth():
     assert coth(pi*I/105) == -cot(pi/105)*I
     assert coth(-pi*I/105) == cot(pi/105)*I
 
-    assert coth(2 + 3*I) == coth(2 + 3*I)
+    assert coth(2 + 3*I) == coth(2 + 3*I, evaluate=False)
 
     assert coth(x*I) == -cot(x)*I
 
@@ -524,7 +523,7 @@ def test_asinh_series():
 
 
 def test_acosh():
-    assert acosh(-x) == acosh(-x)
+    assert acosh(-x) == acosh(-x, evaluate=False)
 
     assert acosh(1) == 0
     assert acosh(-1) == pi*I

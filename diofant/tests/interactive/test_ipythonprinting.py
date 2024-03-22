@@ -24,7 +24,7 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('import diofant')
     app.run_cell('from diofant import Float, Fraction, Symbol, QQ, '
                  'factorial, sqrt, init_printing, pretty, '
-                 'Matrix, sstrrepr')
+                 'Matrix')
 
     # Test IntegerDivisionWrapper
 
@@ -94,17 +94,7 @@ def test_ipython_printing(monkeypatch):
     assert app.user_ns['a'][0]['text/plain'] in ('\N{GREEK SMALL LETTER PI}', 'pi')
     assert app.user_ns['a2'][0]['text/plain'] in (' 2\n\N{GREEK SMALL LETTER PI} ', '  2\npi ')
 
-    # Use different printing setup
-    app.run_cell('init_printing(use_unicode=False)')
-    app.run_cell("a = format(Symbol('pi'))")
-    app.run_cell("a2 = format(Symbol('pi')**2)")
-    assert app.user_ns['a'][0]['text/plain'] == 'pi'
-    assert app.user_ns['a2'][0]['text/plain'] == '  2\npi '
-
-    app.run_cell('a = format(int(1))')
-    pytest.raises(KeyError, lambda: app.user_ns['a'][0]['text/latex'])
-
-    app.run_cell('init_printing()')
+    app.run_cell('init_printing(wrap_line=False)')
     app.run_cell("a = format({Symbol('pi'): 3.14, Symbol('n_i'): 3})")
     text = app.user_ns['a'][0]['text/plain']
     pytest.raises(KeyError, lambda: app.user_ns['a'][0]['text/latex'])
@@ -115,7 +105,7 @@ def test_ipython_printing(monkeypatch):
 
     # If we enable the default printing, then the dictionary's should render
     # as a LaTeX version of the whole dict: ${\pi: 3.14, n_i: 3}$
-    app.run_cell('init_printing()')
+    app.run_cell('init_printing(wrap_line=True)')
     app.run_cell("inst.display_formatter.formatters['text/latex'].enabled = True")
     app.run_cell("a = format({Symbol('pi'): 3.14, Symbol('n_i'): 3})")
     text = app.user_ns['a'][0]['text/plain']
@@ -135,10 +125,6 @@ def test_ipython_printing(monkeypatch):
     app.run_cell('init_printing(no_global=True)')
     app.run_cell("a = format({Symbol('pi')})")
     assert app.user_ns['a'][0]['text/plain'] == '{\N{GREEK SMALL LETTER PI}}'
-
-    app.run_cell('init_printing(use_unicode=False)')
-    app.run_cell("a = format(Symbol('pi'))")
-    assert app.user_ns['a'][0]['text/plain'] == 'pi'
 
     app.run_cell('init_printing(order=None)')  # this will fallback to defaults
     app.run_cell("a = format(Symbol('pi'))")
@@ -172,4 +158,4 @@ def test_ipython_printing(monkeypatch):
     monkeypatch.setenv('TERM', '')
     app.run_cell('init_printing()')
     app.run_cell("a = format(Symbol('pi'))")
-    assert app.user_ns['a'][0]['text/plain'] == 'pi'
+    assert app.user_ns['a'][0]['text/plain'] == 'π'

@@ -3,8 +3,8 @@ import pytest
 from diofant import (Basic, Dict, Idx, Indexed, IndexedBase, Symbol, Tuple, oo,
                      symbols)
 from diofant.abc import a, b, c, x
-from diofant.core.compatibility import iterable
 from diofant.tensor.indexed import IndexExceptionError
+from diofant.utilities.iterables import is_iterable
 
 
 __all__ = ()
@@ -189,7 +189,7 @@ def test_complex_indices():
 def test_not_interable():
     i, j = symbols('i j', integer=True)
     A = Indexed('A', i, i + j)
-    assert not iterable(A)
+    assert not is_iterable(A)
 
 
 def test_Indexed_coeff():

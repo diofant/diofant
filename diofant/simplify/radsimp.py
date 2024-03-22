@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
                     expand_mul, expand_power_base, gcd_terms, symbols)
-from ..core.compatibility import iterable
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
@@ -10,6 +9,7 @@ from ..core.sympify import sympify
 from ..functions import log, sqrt
 from ..polys import gcd
 from ..utilities import default_sort_key, ordered
+from ..utilities.iterables import is_iterable
 from .sqrtdenest import sqrtdenest
 
 
@@ -318,7 +318,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
                 expr.base, syms, func, True, exact, distribute_order_term)
             return Pow(b, expr.exp)
 
-    if iterable(syms):
+    if is_iterable(syms):
         syms = [expand_power_base(i, deep=False) for i in syms]
     else:
         syms = [expand_power_base(syms, deep=False)]
@@ -620,21 +620,19 @@ def radsimp(expr, symbolic=True, max_terms=4):
     >>> r2 = sqrt(2)
     >>> r5 = sqrt(5)
     >>> ans = radsimp(1/(y*r2 + x*r2 + a*r5 + b*r5))
-    >>> pprint(ans, use_unicode=False)
+    >>> pprint(ans)
         ___       ___       ___       ___
-      \/ 5 *a + \/ 5 *b - \/ 2 *x - \/ 2 *y
-    ------------------------------------------
+      ╲╱ 5 ⋅a + ╲╱ 5 ⋅b - ╲╱ 2 ⋅x - ╲╱ 2 ⋅y
+    ──────────────────────────────────────────
        2               2      2              2
-    5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
-
+    5⋅a  + 10⋅a⋅b + 5⋅b  - 2⋅x  - 4⋅x⋅y - 2⋅y
     >>> n, d = fraction(ans)
-    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True),
-    ...        use_unicode=False)
+    >>> pprint(factor_terms(signsimp(collect_sqrt(n))/d, radical=True))
             ___             ___
-          \/ 5 *(a + b) - \/ 2 *(x + y)
-    ------------------------------------------
+          ╲╱ 5 ⋅(a + b) - ╲╱ 2 ⋅(x + y)
+    ──────────────────────────────────────────
        2               2      2              2
-    5*a  + 10*a*b + 5*b  - 2*x  - 4*x*y - 2*y
+    5⋅a  + 10⋅a⋅b + 5⋅b  - 2⋅x  - 4⋅x⋅y - 2⋅y
 
     If radicals in the denominator cannot be removed or there is no denominator,
     the original expression will be returned.

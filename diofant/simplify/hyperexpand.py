@@ -473,7 +473,7 @@ def make_simp(z):
 class Hyper_Function(Expr):
     """A generalized hypergeometric function."""
 
-    def __new__(cls, ap, bq):
+    def __new__(cls, ap, bq, **kwargs):
         obj = super().__new__(cls)
         obj.ap = Tuple(*list(map(expand, ap)))
         obj.bq = Tuple(*list(map(expand, bq)))

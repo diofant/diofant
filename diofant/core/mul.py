@@ -597,20 +597,6 @@ class Mul(AssocOp):
         """Nice order of classes."""
         return 4, 0, cls.__name__
 
-    def _eval_evalf(self, prec):
-        c, m = self.as_coeff_Mul()
-        if c is S.NegativeOne:
-            if m.is_Mul:
-                rv = -AssocOp._eval_evalf(m, prec)
-            else:
-                mnew = m._eval_evalf(prec)
-                if mnew is not None:
-                    m = mnew
-                rv = -m
-        else:
-            rv = AssocOp._eval_evalf(self, prec)
-        return rv
-
     @cacheit
     def as_two_terms(self):
         """Return head and tail of self.

@@ -161,7 +161,7 @@ def test_Matrix_mul():
 
 def test_Matrix_numpy_array():
     class MatArray:
-        def __array__(self):
+        def __array__(self, dtype=None, copy=None):
             return numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     matarr = MatArray()
     assert Matrix(matarr) == Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])

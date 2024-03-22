@@ -272,7 +272,7 @@ class MatrixExpr(Expr):
         """
         return self.as_explicit().as_mutable()
 
-    def __array__(self):
+    def __array__(self, dtype=None, copy=None):
         from numpy import empty
         a = empty(self.shape, dtype=object)
         for i in range(self.rows):

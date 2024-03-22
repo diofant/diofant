@@ -82,13 +82,13 @@ from io import StringIO
 
 from .. import __version__ as diofant_version
 from ..core import Dummy, Equality, Expr, Function, Integer, Symbol, Tuple
-from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
 from ..printing.ccode import CCodePrinter, ccode
 from ..printing.fcode import FCodePrinter, fcode
 from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
+from .iterables import is_sequence
 
 
 __all__ = (

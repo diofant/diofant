@@ -282,7 +282,7 @@ def test_catalan():
         assert catalan(n).rewrite(factorial).subs({n: i}) == c
         assert catalan(n).rewrite(Product).subs({n: i}).doit() == c
 
-    assert catalan(x) == catalan(x)
+    assert catalan(x) == catalan(x, evaluate=False)
     assert catalan(2*x).rewrite(binomial) == binomial(4*x, 2*x)/(2*x + 1)
     assert catalan(Rational(1, 2)).rewrite(gamma) == 8/(3*pi)
     assert catalan(Rational(1, 2)).rewrite(factorial).rewrite(gamma) ==\
@@ -329,7 +329,7 @@ def test_genocchi():
     n = Symbol('n', integer=True, positive=True)
 
     assert genocchi(2*n + 1) == 0
-    assert genocchi(m) == genocchi(m)
+    assert genocchi(m) == genocchi(m, evaluate=False)
     assert genocchi(n).rewrite(bernoulli) == 2 * (1 - 2 ** n) * bernoulli(n)
     assert genocchi(x).rewrite(bernoulli) == genocchi(x)
 

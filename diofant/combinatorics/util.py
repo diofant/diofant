@@ -162,8 +162,7 @@ def _distribute_gens_by_base(base, gens):
         j = 0
         while j < base_len - 1 and gen._array_form[base[j]] == base[j]:
             j += 1
-        if j > max_stab_index:
-            max_stab_index = j
+        max_stab_index = max(max_stab_index, j)
         for k in range(j + 1):
             stabs[k].append(gen)
     for i in range(max_stab_index + 1, base_len):

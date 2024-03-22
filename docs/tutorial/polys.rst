@@ -3,7 +3,7 @@
 =============
 
 ..
-    >>> init_printing(pretty_print=True, use_unicode=True)
+    >>> init_printing(pretty_print=True)
 
 We show here some functions, that provide different algorithms dealing
 with polynomials in the form of Diofant expression.

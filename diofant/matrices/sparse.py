@@ -2,11 +2,11 @@ import collections
 import copy
 
 from ..core import Dict, Expr, Integer
-from ..core.compatibility import as_int, is_sequence
+from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
 from ..logic import true
-from ..utilities.iterables import uniq
+from ..utilities.iterables import is_sequence, uniq
 from .matrices import MatrixBase, ShapeError, a2idx
 
 

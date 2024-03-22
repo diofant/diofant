@@ -3,7 +3,6 @@
 import itertools
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, zoo
-from ..core.compatibility import iterable
 from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
@@ -11,6 +10,7 @@ from ..core.singleton import Singleton
 from ..core.sympify import sympify
 from ..logic import And, Not, Or, false, true
 from ..utilities import ordered, subsets
+from ..utilities.iterables import is_iterable
 from .contains import Contains
 
 
@@ -571,7 +571,7 @@ class ProductSet(Set):
                 if arg.is_ProductSet:
                     return sum(map(flatten, arg.args), [])
                 return [arg]
-            if iterable(arg):
+            if is_iterable(arg):
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         sets = flatten(list(sets))
@@ -1141,7 +1141,7 @@ class Union(Set, EvalfMixin):
                 if arg.is_Union:
                     return sum(map(flatten, arg.args), [])
                 return [arg]
-            if iterable(arg):  # and not isinstance(arg, Set) (implicit)
+            if is_iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
@@ -1346,7 +1346,7 @@ class Intersection(Set):
                 if arg.is_Intersection:
                     return sum(map(flatten, arg.args), [])
                 return [arg]
-            if iterable(arg):  # and not isinstance(arg, Set) (implicit)
+            if is_iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
             raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
