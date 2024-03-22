@@ -9,8 +9,8 @@ import collections
 import itertools
 
 from ..core import Integer, Symbol, cacheit
-from ..core.compatibility import iterable
 from ..utilities import numbered_symbols, ordered
+from ..utilities.iterables import is_iterable
 from .boolalg import (And, Boolean, BooleanFunction, Implies, Not, Or, false,
                       to_cnf, to_nnf, true)
 
@@ -225,7 +225,7 @@ class Quantifier(BooleanFunction):
     def __new__(cls, *args, **kwargs):
         *var, expr = args
 
-        if len(var) == 1 and iterable(var[0]):
+        if len(var) == 1 and is_iterable(var[0]):
             var = set(var[0])
         else:
             var = set(var)
@@ -350,7 +350,7 @@ def fol_true(expr, model=None):
         model = {}
     for key, val in model.copy().items():
         if isinstance(key, Symbol):
-            if iterable(val):
+            if is_iterable(val):
                 model[key] = [Constant(v) for v in val]
             else:
                 model[key] = Constant(val)
@@ -361,7 +361,7 @@ def fol_true(expr, model=None):
             mapping = {}
             for k, v in val.items():
                 if k != 'default':
-                    k = tuple(k) if iterable(k) else (k,)
+                    k = tuple(k) if is_iterable(k) else (k,)
                 if v is None:
                     mapping[k] = None
                 else:
