@@ -24,6 +24,7 @@ Compatibility breaks
 * Removed ``sstrrepr()`` function, see :pull:`1362`.
 * Removed support for ASCII pretty-printing and ``pprint_use_unicode()`` function, see :pull:`1369`.
 * Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
+* Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
 
 Minor changes
 =============
