@@ -27,7 +27,7 @@ from .polyerrors import (CoercionFailedError, ComputationFailedError,
                          MultivariatePolynomialError, PolificationFailedError,
                          PolynomialError, UnificationFailedError)
 from .polyoptions import allowed_flags, build_options
-from .polyutils import _parallel_dict_from_expr, _sort_gens
+from .polyutils import _is_coeff, _parallel_dict_from_expr, _sort_gens
 from .rationaltools import together
 from .rings import PolyElement
 
@@ -199,7 +199,7 @@ class Poly(Expr):
                     if factors:
                         factor = Mul(*factors)
 
-                        if factor.is_Number:
+                        if _is_coeff(factor, opt):
                             product *= factor
                         else:
                             (factor,), _opt = _parallel_dict_from_expr([factor], opt)
@@ -220,7 +220,7 @@ class Poly(Expr):
                 if terms:
                     term = Add(*terms)
 
-                    if term.is_Number:
+                    if _is_coeff(term, opt):
                         result += term
                     else:
                         (term,), _opt = _parallel_dict_from_expr([term], opt)

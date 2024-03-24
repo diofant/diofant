@@ -127,27 +127,25 @@ def _unify_gens(f_gens, g_gens):
     return tuple(gens)
 
 
+def _is_coeff(expr, opt):
+    """Check if expr is a coefficient."""
+    if opt.domain is not None:
+        return expr in opt.domain
+    if opt.extension is not False:
+        return expr.is_number and expr.is_algebraic
+    if opt.greedy is not False:
+        return expr.is_Number and expr.is_finite is not False
+    return expr.is_number and expr.is_finite is not False
+
+
 def _find_gens(exprs, opt):
     """Find generators in a reasonably intelligent way."""
-    if opt.domain is not None:
-        def _is_coeff(factor):
-            return factor in opt.domain
-    elif opt.extension is not False:
-        def _is_coeff(factor):
-            return factor.is_number and factor.is_algebraic
-    elif opt.greedy is not False:
-        def _is_coeff(factor):
-            return factor.is_Number and factor.is_finite is not False
-    else:
-        def _is_coeff(factor):
-            return factor.is_number and factor.is_finite is not False
-
     gens = set()
 
     for expr in exprs:
         for term in Add.make_args(expr):
             for factor in Mul.make_args(term):
-                if not _is_coeff(factor):
+                if not _is_coeff(factor, opt):
                     base, exp = decompose_power(factor)
                     if exp < 0:
                         base = Pow(base, -1)

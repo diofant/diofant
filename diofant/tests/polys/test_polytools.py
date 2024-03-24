@@ -227,6 +227,12 @@ def test_Poly_from_expr():
     # issue sympy/sympy#25899
     assert Poly('x-x') == Integer(0).as_poly(x)
 
+    # issue diofant/diofant#1382
+    assert (Poly.from_expr(I*(x + I), extension=True) ==
+            (I*x - 1).as_poly(x, gaussian=True))
+    assert (Poly.from_expr(I + (1 + x)*x, extension=True) ==
+            (x**2 + x + I).as_poly(x, gaussian=True))
+
 
 def test_Poly__new__():
     pytest.raises(GeneratorsError, lambda: Poly(x + 1, x, x))
