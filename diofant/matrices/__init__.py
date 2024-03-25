@@ -6,8 +6,7 @@ matrix, etc.
 from .dense import (GramSchmidt, MutableDenseMatrix, MutableMatrix, casoratian,
                     diag, eye, hessian, jordan_cell, list2numpy, matrix2numpy,
                     matrix_multiply_elementwise, ones, randMatrix, rot_axis1,
-                    rot_axis2, rot_axis3, symarray, vandermonde, wronskian,
-                    zeros)
+                    rot_axis2, rot_axis3, vandermonde, wronskian, zeros)
 from .expressions import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                           DiagonalMatrix, DiagonalOf, FunctionMatrix,
                           HadamardProduct, Identity, Inverse, MatAdd, MatMul,
@@ -26,7 +25,7 @@ Matrix = MutableMatrix
 __all__ = ('GramSchmidt', 'MutableDenseMatrix', 'MutableMatrix', 'casoratian',
            'diag', 'eye', 'hessian', 'jordan_cell', 'list2numpy',
            'matrix2numpy', 'matrix_multiply_elementwise', 'ones', 'randMatrix',
-           'rot_axis1', 'rot_axis2', 'rot_axis3', 'symarray', 'vandermonde',
+           'rot_axis1', 'rot_axis2', 'rot_axis3', 'vandermonde',
            'wronskian', 'zeros', 'Adjoint', 'BlockDiagMatrix', 'BlockMatrix',
            'Determinant', 'DiagonalMatrix', 'DiagonalOf', 'FunctionMatrix',
            'HadamardProduct', 'Identity', 'Inverse', 'MatAdd', 'MatMul',
