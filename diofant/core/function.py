@@ -628,7 +628,10 @@ class Function(Application, Expr):
         return self.func(*args)
 
 
-class AppliedUndef(Function):
+from .. import logic  # noqa: E402
+
+
+class AppliedUndef(Function, logic.boolalg.Boolean):
     """
     Base class for expressions resulting from the application of an undefined
     function.
@@ -642,6 +645,9 @@ class AppliedUndef(Function):
 
     def _eval_as_leading_term(self, x):
         return self
+
+    def equals(self, other, failing_expression=False):
+        return super(logic.boolalg.Boolean, self).equals(other, failing_expression=failing_expression)
 
 
 class UndefinedFunction(FunctionClass):
