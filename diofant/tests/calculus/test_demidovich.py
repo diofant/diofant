@@ -1,8 +1,8 @@
 # Numbers listed with the tests refer to problem numbers in books
 # :cite:`demidovich1970problems` and :cite:`anti-demidovich2001` (with '*').
 
-from diofant import (Rational, asin, cos, exp, limit, log, oo, pi, root, sign,
-                     sin, sqrt, tan)
+from diofant import (I, Rational, asin, cos, exp, limit, log, oo, pi, root,
+                     sign, sin, sqrt, tan)
 from diofant.abc import a, h, k, m, n, x
 
 
@@ -68,7 +68,7 @@ def test_Limits_simple_4b():
     # issue sympy/sympy#3511
     assert limit(x - root(x**3 - 1, 3), x, oo) == 0
     assert limit(x + root(1 - x**3, 3),
-                 x, oo) == oo*sign(1 + root(-1, 3))  # 215
+                 x, oo) == oo*sign(3 + I*sqrt(3))  # 215
 
 
 def test_Limits_simple_4c():

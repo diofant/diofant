@@ -95,7 +95,9 @@ def test_construct_domain():
 
     assert construct_domain(x**2 + 2*x + E) == (dom, dom(x**2 + 2*x + E))
 
-    assert construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio))
+    dom = QQ.algebraic_field(GoldenRatio).inject(x, y)
+
+    assert construct_domain(x + y + GoldenRatio) == (dom, dom(x + y + GoldenRatio))
 
 
 def test_composite_option():

@@ -31,7 +31,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
         if expr.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(expr))
-        if expr.is_algebraic:
+        if expr.is_number and expr.is_algebraic:
             from ..polys import primitive_element
             try:
                 _, _, [[rep]] = primitive_element([expr], domain=self)
