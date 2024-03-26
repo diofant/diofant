@@ -661,7 +661,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                 C = C.quo_ground(ring.domain.factorial(k + 1))
                 T = _diophantine(G, C, A, d, minpoly, p)
                 if T is None:
-                    raise NotImplementedError
+                    return
 
                 for i, t in enumerate(T):
                     T[i] = t.set_ring(ring) * M
@@ -673,8 +673,6 @@ def _diophantine(F, c, A, d, minpoly, p):
                     c = c - t * b
 
                 c = _trunc(c, minpoly, p)
-            else:
-                raise NotImplementedError
 
         S = [_trunc(s, minpoly, p) for s in S]
 
