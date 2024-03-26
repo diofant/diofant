@@ -11,7 +11,7 @@ from ..core.function import _coeff_isneg
 from ..core.operations import AssocOp
 from ..core.relational import Relational
 from ..sets import Reals
-from ..utilities import default_sort_key, has_variety
+from ..utilities import default_sort_key
 from .conventions import requires_partial, split_super_sub
 from .precedence import PRECEDENCE, precedence
 from .printer import Printer
@@ -1423,7 +1423,7 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_ProductSet(self, p):
-        if len(p.sets) > 1 and not has_variety(p.sets):
+        if len(p.sets) > 1 and len(set(p.sets)) == 1:
             return self._print(p.sets[0]) + '^%d' % len(p.sets)
         return r' \times '.join(self._print(set) for set in p.sets)
 

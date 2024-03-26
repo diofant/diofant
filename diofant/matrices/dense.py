@@ -1,7 +1,7 @@
 import itertools
 import random
 
-from ..core import Basic, Expr, Integer, Symbol, count_ops
+from ..core import Basic, Expr, Integer, count_ops
 from ..core.compatibility import as_int
 from ..core.decorators import call_highest_priority
 from ..core.sympify import sympify
@@ -9,7 +9,6 @@ from ..functions import cos, sin, sqrt
 from ..logic import true
 from ..simplify import simplify as _simplify
 from ..utilities import filldedent, numbered_symbols
-from ..utilities.decorator import doctest_depends_on
 from ..utilities.iterables import is_sequence
 from .matrices import MatrixBase, ShapeError, a2idx, classof
 
@@ -898,80 +897,6 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
         for j in range(m.cols):
             a[i, j] = m[i, j]
     return a
-
-
-@doctest_depends_on(modules=('numpy',))
-def symarray(prefix, shape, **kwargs):  # pragma: no cover
-    r"""Create a numpy ndarray of symbols (as an object array).
-
-    The created symbols are named ``prefix_i1_i2_``...  You should thus provide a
-    non-empty prefix if you want your symbols to be unique for different output
-    arrays, as Diofant symbols with identical names are the same object.
-
-    Parameters
-    ==========
-
-    prefix : string
-      A prefix prepended to the name of every symbol.
-
-    shape : int or tuple
-      Shape of the created array.  If an int, the array is one-dimensional; for
-      more than one dimension the shape must be a tuple.
-
-    \*\*kwargs : dict
-      keyword arguments passed on to Symbol
-
-    Examples
-    ========
-
-    These doctests require numpy.
-
-    >>> symarray('', 3)
-    [_0 _1 _2]
-
-    If you want multiple symarrays to contain distinct symbols, you *must*
-    provide unique prefixes:
-
-    >>> a = symarray('', 3)
-    >>> b = symarray('', 3)
-    >>> a[0] == b[0]
-    True
-    >>> a = symarray('a', 3)
-    >>> b = symarray('b', 3)
-    >>> a[0] == b[0]
-    False
-
-    Creating symarrays with a prefix:
-
-    >>> symarray('a', 3)
-    [a_0 a_1 a_2]
-
-    For more than one dimension, the shape must be given as a tuple:
-
-    >>> symarray('a', (2, 3))
-    [[a_0_0 a_0_1 a_0_2]
-     [a_1_0 a_1_1 a_1_2]]
-    >>> symarray('a', (2, 3, 2))
-    [[[a_0_0_0 a_0_0_1]
-      [a_0_1_0 a_0_1_1]
-      [a_0_2_0 a_0_2_1]]
-    <BLANKLINE>
-     [[a_1_0_0 a_1_0_1]
-      [a_1_1_0 a_1_1_1]
-      [a_1_2_0 a_1_2_1]]]
-
-    For setting assumptions of the underlying Symbols:
-
-    >>> [s.is_real for s in symarray('a', 2, real=True)]
-    [True, True]
-
-    """
-    from numpy import empty, ndindex
-    arr = empty(shape, dtype=object)
-    for index in ndindex(shape):
-        arr[index] = Symbol(f"{prefix}_{'_'.join(map(str, index))}",
-                            **kwargs)
-    return arr
 
 
 def rot_axis3(theta):

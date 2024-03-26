@@ -191,7 +191,7 @@ from collections import defaultdict
 from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
                     expand_mul, factor_terms, gcd_terms, pi)
 from ..core.exprtools import Factors
-from ..core.strategies import greedy, identity
+from ..core.strategies import bottom_up, greedy, identity
 from ..core.sympify import sympify
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
                          sqrt, tan, tanh)
@@ -200,7 +200,6 @@ from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..ntheory import perfect_power
 from ..polys.polytools import factor
 from ..utilities import ordered
-from .simplify import bottom_up
 
 
 # ================== Fu-like tools ===========================
@@ -236,7 +235,7 @@ def TR1(rv):
             return 1/sin(a)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR2(rv):
@@ -263,7 +262,7 @@ def TR2(rv):
             return cos(a)/sin(a)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR2i(rv, half=False):
@@ -375,7 +374,7 @@ def TR2i(rv, half=False):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR3(rv):
@@ -411,7 +410,7 @@ def TR3(rv):
             rv = fmap[rv.func](pi/2 - rv.args[0])
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR4(rv):
@@ -493,7 +492,7 @@ def _TR56(rv, f, g, h, max, pow):
             e = rv.exp//2
         return h(g(rv.base.args[0])**2)**e
 
-    return bottom_up(rv, _f)
+    return bottom_up(_f)(rv)
 
 
 def TR5(rv, max=4, pow=False):
@@ -552,7 +551,7 @@ def TR7(rv):
             return rv
         return (1 + cos(2*rv.base.args[0]))/2
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR8(rv, first=True):
@@ -624,7 +623,7 @@ def TR8(rv, first=True):
             args.append(sin(s.pop()))
         return TR8(expand_mul(Mul(*args)))
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR9(rv):
@@ -714,7 +713,7 @@ def TR9(rv):
 
         return process_common_addends(rv, do)  # DON'T sift by free symbols
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR10(rv, first=True):
@@ -754,7 +753,7 @@ def TR10(rv, first=True):
             return cos(a)*cos(b) - sin(a)*sin(b)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR10i(rv):
@@ -881,7 +880,7 @@ def TR10i(rv):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR11(rv, base=None):
@@ -957,7 +956,7 @@ def TR11(rv, base=None):
                     rv = c**2 - s**2
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR12(rv, first=True):
@@ -987,7 +986,7 @@ def TR12(rv, first=True):
             return (tan(a) + tb)/(1 - tan(a)*tb)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR12i(rv):
@@ -1110,7 +1109,7 @@ def TR12i(rv):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR13(rv):
@@ -1156,7 +1155,7 @@ def TR13(rv):
             args.append(cot(c.pop()))
         return Mul(*args)
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TRmorrie(rv):
@@ -1270,7 +1269,7 @@ def TRmorrie(rv):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR14(rv, first=True):
@@ -1388,7 +1387,7 @@ def TR14(rv, first=True):
 
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR15(rv, max=4, pow=False):
@@ -1414,7 +1413,7 @@ def TR15(rv, max=4, pow=False):
             rv = a
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR16(rv, max=4, pow=False):
@@ -1440,7 +1439,7 @@ def TR16(rv, max=4, pow=False):
             rv = a
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR111(rv):
@@ -1468,7 +1467,7 @@ def TR111(rv):
             return sec(rv.base.args[0])**-rv.exp
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TR22(rv, max=4, pow=False):
@@ -1494,7 +1493,7 @@ def TR22(rv, max=4, pow=False):
         rv = _TR56(rv, cot, csc, lambda x: x - 1, max=max, pow=pow)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def TRpower(rv):
@@ -1539,7 +1538,7 @@ def TRpower(rv):
                 rv += 2**(-n)*binomial(n, n/2)
         return rv
 
-    return bottom_up(rv, f)
+    return bottom_up(f)(rv)
 
 
 def L(rv):
@@ -1998,7 +1997,7 @@ def _osborne(e, d):
             return cot(a)/I
         raise NotImplementedError(f'unhandled {rv.func}')
 
-    return bottom_up(e, f)
+    return bottom_up(f)(e)
 
 
 def _osbornei(e, d):
@@ -2036,7 +2035,7 @@ def _osbornei(e, d):
             return I/sinh(a)
         raise NotImplementedError(f'unhandled {rv.func}')
 
-    return bottom_up(e, f)
+    return bottom_up(f)(e)
 
 
 def hyper_as_trig(rv):

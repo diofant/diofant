@@ -51,8 +51,6 @@ class RootOf(Expr):
     radicals : bool, optional
         Explicitly solve linear or quadratic polynomial
         equation (enabled by default).
-    expand : bool, optional
-        Expand polynomial, enabled default.
     evaluate : bool or None, optional
         Control automatic evaluation.
 
@@ -66,7 +64,7 @@ class RootOf(Expr):
 
     is_commutative = True
 
-    def __new__(cls, f, x, index=None, radicals=True, expand=True,
+    def __new__(cls, f, x, index=None, radicals=True,
                 evaluate=None, domain=None, modulus=None):
         """Construct a new ``RootOf`` object for ``k``-th root of ``f``."""
         x = sympify(x)
@@ -82,7 +80,7 @@ class RootOf(Expr):
             raise ValueError(f'expected an integer root index, got {index}')
 
         poly = PurePoly(f, x, greedy=None if domain or modulus else False,
-                        expand=expand, domain=domain, modulus=modulus)
+                        domain=domain, modulus=modulus)
 
         if not poly.is_univariate:
             raise PolynomialError('only univariate polynomials are allowed')
@@ -788,14 +786,14 @@ class RootSum(Expr):
         q = q.expand()
 
         try:
-            p = p.as_poly(domain=domain, expand=False)
+            p = p.as_poly(domain=domain)
         except GeneratorsNeededError:
             p, p_coeff = None, (p,)
         else:
             p_monom, p_coeff = zip(*p.terms())
 
         try:
-            q = q.as_poly(domain=domain, expand=False)
+            q = q.as_poly(domain=domain)
         except GeneratorsNeededError:
             q, q_coeff = None, (q,)
         else:

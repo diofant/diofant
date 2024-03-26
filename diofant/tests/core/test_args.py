@@ -88,9 +88,6 @@ from diofant.sets.fancysets import (ExtendedReals, Integers, Naturals,
 from diofant.sets.sets import EmptySet
 from diofant.simplify.hyperexpand import G_Function, Hyper_Function
 from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
-from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
-                                   TensorIndexType, TensorSymmetry, TensorType,
-                                   get_symmetric_group_sgs, tensor_indices)
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
 
@@ -1466,66 +1463,6 @@ def test_diofant__tensor__indexed__IndexedBase():
     assert _test_args(IndexedBase('A', shape=(x, y)))
     assert _test_args(IndexedBase('A', 1))
     assert _test_args(IndexedBase('A')[0, 1])
-
-
-def test_diofant__tensor__tensor__TensorIndexType():
-    assert _test_args(TensorIndexType('Lorentz', metric=False))
-
-
-def test_diofant__tensor__tensor__TensorSymmetry():
-    assert _test_args(TensorSymmetry(get_symmetric_group_sgs(2)))
-
-
-def test_diofant__tensor__tensor__TensorType():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    sym = TensorSymmetry(get_symmetric_group_sgs(1))
-    assert _test_args(TensorType([Lorentz], sym))
-
-
-def test_diofant__tensor__tensor__TensorHead():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    sym = TensorSymmetry(get_symmetric_group_sgs(1))
-    S1 = TensorType([Lorentz], sym)
-    assert _test_args(TensorHead('p', S1, 0))
-
-
-def test_diofant__tensor__tensor__TensorIndex():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    assert _test_args(TensorIndex('i', Lorentz))
-
-
-def test_diofant__tensor__tensor__TensExpr():
-    pass
-
-
-def test_diofant__tensor__tensor__TensAdd():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a = tensor_indices('a', Lorentz)
-    sym = TensorSymmetry(get_symmetric_group_sgs(1))
-    S1 = TensorType([Lorentz], sym)
-    p, q = S1('p,q')
-    t1 = p(a)
-    t2 = q(a)
-    assert _test_args(TensAdd(t1, t2))
-
-
-def test_diofant__tensor__tensor__Tensor():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a = tensor_indices('a', Lorentz)
-    sym = TensorSymmetry(get_symmetric_group_sgs(1))
-    S1 = TensorType([Lorentz], sym)
-    p = S1('p')
-    assert _test_args(p(a))
-
-
-def test_diofant__tensor__tensor__TensMul():
-    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    a, b = tensor_indices('a,b', Lorentz)
-    sym = TensorSymmetry(get_symmetric_group_sgs(1))
-    S1 = TensorType([Lorentz], sym)
-    p = S1('p')
-    q = S1('q')
-    assert _test_args(3*p(a)*q(b))
 
 
 def test_as_coeff_add():

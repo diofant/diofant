@@ -6,7 +6,7 @@ from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
                     Pow, Rational, Wild, cacheit, count_ops, expand,
                     expand_mul, factor_terms, symbols)
 from ..core.function import _mexpand
-from ..core.strategies import greedy, identity
+from ..core.strategies import bottom_up, greedy, identity
 from ..core.sympify import sympify
 from ..domains import ZZ
 from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
@@ -514,7 +514,6 @@ def exptrigsimp(expr, simplify=True):
 
     """
     from .fu import TR2i, hyper_as_trig
-    from .simplify import bottom_up
 
     def exp_trig(e):
         # select the better of e, and e rewritten in terms of exp or trig
@@ -524,7 +523,7 @@ def exptrigsimp(expr, simplify=True):
             choices.append(e.rewrite(exp))
         choices.append(e.rewrite(cos))
         return min(*choices, key=count_ops)
-    newexpr = bottom_up(expr, exp_trig)
+    newexpr = bottom_up(exp_trig)(expr)
 
     if simplify:
         newexpr = newexpr.simplify()
@@ -1077,7 +1076,6 @@ def futrig(e, **kwargs):
 
     """
     from .fu import hyper_as_trig
-    from .simplify import bottom_up
 
     e = sympify(e)
 
@@ -1088,7 +1086,7 @@ def futrig(e, **kwargs):
         return e
 
     old = e
-    e = bottom_up(e, functools.partial(_futrig, **kwargs))
+    e = bottom_up(functools.partial(_futrig, **kwargs))(e)
 
     if kwargs.pop('hyper', True) and e.has(HyperbolicFunction):
         e, f = hyper_as_trig(e)

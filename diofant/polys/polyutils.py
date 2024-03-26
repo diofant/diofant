@@ -131,7 +131,7 @@ def _is_coeff(expr, opt):
     """Check if expr is a coefficient."""
     if opt.domain is not None:
         return expr in opt.domain
-    if opt.extension is not False:
+    if opt.extension:
         return expr.is_number and expr.is_algebraic
     if opt.greedy is not False:
         return expr.is_Number and expr.is_finite is not False

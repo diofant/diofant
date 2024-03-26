@@ -11,6 +11,7 @@ from ..core.compatibility import as_int
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
+from ..core.strategies import bottom_up
 from ..core.sympify import sympify
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
                          exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
@@ -19,7 +20,7 @@ from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
-from ..utilities import has_variety, ordered
+from ..utilities import ordered
 from ..utilities.iterables import is_iterable
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre
@@ -608,17 +609,14 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     # See also https://github.com/sympy/sympy/pull/185.
 
     def shorter(*choices):
-        """Return the choice that has the fewest ops. In case of a tie,
-        the expression listed first is selected.
-
-        """
-        if not has_variety(choices):
+        # Return the choice that has the fewest ops.  In case of a tie, the
+        # expression listed first is selected.
+        if len(set(choices)) == 1:
             return choices[0]
         return min(choices, key=measure)
 
-    expr = bottom_up(expr,
-                     lambda e: e if isinstance(e, (Integral, Product, Sum)) else e.doit(deep=False))
-    expr = bottom_up(expr, lambda w: w.normal())
+    expr = bottom_up(lambda e: e if isinstance(e, (Integral, Product, Sum)) else e.doit(deep=False))(expr)
+    expr = bottom_up(lambda w: w.normal() if hasattr(w, 'normal') else w)(expr)
     expr = Mul(*powsimp(expr).as_content_primitive())
     _e = cancel(expr, extension=False)
     expr1 = shorter(_e, _mexpand(_e).cancel(extension=False))  # issue sympy/sympy#6829
@@ -979,26 +977,7 @@ def logcombine(expr, force=False):
 
         return Add(*other)
 
-    return bottom_up(expr, f)
-
-
-def bottom_up(rv, F, atoms=False):
-    """Apply ``F`` to all expressions in an expression tree from the
-    bottom up. If ``atoms`` is True, apply ``F`` even if there are no args.
-
-    """
-    try:
-        if rv.args:
-            args = tuple(bottom_up(a, F, atoms) for a in rv.args)
-            if args != rv.args:
-                rv = rv.func(*args)
-            rv = F(rv)
-        elif atoms:
-            rv = F(rv)
-    except AttributeError:
-        pass
-
-    return rv
+    return bottom_up(f)(expr)
 
 
 def besselsimp(expr):

@@ -2684,7 +2684,7 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     expr = _constant_renumber(expr)
     # Renumbering happens here
     newconsts = symbols(f'C1:{newstartnumber:d}')
-    expr = expr.subs(zip(constants_found[1:], newconsts), simultaneous=True)
+    expr = expr.subs(dict(zip(constants_found[1:], newconsts)), simultaneous=True)
     return expr
 
 

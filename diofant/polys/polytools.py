@@ -793,7 +793,7 @@ class Poly(Expr):
                 gens[index] = value
 
         rep = self.rep
-        return rep.ring.to_expr(rep).subs(zip(self.gens, gens))
+        return rep.ring.to_expr(rep).subs(dict(zip(self.gens, gens)))
 
     def inject(self, front=False):
         """

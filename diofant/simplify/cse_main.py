@@ -1,12 +1,13 @@
 """Tools for doing common subexpression elimination."""
 
 import graphlib
+import itertools
 
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms
 from ..core.function import _coeff_isneg
 from ..core.sympify import sympify
 from ..utilities import numbered_symbols, ordered, sift
-from ..utilities.iterables import filter_symbols, is_iterable
+from ..utilities.iterables import is_iterable
 from . import cse_opts
 
 
@@ -483,7 +484,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
         # an actual iterator.
         symbols = iter(symbols)
 
-    symbols = filter_symbols(symbols, excluded_symbols)
+    symbols = itertools.filterfalse(lambda x: x in excluded_symbols, symbols)
 
     # Find other optimization opportunities.
     opt_subs = opt_cse(reduced_exprs, order)
