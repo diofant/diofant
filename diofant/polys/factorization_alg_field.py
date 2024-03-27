@@ -6,8 +6,8 @@ from ..core import Dummy
 from ..domains.algebraicfield import AlgebraicElement
 from ..integrals.heurisch import _symbols
 from ..ntheory import nextprime
-from .modulargcd import (_euclidean_algorithm, _gf_gcdex, _minpoly_from_dense,
-                         _trunc)
+from .modulargcd import (_div, _euclidean_algorithm, _gf_gcdex,
+                         _minpoly_from_dense, _trunc)
 from .polyerrors import NotInvertibleError, UnluckyLeadingCoefficientError
 from .polyutils import _sort_factors
 from .rings import PolynomialRing
@@ -485,36 +485,6 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
         return [h.set_ring(ring) for h in H]
 
 
-def _div(f, g, minpoly, p):
-    r"""
-    Division with remainder for univariate polynomials over
-    `\mathbb Z_p[z]/(\mu(z))`.
-
-    """
-    ring = f.ring
-    domain = ring.domain
-
-    rem = f
-    deg = g.degree(0)
-    lcinv, _, gcd = _gf_gcdex(g.eject(*ring.gens[1:]).LC, minpoly, p)
-
-    if not gcd == 1:
-        raise NotImplementedError
-
-    quotient = ring.zero
-
-    while True:
-        degrem = rem.degree(0)
-        if degrem < deg:
-            break
-        m = ring.from_terms([((degrem - deg, 0), domain.one)])
-        quo = (lcinv * rem.eject(*ring.gens[1:]).LC).set_ring(ring)*m
-        rem = _trunc(rem - g*quo, minpoly, p)
-        quotient += quo
-
-    return _trunc(quotient, minpoly, p), rem
-
-
 def _extended_euclidean_algorithm(f, g, minpoly, p):
     r"""
     Extended Euclidean Algorithm for univariate polynomials over
@@ -525,14 +495,12 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
 
     """
     ring = f.ring
-    zero = ring.zero
-    one = ring.one
 
     f = _trunc(f, minpoly, p)
     g = _trunc(g, minpoly, p)
 
-    s0, s1 = zero, one
-    t0, t1 = one, zero
+    s0, s1 = ring.zero, ring.one
+    t0, t1 = s1, s0
 
     while g:
         result = _div(f, g, minpoly, p)
@@ -541,10 +509,11 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
         s0, s1 = s1 - quo*s0, s0
         t0, t1 = t1 - quo*t0, t0
 
-    lcfinv = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
 
-    return (_trunc(s1 * lcfinv, minpoly, p), _trunc(t1 * lcfinv, minpoly, p),
-            _trunc(f * lcfinv, minpoly, p))
+    return (_trunc(s1 * lcfinv, minpoly, p),
+            _trunc(t1 * lcfinv, minpoly, p),
+            _trunc( f * lcfinv, minpoly, p))
 
 
 def _diophantine_univariate(F, m, minpoly, p):
@@ -754,13 +723,14 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 def _sqf_p(f, minpoly, p):
     r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
-    lcinv, *_ = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
+    lcinv, *_ = _gf_gcdex(f.eject(-1).LC, minpoly, p)
 
     f = _trunc(f * lcinv.set_ring(ring), minpoly, p)
 
     if not f:
         return True
-    return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
+    df = _trunc(f.diff(0), minpoly, p)
+    return _euclidean_algorithm(f, df, minpoly, p) == 1
 
 
 def _test_prime(f, A, minpoly, p):
