@@ -168,6 +168,9 @@ def test_efactor_random():
     random.seed(2)
     assert e.factor_list() == (1, [(e, 1)])
 
+    random.seed(66)
+    assert e.factor_list() == (1, [(e, 1)])
+
 
 @pytest.mark.slow
 def test_efactor_wang():

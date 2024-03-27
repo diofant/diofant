@@ -763,7 +763,7 @@ def _sqf_p(f, minpoly, p):
     return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
 
 
-def _test_prime(fA, D, minpoly, p, domain):
+def _test_prime(f, A, minpoly, p):
     r"""
     Test if a prime number is suitable for _factor.
 
@@ -773,11 +773,11 @@ def _test_prime(fA, D, minpoly, p, domain):
     _factor
 
     """
+    fA = f.eject(0, -1)(*A)
+
     if fA.LC % p == 0 or minpoly.LC % p == 0:
         return False
     if not _sqf_p(fA, minpoly, p):
-        return False
-    if D % p == 0:
         return False
 
     return True
@@ -894,7 +894,7 @@ def _factor(f, save):
 
             f_ *= delta
 
-            while not _test_prime(fA, D, minpoly, p, zring.domain):
+            while not _test_prime(f_, A, minpoly, p):
                 p = nextprime(p)
 
             pfactors = _hensel_lift(f_, fAfactors_, lcs, A, minpoly, p)
