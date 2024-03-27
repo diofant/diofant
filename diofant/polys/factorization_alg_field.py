@@ -536,8 +536,6 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
 
     while g:
         result = _div(f, g, minpoly, p)
-        if result is None:
-            raise NotImplementedError
         quo, rem = result
         f, g = g, rem
         s0, s1 = s1 - quo*s0, s0
@@ -567,8 +565,6 @@ def _diophantine_univariate(F, m, minpoly, p):
     if len(F) == 2:
         f, g = F
         result = _extended_euclidean_algorithm(g, f, minpoly, p)
-        if result is None:
-            raise NotImplementedError
         s, t, _ = result
 
         s *= m
@@ -592,8 +588,6 @@ def _diophantine_univariate(F, m, minpoly, p):
 
         for f, g in zip(F, G):
             result = _diophantine([g, f], T[-1], [], 0, minpoly, p)
-            if result is None:
-                raise NotImplementedError
             t, s = result
             T.append(t)
             S.append(s)
@@ -619,8 +613,6 @@ def _diophantine(F, c, A, d, minpoly, p):
 
         for (exp,), coeff in c.eject(1).items():
             T = _diophantine_univariate(F, exp, minpoly, p)
-            if T is None:
-                raise NotImplementedError
 
             for j, (s, t) in enumerate(zip(S, T)):
                 S[j] = _trunc(s + t*coeff.set_ring(ring), minpoly, p)
@@ -638,8 +630,6 @@ def _diophantine(F, c, A, d, minpoly, p):
         C = c.eval(n, a)
 
         S = _diophantine(G, C, A, d, minpoly, p)
-        if S is None:
-            raise NotImplementedError
         S = [s.set_ring(ring) for s in S]
 
         for s, b in zip(S, B):
@@ -660,8 +650,6 @@ def _diophantine(F, c, A, d, minpoly, p):
             if C:
                 C = C.quo_ground(ring.domain.factorial(k + 1))
                 T = _diophantine(G, C, A, d, minpoly, p)
-                if T is None:
-                    raise NotImplementedError
 
                 for i, t in enumerate(T):
                     T[i] = t.set_ring(ring) * M
@@ -752,8 +740,6 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
             if C:
                 C = C.quo_ground(ring.domain.factorial(k + 1))  # coeff of (x_{j-1} - a_{j-1})^(k + 1) in c
                 T = _diophantine(G, C, I, d, minpoly, p)
-                if T is None:
-                    raise NotImplementedError
 
                 for i, (h, t) in enumerate(zip(H, T)):
                     H[i] = _trunc(h + t.set_ring(Hring)*M, minpoly, p)
