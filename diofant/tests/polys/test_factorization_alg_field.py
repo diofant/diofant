@@ -160,6 +160,14 @@ def test_efactor_random():
         random.seed(seed)
         assert efactor(f) == (1, [(f1, 1), (f2, 1), (f3, 1), (f4, 1)])
 
+    A2 = QQ.algebraic_field(sqrt(2))
+    _, x0, x1, x2, x3, x4, x5, x6 = ring('x:7', A2)
+
+    e = x0*x1*x4*x6 - x0*x2*x3*x5 + sqrt(2)*x1*x4*x6 + sqrt(2)*x2*x3*x5
+
+    random.seed(2)
+    assert e.factor_list() == (1, [(e, 1)])
+
 
 @pytest.mark.slow
 def test_efactor_wang():

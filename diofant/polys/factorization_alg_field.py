@@ -673,8 +673,6 @@ def _diophantine(F, c, A, d, minpoly, p):
                     c = c - t * b
 
                 c = _trunc(c, minpoly, p)
-            else:
-                raise NotImplementedError
 
         S = [_trunc(s, minpoly, p) for s in S]
 
