@@ -239,10 +239,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
     m = len(denoms)
 
     for i in range(m):
-        pi = gcd(omega, divisors[i])
-        divisors[i] //= pi
-        if divisors[i] == 1:
-            raise NotImplementedError
+        divisors[i] //= gcd(omega, divisors[i])
 
     e = []
 
@@ -348,7 +345,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
     if not fA.is_squarefree:
         return
 
-    omega = gamma * D
+    omega = D * gamma
     denoms = []
     for l, _ in lcfactors:
         lA = l.eval(list(zip(l.ring.gens, A)))  # in Q(alpha)
