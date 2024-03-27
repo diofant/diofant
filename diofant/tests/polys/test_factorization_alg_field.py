@@ -32,7 +32,6 @@ def test_efactor_1():
     f = f1 * f2
 
     assert efactor(f) == (1, [(f1, 1), (f2, 1)])
-    assert efactor(f, save=False) == (1, [(f1, 1), (f2, 1)])
 
     f1 = x + 2**10*y
     f2 = x**2 + sqrt(2)*y

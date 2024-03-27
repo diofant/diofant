@@ -279,15 +279,11 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
         lcs[j] = lj*dj
         U[j] = (U[j]*dj).set_ring(zring) * ljA.set_ring(zring)
 
-        if omega == 1:
-            f *= dj
-        else:
-            d = gcd(omega, dj)
-            f *= (dj // d)
+        d = gcd(omega, dj)
+        f *= (dj // d)
 
-    if omega != 1:
-        lcs[0] *= omega
-        U[0] *= omega
+    lcs[0] *= omega
+    U[0] *= omega
 
     return f, lcs, U
 
@@ -751,7 +747,7 @@ def _test_prime(f, A, minpoly, p):
 
 
 # squarefree f with cont_x0(f) = 1
-def _factor(f, save):
+def _factor(f):
     r"""
     Factor a multivariate polynomial `f`, which is squarefree and primitive
     in `x_0`, in `\mathbb Q(\alpha)[x_0, \ldots, x_n]`.
@@ -779,10 +775,7 @@ def _factor(f, save):
     minpoly = _minpoly_from_dense(ring.domain.mod, zring.drop(*zring.gens[:-1]))
     f_ = _monic_associate(f, zring)
 
-    if save is True:
-        D = minpoly.resultant(minpoly.diff(0))
-    else:
-        D = groundring.one
+    D = minpoly.resultant(minpoly.diff(0))
 
     # heuristic bound for p-adic lift
     B = (f_.max_norm() + 1)*D
@@ -829,7 +822,7 @@ def _factor(f, save):
                     xi = gens[i]
                     f_ = f_.compose(xi, x + xi*ci)
 
-                lc, factors = _factor(_z_to_alpha(f_, ring), save)
+                lc, factors = _factor(_z_to_alpha(f_, ring))
                 gens = factors[0].ring.gens
                 x = gens[0]
 
@@ -883,13 +876,8 @@ def _factor(f, save):
 
 
 # output of the form (lc, [(poly1, exp1), ...])
-def efactor(f, save=True):
+def efactor(f):
     r"""Factor a multivariate polynomial `f` in `\mathbb Q(\alpha)[x_0, \ldots, x_n]`.
-
-    By default, an estimate of the defect of the algebraic field is included
-    in all computations. If ``save`` is set to ``False``, the defect will be
-    treated as one, thus computations are faster. However, if the defect of
-    `\alpha` is larger than one, this may lead to wrong results.
 
     References
     ==========
@@ -922,7 +910,7 @@ def efactor(f, save=True):
         lc, sqflist = f.sqf_list()
         factors = []
         for g, exp in sqflist:
-            lcg, gfactors = _factor(g, save)
+            lcg, gfactors = _factor(g)
             lc *= lcg
             factors = factors + [(gi, exp) for gi in gfactors]
 
