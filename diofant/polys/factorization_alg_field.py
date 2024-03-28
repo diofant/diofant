@@ -99,16 +99,14 @@ def _z_to_alpha(f, ring):
 
 
 def _distinct_prime_divisors(S, domain):
-    r"""
-    Try to find pairwise coprime divisors of all elements of a given list
-    `S` of integers.
-
-    If this fails, ``None`` is returned.
+    """
+    Find pairwise coprime divisors of all elements of a given list `S` of
+    integers.  If this fails, ``None`` is returned.
 
     References
     ==========
 
-    * :cite:`Javadi2009factor`
+    * :cite:`Javadi2009factor`, Algorithm 4
 
     """
     gcd = domain.gcd
@@ -118,22 +116,23 @@ def _distinct_prime_divisors(S, domain):
         divisors.append(s)
 
         for j in range(i):
-            g = gcd(divisors[i], divisors[j])
-            divisors[i] = divisors[i] // g
-            divisors[j] = divisors[j] // g
-            g1 = gcd(divisors[i], g)
-            g2 = gcd(divisors[j], g)
+            g1 = g2 = gcd(divisors[i], divisors[j])
 
-            while g1 != 1:
+            while True:
                 g1 = gcd(divisors[i], g1)
-                divisors[i] = divisors[i] // g1
+                divisors[i] //= g1
+                if g1 == 1:
+                    if divisors[i] == 1:
+                        return
+                    break
 
-            while g2 != 1:
+            while True:
                 g2 = gcd(divisors[j], g2)
-                divisors[j] = divisors[j] // g2
-
-            if divisors[i] == 1 or divisors[j] == 1:
-                return
+                divisors[j] //= g2
+                if g2 == 1:
+                    if divisors[j] == 1:
+                        return
+                    break
 
     return divisors
 
