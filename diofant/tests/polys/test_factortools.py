@@ -1,11 +1,12 @@
 """Tests for polynomial factorization routines."""
 
 import math
+import random
 
 import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactorsError,
-                     I, nextprime, pi, ring, sin, sqrt)
+                     I, nextprime, pi, ring, root, sin, sqrt)
 from diofant.config import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -440,6 +441,176 @@ def test_dmp_ext_factor(method):
                                                      (x + sqrt(2)*y, 1)])
         assert (2*x**2 - 4*y**2).factor_list() == (2, [(x - sqrt(2)*y, 1),
                                                        (x + sqrt(2)*y, 1)])
+
+
+def test_efactor_1():
+    with using(aa_factor_method='modular'):
+        R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+
+        f = x**2 + sqrt(2)*y
+        assert f.factor_list() == (1, [(f, 1)])
+
+        f1 = x + y
+        f2 = x**2 + sqrt(2)*y
+        f = f1 * f2
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1)])
+
+        f1 = x + 2**10*y
+        f2 = x**2 + sqrt(2)*y
+        f = f1 * f2
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1)])
+
+        R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2)))
+
+        f1 = x - sqrt(2)*z
+        f = f1**2
+
+        assert f.factor_list() == (1, [(f1, 2)])
+
+        A3 = QQ.algebraic_field(sqrt(3))
+        R, x, y, z = ring('x y z', A3)
+
+        f1 = z + 1
+        f2 = 3*x*y**2/4 + sqrt(3)
+        f3 = sqrt(3)*y*x**2 + 2*y + z
+        f = f1 * f2**2 * f3
+
+        lc2 = f2.LC
+        lc3 = f3.LC
+
+        assert f.factor_list() == (lc2**2*lc3, [(f1, 1),
+                                                (f2.quo_ground(lc2), 2),
+                                                (f3.quo_ground(lc3), 1)])
+
+        R, x, y = ring('x y', QQ.algebraic_field(I))
+
+        f1 = x - I*y
+        f2 = x + I*y
+        f = f1*f2
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1)])
+
+        f1 = x*(y + 1) + 1
+        f2 = x*(y + I) + 1
+        f3 = x**2*(y - I) + 1
+        f = f1*f2*f3
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1), (f3, 1)])
+
+        lc = R.domain(-2)
+        f1 = x*(y - 3*I) + lc**(-1)
+        f2 = x*(y + 2) + 1
+        f3 = x*(y + I) + 1
+        f = lc*f1*f2*f3
+
+        assert f.factor_list() == (lc, [(f1, 1), (f2, 1), (f3, 1)])
+
+        a = sqrt(2)*(1 + I)/2
+        A = QQ.algebraic_field(a)
+        R, x, y = ring('x y', A)
+
+        f1 = x - a**3*y
+        f2 = x - a*y
+        f3 = x + a**3*y
+        f4 = x + a*y
+        f = x**4 + y**4
+
+        assert f1*f2*f3*f4 == f
+        assert f.factor_list() == (1, [(f3, 1), (f2, 1), (f4, 1), (f1, 1)])
+
+        R, x, y, z = ring('x y z', QQ.algebraic_field(root(2, 5)))
+
+        f1 = y
+        f2 = x - y
+        f3 = x**2 + root(2, 5)*y*z
+        f = f1*f2*f3
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1), (f3, 1)])
+
+        R, x, y, z = ring('x y z', QQ.algebraic_field(sqrt(2), root(3, 3)))
+
+        lc = R.domain.from_expr(root(3, 3))
+        f1 = x - z*root(3, 3)**2/3
+        f2 = x**2 + 2*y + sqrt(2)
+        f = lc*f1*f2
+
+        assert f.factor_list() == (lc, [(f1, 1), (f2, 1)])
+
+        a = (-1 + sqrt(5))/4 - I*sqrt((sqrt(5) + 5)/8)
+        A = QQ.algebraic_field(a)
+        a = A.unit
+        R, x, y, z = ring('x y z', A)
+
+        f1 = x**2 + 2*(a**3 + a**2 + a + 1)*x + a*z**2 + a**3*y + 12*a**2
+        f2 = x**2 - 2*a*x - (a**3 + a**2 + a + 1)*z**2 + a**2*y + 12*a**3
+        f = f1*f2
+
+        assert f.factor_list() == (1, [(f2, 1), (f1, 1)])
+
+        R, x, y = ring('x y', QQ.algebraic_field(root(1, 5, 3)))
+        A = R.domain
+
+        a = A([QQ(-19125, 42722), QQ(23337, 21361), QQ(46350, 21361), QQ(17315, 21361)])
+        b = A([QQ(-17355, 85444), QQ(-15120, 21361), QQ(-7870, 21361), QQ(45917, 85444)])
+        c = A([QQ(5, 521), QQ(130, 521), QQ(650, 521), QQ(104, 521)])
+        d = A([QQ(16196, 21361), QQ(-6645, 21361), QQ(-20200, 21361), QQ(-29909, 42722)])
+
+        e = a*y + b*y**2 + x*c + x*y*d + x**2
+
+        r = e.factor_list()
+
+        e1 = A([QQ(75, 82), QQ(-10, 41), QQ(-25, 41), QQ(-47, 41)])*y + x
+        e2 = (x + A([QQ(-163, 1042), QQ(-35, 521), QQ(-175, 521),
+                     QQ(465, 1042)])*y + A([QQ(5, 521), QQ(130, 521),
+                                            QQ(650, 521), QQ(104, 521)]))
+
+        assert r == (1, [(e1, 1), (e2, 1)])
+
+
+def test_efactor_random():
+    with using(aa_factor_method='modular'):
+        A3 = QQ.algebraic_field(sqrt(3))
+        _, x, y, z, t = ring('x y z t', A3)
+
+        f1 = x*y - sqrt(3)
+        f2 = z*t + 1
+        f3 = x**2 + 1
+        f4 = x**2 + z*t
+        f = f1*f2*f3*f4
+
+        for seed in [0, 1, 2, 6]:
+            random.seed(seed)
+            assert f.factor_list() == (1, [(f1, 1), (f2, 1), (f3, 1), (f4, 1)])
+
+        A2 = QQ.algebraic_field(sqrt(2))
+        _, x0, x1, x2, x3, x4, x5, x6 = ring('x:7', A2)
+
+        e = x0*x1*x4*x6 - x0*x2*x3*x5 + sqrt(2)*x1*x4*x6 + sqrt(2)*x2*x3*x5
+
+        random.seed(2)
+        assert e.factor_list() == (1, [(e, 1)])
+
+        random.seed(66)
+        assert e.factor_list() == (1, [(e, 1)])
+
+
+@pytest.mark.slow
+def test_efactor_wang():
+    with using(aa_factor_method='modular'):
+        a = (-1 + sqrt(5))/4 - I*sqrt((sqrt(5) + 5)/8)
+        A = QQ.algebraic_field(a)
+        a = A.unit
+        _, x, y, z = ring('x y z', A)
+
+        f1 = x**2 - 2*a**2*x + a**3*z**2 - (a**3 + a**2 + a + 1)*y + 12*a
+        f2 = x**2 - 2*a**3*x + a**2*z**2 + a*y - 12*(a**3 + a**2 + a + 1)
+        f3 = x**2 + 2*(a**3 + a**2 + a + 1)*x + a*z**2 + a**3*y + 12*a**2
+        f4 = x**2 - 2*a*x - (a**3 + a**2 + a + 1)*z**2 + a**2*y + 12*a**3
+        f = f1*f2*f3*f4
+
+        assert f.factor_list() == (1, [(f2, 1), (f1, 1), (f4, 1), (f3, 1)])
 
 
 def test_factor_list():
@@ -978,3 +1149,14 @@ def test_sympyissue_23174():
 
     with using(gf_factor_method='zassenhaus'):
         assert f.factor_list() == r
+
+
+@pytest.mark.timeout(60)
+def test_sympyissue_19196():
+    with using(aa_factor_method='modular'):
+        A = QQ.algebraic_field(sqrt(2), root(3, 3))
+        _, x, y, z = ring('x y z', A)
+
+        f1, f2 = x - z/root(3, 3), x**2 + 2*y + sqrt(2)
+        f = f1*f2
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1)])
