@@ -698,13 +698,10 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 
 
 def _sqf_p(f, minpoly, p):
-    r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
+    r"""Return ``True`` if nonzero `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
     lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
     f = _trunc(f * lcfinv, minpoly, p)
-
-    if not f:
-        return True
     df = _trunc(f.diff(0), minpoly, p)
     return _euclidean_algorithm(f, df, minpoly, p) == 1
 
