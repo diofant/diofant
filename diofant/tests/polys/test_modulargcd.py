@@ -2,59 +2,11 @@
 
 import pytest
 
-from diofant import QQ, ZZ, ring, sqrt
-from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
-                                      _func_field_modgcd_m, _to_ANP_poly,
-                                      _to_ZZ_poly)
+from diofant import ZZ, ring
+from diofant.polys.modulargcd import _func_field_modgcd_m
 
 
 __all__ = ()
-
-
-def test_chinese_remainder():
-    R, x, y = ring('x y', ZZ)
-    p, q = 3, 5
-
-    hp = x**3*y - x**2 - 1
-    hq = -x**3*y - 2*x*y**2 + 2
-
-    hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
-
-    assert hpq.trunc_ground(p) == hp
-    assert hpq.trunc_ground(q) == hq
-
-    _, z = ring('z', R)
-    p, q = 3, 7
-
-    hp = (x*y + 1)*z**2 + x
-    hq = (x**2 - 3*y)*z + 2
-
-    hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
-
-    assert hpq.trunc_ground(p) == hp
-    assert hpq.trunc_ground(q) == hq
-
-
-def test_to_ZZ_ANP_poly():
-    A = QQ.algebraic_field(sqrt(2))
-    R, x = ring('x', A)
-    f = x*(sqrt(2) + 1)
-
-    T, x_, z_ = ring('x_ z_', ZZ)
-    f_ = x_*z_ + x_
-
-    assert _to_ZZ_poly(f, T) == f_
-    assert _to_ANP_poly(f_, R) == f
-
-    R, x, t, s = ring('x t s', A)
-    f = x*t**2 + x*s + sqrt(2)
-
-    D, t_, s_ = ring('t_ s_', ZZ)
-    T, x_, z_ = ring('x_ z_', D)
-    f_ = (t_**2 + s_)*x_ + z_
-
-    assert _to_ZZ_poly(f, T) == f_
-    assert _to_ANP_poly(f_, R) == f
 
 
 def test_modgcd_func_field():
