@@ -14,13 +14,6 @@ from .rings import PolynomialRing
 from .solvers import solve_lin_sys
 
 
-# TODO
-# ====
-
-# -) efficiency of _factor can be improved for irreducible polynomials if the
-#    univariate factorization is done before the LC is factored
-
-
 def _alpha_to_z(f, ring):
     r"""
     Change the representation of a polynomial over
