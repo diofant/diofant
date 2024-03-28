@@ -54,9 +54,8 @@ def _alpha_to_z(f, ring):
             n = len(coeff)
 
             for i in range(n):
-                m = monom + (n-i-1,)
-                if coeff[n - i - 1]:
-                    f_[m] = coeff[n - i - 1]
+                m = monom + (n - i - 1,)
+                f_[m] = coeff[n - i - 1]
 
     return f_
 
@@ -89,11 +88,7 @@ def _z_to_alpha(f, ring):
     for monom, coeff in f.items():
         m = monom[:-1]
         c = domain([0]*monom[-1] + [domain.domain(coeff)])
-
-        if m not in f_:
-            f_[m] = c
-        else:
-            f_[m] += c
+        f_[m] += c
 
     return f_
 
@@ -251,7 +246,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
 
             while g1 != 1:
                 eji += 1
-                dj = dj // g1
+                dj //= g1
                 g1 = gcd(dj, g1)
 
             ej.append(eji)
@@ -332,7 +327,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
     ring = f.ring
     qring = ring.clone(domain=ring.domain.field)
 
-    fA = f.eval(list(zip(ring.gens[1:-1], A)))
+    fA = f.eject(0, -1)(*A)
 
     if fA.degree() < f.degree():
         return
@@ -343,7 +338,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
     omega = D * gamma
     denoms = []
     for l, _ in lcfactors:
-        lA = l.eval(list(zip(l.ring.gens, A)))  # in Q(alpha)
+        lA = l(*A)  # in Q(alpha)
         denoms.append(_denominator(_alpha_to_z(lA**(-1), qring)))
 
     if any(denoms.count(denom) > 1 for denom in denoms):
@@ -368,8 +363,7 @@ def _subs_ground(f, A):
     f_ = f.ring.zero
 
     for monom, coeff in f.items():
-        if coeff.compose(A):
-            f_[monom] = coeff.compose(A)
+        f_[monom] = coeff.compose(A)
 
     return f_
 
@@ -594,7 +588,7 @@ def _diophantine(F, c, A, d, minpoly, p):
         S = [s.set_ring(ring) for s in S]
 
         for s, b in zip(S, B):
-            c = c - s*b
+            c -= s*b
 
         c = _trunc(c, minpoly, p)
 
@@ -605,7 +599,7 @@ def _diophantine(F, c, A, d, minpoly, p):
             if not c:
                 break
 
-            M = M * m
+            M *= m
             C = c.diff(x=n, m=k + 1).eval(x=n, a=a)
 
             if C:
@@ -619,7 +613,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                     S[i] = s + t
 
                 for t, b in zip(T, B):
-                    c = c - t * b
+                    c -= t*b
 
                 c = _trunc(c, minpoly, p)
 
@@ -695,7 +689,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
             if not c:
                 break
 
-            M = M * m
+            M *= m
             C = c.diff(x=j, m=k + 1).eval(x=j, a=a)
 
             if C:
@@ -715,9 +709,8 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 def _sqf_p(f, minpoly, p):
     r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
-    lcinv, *_ = _gf_gcdex(f.eject(-1).LC, minpoly, p)
-
-    f = _trunc(f * lcinv.set_ring(ring), minpoly, p)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
+    f = _trunc(f * lcfinv, minpoly, p)
 
     if not f:
         return True
