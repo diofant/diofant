@@ -507,6 +507,13 @@ def test_efactor_1():
 
         assert f.factor_list() == (lc, [(f1, 1), (f2, 1), (f3, 1)])
 
+        f1 = x*(y - I) - 2
+        f2 = x*(y + 2) + 1
+        f3 = x*(y + 3*I) + 2
+        f = f1*f2*f3
+
+        assert f.factor_list() == (1, [(f1, 1), (f2, 1), (f3, 1)])
+
         a = sqrt(2)*(1 + I)/2
         A = QQ.algebraic_field(a)
         R, x, y = ring('x y', A)
