@@ -1,7 +1,6 @@
 import math
 import random
 
-from ..config import using
 from ..core import Dummy
 from ..domains.algebraicfield import AlgebraicElement
 from ..integrals.heurisch import _symbols
@@ -821,8 +820,7 @@ def _factor(f):
                 continue
             fA, denoms, divisors = result
 
-            with using(aa_factor_method='trager'):
-                _, fAfactors = _z_to_alpha(fA, uniring).factor_list()
+            _, fAfactors = trager(_z_to_alpha(fA, uniring))
             if len(fAfactors) == 1:
                 g = _z_to_alpha(f_, ring)
                 return f.LC, [g.monic()]
@@ -860,9 +858,45 @@ def _factor(f):
         N += 1
 
 
-# output of the form (lc, [(poly1, exp1), ...])
+def trager(f):
+    """
+    Factor multivariate polynomial `f` over algebraic number fields, using
+    classical Trager algorithm.
+
+    References
+    ==========
+
+    * :cite:`Trager1976algebraic`
+
+    """
+    ring = f.ring
+    domain = ring.domain
+
+    lc, f = f.LC, f.monic()
+
+    if f.is_ground:
+        return lc, []
+
+    f, F = f.sqf_part(), f
+    s, g, r = f.sqf_norm()
+
+    _, factors = r.factor_list()
+
+    if len(factors) == 1:
+        factors = [f]
+    else:
+        for i, (factor, _) in enumerate(factors):
+            h = factor.set_domain(domain)
+            h, _, g = ring.cofactors(h, g)
+            h = h.compose({x: x + s*domain.unit for x in ring.gens})
+            factors[i] = h
+
+    return lc, ring._trial_division(F, factors)
+
+
 def efactor(f):
-    r"""Factor a multivariate polynomial `f` in `\mathbb Q(\alpha)[x_0, \ldots, x_n]`.
+    """
+    Factor multivariate polynomial `f` over algebraic number fields.
 
     References
     ==========
@@ -872,31 +906,26 @@ def efactor(f):
     """
     ring = f.ring
 
-    assert ring.domain.is_AlgebraicField
-
     if f.is_ground:
         return f[1], []
 
-    n = ring.ngens
+    if ring.ngens == 1:
+        return trager(f)
 
-    if n == 1:
-        with using(aa_factor_method='trager'):
-            return f.factor_list()
-    else:
-        cont, f = f.eject(*ring.gens[1:]).primitive()
-        f = f.inject()
-        if cont != 1:
-            lccont, contfactors = efactor(cont)
-            lc, factors = efactor(f)
-            contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
-            return lccont * lc, _sort_factors(contfactors + factors)
+    cont, f = f.eject(*ring.gens[1:]).primitive()
+    f = f.inject()
+    if cont != 1:
+        lccont, contfactors = efactor(cont)
+        lc, factors = efactor(f)
+        contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
+        return lccont * lc, _sort_factors(contfactors + factors)
 
-        # this is only correct because the content in x_0 is already divided out
-        lc, sqflist = f.sqf_list()
-        factors = []
-        for g, exp in sqflist:
-            lcg, gfactors = _factor(g)
-            lc *= lcg
-            factors = factors + [(gi, exp) for gi in gfactors]
+    # this is only correct because the content in x_0 is already divided out
+    lc, sqflist = f.sqf_list()
+    factors = []
+    for g, exp in sqflist:
+        lcg, gfactors = _factor(g)
+        lc *= lcg
+        factors = factors + [(gi, exp) for gi in gfactors]
 
-        return lc, _sort_factors(factors)
+    return lc, _sort_factors(factors)
