@@ -8,7 +8,6 @@ from ..ntheory import nextprime
 from .modulargcd import (_div, _euclidean_algorithm, _gf_gcdex,
                          _minpoly_from_dense, _trunc)
 from .polyerrors import NotInvertibleError, UnluckyLeadingCoefficientError
-from .polyutils import _sort_factors
 from .rings import PolynomialRing
 from .solvers import solve_lin_sys
 
@@ -918,7 +917,7 @@ def efactor(f):
         lccont, contfactors = efactor(cont)
         lc, factors = efactor(f)
         contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
-        return lccont * lc, _sort_factors(contfactors + factors)
+        return lccont * lc, contfactors + factors
 
     # this is only correct because the content in x_0 is already divided out
     lc, sqflist = f.sqf_list()
@@ -928,4 +927,4 @@ def efactor(f):
         lc *= lcg
         factors = factors + [(gi, exp) for gi in gfactors]
 
-    return lc, _sort_factors(factors)
+    return lc, factors
