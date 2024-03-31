@@ -1,6 +1,6 @@
 import pytest
-from mpmath import inf, mpc, ninf
-from mpmath.libmp import from_float
+from mpmath import inf, mpc, mpf, ninf
+from mpmath.libmp import from_float, from_int, mpf_sqrt
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,
@@ -472,8 +472,8 @@ def test_infinities():
 
 
 def test_to_mpmath():
-    assert sqrt(3)._to_mpmath(20)._mpf_ == (0, int(908093), -19, 20)
-    assert Float(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
+    assert sqrt(3)._to_mpmath(20)._mpf_ == mpf_sqrt(from_int(3), 20)
+    assert Float(3.2)._to_mpmath(20)._mpf_ == mpf(3.2, prec=20)._mpf_
 
 
 def test_sympyissue_6632():
