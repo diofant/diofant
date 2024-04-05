@@ -1,6 +1,6 @@
 """Implementation of :class:`RationalField` class."""
 
-from ..polys.polyerrors import CoercionFailedError
+from ..polys.polyerrors import CoercionFailedError, NotAlgebraicError
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .groundtypes import DiofantRational, GMPYRational, PythonRational
@@ -31,12 +31,14 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
         if expr.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(expr))
-        if expr.is_algebraic:
+        if not expr.is_number or expr.is_algebraic is False:
+            pass
+        else:
             from ..polys import primitive_element
             try:
                 _, _, [[rep]] = primitive_element([expr], domain=self)
                 return self.dtype(rep.numerator, rep.denominator)
-            except ValueError:
+            except (NotAlgebraicError, ValueError):
                 pass
         raise CoercionFailedError(f'expected `Rational` object, got {expr}')
 
