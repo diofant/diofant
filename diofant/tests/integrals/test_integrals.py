@@ -1549,3 +1549,15 @@ def test_sympyissue_26071():
 def test_sympyissue_25786():
     assert integrate(exp(-0.8*x**2),
                      (x, -3, -0.2)) == 0.44728859099449181*sqrt(pi)
+
+
+def test_sympyissue_26477():
+    x = Symbol('x', positive=True)
+    y = Symbol('y', positive=True)
+    z = Symbol('z', real=True)
+
+    i = Integral(z**(x - 1)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x, y)
+    assert i.doit() == gamma(x)*gamma(y)/gamma(x + y)
+
+    i = Integral(z**(x - 0.5)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x + 0.5, y)
+    assert i.doit() == gamma(x + 0.5)*gamma(y)/gamma(x + y + 0.5)
