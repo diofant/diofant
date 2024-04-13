@@ -8,8 +8,9 @@ from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      CoercionFailedError, ComplexField, DomainError, Float,
                      GeneratorsError, GeneratorsNeededError, I, Integer,
                      NotInvertibleError, PythonRational, QQ_python, Rational,
-                     RealField, RootOf, UnificationFailedError, ZZ_python,
-                     cbrt, field, im, oo, re, ring, root, roots, sin, sqrt)
+                     RealField, RootOf, Symbol, UnificationFailedError,
+                     ZZ_python, cbrt, field, im, oo, re, ring, root, roots,
+                     sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -1275,3 +1276,7 @@ def test_issue_1243():
 def test_sympyissue_20327():
     F7 = FF(7)
     assert (2*x/3).as_poly(x, domain=F7) == (3*x).as_poly(x, domain=F7)
+
+
+def test_issue_1385():
+    assert Symbol('n', integer=True) not in QQ
