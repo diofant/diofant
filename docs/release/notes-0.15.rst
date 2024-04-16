@@ -96,3 +96,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`26313`: Error result for limit of a piecewise
 * :sympyissue:`26477`: Error in integral result using hyper
 * :sympyissue:`26497`: factor produces wrong output
+* :sympyissue:`26501`: TypeError: '>' not supported between instances of 'Poly' and 'int' calling integrate in sympy 1.12
+* :sympyissue:`26503`: TypeError: Invalid NaN comparison calling integrate in sympy 1.12
+* :sympyissue:`26504`: IndexError: Index out of range: calling integrate in sympy 1.12
+* :sympyissue:`26506`: RecursionError: maximum recursion depth exceeded in comparison calling integrate in sympy 1.12
