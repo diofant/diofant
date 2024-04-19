@@ -448,7 +448,7 @@ class Float(Number):
     >>> def show(f):  # binary rep of Float
     ...     from mpmath.libmp import to_man_exp
     ...     from diofant import Mul, Pow
-    ...     m, e = to_man_exp(f._mpf_)
+    ...     m, e = to_man_exp(f._mpf_, signed=True)
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
     ...     print(f'{v} at prec={f._prec}')
     ...

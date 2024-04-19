@@ -1124,3 +1124,9 @@ def test_sympyissue_26313():
     e = Piecewise((x**2, x <= 2), (5*x - 7, x > 2))
     assert limit(e, x, 2) == 3
     assert limit(e, x, 2, dir=1) == 4
+
+
+def test_sympyissue_26513():
+    assert limit((x/(x + 1))**x, x, oo) == exp(-1)
+    assert limit((-x/(x + 1))**x, x, oo) == Limit((-x/(x + 1))**x, x, oo)
+    assert limit(abs((-x/(x + 1))**x), x, oo) == exp(-1)

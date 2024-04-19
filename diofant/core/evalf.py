@@ -301,12 +301,8 @@ def add_terms(terms, prec, target_prec):
     sum_man, sum_exp, absolute_error = 0, 0, MINUS_INF
 
     for x, accuracy in terms:
-        sign = int(mpf_sign(x) < 0)
-        man, exp = to_man_exp(x)
+        man, exp = to_man_exp(x, signed=True)
         bc = man.bit_length()
-
-        if sign:
-            man = -man
         absolute_error = max(absolute_error, bc + exp - accuracy)
         delta = exp - sum_exp
         if exp >= sum_exp:
@@ -409,7 +405,7 @@ def evalf_mul(v, prec, options):
     working_prec = prec + len(args) + 5
 
     # Empty product is 1
-    man, exp = to_man_exp(fone)
+    man, exp = to_man_exp(fone, signed=False)
     bc = man.bit_length()
     start = man, exp, bc
 
@@ -434,12 +430,12 @@ def evalf_mul(v, prec, options):
             continue
         if re:
             s = int(mpf_sign(re) < 0)
-            m, e = to_man_exp(re)
+            m, e = to_man_exp(re, signed=False)
             b = m.bit_length()
             w_acc = re_acc
         elif im:
             s = int(mpf_sign(im) < 0)
-            m, e = to_man_exp(im)
+            m, e = to_man_exp(im, signed=False)
             b = m.bit_length()
             w_acc = im_acc
             direction += 1
