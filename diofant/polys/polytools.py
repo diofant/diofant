@@ -1993,9 +1993,9 @@ class Poly(Expr):
         try:
             # We need to add extra precision to guard against losing accuracy.
             # 10 times the degree of the polynomial seems to work well.
-            roots = mpmath.polyroots(list(reversed(coeffs)), maxsteps=maxsteps,
+            roots = mpmath.polyroots(coeffs, maxsteps=maxsteps,
                                      cleanup=cleanup, error=False,
-                                     extraprec=self.degree()*10)
+                                     extraprec=self.degree()*10, asc=False)
 
             # Mpmath puts real roots first, then complex ones (as does all_roots)
             # so we make sure this convention holds here, too.
