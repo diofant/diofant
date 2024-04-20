@@ -325,7 +325,7 @@ def log_to_real(h, q, x, t):
     a, b = H_map.get(Integer(1), Integer(0)), H_map.get(I, Integer(0))
     c, d = Q_map.get(Integer(1), Integer(0)), Q_map.get(I, Integer(0))
 
-    R = resultant(c, d, v).as_poly(u)
+    R = resultant(c, d, v, u).as_poly(u)
 
     R_u_all = roots(R)
     R_q_all = roots(q)
