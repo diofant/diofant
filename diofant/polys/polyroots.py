@@ -422,7 +422,7 @@ def _inv_totient_estimate(m):
     return L, U
 
 
-def roots_cyclotomic(f, factor=False):
+def roots_cyclotomic(f, factor=False, expand=True):
     """Compute roots of cyclotomic polynomials."""
     L, U = _inv_totient_estimate(f.degree())
 
@@ -444,7 +444,10 @@ def roots_cyclotomic(f, factor=False):
         ks.sort(key=lambda x: (x, -1) if x <= h else (abs(x - n), 1))
         d = 2*I*pi/n
         for k in reversed(ks):
-            roots.append(exp(k*d).expand(complex=True))
+            r = exp(k*d, evaluate=False)
+            if expand:
+                r = r.doit().expand(complex=True)
+            roots.append(r)
     else:
         g = f.as_poly(extension=root(-1, n))
 

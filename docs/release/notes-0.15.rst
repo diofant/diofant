@@ -102,3 +102,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26506`: RecursionError: maximum recursion depth exceeded in comparison calling integrate in sympy 1.12
 * :sympyissue:`26513`: Wrong limit result for Abs((-n/(n+1))**n)
 * :sympyissue:`26502`: lots of PolynomialError contains an element of the set of generators exceptions calling integrate in sympy 1.12
+* :sympyissue:`14069`: Condition for TODO in zeta_functions.py is now satisfied
