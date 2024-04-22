@@ -45,7 +45,7 @@ def test_rf_eval_apply():
     assert rf(n, k).is_integer is None
     assert rf(n, m).is_integer is True
 
-    assert rf(x, y).rewrite('tractable') == \
+    assert rf(x, y).rewrite('tractable', wrt=x) == \
         exp(-loggamma(x))*exp(loggamma(x + y))
 
 
