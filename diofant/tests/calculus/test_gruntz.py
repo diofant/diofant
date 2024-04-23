@@ -1,11 +1,4 @@
-"""
-This test suite is testing the Gruntz algorithm implementation.
-
-See the documentation in the gruntz module.  The
-algorithm itself is highly recursive by nature, so ``compare()`` is
-logically the lowest part of the algorithm, yet in some sense it's the most
-complex part, because it needs to calculate a limit to return the result.
-"""
+"""This test suite is testing the Gruntz algorithm implementation."""
 
 import pytest
 
@@ -16,7 +9,7 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      gamma, li, limit, log, loggamma, oo, pi, root, sign, sin,
                      sinh, sqrt, tan, tanh, zeta)
 from diofant.abc import a, n, x, y
-from diofant.calculus.gruntz import compare, leadterm, mrv, rewrite, signinf
+from diofant.calculus.gruntz import leadterm, mrv, mrv_max, rewrite, signinf
 
 
 __all__ = ()
@@ -132,49 +125,54 @@ def test_gruntz_hyperbolic():
     assert limit(coth(-x), x, oo) == -1
 
 
-def test_compare():
-    assert compare(Integer(2), x, x) < 0
-    assert compare(x, exp(x), x) < 0
-    assert compare(exp(x), exp(x**2), x) < 0
-    assert compare(exp(x**2), exp(exp(x)), x) < 0
-    assert compare(Integer(1), exp(exp(x)), x) < 0
+def test_mrv_max():
+    assert mrv_max({Integer(2)}, {x}, x) == {x}
+    assert mrv_max({x}, {exp(x)}, x) == {exp(x)}
+    assert mrv_max({exp(x)}, {exp(x**2)}, x) == {exp(x**2)}
+    assert mrv_max({exp(x**2)}, {exp(exp(x))}, x) == {exp(exp(x))}
+    assert mrv_max({Integer(1)}, {exp(exp(x))}, x) == {exp(exp(x))}
 
-    assert compare(x, Integer(2), x) > 0
-    assert compare(exp(x), x, x) > 0
-    assert compare(exp(x**2), exp(x), x) > 0
-    assert compare(exp(exp(x)), exp(x**2), x) > 0
-    assert compare(exp(exp(x)), Integer(1), x) > 0
+    assert mrv_max({x}, {Integer(2)}, x) == {x}
+    assert mrv_max({exp(x)}, {x}, x) == {exp(x)}
+    assert mrv_max({exp(x**2)}, {exp(x)}, x) == {exp(x**2)}
+    assert mrv_max({exp(exp(x))}, {exp(x**2)}, x) == {exp(exp(x))}
+    assert mrv_max({exp(exp(x))}, {Integer(1)}, x) == {exp(exp(x))}
 
-    assert compare(Integer(2), Integer(3), x) == 0
-    assert compare(Integer(3), Integer(-5), x) == 0
-    assert compare(Integer(2), Integer(-5), x) == 0
+    assert mrv_max({Integer(2)}, {Integer(3)}, x) == {Integer(2), Integer(3)}
+    assert mrv_max({Integer(3)}, {Integer(-5)}, x) == {Integer(3), Integer(-5)}
+    assert mrv_max({Integer(2)}, {Integer(-5)}, x) == {Integer(2), Integer(-5)}
 
-    assert compare(x, x**2, x) == 0
-    assert compare(x**2, x**3, x) == 0
-    assert compare(x**3, 1/x, x) == 0
-    assert compare(1/x, x**m, x) == 0
-    assert compare(x**m, -x, x) == 0
+    assert mrv_max({x}, {x**2}, x) == {x, x**2}
+    assert mrv_max({x**2}, {x**3}, x) == {x**2, x**3}
+    assert mrv_max({x**3}, {1/x}, x) == {x**3, 1/x}
+    assert mrv_max({1/x}, {x**m}, x) == {1/x, x**m}
+    assert mrv_max({x**m}, {-x}, x) == {x**m, -x}
 
-    assert compare(exp(x), exp(-x), x) == 0
-    assert compare(exp(-x), exp(2*x), x) == 0
-    assert compare(exp(2*x), exp(x)**2, x) == 0
-    assert compare(exp(x)**2, exp(x + exp(-x)), x) == 0
-    assert compare(exp(x), exp(x + exp(-x)), x) == 0
+    assert mrv_max({exp(x)}, {exp(-x)}, x) == {exp(x), exp(-x)}
+    assert mrv_max({exp(-x)}, {exp(2*x)}, x) == {exp(-x), exp(2*x)}
+    assert mrv_max({exp(2*x)}, {exp(x)**2}, x) == {exp(2*x), exp(x)**2}
+    assert mrv_max({exp(x)**2}, {exp(x + exp(-x))}, x) == {exp(x)**2,
+                                                           exp(x + exp(-x))}
+    assert mrv_max({exp(x)}, {exp(x + exp(-x))}, x) == {exp(x),
+                                                        exp(x + exp(-x))}
 
-    assert compare(exp(x**2), 1/exp(x**2), x) == 0
+    assert mrv_max({exp(x**2)}, {1/exp(x**2)}, x) == {exp(x**2), 1/exp(x**2)}
 
-    assert compare(exp(x), x**5, x) > 0
-    assert compare(exp(x**2), exp(x)**2, x) > 0
-    assert compare(exp(x), exp(x + exp(-x)), x) == 0
-    assert compare(exp(x + exp(-x)), exp(x), x) == 0
-    assert compare(exp(x + exp(-x)), exp(-x), x) == 0
-    assert compare(exp(-x), x, x) > 0
-    assert compare(x, exp(-x), x) < 0
-    assert compare(exp(x + 1/x), x, x) > 0
-    assert compare(exp(-exp(x)), exp(x), x) > 0
-    assert compare(exp(exp(-exp(x)) + x), exp(-exp(x)), x) < 0
+    assert mrv_max({exp(x)}, {x**5}, x) == {exp(x)}
+    assert mrv_max({exp(x**2)}, {exp(x)**2}, x) == {exp(x**2)}
+    assert mrv_max({exp(x)}, {exp(x + exp(-x))}, x) == {exp(x),
+                                                        exp(x + exp(-x))}
+    assert mrv_max({exp(x + exp(-x))}, {exp(x)}, x) == {exp(x + exp(-x)),
+                                                        exp(x)}
+    assert mrv_max({exp(x + exp(-x))}, {exp(-x)}, x) == {exp(x + exp(-x)),
+                                                         exp(-x)}
+    assert mrv_max({exp(-x)}, {x}, x) == {exp(-x)}
+    assert mrv_max({x}, {exp(-x)}, x) == {exp(-x)}
+    assert mrv_max({exp(x + 1/x)}, {x}, x) == {exp(x + 1/x)}
+    assert mrv_max({exp(-exp(x))}, {exp(x)}, x) == {exp(-exp(x))}
+    assert mrv_max({exp(exp(-exp(x)) + x)}, {exp(-exp(x))}, x) == {exp(-exp(x))}
 
-    assert compare(exp(exp(x)), exp(x + exp(-exp(x))), x) > 0
+    assert mrv_max({exp(exp(x))}, {exp(x + exp(-exp(x)))}, x) == {exp(exp(x))}
 
 
 def test_signinf():
