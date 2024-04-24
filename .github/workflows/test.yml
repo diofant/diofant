@@ -29,7 +29,6 @@ jobs:
         allow-prereleases: true
     - name: Install libs
       run: |
-        sudo rm /etc/apt/sources.list.d/microsoft-prod.list
         sudo apt update
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
