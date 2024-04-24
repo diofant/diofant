@@ -67,38 +67,6 @@ from ..core.function import UndefinedFunction
 from ..utilities import ordered
 
 
-def compare(a, b, x):
-    r"""
-    Determine order relation between two functons.
-
-    Returns
-    =======
-
-    {1, 0, -1}
-        Respectively, if `a(x) \succ b(x)`, `a(x) \asymp b(x)`
-        or `b(x) \succ a(x)`.
-
-    Examples
-    ========
-
-    >>> compare(exp(x), x**5, x)
-    1
-
-    """
-    from ..functions import log
-
-    # The log(exp(...)) must always be simplified here for termination.
-    la = a.exp if a.is_Exp else log(a)
-    lb = b.exp if b.is_Exp else log(b)
-
-    c = limitinf(la/lb, x)
-    if c.is_zero:
-        return -1
-    if c.is_infinite:
-        return 1
-    return 0
-
-
 def mrv(e, x):
     """
     Calculate the MRV set of the expression.
@@ -118,29 +86,53 @@ def mrv(e, x):
         return {x}
     if e.is_Mul or e.is_Add:
         a, b = e.as_two_terms()
-        return _mrv_max(mrv(a, x), mrv(b, x), x)
+        return mrv_max(mrv(a, x), mrv(b, x), x)
     if e.is_Exp:
         if e.exp == x:
             return {e}
         if any(a.is_infinite for a in Mul.make_args(limitinf(e.exp, x))):
-            return _mrv_max({e}, mrv(e.exp, x), x)
+            return mrv_max({e}, mrv(e.exp, x), x)
         return mrv(e.exp, x)
     if e.is_Pow:
         return mrv(e.base, x)
     if isinstance(e, log):
         return mrv(e.args[0], x)
     if e.is_Function and not isinstance(e.func, UndefinedFunction):
-        return functools.reduce(lambda a, b: _mrv_max(a, b, x),
-                                [mrv(a, x) for a in e.args])
+        return functools.reduce(lambda a, b: mrv_max(a, b, x),
+                                (mrv(a, x) for a in e.args))
     raise NotImplementedError(f"Can't calculate the MRV of {e}.")
 
 
-def _mrv_max(f, g, x):
-    """Compute the maximum of two MRV sets."""
-    for a, b in zip(f, g):
-        if (c := compare(a, b, x)) in (1, -1):
-            return f if c > 0 else g
-        break
+def mrv_max(f, g, x):
+    """Compute the maximum of two MRV sets.
+
+    Examples
+    ========
+
+    >>> mrv_max({log(x)}, {x**5}, x)
+    {x**5}
+
+    """
+    from ..functions import log
+
+    if not f:
+        return g
+    if not g:
+        return f
+    if f & g:
+        return f | g
+
+    a, b = map(next, map(iter, (f, g)))
+
+    # The log(exp(...)) must always be simplified here.
+    la = a.exp if a.is_Exp else log(a)
+    lb = b.exp if b.is_Exp else log(b)
+
+    c = limitinf(la/lb, x)
+    if c.is_zero:
+        return g
+    if c.is_infinite:
+        return f
     return f | g
 
 
@@ -161,13 +153,11 @@ def signinf(e, x):
 
     if not e.has(x):
         return sign(e).simplify()
-    if e == x:
+    if e == x or (e.is_Pow and signinf(e.base, x) == 1):
         return Integer(1)
     if e.is_Mul:
         a, b = e.as_two_terms()
         return signinf(a, x)*signinf(b, x)
-    if e.is_Pow and signinf(e.base, x) == 1:
-        return Integer(1)
 
     c0, _ = leadterm(e, x)
     return signinf(c0, x)
@@ -231,11 +221,12 @@ def leadterm(e, x):
     if not e.has(x):
         return e, Integer(0)
 
+    # Rewrite to exp-log functions per Sec. 3.3 of thesis.
     e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
-    e = e.replace(lambda f: f.is_Mul and sum(a.is_Pow for a in f.args) > 1,
-                  lambda f: Mul(exp(Add(*[a.exp for a in f.args if a.is_Exp])),
-                                *[a for a in f.args if not a.is_Exp]))
+    e = e.replace(lambda f: f.is_Mul and sum(a.is_Exp for a in f.args) > 1,
+                  lambda f: Mul(exp(Add(*(a.exp for a in f.args if a.is_Exp))),
+                                *(a for a in f.args if not a.is_Exp)))
 
     # The positive dummy, w, is used here so log(w*2) etc. will expand.
     # TODO: For limits of complex functions, the algorithm would have to

@@ -84,6 +84,8 @@ def test_gamma():
 
 def test_gamma_rewrite():
     assert gamma(n).rewrite(factorial) == factorial(n - 1)
+    assert gamma(x).rewrite('tractable') == gamma(x)
+    assert gamma(x).rewrite('tractable', wrt=x) == exp(loggamma(x))
 
 
 def test_gamma_series():

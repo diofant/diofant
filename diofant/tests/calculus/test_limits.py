@@ -1130,3 +1130,10 @@ def test_sympyissue_26513():
     assert limit((x/(x + 1))**x, x, oo) == exp(-1)
     assert limit((-x/(x + 1))**x, x, oo) == Limit((-x/(x + 1))**x, x, oo)
     assert limit(abs((-x/(x + 1))**x), x, oo) == exp(-1)
+
+
+def test_sympyissue_26525():
+    e = (-exp(-I*pi*x)*I*(exp(I*pi*x)*pi -
+                          gamma(-x + Rational(1, 2))*gamma(x + Rational(1, 2))) *
+         gamma(-x - 1)/(2*sqrt(pi)*gamma(-x + Rational(1, 2))))
+    assert limit(e, x, 1) == pi/8

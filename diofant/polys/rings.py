@@ -302,8 +302,12 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
         if self.domain == K0:
             return self(a)
     _from_GMPYFiniteField = _from_PythonFiniteField
-    _from_AlgebraicField = _from_PythonFiniteField
     _from_ExpressionDomain = _from_PythonFiniteField
+
+    def _from_AlgebraicField(self, a, K0):
+        e = self.domain._from_AlgebraicField(a, K0)
+        if e is not None:
+            return self(a)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))

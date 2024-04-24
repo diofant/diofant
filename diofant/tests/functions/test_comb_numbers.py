@@ -226,7 +226,7 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(n+4)) == harmonic(n) + 1/(n + 4) + 1/(n + 3) + 1/(n + 2) + 1/(n + 1)
     assert expand_func(harmonic(n-4)) == harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
 
-    assert harmonic(n, m).rewrite('tractable') == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite('tractable')
+    assert harmonic(n, m).rewrite('tractable', wrt=m) == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite('tractable', wrt=m)
 
     assert isinstance(expand_func(harmonic(n, 2)), harmonic)
 
