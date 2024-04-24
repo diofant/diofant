@@ -4,7 +4,6 @@ import graphlib
 import re
 
 from ..core import Basic, I, sympify
-from ..utilities import numbered_symbols
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
@@ -602,23 +601,6 @@ class Gen(Flag, metaclass=OptionType):
         if isinstance(option, (Basic, int)):
             return option
         raise OptionError("invalid argument for 'gen' option")
-
-
-class Symbols(Flag, metaclass=OptionType):
-    """``symbols`` flag to polynomial manipulation functions."""
-
-    option = 'symbols'
-
-    @classmethod
-    def default(cls):
-        return numbered_symbols('s', start=1)
-
-    @classmethod
-    def preprocess(cls, option):
-        if hasattr(option, '__iter__'):
-            return iter(option)
-        raise OptionError('expected an iterator or '
-                          f'iterable container, got {option}')
 
 
 class Method(Flag, metaclass=OptionType):
