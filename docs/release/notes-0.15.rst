@@ -31,6 +31,7 @@ Minor changes
 =============
 
 * Support CPython 3.12, see :pull:`1325`.
+* Corrected evaluation rules for inverse trigonometric and hyperbolic functions, see :pull:`1396`.
 
 Developer changes
 =================

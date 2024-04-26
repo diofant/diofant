@@ -716,6 +716,10 @@ class asinh(Function):
         if arg.is_number:
             if arg == oo:
                 return oo
+            if arg == oo + I*oo:
+                return oo + I*pi/4
+            if arg == oo - I*oo:
+                return oo - I*pi/4
             if arg == 0:
                 return Integer(0)
             if arg == 1:
@@ -780,13 +784,13 @@ class acosh(Function):
             if arg == +oo:
                 return oo
             if arg == -oo:
-                return oo
+                return oo + I*pi
             if arg == +I*oo:
-                return oo
+                return oo + I*pi/2
             if arg == -I*oo:
-                return oo
+                return oo - I*pi/2
             if arg == zoo:
-                return oo
+                return zoo
             if arg == 0:
                 return pi*I/2
             if arg == +1:

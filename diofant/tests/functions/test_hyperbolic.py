@@ -490,8 +490,13 @@ def test_asinh():
     assert asinh(+oo) == +oo
     assert asinh(-oo) == -oo
 
-    assert asinh(+I*oo) == +oo
-    assert asinh(-I*oo) == -oo
+    assert asinh(+I*oo) == +oo + I*pi/2
+    assert asinh(-I*oo) == -oo - I*pi/2
+
+    assert asinh(+oo + I*oo) == +oo + I*pi/4
+    assert asinh(+oo - I*oo) == +oo - I*pi/4
+    assert asinh(-oo + I*oo) == -oo + I*pi/4
+    assert asinh(-oo - I*oo) == -oo - I*pi/4
 
     assert asinh(zoo) == zoo
 
@@ -532,11 +537,11 @@ def test_acosh():
     assert acosh(Rational(-1, 2)) == 2*pi*I/3
 
     assert acosh(+oo) == oo
-    assert acosh(-oo) == oo
-    assert acosh(+I*oo) == oo
-    assert acosh(-I*oo) == oo
+    assert acosh(-oo) == oo + I*pi
+    assert acosh(+I*oo) == oo + I*pi/2
+    assert acosh(-I*oo) == oo - I*pi/2
 
-    assert acosh(zoo) == oo
+    assert acosh(zoo) == zoo
 
     assert acosh(I) == log(I*(1 + sqrt(2)))
     assert acosh(-I) == log(-I*(1 + sqrt(2)))

@@ -683,10 +683,16 @@ def test_cot_expansion():
 
 def test_asin():
     assert asin(nan) == nan
+    assert asin(zoo) == zoo
 
     assert asin.nargs == FiniteSet(1)
-    assert asin(+oo) == -oo*I
-    assert asin(-oo) == +oo*I
+    assert asin(+oo) == +pi/2 - oo*I
+    assert asin(-oo) == -pi/2 + oo*I
+
+    assert asin(+oo + I*oo) == +pi/4 + I*oo
+    assert asin(+oo - I*oo) == +pi/4 - I*oo
+    assert asin(-oo + I*oo) == -pi/4 + I*oo
+    assert asin(-oo - I*oo) == -pi/4 - I*oo
 
     # Note: asin(-x) = - asin(x)
     assert asin(0) == 0
@@ -757,7 +763,7 @@ def test_acos():
 
     assert acos.nargs == FiniteSet(1)
     assert acos(+oo) == +I*oo
-    assert acos(-oo) == -I*oo
+    assert acos(-oo) == -I*oo + pi
 
     # Note: acos(-x) = pi - acos(x)
     assert acos(0) == pi/2
