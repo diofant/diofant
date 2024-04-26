@@ -689,14 +689,10 @@ class asinh(Function):
     """
     The inverse hyperbolic sine function.
 
-    * asinh(x) -> Returns the inverse hyperbolic sine of x
-
     See Also
     ========
 
-    diofant.functions.elementary.hyperbolic.cosh
-    diofant.functions.elementary.hyperbolic.tanh
-    diofant.functions.elementary.hyperbolic.sinh
+    sinh
 
     """
 
@@ -707,27 +703,25 @@ class asinh(Function):
 
     @classmethod
     def eval(cls, arg):
+        from ...core import expand_mul
         from .trigonometric import asin
 
-        if arg.is_Number:
-            if arg in (oo, -oo, 0):
-                return arg
+        if arg.could_extract_minus_sign():
+            return -cls(-arg)
+
+        i_coeff = arg.as_coefficient(I)
+        if i_coeff is not None:
+            return expand_mul(I*asin(i_coeff))
+
+        if arg.is_number:
+            if arg == oo:
+                return oo
+            if arg == 0:
+                return Integer(0)
             if arg == 1:
                 return log(sqrt(2) + 1)
-            if arg == -1:
-                return log(sqrt(2) - 1)
-            if arg.is_negative:
-                return -cls(-arg)
-        else:
-            if arg is zoo:
+            if arg == zoo:
                 return zoo
-
-            i_coeff = arg.as_coefficient(I)
-
-            if i_coeff is not None:
-                return I * asin(i_coeff)
-            if _coeff_isneg(arg):
-                return -cls(-arg)
 
     @staticmethod
     @cacheit
@@ -768,14 +762,10 @@ class acosh(Function):
     """
     The inverse hyperbolic cosine function.
 
-    * acosh(x) -> Returns the inverse hyperbolic cosine of x
-
     See Also
     ========
 
-    diofant.functions.elementary.hyperbolic.asinh
-    diofant.functions.elementary.hyperbolic.atanh
-    diofant.functions.elementary.hyperbolic.cosh
+    cosh
 
     """
 
@@ -786,17 +776,24 @@ class acosh(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
-            if arg in (oo, -oo):
+        if arg.is_number:
+            if arg == +oo:
+                return oo
+            if arg == -oo:
+                return oo
+            if arg == +I*oo:
+                return oo
+            if arg == -I*oo:
+                return oo
+            if arg == zoo:
                 return oo
             if arg == 0:
-                return pi*I / 2
-            if arg == 1:
+                return pi*I/2
+            if arg == +1:
                 return Integer(0)
             if arg == -1:
                 return pi*I
 
-        if arg.is_number:
             cst_table = {
                 I: log(I*(1 + sqrt(2))),
                 -I: log(-I*(1 + sqrt(2))),
@@ -824,9 +821,6 @@ class acosh(Function):
                 if arg.is_extended_real:
                     return cst_table[arg]*I
                 return cst_table[arg]
-
-        if arg.is_infinite:
-            return oo
 
     @staticmethod
     @cacheit
