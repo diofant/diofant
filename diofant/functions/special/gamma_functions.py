@@ -159,8 +159,9 @@ class gamma(Function):
         if x.is_noninteger:
             return floor(x).is_even
 
-    def _eval_rewrite_as_tractable(self, z, **kwargs):
-        return exp(loggamma(z))
+    def _eval_rewrite_as_tractable(self, z, wrt=None, **kwargs):
+        if wrt is not None and z.limit(wrt, oo) == oo:
+            return exp(loggamma(z))
 
     def _eval_rewrite_as_factorial(self, z):
         return factorial(z - 1)

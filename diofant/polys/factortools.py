@@ -33,31 +33,6 @@ class _Factor:
 
         return _sort_factors(result)
 
-    def _aa_factor_trager(self, f):
-        """Factor multivariate polynomials over algebraic number fields."""
-        domain = self.domain
-
-        lc, f = f.LC, f.monic()
-
-        if f.is_ground:
-            return lc, []
-
-        f, F = f.sqf_part(), f
-        s, g, r = f.sqf_norm()
-
-        _, factors = r.factor_list()
-
-        if len(factors) == 1:
-            factors = [f]
-        else:
-            for i, (factor, _) in enumerate(factors):
-                h = factor.set_domain(domain)
-                h, _, g = self.cofactors(h, g)
-                h = h.compose({x: x + s*domain.unit for x in self.gens})
-                factors[i] = h
-
-        return lc, self._trial_division(F, factors)
-
     def _zz_factor(self, f):
         """
         Factor (non square-free) polynomials in `Z[X]`.
@@ -430,10 +405,9 @@ class _Factor:
                 for h in self._gf_factor_sqf(g):
                     factors.append((h, n))
         elif domain.is_AlgebraicField:
-            from .factorization_alg_field import efactor
+            from .factorization_alg_field import efactor, trager
 
-            _factor_aa_methods = {'trager': self._aa_factor_trager,
-                                  'modular': efactor}
+            _factor_aa_methods = {'modular': efactor, 'trager': trager}
             method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
             coeff, factors = method(f)
         else:

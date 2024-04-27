@@ -169,14 +169,16 @@ class Domain(DefaultPrinting, abc.ABC):
         if K1.is_ExpressionDomain:
             return K1
 
-        if any(isinstance(d, CompositeDomain) for d in (self, K1)):
-            if isinstance(self, CompositeDomain):
-                self_ground = self.domain
-                self_symbols = self.symbols
-                order = self.order
+        K0 = self
+
+        if any(isinstance(d, CompositeDomain) for d in (K0, K1)):
+            if isinstance(K0, CompositeDomain):
+                K0_ground = K0.domain
+                K0_symbols = K0.symbols
+                order = K0.order
             else:
-                self_ground = self
-                self_symbols = ()
+                K0_ground = K0
+                K0_symbols = ()
                 order = K1.order
 
             if isinstance(K1, CompositeDomain):
@@ -186,16 +188,16 @@ class Domain(DefaultPrinting, abc.ABC):
                 K1_ground = K1
                 K1_symbols = ()
 
-            domain = self_ground.unify(K1_ground)
-            symbols = _unify_gens(self_symbols, K1_symbols)
+            domain = K0_ground.unify(K1_ground)
+            symbols = _unify_gens(K0_symbols, K1_symbols)
 
-            if ((self.is_FractionField and K1.is_PolynomialRing or
-                 K1.is_FractionField and self.is_PolynomialRing) and
-                    (not self_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
+            if ((K0.is_FractionField and K1.is_PolynomialRing or
+                 K1.is_FractionField and K0.is_PolynomialRing) and
+                    (not K0_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
                 domain = domain.ring
 
-            if isinstance(self, CompositeDomain) and (not isinstance(K1, CompositeDomain) or self.is_FractionField or K1.is_PolynomialRing):
-                cls = self.__class__
+            if isinstance(K0, CompositeDomain) and (not isinstance(K1, CompositeDomain) or K0.is_FractionField or K1.is_PolynomialRing):
+                cls = K0.__class__
             else:
                 cls = K1.__class__
 
@@ -206,34 +208,34 @@ class Domain(DefaultPrinting, abc.ABC):
             tol = max(K0.tolerance, K1.tolerance)
             return cls(prec=prec, tol=tol)
 
-        if self.is_ComplexField and K1.is_ComplexField:
-            return mkinexact(self.__class__, self, K1)
-        if self.is_ComplexField and K1.is_RealField:
-            return mkinexact(self.__class__, self, K1)
-        if self.is_RealField and K1.is_ComplexField:
-            return mkinexact(K1.__class__, K1, self)
-        if self.is_RealField and K1.is_RealField:
-            return mkinexact(self.__class__, self, K1)
-        if self.is_ComplexField or self.is_RealField:
-            return self
+        if K0.is_ComplexField and K1.is_ComplexField:
+            return mkinexact(K0.__class__, K0, K1)
+        if K0.is_ComplexField and K1.is_RealField:
+            return mkinexact(K0.__class__, K0, K1)
+        if K0.is_RealField and K1.is_ComplexField:
+            return mkinexact(K1.__class__, K1, K0)
+        if K0.is_RealField and K1.is_RealField:
+            return mkinexact(K0.__class__, K0, K1)
+        if K0.is_ComplexField or K0.is_RealField:
+            return K0
         if K1.is_ComplexField or K1.is_RealField:
             return K1
 
-        if self.is_AlgebraicField and K1.is_AlgebraicField:
-            return self.__class__(self.domain.unify(K1.domain), *_unify_gens(self.gens, K1.gens))
-        if self.is_AlgebraicField:
-            return self
+        if K0.is_AlgebraicField and K1.is_AlgebraicField:
+            return K0.__class__(K0.domain.unify(K1.domain), *_unify_gens(K0.gens, K1.gens))
+        if K0.is_AlgebraicField:
+            return K0
         if K1.is_AlgebraicField:
             return K1
 
-        if self.is_RationalField:
-            return self
+        if K0.is_RationalField:
+            return K0
         if K1.is_RationalField:
             return K1
 
-        if self.is_FiniteField and self.domain == K1:
-            return self
-        if K1.is_FiniteField and K1.domain == self:
+        if K0.is_FiniteField and K0.domain == K1:
+            return K0
+        if K1.is_FiniteField and K1.domain == K0:
             return K1
 
         raise NotImplementedError

@@ -408,7 +408,6 @@ def test_pickling_polys_errors():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_options():
     for c in (Options, Options((), {'domain': 'ZZ', 'polys': False})):
         check(c)

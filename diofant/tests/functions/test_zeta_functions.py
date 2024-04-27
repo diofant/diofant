@@ -182,3 +182,6 @@ def test_lerchphi_expansion():
     assert myexpand(lerchphi(I, s, a), None)
     assert myexpand(lerchphi(-I, s, a), None)
     assert myexpand(lerchphi(exp(2*I*pi/5), s, a), None)
+
+    assert not myexpand(lerchphi(exp(1), s, a), None)
+    assert not myexpand(lerchphi(sqrt(2), s, a), None)

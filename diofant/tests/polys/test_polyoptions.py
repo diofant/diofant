@@ -9,7 +9,7 @@ from diofant.polys.polyoptions import (Auto, BooleanOption, Domain, Expand,
                                        Extension, Field, Formal, Frac,
                                        Gaussian, Gen, Gens, Greedy, Include,
                                        Method, Modulus, Options, OptionType,
-                                       Order, Polys, Sort, Split, Symbols, Wrt,
+                                       Order, Polys, Sort, Split, Wrt,
                                        allowed_flags, set_defaults)
 
 
@@ -439,17 +439,6 @@ def test_Gen_postprocess():
     Gen.postprocess(opt)
 
     assert opt == {'gen': x}
-
-
-def test_Symbols_preprocess():
-    pytest.raises(OptionError, lambda: Symbols.preprocess(x))
-
-
-def test_Symbols_postprocess():
-    opt = {'symbols': [x, y, z]}
-    Symbols.postprocess(opt)
-
-    assert opt == {'symbols': [x, y, z]}
 
 
 def test_Method_preprocess():

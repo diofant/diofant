@@ -157,20 +157,22 @@ class lerchphi(Function):
                 *[polylog(s, zet**k*root)._eval_expand_func(**hints)
                   / (unpolarify(zet)**k*root)**m for k in range(n)])
 
-        # TODO use minpoly instead of ad-hoc methods when issue sympy/sympy#5888 is fixed
-        if z.is_Exp and (z.exp/(pi*I)).is_Rational or z in [-1, I, -I]:
-            # TODO reference?
-            if z == -1:
-                p, q = Integer(1), Integer(2)
-            elif z == I:
-                p, q = Integer(1), Integer(4)
-            elif z == -I:
-                p, q = Integer(-1), Integer(4)
+        # See https://en.wikipedia.org/wiki/Lerch_zeta_function#Identities
+        if z.is_number:
+            from diofant.polys import NotAlgebraicError, minimal_polynomial
+            try:
+                poly = minimal_polynomial(z)
+            except NotAlgebraicError:
+                pass
             else:
-                arg = z.exp/(2*pi*I)
-                p, q = Integer(arg.numerator), Integer(arg.denominator)
-            return Add(*[exp(2*pi*I*k*p/q)/q**s*zeta(s, (k + a)/q)
-                         for k in range(q)])
+                from diofant.polys.polyroots import roots_cyclotomic
+                if poly.is_cyclotomic:
+                    for r in roots_cyclotomic(poly, expand=False):  # pragma: no branch
+                        if z.equals(r) is not False:
+                            arg = r.exp/(2*pi*I)
+                            p, q = arg.as_numer_denom()
+                            return Add(*[exp(2*pi*I*k*p/q)/q**s*zeta(s, (k + a)/q)
+                                         for k in range(q)])
 
         return lerchphi(z, s, a)
 

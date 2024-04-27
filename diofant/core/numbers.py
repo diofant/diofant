@@ -446,8 +446,9 @@ class Float(Number):
     it will not increase the accuracy -- the underlying value is not changed:
 
     >>> def show(f):  # binary rep of Float
+    ...     from mpmath.libmp import to_man_exp
     ...     from diofant import Mul, Pow
-    ...     s, m, e, b = f._mpf_
+    ...     m, e = to_man_exp(f._mpf_, signed=True)
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
     ...     print(f'{v} at prec={f._prec}')
     ...

@@ -227,6 +227,12 @@ def test_Poly_from_expr():
     # issue sympy/sympy#25899
     assert Poly('x-x') == Integer(0).as_poly(x)
 
+    # issue diofant/diofant#1382
+    assert (Poly.from_expr(I*(x + I), extension=True) ==
+            (I*x - 1).as_poly(x, gaussian=True))
+    assert (Poly.from_expr(I + (1 + x)*x, extension=True) ==
+            (x**2 + x + I).as_poly(x, gaussian=True))
+
 
 def test_Poly__new__():
     pytest.raises(GeneratorsError, lambda: Poly(x + 1, x, x))
@@ -3383,3 +3389,17 @@ def test_sympyissue_25723():
         assert gcd(x - i, (x - i)*(2*x + 1)) == x - i
 
     assert gcd(x - i, (x - i)*(2*x - 1)) == x - i
+
+
+def test_sympyissue_26497():
+    a_n, m = symbols('a_n m', real=True, positive=True)
+    expr = (-a_n**4*m**2/(a_n**2 + 1) - 2*a_n**4*m/(a_n**2 + 1) -
+            a_n**4 - a_n**4/(a_n**2 + 1) + 2*I*a_n**3*m**2/(a_n**2 + 1) +
+            4*I*a_n**3*m/(a_n**2 + 1) + 2*I*a_n**3 +
+            2*I*a_n**3/(a_n**2 + 1) + 2*I*a_n*m**2/(a_n**2 + 1) +
+            4*I*a_n*m/(a_n**2 + 1) + 2*I*a_n + 2*I*a_n/(a_n**2 + 1) +
+            m**2/(a_n**2 + 1) + 2*m/(a_n**2 + 1) + 1 + 1/(a_n**2 + 1))
+    expr2 = (-a_n**2 + 2*I*a_n + 1)*(a_n**2 + m**2 + 2*m + 2)
+
+    assert expr.factor() == expr2
+    assert expr.subs({a_n: 1, m: 1}) == expr2.subs({a_n: 1, m: 1}) == 12*I

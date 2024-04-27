@@ -38,10 +38,9 @@ def test_symmetrize():
         (-3*x*y*(x + y) - 2*a*x*y + a*(x + y)**2 + (x + y)**3,
          y**2*(1 - a) + y**3*(b - 1))
 
-    U = [u0, u1, u2] = symbols('u:3')
-
-    assert symmetrize(x + 1, x, y, z, formal=True, symbols=U) == \
-        (u0 + 1, -y - z, [(u0, x + y + z), (u1, x*y + x*z + y*z), (u2, x*y*z)])
+    s1, s2, s3 = symbols('s1:4')
+    assert symmetrize(x + 1, x, y, z, formal=True) == \
+        (s1 + 1, -y - z, [(s1, x + y + z), (s2, x*y + x*z + y*z), (s3, x*y*z)])
 
     assert symmetrize([1, 2, 3]) == [(1, 0), (2, 0), (3, 0)]
     assert symmetrize([1, 2, 3], formal=True) == ([(1, 0), (2, 0), (3, 0)], [])

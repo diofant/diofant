@@ -1549,3 +1549,33 @@ def test_sympyissue_26071():
 def test_sympyissue_25786():
     assert integrate(exp(-0.8*x**2),
                      (x, -3, -0.2)) == 0.44728859099449181*sqrt(pi)
+
+
+def test_sympyissue_26477():
+    x = Symbol('x', positive=True)
+    y = Symbol('y', positive=True)
+    z = Symbol('z', real=True)
+
+    i = Integral(z**(x - 1)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x, y)
+    assert i.doit() == gamma(x)*gamma(y)/gamma(x + y)
+
+    i = Integral(z**(x - 0.5)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x + 0.5, y)
+    assert i.doit() == gamma(x + 0.5)*gamma(y)/gamma(x + y + 0.5)
+
+
+def test_sympyissue_26501():
+    integrate(exp(x/log(x)), x)  # not raises
+
+
+def test_sympyissue_26503():
+    assert (integrate(a**x*b**(-x), x) ==
+            Piecewise((x, Eq(a, b)), (a**x/(b**x*log(a) - b**x*log(b)), True)))
+
+
+def test_sympyissue_26504():
+    assert (integrate(2**(3*x + 2)*3**(7*x + 5), x) ==
+            972*2**(3*x)*3**(7*x)/(3*log(2) + 7*log(3)))
+
+
+def test_sympyissue_26506():
+    integrate(log(x**2 + x - 1)**2/x**3, x)  # not raises

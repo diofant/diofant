@@ -25,6 +25,7 @@ Compatibility breaks
 * Removed support for ASCII pretty-printing and ``pprint_use_unicode()`` function, see :pull:`1369`.
 * Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
 * Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
+* Removed ``symarray()`` function, see :pull:`1383`.
 
 Minor changes
 =============
@@ -93,3 +94,13 @@ These Sympy issues also were addressed:
 * :sympyissue:`25786`: Wrong result for a simple integral
 * :sympyissue:`26343`: TypeError: Invalid NaN Comparison using dsolve for ODE with ics={v(0) : 0}
 * :sympyissue:`26313`: Error result for limit of a piecewise
+* :sympyissue:`26477`: Error in integral result using hyper
+* :sympyissue:`26497`: factor produces wrong output
+* :sympyissue:`26501`: TypeError: '>' not supported between instances of 'Poly' and 'int' calling integrate in sympy 1.12
+* :sympyissue:`26503`: TypeError: Invalid NaN comparison calling integrate in sympy 1.12
+* :sympyissue:`26504`: IndexError: Index out of range: calling integrate in sympy 1.12
+* :sympyissue:`26506`: RecursionError: maximum recursion depth exceeded in comparison calling integrate in sympy 1.12
+* :sympyissue:`26513`: Wrong limit result for Abs((-n/(n+1))**n)
+* :sympyissue:`26502`: lots of PolynomialError contains an element of the set of generators exceptions calling integrate in sympy 1.12
+* :sympyissue:`14069`: Condition for TODO in zeta_functions.py is now satisfied
+* :sympyissue:`25931`: Possible improvements in gruntz

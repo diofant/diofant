@@ -665,7 +665,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_tractable(self, n, m=1, **kwargs):
         from .. import polygamma
-        return self.rewrite(polygamma).rewrite('tractable')
+        return self.rewrite(polygamma).rewrite('tractable', **kwargs)
 
     def _eval_evalf(self, prec):
         from .. import polygamma

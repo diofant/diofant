@@ -564,8 +564,6 @@ Numpy Utility Functions Reference
 
 .. autofunction:: diofant.matrices.dense.matrix2numpy
 
-.. autofunction:: diofant.matrices.dense.symarray
-
 .. autofunction:: diofant.matrices.dense.rot_axis1
 
 .. autofunction:: diofant.matrices.dense.rot_axis2
