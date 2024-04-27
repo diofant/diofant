@@ -984,7 +984,7 @@ class acoth(Function):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return 0
+                return Integer(0)
 
             i_coeff = arg.as_coefficient(I)
 
