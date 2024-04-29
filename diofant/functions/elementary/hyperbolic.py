@@ -554,10 +554,10 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         o = self._reciprocal_of(self.args[0])
         return getattr(o, method_name)(*args, **kwargs)
 
-    def _rewrite_reciprocal(self, method_name, arg):
+    def _rewrite_reciprocal(self, method_name, arg, **kwargs):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
-        t = self._call_reciprocal(method_name, arg)
+        t = self._call_reciprocal(method_name, arg, **kwargs)
         assert t is not None
         assert t != self._reciprocal_of(arg)
         return 1/t
@@ -565,8 +565,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
     def _eval_rewrite_as_exp(self, arg):
         return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
-        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg)
+    def _eval_rewrite_as_tractable(self, arg, **kwargs):
+        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg, **kwargs)
 
     def _eval_rewrite_as_tanh(self, arg):
         return self._rewrite_reciprocal('_eval_rewrite_as_tanh', arg)
@@ -751,7 +751,7 @@ class asinh(Function):
             return arg
         return self.func(arg)
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return log(x + sqrt(x**2 + 1))
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
@@ -931,7 +931,7 @@ class atanh(Function):
             return arg
         return self.func(arg)
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return (log(1 + x) - log(1 - x))/2
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
@@ -984,7 +984,7 @@ class acoth(Function):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return 0
+                return Integer(0)
 
             i_coeff = arg.as_coefficient(I)
 
