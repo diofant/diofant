@@ -2,12 +2,12 @@ import pytest
 
 from diofant import (Abs, Derivative, DiracDelta, E, Eq, Expr, Function,
                      Heaviside, I, Integer, Integral, Interval, Matrix, Ne, O,
-                     Piecewise, Rational, Subs, Symbol, adjoint, arg, atan2,
-                     cbrt, comp, conjugate, cos, erf, exp, exp_polar, expand,
-                     gamma, im, log, nan, oo, periodic_argument, pi,
-                     polar_lift, polarify, principal_branch, re, root, sign,
-                     simplify, sin, sqrt, symbols, tanh, transpose,
-                     unbranched_argument, unpolarify, uppergamma, zoo)
+                     Piecewise, Rational, Symbol, adjoint, arg, atan2, cbrt,
+                     comp, conjugate, cos, erf, exp, exp_polar, expand, gamma,
+                     im, log, nan, oo, periodic_argument, pi, polar_lift,
+                     polarify, principal_branch, re, root, sign, simplify, sin,
+                     sqrt, symbols, tanh, transpose, unbranched_argument,
+                     unpolarify, uppergamma, zoo)
 from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
@@ -226,11 +226,11 @@ def test_sign():
     assert sign(x).doit() == sign(x)
     assert conjugate(sign(x)) == sign(x)
 
+    assert sign(sin(x)).series(x, n=0) == O(1, x)
     assert sign(sin(x)).series(x) == 1
     y = Symbol('y')
-    assert sign(x*y).series(x).removeO() == sign(y)
-    assert sign(I + x).series(x, n=2) == I + x*Subs(sign(x + I).diff(x),
-                                                    (x, 0)) + O(x**2)
+    assert sign(x*y).series(x) == sign(y)
+    assert sign(I + x).series(x) == I
 
     x = Symbol('x', nonzero=True)
     assert sign(x).is_imaginary is None
@@ -548,8 +548,8 @@ def test_arg():
     assert arg(x).rewrite(sign) == -I*log(sign(x))
 
     assert arg(x).series(x) == 0
-    assert arg(+I*x + x**2).series(x) == +pi/2 - x + x**3/3 - x**5/5 + O(x**6)
-    assert arg(-I*x + x**2).series(x) == -pi/2 + x - x**3/3 + x**5/5 + O(x**6)
+    assert arg(+I*x + x**2).series(x) == +pi/2
+    assert arg(-I*x + x**2).series(x) == -pi/2
 
 
 def test_arg_rewrite():

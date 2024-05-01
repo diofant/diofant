@@ -10,8 +10,9 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
                      elliptic_e, elliptic_k, erf, erfc, erfi, exp, factorial,
                      false, floor, gamma, hyper, integrate, limit, log,
-                     lowergamma, nan, oo, pi, polygamma, root, sign, simplify,
-                     sin, sinh, sqrt, subfactorial, symbols, tan, true)
+                     lowergamma, nan, oo, pi, polygamma, re, root, sign,
+                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
+                     true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1137,3 +1138,7 @@ def test_sympyissue_26525():
                           gamma(-x + Rational(1, 2))*gamma(x + Rational(1, 2))) *
          gamma(-x - 1)/(2*sqrt(pi)*gamma(-x + Rational(1, 2))))
     assert limit(e, x, 1) == pi/8
+
+
+def test_issue_1397():
+    assert limit(re(asin(x)), x, oo) == pi/2
