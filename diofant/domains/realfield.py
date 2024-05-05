@@ -95,9 +95,9 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         if not element.imag:
             return self.dtype(element.real)
 
-    def to_rational(self, element, limit=True):
+    def to_rational(self, element):
         """Convert a real number to rational number."""
-        return self._context.to_rational(element, limit)
+        return self._context.to_rational(element)
 
     def get_exact(self):
         from . import QQ
