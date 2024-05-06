@@ -137,6 +137,10 @@ class MPContext(PythonMPContext):
     def _convert_fallback(self, x, strings):
         raise TypeError('cannot create mpf from ' + str(x))
 
+    @property
+    def _str_digits(self):
+        return self._dps
+
     def to_rational(self, s):
         return s.as_integer_ratio()
 
