@@ -138,7 +138,7 @@ class MPContext(PythonMPContext):
         raise TypeError('cannot create mpf from ' + str(x))
 
     def to_rational(self, s):
-        return self.as_integer_ratio(s)
+        return s.as_integer_ratio()
 
     def almosteq(self, s, t, rel_eps=None, abs_eps=None):
         t = self.convert(t)
