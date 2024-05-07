@@ -104,3 +104,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26502`: lots of PolynomialError contains an element of the set of generators exceptions calling integrate in sympy 1.12
 * :sympyissue:`14069`: Condition for TODO in zeta_functions.py is now satisfied
 * :sympyissue:`25931`: Possible improvements in gruntz
+* :sympyissue:`26566`: wrong result integrating sin(a*(x+pi))**2
