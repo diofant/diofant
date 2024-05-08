@@ -105,3 +105,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14069`: Condition for TODO in zeta_functions.py is now satisfied
 * :sympyissue:`25931`: Possible improvements in gruntz
 * :sympyissue:`26566`: wrong result integrating sin(a*(x+pi))**2
+* :sympyissue:`26571`: integrate((x**8+1)**(-1/2),x) raises _CoeffExpValueError
