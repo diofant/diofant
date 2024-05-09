@@ -1579,3 +1579,10 @@ def test_sympyissue_26504():
 
 def test_sympyissue_26506():
     integrate(log(x**2 + x - 1)**2/x**3, x)  # not raises
+
+
+def test_sympyissue_26566():
+    a = symbols('a', real=True, positive=True)
+
+    assert integrate(sin(a*(x + pi))**2,
+                     (x, -pi, -pi/2)) == (pi*a - sin(pi*a))/(4*a)

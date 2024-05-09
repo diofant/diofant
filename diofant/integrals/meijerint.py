@@ -312,7 +312,7 @@ def _get_coeff_exp(expr, x):
 
     """
     from ..simplify import powsimp
-    (c, m) = expand_power_base(powsimp(expr)).as_coeff_mul(x)
+    (c, m) = expand_power_base(powsimp(expr)).as_coeff_mul(x, rational=False)
     if not m:
         return c, Integer(0)
     [m] = m
