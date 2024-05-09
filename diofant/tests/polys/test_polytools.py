@@ -3403,3 +3403,9 @@ def test_sympyissue_26497():
 
     assert expr.factor() == expr2
     assert expr.subs({a_n: 1, m: 1}) == expr2.subs({a_n: 1, m: 1}) == 12*I
+
+    # issue sympy/sympy#26577
+    assert expr.cancel().factor() == expr2
+    expr3 = -(a_n - I)**2*(a_n**2 + m**2 + 2*m + 2)
+    assert expr.cancel(extension=True).factor(extension=True) == expr3
+    assert expr.factor(extension=True) == expr3

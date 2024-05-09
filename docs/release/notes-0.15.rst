@@ -106,3 +106,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`25931`: Possible improvements in gruntz
 * :sympyissue:`26566`: wrong result integrating sin(a*(x+pi))**2
 * :sympyissue:`26571`: integrate((x**8+1)**(-1/2),x) raises _CoeffExpValueError
+* :sympyissue:`26577`: factor should use the same domain for numerator and denominator
