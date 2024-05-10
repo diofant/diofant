@@ -149,9 +149,8 @@ class floor(RoundFunction):
         args0 = args.subs({x: 0})
         if args0 == r:
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
-            if direction.is_positive:
-                return r
-            return r - 1
+            if direction.is_negative:
+                return r - 1
         return r
 
     def __le__(self, other):
@@ -224,7 +223,6 @@ class ceiling(RoundFunction):
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
                 return r + 1
-            return r
         return r
 
     def __lt__(self, other):
