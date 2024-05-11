@@ -288,6 +288,8 @@ def test_heuristic():
     assert heuristics(sin(1/x) + atan(x), x, 0, -1) == sin(oo)
     assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, -1) == log(2)
     assert heuristics(tan(tan(1/x)), x, 0, -1) is None
+    assert isinstance(limit(log(2 + sqrt(atan(x))*sin(1/x)),
+                            x, 0, -1, heuristics=False), Limit)
 
 
 def test_sympyissue_3871():
