@@ -2418,37 +2418,38 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return collect(s1.removeO(), x) + target_order
             except NotImplementedError:  # XXX parse_derivative of radsimp.py
                 return s1 + target_order
-        else:  # lseries handling
-            def yield_lseries(s):
-                """Return terms of lseries one at a time."""
-                for si in s:
-                    if not si.is_Add:
-                        yield si
-                        continue
-                    # yield terms 1 at a time if possible
-                    # by increasing order until all the
-                    # terms have been returned
-                    yielded = 0
-                    o = Order(si, x)*x
-                    if expand_mul(o.expr).is_Add:
-                        raise NotImplementedError
-                    ndid = 0
-                    ndo = len(si.args)
-                    while 1:
-                        do = (si - yielded + o).removeO()
-                        o *= x
-                        if not do or do.is_Order:
-                            continue
-                        if do.is_Add:
-                            ndid += len(do.args)
-                        else:
-                            ndid += 1
-                        yield do
-                        if ndid == ndo:
-                            break
-                        yielded += do
 
-            return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
+        # lseries handling
+        def yield_lseries(s):
+            """Return terms of lseries one at a time."""
+            for si in s:
+                if not si.is_Add:
+                    yield si
+                    continue
+                # yield terms 1 at a time if possible
+                # by increasing order until all the
+                # terms have been returned
+                yielded = 0
+                o = Order(si, x)*x
+                if expand_mul(o.expr).is_Add:
+                    raise NotImplementedError
+                ndid = 0
+                ndo = len(si.args)
+                while 1:
+                    do = (si - yielded + o).removeO()
+                    o *= x
+                    if not do or do.is_Order:
+                        continue
+                    if do.is_Add:
+                        ndid += len(do.args)
+                    else:
+                        ndid += 1
+                    yield do
+                    if ndid == ndo:
+                        break
+                    yielded += do
+
+        return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
 
     def taylor_term(self, n, x, *previous_terms):
         """General method for the taylor term.
