@@ -1123,8 +1123,6 @@ class Pow(Expr):
         from ..simplify import powsimp
         if self.is_Exp:
             e_series = self.exp.nseries(x, n, logx)
-            if e_series.is_Order:
-                return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
             if e0 in (-oo, oo):
                 return self
@@ -1139,7 +1137,6 @@ class Pow(Expr):
             return powsimp(exp_series, deep=True, combine='exp')
         if self.exp.has(x):
             return exp(self.exp*log(self.base)).nseries(x, n, logx)
-
         b_series = self.base.nseries(x, n, logx)
         while b_series.is_Order:
             n += 1
