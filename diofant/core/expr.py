@@ -2685,12 +2685,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         This is a wrapper to compute a series first.
 
         """
-        from ..functions import log
-        from .symbol import Dummy
-
-        d = logx if logx else Dummy('logx')
-
-        for t in self.series(x, n=None, logx=d):
+        for t in self.series(x, n=None, logx=logx):
             t = t.cancel()
 
             is_zero = t.equals(0)
@@ -2699,9 +2694,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if is_zero is False:
                 break
             raise NotImplementedError(f'Zero-decision problem for {t}')
-
-        if logx is None:
-            t = t.subs({d: log(x)})
 
         return t.as_leading_term(x)
 
