@@ -321,8 +321,8 @@ def test_limit():
     assert limit((log(E + 1/x) - 1)**(1 - sqrt(E + 1/x)), x, oo) == oo
 
     # issue sympy/sympy#9471
-    assert limit(27**log(x, 3)/x**3, x, oo) == 1
-    assert limit(27**(log(x, 3) + 1)/x**3, x, oo) == 27
+    assert limit(27**(log(x)/log(3))/x**3, x, oo) == 1
+    assert limit(27**(log(x)/log(3) + 1)/x**3, x, oo) == 27
 
     # issue sympy/sympy#9449
     assert limit(x*(abs(1/x + y) - abs(y - 1/x))/2, x, oo) == sign(y)**-1

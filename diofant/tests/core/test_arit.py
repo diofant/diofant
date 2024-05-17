@@ -196,8 +196,8 @@ def test_pow_E():
     assert 3**(1/log(-3)) != E
     assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == E
     assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == E
-    assert (3 + 2*I)**(1/(log(-3 - 2*I, 3)/2 + I*pi/log(3)/2)) == 9
-    assert (3 + 2*I)**(1/(log(3 + 2*I, 3)/2)) == 9
+    assert (3 + 2*I)**(1/(log(-3 - 2*I)/log(3)/2 + I*pi/log(3)/2)) == 9
+    assert (3 + 2*I)**(1/(log(3 + 2*I)/log(3)/2)) == 9
     # every time tests are run they will affirm with a different random
     # value that this identity holds
     while 1:

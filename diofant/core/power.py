@@ -522,6 +522,7 @@ class Pow(Expr):
 
     def _eval_subs(self, old, new):
         from ..functions import log
+        from .function import expand_log
         from .symbol import Symbol
 
         def _check(ct1, ct2, old):
@@ -558,7 +559,8 @@ class Pow(Expr):
             return new**self.exp._subs(old, new)
 
         if old.func is self.func and self.exp == old.exp:
-            l = log(self.base, old.base)
+            l = log(self.base)/log(old.base)
+            l = expand_log(l)
             if l.is_Number:
                 return Pow(new, l)
 
