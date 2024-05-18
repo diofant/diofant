@@ -156,7 +156,7 @@ def test_all_implicit_steps():
         'x**2 + 2xy + y**2': 'x**2 + 2 * x * y + y**2',  # split the xy
         'pi': 'pi',  # don't mess with constants
         'None': 'None',
-        'ln sin x': 'ln(sin(x))',  # multiple implicit function applications
+        'log sin x': 'log(sin(x))',  # multiple implicit function applications
         'sin x**2': 'sin(x**2)',  # implicit application to an exponential
         'alpha': 'Symbol("alpha")',  # don't split Greek letters/subscripts
         'x_2': 'Symbol("x_2")',

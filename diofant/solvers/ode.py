@@ -3725,7 +3725,6 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     gsol = Integer(0)
     # We need keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
-    ln = log
     for root, multiplicity in charroots.items():
         for i in range(multiplicity):
             if isinstance(root, RootOf):
@@ -3734,14 +3733,14 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
                     raise NotImplementedError
                 collectterms = [(0, root, 0)] + collectterms
             elif root.is_extended_real:
-                gsol += ln(x)**i*(x**root) * constants.pop()
+                gsol += log(x)**i*(x**root) * constants.pop()
                 collectterms = [(i, root, 0)] + collectterms
             else:
                 reroot = re(root)
                 imroot = im(root)
-                gsol += ln(x)**i * (x**reroot) * (
-                    constants.pop() * sin(abs(imroot)*ln(x))
-                    + constants.pop() * cos(imroot*ln(x)))
+                gsol += log(x)**i * (x**reroot) * (
+                    constants.pop() * sin(abs(imroot)*log(x))
+                    + constants.pop() * cos(imroot*log(x)))
                 # Preserve ordering (multiplicity, real part, imaginary part)
                 # It will be assumed implicitly when constructing
                 # fundamental solution sets.
@@ -3755,11 +3754,11 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
         # Keep track of when to use sin or cos for nonzero imroot
         for i, reroot, imroot in collectterms:
             if imroot == 0:
-                gensols.append(ln(x)**i*x**reroot)
+                gensols.append(log(x)**i*x**reroot)
             else:
-                sin_form = ln(x)**i*x**reroot*sin(abs(imroot)*ln(x))
+                sin_form = log(x)**i*x**reroot*sin(abs(imroot)*log(x))
                 if sin_form in gensols:
-                    cos_form = ln(x)**i*x**reroot*cos(imroot*ln(x))
+                    cos_form = log(x)**i*x**reroot*cos(imroot*log(x))
                     gensols.append(cos_form)
                 else:
                     gensols.append(sin_form)
