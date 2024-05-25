@@ -683,6 +683,7 @@ def test_cot_expansion():
 
 def test_asin():
     assert asin(nan) == nan
+    assert asin(zoo) == zoo
 
     assert asin.nargs == FiniteSet(1)
     assert asin(+oo) == -oo*I
