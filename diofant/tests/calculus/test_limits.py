@@ -546,7 +546,7 @@ def test_issue_55():
 
 
 def test_sympyissue_8061():
-    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
+    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x), x, 0) == oo
 
 
 def test_sympyissue_8229():

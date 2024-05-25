@@ -1,9 +1,7 @@
-from mpmath.libmp import prec_to_dps
-
-from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
-                     oo, pi, zoo)
+from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, oo,
+                     pi, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
-from ...ntheory import multiplicity, perfect_power
+from ...ntheory import perfect_power
 from .miscellaneous import sqrt
 
 
@@ -174,31 +172,8 @@ class log(Function):
         return exp
 
     @classmethod
-    def eval(cls, arg, base=None):
+    def eval(cls, arg):
         from .complexes import unpolarify
-
-        if base is not None:
-            if base == 1:
-                if arg == 1:
-                    return nan
-                return zoo
-            try:
-                # handle extraction of powers of the base now
-                # or else expand_log in Mul would have to handle this
-                n = multiplicity(base, arg)
-                if n:
-                    den = base**n
-                    if den.is_Integer:
-                        return n + log(arg // den) / log(base)
-                    return n + log(arg / den) / log(base)
-            except ValueError:
-                pass
-            if base is not E:
-                if arg.is_Float:
-                    dps = prec_to_dps(arg._prec + 4)
-                    return cls(arg)/cls(base).evalf(dps)
-                return cls(arg)/cls(base)
-            return cls(arg)
 
         if arg.is_Number:
             if arg == 0:
@@ -240,8 +215,6 @@ class log(Function):
         from ...concrete import Product, Sum
         from .complexes import unpolarify
         force = hints.get('force', False)
-        if len(self.args) == 2:
-            return expand_log(self.func(*self.args), deep=deep, force=force)
         arg = self.args[0]
         if arg.is_Integer:
             # remove perfect powers
@@ -282,8 +255,6 @@ class log(Function):
 
     def _eval_simplify(self, ratio, measure):
         from ...simplify import simplify
-        if len(self.args) == 2:
-            return simplify(self.func(*self.args), ratio=ratio, measure=measure)
         expr = self.func(simplify(self.args[0], ratio=ratio, measure=measure))
         expr = expand_log(expr, deep=True)
         return min([expr, self], key=measure)

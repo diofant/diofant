@@ -659,10 +659,6 @@ def evalf_log(expr, prec, options):
     from ..functions import Abs, log
     from .add import Add
 
-    if len(expr.args) > 1:
-        expr = expr.doit()
-        return evalf(expr, prec, options)
-
     arg = expr.args[0]
     workprec = prec + 10
     xre, xim, *_ = evalf(arg, workprec, options)

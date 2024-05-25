@@ -170,36 +170,14 @@ def test_log_values():
     assert isinstance(log(2*3**2), log)
 
 
-def test_log_base():
-    assert log(1, 2) == 0
-    assert log(2, 2) == 1
-    assert log(3, 2) == log(3)/log(2)
-    assert log(6, 2) == 1 + log(3)/log(2)
-    assert log(6, 3) == 1 + log(2)/log(3)
-    assert log(2**3, 2) == 3
-    assert log(3**3, 3) == 3
-    assert log(5, 1) == zoo
-    assert log(1, 1) == nan
-    assert log(Rational(2, 3), 10) == (-log(3) + log(2))/log(10)
-    assert log(Rational(2, 3), Rational(1, 3)) == -log(2)/log(3) + 1
-    assert log(Rational(2, 3), Rational(2, 5)) == \
-        (-log(3) + log(2))/(-log(5) + log(2))
-
-
 def test_log_symbolic():
-    assert log(x, exp(1)) == log(x)
     assert log(exp(x)) != x
 
-    assert log(x, exp(1)) == log(x)
     assert log(x*y) != log(x) + log(y)
     assert log(x/y).expand() != log(x) - log(y)
     assert log(x/y).expand(force=True) == log(x) - log(y)
     assert log(x**y).expand() != y*log(x)
     assert log(x**y).expand(force=True) == y*log(x)
-
-    assert log(x, 2) == log(x)/log(2)
-    assert log(E, 2) == 1/log(2)
-    assert log(x, y) == log(x)/log(y)
 
     p, q = symbols('p,q', positive=True)
     r = Symbol('r', real=True)
@@ -344,18 +322,6 @@ def test_log_expand():
     # factoring and if simplification is sought, it's cheaper to put
     # logs together than it is to take them apart.
     assert log(2*3**2).expand() != 2*log(3) + log(2)
-
-    # issue sympy/sympy#8866
-    assert simplify(log(x, 10, evaluate=False)) == simplify(log(x, 10))
-    assert expand_log(log(x, 10, evaluate=False)) == expand_log(log(x, 10))
-
-    y = Symbol('y', positive=True)
-    l1 = log(exp(y), exp(10))
-    b1 = log(exp(y), exp(5))
-    l2 = log(exp(y), exp(10), evaluate=False)
-    b2 = log(exp(y), exp(5), evaluate=False)
-    assert simplify(log(l1, b1)) == simplify(log(l2, b2))
-    assert expand_log(log(l1, b1)) == expand_log(log(l2, b2))
 
 
 def test_log_simplify():

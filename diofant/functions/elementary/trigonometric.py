@@ -116,7 +116,7 @@ def _pi_coeff(arg, cycles=1):
                 # recast exact binary fractions to Rationals
                 f = abs(c) % 1
                 if f != 0:
-                    p = -round(log(f, 2).evalf(strict=False))
+                    p = -round((log(f)/log(2)).evalf(strict=False))
                     m = 2**p
                     cm = c*m
                     i = int(cm)
