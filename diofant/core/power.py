@@ -176,9 +176,9 @@ class Pow(Expr):
         if evaluate:
             if nan in (b, e):
                 return nan
-            if e is Integer(0):
+            if e == 0:
                 return Integer(1)
-            if e is Integer(1):
+            if e == 1:
                 return b
             if e is zoo:
                 return nan

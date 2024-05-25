@@ -543,7 +543,7 @@ class Mul(AssocOp):
                                                   c.is_extended_real is not None)]
 
         # 0
-        elif coeff is S.Zero:
+        elif coeff == 0:
             # we know for sure the result will be 0 except the multiplicand
             # is infinity
             if any(c.is_infinite for c in c_part):

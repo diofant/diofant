@@ -493,9 +493,6 @@ class Float(Number):
 
     @classmethod
     def _new(cls, _mpf_, _prec, zero=True):
-        # special cases
-        if zero and _mpf_ == fzero:
-            return Integer(0)  # XXX this is different from Float which gives 0.0
         if _mpf_ == fnan:
             return nan
 

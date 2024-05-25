@@ -943,7 +943,7 @@ def hypsum(expr, n, start, prec):
         raise ValueError(f'Sum diverges like (n!)^{int(-h)}')
 
     term = expr.subs({n: 0})
-    if not term.is_Rational:
+    if not term.is_Rational and not term.is_zero:
         raise NotImplementedError('Non rational term functionality is not implemented.')
 
     # Direct summation if geometric or faster
