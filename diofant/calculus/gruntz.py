@@ -62,7 +62,7 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, exp, oo
+from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, exp, log, oo
 from ..core.function import UndefinedFunction
 from ..utilities import ordered
 
@@ -78,8 +78,6 @@ def mrv(e, x):
     {x}
 
     """
-    from ..functions import log
-
     if not e.has(x):
         return set()
     if e == x:
@@ -113,8 +111,6 @@ def mrv_max(f, g, x):
     {x**5}
 
     """
-    from ..functions import log
-
     if not f:
         return g
     if not g:
@@ -216,8 +212,6 @@ def leadterm(e, x):
     (-1, 0)
 
     """
-    from ..functions import log
-
     if not e.has(x):
         return e, Integer(0)
 

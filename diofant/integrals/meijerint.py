@@ -92,8 +92,8 @@ def _create_lookup_table(table):
                 return arg <= 0
 
     # Section 8.4.2
-    from ..core import exp
-    from ..functions import (cos, cosh, erf, erfc, erfi, factorial, gamma, log,
+    from ..core import exp, log
+    from ..functions import (cos, cosh, erf, erfc, erfi, factorial, gamma,
                              polar_lift, re, sin, sinh, sqrt)
 
     # TODO this needs more polar_lift (c/f entry for exp)
@@ -1922,8 +1922,8 @@ def meijerint_inversion(f, x, t):
     Heaviside(t)
 
     """
-    from ..core import Add, Mul, exp, expand
-    from ..functions import Heaviside, log
+    from ..core import Add, Mul, exp, expand, log
+    from ..functions import Heaviside
     from .integrals import Integral
     f_ = f
     t_ = t

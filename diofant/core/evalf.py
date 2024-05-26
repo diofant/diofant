@@ -656,8 +656,9 @@ def evalf_trig(v, prec, options):
 
 
 def evalf_log(expr, prec, options):
-    from ..functions import Abs, log
+    from ..functions import Abs
     from .add import Add
+    from .power import log
 
     arg = expr.args[0]
     workprec = prec + 10

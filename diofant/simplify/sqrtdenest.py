@@ -1,10 +1,10 @@
 import math
 
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
-                    expand_log, expand_mul, factor_terms)
+                    expand_log, expand_mul, factor_terms, log)
 from ..core.function import _mexpand
 from ..core.sympify import sympify
-from ..functions import log, root, sign, sqrt
+from ..functions import root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
 from ..utilities import default_sort_key, ordered
 from .powsimp import powdenest

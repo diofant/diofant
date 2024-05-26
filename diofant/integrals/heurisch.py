@@ -4,10 +4,10 @@ import functools
 from itertools import permutations
 
 from ..core import (Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, exp,
-                    expand_multinomial, expand_power_exp, pi, sympify)
+                    expand_multinomial, expand_power_exp, log, pi, sympify)
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         binomial, cos, cosh, cot, coth, erf, erfi, li, log,
-                         root, sin, sinh, sqrt, tan, tanh)
+                         binomial, cos, cosh, cot, coth, erf, erfi, li, root,
+                         sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain

@@ -61,15 +61,15 @@ from collections import defaultdict
 from itertools import chain, product
 
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
-                    Rational, Tuple, exp, expand, expand_func, nan, oo, pi,
-                    symbols, zoo)
+                    Rational, Tuple, exp, expand, expand_func, log, nan, oo,
+                    pi, symbols, zoo)
 from ..core.sympify import sympify
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf,
                          exp_polar, expint, factorial, floor, fresnelc,
-                         fresnels, gamma, lerchphi, log, lowergamma,
-                         polar_lift, polarify, re, rf, root, sin, sinh, sqrt,
-                         unpolarify, uppergamma)
+                         fresnels, gamma, lerchphi, lowergamma, polar_lift,
+                         polarify, re, rf, root, sin, sinh, sqrt, unpolarify,
+                         uppergamma)
 from ..functions.special.hyper import (HyperRep_asin1, HyperRep_asin2,
                                        HyperRep_atanh, HyperRep_cosasin,
                                        HyperRep_log1, HyperRep_log2,
