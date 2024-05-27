@@ -7,9 +7,9 @@ from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      combsimp, cos, cosh, cosine_transform, count_ops, diff,
                      erf, exp, exp_polar, expand, expand_multinomial,
                      expand_power_exp, factor, factorial, gamma, hyper,
-                     hypersimp, integrate, ln, log, logcombine, nsimplify, oo,
-                     pi, posify, root, separatevars, sign, signsimp, simplify,
-                     sin, sinh, solve, sqrt, sqrtdenest, sstr, symbols, tan,
+                     hypersimp, integrate, log, logcombine, nsimplify, oo, pi,
+                     posify, root, separatevars, sign, signsimp, simplify, sin,
+                     sinh, solve, sqrt, sqrtdenest, sstr, symbols, tan,
                      trigsimp, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
@@ -708,7 +708,7 @@ def test_simplify_algebraic_numbers():
 
 @pytest.mark.timeout(20)
 def test_sympyissue_21641():
-    assert (simplify(65712362363534280139543*ln(Rational(49, 50)) /
+    assert (simplify(65712362363534280139543*log(Rational(49, 50)) /
                      2441406250000000000) ==
             -65712362363534280139543*log(50)/2441406250000000000 +
             65712362363534280139543*log(49)/2441406250000000000)

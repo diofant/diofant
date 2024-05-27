@@ -45,16 +45,13 @@ from .special.tensor_functions import Eijk, KroneckerDelta, LeviCivita
 from .special.zeta_functions import dirichlet_eta, lerchphi, polylog, zeta
 
 
-ln = log
-
-
 __all__ = ('FallingFactorial', 'RisingFactorial', 'binomial', 'factorial',
            'factorial2', 'ff', 'rf', 'subfactorial', 'bell', 'bernoulli',
            'catalan', 'euler', 'fibonacci', 'genocchi', 'harmonic', 'lucas',
            'Abs', 'adjoint', 'arg', 'conjugate', 'im', 'periodic_argument',
            'polar_lift', 'polarify', 'principal_branch', 're', 'sign',
            'transpose', 'unbranched_argument', 'unpolarify', 'LambertW',
-           'exp', 'exp_polar', 'log', 'ln', 'acosh', 'acoth', 'asinh',
+           'exp', 'exp_polar', 'log', 'acosh', 'acoth', 'asinh',
            'atanh', 'cosh', 'coth', 'csch', 'sech', 'sinh', 'tanh', 'ceiling',
            'floor', 'Id', 'Max', 'Min', 'cbrt', 'real_root', 'root', 'sqrt',
            'Piecewise', 'piecewise_fold', 'acos', 'acot', 'acsc', 'asec',

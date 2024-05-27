@@ -27,7 +27,7 @@ from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      binomial, ceiling, chebyshevt, chebyshevt_root,
                      chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
-                     floor, gamma, harmonic, hermite, im, legendre, ln, log,
+                     floor, gamma, harmonic, hermite, im, legendre, log,
                      loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
                      rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
                      vectorize, zeta, zoo)
@@ -195,7 +195,7 @@ def test_Singletons():
 
 
 def test_functions():
-    one_var = (acosh, ln, Heaviside, factorial, bernoulli, coth, tanh,
+    one_var = (acosh, Heaviside, factorial, bernoulli, coth, tanh,
                sign, arg, asin, DiracDelta, re, Abs, sinh, cos, cot, acos,
                acot, gamma, bell, harmonic, LambertW, zeta, log, factorial,
                asinh, acoth, cosh, dirichlet_eta, loggamma, erf, ceiling,

@@ -291,9 +291,9 @@ def test_RR():
 # TODO: convert the rest of PMINT tests:
 # Airy functions
 # f = (x - AiryAi(x)*AiryAi(1, x)) / (x**2 - AiryAi(x)**2)
-# g = Rational(1,2)*ln(x + AiryAi(x)) + Rational(1,2)*ln(x - AiryAi(x))
+# g = Rational(1,2)*log(x + AiryAi(x)) + Rational(1,2)*log(x - AiryAi(x))
 # f = x**2 * AiryAi(x)
 # g = -AiryAi(x) + AiryAi(1, x)*x
 # Whittaker functions
 # f = WhittakerW(mu + 1, nu, x) / (WhittakerW(mu, nu, x) * x)
-# g = x/2 - mu*ln(x) - ln(WhittakerW(mu, nu, x))
+# g = x/2 - mu*log(x) - log(WhittakerW(mu, nu, x))
