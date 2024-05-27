@@ -62,7 +62,7 @@ for proof of the termination (pp. 52-60).
 
 import functools
 
-from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, oo
+from ..core import Add, Dummy, Integer, Mul, cacheit, evaluate, exp, oo
 from ..core.function import UndefinedFunction
 from ..utilities import ordered
 
@@ -216,7 +216,7 @@ def leadterm(e, x):
     (-1, 0)
 
     """
-    from ..functions import exp, log
+    from ..functions import log
 
     if not e.has(x):
         return e, Integer(0)
@@ -271,8 +271,6 @@ def rewrite(e, x, w):
     (log(x)/y, -x)
 
     """
-    from ..functions import exp
-
     Omega = mrv(e, x)
     if not Omega:
         return e, None  # e really does not depend on x

@@ -1169,7 +1169,8 @@ class expint(Function):
 
     @classmethod
     def eval(cls, nu, z):
-        from .. import exp, factorial, gamma, unpolarify, uppergamma
+        from ...core import exp
+        from .. import factorial, gamma, unpolarify, uppergamma
         nu2 = unpolarify(nu)
         if nu != nu2:
             return expint(nu2, z)
@@ -1202,7 +1203,8 @@ class expint(Function):
         return z**(nu - 1)*uppergamma(1 - nu, z)
 
     def _eval_rewrite_as_Ei(self, nu, z):
-        from .. import exp, exp_polar, factorial, unpolarify
+        from ...core import exp
+        from .. import exp_polar, factorial, unpolarify
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
         if nu.is_Integer and nu > 1:

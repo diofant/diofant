@@ -37,9 +37,8 @@ import functools
 import operator
 from itertools import combinations_with_replacement
 
-from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
-                    expand_trig, symbols)
-from ..functions import exp
+from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, exp,
+                    expand, expand_trig, symbols)
 from ..integrals import Integral
 from ..polys import lcm
 from ..simplify.radsimp import collect

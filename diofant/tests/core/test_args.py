@@ -23,7 +23,7 @@ from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
                      RootSum, S, Set, StrictGreaterThan, StrictLessThan, Subs,
                      Subset, Sum, Symbol, SymmetricDifference, Trace,
                      Transpose, Tuple, Unequality, Union, Wild, WildFunction,
-                     Xor, ZeroMatrix, divisor_sigma, false, mobius, sin,
+                     Xor, ZeroMatrix, divisor_sigma, exp, false, mobius, sin,
                      symbols, totient, true)
 from diofant.abc import a, b, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
@@ -48,14 +48,14 @@ from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                cosh, cot, coth, csc, csch, dirichlet_eta,
                                elliptic_e, elliptic_f, elliptic_k, elliptic_pi,
                                erf, erf2, erf2inv, erfc, erfcinv, erfi, erfinv,
-                               euler, exp, exp_polar, expint, factorial,
-                               factorial2, fibonacci, floor, fresnelc,
-                               fresnels, gamma, gegenbauer, genocchi, hankel1,
-                               hankel2, harmonic, hermite, hyper, im, jacobi,
-                               jn, laguerre, legendre, lerchphi, li, log,
-                               loggamma, lowergamma, lucas, meijerg,
-                               periodic_argument, polar_lift, polygamma,
-                               polylog, principal_branch)
+                               euler, exp_polar, expint, factorial, factorial2,
+                               fibonacci, floor, fresnelc, fresnels, gamma,
+                               gegenbauer, genocchi, hankel1, hankel2,
+                               harmonic, hermite, hyper, im, jacobi, jn,
+                               laguerre, legendre, lerchphi, li, log, loggamma,
+                               lowergamma, lucas, meijerg, periodic_argument,
+                               polar_lift, polygamma, polylog,
+                               principal_branch)
 from diofant.functions import re as _re
 from diofant.functions import (sec, sech, sign, sinh, subfactorial, tan, tanh,
                                transpose, uppergamma, yn, zeta)

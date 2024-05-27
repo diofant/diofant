@@ -14,7 +14,7 @@ from .elementary.complexes import (Abs, adjoint, arg, conjugate, im,
                                    periodic_argument, polar_lift, polarify,
                                    principal_branch, re, sign, transpose,
                                    unbranched_argument, unpolarify)
-from .elementary.exponential import LambertW, exp, exp_polar, log
+from .elementary.exponential import LambertW, exp_polar, log
 from .elementary.hyperbolic import (acosh, acoth, asinh, atanh, cosh, coth,
                                     csch, sech, sinh, tanh)
 from .elementary.integers import ceiling, floor
@@ -51,7 +51,7 @@ __all__ = ('FallingFactorial', 'RisingFactorial', 'binomial', 'factorial',
            'Abs', 'adjoint', 'arg', 'conjugate', 'im', 'periodic_argument',
            'polar_lift', 'polarify', 'principal_branch', 're', 'sign',
            'transpose', 'unbranched_argument', 'unpolarify', 'LambertW',
-           'exp', 'exp_polar', 'log', 'acosh', 'acoth', 'asinh',
+           'exp_polar', 'log', 'acosh', 'acoth', 'asinh',
            'atanh', 'cosh', 'coth', 'csch', 'sech', 'sinh', 'tanh', 'ceiling',
            'floor', 'Id', 'Max', 'Min', 'cbrt', 'real_root', 'root', 'sqrt',
            'Piecewise', 'piecewise_fold', 'acos', 'acot', 'acsc', 'asec',

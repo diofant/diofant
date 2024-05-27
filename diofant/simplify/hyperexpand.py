@@ -61,11 +61,11 @@ from collections import defaultdict
 from itertools import chain, product
 
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
-                    Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
-                    zoo)
+                    Rational, Tuple, exp, expand, expand_func, nan, oo, pi,
+                    symbols, zoo)
 from ..core.sympify import sympify
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
-                         ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
+                         ceiling, cos, cosh, elliptic_e, elliptic_k, erf,
                          exp_polar, expint, factorial, floor, fresnelc,
                          fresnels, gamma, lerchphi, log, lowergamma,
                          polar_lift, polarify, re, rf, root, sin, sinh, sqrt,
