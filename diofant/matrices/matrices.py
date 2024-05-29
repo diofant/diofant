@@ -4,11 +4,11 @@ import math
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
-                    Symbol, count_ops, oo, symbols)
+                    Symbol, count_ops, exp, oo, symbols)
 from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and
 from ..core.sympify import sympify
-from ..functions import Max, Min, exp, factorial, sqrt
+from ..functions import Max, Min, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp

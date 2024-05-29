@@ -1,4 +1,4 @@
-from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, oo,
+from ...core import (Add, E, Function, I, Integer, Mul, exp, expand_log, oo,
                      pi, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import perfect_power
@@ -132,19 +132,6 @@ class exp_polar(Function):
         if self.exp == 0:
             return super().as_base_exp()
         return self.func(1), Mul(*self.args)
-
-
-def exp(arg, **kwargs):
-    """
-    The exponential function, `e^x`.
-
-    See Also
-    ========
-
-    diofant.functions.elementary.exponential.log
-
-    """
-    return Pow(E, arg, **kwargs)
 
 
 class log(Function):

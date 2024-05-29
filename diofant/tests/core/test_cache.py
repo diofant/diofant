@@ -64,8 +64,9 @@ def test_nocache(clear_imports, monkeypatch):
     """Regression tests with DIOFANT_USE_CACHE=False."""
     monkeypatch.setenv('DIOFANT_USE_CACHE', 'False')
     from diofant.core.cache import CACHE
+    from diofant.core.power import exp
     from diofant.core.symbol import Symbol
-    from diofant.functions import exp, sin, sinh, sqrt
+    from diofant.functions import sin, sinh, sqrt
 
     # test that we don't use cache
     assert not CACHE

@@ -92,8 +92,9 @@ def _create_lookup_table(table):
                 return arg <= 0
 
     # Section 8.4.2
-    from ..functions import (cos, cosh, erf, erfc, erfi, exp, factorial, gamma,
-                             log, polar_lift, re, sin, sinh, sqrt)
+    from ..core import exp
+    from ..functions import (cos, cosh, erf, erfc, erfi, factorial, gamma, log,
+                             polar_lift, re, sin, sinh, sqrt)
 
     # TODO this needs more polar_lift (c/f entry for exp)
     add(Heaviside(t - b)*(t - b)**(a - 1), [a], [], [], [0], t/b,
@@ -898,8 +899,9 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
 
 def _check_antecedents(g1, g2, x):
     """Return a condition under which the integral theorem applies."""
+    from ..core import exp
     from ..functions import arg as arg_
-    from ..functions import cos, exp, re, sign, sin
+    from ..functions import cos, re, sign, sin
     from ..functions import unbranched_argument as arg
     from ..functions import unpolarify
 
@@ -1188,7 +1190,8 @@ def _rewrite_inversion(fac, po, g, x):
 
 def _check_antecedents_inversion(g, x):
     """Check antecedents for the laplace inversion integral."""
-    from ..functions import exp, im, re
+    from ..core import exp
+    from ..functions import im, re
     z = g.argument
     _, e = _get_coeff_exp(z, x)
     if e < 0:
@@ -1658,7 +1661,8 @@ def meijerint_definite(f, x, a, b):
     #
     # There are usually several ways of doing this, and we want to try all.
     # This function does (1), calls _meijerint_definite_2 for step (2).
-    from ..functions import DiracDelta, arg, exp
+    from ..core import exp
+    from ..functions import DiracDelta, arg
 
     if f.has(DiracDelta):
         return
@@ -1918,8 +1922,8 @@ def meijerint_inversion(f, x, t):
     Heaviside(t)
 
     """
-    from ..core import Add, Mul, expand
-    from ..functions import Heaviside, exp, log
+    from ..core import Add, Mul, exp, expand
+    from ..functions import Heaviside, log
     from .integrals import Integral
     f_ = f
     t_ = t

@@ -5,10 +5,10 @@ import math
 import mpmath
 
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, Tuple, oo, pi, zoo)
+                     Ne, Rational, Tuple, exp, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
-from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
-                sin, sinh, sqrt)
+from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, log, sin,
+                sinh, sqrt)
 
 
 class TupleArg(Tuple):

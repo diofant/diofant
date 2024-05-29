@@ -2622,7 +2622,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from ..calculus import Order
         from ..calculus.gruntz import mrv, rewrite
-        from ..functions import exp, log
+        from ..functions import log
         from . import Dummy
 
         if x.is_positive is x.is_negative is None:
@@ -3154,4 +3154,4 @@ from .add import Add  # noqa: E402
 from .mod import Mod  # noqa: E402
 from .mul import Mul  # noqa: E402
 from .numbers import I, Integer, Rational, nan, oo, zoo  # noqa: E402
-from .power import Pow  # noqa: E402
+from .power import exp, Pow  # noqa: E402

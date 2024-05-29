@@ -232,13 +232,12 @@ from itertools import islice
 from ..calculus import Order
 from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
-                    Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
-                    oo, symbols, zoo)
+                    Tuple, Wild, diff, exp, expand, expand_mul, factor_terms,
+                    nan, oo, symbols, zoo)
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
-from ..functions import (conjugate, cos, exp, factorial, im, log, re, sin,
-                         sqrt, tan)
+from ..functions import conjugate, cos, factorial, im, log, re, sin, sqrt, tan
 from ..integrals import Integral, integrate
 from ..logic.boolalg import BooleanAtom
 from ..matrices import BlockDiagMatrix, Matrix, wronskian

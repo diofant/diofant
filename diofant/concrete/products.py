@@ -1,5 +1,5 @@
-from ..core import Integer, Mul, nan
-from ..functions import exp, log
+from ..core import Integer, Mul, exp, nan
+from ..functions import log
 from ..polys import quo, roots
 from ..simplify.powsimp import powsimp
 from .expr_with_intlimits import ExprWithIntLimits

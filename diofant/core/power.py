@@ -77,6 +77,19 @@ def integer_nthroot(y, n):
     return x, t == y
 
 
+def exp(arg, **kwargs):
+    """
+    The exponential function, `e^x`.
+
+    See Also
+    ========
+
+    diofant.functions.elementary.exponential.log
+
+    """
+    return Pow(E, arg, **kwargs)
+
+
 class Pow(Expr):
     """
     Defines the expression x**y as "x raised to a power y".
@@ -233,7 +246,7 @@ class Pow(Expr):
         return 4, 2, cls.__name__
 
     def _eval_power(self, other):
-        from ..functions import Abs, arg, exp, floor, im, log, re, sign
+        from ..functions import Abs, arg, floor, im, log, re, sign
         b, e = self.as_base_exp()
         if b is nan:
             return (b**e)**other  # let __new__ handle it
@@ -877,27 +890,26 @@ class Pow(Expr):
         from ..functions import arg, cos, sin
 
         if self.exp.is_Integer:
-            exp = self.exp
             re, im = self.base.as_real_imag(deep=deep)
             if not im:
                 return self, Integer(0)
             a, b = symbols('a b', cls=Dummy)
-            if exp >= 0:
+            if self.exp >= 0:
                 if re.is_Number and im.is_Number:
                     # We can be more efficient in this case
-                    expr = expand_multinomial(self.base**exp)
+                    expr = expand_multinomial(self.base**self.exp)
                     return expr.as_real_imag()
 
-                expr = ((a + b)**exp).as_poly()  # a = re, b = im; expr = (a + b*I)**exp
+                expr = ((a + b)**self.exp).as_poly()  # a = re, b = im; expr = (a + b*I)**self.exp
             else:
                 mag = re**2 + im**2
                 re, im = re/mag, -im/mag
                 if re.is_Number and im.is_Number:
                     # We can be more efficient in this case
-                    expr = expand_multinomial((re + im*I)**-exp)
+                    expr = expand_multinomial((re + im*I)**-self.exp)
                     return expr.as_real_imag()
 
-                expr = ((a + b)**-exp).as_poly()
+                expr = ((a + b)**-self.exp).as_poly()
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]
@@ -930,7 +942,6 @@ class Pow(Expr):
 
             return rp*cos(tp), rp*sin(tp)
         if self.is_Exp:
-            from ..functions import exp
             re, im = self.exp.as_real_imag()
             if deep:
                 re = re.expand(deep, **hints)
@@ -1121,7 +1132,7 @@ class Pow(Expr):
 
     def _eval_nseries(self, x, n, logx):
         from ..calculus import Order, limit
-        from ..functions import arg, exp, floor, log
+        from ..functions import arg, floor, log
         from ..simplify import powsimp
         if self.is_Exp:
             e_series = self.exp.nseries(x, n, logx)
@@ -1181,7 +1192,7 @@ class Pow(Expr):
 
     def _eval_as_leading_term(self, x):
         from ..calculus import Order
-        from ..functions import exp, log
+        from ..functions import log
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
         if self.is_Exp:
