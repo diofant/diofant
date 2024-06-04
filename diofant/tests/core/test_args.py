@@ -23,8 +23,8 @@ from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
                      RootSum, S, Set, StrictGreaterThan, StrictLessThan, Subs,
                      Subset, Sum, Symbol, SymmetricDifference, Trace,
                      Transpose, Tuple, Unequality, Union, Wild, WildFunction,
-                     Xor, ZeroMatrix, divisor_sigma, exp, false, mobius, sin,
-                     symbols, totient, true)
+                     Xor, ZeroMatrix, divisor_sigma, exp, false, log, mobius,
+                     sin, symbols, totient, true)
 from diofant.abc import a, b, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
 from diofant.concrete.expr_with_limits import AddWithLimits, ExprWithLimits
@@ -52,7 +52,7 @@ from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                fibonacci, floor, fresnelc, fresnels, gamma,
                                gegenbauer, genocchi, hankel1, hankel2,
                                harmonic, hermite, hyper, im, jacobi, jn,
-                               laguerre, legendre, lerchphi, li, log, loggamma,
+                               laguerre, legendre, lerchphi, li, loggamma,
                                lowergamma, lucas, meijerg, periodic_argument,
                                polar_lift, polygamma, polylog,
                                principal_branch)
@@ -644,7 +644,7 @@ def test_diofant__functions__elementary__exponential__exp_polar():
     assert _test_args(exp_polar(2))
 
 
-def test_diofant__functions__elementary__exponential__log():
+def test_diofant__core__power__log():
     assert _test_args(log(2))
 
 

@@ -2622,8 +2622,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from ..calculus import Order
         from ..calculus.gruntz import mrv, rewrite
-        from ..functions import log
-        from . import Dummy
+        from . import Dummy, log
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)

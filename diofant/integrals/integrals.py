@@ -1,9 +1,9 @@
 from ..calculus import Order, limit
 from ..concrete.expr_with_limits import AddWithLimits
 from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
-                    diff, nan, oo)
+                    diff, log, nan, oo)
 from ..core.sympify import sympify
-from ..functions import Piecewise, log, piecewise_fold
+from ..functions import Piecewise, piecewise_fold
 from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError

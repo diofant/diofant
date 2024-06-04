@@ -9,15 +9,14 @@ from types import GeneratorType
 
 from ..core import (Add, Dummy, Equality, Expr, Float, Function, Ge, I,
                     Integer, Lambda, Mul, Symbol, exp, expand_log, expand_mul,
-                    expand_power_exp, nan, nfloat, pi, preorder_traversal)
+                    expand_power_exp, log, nan, nfloat, pi, preorder_traversal)
 from ..core.assumptions import check_assumptions
 from ..core.function import AppliedUndef
 from ..core.logic import fuzzy_and
 from ..core.relational import Relational
 from ..core.sympify import sympify
 from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
-                         atan2, cos, im, log, piecewise_fold, re, sin, sqrt,
-                         tan)
+                         atan2, cos, im, piecewise_fold, re, sin, sqrt, tan)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..logic import false, true
