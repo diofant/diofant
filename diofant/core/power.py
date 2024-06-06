@@ -84,7 +84,7 @@ def exp(arg, **kwargs):
     See Also
     ========
 
-    diofant.functions.elementary.exponential.log
+    log
 
     """
     return Pow(E, arg, **kwargs)
@@ -1306,14 +1306,12 @@ class Pow(Expr):
 class log(Function):
     r"""
     The natural logarithm function `\ln(x)` or `\log(x)`.
-    Logarithms are taken with the natural base, `e`. To get
-    a logarithm of a different base ``b``, use ``log(x, b)``,
-    which is essentially short-hand for ``log(x)/log(b)``.
+    Logarithms are taken with the natural base, `e`.
 
     See Also
     ========
 
-    diofant.functions.elementary.exponential.exp
+    exp
 
     """
 

@@ -26,8 +26,8 @@ Compatibility breaks
 * Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
 * Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
 * Removed ``symarray()`` function, see :pull:`1383`.
-* Removed ``base`` kwarg for :func:`~diofant.functions.elementary.exponential.log`, see :pull:`1407`.
-* Removed ``ln`` alias for :func:`~diofant.functions.elementary.exponential.log`, see :pull:`1410`.
+* Removed ``base`` kwarg for :func:`~diofant.core.power.log`, see :pull:`1407`.
+* Removed ``ln`` alias for :func:`~diofant.core.power.log`, see :pull:`1410`.
 
 Minor changes
 =============
