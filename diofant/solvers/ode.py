@@ -189,7 +189,7 @@ to solve the solution for you, so you do not need to do that.  Lastly, if your
 ODE has a common simplification that can be applied to your solutions, you can
 add a special case in :py:meth:`~diofant.solvers.ode.odesimp` for it.  For
 example, solutions returned from the ``1st_homogeneous_coeff`` hints often
-have many :py:meth:`~diofant.functions.elementary.exponential.log` terms, so
+have many :py:meth:`~diofant.core.power.log` terms, so
 :py:meth:`~diofant.solvers.ode.odesimp` calls
 :py:meth:`~diofant.simplify.simplify.logcombine` on them (it also helps to write
 the arbitrary constant as ``log(C1)`` instead of ``C1`` in this case).  Also
