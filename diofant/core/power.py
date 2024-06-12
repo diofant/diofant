@@ -1135,8 +1135,9 @@ class Pow(Expr):
         if self.is_Exp:
             e_series = self.exp.nseries(x, n, logx)
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (-oo, oo):
-                return self
+            if e0.is_infinite:
+                return self.subs({x: 1/x}).series(x, oo, n,
+                                                  logx=logx).subs({x: 1/x})
             t = e_series - e0
             exp_series = term = exp(e0)
             # series of exp(e0 + t) in t
