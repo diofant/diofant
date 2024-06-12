@@ -2391,7 +2391,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         # from here on it's x0=0 and dir=-1 handling
 
-        if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
+        if any(_ is not True for _ in [x.is_positive, x.is_finite]):
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
             rv = self.subs({x: xpos}).series(xpos, x0, n, dir, logx=logx)
@@ -2414,10 +2414,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if (s1 + target_order).removeO() == s1:
                 target_order = Integer(0)
 
-            try:
-                return collect(s1.removeO(), x) + target_order
-            except NotImplementedError:  # XXX parse_derivative of radsimp.py
-                return s1 + target_order
+            return collect(s1.removeO(), x) + target_order
 
         # lseries handling
         def yield_lseries(s):
