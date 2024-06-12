@@ -1513,7 +1513,13 @@ class log(Function):
         return res + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
-        arg = self.args[0].as_leading_term(x)
-        if arg == 1:
-            return (self.args[0] - 1).as_leading_term(x)
+        from .function import expand_log
+
+        # make sure to expand log(1/x) here
+        expr = expand_log(self)
+        if expr != self:
+            return expr.as_leading_term(x)
+        arg = self.args[0]
+        if arg.as_leading_term(x) == 1:
+            return (arg - 1).as_leading_term(x)
         return self.func(arg)

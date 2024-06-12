@@ -330,6 +330,11 @@ def test_log_simplify():
     assert expand_log(log(x**(2 + log(2)))) == (2 + log(2))*log(x)
 
 
+def test_log_as_leading_term():
+    x = Symbol('x', positive=True)
+    assert log(1/x).as_leading_term(x) == -log(x)
+
+
 def test_lambertw():
     k = Symbol('k')
 
