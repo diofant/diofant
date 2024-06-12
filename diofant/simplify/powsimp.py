@@ -3,11 +3,11 @@ import math
 from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
-                    count_ops, expand_log, expand_mul, factor_terms)
+                    count_ops, exp, expand_log, expand_mul, factor_terms, log)
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..core.sympify import sympify
-from ..functions import exp, exp_polar, log, polarify, root, unpolarify
+from ..functions import exp_polar, polarify, root, unpolarify
 from ..logic import true
 from ..ntheory import multiplicity
 from ..polys import gcd, lcm

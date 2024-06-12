@@ -6,11 +6,11 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
-                     Symbol, acos, acosh, acoth, arg, asin, atan, besselk,
-                     binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
-                     elliptic_e, elliptic_k, erf, erfc, erfi, exp, factorial,
-                     false, floor, gamma, hyper, integrate, limit, log,
-                     lowergamma, nan, oo, pi, polygamma, re, root, sign,
+                     Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
+                     besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
+                     digamma, elliptic_e, elliptic_k, erf, erfc, erfi, exp,
+                     factorial, false, floor, gamma, hyper, integrate, limit,
+                     log, lowergamma, nan, oo, pi, polygamma, re, root, sign,
                      simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
                      true)
 from diofant.abc import a, b, c, k, n, x, y, z
@@ -200,6 +200,8 @@ def test_floor():
     assert limit(floor(x), x, 2, 1) == 1
     assert limit(floor(x), x, 248) == 248
     assert limit(floor(x), x, 248, 1) == 247
+    assert limit(floor(arg(1 + x)), x, 0) == 0
+    assert limit(floor(arg(1 - x)), x, 0) == 0
 
 
 def test_floor_requires_robust_assumptions():
@@ -286,6 +288,8 @@ def test_heuristic():
     assert heuristics(sin(1/x) + atan(x), x, 0, -1) == sin(oo)
     assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, -1) == log(2)
     assert heuristics(tan(tan(1/x)), x, 0, -1) is None
+    assert isinstance(limit(log(2 + sqrt(atan(x))*sin(1/x)),
+                            x, 0, -1, heuristics=False), Limit)
 
 
 def test_sympyissue_3871():
@@ -542,7 +546,7 @@ def test_issue_55():
 
 
 def test_sympyissue_8061():
-    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
+    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x), x, 0) == oo
 
 
 def test_sympyissue_8229():
@@ -1142,3 +1146,7 @@ def test_sympyissue_26525():
 
 def test_issue_1397():
     assert limit(re(asin(x)), x, oo) == pi/2
+
+
+def test_issue_1403():
+    assert acsc(x).rewrite(atan).limit(x, I*oo) == 0

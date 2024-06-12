@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Derivative, E, I, O, PoleError, Rational, Symbol, acosh,
                      acoth, asin, asinh, atanh, besselk, cbrt, ceiling, cos,
-                     cosh, cot, coth, exp, floor, limit, ln, log, oo, pi, sign,
+                     cosh, cot, coth, exp, floor, limit, log, oo, pi, sign,
                      sin, sinh, sqrt, tan, tanh)
 from diofant.abc import a, b, l, w, x, y, z
 
@@ -25,13 +25,13 @@ def test_simple_1():
 
 
 def test_mul_0():
-    assert (x*ln(x)).series(x, n=5) == x*ln(x)
+    assert (x*log(x)).series(x, n=5) == x*log(x)
 
 
 def test_mul_1():
-    assert (x*ln(2 + x)).series(x, n=5) == x*log(2) + x**2/2 - x**3/8 + \
+    assert (x*log(2 + x)).series(x, n=5) == x*log(2) + x**2/2 - x**3/8 + \
         x**4/24 + O(x**5)
-    assert (x*ln(1 + x)).series(x, n=5) == x**2 - x**3/2 + x**4/3 + O(x**5)
+    assert (x*log(1 + x)).series(x, n=5) == x**2 - x**3/2 + x**4/3 + O(x**5)
 
 
 def test_pow_0():
@@ -76,7 +76,7 @@ def test_exp_sqrt_1():
 
 
 def test_power_x_x1():
-    assert (exp(x*ln(x))).series(x, n=3) == \
+    assert (exp(x*log(x))).series(x, n=3) == \
         1 + x*log(x) + x**2*log(x)**2/2 + x**3*log(x)**3/6 + O(x**3)
 
 

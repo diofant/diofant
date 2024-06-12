@@ -9,7 +9,7 @@ New features
 
 * MrvAsympt algorithm to find asymptotic expansion, see :func:`~diofant.core.expr.Expr.aseries` method and :pull:`6`.  Thanks to Avichal Dayal.
 * :func:`~diofant.concrete.summations.Sum.findrecur` method to find recurrence relations (with Sister Celine's algorithm), see :pull:`15`.
-* Support for :class:`~diofant.core.power.Pow`/:class:`~diofant.functions.elementary.exponential.log` branch-cuts in limits, see :pull:`140`.
+* Support for :class:`~diofant.core.power.Pow`/:class:`~diofant.core.power.log` branch-cuts in limits, see :pull:`140`.
 * Added basic optimization package, see :func:`~diofant.calculus.optimization.minimize` and :pull:`108`.
 * Cartesian product of iterables using Cantor pairing, see :func:`~diofant.utilities.iterables.cantor_product` and :pull:`276`.
 * :class:`~diofant.sets.fancysets.Rationals` set, :pull:`255`.

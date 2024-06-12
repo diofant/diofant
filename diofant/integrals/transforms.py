@@ -777,8 +777,9 @@ class InverseMellinTransform(IntegralTransform):
         from ..utilities import postorder_traversal
         global _allowed  # pylint: disable=global-statement
         if _allowed is None:
-            from ..functions import (cos, cosh, cot, coth, exp, factorial,
-                                     gamma, rf, sin, sinh, tan, tanh)
+            from ..core import exp
+            from ..functions import (cos, cosh, cot, coth, factorial, gamma,
+                                     rf, sin, sinh, tan, tanh)
             _allowed = {exp, gamma, sin, cos, tan, cot, cosh, sinh, tanh, coth,
                         factorial, rf}
         for _f in postorder_traversal(f):
@@ -931,8 +932,8 @@ def _simplifyconds(expr, s, a):
 @_noconds
 def _laplace_transform(f, t, s_, simplify=True, noconds=False):
     """The backend function for Laplace transforms."""
-    from ..core import Wild, symbols
-    from ..functions import Max, Min, cos, exp
+    from ..core import Wild, exp, symbols
+    from ..functions import Max, Min, cos
     from ..functions import periodic_argument as arg
     from ..functions import polar_lift, re
     s = Dummy('s')
@@ -1044,7 +1045,7 @@ class LaplaceTransform(IntegralTransform):
         return _laplace_transform(f, x, s, **hints)
 
     def _as_integral(self, f, x, s):
-        from ..functions import exp
+        from ..core import exp
         return Integral(f*exp(-s*x), (x, 0, oo))
 
     def _collapse_extra(self, extra):
@@ -1101,8 +1102,8 @@ def laplace_transform(f, t, s, **hints):
 @_noconds
 def _inverse_laplace_transform(F, s, t_, plane, simplify=True, noconds=True):
     """The backend function for inverse Laplace transforms."""
-    from ..core import expand_complex
-    from ..functions import Heaviside, Piecewise, exp, log
+    from ..core import exp, expand_complex, log
+    from ..functions import Heaviside, Piecewise
     from .integrals import Integral
     from .meijerint import _get_coeff_exp, meijerint_inversion
 
@@ -1203,7 +1204,7 @@ class InverseLaplaceTransform(IntegralTransform):
         return _inverse_laplace_transform(f, x, s, self.fundamental_plane, **hints)
 
     def _as_integral(self, f, x, s):
-        from ..functions import exp
+        from ..core import exp
         c = self.__class__._c
         return Integral(exp(x*s)*f, (x, c - I*oo, c + I*oo))
 
@@ -1264,7 +1265,7 @@ def _fourier_transform(f, x, k, a, b, name, simplify=True, noconds=True):
     and inverse Fourier transforms.
 
     """
-    from ..functions import exp
+    from ..core import exp
     F = integrate(a*f*exp(b*I*x*k), (x, -oo, oo))
 
     if not F.has(Integral):
@@ -1297,7 +1298,7 @@ class FourierTypeTransform(IntegralTransform):
                                   self.__class__._name, **hints)
 
     def _as_integral(self, f, x, s):
-        from ..functions import exp
+        from ..core import exp
         a = self.a()
         b = self.b()
         return Integral(a*f*exp(b*I*x*s), (x, -oo, oo))

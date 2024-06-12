@@ -9,7 +9,7 @@ from .symbol import Symbol, Wild, Dummy, symbols, var
 from .numbers import (Number, Float, Rational, Integer,
                       NumberSymbol, E, I, nan, oo, pi, zoo, comp,
                       mod_inverse, integer_digits)
-from .power import Pow, integer_nthroot
+from .power import Pow, exp, integer_nthroot, log
 from .mul import Mul
 from .add import Add
 from .mod import Mod
@@ -36,13 +36,13 @@ GoldenRatio = S.GoldenRatio
 __all__ = ('sympify', 'SympifyError', 'cacheit', 'Basic', 'Atom',
            'preorder_traversal', 'S', 'Expr', 'AtomicExpr', 'Symbol',
            'Wild', 'Dummy', 'symbols', 'var', 'Number', 'Float', 'Rational',
-           'Integer', 'NumberSymbol', 'E', 'I', 'nan', 'oo',
+           'Integer', 'NumberSymbol', 'E', 'I', 'nan', 'oo', 'log',
            'pi', 'zoo', 'comp', 'mod_inverse', 'integer_digits', 'Pow',
            'integer_nthroot', 'Mul', 'Add', 'Mod', 'Rel', 'Eq', 'Ne',
            'Lt', 'Le', 'Gt', 'Ge', 'Equality', 'GreaterThan', 'LessThan',
            'Unequality', 'StrictGreaterThan', 'StrictLessThan', 'vectorize',
            'Lambda', 'WildFunction', 'Derivative', 'diff', 'FunctionClass',
-           'Function', 'Subs', 'expand', 'PoleError', 'count_ops',
+           'Function', 'Subs', 'expand', 'PoleError', 'count_ops', 'exp',
            'expand_mul', 'expand_log', 'expand_func', 'expand_trig',
            'expand_complex', 'expand_multinomial', 'nfloat',
            'expand_power_base', 'expand_power_exp', 'PrecisionExhausted', 'N',

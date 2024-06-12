@@ -1,5 +1,5 @@
-from ...core import I, pi
-from ...functions import exp, sqrt
+from ...core import I, exp, pi
+from ...functions import sqrt
 from .matexpr import MatrixExpr
 
 

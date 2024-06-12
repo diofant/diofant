@@ -5,7 +5,7 @@ from ..sets import Reals
 from .gruntz import limitinf
 
 
-def limit(expr, z, z0, dir=None):
+def limit(expr, z, z0, dir=None, **kwargs):
     """
     Compute the directional limit of ``expr`` at the point ``z0``.
 
@@ -25,7 +25,9 @@ def limit(expr, z, z0, dir=None):
     Limit
 
     """
-    return Limit(expr, z, z0, dir).doit(deep=False)
+    heuristics = kwargs.pop('heuristics', True)
+    return Limit(expr, z, z0, dir).doit(deep=False,
+                                        heuristics=heuristics)
 
 
 def heuristics(e, z, z0, dir):

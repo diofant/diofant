@@ -4,7 +4,7 @@ import pytest
 
 from diofant import (ComputationFailedError, I, Matrix, Mul, PolynomialError,
                      Rational, RootOf, flatten, ordered, root, sqrt, symbols)
-from diofant.abc import n, t, x, y, z
+from diofant.abc import c, n, s, t, x, y, z
 from diofant.solvers.polysys import (solve_linear_system, solve_poly_system,
                                      solve_surd_system)
 
@@ -345,3 +345,12 @@ def test_solve_surd_system():
 def test_sympyissue_21999():
     assert solve_poly_system([x - 1], x, y) == [{x: 1}]
     assert solve_poly_system([y - 1], x, y) == [{y: 1}]
+
+
+def test_sympyissue_26682():
+    eqns = [c**2 + s**2 - 1,
+            -1.98079646822393*c - 0.887785747630113*s - 0.15634896910398]
+    assert solve_poly_system(eqns, s, c) == [{c: -0.47366192584758887,
+                                              s: 0.88070675028771817},
+                                             {c: 0.34220436670067722,
+                                              s: -0.93962554850907942}]

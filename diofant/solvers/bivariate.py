@@ -1,6 +1,6 @@
-from ..core import Add, Dummy, Pow, expand_log
+from ..core import Add, Dummy, Pow, exp, expand_log, log
 from ..core.function import _mexpand
-from ..functions import LambertW, exp, log, root
+from ..functions import LambertW, root
 from ..polys.polytools import Poly, factor
 from ..simplify import collect, separatevars
 from ..utilities import ordered

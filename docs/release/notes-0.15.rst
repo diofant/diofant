@@ -26,6 +26,8 @@ Compatibility breaks
 * Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
 * Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
 * Removed ``symarray()`` function, see :pull:`1383`.
+* Removed ``base`` kwarg for :func:`~diofant.core.power.log`, see :pull:`1407`.
+* Removed ``ln`` alias for :func:`~diofant.core.power.log`, see :pull:`1410`.
 
 Minor changes
 =============
@@ -108,3 +110,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26566`: wrong result integrating sin(a*(x+pi))**2
 * :sympyissue:`26571`: integrate((x**8+1)**(-1/2),x) raises _CoeffExpValueError
 * :sympyissue:`26577`: factor should use the same domain for numerator and denominator
+* :sympyissue:`26682`: Incorrect behaviour for solve_poly_system
