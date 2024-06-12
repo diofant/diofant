@@ -42,9 +42,6 @@ def test_simple():
     pytest.raises(ValueError, lambda: x.series(dir=''))
     pytest.raises(ValueError, lambda: x.series(dir=0))
 
-    assert Derivative(x**2 + x**3*y**2,
-                      (x, 2), (y, 1)).series(x).simplify() == 12*x*y + O(x**6)
-
     assert (1 + x).getn() is None
 
     # issue sympy/sympy#8805

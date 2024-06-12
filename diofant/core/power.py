@@ -1135,8 +1135,9 @@ class Pow(Expr):
         if self.is_Exp:
             e_series = self.exp.nseries(x, n, logx)
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (-oo, oo):
-                return self
+            if e0.is_infinite:
+                return self.subs({x: 1/x}).series(x, oo, n,
+                                                  logx=logx).subs({x: 1/x})
             t = e_series - e0
             exp_series = term = exp(e0)
             # series of exp(e0 + t) in t
@@ -1513,7 +1514,13 @@ class log(Function):
         return res + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):
-        arg = self.args[0].as_leading_term(x)
-        if arg == 1:
-            return (self.args[0] - 1).as_leading_term(x)
+        from .function import expand_log
+
+        # make sure to expand log(1/x) here
+        expr = expand_log(self)
+        if expr != self:
+            return expr.as_leading_term(x)
+        arg = self.args[0]
+        if arg.as_leading_term(x) == 1:
+            return (arg - 1).as_leading_term(x)
         return self.func(arg)
