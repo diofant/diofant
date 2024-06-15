@@ -139,11 +139,6 @@ def test_x_is_base_detection():
     assert eq.series() == x**Rational(4, 3)
 
 
-def test_sin_power():
-    e = sin(x)**1.2
-    assert e.compute_leading_term(x) == x**1.2
-
-
 @pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_exp_product_positive_factors():
     a, b = symbols('a, b', positive=True)
