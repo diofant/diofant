@@ -402,7 +402,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             sols = solve(eq, *x)[0]
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
-        y = y.subs(sols).subs({_: 1 for _ in x})
+        y = y.subs(sols).subs(dict.fromkeys(x, 1))
 
         return y if y else None
 
