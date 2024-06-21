@@ -2462,33 +2462,27 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
     def _eval_lseries(self, x, logx=None):
-        # default implementation of lseries is using nseries(), and adaptively
-        # increasing the "n". As you can see, it is not very efficient, because
-        # we are calculating the series over and over again. Subclasses should
-        # override this method and implement much more efficient yielding of
-        # terms.
+        # Default implementation of lseries is using nseries(), and adaptively
+        # increasing the "n".  As you can see, it is not very efficient, because
+        # we are calculating the series over and over again.
         n = 0
         series = self._eval_nseries(x, n, logx)
         if not series.is_Order:
-            if series.is_Add:
-                yield series.removeO()
-            else:
-                yield series
-            return
-
-        while series.is_Order:
-            n += 1
-            series = self._eval_nseries(x, n, logx)
-        e = series.removeO()
-        yield e
-        while 1:
-            while 1:
+            yield series.removeO()
+        else:
+            while series.is_Order:
                 n += 1
-                series = self._eval_nseries(x, n, logx).removeO()
-                if e != series:
-                    break
-            yield series - e
-            e = series
+                series = self._eval_nseries(x, n, logx)
+            e = series.removeO()
+            yield e
+            while 1:
+                while 1:
+                    n += 1
+                    series = self._eval_nseries(x, n, logx).removeO()
+                    if e != series:
+                        break
+                yield series - e
+                e = series
 
     def nseries(self, x, n=6, logx=None):
         """Calculate "n" terms of series in x around 0
