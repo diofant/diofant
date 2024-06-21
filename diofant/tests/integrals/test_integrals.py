@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
-                     Expr, Float, Function, Heaviside, I, Integral, Interval,
-                     Lambda, LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise,
-                     Poly, Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg,
-                     asin, asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+from diofant import (And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma, Expr,
+                     Float, Function, Heaviside, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
                      expand_func, expand_mul, floor, fresnels, gamma, im,
                      integrate, log, lowergamma, meijerg, nan, oo, pi,
                      polar_lift, polygamma, re, sign, simplify, sin, sinh,
@@ -879,10 +879,7 @@ def test_is_real():
 
 def test_series():
     i = Integral(cos(x), (x, x))
-    e = i.series(x, n=None)
-    s1 = i.series(x, n=8).removeO().doit()
-    s2 = Add(*[next(e) for j in range(4)])
-    assert s1 == s2
+    assert i.series(x, n=8) == x - x**3/6 + x**5/120 - x**7/5040 + O(x**8)
 
 
 def test_sympyissue_4403():

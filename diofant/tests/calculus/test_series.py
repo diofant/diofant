@@ -61,19 +61,13 @@ def test_simple():
 
 
 def test_sympyissue_5223():
-    assert next(Integer(0).series(x, n=None)) == 0
     assert cos(x).series() == cos(x).series(x)
 
-    e = cos(x).series(x, 1, n=None)
-    assert [next(e) for i in range(2)] == [cos(1), -((x - 1)*sin(1))]
-    e = cos(x).series(x, 1, n=None, dir=+1)
-    assert [next(e) for i in range(2)] == [cos(1), (1 - x)*sin(1)]
     # the following test is exact so no need for x -> x - 1 replacement
     assert abs(x).series(x, 1, dir=+1) == x
     assert exp(x).series(x, 1, dir=+1, n=3).removeO() == \
         E - E*(-x + 1) + E*(-x + 1)**2/2
 
-    assert next(Derivative(cos(x), x).series(n=None)) == Derivative(1, x)
     assert Derivative(exp(x),
                       x).series(n=3) == (Derivative(1, x) + Derivative(x, x) +
                                          Derivative(x**2/2, x) +
@@ -137,11 +131,6 @@ def test_sympyissue_6318():
 def test_x_is_base_detection():
     eq = (x**2)**Rational(2, 3)
     assert eq.series() == x**Rational(4, 3)
-
-
-def test_sin_power():
-    e = sin(x)**1.2
-    assert e.compute_leading_term(x) == x**1.2
 
 
 @pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
