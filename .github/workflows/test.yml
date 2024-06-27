@@ -71,6 +71,7 @@ jobs:
         files: ./coverage.xml
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
+        version: v0.6.0  # Workaround for codecov/codecov-action#1487
     - name: Get version
       id: release
       run: |
