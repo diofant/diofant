@@ -5,6 +5,7 @@ import math
 import operator
 
 from ..core import Dummy, I
+from ..domains import QQ
 from .polyerrors import DomainError, RefinementFailedError
 
 
@@ -244,29 +245,29 @@ _rules_ambiguous = {
 }
 
 _values = {
-    0: [(+0, 1)],
-    1: [(+1, 4)],
-    2: [(-1, 4)],
-    3: [(+1, 4)],
-    4: [(-1, 4)],
-    -1: [(+9, 4), (+1, 4)],
-    -2: [(+7, 4), (-1, 4)],
-    -3: [(+9, 4), (+1, 4)],
-    -4: [(+7, 4), (-1, 4)],
-    +5: [(+1, 2)],
-    -5: [(-1, 2)],
-    7: [(+1, 1), (-1, 1)],
-    8: [(+1, 1), (-1, 1)],
-    9: [(+1, 2), (-3, 2)],
-    10: [(+3, 2), (-1, 2)],
-    11: [(+3, 4), (-5, 4)],
-    12: [(+5, 4), (-3, 4)],
-    13: [(+5, 4), (-3, 4)],
-    14: [(+3, 4), (-5, 4)],
-    15: [(+1, 2), (-3, 2)],
-    16: [(+3, 2), (-1, 2)],
-    17: [(+2, 1), (+0, 1)],
-    18: [(+2, 1), (+0, 1)],
+    0: [QQ(+0, 1)],
+    1: [QQ(+1, 4)],
+    2: [QQ(-1, 4)],
+    3: [QQ(+1, 4)],
+    4: [QQ(-1, 4)],
+    -1: [QQ(+9, 4), QQ(+1, 4)],
+    -2: [QQ(+7, 4), QQ(-1, 4)],
+    -3: [QQ(+9, 4), QQ(+1, 4)],
+    -4: [QQ(+7, 4), QQ(-1, 4)],
+    +5: [QQ(+1, 2)],
+    -5: [QQ(-1, 2)],
+    7: [QQ(+1, 1), QQ(-1, 1)],
+    8: [QQ(+1, 1), QQ(-1, 1)],
+    9: [QQ(+1, 2), QQ(-3, 2)],
+    10: [QQ(+3, 2), QQ(-1, 2)],
+    11: [QQ(+3, 4), QQ(-5, 4)],
+    12: [QQ(+5, 4), QQ(-3, 4)],
+    13: [QQ(+5, 4), QQ(-3, 4)],
+    14: [QQ(+3, 4), QQ(-5, 4)],
+    15: [QQ(+1, 2), QQ(-3, 2)],
+    16: [QQ(+3, 2), QQ(-1, 2)],
+    17: [QQ(+2, 1), QQ(+0, 1)],
+    18: [QQ(+2, 1), QQ(+0, 1)],
 }
 
 
@@ -512,9 +513,9 @@ def _reverse_intervals(intervals):
     return [((b, a), indices, f) for (a, b), indices, f in reversed(intervals)]
 
 
-def _winding_number(T, field):
+def _winding_number(T):
     """Compute the winding number of the input polynomial, i.e. the number of roots."""
-    return int(sum((field(_values[t][i][0])/field(_values[t][i][1]) for t, i in T), field(0)) / field(2))
+    return int(sum((_values[t][i] for t, i in T), QQ(0)) / QQ(2))
 
 
 def _get_rectangle(f1, f2, inf, sup, exclude=None):
@@ -547,7 +548,7 @@ def _get_rectangle(f1, f2, inf, sup, exclude=None):
 
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=exclude)
 
-    N = _winding_number(T, f1L1.ring.domain)
+    N = _winding_number(T)
 
     I_L = I_L1, I_L2, I_L3, I_L4
     Q_L = Q_L1, Q_L2, Q_L3, Q_L4
@@ -642,8 +643,8 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L, exclude=True)
     T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R, exclude=True)
 
-    N_L = _winding_number(T_L, F)
-    N_R = _winding_number(T_R, F)
+    N_L = _winding_number(T_L)
+    N_R = _winding_number(T_R)
 
     I_L = I_L1_L, I_L2_L, I_L3_L, I_L4_L
     Q_L = Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L
@@ -750,8 +751,8 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B, exclude=True)
     T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U, exclude=True)
 
-    N_B = _winding_number(T_B, F)
-    N_U = _winding_number(T_U, F)
+    N_B = _winding_number(T_B)
+    N_U = _winding_number(T_U)
 
     I_B = I_L1_B, I_L2_B, I_L3_B, I_L4_B
     Q_B = Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B
