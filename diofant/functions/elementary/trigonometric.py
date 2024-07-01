@@ -639,7 +639,7 @@ class cos(TrigonometricFunction):
         def fermatCoords(n):
             assert n > 1
             assert n % 2
-            primes = {p: 0 for p in cst_table_some}
+            primes = dict.fromkeys(cst_table_some, 0)
             assert 1 not in primes
             for p_i in primes:
                 while 0 == n % p_i:
@@ -649,7 +649,7 @@ class cos(TrigonometricFunction):
                 return False
             if max(primes.values()) > 1:
                 return False
-            return tuple(p for p in primes if primes[p] == 1)
+            return tuple(p for p, c in primes.items() if c == 1)
 
         if pi_coeff.denominator in cst_table_some:
             return chebyshevt(pi_coeff.numerator, cst_table_some[pi_coeff.denominator]).expand()
