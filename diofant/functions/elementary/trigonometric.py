@@ -1407,7 +1407,7 @@ class asin(InverseTrigonometricFunction):
     >>> asin(-1)
     -pi/2
     >>> asin(oo)
-    -oo*I
+    pi/2 - oo*I
 
     See Also
     ========
@@ -1439,7 +1439,11 @@ class asin(InverseTrigonometricFunction):
 
         if arg.is_number:
             if arg == oo:
-                return -oo*I
+                return pi/2 - oo*I
+            if arg == oo + I*oo:
+                return pi/4 + I*oo
+            if arg == oo - I*oo:
+                return pi/4 - I*oo
             if arg == zoo:
                 return zoo
             if arg == 0:
@@ -1572,7 +1576,7 @@ class acos(InverseTrigonometricFunction):
             if arg == +oo:
                 return +oo*I
             if arg == -oo:
-                return -oo*I
+                return -oo*I + pi
             if arg == zoo:
                 return zoo
             if arg == 0:
