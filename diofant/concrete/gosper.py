@@ -119,7 +119,7 @@ def gosper_term(f, n):
     if solution:
         solution = solution[0]
 
-    x = x.subs(solution).subs({_: 0 for _ in coeffs})
+    x = x.subs(solution).subs(dict.fromkeys(coeffs, 0))
 
     if x != 0:
         return B.as_expr()*x.as_expr()/C.as_expr()
