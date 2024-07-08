@@ -210,9 +210,8 @@ def test_integration():
     assert integrate(sqrt(-x**2 - 4), x) == \
         -2*atan(x/sqrt(-4 - x**2)) + x*sqrt(-4 - x**2)/2
 
-    assert (integrate(exp(-x**2/2)/(Integral(exp(-x**2/2), (x, 0, oo))),
-                      (x, 0, z)) ==
-            exp(-z**2/2)*(-exp(z**2/2)*(-erf(sqrt(2)*z/2) + 1) + exp(z**2/2)))
+    assert integrate(exp(-x**2/2)/(Integral(exp(-x**2/2), (x, 0, oo))),
+                     (x, 0, z)).equals(exp(-z**2/2)*(-exp(z**2/2)*(-erf(sqrt(2)*z/2) + 1) + exp(z**2/2)))
     assert integrate(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)),
                      (x, -1, 1)) == erf(sqrt(2)/2)
 
@@ -1018,9 +1017,11 @@ def test_atom_bug():
 
 def test_limit_bug():
     z = Symbol('z', nonzero=True)
-    assert integrate(sin(x*y*z), (x, 0, pi), (y, 0, pi)) == \
-        (log(z**2) + 2*EulerGamma + 2*log(pi))/(2*z) - \
-        (-log(pi*z) + log(pi**2*z**2)/2 + Ci(pi**2*z))/z + log(pi)/z
+    assert integrate(sin(x*y*z), (x, 0, pi),
+                     (y, 0, pi)).equals((log(z**2) + 2*EulerGamma +
+                                         2*log(pi))/(2*z) -
+                                        (-log(pi*z) + log(pi**2*z**2)/2 +
+                                         Ci(pi**2*z))/z + log(pi)/z)
 
 
 def test_sympyissue_4703():
