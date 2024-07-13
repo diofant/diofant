@@ -7,8 +7,7 @@ from diofant import (ComputationFailedError, I, Integer, Matrix, Mul,
                      sqrt, symbols)
 from diofant.abc import c, n, s, t, x, y, z
 from diofant.solvers.polysys import (cylindrical_algebraic_decomposition,
-                                     get_nice_roots, hongproj, projone,
-                                     projtwo, red, red_set,
+                                     hongproj, projone, projtwo, red, red_set,
                                      solve_linear_system, solve_poly_system,
                                      solve_poly_system_cad, solve_surd_system,
                                      subresultant_coefficients,
@@ -617,25 +616,6 @@ def test_subresultant_coefficients():
     assert subresultant_coefficients(fs[4], gs[4], x) == answers[4]
 
 
-def test_get_nice_roots():
-    # constants have no roots
-    assert get_nice_roots(3) == []
-    assert get_nice_roots(Integer(3).as_poly(x)) == []
-
-    # if not implemented, just solve numerically
-    # eg if coefficient is algebraic
-    # the answer here can be solved with basic algebra
-    assert get_nice_roots(sqrt(2) * x**2 - 1)[1].evalf() == sqrt(1 / sqrt(2)).evalf()
-
-    # if roots are RootOf, then they should be numeric
-    assert get_nice_roots(x**5 + x**2 - 1)[0] == RootOf(x**5 + x**2 - 1, 0).evalf()
-
-    # the algebraic roots should stay algebraic
-    # bc of the multiplication, we get the roots from x^2 - 1 of +- sqrt(2)
-    assert get_nice_roots((x**2 - 2) * (x**5 - x**2 - 1)) == \
-        [-sqrt(2), RootOf(x**5 - x**2 - 1, 0).evalf(), sqrt(2)]
-
-
 def test_projone():
     # simple example: work it out manually by looping through
     # for x^2
@@ -752,5 +732,5 @@ def test_solve_poly_system_cad():
     assert solve_and_sub([x**2 - 1 >= 3], [x], False) is True
 
     # harder example
-    assert solve_and_sub([x**2 * y**2 - 1 > 0, x <= 0.2,
+    assert solve_and_sub([x**2 * y**2 - 1 > 0, 5*x <= 1,
                           x + y >= 1], [x, y]) is True

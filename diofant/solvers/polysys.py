@@ -6,8 +6,8 @@ from ..core import Integer, diff, expand_mul
 from ..domains import EX
 from ..matrices import Matrix
 from ..polys import (LC, LT, ComputationFailedError, PolificationFailedError,
-                     RootOf, degree, factor_list, groebner, nroots,
-                     parallel_poly_from_expr, real_roots, subresultants)
+                     degree, groebner, parallel_poly_from_expr, real_roots,
+                     subresultants)
 from ..polys.solvers import solve_lin_sys
 from ..simplify.simplify import simplify
 from ..utilities import default_sort_key, numbered_symbols
@@ -504,42 +504,6 @@ def subresultant_coefficients(f, g, mvar):
     return subres_coeffs
 
 
-# gets real roots, numeric if not algebraic
-# returns them sorted
-# not a public function!
-def get_nice_roots(poly):
-
-    # its a constant
-    try:
-        if poly.is_number:
-            return []
-    except AttributeError:
-        return []
-
-    factors = factor_list(poly)[1]  # the 0th is just a number
-
-    roots = set()
-    # get the roots of the factors that are polynomials
-    for factor in factors:
-        curr_factor = factor[0]
-
-        if curr_factor.is_number:
-            continue
-
-        try:
-            new_roots = real_roots(curr_factor)
-            for i, r in enumerate(new_roots):
-                # want to avoid RootOf
-                if r.has(RootOf):
-                    new_roots[i] = r.evalf()
-        except NotImplementedError:
-            new_roots = [root for root in nroots(curr_factor) if root.is_real]
-
-        roots.update(new_roots)
-
-    return sorted(roots, reverse=False)
-
-
 # HONG PROJECTION OPERATOR (1990)
 # input: set F of k-variate polynomials
 # output: set F' of (k-1)-variate polynomials such that a CAD of R^{k-1} can be lifted to R^k
@@ -742,9 +706,10 @@ def cylindrical_algebraic_decomposition(F, gens):
             for proj in projs:
                 subbed = proj.subs(point)
                 subbed = subbed.expand()
-                roots.update(get_nice_roots(subbed))
+                if not subbed.is_number:
+                    roots.update(real_roots(subbed))
             # have to sort them overall now
-            roots = sorted(roots, reverse=False)
+            roots = sorted(roots)
 
             # Calculate sample points
             if not roots:
