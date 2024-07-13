@@ -378,16 +378,12 @@ def red_set(f, mvar):
 
     """
     reds = []
+    deg = degree(f, mvar)
 
-    # handle the constant case here
-    # because otherwise diofant says deg= -infty
-    try:
-        if f.is_number:
-            return []
-    except AttributeError:  # if its not a diofant Basic object, then also return []
-        return []
+    if deg <= 0:
+        deg = -1
 
-    for i in range(degree(f, mvar) + 1):
+    for i in range(deg + 1):
         if i == 0:
             reds.append(f)
         else:
