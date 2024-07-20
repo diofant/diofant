@@ -104,7 +104,7 @@ Use flag ``simultaneous`` to do all substitutions at once.
 Numerics
 ========
 
-To evaluate a numerical expression into a floating point number with
+To evaluate a numerical expression into a floating-point number with
 arbitrary precision, use :meth:`~diofant.core.evalf.EvalfMixin.evalf`.
 By default, 15 digits of precision are used.
 
@@ -152,7 +152,7 @@ Discussed above method is not effective enough if you intend to
 evaluate an expression at many points, there are better ways,
 especially if you only care about machine precision.
 
-Substitution may be used to evaluate an expression for some floating point
+Substitution may be used to evaluate an expression for some floating-point
 number
 
     >>> expr = sin(x)/x

@@ -205,7 +205,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`6572` Remove "#doctest: +SKIP" comments on valid docstrings
 * :sympyissue:`10134` Remove "raise StopIteration"
 * :sympyissue:`11672` limit(Rational(-1,2)**k, k, oo) fails
-* :sympyissue:`11678` Invalid limit of floating point matrix power
+* :sympyissue:`11678` Invalid limit of floating-point matrix power
 * :sympyissue:`11746` undesired (wrong) substition behavior in sympy?
 * :sympyissue:`3904` missing docstrings in core
 * :sympyissue:`3112` Asymptotic expansion
