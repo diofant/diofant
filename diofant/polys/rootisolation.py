@@ -431,37 +431,17 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
     return Q
 
 
-def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
+def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=set()):
     """Transform sequences of quadrants to a sequence of rules."""
-    if exclude is True:
-        edges = [1, 1, 0, 0]
+    edges = [0]*4
+    for i, edge in enumerate(['S', 'E', 'N', 'W']):
+        if edge in exclude:
+            edges[i] = 1
 
-        corners = {
-            (0, 1): 1,
-            (1, 2): 1,
-            (2, 3): 0,
-            (3, 0): 1,
-        }
-    else:
-        edges = [0, 0, 0, 0]
-
-        corners = {
-            (0, 1): 0,
-            (1, 2): 0,
-            (2, 3): 0,
-            (3, 0): 0,
-        }
-
-    if exclude is not None and exclude is not True:
-        exclude = set(exclude)
-
-        for i, edge in enumerate(['S', 'E', 'N', 'W']):
-            if edge in exclude:
-                edges[i] = 1
-
-        for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
-            if corner in exclude:
-                corners[((i - 1) % 4, i)] = 1
+    corners = {(0, 1): 0, (1, 2): 0, (2, 3): 0, (3, 0): 0}
+    for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
+        if corner in exclude:
+            corners[((i - 1) % 4, i)] = 1
 
     QQ, rules = [Q_L1, Q_L2, Q_L3, Q_L4], []
 
@@ -518,7 +498,7 @@ def _winding_number(T):
     return int(sum((_values[t][i] for t, i in T), QQ(0)) / QQ(2))
 
 
-def _get_rectangle(f1, f2, inf, sup, exclude=None):
+def _get_rectangle(f1, f2, inf, sup, exclude=set()):
     (u, v), (s, t) = inf, sup
 
     f1L1 = f1.eval(1, v)
@@ -640,8 +620,10 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_R = _intervals_to_quadrants(I_L3_R, f1L3F, f2L3F, s, x)
     Q_L4_R = _intervals_to_quadrants(I_L4_R, f1V, f2V, t, v)
 
-    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L, exclude=True)
-    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R, exclude=True)
+    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
     N_L = _winding_number(T_L)
     N_R = _winding_number(T_R)
@@ -748,8 +730,10 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_U = Q_L3
     Q_L4_U = _intervals_to_quadrants(I_L4_U, f1L4F, f2L4F, t, y)
 
-    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B, exclude=True)
-    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U, exclude=True)
+    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
     N_B = _winding_number(T_B)
     N_U = _winding_number(T_U)
@@ -1757,7 +1741,7 @@ class _FindRoot:
 
         return h
 
-    def _count_complex_roots(self, f, inf=None, sup=None, exclude=None):
+    def _count_complex_roots(self, f, inf=None, sup=None, exclude=set()):
         """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm."""
         domain = self.domain.field
         new_ring = self.clone(domain=domain)
@@ -1785,7 +1769,7 @@ class _FindRoot:
 
         f1, f2 = new_ring._real_imag(f)
 
-        return _get_rectangle(f1, f2, (u, v), (s, t), exclude)[0]
+        return _get_rectangle(f1, f2, (u, v), (s, t), exclude=exclude)[0]
 
     def _isolate_complex_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm."""
