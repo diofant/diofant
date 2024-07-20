@@ -1603,8 +1603,7 @@ class _FindRoot:
         for i, p in enumerate(polys):
             p = p.set_domain(domain)
             p = p.clear_denoms()[1]
-            (j,), p = p.terms_gcd()
-            polys[i] = p  # .set_domain(domain)
+            (j,), polys[i] = p.terms_gcd()
 
             if zeros and j > 0:
                 zero_indices[i] = j
