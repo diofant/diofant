@@ -720,6 +720,7 @@ def test__count_real_roots():
     f *= (x - 1)*(x + 1)
 
     assert R._count_real_roots(f) == 2
+    assert R._count_real_roots(f, inf=0, sup=0) == 0
 
 
 # parameters for test_dup_count_complex_roots_n(): n = 1..8

@@ -1421,7 +1421,8 @@ class _FindRoot:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
-            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf, sup))
+            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf=inf,
+                                                                   sup=sup))
 
         sturm = f.sturm()
 
