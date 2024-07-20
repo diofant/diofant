@@ -474,7 +474,11 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
         if Q[0] == OO:
             j, Q = (i - 1) % 4, Q[1:]
             qq = QQ[j][-2], OO, Q[0]
-            rules.append((_rules_ambiguous[qq], corners[(j, i)]))
+
+            if qq in _rules_ambiguous:
+                rules.append((_rules_ambiguous[qq], corners[(j, i)]))
+            else:
+                raise NotImplementedError(f'3 element rule (corner): {qq}')
 
         q1, k = Q[0], 1
 
@@ -483,10 +487,20 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
             if q2 != OO:
                 qq = q1, q2
-                rules.append((_rules_simple[qq], 0))
+
+                if qq in _rules_simple:
+                    rules.append((_rules_simple[qq], 0))
+                elif qq in _rules_ambiguous:
+                    rules.append((_rules_ambiguous[qq], edges[i]))
+                else:
+                    raise NotImplementedError(f'2 element rule (inside): {qq}')
             else:
                 qq, k = (q1, q2, Q[k]), k + 1
-                rules.append((_rules_ambiguous[qq], edges[i]))
+
+                if qq in _rules_ambiguous:
+                    rules.append((_rules_ambiguous[qq], edges[i]))
+                else:
+                    raise NotImplementedError(f'3 element rule (edge): {qq}')
 
             q1 = qq[-1]
 

@@ -1300,6 +1300,14 @@ def test_ComplexInterval():
     assert t1 == t2
     assert u1 <= u2 < s2 < s1
 
+    # issue diofant/diofant#1422
+    R, x = ring('x', ZZ)
+
+    f = x**4 - x**2 + 1
+    r1, *_ = R._isolate_complex_roots_sqf(f, blackbox=True)
+    assert r1.refine().refine().refine().as_tuple() == ((-1, QQ(-1, 2)),
+                                                        (0, 0))
+
 
 def test_issue_745():
     D, y = ring('y', ZZ)
