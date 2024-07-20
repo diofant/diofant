@@ -410,7 +410,6 @@ class Pow(Expr):
                 return True
 
     def _eval_is_extended_real(self):
-        from ..functions import arg
         from .mul import Mul
 
         b, e = self.base, self.exp
@@ -469,10 +468,6 @@ class Pow(Expr):
                 if b == 2:
                     return False
 
-        if b.is_extended_real is False:  # we already know it's not imag
-            i = arg(b)*e/pi
-            return i.is_integer
-
     def _eval_is_complex(self):
         b, e = self.base, self.exp
 
@@ -481,8 +476,6 @@ class Pow(Expr):
             return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
-        from ..functions import arg
-
         b, e = self.base, self.exp
 
         if b.is_imaginary:
@@ -500,9 +493,6 @@ class Pow(Expr):
                 return False
             if (2*e).is_integer:
                 return b.is_negative
-
-        if b.is_real is False:  # we already know it's not imag
-            return (2*arg(b)*e/pi).is_odd
 
     def _eval_is_odd(self):
         b, e = self.base, self.exp

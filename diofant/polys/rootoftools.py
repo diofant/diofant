@@ -218,6 +218,11 @@ class RootOf(Expr):
             ci = self.index + 2*((self.index - nreals + 1) % 2) - 1
             return self._new(self.poly, ci)
 
+    def as_real_imag(self, deep=True, **hints):
+        if (cself := self._eval_conjugate()) is not None:
+            return ((self + cself)/2, (self - cself)/I/2)
+        return super().as_real_imag(deep=deep, **hints)
+
     @property
     def is_number(self):
         return not self.free_symbols

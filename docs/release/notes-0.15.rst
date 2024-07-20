@@ -33,6 +33,7 @@ Minor changes
 =============
 
 * Support CPython 3.12, see :pull:`1325`.
+* Support :meth:`~diofant.core.expr.Expr.as_real_imag` for :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`1415`.
 
 Developer changes
 =================
