@@ -121,7 +121,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`14791` No solution is returned for solve(exp(log(5)*x) - exp(log(2)*x), x)
 * :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
 * :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
-* :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
+* :sympyissue:`14822` RisingFactorial cannot do numerical (floating-point) evaluations
 * :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
 * :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
 * :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ

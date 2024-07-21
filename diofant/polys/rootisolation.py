@@ -5,6 +5,7 @@ import math
 import operator
 
 from ..core import Dummy, I
+from ..domains import QQ
 from .polyerrors import DomainError, RefinementFailedError
 
 
@@ -244,29 +245,29 @@ _rules_ambiguous = {
 }
 
 _values = {
-    0: [(+0, 1)],
-    1: [(+1, 4)],
-    2: [(-1, 4)],
-    3: [(+1, 4)],
-    4: [(-1, 4)],
-    -1: [(+9, 4), (+1, 4)],
-    -2: [(+7, 4), (-1, 4)],
-    -3: [(+9, 4), (+1, 4)],
-    -4: [(+7, 4), (-1, 4)],
-    +5: [(+1, 2)],
-    -5: [(-1, 2)],
-    7: [(+1, 1), (-1, 1)],
-    8: [(+1, 1), (-1, 1)],
-    9: [(+1, 2), (-3, 2)],
-    10: [(+3, 2), (-1, 2)],
-    11: [(+3, 4), (-5, 4)],
-    12: [(+5, 4), (-3, 4)],
-    13: [(+5, 4), (-3, 4)],
-    14: [(+3, 4), (-5, 4)],
-    15: [(+1, 2), (-3, 2)],
-    16: [(+3, 2), (-1, 2)],
-    17: [(+2, 1), (+0, 1)],
-    18: [(+2, 1), (+0, 1)],
+    0: [QQ(+0, 1)],
+    1: [QQ(+1, 4)],
+    2: [QQ(-1, 4)],
+    3: [QQ(+1, 4)],
+    4: [QQ(-1, 4)],
+    -1: [QQ(+9, 4), QQ(+1, 4)],
+    -2: [QQ(+7, 4), QQ(-1, 4)],
+    -3: [QQ(+9, 4), QQ(+1, 4)],
+    -4: [QQ(+7, 4), QQ(-1, 4)],
+    +5: [QQ(+1, 2)],
+    -5: [QQ(-1, 2)],
+    7: [QQ(+1, 1), QQ(-1, 1)],
+    8: [QQ(+1, 1), QQ(-1, 1)],
+    9: [QQ(+1, 2), QQ(-3, 2)],
+    10: [QQ(+3, 2), QQ(-1, 2)],
+    11: [QQ(+3, 4), QQ(-5, 4)],
+    12: [QQ(+5, 4), QQ(-3, 4)],
+    13: [QQ(+5, 4), QQ(-3, 4)],
+    14: [QQ(+3, 4), QQ(-5, 4)],
+    15: [QQ(+1, 2), QQ(-3, 2)],
+    16: [QQ(+3, 2), QQ(-1, 2)],
+    17: [QQ(+2, 1), QQ(+0, 1)],
+    18: [QQ(+2, 1), QQ(+0, 1)],
 }
 
 
@@ -430,37 +431,17 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
     return Q
 
 
-def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
+def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=set()):
     """Transform sequences of quadrants to a sequence of rules."""
-    if exclude is True:
-        edges = [1, 1, 0, 0]
+    edges = [0]*4
+    for i, edge in enumerate(['S', 'E', 'N', 'W']):
+        if edge in exclude:
+            edges[i] = 1
 
-        corners = {
-            (0, 1): 1,
-            (1, 2): 1,
-            (2, 3): 0,
-            (3, 0): 1,
-        }
-    else:
-        edges = [0, 0, 0, 0]
-
-        corners = {
-            (0, 1): 0,
-            (1, 2): 0,
-            (2, 3): 0,
-            (3, 0): 0,
-        }
-
-    if exclude is not None and exclude is not True:
-        exclude = set(exclude)
-
-        for i, edge in enumerate(['S', 'E', 'N', 'W']):
-            if edge in exclude:
-                edges[i] = 1
-
-        for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
-            if corner in exclude:
-                corners[((i - 1) % 4, i)] = 1
+    corners = {(0, 1): 0, (1, 2): 0, (2, 3): 0, (3, 0): 0}
+    for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
+        if corner in exclude:
+            corners[((i - 1) % 4, i)] = 1
 
     QQ, rules = [Q_L1, Q_L2, Q_L3, Q_L4], []
 
@@ -512,12 +493,12 @@ def _reverse_intervals(intervals):
     return [((b, a), indices, f) for (a, b), indices, f in reversed(intervals)]
 
 
-def _winding_number(T, field):
+def _winding_number(T):
     """Compute the winding number of the input polynomial, i.e. the number of roots."""
-    return int(sum((field(_values[t][i][0])/field(_values[t][i][1]) for t, i in T), field(0)) / field(2))
+    return int(sum((_values[t][i] for t, i in T), QQ(0)) / QQ(2))
 
 
-def _get_rectangle(f1, f2, inf, sup, exclude=None):
+def _get_rectangle(f1, f2, inf, sup, exclude=set()):
     (u, v), (s, t) = inf, sup
 
     f1L1 = f1.eval(1, v)
@@ -547,7 +528,7 @@ def _get_rectangle(f1, f2, inf, sup, exclude=None):
 
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=exclude)
 
-    N = _winding_number(T, f1L1.ring.domain)
+    N = _winding_number(T)
 
     I_L = I_L1, I_L2, I_L3, I_L4
     Q_L = Q_L1, Q_L2, Q_L3, Q_L4
@@ -639,11 +620,13 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_R = _intervals_to_quadrants(I_L3_R, f1L3F, f2L3F, s, x)
     Q_L4_R = _intervals_to_quadrants(I_L4_R, f1V, f2V, t, v)
 
-    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L, exclude=True)
-    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R, exclude=True)
+    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
-    N_L = _winding_number(T_L, F)
-    N_R = _winding_number(T_R, F)
+    N_L = _winding_number(T_L)
+    N_R = _winding_number(T_R)
 
     I_L = I_L1_L, I_L2_L, I_L3_L, I_L4_L
     Q_L = Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L
@@ -747,11 +730,13 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_U = Q_L3
     Q_L4_U = _intervals_to_quadrants(I_L4_U, f1L4F, f2L4F, t, y)
 
-    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B, exclude=True)
-    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U, exclude=True)
+    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
-    N_B = _winding_number(T_B, F)
-    N_U = _winding_number(T_U, F)
+    N_B = _winding_number(T_B)
+    N_U = _winding_number(T_U)
 
     I_B = I_L1_B, I_L2_B, I_L3_B, I_L4_B
     Q_B = Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B
@@ -1420,7 +1405,8 @@ class _FindRoot:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
-            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf, sup))
+            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf=inf,
+                                                                   sup=sup))
 
         sturm = f.sturm()
 
@@ -1602,8 +1588,7 @@ class _FindRoot:
         for i, p in enumerate(polys):
             p = p.set_domain(domain)
             p = p.clear_denoms()[1]
-            (j,), p = p.terms_gcd()
-            polys[i] = p  # .set_domain(domain)
+            (j,), polys[i] = p.terms_gcd()
 
             if zeros and j > 0:
                 zero_indices[i] = j
@@ -1756,7 +1741,7 @@ class _FindRoot:
 
         return h
 
-    def _count_complex_roots(self, f, inf=None, sup=None, exclude=None):
+    def _count_complex_roots(self, f, inf=None, sup=None, exclude=set()):
         """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm."""
         domain = self.domain.field
         new_ring = self.clone(domain=domain)
@@ -1784,7 +1769,7 @@ class _FindRoot:
 
         f1, f2 = new_ring._real_imag(f)
 
-        return _get_rectangle(f1, f2, (u, v), (s, t), exclude)[0]
+        return _get_rectangle(f1, f2, (u, v), (s, t), exclude=exclude)[0]
 
     def _isolate_complex_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm."""
