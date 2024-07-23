@@ -132,88 +132,48 @@ _rules_ambiguous = {
     (Q4, OO, A4): [7, -1],
 
     # A --  OO --> A => { +4 (CCW), -4 (CW) }
-    (A1, A3): [4, -4],
-    (A2, A4): [4, -4],
-    (A3, A1): [4, -4],
-    (A4, A2): [4, -4],
-
     (A1, OO, A3): [4, -4],
     (A2, OO, A4): [4, -4],
     (A3, OO, A1): [4, -4],
     (A4, OO, A2): [4, -4],
 
     # Q -- DIA --> Q => { +4 (CCW), -4 (CW) }
-    (Q1, Q3): [4, -4],
-    (Q2, Q4): [4, -4],
-    (Q3, Q1): [4, -4],
-    (Q4, Q2): [4, -4],
-
     (Q1, OO, Q3): [4, -4],
     (Q2, OO, Q4): [4, -4],
     (Q3, OO, Q1): [4, -4],
     (Q4, OO, Q2): [4, -4],
 
     # A --- R ---> A => { +2 (CCW), -6 (CW) }
-    (A1, A2): [2, -6],
-    (A2, A3): [2, -6],
-    (A3, A4): [2, -6],
-    (A4, A1): [2, -6],
-
     (A1, OO, A2): [2, -6],
     (A2, OO, A3): [2, -6],
     (A3, OO, A4): [2, -6],
     (A4, OO, A1): [2, -6],
 
     # A --- L ---> A => { +6 (CCW), -2 (CW) }
-    (A1, A4): [6, -2],
-    (A2, A1): [6, -2],
-    (A3, A2): [6, -2],
-    (A4, A3): [6, -2],
-
     (A1, OO, A4): [6, -2],
     (A2, OO, A1): [6, -2],
     (A3, OO, A2): [6, -2],
     (A4, OO, A3): [6, -2],
 
     # Q --- 1 ---> A => { +3 (CCW), -5 (CW) }
-    (Q1, A3): [3, -5],
-    (Q2, A4): [3, -5],
-    (Q3, A1): [3, -5],
-    (Q4, A2): [3, -5],
-
     (Q1, OO, A3): [3, -5],
     (Q2, OO, A4): [3, -5],
     (Q3, OO, A1): [3, -5],
     (Q4, OO, A2): [3, -5],
 
     # Q --- 2 ---> A => { +5 (CCW), -3 (CW) }
-    (Q1, A4): [5, -3],
-    (Q2, A1): [5, -3],
-    (Q3, A2): [5, -3],
-    (Q4, A3): [5, -3],
-
     (Q1, OO, A4): [5, -3],
     (Q2, OO, A1): [5, -3],
     (Q3, OO, A2): [5, -3],
     (Q4, OO, A3): [5, -3],
 
     # A --- 1 ---> Q => { +5 (CCW), -3 (CW) }
-    (A1, Q3): [5, -3],
-    (A2, Q4): [5, -3],
-    (A3, Q1): [5, -3],
-    (A4, Q2): [5, -3],
-
     (A1, OO, Q3): [5, -3],
     (A2, OO, Q4): [5, -3],
     (A3, OO, Q1): [5, -3],
     (A4, OO, Q2): [5, -3],
 
     # A --- 2 ---> Q => { +3 (CCW), -5 (CW) }
-    (A1, Q2): [3, -5],
-    (A2, Q3): [3, -5],
-    (A3, Q4): [3, -5],
-    (A4, Q1): [3, -5],
-
     (A1, OO, Q2): [3, -5],
     (A2, OO, Q3): [3, -5],
     (A3, OO, Q4): [3, -5],
@@ -442,11 +402,12 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=set()):
 
             if q2 != OO:
                 qq = q1, q2
+                qq0 = q1, OO, q2
 
                 if qq in _rules_simple:
                     rules.append((_rules_simple[qq], 0))
-                elif qq in _rules_ambiguous:
-                    rules.append((_rules_ambiguous[qq], edges[i]))
+                elif qq0 in _rules_ambiguous:
+                    rules.append((_rules_ambiguous[qq0], edges[i]))
                 else:
                     raise NotImplementedError(f'2 element rule (inside): {qq}')
             else:
