@@ -1,10 +1,10 @@
 import math
 
 from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
-                    expand_mul, factor_terms)
+                    expand_log, expand_mul, factor_terms, log)
 from ..core.function import _mexpand
 from ..core.sympify import sympify
-from ..functions import log, root, sign, sqrt
+from ..functions import root, sign, sqrt
 from ..polys import Poly, PolynomialError, cancel, degree
 from ..utilities import default_sort_key, ordered
 from .powsimp import powdenest
@@ -818,7 +818,7 @@ def unrad(eq, *syms, **flags):
             if not others:
                 eq = rterms[0]**lcm - (-rterms[1])**lcm
                 ok = True
-            elif not log(lcm, 2).is_Integer:
+            elif not expand_log(log(lcm)/log(2)).is_Integer:
                 # the lcm-is-power-of-two case is handled below
                 r0, r1 = rterms
                 if flags.get('_reverse', False):
@@ -913,8 +913,8 @@ def unrad(eq, *syms, **flags):
                     ok = True
         # handle power-of-2 cases
         if not ok:
-            if log(lcm, 2).is_Integer and (not others and
-                                           len(rterms) == 4 or len(rterms) < 4):
+            if expand_log(log(lcm)/log(2)).is_Integer and (not others and
+                                                           len(rterms) == 4 or len(rterms) < 4):
                 def _norm2(a, b):
                     return a**2 + b**2 + 2*a*b
 

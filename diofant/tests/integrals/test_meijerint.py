@@ -679,3 +679,10 @@ def test_meijerint_doc():
 
 .. math::
   a = a {G_{1, 1}^{1, 0}\left(\begin{matrix}  & 1 \\0 & """
+
+
+def test_sympyissue_26573():
+    r18 = Rational(1, 8)
+    assert (integrate((x**8 + 1)**(-0.5), x) ==
+            0.125*x*gamma(r18)*hyper((r18, 0.5), (1 + r18,),
+                                     x**8*exp_polar(I*pi))/gamma(1 + r18))

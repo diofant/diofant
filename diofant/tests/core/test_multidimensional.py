@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Derivative, E, Function, Integer, Rational, diff, log, pi,
-                     sin, vectorize)
+                     sin, vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 
 
@@ -21,12 +21,12 @@ def test_vectorize():
         return sin(x, evaluate=evaluate)
 
     @vectorize(0, 'evaluate')
-    def vlog1(x, base=None, evaluate=True):
-        return log(x, base, evaluate=evaluate)
+    def vzeta(z, a=None, evaluate=True):
+        return zeta(z, a, evaluate=evaluate)
 
     @vectorize(0, 3, 'boo')
-    def vlog2(x, base=E, **kwargs):
-        return log(x, base)
+    def vlog(x, base=E, **kwargs):
+        return log(x)/log(base)
 
     @vectorize(0, 1)
     def vdiff(f, y):
@@ -43,10 +43,10 @@ def test_vectorize():
              [0, sin(2*pi, evaluate=False)],
              [1, sin(pi/2, evaluate=False)]])
 
-    assert (vlog1([1, 2], evaluate=[True, False], base=2) ==
-            [[0, log(1, 2, evaluate=False)],
-             [1, log(2, 2, evaluate=False)]])
-    assert vlog2([1, 2]) == [0, log(2)]
+    assert (vzeta([1, 2], evaluate=[True, False], a=2) ==
+            [[zoo, zeta(1, 2, evaluate=False)],
+             [-1 + pi**2/6, zeta(2, 2, evaluate=False)]])
+    assert vlog([1, 2]) == [0, log(2)]
 
     assert (vdiff([f(x, y, z), g(x, y, z)], [x, y, z]) ==
             [[Derivative(f(x, y, z), x), Derivative(f(x, y, z), y),

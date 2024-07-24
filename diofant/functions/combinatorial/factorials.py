@@ -91,7 +91,8 @@ class factorial(CombinatorialFunction):
         return gamma(n + 1)
 
     def _eval_rewrite_as_tractable(self, n, **kwargs):
-        from .. import exp, loggamma
+        from ...core import exp
+        from .. import loggamma
         return exp(loggamma(n + 1))
 
     def _eval_rewrite_as_Product(self, n):

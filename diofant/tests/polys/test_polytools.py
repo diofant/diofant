@@ -1151,6 +1151,7 @@ def test_Poly_LC():
 
     assert LC(x*y**7 + 2*x**2*y**3, order='lex') == 2
     assert LC(x*y**7 + 2*x**2*y**3, order='grlex') == 1
+    assert LC(0, x, order='lex') == 0
 
     pytest.raises(ComputationFailedError, lambda: LC([1, 2]))
 
@@ -3403,3 +3404,9 @@ def test_sympyissue_26497():
 
     assert expr.factor() == expr2
     assert expr.subs({a_n: 1, m: 1}) == expr2.subs({a_n: 1, m: 1}) == 12*I
+
+    # issue sympy/sympy#26577
+    assert expr.cancel().factor() == expr2
+    expr3 = -(a_n - I)**2*(a_n**2 + m**2 + 2*m + 2)
+    assert expr.cancel(extension=True).factor(extension=True) == expr3
+    assert expr.factor(extension=True) == expr3

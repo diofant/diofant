@@ -5,8 +5,8 @@ import pytest
 from diofant import (Eq, Float, Function, GeneratorsNeededError, I, Integer,
                      Lambda, MultivariatePolynomialError, PolynomialError, Pow,
                      PurePoly, Rational, RootOf, RootSum, Symbol, cbrt,
-                     ceiling, conjugate, exp, expand_func, false,
-                     legendre_poly, log, oo, root, solve, sqrt, tan, true)
+                     ceiling, conjugate, exp, expand_func, false, im,
+                     legendre_poly, log, oo, re, root, solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
 
 
@@ -237,6 +237,13 @@ def test_RootOf_conjugate():
     r5 = RootOf(p4, 5)
     assert r4.conjugate() == r5
     assert r4.evalf() == -r5.evalf()
+
+
+def test_RootOf_as_real_imag():
+    r1, r2 = RootOf(x**3 + x + 3, 1), RootOf(x**3 + x + 3, 2)
+    assert r1.as_real_imag() == (r1/2 + r2/2, -I*(-r2 + r1)/2)
+    r1 = RootOf(x**3 + y*x + 1, x, 0)
+    assert r1.as_real_imag() == (re(r1), im(r1))
 
 
 def test_RootOf_subs():

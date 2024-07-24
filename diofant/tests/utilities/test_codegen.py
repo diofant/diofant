@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Catalan, Dummy, Eq, Equality, Function, Idx, IndexedBase,
                      Integral, Lambda, Matrix, MatrixSymbol, acos, asin, atan,
-                     atan2, besseli, ceiling, cos, cosh, erf, floor, ln, log,
-                     pi, sin, sinh, sqrt, symbols, tan, tanh)
+                     atan2, besseli, ceiling, cos, cosh, erf, floor, log, pi,
+                     sin, sinh, sqrt, symbols, tan, tanh)
 from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
@@ -267,7 +267,6 @@ def test_ansi_math1_codegen():
         ('test_cosh', cosh(x)),
         ('test_floor', floor(x)),
         ('test_log', log(x)),
-        ('test_ln', ln(x)),
         ('test_sin', sin(x)),
         ('test_sinh', sinh(x)),
         ('test_sqrt', sqrt(x)),
@@ -287,7 +286,6 @@ def test_ansi_math1_codegen():
         'double test_cosh(double x) {\n   double test_cosh_result;\n   test_cosh_result = cosh(x);\n   return test_cosh_result;\n}\n'
         'double test_floor(double x) {\n   double test_floor_result;\n   test_floor_result = floor(x);\n   return test_floor_result;\n}\n'
         'double test_log(double x) {\n   double test_log_result;\n   test_log_result = log(x);\n   return test_log_result;\n}\n'
-        'double test_ln(double x) {\n   double test_ln_result;\n   test_ln_result = log(x);\n   return test_ln_result;\n}\n'
         'double test_sin(double x) {\n   double test_sin_result;\n   test_sin_result = sin(x);\n   return test_sin_result;\n}\n'
         'double test_sinh(double x) {\n   double test_sinh_result;\n   test_sinh_result = sinh(x);\n   return test_sinh_result;\n}\n'
         'double test_sqrt(double x) {\n   double test_sqrt_result;\n   test_sqrt_result = sqrt(x);\n   return test_sqrt_result;\n}\n'
@@ -301,7 +299,7 @@ def test_ansi_math1_codegen():
         'double test_asin(double x);\ndouble test_atan(double x);\n'
         'double test_ceil(double x);\ndouble test_cos(double x);\n'
         'double test_cosh(double x);\ndouble test_floor(double x);\n'
-        'double test_log(double x);\ndouble test_ln(double x);\n'
+        'double test_log(double x);\n'
         'double test_sin(double x);\ndouble test_sinh(double x);\n'
         'double test_sqrt(double x);\ndouble test_tan(double x);\n'
         'double test_tanh(double x);\n#endif\n'
@@ -775,7 +773,6 @@ def test_intrinsic_math_codegen():
         ('test_cos', cos(x)),
         ('test_cosh', cosh(x)),
         ('test_log', log(x)),
-        ('test_ln', ln(x)),
         ('test_sin', sin(x)),
         ('test_sinh', sinh(x)),
         ('test_sqrt', sqrt(x)),
@@ -819,11 +816,6 @@ def test_intrinsic_math_codegen():
         'implicit none\n'
         'REAL*8, intent(in) :: x\n'
         'test_log = log(x)\n'
-        'end function\n'
-        'REAL*8 function test_ln(x)\n'
-        'implicit none\n'
-        'REAL*8, intent(in) :: x\n'
-        'test_ln = log(x)\n'
         'end function\n'
         'REAL*8 function test_sin(x)\n'
         'implicit none\n'
@@ -893,12 +885,6 @@ def test_intrinsic_math_codegen():
         'end interface\n'
         'interface\n'
         'REAL*8 function test_log(x)\n'
-        'implicit none\n'
-        'REAL*8, intent(in) :: x\n'
-        'end function\n'
-        'end interface\n'
-        'interface\n'
-        'REAL*8 function test_ln(x)\n'
         'implicit none\n'
         'REAL*8, intent(in) :: x\n'
         'end function\n'

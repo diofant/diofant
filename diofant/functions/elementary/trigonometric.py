@@ -116,7 +116,7 @@ def _pi_coeff(arg, cycles=1):
                 # recast exact binary fractions to Rationals
                 f = abs(c) % 1
                 if f != 0:
-                    p = -round(log(f, 2).evalf(strict=False))
+                    p = -round((log(f)/log(2)).evalf(strict=False))
                     m = 2**p
                     cm = c*m
                     i = int(cm)
@@ -639,7 +639,7 @@ class cos(TrigonometricFunction):
         def fermatCoords(n):
             assert n > 1
             assert n % 2
-            primes = {p: 0 for p in cst_table_some}
+            primes = dict.fromkeys(cst_table_some, 0)
             assert 1 not in primes
             for p_i in primes:
                 while 0 == n % p_i:
@@ -649,7 +649,7 @@ class cos(TrigonometricFunction):
                 return False
             if max(primes.values()) > 1:
                 return False
-            return tuple(p for p in primes if primes[p] == 1)
+            return tuple(p for p, c in primes.items() if c == 1)
 
         if pi_coeff.denominator in cst_table_some:
             return chebyshevt(pi_coeff.numerator, cst_table_some[pi_coeff.denominator]).expand()
@@ -1336,7 +1336,7 @@ class cot(ReciprocalTrigonometricFunction):
         return I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
 
     def _eval_rewrite_as_sin(self, arg):
-        return 2*sin(2*arg)/sin(arg)**2
+        return sin(2*arg)/(2*sin(arg)**2)
 
     def as_real_imag(self, deep=True, **hints):
         re, im = self._as_real_imag(deep=deep, **hints)
@@ -1399,15 +1399,6 @@ class asin(InverseTrigonometricFunction):
     """
     The inverse sine function.
 
-    Returns the arcsine of x in radians.
-
-    Notes
-    =====
-
-    asin(x) will evaluate automatically in the cases oo, -oo, 0, 1,
-    -1 and for some instances when the result is a rational multiple
-    of pi (see the eval class method).
-
     Examples
     ========
 
@@ -1415,22 +1406,13 @@ class asin(InverseTrigonometricFunction):
     pi/2
     >>> asin(-1)
     -pi/2
+    >>> asin(oo)
+    -oo*I
 
     See Also
     ========
 
-    diofant.functions.elementary.trigonometric.sin
-    diofant.functions.elementary.trigonometric.csc
-    diofant.functions.elementary.trigonometric.cos
-    diofant.functions.elementary.trigonometric.sec
-    diofant.functions.elementary.trigonometric.tan
-    diofant.functions.elementary.trigonometric.cot
-    diofant.functions.elementary.trigonometric.acsc
-    diofant.functions.elementary.trigonometric.acos
-    diofant.functions.elementary.trigonometric.asec
-    diofant.functions.elementary.trigonometric.atan
-    diofant.functions.elementary.trigonometric.acot
-    diofant.functions.elementary.trigonometric.atan2
+    sin, csc, acsc
 
     References
     ==========
@@ -1448,47 +1430,38 @@ class asin(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
-            if arg in (oo, -oo):
-                return -arg * I
-            if arg == 0:
-                return Integer(0)
-            if arg == 1:
-                return pi / 2
-            if arg == -1:
-                return -pi / 2
-
         if arg.could_extract_minus_sign():
             return -cls(-arg)
 
+        i_coeff = arg.as_coefficient(I)
+        if i_coeff is not None:
+            return I*asinh(i_coeff)
+
         if arg.is_number:
+            if arg == oo:
+                return -oo*I
+            if arg == zoo:
+                return zoo
+            if arg == 0:
+                return Integer(0)
+            if arg == 1:
+                return pi/2
+
             cst_table = {
                 sqrt(3)/2: 3,
-                -sqrt(3)/2: -3,
                 sqrt(2)/2: 4,
-                -sqrt(2)/2: -4,
                 1/sqrt(2): 4,
-                -1/sqrt(2): -4,
                 sqrt((5 - sqrt(5))/8): 5,
-                -sqrt((5 - sqrt(5))/8): -5,
                 Rational(+1, 2): 6,
-                Rational(-1, 2): -6,
                 sqrt(2 - sqrt(2))/2: 8,
-                -sqrt(2 - sqrt(2))/2: -8,
                 (sqrt(5) - 1)/4: 10,
                 (1 - sqrt(5))/4: -10,
                 (sqrt(3) - 1)/sqrt(2**3): 12,
                 (1 - sqrt(3))/sqrt(2**3): -12,
                 (sqrt(5) + 1)/4: Rational(10, 3),
-                -(sqrt(5) + 1)/4: -Rational(10, 3)
             }
-
             if arg in cst_table:
-                return pi / cst_table[arg]
-
-        i_coeff = arg.as_coefficient(I)
-        if i_coeff is not None:
-            return I * asinh(i_coeff)
+                return pi/cst_table[arg]
 
     @staticmethod
     @cacheit
@@ -1564,17 +1537,6 @@ class acos(InverseTrigonometricFunction):
     """
     The inverse cosine function.
 
-    Returns the arc cosine of x (measured in radians).
-
-    Notes
-    =====
-
-    ``acos(x)`` will evaluate automatically in the cases
-    ``oo``, ``-oo``, ``0``, ``1``, ``-1``.
-
-    ``acos(zoo)`` evaluates to ``zoo``
-    (see note in :py:class`diofant.functions.elementary.trigonometric.asec`)
-
     Examples
     ========
 
@@ -1588,18 +1550,7 @@ class acos(InverseTrigonometricFunction):
     See Also
     ========
 
-    diofant.functions.elementary.trigonometric.sin
-    diofant.functions.elementary.trigonometric.csc
-    diofant.functions.elementary.trigonometric.cos
-    diofant.functions.elementary.trigonometric.sec
-    diofant.functions.elementary.trigonometric.tan
-    diofant.functions.elementary.trigonometric.cot
-    diofant.functions.elementary.trigonometric.asin
-    diofant.functions.elementary.trigonometric.acsc
-    diofant.functions.elementary.trigonometric.asec
-    diofant.functions.elementary.trigonometric.atan
-    diofant.functions.elementary.trigonometric.acot
-    diofant.functions.elementary.trigonometric.atan2
+    cos, sec, asec
 
     References
     ==========
@@ -1617,20 +1568,20 @@ class acos(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
-            if arg in (oo, -oo):
-                return arg * I
+        if arg.is_number:
+            if arg == +oo:
+                return +oo*I
+            if arg == -oo:
+                return -oo*I
+            if arg == zoo:
+                return zoo
             if arg == 0:
                 return pi / 2
-            if arg == 1:
+            if arg == +1:
                 return Integer(0)
             if arg == -1:
                 return pi
 
-        if arg is zoo:
-            return zoo
-
-        if arg.is_number:
             cst_table = {
                 Rational(+1, 2): pi/3,
                 Rational(-1, 2): 2*pi/3,
@@ -1641,7 +1592,6 @@ class acos(InverseTrigonometricFunction):
                 sqrt(3)/2: pi/6,
                 -sqrt(3)/2: 5*pi/6,
             }
-
             if arg in cst_table:
                 return cst_table[arg]
 
@@ -2025,32 +1975,6 @@ class asec(InverseTrigonometricFunction):
     r"""
     The inverse secant function.
 
-    Returns the arc secant of x (measured in radians).
-
-    Notes
-    =====
-
-    ``asec(x)`` will evaluate automatically in the cases
-    ``oo``, ``-oo``, ``0``, ``1``, ``-1``.
-
-    ``asec(x)`` has branch cut in the interval [-1, 1]. For complex arguments,
-    it can be defined as
-
-    .. math::
-        sec^{-1}(z) = -i*(log(\sqrt{1 - z^2} + 1) / z)
-
-    At ``x = 0``, for positive branch cut, the limit evaluates to ``zoo``. For
-    negative branch cut, the limit
-
-    .. math::
-        \lim_{z \to 0}-i*(log(-\sqrt{1 - z^2} + 1) / z)
-
-    simplifies to `-i*log(z/2 + O(z^3))` which ultimately evaluates to
-    ``zoo``.
-
-    As ``asex(x)`` = ``asec(1/x)``, a similar argument can be given for
-    ``acos(x)``.
-
     Examples
     ========
 
@@ -2062,18 +1986,7 @@ class asec(InverseTrigonometricFunction):
     See Also
     ========
 
-    diofant.functions.elementary.trigonometric.sin
-    diofant.functions.elementary.trigonometric.csc
-    diofant.functions.elementary.trigonometric.cos
-    diofant.functions.elementary.trigonometric.sec
-    diofant.functions.elementary.trigonometric.tan
-    diofant.functions.elementary.trigonometric.cot
-    diofant.functions.elementary.trigonometric.asin
-    diofant.functions.elementary.trigonometric.acsc
-    diofant.functions.elementary.trigonometric.acos
-    diofant.functions.elementary.trigonometric.atan
-    diofant.functions.elementary.trigonometric.acot
-    diofant.functions.elementary.trigonometric.atan2
+    sec, cos, acos
 
     References
     ==========
@@ -2081,21 +1994,20 @@ class asec(InverseTrigonometricFunction):
     * https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcSec
-    * https://reference.wolfram.com/language/ref/ArcSec.html
 
     """
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_zero:
-            return zoo
-        if arg.is_Number:
-            if arg == 1:
+        if arg.is_number:
+            if arg == 0:
+                return zoo
+            if arg == +1:
                 return Integer(0)
             if arg == -1:
                 return pi
-        if arg in [oo, -oo, zoo]:
-            return pi/2
+            if arg in [oo, -oo, zoo]:
+                return pi/2
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -2137,14 +2049,6 @@ class acsc(InverseTrigonometricFunction):
     """
     The inverse cosecant function.
 
-    Returns the arc cosecant of x (measured in radians).
-
-    Notes
-    =====
-
-    acsc(x) will evaluate automatically in the cases
-    oo, -oo, 0, 1, -1.
-
     Examples
     ========
 
@@ -2156,18 +2060,7 @@ class acsc(InverseTrigonometricFunction):
     See Also
     ========
 
-    diofant.functions.elementary.trigonometric.sin
-    diofant.functions.elementary.trigonometric.csc
-    diofant.functions.elementary.trigonometric.cos
-    diofant.functions.elementary.trigonometric.sec
-    diofant.functions.elementary.trigonometric.tan
-    diofant.functions.elementary.trigonometric.cot
-    diofant.functions.elementary.trigonometric.asin
-    diofant.functions.elementary.trigonometric.acos
-    diofant.functions.elementary.trigonometric.asec
-    diofant.functions.elementary.trigonometric.atan
-    diofant.functions.elementary.trigonometric.acot
-    diofant.functions.elementary.trigonometric.atan2
+    csc, sin, asin
 
     References
     ==========
@@ -2180,13 +2073,15 @@ class acsc(InverseTrigonometricFunction):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
-            if arg == 1:
-                return pi/2
+        if arg.is_number:
+            if arg == 0:
+                return zoo
+            if arg == +1:
+                return +pi/2
             if arg == -1:
                 return -pi/2
-        if arg in [oo, -oo, zoo]:
-            return Integer(0)
+            if arg in [oo, -oo, zoo]:
+                return Integer(0)
 
     def fdiff(self, argindex=1):
         if argindex == 1:

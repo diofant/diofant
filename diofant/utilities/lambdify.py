@@ -35,7 +35,6 @@ MATH_TRANSLATIONS = {
     'Abs': 'fabs',
     'ceiling': 'ceil',
     'E': 'e',
-    'ln': 'log',
 }
 
 MPMATH_TRANSLATIONS = {
@@ -49,7 +48,6 @@ MPMATH_TRANSLATIONS = {
     'chebyshevu': 'chebyu',
     'E': 'e',
     'I': 'j',
-    'ln': 'log',
     # 'lowergamma': 'lower_gamma',
     'oo': 'inf',
     # 'uppergamma': 'upper_gamma',
@@ -81,7 +79,6 @@ NUMPY_TRANSLATIONS = {
     'ceiling': 'ceil',
     'E': 'e',
     'im': 'imag',
-    'ln': 'log',
     'Mod': 'mod',
     'oo': 'inf',
     're': 'real',

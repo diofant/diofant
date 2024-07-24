@@ -4,17 +4,17 @@ import mpmath
 from mpmath.libmp import prec_to_dps
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
-                    Rational, Symbol, count_ops, expand_func, expand_log,
+                    Rational, Symbol, count_ops, exp, expand_func, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp,
-                    factor_terms, oo, pi)
+                    factor_terms, log, oo, pi)
 from ..core.compatibility import as_int
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
 from ..core.strategies import bottom_up
 from ..core.sympify import sympify
-from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
-                         exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
+from ..functions import (besseli, besselj, besselk, bessely, ceiling,
+                         exp_polar, gamma, jn, piecewise_fold, root, sqrt,
                          unpolarify)
 from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction

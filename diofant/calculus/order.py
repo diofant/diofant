@@ -230,8 +230,6 @@ class Order(Expr):
                 return
             if expr.expr == self.expr:
                 return all(x in self.args[1:] for x in expr.args[1:])
-            if expr.expr.is_Add:
-                return all(self.contains(x) for x in expr.expr.args)
             if self.var != expr.var:
                 return
             ratio = self.expr/expr.expr

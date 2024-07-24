@@ -1,12 +1,13 @@
 from collections import defaultdict
 
 from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
-                    expand_mul, expand_power_base, gcd_terms, symbols)
+                    expand_log, expand_mul, expand_power_base, gcd_terms, log,
+                    symbols)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..core.mul import _keep_coeff, _unevaluated_Mul
 from ..core.sympify import sympify
-from ..functions import log, sqrt
+from ..functions import sqrt
 from ..polys import gcd
 from ..utilities import default_sort_key, ordered
 from ..utilities.iterables import is_iterable
@@ -698,7 +699,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 d = fraction(e)[1]
                 if d.is_Integer:
                     q = d
-            if q != 1 and log(q, 2).is_Integer:
+            if q != 1 and expand_log(log(q)/log(2)).is_Integer:
                 return True
         return False
 

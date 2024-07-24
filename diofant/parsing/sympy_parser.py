@@ -798,17 +798,13 @@ class EvaluateFalseTransformer(ast.NodeTransformer):
                 right = ast.Call(
                     func=ast.Name(id='Pow', ctx=ast.Load()),
                     args=[right, ast.UnaryOp(op=ast.USub(), operand=ast.Constant(1))],
-                    keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
-                    starargs=None,
-                    kwargs=None
+                    keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))]
                 )
 
             new_node = ast.Call(
                 func=ast.Name(id=sympy_class, ctx=ast.Load()),
                 args=[self.visit(node.left), right],
-                keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))],
-                starargs=None,
-                kwargs=None
+                keywords=[ast.keyword(arg='evaluate', value=ast.Constant(value=False, kind=None))]
             )
 
             if sympy_class in ('Add', 'Mul'):

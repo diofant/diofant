@@ -1,8 +1,8 @@
 """This module implements tools for integrating rational functions."""
 
-from ..core import Dummy, I, Integer, Lambda, Symbol, symbols, sympify
+from ..core import Dummy, I, Integer, Lambda, Symbol, log, symbols, sympify
 from ..domains import ZZ
-from ..functions import atan, log
+from ..functions import atan
 from ..polys import Poly, RootSum, cancel, resultant, roots
 from ..simplify import collect
 from ..solvers import solve

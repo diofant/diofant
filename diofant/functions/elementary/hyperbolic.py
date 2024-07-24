@@ -554,10 +554,10 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         o = self._reciprocal_of(self.args[0])
         return getattr(o, method_name)(*args, **kwargs)
 
-    def _rewrite_reciprocal(self, method_name, arg):
+    def _rewrite_reciprocal(self, method_name, arg, **kwargs):
         # Special handling for rewrite functions. If reciprocal rewrite returns
         # unmodified expression, then return None
-        t = self._call_reciprocal(method_name, arg)
+        t = self._call_reciprocal(method_name, arg, **kwargs)
         assert t is not None
         assert t != self._reciprocal_of(arg)
         return 1/t
@@ -565,8 +565,8 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
     def _eval_rewrite_as_exp(self, arg):
         return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
-    def _eval_rewrite_as_tractable(self, arg):
-        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg)
+    def _eval_rewrite_as_tractable(self, arg, **kwargs):
+        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg, **kwargs)
 
     def _eval_rewrite_as_tanh(self, arg):
         return self._rewrite_reciprocal('_eval_rewrite_as_tanh', arg)
@@ -689,14 +689,10 @@ class asinh(Function):
     """
     The inverse hyperbolic sine function.
 
-    * asinh(x) -> Returns the inverse hyperbolic sine of x
-
     See Also
     ========
 
-    diofant.functions.elementary.hyperbolic.cosh
-    diofant.functions.elementary.hyperbolic.tanh
-    diofant.functions.elementary.hyperbolic.sinh
+    sinh
 
     """
 
@@ -707,27 +703,25 @@ class asinh(Function):
 
     @classmethod
     def eval(cls, arg):
+        from ...core import expand_mul
         from .trigonometric import asin
 
-        if arg.is_Number:
-            if arg in (oo, -oo, 0):
-                return arg
+        if arg.could_extract_minus_sign():
+            return -cls(-arg)
+
+        i_coeff = arg.as_coefficient(I)
+        if i_coeff is not None:
+            return expand_mul(I*asin(i_coeff))
+
+        if arg.is_number:
+            if arg == oo:
+                return oo
+            if arg == 0:
+                return Integer(0)
             if arg == 1:
                 return log(sqrt(2) + 1)
-            if arg == -1:
-                return log(sqrt(2) - 1)
-            if arg.is_negative:
-                return -cls(-arg)
-        else:
-            if arg is zoo:
+            if arg == zoo:
                 return zoo
-
-            i_coeff = arg.as_coefficient(I)
-
-            if i_coeff is not None:
-                return I * asin(i_coeff)
-            if _coeff_isneg(arg):
-                return -cls(-arg)
 
     @staticmethod
     @cacheit
@@ -751,7 +745,7 @@ class asinh(Function):
             return arg
         return self.func(arg)
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return log(x + sqrt(x**2 + 1))
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
@@ -768,14 +762,10 @@ class acosh(Function):
     """
     The inverse hyperbolic cosine function.
 
-    * acosh(x) -> Returns the inverse hyperbolic cosine of x
-
     See Also
     ========
 
-    diofant.functions.elementary.hyperbolic.asinh
-    diofant.functions.elementary.hyperbolic.atanh
-    diofant.functions.elementary.hyperbolic.cosh
+    cosh
 
     """
 
@@ -786,17 +776,24 @@ class acosh(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_Number:
-            if arg in (oo, -oo):
+        if arg.is_number:
+            if arg == +oo:
+                return oo
+            if arg == -oo:
+                return oo
+            if arg == +I*oo:
+                return oo
+            if arg == -I*oo:
+                return oo
+            if arg == zoo:
                 return oo
             if arg == 0:
-                return pi*I / 2
-            if arg == 1:
+                return pi*I/2
+            if arg == +1:
                 return Integer(0)
             if arg == -1:
                 return pi*I
 
-        if arg.is_number:
             cst_table = {
                 I: log(I*(1 + sqrt(2))),
                 -I: log(-I*(1 + sqrt(2))),
@@ -824,9 +821,6 @@ class acosh(Function):
                 if arg.is_extended_real:
                     return cst_table[arg]*I
                 return cst_table[arg]
-
-        if arg.is_infinite:
-            return oo
 
     @staticmethod
     @cacheit
@@ -931,7 +925,7 @@ class atanh(Function):
             return arg
         return self.func(arg)
 
-    def _eval_rewrite_as_log(self, x):
+    def _eval_rewrite_as_log(self, x, **kwargs):
         return (log(1 + x) - log(1 - x))/2
     _eval_rewrite_as_tractable = _eval_rewrite_as_log
 
@@ -984,7 +978,7 @@ class acoth(Function):
                 return -cls(-arg)
         else:
             if arg is zoo:
-                return 0
+                return Integer(0)
 
             i_coeff = arg.as_coefficient(I)
 

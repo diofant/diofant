@@ -1092,11 +1092,8 @@ class Poly(Expr):
         4
 
         """
-        if order is not None:
-            return self.coeffs(order)[0]
-
-        result = self.rep.LC
-        return self.domain.to_expr(result)
+        LM = self.LM(order)
+        return self.coeff_monomial(tuple(LM))
 
     def TC(self):
         """

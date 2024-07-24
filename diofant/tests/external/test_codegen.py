@@ -29,7 +29,7 @@ import tempfile
 
 import pytest
 
-from diofant import (N, acos, asin, atan, atan2, ceiling, cos, cosh, floor, ln,
+from diofant import (N, acos, asin, atan, atan2, ceiling, cos, cosh, floor,
                      log, sin, sinh, sqrt, tan, tanh)
 from diofant.abc import x, y, z
 from diofant.utilities.codegen import codegen, get_code_generator, make_routine
@@ -312,7 +312,6 @@ def test_intrinsic_math1_codegen():
         ('test_cos', cos(x)),
         ('test_cosh', cosh(x)),
         ('test_log', log(x)),
-        ('test_ln', ln(x)),
         ('test_sin', sin(x)),
         ('test_sinh', sinh(x)),
         ('test_sqrt', sqrt(x)),

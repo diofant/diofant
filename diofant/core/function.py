@@ -372,7 +372,7 @@ class Function(Application, Expr):
         Decide if the function should automatically evalf().
 
         By default (in this implementation), this happens if (and only if) the
-        ARG is a floating point number.
+        ARG is a floating-point number.
         This function is used by __new__.
 
         """
@@ -499,14 +499,15 @@ class Function(Application, Expr):
         from ..calculus import Order
         from ..sets.sets import FiniteSet
         from .numbers import oo, zoo
+        from .power import log
         from .symbol import Dummy
         args = self.args
         args0 = [t.limit(x, 0) for t in args]
         if any(isinstance(t, Expr) and (t.is_infinite or
                                         t.has(oo, -oo, zoo, nan)) for t in args0):
-            # XXX could use t.as_leading_term(x) here but it's a little
-            # slower
-            a = [t.compute_leading_term(x, logx=logx) for t in args]
+            a = [t.as_leading_term(x) for t in args]
+            if logx:
+                a = [_.subs({log(x): logx}) for _ in a]
             a0 = [t.limit(x, 0) for t in a]
             if any(t.has(oo, -oo, zoo, nan) for t in a0):
                 return self._eval_aseries(n, args0, x, logx)

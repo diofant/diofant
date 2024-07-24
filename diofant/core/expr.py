@@ -2391,7 +2391,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         # from here on it's x0=0 and dir=-1 handling
 
-        if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
+        if any(_ is not True for _ in [x.is_positive, x.is_finite]):
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
             rv = self.subs({x: xpos}).series(xpos, x0, n, dir, logx=logx)
@@ -2414,41 +2414,39 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if (s1 + target_order).removeO() == s1:
                 target_order = Integer(0)
 
-            try:
-                return collect(s1.removeO(), x) + target_order
-            except NotImplementedError:  # XXX parse_derivative of radsimp.py
-                return s1 + target_order
-        else:  # lseries handling
-            def yield_lseries(s):
-                """Return terms of lseries one at a time."""
-                for si in s:
-                    if not si.is_Add:
-                        yield si
-                        continue
-                    # yield terms 1 at a time if possible
-                    # by increasing order until all the
-                    # terms have been returned
-                    yielded = 0
-                    o = Order(si, x)*x
-                    if expand_mul(o.expr).is_Add:
-                        raise NotImplementedError
-                    ndid = 0
-                    ndo = len(si.args)
-                    while 1:
-                        do = (si - yielded + o).removeO()
-                        o *= x
-                        if not do or do.is_Order:
-                            continue
-                        if do.is_Add:
-                            ndid += len(do.args)
-                        else:
-                            ndid += 1
-                        yield do
-                        if ndid == ndo:
-                            break
-                        yielded += do
+            return collect(s1.removeO(), x) + target_order
 
-            return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
+        # lseries handling
+        def yield_lseries(s):
+            """Return terms of lseries one at a time."""
+            for si in s:
+                if not si.is_Add:
+                    yield si
+                    continue
+                # yield terms 1 at a time if possible
+                # by increasing order until all the
+                # terms have been returned
+                yielded = 0
+                o = Order(si, x)*x
+                if expand_mul(o.expr).is_Add:
+                    raise NotImplementedError
+                ndid = 0
+                ndo = len(si.args)
+                while 1:
+                    do = (si - yielded + o).removeO()
+                    o *= x
+                    if not do or do.is_Order:
+                        continue
+                    if do.is_Add:
+                        ndid += len(do.args)
+                    else:
+                        ndid += 1
+                    yield do
+                    if ndid == ndo:
+                        break
+                    yielded += do
+
+        return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
 
     def taylor_term(self, n, x, *previous_terms):
         """General method for the taylor term.
@@ -2464,33 +2462,27 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
     def _eval_lseries(self, x, logx=None):
-        # default implementation of lseries is using nseries(), and adaptively
-        # increasing the "n". As you can see, it is not very efficient, because
-        # we are calculating the series over and over again. Subclasses should
-        # override this method and implement much more efficient yielding of
-        # terms.
+        # Default implementation of lseries is using nseries(), and adaptively
+        # increasing the "n".  As you can see, it is not very efficient, because
+        # we are calculating the series over and over again.
         n = 0
         series = self._eval_nseries(x, n, logx)
         if not series.is_Order:
-            if series.is_Add:
-                yield series.removeO()
-            else:
-                yield series
-            return
-
-        while series.is_Order:
-            n += 1
-            series = self._eval_nseries(x, n, logx)
-        e = series.removeO()
-        yield e
-        while 1:
-            while 1:
+            yield series.removeO()
+        else:
+            while series.is_Order:
                 n += 1
-                series = self._eval_nseries(x, n, logx).removeO()
-                if e != series:
-                    break
-            yield series - e
-            e = series
+                series = self._eval_nseries(x, n, logx)
+            e = series.removeO()
+            yield e
+            while 1:
+                while 1:
+                    n += 1
+                    series = self._eval_nseries(x, n, logx).removeO()
+                    if e != series:
+                        break
+                yield series - e
+                e = series
 
     def nseries(self, x, n=6, logx=None):
         """Calculate "n" terms of series in x around 0
@@ -2621,8 +2613,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         from ..calculus import Order
         from ..calculus.gruntz import mrv, rewrite
-        from ..functions import exp, log
-        from . import Dummy
+        from . import Dummy, log
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)
@@ -2684,12 +2675,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         This is a wrapper to compute a series first.
 
         """
-        from ..functions import log
-        from .symbol import Dummy
-
-        d = logx if logx else Dummy('logx')
-
-        for t in self.series(x, n=None, logx=d):
+        for t in self.series(x, n=None, logx=logx):
             t = t.cancel()
 
             is_zero = t.equals(0)
@@ -2698,9 +2684,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if is_zero is False:
                 break
             raise NotImplementedError(f'Zero-decision problem for {t}')
-
-        if logx is None:
-            t = t.subs({d: log(x)})
 
         return t.as_leading_term(x)
 
@@ -3161,4 +3144,4 @@ from .add import Add  # noqa: E402
 from .mod import Mod  # noqa: E402
 from .mul import Mul  # noqa: E402
 from .numbers import I, Integer, Rational, nan, oo, zoo  # noqa: E402
-from .power import Pow  # noqa: E402
+from .power import exp, Pow  # noqa: E402

@@ -3,12 +3,12 @@
 import functools
 import math
 
-from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
+from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp, exp,
                     factor_terms, pi, symbols)
 from ..core.mul import expand_2arg
 from ..core.sympify import sympify
 from ..domains.compositedomain import CompositeDomain
-from ..functions import Piecewise, acos, cos, exp, im, root, sign, sqrt
+from ..functions import Piecewise, acos, cos, im, root, sign, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify.powsimp import powsimp
 from ..simplify.simplify import simplify

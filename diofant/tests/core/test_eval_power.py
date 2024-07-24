@@ -345,8 +345,11 @@ def test_sympyissue_7638():
     assert sqrt((cos(1)**2 + sin(1)**2 - 1)**(3 + I)).exp == Rational(1, 2)
     assert sqrt(r**Rational(4, 3)) != r**Rational(2, 3)
     assert sqrt((p + I)**Rational(4, 3)) == (p + I)**Rational(2, 3)
-    assert sqrt((p - p**2*I)**2) == p - p**2*I
-    assert sqrt((p + r*I)**2) != p + r*I
+
+    for q in +1 + I, +1 - I:
+        assert sqrt(q**2) == +q
+    for q in -1 + I, -1 - I:
+        assert sqrt(q**2) == -q
 
 
 def test_sympyissue_8582():

@@ -27,9 +27,10 @@ from the names used in Bronstein's book.
 import math
 
 from ..abc import z
-from ..core import Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, oo, sympify
+from ..core import (Dummy, E, Eq, Integer, Lambda, Mul, Pow, Symbol, exp, log,
+                    oo, sympify)
 from ..functions import (Piecewise, acos, acot, asin, atan, cos, cosh, cot,
-                         coth, exp, log, sin, sinh, tan, tanh)
+                         coth, sin, sinh, tan, tanh)
 from ..polys import (Poly, PolynomialError, RootSum, cancel, gcd, real_roots,
                      reduced)
 from ..solvers import solve

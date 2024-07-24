@@ -439,7 +439,7 @@ we proceed by computing `f(g(w))` (and simplifying naively)
 and indeed get back `w`. (In case of branched functions we have to be
 aware of branch cuts. In that case we take `w` to be a positive real
 number and check the formula. If what we have found works for positive
-`w`, then just replace :func:`~diofant.functions.elementary.exponential.exp` inside any branched function by
+`w`, then just replace :func:`~diofant.core.power.exp` inside any branched function by
 :func:`~diofant.functions.elementary.exponential.exp\_polar` and what we get is right for `all` `w`.) Hence
 we can write the formula as
 

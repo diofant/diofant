@@ -480,8 +480,8 @@ def test_asinh():
     assert asinh(-2) == -asinh(2)
     assert asinh(nan) == nan
     assert asinh(0) == 0
-    assert asinh(+1) == log(sqrt(2) + 1)
-    assert asinh(-1) == log(sqrt(2) - 1)
+    assert asinh(+1) == +log(sqrt(2) + 1)
+    assert asinh(-1) == -log(sqrt(2) + 1)
     assert asinh(+I) == +pi*I/2
     assert asinh(-I) == -pi*I/2
     assert asinh(+I/2) == +pi*I/6
@@ -525,10 +525,10 @@ def test_asinh_series():
 def test_acosh():
     assert acosh(-x) == acosh(-x, evaluate=False)
 
-    assert acosh(1) == 0
+    assert acosh(+1) == 0
     assert acosh(-1) == pi*I
     assert acosh(0) == I*pi/2
-    assert acosh(Rational(1, 2)) == I*pi/3
+    assert acosh(Rational(+1, 2)) == I*pi/3
     assert acosh(Rational(-1, 2)) == 2*pi*I/3
 
     assert acosh(+oo) == oo
