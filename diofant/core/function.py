@@ -372,7 +372,7 @@ class Function(Application, Expr):
         Decide if the function should automatically evalf().
 
         By default (in this implementation), this happens if (and only if) the
-        ARG is a floating point number.
+        ARG is a floating-point number.
         This function is used by __new__.
 
         """

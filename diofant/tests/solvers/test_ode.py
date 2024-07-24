@@ -1765,6 +1765,12 @@ def test_nth_linear_constant_coeff_homogeneous():
     assert dsolve(eq) == sol
     assert checkodesol(eq, sol) == (True, 0)
 
+    # https://groups.google.com/g/sympy/c/XBQp6AtDWWM/m/meWJ4IKCAwAJ
+    eq = f(x).diff((x, 2)) + f(x).diff(x) + 0.25*f(x)
+    sol = Eq(f(x), (C1 + C2*x)*exp(-0.5*x))
+    assert dsolve(eq) == sol
+    assert checkodesol(eq, sol) == (True, 0)
+
 
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
     c = [C1, C2, C3, C4, C5]
