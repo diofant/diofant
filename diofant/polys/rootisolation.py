@@ -1702,6 +1702,9 @@ class _FindRoot:
         else:
             s, t = B, B
 
+        if t <= v or s <= u:
+            raise ValueError('not a valid complex isolation rectangle')
+
         f1, f2 = new_ring._real_imag(f)
 
         return _get_rectangle(f1, f2, (u, v), (s, t), exclude=exclude)[0]
