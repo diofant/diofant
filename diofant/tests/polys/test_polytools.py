@@ -1151,6 +1151,7 @@ def test_Poly_LC():
 
     assert LC(x*y**7 + 2*x**2*y**3, order='lex') == 2
     assert LC(x*y**7 + 2*x**2*y**3, order='grlex') == 1
+    assert LC(0, x, order='lex') == 0
 
     pytest.raises(ComputationFailedError, lambda: LC([1, 2]))
 

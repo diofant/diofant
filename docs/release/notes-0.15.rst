@@ -33,6 +33,8 @@ Minor changes
 =============
 
 * Support CPython 3.12, see :pull:`1325`.
+* Support :meth:`~diofant.core.expr.Expr.as_real_imag` for :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`1415`.
+* Support CPython 3.13, see :pull:`1425`.
 * Corrected evaluation rules for inverse trigonometric and hyperbolic functions, see :pull:`1396`.
 
 Developer changes
@@ -111,3 +113,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26571`: integrate((x**8+1)**(-1/2),x) raises _CoeffExpValueError
 * :sympyissue:`26577`: factor should use the same domain for numerator and denominator
 * :sympyissue:`26682`: Incorrect behaviour for solve_poly_system
+* :sympyissue:`26787`: Poly.count_roots wrong for algebraic fields because is_negative is wrong

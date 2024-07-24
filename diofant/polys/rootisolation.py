@@ -5,6 +5,7 @@ import math
 import operator
 
 from ..core import Dummy, I
+from ..domains import QQ
 from .polyerrors import DomainError, RefinementFailedError
 
 
@@ -63,210 +64,144 @@ A4 = 'A4'  # Axis #4 (0-): re = 0 and im < 0
 
 _rules_simple = {
     # Q --> Q (same) => no change
-    (Q1, Q1): 0,
-    (Q2, Q2): 0,
-    (Q3, Q3): 0,
-    (Q4, Q4): 0,
+    (Q1, Q1): [0],
+    (Q2, Q2): [0],
+    (Q3, Q3): [0],
+    (Q4, Q4): [0],
 
-    # A -- CCW --> Q => +1/4 (CCW)
-    (A1, Q1): 1,
-    (A2, Q2): 1,
-    (A3, Q3): 1,
-    (A4, Q4): 1,
+    # A -- CCW --> Q => +1 (CCW)
+    (A1, Q1): [1],
+    (A2, Q2): [1],
+    (A3, Q3): [1],
+    (A4, Q4): [1],
 
-    # A --  CW --> Q => -1/4 (CCW)
-    (A1, Q4): 2,
-    (A2, Q1): 2,
-    (A3, Q2): 2,
-    (A4, Q3): 2,
+    # A --  CW --> Q => -1 (CW)
+    (A1, Q4): [-1],
+    (A2, Q1): [-1],
+    (A3, Q2): [-1],
+    (A4, Q3): [-1],
 
-    # Q -- CCW --> A => +1/4 (CCW)
-    (Q1, A2): 3,
-    (Q2, A3): 3,
-    (Q3, A4): 3,
-    (Q4, A1): 3,
+    # Q -- CCW --> A => +1 (CCW)
+    (Q1, A2): [1],
+    (Q2, A3): [1],
+    (Q3, A4): [1],
+    (Q4, A1): [1],
 
-    # Q --  CW --> A => -1/4 (CCW)
-    (Q1, A1): 4,
-    (Q2, A2): 4,
-    (Q3, A3): 4,
-    (Q4, A4): 4,
+    # Q --  CW --> A => -1 (CW)
+    (Q1, A1): [-1],
+    (Q2, A2): [-1],
+    (Q3, A3): [-1],
+    (Q4, A4): [-1],
 
-    # Q -- CCW --> Q => +1/2 (CCW)
-    (Q1, Q2): +5,
-    (Q2, Q3): +5,
-    (Q3, Q4): +5,
-    (Q4, Q1): +5,
+    # Q -- CCW --> Q => +2 (CCW)
+    (Q1, Q2): [2],
+    (Q2, Q3): [2],
+    (Q3, Q4): [2],
+    (Q4, Q1): [2],
 
-    # Q --  CW --> Q => -1/2 (CW)
-    (Q1, Q4): -5,
-    (Q2, Q1): -5,
-    (Q3, Q2): -5,
-    (Q4, Q3): -5,
+    # Q --  CW --> Q => -2 (CW)
+    (Q1, Q4): [-2],
+    (Q2, Q1): [-2],
+    (Q3, Q2): [-2],
+    (Q4, Q3): [-2],
 }
 
 _rules_ambiguous = {
-    # A -- CCW --> Q => { +1/4 (CCW), -9/4 (CW) }
-    (A1, OO, Q1): -1,
-    (A2, OO, Q2): -1,
-    (A3, OO, Q3): -1,
-    (A4, OO, Q4): -1,
+    # A -- CCW --> Q => { +1 (CCW), -9 (CW) }
+    (A1, OO, Q1): [9, 1],
+    (A2, OO, Q2): [9, 1],
+    (A3, OO, Q3): [9, 1],
+    (A4, OO, Q4): [9, 1],
 
-    # A --  CW --> Q => { -1/4 (CCW), +7/4 (CW) }
-    (A1, OO, Q4): -2,
-    (A2, OO, Q1): -2,
-    (A3, OO, Q2): -2,
-    (A4, OO, Q3): -2,
+    # A --  CW --> Q => { -1 (CCW), +7 (CW) }
+    (A1, OO, Q4): [7, -1],
+    (A2, OO, Q1): [7, -1],
+    (A3, OO, Q2): [7, -1],
+    (A4, OO, Q3): [7, -1],
 
-    # Q -- CCW --> A => { +1/4 (CCW), -9/4 (CW) }
-    (Q1, OO, A2): -3,
-    (Q2, OO, A3): -3,
-    (Q3, OO, A4): -3,
-    (Q4, OO, A1): -3,
+    # Q -- CCW --> A => { +1 (CCW), -9 (CW) }
+    (Q1, OO, A2): [9, 1],
+    (Q2, OO, A3): [9, 1],
+    (Q3, OO, A4): [9, 1],
+    (Q4, OO, A1): [9, 1],
 
-    # Q --  CW --> A => { -1/4 (CCW), +7/4 (CW) }
-    (Q1, OO, A1): -4,
-    (Q2, OO, A2): -4,
-    (Q3, OO, A3): -4,
-    (Q4, OO, A4): -4,
+    # Q --  CW --> A => { -1 (CCW), +7 (CW) }
+    (Q1, OO, A1): [7, -1],
+    (Q2, OO, A2): [7, -1],
+    (Q3, OO, A3): [7, -1],
+    (Q4, OO, A4): [7, -1],
 
-    # A --  OO --> A => { +1 (CCW), -1 (CW) }
-    (A1, A3): 7,
-    (A2, A4): 7,
-    (A3, A1): 7,
-    (A4, A2): 7,
+    # A --  OO --> A => { +4 (CCW), -4 (CW) }
+    (A1, OO, A3): [4, -4],
+    (A2, OO, A4): [4, -4],
+    (A3, OO, A1): [4, -4],
+    (A4, OO, A2): [4, -4],
 
-    (A1, OO, A3): 7,
-    (A2, OO, A4): 7,
-    (A3, OO, A1): 7,
-    (A4, OO, A2): 7,
+    # Q -- DIA --> Q => { +4 (CCW), -4 (CW) }
+    (Q1, OO, Q3): [4, -4],
+    (Q2, OO, Q4): [4, -4],
+    (Q3, OO, Q1): [4, -4],
+    (Q4, OO, Q2): [4, -4],
 
-    # Q -- DIA --> Q => { +1 (CCW), -1 (CW) }
-    (Q1, Q3): 8,
-    (Q2, Q4): 8,
-    (Q3, Q1): 8,
-    (Q4, Q2): 8,
+    # A --- R ---> A => { +2 (CCW), -6 (CW) }
+    (A1, OO, A2): [2, -6],
+    (A2, OO, A3): [2, -6],
+    (A3, OO, A4): [2, -6],
+    (A4, OO, A1): [2, -6],
 
-    (Q1, OO, Q3): 8,
-    (Q2, OO, Q4): 8,
-    (Q3, OO, Q1): 8,
-    (Q4, OO, Q2): 8,
+    # A --- L ---> A => { +6 (CCW), -2 (CW) }
+    (A1, OO, A4): [6, -2],
+    (A2, OO, A1): [6, -2],
+    (A3, OO, A2): [6, -2],
+    (A4, OO, A3): [6, -2],
 
-    # A --- R ---> A => { +1/2 (CCW), -3/2 (CW) }
-    (A1, A2): 9,
-    (A2, A3): 9,
-    (A3, A4): 9,
-    (A4, A1): 9,
+    # Q --- 1 ---> A => { +3 (CCW), -5 (CW) }
+    (Q1, OO, A3): [3, -5],
+    (Q2, OO, A4): [3, -5],
+    (Q3, OO, A1): [3, -5],
+    (Q4, OO, A2): [3, -5],
 
-    (A1, OO, A2): 9,
-    (A2, OO, A3): 9,
-    (A3, OO, A4): 9,
-    (A4, OO, A1): 9,
+    # Q --- 2 ---> A => { +5 (CCW), -3 (CW) }
+    (Q1, OO, A4): [5, -3],
+    (Q2, OO, A1): [5, -3],
+    (Q3, OO, A2): [5, -3],
+    (Q4, OO, A3): [5, -3],
 
-    # A --- L ---> A => { +3/2 (CCW), -1/2 (CW) }
-    (A1, A4): 10,
-    (A2, A1): 10,
-    (A3, A2): 10,
-    (A4, A3): 10,
+    # A --- 1 ---> Q => { +5 (CCW), -3 (CW) }
+    (A1, OO, Q3): [5, -3],
+    (A2, OO, Q4): [5, -3],
+    (A3, OO, Q1): [5, -3],
+    (A4, OO, Q2): [5, -3],
 
-    (A1, OO, A4): 10,
-    (A2, OO, A1): 10,
-    (A3, OO, A2): 10,
-    (A4, OO, A3): 10,
+    # A --- 2 ---> Q => { +3 (CCW), -5 (CW) }
+    (A1, OO, Q2): [3, -5],
+    (A2, OO, Q3): [3, -5],
+    (A3, OO, Q4): [3, -5],
+    (A4, OO, Q1): [3, -5],
 
-    # Q --- 1 ---> A => { +3/4 (CCW), -5/4 (CW) }
-    (Q1, A3): 11,
-    (Q2, A4): 11,
-    (Q3, A1): 11,
-    (Q4, A2): 11,
+    # Q --> OO --> Q => { +2 (CCW), -6 (CW) }
+    (Q1, OO, Q2): [2, -6],
+    (Q2, OO, Q3): [2, -6],
+    (Q3, OO, Q4): [2, -6],
+    (Q4, OO, Q1): [2, -6],
 
-    (Q1, OO, A3): 11,
-    (Q2, OO, A4): 11,
-    (Q3, OO, A1): 11,
-    (Q4, OO, A2): 11,
+    # Q --> OO --> Q => { +6 (CCW), -2 (CW) }
+    (Q1, OO, Q4): [6, -2],
+    (Q2, OO, Q1): [6, -2],
+    (Q3, OO, Q2): [6, -2],
+    (Q4, OO, Q3): [6, -2],
 
-    # Q --- 2 ---> A => { +5/4 (CCW), -3/4 (CW) }
-    (Q1, A4): 12,
-    (Q2, A1): 12,
-    (Q3, A2): 12,
-    (Q4, A3): 12,
+    # A --> OO --> A => { +8 (CCW), 0 (CW) }
+    (A1, OO, A1): [8, 0],
+    (A2, OO, A2): [8, 0],
+    (A3, OO, A3): [8, 0],
+    (A4, OO, A4): [8, 0],
 
-    (Q1, OO, A4): 12,
-    (Q2, OO, A1): 12,
-    (Q3, OO, A2): 12,
-    (Q4, OO, A3): 12,
-
-    # A --- 1 ---> Q => { +5/4 (CCW), -3/4 (CW) }
-    (A1, Q3): 13,
-    (A2, Q4): 13,
-    (A3, Q1): 13,
-    (A4, Q2): 13,
-
-    (A1, OO, Q3): 13,
-    (A2, OO, Q4): 13,
-    (A3, OO, Q1): 13,
-    (A4, OO, Q2): 13,
-
-    # A --- 2 ---> Q => { +3/4 (CCW), -5/4 (CW) }
-    (A1, Q2): 14,
-    (A2, Q3): 14,
-    (A3, Q4): 14,
-    (A4, Q1): 14,
-
-    (A1, OO, Q2): 14,
-    (A2, OO, Q3): 14,
-    (A3, OO, Q4): 14,
-    (A4, OO, Q1): 14,
-
-    # Q --> OO --> Q => { +1/2 (CCW), -3/2 (CW) }
-    (Q1, OO, Q2): 15,
-    (Q2, OO, Q3): 15,
-    (Q3, OO, Q4): 15,
-    (Q4, OO, Q1): 15,
-
-    # Q --> OO --> Q => { +3/2 (CCW), -1/2 (CW) }
-    (Q1, OO, Q4): 16,
-    (Q2, OO, Q1): 16,
-    (Q3, OO, Q2): 16,
-    (Q4, OO, Q3): 16,
-
-    # A --> OO --> A => { +2 (CCW), 0 (CW) }
-    (A1, OO, A1): 17,
-    (A2, OO, A2): 17,
-    (A3, OO, A3): 17,
-    (A4, OO, A4): 17,
-
-    # Q --> OO --> Q => { +2 (CCW), 0 (CW) }
-    (Q1, OO, Q1): 18,
-    (Q2, OO, Q2): 18,
-    (Q3, OO, Q3): 18,
-    (Q4, OO, Q4): 18,
-}
-
-_values = {
-    0: [(+0, 1)],
-    1: [(+1, 4)],
-    2: [(-1, 4)],
-    3: [(+1, 4)],
-    4: [(-1, 4)],
-    -1: [(+9, 4), (+1, 4)],
-    -2: [(+7, 4), (-1, 4)],
-    -3: [(+9, 4), (+1, 4)],
-    -4: [(+7, 4), (-1, 4)],
-    +5: [(+1, 2)],
-    -5: [(-1, 2)],
-    7: [(+1, 1), (-1, 1)],
-    8: [(+1, 1), (-1, 1)],
-    9: [(+1, 2), (-3, 2)],
-    10: [(+3, 2), (-1, 2)],
-    11: [(+3, 4), (-5, 4)],
-    12: [(+5, 4), (-3, 4)],
-    13: [(+5, 4), (-3, 4)],
-    14: [(+3, 4), (-5, 4)],
-    15: [(+1, 2), (-3, 2)],
-    16: [(+3, 2), (-1, 2)],
-    17: [(+2, 1), (+0, 1)],
-    18: [(+2, 1), (+0, 1)],
+    # Q --> OO --> Q => { +8 (CCW), 0 (CW) }
+    (Q1, OO, Q1): [8, 0],
+    (Q2, OO, Q2): [8, 0],
+    (Q3, OO, Q3): [8, 0],
+    (Q4, OO, Q4): [8, 0],
 }
 
 
@@ -430,37 +365,17 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t):
     return Q
 
 
-def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
+def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=set()):
     """Transform sequences of quadrants to a sequence of rules."""
-    if exclude is True:
-        edges = [1, 1, 0, 0]
+    edges = [0]*4
+    for i, edge in enumerate(['S', 'E', 'N', 'W']):
+        if edge in exclude:
+            edges[i] = 1
 
-        corners = {
-            (0, 1): 1,
-            (1, 2): 1,
-            (2, 3): 0,
-            (3, 0): 1,
-        }
-    else:
-        edges = [0, 0, 0, 0]
-
-        corners = {
-            (0, 1): 0,
-            (1, 2): 0,
-            (2, 3): 0,
-            (3, 0): 0,
-        }
-
-    if exclude is not None and exclude is not True:
-        exclude = set(exclude)
-
-        for i, edge in enumerate(['S', 'E', 'N', 'W']):
-            if edge in exclude:
-                edges[i] = 1
-
-        for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
-            if corner in exclude:
-                corners[((i - 1) % 4, i)] = 1
+    corners = {(0, 1): 0, (1, 2): 0, (2, 3): 0, (3, 0): 0}
+    for i, corner in enumerate(['SW', 'SE', 'NE', 'NW']):
+        if corner in exclude:
+            corners[((i - 1) % 4, i)] = 1
 
     QQ, rules = [Q_L1, Q_L2, Q_L3, Q_L4], []
 
@@ -474,7 +389,11 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
         if Q[0] == OO:
             j, Q = (i - 1) % 4, Q[1:]
             qq = QQ[j][-2], OO, Q[0]
-            rules.append((_rules_ambiguous[qq], corners[(j, i)]))
+
+            if qq in _rules_ambiguous:
+                rules.append((_rules_ambiguous[qq], corners[(j, i)]))
+            else:
+                raise NotImplementedError(f'3 element rule (corner): {qq}')
 
         q1, k = Q[0], 1
 
@@ -483,10 +402,21 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
             if q2 != OO:
                 qq = q1, q2
-                rules.append((_rules_simple[qq], 0))
+                qq0 = q1, OO, q2
+
+                if qq in _rules_simple:
+                    rules.append((_rules_simple[qq], 0))
+                elif qq0 in _rules_ambiguous:
+                    rules.append((_rules_ambiguous[qq0], edges[i]))
+                else:
+                    raise NotImplementedError(f'2 element rule (inside): {qq}')
             else:
                 qq, k = (q1, q2, Q[k]), k + 1
-                rules.append((_rules_ambiguous[qq], edges[i]))
+
+                if qq in _rules_ambiguous:
+                    rules.append((_rules_ambiguous[qq], edges[i]))
+                else:
+                    raise NotImplementedError(f'3 element rule (edge): {qq}')
 
             q1 = qq[-1]
 
@@ -498,12 +428,12 @@ def _reverse_intervals(intervals):
     return [((b, a), indices, f) for (a, b), indices, f in reversed(intervals)]
 
 
-def _winding_number(T, field):
+def _winding_number(T):
     """Compute the winding number of the input polynomial, i.e. the number of roots."""
-    return int(sum((field(_values[t][i][0])/field(_values[t][i][1]) for t, i in T), field(0)) / field(2))
+    return int(sum(QQ(t[i], 4) for t, i in T) / QQ(2))
 
 
-def _get_rectangle(f1, f2, inf, sup, exclude=None):
+def _get_rectangle(f1, f2, inf, sup, exclude=set()):
     (u, v), (s, t) = inf, sup
 
     f1L1 = f1.eval(1, v)
@@ -533,7 +463,7 @@ def _get_rectangle(f1, f2, inf, sup, exclude=None):
 
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=exclude)
 
-    N = _winding_number(T, f1L1.ring.domain)
+    N = _winding_number(T)
 
     I_L = I_L1, I_L2, I_L3, I_L4
     Q_L = Q_L1, Q_L2, Q_L3, Q_L4
@@ -625,11 +555,13 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_R = _intervals_to_quadrants(I_L3_R, f1L3F, f2L3F, s, x)
     Q_L4_R = _intervals_to_quadrants(I_L4_R, f1V, f2V, t, v)
 
-    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L, exclude=True)
-    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R, exclude=True)
+    T_L = _traverse_quadrants(Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_R = _traverse_quadrants(Q_L1_R, Q_L2_R, Q_L3_R, Q_L4_R,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
-    N_L = _winding_number(T_L, F)
-    N_R = _winding_number(T_R, F)
+    N_L = _winding_number(T_L)
+    N_R = _winding_number(T_R)
 
     I_L = I_L1_L, I_L2_L, I_L3_L, I_L4_L
     Q_L = Q_L1_L, Q_L2_L, Q_L3_L, Q_L4_L
@@ -733,11 +665,13 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     Q_L3_U = Q_L3
     Q_L4_U = _intervals_to_quadrants(I_L4_U, f1L4F, f2L4F, t, y)
 
-    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B, exclude=True)
-    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U, exclude=True)
+    T_B = _traverse_quadrants(Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
+    T_U = _traverse_quadrants(Q_L1_U, Q_L2_U, Q_L3_U, Q_L4_U,
+                              exclude={'S', 'E', 'SW', 'SE', 'NE'})
 
-    N_B = _winding_number(T_B, F)
-    N_U = _winding_number(T_U, F)
+    N_B = _winding_number(T_B)
+    N_U = _winding_number(T_U)
 
     I_B = I_L1_B, I_L2_B, I_L3_B, I_L4_B
     Q_B = Q_L1_B, Q_L2_B, Q_L3_B, Q_L4_B
@@ -1406,7 +1340,8 @@ class _FindRoot:
             raise DomainError(f"Can't count real roots in domain {domain}")
 
         if domain.is_ComplexAlgebraicField and not domain.is_RealAlgebraicField:
-            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf, sup))
+            return sum(k for *_, k in new_ring._isolate_real_roots(f, inf=inf,
+                                                                   sup=sup))
 
         sturm = f.sturm()
 
@@ -1588,8 +1523,7 @@ class _FindRoot:
         for i, p in enumerate(polys):
             p = p.set_domain(domain)
             p = p.clear_denoms()[1]
-            (j,), p = p.terms_gcd()
-            polys[i] = p  # .set_domain(domain)
+            (j,), polys[i] = p.terms_gcd()
 
             if zeros and j > 0:
                 zero_indices[i] = j
@@ -1742,7 +1676,7 @@ class _FindRoot:
 
         return h
 
-    def _count_complex_roots(self, f, inf=None, sup=None, exclude=None):
+    def _count_complex_roots(self, f, inf=None, sup=None, exclude=set()):
         """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm."""
         domain = self.domain.field
         new_ring = self.clone(domain=domain)
@@ -1770,7 +1704,7 @@ class _FindRoot:
 
         f1, f2 = new_ring._real_imag(f)
 
-        return _get_rectangle(f1, f2, (u, v), (s, t), exclude)[0]
+        return _get_rectangle(f1, f2, (u, v), (s, t), exclude=exclude)[0]
 
     def _isolate_complex_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm."""

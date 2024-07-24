@@ -1280,3 +1280,16 @@ def test_sympyissue_20327():
 
 def test_issue_1385():
     assert Symbol('n', integer=True) not in QQ
+
+
+def test_sympyissue_26787():
+    K = QQ.algebraic_field(sqrt(2))
+
+    a = K.from_expr(1 - sqrt(2))
+    assert K.is_normal(a) is False
+    a = K.from_expr(sqrt(2) - 2)
+    assert K.is_normal(a) is False
+
+    p = (x**2 + 2*sqrt(2)*x + 1).as_poly(extension=True)
+    assert p.count_roots() == 2
+    assert p.count_roots(-10, 10) == 2
