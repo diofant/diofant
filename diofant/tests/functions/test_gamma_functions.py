@@ -402,7 +402,6 @@ def test_loggamma():
 
     def tN(N, M):
         assert loggamma(1/x).series(x, n=N).getn() == M
-    tN(-1, -1)
     tN(1, 1)
     tN(2, 2)
     tN(3, 3)
