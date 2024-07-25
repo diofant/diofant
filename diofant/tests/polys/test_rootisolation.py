@@ -746,6 +746,11 @@ def test__count_complex_roots_1():
     assert R._count_complex_roots(f, a, b) == 1
     assert R._count_complex_roots(f, c, d) == 0
 
+    pytest.raises(ValueError,
+                  lambda: R._count_complex_roots(f, (0, -1), (0, 2)))
+    pytest.raises(ValueError,
+                  lambda: R._count_complex_roots(f, (0, -1), (1, -1)))
+
     R, x = ring('x', QQ)
 
     f = x - QQ(1, 2)
