@@ -55,6 +55,8 @@ known_functions = {
     'floor': [(lambda x: True, 'Floor')],
     'ceiling': [(lambda x: True, 'Ceiling')],
     'arg': [(lambda x: True, 'Arg')],
+    'Ei': [(lambda x: True, 'ExpIntegralEi')],
+    'expint': [(lambda n, x: True, 'ExpIntegralE')],
 }
 
 

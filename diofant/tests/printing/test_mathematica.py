@@ -2,14 +2,14 @@
 
 import pytest
 
-from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
+from diofant import (QQ, Catalan, Derivative, Dummy, E, Ei, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral,
                      InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly, Product,
                      Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
                      Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
                      atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
-                     cot, coth, csch, erf, erfc, erfi, exp, factorial,
+                     cot, coth, csch, erf, erfc, erfi, exp, expint, factorial,
                      factorial2, false, fibonacci, floor, gamma, hyper, im,
                      log, loggamma, lowergamma, mathematica_code, meijerg, oo,
                      pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
@@ -99,6 +99,8 @@ def test_Function():
     assert mathematica_code(ceiling(x)) == 'Ceiling[x]'
     assert mathematica_code(arg(x)) == 'Arg[x]'
     assert mathematica_code(lowergamma(y, x)) == '(Gamma[y] - Gamma[y, x])'
+    assert mathematica_code(Ei(x)) == 'ExpIntegralEi[x]'
+    assert mathematica_code(expint(y, x)) == 'ExpIntegralE[y, x]'
 
     class MyFunc1(Function):
         @classmethod
