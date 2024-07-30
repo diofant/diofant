@@ -57,6 +57,8 @@ known_functions = {
     'arg': [(lambda x: True, 'Arg')],
     'Ei': [(lambda x: True, 'ExpIntegralEi')],
     'expint': [(lambda n, x: True, 'ExpIntegralE')],
+    'Si': [(lambda x: True, 'SinIntegral')],
+    'Ci': [(lambda x: True, 'CosIntegral')],
 }
 
 
