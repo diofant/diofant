@@ -286,7 +286,7 @@ class LatexPrinter(Printer):
                 exp = exp[1:]
 
             return r'%s%s10^{%s}' % (mant, separator, exp)
-        if str_real == '+inf':
+        if str_real in ('+inf', 'inf'):
             return r'\infty'
         if str_real == '-inf':
             return r'- \infty'
