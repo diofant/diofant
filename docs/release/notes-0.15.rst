@@ -114,3 +114,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`26682`: Incorrect behaviour for solve_poly_system
 * :sympyissue:`26787`: Poly.count_roots wrong for algebraic fields because is_negative is wrong
 * :sympyissue:`14738`: dup_count_complex_roots() can't handle degenerate cases
+* :sympyissue:`26856`: very simple example of series bug
+* :sympyissue:`26873`: Saving a long expression to load in another python notebook/file
+* :sympyissue:`26903`: minpoly returns a not irreducible polynomial
