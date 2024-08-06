@@ -286,10 +286,10 @@ class LatexPrinter(Printer):
                 exp = exp[1:]
 
             return r'%s%s10^{%s}' % (mant, separator, exp)
-        if str_real == '+inf':
-            return r'\infty'
         if str_real == '-inf':
             return r'- \infty'
+        if str_real.endswith('inf'):
+            return r'\infty'
         return str_real
 
     def _print_Mul(self, expr):
