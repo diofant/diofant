@@ -2260,7 +2260,7 @@ class _eis(Function):
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...calculus import Order
-        if args0[0] != oo:
+        if args0[0] not in (oo, -oo):
             return super()._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]

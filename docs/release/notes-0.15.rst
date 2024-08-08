@@ -118,3 +118,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26873`: Saving a long expression to load in another python notebook/file
 * :sympyissue:`26903`: minpoly returns a not irreducible polynomial
 * :sympyissue:`26930`: Simple integral evaluation broken in 1.13
+* :sympyissue:`26916`: Ei(-x) * exp(x) (exponential integral) limit to infinity error out
