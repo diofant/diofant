@@ -4,7 +4,7 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
+from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
                      Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
                      besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
@@ -1150,3 +1150,8 @@ def test_issue_1397():
 
 def test_issue_1403():
     assert acsc(x).rewrite(atan).limit(x, I*oo) == 0
+
+
+def test_sympyissue_26916():
+    assert limit(Ei(x)*exp(-x), x, +oo) == 0
+    assert limit(Ei(x)*exp(-x), x, -oo) == 0

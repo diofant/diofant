@@ -1583,3 +1583,9 @@ def test_sympyissue_26566():
 
     assert integrate(sin(a*(x + pi))**2,
                      (x, -pi, -pi/2)) == (pi*a - sin(pi*a))/(4*a)
+
+
+def test_sympyissue_26930():
+    assert (integrate(x**Rational(4, 3)*log(x),
+                      (x, 0, 1)) ==
+            -gamma(Rational(7, 3))**2/gamma(Rational(10, 3))**2)
