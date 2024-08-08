@@ -55,7 +55,7 @@ def test_basic_ops():
 
 def test_1_over_x_and_sqrt():
     # 1.0 and 0.5 would do something different in regular StrPrinter,
-    # but these are exact in IEEE floating point so no different here.
+    # but these are exact in IEEE floating-point so no different here.
     assert octave_code(1/x) == '1./x'
     assert octave_code(x**-1) == octave_code(x**-1.0) == '1./x'
     assert octave_code(1/sqrt(x)) == '1./sqrt(x)'

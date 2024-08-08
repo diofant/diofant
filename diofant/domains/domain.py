@@ -208,18 +208,22 @@ class Domain(DefaultPrinting, abc.ABC):
             tol = max(K0.tolerance, K1.tolerance)
             return cls(prec=prec, tol=tol)
 
-        if K0.is_ComplexField and K1.is_ComplexField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_ComplexField and K1.is_RealField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_RealField and K1.is_ComplexField:
-            return mkinexact(K1.__class__, K1, K0)
-        if K0.is_RealField and K1.is_RealField:
-            return mkinexact(K0.__class__, K0, K1)
-        if K0.is_ComplexField or K0.is_RealField:
+        if K1.is_ComplexField:
+            K0, K1 = K1, K0
+        if K0.is_ComplexField:
+            if K1.is_ComplexField or K1.is_RealField:
+                return mkinexact(K0.__class__, K0, K1)
             return K0
-        if K1.is_ComplexField or K1.is_RealField:
-            return K1
+
+        if K1.is_RealField:
+            K0, K1 = K1, K0
+        if K0.is_RealField:
+            if K1.is_RealField:
+                return mkinexact(K0.__class__, K0, K1)
+            if K1.is_ComplexAlgebraicField:
+                from .complexfield import ComplexField
+                return mkinexact(ComplexField, K0, K0)
+            return K0
 
         if K0.is_AlgebraicField and K1.is_AlgebraicField:
             return K0.__class__(K0.domain.unify(K1.domain), *_unify_gens(K0.gens, K1.gens))

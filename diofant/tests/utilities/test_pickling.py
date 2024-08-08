@@ -2,8 +2,6 @@ import copy
 import pickle
 import warnings
 
-import pytest
-
 from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      CoercionFailedError, Derivative, DiracDelta, DomainError,
                      Dummy, E, Eijk, Equality, EulerGamma,
@@ -166,7 +164,6 @@ def test_core_function():
         check(f)
 
 
-@pytest.mark.xfail
 def test_core_dynamicfunctions():
     f = Function('f')
     check(f)
@@ -180,6 +177,12 @@ def test_core_interval():
 def test_core_multidimensional():
     for c in (vectorize, vectorize(0)):
         check(c)
+
+
+def test_core_appliedundef():
+    x = Symbol('_long_unique_name_1')
+    f = Function('_long_unique_name_2')
+    check(f(x))
 
 
 def test_Singletons():

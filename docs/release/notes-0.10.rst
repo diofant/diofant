@@ -117,12 +117,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`14380` AlgebraicField.numer() could return an algebraic integer
 * :sympyissue:`14442` Should AlgebraicField be a Composite domain?
 * :sympyissue:`14759` dup_isolate_real_roots_list() docstring is wrong
-* :sympyissue:`14738` dup_count_complex_roots() can't handle degenerate cases
 * :sympyissue:`14782` integrate(sqrt(-x**2 + 1)*(-x**2 + x), [x, -1, 1]) is incorrect
 * :sympyissue:`14791` No solution is returned for solve(exp(log(5)*x) - exp(log(2)*x), x)
 * :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
 * :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
-* :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
+* :sympyissue:`14822` RisingFactorial cannot do numerical (floating-point) evaluations
 * :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
 * :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
 * :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ

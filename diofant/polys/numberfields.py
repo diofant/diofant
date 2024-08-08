@@ -110,6 +110,8 @@ def _separate_sq(p):
                 a.append((Integer(1), y**2))
             elif y.is_Atom:
                 a.append((y, Integer(1)))
+            elif y.is_Pow and y.exp.is_integer:
+                a.append((y, Integer(1)))
             else:
                 raise NotImplementedError
         else:

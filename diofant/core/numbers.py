@@ -434,7 +434,7 @@ class Float(Number):
     >>> Float(0.3, 20)
     0.29999999999999998890
 
-    If you want a 20-digit value of the decimal 0.3 (not the floating point
+    If you want a 20-digit value of the decimal 0.3 (not the floating-point
     approximation of 0.3) you should send the 0.3 as a string. The underlying
     representation is still binary but a higher precision than Python's float
     is used:
@@ -1833,8 +1833,8 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     and ``oo**0``, which all produce ``1`` (this is consistent with Python's
     float).
 
-    NaN is loosely related to floating point nan, which is defined in the
-    IEEE 754 floating point standard, and corresponds to the Python
+    NaN is loosely related to floating-point nan, which is defined in the
+    IEEE 754 floating-point standard, and corresponds to the Python
     ``float('nan')``.  Differences are noted below.
 
     NaN is mathematically not equal to anything else, even NaN itself.  This
@@ -1842,7 +1842,7 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     the examples below.
 
     NaN is not comparable so inequalities raise a TypeError.  This is in
-    constrast with floating point nan where all inequalities are false.
+    constrast with floating-point nan where all inequalities are false.
 
     NaN is a singleton, and can be accessed by ``nan``.
 

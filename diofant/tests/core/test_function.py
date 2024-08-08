@@ -396,20 +396,18 @@ def test_function_complex():
 
 
 def test_function__eval_nseries():
-    n = Symbol('n')
-
     assert sin(x).series(x, n=3) == x + O(x**3)
     assert sin(x + 1).series(x, n=2) == x*cos(1) + sin(1) + O(x**2)
     assert sin(pi*(1 - x)).series(x, n=3) == pi*x + O(x**3)
     assert acos(1 - x**2).series(x, n=2) == sqrt(2)*x + O(x**2)
-    assert polygamma(n, x + 1).series(x, n=2) == \
-        polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
+    assert polygamma(y, x + 1).series(x, n=2) == \
+        polygamma(y, 1) + polygamma(y + 1, 1)*x + O(x**2)
     pytest.raises(PoleError, lambda: sin(1/x).series(x, n=2))
     assert acos(1 - x).series(x, n=2) == sqrt(2)*sqrt(x) + \
         sqrt(2)*x**Rational(3, 2)/12 + O(x**2)
     assert acos(1 + x).series(x, n=2) == sqrt(2)*I*sqrt(x) - \
         sqrt(2)*I*x**(3/2)/12 + O(x**2)
-    assert loggamma(1/x).series(x, n=-1) == O(1/x) - log(x)/x
+    assert loggamma(1/x).series(x, n=0) == (-log(x) - 1)/x + log(x)/2 + O(1, x)
     assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:

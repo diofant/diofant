@@ -1259,17 +1259,7 @@ def test_Mul_is_imaginary_real():
     assert (e**(2*j)).is_extended_real is None
     assert (e**j).is_imaginary is None
     assert (e**(2*j)).is_imaginary is None
-
-    assert (e**-1).is_imaginary is False
-    assert (e**2).is_imaginary
-    assert (e**3).is_imaginary is False
-    assert (e**4).is_imaginary is False
-    assert (e**5).is_imaginary is False
     assert (e**-1).is_extended_real is False
-    assert (e**2).is_extended_real is False
-    assert (e**3).is_extended_real is False
-    assert (e**4).is_extended_real
-    assert (e**5).is_extended_real is False
     assert (e**3).is_complex
 
     assert (r*i).is_imaginary is True

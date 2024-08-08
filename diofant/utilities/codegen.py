@@ -264,7 +264,7 @@ class Variable:
             index of the array.
 
         precision : int, optional
-            Controls the precision of floating point constants.
+            Controls the precision of floating-point constants.
 
         """
         if not isinstance(name, (Dummy, Symbol, MatrixSymbol)):
@@ -371,7 +371,7 @@ class OutputArgument(Argument, ResultBase):
             index of the array.
 
         precision : int, optional
-            Controls the precision of floating point constants.
+            Controls the precision of floating-point constants.
 
         """
         Argument.__init__(self, name, datatype, dimensions, precision)
@@ -431,7 +431,7 @@ class Result(Variable, ResultBase):
             bounds for each index of the array.
 
         precision : int, optional
-            Controls the precision of floating point constants.
+            Controls the precision of floating-point constants.
 
         """
         if not isinstance(expr, (Expr, MatrixBase)):
