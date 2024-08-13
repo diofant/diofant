@@ -119,3 +119,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26903`: minpoly returns a not irreducible polynomial
 * :sympyissue:`26930`: Simple integral evaluation broken in 1.13
 * :sympyissue:`26916`: Ei(-x) * exp(x) (exponential integral) limit to infinity error out
+* :sympyissue:`26956`: integrate values with non-suitable parameters
