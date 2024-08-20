@@ -1589,3 +1589,7 @@ def test_sympyissue_26930():
     assert (integrate(x**Rational(4, 3)*log(x),
                       (x, 0, 1)) ==
             -gamma(Rational(7, 3))**2/gamma(Rational(10, 3))**2)
+
+
+def test_sympyissue_26956():
+    assert integrate(x**1.5*(x - 0.5), (x, 0, 1)) == 0.085714285714285687
