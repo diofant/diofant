@@ -12,7 +12,7 @@ from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
                      factorial, false, floor, gamma, hyper, integrate, limit,
                      log, lowergamma, nan, oo, pi, polygamma, re, root, sign,
                      simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
-                     true)
+                     tanh, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1155,3 +1155,8 @@ def test_issue_1403():
 def test_sympyissue_26916():
     assert limit(Ei(x)*exp(-x), x, +oo) == 0
     assert limit(Ei(x)*exp(-x), x, -oo) == 0
+
+
+def test_sympyissue_26990():
+    assert limit(x/((x - 6)*sinh(tanh(0.03*x)) + tanh(x) - 0.5),
+                 x, oo) == 0.85091812823932156
