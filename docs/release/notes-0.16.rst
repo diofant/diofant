@@ -28,3 +28,4 @@ for complete list of issues and pull requests involved in this release.
 These Sympy issues also were addressed:
 
 * :sympyissue:`26990`: Getting an AtrributeError when finding the limit of a complex equation with operators like sinh() and tanh()
+* :sympyissue:`27001`: Possible bug with sympy.solve
