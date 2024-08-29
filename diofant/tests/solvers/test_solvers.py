@@ -1783,3 +1783,9 @@ def test_sympyissue_23637():
 
 def test_sympyissue_23855():
     assert solve([x - 1], x, x) == [{x: 1}]
+
+
+def test_sympyissue_27001():
+    a1, a2, a3 = symbols(['a1', 'a2', 'a3'])
+    eqnSystem = [a1, a1**2]
+    assert solve(eqnSystem, [a1, a2, a3]) == [{a1: 0}]
