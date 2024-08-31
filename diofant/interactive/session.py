@@ -80,6 +80,16 @@ class FloatRationalizer(ast.NodeTransformer):
         return self.generic_visit(node)
 
 
+class WrapInts(ast.NodeTransformer):
+    """Wraps all ints in a call to :class:`~diofant.core.numbers.Integer`."""
+
+    def visit_Constant(self, node):
+        if isinstance(node.value, int) and not isinstance(node.value, bool):
+            return ast.Call(ast.Name('Integer', ast.Load()),
+                            [ast.Constant(repr(node.value))], [])
+        return node
+
+
 _NAMES_MAP = {}
 
 

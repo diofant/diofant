@@ -17,7 +17,7 @@ import sys
 
 from diofant import __version__
 from diofant.interactive.session import (AutomaticSymbols,
-                                         IntegerDivisionWrapper,
+                                         IntegerDivisionWrapper, WrapInts,
                                          unicode_identifiers,
                                          wrap_float_literals)
 
@@ -40,6 +40,8 @@ parser.add_argument('--unicode-identifiers',
                     action='store_true')
 parser.add_argument('--wrap-floats', help='Wrap float literals with Float',
                     action='store_true')
+parser.add_argument('--wrap-ints', help='Wrap integer literals with Integer',
+                    action='store_true')
 parser.add_argument('-V', '--version',
                     help='Print the Diofant version and exit',
                     action='store_true')
@@ -58,6 +60,9 @@ def main():
              "k, m, n = symbols('k m n', integer=True)",
              "f, g, h = symbols('f g h', cls=Function)",
              'init_printing(pretty_print=True, use_unicode=True)']
+
+    if args.wrap_ints:
+        args.no_wrap_division = True
 
     try:
         import IPython
@@ -95,6 +100,11 @@ def main():
             shell.run_cell('ip = get_ipython()')
             shell.run_cell('ip.input_transformers_cleanup.append(wrap_float_literals)')
             shell.run_cell('del ip')
+        if args.wrap_ints:
+            shell.run_cell('from diofant.interactive.session import WrapInts')
+            shell.run_cell('ip = get_ipython()')
+            shell.run_cell('ip.ast_transformers.append(WrapInts())')
+            shell.run_cell('del ip')
         app.start()
     else:
         ast_transformers = []
@@ -109,6 +119,8 @@ def main():
             source_transformers.append(unicode_identifiers)
         if args.wrap_floats:
             source_transformers.append(wrap_float_literals)
+        if args.wrap_ints:
+            ast_transformers.append(WrapInts())
 
         class DiofantConsole(code.InteractiveConsole):
             """An interactive console with readline support."""
