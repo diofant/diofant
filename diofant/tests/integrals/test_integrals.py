@@ -1593,3 +1593,10 @@ def test_sympyissue_26930():
 
 def test_sympyissue_26956():
     assert integrate(x**1.5*(x - 0.5), (x, 0, 1)) == 0.085714285714285687
+
+
+def test_sympyissue_27050():
+    e = sqrt(1 - x**2)/(1 + x**2)
+    e_s = (e.subs({x: sin(w)}) * diff(sin(w), w)).simplify()
+    r = integrate(e_s, (w, -pi/2, pi/2)).simplify()
+    assert re(r).evalf() == 1.301290284568573
