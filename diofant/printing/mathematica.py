@@ -58,6 +58,7 @@ known_functions = {
     'expint': [(lambda n, x: True, 'ExpIntegralE')],
     'Si': [(lambda x: True, 'SinIntegral')],
     'Ci': [(lambda x: True, 'CosIntegral')],
+    'lerchphi': [(lambda z, s, a: True, 'HurwitzLerchPhi')],
 }
 
 

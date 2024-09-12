@@ -11,9 +11,9 @@ from diofant import (QQ, Catalan, Ci, Derivative, Dummy, E, Ei, Eq, EulerGamma,
                      atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
                      cot, coth, csch, erf, erfc, erfi, exp, expint, factorial,
                      factorial2, false, fibonacci, floor, gamma, hyper, im,
-                     log, loggamma, lowergamma, mathematica_code, meijerg, oo,
-                     pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
-                     symbols, tan, tanh, true, uppergamma, zeta)
+                     lerchphi, log, loggamma, lowergamma, mathematica_code,
+                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
+                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import a, s, t, x, y, z
 
 
@@ -90,6 +90,7 @@ def test_Function():
     assert mathematica_code(gamma(x)) == 'Gamma[x]'
     assert mathematica_code(zeta(x)) == 'Zeta[x]'
     assert mathematica_code(zeta(s, a)) == 'HurwitzZeta[s, a]'
+    assert mathematica_code(lerchphi(z, s, a)) == 'HurwitzLerchPhi[z, s, a]'
     assert mathematica_code(Heaviside(x)) == 'UnitStep[x]'
     assert mathematica_code(fibonacci(x)) == 'Fibonacci[x]'
     assert mathematica_code(polylog(x, y)) == 'PolyLog[x, y]'
