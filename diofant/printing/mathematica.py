@@ -46,7 +46,6 @@ known_functions = {
     'factorial2': [(lambda *x: True, 'Factorial2')],
     'RisingFactorial': [(lambda x, k: True, 'Pochhammer')],
     'gamma': [(lambda x: True, 'Gamma')],
-    'zeta': [(lambda x: True, 'Zeta')],
     'Heaviside': [(lambda x: True, 'UnitStep')],
     'fibonacci': [(lambda x: True, 'Fibonacci')],
     'polylog': [(lambda x, y: True, 'PolyLog')],
@@ -139,6 +138,11 @@ class MCodePrinter(CodePrinter):
 
     def _print_lowergamma(self, expr):
         return f"{self.parenthesize(expr.rewrite('uppergamma'), PRECEDENCE['Add'])}"
+
+    def _print_zeta(self, expr):
+        if len(expr.args) == 1:
+            return f'Zeta[{self.doprint(expr.args[0])}]'
+        return f"HurwitzZeta[{self.stringify(expr.args, ', ')}]"
 
     def _print_atan2(self, expr):
         return f"ArcTan[{', '.join(map(self.doprint, reversed(expr.args)))}]"
