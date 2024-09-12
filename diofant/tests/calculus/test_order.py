@@ -361,3 +361,8 @@ def test_sympyissue_22836():
     assert O(2**x + factorial(x), x, oo) == O(factorial(x), x, oo)
     assert O(2**x + factorial(x) + x**x, x, oo) == O((1/x)**(-x), x, oo)
     assert O(x + factorial(x), x, oo) == O(factorial(x), x, oo)
+
+
+def test_sympyissue_27048():
+    assert O(x) + O(x*log(x)) == O(x*log(x))
+    assert O(x*log(x) + x) == O(x*log(x))
