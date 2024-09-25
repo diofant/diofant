@@ -1600,3 +1600,12 @@ def test_sympyissue_27050():
     e_s = (e.subs({x: sin(w)}) * diff(sin(w), w)).simplify()
     r = integrate(e_s, (w, -pi/2, pi/2)).simplify()
     assert re(r).evalf() == 1.301290284568573
+
+
+def test_sympyissue_27108():
+    x = symbols('x', real=True)
+    f = exp(-abs(x))
+    g = 2*DiracDelta(x)
+    assert integrate(f*f, (x, -oo, oo)) == 1
+    assert integrate((f - g)*f, (x, -oo, oo)) == -1
+    assert integrate(f*g, (x, -oo, oo)) == 2
