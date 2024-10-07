@@ -32,3 +32,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`27048`: Order term does not simplify with terms containing log
 * :sympyissue:`27050`: Wrong result of definite integral
 * :sympyissue:`26707`: Wrong translation of lerchphi into Mathematica
+* :sympyissue:`27074`: Sum ignores an undetermined value
+* :sympyissue:`27108`: Wrong integration involving Dirac Delta

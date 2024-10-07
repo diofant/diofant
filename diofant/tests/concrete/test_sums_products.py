@@ -913,3 +913,9 @@ def test_sympyissue_23156():
     assert e == E - E*x*lowergamma(x, 1)/gamma(x + 1)
     assert e.limit(x, 0) == 0
     assert e.subs({x: 0}) is nan
+
+
+def test_sympyissue_27074():
+    e = Sum((-exp(I*pi*m)*exp(-I*pi*n) + exp(-I*pi*m)*exp(I*pi*n))/(m - n),
+            (n, -oo, oo))
+    assert e.simplify() != 0
