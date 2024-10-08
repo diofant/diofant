@@ -140,7 +140,6 @@ latex_logo = '_static/logo.png'
 
 # Theme-specific options.
 html_theme_options = {'logo_only': True,
-                      'display_version': False,
                       'analytics_id': 'UA-147167689-1'}
 
 # The inline configuration options for mathjax.  The value is used as
