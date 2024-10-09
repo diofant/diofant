@@ -179,7 +179,7 @@ def test_basic6():
 
 
 def test_sympyissue_3885():
-    assert limit(x*y + x*z, z, 2) == x*y + 2*x
+    assert limit(x*y + x*z, z, 2) == x*(y + 2)
 
 
 def test_Limit():
@@ -573,7 +573,7 @@ def test_sympyissue_9075():
 
 def test_sympyissue_8634():
     p = Symbol('p', positive=True)
-    assert limit(x**p, x, -oo) == oo*sign((-1)**p)
+    assert limit(x**p, x, -oo) == (-oo)**p
 
 
 def test_sympyissue_9558():
@@ -598,7 +598,7 @@ def test_sympyissue_6171():
 
 def test_sympyissue_11526():
     df = diff(1/(a*log((x - b)/(x - c))), x)
-    res = -1/(-a*c + a*b)
+    res = -1/(a*(b - c))
     assert limit(df, x, oo) == res
     assert (limit(simplify(df), x, oo) - res).simplify() == 0
 
@@ -660,9 +660,8 @@ def test_sympyissue_12769():
                 2*F0**(2*b)*K**(b + 1)*a*r*s0*(b**2 - 2*b + 1) +
                 2*F0**(b + 1)*K**(2*b)*a*r*s0*(b**2 - 2*b + 1) -
                 2*F0**(b + 1)*K**(b + 1)*a**2*(b - 1))/((b - 1)*(b**2 - 2*b + 1))))*(b*r - b - r + 1)
-    assert limit(fx, K, F0) == (F0**(2*b)*b*r**2*s0 - 2*F0**(2*b)*b*r*s0 +
-                                F0**(2*b)*b*s0 - F0**(2*b)*r**2*s0 +
-                                2*F0**(2*b)*r*s0 - F0**(2*b)*s0)
+    assert limit(fx, K, F0) == F0**(2*b)*s0*(b*r**2 - 2*b*r + b -
+                                             r**2 + 2*r - 1)
 
 
 def test_sympyissue_13332():
@@ -687,7 +686,7 @@ def test_sympyissue_13416():
 
 def test_sympyissue_13462():
     assert limit(x**2*(2*x*(-(1 - 1/(2*x))**y + 1) -
-                 y - (-y**2/4 + y/4)/x), x, oo) == y/12 - y**2/8 + y**3/24
+                 y - (-y**2/4 + y/4)/x), x, oo) == y*(y**2 - 3*y + 2)/24
 
 
 def test_sympyissue_13575():
@@ -704,7 +703,7 @@ def test_issue_558():
 
 
 def test_sympyissue_14393():
-    assert limit((x**b - y**b)/(x**a - y**a), x, y) == b*y**b/y**a/a
+    assert limit((x**b - y**b)/(x**a - y**a), x, y) == b*y**(-a + b)/a
 
 
 def test_sympyissue_14590():
@@ -951,7 +950,7 @@ def test_sympyissue_21756():
 def test_sympyissue_21785():
     e = Limit(sqrt((-a**2 + x**2)/(1 - x**2)), a, 1, 1)
 
-    assert e.doit() == exp(I*pi*floor(arg(-1/(x**2 - 1))/(2*pi)))*I
+    assert e.doit() == (-1)**(floor(arg(-1/(x**2 - 1))/(2*pi)) + 1/2)
 
     assert e.subs({x: 1 + I}).doit() == +I
     assert e.subs({x: 1 - I}).doit() == -I
