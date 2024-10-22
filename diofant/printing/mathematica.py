@@ -59,6 +59,10 @@ known_functions = {
     'Si': [(lambda x: True, 'SinIntegral')],
     'Ci': [(lambda x: True, 'CosIntegral')],
     'lerchphi': [(lambda z, s, a: True, 'HurwitzLerchPhi')],
+    'airyai': [(lambda x: True, 'AiryAi')],
+    'airyaiprime': [(lambda x: True, 'AiryAiPrime')],
+    'airybi': [(lambda x: True, 'AiryBi')],
+    'airybiprime': [(lambda x: True, 'AiryBiPrime')],
 }
 
 
