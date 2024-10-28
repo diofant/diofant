@@ -59,6 +59,11 @@ known_functions = {
     'Si': [(lambda x: True, 'SinIntegral')],
     'Ci': [(lambda x: True, 'CosIntegral')],
     'lerchphi': [(lambda z, s, a: True, 'HurwitzLerchPhi')],
+    'airyai': [(lambda x: True, 'AiryAi')],
+    'airyaiprime': [(lambda x: True, 'AiryAiPrime')],
+    'airybi': [(lambda x: True, 'AiryBi')],
+    'airybiprime': [(lambda x: True, 'AiryBiPrime')],
+    'li': [(lambda x: True, 'LogIntegral')],
 }
 
 
@@ -139,6 +144,9 @@ class MCodePrinter(CodePrinter):
 
     def _print_lowergamma(self, expr):
         return f"{self.parenthesize(expr.rewrite('uppergamma'), PRECEDENCE['Add'])}"
+
+    def _print_Li(self, expr):
+        return f"{self.parenthesize(expr.rewrite('li'), PRECEDENCE['Add'])}"
 
     def _print_zeta(self, expr):
         if len(expr.args) == 1:

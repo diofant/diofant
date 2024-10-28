@@ -4,16 +4,17 @@ import pytest
 
 from diofant import (QQ, Catalan, Ci, Derivative, Dummy, E, Ei, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral,
-                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
+                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le, Li,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly, Product,
                      Rational, Reals, RootOf, RootSum, Si, SparseMatrix, Sum,
-                     Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
-                     atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
-                     cot, coth, csch, erf, erfc, erfi, exp, expint, factorial,
-                     factorial2, false, fibonacci, floor, gamma, hyper, im,
-                     lerchphi, log, loggamma, lowergamma, mathematica_code,
-                     meijerg, oo, pi, polygamma, polylog, re, rf, sech, sign,
-                     sin, sinh, symbols, tan, tanh, true, uppergamma, zeta)
+                     Tuple, acos, acosh, acot, acoth, airyai, airyaiprime,
+                     airybi, airybiprime, arg, asin, asinh, atan, atan2, atanh,
+                     binomial, ceiling, conjugate, cos, cosh, cot, coth, csch,
+                     erf, erfc, erfi, exp, expint, factorial, factorial2,
+                     false, fibonacci, floor, gamma, hyper, im, lerchphi, li,
+                     log, loggamma, lowergamma, mathematica_code, meijerg, oo,
+                     pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
+                     symbols, tan, tanh, true, uppergamma, zeta)
 from diofant.abc import a, s, t, x, y, z
 
 
@@ -105,6 +106,12 @@ def test_Function():
     assert mathematica_code(expint(y, x)) == 'ExpIntegralE[y, x]'
     assert mathematica_code(Si(x)) == 'SinIntegral[x]'
     assert mathematica_code(Ci(x)) == 'CosIntegral[x]'
+    assert mathematica_code(airyai(x)) == 'AiryAi[x]'
+    assert mathematica_code(airyaiprime(x)) == 'AiryAiPrime[x]'
+    assert mathematica_code(airybi(x)) == 'AiryBi[x]'
+    assert mathematica_code(airybiprime(x)) == 'AiryBiPrime[x]'
+    assert mathematica_code(li(x)) == 'LogIntegral[x]'
+    assert mathematica_code(Li(x)) == '(LogIntegral[x] - LogIntegral[2])'
 
     class MyFunc1(Function):
         @classmethod
