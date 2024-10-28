@@ -34,3 +34,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`26707`: Wrong translation of lerchphi into Mathematica
 * :sympyissue:`27074`: Sum ignores an undetermined value
 * :sympyissue:`27108`: Wrong integration involving Dirac Delta
+* :sympyissue:`27195`: Pow of Add should not extract Floats
