@@ -394,7 +394,7 @@ def test_branch_cuts():
 
 
 def test_aseries_trig():
-    assert limit(1/log(atan(x)), x, oo) == -1/(-log(pi) + log(2))
+    assert limit(1/log(atan(x)), x, oo) == 1/log(pi/2)
     assert limit(1/acot(-x), x, oo) == -oo
 
 
@@ -467,4 +467,4 @@ def test_sympyissue_23845():
          (-3*sqrt(5)*(-sqrt(5)/2 + Rational(3, 2))**x +
           5*(-sqrt(5)/2 + Rational(3, 2))**x +
           (5 + 3*sqrt(5))*(sqrt(5)/2 + Rational(3, 2))**x))
-    assert limit(e, x, oo) == (sqrt(5) + 5)/(5 + 3*sqrt(5))
+    assert limit(e, x, oo) == -1/2 + sqrt(5)/2
