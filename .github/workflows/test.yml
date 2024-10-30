@@ -65,13 +65,6 @@ jobs:
         pytest diofant/tests/test_cli.py
         coverage html
         coverage xml
-    - name: Upload coverage data
-      if: matrix.coverage
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Get version
       id: release
       run: |
