@@ -388,3 +388,7 @@ def test_sympyissue_18470():
 
 def test_sympyissue_18499():
     assert (1/oo)**(-oo) is zoo
+
+
+def test_sympyissue_27195():
+    assert (x**2 + 10.0)**2 == Pow(x**2 + 10.0, 2, evaluate=False)
