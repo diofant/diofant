@@ -1160,3 +1160,10 @@ def test_sympyissue_26916():
 def test_sympyissue_26990():
     assert limit(x/((x - 6)*sinh(tanh(0.03*x)) + tanh(x) - 0.5),
                  x, oo) == 0.85091812823932156
+
+
+def test_sympyissue_27236():
+    e = Piecewise((1, x < 0), (-1, x >= 0))
+    assert limit(e, x, 0, -1) == -1 == limit(e, x, 0)
+    assert limit(e, x, 0, +1) == +1
+    pytest.raises(PoleError, lambda: limit(e, x, 0, dir=Reals))

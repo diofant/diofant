@@ -36,3 +36,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27108`: Wrong integration involving Dirac Delta
 * :sympyissue:`27195`: Pow of Add should not extract Floats
 * :sympyissue:`27234`: Integral of Abs(cos(x + y)) typeerror
+* :sympyissue:`27236`: bug with limit() function
