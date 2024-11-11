@@ -128,6 +128,12 @@ def test_perfect_power():
     assert perfect_power(2**5*3**3) is False
     assert perfect_power(25751251501**3, big=False) == (25751251501, 3)
     assert perfect_power(2575122501**3, big=False) == (2575122501, 3)
+    pytest.raises(ValueError, lambda: perfect_power(Rational(3, 2)))
+
+
+def test_sympyissue_27238():
+    assert perfect_power(-8) is False
+    assert perfect_power(-64) is False
 
 
 def test_isprime():

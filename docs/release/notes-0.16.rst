@@ -37,3 +37,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27195`: Pow of Add should not extract Floats
 * :sympyissue:`27234`: Integral of Abs(cos(x + y)) typeerror
 * :sympyissue:`27236`: bug with limit() function
+* :sympyissue:`27238`: perfect_power(-64) fails to find (-4)**3
