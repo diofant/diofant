@@ -268,7 +268,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
     (4, 2)
 
     """
-    n = int(n)
+    n = as_int(n)
     if n < 3:
         return False
     logn = math.log(n, 2)

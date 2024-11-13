@@ -1609,3 +1609,9 @@ def test_sympyissue_27108():
     assert integrate(f*f, (x, -oo, oo)) == 1
     assert integrate((f - g)*f, (x, -oo, oo)) == -1
     assert integrate(f*g, (x, -oo, oo)) == 2
+
+
+def test_sympyissue_27234():
+    x, y = symbols('x y', real=True)
+    integral = Integral(abs(cos(x + y)), y)
+    integral.doit()  # not raises
