@@ -38,3 +38,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27234`: Integral of Abs(cos(x + y)) typeerror
 * :sympyissue:`27236`: bug with limit() function
 * :sympyissue:`27238`: perfect_power(-64) fails to find (-4)**3
+* :sympyissue:`27256`: Geometric series with free symbols
