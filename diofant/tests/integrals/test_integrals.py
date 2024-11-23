@@ -1619,3 +1619,12 @@ def test_sympyissue_27234():
 
 def test_sympyissue_27298():
     assert integrate(legendre(n, x), (x, -1, 1)).simplify() != 0
+
+
+def test_sympyissue_27300():
+    e = exp(-I*n*x)
+
+    assert integrate(e*DiracDelta(x), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - pi/2), (x, 0, 2*pi)) == e.subs({x: pi/2})
+    assert integrate(e*DiracDelta(x - 2*pi), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - 4*pi), (x, 0, 2*pi)) == 0

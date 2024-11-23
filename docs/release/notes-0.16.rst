@@ -40,3 +40,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27238`: perfect_power(-64) fails to find (-4)**3
 * :sympyissue:`27256`: Geometric series with free symbols
 * :sympyissue:`27298`: Wrong result when integrating Legendre Polynomial (missing case distinction)
+* :sympyissue:`27300`: Wrong result for an integral over complex exponential with a Diracdelta function
