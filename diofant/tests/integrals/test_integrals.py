@@ -6,8 +6,8 @@ from diofant import (And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma, Expr,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
                      asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
                      expand_func, expand_mul, floor, fresnels, gamma, im,
-                     integrate, log, lowergamma, meijerg, nan, oo, pi,
-                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     integrate, legendre, log, lowergamma, meijerg, nan, oo,
+                     pi, polar_lift, polygamma, re, sign, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
@@ -1615,3 +1615,16 @@ def test_sympyissue_27234():
     x, y = symbols('x y', real=True)
     integral = Integral(abs(cos(x + y)), y)
     integral.doit()  # not raises
+
+
+def test_sympyissue_27298():
+    assert integrate(legendre(n, x), (x, -1, 1)).simplify() != 0
+
+
+def test_sympyissue_27300():
+    e = exp(-I*n*x)
+
+    assert integrate(e*DiracDelta(x), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - pi/2), (x, 0, 2*pi)) == e.subs({x: pi/2})
+    assert integrate(e*DiracDelta(x - 2*pi), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - 4*pi), (x, 0, 2*pi)) == 0

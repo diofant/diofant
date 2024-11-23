@@ -4,7 +4,7 @@ from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Function, I,
                      Integer, Integral, KroneckerDelta, Le, Mod, Ne, Or,
                      Piecewise, Product, Rational, Sum, Symbol, binomial,
                      ceiling, cos, exp, factorial, floor, gamma, harmonic, log,
-                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
+                     lowergamma, nan, oo, pi, product, re, simplify, sin, sqrt,
                      summation, symbols, zeta)
 from diofant.abc import a, b, c, d, i, j, k, m, t, u, v, w, x, y, z
 from diofant.concrete.summations import telescopic
@@ -919,3 +919,12 @@ def test_sympyissue_27074():
     e = Sum((-exp(I*pi*m)*exp(-I*pi*n) + exp(-I*pi*m)*exp(I*pi*n))/(m - n),
             (n, -oo, oo))
     assert e.simplify() != 0
+
+
+def test_sympyissue_27256():
+    assert summation(exp(x), (x, -oo, 0)) == E/(E - 1)
+    assert summation(exp(y*x), (x, -oo, 0)) == Piecewise((1/(1 - exp(-y)),
+                                                          exp(-re(y)) < 1),
+                                                         (Sum(exp(x*y),
+                                                              (x, -oo, 0)),
+                                                          True))
