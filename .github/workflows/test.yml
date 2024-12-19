@@ -41,7 +41,7 @@ jobs:
     - name: Install ~/.python_history
       run: touch ~/.python_history
     - name: Linting with flake8 and pylint
-      if: ${{ ! github.event_name.schedule }}
+      if: github.event_name != 'schedule' && matrix.coverage
       run: |
         flake518
         pylint diofant
