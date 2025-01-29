@@ -1028,8 +1028,9 @@ def test_continued_fraction():
 def test_egyptian_fraction():
     pytest.raises(ValueError, lambda: egyptian_fraction(Rational(1, 2), 'spam'))
 
-    def test_equality(r, alg='Greedy'):
-        return r == Add(*[Rational(1, i) for i in egyptian_fraction(r, alg)])
+    def test_equality(r):
+        return r == Add(*[Rational(1, i)
+                          for i in egyptian_fraction(r, 'Greedy')])
 
     r = random_complex_number(a=0, c=1, b=0, d=0, rational=True)
     assert test_equality(r)
