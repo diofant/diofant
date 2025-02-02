@@ -6,8 +6,8 @@ from diofant import (QQ, Add, CoercionFailedError, GoldenRatio, I, Integer,
                      NotAlgebraicError, PurePoly, Rational, RootOf, cbrt,
                      conjugate, cos, degree, exp, exp_polar, expand,
                      expand_multinomial, field_isomorphism, im,
-                     minimal_polynomial, nsimplify, oo, pi, primitive_element,
-                     re, root, sin, solve, sqrt, tan)
+                     minimal_polynomial, nextprime, nsimplify, oo, pi,
+                     primitive_element, re, root, sin, solve, sqrt, tan)
 from diofant.abc import x, y, z
 
 
@@ -327,6 +327,13 @@ def test_minpoly_compose():
     ex = sqrt(2) - RootOf(x**2 - 2, 0, radicals=False)
     for meth in ('compose', 'groebner'):
         assert minimal_polynomial(ex, method=meth)(x) == x**2 - 8
+
+    # sympy/sympy#26903
+    p1 = nextprime(10**20)
+    p2 = nextprime(p1)
+    ex = sqrt(p1**2*p2) - p1*sqrt(p2)
+    for meth in ('compose', 'groebner'):
+        assert minimal_polynomial(ex, method=meth)(x) == x
 
     mp = minimal_polynomial(tan(pi/7))(x)
     assert mp == x**6 - 21*x**4 + 35*x**2 - 7

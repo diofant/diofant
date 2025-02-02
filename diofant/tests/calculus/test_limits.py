@@ -4,7 +4,7 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
+from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
                      Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
                      besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
@@ -12,7 +12,7 @@ from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
                      factorial, false, floor, gamma, hyper, integrate, limit,
                      log, lowergamma, nan, oo, pi, polygamma, re, root, sign,
                      simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
-                     true)
+                     tanh, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1150,3 +1150,20 @@ def test_issue_1397():
 
 def test_issue_1403():
     assert acsc(x).rewrite(atan).limit(x, I*oo) == 0
+
+
+def test_sympyissue_26916():
+    assert limit(Ei(x)*exp(-x), x, +oo) == 0
+    assert limit(Ei(x)*exp(-x), x, -oo) == 0
+
+
+def test_sympyissue_26990():
+    assert limit(x/((x - 6)*sinh(tanh(0.03*x)) + tanh(x) - 0.5),
+                 x, oo) == 0.85091812823932156
+
+
+def test_sympyissue_27236():
+    e = Piecewise((1, x < 0), (-1, x >= 0))
+    assert limit(e, x, 0, -1) == -1 == limit(e, x, 0)
+    assert limit(e, x, 0, +1) == +1
+    pytest.raises(PoleError, lambda: limit(e, x, 0, dir=Reals))

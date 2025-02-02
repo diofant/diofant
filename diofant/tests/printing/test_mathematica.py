@@ -2,19 +2,21 @@
 
 import pytest
 
-from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
+from diofant import (QQ, Catalan, Ci, Derivative, Dummy, E, Ei, Eq, EulerGamma,
                      Function, Gt, Heaviside, Integer, Integral,
-                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le,
+                     InverseLaplaceTransform, Lambda, LaplaceTransform, Le, Li,
                      Limit, Matrix, Max, Min, Ne, Or, Piecewise, Poly, Product,
-                     Rational, Reals, RootOf, RootSum, SparseMatrix, Sum,
-                     Tuple, acos, acosh, acot, acoth, arg, asin, asinh, atan,
-                     atan2, atanh, binomial, ceiling, conjugate, cos, cosh,
-                     cot, coth, csch, erf, erfc, erfi, exp, factorial,
-                     factorial2, false, fibonacci, floor, gamma, hyper, im,
-                     log, loggamma, lowergamma, mathematica_code, meijerg, oo,
-                     pi, polygamma, polylog, re, rf, sech, sign, sin, sinh,
-                     symbols, tan, tanh, true, uppergamma, zeta)
-from diofant.abc import s, t, x, y, z
+                     Rational, Reals, RootOf, RootSum, Si, SparseMatrix, Sum,
+                     Tuple, acos, acosh, acot, acoth, airyai, airyaiprime,
+                     airybi, airybiprime, arg, asin, asinh, atan, atan2, atanh,
+                     besseli, besselj, besselk, bessely, binomial, ceiling,
+                     conjugate, cos, cosh, cot, coth, csch, erf, erfc, erfi,
+                     exp, expint, factorial, factorial2, false, fibonacci,
+                     floor, gamma, hyper, im, lerchphi, li, log, loggamma,
+                     lowergamma, mathematica_code, meijerg, oo, pi, polygamma,
+                     polylog, re, rf, sech, sign, sin, sinh, symbols, tan,
+                     tanh, true, uppergamma, zeta)
+from diofant.abc import a, s, t, x, y, z
 
 
 __all__ = ()
@@ -89,6 +91,8 @@ def test_Function():
     assert mathematica_code(rf(x, y)) == 'Pochhammer[x, y]'
     assert mathematica_code(gamma(x)) == 'Gamma[x]'
     assert mathematica_code(zeta(x)) == 'Zeta[x]'
+    assert mathematica_code(zeta(s, a)) == 'HurwitzZeta[s, a]'
+    assert mathematica_code(lerchphi(z, s, a)) == 'HurwitzLerchPhi[z, s, a]'
     assert mathematica_code(Heaviside(x)) == 'UnitStep[x]'
     assert mathematica_code(fibonacci(x)) == 'Fibonacci[x]'
     assert mathematica_code(polylog(x, y)) == 'PolyLog[x, y]'
@@ -99,6 +103,20 @@ def test_Function():
     assert mathematica_code(ceiling(x)) == 'Ceiling[x]'
     assert mathematica_code(arg(x)) == 'Arg[x]'
     assert mathematica_code(lowergamma(y, x)) == '(Gamma[y] - Gamma[y, x])'
+    assert mathematica_code(Ei(x)) == 'ExpIntegralEi[x]'
+    assert mathematica_code(expint(y, x)) == 'ExpIntegralE[y, x]'
+    assert mathematica_code(Si(x)) == 'SinIntegral[x]'
+    assert mathematica_code(Ci(x)) == 'CosIntegral[x]'
+    assert mathematica_code(airyai(x)) == 'AiryAi[x]'
+    assert mathematica_code(airyaiprime(x)) == 'AiryAiPrime[x]'
+    assert mathematica_code(airybi(x)) == 'AiryBi[x]'
+    assert mathematica_code(airybiprime(x)) == 'AiryBiPrime[x]'
+    assert mathematica_code(li(x)) == 'LogIntegral[x]'
+    assert mathematica_code(Li(x)) == '(LogIntegral[x] - LogIntegral[2])'
+    assert mathematica_code(besseli(x, y)) == 'BesselI[x, y]'
+    assert mathematica_code(besselj(x, y)) == 'BesselJ[x, y]'
+    assert mathematica_code(besselk(x, y)) == 'BesselK[x, y]'
+    assert mathematica_code(bessely(x, y)) == 'BesselY[x, y]'
 
     class MyFunc1(Function):
         @classmethod

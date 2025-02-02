@@ -26,6 +26,7 @@ There are three types of functions implemented in Diofant:
 """
 
 import collections
+import copyreg
 import inspect
 
 import mpmath
@@ -661,6 +662,23 @@ class UndefinedFunction(FunctionClass):
                 (self.class_key() == other.class_key()))
 
     __hash__ = FunctionClass.__hash__
+
+
+# Using copyreg is the only way to make a dyanmically generated instance of a
+# metaclass picklable without using a custom pickler. It is not possible to
+# define e.g. __reduce__ on the metaclass because obj.__reduce__ will retrieve
+# the __reduce__ method for reducing instances of the type rather than for the
+# type itself.
+
+def _reduce_undef(f):
+    return _rebuild_undef, (str(f),)
+
+
+def _rebuild_undef(name):
+    return Function(name)
+
+
+copyreg.pickle(UndefinedFunction, _reduce_undef)
 
 
 class WildFunction(Function, AtomicExpr):
