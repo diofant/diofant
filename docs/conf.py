@@ -44,7 +44,7 @@ exclude_patterns = ['README.rst']
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2022 SymPy Development Team, 2013-2024 Sergey B Kirpichev'
+copyright = '2006-2022 SymPy Development Team, 2013-2025 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -140,7 +140,6 @@ latex_logo = '_static/logo.png'
 
 # Theme-specific options.
 html_theme_options = {'logo_only': True,
-                      'display_version': False,
                       'analytics_id': 'UA-147167689-1'}
 
 # The inline configuration options for mathjax.  The value is used as

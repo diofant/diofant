@@ -1992,7 +1992,7 @@ class Poly(Expr):
             # 10 times the degree of the polynomial seems to work well.
             roots = mpmath.polyroots(coeffs, maxsteps=maxsteps,
                                      cleanup=cleanup, error=False,
-                                     extraprec=self.degree()*10, asc=False)
+                                     extraprec=self.degree()*10, asc=True)
 
             # Mpmath puts real roots first, then complex ones (as does all_roots)
             # so we make sure this convention holds here, too.

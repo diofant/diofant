@@ -157,6 +157,26 @@ def test_bare_console_wrap_floats():
     assert c.expect_exact('2.00000000000000\r\n>>> ') == 0
 
 
+def test_ipython_console_wrap_ints():
+    pytest.importorskip('IPython')
+
+    c = Console('python -m diofant --simple-prompt '
+                "--wrap-ints --colors 'NoColor'")
+
+    assert c.expect_exact('\r\nIn [1]: ') == 0
+    assert c.send('repr(10)\r\n') == 10
+    assert c.expect_exact("\r\nOut[1]: \'Integer(10)\'\r\n\r\nIn [2]: ") == 0
+
+
+def test_bare_console_wrap_ints():
+    c = Console('python -m diofant --simple-prompt --no-ipython '
+                "--wrap-ints --colors 'NoColor'")
+
+    assert c.expect_exact('>>> ') == 0
+    assert c.send('repr(10)\r\n') == 10
+    assert c.expect_exact("\'Integer(10)\'\r\n>>> ") == 0
+
+
 def test_diofant_version():
     c = Console('python -m diofant --version')
 

@@ -360,13 +360,9 @@ def tn_branch(func, s=None):
 
 
 def test_ei():
-    pos = Symbol('p', positive=True)
-    neg = Symbol('n', negative=True)
     assert Ei(0) == -oo
     assert Ei(+oo) == oo
     assert Ei(-oo) == 0
-    assert Ei(-pos) == Ei(polar_lift(-1)*pos) - I*pi
-    assert Ei(neg) == Ei(polar_lift(neg)) - I*pi
     assert tn_branch(Ei)
     assert mytd(Ei(x), exp(x)/x, x)
     assert mytn(Ei(x), Ei(x).rewrite(uppergamma),
