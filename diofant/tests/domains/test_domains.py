@@ -83,7 +83,7 @@ def test_Domain_unify():
     assert unify(RR, F3) == RR
     assert unify(RR, ZZ) == RR
     assert unify(RR, QQ) == RR
-    assert unify(RR, ALG) == RR
+    assert unify(RR, ALG) == CC
     assert unify(RR, RR) == RR
     assert unify(RR, CC) == CC
     assert unify(RR, ZZ.inject(x)) == RR.inject(x)

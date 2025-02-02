@@ -42,6 +42,9 @@ def test_simple():
     pytest.raises(ValueError, lambda: x.series(dir=''))
     pytest.raises(ValueError, lambda: x.series(dir=0))
 
+    # issue sympy/sympy#26856
+    pytest.raises(ValueError, lambda: (2**x).series(x, oo, -1))
+
     assert (1 + x).getn() is None
 
     # issue sympy/sympy#8805

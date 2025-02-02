@@ -2360,6 +2360,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if not x.is_Symbol:
             raise NotImplementedError('x is not a symbol')
 
+        if n is not None:
+            n = int(n)
+            if n < 0:
+                raise ValueError('number of terms should be nonnegative')
+
         if not self.has(x):
             if n is None:
                 return (s for s in [self])
