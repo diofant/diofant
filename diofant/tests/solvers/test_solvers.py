@@ -992,7 +992,7 @@ def test_check_assumptions():
     x = symbols('x', positive=True)
     assert solve(x**2 - 1) == [{x: 1}]
 
-    with pytest.warns(UserWarning) as warn:
+    with pytest.warns(UserWarning, match='assumptions concerning') as warn:
         assert solve(x**2 - y, x, warn=True) == [{x: -sqrt(y)}, {x: sqrt(y)}]
     assert len(warn) == 1
     assert warn[0].message.args[0][:112] == """
@@ -1023,7 +1023,7 @@ def test_checksol():
     assert checksol(x*(x - y/x), {x: 1}, force=False) is False
 
     sol = {y: sqrt(x)}
-    with pytest.warns(UserWarning) as warn:
+    with pytest.warns(UserWarning, match='could not verify solution') as warn:
         assert checksol(sqrt(y**2), sol, warn=True, force=False) is None
     assert len(warn) == 1
     assert warn[0].message.args[0] == f"""

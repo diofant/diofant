@@ -64,6 +64,10 @@ known_functions = {
     'airybi': [(lambda x: True, 'AiryBi')],
     'airybiprime': [(lambda x: True, 'AiryBiPrime')],
     'li': [(lambda x: True, 'LogIntegral')],
+    'besseli': [(lambda nu, z: True, 'BesselI')],
+    'besselj': [(lambda nu, z: True, 'BesselJ')],
+    'besselk': [(lambda nu, z: True, 'BesselK')],
+    'bessely': [(lambda nu, z: True, 'BesselY')],
 }
 
 
