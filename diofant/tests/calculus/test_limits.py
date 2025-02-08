@@ -1167,3 +1167,9 @@ def test_sympyissue_27236():
     assert limit(e, x, 0, -1) == -1 == limit(e, x, 0)
     assert limit(e, x, 0, +1) == +1
     pytest.raises(PoleError, lambda: limit(e, x, 0, dir=Reals))
+
+
+def test_sympyissue_27551():
+    e = 1/(x*sqrt(log(x)**2))
+    assert limit(e, x, 1, dir=+1) == oo
+    assert limit(e, x, 1, dir=-1) == oo
