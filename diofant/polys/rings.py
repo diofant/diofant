@@ -795,7 +795,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not n:
             return ring.one
         if len(self) > 5 or mod:
-            return self._pow_generic(n, mod)
+            if mod:
+                if ring.domain.is_Field:
+                    return self._pow_generic(n, mod)
+                return self._pow_generic(n) % mod
+            return self._pow_generic(n)
         if len(self) == 1:
             [(monom, coeff)] = self.items()
             p = ring.zero
@@ -812,6 +816,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _pow_generic(self, n, mod=None):
         p = self.ring.one
         c = self
+        if mod:
+            c %= mod
 
         while n:
             if n & 1:
