@@ -58,8 +58,8 @@ def continued_fraction_periodic(p, q, d=0):
       Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
 
     """
-    from ..core.compatibility import as_int
     from ..functions import sqrt
+    from ..utilities import as_int
 
     p, q, d = list(map(as_int, [p, q, d]))
     sd = sqrt(d)

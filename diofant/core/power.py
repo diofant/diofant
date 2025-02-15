@@ -3,10 +3,9 @@ import math
 from mpmath.libmp import sqrtrem
 
 from ..logic import true
-from ..utilities import sift
+from ..utilities import as_int, sift
 from .add import Add
 from .cache import cacheit
-from .compatibility import as_int
 from .evalf import PrecisionExhausted
 from .evaluate import global_evaluate
 from .expr import Expr

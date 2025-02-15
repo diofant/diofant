@@ -1,8 +1,7 @@
 import pytest
 
-from diofant import default_sort_key, nan, oo, ordered, zoo
+from diofant import default_sort_key, ordered
 from diofant.abc import x
-from diofant.core.compatibility import as_int
 
 
 __all__ = ()
@@ -12,15 +11,6 @@ def test_default_sort_key():
     def func(x):
         return x
     assert sorted([func, x, func], key=default_sort_key) == [func, func, x]
-
-
-def test_as_int():
-    pytest.raises(ValueError, lambda: as_int(1.1))
-    pytest.raises(ValueError, lambda: as_int([]))
-    pytest.raises(ValueError, lambda: as_int(nan))
-    pytest.raises(ValueError, lambda: as_int(oo))
-    pytest.raises(ValueError, lambda: as_int(-oo))
-    pytest.raises(ValueError, lambda: as_int(zoo))
 
 
 def test_ordered():

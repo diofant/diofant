@@ -10,37 +10,6 @@ import typing
 from ..external import import_module
 
 
-def as_int(n):
-    """
-    Convert the argument to a builtin integer.
-
-    The return value is guaranteed to be equal to the input. ValueError is
-    raised if the input has a non-integral value.
-
-    Examples
-    ========
-
-    >>> 3.0
-    3.0
-    >>> as_int(3.0)  # convert to int and test for equality
-    3
-    >>> int(sqrt(10))
-    3
-    >>> as_int(sqrt(10))
-    Traceback (most recent call last):
-    ...
-    ValueError: ... is not an integer
-
-    """
-    try:
-        result = int(n)
-        if result != n:
-            raise TypeError
-    except TypeError as exc:
-        raise ValueError(f'{n} is not an integer') from exc
-    return result
-
-
 # If HAS_GMPY is 0, no supported version of gmpy is available. Otherwise,
 # HAS_GMPY contains the major version number of gmpy.
 

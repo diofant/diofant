@@ -2,13 +2,12 @@ import itertools
 import random
 
 from ..core import Basic, Expr, Integer, count_ops
-from ..core.compatibility import as_int
 from ..core.decorators import call_highest_priority
 from ..core.sympify import sympify
 from ..functions import cos, sin, sqrt
 from ..logic import true
 from ..simplify import simplify as _simplify
-from ..utilities import filldedent, numbered_symbols
+from ..utilities import as_int, filldedent, numbered_symbols
 from ..utilities.iterables import is_sequence
 from .matrices import MatrixBase, ShapeError, a2idx, classof
 

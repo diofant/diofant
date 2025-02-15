@@ -1,7 +1,7 @@
 import math
 
-from ..core.compatibility import as_int
 from ..core.numbers import igcdex
+from ..utilities import as_int
 from .primetest import isprime
 
 
