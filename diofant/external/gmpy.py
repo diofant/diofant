@@ -1,13 +1,10 @@
-"""
-Reimplementations of constructs introduced in later versions of Python than
-we support. Also some functions that are needed Diofant-wide and are located
-here for easy import.
-"""
-
 import os
 import typing
 
-from ..external import import_module
+from .importtools import import_module
+
+
+__all__ = ['GROUND_TYPES', 'HAS_GMPY', 'gmpy']
 
 
 # If HAS_GMPY is 0, no supported version of gmpy is available. Otherwise,

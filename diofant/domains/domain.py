@@ -4,7 +4,7 @@ import abc
 import inspect
 
 from ..core import Expr
-from ..core.compatibility import HAS_GMPY
+from ..external import HAS_GMPY
 from ..polys.orderings import lex
 from ..polys.polyerrors import CoercionFailedError, UnificationFailedError
 from ..polys.polyutils import _unify_gens
