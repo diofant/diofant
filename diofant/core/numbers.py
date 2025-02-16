@@ -13,8 +13,9 @@ from mpmath.libmp import (ComplexResult, dps_to_prec, fhalf, finf, fnan, fninf,
                           to_rational)
 
 from ..config import query
+from ..external import GROUND_TYPES, HAS_GMPY, gmpy
+from ..utilities import as_int
 from .cache import cacheit
-from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr

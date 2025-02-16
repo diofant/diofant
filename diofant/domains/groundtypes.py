@@ -6,11 +6,11 @@ from math import factorial as python_factorial
 from math import gcd as python_gcd
 from math import isqrt as python_sqrt
 
-from ..core.compatibility import HAS_GMPY
 from ..core.numbers import Float as DiofantReal
 from ..core.numbers import Integer as DiofantInteger
 from ..core.numbers import Rational as DiofantRational
 from ..core.numbers import igcdex as python_gcdex
+from ..external import HAS_GMPY
 
 
 __all__ = ('python_factorial', 'python_gcd', 'python_sqrt', 'DiofantReal',

@@ -2,9 +2,9 @@ import collections
 import itertools
 import operator
 
-from ..core.compatibility import as_int
 from .enumerative import (MultisetPartitionTraverser, list_visitor,
                           multiset_partitions_taocp)
+from .misc import as_int
 
 
 def flatten(iterable, levels=None, cls=None):

@@ -11,7 +11,7 @@ import diofant
 def pytest_report_header(config):
     return f"""\nDiofant version: {diofant.__version__}
 cache: {diofant.core.cache.USE_CACHE}
-ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
+ground types: {diofant.external.GROUND_TYPES}\n"""
 
 
 def pytest_configure(config):

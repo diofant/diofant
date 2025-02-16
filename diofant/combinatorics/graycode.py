@@ -1,7 +1,7 @@
 import random
 
 from ..core import Basic, Integer
-from ..core.compatibility import as_int
+from ..utilities import as_int
 
 
 class GrayCode(Basic):

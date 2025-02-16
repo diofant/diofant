@@ -4,7 +4,7 @@ import array
 import bisect
 import random
 
-from ..core.compatibility import as_int
+from ..utilities import as_int
 from .primetest import isprime
 
 

@@ -3,8 +3,8 @@ import math
 import random
 
 from ..core import Function, Integer
-from ..core.compatibility import as_int
 from ..core.numbers import igcdex, mod_inverse
+from ..utilities import as_int
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
 from .modular import crt, crt1, crt2

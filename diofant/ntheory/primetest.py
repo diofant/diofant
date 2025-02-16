@@ -1,6 +1,6 @@
 """Primality testing."""
 
-from ..core.compatibility import as_int
+from ..utilities import as_int
 
 
 # pseudoprimes that will pass through last mr_safe test
