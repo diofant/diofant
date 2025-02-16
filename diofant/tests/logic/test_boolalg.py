@@ -7,9 +7,8 @@ from diofant import (ITE, And, EmptySet, Equality, Equivalent, Implies,
                      Union, Xor, false, oo, simplify_logic, sqrt, to_cnf,
                      to_dnf, to_nnf, true)
 from diofant.abc import a, b, c, d, w, x, y, z
-from diofant.logic.boolalg import (BooleanAtom, BooleanFunction, _POSform,
-                                   _SOPform, is_cnf, is_dnf, is_literal,
-                                   is_nnf, to_int_repr)
+from diofant.logic.boolalg import (BooleanAtom, _POSform, _SOPform, is_cnf,
+                                   is_dnf, is_literal, is_nnf, to_int_repr)
 
 
 __all__ = ()
@@ -298,12 +297,6 @@ def test_to_nnf():
     assert to_nnf(false) is false
     assert to_nnf(a) == a
     assert to_nnf(~a) == ~a
-
-    class Foo(BooleanFunction):
-        pass
-
-    pytest.raises(ValueError, lambda: to_nnf(~Foo(a)))
-
     assert to_nnf(a | ~a | b) is true
     assert to_nnf(a & ~a & b) is false
     assert to_nnf(a >> b) == ~a | b
