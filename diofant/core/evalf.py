@@ -72,10 +72,10 @@ def fastlog(x):
     Examples
     ========
 
-    >>> from mpmath.libmp import from_man_exp
+    >>> from mpmath.libmp import MPZ, from_man_exp
     >>> m, e = 5, 1
     >>> n = m*2**e
-    >>> v = from_man_exp(m, e)
+    >>> v = from_man_exp(MPZ(m), e)
     >>> n, (log(n)/log(2)).evalf(2), fastlog(v)
     (10, 3.3, 4)
 

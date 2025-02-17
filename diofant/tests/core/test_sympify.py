@@ -9,7 +9,7 @@ from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
                      Xor, evaluate, exp, false, sin, sqrt, sympify, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.decorators import _sympifyit
-from diofant.external import HAS_GMPY
+from diofant.external import HAS_GMPY, gmpy
 from diofant.utilities.decorator import conserve_mpmath_dps
 
 
@@ -69,8 +69,6 @@ def test_sympify_Fraction():
 
 def test_sympify_gmpy():
     if HAS_GMPY:
-        import gmpy2 as gmpy
-
         value = sympify(gmpy.mpz(1000001))
         assert value == Integer(1000001)
         assert type(value) is Integer

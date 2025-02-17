@@ -17,6 +17,7 @@ from .realfield import RR, RealField
 
 
 _GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
+                     'gmp': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
                      'python': (FF_python, ZZ_python, QQ_python)}
 FF, ZZ, QQ = _GROUND_TYPES_MAP[GROUND_TYPES]
 GF = FF
