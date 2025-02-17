@@ -42,6 +42,7 @@ exports = ['numpy>=1.19,<1.25;python_version<"3.12"',
            'meson-python;python_version>="3.12"',
            'ninja;python_version>="3.12"']
 gmpy = ['gmpy2>=2.2']
+gmp = ['python-gmp>=0.4.0a1']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1']

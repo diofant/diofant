@@ -10,7 +10,7 @@ from diofant.external import gmpy
 __all__ = ()
 
 if not gmpy:
-    pytest.skip('No gmpy2', allow_module_level=True)
+    pytest.skip('No gmpy2/python-gmp', allow_module_level=True)
 
 
 def test_convert():
