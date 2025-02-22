@@ -12,9 +12,12 @@ jobs:
       matrix:
         python-version: [3.11, 3.12, 3.13]
         coverage: [false]
+        nogmpy: [false]
         include:
           - python-version: 3.11
             coverage: true
+          - python-version: 3.13
+            nogmpy: true
     runs-on: ubuntu-latest
     env:
       TERM: xterm
@@ -37,7 +40,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U pip 'setuptools<74' wheel
-        pip install -U .[interactive,develop,gmpy,exports,docs]
+        pip install -U .[interactive,develop,gmp,gmpy,exports,docs]
+        pip install -U git+https://github.com/skirpichev/mpmath.git@gmp-backend
     - name: Install ~/.python_history
       run: touch ~/.python_history
     - name: Linting with flake8 and pylint
@@ -47,6 +51,9 @@ jobs:
         pylint diofant
     - name: Run type checks with mypy
       run: mypy diofant
+    - name: Remove gmpy2
+      run: pip uninstall -y gmpy2
+      if: matrix.nogmpy
     - name: Tests
       if: matrix.coverage == false
       env:
@@ -59,6 +66,8 @@ jobs:
       run: |
         pytest
         pip uninstall -y gmpy2 numpy IPython
+        DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
+        pip uninstall -y gmp
         DIOFANT_GROUND_TYPES='gmpy' pytest diofant/tests/domains
         pytest diofant/tests/polys
         pytest diofant/tests/external diofant/tests/utilities
