@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Reorder tuples, returned by :meth:`~diofant.polys.polytools.Poly.gcdex` and :meth:`~diofant.polys.polytools.Poly.half_gcdex`, see :pull:`1454`.
+
 Minor changes
 =============
 
