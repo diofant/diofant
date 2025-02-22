@@ -1569,7 +1569,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         Extended Euclidean algorithm in `F[x]`.
 
-        Returns ``(s, t, h)`` such that ``h = gcd(self, other)`` and
+        Returns ``(h, s, t)`` such that ``h = gcd(self, other)`` and
         ``s*self + t*other = h``.
 
         Examples
@@ -1581,13 +1581,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         >>> g = x**3 + x**2 - 4*x - 4
 
         >>> f.gcdex(g)
-        (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
+        (x + 1, -1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2)
 
         """
         s, h = self.half_gcdex(other)
         t = h - self*s
         t //= other
-        return s, t, h
+        return h, s, t
 
     def sqf_list(self):
         return self.ring.sqf_list(self)

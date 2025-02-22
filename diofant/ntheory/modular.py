@@ -83,7 +83,7 @@ def crt(M, U, symmetric=False, check=True):
 
     for u, m in zip(U, M):
         e = p // m
-        s, _, _ = ZZ.gcdex(e, m)
+        _, s, _ = ZZ.gcdex(e, m)
         v += e*(u*s % m)
 
     result = v % p
@@ -119,7 +119,7 @@ def crt1(M):
 
     for m in M:
         E.append(p // m)
-        S.append(ZZ.gcdex(E[-1], m)[0] % m)
+        S.append(ZZ.gcdex(E[-1], m)[1] % m)
 
     return p, E, S
 
@@ -215,7 +215,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         g = math.gcd(a, b, c)
         a, b, c = (i//g for i in [a, b, c])
         if a != 1:
-            inv_a, _, g = igcdex(a, c)
+            g, inv_a, _ = igcdex(a, c)
             if g != 1:
                 return
             b *= inv_a

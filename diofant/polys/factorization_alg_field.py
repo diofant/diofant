@@ -486,7 +486,7 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
         s0, s1 = s1 - quo*s0, s0
         t0, t1 = t1 - quo*t0, t0
 
-    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
 
     return (_trunc(s1 * lcfinv, minpoly, p),
             _trunc(t1 * lcfinv, minpoly, p),
@@ -700,7 +700,7 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 def _sqf_p(f, minpoly, p):
     r"""Return ``True`` if nonzero `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
-    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
     f = _trunc(f * lcfinv, minpoly, p)
     df = _trunc(f.diff(0), minpoly, p)
     return _euclidean_algorithm(f, df, minpoly, p) == 1

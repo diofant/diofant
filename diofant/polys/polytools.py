@@ -1452,7 +1452,7 @@ class Poly(Expr):
         """
         Extended Euclidean algorithm of ``self`` and ``other``.
 
-        Returns ``(s, t, h)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
+        Returns ``(h, s, t)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
 
         Examples
         ========
@@ -1461,9 +1461,9 @@ class Poly(Expr):
         >>> g = (x**3 + x**2 - 4*x - 4).as_poly()
 
         >>> f.gcdex(g)
-        (Poly(-1/5*x + 3/5, x, domain='QQ'),
-         Poly(1/5*x**2 - 6/5*x + 2, x, domain='QQ'),
-         Poly(x + 1, x, domain='QQ'))
+        (Poly(x + 1, x, domain='QQ'),
+         Poly(-1/5*x + 3/5, x, domain='QQ'),
+         Poly(1/5*x**2 - 6/5*x + 2, x, domain='QQ'))
 
         """
         dom, per, F, G = self._unify(other)
@@ -1471,8 +1471,8 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        s, t, h = F.gcdex(G)
-        return per(s), per(t), per(h)
+        h, s, t = F.gcdex(G)
+        return per(h), per(s), per(t)
 
     def invert(self, other, auto=True):
         """
@@ -2804,13 +2804,13 @@ def gcdex(f, g, *gens, **args):
     """
     Extended Euclidean algorithm of ``f`` and ``g``.
 
-    Returns ``(s, t, h)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
+    Returns ``(h, s, t)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
 
     Examples
     ========
 
     >>> gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
-    (-x/5 + 3/5, x**2/5 - 6*x/5 + 2, x + 1)
+    (x + 1, -x/5 + 3/5, x**2/5 - 6*x/5 + 2)
 
     """
     allowed_flags(args, ['auto', 'polys'])
@@ -2820,14 +2820,14 @@ def gcdex(f, g, *gens, **args):
     except PolificationFailedError as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        s, t, h = domain.gcdex(a, b)
-        return domain.to_expr(s), domain.to_expr(t), domain.to_expr(h)
+        h, s, t = domain.gcdex(a, b)
+        return domain.to_expr(h), domain.to_expr(s), domain.to_expr(t)
 
-    s, t, h = F.gcdex(G, auto=opt.auto)
+    h, s, t = F.gcdex(G, auto=opt.auto)
 
     if not opt.polys:
-        return s.as_expr(), t.as_expr(), h.as_expr()
-    return s, t, h
+        return h.as_expr(), s.as_expr(), t.as_expr()
+    return h, s, t
 
 
 def invert(f, g, *gens, **args):

@@ -115,7 +115,7 @@ def test_methods():
     assert R.is_normal(-X) is False
     assert R.is_normal(+X) is True
 
-    assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
+    assert R.gcdex(X**3 - X, X**2) == (X, -1, X)
 
     F = QQ.inject(y).field
     Y = F.convert(y)

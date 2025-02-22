@@ -415,12 +415,12 @@ def _sqrt_mod_prime_power(a, p, k):
             break
         n = n1
         px = px**2
-        frinv = igcdex(2*r, px)[0]
+        frinv = igcdex(2*r, px)[1]
         r = (r - fr*frinv) % px
         fr = r**2 - a
     if n < k:
         px = p**k
-        frinv = igcdex(2*r, px)[0]
+        frinv = igcdex(2*r, px)[1]
         r = (r - fr*frinv) % px
     return [r, px - r]
 
@@ -672,7 +672,7 @@ def _nthroot_mod1(s, q, p, all_roots):
             k += 1
             f = f // q
         # find z, x, r1
-        f1 = igcdex(-f, q)[0] % q
+        f1 = igcdex(-f, q)[1] % q
         z = f*f1
         x = (1 + z) // q
         r1 = pow(s, x, p)
@@ -680,7 +680,7 @@ def _nthroot_mod1(s, q, p, all_roots):
         h = pow(g, f*q, p)
         t = discrete_log(p, s1, h)
         g2 = pow(g, z*t, p)
-        g3 = igcdex(g2, p)[0]
+        g3 = igcdex(g2, p)[1]
         r = r1*g3 % p
         assert pow(r, q, p) == s
     res = [r]
@@ -741,7 +741,7 @@ def nthroot_mod(a, n, p, all_roots=False):
         #             b**q * x**r - a; x**r - c = 0; c = b**-q * a mod p
         q, r = divmod(pa, pb)
         c = pow(b, q, p)
-        c = igcdex(c, p)[0]
+        c = igcdex(c, p)[1]
         c = (c * a) % p
         pa, pb = pb, r
         a, b = b, c

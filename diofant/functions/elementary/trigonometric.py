@@ -597,9 +597,10 @@ class cos(TrigonometricFunction):
             # Note, that this is only one such linear combination.
             assert len(x) != 1
             if len(x) == 2:
-                return igcdex(x[0], x[-1])
+                g, s, t = igcdex(x[0], x[-1])
+                return s, t, g
             g = migcdex(x[1:])
-            u, v, h = igcdex(x[0], g[-1])
+            h, u, v = igcdex(x[0], g[-1])
             return tuple([u] + [v*i for i in g[0:-1]] + [h])
 
         def ipartfrac(r, factors=None):

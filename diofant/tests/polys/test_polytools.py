@@ -1652,31 +1652,31 @@ def test_gcdex():
     F, G, S, T, H = (u.as_poly(x, domain=QQ) for u in (f, g, s, t, h))
 
     assert F.half_gcdex(G) == (S, H)
-    assert F.gcdex(G) == (S, T, H)
+    assert F.gcdex(G) == (H, S, T)
     assert F.invert(G) == S
 
     assert half_gcdex(f, g) == (s, h)
-    assert gcdex(f, g) == (s, t, h)
+    assert gcdex(f, g) == (h, s, t)
     assert invert(f, g) == s
 
     assert half_gcdex(f, g, x) == (s, h)
-    assert gcdex(f, g, x) == (s, t, h)
+    assert gcdex(f, g, x) == (h, s, t)
     assert invert(f, g, x) == s
 
     assert half_gcdex(F, G) == (S, H)
-    assert gcdex(F, G) == (S, T, H)
+    assert gcdex(F, G) == (H, S, T)
     assert invert(F, G) == S
 
     assert half_gcdex(f, g, polys=True) == (S, H)
-    assert gcdex(f, g, polys=True) == (S, T, H)
+    assert gcdex(f, g, polys=True) == (H, S, T)
     assert invert(f, g, polys=True) == S
 
     assert half_gcdex(F, G, polys=False) == (s, h)
-    assert gcdex(F, G, polys=False) == (s, t, h)
+    assert gcdex(F, G, polys=False) == (h, s, t)
     assert invert(F, G, polys=False) == s
 
     assert half_gcdex(100, 2004) == (-20, 4)
-    assert gcdex(100, 2004) == (-20, 1, 4)
+    assert gcdex(100, 2004) == (4, -20, 1)
     assert invert(3, 7) == 5
 
     pytest.raises(DomainError, lambda: half_gcdex(x + 1, 2*x + 1, auto=False))
