@@ -16,14 +16,14 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 def test_gcdex():
     R, x = ring('x', FF(11))
 
-    assert R.zero.gcdex(R(2)) == (0, 6, 1)
-    assert R(2).gcdex(R(2)) == (0, 6, 1)
+    assert R.zero.gcdex(R(2)) == (1, 0, 6)
+    assert R(2).gcdex(R(2)) == (1, 0, 6)
 
-    assert R.zero.gcdex(3*x) == (0, 4, x)
+    assert R.zero.gcdex(3*x) == (x, 0, 4)
 
-    assert (3*x).gcdex(3*x) == (0, 4, x)
+    assert (3*x).gcdex(3*x) == (x, 0, 4)
 
-    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
+    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (x + 7, 5*x + 6, 6)
 
     R, x = ring('x', QQ)
 
@@ -34,14 +34,14 @@ def test_gcdex():
     t = x**2/5 - 6*x/5 + 2
     h = x + 1
 
-    assert f.half_gcdex(g) == (s, h)
-    assert f.gcdex(g) == (s, t, h)
+    assert f.half_gcdex(g) == (h, s)
+    assert f.gcdex(g) == (h, s, t)
 
     f = x**4 + 4*x**3 - x + 1
     g = x**3 - x + 1
 
-    s, t, h = f.gcdex(g)
-    S, T, H = g.gcdex(f)
+    h, s, t = f.gcdex(g)
+    H, S, T = g.gcdex(f)
 
     assert s*f + t*g == h
     assert S*g + T*f == H
@@ -53,8 +53,8 @@ def test_gcdex():
     t = -QQ(1, 16)
     h = 1
 
-    assert f.half_gcdex(g) == (s, h)
-    assert f.gcdex(g) == (s, t, h)
+    assert f.half_gcdex(g) == (h, s)
+    assert f.gcdex(g) == (h, s, t)
 
 
 def test_dup_invert():

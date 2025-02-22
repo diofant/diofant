@@ -303,7 +303,7 @@ class _Factor:
         lc = f.LC
 
         if r == 1:
-            F = f * domain.gcdex(lc, p**l)[0]
+            F = f * domain.gcdex(lc, p**l)[1]
             return [F.trunc_ground(p**l)]
 
         m = p
@@ -322,7 +322,7 @@ class _Factor:
         for f_i in f_list[k + 1:]:
             h *= f_i
 
-        s, t, _ = self.clone(domain=p_domain).gcdex(g, h)
+        _, s, t = self.clone(domain=p_domain).gcdex(g, h)
 
         g, h, s, t = map(operator.methodcaller('set_domain', domain),
                          (g, h, s, t))
@@ -698,7 +698,7 @@ class _Factor:
             p_ring = self.clone(domain=p_domain)
             f, g = map(operator.methodcaller('set_domain', p_domain), F)
 
-            s, t, _ = p_ring.gcdex(g, f)
+            _, s, t = p_ring.gcdex(g, f)
 
             s *= m
             t *= m

@@ -111,8 +111,7 @@ class GMPYIntegerRing(IntegerRing):
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``."""
-        h, s, t = gmpy_gcdex(a, b)
-        return s, t, h
+        return gmpy_gcdex(a, b)
 
     def gcd(self, a, b):
         """Compute GCD of ``a`` and ``b``."""

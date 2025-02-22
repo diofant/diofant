@@ -66,27 +66,27 @@ def comp(z1, z2, tol=None):
 
 
 def igcdex(a, b):
-    """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
+    """Returns g, x, y such that g = x*a + y*b = gcd(a, b).
 
     >>> igcdex(2, 3)
-    (-1, 1, 1)
+    (1, -1, 1)
     >>> igcdex(10, 12)
-    (-1, 1, 2)
+    (2, -1, 1)
 
     >>> igcdex(100, 2004)
-    (-20, 1, 4)
-    >>> x, y = _[:-1]
+    (4, -20, 1)
+    >>> x, y = _[1:]
     >>> x*100 + y*2004
     4
 
     """
     if (not a) and (not b):
-        return 0, 1, 0
+        return 0, 0, 0
 
     if not a:
-        return 0, b//abs(b), abs(b)
+        return abs(b), 0, b//abs(b)
     if not b:
-        return a//abs(a), 0, abs(a)
+        return abs(a), a//abs(a), 0
 
     if a < 0:
         a, x_sign = -a, -1
@@ -104,7 +104,7 @@ def igcdex(a, b):
         c, q = a % b, a // b
         a, b, r, s, x, y = b, c, x - q*r, y - q*s, r, s
 
-    return x*x_sign, y*y_sign, a
+    return a, x*x_sign, y*y_sign
 
 
 def mod_inverse(a, m):
@@ -150,7 +150,7 @@ def mod_inverse(a, m):
     try:
         a, m = as_int(a), as_int(m)
         if m > 1:
-            x, _, g = igcdex(a, m)
+            g, x, _ = igcdex(a, m)
             if g == 1:
                 c = x % m
             if a < 0:

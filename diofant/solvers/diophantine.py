@@ -664,7 +664,7 @@ def base_solution_linear(c, a, b, t=None):
                 t = -t
             return b*t, -a*t
         return 0, 0
-    x0, y0, d = igcdex(abs(a), abs(b))
+    d, x0, y0 = igcdex(abs(a), abs(b))
 
     x0 *= sign(a)
     y0 *= sign(b)
@@ -1197,7 +1197,7 @@ def cornacchia(a, b, m):
     """
     sols = set()
 
-    a1 = igcdex(a, m)[0]
+    a1 = igcdex(a, m)[1]
     v = sqrt_mod(-b*a1, m, all_roots=True)
     if not v:
         return
