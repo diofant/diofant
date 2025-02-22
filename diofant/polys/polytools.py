@@ -1428,7 +1428,7 @@ class Poly(Expr):
         """
         Half extended Euclidean algorithm of ``self`` and ``other``.
 
-        Returns ``(s, h)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
+        Returns ``(h, s)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
 
         Examples
         ========
@@ -1437,7 +1437,7 @@ class Poly(Expr):
         >>> g = (x**3 + x**2 - 4*x - 4).as_poly()
 
         >>> f.half_gcdex(g)
-        (Poly(-1/5*x + 3/5, x, domain='QQ'), Poly(x + 1, x, domain='QQ'))
+        (Poly(x + 1, x, domain='QQ'), Poly(-1/5*x + 3/5, x, domain='QQ'))
 
         """
         dom, per, F, G = self._unify(other)
@@ -1445,8 +1445,8 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        s, h = F.half_gcdex(G)
-        return per(s), per(h)
+        h, s = F.half_gcdex(G)
+        return per(h), per(s)
 
     def gcdex(self, other, auto=True):
         """
@@ -2774,13 +2774,13 @@ def half_gcdex(f, g, *gens, **args):
     """
     Half extended Euclidean algorithm of ``f`` and ``g``.
 
-    Returns ``(s, h)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
+    Returns ``(h, s)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
 
     Examples
     ========
 
     >>> half_gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
-    (-x/5 + 3/5, x + 1)
+    (x + 1, -x/5 + 3/5)
 
     """
     allowed_flags(args, ['auto', 'polys'])
@@ -2790,14 +2790,14 @@ def half_gcdex(f, g, *gens, **args):
     except PolificationFailedError as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        s, h = domain.half_gcdex(a, b)
-        return domain.to_expr(s), domain.to_expr(h)
+        h, s = domain.half_gcdex(a, b)
+        return domain.to_expr(h), domain.to_expr(s)
 
-    s, h = F.half_gcdex(G, auto=opt.auto)
+    h, s = F.half_gcdex(G, auto=opt.auto)
 
     if not opt.polys:
-        return s.as_expr(), h.as_expr()
-    return s, h
+        return h.as_expr(), s.as_expr()
+    return h, s
 
 
 def gcdex(f, g, *gens, **args):

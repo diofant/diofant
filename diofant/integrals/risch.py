@@ -673,7 +673,7 @@ def gcdex_diophantine(a, b, c):
     # TODO: This should go in densetools.py.
     # XXX: Bettter name?
 
-    s, g = a.half_gcdex(b)
+    g, s = a.half_gcdex(b)
     q = c.exquo(g)  # Inexact division means c is not in (a, b)
     s = q*s
 

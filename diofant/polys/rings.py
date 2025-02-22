@@ -1543,7 +1543,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         >>> g = x**3 + x**2 - 4*x - 4
 
         >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
+        (x + 1, -1/5*x + 3/5)
 
         """
         ring = self.ring
@@ -1563,7 +1563,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         a = a.quo_ground(f.LC)
         f = f.monic()
 
-        return a, f
+        return f, a
 
     def gcdex(self, other):
         """
@@ -1584,7 +1584,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         (x + 1, -1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2)
 
         """
-        s, h = self.half_gcdex(other)
+        h, s = self.half_gcdex(other)
         t = h - self*s
         t //= other
         return h, s, t

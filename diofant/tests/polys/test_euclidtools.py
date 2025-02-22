@@ -34,7 +34,7 @@ def test_gcdex():
     t = x**2/5 - 6*x/5 + 2
     h = x + 1
 
-    assert f.half_gcdex(g) == (s, h)
+    assert f.half_gcdex(g) == (h, s)
     assert f.gcdex(g) == (h, s, t)
 
     f = x**4 + 4*x**3 - x + 1
@@ -53,7 +53,7 @@ def test_gcdex():
     t = -QQ(1, 16)
     h = 1
 
-    assert f.half_gcdex(g) == (s, h)
+    assert f.half_gcdex(g) == (h, s)
     assert f.gcdex(g) == (h, s, t)
 
 

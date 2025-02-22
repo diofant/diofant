@@ -36,7 +36,7 @@ class CommutativeRing(Domain):
 
     def invert(self, a, b):
         """Return inversion of ``a mod b``."""
-        s, h = self.half_gcdex(a, b)
+        h, s = self.half_gcdex(a, b)
 
         if h == 1:
             return s % b
@@ -44,8 +44,7 @@ class CommutativeRing(Domain):
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
-        h, s, _ = self.gcdex(a, b)
-        return s, h
+        return self.gcdex(a, b)[:2]
 
     def cofactors(self, a, b):
         """Return GCD and cofactors of ``a`` and ``b``."""
