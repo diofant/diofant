@@ -1,8 +1,7 @@
 from collections import defaultdict
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import as_int
-from ..utilities import flatten
+from ..utilities import as_int, flatten
 from ..utilities.iterables import is_iterable
 
 

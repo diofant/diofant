@@ -628,7 +628,7 @@ def _div(f, g, minpoly, p):
 
     rem = f
     deg = g.degree(0)
-    lcinv, _, gcd = _gf_gcdex(g.eject(-1).LC, minpoly, p)
+    gcd, lcinv, _ = _gf_gcdex(g.eject(-1).LC, minpoly, p)
 
     if not gcd == 1:
         return
@@ -686,7 +686,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
             return
         f, g = g, result[-1]
 
-    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 

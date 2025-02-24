@@ -3,11 +3,10 @@ from collections import defaultdict
 
 from mpmath.libmp import mpf_log, prec_to_dps
 
-from ..utilities import default_sort_key
+from ..utilities import as_int, default_sort_key
 from .assumptions import ManagedProperties
 from .basic import Atom, Basic
 from .cache import cacheit
-from .compatibility import as_int
 from .decorators import _sympifyit, call_highest_priority
 from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
 from .sympify import sympify

@@ -32,13 +32,12 @@ import inspect
 import mpmath
 from mpmath.libmp import prec_to_dps
 
-from ..utilities import default_sort_key, ordered
+from ..utilities import as_int, default_sort_key, ordered
 from ..utilities.iterables import is_iterable, is_sequence, uniq
 from .add import Add
 from .assumptions import ManagedProperties
 from .basic import Basic
 from .cache import cacheit
-from .compatibility import as_int
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
 from .evalf import PrecisionExhausted

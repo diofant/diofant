@@ -30,7 +30,6 @@ from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
                      vectorize, zeta, zoo)
 from diofant.abc import x, y, z
-from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.domains import AlgebraicField, ComplexField, RealField
@@ -38,6 +37,7 @@ from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
+from diofant.external import HAS_GMPY
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
 from diofant.polys.polyoptions import Options
