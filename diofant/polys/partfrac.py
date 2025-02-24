@@ -393,7 +393,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
             G = P.gcd(d)
             D = d.quo(G)
 
-            B, g = Q.half_gcdex(D)
+            g, B = Q.half_gcdex(D)
             b = (P * B.quo(g)).rem(D)
 
             Dw = D.subs({x: next(dummygen)})

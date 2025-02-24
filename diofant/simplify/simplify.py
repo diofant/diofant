@@ -7,7 +7,6 @@ from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     Rational, Symbol, count_ops, exp, expand_func, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp,
                     factor_terms, log, oo, pi)
-from ..core.compatibility import as_int
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
@@ -20,7 +19,7 @@ from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
-from ..utilities import ordered
+from ..utilities import as_int, ordered
 from ..utilities.iterables import is_iterable
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre

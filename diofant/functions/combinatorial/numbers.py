@@ -16,7 +16,7 @@ from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
                      Rational, cacheit, expand_mul, log, nan, oo, pi)
-from ...core.compatibility import as_int
+from ...utilities import as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.integers import floor
 from ..elementary.trigonometric import cos, cot, sin

@@ -1789,3 +1789,14 @@ def test_sympyissue_27001():
     a1, a2, a3 = symbols(['a1', 'a2', 'a3'])
     eqnSystem = [a1, a1**2]
     assert solve(eqnSystem, [a1, a2, a3]) == [{a1: 0}]
+
+
+def test_sympyissue_27624():
+    eqs = [(a - b)**2 + b**2 - 1, (a - c)**2 + 2*c**2 - 1,
+           2*(b - c)**2 + c**2 - 1]
+    r = [RootOf(36*x**8 - 80*x**6 + 60*x**4 - 16*x**2 + 1, i)
+         for i in range(8)]
+    ans = [{a: r[i]*(-36*r[i]**6 + 62*r[i]**4 - 38*r[i]**2 + 11)/2,
+            b: r[i]*(-54*r[i]**6 + 102*r[i]**4 - 59*r[i]**2 + 11)/2,
+            c: r[i]} for i in [4, 5, 6, 7, 0, 1, 2, 3]]
+    assert solve(eqs) == ans

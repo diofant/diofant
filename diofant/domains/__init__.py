@@ -1,6 +1,6 @@
 """Implementation of mathematical domains."""
 
-from ..core.compatibility import GROUND_TYPES
+from ..external import GROUND_TYPES
 from .algebraicfield import (AlgebraicField, ComplexAlgebraicField,
                              RealAlgebraicField)
 from .complexfield import CC, ComplexField

@@ -276,7 +276,7 @@ def log_to_atan(f, g):
 
     if q.is_zero:
         return 2*atan(p.as_expr())
-    s, t, h = g.gcdex(-f)
+    h, s, t = g.gcdex(-f)
     u = (f*s + g*t).quo(h)
     A = 2*atan(u.as_expr())
 

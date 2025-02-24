@@ -464,11 +464,6 @@ Dict
 .. autoclass:: Dict
    :members:
 
-compatibility
--------------
-.. automodule:: diofant.core.compatibility
-   :members:
-
 exprtools
 ---------
 .. module:: diofant.core.exprtools
