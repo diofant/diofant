@@ -287,7 +287,7 @@ def test_issue_1139():
             sqrt(2)/(2*(1 - I)**3*(x - sqrt(2)/2 + sqrt(2)*I/2)) -
             3*I/(4*(1 - I)**3) - 3/(4*(1 - I)**3) +
             5*sqrt(2)*I*(x - sqrt(2)/2 + sqrt(2)*I/2)/(8*(1 - I)**3) +
-            O((x - sqrt(2)/2 + sqrt(2)*I/2)**2, x, sqrt(2)/2 - sqrt(2)*I/2))
+            O((x - sqrt(2)*(1 - I)/2)**2, x, sqrt(2)*(1 - I)/2))
 
 
 def test_sympyissue_22493():
