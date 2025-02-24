@@ -2,8 +2,6 @@ import copy
 import pickle
 import warnings
 
-import pytest
-
 from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      CoercionFailedError, Derivative, DiracDelta, DomainError,
                      Dummy, E, Eijk, Equality, EulerGamma,
@@ -27,12 +25,11 @@ from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan,
                      binomial, ceiling, chebyshevt, chebyshevt_root,
                      chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
-                     floor, gamma, harmonic, hermite, im, legendre, ln, log,
+                     floor, gamma, harmonic, hermite, im, legendre, log,
                      loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
                      rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
                      vectorize, zeta, zoo)
 from diofant.abc import x, y, z
-from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.domains import AlgebraicField, ComplexField, RealField
@@ -40,6 +37,7 @@ from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
+from diofant.external import HAS_GMPY
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
 from diofant.polys.polyoptions import Options
@@ -166,7 +164,6 @@ def test_core_function():
         check(f)
 
 
-@pytest.mark.xfail
 def test_core_dynamicfunctions():
     f = Function('f')
     check(f)
@@ -182,6 +179,12 @@ def test_core_multidimensional():
         check(c)
 
 
+def test_core_appliedundef():
+    x = Symbol('_long_unique_name_1')
+    f = Function('_long_unique_name_2')
+    check(f(x))
+
+
 def test_Singletons():
     protocols = [0, 1, 2, 3]
     copiers = [copy.copy, copy.deepcopy]
@@ -195,7 +198,7 @@ def test_Singletons():
 
 
 def test_functions():
-    one_var = (acosh, ln, Heaviside, factorial, bernoulli, coth, tanh,
+    one_var = (acosh, Heaviside, factorial, bernoulli, coth, tanh,
                sign, arg, asin, DiracDelta, re, Abs, sinh, cos, cot, acos,
                acot, gamma, bell, harmonic, LambertW, zeta, log, factorial,
                asinh, acoth, cosh, dirichlet_eta, loggamma, erf, ceiling,
@@ -408,7 +411,6 @@ def test_pickling_polys_errors():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_options():
     for c in (Options, Options((), {'domain': 'ZZ', 'polys': False})):
         check(c)

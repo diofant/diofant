@@ -1,13 +1,13 @@
 import pytest
 
-from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
-                     Expr, Float, Function, Heaviside, I, Integral, Interval,
-                     Lambda, LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise,
-                     Poly, Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg,
-                     asin, asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
+from diofant import (And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma, Expr,
+                     Float, Function, Heaviside, I, Integral, Interval, Lambda,
+                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
+                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
+                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
                      expand_func, expand_mul, floor, fresnels, gamma, im,
-                     integrate, log, lowergamma, meijerg, nan, oo, pi,
-                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
+                     integrate, legendre, log, lowergamma, meijerg, nan, oo,
+                     pi, polar_lift, polygamma, re, sign, simplify, sin, sinh,
                      sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
@@ -879,10 +879,7 @@ def test_is_real():
 
 def test_series():
     i = Integral(cos(x), (x, x))
-    e = i.series(x, n=None)
-    s1 = i.series(x, n=8).removeO().doit()
-    s2 = Add(*[next(e) for j in range(4)])
-    assert s1 == s2
+    assert i.series(x, n=8) == x - x**3/6 + x**5/120 - x**7/5040 + O(x**8)
 
 
 def test_sympyissue_4403():
@@ -1549,3 +1546,85 @@ def test_sympyissue_26071():
 def test_sympyissue_25786():
     assert integrate(exp(-0.8*x**2),
                      (x, -3, -0.2)) == 0.44728859099449181*sqrt(pi)
+
+
+def test_sympyissue_26477():
+    x = Symbol('x', positive=True)
+    y = Symbol('y', positive=True)
+    z = Symbol('z', real=True)
+
+    i = Integral(z**(x - 1)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x, y)
+    assert i.doit() == gamma(x)*gamma(y)/gamma(x + y)
+
+    i = Integral(z**(x - 0.5)*(1 - z)**(y - 1), (z, 0, 1))  # beta(x + 0.5, y)
+    assert i.doit() == gamma(x + 0.5)*gamma(y)/gamma(x + y + 0.5)
+
+
+def test_sympyissue_26501():
+    integrate(exp(x/log(x)), x)  # not raises
+
+
+def test_sympyissue_26503():
+    assert (integrate(a**x*b**(-x), x) ==
+            Piecewise((x, Eq(a, b)), (a**x/(b**x*log(a) - b**x*log(b)), True)))
+
+
+def test_sympyissue_26504():
+    assert (integrate(2**(3*x + 2)*3**(7*x + 5), x) ==
+            972*2**(3*x)*3**(7*x)/(3*log(2) + 7*log(3)))
+
+
+def test_sympyissue_26506():
+    integrate(log(x**2 + x - 1)**2/x**3, x)  # not raises
+
+
+def test_sympyissue_26566():
+    a = symbols('a', real=True, positive=True)
+
+    assert integrate(sin(a*(x + pi))**2,
+                     (x, -pi, -pi/2)) == (pi*a - sin(pi*a))/(4*a)
+
+
+def test_sympyissue_26930():
+    assert (integrate(x**Rational(4, 3)*log(x),
+                      (x, 0, 1)) ==
+            -gamma(Rational(7, 3))**2/gamma(Rational(10, 3))**2)
+
+
+def test_sympyissue_26956():
+    assert integrate(x**1.5*(x - 0.5), (x, 0, 1)) == 0.085714285714285687
+
+
+def test_sympyissue_27050():
+    e = sqrt(1 - x**2)/(1 + x**2)
+    e_s = (e.subs({x: sin(w)}) * diff(sin(w), w)).simplify()
+    r = integrate(e_s, (w, -pi/2, pi/2)).simplify()
+    assert re(r).evalf() == 1.301290284568573
+
+
+def test_sympyissue_27108():
+    x = symbols('x', real=True)
+    f = exp(-abs(x))
+    g = 2*DiracDelta(x)
+    assert integrate(f*f, (x, -oo, oo)) == 1
+    assert integrate((f - g)*f, (x, -oo, oo)) == -1
+    assert integrate(f*g, (x, -oo, oo)) == 2
+
+
+def test_sympyissue_27234():
+    x, y = symbols('x y', real=True)
+    integral = Integral(abs(cos(x + y)), y)
+    integral.doit()  # not raises
+
+
+def test_sympyissue_27298():
+    assert integrate(legendre(n, x), (x, -1, 1)).simplify() != 0
+
+
+def test_sympyissue_27300():
+    e = exp(-I*n*x)
+
+    assert integrate(e*DiracDelta(x), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - pi/2), (x, 0, 2*pi)) == e.subs({x: pi/2})
+    assert integrate(e*DiracDelta(x - 2*pi), (x, 0, 2*pi)) == 1/2
+    assert integrate(e*DiracDelta(x - 4*pi), (x, 0, 2*pi)) == 0

@@ -8,8 +8,9 @@ from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
                      CoercionFailedError, ComplexField, DomainError, Float,
                      GeneratorsError, GeneratorsNeededError, I, Integer,
                      NotInvertibleError, PythonRational, QQ_python, Rational,
-                     RealField, RootOf, UnificationFailedError, ZZ_python,
-                     cbrt, field, im, oo, re, ring, root, roots, sin, sqrt)
+                     RealField, RootOf, Symbol, UnificationFailedError,
+                     ZZ_python, cbrt, field, im, oo, re, ring, root, roots,
+                     sin, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains.domainelement import DomainElement
 
@@ -82,7 +83,7 @@ def test_Domain_unify():
     assert unify(RR, F3) == RR
     assert unify(RR, ZZ) == RR
     assert unify(RR, QQ) == RR
-    assert unify(RR, ALG) == RR
+    assert unify(RR, ALG) == CC
     assert unify(RR, RR) == RR
     assert unify(RR, CC) == CC
     assert unify(RR, ZZ.inject(x)) == RR.inject(x)
@@ -1275,3 +1276,20 @@ def test_issue_1243():
 def test_sympyissue_20327():
     F7 = FF(7)
     assert (2*x/3).as_poly(x, domain=F7) == (3*x).as_poly(x, domain=F7)
+
+
+def test_issue_1385():
+    assert Symbol('n', integer=True) not in QQ
+
+
+def test_sympyissue_26787():
+    K = QQ.algebraic_field(sqrt(2))
+
+    a = K.from_expr(1 - sqrt(2))
+    assert K.is_normal(a) is False
+    a = K.from_expr(sqrt(2) - 2)
+    assert K.is_normal(a) is False
+
+    p = (x**2 + 2*sqrt(2)*x + 1).as_poly(extension=True)
+    assert p.count_roots() == 2
+    assert p.count_roots(-10, 10) == 2

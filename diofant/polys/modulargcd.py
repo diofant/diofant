@@ -616,6 +616,37 @@ def _trunc(f, minpoly, p):
     return f.trunc_ground(p).div([minpoly, p_])[1].trunc_ground(p)
 
 
+def _div(f, g, minpoly, p):
+    r"""
+    Division with remainder for univariate polynomials over
+    `\mathbb Z_p[z]/(\mu(z))`.
+
+    """
+    ring = f.ring
+    domain = ring.domain
+    one = domain.one
+
+    rem = f
+    deg = g.degree(0)
+    gcd, lcinv, _ = _gf_gcdex(g.eject(-1).LC, minpoly, p)
+
+    if not gcd == 1:
+        return
+
+    quotient = ring.zero
+
+    while True:
+        degrem = rem.degree(0)
+        if degrem < deg:
+            break
+        m = ring.from_terms([((degrem - deg, 0), one)])
+        quo = (lcinv * rem.eject(-1).LC).set_ring(ring)*m
+        rem = _trunc(rem - g*quo, minpoly, p)
+        quotient += quo
+
+    return _trunc(quotient, minpoly, p), rem
+
+
 def _euclidean_algorithm(f, g, minpoly, p):
     r"""
     Compute the monic GCD of two univariate polynomials in
@@ -645,31 +676,17 @@ def _euclidean_algorithm(f, g, minpoly, p):
 
     """
     ring = f.ring
-    domain = ring.domain
 
     f = _trunc(f, minpoly, p)
     g = _trunc(g, minpoly, p)
 
     while g:
-        rem = f
-        deg = g.degree(0)  # degree in x
-        lcinv, _, gcd = _gf_gcdex(g.eject(-1).LC, minpoly, p)
-
-        if not gcd == 1:
+        result = _div(f, g, minpoly, p)
+        if result is None:
             return
+        f, g = g, result[-1]
 
-        while True:
-            degrem = rem.degree(0)  # degree in x
-            if degrem < deg:
-                break
-            quo = (lcinv * rem.eject(-1).LC).set_ring(ring)
-            m = ring.from_terms([((degrem - deg, 0), domain.one)])
-            rem = _trunc(rem - g*m*quo, minpoly, p)
-
-        f = g
-        g = rem
-
-    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 
@@ -1184,11 +1201,7 @@ def _to_ZZ_poly(f, ring):
         for i in range(n):
             if coeff[n - i - 1]:
                 c = domain(coeff[n - i - 1] * den) * m
-
-                if (monom[0], n-i-1) not in f_:
-                    f_[(monom[0], n-i-1)] = c
-                else:
-                    f_[(monom[0], n-i-1)] += c
+                f_[(monom[0], n-i-1)] += c
 
     return f_
 
@@ -1225,21 +1238,13 @@ def _to_ANP_poly(f, ring):
             for mon, coef in coeff.items():
                 m = (monom[0],) + mon
                 c = domain([0]*monom[1] + [domain.domain(coef)])
-
-                if m not in f_:
-                    f_[m] = c
-                else:
-                    f_[m] += c
+                f_[m] += c
 
     else:
         for monom, coeff in f.items():
             m = monom[0],
             c = domain([0]*monom[1] + [domain.domain(coeff)])
-
-            if m not in f_:
-                f_[m] = c
-            else:
-                f_[m] += c
+            f_[m] += c
 
     return f_
 

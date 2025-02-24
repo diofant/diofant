@@ -209,16 +209,9 @@ GoldenRatio
 
 power
 -----
-.. module:: diofant.core.power
-
-Pow
-^^^
-.. autoclass:: Pow
+.. automodule:: diofant.core.power
    :members:
 
-integer_nthroot
-^^^^^^^^^^^^^^^
-.. autofunction:: integer_nthroot
 
 mul
 ---
@@ -469,11 +462,6 @@ Tuple
 Dict
 ^^^^
 .. autoclass:: Dict
-   :members:
-
-compatibility
--------------
-.. automodule:: diofant.core.compatibility
    :members:
 
 exprtools

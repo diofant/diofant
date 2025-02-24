@@ -5,9 +5,8 @@ from collections import defaultdict
 from mpmath.libmp import ifac
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import as_int
 from ..polys import lcm
-from ..utilities import flatten
+from ..utilities import as_int, flatten
 from ..utilities.iterables import is_sequence, minlex, runs
 
 

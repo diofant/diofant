@@ -222,6 +222,9 @@ def test_roots_cyclotomic():
         sqrt(3)/2 - I/2,
         sqrt(3)/2 + I/2,
     ]
+    assert roots_cyclotomic(cyclotomic_poly(12, x, polys=True),
+                            expand=False) == [exp(7*I*pi/6), exp(5*I*pi/6),
+                                              exp(11*I*pi/6), exp(I*pi/6)]
 
     assert roots_cyclotomic(
         cyclotomic_poly(1, x, polys=True), factor=True) == [1]

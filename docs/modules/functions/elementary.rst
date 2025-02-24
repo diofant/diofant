@@ -268,11 +268,6 @@ RoundFunction
 diofant.functions.elementary.exponential
 ========================================
 
-exp
----
-
-.. autofunction:: diofant.functions.elementary.exponential.exp
-
 exp_polar
 ---------
 
@@ -283,12 +278,6 @@ LambertW
 --------
 
 .. autoclass:: diofant.functions.elementary.exponential.LambertW
-   :members:
-
-log
----
-
-.. autoclass:: diofant.functions.elementary.exponential.log
    :members:
 
 

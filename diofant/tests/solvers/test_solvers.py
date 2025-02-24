@@ -992,7 +992,7 @@ def test_check_assumptions():
     x = symbols('x', positive=True)
     assert solve(x**2 - 1) == [{x: 1}]
 
-    with pytest.warns(UserWarning) as warn:
+    with pytest.warns(UserWarning, match='assumptions concerning') as warn:
         assert solve(x**2 - y, x, warn=True) == [{x: -sqrt(y)}, {x: sqrt(y)}]
     assert len(warn) == 1
     assert warn[0].message.args[0][:112] == """
@@ -1023,7 +1023,7 @@ def test_checksol():
     assert checksol(x*(x - y/x), {x: 1}, force=False) is False
 
     sol = {y: sqrt(x)}
-    with pytest.warns(UserWarning) as warn:
+    with pytest.warns(UserWarning, match='could not verify solution') as warn:
         assert checksol(sqrt(y**2), sol, warn=True, force=False) is None
     assert len(warn) == 1
     assert warn[0].message.args[0] == f"""
@@ -1783,3 +1783,20 @@ def test_sympyissue_23637():
 
 def test_sympyissue_23855():
     assert solve([x - 1], x, x) == [{x: 1}]
+
+
+def test_sympyissue_27001():
+    a1, a2, a3 = symbols(['a1', 'a2', 'a3'])
+    eqnSystem = [a1, a1**2]
+    assert solve(eqnSystem, [a1, a2, a3]) == [{a1: 0}]
+
+
+def test_sympyissue_27624():
+    eqs = [(a - b)**2 + b**2 - 1, (a - c)**2 + 2*c**2 - 1,
+           2*(b - c)**2 + c**2 - 1]
+    r = [RootOf(36*x**8 - 80*x**6 + 60*x**4 - 16*x**2 + 1, i)
+         for i in range(8)]
+    ans = [{a: r[i]*(-36*r[i]**6 + 62*r[i]**4 - 38*r[i]**2 + 11)/2,
+            b: r[i]*(-54*r[i]**6 + 102*r[i]**4 - 59*r[i]**2 + 11)/2,
+            c: r[i]} for i in [4, 5, 6, 7, 0, 1, 2, 3]]
+    assert solve(eqs) == ans

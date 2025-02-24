@@ -1,11 +1,10 @@
 """Special sets."""
 
 from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
-from ..core.compatibility import as_int
 from ..core.singleton import Singleton
 from ..core.sympify import converter, sympify
 from ..logic import false, true
-from ..utilities.iterables import cantor_product
+from ..utilities import as_int, cantor_product
 from .sets import EmptySet, FiniteSet, Intersection, Interval, Set
 
 

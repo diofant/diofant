@@ -641,7 +641,7 @@ def test_cot_series():
 def test_cot_rewrite():
     neg_exp, pos_exp = exp(-x*I), exp(x*I)
     assert cot(x).rewrite(exp) == I*(pos_exp + neg_exp)/(pos_exp - neg_exp)
-    assert cot(x).rewrite(sin) == 2*sin(2*x)/sin(x)**2
+    assert cot(x).rewrite(sin) == sin(2*x)/(2*sin(x)**2)
     assert cot(x).rewrite(cos) == -cos(x)/cos(x + pi/2)
     assert cot(x).rewrite(tan) == 1/tan(x)
     assert (cot(sinh(x)).rewrite(exp).subs({x: 3}).evalf() ==
@@ -683,10 +683,11 @@ def test_cot_expansion():
 
 def test_asin():
     assert asin(nan) == nan
+    assert asin(zoo) == zoo
 
     assert asin.nargs == FiniteSet(1)
-    assert asin(oo) == -I*oo
-    assert asin(-oo) == I*oo
+    assert asin(+oo) == -oo*I
+    assert asin(-oo) == +oo*I
 
     # Note: asin(-x) = - asin(x)
     assert asin(0) == 0
@@ -756,7 +757,7 @@ def test_acos():
     assert acos(zoo) == zoo
 
     assert acos.nargs == FiniteSet(1)
-    assert acos(oo) == I*oo
+    assert acos(+oo) == +I*oo
     assert acos(-oo) == -I*oo
 
     # Note: acos(-x) = pi - acos(x)
@@ -1398,12 +1399,11 @@ def test_csc():
 
 
 def test_asec():
-    z = Symbol('z', zero=True)
-    assert asec(z) == zoo
+    assert asec(0) == zoo
     assert asec(nan) == nan
-    assert asec(1) == 0
+    assert asec(+1) == 0
     assert asec(-1) == pi
-    assert asec(oo) == pi/2
+    assert asec(+oo) == pi/2
     assert asec(-oo) == pi/2
     assert asec(zoo) == pi/2
 
@@ -1424,10 +1424,11 @@ def test_asec():
 
 
 def test_acsc():
+    assert acsc(0) == zoo
     assert acsc(nan) == nan
-    assert acsc(1) == pi/2
+    assert acsc(+1) == +pi/2
     assert acsc(-1) == -pi/2
-    assert acsc(oo) == 0
+    assert acsc(+oo) == 0
     assert acsc(-oo) == 0
     assert acsc(zoo) == 0
 

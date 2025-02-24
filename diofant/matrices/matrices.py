@@ -4,16 +4,15 @@ import math
 from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
-                    Symbol, count_ops, oo, symbols)
-from ..core.compatibility import as_int
+                    Symbol, count_ops, exp, oo, symbols)
 from ..core.logic import fuzzy_and
 from ..core.sympify import sympify
-from ..functions import Max, Min, exp, factorial, sqrt
+from ..functions import Max, Min, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
-from ..utilities import default_sort_key, flatten
+from ..utilities import as_int, default_sort_key, flatten
 from ..utilities.iterables import is_sequence
 
 

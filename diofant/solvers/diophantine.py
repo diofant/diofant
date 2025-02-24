@@ -3,7 +3,6 @@ import math
 from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms,
                     integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
-from ..core.compatibility import as_int
 from ..core.function import _mexpand
 from ..core.numbers import igcdex
 from ..functions import floor, sign, sqrt
@@ -12,7 +11,7 @@ from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
                        nextprime, perfect_power, sqrt_mod, square_factor)
 from ..polys import GeneratorsNeededError, factor_list
 from ..simplify import signsimp
-from ..utilities import default_sort_key, filldedent, numbered_symbols
+from ..utilities import as_int, default_sort_key, filldedent, numbered_symbols
 from ..utilities.iterables import is_sequence
 from .solvers import solve
 
@@ -665,7 +664,7 @@ def base_solution_linear(c, a, b, t=None):
                 t = -t
             return b*t, -a*t
         return 0, 0
-    x0, y0, d = igcdex(abs(a), abs(b))
+    d, x0, y0 = igcdex(abs(a), abs(b))
 
     x0 *= sign(a)
     y0 *= sign(b)
@@ -1198,7 +1197,7 @@ def cornacchia(a, b, m):
     """
     sols = set()
 
-    a1 = igcdex(a, m)[0]
+    a1 = igcdex(a, m)[1]
     v = sqrt_mod(-b*a1, m, all_roots=True)
     if not v:
         return

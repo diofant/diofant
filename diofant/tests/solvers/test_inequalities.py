@@ -374,7 +374,7 @@ def test_solve_univariate_inequality():
 
 
 def test_sympyissue_25697():
-    assert reduce_inequalities(log(x, 3) <= 2) == (Integer(0) < x) & (x <= 9)
+    assert reduce_inequalities(log(x)/log(3) <= 2) == (Integer(0) < x) & (x <= 9)
 
 
 def test_slow_general_univariate():

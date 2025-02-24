@@ -4,14 +4,15 @@ import itertools
 
 import pytest
 
-from diofant import (E, Float, Function, I, Integral, Lambda, Limit, O,
+from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
-                     Symbol, acos, acosh, acoth, arg, asin, atan, besselk,
-                     binomial, cbrt, ceiling, cos, cosh, cot, diff, digamma,
-                     elliptic_e, elliptic_k, erf, erfc, erfi, exp, factorial,
-                     false, floor, gamma, hyper, integrate, limit, log,
-                     lowergamma, nan, oo, pi, polygamma, root, sign, simplify,
-                     sin, sinh, sqrt, subfactorial, symbols, tan, true)
+                     Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
+                     besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
+                     digamma, elliptic_e, elliptic_k, erf, erfc, erfi, exp,
+                     factorial, false, floor, gamma, hyper, integrate, limit,
+                     log, lowergamma, nan, oo, pi, polygamma, re, root, sign,
+                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
+                     tanh, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -199,6 +200,8 @@ def test_floor():
     assert limit(floor(x), x, 2, 1) == 1
     assert limit(floor(x), x, 248) == 248
     assert limit(floor(x), x, 248, 1) == 247
+    assert limit(floor(arg(1 + x)), x, 0) == 0
+    assert limit(floor(arg(1 - x)), x, 0) == 0
 
 
 def test_floor_requires_robust_assumptions():
@@ -285,6 +288,8 @@ def test_heuristic():
     assert heuristics(sin(1/x) + atan(x), x, 0, -1) == sin(oo)
     assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, -1) == log(2)
     assert heuristics(tan(tan(1/x)), x, 0, -1) is None
+    assert isinstance(limit(log(2 + sqrt(atan(x))*sin(1/x)),
+                            x, 0, -1, heuristics=False), Limit)
 
 
 def test_sympyissue_3871():
@@ -541,7 +546,7 @@ def test_issue_55():
 
 
 def test_sympyissue_8061():
-    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x, 4), x, 0) == oo
+    assert limit(4**(acos(1/(1 + x**2))**2)/log(1 + x), x, 0) == oo
 
 
 def test_sympyissue_8229():
@@ -1124,3 +1129,47 @@ def test_sympyissue_26313():
     e = Piecewise((x**2, x <= 2), (5*x - 7, x > 2))
     assert limit(e, x, 2) == 3
     assert limit(e, x, 2, dir=1) == 4
+
+
+def test_sympyissue_26513():
+    assert limit((x/(x + 1))**x, x, oo) == exp(-1)
+    assert limit((-x/(x + 1))**x, x, oo) == Limit((-x/(x + 1))**x, x, oo)
+    assert limit(abs((-x/(x + 1))**x), x, oo) == exp(-1)
+
+
+def test_sympyissue_26525():
+    e = (-exp(-I*pi*x)*I*(exp(I*pi*x)*pi -
+                          gamma(-x + Rational(1, 2))*gamma(x + Rational(1, 2))) *
+         gamma(-x - 1)/(2*sqrt(pi)*gamma(-x + Rational(1, 2))))
+    assert limit(e, x, 1) == pi/8
+
+
+def test_issue_1397():
+    assert limit(re(asin(x)), x, oo) == pi/2
+
+
+def test_issue_1403():
+    assert acsc(x).rewrite(atan).limit(x, I*oo) == 0
+
+
+def test_sympyissue_26916():
+    assert limit(Ei(x)*exp(-x), x, +oo) == 0
+    assert limit(Ei(x)*exp(-x), x, -oo) == 0
+
+
+def test_sympyissue_26990():
+    assert limit(x/((x - 6)*sinh(tanh(0.03*x)) + tanh(x) - 0.5),
+                 x, oo) == 0.85091812823932156
+
+
+def test_sympyissue_27236():
+    e = Piecewise((1, x < 0), (-1, x >= 0))
+    assert limit(e, x, 0, -1) == -1 == limit(e, x, 0)
+    assert limit(e, x, 0, +1) == +1
+    pytest.raises(PoleError, lambda: limit(e, x, 0, dir=Reals))
+
+
+def test_sympyissue_27551():
+    e = 1/(x*sqrt(log(x)**2))
+    assert limit(e, x, 1, dir=+1) == oo
+    assert limit(e, x, 1, dir=-1) == oo

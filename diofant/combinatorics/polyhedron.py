@@ -1,7 +1,6 @@
 from ..core import Basic, Tuple
-from ..core.compatibility import as_int
 from ..sets import FiniteSet
-from ..utilities import flatten, unflatten
+from ..utilities import as_int, flatten, unflatten
 from ..utilities.iterables import minlex
 from .perm_groups import PermutationGroup
 from .permutations import Permutation

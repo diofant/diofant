@@ -1615,6 +1615,10 @@ def test_PolyElement___pow__():
 
     assert f**4 == f._pow_generic(4) == f._pow_multinomial(4) == g
 
+    f, g = x + 1, 2*x - 1
+
+    assert pow(f, 7, g) == x**7 + 7*x**6 + 21*x**5 + 35*x**4 + 35*x**3 + 21*x**2 + 7*x + 1
+
     R, x = ring('x', ZZ, grlex)
 
     assert R.zero**0 == 1
@@ -1652,6 +1656,8 @@ def test_PolyElement___pow__():
     assert R(QQ(3, 7))**7 == QQ(2187, 823543)
 
     assert (x/3 + QQ(2, 3))**2 == x**2/9 + 4*x/9 + QQ(4, 9)
+
+    assert pow(x + 1, 7, 2*x**2 - 1) == 239*x/8 + QQ(169, 8)
 
     R, x, y = ring('x y', FF(7))
 

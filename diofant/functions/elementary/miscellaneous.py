@@ -1,6 +1,5 @@
 from ...core import (Add, Dummy, Equality, Expr, Integer, Lambda, Mul, Pow,
                      Rational, Tuple, oo, zoo)
-from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
 from ...core.operations import LatticeOp, ShortCircuitError
@@ -8,6 +7,7 @@ from ...core.rules import Transform
 from ...core.singleton import SingletonWithManagedProperties as Singleton
 from ...core.sympify import sympify
 from ...logic import And, Or
+from ...utilities import as_int
 from .integers import floor
 
 

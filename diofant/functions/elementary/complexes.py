@@ -332,10 +332,8 @@ class sign(Function):
         return self.func(self.args[0].factor())
 
     def _eval_nseries(self, x, n, logx):
-        direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]
-        if direction.is_extended_real:
-            return self.func(direction)
-        return super()._eval_nseries(x, n, logx)
+        c, _ = self.args[0].as_leading_term(x).as_coeff_exponent(x)
+        return self.func(c.limit(x, 0))
 
 
 class Abs(Function):
@@ -574,6 +572,10 @@ class arg(Function):
 
     def _eval_rewrite_as_sign(self, arg):
         return -I*log(sign(arg))
+
+    def _eval_nseries(self, x, n, logx):
+        c, _ = self.args[0].as_leading_term(x).as_coeff_exponent(x)
+        return self.func(c.limit(x, 0))
 
 
 class conjugate(Function):

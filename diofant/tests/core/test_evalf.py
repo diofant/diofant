@@ -1,6 +1,6 @@
 import pytest
-from mpmath import inf, mpc, ninf
-from mpmath.libmp import from_float
+from mpmath import inf, mpc, mpf, ninf
+from mpmath.libmp import from_float, from_int, mpf_sqrt
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
                      GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,
@@ -135,7 +135,7 @@ def test_evalf_logs():
     assert NS('log(3+pi*I)', 15) == '1.46877619736226 + 0.808448792630022*I'
     assert NS('log(pi*I)', 15) == '1.14472988584940 + 1.57079632679490*I'
     assert NS('log(-1.000000 + 0.000001)', 2) == '-1.0e-6 + 3.1*I'
-    assert NS('log(100, 10, evaluate=False)', 15) == '2.00000000000000'
+    assert NS('log(100)/log(10)', 15) == '2.00000000000000'
 
 
 def test_evalf_trig():
@@ -182,7 +182,7 @@ def test_evalf_bugs():
     assert NS(sin(1) + exp(-10**10), 10) == NS(sin(1), 10)
     assert NS(exp(10**10) + sin(1), 10) == NS(exp(10**10), 10)
     assert NS('log(1+1/10**50)', 20) == '1.0000000000000000000e-50'
-    assert NS('log(10**100,10)', 10) == '100.0000000'
+    assert NS('log(10**100)/log(10)', 10) == '100.0000000'
     assert NS('log(2)', 10) == '0.6931471806'
     assert NS(
         '(sin(x)-x)/x**3', 15, subs={x: '1/10**50'}) == '-0.166666666666667'
@@ -472,8 +472,8 @@ def test_infinities():
 
 
 def test_to_mpmath():
-    assert sqrt(3)._to_mpmath(20)._mpf_ == (0, int(908093), -19, 20)
-    assert Float(3.2)._to_mpmath(20)._mpf_ == (0, int(838861), -18, 20)
+    assert sqrt(3)._to_mpmath(20)._mpf_ == mpf_sqrt(from_int(3), 20)
+    assert Float(3.2)._to_mpmath(20)._mpf_ == mpf(3.2, prec=20)._mpf_
 
 
 def test_sympyissue_6632():

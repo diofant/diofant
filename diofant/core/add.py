@@ -631,7 +631,12 @@ class Add(AssocOp):
             if not expr:
                 # simple leading term analysis gave us 0 but we have to send
                 # back a term, so compute the leading term (via series)
-                return self.compute_leading_term(x)
+                n = 1
+                expr = self.series(x, n=n)
+                while expr.is_Order:
+                    n += 1
+                    expr = self.series(x, n=n)
+                return expr.as_leading_term(x)
 
         expr = expr.removeO()
 

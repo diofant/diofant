@@ -4,23 +4,22 @@ import mpmath
 from mpmath.libmp import prec_to_dps
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
-                    Rational, Symbol, count_ops, expand_func, expand_log,
+                    Rational, Symbol, count_ops, exp, expand_func, expand_log,
                     expand_mul, expand_multinomial, expand_power_exp,
-                    factor_terms, oo, pi)
-from ..core.compatibility import as_int
+                    factor_terms, log, oo, pi)
 from ..core.evaluate import global_evaluate
 from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
 from ..core.strategies import bottom_up
 from ..core.sympify import sympify
-from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
-                         exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
+from ..functions import (besseli, besselj, besselk, bessely, ceiling,
+                         exp_polar, gamma, jn, piecewise_fold, root, sqrt,
                          unpolarify)
 from ..functions.combinatorial.factorials import CombinatorialFunction
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import cancel, factor, together
-from ..utilities import ordered
+from ..utilities import as_int, ordered
 from ..utilities.iterables import is_iterable
 from .combsimp import combsimp
 from .cse_opts import sub_post, sub_pre
@@ -811,9 +810,9 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
             # We'll be happy with low precision if a simple fraction
             if not (tolerance or full):
                 mpmath.mp.dps = 15
-                rat = mpmath.findpoly(xv, 1)
+                rat = mpmath.findpoly(xv, 1, asc=True)
                 if rat is not None:
-                    return Rational(-int(rat[1]), int(rat[0]))
+                    return Rational(-int(rat[0]), int(rat[1]))
             mpmath.mp.dps = prec
             newexpr = mpmath.identify(xv, constants=constants_dict,
                                       tol=tolerance, full=full)

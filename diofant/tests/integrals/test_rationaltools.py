@@ -185,3 +185,9 @@ def test_issue_1363():
             (2*x**2 + 6*x + 2)/(-5*x**3 - 4*x**2 + 6*x)]
 
     assert all(ratint(e, x).diff(x).equals(e) for e in bad + good)
+
+
+def test_sympyissue_26502():
+    e = 1/(x**4 + sqrt(2)*x - 1)
+    r = integrate(e, x)
+    assert r.diff(x) == e

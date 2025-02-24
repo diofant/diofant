@@ -720,6 +720,7 @@ def test__count_real_roots():
     f *= (x - 1)*(x + 1)
 
     assert R._count_real_roots(f) == 2
+    assert R._count_real_roots(f, inf=0, sup=0) == 0
 
 
 # parameters for test_dup_count_complex_roots_n(): n = 1..8
@@ -744,6 +745,11 @@ def test__count_complex_roots_1():
 
     assert R._count_complex_roots(f, a, b) == 1
     assert R._count_complex_roots(f, c, d) == 0
+
+    pytest.raises(ValueError,
+                  lambda: R._count_complex_roots(f, (0, -1), (0, 2)))
+    pytest.raises(ValueError,
+                  lambda: R._count_complex_roots(f, (0, -1), (1, -1)))
 
     R, x = ring('x', QQ)
 
@@ -1031,28 +1037,29 @@ def test__count_complex_roots_exclude():
 
     assert R._count_complex_roots(f, a, b) == 4
 
-    assert R._count_complex_roots(f, a, b, exclude=['S']) == 3
-    assert R._count_complex_roots(f, a, b, exclude=['N']) == 3
+    assert R._count_complex_roots(f, a, b, exclude={'S'}) == 3
+    assert R._count_complex_roots(f, a, b, exclude={'N'}) == 3
 
-    assert R._count_complex_roots(f, a, b, exclude=['S', 'N']) == 2
+    assert R._count_complex_roots(f, a, b, exclude={'S', 'N'}) == 2
 
-    assert R._count_complex_roots(f, a, b, exclude=['E']) == 4
-    assert R._count_complex_roots(f, a, b, exclude=['W']) == 4
+    assert R._count_complex_roots(f, a, b, exclude={'E'}) == 4
+    assert R._count_complex_roots(f, a, b, exclude={'W'}) == 4
 
-    assert R._count_complex_roots(f, a, b, exclude=['E', 'W']) == 4
+    assert R._count_complex_roots(f, a, b, exclude={'E', 'W'}) == 4
 
-    assert R._count_complex_roots(f, a, b, exclude=['N', 'S', 'E', 'W']) == 2
+    assert R._count_complex_roots(f, a, b, exclude={'N', 'S', 'E', 'W'}) == 2
 
-    assert R._count_complex_roots(f, a, b, exclude=['SW']) == 3
-    assert R._count_complex_roots(f, a, b, exclude=['SE']) == 3
+    assert R._count_complex_roots(f, a, b, exclude={'SW'}) == 3
+    assert R._count_complex_roots(f, a, b, exclude={'SE'}) == 3
 
-    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE']) == 2
-    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S']) == 1
-    assert R._count_complex_roots(f, a, b, exclude=['SW', 'SE', 'S', 'N']) == 0
+    assert R._count_complex_roots(f, a, b, exclude={'SW', 'SE'}) == 2
+    assert R._count_complex_roots(f, a, b, exclude={'SW', 'SE', 'S'}) == 1
+    assert R._count_complex_roots(f, a, b, exclude={'SW', 'SE', 'S', 'N'}) == 0
 
     a, b = (0, 0), (1, 1)
 
-    assert R._count_complex_roots(f, a, b, exclude=True) == 1
+    assert R._count_complex_roots(f, a, b,
+                                  exclude={'S', 'E', 'SW', 'SE', 'NE'}) == 1
 
     R, x = ring('x', QQ.algebraic_field(I))
 
@@ -1299,6 +1306,14 @@ def test_ComplexInterval():
     assert v1 == v2
     assert t1 == t2
     assert u1 <= u2 < s2 < s1
+
+    # issue diofant/diofant#1422
+    R, x = ring('x', ZZ)
+
+    f = x**4 - x**2 + 1
+    r1, *_ = R._isolate_complex_roots_sqf(f, blackbox=True)
+    assert r1.refine().refine().refine().as_tuple() == ((-1, QQ(-1, 2)),
+                                                        (0, 0))
 
 
 def test_issue_745():

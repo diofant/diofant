@@ -27,8 +27,8 @@ from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
-                     exp, expand, expand_func, eye, factor, factorial,
-                     factorial2, factorint, fibonacci, floor,
+                     exp, expand, expand_func, expand_log, eye, factor,
+                     factorial, factorial2, factorint, fibonacci, floor,
                      fourier_transform, gamma, gcd, groebner, hessian, hyper,
                      hyperexpand, im, integrate, inverse_laplace_transform,
                      laplace_transform, legendre_poly, limit, log, logcombine,
@@ -93,7 +93,7 @@ def test_C3():
 
 
 def test_C7():
-    assert log(32768, 8) == 5
+    assert expand_log(log(32768)/log(8)) == 5
 
 
 def test_C8():
@@ -799,7 +799,7 @@ def test_M23():
 
 def test_M24():
     solution = solve(1 - binomial(m, 2)*2**k, k)
-    answer = log(2/(m*(m - 1)), 2)
+    answer = log(2/(m*(m - 1)))/log(2)
     assert solution[0][k].expand() == answer.expand()
 
 

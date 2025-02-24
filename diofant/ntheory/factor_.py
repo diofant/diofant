@@ -5,8 +5,8 @@ import numbers
 import random
 
 from ..core import Function, Integer, Mul, Pow, Rational, integer_nthroot
-from ..core.compatibility import as_int
 from ..core.sympify import sympify
+from ..utilities import as_int
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
 
@@ -268,7 +268,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
     (4, 2)
 
     """
-    n = int(n)
+    n = as_int(n)
     if n < 3:
         return False
     logn = math.log(n, 2)

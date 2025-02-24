@@ -15,10 +15,9 @@ from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
-                     Rational, cacheit, expand_mul, nan, oo, pi)
-from ...core.compatibility import as_int
+                     Rational, cacheit, expand_mul, log, nan, oo, pi)
+from ...utilities import as_int
 from ...utilities.memoization import recurrence_memo
-from ..elementary.exponential import log
 from ..elementary.integers import floor
 from ..elementary.trigonometric import cos, cot, sin
 from .factorials import binomial, factorial
@@ -665,7 +664,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_tractable(self, n, m=1, **kwargs):
         from .. import polygamma
-        return self.rewrite(polygamma).rewrite('tractable')
+        return self.rewrite(polygamma).rewrite('tractable', **kwargs)
 
     def _eval_evalf(self, prec):
         from .. import polygamma
@@ -847,7 +846,7 @@ class catalan(Function):
             return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
-        from .. import log, polygamma
+        from .. import polygamma
         n = self.args[0]
         return catalan(n)*(polygamma(0, n + Rational(1, 2)) - polygamma(0, n + 2) + log(4))
 

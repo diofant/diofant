@@ -2,16 +2,13 @@
 Diofant 0.15
 ============
 
-Not Released Yet
+20 Aug 2024
 
 New features
 ============
 
 * New configuration option (``MAX_INTEGER_NBITS``) to control the maximal size of evaluated integers, see :pull:`1327`.
 * Added :func:`~diofant.polys.polytools.eliminate` to eliminate symbols from the equations, see :pull:`1331`.
-
-Major changes
-=============
 
 Compatibility breaks
 ====================
@@ -26,14 +23,15 @@ Compatibility breaks
 * Removed ``bottom_up()``, ``has_variety()`` and ``has_dups()`` functions, see :pull:`1380`.
 * Removed ``diofant.tensor.tensor`` module, see :pull:`1380`.
 * Removed ``symarray()`` function, see :pull:`1383`.
+* Removed ``base`` kwarg for :func:`~diofant.core.power.log`, see :pull:`1407`.
+* Removed ``ln`` alias for :func:`~diofant.core.power.log`, see :pull:`1410`.
 
 Minor changes
 =============
 
 * Support CPython 3.12, see :pull:`1325`.
-
-Developer changes
-=================
+* Support :meth:`~diofant.core.expr.Expr.as_real_imag` for :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`1415`.
+* Support CPython 3.13, see :pull:`1425`.
 
 Issues closed
 =============
@@ -94,3 +92,25 @@ These Sympy issues also were addressed:
 * :sympyissue:`25786`: Wrong result for a simple integral
 * :sympyissue:`26343`: TypeError: Invalid NaN Comparison using dsolve for ODE with ics={v(0) : 0}
 * :sympyissue:`26313`: Error result for limit of a piecewise
+* :sympyissue:`26477`: Error in integral result using hyper
+* :sympyissue:`26497`: factor produces wrong output
+* :sympyissue:`26501`: TypeError: '>' not supported between instances of 'Poly' and 'int' calling integrate in sympy 1.12
+* :sympyissue:`26503`: TypeError: Invalid NaN comparison calling integrate in sympy 1.12
+* :sympyissue:`26504`: IndexError: Index out of range: calling integrate in sympy 1.12
+* :sympyissue:`26506`: RecursionError: maximum recursion depth exceeded in comparison calling integrate in sympy 1.12
+* :sympyissue:`26513`: Wrong limit result for Abs((-n/(n+1))**n)
+* :sympyissue:`26502`: lots of PolynomialError contains an element of the set of generators exceptions calling integrate in sympy 1.12
+* :sympyissue:`14069`: Condition for TODO in zeta_functions.py is now satisfied
+* :sympyissue:`25931`: Possible improvements in gruntz
+* :sympyissue:`26566`: wrong result integrating sin(a*(x+pi))**2
+* :sympyissue:`26571`: integrate((x**8+1)**(-1/2),x) raises _CoeffExpValueError
+* :sympyissue:`26577`: factor should use the same domain for numerator and denominator
+* :sympyissue:`26682`: Incorrect behaviour for solve_poly_system
+* :sympyissue:`26787`: Poly.count_roots wrong for algebraic fields because is_negative is wrong
+* :sympyissue:`14738`: dup_count_complex_roots() can't handle degenerate cases
+* :sympyissue:`26856`: very simple example of series bug
+* :sympyissue:`26873`: Saving a long expression to load in another python notebook/file
+* :sympyissue:`26903`: minpoly returns a not irreducible polynomial
+* :sympyissue:`26930`: Simple integral evaluation broken in 1.13
+* :sympyissue:`26916`: Ei(-x) * exp(x) (exponential integral) limit to infinity error out
+* :sympyissue:`26956`: integrate values with non-suitable parameters

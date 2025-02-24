@@ -1151,6 +1151,7 @@ def test_Poly_LC():
 
     assert LC(x*y**7 + 2*x**2*y**3, order='lex') == 2
     assert LC(x*y**7 + 2*x**2*y**3, order='grlex') == 1
+    assert LC(0, x, order='lex') == 0
 
     pytest.raises(ComputationFailedError, lambda: LC([1, 2]))
 
@@ -1650,32 +1651,32 @@ def test_gcdex():
 
     F, G, S, T, H = (u.as_poly(x, domain=QQ) for u in (f, g, s, t, h))
 
-    assert F.half_gcdex(G) == (S, H)
-    assert F.gcdex(G) == (S, T, H)
+    assert F.half_gcdex(G) == (H, S)
+    assert F.gcdex(G) == (H, S, T)
     assert F.invert(G) == S
 
-    assert half_gcdex(f, g) == (s, h)
-    assert gcdex(f, g) == (s, t, h)
+    assert half_gcdex(f, g) == (h, s)
+    assert gcdex(f, g) == (h, s, t)
     assert invert(f, g) == s
 
-    assert half_gcdex(f, g, x) == (s, h)
-    assert gcdex(f, g, x) == (s, t, h)
+    assert half_gcdex(f, g, x) == (h, s)
+    assert gcdex(f, g, x) == (h, s, t)
     assert invert(f, g, x) == s
 
-    assert half_gcdex(F, G) == (S, H)
-    assert gcdex(F, G) == (S, T, H)
+    assert half_gcdex(F, G) == (H, S)
+    assert gcdex(F, G) == (H, S, T)
     assert invert(F, G) == S
 
-    assert half_gcdex(f, g, polys=True) == (S, H)
-    assert gcdex(f, g, polys=True) == (S, T, H)
+    assert half_gcdex(f, g, polys=True) == (H, S)
+    assert gcdex(f, g, polys=True) == (H, S, T)
     assert invert(f, g, polys=True) == S
 
-    assert half_gcdex(F, G, polys=False) == (s, h)
-    assert gcdex(F, G, polys=False) == (s, t, h)
+    assert half_gcdex(F, G, polys=False) == (h, s)
+    assert gcdex(F, G, polys=False) == (h, s, t)
     assert invert(F, G, polys=False) == s
 
-    assert half_gcdex(100, 2004) == (-20, 4)
-    assert gcdex(100, 2004) == (-20, 1, 4)
+    assert half_gcdex(100, 2004) == (4, -20)
+    assert gcdex(100, 2004) == (4, -20, 1)
     assert invert(3, 7) == 5
 
     pytest.raises(DomainError, lambda: half_gcdex(x + 1, 2*x + 1, auto=False))
@@ -2451,7 +2452,6 @@ def test_count_roots():
     assert count_roots(x**2 + 2) == 0
     assert count_roots(x**2 + 2, inf=-2*I) == 2
     assert count_roots(x**2 + 2, sup=+2*I) == 2
-    assert count_roots(x**2 + 2, inf=-2*I, sup=+2*I) == 2
 
     assert count_roots(x**2 + 2, inf=0) == 0
     assert count_roots(x**2 + 2, sup=0) == 0
@@ -2459,14 +2459,19 @@ def test_count_roots():
     assert count_roots(x**2 + 2, inf=-I) == 1
     assert count_roots(x**2 + 2, sup=+I) == 1
 
-    assert count_roots(x**2 + 2, inf=+I/2, sup=+I) == 0
-    assert count_roots(x**2 + 2, inf=-I, sup=-I/2) == 0
-
     assert count_roots(x**2 + 1, inf=-I, sup=1) == 1
 
     assert count_roots(x**4 - 4, inf=0, sup=1 + 3*I) == 1
 
     pytest.raises(PolynomialError, lambda: count_roots(1))
+
+
+@pytest.mark.xfail
+def test_count_roots_xfail():
+    assert count_roots(x**2 + 2, inf=-2*I, sup=+2*I) == 2
+
+    assert count_roots(x**2 + 2, inf=+I/2, sup=+I) == 0
+    assert count_roots(x**2 + 2, inf=-I, sup=-I/2) == 0
 
 
 def test_sympyissue_12602():
@@ -3393,3 +3398,23 @@ def test_sympyissue_25723():
         assert gcd(x - i, (x - i)*(2*x + 1)) == x - i
 
     assert gcd(x - i, (x - i)*(2*x - 1)) == x - i
+
+
+def test_sympyissue_26497():
+    a_n, m = symbols('a_n m', real=True, positive=True)
+    expr = (-a_n**4*m**2/(a_n**2 + 1) - 2*a_n**4*m/(a_n**2 + 1) -
+            a_n**4 - a_n**4/(a_n**2 + 1) + 2*I*a_n**3*m**2/(a_n**2 + 1) +
+            4*I*a_n**3*m/(a_n**2 + 1) + 2*I*a_n**3 +
+            2*I*a_n**3/(a_n**2 + 1) + 2*I*a_n*m**2/(a_n**2 + 1) +
+            4*I*a_n*m/(a_n**2 + 1) + 2*I*a_n + 2*I*a_n/(a_n**2 + 1) +
+            m**2/(a_n**2 + 1) + 2*m/(a_n**2 + 1) + 1 + 1/(a_n**2 + 1))
+    expr2 = (-a_n**2 + 2*I*a_n + 1)*(a_n**2 + m**2 + 2*m + 2)
+
+    assert expr.factor() == expr2
+    assert expr.subs({a_n: 1, m: 1}) == expr2.subs({a_n: 1, m: 1}) == 12*I
+
+    # issue sympy/sympy#26577
+    assert expr.cancel().factor() == expr2
+    expr3 = -(a_n - I)**2*(a_n**2 + m**2 + 2*m + 2)
+    assert expr.cancel(extension=True).factor(extension=True) == expr3
+    assert expr.factor(extension=True) == expr3

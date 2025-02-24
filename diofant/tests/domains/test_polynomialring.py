@@ -71,13 +71,19 @@ def test_conversion():
 
     R = ALG.inject(x, y)
     assert R.convert(ALG(1), ALG) == R(1)
-    pytest.raises(CoercionFailedError,
-                  lambda: R.convert(ALG(1), QQ.algebraic_field(sqrt(2))))
+    ALG2 = QQ.algebraic_field(sqrt(7))
+    pytest.raises(CoercionFailedError, lambda: R.convert(ALG2(1)))
 
     R = R.drop(y)
     pytest.raises(CoercionFailedError, lambda: R.convert(G(y), R))
 
     pytest.raises(CoercionFailedError, lambda: R.convert(FF(8)(2)))
+
+    A1 = QQ.algebraic_field(sqrt(2) + sqrt(3) + sqrt(6))
+    A2 = QQ.algebraic_field(sqrt(6) + 3*sqrt(2) + 3*sqrt(3))
+    a = A1.from_expr(2*sqrt(6))
+    R = A2.inject(x)
+    assert R.convert_from(a, A1) == R.from_expr(2*sqrt(6))
 
 
 def test_units():
@@ -109,7 +115,7 @@ def test_methods():
     assert R.is_normal(-X) is False
     assert R.is_normal(+X) is True
 
-    assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
+    assert R.gcdex(X**3 - X, X**2) == (X, -1, X)
 
     F = QQ.inject(y).field
     Y = F.convert(y)

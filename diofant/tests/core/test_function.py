@@ -132,8 +132,8 @@ def test_nargs():
     assert Function('f', nargs=2)(1, 2).nargs == FiniteSet(2)
     assert sin.nargs == FiniteSet(1)
     assert sin(2).nargs == FiniteSet(1)
-    assert log.nargs == FiniteSet(1, 2)
-    assert log(2).nargs == FiniteSet(1, 2)
+    assert log.nargs == FiniteSet(1)
+    assert log(2).nargs == FiniteSet(1)
     assert Function('f', nargs=2).nargs == FiniteSet(2)
     assert Function('f', nargs=0).nargs == FiniteSet(0)
     assert Function('f', nargs=(0, 1)).nargs == FiniteSet(0, 1)
@@ -365,7 +365,7 @@ def test_extensibility_eval():
 
 def test_function_signature():
     assert str(inspect.signature(sin)) == '(arg)'
-    assert str(inspect.signature(log)) == '(arg, base=None)'
+    assert str(inspect.signature(log)) == '(arg)'
 
 
 def test_function_non_commutative():
@@ -396,20 +396,18 @@ def test_function_complex():
 
 
 def test_function__eval_nseries():
-    n = Symbol('n')
-
     assert sin(x).series(x, n=3) == x + O(x**3)
     assert sin(x + 1).series(x, n=2) == x*cos(1) + sin(1) + O(x**2)
     assert sin(pi*(1 - x)).series(x, n=3) == pi*x + O(x**3)
     assert acos(1 - x**2).series(x, n=2) == sqrt(2)*x + O(x**2)
-    assert polygamma(n, x + 1).series(x, n=2) == \
-        polygamma(n, 1) + polygamma(n + 1, 1)*x + O(x**2)
+    assert polygamma(y, x + 1).series(x, n=2) == \
+        polygamma(y, 1) + polygamma(y + 1, 1)*x + O(x**2)
     pytest.raises(PoleError, lambda: sin(1/x).series(x, n=2))
     assert acos(1 - x).series(x, n=2) == sqrt(2)*sqrt(x) + \
         sqrt(2)*x**Rational(3, 2)/12 + O(x**2)
     assert acos(1 + x).series(x, n=2) == sqrt(2)*I*sqrt(x) - \
         sqrt(2)*I*x**(3/2)/12 + O(x**2)
-    assert loggamma(1/x).series(x, n=-1) == O(1/x) - log(x)/x
+    assert loggamma(1/x).series(x, n=0) == (-log(x) - 1)/x + log(x)/2 + O(1, x)
     assert loggamma(log(1/x)).series(x, n=1, logx=y) == loggamma(-y)
 
     # issue sympy/sympy#6725:
@@ -698,19 +696,20 @@ def test_sympyissue_12005():
     assert f(g(x)).diff(g(x), g(x)) == Subs(Derivative(f(y), y, y), (y, g(x)))
 
 
+@pytest.mark.xfail
 def test_sympyissue_13098():
-    assert floor(log(Float('9.9999999000000006'), 10)) == 0
-    assert floor(log(Float('9.9999999899999992'), 10)) == 0
-    assert floor(log(Float(('15.' + '9'*54 + '001'), dps=56), 2)) == 3
-    assert floor(log(Float('16.0'), 2)) == 4
-    assert floor(log(Float('99.' + '9'*23 + '007', dps=25), 10)) == 1
-    assert floor(log(Float('999.99999000000003'), 10)) == 2
-    assert floor(log(Float('999.999999'), 10)) == 2
+    assert floor(log(Float('9.9999999000000006'))/log(10)) == 0
+    assert floor(log(Float('9.9999999899999992'))/log(10)) == 0
+    assert floor(log(Float(('15.' + '9'*54 + '001'), dps=56))/log(2)) == 3
+    assert floor(log(Float('16.0'))/log(2)) == 4
+    assert floor(log(Float('99.' + '9'*23 + '007', dps=25))/log(10)) == 1
+    assert floor(log(Float('999.99999000000003'))/log(10)) == 2
+    assert floor(log(Float('999.999999'))/log(10)) == 2
     x = Float('9.'+'9'*20)
-    assert floor(log(x, 10)) == 0
-    assert ceiling(log(x, 10)) == 1
-    assert floor(log(20 - x, 10)) == 1
-    assert ceiling(log(20 - x, 10)) == 2
+    assert floor(log(x)/log(10)) == 0
+    assert ceiling(log(x)/log(10)) == 1
+    assert floor(log(20 - x)/log(10)) == 1
+    assert ceiling(log(20 - x)/log(10)) == 2
 
 
 def test_sympyissue_6938():

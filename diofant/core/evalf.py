@@ -2,16 +2,6 @@
 Adaptive numerical evaluation of Diofant expressions, using mpmath
 for mathematical functions.
 
-An mpf value tuple is a tuple of integers (sign, man, exp, bc)
-representing a floating-point number: [1, -1][sign]*man*2**exp where
-sign is 0 or 1 and bc should correspond to the number of bits used to
-represent the mantissa (man) in binary notation, e.g.
-
->>> sign, man, exp, bc = 0, 5, 1, 3
->>> n = [1, -1][sign]*man*2**exp
->>> n, man.bit_length()
-(10, 3)
-
 A temporary result is a tuple (re, im, re_acc, im_acc) where
 re and im are nonzero mpf value tuples representing approximate
 numbers, or None to denote exact zeros.
@@ -31,8 +21,8 @@ from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
                           mpc_pow_int, mpc_pow_mpf, mpc_sqrt, mpf_abs, mpf_add,
                           mpf_atan, mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos,
                           mpf_exp, mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi,
-                          mpf_pow, mpf_pow_int, mpf_shift, mpf_sin, mpf_sqrt,
-                          normalize, prec_to_dps, round_nearest)
+                          mpf_pow, mpf_pow_int, mpf_shift, mpf_sign, mpf_sin,
+                          mpf_sqrt, prec_to_dps, round_nearest, to_man_exp)
 
 from ..utilities.iterables import is_sequence
 from .sympify import sympify
@@ -82,10 +72,11 @@ def fastlog(x):
     Examples
     ========
 
-    >>> s, m, e = 0, 5, 1
-    >>> bc = m.bit_length()
-    >>> n = [1, -1][s]*m*2**e
-    >>> n, (log(n)/log(2)).evalf(2), fastlog((s, m, e, bc))
+    >>> from mpmath.libmp import from_man_exp
+    >>> m, e = 5, 1
+    >>> n = m*2**e
+    >>> v = from_man_exp(m, e)
+    >>> n, (log(n)/log(2)).evalf(2), fastlog(v)
     (10, 3.3, 4)
 
     """
@@ -310,9 +301,8 @@ def add_terms(terms, prec, target_prec):
     sum_man, sum_exp, absolute_error = 0, 0, MINUS_INF
 
     for x, accuracy in terms:
-        sign, man, exp, bc = x
-        if sign:
-            man = -man
+        man, exp = to_man_exp(x, signed=True)
+        bc = man.bit_length()
         absolute_error = max(absolute_error, bc + exp - accuracy)
         delta = exp - sum_exp
         if exp >= sum_exp:
@@ -336,16 +326,9 @@ def add_terms(terms, prec, target_prec):
                 sum_exp = exp
     if not sum_man:
         return scaled_zero(absolute_error)
-    if sum_man < 0:
-        sum_sign = 1
-        sum_man = -sum_man
-    else:
-        sum_sign = 0
     sum_bc = sum_man.bit_length()
     sum_accuracy = sum_exp + sum_bc - absolute_error
-    r = normalize(sum_sign, sum_man, sum_exp, sum_bc, target_prec,
-                  rnd), sum_accuracy
-    return r
+    return from_man_exp(sum_man, sum_exp, target_prec, rnd), sum_accuracy
 
 
 def evalf_add(v, prec, options):
@@ -422,7 +405,9 @@ def evalf_mul(v, prec, options):
     working_prec = prec + len(args) + 5
 
     # Empty product is 1
-    start = man, exp, bc = fone[1:]
+    man, exp = to_man_exp(fone, signed=False)
+    bc = man.bit_length()
+    start = man, exp, bc
 
     # First, we multiply all pure real or pure imaginary numbers.
     # direction tells us that the result should be multiplied by
@@ -444,9 +429,15 @@ def evalf_mul(v, prec, options):
             complex_factors.append((re, im, re_acc, im_acc))
             continue
         if re:
-            (s, m, e, b), w_acc = re, re_acc
+            s = int(mpf_sign(re) < 0)
+            m, e = to_man_exp(re, signed=False)
+            b = m.bit_length()
+            w_acc = re_acc
         elif im:
-            (s, m, e, b), w_acc = im, im_acc
+            s = int(mpf_sign(im) < 0)
+            m, e = to_man_exp(im, signed=False)
+            b = m.bit_length()
+            w_acc = im_acc
             direction += 1
         else:
             return None, None, None, None
@@ -460,7 +451,9 @@ def evalf_mul(v, prec, options):
         acc = min(acc, w_acc)
     sign = (direction & 2) >> 1
     if not complex_factors:
-        v = normalize(sign, man, exp, man.bit_length(), prec, rnd)
+        if sign:
+            man = -man
+        v = from_man_exp(man, exp, prec, rnd)
         # multiply by i
         if direction & 1:
             return None, v, None, acc
@@ -468,7 +461,9 @@ def evalf_mul(v, prec, options):
     # initialize with the first term
     if (man, exp, bc) != start:
         # there was a real part; give it an imaginary part
-        re, im = (sign, man, exp, man.bit_length()), fzero
+        if sign:
+            man = -man
+        re, im = from_man_exp(man, exp), fzero
         i0 = 0
     else:
         # there is no real part to start (other than the starting 1)
@@ -661,12 +656,9 @@ def evalf_trig(v, prec, options):
 
 
 def evalf_log(expr, prec, options):
-    from ..functions import Abs, log
+    from ..functions import Abs
     from .add import Add
-
-    if len(expr.args) > 1:
-        expr = expr.doit()
-        return evalf(expr, prec, options)
+    from .power import log
 
     arg = expr.args[0]
     workprec = prec + 10

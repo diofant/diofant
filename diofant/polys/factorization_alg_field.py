@@ -1,24 +1,15 @@
 import math
 import random
 
-from ..config import using
 from ..core import Dummy
 from ..domains.algebraicfield import AlgebraicElement
 from ..integrals.heurisch import _symbols
 from ..ntheory import nextprime
-from .modulargcd import (_euclidean_algorithm, _gf_gcdex, _minpoly_from_dense,
-                         _trunc)
+from .modulargcd import (_div, _euclidean_algorithm, _gf_gcdex,
+                         _minpoly_from_dense, _trunc)
 from .polyerrors import NotInvertibleError, UnluckyLeadingCoefficientError
-from .polyutils import _sort_factors
 from .rings import PolynomialRing
 from .solvers import solve_lin_sys
-
-
-# TODO
-# ====
-
-# -) efficiency of _factor can be improved for irreducible polynomials if the
-#    univariate factorization is done before the LC is factored
 
 
 def _alpha_to_z(f, ring):
@@ -54,9 +45,8 @@ def _alpha_to_z(f, ring):
             n = len(coeff)
 
             for i in range(n):
-                m = monom + (n-i-1,)
-                if coeff[n - i - 1]:
-                    f_[m] = coeff[n - i - 1]
+                m = monom + (n - i - 1,)
+                f_[m] = coeff[n - i - 1]
 
     return f_
 
@@ -89,26 +79,20 @@ def _z_to_alpha(f, ring):
     for monom, coeff in f.items():
         m = monom[:-1]
         c = domain([0]*monom[-1] + [domain.domain(coeff)])
-
-        if m not in f_:
-            f_[m] = c
-        else:
-            f_[m] += c
+        f_[m] += c
 
     return f_
 
 
 def _distinct_prime_divisors(S, domain):
-    r"""
-    Try to find pairwise coprime divisors of all elements of a given list
-    `S` of integers.
-
-    If this fails, ``None`` is returned.
+    """
+    Find pairwise coprime divisors of all elements of a given list `S` of
+    integers.  If this fails, ``None`` is returned.
 
     References
     ==========
 
-    * :cite:`Javadi2009factor`
+    * :cite:`Javadi2009factor`, Algorithm 4
 
     """
     gcd = domain.gcd
@@ -118,22 +102,23 @@ def _distinct_prime_divisors(S, domain):
         divisors.append(s)
 
         for j in range(i):
-            g = gcd(divisors[i], divisors[j])
-            divisors[i] = divisors[i] // g
-            divisors[j] = divisors[j] // g
-            g1 = gcd(divisors[i], g)
-            g2 = gcd(divisors[j], g)
+            g1 = g2 = gcd(divisors[i], divisors[j])
 
-            while g1 != 1:
+            while True:
                 g1 = gcd(divisors[i], g1)
-                divisors[i] = divisors[i] // g1
+                divisors[i] //= g1
+                if g1 == 1:
+                    if divisors[i] == 1:
+                        return
+                    break
 
-            while g2 != 1:
+            while True:
                 g2 = gcd(divisors[j], g2)
-                divisors[j] = divisors[j] // g2
-
-            if divisors[i] == 1 or divisors[j] == 1:
-                return
+                divisors[j] //= g2
+                if g2 == 1:
+                    if divisors[j] == 1:
+                        return
+                    break
 
     return divisors
 
@@ -239,10 +224,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
     m = len(denoms)
 
     for i in range(m):
-        pi = gcd(omega, divisors[i])
-        divisors[i] //= pi
-        if divisors[i] == 1:
-            raise NotImplementedError
+        divisors[i] //= gcd(omega, divisors[i])
 
     e = []
 
@@ -255,7 +237,7 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
 
             while g1 != 1:
                 eji += 1
-                dj = dj // g1
+                dj //= g1
                 g1 = gcd(dj, g1)
 
             ej.append(eji)
@@ -282,15 +264,11 @@ def _leading_coeffs(f, U, gamma, lcfactors, A, D, denoms, divisors):
         lcs[j] = lj*dj
         U[j] = (U[j]*dj).set_ring(zring) * ljA.set_ring(zring)
 
-        if omega == 1:
-            f *= dj
-        else:
-            d = gcd(omega, dj)
-            f *= (dj // d)
+        d = gcd(omega, dj)
+        f *= (dj // d)
 
-    if omega != 1:
-        lcs[0] *= omega
-        U[0] *= omega
+    lcs[0] *= omega
+    U[0] *= omega
 
     return f, lcs, U
 
@@ -340,7 +318,7 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
     ring = f.ring
     qring = ring.clone(domain=ring.domain.field)
 
-    fA = f.eval(list(zip(ring.gens[1:-1], A)))
+    fA = f.eject(0, -1)(*A)
 
     if fA.degree() < f.degree():
         return
@@ -348,10 +326,10 @@ def _test_evaluation_points(f, gamma, lcfactors, A, D):
     if not fA.is_squarefree:
         return
 
-    omega = gamma * D
+    omega = D * gamma
     denoms = []
     for l, _ in lcfactors:
-        lA = l.eval(list(zip(l.ring.gens, A)))  # in Q(alpha)
+        lA = l(*A)  # in Q(alpha)
         denoms.append(_denominator(_alpha_to_z(lA**(-1), qring)))
 
     if any(denoms.count(denom) > 1 for denom in denoms):
@@ -376,8 +354,7 @@ def _subs_ground(f, A):
     f_ = f.ring.zero
 
     for monom, coeff in f.items():
-        if coeff.compose(A):
-            f_[monom] = coeff.compose(A)
+        f_[monom] = coeff.compose(A)
 
     return f_
 
@@ -485,36 +462,6 @@ def _padic_lift(f, pfactors, lcs, B, minpoly, p):
         return [h.set_ring(ring) for h in H]
 
 
-def _div(f, g, minpoly, p):
-    r"""
-    Division with remainder for univariate polynomials over
-    `\mathbb Z_p[z]/(\mu(z))`.
-
-    """
-    ring = f.ring
-    domain = ring.domain
-
-    rem = f
-    deg = g.degree(0)
-    lcinv, _, gcd = _gf_gcdex(g.eject(*ring.gens[1:]).LC, minpoly, p)
-
-    if not gcd == 1:
-        raise NotImplementedError
-
-    quotient = ring.zero
-
-    while True:
-        degrem = rem.degree(0)
-        if degrem < deg:
-            break
-        m = ring.from_terms([((degrem - deg, 0), domain.one)])
-        quo = (lcinv * rem.eject(*ring.gens[1:]).LC).set_ring(ring)*m
-        rem = _trunc(rem - g*quo, minpoly, p)
-        quotient += quo
-
-    return _trunc(quotient, minpoly, p), rem
-
-
 def _extended_euclidean_algorithm(f, g, minpoly, p):
     r"""
     Extended Euclidean Algorithm for univariate polynomials over
@@ -525,28 +472,25 @@ def _extended_euclidean_algorithm(f, g, minpoly, p):
 
     """
     ring = f.ring
-    zero = ring.zero
-    one = ring.one
 
     f = _trunc(f, minpoly, p)
     g = _trunc(g, minpoly, p)
 
-    s0, s1 = zero, one
-    t0, t1 = one, zero
+    s0, s1 = ring.zero, ring.one
+    t0, t1 = s1, s0
 
     while g:
         result = _div(f, g, minpoly, p)
-        if result is None:
-            raise NotImplementedError
         quo, rem = result
         f, g = g, rem
         s0, s1 = s1 - quo*s0, s0
         t0, t1 = t1 - quo*t0, t0
 
-    lcfinv = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
 
-    return (_trunc(s1 * lcfinv, minpoly, p), _trunc(t1 * lcfinv, minpoly, p),
-            _trunc(f * lcfinv, minpoly, p))
+    return (_trunc(s1 * lcfinv, minpoly, p),
+            _trunc(t1 * lcfinv, minpoly, p),
+            _trunc( f * lcfinv, minpoly, p))
 
 
 def _diophantine_univariate(F, m, minpoly, p):
@@ -567,8 +511,6 @@ def _diophantine_univariate(F, m, minpoly, p):
     if len(F) == 2:
         f, g = F
         result = _extended_euclidean_algorithm(g, f, minpoly, p)
-        if result is None:
-            raise NotImplementedError
         s, t, _ = result
 
         s *= m
@@ -592,8 +534,6 @@ def _diophantine_univariate(F, m, minpoly, p):
 
         for f, g in zip(F, G):
             result = _diophantine([g, f], T[-1], [], 0, minpoly, p)
-            if result is None:
-                raise NotImplementedError
             t, s = result
             T.append(t)
             S.append(s)
@@ -619,8 +559,6 @@ def _diophantine(F, c, A, d, minpoly, p):
 
         for (exp,), coeff in c.eject(1).items():
             T = _diophantine_univariate(F, exp, minpoly, p)
-            if T is None:
-                raise NotImplementedError
 
             for j, (s, t) in enumerate(zip(S, T)):
                 S[j] = _trunc(s + t*coeff.set_ring(ring), minpoly, p)
@@ -638,12 +576,10 @@ def _diophantine(F, c, A, d, minpoly, p):
         C = c.eval(n, a)
 
         S = _diophantine(G, C, A, d, minpoly, p)
-        if S is None:
-            raise NotImplementedError
         S = [s.set_ring(ring) for s in S]
 
         for s, b in zip(S, B):
-            c = c - s*b
+            c -= s*b
 
         c = _trunc(c, minpoly, p)
 
@@ -654,14 +590,12 @@ def _diophantine(F, c, A, d, minpoly, p):
             if not c:
                 break
 
-            M = M * m
+            M *= m
             C = c.diff(x=n, m=k + 1).eval(x=n, a=a)
 
             if C:
                 C = C.quo_ground(ring.domain.factorial(k + 1))
                 T = _diophantine(G, C, A, d, minpoly, p)
-                if T is None:
-                    return
 
                 for i, t in enumerate(T):
                     T[i] = t.set_ring(ring) * M
@@ -670,7 +604,7 @@ def _diophantine(F, c, A, d, minpoly, p):
                     S[i] = s + t
 
                 for t, b in zip(T, B):
-                    c = c - t * b
+                    c -= t*b
 
                 c = _trunc(c, minpoly, p)
 
@@ -746,14 +680,12 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
             if not c:
                 break
 
-            M = M * m
+            M *= m
             C = c.diff(x=j, m=k + 1).eval(x=j, a=a)
 
             if C:
                 C = C.quo_ground(ring.domain.factorial(k + 1))  # coeff of (x_{j-1} - a_{j-1})^(k + 1) in c
                 T = _diophantine(G, C, I, d, minpoly, p)
-                if T is None:
-                    raise NotImplementedError
 
                 for i, (h, t) in enumerate(zip(H, T)):
                     H[i] = _trunc(h + t.set_ring(Hring)*M, minpoly, p)
@@ -766,18 +698,15 @@ def _hensel_lift(f, H, LC, A, minpoly, p):
 
 
 def _sqf_p(f, minpoly, p):
-    r"""Return ``True`` if `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
+    r"""Return ``True`` if nonzero `f` is square-free in `\mathbb Z_p[z]/(\mu(z))[x]`."""
     ring = f.ring
-    lcinv, *_ = _gf_gcdex(f.eject(*ring.gens[1:]).LC, minpoly, p)
-
-    f = _trunc(f * lcinv.set_ring(ring), minpoly, p)
-
-    if not f:
-        return True
-    return _euclidean_algorithm(f, _trunc(f.diff(0), minpoly, p), minpoly, p) == 1
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[1].set_ring(ring)
+    f = _trunc(f * lcfinv, minpoly, p)
+    df = _trunc(f.diff(0), minpoly, p)
+    return _euclidean_algorithm(f, df, minpoly, p) == 1
 
 
-def _test_prime(fA, D, minpoly, p, domain):
+def _test_prime(f, A, minpoly, p):
     r"""
     Test if a prime number is suitable for _factor.
 
@@ -787,18 +716,18 @@ def _test_prime(fA, D, minpoly, p, domain):
     _factor
 
     """
+    fA = f.eject(0, -1)(*A)
+
     if fA.LC % p == 0 or minpoly.LC % p == 0:
         return False
     if not _sqf_p(fA, minpoly, p):
-        return False
-    if D % p == 0:
         return False
 
     return True
 
 
 # squarefree f with cont_x0(f) = 1
-def _factor(f, save):
+def _factor(f):
     r"""
     Factor a multivariate polynomial `f`, which is squarefree and primitive
     in `x_0`, in `\mathbb Q(\alpha)[x_0, \ldots, x_n]`.
@@ -826,10 +755,7 @@ def _factor(f, save):
     minpoly = _minpoly_from_dense(ring.domain.mod, zring.drop(*zring.gens[:-1]))
     f_ = _monic_associate(f, zring)
 
-    if save is True:
-        D = minpoly.resultant(minpoly.diff(0))
-    else:
-        D = groundring.one
+    D = minpoly.resultant(minpoly.diff(0))
 
     # heuristic bound for p-adic lift
     B = (f_.max_norm() + 1)*D
@@ -876,7 +802,7 @@ def _factor(f, save):
                     xi = gens[i]
                     f_ = f_.compose(xi, x + xi*ci)
 
-                lc, factors = _factor(_z_to_alpha(f_, ring), save)
+                lc, factors = _factor(_z_to_alpha(f_, ring))
                 gens = factors[0].ring.gens
                 x = gens[0]
 
@@ -890,8 +816,7 @@ def _factor(f, save):
                 continue
             fA, denoms, divisors = result
 
-            with using(aa_factor_method='trager'):
-                _, fAfactors = _z_to_alpha(fA, uniring).factor_list()
+            _, fAfactors = trager(_z_to_alpha(fA, uniring))
             if len(fAfactors) == 1:
                 g = _z_to_alpha(f_, ring)
                 return f.LC, [g.monic()]
@@ -908,7 +833,7 @@ def _factor(f, save):
 
             f_ *= delta
 
-            while not _test_prime(fA, D, minpoly, p, zring.domain):
+            while not _test_prime(f_, A, minpoly, p):
                 p = nextprime(p)
 
             pfactors = _hensel_lift(f_, fAfactors_, lcs, A, minpoly, p)
@@ -929,14 +854,45 @@ def _factor(f, save):
         N += 1
 
 
-# output of the form (lc, [(poly1, exp1), ...])
-def efactor(f, save=True):
-    r"""Factor a multivariate polynomial `f` in `\mathbb Q(\alpha)[x_0, \ldots, x_n]`.
+def trager(f):
+    """
+    Factor multivariate polynomial `f` over algebraic number fields, using
+    classical Trager algorithm.
 
-    By default, an estimate of the defect of the algebraic field is included
-    in all computations. If ``save`` is set to ``False``, the defect will be
-    treated as one, thus computations are faster. However, if the defect of
-    `\alpha` is larger than one, this may lead to wrong results.
+    References
+    ==========
+
+    * :cite:`Trager1976algebraic`
+
+    """
+    ring = f.ring
+    domain = ring.domain
+
+    lc, f = f.LC, f.monic()
+
+    if f.is_ground:
+        return lc, []
+
+    f, F = f.sqf_part(), f
+    s, g, r = f.sqf_norm()
+
+    _, factors = r.factor_list()
+
+    if len(factors) == 1:
+        factors = [f]
+    else:
+        for i, (factor, _) in enumerate(factors):
+            h = factor.set_domain(domain)
+            h, _, g = ring.cofactors(h, g)
+            h = h.compose({x: x + s*domain.unit for x in ring.gens})
+            factors[i] = h
+
+    return lc, ring._trial_division(F, factors)
+
+
+def efactor(f):
+    """
+    Factor multivariate polynomial `f` over algebraic number fields.
 
     References
     ==========
@@ -946,31 +902,26 @@ def efactor(f, save=True):
     """
     ring = f.ring
 
-    assert ring.domain.is_AlgebraicField
-
     if f.is_ground:
         return f[1], []
 
-    n = ring.ngens
+    if ring.ngens == 1:
+        return trager(f)
 
-    if n == 1:
-        with using(aa_factor_method='trager'):
-            return f.factor_list()
-    else:
-        cont, f = f.eject(*ring.gens[1:]).primitive()
-        f = f.inject()
-        if cont != 1:
-            lccont, contfactors = efactor(cont)
-            lc, factors = efactor(f)
-            contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
-            return lccont * lc, _sort_factors(contfactors + factors)
+    cont, f = f.eject(*ring.gens[1:]).primitive()
+    f = f.inject()
+    if cont != 1:
+        lccont, contfactors = efactor(cont)
+        lc, factors = efactor(f)
+        contfactors = [(g.set_ring(ring), exp) for g, exp in contfactors]
+        return lccont * lc, contfactors + factors
 
-        # this is only correct because the content in x_0 is already divided out
-        lc, sqflist = f.sqf_list()
-        factors = []
-        for g, exp in sqflist:
-            lcg, gfactors = _factor(g, save)
-            lc *= lcg
-            factors = factors + [(gi, exp) for gi in gfactors]
+    # this is only correct because the content in x_0 is already divided out
+    lc, sqflist = f.sqf_list()
+    factors = []
+    for g, exp in sqflist:
+        lcg, gfactors = _factor(g)
+        lc *= lcg
+        factors = factors + [(gi, exp) for gi in gfactors]
 
-        return lc, _sort_factors(factors)
+    return lc, factors

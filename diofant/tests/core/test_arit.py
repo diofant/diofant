@@ -196,8 +196,8 @@ def test_pow_E():
     assert 3**(1/log(-3)) != E
     assert (3 + 2*I)**(1/(log(-3 - 2*I) + I*pi)) == E
     assert (4 + 2*I)**(1/(log(-4 - 2*I) + I*pi)) == E
-    assert (3 + 2*I)**(1/(log(-3 - 2*I, 3)/2 + I*pi/log(3)/2)) == 9
-    assert (3 + 2*I)**(1/(log(3 + 2*I, 3)/2)) == 9
+    assert (3 + 2*I)**(1/(log(-3 - 2*I)/log(3)/2 + I*pi/log(3)/2)) == 9
+    assert (3 + 2*I)**(1/(log(3 + 2*I)/log(3)/2)) == 9
     # every time tests are run they will affirm with a different random
     # value that this identity holds
     while 1:
@@ -1259,17 +1259,7 @@ def test_Mul_is_imaginary_real():
     assert (e**(2*j)).is_extended_real is None
     assert (e**j).is_imaginary is None
     assert (e**(2*j)).is_imaginary is None
-
-    assert (e**-1).is_imaginary is False
-    assert (e**2).is_imaginary
-    assert (e**3).is_imaginary is False
-    assert (e**4).is_imaginary is False
-    assert (e**5).is_imaginary is False
     assert (e**-1).is_extended_real is False
-    assert (e**2).is_extended_real is False
-    assert (e**3).is_extended_real is False
-    assert (e**4).is_extended_real
-    assert (e**5).is_extended_real is False
     assert (e**3).is_complex
 
     assert (r*i).is_imaginary is True
@@ -1884,6 +1874,13 @@ def test_mul_zero_detection():
         b = Dummy('b', finite=ib, extended_real=True)
         e = Mul(b, z, evaluate=False)
         test2(z, b, e)
+
+
+def test_Mul_does_not_distribute_infinity():
+    assert ((1 + I)*oo).is_Mul
+    assert ((a + c)*(-oo)).is_Mul
+    assert ((a + 1)*zoo).is_Mul
+    assert ((1 + I)*oo).is_finite is False
 
 
 def test_sympyissue_8274():

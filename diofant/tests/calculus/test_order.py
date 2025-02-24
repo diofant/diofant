@@ -2,7 +2,7 @@ import pytest
 
 from diofant import (Add, Derivative, Function, I, Integer, Integral, O,
                      Rational, Symbol, conjugate, cos, digamma, exp, expand,
-                     factorial, ln, log, nan, oo, pi, sin, sqrt, transpose)
+                     factorial, log, nan, oo, pi, sin, sqrt, transpose)
 from diofant.abc import w, x, y, z
 
 
@@ -46,7 +46,7 @@ def test_simple_2():
     assert O(2*x)*x == O(x**2)
     assert O(2*x)/x == O(1, x)
     assert O(2*x)*x*exp(1/x) == O(x**2*exp(1/x))
-    assert (O(2*x)*x*exp(1/x)/ln(x)**3).expr == x**2*exp(1/x)*ln(x)**-3
+    assert (O(2*x)*x*exp(1/x)/log(x)**3).expr == x**2*exp(1/x)*log(x)**-3
 
 
 def test_simple_3():
@@ -125,12 +125,12 @@ def test_add_1():
     assert O(3*x - 2*x**2) == O(x)
     assert O(1 + x) == O(1, x)
     assert O(1 + 1/x) == O(1/x)
-    assert O(ln(x) + 1/ln(x)) == O(ln(x))
+    assert O(log(x) + 1/log(x)) == O(log(x))
     assert O(exp(1/x) + x) == O(exp(1/x))
     assert O(exp(1/x) + 1/x**20) == O(exp(1/x))
 
 
-def test_ln_args():
+def test_log_args():
     assert O(log(x)) + O(log(2*x)) == O(log(x))
     assert O(log(x)) + O(log(x**3)) == O(log(x))
 
@@ -281,7 +281,7 @@ def test_order_at_infinity():
     assert O(2*x, x, oo)*x == O(x**2, x, oo)
     assert O(2*x, x, oo)/x == O(1, x, oo)
     assert O(2*x, x, oo)*x*exp(1/x) == O(x**2*exp(1/x), x, oo)
-    assert O(2*x, x, oo)*x*exp(1/x)/ln(x)**3 == O(x**2*exp(1/x)*ln(x)**-3, x, oo)
+    assert O(2*x, x, oo)*x*exp(1/x)/log(x)**3 == O(x**2*exp(1/x)*log(x)**-3, x, oo)
 
     assert O(x, x, oo) + 1/x == 1/x + O(x, x, oo) == O(x, x, oo)
     assert O(x, x, oo) + 1 == 1 + O(x, x, oo) == O(x, x, oo)
@@ -361,3 +361,8 @@ def test_sympyissue_22836():
     assert O(2**x + factorial(x), x, oo) == O(factorial(x), x, oo)
     assert O(2**x + factorial(x) + x**x, x, oo) == O((1/x)**(-x), x, oo)
     assert O(x + factorial(x), x, oo) == O(factorial(x), x, oo)
+
+
+def test_sympyissue_27048():
+    assert O(x) + O(x*log(x)) == O(x*log(x))
+    assert O(x*log(x) + x) == O(x*log(x))

@@ -189,7 +189,7 @@ to solve the solution for you, so you do not need to do that.  Lastly, if your
 ODE has a common simplification that can be applied to your solutions, you can
 add a special case in :py:meth:`~diofant.solvers.ode.odesimp` for it.  For
 example, solutions returned from the ``1st_homogeneous_coeff`` hints often
-have many :py:meth:`~diofant.functions.elementary.exponential.log` terms, so
+have many :py:meth:`~diofant.core.power.log` terms, so
 :py:meth:`~diofant.solvers.ode.odesimp` calls
 :py:meth:`~diofant.simplify.simplify.logcombine` on them (it also helps to write
 the arbitrary constant as ``log(C1)`` instead of ``C1`` in this case).  Also
@@ -232,13 +232,12 @@ from itertools import islice
 from ..calculus import Order
 from ..core import (Add, AtomicExpr, Derivative, Dummy, Eq, Equality, Expr,
                     Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
-                    Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
-                    oo, symbols, zoo)
+                    Tuple, Wild, diff, exp, expand, expand_mul, factor_terms,
+                    log, nan, oo, symbols, zoo)
 from ..core.function import AppliedUndef, _mexpand
 from ..core.multidimensional import vectorize
 from ..core.sympify import sympify
-from ..functions import (conjugate, cos, exp, factorial, im, log, re, sin,
-                         sqrt, tan)
+from ..functions import conjugate, cos, factorial, im, re, sin, sqrt, tan
 from ..integrals import Integral, integrate
 from ..logic.boolalg import BooleanAtom
 from ..matrices import BlockDiagMatrix, Matrix, wronskian
@@ -3725,7 +3724,6 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     gsol = Integer(0)
     # We need keep track of terms so we can run collect() at the end.
     # This is necessary for constantsimp to work properly.
-    ln = log
     for root, multiplicity in charroots.items():
         for i in range(multiplicity):
             if isinstance(root, RootOf):
@@ -3734,14 +3732,14 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
                     raise NotImplementedError
                 collectterms = [(0, root, 0)] + collectterms
             elif root.is_extended_real:
-                gsol += ln(x)**i*(x**root) * constants.pop()
+                gsol += log(x)**i*(x**root) * constants.pop()
                 collectterms = [(i, root, 0)] + collectterms
             else:
                 reroot = re(root)
                 imroot = im(root)
-                gsol += ln(x)**i * (x**reroot) * (
-                    constants.pop() * sin(abs(imroot)*ln(x))
-                    + constants.pop() * cos(imroot*ln(x)))
+                gsol += log(x)**i * (x**reroot) * (
+                    constants.pop() * sin(abs(imroot)*log(x))
+                    + constants.pop() * cos(imroot*log(x)))
                 # Preserve ordering (multiplicity, real part, imaginary part)
                 # It will be assumed implicitly when constructing
                 # fundamental solution sets.
@@ -3755,11 +3753,11 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
         # Keep track of when to use sin or cos for nonzero imroot
         for i, reroot, imroot in collectterms:
             if imroot == 0:
-                gensols.append(ln(x)**i*x**reroot)
+                gensols.append(log(x)**i*x**reroot)
             else:
-                sin_form = ln(x)**i*x**reroot*sin(abs(imroot)*ln(x))
+                sin_form = log(x)**i*x**reroot*sin(abs(imroot)*log(x))
                 if sin_form in gensols:
-                    cos_form = ln(x)**i*x**reroot*cos(imroot*ln(x))
+                    cos_form = log(x)**i*x**reroot*cos(imroot*log(x))
                     gensols.append(cos_form)
                 else:
                     gensols.append(sin_form)
@@ -5463,7 +5461,7 @@ def lie_heuristic_bivariate(match, comp):
                 etared = etaeq.subs(soldict)
                 # Scaling is done by substituting one for the parameters
                 # This can be any number except zero.
-                dict_ = {sym: 1 for sym in symset}
+                dict_ = dict.fromkeys(symset, 1)
                 inf = {eta: etared.subs(dict_).subs({y: func}),
                        xi: xired.subs(dict_).subs({y: func})}
                 return [inf]
@@ -5523,7 +5521,7 @@ def lie_heuristic_chi(match, comp):
             soldict = soldict[0]
             if any(x for x in soldict.values()):
                 chieq = chieq.subs(soldict)
-                dict_ = {sym: 1 for sym in solsyms}
+                dict_ = dict.fromkeys(solsyms, 1)
                 chieq = chieq.subs(dict_)
                 # After finding chi, the main aim is to find out
                 # eta, xi by the equation eta = xi*h + chi

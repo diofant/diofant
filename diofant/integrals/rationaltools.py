@@ -1,8 +1,8 @@
 """This module implements tools for integrating rational functions."""
 
-from ..core import Dummy, I, Integer, Lambda, Symbol, symbols, sympify
+from ..core import Dummy, I, Integer, Lambda, Symbol, log, symbols, sympify
 from ..domains import ZZ
-from ..functions import atan, log
+from ..functions import atan
 from ..polys import Poly, RootSum, cancel, resultant, roots
 from ..simplify import collect
 from ..solvers import solve
@@ -276,7 +276,7 @@ def log_to_atan(f, g):
 
     if q.is_zero:
         return 2*atan(p.as_expr())
-    s, t, h = g.gcdex(-f)
+    h, s, t = g.gcdex(-f)
     u = (f*s + g*t).quo(h)
     A = 2*atan(u.as_expr())
 
@@ -325,7 +325,7 @@ def log_to_real(h, q, x, t):
     a, b = H_map.get(Integer(1), Integer(0)), H_map.get(I, Integer(0))
     c, d = Q_map.get(Integer(1), Integer(0)), Q_map.get(I, Integer(0))
 
-    R = resultant(c, d, v).as_poly(u)
+    R = resultant(c, d, v, u).as_poly(u)
 
     R_u_all = roots(R)
     R_q_all = roots(q)

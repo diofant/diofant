@@ -13,8 +13,9 @@ from mpmath.libmp import (ComplexResult, dps_to_prec, fhalf, finf, fnan, fninf,
                           to_rational)
 
 from ..config import query
+from ..external import GROUND_TYPES, HAS_GMPY, gmpy
+from ..utilities import as_int
 from .cache import cacheit
-from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
@@ -65,27 +66,27 @@ def comp(z1, z2, tol=None):
 
 
 def igcdex(a, b):
-    """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
+    """Returns g, x, y such that g = x*a + y*b = gcd(a, b).
 
     >>> igcdex(2, 3)
-    (-1, 1, 1)
+    (1, -1, 1)
     >>> igcdex(10, 12)
-    (-1, 1, 2)
+    (2, -1, 1)
 
     >>> igcdex(100, 2004)
-    (-20, 1, 4)
-    >>> x, y = _[:-1]
+    (4, -20, 1)
+    >>> x, y = _[1:]
     >>> x*100 + y*2004
     4
 
     """
     if (not a) and (not b):
-        return 0, 1, 0
+        return 0, 0, 0
 
     if not a:
-        return 0, b//abs(b), abs(b)
+        return abs(b), 0, b//abs(b)
     if not b:
-        return a//abs(a), 0, abs(a)
+        return abs(a), a//abs(a), 0
 
     if a < 0:
         a, x_sign = -a, -1
@@ -103,7 +104,7 @@ def igcdex(a, b):
         c, q = a % b, a // b
         a, b, r, s, x, y = b, c, x - q*r, y - q*s, r, s
 
-    return x*x_sign, y*y_sign, a
+    return a, x*x_sign, y*y_sign
 
 
 def mod_inverse(a, m):
@@ -149,7 +150,7 @@ def mod_inverse(a, m):
     try:
         a, m = as_int(a), as_int(m)
         if m > 1:
-            x, _, g = igcdex(a, m)
+            g, x, _ = igcdex(a, m)
             if g == 1:
                 c = x % m
             if a < 0:
@@ -434,7 +435,7 @@ class Float(Number):
     >>> Float(0.3, 20)
     0.29999999999999998890
 
-    If you want a 20-digit value of the decimal 0.3 (not the floating point
+    If you want a 20-digit value of the decimal 0.3 (not the floating-point
     approximation of 0.3) you should send the 0.3 as a string. The underlying
     representation is still binary but a higher precision than Python's float
     is used:
@@ -446,8 +447,9 @@ class Float(Number):
     it will not increase the accuracy -- the underlying value is not changed:
 
     >>> def show(f):  # binary rep of Float
+    ...     from mpmath.libmp import to_man_exp
     ...     from diofant import Mul, Pow
-    ...     s, m, e, b = f._mpf_
+    ...     m, e = to_man_exp(f._mpf_, signed=True)
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
     ...     print(f'{v} at prec={f._prec}')
     ...
@@ -1832,8 +1834,8 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     and ``oo**0``, which all produce ``1`` (this is consistent with Python's
     float).
 
-    NaN is loosely related to floating point nan, which is defined in the
-    IEEE 754 floating point standard, and corresponds to the Python
+    NaN is loosely related to floating-point nan, which is defined in the
+    IEEE 754 floating-point standard, and corresponds to the Python
     ``float('nan')``.  Differences are noted below.
 
     NaN is mathematically not equal to anything else, even NaN itself.  This
@@ -1841,7 +1843,7 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     the examples below.
 
     NaN is not comparable so inequalities raise a TypeError.  This is in
-    constrast with floating point nan where all inequalities are false.
+    constrast with floating-point nan where all inequalities are false.
 
     NaN is a singleton, and can be accessed by ``nan``.
 

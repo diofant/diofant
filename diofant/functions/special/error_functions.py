@@ -949,16 +949,6 @@ class Ei(Function):
     Examples
     ========
 
-    The exponential integral in Diofant is strictly undefined for negative values
-    of the argument. For convenience, exponential integrals with negative
-    arguments are immediately converted into an expression that agrees with
-    the classical integral definition:
-
-    >>> Ei(-1)
-    -I*pi + Ei(exp_polar(I*pi))
-
-    This yields a real value:
-
     >>> Ei(-1).evalf(chop=True)
     -0.219383934395520
 
@@ -1016,9 +1006,6 @@ class Ei(Function):
         if z == -oo:
             return Integer(0)
 
-        if not z.is_polar and z.is_negative:
-            # Note: is this a good idea?
-            return Ei(polar_lift(z)) - pi*I
         nz, n = z.extract_branch_factor()
         if n:
             return Ei(nz) + 2*I*pi*n
@@ -1169,7 +1156,8 @@ class expint(Function):
 
     @classmethod
     def eval(cls, nu, z):
-        from .. import exp, factorial, gamma, unpolarify, uppergamma
+        from ...core import exp
+        from .. import factorial, gamma, unpolarify, uppergamma
         nu2 = unpolarify(nu)
         if nu != nu2:
             return expint(nu2, z)
@@ -1202,7 +1190,8 @@ class expint(Function):
         return z**(nu - 1)*uppergamma(1 - nu, z)
 
     def _eval_rewrite_as_Ei(self, nu, z):
-        from .. import exp, exp_polar, factorial, unpolarify
+        from ...core import exp
+        from .. import exp_polar, factorial, unpolarify
         if nu == 1:
             return -Ei(z*exp_polar(-I*pi)) - I*pi
         if nu.is_Integer and nu > 1:
@@ -2271,7 +2260,7 @@ class _eis(Function):
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...calculus import Order
-        if args0[0] != oo:
+        if args0[0] not in (oo, -oo):
             return super()._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]

@@ -84,6 +84,8 @@ def test_gamma():
 
 def test_gamma_rewrite():
     assert gamma(n).rewrite(factorial) == factorial(n - 1)
+    assert gamma(x).rewrite('tractable') == gamma(x)
+    assert gamma(x).rewrite('tractable', wrt=x) == exp(loggamma(x))
 
 
 def test_gamma_series():
@@ -400,7 +402,6 @@ def test_loggamma():
 
     def tN(N, M):
         assert loggamma(1/x).series(x, n=N).getn() == M
-    tN(-1, -1)
     tN(1, 1)
     tN(2, 2)
     tN(3, 3)

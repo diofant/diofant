@@ -3,13 +3,13 @@ import math
 from collections import defaultdict
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
-                    Pow, Rational, Wild, cacheit, count_ops, expand,
+                    Pow, Rational, Wild, cacheit, count_ops, exp, expand,
                     expand_mul, factor_terms, symbols)
 from ..core.function import _mexpand
 from ..core.strategies import bottom_up, greedy, identity
 from ..core.sympify import sympify
 from ..domains import ZZ
-from ..functions import cos, cosh, cot, coth, exp, sin, sinh, tan, tanh
+from ..functions import cos, cosh, cot, coth, sin, sinh, tan, tanh
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
 from ..polys import Poly, cancel, factor, parallel_poly_from_expr

@@ -1,6 +1,4 @@
-from mpmath import mp, workprec
-
-from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
+from ...core import (Add, Dummy, EulerGamma, Function, I, Integer, Pow,
                      Rational, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
@@ -159,8 +157,9 @@ class gamma(Function):
         if x.is_noninteger:
             return floor(x).is_even
 
-    def _eval_rewrite_as_tractable(self, z, **kwargs):
-        return exp(loggamma(z))
+    def _eval_rewrite_as_tractable(self, z, wrt=None, **kwargs):
+        if wrt is not None and z.limit(wrt, oo) == oo:
+            return exp(loggamma(z))
 
     def _eval_rewrite_as_factorial(self, z):
         return factorial(z - 1)
@@ -295,13 +294,6 @@ class lowergamma(Function):
                 if not a.is_Integer:
                     return (cls(a + 1, x) + x**a * exp(-x))/a
 
-    def _eval_evalf(self, prec):
-        a = self.args[0]._to_mpmath(prec)
-        z = self.args[1]._to_mpmath(prec)
-        with workprec(prec):
-            res = mp.gammainc(a, 0, z)
-        return Expr._from_mpmath(res, prec)
-
     def _eval_conjugate(self):
         z = self.args[1]
         if z not in (0, -oo):
@@ -394,13 +386,6 @@ class uppergamma(Function):
             a, z = self.args
             return uppergamma(a, z)*log(z) + meijerg([], [1, 1], [0, 0, a], [], z)
         raise ArgumentIndexError(self, argindex)
-
-    def _eval_evalf(self, prec):
-        a = self.args[0]._to_mpmath(prec)
-        z = self.args[1]._to_mpmath(prec)
-        with workprec(prec):
-            res = mp.gammainc(a, z, mp.inf)
-        return Expr._from_mpmath(res, prec)
 
     @classmethod
     def eval(cls, a, z):

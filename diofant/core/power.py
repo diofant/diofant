@@ -3,15 +3,14 @@ import math
 from mpmath.libmp import sqrtrem
 
 from ..logic import true
-from ..utilities import sift
+from ..utilities import as_int, sift
 from .add import Add
 from .cache import cacheit
-from .compatibility import as_int
 from .evalf import PrecisionExhausted
 from .evaluate import global_evaluate
 from .expr import Expr
-from .function import (_coeff_isneg, expand_complex, expand_mul,
-                       expand_multinomial)
+from .function import (ArgumentIndexError, Function, _coeff_isneg,
+                       expand_complex, expand_mul, expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
 from .numbers import E, I, Integer, Rational, nan, oo, pi, zoo
@@ -75,6 +74,19 @@ def integer_nthroot(y, n):
         x -= 1
         t = x**n
     return x, t == y
+
+
+def exp(arg, **kwargs):
+    """
+    The exponential function, `e^x`.
+
+    See Also
+    ========
+
+    log
+
+    """
+    return Pow(E, arg, **kwargs)
 
 
 class Pow(Expr):
@@ -143,7 +155,7 @@ class Pow(Expr):
     | -oo**(-1+I)  |         | limit is 0.                                   |
     +--------------+---------+-----------------------------------------------+
 
-    Because symbolic computations are more flexible that floating point
+    Because symbolic computations are more flexible that floating-point
     calculations and we prefer to never return an incorrect answer,
     we choose not to conform to all IEEE 754 conventions.  This helps
     us avoid extra test-case code in the calculation of limits.
@@ -169,7 +181,7 @@ class Pow(Expr):
     def __new__(cls, b, e, evaluate=None):
         if evaluate is None:
             evaluate = global_evaluate[0]
-        from ..functions.elementary.exponential import exp_polar
+        from ..functions import exp_polar
 
         b = sympify(b, strict=True)
         e = sympify(e, strict=True)
@@ -193,7 +205,7 @@ class Pow(Expr):
                 return Integer(1)
             # recognize base as E
             if not e.is_Atom and b is not E and not isinstance(b, exp_polar):
-                from ..functions import im, log, sign
+                from ..functions import im, sign
                 from ..simplify import denom, numer
                 from .exprtools import factor_terms
                 c, ex = factor_terms(e, sign=False).as_coeff_Mul()
@@ -233,7 +245,7 @@ class Pow(Expr):
         return 4, 2, cls.__name__
 
     def _eval_power(self, other):
-        from ..functions import Abs, arg, exp, floor, im, log, re, sign
+        from ..functions import Abs, arg, floor, im, re, sign
         b, e = self.as_base_exp()
         if b is nan:
             return (b**e)**other  # let __new__ handle it
@@ -292,8 +304,6 @@ class Pow(Expr):
                 elif b.is_nonnegative:
                     s = 1  # floor = 0
                 elif re(b).is_nonnegative and (abs(e) < 2) == true:
-                    s = 1  # floor = 0
-                elif im(b).is_nonzero and (abs(e) == 2):
                     s = 1  # floor = 0
                 elif b.is_imaginary and (abs(e) == 2):
                     s = 1  # floor = 0
@@ -399,7 +409,6 @@ class Pow(Expr):
                 return True
 
     def _eval_is_extended_real(self):
-        from ..functions import arg, log
         from .mul import Mul
 
         b, e = self.base, self.exp
@@ -458,13 +467,7 @@ class Pow(Expr):
                 if b == 2:
                     return False
 
-        if b.is_extended_real is False:  # we already know it's not imag
-            i = arg(b)*e/pi
-            return i.is_integer
-
     def _eval_is_complex(self):
-        from ..functions import log
-
         b, e = self.base, self.exp
 
         if b.is_complex:
@@ -472,8 +475,6 @@ class Pow(Expr):
             return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
-        from ..functions import arg, log
-
         b, e = self.base, self.exp
 
         if b.is_imaginary:
@@ -491,9 +492,6 @@ class Pow(Expr):
                 return False
             if (2*e).is_integer:
                 return b.is_negative
-
-        if b.is_real is False:  # we already know it's not imag
-            return (2*arg(b)*e/pi).is_odd
 
     def _eval_is_odd(self):
         b, e = self.base, self.exp
@@ -523,7 +521,7 @@ class Pow(Expr):
             return True
 
     def _eval_subs(self, old, new):
-        from ..functions import log
+        from .function import expand_log
         from .symbol import Symbol
 
         def _check(ct1, ct2, old):
@@ -560,7 +558,8 @@ class Pow(Expr):
             return new**self.exp._subs(old, new)
 
         if old.func is self.func and self.exp == old.exp:
-            l = log(self.base, old.base)
+            l = log(self.base)/log(old.base)
+            l = expand_log(l)
             if l.is_Number:
                 return Pow(new, l)
 
@@ -621,7 +620,7 @@ class Pow(Expr):
         return b, e
 
     def _eval_adjoint(self):
-        from ..functions.elementary.complexes import adjoint
+        from ..functions import adjoint
         i, p = self.exp.is_integer, self.base.is_positive
         if i:
             return adjoint(self.base)**self.exp
@@ -631,7 +630,7 @@ class Pow(Expr):
     def _eval_conjugate(self):
         if self.is_extended_real:
             return self
-        from ..functions.elementary.complexes import conjugate as c
+        from ..functions import conjugate as c
         i, p = self.exp.is_integer, self.base.is_positive
         if i:
             return c(self.base)**self.exp
@@ -643,7 +642,7 @@ class Pow(Expr):
             return c(expanded)
 
     def _eval_transpose(self):
-        from ..functions.elementary.complexes import transpose
+        from ..functions import transpose
         i, p = self.exp.is_integer, self.base.is_complex
         if p:
             return self.base**self.exp
@@ -874,30 +873,32 @@ class Pow(Expr):
         diofant.core.expr.Expr.as_real_imag
 
         """
-        from ..functions import arg, cos, sin
+        from ..functions import arg, cos
+        from ..functions import im as cimag
+        from ..functions import re as creal
+        from ..functions import sin
 
         if self.exp.is_Integer:
-            exp = self.exp
             re, im = self.base.as_real_imag(deep=deep)
             if not im:
                 return self, Integer(0)
             a, b = symbols('a b', cls=Dummy)
-            if exp >= 0:
+            if self.exp >= 0:
                 if re.is_Number and im.is_Number:
                     # We can be more efficient in this case
-                    expr = expand_multinomial(self.base**exp)
+                    expr = expand_multinomial(self.base**self.exp)
                     return expr.as_real_imag()
 
-                expr = ((a + b)**exp).as_poly()  # a = re, b = im; expr = (a + b*I)**exp
+                expr = ((a + b)**self.exp).as_poly()  # a = re, b = im; expr = (a + b*I)**self.exp
             else:
                 mag = re**2 + im**2
                 re, im = re/mag, -im/mag
                 if re.is_Number and im.is_Number:
                     # We can be more efficient in this case
-                    expr = expand_multinomial((re + im*I)**-exp)
+                    expr = expand_multinomial((re + im*I)**-self.exp)
                     return expr.as_real_imag()
 
-                expr = ((a + b)**-exp).as_poly()
+                expr = ((a + b)**-self.exp).as_poly()
 
             # Terms with even b powers will be real
             r = [i for i in expr.terms() if not i[0][1] % 2]
@@ -930,25 +931,22 @@ class Pow(Expr):
 
             return rp*cos(tp), rp*sin(tp)
         if self.is_Exp:
-            from ..functions import exp
             re, im = self.exp.as_real_imag()
             if deep:
                 re = re.expand(deep, **hints)
                 im = im.expand(deep, **hints)
             c, s = cos(im), sin(im)
             return exp(re)*c, exp(re)*s
-        from ..functions import im, re
         if deep:
             hints['complex'] = False
 
             expanded = self.expand(deep, **hints)
             if hints.get('ignore') != expanded:
-                return re(expanded), im(expanded)
+                return creal(expanded), cimag(expanded)
         else:
-            return re(self), im(self)
+            return creal(self), cimag(self)
 
     def _eval_derivative(self, s):
-        from ..functions import log
         dbase = self.base.diff(s)
         dexp = self.exp.diff(s)
         return self * (dexp * log(self.base) + dbase * self.exp/self.base)
@@ -1121,15 +1119,14 @@ class Pow(Expr):
 
     def _eval_nseries(self, x, n, logx):
         from ..calculus import Order, limit
-        from ..functions import arg, exp, floor, log
+        from ..functions import arg, floor
         from ..simplify import powsimp
         if self.is_Exp:
             e_series = self.exp.nseries(x, n, logx)
-            if e_series.is_Order:
-                return 1 + e_series
             e0 = limit(e_series.removeO(), x, 0)
-            if e0 in (-oo, oo):
-                return self
+            if e0.is_infinite:
+                return self.subs({x: 1/x}).series(x, oo, n,
+                                                  logx=logx).subs({x: 1/x})
             t = e_series - e0
             exp_series = term = exp(e0)
             # series of exp(e0 + t) in t
@@ -1141,7 +1138,6 @@ class Pow(Expr):
             return powsimp(exp_series, deep=True, combine='exp')
         if self.exp.has(x):
             return exp(self.exp*log(self.base)).nseries(x, n, logx)
-
         b_series = self.base.nseries(x, n, logx)
         while b_series.is_Order:
             n += 1
@@ -1184,7 +1180,6 @@ class Pow(Expr):
 
     def _eval_as_leading_term(self, x):
         from ..calculus import Order
-        from ..functions import exp, log
         if not self.exp.has(x):
             return self.func(self.base.as_leading_term(x), self.exp)
         if self.is_Exp:
@@ -1296,3 +1291,225 @@ class Pow(Expr):
                 # sqrt(2)*sqrt(1 + sqrt(5))
                 return c, self.func(_keep_coeff(m, t), e)
         return Integer(1), self.func(b, e)
+
+
+class log(Function):
+    r"""
+    The natural logarithm function `\ln(x)` or `\log(x)`.
+    Logarithms are taken with the natural base, `e`.
+
+    See Also
+    ========
+
+    exp
+
+    """
+
+    def fdiff(self, argindex=1):
+        """Returns the first derivative of the function."""
+        if argindex == 1:
+            return 1/self.args[0]
+        raise ArgumentIndexError(self, argindex)
+
+    def inverse(self, argindex=1):
+        r"""Returns `e^x`, the inverse function of `\log(x)`."""
+        return exp
+
+    @classmethod
+    def eval(cls, arg):
+        from ..functions import exp_polar, unpolarify
+
+        if arg.is_Number:
+            if arg == 0:
+                return zoo
+            if arg == 1:
+                return Integer(0)
+            if arg in (oo, -oo):
+                return oo
+            if arg.is_Rational:
+                if arg.denominator != 1:
+                    return cls(arg.numerator) - cls(arg.denominator)
+
+        if arg.is_Exp and arg.exp.is_extended_real:
+            return arg.exp
+        if isinstance(arg, exp_polar):
+            return unpolarify(arg.exp)
+
+        if arg.is_number:
+            if arg.is_negative:
+                return pi * I + cls(-arg)
+            if arg is zoo:
+                return zoo
+            if arg is E:
+                return Integer(1)
+
+        # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
+        if not arg.is_Add:
+            coeff = arg.as_coefficient(I)
+
+            if coeff is not None:
+                if coeff in (oo, -oo):
+                    return oo
+                if coeff.is_Rational:
+                    if coeff.is_nonnegative:
+                        return +pi*I/2 + cls(+coeff)
+                    return -pi*I/2 + cls(-coeff)
+
+    def _eval_expand_log(self, deep=True, **hints):
+        from ..concrete import Product, Sum
+        from ..functions import unpolarify
+        from ..ntheory import perfect_power
+        force = hints.get('force', False)
+        arg = self.args[0]
+        if arg.is_Integer:
+            # remove perfect powers
+            p = perfect_power(int(arg))
+            if p is not False:
+                return p[1]*self.func(p[0])
+        elif arg.is_Mul:
+            expr = []
+            nonpos = []
+            for x in arg.args:
+                if force or x.is_positive or x.is_polar:
+                    a = self.func(x)
+                    if isinstance(a, log):
+                        expr.append(self.func(x)._eval_expand_log(**hints))
+                    else:
+                        expr.append(a)
+                elif x.is_negative:
+                    a = self.func(-x)
+                    expr.append(a)
+                    nonpos.append(Integer(-1))
+                else:
+                    nonpos.append(x)
+            return Add(*expr) + log(Mul(*nonpos))
+        elif arg.is_Pow:
+            if force or (arg.exp.is_extended_real and arg.base.is_positive) or \
+                    arg.base.is_polar:
+                b = arg.base
+                e = arg.exp
+                a = self.func(b)
+                if isinstance(a, log):
+                    return unpolarify(e) * a._eval_expand_log(**hints)
+                return unpolarify(e) * a
+        elif isinstance(arg, Product):
+            if arg.function.is_positive:
+                return Sum(log(arg.function), *arg.limits)
+
+        return self.func(arg)
+
+    def _eval_simplify(self, ratio, measure):
+        from ..simplify import simplify
+        from .function import expand_log
+        expr = self.func(simplify(self.args[0], ratio=ratio, measure=measure))
+        expr = expand_log(expr, deep=True)
+        return min([expr, self], key=measure)
+
+    def as_real_imag(self, deep=True, **hints):
+        """
+        Returns this function as a complex coordinate.
+
+        Examples
+        ========
+
+        >>> log(x).as_real_imag()
+        (log(Abs(x)), arg(x))
+        >>> log(I).as_real_imag()
+        (0, pi/2)
+        >>> log(1 + I).as_real_imag()
+        (log(sqrt(2)), pi/4)
+        >>> log(I*x).as_real_imag()
+        (log(Abs(x)), arg(I*x))
+
+        """
+        from ..functions import Abs, arg
+        if deep:
+            abs = Abs(self.args[0].expand(deep, **hints))
+            arg = arg(self.args[0].expand(deep, **hints))
+        else:
+            abs = Abs(self.args[0])
+            arg = arg(self.args[0])
+        if hints.get('log', False):  # Expand the log
+            hints['complex'] = False
+            return log(abs).expand(deep, **hints), arg
+        return log(abs), arg
+
+    def _eval_is_rational(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if s.args[0].is_rational and (self.args[0] - 1).is_nonzero:
+                return False
+        else:
+            return s.is_rational
+
+    def _eval_is_algebraic(self):
+        s = self.func(*self.args)
+        if s.func == self.func:
+            if self.args[0].is_algebraic and (self.args[0] - 1).is_nonzero:
+                return False
+        else:
+            return s.is_algebraic
+
+    def _eval_is_extended_real(self):
+        return self.args[0].is_positive
+
+    def _eval_is_finite(self):
+        arg = self.args[0]
+        if arg.is_zero:
+            return False
+        if arg.is_nonzero:
+            return arg.is_finite
+
+    def _eval_is_complex(self):
+        arg = self.args[0]
+        if arg.is_nonzero:
+            return arg.is_complex
+
+    def _eval_is_positive(self):
+        return (self.args[0] - 1).is_positive
+
+    def _eval_is_zero(self):
+        return (self.args[0] - 1).is_zero
+
+    def _eval_nseries(self, x, n, logx):
+        from ..calculus import Order
+        from ..functions import arg as argument
+        from ..functions import floor
+        if not logx:
+            logx = log(x)
+        arg = self.args[0]
+        arg_series = arg.nseries(x, n, logx)
+        while arg_series.is_Order:
+            n += 1
+            arg_series = arg.nseries(x, n, logx)
+        arg0 = arg_series.as_leading_term(x)
+        c, e = arg0.as_coeff_exponent(x)
+        res = term = t = ((arg_series - arg0)/arg0).nseries(x, n, logx)
+        # series of log(1 + t) in t
+        for i in range(1, n):
+            term *= -i*t/(i + 1)
+            term = term.series(x, n=n, logx=logx)
+            res += term
+        res += Order(t**n, x)
+        # branch handling
+        if c.is_negative:
+            if t.is_Order:
+                return self._eval_nseries(x, n + 1, logx)
+            l = 2*pi*I*floor(argument(t*c)/2/pi).limit(x, 0)
+            if l.is_finite:
+                res += l
+            else:
+                raise NotImplementedError
+        return res + log(c) + e*logx
+
+    def _eval_as_leading_term(self, x):
+        from .function import expand_log
+
+        # make sure to expand log(1/x) here
+        expr = expand_log(self)
+        if expr != self:
+            return expr.as_leading_term(x)
+        arg = self.args[0]
+        if arg.as_leading_term(x) == 1:
+            return (arg - 1).as_leading_term(x)
+        return self.func(arg)

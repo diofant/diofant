@@ -1,4 +1,4 @@
-from ..core import Add, Mul, PoleError, Pow, sympify
+from ..core import Add, Mul, PoleError, Pow, log, sympify
 from ..sets import Reals
 
 
@@ -28,7 +28,7 @@ def singularities(f, x):
     * https://en.wikipedia.org/wiki/Mathematical_singularity
 
     """
-    from ..functions import Abs, cos, log, sign, sin
+    from ..functions import Abs, cos, sign, sin
     from ..solvers import solve
     from .limits import limit
 

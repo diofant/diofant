@@ -4,9 +4,9 @@ import random
 from random import uniform
 
 from ..core import I, Symbol, Tuple, comp
-from ..core.compatibility import as_int
 from ..simplify import nsimplify
 from .iterables import is_sequence
+from .misc import as_int
 
 
 def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):

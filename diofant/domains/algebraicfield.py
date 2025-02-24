@@ -139,8 +139,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         if K0.domain == self.domain:
             if (coeffs := field_isomorphism(K0, self)) is not None:
                 return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
-            raise CoercionFailedError(f'{K0} is not in a subfield of {self}')
-        return self.from_expr(K0.to_expr(a))
+        else:
+            return self.from_expr(K0.to_expr(a))
 
     def _from_ExpressionDomain(self, a, K0):
         return self.from_expr(K0.to_expr(a))

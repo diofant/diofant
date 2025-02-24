@@ -302,8 +302,12 @@ class PolynomialRing(_GCD, CommutativeRing, CompositeDomain, _SQF, _Factor, _Tes
         if self.domain == K0:
             return self(a)
     _from_GMPYFiniteField = _from_PythonFiniteField
-    _from_AlgebraicField = _from_PythonFiniteField
     _from_ExpressionDomain = _from_PythonFiniteField
+
+    def _from_AlgebraicField(self, a, K0):
+        e = self.domain._from_AlgebraicField(a, K0)
+        if e is not None:
+            return self(a)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -791,7 +795,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not n:
             return ring.one
         if len(self) > 5 or mod:
-            return self._pow_generic(n, mod)
+            if mod:
+                if ring.domain.is_Field:
+                    return self._pow_generic(n, mod)
+                return self._pow_generic(n) % mod
+            return self._pow_generic(n)
         if len(self) == 1:
             [(monom, coeff)] = self.items()
             p = ring.zero
@@ -808,6 +816,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _pow_generic(self, n, mod=None):
         p = self.ring.one
         c = self
+        if mod:
+            c %= mod
 
         while n:
             if n & 1:
@@ -1533,7 +1543,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         >>> g = x**3 + x**2 - 4*x - 4
 
         >>> f.half_gcdex(g)
-        (-1/5*x + 3/5, x + 1)
+        (x + 1, -1/5*x + 3/5)
 
         """
         ring = self.ring
@@ -1553,13 +1563,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         a = a.quo_ground(f.LC)
         f = f.monic()
 
-        return a, f
+        return f, a
 
     def gcdex(self, other):
         """
         Extended Euclidean algorithm in `F[x]`.
 
-        Returns ``(s, t, h)`` such that ``h = gcd(self, other)`` and
+        Returns ``(h, s, t)`` such that ``h = gcd(self, other)`` and
         ``s*self + t*other = h``.
 
         Examples
@@ -1571,13 +1581,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         >>> g = x**3 + x**2 - 4*x - 4
 
         >>> f.gcdex(g)
-        (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
+        (x + 1, -1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2)
 
         """
-        s, h = self.half_gcdex(other)
+        h, s = self.half_gcdex(other)
         t = h - self*s
         t //= other
-        return s, t, h
+        return h, s, t
 
     def sqf_list(self):
         return self.ring.sqf_list(self)

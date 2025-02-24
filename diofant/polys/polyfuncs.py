@@ -40,7 +40,7 @@ def symmetrize(F, *gens, **args):
     (s1**2 - 2*s2, -2*y**2, [(s1, x + y), (s2, x*y)])
 
     """
-    allowed_flags(args, ['formal', 'symbols'])
+    allowed_flags(args, ['formal'])
 
     iterable = True
 
@@ -66,7 +66,7 @@ def symmetrize(F, *gens, **args):
             return result, []
         return result + ([],)
 
-    polys, symbols = [], opt.symbols
+    polys, symbols = [], numbered_symbols('s', start=1)
     gens, dom = opt.gens, opt.domain
 
     for i in range(len(gens)):
