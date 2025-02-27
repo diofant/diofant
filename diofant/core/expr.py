@@ -2319,12 +2319,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> e.series(x, n=2)
         cos(E**y) - x*sin(E**y) + O(x**2)
 
-        If ``n=None`` then a generator of the series terms will be returned.
-
-        >>> term = cos(x).series(n=None)
-        >>> [next(term) for i in range(2)]
-        [1, -x**2/2]
-
         For ``dir=-1`` (default) the series is calculated from the right and
         for ``dir=+1`` the series from the left.  For infinite ``x0`` (``oo``
         or ``-oo``), the ``dir`` argument is determined from the direction
@@ -2345,7 +2339,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..calculus import Order
         from ..functions import sign
         from ..simplify import collect
-        from .function import expand_mul
         from .symbol import Dummy, Symbol
 
         if x is None:
@@ -2388,69 +2381,34 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         # use rep to shift origin to x0 and change dir to 1, then undo
         if x0 or dir != -1:
-            s = self.subs({x: x0 - dir*x}).series(x, x0=0, n=n, dir=-1, logx=logx)
-            if n is None:  # lseries...
-                return (si.subs({x: x0/dir - x/dir}) for si in s)  # pragma: no branch
-            return s.subs({x: x0/dir - x/dir})
+            return self.subs({x: x0 - dir*x}).series(x, x0=0, n=n,
+                                                     dir=-1,
+                                                     logx=logx).subs({x: x0/dir - x/dir})
 
         # from here on it's x0=0 and dir=-1 handling
 
         if any(_ is not True for _ in [x.is_positive, x.is_finite]):
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
-            rv = self.subs({x: xpos}).series(xpos, x0, n, dir, logx=logx)
-            if n is None:
-                return (s.subs({xpos: x}) for s in rv)
-            return rv.subs({xpos: x})
+            return self.subs({x: xpos}).series(xpos, x0, n, dir,
+                                               logx=logx).subs({xpos: x})
 
-        if n is not None:  # nseries handling
-            s1 = self._eval_nseries(x, n, logx)
+        # nseries handling
+        s1 = self._eval_nseries(x, n, logx)
+        cur_order = s1.getO() or Integer(0)
+
+        # Now make sure the requested order is returned
+        target_order = Order(x**n, x)
+        ndo = n + 1
+        while not target_order.contains(cur_order):
+            s1 = self._eval_nseries(x, ndo, logx)
+            ndo += 1
             cur_order = s1.getO() or Integer(0)
 
-            # Now make sure the requested order is returned
-            target_order = Order(x**n, x)
-            ndo = n + 1
-            while not target_order.contains(cur_order):
-                s1 = self._eval_nseries(x, ndo, logx)
-                ndo += 1
-                cur_order = s1.getO() or Integer(0)
+        if (s1 + target_order).removeO() == s1:
+            target_order = Integer(0)
 
-            if (s1 + target_order).removeO() == s1:
-                target_order = Integer(0)
-
-            return collect(s1.removeO(), x) + target_order
-
-        # lseries handling
-        def yield_lseries(s):
-            """Return terms of lseries one at a time."""
-            for si in s:
-                if not si.is_Add:
-                    yield si
-                    continue
-                # yield terms 1 at a time if possible
-                # by increasing order until all the
-                # terms have been returned
-                yielded = 0
-                o = Order(si, x)*x
-                if expand_mul(o.expr).is_Add:
-                    raise NotImplementedError
-                ndid = 0
-                ndo = len(si.args)
-                while 1:
-                    do = (si - yielded + o).removeO()
-                    o *= x
-                    if not do or do.is_Order:
-                        continue
-                    if do.is_Add:
-                        ndid += len(do.args)
-                    else:
-                        ndid += 1
-                    yield do
-                    if ndid == ndo:
-                        break
-                    yielded += do
-
-        return yield_lseries(self.removeO()._eval_lseries(x, logx=logx))
+        return collect(s1.removeO(), x) + target_order
 
     def taylor_term(self, n, x, *previous_terms):
         """General method for the taylor term.
@@ -2464,29 +2422,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x = sympify(x)
         _x = Dummy('x')
         return self.subs({x: _x}).diff((_x, n)).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
-
-    def _eval_lseries(self, x, logx=None):
-        # Default implementation of lseries is using nseries(), and adaptively
-        # increasing the "n".  As you can see, it is not very efficient, because
-        # we are calculating the series over and over again.
-        n = 0
-        series = self._eval_nseries(x, n, logx)
-        if not series.is_Order:
-            yield series.removeO()
-        else:
-            while series.is_Order:
-                n += 1
-                series = self._eval_nseries(x, n, logx)
-            e = series.removeO()
-            yield e
-            while 1:
-                while 1:
-                    n += 1
-                    series = self._eval_nseries(x, n, logx).removeO()
-                    if e != series:
-                        break
-                yield series - e
-                e = series
 
     def nseries(self, x, n=6, logx=None):
         """Calculate "n" terms of series in x around 0
@@ -2679,17 +2614,24 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         This is a wrapper to compute a series first.
 
         """
-        for t in self.series(x, n=None, logx=logx):
-            t = t.cancel()
-
-            is_zero = t.equals(0)
+        ndo = 1
+        expr = self
+        while True:
+            t = expr._eval_nseries(x, n=ndo, logx=logx)
+            lt = t.removeO()
+            lt2 = lt.cancel()
+            is_zero = lt2.equals(0)
             if is_zero:
+                if not t.getO():
+                    break
+                ndo += 1
+                expr -= lt
                 continue
             if is_zero is False:
                 break
             raise NotImplementedError(f'Zero-decision problem for {t}')
 
-        return t.as_leading_term(x)
+        return lt2.as_leading_term(x)
 
     @cacheit
     def as_leading_term(self, x):

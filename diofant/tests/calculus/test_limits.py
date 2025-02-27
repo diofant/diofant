@@ -179,7 +179,7 @@ def test_basic6():
 
 
 def test_sympyissue_3885():
-    assert limit(x*y + x*z, z, 2) == x*y + 2*x
+    assert limit(x*y + x*z, z, 2) == x*(y + 2)
 
 
 def test_Limit():
@@ -951,10 +951,10 @@ def test_sympyissue_21756():
 def test_sympyissue_21785():
     e = Limit(sqrt((-a**2 + x**2)/(1 - x**2)), a, 1, 1)
 
-    assert e.doit() == exp(I*pi*floor(arg(-1/(x**2 - 1))/(2*pi)))*I
+    assert e.doit() == (-1)**(floor(arg(-1/(x**2 - 1))/(2*pi)) + 1/2)
 
-    assert e.subs({x: 1 + I}).doit() == +I
-    assert e.subs({x: 1 - I}).doit() == -I
+    assert e.subs({x: 1 + I}).doit().simplify() == +I
+    assert e.subs({x: 1 - I}).doit().simplify() == -I
 
 
 def test_sympyissue_22220():
