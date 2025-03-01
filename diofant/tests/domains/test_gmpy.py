@@ -4,11 +4,13 @@ import pytest
 
 from diofant import (CC, FF, CoercionFailedError, FF_gmpy, FF_python,
                      PythonRational, QQ_gmpy, QQ_python, ZZ_gmpy, ZZ_python)
+from diofant.external import gmpy
 
 
 __all__ = ()
 
-gmpy = pytest.importorskip('gmpy2')
+if not gmpy:
+    pytest.skip('No gmpy2', allow_module_level=True)
 
 
 def test_convert():
