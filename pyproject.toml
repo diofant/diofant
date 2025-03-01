@@ -42,6 +42,7 @@ exports = ['numpy>=1.19,<1.25;python_version<"3.12"',
            'meson-python;python_version>="3.12"',
            'ninja;python_version>="3.12"']
 gmpy = ['gmpy2>=2.2']
+gmp = ['python-gmp>=0.4.0a1']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1']
@@ -155,7 +156,7 @@ show_missing = true
 [tool.mypy]
 follow_imports = 'silent'
 [[tool.mypy.overrides]]
-module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*']
+module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp']
 ignore_missing_imports = true
 [tool.flake8]
 statistics = true
@@ -166,7 +167,8 @@ ignore = ['E201', 'E202', 'E226', 'E241', 'W503', 'F402', 'F821',
 max_line_length = 7000
 exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml']
 jobs = 1
-per_file_ignores = ['diofant/printing/latex.py:SFS101']
+per_file_ignores = ['diofant/printing/latex.py:SFS101',
+                    'diofant/__init__.py:E402']
 pytest-fixture-no-parentheses = true
 pytest-mark-no-parentheses = true
 pytest-raises-require-match-for = ['BaseException', 'Exception', 'OSError',
