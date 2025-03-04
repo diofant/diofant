@@ -46,3 +46,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27300`: Wrong result for an integral over complex exponential with a Diracdelta function
 * :sympyissue:`27551`: Invalid limit
 * :sympyissue:`27624`: sympy takes so long to solve a solvable system of polynomial equations symbolically
+* :sympyissue:`27675`: A simple example of a wrong definite integral

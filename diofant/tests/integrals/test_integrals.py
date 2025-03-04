@@ -1629,3 +1629,10 @@ def test_sympyissue_27300():
     assert integrate(e*DiracDelta(x - pi/2), (x, 0, 2*pi)) == e.subs({x: pi/2})
     assert integrate(e*DiracDelta(x - 2*pi), (x, 0, 2*pi)) == 1/2
     assert integrate(e*DiracDelta(x - 4*pi), (x, 0, 2*pi)) == 0
+
+
+def test_sympyissue_27675():
+    assert integrate(2.06*(x + 0.20)/(x + 0.34)**2,
+                     (x, 0, 1)) == 2.1922358936689497
+    assert integrate((x + 0.19)/(x + 0.37)**2,
+                     (x, 0, 1)) == 0.95396338801128411
