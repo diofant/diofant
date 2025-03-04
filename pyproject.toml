@@ -35,7 +35,7 @@ Homepage = 'https://diofant.readthedocs.io/'
 'Source Code' = 'https://github.com/diofant/diofant/'
 'Bug Tracker' = 'https://github.com/diofant/diofant/issues/'
 Download = 'https://github.com/diofant/diofant/releases/'
-Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.15.html'
+Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 [project.optional-dependencies]
 exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
            'meson-python', 'ninja']
