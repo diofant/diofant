@@ -3,7 +3,7 @@
 Installation
 ------------
 
-The Diofant can be installed on any computer with Python 3.11
+The Diofant can be installed on any computer with Python 3.12
 or above.  You can install latest release with pip::
 
     pip install diofant
