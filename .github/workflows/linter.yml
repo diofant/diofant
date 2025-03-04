@@ -1,0 +1,17 @@
+name: Linting with flake8, etc
+on: workflow_call
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install --upgrade .[develop,exports]
+      - run: python -We:invalid -m compileall -f diofant -q
+      - run: flake518 diofant
+      - run: pylint diofant
+      - run: mypy diofant
