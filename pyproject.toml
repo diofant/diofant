@@ -20,11 +20,10 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: Software Development :: Libraries :: Python Modules',
                'Programming Language :: Python :: 3',
                'Programming Language :: Python :: 3 :: Only',
-               'Programming Language :: Python :: 3.11',
                'Programming Language :: Python :: 3.12',
                'Programming Language :: Python :: 3.13',
                'Programming Language :: Python :: Implementation :: CPython']
-requires-python = '>=3.11'
+requires-python = '>=3.12'
 dependencies = ['mpmath>=1.4.0a1']
 dynamic = ['version']
 [project.readme]
@@ -37,10 +36,8 @@ Homepage = 'https://diofant.readthedocs.io/'
 Download = 'https://github.com/diofant/diofant/releases/'
 Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.15.html'
 [project.optional-dependencies]
-exports = ['numpy>=1.19,<1.25;python_version<"3.12"',
-           'numpy>=1.26.0rc1;python_version>="3.12"', 'cython>=0.29',
-           'meson-python;python_version>="3.12"',
-           'ninja;python_version>="3.12"']
+exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
+           'meson-python', 'ninja']
 gmpy = ['gmpy2>=2.2']
 gmp = ['python-gmp>=0.4.0a1']
 interactive = ['ipykernel']
