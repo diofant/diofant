@@ -47,3 +47,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27551`: Invalid limit
 * :sympyissue:`27624`: sympy takes so long to solve a solvable system of polynomial equations symbolically
 * :sympyissue:`27675`: A simple example of a wrong definite integral
+* :sympyissue:`27683`: RecursionError: maximum recursion depth exceeded for SympifyError(a) when exchange an Integer into a Float
