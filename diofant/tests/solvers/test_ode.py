@@ -2,7 +2,7 @@ import itertools
 
 import pytest
 
-from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
+from diofant import (Derivative, Dummy, E, Ei, Eq, Float, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Rational,
                      RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
                      cbrt, cos, diff, dsolve, erf, erfi, exp, log, oo, pi,
@@ -3087,3 +3087,15 @@ def test_sympyissue_26343():
                                                 (-C1 + t)/sqrt(m))))/sqrt(c))
 
     assert dsolve(eq, f(t), ics={f(0): 0}) == sol
+
+
+def test_sympyissue_27683():
+    tests = [(Eq(diff(f(x), x, x)*4000, 1), Eq(f(x), C1 + C2*x + x**2/8000)),
+             (Eq(diff(f(x), x, x)*4000, 1),
+              Eq(f(x), C1 + C2*x + 0.000125*x**2)),
+             (Eq(diff(f(x), x, x)*Integer(4000), Integer(1)),
+              Eq(f(x), C1 + C2*x + x**2/8000)),
+             (Eq(diff(f(x), x, x)*Float(4000), Float(1)),
+              Eq(f(x), C1 + C2*x + 0.000125*x**2))]
+    for eq, sol in tests:
+        assert dsolve(eq, f(x)) == sol
