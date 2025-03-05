@@ -99,22 +99,3 @@ jobs:
         external_repository: diofant/diofant.github.io
         publish_branch: master
         publish_dir: diofant.github.io-master
-#   - name: Publish on Github Releases
-#     uses: softprops/action-gh-release@v1
-#     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-#     with:
-#       files: |
-#         dist/*
-#         build/sphinx/latex/Diofant-*.pdf
-#       draft: true
-#       prerelease: true
-#       name: "Diofant ${{ steps.release.outputs.version }}"
-#       body: "See [release notes](https://diofant.readthedocs.io/\
-#              en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
-#       token: ${{ secrets.RELEASES_DEPLOY_KEY }}
-#   - name: Publish package on PyPI
-#     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.coverage
-#     uses: pypa/gh-action-pypi-publish@release/v1
-#     with:
-#       user: __token__
-#       password: ${{ secrets.PYPI_API_TOKEN }}
