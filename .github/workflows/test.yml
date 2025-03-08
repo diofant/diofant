@@ -43,8 +43,6 @@ jobs:
         pip install -U pip 'setuptools<74' wheel
         pip install -U .[interactive,develop,gmp,exports,docs]
         pip install -U git+https://github.com/mpmath/mpmath.git
-    - name: Install ~/.python_history
-      run: touch ~/.python_history
     - name: Tests
       if: matrix.coverage == false
       env:
