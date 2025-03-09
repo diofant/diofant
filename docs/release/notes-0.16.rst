@@ -48,3 +48,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27624`: sympy takes so long to solve a solvable system of polynomial equations symbolically
 * :sympyissue:`27675`: A simple example of a wrong definite integral
 * :sympyissue:`27683`: RecursionError: maximum recursion depth exceeded for SympifyError(a) when exchange an Integer into a Float
+* :sympyissue:`27712`: Infinite hang and resource consumption when solving a specially crafted equation due to call to Integer
