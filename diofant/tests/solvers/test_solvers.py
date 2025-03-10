@@ -1800,3 +1800,12 @@ def test_sympyissue_27624():
             b: r[i]*(-54*r[i]**6 + 102*r[i]**4 - 59*r[i]**2 + 11)/2,
             c: r[i]} for i in [4, 5, 6, 7, 0, 1, 2, 3]]
     assert solve(eqs) == ans
+
+
+def test_sympyissue_27712():
+    l, r1, r2, eps0 = symbols('l r1 r2 eps0')
+    l = (15*10**(-9))/1  # 15 nanocoulombs per meters
+    r2 = 0.025  # in meters 2.5cm
+    eps0 = 8.8541878188*10**(-12)  # Epsilon zero vaccuum permitivity.
+    eq = Eq(175, l/(2*pi*eps0)*log(r1/r2))
+    assert solve(eq, r1) == [{r1: 0.047842850456392652}]
