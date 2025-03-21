@@ -620,6 +620,13 @@ def test_is_zero():
         assert func(x, (x, 1, 1)).is_zero is None
 
 
+def test_is_positive():
+    e = summation(1/((n + 1)**4 + 1), (n, -oo, oo))
+    assert e != 0  # issue sympy/sympy#27786
+    assert e.is_positive
+    assert e > 0
+
+
 def test_is_number():
     # is number should not rely on evaluation or assumptions,
     # it should be equivalent to `not foo.free_symbols`
