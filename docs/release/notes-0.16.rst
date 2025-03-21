@@ -51,3 +51,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27712`: Infinite hang and resource consumption when solving a specially crafted equation due to call to Integer
 * :sympyissue:`27794`: PolyRing.index doesn't appear to follow Python's list indexing convention
 * :sympyissue:`27786`: A sum of positive elements returns 0
+* :sympyissue:`27798`: Bug of domain.unify
