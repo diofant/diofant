@@ -139,7 +139,7 @@ def test_PolynomialRing_index():
     R, x, y, _ = ring('x y z', ZZ)
 
     assert R.index(0) == 0
-    assert R.index(-1) == 2
+    assert R.index(-1) == 2  # issue sympy/sympy#27794
 
     pytest.raises(ValueError, lambda: R.index(100))
 
