@@ -52,3 +52,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27794`: PolyRing.index doesn't appear to follow Python's list indexing convention
 * :sympyissue:`27786`: A sum of positive elements returns 0
 * :sympyissue:`27798`: Bug of domain.unify
+* :sympyissue:`27819`: PolyRing: Issue in index Method of PolyRing When Using String as Generator
