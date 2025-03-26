@@ -49,3 +49,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`27675`: A simple example of a wrong definite integral
 * :sympyissue:`27683`: RecursionError: maximum recursion depth exceeded for SympifyError(a) when exchange an Integer into a Float
 * :sympyissue:`27712`: Infinite hang and resource consumption when solving a specially crafted equation due to call to Integer
+* :sympyissue:`27794`: PolyRing.index doesn't appear to follow Python's list indexing convention
+* :sympyissue:`27786`: A sum of positive elements returns 0
+* :sympyissue:`27798`: Bug of domain.unify
+* :sympyissue:`27819`: PolyRing: Issue in index Method of PolyRing When Using String as Generator
