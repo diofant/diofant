@@ -54,3 +54,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27798`: Bug of domain.unify
 * :sympyissue:`27819`: PolyRing: Issue in index Method of PolyRing When Using String as Generator
 * :sympyissue:`27874`: What should the extended Euclidean algorithm return when all inputs are zero?
+* :sympyissue:`27901`: rsolve raises AttributeError for some of the hypergeometric univariate functions
