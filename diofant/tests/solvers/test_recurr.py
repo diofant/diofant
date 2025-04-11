@@ -285,3 +285,11 @@ def test_sympyissue_19630():
     res0 = [{f: Lambda(n, (-2)**n + 2*n)}]
 
     assert rsolve(eq, init={f(1): 0, f(2): 8, f(3): -2}) == res0
+
+
+def test_sympyissue_27901():
+    eq = Eq(f(k + 1) - f(k),
+            binomial(n + 1, k)*2**(-n - 1) - binomial(n, k)*2**(-n))
+    res = [{f: Lambda(k, C0 - 2**(-n)*k*binomial(n, k)/(-k + n + 1)/2)}]
+
+    assert rsolve(eq, f(k)) == res
