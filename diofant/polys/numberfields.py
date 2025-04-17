@@ -701,7 +701,7 @@ def primitive_element(extension, **args):
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
 
-    extension = list(uniq(extension))
+    extension = [sympify(_).as_expr() for _ in uniq(extension)]
 
     x = Dummy('x')
     symbols = set().union(*(e.free_symbols for e in extension))
