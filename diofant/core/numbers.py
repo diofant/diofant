@@ -724,7 +724,7 @@ class Float(Number):
 
 
 # Ground type for components of Rational
-_int_dtype = gmpy.mpz if GROUND_TYPES == 'gmpy' else int
+_int_dtype = int if GROUND_TYPES == 'python' else gmpy.mpz
 
 
 class Rational(Number):

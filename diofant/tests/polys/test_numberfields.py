@@ -397,6 +397,12 @@ def test_primitive_element():
             (PurePoly(x**4 + 54*x**2 + 81), [1, 2, 4], [[0, QQ(1, 3)], [0, 2, 0, QQ(1, 27)],
                                                         [0, QQ(-5, 6), 0, QQ(-1, 54)]]))
 
+    # issue sympy/sympy#14120
+    D = QQ.inject(y)
+    assert (primitive_element([(y**2 - 2)]) ==
+            (PurePoly(x - y**2 + 2, x, domain=D), [1],
+             [[D.from_expr(y**2 - 2)]]))
+
 
 def test_field_isomorphism():
     a = QQ.algebraic_field(sqrt(2))

@@ -3418,3 +3418,12 @@ def test_sympyissue_26497():
     expr3 = -(a_n - I)**2*(a_n**2 + m**2 + 2*m + 2)
     assert expr.cancel(extension=True).factor(extension=True) == expr3
     assert expr.factor(extension=True) == expr3
+
+
+def test_sympyissue_27798():
+    p = 49*x**3 - 49*x**2 + 14*x - 1
+    f1 = QQ.algebraic_field(RootOf(p, 2))
+    f2 = QQ.algebraic_field(RootOf(p, 0))
+    f3 = f1.unify(f2)
+    assert (x.as_poly(x, domain=f1) + x.as_poly(x, domain=f2)
+            == (2*x).as_poly(x, domain=f3))

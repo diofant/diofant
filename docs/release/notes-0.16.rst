@@ -14,6 +14,7 @@ Compatibility breaks
 ====================
 
 * Reorder tuples, returned by :meth:`~diofant.polys.polytools.Poly.gcdex` and :meth:`~diofant.polys.polytools.Poly.half_gcdex`, see :pull:`1454`.
+* Removed ``Expr.lseries()`` (``n=None`` option for :meth:`~diofant.core.expr.Expr.series`), see :pull:`1418`.
 
 Minor changes
 =============
@@ -45,3 +46,13 @@ These Sympy issues also were addressed:
 * :sympyissue:`27300`: Wrong result for an integral over complex exponential with a Diracdelta function
 * :sympyissue:`27551`: Invalid limit
 * :sympyissue:`27624`: sympy takes so long to solve a solvable system of polynomial equations symbolically
+* :sympyissue:`27675`: A simple example of a wrong definite integral
+* :sympyissue:`27683`: RecursionError: maximum recursion depth exceeded for SympifyError(a) when exchange an Integer into a Float
+* :sympyissue:`27712`: Infinite hang and resource consumption when solving a specially crafted equation due to call to Integer
+* :sympyissue:`27794`: PolyRing.index doesn't appear to follow Python's list indexing convention
+* :sympyissue:`27786`: A sum of positive elements returns 0
+* :sympyissue:`27798`: Bug of domain.unify
+* :sympyissue:`27819`: PolyRing: Issue in index Method of PolyRing When Using String as Generator
+* :sympyissue:`27874`: What should the extended Euclidean algorithm return when all inputs are zero?
+* :sympyissue:`27901`: rsolve raises AttributeError for some of the hypergeometric univariate functions
+* :sympyissue:`14120`: GeneratorsError for primitive_element([Poly(x**2 - 2)], x)

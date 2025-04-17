@@ -91,6 +91,11 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if self.function.is_zero:
             return True
 
+    def _eval_is_positive(self):
+        if self.function.is_positive and all((h - l - 1).is_nonnegative
+                                             for (_, l, h) in self.limits):
+            return True
+
     def doit(self, **hints):
         if hints.get('deep', True):
             f = self.function.doit(**hints)

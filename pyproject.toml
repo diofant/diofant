@@ -1,5 +1,5 @@
 [build-system]
-requires = ['setuptools>=64,<74', 'setuptools_scm[toml]>=8']
+requires = ['setuptools>=75.8.1', 'setuptools_scm[toml]>=8']
 build-backend = 'setuptools.build_meta'
 [project]
 name = 'Diofant'
@@ -20,11 +20,11 @@ classifiers = ['Development Status :: 4 - Beta',
                'Topic :: Software Development :: Libraries :: Python Modules',
                'Programming Language :: Python :: 3',
                'Programming Language :: Python :: 3 :: Only',
-               'Programming Language :: Python :: 3.11',
                'Programming Language :: Python :: 3.12',
                'Programming Language :: Python :: 3.13',
+               'Programming Language :: Python :: 3.14',
                'Programming Language :: Python :: Implementation :: CPython']
-requires-python = '>=3.11'
+requires-python = '>=3.12'
 dependencies = ['mpmath>=1.4.0a1']
 dynamic = ['version']
 [project.readme]
@@ -35,13 +35,12 @@ Homepage = 'https://diofant.readthedocs.io/'
 'Source Code' = 'https://github.com/diofant/diofant/'
 'Bug Tracker' = 'https://github.com/diofant/diofant/issues/'
 Download = 'https://github.com/diofant/diofant/releases/'
-Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.15.html'
+Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 [project.optional-dependencies]
-exports = ['numpy>=1.19,<1.25;python_version<"3.12"',
-           'numpy>=1.26.0rc1;python_version>="3.12"', 'cython>=0.29',
-           'meson-python;python_version>="3.12"',
-           'ninja;python_version>="3.12"']
+exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
+           'meson-python', 'ninja']
 gmpy = ['gmpy2>=2.2']
+gmp = ['python-gmp>=0.4.0a1']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1']
@@ -155,18 +154,19 @@ show_missing = true
 [tool.mypy]
 follow_imports = 'silent'
 [[tool.mypy.overrides]]
-module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*']
+module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp']
 ignore_missing_imports = true
 [tool.flake8]
 statistics = true
 ignore = ['E201', 'E202', 'E226', 'E241', 'W503', 'F402', 'F821',
           'N801', 'N802', 'N803', 'N806', 'D402', 'D103', 'D100', 'D105',
           'D205', 'D401', 'D102', 'D400', 'E741', 'N807', 'W504',
-          'N815', 'SFS301']
+          'N815', 'SFS301', 'F824']
 max_line_length = 7000
 exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml']
 jobs = 1
-per_file_ignores = ['diofant/printing/latex.py:SFS101']
+per_file_ignores = ['diofant/printing/latex.py:SFS101',
+                    'diofant/__init__.py:E402']
 pytest-fixture-no-parentheses = true
 pytest-mark-no-parentheses = true
 pytest-raises-require-match-for = ['BaseException', 'Exception', 'OSError',
