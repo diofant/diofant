@@ -57,3 +57,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`27901`: rsolve raises AttributeError for some of the hypergeometric univariate functions
 * :sympyissue:`14120`: GeneratorsError for primitive_element([Poly(x**2 - 2)], x)
 * :sympyissue:`28006`: Mul(0, x, evaluate=False).is_zero gives False
+* :sympyissue:`28033`: Incorrect result when calculating a definite integral as the limit of a Rieman sum
