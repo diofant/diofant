@@ -11,8 +11,8 @@ from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
                      digamma, elliptic_e, elliptic_k, erf, erfc, erfi, exp,
                      factorial, false, floor, gamma, hyper, integrate, limit,
                      log, lowergamma, nan, oo, pi, polygamma, re, root, sign,
-                     simplify, sin, sinh, sqrt, subfactorial, symbols, tan,
-                     tanh, true)
+                     simplify, sin, sinh, sqrt, subfactorial, summation,
+                     symbols, tan, tanh, true)
 from diofant.abc import a, b, c, k, n, x, y, z
 from diofant.calculus.limits import heuristics
 
@@ -1173,3 +1173,8 @@ def test_sympyissue_27551():
     e = 1/(x*sqrt(log(x)**2))
     assert limit(e, x, 1, dir=+1) == oo
     assert limit(e, x, 1, dir=-1) == oo
+
+
+def test_sympyissue_28033():
+    e = 2/n*summation(exp(1 + (2*x)/n), (x, 1, n))
+    assert limit(e, n, oo) == exp(3) - E

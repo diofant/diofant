@@ -2,10 +2,10 @@
 
 import pytest
 
-from diofant import (E, Eq, FiniteSet, Float, Integer, Integral, Interval, Max,
-                     Min, Ne, Piecewise, PurePoly, Rational, RootOf, S, Symbol,
-                     Union, false, log, oo, pi, reduce_inequalities, root, sin,
-                     solve, sqrt, true)
+from diofant import (E, EmptySet, Eq, FiniteSet, Float, Integer, Integral,
+                     Interval, Max, Min, Ne, Piecewise, PurePoly, Rational,
+                     RootOf, S, Symbol, Union, exp, false, log, oo, pi,
+                     reduce_inequalities, root, sin, solve, sqrt, true)
 from diofant.abc import x, y
 from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
@@ -439,3 +439,9 @@ def test_sympyissue_25738():
 def test_sympyissue_25983():
     assert reduce_inequalities(pi/abs(x) <= 1) == (pi <= x) | (x <= -pi)
     assert (pi/abs(x) <= 1).as_set() == Interval(-oo, -pi) | Interval(pi, oo)
+
+
+def test_sympyissue_28033():
+    x = Symbol('x', finite=True, positive=True)
+    eq = Eq(exp(2/x), 1)
+    assert eq.as_set() is EmptySet()

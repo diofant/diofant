@@ -929,3 +929,7 @@ def test_sympyissue_24948():
     a = acos(-3*sqrt(10)/10)
     b = acos(2*sqrt(5)/5)
     assert (b - a + 3*pi/4).is_positive is None
+
+
+def test_sympyissue_28006():
+    assert Mul(0, x, evaluate=False).is_zero is not False
