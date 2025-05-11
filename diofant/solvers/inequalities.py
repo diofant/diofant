@@ -538,7 +538,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     from .solvers import solve
 
     e = expr.lhs - expr.rhs
-    if gen.is_extended_real is None:
+    if gen.is_extended_real is not False:
         gen_r = Dummy(gen.name, extended_real=True)
         e_r = e.subs({gen: gen_r})
     else:
