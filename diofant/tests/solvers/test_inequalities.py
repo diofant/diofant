@@ -62,6 +62,10 @@ def test_solve_linear_inequalities():
 
     assert reduce_inequalities(eqs) == ans
 
+    eqs = [x >= 0, y >= 0, x <= 1, y <= 1, Eq(x + y, 1), Eq(x + 2*y, 0)]
+
+    assert reduce_inequalities(eqs) == false
+
 
 def test_solve_poly_inequality():
     assert psolve(Integer(0).as_poly(x), '==') == [S.ExtendedReals]
