@@ -107,7 +107,8 @@ class MCodePrinter(CodePrinter):
                     raise ValueError('bad user_functions')
             self.known_functions.update(userfuncs)
 
-    doprint = StrPrinter.doprint
+    def doprint(self, expr, assign_to=None):
+        return StrPrinter.doprint(self, expr)
 
     def _print_Pow(self, expr):
         PREC = precedence(expr)

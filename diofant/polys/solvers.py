@@ -6,7 +6,7 @@ from ..matrices import Matrix, zeros
 class RawMatrix(Matrix):
     """Dummy class with overriden sympify() helper."""
 
-    _sympify = staticmethod(lambda x: x)  # type: ignore[misc,arg-type] # see e.g. python/mypy#13818
+    _sympify = staticmethod(lambda x: x)  # type: ignore # see e.g. python/mypy#13818
 
 
 def eqs_to_matrix(eqs, ring):
