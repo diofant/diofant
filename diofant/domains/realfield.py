@@ -101,33 +101,11 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def to_rational(self, s, limit=True):
         """Convert a real number to rational number."""
         p, q = mpmath.libmp.to_rational(s._mpf_)
-        _max_denom = max(2**self._context.prec // 200, 99)
-
-        if not limit or q <= _max_denom:
+        _max_denom = max(2**self._context.prec // 200, 99) if limit else q
+        x = Fraction(p, q).limit_denominator(_max_denom)
+        if p and not x:
             return p, q
-
-        p0, q0, p1, q1 = 0, 1, 1, 0
-        n, d = p, q
-
-        while True:
-            a = n//d
-            q2 = q0 + a*q1
-            if q2 > _max_denom:
-                break
-            p0, q0, p1, q1 = p1, q1, p0 + a*p1, q2
-            n, d = d, n - a*d
-
-        k = (_max_denom - q0)//q1
-
-        number = Fraction(p, q)
-        bound1 = Fraction(p0 + k*p1, q0 + k*q1)
-        bound2 = Fraction(p1, q1)
-
-        if not bound2 or not bound1:
-            return p, q
-        if abs(bound2 - number) <= abs(bound1 - number):
-            return bound2.as_integer_ratio()
-        return bound1.as_integer_ratio()
+        return x.as_integer_ratio()
 
     def get_exact(self):
         from . import QQ
