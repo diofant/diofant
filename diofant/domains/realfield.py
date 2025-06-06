@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from fractions import Fraction
+
 import mpmath
 
 from ..core import Float
 from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
-from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
@@ -30,23 +31,27 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     def dps(self):
         return self._context.dps
 
-    @property
-    def tolerance(self):
-        return self._context.tolerance
+    def __new__(cls, prec=53, dps=None):
+        context = mpmath.MPContext()
 
-    def __new__(cls, prec=53, dps=None, tol=None):
-        context = MPContext(prec, dps, tol)
+        if prec is None and dps is None:
+            context.prec = 53
+        elif dps is None:
+            context.prec = prec
+        elif prec is None:
+            context.dps = dps
+        else:
+            raise TypeError('Cannot set both prec and dps')
 
         obj = super().__new__(cls)
 
         try:
-            obj.dtype = _reals_cache[(context.prec, context.tolerance)]
+            obj.dtype = _reals_cache[context.prec]
         except KeyError:
-            _reals_cache[(context.prec, context.tolerance)] = obj.dtype = context.mpf
+            _reals_cache[context.prec] = obj.dtype = context.mpf
 
-        context._parent = obj
         obj._context = context
-        obj._hash = hash((cls.__name__, obj.dtype, context.prec, context.tolerance))
+        obj._hash = hash((cls.__name__, obj.dtype, context.prec))
 
         obj.zero = obj.dtype(0)
         obj.one = obj.dtype(1)
@@ -54,13 +59,11 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         return obj
 
     def __getnewargs_ex__(self):
-        return (), {'prec': self.precision,
-                    'tol': mpmath.mpf(self.tolerance._mpf_)}
+        return (), {'prec': self.precision}
 
     def __eq__(self, other):
         return (isinstance(other, RealField)
-                and self.precision == other.precision
-                and self.tolerance == other.tolerance)
+                and self.precision == other.precision)
 
     def __hash__(self):
         return self._hash
@@ -95,9 +98,36 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         if not element.imag:
             return self.dtype(element.real)
 
-    def to_rational(self, element, limit=True):
+    def to_rational(self, s, limit=True):
         """Convert a real number to rational number."""
-        return self._context.to_rational(element, limit)
+        p, q = mpmath.libmp.to_rational(s._mpf_)
+        _max_denom = max(2**self._context.prec // 200, 99)
+
+        if not limit or q <= _max_denom:
+            return p, q
+
+        p0, q0, p1, q1 = 0, 1, 1, 0
+        n, d = p, q
+
+        while True:
+            a = n//d
+            q2 = q0 + a*q1
+            if q2 > _max_denom:
+                break
+            p0, q0, p1, q1 = p1, q1, p0 + a*p1, q2
+            n, d = d, n - a*d
+
+        k = (_max_denom - q0)//q1
+
+        number = Fraction(p, q)
+        bound1 = Fraction(p0 + k*p1, q0 + k*q1)
+        bound2 = Fraction(p1, q1)
+
+        if not bound2 or not bound1:
+            return p, q
+        if abs(bound2 - number) <= abs(bound1 - number):
+            return bound2.as_integer_ratio()
+        return bound1.as_integer_ratio()
 
     def get_exact(self):
         from . import QQ
