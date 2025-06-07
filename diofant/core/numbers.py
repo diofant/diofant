@@ -722,6 +722,16 @@ class Float(Number):
     def __format__(self, format_spec):
         return format(decimal.Decimal(str(self)), format_spec)
 
+    def as_integer_ratio(self):
+        """
+        Return integer ratio.
+
+        Return a pair of integers, whose ratio is exactly equal to the
+        original Float and with a positive denominator.
+
+        """
+        return to_rational(self._mpf_)
+
 
 # Ground type for components of Rational
 _int_dtype = int if GROUND_TYPES == 'python' else gmpy.mpz
@@ -1910,6 +1920,9 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     __ge__ = Expr.__ge__
     __lt__ = Expr.__lt__
     __le__ = Expr.__le__
+
+    def as_integer_ratio(self):
+        raise ValueError('cannot convert NaN to integer ratio')
 
 
 nan = S.NaN

@@ -1593,3 +1593,9 @@ def test_comparisons_with_unknown_type():
 
 def test_sympyissue_24543():
     assert Rational('0.5', '100') == Rational(1, 200)
+
+
+def test_Float_as_integer_ratio():
+    assert Float('0.25').as_integer_ratio() == (1, 4)
+    pytest.raises(ValueError, nan.as_integer_ratio)
+    pytest.raises(OverflowError, lambda: Float('inf').as_integer_ratio())
