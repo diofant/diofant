@@ -19,6 +19,8 @@ Compatibility breaks
 Minor changes
 =============
 
+* Add :meth:`~diofant.core.numbers.Float.as_integer_ratio`, see :pull:`4407`.
+
 Developer changes
 =================
 

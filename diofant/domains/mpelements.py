@@ -1,11 +1,9 @@
 """Real and complex elements."""
 
-from fractions import Fraction
-
 from mpmath.ctx_mp_python import PythonMPContext, _constant, _mpc, _mpf
 from mpmath.libmp import (MPZ_ONE, finf, fnan, fninf, fone, from_float,
                           from_int, from_str, fzero, int_types, mpf_mul,
-                          round_nearest, to_rational)
+                          round_nearest)
 
 from .domainelement import DomainElement
 
@@ -103,11 +101,6 @@ class MPContext(PythonMPContext):
 
         self.tolerance = self.make_mpf(self.tol)
 
-        if not self.tolerance:
-            self.max_denom = 1000000
-        else:
-            self.max_denom = int(1/self.tolerance)
-
         self.zero = self.make_mpf(fzero)
         self.one = self.make_mpf(fone)
         self.j = self.make_mpc((fzero, fone))
@@ -142,35 +135,6 @@ class MPContext(PythonMPContext):
     @property
     def _str_digits(self):
         return self._dps
-
-    def to_rational(self, s, limit=True):
-        p, q = to_rational(s._mpf_)
-
-        if not limit or q <= self.max_denom:
-            return p, q
-
-        p0, q0, p1, q1 = 0, 1, 1, 0
-        n, d = p, q
-
-        while True:
-            a = n//d
-            q2 = q0 + a*q1
-            if q2 > self.max_denom:
-                break
-            p0, q0, p1, q1 = p1, q1, p0 + a*p1, q2
-            n, d = d, n - a*d
-
-        k = (self.max_denom - q0)//q1
-
-        number = Fraction(p, q)
-        bound1 = Fraction(p0 + k*p1, q0 + k*q1)
-        bound2 = Fraction(p1, q1)
-
-        if not bound2 or not bound1:
-            return p, q
-        if abs(bound2 - number) <= abs(bound1 - number):
-            return bound2.as_integer_ratio()
-        return bound1.as_integer_ratio()
 
     def almosteq(self, s, t, rel_eps=None, abs_eps=None):
         t = self.convert(t)
