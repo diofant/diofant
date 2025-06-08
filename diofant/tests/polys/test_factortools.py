@@ -646,9 +646,9 @@ def test_factor_list():
     assert f.factor_list() == (1.0, [(f, 1)])
 
     # issue diofant/diofant#238
-    f = 0.1*x**2 + 1.1*x + 1.0
+    f = 0.25*x**2 + 1.0625*x + 0.25
 
-    assert f.factor_list() == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+    assert f.factor_list() == (16.0, [(0.25*x + 0.0625, 1), (0.0625*x + 0.25, 1)])
 
     f = 0.25 + 1.0*x + 1.0*x**2
 
@@ -737,9 +737,9 @@ def test_factor_list():
     # issue diofant/diofant#238
     R, x, y, z = ring('x y z', RR)
 
-    f = x*y + x*z + 0.1*y + 0.1*z
+    f = 0.25*x*y + 0.0625*x*z + y + 0.25*z
 
-    assert f.factor_list() == (10.0, [(x + 0.1, 1), (0.1*y + 0.1*z, 1)])
+    assert f.factor_list() == (16.0, [(0.0625*x + 0.25, 1), (0.25*y + 0.0625*z, 1)])
 
     f = 0.25*x**2 + 1.0*x*y*z + 1.0*y**2*z**2
 

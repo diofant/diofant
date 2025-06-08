@@ -15,6 +15,7 @@ Compatibility breaks
 
 * Reorder tuples, returned by :meth:`~diofant.polys.polytools.Poly.gcdex` and :meth:`~diofant.polys.polytools.Poly.half_gcdex`, see :pull:`1454`.
 * Removed ``Expr.lseries()`` (``n=None`` option for :meth:`~diofant.core.expr.Expr.series`), see :pull:`1418`.
+* Conversion to exact domains now happens with full precision, see :pull:`1467`.
 
 Minor changes
 =============

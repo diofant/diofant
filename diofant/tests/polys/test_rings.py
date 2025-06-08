@@ -1960,7 +1960,7 @@ def test_PolyElement_monic():
 
     f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
-    assert f.monic() == x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
+    assert f.monic() == x**2*y + 8*x**2/3 + 5*x*y/3 + 2*x + 2*y/3 + 1
 
 
 def test_PolyElement_content():
