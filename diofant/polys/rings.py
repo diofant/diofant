@@ -433,8 +433,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         common = ground_ring.one
         lcm = ground_ring.lcm
 
-        for coeff in self.values():
-            common = lcm(common, coeff.denominator)
+        if domain.is_Exact:
+            for coeff in self.values():
+                common = lcm(common, coeff.denominator)
 
         f = self*domain.convert(common)
 
