@@ -165,8 +165,7 @@ ignore = ['E201', 'E202', 'E226', 'E241', 'W503', 'F402', 'F821',
 max_line_length = 7000
 exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml']
 jobs = 1
-per_file_ignores = ['diofant/printing/latex.py:SFS101',
-                    'diofant/__init__.py:E402']
+per_file_ignores = ['diofant/printing/latex.py:SFS101']
 pytest-fixture-no-parentheses = true
 pytest-mark-no-parentheses = true
 pytest-raises-require-match-for = ['BaseException', 'Exception', 'OSError',
