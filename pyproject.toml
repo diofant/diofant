@@ -40,7 +40,7 @@ Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
            'meson-python', 'ninja']
 gmpy = ['gmpy2>=2.2']
-gmp = ['python-gmp>=0.4.0a1']
+gmp = ['python-gmp>=0.4.0a4']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1', 'setuptools>=75.8.1,<80.9']
@@ -165,8 +165,7 @@ ignore = ['E201', 'E202', 'E226', 'E241', 'W503', 'F402', 'F821',
 max_line_length = 7000
 exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml']
 jobs = 1
-per_file_ignores = ['diofant/printing/latex.py:SFS101',
-                    'diofant/__init__.py:E402']
+per_file_ignores = ['diofant/printing/latex.py:SFS101']
 pytest-fixture-no-parentheses = true
 pytest-mark-no-parentheses = true
 pytest-raises-require-match-for = ['BaseException', 'Exception', 'OSError',

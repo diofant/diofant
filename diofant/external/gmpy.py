@@ -16,7 +16,11 @@ gmpy: typing.Any = import_module('gmpy2')
 if gmpy:
     HAS_GMPY = 2
 else:
-    HAS_GMPY = 0
+    gmpy = import_module('gmp')
+    if gmpy:
+        HAS_GMPY = 2
+    else:
+        HAS_GMPY = 0
 
 if GROUND_TYPES == 'auto':
     if HAS_GMPY:
