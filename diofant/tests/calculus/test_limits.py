@@ -1178,3 +1178,8 @@ def test_sympyissue_27551():
 def test_sympyissue_28033():
     e = 2/n*summation(exp(1 + (2*x)/n), (x, 1, n))
     assert limit(e, n, oo) == exp(3) - E
+
+
+def test_sympyissue_28130():
+    assert limit(E**x, x, -oo) == 0
+    assert limit(2**x, x, -oo) == 0

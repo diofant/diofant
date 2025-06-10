@@ -62,3 +62,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`28006`: Mul(0, x, evaluate=False).is_zero gives False
 * :sympyissue:`28033`: Incorrect result when calculating a definite integral as the limit of a Rieman sum
 * :sympyissue:`28089`: LP solver may loop or give wrong answer on infeasible LPs
+* :sympyissue:`28089`: limit of exponential with non-E base gives oo instead of zero
