@@ -1,8 +1,9 @@
 import pytest
 
 from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
-                     Rational, Symbol, Wild, acos, asin, cbrt, exp, false, log,
-                     nan, oo, pi, simplify, sin, sqrt, zoo)
+                     Rational, Symbol, Wild, acos, asin, cbrt, exp,
+                     expand_complex, false, log, nan, oo, pi, root, simplify,
+                     sin, sqrt, zoo)
 from diofant.abc import x, y
 from diofant.core.facts import InconsistentAssumptions
 
@@ -940,3 +941,12 @@ def test_sympyissue_28141():
     assert exp(x).is_positive is None
     assert exp(x).is_negative is False
     assert exp(x).is_nonnegative is True
+
+
+def test_sympyissue_28152():
+    neg = Symbol('neg', negative=True)
+
+    e = root(neg, 3)
+    assert e.is_real is False
+    e2 = expand_complex(e.subs({neg: -1}))
+    assert e2.is_real is False
