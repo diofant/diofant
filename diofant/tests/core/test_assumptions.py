@@ -933,3 +933,10 @@ def test_sympyissue_24948():
 
 def test_sympyissue_28006():
     assert Mul(0, x, evaluate=False).is_zero is not False
+
+
+def test_sympyissue_28141():
+    x = Symbol('x', extended_real=True)
+    assert exp(x).is_positive is None
+    assert exp(x).is_negative is False
+    assert exp(x).is_nonnegative is True
