@@ -1,17 +1,16 @@
 [build-system]
-requires = ['setuptools>=75.8.1,<80.9', 'setuptools_scm[toml]>=8']
+requires = ['setuptools>=77,<80.9', 'setuptools_scm[toml]>=8']
 build-backend = 'setuptools.build_meta'
 [project]
 name = 'Diofant'
 description = 'Computer algebra system (CAS) in Python'
 keywords = ['Math', 'CAS']
-license = {text = 'BSD'}
+license = 'BSD-3-Clause'
 authors = [{name = 'Sergey B Kirpichev et al'}]
 maintainers = [{name = 'Sergey B Kirpichev', email = 'diofant@googlegroups.com'}]
 classifiers = ['Development Status :: 4 - Beta',
                'Intended Audience :: Education',
                'Intended Audience :: Science/Research',
-               'License :: OSI Approved :: BSD License',
                'Operating System :: OS Independent',
                'Programming Language :: Python',
                'Topic :: Scientific/Engineering',
