@@ -2624,12 +2624,12 @@ def test_cancel():
 
     f = (x**2 - 2)/(x + sqrt(2))
 
-    assert cancel(f) == f
+    assert cancel(f, extension=False) == f
     assert cancel(f, greedy=False) == x - sqrt(2)
 
     f = (x**2 - 2)/(x - sqrt(2))
 
-    assert cancel(f) == f
+    assert cancel(f, extension=False) == f
     assert cancel(f, greedy=False) == x + sqrt(2)
 
     assert cancel((x**2/4 - 1, x/2 - 1)) == (Rational(1, 2), x + 2, 1)
@@ -2656,7 +2656,7 @@ def test_cancel():
     f = x**3 + (sqrt(2) - 2)*x**2 - (2*sqrt(2) + 3)*x - 3*sqrt(2)
     g = x**2 - 2
 
-    assert cancel((f, g), extension=True) == (1, x**2 - 2*x - 3, x - sqrt(2))
+    assert cancel((f, g)) == (1, x**2 - 2*x - 3, x - sqrt(2))
 
     f = (-2*x + 3).as_poly()
     g = (-x**9 + x**8 + x**6 - x**5 + 2*x**2 - 3*x + 1).as_poly()
@@ -3288,6 +3288,10 @@ def test_sympyissue_22673():
     assert factor_list(e, modulus=7) == (1, [(x + i, 1) for i in range(7)])
     assert factor_list(p) == (1, [((x + i).as_poly(modulus=7), 1)
                                   for i in range(7)])
+
+
+def test_sympyissue_18391():
+    assert gcd(x**2 + 1, x + I) == x + I
 
 
 @pytest.mark.timeout(10)
