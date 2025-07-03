@@ -4,7 +4,7 @@ import itertools
 
 import pytest
 
-from diofant import (E, Ei, Float, Function, I, Integral, Lambda, Limit, O,
+from diofant import (E, Ei, Eq, Float, Function, I, Integral, Lambda, Limit, O,
                      Piecewise, PoleError, Rational, Reals, RootSum, Sum,
                      Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
                      besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
@@ -1183,3 +1183,9 @@ def test_sympyissue_28033():
 def test_sympyissue_28130():
     assert limit(E**x, x, -oo) == 0
     assert limit(2**x, x, -oo) == 0
+
+
+def test_sympyissue_28170():
+    e = Piecewise((2, x < 0), (5, x > 0), (0, Eq(x, 0)))
+    assert limit(e, x, 0) == 5
+    assert limit(e, x, 0, dir=1) == 2
