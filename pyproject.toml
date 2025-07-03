@@ -39,7 +39,7 @@ Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
            'meson-python', 'ninja']
 gmpy = ['gmpy2>=2.2']
-gmp = ['python-gmp>=0.4.0a4']
+gmp = ['python-gmp>=0.4.0a4,<0.4.0a5']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1', 'setuptools>=75.8.1,<80.9']
