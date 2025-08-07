@@ -20,7 +20,7 @@ from mpmath.libmp import (dps_to_prec, finf, fnan, fninf, fone, from_man_exp,
                           fzero, mpc_abs, mpc_exp, mpc_pow, mpc_pow_int,
                           mpc_pow_mpf, mpc_sqrt, mpf_abs, mpf_add, mpf_atan,
                           mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos, mpf_exp,
-                          mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
+                          mpf_ln, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
                           mpf_pow_int, mpf_shift, mpf_sign, mpf_sin, mpf_sqrt,
                           prec_to_dps, round_nearest, to_man_exp)
 
@@ -673,7 +673,7 @@ def evalf_log(expr, prec, options):
 
     imaginary_term = mpf_cmp(xre, fzero) < 0
 
-    re = mpf_log(mpf_abs(xre), prec, rnd)
+    re = mpf_ln(mpf_abs(xre), prec, rnd)
     size = fastlog(re)
     if prec - size > workprec:
         # We actually need to compute 1+x accurately, not x
@@ -681,7 +681,7 @@ def evalf_log(expr, prec, options):
         xre, xim, _, _ = evalf_add(arg, prec, options)
         prec2 = workprec - fastlog(xre)
         # xre is now x - 1 so we add 1 back here to calculate x
-        re = mpf_log(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
+        re = mpf_ln(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
 
     re_acc = prec
 
