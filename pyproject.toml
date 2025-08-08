@@ -24,7 +24,7 @@ classifiers = ['Development Status :: 4 - Beta',
                'Programming Language :: Python :: 3.14',
                'Programming Language :: Python :: Implementation :: CPython']
 requires-python = '>=3.12'
-dependencies = ['mpmath>=1.4.0a1']
+dependencies = ['mpmath>=1.4.0a7']
 dynamic = ['version']
 [project.readme]
 file = 'docs/README.rst'
@@ -39,7 +39,7 @@ Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
            'meson-python', 'ninja']
 gmpy = ['gmpy2>=2.2']
-gmp = ['python-gmp>=0.4.0a4,<0.4.0a5']
+gmp = ['python-gmp>=0.4.0b3']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1', 'setuptools>=75.8.1,<80.9']
@@ -64,10 +64,12 @@ lines_after_imports = 2
 skip = ['diofant/core/expr.py',
         'diofant/__init__.py',
         'diofant/core/__init__.py',
-        'diofant/polys/__init__.py']
+        'diofant/polys/__init__.py',
+        'diofant/external/_gmp_fractions.py']
 atomic = true
 [tool.pylint.MASTER]
 jobs = 0
+ignore-path = ['diofant/external/_gmp_fractions.py']
 [tool.pylint.format]
 max-line-length = 7000
 [tool.pylint.design]
@@ -139,6 +141,7 @@ filterwarnings = ['ignore::UserWarning', 'error::DeprecationWarning']
 [tool.coverage.run]
 branch = true
 omit = ['conftest.py',
+        'diofant/external/_gmp_fractions.py',
         'diofant/tests/*',
         'diofant/tests/*/*']
 parallel = true
@@ -152,6 +155,7 @@ exclude_lines = ['pragma: no cover',
 show_missing = true
 [tool.mypy]
 follow_imports = 'silent'
+exclude = ['diofant/external/_gmp_fractions.py']
 [[tool.mypy.overrides]]
 module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp']
 ignore_missing_imports = true
@@ -162,7 +166,8 @@ ignore = ['E201', 'E202', 'E226', 'E241', 'W503', 'F402', 'F821',
           'D205', 'D401', 'D102', 'D400', 'E741', 'N807', 'W504',
           'N815', 'SFS301', 'F824']
 max_line_length = 7000
-exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml']
+exclude = ['build', '.eggs', '.git' , '*.rst' , '*.cfg', '*.yml',
+           'diofant/external/_gmp_fractions.py']
 jobs = 1
 per_file_ignores = ['diofant/printing/latex.py:SFS101']
 pytest-fixture-no-parentheses = true

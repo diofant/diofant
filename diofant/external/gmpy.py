@@ -1,4 +1,6 @@
 import os
+import sys
+import types
 import typing
 
 from .importtools import import_module
@@ -16,8 +18,18 @@ gmpy: typing.Any = import_module('gmpy2')
 if gmpy:
     HAS_GMPY = 2
 else:
-    gmpy = import_module('gmp')
-    if gmpy:
+    gmp = import_module('gmp')
+    if gmp:
+        # Emulate gmpy2 module.
+        gmpy = types.ModuleType('gmpy2')
+        for attr in ['__version__', '_mpmath_create', '_mpmath_normalize',
+                     'double_fac', 'fac', 'fib', 'gcd', 'gcdext', 'gmp_info',
+                     'isqrt', 'isqrt_rem', 'mpz']:
+            setattr(gmpy, attr, getattr(gmp, attr))
+        # We can't just subclass Fraction, see python/cpython#136096
+        from ._gmp_fractions import mpq
+        setattr(gmpy, 'mpq', mpq)
+        sys.modules.setdefault('gmpy2', gmpy)
         HAS_GMPY = 2
     else:
         HAS_GMPY = 0
