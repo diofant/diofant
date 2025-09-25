@@ -617,8 +617,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     expr = bottom_up(lambda e: e if isinstance(e, (Integral, Product, Sum)) else e.doit(deep=False))(expr)
     expr = bottom_up(lambda w: w.normal() if hasattr(w, 'normal') else w)(expr)
     expr = Mul(*powsimp(expr).as_content_primitive())
-    _e = cancel(expr)
-    expr1 = shorter(_e, _mexpand(_e).cancel())  # issue sympy/sympy#6829
+    _e = cancel(expr, extension=False)
+    expr1 = shorter(_e, _mexpand(_e).cancel(extension=False))  # issue sympy/sympy#6829
     expr2 = shorter(together(expr, deep=True), together(expr1, deep=True))
 
     if ratio is oo:

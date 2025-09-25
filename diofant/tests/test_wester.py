@@ -407,7 +407,7 @@ def test_H20():
     f = x**3 + (sqrt(2) - 2)*x**2 - (2*sqrt(2) + 3)*x - 3*sqrt(2)
     g = x**2 - 2
     r = (x**2 - 2*x - 3)/(x - sqrt(2))
-    assert cancel(f/g, extension=True) == cancel(f/g, extension=sqrt(2)) == r
+    assert cancel(f/g) == cancel(f/g, extension=sqrt(2)) == r
 
 
 def test_H22():
@@ -793,8 +793,8 @@ def test_M22():
 
 
 def test_M23():
-    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(Rational(1, 2) + sqrt(5)/2)},
-                                           {x: sqrt(Rational(-1, 2) + sqrt(5)/2)}]
+    assert solve(x - 1/sqrt(1 + x**2)) == [{x: sqrt(2)*sqrt(-1 + sqrt(5))/2},
+                                           {x: -sqrt(2)*I*sqrt(1 + sqrt(5))/2}]
 
 
 def test_M24():
