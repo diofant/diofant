@@ -16,13 +16,13 @@ import numbers
 
 from mpmath import (inf, make_mpc, make_mpf, mp, mpc, mpf, nsum, quadosc,
                     quadts, workprec)
-from mpmath.libmp import (MPZ, dps_to_prec, finf, fnan, fninf, fone,
-                          from_man_exp, fzero, mpc_abs, mpc_exp, mpc_pow,
-                          mpc_pow_int, mpc_pow_mpf, mpc_sqrt, mpf_abs, mpf_add,
-                          mpf_atan, mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos,
-                          mpf_exp, mpf_log, mpf_lt, mpf_mul, mpf_neg, mpf_pi,
-                          mpf_pow, mpf_pow_int, mpf_shift, mpf_sign, mpf_sin,
-                          mpf_sqrt, prec_to_dps, round_nearest, to_man_exp)
+from mpmath.libmp import (dps_to_prec, finf, fnan, fninf, fone, from_man_exp,
+                          fzero, mpc_abs, mpc_exp, mpc_pow, mpc_pow_int,
+                          mpc_pow_mpf, mpc_sqrt, mpf_abs, mpf_add, mpf_atan,
+                          mpf_atan2, mpf_bernoulli, mpf_cmp, mpf_cos, mpf_exp,
+                          mpf_ln, mpf_lt, mpf_mul, mpf_neg, mpf_pi, mpf_pow,
+                          mpf_pow_int, mpf_shift, mpf_sign, mpf_sin, mpf_sqrt,
+                          prec_to_dps, round_nearest, to_man_exp)
 
 from ..utilities.iterables import is_sequence
 from .sympify import sympify
@@ -72,10 +72,10 @@ def fastlog(x):
     Examples
     ========
 
-    >>> from mpmath.libmp import MPZ, from_man_exp
+    >>> from mpmath.libmp import from_man_exp
     >>> m, e = 5, 1
     >>> n = m*2**e
-    >>> v = from_man_exp(MPZ(m), e)
+    >>> v = from_man_exp(m, e)
     >>> n, (log(n)/log(2)).evalf(2), fastlog(v)
     (10, 3.3, 4)
 
@@ -673,7 +673,7 @@ def evalf_log(expr, prec, options):
 
     imaginary_term = mpf_cmp(xre, fzero) < 0
 
-    re = mpf_log(mpf_abs(xre), prec, rnd)
+    re = mpf_ln(mpf_abs(xre), prec, rnd)
     size = fastlog(re)
     if prec - size > workprec:
         # We actually need to compute 1+x accurately, not x
@@ -681,7 +681,7 @@ def evalf_log(expr, prec, options):
         xre, xim, _, _ = evalf_add(arg, prec, options)
         prec2 = workprec - fastlog(xre)
         # xre is now x - 1 so we add 1 back here to calculate x
-        re = mpf_log(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
+        re = mpf_ln(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
 
     re_acc = prec
 
@@ -945,12 +945,12 @@ def hypsum(expr, n, start, prec):
 
     # Direct summation if geometric or faster
     if h > 0 or (h == 0 and abs(g) > 1):
-        term = (MPZ(term.numerator) << prec) // term.denominator
+        term = (term.numerator << prec) // term.denominator
         s = term
         k = 1
         while abs(term) > 5:
-            term *= MPZ(func1(k - 1))
-            term //= MPZ(func2(k - 1))
+            term *= func1(k - 1)
+            term //= func2(k - 1)
             s += term
             k += 1
         return from_man_exp(s, -prec)
@@ -967,13 +967,13 @@ def hypsum(expr, n, start, prec):
         # might occur in the extrapolation process; we check the answer to
         # make sure that the desired precision has been reached, too.
         prec2 = 4*prec
-        term0 = (MPZ(term.numerator) << prec2) // term.denominator
+        term0 = (term.numerator << prec2) // term.denominator
 
         def summand(k, _term=[term0]):
             if k:
                 k = int(k)
-                _term[0] *= MPZ(func1(k - 1))
-                _term[0] //= MPZ(func2(k - 1))
+                _term[0] *= func1(k - 1)
+                _term[0] //= func2(k - 1)
             return make_mpf(from_man_exp(_term[0], -prec2))
 
         with workprec(prec):

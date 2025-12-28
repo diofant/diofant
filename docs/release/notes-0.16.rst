@@ -15,9 +15,12 @@ Compatibility breaks
 
 * Reorder tuples, returned by :meth:`~diofant.polys.polytools.Poly.gcdex` and :meth:`~diofant.polys.polytools.Poly.half_gcdex`, see :pull:`1454`.
 * Removed ``Expr.lseries()`` (``n=None`` option for :meth:`~diofant.core.expr.Expr.series`), see :pull:`1418`.
+* Conversion to exact domains now happens with full precision, see :pull:`1467`.
 
 Minor changes
 =============
+
+* Add :meth:`~diofant.core.numbers.Float.as_integer_ratio`, see :pull:`1468`.
 
 Developer changes
 =================
@@ -56,3 +59,10 @@ These Sympy issues also were addressed:
 * :sympyissue:`27874`: What should the extended Euclidean algorithm return when all inputs are zero?
 * :sympyissue:`27901`: rsolve raises AttributeError for some of the hypergeometric univariate functions
 * :sympyissue:`14120`: GeneratorsError for primitive_element([Poly(x**2 - 2)], x)
+* :sympyissue:`28006`: Mul(0, x, evaluate=False).is_zero gives False
+* :sympyissue:`28033`: Incorrect result when calculating a definite integral as the limit of a Rieman sum
+* :sympyissue:`28089`: LP solver may loop or give wrong answer on infeasible LPs
+* :sympyissue:`28089`: limit of exponential with non-E base gives oo instead of zero
+* :sympyissue:`28141`: exp(x) where x is an extended_real has is_zero=False even though exp(-Inf)=0
+* :sympyissue:`28152`: (neg**Rational(1,3)).is_real gives False
+* :sympyissue:`28170`: Wrong left & right limit for Piecewise function with single point pieces

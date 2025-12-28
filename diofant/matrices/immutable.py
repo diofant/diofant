@@ -15,7 +15,7 @@ def sympify_matrix(arg):
 sympify_converter[MatrixBase] = sympify_matrix
 
 
-class ImmutableMatrix(DenseMatrix, MatrixExpr):  # type: ignore[misc]
+class ImmutableMatrix(DenseMatrix, MatrixExpr):  # type: ignore
     """Create an immutable version of a matrix.
 
     Examples
