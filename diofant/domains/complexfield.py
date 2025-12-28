@@ -8,7 +8,6 @@ from ..core import Float, I
 from ..polys.polyerrors import CoercionFailedError
 from .characteristiczero import CharacteristicZero
 from .field import Field
-from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
@@ -30,23 +29,18 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
     def dps(self):
         return self._context.dps
 
-    @property
-    def tolerance(self):
-        return self._context.tolerance
-
-    def __new__(cls, prec=53, dps=None, tol=None):
-        context = MPContext(prec, dps, tol)
-
+    def __new__(cls, prec=53):
+        context = mpmath.mp
+        context.prec = prec
         obj = super().__new__(cls)
 
         try:
-            obj.dtype = _complexes_cache[(context.prec, context.tolerance)]
+            obj.dtype = _complexes_cache[context.prec]
         except KeyError:
-            _complexes_cache[(context.prec, context.tolerance)] = obj.dtype = context.mpc
+            _complexes_cache[context.prec] = obj.dtype = context.mpc
 
-        context._parent = obj
         obj._context = context
-        obj._hash = hash((cls.__name__, obj.dtype, context.prec, context.tolerance))
+        obj._hash = hash((cls.__name__, obj.dtype, context.prec))
 
         obj.zero = obj.dtype(0)
         obj.one = obj.dtype(1)
@@ -54,13 +48,11 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return obj
 
     def __getnewargs_ex__(self):
-        return (), {'prec': self.precision,
-                    'tol': mpmath.mpf(self.tolerance._mpf_)}
+        return (), {'prec': self.precision}
 
     def __eq__(self, other):
         return (isinstance(other, ComplexField)
-                and self.precision == other.precision
-                and self.tolerance == other.tolerance)
+                and self.precision == other.precision)
 
     def __hash__(self):
         return self._hash

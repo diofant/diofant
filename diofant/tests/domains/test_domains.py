@@ -27,16 +27,8 @@ def unify(K0, K1):
 def test_Domain_interface():
     assert issubclass(DomainElement, abc.ABC)
 
-    assert RR(1).parent is RR
-    assert CC(1).parent is CC
-
-    RR3 = RealField(prec=53, dps=3)
+    RR3 = RealField(prec=13)
     assert str(RR3(1.7611107002)) == '1.76'
-
-    assert RealField(tol=3).tolerance == 3.0
-    assert RealField(tol=0.1).tolerance == 0.1
-    assert RealField(tol='0.1').tolerance == 0.1
-    pytest.raises(ValueError, lambda: RealField(tol=object()))
 
     pytest.raises(AttributeError, lambda: CC.ring)
 
@@ -101,11 +93,9 @@ def test_Domain_unify():
     assert unify(CC, EX) == EX
 
     CC2 = ComplexField(prec=20)
-    assert unify(CC, CC2) == unify(CC2, CC) == ComplexField(prec=CC.precision,
-                                                            tol=CC2.tolerance)
+    assert unify(CC, CC2) == unify(CC2, CC) == ComplexField(prec=CC.precision)
     RR2 = RealField(prec=20)
-    assert unify(RR, RR2) == unify(RR2, RR) == RealField(prec=RR.precision,
-                                                         tol=RR2.tolerance)
+    assert unify(RR, RR2) == unify(RR2, RR) == RealField(prec=RR.precision)
 
     assert unify(ZZ.inject(x), F3) == F3.inject(x)
     assert unify(ZZ.inject(x), ZZ) == ZZ.inject(x)
@@ -559,8 +549,6 @@ def test_Domain_convert():
     pytest.raises(CoercionFailedError, lambda: ZZ_python.convert(3.2))
 
     assert CC.convert(QQ_python(1, 2)) == CC(0.5)
-    CC01 = ComplexField(tol=0.1)
-    assert CC.convert(CC01(0.3)) == CC(0.3)
 
     pytest.raises(CoercionFailedError, lambda: ALG2.convert(CC(1j)))
 
@@ -1178,10 +1166,6 @@ def test_RR_Float():
     assert RR2(f1)-1 > 1e-50
     assert RR2(f2)-1 > 1e-50  # RR's precision is equal to f2's
 
-    a = RR(2.1)
-    assert a.numerator == a
-    assert a.denominator == 1
-
 
 def test_CC_double():
     assert CC(3.14).real > 1e-50
@@ -1197,10 +1181,6 @@ def test_CC_double():
     assert CC(1e-15j).imag > 1e-50
     assert CC(1e-20j).imag > 1e-50
     assert CC(1e-40j).imag > 1e-50
-
-    a = CC(2.1 + 1j)
-    assert a.numerator == a
-    assert a.denominator == 1
 
 
 def test_almosteq():
