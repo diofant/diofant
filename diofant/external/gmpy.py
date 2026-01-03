@@ -23,8 +23,7 @@ else:
         # Emulate gmpy2 module.
         gmpy = types.ModuleType('gmpy2')
         for attr in ['__version__', '_mpmath_create', '_mpmath_normalize',
-                     'double_fac', 'fac', 'fib', 'gcd', 'gcdext', 'gmp_info',
-                     'isqrt', 'isqrt_rem', 'mpz']:
+                     'fac', 'gcd', 'gcdext', 'isqrt', 'isqrt_rem', 'mpz']:
             setattr(gmpy, attr, getattr(gmp, attr))
         # We can't just subclass Fraction, see python/cpython#136096
         from ._gmp_fractions import mpq
