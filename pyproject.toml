@@ -157,7 +157,8 @@ show_missing = true
 follow_imports = 'silent'
 exclude = ['diofant/external/_gmp_fractions.py']
 [[tool.mypy.overrides]]
-module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp']
+module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp',
+          '_pyrepl.*']
 ignore_missing_imports = true
 [tool.flake8]
 statistics = true
