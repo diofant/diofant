@@ -10,7 +10,7 @@ or above.  You can install latest release with pip::
 
 or to install also extra dependencies::
 
-    pip install diofant[gmpy,interactive]
+    pip install diofant[gmp,interactive]
 
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
