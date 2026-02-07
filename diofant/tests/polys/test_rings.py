@@ -139,7 +139,7 @@ def test_PolynomialRing_index():
     R, x, y, _ = ring('x y z', ZZ)
 
     assert R.index(0) == 0
-    assert R.index(-1) == 2
+    assert R.index(-1) == 2  # issue sympy/sympy#27794
 
     pytest.raises(ValueError, lambda: R.index(100))
 
@@ -3123,3 +3123,12 @@ def test_sympyissue_21410():
     p = x**6 + x**5 + x**4 + x**3 + 1
 
     assert p**4 == p*p*p*p == x**24 + x**20 + x**16 + x**12 + 1
+
+
+def test_sympyissue_27819():
+    _, x = ring('x', ZZ)
+
+    p = 1 + x + x**2
+    r = 2*x + 1
+
+    assert p.diff(x) == p.diff(0) == p.diff('x') == r

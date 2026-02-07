@@ -9,9 +9,12 @@ import diofant
 
 
 def pytest_report_header(config):
+    import mpmath
+
     return f"""\nDiofant version: {diofant.__version__}
 cache: {diofant.core.cache.USE_CACHE}
-ground types: {diofant.external.GROUND_TYPES}\n"""
+ground types: {diofant.external.GROUND_TYPES}
+mpmath backend: {mpmath.libmp.BACKEND}\n"""
 
 
 def pytest_configure(config):

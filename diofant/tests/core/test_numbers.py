@@ -169,7 +169,7 @@ def test_divmod():
 
 
 def test_igcdex():
-    assert igcdex(0, 0) == (0, 0, 0)
+    assert igcdex(0, 0) == (0, 0, 0)  # issue sympy/sympy#27874
     assert igcdex(-2, 0) == (2, -1, 0)
     assert igcdex(0, -2) == (2, 0, -1)
     assert igcdex(2, 3) == (1, -1, 1)

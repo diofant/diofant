@@ -10,7 +10,7 @@ from ..core.numbers import Float as DiofantReal
 from ..core.numbers import Integer as DiofantInteger
 from ..core.numbers import Rational as DiofantRational
 from ..core.numbers import igcdex as python_gcdex
-from ..external import HAS_GMPY
+from ..external import gmpy
 
 
 __all__ = ('python_factorial', 'python_gcd', 'python_sqrt', 'DiofantReal',
@@ -26,14 +26,13 @@ PythonComplex = builtins.complex
 PythonRational = fractions.Fraction
 
 
-if HAS_GMPY:
-    # pylint: disable=no-name-in-module
-    from gmpy2 import fac as gmpy_factorial
-    from gmpy2 import gcd as gmpy_gcd
-    from gmpy2 import gcdext as gmpy_gcdex
-    from gmpy2 import isqrt as gmpy_sqrt
-    from gmpy2 import mpq as GMPYRational  # noqa: N812
-    from gmpy2 import mpz as GMPYInteger  # noqa: N812
+if gmpy:
+    gmpy_gcd = gmpy.gcd
+    gmpy_gcdex = gmpy.gcdext
+    gmpy_factorial = gmpy.fac
+    gmpy_sqrt = gmpy.isqrt
+    GMPYRational = gmpy.mpq
+    GMPYInteger = gmpy.mpz
 else:
     class _GMPYInteger:
         def __init__(self, obj):

@@ -1,5 +1,29 @@
 """Diofant is a Python library for symbolic mathematics."""
 
+import sys
+import types
+
+try:
+    import gmpy2
+    del gmpy2
+    no_gmpy2 = False
+except ImportError:
+    no_gmpy2 = True
+try:
+    import gmp
+except ImportError:
+    gmp = None
+if no_gmpy2 and gmp:
+    # Emulate gmpy2 module.
+    gmpy2_mod = types.ModuleType('gmpy2')
+    for attr in ['__version__', '_from_bytes', '_mpmath_create',
+                 '_mpmath_normalize', 'double_fac', 'fac', 'fib',
+                 'gcd', 'gcdext', 'gmp_info', 'isqrt', 'isqrt_rem',
+                 'mpq', 'mpz']:
+        setattr(gmpy2_mod, attr, getattr(gmp, attr))
+    sys.modules.setdefault('gmpy2', gmpy2_mod)
+del gmp, sys, types
+
 from fractions import Fraction
 from importlib.metadata import version
 
