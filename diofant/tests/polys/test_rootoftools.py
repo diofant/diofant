@@ -104,7 +104,7 @@ def test_RootOf___new__():
     assert e.poly == PurePoly(x**2 - 4, x)
     assert e.index == 1
 
-    assert RootOf(x**7 - 0.1*x + 1, 0) == RootOf(10*x**7 - x + 10, 0)
+    assert RootOf(x**7 - 0.1*x + 1, 0) == RootOf(36028797018963968*x**7 - 3602879701896397*x + 36028797018963968, 0)
 
     e = x**7 - x
     p = (x**7 - x).as_poly(modulus=7)
@@ -361,7 +361,7 @@ def test_RootOf_refine():
 def test_RootOf_real_roots():
     assert (x**5 + x + 1).as_poly().real_roots() == [RootOf(x**3 - x**2 + 1, 0)]
     assert (x**5 + x + 1).as_poly().real_roots(radicals=False) == [RootOf(x**3 - x**2 + 1, 0)]
-    assert (x**7 - 0.1*x + 1).as_poly(x).real_roots() == [RootOf(10*x**7 - x + 10, 0)]
+    assert (x**7 - 0.1*x + 1).as_poly(x).real_roots() == [RootOf(36028797018963968*x**7 - 3602879701896397*x + 36028797018963968, 0)]
     assert ((x - 2)*(x - 1)*(x**2 - 2)).as_poly().real_roots() == [-sqrt(2), 1, sqrt(2), 2]
     assert ((x + 1)**3*(3*x + 1)).as_poly().real_roots(multiple=False) == [(-1, 3), (Rational(-1, 3), 1)]
 

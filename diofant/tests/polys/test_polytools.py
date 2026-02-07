@@ -300,7 +300,7 @@ def test_Poly__new__():
     assert (3.0*x**2 + 2.0*x + 1).as_poly(domain=RR).all_coeffs() == [1.0, 2.0, 3.0]
 
     pytest.raises(CoercionFailedError, lambda: Poly(3.1*x**2 + 2.1*x + 1, x, domain=ZZ))
-    assert (3.1*x**2 + 2.1*x + 1).as_poly(domain=QQ).all_coeffs() == [1, Rational(21, 10), Rational(31, 10)]
+    assert (3.1*x**2 + 2.1*x + 1).as_poly(domain=QQ).all_coeffs() == [Integer(1), Rational(4728779608739021, 2251799813685248), Rational(6980579422424269, 2251799813685248)]
     assert (3.1*x**2 + 2.1*x + 1).as_poly(domain=RR).all_coeffs() == [1.0, 2.1, 3.1]
 
     assert Poly({(2, 1): 1, (1, 2): 2, (1, 1): 3}, x, y) == \
@@ -564,7 +564,7 @@ def test_Poly_set_domain():
     assert (2*x + 1).as_poly().set_domain(QQ) == (2*x + 1).as_poly(domain=QQ)
 
     assert (Rational(2, 10)*x + Rational(1, 10)).as_poly().set_domain(RR) == (0.2*x + 0.1).as_poly()
-    assert (0.2*x + 0.1).as_poly().set_domain(QQ) == (Rational(2, 10)*x + Rational(1, 10)).as_poly()
+    assert (0.2*x + 0.1).as_poly().set_domain(QQ) == Poly(3602879701896397*x/18014398509481984 + Rational(3602879701896397, 36028797018963968), x, domain='QQ').as_poly()
 
     pytest.raises(CoercionFailedError, lambda: (x/2 + 1).as_poly().set_domain(ZZ))
     pytest.raises(CoercionFailedError, lambda: (x + 1).as_poly(modulus=2).set_domain(QQ))
@@ -862,7 +862,7 @@ def test_Poly_to_exact():
     assert (2*x).as_poly().to_exact() == (2*x).as_poly()
     assert (x/2).as_poly().to_exact() == (x/2).as_poly()
 
-    assert (0.1*x).as_poly().to_exact() == (x/10).as_poly()
+    assert (0.1*x).as_poly().to_exact() == (3602879701896397*x/36028797018963968).as_poly()
 
 
 def test_Poly_retract():
@@ -3137,11 +3137,10 @@ def test_to_rational_coeffs():
 
 
 def test_sympyissue_8754():
-    z = 0.0001*(x*(x + (4.0*y))) + 0.0001*(y*(x + (4.0*y)))
+    z = 9.1552734375e-05*(x*(x + (4.0*y))) + 9.1552734375e-05*(y*(x + (4.0*y)))
     w = expand(z)
     v = factor(w)
-    assert v == 10000.0*((0.0001*x + 0.0001*y)*(0.0001*x +
-                                                0.00040000000000000002*y))
+    assert v == 98304.0*((3.0517578125e-5*x + 3.0517578125e-5*y)*(3.0517578125e-5*x + 0.0001220703125*y))
     assert expand(v) == w
 
 

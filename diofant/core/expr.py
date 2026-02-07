@@ -1,7 +1,7 @@
 import functools
 from collections import defaultdict
 
-from mpmath.libmp import mpf_log, prec_to_dps
+from mpmath.libmp import mpf_ln, prec_to_dps
 
 from ..utilities import as_int, default_sort_key
 from .assumptions import ManagedProperties
@@ -3078,7 +3078,7 @@ def _mag(x):
     try:
         mag_first_dig = ceil(log10(xpos))
     except (ValueError, OverflowError):
-        mag_first_dig = ceil(Float(mpf_log(xpos._mpf_, 53))/log(10))
+        mag_first_dig = ceil(Float(mpf_ln(xpos._mpf_, 53))/log(10))
     # check that we aren't off by 1
     if (xpos/10**mag_first_dig) >= 1:
         assert 1 <= (xpos/10**mag_first_dig) < 10

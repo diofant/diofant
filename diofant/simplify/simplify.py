@@ -767,7 +767,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     """
     try:
         return sympify(as_int(expr))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         pass
     expr = sympify(expr)
     expr = sympify(expr).xreplace({Float('inf'): oo,

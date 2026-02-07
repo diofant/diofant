@@ -97,12 +97,12 @@ class Domain(DefaultPrinting, abc.ABC):
             if isinstance(element, rationals.dtype):
                 return self.convert_from(element, rationals)
 
-        if isinstance(element, float):
-            parent = RealField(tol=False)
+        if isinstance(element, float) or type(element).__name__ == 'mpf':
+            parent = RealField()
             return self.convert_from(parent(element), parent)
 
-        if isinstance(element, complex):
-            parent = ComplexField(tol=False)
+        if isinstance(element, complex) or type(element).__name__ == 'mpc':
+            parent = ComplexField()
             return self.convert_from(parent(element), parent)
 
         if isinstance(element, DomainElement):
@@ -205,8 +205,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
         def mkinexact(cls, K0, K1):
             prec = max(K0.precision, K1.precision)
-            tol = max(K0.tolerance, K1.tolerance)
-            return cls(prec=prec, tol=tol)
+            return cls(prec=prec)
 
         if K1.is_ComplexField:
             K0, K1 = K1, K0
