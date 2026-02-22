@@ -23,12 +23,12 @@ jobs:
     env:
       TERM: xterm
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         persist-credentials: false
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
@@ -79,7 +79,7 @@ jobs:
     - name: Make packages
       run: python -m build
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: matrix.coverage
       with:
         path: |
@@ -90,7 +90,7 @@ jobs:
           build/coverage/html/
     - name: Upload docs to Github Pages
       if: github.event_name == 'push' && matrix.coverage
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         external_repository: diofant/diofant.github.io

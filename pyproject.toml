@@ -38,8 +38,7 @@ Changelog = 'https://diofant.readthedocs.io/en/latest/release/notes-0.16.html'
 [project.optional-dependencies]
 exports = ['numpy>=1.26.0rc1', 'cython>=0.29',
            'meson-python', 'ninja']
-gmpy = ['gmpy2>=2.2']
-gmp = ['python-gmp>=0.4']
+gmp = ['python-gmp>=0.5']
 interactive = ['ipykernel']
 docs = ['sphinx>=7', 'sphinxcontrib-bibtex>=2.6', 'sphinxcontrib-autoprogram',
         'sphinx-rtd-theme>=1', 'setuptools>=75.8.1,<80.9']
@@ -159,7 +158,8 @@ show_missing = true
 follow_imports = 'silent'
 exclude = ['diofant/external/_gmp_fractions.py']
 [[tool.mypy.overrides]]
-module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp']
+module = ['IPython.*', 'gmpy2', 'mpmath.*', 'pexpect', 'traitlets.*', 'gmp',
+          '_pyrepl.*']
 ignore_missing_imports = true
 [tool.flake8]
 statistics = true
