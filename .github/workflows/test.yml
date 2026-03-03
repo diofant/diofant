@@ -79,7 +79,7 @@ jobs:
     - name: Make packages
       run: python -m build
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: matrix.coverage
       with:
         path: |
