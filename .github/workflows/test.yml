@@ -14,10 +14,10 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: [3.12, 3.13, 3.14]
+        python-version: [3.13, 3.14]
         coverage: [false]
         include:
-          - python-version: 3.13
+          - python-version: 3.14
             coverage: true
     runs-on: ubuntu-latest
     env:
