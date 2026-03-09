@@ -8,11 +8,6 @@ some initialization code.
 
 import argparse
 import ast
-import atexit
-import code
-import os
-import readline
-import rlcompleter
 import sys
 
 from diofant import __version__
@@ -122,22 +117,22 @@ def main():
         if args.wrap_ints:
             ast_transformers.append(WrapInts())
 
-        class DiofantConsole(code.InteractiveConsole):
+        try:
+            from _pyrepl.main import CAN_USE_PYREPL
+            if CAN_USE_PYREPL:  # pragma: no cover
+                from _pyrepl.console import \
+                    InteractiveColoredConsole as InteractiveConsole
+            else:
+                raise ImportError
+        except ImportError:  # pragma: no cover
+            from code import InteractiveConsole
+
+        class DiofantConsole(InteractiveConsole):
             """An interactive console with readline support."""
 
             def __init__(self, ast_transformers=[],
                          source_transformers=[], **kwargs):
                 super().__init__(**kwargs)
-
-                readline.set_completer(rlcompleter.Completer(ns).complete)
-                readline.parse_and_bind('tab: complete')
-
-                history = os.path.expanduser('~/.python_history')
-                try:
-                    readline.read_history_file(history)
-                except OSError:
-                    pass
-                atexit.register(readline.write_history_file, history)
                 self.ast_transformers = ast_transformers
                 self.source_transformers = source_transformers
 
@@ -146,25 +141,45 @@ def main():
                     source = '\n'.join(t(source.splitlines()))
 
                 try:
-                    tree = ast.parse(source)
-                except SyntaxError:
+                    code = self.compile(source, filename, 'exec')
+                except (OverflowError, SyntaxError, ValueError):
+                    self.showsyntaxerror(filename, source=source)
+                    return False
+
+                if code is None:
                     return True
 
-                for t in self.ast_transformers:
-                    tree = t.visit(tree)
-                ast.fix_missing_locations(tree)
+                if self.ast_transformers:
+                    tree = ast.parse(source)
+                    for t in self.ast_transformers:
+                        tree = t.visit(tree)
+                    ast.fix_missing_locations(tree)
+                    source = ast.unparse(tree)
+                    source += '\n'
 
-                source = ast.unparse(tree)
-                source = source.split('\n')
-                source = ';'.join(source)
                 return super().runsource(source, filename=filename, symbol=symbol)
 
         c = DiofantConsole(ast_transformers=ast_transformers,
                            source_transformers=source_transformers, locals=ns)
 
+        interactive_hook = getattr(sys, '__interactivehook__', None)
+        if interactive_hook is not None:  # pragma: no branch
+            sys.audit('cpython.run_interactivehook', interactive_hook)
+            interactive_hook()
+
         for l in lines:
             c.push(l)
-        c.interact('', '')
+
+        try:
+            from _pyrepl.main import CAN_USE_PYREPL
+            if CAN_USE_PYREPL:  # pragma: no cover
+                from _pyrepl.simple_interact import \
+                    run_multiline_interactive_console
+                run_multiline_interactive_console(c)
+            else:
+                raise ImportError
+        except ImportError:  # pragma: no cover
+            c.interact('', '')
 
 
 if __name__ == '__main__':  # pragma: no branch
