@@ -14,10 +14,10 @@ jobs:
       contents: write
     strategy:
       matrix:
-        python-version: [3.12, 3.13, 3.14]
+        python-version: [3.13, 3.14]
         coverage: [false]
         include:
-          - python-version: 3.13
+          - python-version: 3.14
             coverage: true
     runs-on: ubuntu-latest
     env:
@@ -79,7 +79,7 @@ jobs:
     - name: Make packages
       run: python -m build
     - name: Archive production artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       if: matrix.coverage
       with:
         path: |
