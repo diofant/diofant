@@ -14,24 +14,21 @@ __all__ = ['GROUND_TYPES', 'HAS_GMPY', 'gmpy']
 
 GROUND_TYPES: str = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 
-gmpy: typing.Any = import_module('gmpy2')
-if gmpy:
+gmp = import_module('gmp')
+if gmp:
+    # Emulate gmpy2 module.
+    gmpy: typing.Any = types.ModuleType('gmpy2')
+    for attr in ['__version__', '_mpmath_create', '_mpmath_normalize',
+                 'fac', 'gcd', 'gcdext', 'isqrt', 'isqrt_rem', 'mpz']:
+        setattr(gmpy, attr, getattr(gmp, attr))
+    # We can't just subclass Fraction, see python/cpython#136096
+    from ._gmp_fractions import mpq
+    setattr(gmpy, 'mpq', mpq)
+    sys.modules.setdefault('gmpy2', gmpy)
     HAS_GMPY = 2
 else:
-    gmp = import_module('gmp')
-    if gmp:
-        # Emulate gmpy2 module.
-        gmpy = types.ModuleType('gmpy2')
-        for attr in ['__version__', '_mpmath_create', '_mpmath_normalize',
-                     'fac', 'gcd', 'gcdext', 'isqrt', 'isqrt_rem', 'mpz']:
-            setattr(gmpy, attr, getattr(gmp, attr))
-        # We can't just subclass Fraction, see python/cpython#136096
-        from ._gmp_fractions import mpq
-        setattr(gmpy, 'mpq', mpq)
-        sys.modules.setdefault('gmpy2', gmpy)
-        HAS_GMPY = 2
-    else:
-        HAS_GMPY = 0
+    gmpy = None
+    HAS_GMPY = 0
 
 if GROUND_TYPES == 'auto':
     if HAS_GMPY:

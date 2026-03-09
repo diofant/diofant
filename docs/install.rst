@@ -3,14 +3,14 @@
 Installation
 ------------
 
-The Diofant can be installed on any computer with Python 3.12
+The Diofant can be installed on any computer with Python 3.13
 or above.  You can install latest release with pip::
 
     pip install diofant
 
 or to install also extra dependencies::
 
-    pip install diofant[gmpy,interactive]
+    pip install diofant[gmp,interactive]
 
 To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
 system to have good TTF fonts.  The `DejaVu Sans Mono
