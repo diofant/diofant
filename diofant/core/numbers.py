@@ -260,7 +260,7 @@ class Number(AtomicExpr):
         return self._as_mpf_val(prec), prec
 
     def __float__(self):
-        return to_float(self._as_mpf_val(53))
+        return to_float(self._as_mpf_val(53), rnd=rnd)
 
     def _eval_subs(self, old, new):
         if old == -self:
