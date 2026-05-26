@@ -1646,3 +1646,9 @@ def test_sympyissue_29751():
     assert (integrate(x**Rational(1, 3)*(1 - x)**Rational(1, 2),
                       (x, 0, 1))
             == sqrt(pi)*gamma(Rational(4, 3))/(2*gamma(Rational(17, 6))))
+
+
+def test_sympyissue_29637():
+    e = 1/(1 + x**10)
+    i = integrate(e, x)
+    assert i.diff(x).simplify() == e
