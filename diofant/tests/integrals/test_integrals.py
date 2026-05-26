@@ -1636,3 +1636,7 @@ def test_sympyissue_27675():
                      (x, 0, 1)) == 2.1922358936689497
     assert integrate((x + 0.19)/(x + 0.37)**2,
                      (x, 0, 1)) == 0.95396338801128411
+
+
+def test_sympyissue_29792():
+    assert integrate(sqrt(2 - x)*sqrt(1/(2 - x)), (x, 0, 1)) == 1
