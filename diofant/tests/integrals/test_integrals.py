@@ -1640,3 +1640,9 @@ def test_sympyissue_27675():
 
 def test_sympyissue_29792():
     assert integrate(sqrt(2 - x)*sqrt(1/(2 - x)), (x, 0, 1)) == 1
+
+
+def test_sympyissue_29751():
+    assert (integrate(x**Rational(1, 3)*(1 - x)**Rational(1, 2),
+                      (x, 0, 1))
+            == sqrt(pi)*gamma(Rational(4, 3))/(2*gamma(Rational(17, 6))))
