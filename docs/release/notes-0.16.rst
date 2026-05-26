@@ -66,3 +66,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`28141`: exp(x) where x is an extended_real has is_zero=False even though exp(-Inf)=0
 * :sympyissue:`28152`: (neg**Rational(1,3)).is_real gives False
 * :sympyissue:`28170`: Wrong left & right limit for Piecewise function with single point pieces
+* :sympyissue:`29792`: wrong result: integrate(sqrt(2 - x) * sqrt(1 / (2 - x)), (x, 0, 1))
+* :sympyissue:`29751`: SymPy branch-cut related defect in definite integration of a Beta-type integral
+* :sympyissue:`29637`: integrate(1/(1+x**10), x) returns incorrect result in Sympy 1.14

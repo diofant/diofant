@@ -1636,3 +1636,19 @@ def test_sympyissue_27675():
                      (x, 0, 1)) == 2.1922358936689497
     assert integrate((x + 0.19)/(x + 0.37)**2,
                      (x, 0, 1)) == 0.95396338801128411
+
+
+def test_sympyissue_29792():
+    assert integrate(sqrt(2 - x)*sqrt(1/(2 - x)), (x, 0, 1)) == 1
+
+
+def test_sympyissue_29751():
+    assert (integrate(x**Rational(1, 3)*(1 - x)**Rational(1, 2),
+                      (x, 0, 1))
+            == sqrt(pi)*gamma(Rational(4, 3))/(2*gamma(Rational(17, 6))))
+
+
+def test_sympyissue_29637():
+    e = 1/(1 + x**10)
+    i = integrate(e, x)
+    assert i.diff(x).simplify() == e
