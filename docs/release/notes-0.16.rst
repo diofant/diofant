@@ -69,3 +69,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`29792`: wrong result: integrate(sqrt(2 - x) * sqrt(1 / (2 - x)), (x, 0, 1))
 * :sympyissue:`29751`: SymPy branch-cut related defect in definite integration of a Beta-type integral
 * :sympyissue:`29637`: integrate(1/(1+x**10), x) returns incorrect result in Sympy 1.14
+* :sympyissue:`28596`: Indefinite integral 1/(a+x²) is calculated incorrectly

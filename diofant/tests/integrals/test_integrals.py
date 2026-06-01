@@ -1652,3 +1652,12 @@ def test_sympyissue_29637():
     e = 1/(1 + x**10)
     i = integrate(e, x)
     assert i.diff(x).simplify() == e
+
+
+def test_sympyissue_28596():
+    a = symbols('a')
+    e = 1/(a + x**2)
+    assert integrate(e, x).diff(x).simplify() == e
+    a = symbols('a', real=True)
+    e2 = 1/(a + x**2)
+    assert integrate(e2, x) == sqrt(1/a)*atan(x/(a*sqrt(1/a)))
