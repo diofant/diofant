@@ -72,3 +72,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`28596`: Indefinite integral 1/(a+x²) is calculated incorrectly
 * :sympyissue:`23688`: Limits of RootSums are not implemented
 * :sympyissue:`28657`: Bug in indefinite integrals
+* :sympyissue:`28186`: Incorrect integral when variables are real
