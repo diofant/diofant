@@ -73,3 +73,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`23688`: Limits of RootSums are not implemented
 * :sympyissue:`28657`: Bug in indefinite integrals
 * :sympyissue:`28186`: Incorrect integral when variables are real
+* :sympyissue:`23828`: div result depends (in a non-obvious way) on symbols in expression
