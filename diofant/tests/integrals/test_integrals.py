@@ -1652,3 +1652,20 @@ def test_sympyissue_29637():
     e = 1/(1 + x**10)
     i = integrate(e, x)
     assert i.diff(x).simplify() == e
+
+
+def test_sympyissue_28596():
+    a = symbols('a')
+    e = 1/(a + x**2)
+    assert integrate(e, x).diff(x).simplify() == e
+    a = symbols('a', real=True)
+    e2 = 1/(a + x**2)
+    assert integrate(e2, x) == sqrt(1/a)*atan(x/(a*sqrt(1/a)))
+
+
+def test_sympyissue_23688():
+    phi, w = symbols('phi w')
+    i = 4*sin(2*phi)/((w - 1/w)**2 + 4*sin(phi)**2)
+    # see diofant/diofant#1491 for general phi
+    i2 = i.subs({phi: pi/8})
+    assert integrate(i2, (w, -oo, oo)) == 2*pi*sqrt(sqrt(2) + 2)
