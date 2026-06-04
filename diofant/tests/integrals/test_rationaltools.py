@@ -1,6 +1,6 @@
 from diofant import (EX, I, Integer, Lambda, Poly, Rational, RootSum, atan,
-                     integrate, log, simplify, sqrt, symbols)
-from diofant.abc import a, b, t, u, x
+                     integrate, log, pi, simplify, sqrt, symbols)
+from diofant.abc import a, b, c, t, u, x, y
 from diofant.integrals.rationaltools import (log_to_atan, log_to_real, ratint,
                                              ratint_logpart)
 
@@ -191,3 +191,18 @@ def test_sympyissue_26502():
     e = 1/(x**4 + sqrt(2)*x - 1)
     r = integrate(e, x)
     assert r.diff(x) == e
+
+
+def test_issue_1474():
+    # see also issue sympy/sympy#28657
+    e = 400*pi**2*x**2/(1600*pi**4*x**4 - 796*pi**2*x**2 + 100)
+    r = ratint(e, x)
+    assert r.diff(x).equals(e)
+
+
+def test_sympyissue_28186():
+    e = y**2*(x - y)**3/((x - y)**2 + 1)**2
+    assert (ratint(e, y).diff(y) - e).equals(0)
+
+    e = 1/(a*x**2 + b*x + c)
+    assert (integrate(e, x).diff(x) - e).equals(0)

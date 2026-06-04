@@ -22,7 +22,7 @@ from diofant import (CC, EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailedError,
                      quo, re, real_roots, reduced, rem, resultant, sin, sqf,
                      sqf_list, sqf_norm, sqf_part, sqrt, subresultants,
                      symbols, sympify, tan, tanh, terms_gcd, true, trunc)
-from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
+from diofant.abc import a, b, c, d, p, q, t, v, w, x, y, z
 from diofant.config import using
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -3426,3 +3426,16 @@ def test_sympyissue_27798():
     f3 = f1.unify(f2)
     assert (x.as_poly(x, domain=f1) + x.as_poly(x, domain=f2)
             == (2*x).as_poly(x, domain=f3))
+
+
+def test_sympyissue_23828():
+    for qq in symbols('c:z'):
+        assert len([i for i in symbols('a:z')
+                    if div(a*i + b + qq, a)[0] != 0]) == 26
+
+    assert div(a*x + b + p, a) == (x, b + p)
+    assert div(a*v + b + p, a) == (v, b + p)
+
+    # Result is unique (reduction to Groebner basis):
+    assert div(a*x + b + p, a, *[a, b, v, p, x]) == (x, b + p)
+    assert div(a*x + b + p, a, *[b, v, p, x, a]) == (x, b + p)

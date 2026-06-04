@@ -90,7 +90,7 @@ class WrapInts(ast.NodeTransformer):
         return node
 
 
-_NAMES_MAP = {}
+_NAMES_MAP: dict[str, str] = {}
 
 
 def unicode_identifiers(lines):

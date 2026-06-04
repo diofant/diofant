@@ -3,6 +3,7 @@
 import ast
 import contextlib
 import os
+import typing
 
 
 __all__ = 'setup',
@@ -37,7 +38,7 @@ _default_config = {
     'MAX_INTEGER_NBITS':          10000000,
 }
 
-_current_config = {}
+_current_config: dict[str, typing.Any] = {}
 
 
 @contextlib.contextmanager

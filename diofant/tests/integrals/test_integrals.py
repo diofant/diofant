@@ -1636,3 +1636,36 @@ def test_sympyissue_27675():
                      (x, 0, 1)) == 2.1922358936689497
     assert integrate((x + 0.19)/(x + 0.37)**2,
                      (x, 0, 1)) == 0.95396338801128411
+
+
+def test_sympyissue_29792():
+    assert integrate(sqrt(2 - x)*sqrt(1/(2 - x)), (x, 0, 1)) == 1
+
+
+def test_sympyissue_29751():
+    assert (integrate(x**Rational(1, 3)*(1 - x)**Rational(1, 2),
+                      (x, 0, 1))
+            == sqrt(pi)*gamma(Rational(4, 3))/(2*gamma(Rational(17, 6))))
+
+
+def test_sympyissue_29637():
+    e = 1/(1 + x**10)
+    i = integrate(e, x)
+    assert i.diff(x).simplify() == e
+
+
+def test_sympyissue_28596():
+    a = symbols('a')
+    e = 1/(a + x**2)
+    assert integrate(e, x).diff(x).simplify() == e
+    a = symbols('a', real=True)
+    e2 = 1/(a + x**2)
+    assert integrate(e2, x) == sqrt(1/a)*atan(x/(a*sqrt(1/a)))
+
+
+def test_sympyissue_23688():
+    phi, w = symbols('phi w')
+    i = 4*sin(2*phi)/((w - 1/w)**2 + 4*sin(phi)**2)
+    # see diofant/diofant#1491 for general phi
+    i2 = i.subs({phi: pi/8})
+    assert integrate(i2, (w, -oo, oo)) == 2*pi*sqrt(sqrt(2) + 2)

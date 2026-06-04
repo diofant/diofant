@@ -327,6 +327,7 @@ def test_doit2():
 
 
 def test_RootSum_limits():
+    # see sympy/sympy#23688
     r = RootSum(x**2 + 1, Lambda(x, x*log(x + y)))
 
     assert limit(r, y, oo) == 0

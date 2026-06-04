@@ -535,7 +535,7 @@ def _inflate_fox_h(g, a):
     return D, meijerg(g.an, g.aother, g.bm, list(g.bother) + bs, z)
 
 
-_dummies = {}
+_dummies: dict[str, str] = {}
 
 
 def _dummy(name, token, expr, **kwargs):
