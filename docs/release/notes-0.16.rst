@@ -74,3 +74,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`28657`: Bug in indefinite integrals
 * :sympyissue:`28186`: Incorrect integral when variables are real
 * :sympyissue:`23828`: div result depends (in a non-obvious way) on symbols in expression
+* :sympyissue:`29835`: Incorrect limit from the right for an unbounded piecewise function

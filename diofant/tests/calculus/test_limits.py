@@ -4,9 +4,9 @@ import itertools
 
 import pytest
 
-from diofant import (E, Ei, Eq, Float, Function, I, Integral, Lambda, Limit, O,
-                     Piecewise, PoleError, Rational, Reals, RootSum, Sum,
-                     Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
+from diofant import (E, Ei, Eq, Float, Function, I, Integral, Lambda, LessThan,
+                     Limit, O, Piecewise, PoleError, Rational, Reals, RootSum,
+                     Sum, Symbol, acos, acosh, acoth, acsc, arg, asin, atan,
                      besselk, binomial, cbrt, ceiling, cos, cosh, cot, diff,
                      digamma, elliptic_e, elliptic_k, erf, erfc, erfi, exp,
                      factorial, false, floor, gamma, hyper, integrate, limit,
@@ -1190,3 +1190,10 @@ def test_sympyissue_28170():
     e = Piecewise((2, x < 0), (5, x > 0), (0, Eq(x, 0)))
     assert limit(e, x, 0) == 5
     assert limit(e, x, 0, dir=1) == 2
+
+
+def test_sympyissue_29835():
+    e = Piecewise((0, LessThan(y, 0)), (-6/y**2, True))
+    assert limit(e, y, 0) == -oo
+    assert limit(e, y, 0, -1) == -oo
+    assert limit(e, y, 0, +1) == 0
