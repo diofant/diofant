@@ -3435,3 +3435,8 @@ def test_sympyissue_23828():
     # Result is unique (reduction to Groebner basis):
     assert div(a*x + b + p, a, *[a, b, v, p, x]) == (x, b + p)
     assert div(a*x + b + p, a, *[b, v, p, x, a]) == (x, b + p)
+
+
+def test_sympyissue_29828():
+    B = groebner([t**2], t, order='lex')
+    assert B.reduce(7) == ([0], 7)

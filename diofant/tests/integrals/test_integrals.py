@@ -1,14 +1,14 @@
 import pytest
 
 from diofant import (And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma, Expr,
-                     Float, Function, Heaviside, I, Integral, Interval, Lambda,
-                     LambertW, Matrix, Max, Min, Mul, Ne, O, Piecewise, Poly,
-                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, arg, asin,
-                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
-                     expand_func, expand_mul, floor, fresnels, gamma, im,
-                     integrate, legendre, log, lowergamma, meijerg, nan, oo,
-                     pi, polar_lift, polygamma, re, sign, simplify, sin, sinh,
-                     sqrt, symbols, tan, tanh, trigsimp)
+                     Float, Function, Heaviside, I, Integer, Integral,
+                     Interval, Lambda, LambertW, Matrix, Max, Min, Mul, Ne, O,
+                     Piecewise, Poly, Rational, Si, Sum, Symbol, Tuple, acos,
+                     acosh, arg, asin, asinh, atan, cbrt, cos, cosh, diff, erf,
+                     erfi, exp, expand_func, expand_mul, floor, fresnels,
+                     gamma, hyper, im, integrate, legendre, log, lowergamma,
+                     meijerg, nan, oo, pi, polar_lift, polygamma, re, sign,
+                     simplify, sin, sinh, sqrt, symbols, tan, tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -1669,3 +1669,16 @@ def test_sympyissue_23688():
     # see diofant/diofant#1491 for general phi
     i2 = i.subs({phi: pi/8})
     assert integrate(i2, (w, -oo, oo)) == 2*pi*sqrt(sqrt(2) + 2)
+
+
+def test_sympyissue_29900():
+    xn = symbols('xn', negative=True)
+    e = sin(x**3)
+    en = e.subs({x: xn})
+    r = integrate(e, x)
+    ans = x**4*gamma(Integer(2)/3)*hyper((Integer(2)/3,),
+                                         (Integer(3)/2, Integer(5)/3),
+                                         -x**6/4)/(6*gamma(Integer(5)/3))
+    rn = integrate(en, xn)
+    assert rn.subs({xn: x}) == r
+    assert r == ans
