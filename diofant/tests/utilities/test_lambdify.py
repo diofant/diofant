@@ -6,8 +6,9 @@ import pytest
 
 import diofant
 from diofant import (ITE, And, Float, Function, I, Integral, Lambda, Matrix,
-                     Max, Min, Not, Or, Piecewise, Rational, cos, exp, false,
-                     lambdify, oo, pi, sin, sqrt, symbols, true)
+                     Max, Min, Not, Or, Piecewise, Rational, binomial, cos,
+                     exp, false, gamma, lambdify, oo, pi, sin, sqrt, symbols,
+                     true, zeta)
 from diofant.abc import t, w, x, y, z
 from diofant.external import import_module
 from diofant.printing.lambdarepr import LambdaPrinter, NumPyPrinter
@@ -591,3 +592,10 @@ def test_sympyissue_23224():
 def test_sympyissue_26119():
     f = lambdify((x,), ((), (x,)), printer=NumPyPrinter)
     assert f(1) == ((), (1,))
+
+
+def test_issue_1494():
+    pytest.importorskip('numpy')
+    for e in [binomial(x, 2), gamma(x), zeta(x)]:
+        pytest.raises(NameError, lambda: lambdify(x, e, modules='numpy'))
+    assert lambdify(x, binomial(x, 2), modules='mpmath')(5) == 10
