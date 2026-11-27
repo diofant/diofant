@@ -60,7 +60,7 @@ def main():
         args.no_wrap_division = True
 
     try:
-        import IPython
+        import IPython.terminal.ipapp
         import traitlets
     except ImportError:
         args.no_ipython = True
