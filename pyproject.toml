@@ -66,7 +66,7 @@ skip = ['diofant/core/expr.py',
         'diofant/external/_gmp_fractions.py']
 atomic = true
 [tool.pylint.MASTER]
-jobs = 0
+jobs = 1  # workaround pylint-dev/pylint#11528
 ignore-path = ['diofant/external/_gmp_fractions.py']
 [tool.pylint.format]
 max-line-length = 7000
@@ -124,7 +124,8 @@ disable = ['invalid-name',
            'arguments-out-of-order',
            'consider-using-f-string',
            'too-many-positional-arguments',
-           'possibly-used-before-assignment']
+           'possibly-used-before-assignment',
+           'looping-through-iterator']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']

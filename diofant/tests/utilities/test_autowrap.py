@@ -158,7 +158,7 @@ static PyMethodDef wrapper_module_{num}Methods[] = {{
         {{NULL, NULL, 0, NULL}}
 }};
 
-static void test_ufunc(char **args, npy_intp *dimensions, npy_intp* steps, void* data)
+static void test_ufunc(char **args, const npy_intp *dimensions, const npy_intp* steps, void* data)
 {{
     npy_intp i;
     npy_intp n = dimensions[0];

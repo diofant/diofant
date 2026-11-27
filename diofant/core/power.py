@@ -1164,7 +1164,7 @@ class Pow(Expr):
             term = term.nseries(x, n, logx)
             pow_series += term
         factor = b0**self.exp
-        if t != 0 and not (self.exp.is_Integer and self.exp >= 0 and n > self.exp):
+        if t != 0 and not (self.exp.is_Integer and n > self.exp >= 0):
             pow_series += Order(t**n, x)
             # branch handling
             if c.is_negative:

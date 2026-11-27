@@ -7,11 +7,12 @@ from diofant import Float, Fraction, Symbol
 
 __all__ = ()
 
-ipython = pytest.importorskip('IPython', minversion='2.3.0')
+pytest.importorskip('IPython', minversion='2.3.0')
+ipapp = pytest.importorskip('IPython.terminal.ipapp')
 
 
 def test_ipython_printing(monkeypatch):
-    app = ipython.terminal.ipapp.TerminalIPythonApp()
+    app = ipapp.TerminalIPythonApp()
     app.display_banner = False
     app.initialize([])
     app = app.shell
