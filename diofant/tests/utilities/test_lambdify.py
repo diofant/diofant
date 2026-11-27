@@ -595,9 +595,13 @@ def test_sympyissue_26119():
 
 
 def test_issue_1494():
-    pytest.importorskip('numpy')
+    pytest.raises(NameError, lambda: lambdify(x, zeta(x), modules='math'))
+    assert lambdify(x, binomial(x, 2), modules='mpmath')(5) == 10
+
+
+@with_numpy
+def test_issue_1494_numpy():
     for e in [binomial(x, 2), gamma(x), zeta(x)]:
         pytest.raises(NameError, lambda: lambdify(x, e, modules='numpy'))
-    assert lambdify(x, binomial(x, 2), modules='mpmath')(5) == 10
     xp = symbols('x', positive=True)
     pytest.raises(NameError, lambda: lambdify([xp], binomial(xp, 2)))
