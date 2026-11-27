@@ -124,7 +124,8 @@ disable = ['invalid-name',
            'arguments-out-of-order',
            'consider-using-f-string',
            'too-many-positional-arguments',
-           'possibly-used-before-assignment']
+           'possibly-used-before-assignment',
+           'looping-through-iterator']
 [tool.pytest.ini_options]
 doctest_optionflags = ['ELLIPSIS', 'NORMALIZE_WHITESPACE',
                        'IGNORE_EXCEPTION_DETAIL']
