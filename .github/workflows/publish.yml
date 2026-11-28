@@ -8,10 +8,10 @@ jobs:
     name: Build distributions
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: "3.x"
     - run: pip install build
@@ -54,7 +54,7 @@ jobs:
         pattern: diofant-dist
         path: dist/
         merge-multiple: true
-    - uses: sigstore/gh-action-sigstore-python@v3.2.0
+    - uses: sigstore/gh-action-sigstore-python@v3.5.0
       with:
         inputs: >-
           ./dist/*.tar.gz
