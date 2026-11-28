@@ -3,6 +3,8 @@ This module provides convenient functions to transform diofant expressions to
 lambda functions which can be used to calculate numerical values very fast.
 """
 
+import builtins
+import dis
 import inspect
 import textwrap
 
@@ -329,6 +331,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if flat in lstr:
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)  # pylint: disable=eval-used
+    missing = sorted({i.argval for i in dis.get_instructions(func)
+                      if i.opname == 'LOAD_GLOBAL'
+                      and i.argval not in namespace
+                      and i.argval not in builtins.__dict__})
+    if missing:
+        raise NameError(f"Can't lambdify {expr} with modules={modules!r}: "
+                        f"undefined names {', '.join(missing)}")
     # For numpy lambdify, wrap all input arguments in arrays.
     if module_provided and 'numpy' in namespaces:
         def array_wrap(funcarg):
